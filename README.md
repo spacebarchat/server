@@ -29,7 +29,8 @@ Content-Type: application/json
 url-params:
     :id                       // aHR0cHM6Ly9kaXNjb3JkLmNvbQ==
     :filename                 // discord.png
-    
+```
+```
 /external/aHR0cHM6Ly9kaXNjb3JkLmNvbQ==/discord.png
 ```
 ##### Returns:
