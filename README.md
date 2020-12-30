@@ -3,7 +3,7 @@ cdn for discord clone
 
 ## Endpoints:
 
-### /external 
+### `/external` 
 #### POST
 ```
 Content-Type: application/json
@@ -23,5 +23,17 @@ Content-Type: application/json
     "ogType": string          // "website"
 }
 ```
-### /external/:id/:filename
+### `/external/<id>/<filename>`
 #### GET
+```
+url-params:
+    :id                       // aHR0cHM6Ly9kaXNjb3JkLmNvbQ==
+    :filename                 // discord.png
+    
+/external/aHR0cHM6Ly9kaXNjb3JkLmNvbQ==/discord.png
+```
+##### Returns:
+```
+Content-Type: image/<imageType(png,img,gif)>
+Image
+```
