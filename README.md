@@ -1,4 +1,4 @@
-# discord-cdn
+# Discord-CDN
 cdn for discord clone
 
 ## Endpoints:
