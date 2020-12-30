@@ -1,0 +1,19 @@
+import { Router } from "express";
+import multer from "multer";
+const multer_ = multer();
+
+const router = Router();
+router.post("/:file", multer_.single("attachment"), async (req, res) => {
+	const { buffer } = req.file;
+
+	res.set("Content-Type", "image/png");
+	res.send(buffer);
+});
+router.get("/:hash/:file", async (req, res) => {
+	res.send(`${req.params.hash}/${req.params.file}`);
+});
+router.delete("/:hash/:file", async (req, res) => {
+	res.send("remove");
+});
+
+export default router;
