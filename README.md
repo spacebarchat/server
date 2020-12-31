@@ -2,8 +2,7 @@
 cdn for discord clone
 
 ## Endpoints:
-### `/attachments/<filename>`
-#### POST
+### POST `/attachments/<filename>`
 ```
 Content-Type: form-data
 
@@ -18,8 +17,7 @@ attachment: File
     "filename": string              // "lakdoiauej.png"
 }
 ```
-### `/attachments/<id>/<filename>`
-#### GET
+### GET `/attachments/<id>/<filename>`
 ```
 requests image from database with given <id> and <filename>
 ```
@@ -28,8 +26,7 @@ requests image from database with given <id> and <filename>
 Content-Type: image/<imageType(png,img,gif)>
 Image
 ```
-### `/attachments/<id>/<filename>`
-#### DELETE
+### DELETE `/attachments/<id>/<filename>`
 ```
 deletes database entry
 ```
@@ -46,8 +43,8 @@ Content-Type: application/json
 <hr>
 
 _(endpoints for crawler):_
-### `/external` 
-#### POST
+### POST `/external` 
+
 ```
 requests crawling of `og:`metadata and the download of the `og:image` property
 --------
@@ -69,8 +66,7 @@ Content-Type: application/json
     "ogType": string          // "website"
 }
 ```
-### `/external/<id>/<filename>`
-#### GET
+### GET `/external/<id>/<filename>`
 - requests cached crawled image 
 ```
 url-params:
