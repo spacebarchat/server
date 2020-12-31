@@ -26,13 +26,15 @@
 		"lambert-db": "^1.0.5",
 		"missing-native-js-functions": "^1.0.8",
 		"multer": "^1.4.2",
-		"node-fetch": "^2.6.1"
+		"node-fetch": "^2.6.1",
+		"uuid": "^8.3.2"
 	},
 	"devDependencies": {
 		"@types/btoa": "^1.2.3",
 		"@types/express": "^4.17.9",
 		"@types/multer": "^1.4.5",
 		"@types/node": "^14.14.16",
-		"@types/node-fetch": "^2.5.7"
+		"@types/node-fetch": "^2.5.7",
+		"@types/uuid": "^8.3.0"
 	}
 }
