@@ -1,6 +1,12 @@
 # Discord-CDN
 cdn for discord clone
 
+## Run localy:
+```
+npm i
+node dist/
+```
+
 ## Endpoints:
 ### POST `/attachments/<filename>`
 ```
