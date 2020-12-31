@@ -6,7 +6,7 @@ cdn for discord clone
 ```
 Content-Type: form-data
 
-attachment: File
+attachment: File (binary-data)
 ```
 ##### Returns:
 ```
