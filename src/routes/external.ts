@@ -8,11 +8,12 @@ import { URL } from "url";
 const router = Router();
 
 type crawled = {
-	title: string;
-	type: string;
-	description: string;
-	url: string;
-	image_url: string;
+	id: string;
+	ogTitle: string;
+	ogType: string;
+	ogDescription: string;
+	ogUrl: string;
+	cachedImage: string;
 };
 
 const DEFAULT_FETCH_OPTIONS: any = {
@@ -59,7 +60,7 @@ router.post("/", bodyParser.json(), async (req, res) => {
 
 		await db.data.externals.push({ image: ImageResponseBuffer, id: ID, type: ImageType });
 
-		const new_cache_entry = { id: ID, ogTitle, ogDescription, cachedImage, ogUrl, ogType };
+		const new_cache_entry: crawled = { id: ID, ogTitle, ogDescription, cachedImage, ogUrl, ogType };
 		await db.data.crawler.push(new_cache_entry);
 
 		res.send(new_cache_entry);
