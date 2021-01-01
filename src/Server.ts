@@ -1,7 +1,6 @@
 import express, { Application, Router } from "express";
 import { traverseDirectory } from "./Utils";
 import { Server as HTTPServer } from "http";
-import fetch from "node-fetch";
 import fs from "fs/promises";
 
 export type ServerOptions = {
@@ -56,13 +55,13 @@ export class Server {
 			var router = require(file);
 			if (router.router) router = router.router;
 			if (router.default) router = router.default;
-			if (!router || router.prototype.constructor.name !== "router")
+			if (!router || router?.prototype?.constructor?.name !== "router")
 				throw `File doesn't export any default router`;
 			this.app.use(path, <Router>router);
 			console.log(`[Server] Route ${path} registerd`);
 			return router;
 		} catch (error) {
-			console.error(new Error(`[Server] Failed to register route ${file}: ${error}`));
+			console.error(new Error(`[Server] Failed to register route ${path}: ${error}`));
 		}
 	}
 

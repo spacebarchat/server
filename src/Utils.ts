@@ -1,14 +1,5 @@
 import fs from "fs/promises";
-
-declare global {
-	interface Array<T> {
-		flat(): T;
-	}
-}
-
-Array.prototype.flat = function () {
-	return this.reduce((acc, val) => (Array.isArray(val) ? acc.concat(val.flat()) : acc.concat(val)), []);
-};
+import "missing-native-js-functions";
 
 export interface traverseDirectoryOptions {
 	dirname: string;
