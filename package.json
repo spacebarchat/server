@@ -24,7 +24,8 @@
 		"express-cache-middleware": "^1.0.1",
 		"lambert-db": "^1.0.3",
 		"missing-native-js-functions": "^1.0.8",
-		"node-fetch": "^2.6.1"
+		"node-fetch": "^2.6.1",
+		"rethinkdb-ts": "^2.4.5"
 	},
 	"devDependencies": {
 		"@types/node": "^14.14.10",
