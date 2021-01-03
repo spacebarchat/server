@@ -1,3 +1,7 @@
+/**
+ * * patch to redirect requests from cloned client
+ * (../../client/index.html)
+ */
 import { Router } from "express";
 import fetch from "node-fetch";
 
