@@ -1,4 +1,4 @@
-import { Server } from "./Server";
+import { DiscordServer } from "./Server";
 
-const server = new Server();
+const server = new DiscordServer();
 server.start().catch(console.error);
