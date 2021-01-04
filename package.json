@@ -24,6 +24,7 @@
 		"express": "^4.17.1",
 		"express-async-errors": "^3.1.1",
 		"lambert-db": "^1.0.5",
+		"lambert-server": "^1.0.3",
 		"missing-native-js-functions": "^1.0.8",
 		"multer": "^1.4.2",
 		"node-fetch": "^2.6.1",

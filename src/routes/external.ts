@@ -30,7 +30,7 @@ const DEFAULT_FETCH_OPTIONS: any = {
 router.post("/", bodyParser.json(), async (req, res) => {
 	if (!req.body) throw new Error("Invalid Body (url missing) \nExample: url:https://discord.com");
 
-	const { db } = req.server;
+	const { db } = req.cdn;
 	const { url } = req.body;
 
 	const ID = btoa(url);
@@ -72,7 +72,7 @@ router.post("/", bodyParser.json(), async (req, res) => {
 });
 
 router.get("/:id/:filename", async (req, res) => {
-	const { db } = req.server;
+	const { db } = req.cdn;
 	const { id, filename } = req.params;
 	const { image, type } = await db.data.externals({ id: id }).get();
 	const imageBuffer = Buffer.from(image, "base64");

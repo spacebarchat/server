@@ -15,7 +15,7 @@ type Attachment = {
 router.post("/:filename", multer_.single("attachment"), async (req, res) => {
 	const { buffer, mimetype } = req.file;
 	const { filename } = req.params;
-	const { db } = req.server;
+	const { db } = req.cdn;
 
 	const File: Attachment = {
 		filename,
@@ -30,7 +30,7 @@ router.post("/:filename", multer_.single("attachment"), async (req, res) => {
 });
 
 router.get("/:hash/:filename", async (req, res) => {
-	const { db } = req.server;
+	const { db } = req.cdn;
 	const { hash, filename } = req.params;
 
 	const File: Attachment = await db.data.attachments({ id: hash, filename: filename }).get();
@@ -41,7 +41,7 @@ router.get("/:hash/:filename", async (req, res) => {
 
 router.delete("/:hash/:filename", async (req, res) => {
 	const { hash, filename } = req.params;
-	const { db } = req.server;
+	const { db } = req.cdn;
 
 	await db.data.attachments({ id: hash, filename: filename }).delete();
 	return res.send({ success: true, message: "attachment deleted" });
