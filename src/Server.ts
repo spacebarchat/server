@@ -1,6 +1,3 @@
-import express, { Application, Router } from "express";
-import { traverseDirectory } from "./Utils";
-import { Server as HTTPServer } from "http";
 import fs from "fs/promises";
 import { Server, ServerOptions } from "lambert-server";
 
@@ -17,7 +14,7 @@ declare global {
 export class DiscordServer extends Server {
 	public options: DiscordServerOptions;
 
-	constructor(opts?: DiscordServerOptions) {
+	constructor(opts?: Partial<DiscordServerOptions>) {
 		super(opts);
 	}
 
