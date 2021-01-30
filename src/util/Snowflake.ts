@@ -10,10 +10,10 @@
  * A container for useful snowflake-related methods.
  */
 export class Snowflake {
-	static EPOCH = 1420070400000;
-	static INCREMENT = 0;
-	static processId = 0;
-	static workerId = 0;
+	static readonly EPOCH = 1420070400000n;
+	static INCREMENT = 0n; // max 4095
+	static processId = 0n; // max 31
+	static workerId = 0n; // max 31
 
 	constructor() {
 		throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
@@ -82,27 +82,12 @@ export class Snowflake {
 		return dec;
 	}
 
-	/**
-	 * Generates a Discord snowflake.
-	 * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
-	 * @param {number|Date} [timestamp=Date.now()] Timestamp or date of the snowflake to generate
-	 * @returns {Snowflake} The generated snowflake
-	 */
-	static generate(timestamp = Date.now()) {
-		if (timestamp instanceof Date) timestamp = timestamp.getTime();
-		if (typeof timestamp !== "number" || isNaN(timestamp)) {
-			throw new TypeError(
-				`"timestamp" argument must be a number (received ${isNaN(timestamp) ? "NaN" : typeof timestamp})`
-			);
-		}
-		if (Snowflake.INCREMENT >= 4095) Snowflake.INCREMENT = 0;
-		let workerBin = Snowflake.workerId.toString(2).padStart(5, "0");
-		let processBin = Snowflake.processId.toString(2).padStart(5, "0");
-
-		const BINARY = `${(timestamp - EPOCH)
-			.toString(2)
-			.padStart(42, "0")}${workerBin}${processBin}${(Snowflake.INCREMENT++).toString(2).padStart(12, "0")}`;
-		return Snowflake.binaryToID(BINARY);
+	static generate() {
+		var time = BigInt(Date.now() - Snowflake.EPOCH) << 22n;
+		var worker = Snowflake.workerId << 17n;
+		var process = Snowflake.processId << 12n;
+		var increment = Snowflake.INCREMENT++;
+		return (time | worker | process | increment).toString(10);
 	}
 
 	/**
@@ -137,14 +122,5 @@ export class Snowflake {
 			enumerable: true,
 		});
 		return res;
-	}
-
-	/**
-	 * Discord's epoch value (2015-01-01T00:00:00.000Z).
-	 * @type {number}
-	 * @readonly
-	 */
-	static get EPOCH() {
-		return EPOCH;
 	}
 }
