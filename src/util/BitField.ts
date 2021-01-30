@@ -3,26 +3,17 @@
 // https://github.com/discordjs/discord.js/blob/master/src/util/BitField.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
 
-export type BitFieldResolvable = number | BitField | string | BitFieldResolvable[];
+export type BitFieldResolvable = number | BigInt | BitField | string | BitFieldResolvable[];
 
 /**
  * Data structure that makes it easy to interact with a bitfield.
  */
 export class BitField {
-	public bitfield: number;
+	public bitfield: bigint = BigInt(0);
 
-	/**
-	 * Numeric bitfield flags.
-	 * <info>Defined in extension classes</info>
-	 */
-	public static FLAGS: Record<string, number>;
-	/**
-	 */
+	public static FLAGS: Record<string, bigint>;
+
 	constructor(bits: BitFieldResolvable = 0) {
-		/**
-		 * Bitfield of the packed bits
-		 * @type {number}
-		 */
 		this.bitfield = BitField.resolve(bits);
 	}
 
@@ -30,7 +21,7 @@ export class BitField {
 	 * Checks whether the bitfield has a bit, or any of multiple bits.
 	 */
 	any(bit: BitFieldResolvable): boolean {
-		return (this.bitfield & BitField.resolve(bit)) !== 0;
+		return (this.bitfield & BitField.resolve(bit)) !== 0n;
 	}
 
 	/**
@@ -45,8 +36,8 @@ export class BitField {
 	 */
 	has(bit: BitFieldResolvable): boolean {
 		if (Array.isArray(bit)) return bit.every((p) => this.has(p));
-		bit = BitField.resolve(bit);
-		return (this.bitfield & bit) === bit;
+		const BIT = BitField.resolve(bit);
+		return (this.bitfield & BIT) === BIT;
 	}
 
 	/**
@@ -70,7 +61,7 @@ export class BitField {
 	 * @returns {BitField} These bits or new BitField if the instance is frozen.
 	 */
 	add(...bits: BitFieldResolvable[]): BitField {
-		let total = 0;
+		let total = 0n;
 		for (const bit of bits) {
 			total |= BitField.resolve(bit);
 		}
@@ -84,7 +75,7 @@ export class BitField {
 	 * @param {...BitFieldResolvable} [bits] Bits to remove
 	 */
 	remove(...bits: BitFieldResolvable[]) {
-		let total = 0;
+		let total = 0n;
 		for (const bit of bits) {
 			total |= BitField.resolve(bit);
 		}
@@ -136,10 +127,11 @@ export class BitField {
 	 * @param {BitFieldResolvable} [bit=0] - bit(s) to resolve
 	 * @returns {number}
 	 */
-	static resolve(bit: BitFieldResolvable = 0): number {
-		if (typeof bit === "number" && bit >= 0) return bit;
+	static resolve(bit: BitFieldResolvable = 0n): bigint {
+		if ((typeof bit === "number" || typeof bit === "bigint") && bit >= 0n) return BigInt(bit);
 		if (bit instanceof BitField) return bit.bitfield;
-		if (Array.isArray(bit)) return bit.map((p) => this.resolve(p)).reduce((prev, p) => prev | p, 0);
+		if (Array.isArray(bit))
+			return bit.map((p) => this.resolve(p)).reduce((prev, p) => BigInt(prev) | BigInt(p), 0n);
 		if (typeof bit === "string" && typeof this.FLAGS[bit] !== "undefined") return this.FLAGS[bit];
 		throw new RangeError("BITFIELD_INVALID: " + bit);
 	}

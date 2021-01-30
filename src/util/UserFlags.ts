@@ -5,18 +5,18 @@ import { BitField } from "./BitField";
 
 export class UserFlags extends BitField {
 	static FLAGS = {
-		DISCORD_EMPLOYEE: 1 << 0,
-		PARTNERED_SERVER_OWNER: 1 << 1,
-		HYPESQUAD_EVENTS: 1 << 2,
-		BUGHUNTER_LEVEL_1: 1 << 3,
-		HOUSE_BRAVERY: 1 << 6,
-		HOUSE_BRILLIANCE: 1 << 7,
-		HOUSE_BALANCE: 1 << 8,
-		EARLY_SUPPORTER: 1 << 9,
-		TEAM_USER: 1 << 10,
-		SYSTEM: 1 << 12,
-		BUGHUNTER_LEVEL_2: 1 << 14,
-		VERIFIED_BOT: 1 << 16,
-		EARLY_VERIFIED_BOT_DEVELOPER: 1 << 17,
+		DISCORD_EMPLOYEE: 1n << 0n,
+		PARTNERED_SERVER_OWNER: 1n << 1n,
+		HYPESQUAD_EVENTS: 1n << 2n,
+		BUGHUNTER_LEVEL_1: 1n << 3n,
+		HOUSE_BRAVERY: 1n << 6n,
+		HOUSE_BRILLIANCE: 1n << 7n,
+		HOUSE_BALANCE: 1n << 8n,
+		EARLY_SUPPORTER: 1n << 9n,
+		TEAM_USER: 1n << 10n,
+		SYSTEM: 1n << 12n,
+		BUGHUNTER_LEVEL_2: 1n << 14n,
+		VERIFIED_BOT: 1n << 16n,
+		EARLY_VERIFIED_BOT_DEVELOPER: 1n << 17n,
 	};
 }

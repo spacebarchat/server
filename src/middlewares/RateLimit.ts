@@ -4,7 +4,7 @@ import { getIpAdress } from "./GlobalRateLimit";
 
 export function RateLimit({ count = 10, timespan = 1000 * 5, name = "/" }) {
 	return async (req: Request, res: Response, next: NextFunction) => {
-		let id = req.userid || getIpAdress(req); // TODO: .replaceAll(".", "_"); // for ip adress replace all dots to save in database
+		let id = req.userid || getIpAdress(req);
 
 		const limit: { count: number; start: number } = (await db.data.ratelimit.routes[name][id].get()) || {
 			count: 0,
