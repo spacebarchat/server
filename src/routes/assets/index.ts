@@ -3,10 +3,10 @@
  * (../../client/index.html)
  */
 import { Router } from "express";
-import fetch from "node-fetch";
+import fetch, { Response } from "node-fetch";
 
-const router = Router();
-const cache = new Map();
+const router: Router = Router();
+const cache = new Map<string, Response>();
 const assetEndpoint = "https://discord.com/assets/";
 
 export async function getCache(key: string): Promise<Response> {

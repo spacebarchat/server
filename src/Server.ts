@@ -1,5 +1,8 @@
 import fs from "fs/promises";
 import { Server, ServerOptions } from "lambert-server";
+import { Authentication, GlobalRateLimit } from "./middlewares/";
+import Config from "./util/Config";
+import db from "./util/Database";
 
 export interface DiscordServerOptions extends ServerOptions {}
 
@@ -19,6 +22,13 @@ export class DiscordServer extends Server {
 	}
 
 	async start() {
+		await db.init();
+		console.log("[DB] connected");
+		await Promise.all([Config.init()]);
+
+		this.app.use(GlobalRateLimit);
+		this.app.use(Authentication);
+
 		// recursively loads files in routes/
 		this.routes = await this.registerRoutes(__dirname + "/routes/");
 		// const indexHTML = await (await fetch("https://discord.com/app")).buffer();

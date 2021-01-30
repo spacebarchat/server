@@ -1,16 +1,20 @@
 // @ts-nocheck
 
-// github.com/discordjs/discord.js/blob/master/src/util/Snowflake.js
+// https://github.com/discordjs/discord.js/blob/master/src/util/Snowflake.js
+// Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
 "use strict";
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
-const EPOCH = 1420070400000;
-let INCREMENT = 0;
 
 /**
  * A container for useful snowflake-related methods.
  */
-class SnowflakeUtil {
+export class Snowflake {
+	static EPOCH = 1420070400000;
+	static INCREMENT = 0;
+	static processId = 0;
+	static workerId = 0;
+
 	constructor() {
 		throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
 	}
@@ -91,11 +95,14 @@ class SnowflakeUtil {
 				`"timestamp" argument must be a number (received ${isNaN(timestamp) ? "NaN" : typeof timestamp})`
 			);
 		}
-		if (INCREMENT >= 4095) INCREMENT = 0;
-		const BINARY = `${(timestamp - EPOCH).toString(2).padStart(42, "0")}0000100000${(INCREMENT++)
+		if (Snowflake.INCREMENT >= 4095) Snowflake.INCREMENT = 0;
+		let workerBin = Snowflake.workerId.toString(2).padStart(5, "0");
+		let processBin = Snowflake.processId.toString(2).padStart(5, "0");
+
+		const BINARY = `${(timestamp - EPOCH)
 			.toString(2)
-			.padStart(12, "0")}`;
-		return SnowflakeUtil.binaryToID(BINARY);
+			.padStart(42, "0")}${workerBin}${processBin}${(Snowflake.INCREMENT++).toString(2).padStart(12, "0")}`;
+		return Snowflake.binaryToID(BINARY);
 	}
 
 	/**
@@ -115,7 +122,7 @@ class SnowflakeUtil {
 	 * @returns {DeconstructedSnowflake} Deconstructed snowflake
 	 */
 	static deconstruct(snowflake) {
-		const BINARY = SnowflakeUtil.idToBinary(snowflake).toString(2).padStart(64, "0");
+		const BINARY = Snowflake.idToBinary(snowflake).toString(2).padStart(64, "0");
 		const res = {
 			timestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
 			workerID: parseInt(BINARY.substring(42, 47), 2),
@@ -141,5 +148,3 @@ class SnowflakeUtil {
 		return EPOCH;
 	}
 }
-
-module.exports = SnowflakeUtil;

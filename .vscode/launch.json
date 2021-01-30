@@ -8,8 +8,17 @@
 			"sourceMaps": true,
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Program",
-			"program": "${workspaceFolder}/dist/test/db_test.js",
+			"name": "Launch Server",
+			"program": "${workspaceFolder}/dist/index.js",
+			"preLaunchTask": "tsc: build - tsconfig.json",
+			"outFiles": ["${workspaceFolder}/dist/**/*.js"]
+		},
+		{
+			"sourceMaps": true,
+			"type": "node",
+			"request": "launch",
+			"name": "Test",
+			"program": "${workspaceFolder}/dist/test/mongo_test.js",
 			"preLaunchTask": "tsc: build - tsconfig.json",
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"]
 		},
@@ -18,7 +27,9 @@
 			"program": "${file}",
 			"request": "launch",
 			"skipFiles": ["<node_internals>/**"],
-			"type": "node"
+			"runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
+			"type": "node",
+			"resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
 		}
 	]
 }
