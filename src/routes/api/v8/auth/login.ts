@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Config from "../../../../util/Config";
 import { User } from "../../../../models/User";
+import { adjustEmail } from "./register";
 const router: Router = Router();
 
 router.post(
@@ -19,7 +20,9 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		const { login, password } = req.body;
-		const userquery = { $or: [{ email: login }, { phone: login }] };
+
+		// query for user with same email or phone number
+		const userquery = { $or: [{ email: adjustEmail(login) }, { phone: login }] };
 		const user: User = await db.data
 			.users(userquery)
 			.get({ hash: true, id: true, user_settings: { locale: true, theme: true } });
@@ -30,6 +33,7 @@ router.post(
 			});
 		}
 
+		// the salt is saved in the password refer to bcrypt docs
 		const same_password = await bcrypt.compare(password, user.hash);
 		if (!same_password) {
 			throw FieldErrors({
@@ -37,7 +41,7 @@ router.post(
 			});
 		}
 
-		const token = generateToken(user.id);
+		const token = await generateToken(user.id);
 
 		// Notice this will have a different token structure, than discord
 		// Discord header is just the user id as string, which is not possible with npm-jsonwebtoken package
@@ -47,7 +51,7 @@ router.post(
 	}
 );
 
-export function generateToken(id: bigint) {
+export async function generateToken(id: bigint) {
 	const iat = Math.floor(Date.now() / 1000);
 	const algorithm = "HS256";
 
