@@ -95,7 +95,7 @@ export function instanceOf(
 					return true;
 				throw new FieldError("BASE_TYPE_CHOICES", t("common:field.BASE_TYPE_CHOICES", { types: type.types }));
 			case Email:
-				if ((<Email>type).check()) return true;
+				if (new Email(value).check()) return true;
 				throw new FieldError("EMAIL_TYPE_INVALID_EMAIL", t("common:field.EMAIL_TYPE_INVALID_EMAIL"));
 			case Date:
 				value = new Date(value);
@@ -143,13 +143,13 @@ export function instanceOf(
 					let newKey = key;
 					const OPTIONAL = key.startsWith(OPTIONAL_PREFIX);
 					if (OPTIONAL) newKey = newKey.slice(OPTIONAL_PREFIX.length);
-					errors[key] = {};
+					errors[newKey] = {};
 
 					return (
 						instanceOf(type[key], value[newKey], {
 							path: `${path}.${newKey}`,
 							optional: OPTIONAL,
-							errors: errors[key],
+							errors: errors[newKey],
 							t,
 							ref: { key: newKey, obj: value },
 						}) === true

@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { Long } from "mongodb";
+import { Snowflake } from "../util/Snowflake";
 
 async function main() {
 	const conn = await mongoose.createConnection(
@@ -9,10 +11,7 @@ async function main() {
 		}
 	);
 	console.log("connected");
-	const result = await conn
-		.collection("users")
-		.find({ $or: [{ email: "samuel.scheit@gmail.com" }, { phone: "samuel.scheit@gmail.com" }] })
-		.toArray();
+	const result = await conn.collection("users").insertOne({ test: Long.fromString(Snowflake.generate().toString()) });
 	// .project(undefined)
 
 	console.log(result);

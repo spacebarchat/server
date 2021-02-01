@@ -3,16 +3,16 @@ import Config from "../util/Config";
 import db from "../util/Database";
 
 export async function GlobalRateLimit(req: Request, res: Response, next: NextFunction) {
-	if (!Config.get().server.ipRateLimit.enabled) return next();
+	if (!Config.get().limits.rate.ip.enabled) return next();
 
 	const ip = getIpAdress(req);
 	let limit = (await db.data.ratelimit.global[ip].get()) || { start: Date.now(), count: 0 };
-	if (limit.start < Date.now() - Config.get().server.ipRateLimit.timespan) {
+	if (limit.start < Date.now() - Config.get().limits.rate.ip.timespan) {
 		limit.start = Date.now();
 		limit.count = 0;
 	}
 
-	if (limit.count > Config.get().server.ipRateLimit.count) {
+	if (limit.count > Config.get().limits.rate.ip.count) {
 		const timespan = Date.now() - limit.start;
 
 		return res
@@ -37,7 +37,7 @@ export async function GlobalRateLimit(req: Request, res: Response, next: NextFun
 }
 
 export function getIpAdress(req: Request): string {
-	const { forwadedFor } = Config.get().server;
+	const { forwadedFor } = Config.get().security;
 	const ip = forwadedFor ? <string>req.headers[forwadedFor] : req.ip;
 	return ip.replaceAll(".", "_").replaceAll(":", "_");
 }

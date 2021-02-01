@@ -19,7 +19,7 @@ export function Authentication(req: Request, res: Response, next: NextFunction) 
 	if (NO_AUTHORIZATION_ROUTES.includes(req.url)) return next();
 	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 
-	return jwt.verify(req.headers.authorization, Config.get().server.jwtSecret, JWTOptions, (err, decoded: any) => {
+	return jwt.verify(req.headers.authorization, Config.get().security.jwtSecret, JWTOptions, (err, decoded: any) => {
 		if (err || !decoded) return next(new HTTPError("Invalid Token", 401));
 
 		req.token = decoded;
