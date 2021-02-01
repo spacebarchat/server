@@ -5,9 +5,9 @@ import { ProviderCache } from "lambert-db";
 var Config: ProviderCache;
 
 async function init() {
-	Config = db.data.config.cache();
+	Config = db.data.config({}).cache();
 	await Config.init();
-	await Config.set(DefaultOptions.merge(Config.cache));
+	await Config.set(DefaultOptions.merge(Config.cache || {}));
 }
 
 function get() {

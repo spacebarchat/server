@@ -104,3 +104,4 @@ dist
 .tern-port
 
 .DS_STORE
+src/ready.json

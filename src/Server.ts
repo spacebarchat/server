@@ -3,6 +3,9 @@ import { Server, ServerOptions } from "lambert-server";
 import { Authentication, GlobalRateLimit } from "./middlewares/";
 import Config from "./util/Config";
 import db from "./util/Database";
+import i18next from "i18next";
+import i18nextMiddleware from "i18next-http-middleware";
+import { Request } from "express";
 
 export interface DiscordServerOptions extends ServerOptions {}
 
@@ -18,7 +21,7 @@ export class DiscordServer extends Server {
 	public options: DiscordServerOptions;
 
 	constructor(opts?: Partial<DiscordServerOptions>) {
-		super(opts);
+		super({ ...opts, errorHandler: false });
 	}
 
 	async start() {
@@ -28,11 +31,21 @@ export class DiscordServer extends Server {
 
 		this.app.use(GlobalRateLimit);
 		this.app.use(Authentication);
+		const namespaces = await fs.readdir(__dirname + "/locales/de/");
+		const ns = namespaces.filter((x) => x.endsWith(".json")).map((x) => x.slice(0, x.length - 5));
 
-		// recursively loads files in routes/
+		i18next.use(i18nextMiddleware.LanguageDetector).init({
+			preload: ["en", "de"],
+			fallbackLng: "en",
+			ns,
+			backend: {
+				loadPath: "locales/{{lng}}/{{ns}}.json",
+			},
+		});
+		this.app.use(i18nextMiddleware.handle(i18next, {}));
+
 		this.routes = await this.registerRoutes(__dirname + "/routes/");
-		// const indexHTML = await (await fetch("https://discord.com/app")).buffer();
-		const indexHTML = await fs.readFile(__dirname + "/../client/index.html");
+		const indexHTML = await fs.readFile(__dirname + "/../client_test/index.html");
 
 		this.app.get("*", (req, res) => {
 			res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);

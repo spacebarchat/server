@@ -7,6 +7,7 @@ import { Snowflake } from "../../../../util/Snowflake";
 import "missing-native-js-functions";
 import { User } from "../../../../models/User";
 import { generateToken } from "./login";
+import { trim } from "../../../../util/String";
 const router: Router = Router();
 
 router.post(
@@ -39,7 +40,7 @@ router.post(
 
 		let adjusted_email: string = email;
 		let adjusted_password: string = password;
-		let adjusted_username: string = username;
+		let adjusted_username: string = trim(username);
 		const { register } = Config.get();
 
 		if (!register.allowNewRegistration) {

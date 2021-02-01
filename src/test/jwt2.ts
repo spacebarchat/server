@@ -1,8 +1,13 @@
 import jwt from "jsonwebtoken";
 
-// console.log(jwt.sign("test", "test"));
+const algorithm = "HS256";
+const iat = Math.floor(Date.now() / 1000);
 
-jwt.verify(`${"2WmFS_EAdYFCBOFM9pVPo9g4bpuI2I9U_JGTCfrx7Tk".repeat(1000000)}`, "test", (err, decoded) => {
-	if (err) console.error(err);
-	console.log(decoded);
+// @ts-ignore
+const token = jwt.sign({ id: "311129357362135041" }, "secret", {
+	algorithm,
 });
+console.log(token);
+
+const decoded = jwt.verify(token, "secret", { algorithms: [algorithm] });
+console.log(decoded);
