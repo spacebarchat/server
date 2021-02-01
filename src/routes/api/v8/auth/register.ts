@@ -20,7 +20,7 @@ router.post(
 		$email: Email,
 		$fingerprint: String,
 		$invite: String,
-		$date_of_birth: String, // "2000-04-03"
+		$date_of_birth: Date, // "2000-04-03"
 		$gift_code_sku_id: String,
 		$captcha_key: String,
 	}),
@@ -110,7 +110,7 @@ router.post(
 				throw FieldErrors({
 					date_of_birth: {
 						code: "DATE_OF_BIRTH_UNDERAGE",
-						message: req.t("auth:register.DATE_OF_BIRTH_UNDERAGE"),
+						message: req.t("auth:register.DATE_OF_BIRTH_UNDERAGE", { years: register.dateOfBirth.minimum }),
 					},
 				});
 			}
