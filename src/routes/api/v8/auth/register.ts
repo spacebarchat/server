@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import Config from "../../../../util/Config";
 import db from "../../../../util/Database";
 import bcrypt from "bcrypt";
@@ -7,7 +7,8 @@ import { Snowflake } from "../../../../util/Snowflake";
 import "missing-native-js-functions";
 import { User } from "../../../../models/User";
 import { generateToken } from "./login";
-import { trim } from "../../../../util/String";
+import { checkLength, trimSpecial } from "../../../../util/String";
+
 const router: Router = Router();
 
 router.post(
@@ -37,24 +38,40 @@ router.post(
 		} = req.body;
 		// TODO: automatically join invite
 		// TODO: gift_code_sku_id?
+		// TODO: check passwort strength
 
+		// adjusted_email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
 		let adjusted_email: string = email;
-		let adjusted_password: string = password;
-		let adjusted_username: string = trim(username);
+
+		// adjusted_password will be the hash of the password
+		let adjusted_password: string = "";
+
+		// trim special uf8 control characters -> Backspace, Newline, ...
+		let adjusted_username: string = trimSpecial(username);
+
+		// discriminator will be randomly generated
+		let discriminator = "";
+
+		checkLength(adjusted_username, 2, 32, "username", req);
+		checkLength(password, 8, 100, "password", req);
+
 		const { register } = Config.get();
 
+		// check if registration is allowed
 		if (!register.allowNewRegistration) {
 			throw FieldErrors({
 				email: { code: "REGISTRATION_DISABLED", message: req.t("auth:register.REGISTRATION_DISABLED") },
 			});
 		}
 
+		// check if the user agreed to the Terms of Service
 		if (!consent) {
 			throw FieldErrors({
 				consent: { code: "CONSENT_REQUIRED", message: req.t("auth:register.CONSENT_REQUIRED") },
 			});
 		}
 
+		// require invite to register -> for organizations to send invites to their employees
 		if (register.requireInvite && !invite) {
 			throw FieldErrors({
 				email: { code: "INVITE_ONLY", message: req.t("auth:register.INVITE_ONLY") },
@@ -62,15 +79,9 @@ router.post(
 		}
 
 		if (email) {
-			const parts = email.match(EMAIL_REGEX);
-			const domain = parts[5];
-			const user = parts[1];
+			adjusted_email = adjustEmail(email);
 
-			if (domain === "gmail.com") {
-				// replace .dots and +alternatives -> Gmail Dot Trick https://support.google.com/mail/answer/7436150 and https://generator.email/blog/gmail-generator
-				adjusted_email = user.replace(/[.]|(\+.*)/g, "");
-			}
-
+			// check if there is already an account with this email
 			const exists = await db.data.users({ email: adjusted_email }).get();
 			if (exists) {
 				throw FieldErrors({
@@ -121,21 +132,23 @@ router.post(
 		if (register.requireCaptcha) {
 			if (!captcha_key) {
 				const { sitekey, service } = Config.get().security.captcha;
-				return res
-					.status(400)
-					.json({ captcha_key: ["captcha-required"], captcha_sitekey: sitekey, captcha_service: service });
+				return res.status(400).json({
+					captcha_key: ["captcha-required"],
+					captcha_sitekey: sitekey,
+					captcha_service: service,
+				});
 			}
 
 			// TODO: check captcha
 		}
 
+		// the salt is saved in the password refer to bcrypt docs
 		adjusted_password = await bcrypt.hash(password, 12);
-		adjusted_username = username.replace(/[]/g, "");
-		var discriminator = "";
+
 		let exists;
 		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
-		for (let tries = 5; tries >= 0; tries--) {
-			discriminator = Math.randomBetween(1, 9999).toString().padStart(4, "0");
+		for (let tries = 0; tries < 5; tries++) {
+			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
 			exists = await db.data.users({ discriminator, username: adjusted_username }).get({ id: true });
 			if (!exists) break;
 		}
@@ -205,11 +218,23 @@ router.post(
 
 		await db.data.users.push(user);
 
-		const token = generateToken(user.id);
-
-		return res.json({ token });
+		return res.json({ token: await generateToken(user.id) });
 	}
 );
+
+export function adjustEmail(email: string) {
+	// body parser already checked if it is a valid email
+	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);
+	const domain = parts[5];
+	const user = parts[1];
+
+	if (domain === "gmail.com") {
+		// replace .dots and +alternatives -> Gmail Dot Trick https://support.google.com/mail/answer/7436150 and https://generator.email/blog/gmail-generator
+		return user.replace(/[.]|(\+.*)/g, "") + "@gmail.com";
+	}
+
+	return email;
+}
 
 export default router;
 
