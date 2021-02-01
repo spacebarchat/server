@@ -10,7 +10,7 @@
  * A container for useful snowflake-related methods.
  */
 export class Snowflake {
-	static readonly EPOCH = 1420070400000n;
+	static readonly EPOCH = 1420070400000;
 	static INCREMENT = 0n; // max 4095
 	static processId = 0n; // max 31
 	static workerId = 0n; // max 31
@@ -87,7 +87,7 @@ export class Snowflake {
 		var worker = Snowflake.workerId << 17n;
 		var process = Snowflake.processId << 12n;
 		var increment = Snowflake.INCREMENT++;
-		return (time | worker | process | increment).toString(10);
+		return time | worker | process | increment;
 	}
 
 	/**
