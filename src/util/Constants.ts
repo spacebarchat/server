@@ -72,10 +72,11 @@ export interface DefaultOptions {
 		allowNewRegistration: boolean;
 		allowMultipleAccounts: boolean;
 		password: {
-			pwMinLength: number;
-			pwMinNumbers: number;
-			pwMinUpperCase: number;
-			pwMinSymbols: number;
+			minLength: number;
+			minNumbers: number;
+			minUpperCase: number;
+			minSymbols: number;
+			blockInsecureCommonPasswords: boolean; // TODO: efficiently save password blocklist in database
 		};
 	};
 }
@@ -141,10 +142,11 @@ export const DefaultOptions: DefaultOptions = {
 		allowNewRegistration: true,
 		allowMultipleAccounts: true,
 		password: {
-			pwMinLength: 8,
-			pwMinNumbers: 2,
-			pwMinUpperCase: 2,
-			pwMinSymbols: 0,
+			minLength: 8,
+			minNumbers: 2,
+			minUpperCase: 2,
+			minSymbols: 0,
+			blockInsecureCommonPasswords: false,
 		},
 	},
 };
