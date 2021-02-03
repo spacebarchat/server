@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import db from "../../../../util/Database";
-import { check, FieldErrors } from "../../../../util/instanceOf";
+import { check, FieldErrors, Length } from "../../../../util/instanceOf";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Config from "../../../../util/Config";
@@ -11,8 +11,8 @@ const router: Router = Router();
 router.post(
 	"/",
 	check({
-		login: String, // email or telephone
-		password: String,
+		login: new Length(String, 2, 100), // email or telephone
+		password: new Length(String, 8, 64),
 		$undelete: Boolean,
 		$captcha_key: String,
 		$login_source: String,

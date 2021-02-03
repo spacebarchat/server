@@ -2,22 +2,24 @@ import { NextFunction, Request, Response, Router } from "express";
 import Config from "../../../../util/Config";
 import db from "../../../../util/Database";
 import bcrypt from "bcrypt";
-import { check, Email, EMAIL_REGEX, FieldErrors } from "../../../../util/instanceOf";
+import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../../../util/instanceOf";
 import { Snowflake } from "../../../../util/Snowflake";
 import "missing-native-js-functions";
 import { User } from "../../../../models/User";
 import { generateToken } from "./login";
-import { checkLength, trimSpecial } from "../../../../util/String";
+import { trimSpecial } from "../../../../util/String";
 
 const router: Router = Router();
 
 router.post(
 	"/",
 	check({
-		username: String,
-		password: String,
+		username: new Length(String, 2, 32),
+		// TODO: check min password length in config
+		// prevent Denial of Service with max length of 64 chars
+		password: new Length(String, 8, 64),
 		consent: Boolean,
-		$email: Email,
+		$email: new Length(Email, 5, 100),
 		$fingerprint: String,
 		$invite: String,
 		$date_of_birth: Date, // "2000-04-03"
@@ -51,9 +53,6 @@ router.post(
 
 		// discriminator will be randomly generated
 		let discriminator = "";
-
-		checkLength(adjusted_username, 2, 32, "username", req);
-		checkLength(password, 8, 100, "password", req);
 
 		const { register } = Config.get();
 
@@ -146,7 +145,10 @@ router.post(
 		adjusted_password = await bcrypt.hash(password, 12);
 
 		let exists;
-		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
+		// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
+		// if it all five times already exists, abort with USERNAME_TOO_MANY_USERS error
+		// else just continue
+		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the mongodb database?
 		for (let tries = 0; tries < 5; tries++) {
 			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
 			exists = await db.data.users({ discriminator, username: adjusted_username }).get({ id: true });
