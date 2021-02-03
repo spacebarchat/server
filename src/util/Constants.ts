@@ -71,6 +71,12 @@ export interface DefaultOptions {
 		requireInvite: boolean;
 		allowNewRegistration: boolean;
 		allowMultipleAccounts: boolean;
+		password: {
+			pwMinLength: number;
+			pwMinNumbers: number;
+			pwMinUpperCase: number;
+			pwMinSymbols: number;
+		};
 	};
 }
 
@@ -123,7 +129,7 @@ export const DefaultOptions: DefaultOptions = {
 			required: true,
 			allowlist: false,
 			blocklist: true,
-			domains: [], // TODO: efficicently save domain blocklist in database
+			domains: [], // TODO: efficiently save domain blocklist in database
 			// domains: fs.readFileSync(__dirname + "/blockedEmailDomains.txt", { encoding: "utf8" }).split("\n"),
 		},
 		dateOfBirth: {
@@ -134,6 +140,12 @@ export const DefaultOptions: DefaultOptions = {
 		requireCaptcha: true,
 		allowNewRegistration: true,
 		allowMultipleAccounts: true,
+		password: {
+			pwMinLength: 8,
+			pwMinNumbers: 2,
+			pwMinUpperCase: 2,
+			pwMinSymbols: 0,
+		},
 	},
 };
 
