@@ -1,0 +1,22 @@
+{
+  "name": "websocket_learn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lambert-db": "^1.1.2",
+    "node-fetch": "^2.6.1",
+    "uuid": "^8.3.2",
+    "ws": "^7.4.2"
+  },
+  "devDependencies": {
+    "@types/uuid": "^8.3.0",
+    "@types/ws": "^7.4.0"
+  }
+}
