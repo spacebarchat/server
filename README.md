@@ -1,16 +1,11 @@
-# Discord Open Source Server
-This repository contains the HTTP API Server and the WebSocket Gateway Server
+# Discord Open Source API Server
+This repository contains the HTTP API Server
 
 ## Bug Tracker
 [Project Board](https://github.com/discord-open-source/discord-server/projects/4)
 
 ## API
-[Project Board](https://github.com/discord-open-source/discord-server/projects/6)
-
-For the WebSocket we use [ws](https://www.npmjs.com/package/ws) and we'll write our own packet handler for the individual opcodes and events.
-
-## Gateway
-[Project Board](https://github.com/discord-open-source/discord-server/projects/3)
+[Project Board](https://github.com/discord-open-source/discord-server/projects/2)
 
 We use [express](https://expressjs.com/) for the HTTP Server and 
 [lambert-server](https://www.npmjs.com/package/lambert-server) for route handling and body validation (customized).
@@ -22,7 +17,7 @@ You should be familiar with:
 - [TypeScript](https://www.typescriptlang.org/)
 - [Lambert-DB](https://www.npmjs.com/package/lambert-db) (easy database abstraction wrapper)
 
-and the technologies we use for Gateway/API
+and the other technologies we use 
 
 ### Getting Started
 Clone the Repository:
