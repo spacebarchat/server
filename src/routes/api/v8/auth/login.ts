@@ -6,7 +6,9 @@ import jwt from "jsonwebtoken";
 import Config from "../../../../util/Config";
 import { User } from "../../../../models/User";
 import { adjustEmail } from "./register";
+
 const router: Router = Router();
+export default router;
 
 router.post(
 	"/",
@@ -21,7 +23,7 @@ router.post(
 	async (req: Request, res: Response) => {
 		const { login, password } = req.body;
 
-		// query for user with same email or phone number
+		// * MongoDB Specific query for user with same email or phone number
 		const userquery = { $or: [{ email: adjustEmail(login) }, { phone: login }] };
 		const user: User = await db.data
 			.users(userquery)
@@ -69,8 +71,6 @@ export async function generateToken(id: bigint) {
 		);
 	});
 }
-
-export default router;
 
 /**
  * POST /auth/login

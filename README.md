@@ -5,12 +5,12 @@ This repository contains the HTTP API Server and the WebSocket Gateway Server
 [Project Board](https://github.com/discord-open-source/discord-server/projects/4)
 
 ## API
-[Project Board](https://github.com/discord-open-source/discord-server/projects/3)
+[Project Board](https://github.com/discord-open-source/discord-server/projects/6)
 
 For the WebSocket we use [ws](https://www.npmjs.com/package/ws) and we'll write our own packet handler for the individual opcodes and events.
 
 ## Gateway
-[Project Board](https://github.com/discord-open-source/discord-server/projects/6)
+[Project Board](https://github.com/discord-open-source/discord-server/projects/3)
 
 We use [express](https://expressjs.com/) for the HTTP Server and 
 [lambert-server](https://www.npmjs.com/package/lambert-server) for route handling and body validation (customized).
