@@ -1,38 +1,53 @@
+import { Channel } from "./Channel";
+import { Emoji } from "./Emoji";
+import { Member } from "./Member";
+import { Role } from "./Role";
+
 export interface Guild {
 	id: bigint;
 	name: string;
-	icon: string; // e.g. "28776e7ad42922582be25bb06cdc5b53"
+	icon: string;
 	icon_hash: string;
+	splash: string;
+	discovery_splash: string;
+	owner: boolean;
+	owner_id: bigint;
+	permissions: string;
+	region: string;
 	afk_channel_id: bigint;
 	afk_timeout: number;
-	application_id: bigint;
-	banner: string; // id
-	description: string;
-	explicit_content_filter: number;
-	features: string[];
-	/* guild_hashes: // ? what is this
-		channels: {hash: "uZsNP+TWAFY", omitted: false}
-		metadata: {hash: "JCboqYj68bQ", omitted: false}
-		roles: {hash: "1d7EJBRgVqg", omitted: false}
-		version: 1
-	*/
-	joined_at: string; // user specific, Date Iso: "2021-01-23T19:01:23.126002+00:00"
-	large: boolean;
-	lazy: boolean; // ? what is this
-	max_members: number; // e.g. default 100.000
-	max_video_channel_users: number; // ? default: 25, is this max 25 streaming or watching
-	member_count: number; // current member count
-	mfa_level: number;
-	owner_id: bigint;
-	preferred_locale: string; // only partnered/verified guilds can choose this
-	premium_subscription_count: number; // number of boosts
-	premium_tier: number; // ? what is this
-	public_updates_channel_id: bigint; //
-	rules_channel_id: bigint;
-	splash: string; // e.g. "32bec3d01f1dc90933cbb0bd75d333b0"
-	system_channel_flags: number;
-	system_channel_id: bigint;
-	vanity_url_code: string;
+	widget_enabled: boolean;
+	widget_channel_id: bigint;
 	verification_level: number;
-	threads: []; // ? not yet finished
+	default_message_notifications: number;
+	explicit_content_filter: number;
+	roles: Role[];
+	emojis: Emoji[];
+	features: [];
+	mfa_level: number;
+	application_id: bigint;
+	system_channel_id: bigint;
+	system_channel_flags: number;
+	rules_channel_id: bigint;
+	joined_at: number;
+	large: boolean;
+	unavailable: boolean;
+	member_count: number;
+	voice_states: []; // ! tf is this
+	members: Member[];
+	channels: Channel[];
+	presences: []; // TODO: add model
+	max_presences: number;
+	max_members: number;
+	vanity_url_code: string;
+	description: string;
+	banner: string;
+	premium_tier: number;
+	premium_subscription_count: number;
+	preferred_locale: string;
+	public_updates_channel_id: bigint;
+	max_video_channel_users: number;
+	approximate_member_count: number;
+	approximate_presence_count: number;
+	welcome_screen: []; // ! what is this
 }
