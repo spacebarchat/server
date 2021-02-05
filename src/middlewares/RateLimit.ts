@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import db from "../util/Database";
+import { db } from "discord-server-util";
+
 import { getIpAdress } from "./GlobalRateLimit";
 
 export function RateLimit({ count = 10, timespan = 1000 * 5, name = "/" }) {
