@@ -6,8 +6,8 @@ declare const _default: {
 };
 export default _default;
 export interface DefaultOptions {
-    api: any;
-    gateway: any;
-    voice: any;
+    api?: any;
+    gateway?: any;
+    voice?: any;
 }
 export declare const DefaultOptions: DefaultOptions;

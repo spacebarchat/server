@@ -18,9 +18,9 @@ export default {
 };
 
 export interface DefaultOptions {
-	api: any;
-	gateway: any;
-	voice: any;
+	api?: any;
+	gateway?: any;
+	voice?: any;
 }
 
 export const DefaultOptions: DefaultOptions = {
