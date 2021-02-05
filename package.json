@@ -1,22 +1,28 @@
 {
-  "name": "websocket_learn",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "lambert-db": "^1.1.2",
-    "node-fetch": "^2.6.1",
-    "uuid": "^8.3.2",
-    "ws": "^7.4.2"
-  },
-  "devDependencies": {
-    "@types/uuid": "^8.3.0",
-    "@types/ws": "^7.4.0"
-  }
+	"name": "discord-gateway",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsc -b .",
+		"start": "npm run build && node dist/"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"discord-server-util": "git+https://github.com/discord-open-source/discord-server-util.git",
+		"erlpack": "^0.1.3",
+		"jsonwebtoken": "^8.5.1",
+		"lambert-db": "^1.1.2",
+		"node-fetch": "^2.6.1",
+		"uuid": "^8.3.2",
+		"ws": "^7.4.2"
+	},
+	"devDependencies": {
+		"@types/jsonwebtoken": "^8.5.0",
+		"@types/uuid": "^8.3.0",
+		"@types/ws": "^7.4.0"
+	}
 }
