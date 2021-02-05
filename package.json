@@ -1,5 +1,5 @@
 {
-	"name": "discord-server-opensource",
+	"name": "discord-api",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
@@ -10,18 +10,19 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Trenite/discord-server-opensource.git"
+		"url": "git+https://github.com/discord-open-source/discord-api.git"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/Trenite/discord-server-opensource/issues"
+		"url": "https://github.com/discord-open-source/discord-api/issues"
 	},
-	"homepage": "https://github.com/Trenite/discord-server-opensource#readme",
+	"homepage": "https://github.com/discord-open-source/discord-api#readme",
 	"dependencies": {
 		"bcrypt": "^5.0.0",
 		"body-parser": "^1.19.0",
+		"discord-server-util": "git+https://github.com/discord-open-source/discord-server-util.git",
 		"express": "^4.17.1",
 		"express-validator": "^6.9.2",
 		"i18next": "^19.8.5",
