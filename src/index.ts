@@ -12,13 +12,27 @@ import { User } from "./models/User";
 import { EmojiSchema } from "./Schema/Emoji";
 import { ActivitySchema } from "./Schema/Activity";
 import { IdentifySchema } from "./Schema/Identify";
+import { trimSpecial } from "./util/String";
+import { BitField } from "./util/BitField";
+import { Intents } from "./util/Intents";
+import { MessageFlags } from "./util/MessageFlags";
+import { Permissions } from "./util/Permissions";
+import { Snowflake } from "./util/Snowflake";
+import { UserFlags } from "./util/UserFlags";
 
 export {
+	trimSpecial,
 	checkToken,
 	Config,
 	Constants,
 	db,
+	BitField,
 	DefaultOptions,
+	Permissions,
+	MessageFlags,
+	UserFlags,
+	Snowflake,
+	Intents,
 	Channel,
 	Emoji,
 	Guild,

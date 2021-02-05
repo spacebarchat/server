@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.IdentifySchema = exports.ActivitySchema = exports.EmojiSchema = exports.DefaultOptions = exports.db = exports.Constants = exports.Config = exports.checkToken = void 0;
+exports.IdentifySchema = exports.ActivitySchema = exports.EmojiSchema = exports.Intents = exports.Snowflake = exports.UserFlags = exports.MessageFlags = exports.Permissions = exports.DefaultOptions = exports.BitField = exports.db = exports.Constants = exports.Config = exports.checkToken = exports.trimSpecial = void 0;
 const checkToken_1 = require("./util/checkToken");
 Object.defineProperty(exports, "checkToken", { enumerable: true, get: function () { return checkToken_1.checkToken; } });
 const Config_1 = __importStar(require("./util/Config"));
@@ -38,4 +38,18 @@ const Activity_1 = require("./Schema/Activity");
 Object.defineProperty(exports, "ActivitySchema", { enumerable: true, get: function () { return Activity_1.ActivitySchema; } });
 const Identify_1 = require("./Schema/Identify");
 Object.defineProperty(exports, "IdentifySchema", { enumerable: true, get: function () { return Identify_1.IdentifySchema; } });
+const String_1 = require("./util/String");
+Object.defineProperty(exports, "trimSpecial", { enumerable: true, get: function () { return String_1.trimSpecial; } });
+const BitField_1 = require("./util/BitField");
+Object.defineProperty(exports, "BitField", { enumerable: true, get: function () { return BitField_1.BitField; } });
+const Intents_1 = require("./util/Intents");
+Object.defineProperty(exports, "Intents", { enumerable: true, get: function () { return Intents_1.Intents; } });
+const MessageFlags_1 = require("./util/MessageFlags");
+Object.defineProperty(exports, "MessageFlags", { enumerable: true, get: function () { return MessageFlags_1.MessageFlags; } });
+const Permissions_1 = require("./util/Permissions");
+Object.defineProperty(exports, "Permissions", { enumerable: true, get: function () { return Permissions_1.Permissions; } });
+const Snowflake_1 = require("./util/Snowflake");
+Object.defineProperty(exports, "Snowflake", { enumerable: true, get: function () { return Snowflake_1.Snowflake; } });
+const UserFlags_1 = require("./util/UserFlags");
+Object.defineProperty(exports, "UserFlags", { enumerable: true, get: function () { return UserFlags_1.UserFlags; } });
 //# sourceMappingURL=index.js.map
