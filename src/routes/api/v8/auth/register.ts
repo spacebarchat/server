@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import Config from "../../../../util/Config";
-import db from "../../../../util/Database";
+import { db } from "discord-server-util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../../../util/instanceOf";
 import { Snowflake } from "../../../../util/Snowflake";
