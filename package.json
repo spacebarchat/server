@@ -22,7 +22,7 @@
 	"dependencies": {
 		"jsonwebtoken": "^8.5.1",
 		"lambert-db": "^1.1.4",
-		"missing-native-js-functions": "^1.2.1"
+		"missing-native-js-functions": "^1.2.2"
 	},
 	"devDependencies": {
 		"@types/jsonwebtoken": "^8.5.0",
