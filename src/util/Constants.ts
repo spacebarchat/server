@@ -4,6 +4,7 @@ export enum OPCODES {
 	Identify,
 	Presence_Update,
 	Voice_State_Update,
+	Dummy_Value, // ? What is opcode 5?
 	Resume,
 	Reconnect,
 	Request_Guild_Members,
