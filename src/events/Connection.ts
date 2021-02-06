@@ -5,11 +5,12 @@ import { Message } from "./Message";
 import { setHeartbeat } from "../util/setHeartbeat";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
+import { setupListener } from "../listener/listener";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
 
-export function Connection(this: Server, socket: WebSocket, request: IncomingMessage) {
+export async function Connection(this: Server, socket: WebSocket, request: IncomingMessage) {
 	try {
 		socket.on("close", Close);
 		socket.on("message", Message);
@@ -29,12 +30,14 @@ export function Connection(this: Server, socket: WebSocket, request: IncomingMes
 
 		setHeartbeat(socket);
 
-		Send(socket, {
+		await Send(socket, {
 			op: OPCODES.Hello,
 			d: {
 				heartbeat_interval: 1000 * 30,
 			},
 		});
+
+		await setupListener.call(socket);
 
 		socket.readyTimeout = setTimeout(() => {
 			return socket.close(CLOSECODES.Session_timed_out);
