@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Long } from "mongodb";
-import { Snowflake } from "../util/Snowflake";
+import { Snowflake } from "../../../server-util/src/util/Snowflake";
 
 async function main() {
 	const conn = await mongoose.createConnection(

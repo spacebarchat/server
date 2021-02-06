@@ -2,10 +2,9 @@ import { Request, Response, Router } from "express";
 import { check, FieldErrors, Length } from "../../../../util/instanceOf";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { db, User } from "discord-server-util";
 import Config from "../../../../util/Config";
-import { User } from "../../../../models/User";
 import { adjustEmail } from "./register";
-import { db } from "discord-server-util";
 
 const router: Router = Router();
 export default router;

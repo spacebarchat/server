@@ -1,3 +1,4 @@
+import "missing-native-js-functions";
 import fs from "fs/promises";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, GlobalRateLimit } from "./middlewares/";

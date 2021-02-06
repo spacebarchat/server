@@ -1,13 +1,10 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import Config from "../../../../util/Config";
-import { db } from "discord-server-util";
+import { db, trimSpecial, User, Snowflake } from "discord-server-util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../../../util/instanceOf";
-import { Snowflake } from "../../../../util/Snowflake";
 import "missing-native-js-functions";
-import { User } from "../../../../models/User";
 import { generateToken } from "./login";
-import { trimSpecial } from "../../../../util/String";
 
 const router: Router = Router();
 
@@ -54,6 +51,7 @@ router.post(
 		// discriminator will be randomly generated
 		let discriminator = "";
 
+		// get register Config
 		const { register } = Config.get();
 
 		// check if registration is allowed
@@ -70,7 +68,7 @@ router.post(
 			});
 		}
 
-		// require invite to register -> for organizations to send invites to their employees
+		// require invite to register -> e.g. for organizations to send invites to their employees
 		if (register.requireInvite && !invite) {
 			throw FieldErrors({
 				email: { code: "INVITE_ONLY", message: req.t("auth:register.INVITE_ONLY") },
@@ -78,6 +76,7 @@ router.post(
 		}
 
 		if (email) {
+			// replace all dots and chars after +, if its a gmail.com email
 			adjusted_email = adjustEmail(email);
 
 			// check if there is already an account with this email
@@ -164,6 +163,7 @@ router.post(
 			});
 		}
 
+		// constructing final user object
 		const user: User = {
 			id: Snowflake.generate(),
 			created_at: Date.now(),
@@ -218,6 +218,7 @@ router.post(
 			},
 		};
 
+		// insert user into database
 		await db.data.users.push(user);
 
 		return res.json({ token: await generateToken(user.id) });

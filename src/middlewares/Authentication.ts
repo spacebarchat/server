@@ -1,8 +1,6 @@
-import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import Config from "../util/Config";
-import { JWTOptions } from "../util/Constants";
+import { checkToken } from "discord-server-util";
 
 export const NO_AUTHORIZATION_ROUTES = ["/api/v8/auth/login", "/api/v8/auth/register"];
 
@@ -15,16 +13,13 @@ declare global {
 	}
 }
 
-export function Authentication(req: Request, res: Response, next: NextFunction) {
+export async function Authentication(req: Request, res: Response, next: NextFunction) {
 	if (NO_AUTHORIZATION_ROUTES.includes(req.url)) return next();
 	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
+	// TODO: check if user is banned/token expired
 
-	return jwt.verify(req.headers.authorization, Config.get().security.jwtSecret, JWTOptions, (err, decoded: any) => {
-		if (err || !decoded) return next(new HTTPError("Invalid Token", 401));
+	const decoded: any = await checkToken(req.headers.authorization);
 
-		req.token = decoded;
-		req.userid = decoded.id;
-
-		return next();
-	});
+	req.token = decoded;
+	req.userid = decoded.id;
 }
