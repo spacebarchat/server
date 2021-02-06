@@ -1,12 +1,12 @@
 import { ActivitySchema } from "./Activity";
 export declare const IdentifySchema: {
     token: StringConstructor;
-    properties: {
+    intents: BigIntConstructor;
+    $properties: {
         $$os: StringConstructor;
         $$browser: StringConstructor;
         $$device: StringConstructor;
     };
-    intents: BigIntConstructor;
     $presence: {
         afk: BooleanConstructor;
         status: StringConstructor;

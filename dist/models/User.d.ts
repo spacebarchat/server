@@ -13,6 +13,7 @@ export interface User {
     hash: string;
     valid_tokens_since: number;
     user_settings: UserSettings;
+    guilds: bigint[];
 }
 export interface UserSettings {
     afk_timeout: number;
