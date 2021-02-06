@@ -15,6 +15,7 @@ export interface User {
 	hash: string; // hash of the password, salt is saved in password (bcrypt)
 	valid_tokens_since: number; // all tokens with a previous issue date are invalid
 	user_settings: UserSettings;
+	guilds: bigint[] // array of guild ids the user is part of
 }
 
 export interface UserSettings {
