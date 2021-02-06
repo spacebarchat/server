@@ -1,3 +1,4 @@
+import { EmojiSchema } from "./Emoji";
 export declare const ActivitySchema: {
     afk: BooleanConstructor;
     status: StringConstructor;
@@ -15,7 +16,7 @@ export declare const ActivitySchema: {
         $State: StringConstructor;
         $emoji: {
             name: StringConstructor;
-            id: BigIntConstructor;
+            $id: BigIntConstructor;
             animated: BooleanConstructor;
         };
         $party: {
@@ -38,3 +39,41 @@ export declare const ActivitySchema: {
     }[];
     $since: NumberConstructor;
 };
+export interface ActivitySchema {
+    afk: boolean;
+    status: string;
+    activities?: [
+        {
+            name: string;
+            type: number;
+            url?: string;
+            created_at?: number;
+            timestamps?: {
+                start: number;
+                end: number;
+            };
+            application_id?: bigint;
+            details?: string;
+            State?: string;
+            emoji?: EmojiSchema;
+            party?: {
+                id?: string;
+                size?: [number];
+            };
+            assets?: {
+                large_image?: string;
+                large_text?: string;
+                small_image?: string;
+                small_text?: string;
+            };
+            secrets?: {
+                join?: string;
+                spectate?: string;
+                match?: string;
+            };
+            instance?: boolean;
+            flags: bigint;
+        }
+    ];
+    since?: number;
+}

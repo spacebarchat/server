@@ -1,3 +1,4 @@
+import { ActivitySchema } from "./Activity";
 export declare const IdentifySchema: {
     token: StringConstructor;
     properties: {
@@ -23,7 +24,7 @@ export declare const IdentifySchema: {
             $State: StringConstructor;
             $emoji: {
                 name: StringConstructor;
-                id: BigIntConstructor;
+                $id: BigIntConstructor;
                 animated: BooleanConstructor;
             };
             $party: {
@@ -51,3 +52,17 @@ export declare const IdentifySchema: {
     $shard: NumberConstructor[];
     $guild_subscriptions: BooleanConstructor;
 };
+export interface IdentifySchema {
+    token: string;
+    properties: {
+        $$os: string;
+        $$browser: string;
+        $$device: string;
+    };
+    intents: bigint;
+    presence?: ActivitySchema;
+    compress?: boolean;
+    large_threshold?: number;
+    shard?: [number];
+    guild_subscriptions?: boolean;
+}

@@ -4,50 +4,49 @@ import { Member } from "./Member";
 import { Role } from "./Role";
 
 export interface Guild {
-	id: bigint;
-	name: string;
-	icon: string;
-	icon_hash: string;
-	splash: string;
-	discovery_splash: string;
-	owner: boolean;
-	owner_id: bigint;
-	permissions: string;
-	region: string;
 	afk_channel_id: bigint;
 	afk_timeout: number;
-	widget_enabled: boolean;
-	widget_channel_id: bigint;
-	verification_level: number;
-	default_message_notifications: number;
-	explicit_content_filter: number;
-	roles: Role[];
-	emojis: Emoji[];
-	features: [];
-	mfa_level: number;
 	application_id: bigint;
-	system_channel_id: bigint;
-	system_channel_flags: number;
-	rules_channel_id: bigint;
-	joined_at: number;
-	large: boolean;
-	unavailable: boolean;
-	member_count: number;
-	voice_states: []; // ! tf is this
-	members: Member[];
-	channels: Channel[];
-	presences: []; // TODO: add model
-	max_presences: number;
-	max_members: number;
-	vanity_url_code: string;
-	description: string;
-	banner: string;
-	premium_tier: number;
-	premium_subscription_count: number;
-	preferred_locale: string;
-	public_updates_channel_id: bigint;
-	max_video_channel_users: number;
 	approximate_member_count: number;
 	approximate_presence_count: number;
-	welcome_screen: []; // ! what is this
+	banner: string;
+	channels: Channel[];
+	default_message_notifications: number;
+	description: string;
+	discovery_splash: string;
+	emojis: Emoji[];
+	explicit_content_filter: number;
+	features: [];
+	icon: string;
+	id: bigint;
+	joined_at: number; // ! member specific should be removed
+	large: boolean;
+	max_members: number; // e.g. default 100.000
+	max_presences: number;
+	max_video_channel_users: number; // ? default: 25, is this max 25 streaming or watching
+	member_count: number;
+	members: Member[];
+	mfa_level: number;
+	name: string;
+	owner_id: bigint;
+	owner: boolean;
+	permissions: string;
+	preferred_locale: string; // only community guilds can choose this
+	premium_subscription_count: number;
+	premium_tier: number; // nitro boost level
+	presences: []; // TODO: add model
+	public_updates_channel_id: bigint;
+	region: string;
+	roles: Role[];
+	rules_channel_id: bigint;
+	splash: string;
+	system_channel_flags: number;
+	system_channel_id: bigint;
+	unavailable: boolean;
+	vanity_url_code: string;
+	verification_level: number;
+	voice_states: []; // connected users
+	welcome_screen: []; // welcome splash screen if a user joins guild
+	widget_channel_id: bigint;
+	widget_enabled: boolean;
 }

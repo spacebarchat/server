@@ -2,7 +2,6 @@ export interface Guild {
 	id: bigint;
 	name: string;
 	icon: string; // e.g. "28776e7ad42922582be25bb06cdc5b53"
-	icon_hash: string;
 	afk_channel_id: bigint;
 	afk_timeout: number;
 	application_id: bigint;
