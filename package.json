@@ -15,9 +15,9 @@
 		"discord-server-util": "github:discord-open-source/discord-server-util",
 		"erlpack": "^0.1.3",
 		"jsonwebtoken": "^8.5.1",
-		"lambert-db": "^1.1.5",
-		"lambert-server": "^1.1.0",
-		"missing-native-js-functions": "^1.2.2",
+		"lambert-db": "^1.1.6",
+		"lambert-server": "^1.1.3",
+		"missing-native-js-functions": "^1.2.3",
 		"node-fetch": "^2.6.1",
 		"uuid": "^8.3.2",
 		"ws": "^7.4.2"
