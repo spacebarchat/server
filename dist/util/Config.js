@@ -9,7 +9,7 @@ const Database_1 = __importDefault(require("./Database"));
 var Config;
 exports.default = {
     init: async function init(opts = exports.DefaultOptions) {
-        Config = Database_1.default.data.config({}).cache();
+        Config = await Database_1.default.data.config({}).cache();
         await Config.init();
         await Config.set(opts.merge(Config.cache || {}));
     },
