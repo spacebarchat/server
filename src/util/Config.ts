@@ -5,7 +5,7 @@ var Config: ProviderCache;
 
 export default {
 	init: async function init(opts: DefaultOptions = DefaultOptions) {
-		Config = db.data.config({}).cache();
+		Config = await db.data.config({}).cache();
 		await Config.init();
 		await Config.set(opts.merge(Config.cache || {}));
 	},
