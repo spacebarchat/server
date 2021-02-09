@@ -1,5 +1,5 @@
 {
-	"name": "discord-server-util",
+	"name": "fosscord-server-util",
 	"version": "1.0.0",
 	"description": "",
 	"main": "dist/index.js",
@@ -10,15 +10,15 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discord-open-source/discord-server-util.git"
+		"url": "git+https://github.com/fosscord/fosscord-server-util.git"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/discord-open-source/discord-server-util/issues"
+		"url": "https://github.com/fosscord/fosscord-server-util/issues"
 	},
-	"homepage": "https://github.com/discord-open-source/discord-server-util#readme",
+	"homepage": "https://github.com/fosscord/fosscord-server-util#readme",
 	"dependencies": {
 		"jsonwebtoken": "^8.5.1",
 		"lambert-db": "^1.1.7",
