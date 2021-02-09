@@ -1,8 +1,8 @@
-export declare const Guild: {
+export declare const GuildSchema: {
     name: StringConstructor;
     $region: StringConstructor;
 };
-export interface Guild {
+export interface GuildSchema {
     name: string;
     region?: string;
 }

@@ -1,4 +1,4 @@
-export const Guild = {
+export const GuildSchema = {
 	name: String, // ! 2-100 chars
 	$region: String, // ? voice region ?
 	// $icon: String, // TODO: add icon data (base64 128x128)
@@ -16,7 +16,7 @@ export const Guild = {
 	// $system_channel_id:	snowflake,
 };
 
-export interface Guild {
+export interface GuildSchema {
 	name: string; // ! 2-100 chars
 	region?: string; // ? voice region ?
 	// icon?: string; // TODO: add icon data (base64 128x128)

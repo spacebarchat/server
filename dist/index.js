@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.IdentifySchema = exports.ActivitySchema = exports.EmojiSchema = exports.Intents = exports.Snowflake = exports.UserFlags = exports.MessageFlags = exports.Permissions = exports.DefaultOptions = exports.BitField = exports.db = exports.Constants = exports.Config = exports.checkToken = exports.trimSpecial = void 0;
+exports.GuildSchema = exports.IdentifySchema = exports.ActivitySchema = exports.EmojiSchema = exports.Intents = exports.Snowflake = exports.UserFlags = exports.MessageFlags = exports.Permissions = exports.DefaultOptions = exports.BitField = exports.db = exports.Constants = exports.Config = exports.checkToken = exports.trimSpecial = void 0;
 const checkToken_1 = require("./util/checkToken");
 Object.defineProperty(exports, "checkToken", { enumerable: true, get: function () { return checkToken_1.checkToken; } });
 const Config_1 = __importStar(require("./util/Config"));
@@ -32,12 +32,15 @@ const Database_1 = __importDefault(require("./util/Database"));
 exports.db = Database_1.default;
 const Constants = __importStar(require("./util/Constants"));
 exports.Constants = Constants;
+//*  schema
 const Emoji_1 = require("./Schema/Emoji");
 Object.defineProperty(exports, "EmojiSchema", { enumerable: true, get: function () { return Emoji_1.EmojiSchema; } });
 const Activity_1 = require("./Schema/Activity");
 Object.defineProperty(exports, "ActivitySchema", { enumerable: true, get: function () { return Activity_1.ActivitySchema; } });
 const Identify_1 = require("./Schema/Identify");
 Object.defineProperty(exports, "IdentifySchema", { enumerable: true, get: function () { return Identify_1.IdentifySchema; } });
+const Guild_1 = require("./Schema/Guild");
+Object.defineProperty(exports, "GuildSchema", { enumerable: true, get: function () { return Guild_1.GuildSchema; } });
 const String_1 = require("./util/String");
 Object.defineProperty(exports, "trimSpecial", { enumerable: true, get: function () { return String_1.trimSpecial; } });
 const BitField_1 = require("./util/BitField");

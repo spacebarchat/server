@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Guild = void 0;
-exports.Guild = {
+exports.GuildSchema = void 0;
+exports.GuildSchema = {
     name: String,
     $region: String,
 };

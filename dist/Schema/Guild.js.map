@@ -1,1 +1,1 @@
-{"version":3,"file":"Guild.js","sourceRoot":"","sources":["../../src/Schema/Guild.ts"],"names":[],"mappings":";;;AAAa,QAAA,KAAK,GAAG;IACpB,IAAI,EAAE,MAAM;IACZ,OAAO,EAAE,MAAM;CAcf,CAAC"}
+{"version":3,"file":"Guild.js","sourceRoot":"","sources":["../../src/Schema/Guild.ts"],"names":[],"mappings":";;;AAAa,QAAA,WAAW,GAAG;IAC1B,IAAI,EAAE,MAAM;IACZ,OAAO,EAAE,MAAM;CAcf,CAAC"}
