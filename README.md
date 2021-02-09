@@ -1,4 +1,4 @@
-# discord-gateway
-Open Source Discord WebSocket Gateway Server 
+# Fosscord-gateway
+Fosscord WebSocket Gateway Server 
 
-## [Wiki](https://github.com/discord-open-source/discord-gateway/wiki/)
+## [Wiki](https://github.com/fosscord/fosscord-gateway/wiki/)
