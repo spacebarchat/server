@@ -1,5 +1,5 @@
-# Discord-CDN
-cdn for discord clone
+# Fosscord-CDN
+CDN for Fosscord
 
 ## Run localy:
 ```
