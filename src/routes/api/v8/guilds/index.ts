@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { db, GuildSchema, Guild } from "fosscord-server-util";
+import { db, GuildSchema, Guild, Snowflake } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../../../util/instanceOf";
 
@@ -63,68 +63,69 @@ router.get("/:id", async (req: Request, res: Response) => {
 	return res.json(guild);
 });
 
-// router.put("/:id", check(GuildSchema), async (req: Request, res: Response) => {}); // TODO: add addGuildSchema & createGuildSchema
+// TODO: add addGuildSchema & createGuildSchema
+// router.put("/:id", check(GuildSchema), async (req: Request, res: Response) => {});
 
-// TODO: finish POST route
-// router.post("/", check(GuildSchema), async (req: Request, res: Response) => {
-// 	const body = req.body as GuildSchema;
-// 	const guildID = BigInt();
-// 	const guild: Guild = {
-// 		...body, // ! contains name & icon values
-// 		afk_channel_id: undefined,
-// 		afk_timeout: undefined,
-// 		application_id: undefined,
-// 		approximate_member_count: undefined,
-// 		approximate_presence_count: undefined,
-// 		banner: undefined,
-// 		channels: [],
-// 		default_message_notifications: undefined,
-// 		description: undefined,
-// 		discovery_splash: undefined,
-// 		emojis: [],
-// 		explicit_content_filter: undefined,
-// 		features: [],
-// 		// icon: undefined,
-// 		id: guildID,
-// 		// joined_at: undefined,
-// 		large: undefined,
-// 		max_members: undefined,
-// 		max_presences: undefined,
-// 		max_video_channel_users: undefined,
-// 		member_count: undefined,
-// 		members: undefined,
-// 		mfa_level: undefined,
-// 		// name: undefined,
-// 		owner_id: req.userid, // ! important
-// 		// owner: undefined,
-// 		permissions: undefined,
-// 		preferred_locale: undefined,
-// 		premium_subscription_count: undefined,
-// 		premium_tier: undefined,
-// 		presences: [],
-// 		public_updates_channel_id: undefined,
-// 		region: undefined,
-// 		roles: [],
-// 		rules_channel_id: undefined,
-// 		splash: undefined,
-// 		system_channel_flags: undefined,
-// 		system_channel_id: undefined,
-// 		unavailable: undefined,
-// 		vanity_url_code: undefined,
-// 		verification_level: undefined,
-// 		voice_states: [],
-// 		welcome_screen: [],
-// 		widget_channel_id: undefined,
-// 		widget_enabled: undefined,
-// 	};
+// // TODO: finish POST route
+router.post("/", check(GuildSchema), async (req: Request, res: Response) => {
+	const body = req.body as GuildSchema;
+	const guildID = Snowflake.generate();
+	const guild: Guild = {
+		...body, // ! contains name & icon values
+		afk_channel_id: undefined,
+		afk_timeout: undefined,
+		application_id: undefined,
+		approximate_member_count: undefined,
+		approximate_presence_count: undefined,
+		banner: undefined,
+		channels: [],
+		default_message_notifications: undefined,
+		description: undefined,
+		discovery_splash: undefined,
+		emojis: [],
+		explicit_content_filter: undefined,
+		features: [],
+		// icon: undefined,
+		id: guildID,
+		// joined_at: undefined,
+		large: undefined,
+		max_members: undefined,
+		max_presences: undefined,
+		max_video_channel_users: undefined,
+		member_count: undefined,
+		members: undefined,
+		mfa_level: undefined,
+		// name: undefined,
+		owner_id: req.userid, // ! important
+		// owner: undefined,
+		permissions: undefined,
+		preferred_locale: undefined,
+		premium_subscription_count: undefined,
+		premium_tier: undefined,
+		presences: [],
+		public_updates_channel_id: undefined,
+		region: undefined,
+		roles: [],
+		rules_channel_id: undefined,
+		splash: undefined,
+		system_channel_flags: undefined,
+		system_channel_id: undefined,
+		unavailable: undefined,
+		vanity_url_code: undefined,
+		verification_level: undefined,
+		voice_states: [],
+		welcome_screen: [],
+		widget_channel_id: undefined,
+		widget_enabled: undefined,
+	};
 
-// 	try {
-// 		await db.data.guilds.push(guild);
-// 	} catch (error) {
-// 		throw new HTTPError("Couldnt create Guild", 500);
-// 	}
-// 	res.status(201).json({ id: guild.id });
-// });
+	try {
+		await db.data.guilds.push(guild);
+	} catch (error) {
+		throw new HTTPError("Couldnt create Guild", 500);
+	}
+	res.status(201).json({ id: guild.id });
+});
 
 router.delete("/:id", async (req: Request, res: Response) => {
 	const { id: guildID } = req.params;
