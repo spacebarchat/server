@@ -1,5 +1,5 @@
 {
-	"name": "discord-server-util",
+	"name": "fosscord-server-util",
 	"version": "1.0.0",
 	"description": "",
 	"main": "dist/index.js",
