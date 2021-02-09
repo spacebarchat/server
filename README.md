@@ -1,2 +1,2 @@
-# discord-voice
-A discord voice and video server
+# Fosscord-voice
+A Fosscord voice and video server
