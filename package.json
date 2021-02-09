@@ -1,5 +1,5 @@
 {
-	"name": "discord-api",
+	"name": "fosscord-api",
 	"version": "1.0.0",
 	"description": "This repository contains the HTTP API Server",
 	"main": "index.js",
@@ -10,21 +10,21 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discord-open-source/discord-api.git"
+		"url": "git+https://github.com/fosscord/fosscord-api.git"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/discord-open-source/discord-api/issues"
+		"url": "https://github.com/fosscord/fosscord-api/issues"
 	},
-	"homepage": "https://github.com/discord-open-source/discord-api#readme",
+	"homepage": "https://github.com/fosscord/fosscord-api#readme",
 	"dependencies": {
 		"bcrypt": "^5.0.0",
 		"body-parser": "^1.19.0",
-		"discord-server-util": "github:discord-open-source/discord-server-util",
 		"express": "^4.17.1",
 		"express-validator": "^6.9.2",
+		"fosscord-server-util": "git+https://github.com/fosscord/fosscord-server-util.git",
 		"i18next": "^19.8.5",
 		"i18next-http-middleware": "^3.1.0",
 		"i18next-node-fs-backend": "^2.1.3",
