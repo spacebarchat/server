@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import Config from "../../../../util/Config";
-import { db, trimSpecial, User, Snowflake } from "discord-server-util";
+import { db, trimSpecial, User, Snowflake } from "fosscord-server-util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../../../util/instanceOf";
 import "missing-native-js-functions";
