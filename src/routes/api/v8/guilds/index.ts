@@ -6,7 +6,7 @@ import { check } from "./../../../../util/instanceOf";
 const router: Router = Router();
 
 router.get("/:id", async (req: Request, res: Response) => {
-	const member = await db.data.guilds({ id: req.params.id }).members({ id: req.userid }).get({});
+	const member = await db.data.guilds({ id: req.params.id }).members({ id: req.userid }).get({ id: true });
 
 	if (!member) {
 		throw new HTTPError("you arent a member of the guild you are trying to access", 401);
@@ -135,7 +135,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
 		throw new HTTPError("This guild doesnt exist", 404);
 	}
 
-	if (!guild.owner_id) {
+	if (guild.owner_id !== req.userid) {
 		throw new HTTPError("You arent the owner of this guild", 401);
 	}
 
