@@ -1,11 +1,11 @@
-# Discord Open Source API Server
+# Fosscord API Server
 This repository contains the HTTP API Server
 
 ## Bug Tracker
-[Project Board](https://github.com/discord-open-source/discord-server/projects/4)
+[Project Board](https://github.com/fosscord/fosscord-server/projects/4)
 
 ## API
-[Project Board](https://github.com/discord-open-source/discord-server/projects/2)
+[Project Board](https://github.com/fosscord/fosscord-server/projects/2)
 
 We use [express](https://expressjs.com/) for the HTTP Server and 
 [lambert-server](https://www.npmjs.com/package/lambert-server) for route handling and body validation (customized).
@@ -22,7 +22,7 @@ and the other technologies we use
 ### Getting Started
 Clone the Repository:
 ```bash
-git clone https://github.com/discord-open-source/discord-server
+git clone https://github.com/fosscord/fosscord-server
 cd discord-server
 ```
 #### Install (dev)dependencies:
