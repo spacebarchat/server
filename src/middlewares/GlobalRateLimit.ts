@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Config from "../util/Config";
-import { db } from "discord-server-util";
+import { db } from "fosscord-server-util";
 
 export async function GlobalRateLimit(req: Request, res: Response, next: NextFunction) {
 	if (!Config.get().limits.rate.ip.enabled) return next();

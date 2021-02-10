@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Long } from "mongodb";
-import { Snowflake } from "discord-server-util";
+import { Snowflake } from "fosscord-server-util";
 
 async function main() {
 	const conn = await mongoose.createConnection(

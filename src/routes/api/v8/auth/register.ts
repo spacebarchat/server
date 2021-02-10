@@ -177,6 +177,7 @@ router.post(
 			email: adjusted_email,
 			flags: 0n, // TODO: generate default flags
 			hash: adjusted_password,
+			guilds: [],
 			valid_tokens_since: Date.now(),
 			user_settings: {
 				afk_timeout: 300,
