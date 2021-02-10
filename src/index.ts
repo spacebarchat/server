@@ -12,12 +12,6 @@ import { Member } from "./models/Member";
 import { Role } from "./models/Role";
 import { User } from "./models/User";
 
-//*  schema
-import { EmojiSchema } from "./Schema/Emoji";
-import { ActivitySchema } from "./Schema/Activity";
-import { IdentifySchema } from "./Schema/Identify";
-import { GuildSchema } from "./Schema/Guild";
-
 import { trimSpecial } from "./util/String";
 import { BitField } from "./util/BitField";
 import { Intents } from "./util/Intents";
@@ -47,8 +41,4 @@ export {
 	Member,
 	Role,
 	User,
-	EmojiSchema,
-	ActivitySchema,
-	IdentifySchema,
-	GuildSchema,
 };

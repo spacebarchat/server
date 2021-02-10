@@ -7,8 +7,6 @@ export interface Guild {
 	afk_channel_id?: bigint;
 	afk_timeout?: number;
 	application_id?: bigint;
-	approximate_member_count?: number;
-	approximate_presence_count?: number;
 	banner?: string;
 	channels: Channel[];
 	default_message_notifications?: number;
@@ -25,11 +23,11 @@ export interface Guild {
 	max_presences?: number;
 	max_video_channel_users?: number; // ? default: 25, is this max 25 streaming or watching
 	member_count?: number;
+	presence_count?: number; // users online
 	members?: Member[];
 	mfa_level?: number;
 	name: string;
 	owner_id: bigint;
-	permissions?: string;
 	preferred_locale?: string; // only community guilds can choose this
 	premium_subscription_count?: number;
 	premium_tier?: number; // nitro boost level

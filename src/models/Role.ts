@@ -1,4 +1,5 @@
 export interface Role {
+	id: bigint;
 	color: number;
 	hoist: boolean;
 	managed: boolean;
@@ -6,4 +7,7 @@ export interface Role {
 	name: string;
 	permissions: bigint;
 	position: number;
+	tags?: {
+		bot_id?: bigint;
+	};
 }
