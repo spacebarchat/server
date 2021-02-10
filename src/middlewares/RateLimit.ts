@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { db } from "discord-server-util";
+import { db } from "fosscord-server-util";
 
 import { getIpAdress } from "./GlobalRateLimit";
 

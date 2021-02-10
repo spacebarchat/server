@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Config from "../util/Config";
-import { db } from "discord-server-util";
+import { db } from "fosscord-server-util";
 
 // TODO: use mongodb ttl index
 // TODO: increment count on serverside

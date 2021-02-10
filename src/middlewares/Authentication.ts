@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { checkToken } from "discord-server-util";
+import { checkToken } from "fosscord-server-util";
 
 export const NO_AUTHORIZATION_ROUTES = ["/api/v8/auth/login", "/api/v8/auth/register"];
 

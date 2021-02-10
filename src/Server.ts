@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, GlobalRateLimit } from "./middlewares/";
 import Config from "./util/Config";
-import { db } from "discord-server-util";
+import { db } from "fosscord-server-util";
 import i18next from "i18next";
 import i18nextMiddleware, { I18next } from "i18next-http-middleware";
 import i18nextBackend from "i18next-node-fs-backend";

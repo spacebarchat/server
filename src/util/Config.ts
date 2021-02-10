@@ -1,4 +1,4 @@
-import { Config } from "discord-server-util";
+import { Config } from "fosscord-server-util";
 import crypto from "crypto";
 import fs from "fs";
 
