@@ -1,7 +1,8 @@
 import { Router, Request, Response } from "express";
-import { db, GuildSchema, Guild, Snowflake } from "fosscord-server-util";
+import { db, Guild, Snowflake } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../../../util/instanceOf";
+import { GuildCreateSchema, GuildGetSchema, GuildUpdateSchema } from "../../../../schema/Guild";
 
 const router: Router = Router();
 
@@ -12,75 +13,38 @@ router.get("/:id", async (req: Request, res: Response) => {
 		throw new HTTPError("you arent a member of the guild you are trying to access", 401);
 	}
 
-	const guild = await db.data.guilds({ id: req.params.id }).get({
-		id: true,
-		name: true,
-		icon: true,
-		// icon_hash: true,
-		splash: true,
-		discovery_splash: true,
-		owner: true,
-		owner_id: true,
-		permissions: true,
-		region: true,
-		afk_channel_id: true,
-		afk_timeout: true,
-		widget_enabled: true,
-		widget_channel_id: true,
-		verification_level: true,
-		default_message_notifications: true,
-		explicit_content_filter: true,
-		roles: true,
-		emojis: true,
-		features: true,
-		mfa_level: true,
-		application_id: true,
-		system_channel_id: true,
-		system_channel_flags: true,
-		rules_channel_id: true,
-		joined_at: true,
-		// large: true,
-		// unavailable: true,
-		member_count: true,
-		// voice_states: true,
-		// members: true,
-		// channels: true,
-		// presences: true,
-		max_presences: true,
-		max_members: true,
-		vanity_url_code: true,
-		description: true,
-		banner: true,
-		premium_tier: true,
-		premium_subscription_count: true,
-		preferred_locale: true,
-		public_updates_channel_id: true,
-		max_video_channel_users: true,
-		approximate_member_count: true,
-		approximate_presence_count: true,
-		// welcome_screen: true,
-	});
+	const guild = await db.data.guilds({ id: req.params.id }).get(GuildGetSchema);
 	return res.json(guild);
 });
 
-// TODO: add addGuildSchema & createGuildSchema
-// router.put("/:id", check(GuildSchema), async (req: Request, res: Response) => {});
+router.patch("/:id", check(GuildUpdateSchema), async (req: Request, res: Response) => {
+	// TODO: check permission of member
+	const body = req.body as GuildUpdateSchema;
+
+	const guild = await db.data.guilds({ id: req.params.id }).get({ id: true });
+	if (!guild) throw new HTTPError("This guild doesnt exist", 404);
+
+	throw "not finished";
+});
 
 // // TODO: finish POST route
-router.post("/", check(GuildSchema), async (req: Request, res: Response) => {
-	const body = req.body as GuildSchema;
+router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) => {
+	const body = req.body as GuildCreateSchema;
+
 	const guildID = Snowflake.generate();
 	const guild: Guild = {
+		// name: undefined,
+		// owner: undefined,
 		...body, // ! contains name & icon values
+		owner_id: req.userid,
 		afk_channel_id: undefined,
-		afk_timeout: undefined,
+		afk_timeout: 300,
 		application_id: undefined,
-		approximate_member_count: undefined,
-		approximate_presence_count: undefined,
 		banner: undefined,
 		channels: [],
 		default_message_notifications: undefined,
 		description: undefined,
+		splash: undefined,
 		discovery_splash: undefined,
 		emojis: [],
 		explicit_content_filter: undefined,
@@ -89,25 +53,44 @@ router.post("/", check(GuildSchema), async (req: Request, res: Response) => {
 		id: guildID,
 		// joined_at: undefined,
 		large: undefined,
-		max_members: undefined,
+		max_members: 250000,
 		max_presences: undefined,
-		max_video_channel_users: undefined,
-		member_count: undefined,
-		members: undefined,
-		mfa_level: undefined,
-		// name: undefined,
-		owner_id: req.userid, // ! important
-		// owner: undefined,
-		permissions: undefined,
-		preferred_locale: undefined,
-		premium_subscription_count: undefined,
-		premium_tier: undefined,
+		max_video_channel_users: 25,
+		member_count: 0,
+		presence_count: 0,
+		members: [
+			{
+				id: req.userid,
+				roles: [], // @everyone role is not explicitly set, the client and server automatically assumes it
+				joined_at: Date.now(),
+				nick: undefined,
+				premium_since: undefined,
+				deaf: false,
+				mute: false,
+				pending: false,
+				permissions: 8n, // value will be computed if a role is changed
+			},
+		],
+		mfa_level: 0,
+		preferred_locale: "en-US",
+		premium_subscription_count: 0,
+		premium_tier: 0,
 		presences: [],
 		public_updates_channel_id: undefined,
 		region: undefined,
-		roles: [],
+		roles: [
+			{
+				color: 0,
+				hoist: false,
+				name: "@everyone",
+				permissions: 0n,
+				id: guildID,
+				managed: true, // ? discord set this to true,
+				mentionable: false,
+				position: 0,
+			},
+		],
 		rules_channel_id: undefined,
-		splash: undefined,
 		system_channel_flags: undefined,
 		system_channel_id: undefined,
 		unavailable: undefined,
@@ -116,7 +99,7 @@ router.post("/", check(GuildSchema), async (req: Request, res: Response) => {
 		voice_states: [],
 		welcome_screen: [],
 		widget_channel_id: undefined,
-		widget_enabled: undefined,
+		widget_enabled: false,
 	};
 
 	try {
@@ -132,19 +115,10 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
 	const guild = await db.data.guilds({ id: guildID }).get({ owner_id: true });
 
-	if (!guild) {
-		throw new HTTPError("This guild doesnt exist", 404);
-	}
+	if (!guild) throw new HTTPError("This guild doesnt exist", 404);
+	if (guild.owner_id !== req.userid) throw new HTTPError("You arent the owner of this guild", 401);
 
-	if (guild.owner_id !== req.userid) {
-		throw new HTTPError("You arent the owner of this guild", 401);
-	}
-
-	try {
-		await db.data.guilds({ id: guildID }).delete();
-	} catch (error) {
-		throw new HTTPError(`Couldnt delete guild: ${error}`, 500);
-	}
+	await db.data.guilds({ id: guildID }).delete();
 
 	return res.status(204);
 });
