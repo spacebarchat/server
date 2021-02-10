@@ -1,6 +1,7 @@
-import { db } from "discord-server-util";
+import { db } from "fosscord-server-util";
 import { Server as WebSocketServer } from "ws";
 import { Connection } from "./events/Connection";
+import Config from "./util/Config";
 
 export class Server {
 	public ws: WebSocketServer;
@@ -9,8 +10,15 @@ export class Server {
 		this.ws.on("connection", Connection);
 	}
 
+	async setupSchema() {
+		// TODO: adjust expireAfterSeconds -> lower
+		await db.conn.db.collection("events").createIndex({ created_at: 1 }, { expireAfterSeconds: 60 });
+	}
+
 	async listen(): Promise<void> {
 		await db.init();
+		await this.setupSchema();
+		await Config.init();
 		console.log("listening");
 	}
 }
