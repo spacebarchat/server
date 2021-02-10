@@ -1,8 +1,9 @@
 import { CLOSECODES, Payload } from "../util/Constants";
 import WebSocket from "../util/WebSocket";
-import { checkToken, IdentifySchema } from "fosscord-server-util";
+import { checkToken } from "fosscord-server-util";
 import { setupListener } from "../listener/listener";
 import { instanceOf } from "lambert-server";
+import { IdentifySchema } from "../schema/Identify";
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	try {
