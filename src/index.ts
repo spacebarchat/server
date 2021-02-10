@@ -6,6 +6,7 @@ import * as Constants from "./util/Constants";
 import { Channel } from "./models/Channel";
 import { Emoji } from "./models/Emoji";
 import { Guild } from "./models/Guild";
+import { Event } from "./models/Event";
 import { Invite } from "./models/Invite";
 import { Member } from "./models/Member";
 import { Role } from "./models/Role";
@@ -39,6 +40,7 @@ export {
 	Snowflake,
 	Intents,
 	Channel,
+	Event,
 	Emoji,
 	Guild,
 	Invite,
