@@ -1,4 +1,4 @@
-import { Payload } from "../util/Constants";
+import { CLOSECODES, Payload } from "../util/Constants";
 
 import WebSocket from "../util/WebSocket";
 

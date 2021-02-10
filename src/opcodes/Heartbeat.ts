@@ -1,4 +1,4 @@
-import { Payload } from "../util/Constants";
+import { CLOSECODES, Payload } from "../util/Constants";
 import { Send } from "../util/Send";
 import { setHeartbeat } from "../util/setHeartbeat";
 import WebSocket from "../util/WebSocket";

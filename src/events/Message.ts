@@ -18,7 +18,8 @@ export async function Message(this: WebSocket, buffer: Data) {
 	try {
 		if (this.encoding === "etf" && buffer instanceof Buffer) data = erlpack.unpack(buffer);
 		else if (this.encoding === "json" && typeof buffer === "string") data = JSON.parse(buffer);
-		if (!instanceOf(PayloadSchema, data)) throw "invalid data";
+		const result = instanceOf(PayloadSchema, data);
+		if (result !== true) throw "invalid data";
 	} catch (error) {
 		return this.close(CLOSECODES.Decode_error);
 	}
