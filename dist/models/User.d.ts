@@ -3,17 +3,50 @@ export interface User {
     username: string;
     discriminator: string;
     avatar: string | null;
+    phone?: string;
+    desktop: boolean;
+    mobile: boolean;
+    premium: boolean;
+    premium_type: number;
     bot: boolean;
     system: boolean;
+    nsfw_allowed: boolean;
     mfa_enabled: boolean;
     created_at: number;
     verified: boolean;
     email: string;
     flags: bigint;
+    public_flags: bigint;
     hash: string;
+    guilds: bigint[];
     valid_tokens_since: number;
     user_settings: UserSettings;
-    guilds: bigint[];
+    relationships: Relationship[];
+    connected_accounts: ConnectedAccount[];
+}
+export interface PublicUser {
+    id: bigint;
+    discriminator: string;
+    username: string;
+    avatar?: string;
+    publicFlags: bigint;
+}
+export interface ConnectedAccount {
+    access_token: string;
+    friend_sync: boolean;
+    id: string;
+    name: string;
+    revoked: boolean;
+    show_activity: boolean;
+    type: string;
+    verifie: boolean;
+    visibility: number;
+}
+export interface Relationship {
+    id: bigint;
+    nickname?: string;
+    type: number;
+    user_id: bigint;
 }
 export interface UserSettings {
     afk_timeout: number;

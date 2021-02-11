@@ -1,0 +1,39 @@
+export interface ApplicationCommand {
+    id: bigint;
+    application_id: bigint;
+    name: string;
+    description: string;
+    options?: ApplicationCommandOption[];
+}
+export interface ApplicationCommandOption {
+    type: ApplicationCommandOptionType;
+    name: string;
+    description: string;
+    required?: boolean;
+    choices?: ApplicationCommandOptionChoice[];
+    options?: ApplicationCommandOption[];
+}
+export interface ApplicationCommandOptionChoice {
+    name: string;
+    value: string | number;
+}
+export declare enum ApplicationCommandOptionType {
+    SUB_COMMAND = 1,
+    SUB_COMMAND_GROUP = 2,
+    STRING = 3,
+    INTEGER = 4,
+    BOOLEAN = 5,
+    USER = 6,
+    CHANNEL = 7,
+    ROLE = 8
+}
+export interface ApplicationCommandInteractionData {
+    id: bigint;
+    name: string;
+    options?: ApplicationCommandInteractionDataOption[];
+}
+export interface ApplicationCommandInteractionDataOption {
+    name: string;
+    value?: any;
+    options?: ApplicationCommandInteractionDataOption[];
+}

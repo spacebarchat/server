@@ -1,1 +1,1 @@
-{"version":3,"file":"Channel.js","sourceRoot":"","sources":["../../src/models/Channel.ts"],"names":[],"mappings":""}
+{"version":3,"file":"Channel.js","sourceRoot":"","sources":["../../src/models/Channel.ts"],"names":[],"mappings":";;;AA6CA,IAAY,WAQX;AARD,WAAY,WAAW;IACtB,yDAAc,CAAA;IACd,yCAAM,CAAA;IACN,2DAAe,CAAA;IACf,qDAAY,CAAA;IACZ,iEAAkB,CAAA;IAClB,yDAAc,CAAA;IACd,2DAAe,CAAA;AAChB,CAAC,EARW,WAAW,GAAX,mBAAW,KAAX,mBAAW,QAQtB"}

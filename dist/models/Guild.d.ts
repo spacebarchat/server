@@ -1,4 +1,4 @@
-import { Channel } from "./Channel";
+import { GuildChannel } from "./Channel";
 import { Emoji } from "./Emoji";
 import { Member } from "./Member";
 import { Role } from "./Role";
@@ -7,13 +7,13 @@ export interface Guild {
     afk_timeout?: number;
     application_id?: bigint;
     banner?: string;
-    channels: Channel[];
+    channels: GuildChannel[];
     default_message_notifications?: number;
     description?: string;
     discovery_splash?: string;
     emojis: Emoji[];
     explicit_content_filter?: number;
-    features: [];
+    features: string[];
     icon?: string;
     id: bigint;
     large?: boolean;
