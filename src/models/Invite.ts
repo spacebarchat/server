@@ -1,5 +1,10 @@
 export interface Invite {
 	code: string;
+	temporary: boolean;
+	uses: number;
+	max_uses: number;
+	max_age: number;
+	created_at: number;
 	guild: {
 		id: bigint;
 		name: string;

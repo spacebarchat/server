@@ -3,14 +3,50 @@ import Config, { DefaultOptions } from "./util/Config";
 import db from "./util/Database";
 
 import * as Constants from "./util/Constants";
-import { Channel } from "./models/Channel";
+import {
+	Channel,
+	ChannelType,
+	DMChannel,
+	GuildChannel,
+	ReadState,
+	TextBasedChannel,
+	TextChannel,
+	VoiceChannel,
+} from "./models/Channel";
 import { Emoji } from "./models/Emoji";
 import { Guild } from "./models/Guild";
-import { Event } from "./models/Event";
 import { Invite } from "./models/Invite";
-import { Member } from "./models/Member";
+import { Member, MuteConfig, PublicMember, UserGuildSettings } from "./models/Member";
 import { Role } from "./models/Role";
-import { User } from "./models/User";
+import { User, ConnectedAccount, PublicUser, Relationship, UserSettings } from "./models/User";
+import { Activity, ActivityType, Presence } from "./models/Activity";
+import {
+	ApplicationCommand,
+	ApplicationCommandInteractionData,
+	ApplicationCommandInteractionDataOption,
+	ApplicationCommandOption,
+	ApplicationCommandOptionChoice,
+	ApplicationCommandOptionType,
+} from "./models/Application";
+import { ApplicationCommandPayload, EVENT, Event, MessagePayload } from "./models/Event";
+import {
+	Interaction,
+	InteractionApplicationCommandCallbackData,
+	InteractionResponseType,
+	InteractionType,
+} from "./models/Interaction";
+import {
+	AllowedMentions,
+	Attachment,
+	Embed,
+	EmbedImage,
+	Message,
+	MessageType,
+	PartialEmoji,
+	Reaction,
+} from "./models/Message";
+import { ClientStatus, Status } from "./models/Status";
+import { VoiceState } from "./models/VoiceState";
 
 import { trimSpecial } from "./util/String";
 import { BitField } from "./util/BitField";
@@ -26,19 +62,60 @@ export {
 	Config,
 	Constants,
 	db,
+	Activity,
+	ActivityType,
+	Presence,
 	BitField,
 	DefaultOptions,
 	Permissions,
-	MessageFlags,
-	UserFlags,
+	VoiceState,
 	Snowflake,
 	Intents,
 	Channel,
-	Event,
+	ChannelType,
+	DMChannel,
+	GuildChannel,
+	ReadState,
+	TextBasedChannel,
+	TextChannel,
+	VoiceChannel,
 	Emoji,
 	Guild,
 	Invite,
 	Member,
+	ClientStatus,
+	Status,
+	MuteConfig,
+	PublicMember,
+	UserGuildSettings,
 	Role,
 	User,
+	UserFlags,
+	UserSettings,
+	ConnectedAccount,
+	PublicUser,
+	Relationship,
+	EVENT,
+	Event,
+	MessageType,
+	Message,
+	MessageFlags,
+	MessagePayload,
+	AllowedMentions,
+	Attachment,
+	Embed,
+	EmbedImage,
+	PartialEmoji,
+	Reaction,
+	Interaction,
+	InteractionApplicationCommandCallbackData,
+	InteractionResponseType,
+	InteractionType,
+	ApplicationCommand,
+	ApplicationCommandPayload,
+	ApplicationCommandInteractionData,
+	ApplicationCommandInteractionDataOption,
+	ApplicationCommandOption,
+	ApplicationCommandOptionChoice,
+	ApplicationCommandOptionType,
 };
