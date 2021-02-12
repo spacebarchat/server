@@ -1,10 +1,9 @@
 import { ConnectedAccount, User, UserSettings } from "./User";
 import { DMChannel, Channel } from "./Channel";
 import { Guild } from "./Guild";
-import { Member, PublicMember, UserGuildSettings } from "./Member";
+import { PublicMember, UserGuildSettings } from "./Member";
 import { Emoji } from "./Emoji";
-import { ClientStatus, Status } from "./Status";
-import { Activity, Presence } from "./Activity";
+import { Presence } from "./Activity";
 import { Role } from "./Role";
 import { Invite } from "./Invite";
 import { Message, PartialEmoji } from "./Message";
