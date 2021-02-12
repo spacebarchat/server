@@ -3,7 +3,7 @@ import { ClientStatus, Status } from "./Status";
 
 export interface Presence {
 	user: User;
-	guild_id: bigint;
+	guild_id?: bigint;
 	status: Status;
 	activities: Activity[];
 	client_status: ClientStatus;

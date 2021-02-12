@@ -1,13 +1,9 @@
-import { GuildChannel } from "./Channel";
 import { Emoji } from "./Emoji";
-import { Member } from "./Member";
-import { Role } from "./Role";
 export interface Guild {
     afk_channel_id?: bigint;
     afk_timeout?: number;
     application_id?: bigint;
     banner?: string;
-    channels: GuildChannel[];
     default_message_notifications?: number;
     description?: string;
     discovery_splash?: string;
@@ -22,17 +18,14 @@ export interface Guild {
     max_video_channel_users?: number;
     member_count?: number;
     presence_count?: number;
-    members?: Member[];
     mfa_level?: number;
     name: string;
     owner_id: bigint;
     preferred_locale?: string;
     premium_subscription_count?: number;
     premium_tier?: number;
-    presences: [];
     public_updates_channel_id?: bigint;
     region?: string;
-    roles: Role[];
     rules_channel_id?: bigint;
     splash?: string;
     system_channel_flags?: number;

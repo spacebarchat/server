@@ -1,3 +1,6 @@
+import { Activity } from "./Activity";
+import { ClientStatus, Status } from "./Status";
+
 export interface User {
 	id: bigint;
 	username: string;
@@ -23,6 +26,11 @@ export interface User {
 	user_settings: UserSettings;
 	relationships: Relationship[];
 	connected_accounts: ConnectedAccount[];
+	presence: {
+		status: Status;
+		activities: Activity[];
+		client_status: ClientStatus;
+	};
 }
 
 export interface PublicUser {
