@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChannelType = exports.ChannelModel = exports.ChannelSchema = void 0;
+exports.ChannelType = exports.ChannelPermissionOverwriteType = exports.ChannelModel = exports.ChannelSchema = void 0;
 const mongoose_1 = require("mongoose");
 exports.ChannelSchema = new mongoose_1.Schema({
     id: mongoose_1.Types.Long,
@@ -27,6 +27,11 @@ exports.ChannelSchema = new mongoose_1.Schema({
     ],
 });
 exports.ChannelModel = mongoose_1.model("Channel", exports.ChannelSchema, "channels");
+var ChannelPermissionOverwriteType;
+(function (ChannelPermissionOverwriteType) {
+    ChannelPermissionOverwriteType[ChannelPermissionOverwriteType["role"] = 0] = "role";
+    ChannelPermissionOverwriteType[ChannelPermissionOverwriteType["member"] = 1] = "member";
+})(ChannelPermissionOverwriteType = exports.ChannelPermissionOverwriteType || (exports.ChannelPermissionOverwriteType = {}));
 var ChannelType;
 (function (ChannelType) {
     ChannelType[ChannelType["GUILD_TEXT"] = 0] = "GUILD_TEXT";

@@ -3,6 +3,7 @@ import { Schema, Document } from "mongoose";
 import { ChannelType } from "./Channel";
 export interface Message extends Document {
     id: bigint;
+    channel_id: bigint;
     author_id?: bigint;
     webhook_id?: bigint;
     application_id: bigint;

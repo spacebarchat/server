@@ -81,6 +81,7 @@ const Embed = {
 };
 exports.MessageSchema = new mongoose_1.Schema({
     id: mongoose_1.Types.Long,
+    channel_id: mongoose_1.Types.Long,
     author_id: mongoose_1.Types.Long,
     webhook_id: mongoose_1.Types.Long,
     application_id: mongoose_1.Types.Long,

@@ -19,12 +19,17 @@ export interface GuildChannel extends Channel {
     guild_id: bigint;
     position: number;
     parent_id?: bigint;
-    permission_overwrites: {
-        allow: bigint;
-        deny: bigint;
-        id: bigint;
-        type: number;
-    }[];
+    permission_overwrites: ChannelPermissionOverwrite[];
+}
+export interface ChannelPermissionOverwrite {
+    allow: bigint;
+    deny: bigint;
+    id: bigint;
+    type: ChannelPermissionOverwriteType;
+}
+export declare enum ChannelPermissionOverwriteType {
+    role = 0,
+    member = 1
 }
 export interface VoiceChannel extends GuildChannel {
 }

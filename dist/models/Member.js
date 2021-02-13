@@ -8,6 +8,7 @@ const MuteConfig = {
 };
 exports.MemberSchema = new mongoose_1.Schema({
     id: mongoose_1.Types.Long,
+    guild_id: mongoose_1.Types.Long,
     nick: String,
     roles: [mongoose_1.Types.Long],
     joined_at: Number,

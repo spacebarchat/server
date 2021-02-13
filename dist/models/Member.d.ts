@@ -3,6 +3,7 @@ import { PublicUser } from "./User";
 import { Schema, Document } from "mongoose";
 export interface Member extends Document {
     id: bigint;
+    guild_id: bigint;
     nick?: string;
     roles: bigint[];
     joined_at: number;

@@ -2,6 +2,7 @@ import { Schema, model, Types, Document } from "mongoose";
 
 export interface Role extends Document {
 	id: bigint;
+	guild_id: bigint;
 	color: number;
 	hoist: boolean;
 	managed: boolean;
@@ -16,6 +17,7 @@ export interface Role extends Document {
 
 export const RoleSchema = new Schema({
 	id: Types.Long,
+	guild_id: Types.Long,
 	color: Number,
 	hoist: Boolean,
 	managed: Boolean,

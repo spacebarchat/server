@@ -3,6 +3,7 @@ import { Schema, model, Types, Document } from "mongoose";
 
 export interface Member extends Document {
 	id: bigint;
+	guild_id: bigint;
 	nick?: string;
 	roles: bigint[];
 	joined_at: number;
@@ -42,6 +43,7 @@ const MuteConfig = {
 
 export const MemberSchema = new Schema({
 	id: Types.Long,
+	guild_id: Types.Long,
 	nick: String,
 	roles: [Types.Long],
 	joined_at: Number,

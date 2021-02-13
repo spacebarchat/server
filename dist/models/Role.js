@@ -4,6 +4,7 @@ exports.RoleModel = exports.RoleSchema = void 0;
 const mongoose_1 = require("mongoose");
 exports.RoleSchema = new mongoose_1.Schema({
     id: mongoose_1.Types.Long,
+    guild_id: mongoose_1.Types.Long,
     color: Number,
     hoist: Boolean,
     managed: Boolean,

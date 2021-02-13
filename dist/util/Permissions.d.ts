@@ -1,3 +1,5 @@
+import { ChannelPermissionOverwrite } from "../models/Channel";
+import { Role } from "../models/Role";
 import { BitField } from "./BitField";
 export declare type PermissionResolvable = string | number | Permissions | PermissionResolvable[];
 export declare class Permissions extends BitField {
@@ -39,4 +41,18 @@ export declare class Permissions extends BitField {
      * Checks whether the bitfield has a permission, or multiple permissions.
      */
     has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
+    static channelPermission(overwrites: ChannelPermissionOverwrite[], init?: bigint): bigint;
+    static rolePermission(roles: Role[]): bigint;
+    static finalPermission({ user, guild, channel, }: {
+        user: {
+            id: bigint;
+            roles: bigint[];
+        };
+        guild: {
+            roles: Role[];
+        };
+        channel?: {
+            overwrites: ChannelPermissionOverwrite[];
+        };
+    }): bigint;
 }

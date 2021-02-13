@@ -3,6 +3,7 @@ import { ChannelType } from "./Channel";
 
 export interface Message extends Document {
 	id: bigint;
+	channel_id: bigint;
 	author_id?: bigint;
 	webhook_id?: bigint;
 	application_id: bigint;
@@ -188,6 +189,7 @@ const Embed = {
 
 export const MessageSchema = new Schema({
 	id: Types.Long,
+	channel_id: Types.Long,
 	author_id: Types.Long,
 	webhook_id: Types.Long,
 	application_id: Types.Long,
