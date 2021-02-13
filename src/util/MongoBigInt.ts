@@ -1,0 +1,76 @@
+import mongoose from "mongoose";
+
+class LongSchema extends mongoose.SchemaType {
+	public $conditionalHandlers = {
+		$lt: this.handleSingle,
+		$lte: this.handleSingle,
+		$gt: this.handleSingle,
+		$gte: this.handleSingle,
+		$ne: this.handleSingle,
+		$in: this.handleArray,
+		$nin: this.handleArray,
+		$mod: this.handleArray,
+		$all: this.handleArray,
+		$bitsAnySet: this.handleArray,
+		$bitsAllSet: this.handleArray,
+	};
+
+	handleSingle(val: any) {
+		return this.cast(val);
+	}
+
+	handleArray(val: any) {
+		var self = this;
+		return val.map(function (m: any) {
+			return self.cast(m);
+		});
+	}
+
+	checkRequired(val: any) {
+		return null != val;
+	}
+
+	cast(val: any, scope?: any, init?: any) {
+		if (null === val) return val;
+		if ("" === val) return null;
+
+		if (val instanceof mongoose.mongo.Long) return BigInt(val.toString());
+		if (val instanceof Number || "number" == typeof val) return BigInt(val);
+		if (!Array.isArray(val) && val.toString) return BigInt(val.toString());
+
+		// @ts-ignore
+		throw new SchemaType.CastError("Long", val);
+	}
+
+	castForQuery($conditional: string, value: any) {
+		var handler;
+		if (2 === arguments.length) {
+			// @ts-ignore
+			handler = this.$conditionalHandlers[$conditional];
+			if (!handler) {
+				throw new Error("Can't use " + $conditional + " with Long.");
+			}
+			return handler.call(this, value);
+		} else {
+			return this.cast($conditional);
+		}
+	}
+}
+
+LongSchema.cast = mongoose.SchemaType.cast;
+LongSchema.set = mongoose.SchemaType.set;
+LongSchema.get = mongoose.SchemaType.get;
+
+declare module "mongoose" {
+	namespace Types {
+		class Long extends mongoose.mongo.Long {}
+	}
+	namespace Schema {
+		namespace Types {
+			class Long extends LongSchema {}
+		}
+	}
+}
+
+mongoose.Schema.Types.Long = LongSchema;
+mongoose.Types.Long = mongoose.mongo.Long;

@@ -1,6 +1,7 @@
+import { Schema, model, Types, Document } from "mongoose";
 import { ChannelType } from "./Channel";
 
-export interface Message {
+export interface Message extends Document {
 	id: bigint;
 	author_id?: bigint;
 	webhook_id?: bigint;
@@ -27,7 +28,7 @@ export interface Message {
 	activity?: {
 		type: number;
 		party_id: string;
-	}[];
+	};
 	flags?: bigint;
 	stickers?: [];
 	message_reference?: {
@@ -124,3 +125,104 @@ export interface AllowedMentions {
 	users?: bigint[];
 	replied_user?: boolean;
 }
+
+const Attachment = {
+	id: Types.Long, // attachment id
+	filename: String, // name of file attached
+	size: Number, // size of file in bytes
+	url: String, // source url of file
+	proxy_url: String, // a proxied url of file
+	height: Number, // height of file (if image)
+	width: Number, // width of file (if image)
+};
+
+const EmbedImage = {
+	url: String,
+	proxy_url: String,
+	height: Number,
+	width: Number,
+};
+
+const Reaction = {
+	count: Number,
+	emoji: {
+		id: Types.Long,
+		name: String,
+		animated: Boolean,
+	},
+};
+
+const Embed = {
+	title: String, //title of embed
+	type: String, // type of embed (always "rich" for webhook embeds)
+	description: String, // description of embed
+	url: String, // url of embed
+	timestamp: Number, // timestamp of embed content
+	color: Number, // color code of the embed
+	footer: {
+		text: String,
+		icon_url: String,
+		proxy_icon_url: String,
+	}, // footer object	footer information
+	image: EmbedImage, // image object	image information
+	thumbnail: EmbedImage, // thumbnail object	thumbnail information
+	video: EmbedImage, // video object	video information
+	provider: {
+		name: String,
+		url: String,
+	}, // provider object	provider information
+	author: {
+		name: String,
+		url: String,
+		icon_url: String,
+		proxy_icon_url: String,
+	}, // author object	author information
+	fields: [
+		{
+			name: String,
+			value: String,
+			inline: Boolean,
+		},
+	],
+};
+
+export const MessageSchema = new Schema({
+	id: Types.Long,
+	author_id: Types.Long,
+	webhook_id: Types.Long,
+	application_id: Types.Long,
+	content: String,
+	timestamp: Number,
+	edited_timestamp: Number,
+	tts: Boolean,
+	mention_everyone: Boolean,
+	mentions: [Types.Long],
+	mention_roles: [Types.Long],
+	mention_channels: [
+		{
+			id: Types.Long,
+			guild_id: Types.Long,
+			type: ChannelType,
+			name: String,
+		},
+	],
+	attachments: [Attachment],
+	embeds: [Embed],
+	reactions: [Reaction],
+	nonce: Schema.Types.Mixed, // can be a long or a string
+	pinned: Boolean,
+	type: MessageType,
+	activity: {
+		type: Number,
+		party_id: String,
+	},
+	flags: Types.Long,
+	stickers: [],
+	message_reference: {
+		message_id: Types.Long,
+		channel_id: Types.Long,
+		guild_id: Types.Long,
+	},
+});
+
+export const MessageModel = model<Message>("Message", MessageSchema, "messages");

@@ -10,8 +10,9 @@ import { Message, PartialEmoji } from "./Message";
 import { VoiceState } from "./VoiceState";
 import { ApplicationCommand } from "./Application";
 import { Interaction } from "./Interaction";
+import { Schema, model, Types, Document } from "mongoose";
 
-export interface Event {
+export interface Event extends Document {
 	guild_id?: bigint;
 	user_id?: bigint;
 	channel_id?: bigint;
@@ -19,6 +20,17 @@ export interface Event {
 	event: EVENT;
 	data?: any;
 }
+
+export const EventSchema = new Schema({
+	guild_id: Types.Long,
+	user_id: Types.Long,
+	channel_id: Types.Long,
+	created_at: { type: Number, required: true },
+	event: { type: String, required: true },
+	data: Object,
+});
+
+export const EventModel = model<Event>("Event", EventSchema, "events");
 
 // ! Custom Events that shouldn't get sent to the client but processed by the server
 
@@ -120,7 +132,10 @@ export interface GuildUpdateEvent extends Event {
 
 export interface GuildDeleteEvent extends Event {
 	event: "GUILD_DELETE";
-	data: Guild;
+	data: {
+		id: bigint;
+		unavailable?: boolean;
+	};
 }
 
 export interface GuildBanAddEvent extends Event {

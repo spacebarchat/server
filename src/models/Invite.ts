@@ -1,4 +1,6 @@
-export interface Invite {
+import { Schema, model, Types, Document } from "mongoose";
+
+export interface Invite extends Document {
 	code: string;
 	temporary: boolean;
 	uses: number;
@@ -19,7 +21,6 @@ export interface Invite {
 		name: string;
 		type: number;
 	};
-
 	inviter: {
 		id: bigint;
 		username: string;
@@ -34,3 +35,42 @@ export interface Invite {
 	};
 	target_user_type: number;
 }
+
+export const InviteSchema = new Schema({
+	code: String,
+	temporary: Boolean,
+	uses: Number,
+	max_uses: Number,
+	max_age: Number,
+	created_at: Number,
+	guild: {
+		id: Types.Long,
+		name: String,
+		splash: String,
+		description: String,
+		icon: String,
+		features: Object,
+		verification_level: Number,
+	},
+	channel: {
+		id: Types.Long,
+		name: String,
+		type: Number,
+	},
+
+	inviter: {
+		id: Types.Long,
+		username: String,
+		avatar: String,
+		discriminator: Number,
+	},
+	target_user: {
+		id: Types.Long,
+		username: String,
+		avatar: String,
+		discriminator: Number,
+	},
+	target_user_type: Number,
+});
+
+export const InviteModel = model<Invite>("Invite", InviteSchema, "invites");

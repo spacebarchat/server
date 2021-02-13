@@ -1,5 +1,6 @@
 import { User } from "..";
 import { ClientStatus, Status } from "./Status";
+import { Schema, model, Types, Document } from "mongoose";
 
 export interface Presence {
 	user: User;
@@ -44,6 +45,44 @@ export interface Activity {
 	instance?: boolean;
 	flags?: bigint;
 }
+
+export const Activity = {
+	name: String,
+	type: Number,
+	url: String,
+	created_at: Number,
+	timestamps: [
+		{
+			start: Number,
+			end: Number,
+		},
+	],
+	application_id: Types.Long,
+	details: String,
+	state: String,
+	emoji: {
+		name: String,
+		id: Types.Long,
+		amimated: Boolean,
+	},
+	party: {
+		id: String,
+		size: [Number, Number],
+	},
+	assets: {
+		large_image: String,
+		large_text: String,
+		small_image: String,
+		small_text: String,
+	},
+	secrets: {
+		join: String,
+		spectate: String,
+		match: String,
+	},
+	instance: Boolean,
+	flags: Types.Long,
+};
 
 export enum ActivityType {
 	GAME = 0,

@@ -1,7 +1,8 @@
 import { Activity } from "./Activity";
 import { ClientStatus, Status } from "./Status";
+import { Schema, model, Types, Document } from "mongoose";
 
-export interface User {
+export interface User extends Document {
 	id: bigint;
 	username: string;
 	discriminator: string;
@@ -103,3 +104,100 @@ export interface UserSettings {
 	theme: "dark" | "white"; // dark
 	timezone_offset: number; // e.g -60
 }
+
+export const UserSchema = new Schema({
+	id: Types.Long,
+	username: String,
+	discriminator: String,
+	avatar: String,
+	phone: String,
+	desktop: Boolean,
+	mobile: Boolean,
+	premium: Boolean,
+	premium_type: Number,
+	bot: Boolean,
+	system: Boolean,
+	nsfw_allowed: Boolean,
+	mfa_enabled: Boolean,
+	created_at: Number,
+	verified: Boolean,
+	email: String,
+	flags: Types.Long, // TODO: automatically convert Types.Long to BitField of UserFlags
+	public_flags: Types.Long,
+	hash: String, // hash of the password, salt is saved in password (bcrypt)
+	guilds: [Types.Long], // array of guild ids the user is part of
+	valid_tokens_since: Number, // all tokens with a previous issue date are invalid
+	user_settings: {
+		afk_timeout: Number,
+		allow_accessibility_detection: Boolean,
+		animate_emoji: Boolean,
+		animate_stickers: Number,
+		contact_sync_enabled: Boolean,
+		convert_emoticons: Boolean,
+		custom_status: {
+			emoji_id: Types.Long,
+			emoji_name: String,
+			expires_at: Number,
+			text: String,
+		},
+		default_guilds_restricted: Boolean,
+		detect_platform_accounts: Boolean,
+		developer_mode: Boolean,
+		disable_games_tab: Boolean,
+		enable_tts_command: Boolean,
+		explicit_content_filter: Number,
+		friend_source_flags: { all: Boolean },
+		gif_auto_play: Boolean,
+		// every top guild is displayed as a "folder"
+		guild_folders: [
+			{
+				color: Number,
+				guild_ids: [Types.Long],
+				id: Number,
+				name: String,
+			},
+		],
+		guild_positions: [Types.Long], // guild ids ordered by position
+		inline_attachment_media: Boolean,
+		inline_embed_media: Boolean,
+		locale: String, // en_US
+		message_display_compact: Boolean,
+		native_phone_integration_enabled: Boolean,
+		render_embeds: Boolean,
+		render_reactions: Boolean,
+		restricted_guilds: [Types.Long],
+		show_current_game: Boolean,
+		status: String,
+		stream_notifications_enabled: Boolean,
+		theme: String, // dark
+		timezone_offset: Number, // e.g -60,
+	},
+	relationships: [
+		{
+			id: Types.Long,
+			nickname: String,
+			type: Number,
+			user_id: Types.Long,
+		},
+	],
+	connected_accounts: [
+		{
+			access_token: String,
+			friend_sync: Boolean,
+			id: String,
+			name: String,
+			revoked: Boolean,
+			show_activity: Boolean,
+			type: String,
+			verifie: Boolean,
+			visibility: Number,
+		},
+	],
+	presence: {
+		status: String,
+		activities: [Activity],
+		client_status: ClientStatus,
+	},
+});
+
+export const UserModel = model<User>("User", UserSchema, "users");

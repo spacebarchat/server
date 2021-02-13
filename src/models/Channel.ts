@@ -1,19 +1,44 @@
+import { Schema, model, Types, Document } from "mongoose";
+
+export interface ChannelDocument extends Channel, DMChannel, TextChannel, VoiceChannel, Document {
+	id: bigint;
+}
+
+export const ChannelSchema = new Schema({
+	id: Types.Long,
+	created_at: { type: Schema.Types.Date, required: true },
+	name: { type: String, required: true },
+	type: { type: Number, required: true },
+	guild_id: Types.Long,
+	owner_id: Types.Long,
+	parent_id: Types.Long,
+	recipients: [Types.Long],
+	position: Number,
+	last_message_id: Types.Long,
+	last_pin_timestamp: Date,
+	nsfw: Boolean,
+	rate_limit_per_user: Number,
+	topic: String,
+	permission_overwrites: [
+		{
+			allow: Types.Long,
+			deny: Types.Long,
+			id: Types.Long,
+			type: Number,
+		},
+	],
+});
+
+export const ChannelModel = model<ChannelDocument>("Channel", ChannelSchema, "channels");
+
 export interface Channel {
 	id: bigint;
 	created_at: number;
 	name: string;
 	type: number;
-	read_state: ReadState[];
-}
-
-export interface ReadState {
-	last_message_id: bigint;
-	last_pin_timestamp: number;
-	mention_count: number;
 }
 
 export interface TextBasedChannel {
-	messages: any[];
 	last_message_id?: bigint;
 	last_pin_timestamp?: number;
 }
