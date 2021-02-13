@@ -22,5 +22,5 @@ export * from "./util/Snowflake";
 export * from "./util/UserFlags";
 export * from "./models/Event";
 import Config, { DefaultOptions } from "./util/Config";
-import db from "./util/Database";
-export { Config, db, DefaultOptions };
+import db, { MongooseCache } from "./util/Database";
+export { Config, db, DefaultOptions, MongooseCache };

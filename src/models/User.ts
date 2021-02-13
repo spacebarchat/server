@@ -7,6 +7,7 @@ export interface User extends Document {
 	username: string;
 	discriminator: string;
 	avatar: string | null;
+	fingerprints: string[];
 	phone?: string;
 	desktop: boolean;
 	mobile: boolean;
@@ -110,6 +111,7 @@ export const UserSchema = new Schema({
 	username: String,
 	discriminator: String,
 	avatar: String,
+	fingerprints: [String],
 	phone: String,
 	desktop: Boolean,
 	mobile: Boolean,

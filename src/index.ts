@@ -25,6 +25,6 @@ export * from "./util/UserFlags";
 export * from "./models/Event";
 
 import Config, { DefaultOptions } from "./util/Config";
-import db from "./util/Database";
+import db, { MongooseCache } from "./util/Database";
 
-export { Config, db, DefaultOptions };
+export { Config, db, DefaultOptions, MongooseCache };

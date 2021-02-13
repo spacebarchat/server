@@ -21,11 +21,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DefaultOptions = exports.db = exports.Config = exports.Constants = void 0;
+exports.MongooseCache = exports.DefaultOptions = exports.db = exports.Config = exports.Constants = void 0;
 __exportStar(require("./util/checkToken"), exports);
 exports.Constants = __importStar(require("./util/Constants"));
 __exportStar(require("./models/Channel"), exports);
@@ -52,6 +49,7 @@ __exportStar(require("./models/Event"), exports);
 const Config_1 = __importStar(require("./util/Config"));
 exports.Config = Config_1.default;
 Object.defineProperty(exports, "DefaultOptions", { enumerable: true, get: function () { return Config_1.DefaultOptions; } });
-const Database_1 = __importDefault(require("./util/Database"));
+const Database_1 = __importStar(require("./util/Database"));
 exports.db = Database_1.default;
+Object.defineProperty(exports, "MongooseCache", { enumerable: true, get: function () { return Database_1.MongooseCache; } });
 //# sourceMappingURL=index.js.map

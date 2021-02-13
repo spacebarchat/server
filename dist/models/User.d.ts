@@ -7,6 +7,7 @@ export interface User extends Document {
     username: string;
     discriminator: string;
     avatar: string | null;
+    fingerprints: string[];
     phone?: string;
     desktop: boolean;
     mobile: boolean;

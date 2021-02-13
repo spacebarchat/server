@@ -9,6 +9,7 @@ exports.UserSchema = new mongoose_1.Schema({
     username: String,
     discriminator: String,
     avatar: String,
+    fingerprints: [String],
     phone: String,
     desktop: Boolean,
     mobile: Boolean,
