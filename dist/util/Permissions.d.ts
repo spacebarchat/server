@@ -1,7 +1,7 @@
 import { ChannelPermissionOverwrite } from "../models/Channel";
 import { Role } from "../models/Role";
 import { BitField } from "./BitField";
-export declare type PermissionResolvable = string | number | Permissions | PermissionResolvable[];
+export declare type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[];
 export declare class Permissions extends BitField {
     static FLAGS: {
         CREATE_INSTANT_INVITE: bigint;

@@ -6,7 +6,7 @@ import { ChannelPermissionOverwrite } from "../models/Channel";
 import { Role, RoleModel } from "../models/Role";
 import { BitField } from "./BitField";
 
-export type PermissionResolvable = string | number | Permissions | PermissionResolvable[];
+export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[];
 
 export class Permissions extends BitField {
 	static FLAGS = {
