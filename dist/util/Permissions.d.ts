@@ -52,7 +52,8 @@ export declare class Permissions extends BitField {
             roles: Role[];
         };
         channel?: {
-            overwrites: ChannelPermissionOverwrite[];
+            overwrites?: ChannelPermissionOverwrite[];
         };
     }): bigint;
 }
+export declare function getPermission(user_id: bigint, guild_id: bigint, channel_id?: bigint): Promise<bigint>;

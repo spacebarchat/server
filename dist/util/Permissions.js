@@ -1,8 +1,11 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getPermission = exports.Permissions = void 0;
 // https://github.com/discordjs/discord.js/blob/master/src/util/Permissions.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Permissions = void 0;
+const Member_1 = require("../models/Member");
+const Channel_1 = require("../models/Channel");
+const Role_1 = require("../models/Role");
 const BitField_1 = require("./BitField");
 class Permissions extends BitField_1.BitField {
     any(permission, checkAdmin = true) {
@@ -81,4 +84,28 @@ Permissions.FLAGS = {
     MANAGE_WEBHOOKS: 1n << 29n,
     MANAGE_EMOJIS: 1n << 30n,
 };
+async function getPermission(user_id, guild_id, channel_id) {
+    var member = await Member_1.MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
+    if (!member)
+        throw new Error("Member not found");
+    var roles = await Role_1.RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
+    let channel = null;
+    if (channel_id) {
+        channel = await Channel_1.ChannelModel.findOne({ id: channel_id }, "permission_overwrites");
+    }
+    var permission = Permissions.finalPermission({
+        user: {
+            id: user_id,
+            roles: member.roles,
+        },
+        guild: {
+            roles: roles,
+        },
+        channel: {
+            overwrites: channel?.permission_overwrites,
+        },
+    });
+    return permission;
+}
+exports.getPermission = getPermission;
 //# sourceMappingURL=Permissions.js.map
