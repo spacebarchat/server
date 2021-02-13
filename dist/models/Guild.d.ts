@@ -1,5 +1,7 @@
-import { Emoji } from "./Emoji";
-export interface Guild {
+/// <reference path="../util/MongoBigInt.d.ts" />
+import { Schema, Document } from "mongoose";
+export interface Guild extends Document {
+    id: bigint;
     afk_channel_id?: bigint;
     afk_timeout?: number;
     application_id?: bigint;
@@ -7,11 +9,9 @@ export interface Guild {
     default_message_notifications?: number;
     description?: string;
     discovery_splash?: string;
-    emojis: Emoji[];
     explicit_content_filter?: number;
     features: string[];
     icon?: string;
-    id: bigint;
     large?: boolean;
     max_members?: number;
     max_presences?: number;
@@ -38,3 +38,5 @@ export interface Guild {
     widget_channel_id?: bigint;
     widget_enabled?: boolean;
 }
+export declare const GuildSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
+export declare const GuildModel: import("mongoose").Model<Guild>;

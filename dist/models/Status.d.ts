@@ -4,3 +4,8 @@ export interface ClientStatus {
     mobile?: string;
     web?: string;
 }
+export declare const ClientStatus: {
+    desktop: StringConstructor;
+    mobile: StringConstructor;
+    web: StringConstructor;
+};

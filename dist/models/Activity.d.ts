@@ -1,5 +1,6 @@
 import { User } from "..";
 import { ClientStatus, Status } from "./Status";
+import { Types } from "mongoose";
 export interface Presence {
     user: User;
     guild_id?: bigint;
@@ -42,6 +43,41 @@ export interface Activity {
     instance?: boolean;
     flags?: bigint;
 }
+export declare const Activity: {
+    name: StringConstructor;
+    type: NumberConstructor;
+    url: StringConstructor;
+    created_at: NumberConstructor;
+    timestamps: {
+        start: NumberConstructor;
+        end: NumberConstructor;
+    }[];
+    application_id: typeof Types.Long;
+    details: StringConstructor;
+    state: StringConstructor;
+    emoji: {
+        name: StringConstructor;
+        id: typeof Types.Long;
+        amimated: BooleanConstructor;
+    };
+    party: {
+        id: StringConstructor;
+        size: NumberConstructor[];
+    };
+    assets: {
+        large_image: StringConstructor;
+        large_text: StringConstructor;
+        small_image: StringConstructor;
+        small_text: StringConstructor;
+    };
+    secrets: {
+        join: StringConstructor;
+        spectate: StringConstructor;
+        match: StringConstructor;
+    };
+    instance: BooleanConstructor;
+    flags: typeof Types.Long;
+};
 export declare enum ActivityType {
     GAME = 0,
     STREAMING = 1,

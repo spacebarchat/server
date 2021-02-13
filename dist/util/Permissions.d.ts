@@ -37,9 +37,6 @@ export declare class Permissions extends BitField {
     any(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
     /**
      * Checks whether the bitfield has a permission, or multiple permissions.
-     * @param {PermissionResolvable} permission Permission(s) to check for
-     * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-     * @returns {boolean}
      */
     has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
 }

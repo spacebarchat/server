@@ -1,6 +1,32 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChannelType = void 0;
+exports.ChannelType = exports.ChannelModel = exports.ChannelSchema = void 0;
+const mongoose_1 = require("mongoose");
+exports.ChannelSchema = new mongoose_1.Schema({
+    id: mongoose_1.Types.Long,
+    created_at: { type: mongoose_1.Schema.Types.Date, required: true },
+    name: { type: String, required: true },
+    type: { type: Number, required: true },
+    guild_id: mongoose_1.Types.Long,
+    owner_id: mongoose_1.Types.Long,
+    parent_id: mongoose_1.Types.Long,
+    recipients: [mongoose_1.Types.Long],
+    position: Number,
+    last_message_id: mongoose_1.Types.Long,
+    last_pin_timestamp: Date,
+    nsfw: Boolean,
+    rate_limit_per_user: Number,
+    topic: String,
+    permission_overwrites: [
+        {
+            allow: mongoose_1.Types.Long,
+            deny: mongoose_1.Types.Long,
+            id: mongoose_1.Types.Long,
+            type: Number,
+        },
+    ],
+});
+exports.ChannelModel = mongoose_1.model("Channel", exports.ChannelSchema, "channels");
 var ChannelType;
 (function (ChannelType) {
     ChannelType[ChannelType["GUILD_TEXT"] = 0] = "GUILD_TEXT";

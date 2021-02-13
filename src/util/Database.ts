@@ -1,12 +1,12 @@
 import "./MongoBigInt";
-import mongoose, { Collection } from "mongoose";
+import mongoose, { Collection, Connection } from "mongoose";
 import { ChangeStream, ChangeEvent, Long } from "mongodb";
 import EventEmitter from "events";
 const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPreference=secondaryPreferred";
 
 const connection = mongoose.createConnection(uri, { autoIndex: true });
 
-export default connection;
+export default <Connection>connection;
 
 export interface MongooseCache {
 	on(event: "delete", listener: (id: string) => void): this;
@@ -37,7 +37,8 @@ export class MongooseCache extends EventEmitter {
 		this.stream.on("error", console.error);
 
 		if (!this.opts.onlyEvents) {
-			this.data = await this.collection.aggregate(this.pipeline).toArray();
+			const arr = await this.collection.aggregate(this.pipeline).toArray();
+			this.data = arr.length ? arr[0] : arr;
 		}
 	}
 

@@ -1,4 +1,6 @@
-export interface Role {
+/// <reference path="../util/MongoBigInt.d.ts" />
+import { Schema, Document } from "mongoose";
+export interface Role extends Document {
     id: bigint;
     color: number;
     hoist: boolean;
@@ -11,3 +13,5 @@ export interface Role {
         bot_id?: bigint;
     };
 }
+export declare const RoleSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
+export declare const RoleModel: import("mongoose").Model<Role>;

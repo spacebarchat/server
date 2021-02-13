@@ -1,3 +1,4 @@
+/// <reference path="../util/MongoBigInt.d.ts" />
 import { ConnectedAccount, User, UserSettings } from "./User";
 import { DMChannel, Channel } from "./Channel";
 import { Guild } from "./Guild";
@@ -10,7 +11,8 @@ import { Message, PartialEmoji } from "./Message";
 import { VoiceState } from "./VoiceState";
 import { ApplicationCommand } from "./Application";
 import { Interaction } from "./Interaction";
-export interface Event {
+import { Schema, Document } from "mongoose";
+export interface Event extends Document {
     guild_id?: bigint;
     user_id?: bigint;
     channel_id?: bigint;
@@ -18,6 +20,8 @@ export interface Event {
     event: EVENT;
     data?: any;
 }
+export declare const EventSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
+export declare const EventModel: import("mongoose").Model<Event>;
 export interface InvalidatedEvent extends Event {
     event: "INVALIDATED";
 }
@@ -113,7 +117,10 @@ export interface GuildUpdateEvent extends Event {
 }
 export interface GuildDeleteEvent extends Event {
     event: "GUILD_DELETE";
-    data: Guild;
+    data: {
+        id: bigint;
+        unavailable?: boolean;
+    };
 }
 export interface GuildBanAddEvent extends Event {
     event: "GUILD_BAN_ADD";

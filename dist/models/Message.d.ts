@@ -1,5 +1,7 @@
+/// <reference path="../util/MongoBigInt.d.ts" />
+import { Schema, Document } from "mongoose";
 import { ChannelType } from "./Channel";
-export interface Message {
+export interface Message extends Document {
     id: bigint;
     author_id?: bigint;
     webhook_id?: bigint;
@@ -26,7 +28,7 @@ export interface Message {
     activity?: {
         type: number;
         party_id: string;
-    }[];
+    };
     flags?: bigint;
     stickers?: [];
     message_reference?: {
@@ -115,3 +117,5 @@ export interface AllowedMentions {
     users?: bigint[];
     replied_user?: boolean;
 }
+export declare const MessageSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
+export declare const MessageModel: import("mongoose").Model<Message>;

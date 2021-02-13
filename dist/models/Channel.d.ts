@@ -1,17 +1,17 @@
+/// <reference path="../util/MongoBigInt.d.ts" />
+import { Schema, Document } from "mongoose";
+export interface ChannelDocument extends Channel, DMChannel, TextChannel, VoiceChannel, Document {
+    id: bigint;
+}
+export declare const ChannelSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
+export declare const ChannelModel: import("mongoose").Model<ChannelDocument>;
 export interface Channel {
     id: bigint;
     created_at: number;
     name: string;
     type: number;
-    read_state: ReadState[];
-}
-export interface ReadState {
-    last_message_id: bigint;
-    last_pin_timestamp: number;
-    mention_count: number;
 }
 export interface TextBasedChannel {
-    messages: any[];
     last_message_id?: bigint;
     last_pin_timestamp?: number;
 }

@@ -1,6 +1,8 @@
+/// <reference path="../util/MongoBigInt.d.ts" />
 import { Activity } from "./Activity";
 import { ClientStatus, Status } from "./Status";
-export interface User {
+import { Schema, Document } from "mongoose";
+export interface User extends Document {
     id: bigint;
     username: string;
     discriminator: string;
@@ -99,3 +101,5 @@ export interface UserSettings {
     theme: "dark" | "white";
     timezone_offset: number;
 }
+export declare const UserSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
+export declare const UserModel: import("mongoose").Model<User>;

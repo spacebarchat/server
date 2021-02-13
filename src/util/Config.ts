@@ -1,31 +1,38 @@
+import { Schema, model, Types, Document } from "mongoose";
 import "missing-native-js-functions";
-import db from "./Database";
-import { ProviderCache } from "lambert-db";
-var Config: ProviderCache;
+import db, { MongooseCache } from "./Database";
+
+var Config = new MongooseCache(db.collection("config"), [], { onlyEvents: false });
 
 export default {
-	init: async function init(opts: DefaultOptions = DefaultOptions) {
-		await db.collection("config").findOne({});
-		Config = await db.data.config({}).cache();
+	init: async function init() {
 		await Config.init();
-		await Config.set(opts.merge(Config.cache || {}));
+		return this.setAll(Config.data.merge(DefaultOptions));
 	},
 	getAll: function get() {
-		return <DefaultOptions>Config.get();
+		return <DefaultOptions>Config.data;
 	},
 	setAll: function set(val: any) {
-		return Config.set(val);
+		return db.collection("config").updateOne({}, { $set: val });
 	},
 };
 
-export interface DefaultOptions {
+export const DefaultOptions = {
+	api: {},
+	gateway: {},
+	voice: {},
+};
+
+export interface DefaultOptions extends Document {
 	api?: any;
 	gateway?: any;
 	voice?: any;
 }
 
-export const DefaultOptions: DefaultOptions = {
-	api: {},
-	gateway: {},
-	voice: {},
-};
+export const ConfigSchema = new Schema({
+	api: Object,
+	gateway: Object,
+	voice: Object,
+});
+
+export const ConfigModel = model<DefaultOptions>("Config", ConfigSchema, "config");

@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MessageType = void 0;
+exports.MessageModel = exports.MessageSchema = exports.MessageType = void 0;
+const mongoose_1 = require("mongoose");
+const Channel_1 = require("./Channel");
 var MessageType;
 (function (MessageType) {
     MessageType[MessageType["DEFAULT"] = 0] = "DEFAULT";
@@ -21,4 +23,99 @@ var MessageType;
     MessageType[MessageType["REPLY"] = 19] = "REPLY";
     MessageType[MessageType["APPLICATION_COMMAND"] = 20] = "APPLICATION_COMMAND";
 })(MessageType = exports.MessageType || (exports.MessageType = {}));
+const Attachment = {
+    id: mongoose_1.Types.Long,
+    filename: String,
+    size: Number,
+    url: String,
+    proxy_url: String,
+    height: Number,
+    width: Number,
+};
+const EmbedImage = {
+    url: String,
+    proxy_url: String,
+    height: Number,
+    width: Number,
+};
+const Reaction = {
+    count: Number,
+    emoji: {
+        id: mongoose_1.Types.Long,
+        name: String,
+        animated: Boolean,
+    },
+};
+const Embed = {
+    title: String,
+    type: String,
+    description: String,
+    url: String,
+    timestamp: Number,
+    color: Number,
+    footer: {
+        text: String,
+        icon_url: String,
+        proxy_icon_url: String,
+    },
+    image: EmbedImage,
+    thumbnail: EmbedImage,
+    video: EmbedImage,
+    provider: {
+        name: String,
+        url: String,
+    },
+    author: {
+        name: String,
+        url: String,
+        icon_url: String,
+        proxy_icon_url: String,
+    },
+    fields: [
+        {
+            name: String,
+            value: String,
+            inline: Boolean,
+        },
+    ],
+};
+exports.MessageSchema = new mongoose_1.Schema({
+    id: mongoose_1.Types.Long,
+    author_id: mongoose_1.Types.Long,
+    webhook_id: mongoose_1.Types.Long,
+    application_id: mongoose_1.Types.Long,
+    content: String,
+    timestamp: Number,
+    edited_timestamp: Number,
+    tts: Boolean,
+    mention_everyone: Boolean,
+    mentions: [mongoose_1.Types.Long],
+    mention_roles: [mongoose_1.Types.Long],
+    mention_channels: [
+        {
+            id: mongoose_1.Types.Long,
+            guild_id: mongoose_1.Types.Long,
+            type: Channel_1.ChannelType,
+            name: String,
+        },
+    ],
+    attachments: [Attachment],
+    embeds: [Embed],
+    reactions: [Reaction],
+    nonce: mongoose_1.Schema.Types.Mixed,
+    pinned: Boolean,
+    type: MessageType,
+    activity: {
+        type: Number,
+        party_id: String,
+    },
+    flags: mongoose_1.Types.Long,
+    stickers: [],
+    message_reference: {
+        message_id: mongoose_1.Types.Long,
+        channel_id: mongoose_1.Types.Long,
+        guild_id: mongoose_1.Types.Long,
+    },
+});
+exports.MessageModel = mongoose_1.model("Message", exports.MessageSchema, "messages");
 //# sourceMappingURL=Message.js.map
