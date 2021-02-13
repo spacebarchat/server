@@ -5,9 +5,9 @@ import db, { MongooseCache } from "./Database";
 var Config = new MongooseCache(db.collection("config"), [], { onlyEvents: false });
 
 export default {
-	init: async function init() {
+	init: async function init(defaultOpts: any = DefaultOptions) {
 		await Config.init();
-		return this.setAll(Config.data.merge(DefaultOptions));
+		return this.setAll(Config.data.merge(defaultOpts));
 	},
 	getAll: function get() {
 		return <DefaultOptions>Config.data;

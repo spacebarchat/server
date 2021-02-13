@@ -25,9 +25,9 @@ require("missing-native-js-functions");
 const Database_1 = __importStar(require("./Database"));
 var Config = new Database_1.MongooseCache(Database_1.default.collection("config"), [], { onlyEvents: false });
 exports.default = {
-    init: async function init() {
+    init: async function init(defaultOpts = exports.DefaultOptions) {
         await Config.init();
-        return this.setAll(Config.data.merge(exports.DefaultOptions));
+        return this.setAll(Config.data.merge(defaultOpts));
     },
     getAll: function get() {
         return Config.data;

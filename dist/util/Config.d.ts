@@ -2,7 +2,7 @@
 import { Schema, Document } from "mongoose";
 import "missing-native-js-functions";
 declare const _default: {
-    init: () => Promise<import("mongodb").UpdateWriteOpResult>;
+    init: (defaultOpts?: any) => Promise<import("mongodb").UpdateWriteOpResult>;
     getAll: () => DefaultOptions;
     setAll: (val: any) => Promise<import("mongodb").UpdateWriteOpResult>;
 };
