@@ -1,7 +1,7 @@
 import { PublicUser } from "./User";
 import { Schema, model, Types, Document } from "mongoose";
 
-export interface Member extends Document {
+export interface Member {
 	id: bigint;
 	guild_id: bigint;
 	nick?: string;
@@ -13,6 +13,10 @@ export interface Member extends Document {
 	pending: boolean;
 	permissions: bigint;
 	settings: UserGuildSettings;
+}
+
+export interface MemberDocument extends Member, Document {
+	id: bigint;
 }
 
 export interface UserGuildSettings {
@@ -71,7 +75,7 @@ export const MemberSchema = new Schema({
 	},
 });
 
-export const MemberModel = model<Member>("Member", MemberSchema, "members");
+export const MemberModel = model<MemberDocument>("Member", MemberSchema, "members");
 
 export interface PublicMember extends Omit<Member, "settings" | "id"> {
 	user: PublicUser;

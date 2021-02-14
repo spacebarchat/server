@@ -1,7 +1,7 @@
 /// <reference path="../util/MongoBigInt.d.ts" />
 import { PublicUser } from "./User";
 import { Schema, Document } from "mongoose";
-export interface Member extends Document {
+export interface Member {
     id: bigint;
     guild_id: bigint;
     nick?: string;
@@ -13,6 +13,9 @@ export interface Member extends Document {
     pending: boolean;
     permissions: bigint;
     settings: UserGuildSettings;
+}
+export interface MemberDocument extends Member, Document {
+    id: bigint;
 }
 export interface UserGuildSettings {
     channel_overrides: {
@@ -34,7 +37,7 @@ export interface MuteConfig {
     selected_time_window: number;
 }
 export declare const MemberSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
-export declare const MemberModel: import("mongoose").Model<Member>;
+export declare const MemberModel: import("mongoose").Model<MemberDocument>;
 export interface PublicMember extends Omit<Member, "settings" | "id"> {
     user: PublicUser;
 }

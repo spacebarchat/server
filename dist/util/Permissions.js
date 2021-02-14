@@ -18,7 +18,7 @@ class Permissions extends BitField_1.BitField {
         return (checkAdmin && super.has(Permissions.FLAGS.ADMINISTRATOR)) || super.has(permission);
     }
     static channelPermission(overwrites, init) {
-        // channelOverwrites.filter((x) => x.type === 1 && x.id !== user.id);
+        // TODO: do not deny any permissions if admin
         return overwrites.reduce((permission, overwrite) => {
             // apply disallowed permission
             // * permission: current calculated permission (e.g. 010)
