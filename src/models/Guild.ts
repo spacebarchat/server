@@ -1,6 +1,10 @@
 import { Schema, model, Types, Document } from "mongoose";
 
-export interface Guild extends Document {
+export interface GuildDocument extends Document, Guild {
+	id: bigint;
+}
+
+export interface Guild {
 	id: bigint;
 	afk_channel_id?: bigint;
 	afk_timeout?: number;
@@ -82,4 +86,4 @@ export const GuildSchema = new Schema({
 	widget_enabled: Boolean,
 });
 
-export const GuildModel = model<Guild>("Guild", GuildSchema, "guilds");
+export const GuildModel = model<GuildDocument>("Guild", GuildSchema, "guilds");

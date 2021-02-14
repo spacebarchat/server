@@ -12,7 +12,7 @@ import { VoiceState } from "./VoiceState";
 import { ApplicationCommand } from "./Application";
 import { Interaction } from "./Interaction";
 import { Schema, Document } from "mongoose";
-export interface Event extends Document {
+export interface Event {
     guild_id?: bigint;
     user_id?: bigint;
     channel_id?: bigint;
@@ -20,8 +20,10 @@ export interface Event extends Document {
     event: EVENT;
     data?: any;
 }
+export interface EventDocument extends Event, Document {
+}
 export declare const EventSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
-export declare const EventModel: import("mongoose").Model<Event>;
+export declare const EventModel: import("mongoose").Model<EventDocument>;
 export interface InvalidatedEvent extends Event {
     event: "INVALIDATED";
 }

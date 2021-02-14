@@ -1,6 +1,9 @@
 /// <reference path="../util/MongoBigInt.d.ts" />
 import { Schema, Document } from "mongoose";
-export interface Guild extends Document {
+export interface GuildDocument extends Document, Guild {
+    id: bigint;
+}
+export interface Guild {
     id: bigint;
     afk_channel_id?: bigint;
     afk_timeout?: number;
@@ -39,4 +42,4 @@ export interface Guild extends Document {
     widget_enabled?: boolean;
 }
 export declare const GuildSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
-export declare const GuildModel: import("mongoose").Model<Guild>;
+export declare const GuildModel: import("mongoose").Model<GuildDocument>;

@@ -1,6 +1,8 @@
 import { Schema, model, Types, Document } from "mongoose";
 
-export interface ChannelDocument extends Channel, DMChannel, TextChannel, VoiceChannel, Document {
+export interface AnyChannel extends Channel, DMChannel, TextChannel, VoiceChannel {}
+
+export interface ChannelDocument extends Document, AnyChannel {
 	id: bigint;
 }
 

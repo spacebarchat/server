@@ -12,7 +12,7 @@ import { ApplicationCommand } from "./Application";
 import { Interaction } from "./Interaction";
 import { Schema, model, Types, Document } from "mongoose";
 
-export interface Event extends Document {
+export interface Event {
 	guild_id?: bigint;
 	user_id?: bigint;
 	channel_id?: bigint;
@@ -20,6 +20,8 @@ export interface Event extends Document {
 	event: EVENT;
 	data?: any;
 }
+
+export interface EventDocument extends Event, Document {}
 
 export const EventSchema = new Schema({
 	guild_id: Types.Long,
@@ -30,7 +32,7 @@ export const EventSchema = new Schema({
 	data: Object,
 });
 
-export const EventModel = model<Event>("Event", EventSchema, "events");
+export const EventModel = model<EventDocument>("Event", EventSchema, "events");
 
 // ! Custom Events that shouldn't get sent to the client but processed by the server
 

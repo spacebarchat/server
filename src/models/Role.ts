@@ -1,6 +1,6 @@
 import { Schema, model, Types, Document } from "mongoose";
 
-export interface Role extends Document {
+export interface Role {
 	id: bigint;
 	guild_id: bigint;
 	color: number;
@@ -13,6 +13,10 @@ export interface Role extends Document {
 	tags?: {
 		bot_id?: bigint;
 	};
+}
+
+export interface RoleDocument extends Document, Role {
+	id: bigint;
 }
 
 export const RoleSchema = new Schema({
@@ -30,4 +34,4 @@ export const RoleSchema = new Schema({
 	},
 });
 
-export const RoleModel = model<Role>("Role", RoleSchema, "roles");
+export const RoleModel = model<RoleDocument>("Role", RoleSchema, "roles");
