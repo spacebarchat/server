@@ -6,6 +6,8 @@ import { db } from "fosscord-server-util";
 // TODO: increment count on serverside
 
 export async function GlobalRateLimit(req: Request, res: Response, next: NextFunction) {
+	return next();
+	// TODO: use new db mongoose models
 	if (!Config.get().limits.rate.ip.enabled) return next();
 
 	const ip = getIpAdress(req);

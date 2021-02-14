@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { check, FieldErrors, Length } from "../../../../util/instanceOf";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { db, User } from "fosscord-server-util";
+import { User, UserModel } from "fosscord-server-util";
 import Config from "../../../../util/Config";
 import { adjustEmail } from "./register";
 
@@ -23,10 +23,12 @@ router.post(
 		const { login, password } = req.body;
 
 		// * MongoDB Specific query for user with same email or phone number
-		const userquery = { $or: [{ email: adjustEmail(login) }, { phone: login }] };
-		const user: User = await db.data
-			.users(userquery)
-			.get({ hash: true, id: true, user_settings: { locale: true, theme: true } });
+		const user = await UserModel.findOne(
+			{
+				$or: [{ email: adjustEmail(login) }, { phone: login }],
+			},
+			`hash id user_settings.locale user_settings.theme`
+		).exec();
 
 		if (!user) {
 			throw FieldErrors({

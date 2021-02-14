@@ -1,20 +1,28 @@
-import mongoose from "mongoose";
-import { Long } from "mongodb";
-import { Snowflake } from "fosscord-server-util";
+import mongoose, { Schema, Types } from "mongoose";
+import { Long as MongoTypeLong } from "mongodb";
+require("mongoose-long")(mongoose);
+
+const partSchema = new Schema({
+	long: {
+		type: mongoose.Types.Long,
+	},
+});
+
+const Part = mongoose.model("Part", partSchema, "test");
 
 async function main() {
-	const conn = await mongoose.createConnection(
-		"mongodb://localhost:27017/lambert?readPreference=secondaryPreferred",
-		{
-			useNewUrlParser: true,
-			useUnifiedTopology: false,
-		}
-	);
+	const conn = await mongoose.connect("mongodb://localhost:27017/lambert?readPreference=secondaryPreferred", {
+		useNewUrlParser: true,
+		useUnifiedTopology: false,
+	});
 	console.log("connected");
-	const result = await conn.collection("users").insertOne({ test: Long.fromString(Snowflake.generate().toString()) });
-	// .project(undefined)
 
-	console.log(result);
+	const part = new Part({ long: 390810485244821505n });
+
+	// await part.save();
+	console.log("saved");
+	const test = await Part.find({});
+	console.log(test);
 }
 
 main();

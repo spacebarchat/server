@@ -32,6 +32,8 @@
 		"lambert-db": "^1.1.8",
 		"lambert-server": "^1.0.10",
 		"missing-native-js-functions": "^1.2.2",
+		"mongodb": "^3.6.4",
+		"mongoose-long": "^0.3.2",
 		"node-fetch": "^2.6.1"
 	},
 	"devDependencies": {

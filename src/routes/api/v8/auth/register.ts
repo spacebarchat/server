@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import Config from "../../../../util/Config";
-import { db, trimSpecial, User, Snowflake } from "fosscord-server-util";
+import { trimSpecial, User, Snowflake, UserModel } from "fosscord-server-util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../../../util/instanceOf";
 import "missing-native-js-functions";
@@ -80,7 +80,8 @@ router.post(
 			adjusted_email = adjustEmail(email);
 
 			// check if there is already an account with this email
-			const exists = await db.data.users({ email: adjusted_email }).get();
+			const exists = await UserModel.findOne({ email: adjusted_email }).exec();
+
 			if (exists) {
 				throw FieldErrors({
 					email: {
@@ -116,7 +117,8 @@ router.post(
 
 		if (!register.allowMultipleAccounts) {
 			// TODO: check if fingerprint was eligible generated
-			const exists = await db.data.users({ fingerprint }).get();
+			const exists = await UserModel.findOne({ fingerprints: fingerprint }).exec();
+
 			if (exists) {
 				throw FieldErrors({
 					email: {
@@ -150,7 +152,7 @@ router.post(
 		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the mongodb database?
 		for (let tries = 0; tries < 5; tries++) {
 			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
-			exists = await db.data.users({ discriminator, username: adjusted_username }).get({ id: true });
+			exists = await UserModel.findOne({ discriminator, username: adjusted_username }, "id").exec();
 			if (!exists) break;
 		}
 
@@ -164,6 +166,8 @@ router.post(
 		}
 
 		// constructing final user object
+		// TODO fix:
+		// @ts-ignore
 		const user: User = {
 			id: Snowflake.generate(),
 			created_at: Date.now(),
@@ -220,7 +224,7 @@ router.post(
 		};
 
 		// insert user into database
-		await db.data.users.push(user);
+		await new UserModel(user).save({});
 
 		return res.json({ token: await generateToken(user.id) });
 	}

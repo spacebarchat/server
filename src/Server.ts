@@ -1,5 +1,6 @@
 import "missing-native-js-functions";
 import fs from "fs/promises";
+import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, GlobalRateLimit } from "./middlewares/";
 import Config from "./util/Config";
@@ -29,8 +30,20 @@ export class DiscordServer extends Server {
 		super({ ...opts, errorHandler: false, jsonBody: false });
 	}
 
+	async setupSchema() {
+		await db.collection("users").createIndex({ id: 1 }, { unique: true });
+		await db.collection("messages").createIndex({ id: 1 }, { unique: true });
+		await db.collection("channels").createIndex({ id: 1 }, { unique: true });
+		await db.collection("guilds").createIndex({ id: 1 }, { unique: true });
+		await db.collection("members").createIndex({ id: 1 }, { unique: true });
+		await db.collection("roles").createIndex({ id: 1 }, { unique: true });
+		await db.collection("emojis").createIndex({ id: 1 }, { unique: true });
+	}
+
 	async start() {
-		await db.init();
+		// @ts-ignore
+		await (db as Promise<Connection>);
+		await this.setupSchema();
 		console.log("[DB] connected");
 		await Promise.all([Config.init()]);
 
