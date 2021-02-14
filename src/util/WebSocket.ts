@@ -1,3 +1,4 @@
+import { Intents } from "fosscord-server-util";
 import WS, { Server, Data } from "ws";
 
 interface WebSocket extends WS {
@@ -7,6 +8,7 @@ interface WebSocket extends WS {
 	compress?: "zlib-stream";
 	heartbeatTimeout: NodeJS.Timeout;
 	readyTimeout: NodeJS.Timeout;
+	intents: Intents;
 }
 
 export default WebSocket;

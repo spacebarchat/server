@@ -1,9 +1,10 @@
 import { CLOSECODES, Payload } from "../util/Constants";
 import WebSocket from "../util/WebSocket";
-import { checkToken } from "fosscord-server-util";
+import { checkToken, Intents } from "fosscord-server-util";
 import { setupListener } from "../listener/listener";
 import { instanceOf } from "lambert-server";
 import { IdentifySchema } from "../schema/Identify";
+// TODO: check priviliged intents
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	try {
@@ -14,6 +15,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 		var decoded = await checkToken(identify.token);
 		this.userid = decoded.id;
+		this.intents = new Intents(identify.intents);
 
 		await setupListener.call(this);
 	} catch (error) {
