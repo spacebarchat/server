@@ -26,6 +26,7 @@ export interface Guild {
 	// roles: Role[]; // * Role are stored in a seperate collection
 	// channels: GuildChannel[]; // * Channels are stored in a seperate collection
 	// emojis: Emoji[];  // * Emojis are stored in a seperate collection
+	// voice_states: []; // * voice_states are stored in a seperate collection
 	mfa_level?: number;
 	name: string;
 	owner_id: bigint;
@@ -41,7 +42,6 @@ export interface Guild {
 	unavailable?: boolean;
 	vanity_url_code?: string;
 	verification_level?: number;
-	voice_states: []; // connected users
 	welcome_screen: []; // welcome splash screen if a user joins guild
 	widget_channel_id?: bigint;
 	widget_enabled?: boolean;

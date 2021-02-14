@@ -36,7 +36,6 @@ export interface Guild {
     unavailable?: boolean;
     vanity_url_code?: string;
     verification_level?: number;
-    voice_states: [];
     welcome_screen: [];
     widget_channel_id?: bigint;
     widget_enabled?: boolean;
