@@ -12,11 +12,12 @@ export class Server {
 
 	async setupSchema() {
 		// TODO: adjust expireAfterSeconds -> lower
-		await db.conn.db.collection("events").createIndex({ created_at: 1 }, { expireAfterSeconds: 60 });
+		await db.collection("events").createIndex({ created_at: 1 }, { expireAfterSeconds: 60 });
 	}
 
 	async listen(): Promise<void> {
-		await db.init();
+		// @ts-ignore
+		await (db as Promise<Connection>);
 		await this.setupSchema();
 		await Config.init();
 		console.log("listening");
