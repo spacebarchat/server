@@ -9,6 +9,9 @@ import {
 	UserModel,
 	Snowflake,
 	getPermission,
+	Guild,
+	Member,
+	PublicMember,
 } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../../../util/instanceOf";
@@ -50,7 +53,10 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 
 	// // TODO: check if user is in more than (config max guilds)
 	const { maxGuilds } = Config.get().limits.user;
-	const user = await UserModel.findOne({ id: req.userid }, "guilds").exec();
+	const user = await UserModel.findOne(
+		{ id: req.userid },
+		"guilds username discriminator id public_flags avatar"
+	).exec();
 
 	if (!user) throw new HTTPError("User not found", 404);
 
@@ -59,11 +65,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	}
 
 	const guildID = Snowflake.generate();
-	const guild: any = {
-		// TODO:
-		// ! temp fix [Type: any] for:
-		// ! Conversion of type '{ event: "GUILD_CREATE"; data: { guild_id: bigint; name: string; region: string; owner_id: any; icon: undefined; afk_channel_id: undefined; afk_timeout: number; application_id: undefined; banner: undefined; ... 27 more ...; widget_enabled: boolean; }; guild_id: bigint; }' to type 'GuildCreateEvent' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.Type '{ event: "GUILD_CREATE"; data: { guild_id: bigint; name: string; region: string; owner_id: any; icon: undefined; afk_channel_id: undefined; afk_timeout: number; application_id: undefined; banner: undefined; ... 27 more ...; widget_enabled: boolean; }; guild_id: bigint; }' is missing the following properties from type 'GuildCreateEvent': $ignore, $isDefault, $isDeleted, $isEmpty, and 44 more.ts(2352)
-
+	const guild: Guild = {
 		name: body.name,
 		region: body.region || "en-US",
 		owner_id: req.userid,
@@ -96,7 +98,6 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		unavailable: false,
 		vanity_url_code: undefined,
 		verification_level: undefined,
-		voice_states: [],
 		welcome_screen: [],
 		widget_channel_id: undefined,
 		widget_enabled: false,
@@ -119,22 +120,19 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		}).save();
 
 		// // TODO: automatically add user to guild
-		const member: any = {
-			// TODO:
-			// ! temp fix [Type: any] for:
-			// ! Conversion of type '{ event: "GUILD_MEMBER_ADD"; data: { guild_id: bigint; id: any; nick: null; roles: bigint[]; joined_at: number; premium_since: null; deaf: boolean; mute: boolean; pending: boolean; permissions: number; }; guild_id: bigint; }' to type 'GuildMemberAddEvent' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.Type '{ event: "GUILD_MEMBER_ADD"; data: { guild_id: bigint; id: any; nick: null; roles: bigint[]; joined_at: number; premium_since: null; deaf: boolean; mute: boolean; pending: boolean; permissions: number; }; guild_id: bigint; }' is missing the following properties from type 'GuildMemberAddEvent': $ignore, $isDefault, $isDeleted, $isEmpty, and 44 more.ts(2352)
-
+		const member = {
 			id: req.userid,
 			guild_id: guildID,
-			nick: null,
+			nick: undefined,
 			roles: [guildID],
 			joined_at: Date.now(),
-			premium_since: null,
+			premium_since: undefined,
 			deaf: false,
 			mute: false,
 			pending: false,
-			permissions: 8,
+			permissions: 8n,
 		};
+
 		await new MemberModel({
 			...member,
 			settings: {
@@ -154,16 +152,21 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			event: "GUILD_MEMBER_ADD",
 			data: {
 				...member,
+				user: {
+					username: user.username,
+					discriminator: user.discriminator,
+					id: user.id,
+					publicFlags: user.public_flags,
+					avatar: user.avatar,
+				},
 				guild_id: guildID,
 			},
 			guild_id: guildID,
 		} as GuildMemberAddEvent);
+
 		await emitEvent({
 			event: "GUILD_CREATE",
-			data: {
-				...guild,
-				guild_id: guildID,
-			},
+			data: guild,
 			guild_id: guildID,
 		} as GuildCreateEvent);
 	} catch (error) {
@@ -197,5 +200,3 @@ router.delete("/:id", async (req: Request, res: Response) => {
 });
 
 export default router;
-
-export async function addMember(guild: bigint, user: bigint) {}
