@@ -156,5 +156,5 @@ export async function getPermission(user_id: bigint, guild_id: bigint, channel_i
 		},
 	});
 
-	return permission;
+	return new Permissions(permission);
 }

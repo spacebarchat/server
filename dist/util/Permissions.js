@@ -105,7 +105,7 @@ async function getPermission(user_id, guild_id, channel_id) {
             overwrites: channel?.permission_overwrites,
         },
     });
-    return permission;
+    return new Permissions(permission);
 }
 exports.getPermission = getPermission;
 //# sourceMappingURL=Permissions.js.map
