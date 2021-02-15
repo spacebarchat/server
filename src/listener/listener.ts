@@ -27,7 +27,7 @@ export async function dispatch(this: WebSocket, document: Event) {
 	if (document.guild_id) {
 		if (!this.intents.has("GUILDS")) return;
 		const channel_id = document.channel_id || document.data?.channel_id;
-		permission = new Permissions(await getPermission(this.userid, document.guild_id, channel_id));
+		permission = await getPermission(this.userid, document.guild_id, channel_id);
 	}
 
 	console.log("event", document);
