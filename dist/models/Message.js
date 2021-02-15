@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageModel = exports.MessageSchema = exports.MessageType = void 0;
 const mongoose_1 = require("mongoose");
-const Channel_1 = require("./Channel");
 var MessageType;
 (function (MessageType) {
     MessageType[MessageType["DEFAULT"] = 0] = "DEFAULT";
@@ -96,7 +95,7 @@ exports.MessageSchema = new mongoose_1.Schema({
         {
             id: mongoose_1.Types.Long,
             guild_id: mongoose_1.Types.Long,
-            type: Channel_1.ChannelType,
+            type: Number,
             name: String,
         },
     ],
