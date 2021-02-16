@@ -12,6 +12,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"dotenv": "^8.2.0",
 		"erlpack": "^0.1.3",
 		"fosscord-server-util": "github:fosscord/fosscord-server-util",
 		"jsonwebtoken": "^8.5.1",
