@@ -11,6 +11,7 @@ import { VoiceState } from "./VoiceState";
 import { ApplicationCommand } from "./Application";
 import { Interaction } from "./Interaction";
 import { Schema, model, Types, Document } from "mongoose";
+import db from "../util/Database";
 
 export interface Event {
 	guild_id?: bigint;
@@ -32,7 +33,8 @@ export const EventSchema = new Schema({
 	data: Object,
 });
 
-export const EventModel = model<EventDocument>("Event", EventSchema, "events");
+// @ts-ignore
+export const EventModel = db.model<EventDocument>("Event", EventSchema, "events");
 
 // ! Custom Events that shouldn't get sent to the client but processed by the server
 

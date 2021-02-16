@@ -1,6 +1,7 @@
 import { Activity } from "./Activity";
 import { ClientStatus, Status } from "./Status";
 import { Schema, model, Types, Document } from "mongoose";
+import db from "../util/Database";
 
 export interface User extends Document {
 	id: bigint;
@@ -202,4 +203,5 @@ export const UserSchema = new Schema({
 	},
 });
 
-export const UserModel = model<User>("User", UserSchema, "users");
+// @ts-ignore
+export const UserModel = db.model<User>("User", UserSchema, "users");

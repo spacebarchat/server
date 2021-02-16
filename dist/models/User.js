@@ -1,9 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModel = exports.UserSchema = void 0;
 const Activity_1 = require("./Activity");
 const Status_1 = require("./Status");
 const mongoose_1 = require("mongoose");
+const Database_1 = __importDefault(require("../util/Database"));
 exports.UserSchema = new mongoose_1.Schema({
     id: mongoose_1.Types.Long,
     username: String,
@@ -99,5 +103,6 @@ exports.UserSchema = new mongoose_1.Schema({
         client_status: Status_1.ClientStatus,
     },
 });
-exports.UserModel = mongoose_1.model("User", exports.UserSchema, "users");
+// @ts-ignore
+exports.UserModel = Database_1.default.model("User", exports.UserSchema, "users");
 //# sourceMappingURL=User.js.map

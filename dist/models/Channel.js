@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelType = exports.ChannelPermissionOverwriteType = exports.ChannelModel = exports.ChannelSchema = void 0;
 const mongoose_1 = require("mongoose");
+const Database_1 = __importDefault(require("../util/Database"));
 exports.ChannelSchema = new mongoose_1.Schema({
     id: mongoose_1.Types.Long,
     created_at: { type: mongoose_1.Schema.Types.Date, required: true },
@@ -26,7 +30,8 @@ exports.ChannelSchema = new mongoose_1.Schema({
         },
     ],
 });
-exports.ChannelModel = mongoose_1.model("Channel", exports.ChannelSchema, "channels");
+// @ts-ignore
+exports.ChannelModel = Database_1.default.model("Channel", exports.ChannelSchema, "channels");
 var ChannelPermissionOverwriteType;
 (function (ChannelPermissionOverwriteType) {
     ChannelPermissionOverwriteType[ChannelPermissionOverwriteType["role"] = 0] = "role";

@@ -1,4 +1,5 @@
 import { Schema, model, Types, Document } from "mongoose";
+import db from "../util/Database";
 
 export interface Emoji extends Document {
 	id: bigint;
@@ -24,4 +25,5 @@ export const EmojiSchema = new Schema({
 	roles: [Types.Long],
 });
 
-export const EmojiModel = model<Emoji>("Emoji", EmojiSchema, "emojis");
+// @ts-ignore
+export const EmojiModel = db.model<Emoji>("Emoji", EmojiSchema, "emojis");

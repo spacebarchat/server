@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MemberModel = exports.MemberSchema = void 0;
 const mongoose_1 = require("mongoose");
+const Database_1 = __importDefault(require("../util/Database"));
 const MuteConfig = {
     end_time: Number,
     selected_time_window: Number,
@@ -35,5 +39,6 @@ exports.MemberSchema = new mongoose_1.Schema({
         version: Number,
     },
 });
-exports.MemberModel = mongoose_1.model("Member", exports.MemberSchema, "members");
+// @ts-ignore
+exports.MemberModel = Database_1.default.model("Member", exports.MemberSchema, "members");
 //# sourceMappingURL=Member.js.map

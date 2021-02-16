@@ -1,4 +1,5 @@
 import { Schema, model, Types, Document } from "mongoose";
+import db from "../util/Database";
 
 export interface Role {
 	id: bigint;
@@ -34,4 +35,5 @@ export const RoleSchema = new Schema({
 	},
 });
 
-export const RoleModel = model<RoleDocument>("Role", RoleSchema, "roles");
+// @ts-ignore
+export const RoleModel = db.model<RoleDocument>("Role", RoleSchema, "roles");

@@ -1,4 +1,5 @@
 import { Schema, model, Types, Document } from "mongoose";
+import db from "../util/Database";
 
 export interface AnyChannel extends Channel, DMChannel, TextChannel, VoiceChannel {}
 
@@ -31,7 +32,8 @@ export const ChannelSchema = new Schema({
 	],
 });
 
-export const ChannelModel = model<ChannelDocument>("Channel", ChannelSchema, "channels");
+// @ts-ignore
+export const ChannelModel = db.model<ChannelDocument>("Channel", ChannelSchema, "channels");
 
 export interface Channel {
 	id: bigint;

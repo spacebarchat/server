@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageModel = exports.MessageSchema = exports.MessageType = void 0;
 const mongoose_1 = require("mongoose");
+const Database_1 = __importDefault(require("../util/Database"));
 var MessageType;
 (function (MessageType) {
     MessageType[MessageType["DEFAULT"] = 0] = "DEFAULT";
@@ -117,5 +121,6 @@ exports.MessageSchema = new mongoose_1.Schema({
         guild_id: mongoose_1.Types.Long,
     },
 });
-exports.MessageModel = mongoose_1.model("Message", exports.MessageSchema, "messages");
+// @ts-ignore
+exports.MessageModel = Database_1.default.model("Message", exports.MessageSchema, "messages");
 //# sourceMappingURL=Message.js.map

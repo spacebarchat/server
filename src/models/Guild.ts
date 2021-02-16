@@ -1,4 +1,5 @@
 import { Schema, model, Types, Document } from "mongoose";
+import db from "../util/Database";
 
 export interface GuildDocument extends Document, Guild {
 	id: bigint;
@@ -86,4 +87,5 @@ export const GuildSchema = new Schema({
 	widget_enabled: Boolean,
 });
 
-export const GuildModel = model<GuildDocument>("Guild", GuildSchema, "guilds");
+// @ts-ignore
+export const GuildModel = db.model<GuildDocument>("Guild", GuildSchema, "guilds");

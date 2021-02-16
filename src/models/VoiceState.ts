@@ -1,5 +1,6 @@
 import { PublicMember } from "./Member";
 import { Schema, model, Types, Document } from "mongoose";
+import db from "../util/Database";
 
 export interface VoiceState extends Document {
 	guild_id?: bigint;
@@ -29,4 +30,5 @@ export const VoiceSateSchema = new Schema({
 	suppress: Boolean, // whether this user is muted by the current user
 });
 
-export const VoiceStateModel = model<VoiceState>("VoiceState", VoiceSateSchema, "voicestates");
+// @ts-ignore
+export const VoiceStateModel = db.model<VoiceState>("VoiceState", VoiceSateSchema, "voicestates");

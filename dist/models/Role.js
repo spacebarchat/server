@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoleModel = exports.RoleSchema = void 0;
 const mongoose_1 = require("mongoose");
+const Database_1 = __importDefault(require("../util/Database"));
 exports.RoleSchema = new mongoose_1.Schema({
     id: mongoose_1.Types.Long,
     guild_id: mongoose_1.Types.Long,
@@ -16,5 +20,6 @@ exports.RoleSchema = new mongoose_1.Schema({
         bot_id: mongoose_1.Types.Long,
     },
 });
-exports.RoleModel = mongoose_1.model("Role", exports.RoleSchema, "roles");
+// @ts-ignore
+exports.RoleModel = Database_1.default.model("Role", exports.RoleSchema, "roles");
 //# sourceMappingURL=Role.js.map

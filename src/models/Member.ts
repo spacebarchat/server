@@ -1,5 +1,6 @@
 import { PublicUser } from "./User";
 import { Schema, model, Types, Document } from "mongoose";
+import db from "../util/Database";
 
 export interface Member {
 	id: bigint;
@@ -75,7 +76,8 @@ export const MemberSchema = new Schema({
 	},
 });
 
-export const MemberModel = model<MemberDocument>("Member", MemberSchema, "members");
+// @ts-ignore
+export const MemberModel = db.model<MemberDocument>("Member", MemberSchema, "members");
 
 export interface PublicMember extends Omit<Member, "settings" | "id"> {
 	user: PublicUser;

@@ -8,7 +8,9 @@ require("./MongoBigInt");
 const mongoose_1 = __importDefault(require("mongoose"));
 const mongodb_1 = require("mongodb");
 const events_1 = __importDefault(require("events"));
-exports.default = mongoose_1.default.connection;
+const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPreference=secondaryPreferred";
+const connection = mongoose_1.default.createConnection(uri, { autoIndex: true });
+exports.default = connection;
 class MongooseCache extends events_1.default {
     constructor(collection, pipeline, opts) {
         super();

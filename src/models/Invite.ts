@@ -1,4 +1,5 @@
 import { Schema, model, Types, Document } from "mongoose";
+import db from "../util/Database";
 
 export interface Invite extends Document {
 	code: string;
@@ -73,4 +74,5 @@ export const InviteSchema = new Schema({
 	target_user_type: Number,
 });
 
-export const InviteModel = model<Invite>("Invite", InviteSchema, "invites");
+// @ts-ignore
+export const InviteModel = db.model<Invite>("Invite", InviteSchema, "invites");

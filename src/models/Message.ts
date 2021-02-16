@@ -1,5 +1,6 @@
 import { Schema, model, Types, Document } from "mongoose";
 import { ChannelType } from "./Channel";
+import db from "../util/Database";
 
 export interface Message extends Document {
 	id: bigint;
@@ -227,4 +228,5 @@ export const MessageSchema = new Schema({
 	},
 });
 
-export const MessageModel = model<Message>("Message", MessageSchema, "messages");
+// @ts-ignore
+export const MessageModel = db.model<Message>("Message", MessageSchema, "messages");
