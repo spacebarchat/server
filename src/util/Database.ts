@@ -1,12 +1,9 @@
 import "./MongoBigInt";
-import mongoose, { Collection, Connection } from "mongoose";
+import mongoose, { Collection } from "mongoose";
 import { ChangeStream, ChangeEvent, Long } from "mongodb";
 import EventEmitter from "events";
-const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPreference=secondaryPreferred";
 
-const connection = mongoose.createConnection(uri, { autoIndex: true });
-
-export default <Connection>connection;
+export default mongoose.connection;
 
 export interface MongooseCache {
 	on(event: "delete", listener: (id: string) => void): this;
