@@ -10,6 +10,7 @@ import i18nextMiddleware, { I18next } from "i18next-http-middleware";
 import i18nextBackend from "i18next-node-fs-backend";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
+import mongoose from "mongoose";
 
 export interface DiscordServerOptions extends ServerOptions {}
 
@@ -42,7 +43,7 @@ export class DiscordServer extends Server {
 
 	async start() {
 		// @ts-ignore
-		await (db as Promise<Connection>);
+		await mongoose.connect(process.env.MONGO_URL);
 		await this.setupSchema();
 		console.log("[DB] connected");
 		await Promise.all([Config.init()]);
