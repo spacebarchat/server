@@ -213,7 +213,7 @@ export const MessageSchema = new Schema({
 	reactions: [Reaction],
 	nonce: Schema.Types.Mixed, // can be a long or a string
 	pinned: Boolean,
-	type: Number,
+	type: { type: Number },
 	activity: {
 		type: Number,
 		party_id: String,

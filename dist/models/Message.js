@@ -104,7 +104,7 @@ exports.MessageSchema = new mongoose_1.Schema({
     reactions: [Reaction],
     nonce: mongoose_1.Schema.Types.Mixed,
     pinned: Boolean,
-    type: Number,
+    type: { type: Number },
     activity: {
         type: Number,
         party_id: String,
