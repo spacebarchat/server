@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "npm run build && node dist/",
-		"build": "tsc -b ."
+		"build": "tsc -b .",
+		"postinstall": "patch-package"
 	},
 	"repository": {
 		"type": "git",
@@ -35,7 +36,8 @@
 		"missing-native-js-functions": "^1.2.4",
 		"mongodb": "^3.6.4",
 		"mongoose-long": "^0.3.2",
-		"node-fetch": "^2.6.1"
+		"node-fetch": "^2.6.1",
+		"patch-package": "^6.2.2"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^3.0.0",
