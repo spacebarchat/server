@@ -13,7 +13,7 @@ export default {
 		return <DefaultOptions>Config.data;
 	},
 	setAll: function set(val: any) {
-		return db.collection("config").updateOne({}, { $set: val });
+		return db.collection("config").updateOne({}, { $set: val }, { upsert: true });
 	},
 };
 

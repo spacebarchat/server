@@ -33,7 +33,7 @@ exports.default = {
         return Config.data;
     },
     setAll: function set(val) {
-        return Database_1.default.collection("config").updateOne({}, { $set: val });
+        return Database_1.default.collection("config").updateOne({}, { $set: val }, { upsert: true });
     },
 };
 exports.DefaultOptions = {
