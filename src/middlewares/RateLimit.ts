@@ -7,6 +7,7 @@ export function RateLimit({ count = 10, timespan = 1000 * 5, name = "/" }) {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		return next();
 		// TODO: use new db mongoose models
+		/*
 
 		let id = req.userid || getIpAdress(req);
 
@@ -40,5 +41,6 @@ export function RateLimit({ count = 10, timespan = 1000 * 5, name = "/" }) {
 		}
 
 		return next();
+		*/
 	};
 }
