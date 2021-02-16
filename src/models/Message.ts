@@ -204,7 +204,7 @@ export const MessageSchema = new Schema({
 		{
 			id: Types.Long,
 			guild_id: Types.Long,
-			type: Number,
+			type: { type: Number },
 			name: String,
 		},
 	],

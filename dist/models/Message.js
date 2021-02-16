@@ -95,7 +95,7 @@ exports.MessageSchema = new mongoose_1.Schema({
         {
             id: mongoose_1.Types.Long,
             guild_id: mongoose_1.Types.Long,
-            type: Number,
+            type: { type: Number },
             name: String,
         },
     ],
