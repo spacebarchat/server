@@ -29,7 +29,6 @@ exports.UserSchema = new mongoose_1.Schema({
     flags: mongoose_1.Types.Long,
     public_flags: mongoose_1.Types.Long,
     hash: String,
-    guilds: [mongoose_1.Types.Long],
     valid_tokens_since: Number,
     user_settings: {
         afk_timeout: Number,
