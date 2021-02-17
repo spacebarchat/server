@@ -86,7 +86,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		max_presences: 250000,
 		max_video_channel_users: 25,
 		presence_count: 0,
-		member_count: 0,
+		member_count: 1, // TODO: if a addMemberToGuild() function will be used in the future, set this to 0 and automatically increment this number
 		mfa_level: 0,
 		preferred_locale: "en-US",
 		premium_subscription_count: 0,
@@ -146,6 +146,12 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 				version: 0,
 			},
 		}).save();
+
+		// TODO: I don't know why the bigint needs to be converted to a string in order to save the model.
+		// But the weird thing is, that it gets saved as a Long/bigint in the database
+		// @ts-ignore
+		user.guilds.push(guildID.toString());
+		await user.save();
 
 		// // TODO: emit Event
 		await emitEvent({

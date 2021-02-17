@@ -35,7 +35,7 @@ export class DiscordServer extends Server {
 		await db.collection("messages").createIndex({ id: 1 }, { unique: true });
 		await db.collection("channels").createIndex({ id: 1 }, { unique: true });
 		await db.collection("guilds").createIndex({ id: 1 }, { unique: true });
-		await db.collection("members").createIndex({ id: 1 }, { unique: true });
+		await db.collection("members").createIndex({ id: 1, guild_id: 1 }, { unique: true });
 		await db.collection("roles").createIndex({ id: 1 }, { unique: true });
 		await db.collection("emojis").createIndex({ id: 1 }, { unique: true });
 	}
