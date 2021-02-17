@@ -169,10 +169,11 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			data: guild,
 			guild_id: guildID,
 		} as GuildCreateEvent);
+
+		res.status(201).json({ id: guild.id });
 	} catch (error) {
 		throw new HTTPError("Couldnt create Guild", 500);
 	}
-	res.status(201).json({ id: guild.id });
 });
 
 router.delete("/:id", async (req: Request, res: Response) => {

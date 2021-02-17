@@ -18,8 +18,13 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 	// TODO: check if user is banned/token expired
 
-	const decoded: any = await checkToken(req.headers.authorization);
+	try {
+		const decoded: any = await checkToken(req.headers.authorization);
 
-	req.token = decoded;
-	req.userid = decoded.id;
+		req.token = decoded;
+		req.userid = decoded.id;
+		return next();
+	} catch (error) {
+		return next(error);
+	}
 }
