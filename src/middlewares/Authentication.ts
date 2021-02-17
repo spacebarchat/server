@@ -25,6 +25,6 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 		req.userid = decoded.id;
 		return next();
 	} catch (error) {
-		return next(error);
+		return next(new HTTPError(error.toString(), 400));
 	}
 }
