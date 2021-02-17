@@ -22,7 +22,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 		const decoded: any = await checkToken(req.headers.authorization);
 
 		req.token = decoded;
-		req.userid = decoded.id;
+		req.userid = BigInt(decoded.id);
 		return next();
 	} catch (error) {
 		return next(new HTTPError(error.toString(), 400));
