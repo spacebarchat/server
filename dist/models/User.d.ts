@@ -23,6 +23,7 @@ export interface User extends Document {
     flags: bigint;
     public_flags: bigint;
     hash: string;
+    guilds: bigint[];
     valid_tokens_since: number;
     user_settings: UserSettings;
     relationships: Relationship[];
