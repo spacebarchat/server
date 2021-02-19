@@ -10,8 +10,6 @@ import {
 	Snowflake,
 	getPermission,
 	Guild,
-	Member,
-	PublicMember,
 } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../../../util/instanceOf";
@@ -37,7 +35,6 @@ router.patch("/:id", check(GuildUpdateSchema), async (req: Request, res: Respons
 	const body = req.body as GuildUpdateSchema;
 	const guild_id = BigInt(req.params.id);
 
-	// // TODO: check permission of member
 	const perms = await getPermission(req.userid, guild_id);
 	if (!perms.has("MANAGE_GUILD")) throw new HTTPError("User is missing the 'MANAGE_GUILD' permission", 401);
 
@@ -47,12 +44,13 @@ router.patch("/:id", check(GuildUpdateSchema), async (req: Request, res: Respons
 	return res.status(204);
 });
 
-// // TODO: finish POST route
 router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) => {
 	const body = req.body as GuildCreateSchema;
 
-	// // TODO: check if user is in more than (config max guilds)
-	const { maxGuilds } = Config.get().limits.user;
+	// TODO: allow organization admins to bypass this
+	// TODO: comprehensive organization wide permission management
+	if (!Config.get().permissions.user.createGuilds) throw new HTTPError("You are not allowed to create guilds", 401);
+
 	const user = await UserModel.findOne(
 		{ id: req.userid },
 		"guilds username discriminator id public_flags avatar"
@@ -60,7 +58,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 
 	if (!user) throw new HTTPError("User not found", 404);
 
-	if (user.guilds.length >= maxGuilds) {
+	if (user.guilds.length >= Config.get().limits.user.maxGuilds) {
 		throw new HTTPError("User is already in 100 guilds", 403);
 	}
 
@@ -105,7 +103,6 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 
 	try {
 		await new GuildModel(guild).save();
-		// // TODO: insert default everyone role
 		await new RoleModel({
 			id: guildID,
 			guild_id: guildID,
@@ -119,7 +116,6 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			tags: null,
 		}).save();
 
-		// // TODO: automatically add user to guild
 		const member = {
 			id: req.userid,
 			guild_id: guildID,
@@ -153,7 +149,6 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		user.guilds.push(guildID.toString());
 		await user.save();
 
-		// // TODO: emit Event
 		await emitEvent({
 			event: "GUILD_MEMBER_ADD",
 			data: {

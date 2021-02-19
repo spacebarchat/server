@@ -22,6 +22,11 @@ export interface RateLimit {
 }
 
 export interface DefaultOptions {
+	permissions: {
+		user: {
+			createGuilds: boolean;
+		};
+	};
 	limits: {
 		user: {
 			maxGuilds: number;
@@ -96,6 +101,11 @@ export interface DefaultOptions {
 }
 
 export const DefaultOptions: DefaultOptions = {
+	permissions: {
+		user: {
+			createGuilds: true,
+		},
+	},
 	limits: {
 		user: {
 			maxGuilds: 100,
