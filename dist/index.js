@@ -25,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongooseCache = exports.DefaultOptions = exports.db = exports.Config = exports.Constants = void 0;
 __exportStar(require("./util/checkToken"), exports);
 exports.Constants = __importStar(require("./util/Constants"));
+__exportStar(require("./models/Ban"), exports);
 __exportStar(require("./models/Channel"), exports);
 __exportStar(require("./models/Emoji"), exports);
 __exportStar(require("./models/Guild"), exports);
