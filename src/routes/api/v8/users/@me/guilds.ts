@@ -26,6 +26,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.delete("/:id", async (req: Request, res: Response) => {
 	const guildID = BigInt(req.params.id);
+	if(await GuildModel.findOne({id: guildID, owner_id: req.userid}).exec()) throw new HTTPError("You can't leave your own guild", 400);
 	var user = await UserModel.findOneAndUpdate({ id: req.userid}, { $pull: { guilds: guildID }}).exec();
 	await MemberModel.deleteOne({ id: req.userid, guild_id: guildID}).exec();
 	await emitEvent({
