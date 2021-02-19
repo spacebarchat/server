@@ -1,6 +1,7 @@
 export * from "./util/checkToken";
 
 export * as Constants from "./util/Constants";
+export * from "./models/Ban";
 export * from "./models/Channel";
 export * from "./models/Emoji";
 export * from "./models/Guild";
