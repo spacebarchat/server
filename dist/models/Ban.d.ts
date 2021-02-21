@@ -3,7 +3,7 @@ import { Schema, Document } from "mongoose";
 export interface Ban extends Document {
     user_id: bigint;
     guild_id: bigint;
-    executor_id: BigInt;
+    executor_id: bigint;
     ip: string;
     reason?: string;
 }
