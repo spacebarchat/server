@@ -16,6 +16,7 @@ import {
 	BanModel,
 	Ban,
 	GuildBanAddEvent,
+	GuildBanRemoveEvent,
 } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../../../util/instanceOf";
@@ -293,6 +294,45 @@ router.post("/:id/bans/:userid", check(BanCreateSchema), async (req: Request, re
 	} as GuildMemberRemoveEvent);
 
 	return res.json(ban).send();
+});
+
+router.delete("/:id/bans/:userid", async (req: Request, res: Response) => {
+	try {
+		var guildID = BigInt(req.params.id);
+		var bannedUserID = BigInt(req.params.userid);
+	} catch (error) {
+		throw new HTTPError("Invalid id format", 400);
+	}
+	const user = await UserModel.findOne(
+		{ id: bannedUserID },
+		"guilds username discriminator id public_flags avatar"
+	).exec();
+
+	if (!user) throw new HTTPError("User not found", 404);
+
+	const guild = await GuildModel.findOne({ id: guildID }).exec();
+
+	if (!guild) throw new HTTPError("Guild not found", 404);
+	/*const perms = await getPermission(req.userid, guild.id);
+	if (!perms.has("BAN_MEMBERS")) {
+		throw new HTTPError("No permissions", 403);
+	}*/
+
+	await BanModel.deleteOne({
+		user_id: BigInt(user.id),
+		guild_id: guild.id,
+	}).exec();
+
+	await emitEvent({
+		event: "GUILD_BAN_REMOVE",
+		data: {
+			guild_id: guild.id,
+			user: user,
+		},
+		guild_id: guild.id,
+	} as GuildBanRemoveEvent);
+
+	return res.status(204).send();
 });
 
 export default router;
