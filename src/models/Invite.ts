@@ -1,4 +1,4 @@
-import { Schema, model, Types, Document } from "mongoose";
+import { Schema, Document, Types } from "mongoose";
 import db from "../util/Database";
 
 export interface Invite extends Document {
@@ -8,33 +8,14 @@ export interface Invite extends Document {
 	max_uses: number;
 	max_age: number;
 	created_at: number;
-	guild: {
-		id: bigint;
-		name: string;
-		splash: string;
-		description: string;
-		icon: string;
-		features: Object;
-		verification_level: number;
-	};
-	channel: {
-		id: bigint;
-		name: string;
-		type: number;
-	};
-	inviter: {
-		id: bigint;
-		username: string;
-		avatar: string;
-		discriminator: number;
-	};
-	target_user: {
-		id: bigint;
-		username: string;
-		avatar: string;
-		discriminator: number;
-	};
-	target_user_type: number;
+	guild_id: bigint;
+	channel_id: bigint;
+	inviter_id: bigint;
+
+	//! What the fucking shit is this
+	target_user_id?: bigint;
+	target_user_type?: number;
+	// !
 }
 
 export const InviteSchema = new Schema({
@@ -44,34 +25,14 @@ export const InviteSchema = new Schema({
 	max_uses: Number,
 	max_age: Number,
 	created_at: Number,
-	guild: {
-		id: Types.Long,
-		name: String,
-		splash: String,
-		description: String,
-		icon: String,
-		features: Object,
-		verification_level: Number,
-	},
-	channel: {
-		id: Types.Long,
-		name: String,
-		type: Number,
-	},
+	guild_id: Types.Long,
+	channel_id: Types.Long,
+	inviter_id: Types.Long,
 
-	inviter: {
-		id: Types.Long,
-		username: String,
-		avatar: String,
-		discriminator: Number,
-	},
-	target_user: {
-		id: Types.Long,
-		username: String,
-		avatar: String,
-		discriminator: Number,
-	},
+	//! What the fucking shit is this
+	target_user_id: Types.Long,
 	target_user_type: Number,
+	// !
 });
 
 // @ts-ignore

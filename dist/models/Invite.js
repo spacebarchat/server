@@ -13,32 +13,11 @@ exports.InviteSchema = new mongoose_1.Schema({
     max_uses: Number,
     max_age: Number,
     created_at: Number,
-    guild: {
-        id: mongoose_1.Types.Long,
-        name: String,
-        splash: String,
-        description: String,
-        icon: String,
-        features: Object,
-        verification_level: Number,
-    },
-    channel: {
-        id: mongoose_1.Types.Long,
-        name: String,
-        type: Number,
-    },
-    inviter: {
-        id: mongoose_1.Types.Long,
-        username: String,
-        avatar: String,
-        discriminator: Number,
-    },
-    target_user: {
-        id: mongoose_1.Types.Long,
-        username: String,
-        avatar: String,
-        discriminator: Number,
-    },
+    guild_id: mongoose_1.Types.Long,
+    channel_id: mongoose_1.Types.Long,
+    inviter_id: mongoose_1.Types.Long,
+    //! What the fucking shit is this
+    target_user_id: mongoose_1.Types.Long,
     target_user_type: Number,
 });
 // @ts-ignore
