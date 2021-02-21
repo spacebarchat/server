@@ -9,7 +9,7 @@ const Database_1 = __importDefault(require("../util/Database"));
 exports.BanSchema = new mongoose_1.Schema({
     user_id: { type: mongoose_1.Types.Long, required: true },
     guild_id: { type: mongoose_1.Types.Long, required: true },
-    executor_id: { type: BigInt, required: true },
+    executor_id: { type: mongoose_1.Types.Long, required: true },
     reason: String,
     ip: String,
 });

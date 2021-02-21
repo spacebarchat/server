@@ -12,7 +12,7 @@ export interface Ban extends Document {
 export const BanSchema = new Schema({
 	user_id: { type: Types.Long, required: true },
 	guild_id: { type: Types.Long, required: true },
-	executor_id: { type: BigInt, required: true },
+	executor_id: { type: Types.Long, required: true },
 	reason: String,
 	ip: String, // ? Should we store this in here, or in the UserModel?
 });
