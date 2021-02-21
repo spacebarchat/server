@@ -17,7 +17,7 @@ export interface Event {
 	guild_id?: bigint;
 	user_id?: bigint;
 	channel_id?: bigint;
-	created_at?: number;
+	created_at?: Date;
 	event: EVENT;
 	data?: any;
 }
@@ -28,7 +28,7 @@ export const EventSchema = new Schema({
 	guild_id: Types.Long,
 	user_id: Types.Long,
 	channel_id: Types.Long,
-	created_at: { type: Number, required: true },
+	created_at: { type: Date, required: true },
 	event: { type: String, required: true },
 	data: Object,
 });

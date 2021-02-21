@@ -10,7 +10,7 @@ exports.EventSchema = new mongoose_1.Schema({
     guild_id: mongoose_1.Types.Long,
     user_id: mongoose_1.Types.Long,
     channel_id: mongoose_1.Types.Long,
-    created_at: { type: Number, required: true },
+    created_at: { type: Date, required: true },
     event: { type: String, required: true },
     data: Object,
 });

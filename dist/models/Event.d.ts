@@ -16,7 +16,7 @@ export interface Event {
     guild_id?: bigint;
     user_id?: bigint;
     channel_id?: bigint;
-    created_at?: number;
+    created_at?: Date;
     event: EVENT;
     data?: any;
 }
