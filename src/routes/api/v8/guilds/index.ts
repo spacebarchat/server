@@ -3,6 +3,7 @@ import {
 	GuildDeleteEvent,
 	GuildCreateEvent,
 	GuildMemberAddEvent,
+	GuildMemberRemoveEvent,
 	RoleModel,
 	GuildModel,
 	MemberModel,
@@ -10,11 +11,18 @@ import {
 	Snowflake,
 	getPermission,
 	Guild,
+	Member,
+	PublicMember,
+	BanModel,
+	Ban,
+	GuildBanAddEvent,
 } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../../../util/instanceOf";
 import { GuildCreateSchema, GuildUpdateSchema } from "../../../../schema/Guild";
+import { BanCreateSchema } from "../../../../schema/Ban";
 import { emitEvent } from "../../../../util/Event";
+import { getIpAdress } from "../../../../middlewares/GlobalRateLimit";
 import Config from "../../../../util/Config";
 
 const router: Router = Router();
@@ -35,6 +43,7 @@ router.patch("/:id", check(GuildUpdateSchema), async (req: Request, res: Respons
 	const body = req.body as GuildUpdateSchema;
 	const guild_id = BigInt(req.params.id);
 
+	// // TODO: check permission of member
 	const perms = await getPermission(req.userid, guild_id);
 	if (!perms.has("MANAGE_GUILD")) throw new HTTPError("User is missing the 'MANAGE_GUILD' permission", 401);
 
@@ -44,13 +53,12 @@ router.patch("/:id", check(GuildUpdateSchema), async (req: Request, res: Respons
 	return res.status(204);
 });
 
+// // TODO: finish POST route
 router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) => {
 	const body = req.body as GuildCreateSchema;
 
-	// TODO: allow organization admins to bypass this
-	// TODO: comprehensive organization wide permission management
-	if (!Config.get().permissions.user.createGuilds) throw new HTTPError("You are not allowed to create guilds", 401);
-
+	// // TODO: check if user is in more than (config max guilds)
+	const { maxGuilds } = Config.get().limits.user;
 	const user = await UserModel.findOne(
 		{ id: req.userid },
 		"guilds username discriminator id public_flags avatar"
@@ -58,7 +66,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 
 	if (!user) throw new HTTPError("User not found", 404);
 
-	if (user.guilds.length >= Config.get().limits.user.maxGuilds) {
+	if (user.guilds.length >= maxGuilds) {
 		throw new HTTPError("User is already in 100 guilds", 403);
 	}
 
@@ -103,6 +111,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 
 	try {
 		await new GuildModel(guild).save();
+		// // TODO: insert default everyone role
 		await new RoleModel({
 			id: guildID,
 			guild_id: guildID,
@@ -116,6 +125,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			tags: null,
 		}).save();
 
+		// // TODO: automatically add user to guild
 		const member = {
 			id: req.userid,
 			guild_id: guildID,
@@ -149,6 +159,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		user.guilds.push(guildID.toString());
 		await user.save();
 
+		// // TODO: emit Event
 		await emitEvent({
 			event: "GUILD_MEMBER_ADD",
 			data: {
@@ -198,7 +209,90 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
 	await GuildModel.deleteOne({ id: guildID }).exec();
 
-	return res.status(204);
+	return res.status(204).send();
+});
+
+router.get("/:id/bans", async (req: Request, res: Response) => {
+	var bans = await BanModel.find({ guild_id: BigInt(req.params.id) }).exec();
+	return res.json(bans);
+});
+
+router.post("/:id/bans/:userid", check(BanCreateSchema), async (req: Request, res: Response) => {
+	try {
+		var guildID = BigInt(req.params.id);
+		var bannedUserID = BigInt(req.params.userid);
+	} catch (error) {
+		throw new HTTPError("Invalid id format", 400);
+	}
+	const user = await UserModel.findOne(
+		{ id: bannedUserID },
+		"guilds username discriminator id public_flags avatar"
+	).exec();
+
+	if (!user) throw new HTTPError("User not found", 404);
+
+	const guild = await GuildModel.findOne({ id: guildID }).exec();
+
+	if (!guild) throw new HTTPError("Guild not found", 404);
+
+	const member = await MemberModel.findOne(
+		{
+			id: BigInt(user.id),
+			guild_id: guild.id,
+		},
+		"id"
+	).exec();
+
+	if (!member) throw new HTTPError("Member not found", 404);
+	/*const perms = await getPermission(req.userid, guild.id);
+	if (!perms.has("BAN_MEMBERS")) {
+		throw new HTTPError("No permissions", 403);
+	}*/
+
+	if (req.userid === user.id) throw new HTTPError("Invalid Request, you can't ban yourself", 400);
+	if (user.id === guild.owner_id) throw new HTTPError("Invalid Request, you can't ban the guild owner", 400);
+
+	await new BanModel({
+		user_id: BigInt(user.id),
+		guild_id: guild.id,
+		ip: getIpAdress(req),
+		executor_id: req.userid,
+		reason: req.body.reason || "No Reason",
+	}).save();
+
+	await MemberModel.deleteOne({
+		id: BigInt(user.id),
+		guild_id: guild.id,
+	}).exec();
+	await UserModel.findOneAndUpdate({ id: user.id }, { $pull: { guilds: guild.id } }).exec();
+
+	await emitEvent({
+		event: "GUILD_BAN_ADD",
+		data: {
+			guild_id: guild.id,
+			user: user,
+		},
+		guild_id: guild.id,
+	} as GuildBanAddEvent);
+
+	await emitEvent({
+		event: "GUILD_DELETE",
+		data: {
+			id: guild.id,
+		},
+		user_id: user.id,
+	} as GuildDeleteEvent);
+
+	await emitEvent({
+		event: "GUILD_MEMBER_REMOVE",
+		data: {
+			guild_id: guild.id,
+			user: user,
+		},
+		guild_id: guild.id,
+	} as GuildMemberRemoveEvent);
+
+	return res.status(204).send();
 });
 
 export default router;
