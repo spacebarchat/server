@@ -252,7 +252,7 @@ router.post("/:id/bans/:userid", check(BanCreateSchema), async (req: Request, re
 	if (req.userid === user.id) throw new HTTPError("Invalid Request, you can't ban yourself", 400);
 	if (user.id === guild.owner_id) throw new HTTPError("Invalid Request, you can't ban the guild owner", 400);
 
-	await new BanModel({
+	var ban = await new BanModel({
 		user_id: BigInt(user.id),
 		guild_id: guild.id,
 		ip: getIpAdress(req),
@@ -292,7 +292,7 @@ router.post("/:id/bans/:userid", check(BanCreateSchema), async (req: Request, re
 		guild_id: guild.id,
 	} as GuildMemberRemoveEvent);
 
-	return res.status(204).send();
+	return res.json(ban).send();
 });
 
 export default router;
