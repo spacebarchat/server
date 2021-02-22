@@ -73,11 +73,11 @@ export class DiscordServer extends Server {
 		this.app.use(ErrorHandler);
 		const indexHTML = await fs.readFile(__dirname + "/../client_test/index.html");
 
-		this.app.get("*", (req, res) => {
-			res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
-			res.set("content-type", "text/html");
-			res.send(indexHTML);
-		});
+		// this.app.get("*", (req, res) => {
+		// 	res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
+		// 	res.set("content-type", "text/html");
+		// 	res.send(indexHTML);
+		// });
 		return super.start();
 	}
 }
