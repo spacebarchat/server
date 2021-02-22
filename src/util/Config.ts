@@ -1,4 +1,4 @@
-import { Config } from "fosscord-server-util";
+import { Config } from "../routes/api/v8/channels/#channelid/node_modules/fosscord-server-util";
 import crypto from "crypto";
 import fs from "fs";
 

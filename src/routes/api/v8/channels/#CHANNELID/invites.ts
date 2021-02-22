@@ -1,11 +1,11 @@
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 
-import { check } from "./../../../../../util/instanceOf";
-import { random } from "./../../../../../util/RandomInviteID";
+import { check } from "../../../../../util/instanceOf";
+import { random } from "../../../../../util/RandomInviteID";
 import { emitEvent } from "../../../../../util/Event";
 
-import { InviteCreateSchema } from "./../../../../../schema/Invite";
+import { InviteCreateSchema } from "../../../../../schema/Invite";
 
 import { getPermission, ChannelModel, InviteModel, InviteCreateEvent } from "fosscord-server-util";
 
@@ -13,7 +13,7 @@ const router: Router = Router();
 
 router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) => {
 	const usID = req.userid;
-	const chID = BigInt(req.params.CHANNELID);
+	const chID = BigInt(req.params.channelid);
 	const channel = await ChannelModel.findOne({ id: chID }).exec();
 
 	if (!channel || !channel.guild_id) {

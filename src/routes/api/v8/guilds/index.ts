@@ -17,7 +17,7 @@ import {
 	Ban,
 	GuildBanAddEvent,
 	GuildBanRemoveEvent,
-} from "fosscord-server-util";
+} from "../channels/#channelid/node_modules/fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../../../util/instanceOf";
 import { GuildCreateSchema, GuildUpdateSchema } from "../../../../schema/Guild";
