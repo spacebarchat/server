@@ -1,5 +1,5 @@
 /// <reference path="../util/MongoBigInt.d.ts" />
-import { PublicUser } from "./User";
+import { PublicUser, User } from "./User";
 import { Schema, Document } from "mongoose";
 export interface Member {
     id: bigint;
@@ -12,6 +12,7 @@ export interface Member {
     mute: boolean;
     pending: boolean;
     settings: UserGuildSettings;
+    user?: User;
 }
 export interface MemberDocument extends Member, Document {
     id: bigint;

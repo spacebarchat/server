@@ -1,5 +1,5 @@
-import { PublicUser } from "./User";
-import { Schema, model, Types, Document } from "mongoose";
+import { PublicUser, User, UserModel } from "./User";
+import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
 
 export interface Member {
@@ -13,6 +13,7 @@ export interface Member {
 	mute: boolean;
 	pending: boolean;
 	settings: UserGuildSettings;
+	user?: User;
 }
 
 export interface MemberDocument extends Member, Document {
@@ -74,9 +75,16 @@ export const MemberSchema = new Schema({
 	},
 });
 
+MemberSchema.virtual("user", {
+	model: UserModel,
+	localField: "user",
+	foreignField: "id",
+});
+
 // @ts-ignore
 export const MemberModel = db.model<MemberDocument>("Member", MemberSchema, "members");
 
+// @ts-ignore
 export interface PublicMember extends Omit<Member, "settings" | "id"> {
 	user: PublicUser;
 }

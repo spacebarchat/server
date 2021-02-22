@@ -44,6 +44,7 @@ exports.GuildSchema = new mongoose_1.Schema({
     widget_channel_id: mongoose_1.Types.Long,
     widget_enabled: Boolean,
 });
+// GuildSchema.virtual
 // @ts-ignore
 exports.GuildModel = Database_1.default.model("Guild", exports.GuildSchema, "guilds");
 //# sourceMappingURL=Guild.js.map

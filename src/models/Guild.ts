@@ -87,5 +87,7 @@ export const GuildSchema = new Schema({
 	widget_enabled: Boolean,
 });
 
+// GuildSchema.virtual
+
 // @ts-ignore
 export const GuildModel = db.model<GuildDocument>("Guild", GuildSchema, "guilds");

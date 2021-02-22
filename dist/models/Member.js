@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MemberModel = exports.MemberSchema = void 0;
+const User_1 = require("./User");
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
 const MuteConfig = {
@@ -37,6 +38,11 @@ exports.MemberSchema = new mongoose_1.Schema({
         suppress_roles: Boolean,
         version: Number,
     },
+});
+exports.MemberSchema.virtual("user", {
+    model: User_1.UserModel,
+    localField: "user",
+    foreignField: "id",
 });
 // @ts-ignore
 exports.MemberModel = Database_1.default.model("Member", exports.MemberSchema, "members");
