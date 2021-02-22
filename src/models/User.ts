@@ -1,27 +1,28 @@
 import { Activity } from "./Activity";
 import { ClientStatus, Status } from "./Status";
-import { Schema, model, Types, Document } from "mongoose";
+import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
 
-export interface User extends Document {
+export interface User {
 	id: bigint;
-	username: string;
-	discriminator: string;
-	avatar: string | null;
-	fingerprints: string[];
-	phone?: string;
-	desktop: boolean;
-	mobile: boolean;
-	premium: boolean;
-	premium_type: number;
-	bot: boolean;
-	system: boolean;
-	nsfw_allowed: boolean;
-	mfa_enabled: boolean;
-	created_at: number;
-	verified: boolean;
-	email: string;
-	flags: bigint; // TODO: automatically convert BigInt to BitField of UserFlags
+	username: string; // username max length 32, min 2
+	discriminator: string; // #0001 4 digit long string from #0001 - #9999
+	avatar: string | null; // hash of the user avatar
+	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
+	phone?: string; // phone number of the user
+	desktop: boolean; // if the user has desktop app installed
+	mobile: boolean; // if the user has mobile app installed
+	premium: boolean; // if user bought nitro
+	premium_type: number; // nitro level
+	bot: boolean; // if user is bot
+	system: boolean; // shouldn't be used, the api sents this field type true, if the genetaed message comes from a system generated author
+	level: string; // organization permission level (owner, moderator, user)
+	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
+	mfa_enabled: boolean; // if multi factor authentication is enabled
+	created_at: number; // registration date
+	verified: boolean; // if the user is offically verified
+	email: string; // email of the user
+	flags: bigint; // UserFlags
 	public_flags: bigint;
 	hash: string; // hash of the password, salt is saved in password (bcrypt)
 	guilds: bigint[]; // array of guild ids the user is part of
@@ -36,12 +37,16 @@ export interface User extends Document {
 	};
 }
 
+export interface UserDocument extends User, Document {
+	id: bigint;
+}
+
 export interface PublicUser {
 	id: bigint;
 	discriminator: string;
 	username: string;
 	avatar?: string;
-	publicFlags: bigint;
+	public_flags: bigint;
 }
 
 export interface ConnectedAccount {
@@ -204,4 +209,4 @@ export const UserSchema = new Schema({
 });
 
 // @ts-ignore
-export const UserModel = db.model<User>("User", UserSchema, "users");
+export const UserModel = db.model<UserDocument>("User", UserSchema, "users");

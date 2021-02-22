@@ -14,7 +14,7 @@ export interface Emoji extends Document {
 }
 
 export const EmojiSchema = new Schema({
-	id: Types.Long,
+	id: { type: Types.Long, required: true },
 	animated: Boolean,
 	available: Boolean,
 	guild_id: Types.Long,

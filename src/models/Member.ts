@@ -12,7 +12,6 @@ export interface Member {
 	deaf: boolean;
 	mute: boolean;
 	pending: boolean;
-	permissions: bigint;
 	settings: UserGuildSettings;
 }
 
@@ -56,7 +55,6 @@ export const MemberSchema = new Schema({
 	deaf: Boolean,
 	mute: Boolean,
 	pending: Boolean,
-	permissions: Types.Long,
 	settings: {
 		channel_overrides: [
 			{
