@@ -41,6 +41,8 @@ type PermissionString =
 	| "MANAGE_WEBHOOKS"
 	| "MANAGE_EMOJIS";
 
+const CUSTOM_PERMISSION_OFFSET = 1n << 48n; // 16 free custom permission bits, and 16 for discord to add new ones
+
 export class Permissions extends BitField {
 	static FLAGS = {
 		CREATE_INSTANT_INVITE: 1n << 0n,
@@ -74,6 +76,8 @@ export class Permissions extends BitField {
 		MANAGE_ROLES: 1n << 28n,
 		MANAGE_WEBHOOKS: 1n << 29n,
 		MANAGE_EMOJIS: 1n << 30n,
+		// CUSTOM PERMISSIONS
+		// CUSTOM_PERMISSION: 1n << 0n + CUSTOM_PERMISSION_OFFSET
 	};
 
 	any(permission: PermissionResolvable, checkAdmin = true) {
@@ -140,7 +144,7 @@ export async function getPermission(user_id: bigint, guild_id: bigint, channel_i
 	var roles = await RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
 	let channel: ChannelDocument | null = null;
 	if (channel_id) {
-		channel = await ChannelModel.findOne({ id: channel_id }, "permission_overwrites");
+		channel = await ChannelModel.findOne({ id: channel_id }, "permission_overwrites").exec();
 	}
 
 	var permission = Permissions.finalPermission({
