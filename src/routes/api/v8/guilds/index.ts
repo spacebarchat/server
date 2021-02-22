@@ -1,48 +1,13 @@
 import { Router, Request, Response } from "express";
-import {
-	GuildDeleteEvent,
-	RoleModel,
-	GuildModel,
-	MemberModel,
-	Snowflake,
-	getPermission,
-	Guild,
-} from "fosscord-server-util";
+import { RoleModel, GuildModel, Snowflake, Guild } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../../../util/instanceOf";
-import { GuildCreateSchema, GuildUpdateSchema } from "../../../../schema/Guild";
-import { emitEvent } from "../../../../util/Event";
+import { GuildCreateSchema } from "../../../../schema/Guild";
 import Config from "../../../../util/Config";
 import { getPublicUser } from "../../../../util/User";
 import { addMember } from "../../../../util/Member";
 
 const router: Router = Router();
-
-router.get("/:id", async (req: Request, res: Response) => {
-	const guild_id = BigInt(req.params.id);
-
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
-	if (!guild) throw new HTTPError("Guild does not exist");
-
-	const member = await MemberModel.findOne({ guild_id: guild_id, id: req.userid }, "id").exec();
-	if (!member) throw new HTTPError("You are not a member of the guild you are trying to access", 401);
-
-	return res.json(guild);
-});
-
-router.patch("/:id", check(GuildUpdateSchema), async (req: Request, res: Response) => {
-	const body = req.body as GuildUpdateSchema;
-	const guild_id = BigInt(req.params.id);
-
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
-	if (!guild) throw new HTTPError("This guild does not exist", 404);
-
-	const perms = await getPermission(req.userid, guild_id);
-	if (!perms.has("MANAGE_GUILD")) throw new HTTPError("You do not have the MANAGE_GUILD permission", 401);
-
-	await GuildModel.updateOne({ id: guild_id }, body).exec();
-	return res.status(204);
-});
 
 router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) => {
 	const body = req.body as GuildCreateSchema;
@@ -111,35 +76,6 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	await addMember(req.userid, guild_id, { guild });
 
 	res.status(201).json({ id: guild.id });
-});
-
-router.delete("/:id", async (req: Request, res: Response) => {
-	var guild_id = BigInt(req.params.id);
-
-	const guild = await GuildModel.findOne({ id: BigInt(req.params.id) }, "owner_id").exec();
-	if (!guild) throw new HTTPError("This guild does not exist", 404);
-	if (guild.owner_id !== req.userid) throw new HTTPError("You are not the owner of this guild", 401);
-
-	await emitEvent({
-		event: "GUILD_DELETE",
-		data: {
-			id: guild_id,
-		},
-		guild_id: guild_id,
-	} as GuildDeleteEvent);
-
-	await GuildModel.deleteOne({ id: guild_id }).exec();
-
-	return res.status(204).send();
-});
-
-// TODO: needs pagination/only send over websocket
-router.get("/:id/members", async (req: Request, res: Response) => {
-	const guild = await GuildModel.findOne({ id: BigInt(req.params.id) }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
-
-	var members = await MemberModel.find({ guild_id: BigInt(req.params.id) }).exec();
-	return res.json(members);
 });
 
 export default router;
