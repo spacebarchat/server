@@ -121,7 +121,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			managed: true,
 			mentionable: true,
 			name: "@everyone",
-			permissions: 2251804225,
+			permissions: 2251804225n,
 			position: 0,
 			tags: null,
 		}).save();
