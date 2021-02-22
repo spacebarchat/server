@@ -2,11 +2,12 @@ import { Request, Response, Router } from "express";
 import { GuildModel, MemberModel } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { instanceOf, Length } from "../../../../../../util/instanceOf";
+import { PublicMemberProjection } from "../../../../../../util/Member";
 
 const router = Router();
 
-// TODO: privileged intents
-// TODO: needs pagination/only send over websocket
+// TODO: not allowed for user -> only allowed for bots with privileged intents
+// TODO: send over websocket
 router.get("/", async (req: Request, res: Response) => {
 	const guild_id = BigInt(req.params.id);
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
@@ -27,10 +28,23 @@ router.get("/", async (req: Request, res: Response) => {
 	const { limit, after } = (<unknown>req.query) as { limit: number; after: bigint };
 	const query = after ? { id: { $gt: after } } : {};
 
-	var members = await MemberModel.find({ guild_id, ...query })
+	var members = await MemberModel.find({ guild_id, ...query }, PublicMemberProjection)
 		.limit(limit)
+		.populate("user")
 		.exec();
+
 	return res.json(members);
+});
+
+router.get("/:member", async (req: Request, res: Response) => {
+	const guild_id = BigInt(req.params.id);
+	const user_id = BigInt(req.params.member);
+
+	const member = await MemberModel.findOne({ id: user_id, guild_id }).populate("user").exec();
+	if (!member) throw new HTTPError("Member not found", 404);
+	console.log(member.user);
+
+	return res.json(member);
 });
 
 export default router;
