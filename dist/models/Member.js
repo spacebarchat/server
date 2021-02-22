@@ -12,7 +12,7 @@ const MuteConfig = {
     selected_time_window: Number,
 };
 exports.MemberSchema = new mongoose_1.Schema({
-    id: mongoose_1.Types.Long,
+    id: { type: mongoose_1.Types.Long, required: true },
     guild_id: mongoose_1.Types.Long,
     nick: String,
     roles: [mongoose_1.Types.Long],
@@ -40,9 +40,10 @@ exports.MemberSchema = new mongoose_1.Schema({
     },
 });
 exports.MemberSchema.virtual("user", {
-    model: User_1.UserModel,
-    localField: "user",
+    ref: User_1.UserModel,
+    localField: "id",
     foreignField: "id",
+    justOne: true,
 });
 // @ts-ignore
 exports.MemberModel = Database_1.default.model("Member", exports.MemberSchema, "members");

@@ -47,7 +47,7 @@ const MuteConfig = {
 };
 
 export const MemberSchema = new Schema({
-	id: Types.Long,
+	id: { type: Types.Long, required: true },
 	guild_id: Types.Long,
 	nick: String,
 	roles: [Types.Long],
@@ -75,10 +75,11 @@ export const MemberSchema = new Schema({
 	},
 });
 
-MemberSchema.virtual("user", {
-	model: UserModel,
-	localField: "user",
+exports.MemberSchema.virtual("user", {
+	ref: UserModel,
+	localField: "id",
 	foreignField: "id",
+	justOne: true,
 });
 
 // @ts-ignore
