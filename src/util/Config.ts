@@ -6,7 +6,7 @@ export default {
 	init() {
 		return Config.init({ api: DefaultOptions });
 	},
-	get() {
+	get(): DefaultOptions {
 		return Config.getAll().api;
 	},
 	set(val: any) {

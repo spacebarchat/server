@@ -9,11 +9,33 @@ import {
 	UserModel,
 } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
+import Config from "./Config";
 import { emitEvent } from "./Event";
 import { getPublicUser } from "./User";
 
+export const PublicMemberProjection = {
+	id: true,
+	guild_id: true,
+	nick: true,
+	roles: true,
+	joined_at: true,
+	pending: true,
+	deaf: true,
+	mute: true,
+	premium_since: true,
+};
+
 export async function addMember(user_id: bigint, guild_id: bigint, cache?: { guild?: Guild }) {
-	const user = await getPublicUser(user_id);
+	const user = await getPublicUser(user_id, { guilds: true });
+
+	const guildSize = user.guilds.length;
+	// @ts-ignore
+	user.guilds = undefined;
+
+	const { maxGuilds } = Config.get().limits.user;
+	if (guildSize >= maxGuilds) {
+		throw new HTTPError(` You are at the ${maxGuilds}  server limit.`, 403);
+	}
 
 	const guild = cache?.guild || (await GuildModel.findOne({ id: guild_id }).exec());
 	const member = {

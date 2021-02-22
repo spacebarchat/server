@@ -80,3 +80,5 @@ router.delete("/:userid", async (req: Request, res: Response) => {
 
 	return res.status(204).send();
 });
+
+export default router;
