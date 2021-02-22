@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import Config from "../../../../util/Config";
-import { trimSpecial, User, Snowflake, UserModel } from "../channels/#channelid/node_modules/fosscord-server-util";
+import { trimSpecial, User, Snowflake, UserModel } from "fosscord-server-util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../../../util/instanceOf";
 import "missing-native-js-functions";

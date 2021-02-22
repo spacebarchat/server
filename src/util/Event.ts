@@ -1,10 +1,10 @@
-import { Event, EventModel } from "../routes/api/v8/channels/#channelid/node_modules/fosscord-server-util";
+import { Event, EventModel } from "fosscord-server-util";
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
-	const emitEvent = {
+	const obj = {
 		created_at: new Date(), // in seconds
 		...payload,
 	};
 
-	return await new EventModel(emitEvent).save();
+	return await new EventModel(obj).save();
 }

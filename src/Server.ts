@@ -4,7 +4,7 @@ import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, GlobalRateLimit } from "./middlewares/";
 import Config from "./util/Config";
-import { db } from "./routes/api/v8/channels/#channelid/node_modules/fosscord-server-util";
+import { db } from "fosscord-server-util";
 import i18next from "i18next";
 import i18nextMiddleware, { I18next } from "i18next-http-middleware";
 import i18nextBackend from "i18next-node-fs-backend";

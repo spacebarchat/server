@@ -1,13 +1,8 @@
 import { Router, Request, Response } from "express";
-import {
-	GuildModel,
-	MemberModel,
-	UserModel,
-	GuildDeleteEvent,
-	GuildMemberRemoveEvent,
-} from "../../channels/#channelid/node_modules/fosscord-server-util";
+import { GuildModel, MemberModel, UserModel, GuildDeleteEvent, GuildMemberRemoveEvent } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../../../util/Event";
+import { getPublicUser } from "../../../../../util/User";
 
 const router: Router = Router();
 
@@ -20,16 +15,22 @@ router.get("/", async (req: Request, res: Response) => {
 	if (!user) throw new HTTPError("User not found", 404);
 
 	var guildIDs = user.guilds || [];
-	var guildsss = await GuildModel.find({ id: { $in: guildIDs } }).exec();
-	res.json(guildsss);
+	var guild = await GuildModel.find({ id: { $in: guildIDs } }).exec();
+	res.json(guild);
 });
 
+// user send to leave a certain guild
 router.delete("/:id", async (req: Request, res: Response) => {
 	const guildID = BigInt(req.params.id);
-	if (await GuildModel.findOne({ id: guildID, owner_id: req.userid }).exec())
-		throw new HTTPError("You can't leave your own guild", 400);
-	var user = await UserModel.findOneAndUpdate({ id: req.userid }, { $pull: { guilds: guildID } }).exec();
+	const guild = await GuildModel.findOne({ id: guildID }).exec();
+
+	if (!guild) throw new HTTPError("Guild doesn't exist", 404);
+	if (guild.owner_id === req.userid) throw new HTTPError("You can't leave your own guild", 400);
+
 	await MemberModel.deleteOne({ id: req.userid, guild_id: guildID }).exec();
+	await UserModel.updateOne({ id: req.userid }, { $pull: { guilds: guildID } }).exec();
+	const user = await getPublicUser(req.userid);
+
 	await emitEvent({
 		event: "GUILD_DELETE",
 		data: {
