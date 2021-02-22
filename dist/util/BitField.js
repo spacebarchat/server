@@ -7,19 +7,19 @@ exports.BitField = void 0;
 class BitField {
     constructor(bits = 0) {
         this.bitfield = BigInt(0);
-        this.bitfield = BitField.resolve(bits);
+        this.bitfield = BitField.resolve.call(this, bits);
     }
     /**
      * Checks whether the bitfield has a bit, or any of multiple bits.
      */
     any(bit) {
-        return (this.bitfield & BitField.resolve(bit)) !== 0n;
+        return (this.bitfield & BitField.resolve.call(this, bit)) !== 0n;
     }
     /**
      * Checks if this bitfield equals another
      */
     equals(bit) {
-        return this.bitfield === BitField.resolve(bit);
+        return this.bitfield === BitField.resolve.call(this, bit);
     }
     /**
      * Checks whether the bitfield has a bit, or multiple bits.
@@ -27,7 +27,7 @@ class BitField {
     has(bit) {
         if (Array.isArray(bit))
             return bit.every((p) => this.has(p));
-        const BIT = BitField.resolve(bit);
+        const BIT = BitField.resolve.call(this, bit);
         return (this.bitfield & BIT) === BIT;
     }
     /**
@@ -52,7 +52,7 @@ class BitField {
     add(...bits) {
         let total = 0n;
         for (const bit of bits) {
-            total |= BitField.resolve(bit);
+            total |= BitField.resolve.call(this, bit);
         }
         if (Object.isFrozen(this))
             return new BitField(this.bitfield | total);
@@ -66,7 +66,7 @@ class BitField {
     remove(...bits) {
         let total = 0n;
         for (const bit of bits) {
-            total |= BitField.resolve(bit);
+            total |= BitField.resolve.call(this, bit);
         }
         if (Object.isFrozen(this))
             return new BitField(this.bitfield & ~total);
@@ -112,16 +112,22 @@ class BitField {
      * @returns {number}
      */
     static resolve(bit = 0n) {
+        // @ts-ignore
+        const FLAGS = this.FLAGS || this.constructor?.FLAGS;
         if ((typeof bit === "number" || typeof bit === "bigint") && bit >= 0n)
             return BigInt(bit);
         if (bit instanceof BitField)
             return bit.bitfield;
-        if (Array.isArray(bit))
-            return bit.map((p) => this.resolve(p)).reduce((prev, p) => BigInt(prev) | BigInt(p), 0n);
-        if (typeof bit === "string" && typeof this.FLAGS[bit] !== "undefined")
+        if (Array.isArray(bit)) {
+            // @ts-ignore
+            const resolve = this.constructor?.resolve || this.resolve;
+            return bit.map((p) => resolve(p)).reduce((prev, p) => BigInt(prev) | BigInt(p), 0n);
+        }
+        if (typeof bit === "string" && typeof FLAGS[bit] !== "undefined")
             return this.FLAGS[bit];
         throw new RangeError("BITFIELD_INVALID: " + bit);
     }
 }
 exports.BitField = BitField;
+BitField.FLAGS = {};
 //# sourceMappingURL=BitField.js.map
