@@ -2,7 +2,7 @@
 import { Activity } from "./Activity";
 import { ClientStatus, Status } from "./Status";
 import { Schema, Document } from "mongoose";
-export interface User extends Document {
+export interface User {
     id: bigint;
     username: string;
     discriminator: string;
@@ -15,6 +15,7 @@ export interface User extends Document {
     premium_type: number;
     bot: boolean;
     system: boolean;
+    level: string;
     nsfw_allowed: boolean;
     mfa_enabled: boolean;
     created_at: number;
@@ -34,12 +35,15 @@ export interface User extends Document {
         client_status: ClientStatus;
     };
 }
+export interface UserDocument extends User, Document {
+    id: bigint;
+}
 export interface PublicUser {
     id: bigint;
     discriminator: string;
     username: string;
     avatar?: string;
-    publicFlags: bigint;
+    public_flags: bigint;
 }
 export interface ConnectedAccount {
     access_token: string;
@@ -103,4 +107,4 @@ export interface UserSettings {
     timezone_offset: number;
 }
 export declare const UserSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
-export declare const UserModel: import("mongoose").Model<User>;
+export declare const UserModel: import("mongoose").Model<UserDocument>;

@@ -7,7 +7,7 @@ exports.EmojiModel = exports.EmojiSchema = void 0;
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
 exports.EmojiSchema = new mongoose_1.Schema({
-    id: mongoose_1.Types.Long,
+    id: { type: mongoose_1.Types.Long, required: true },
     animated: Boolean,
     available: Boolean,
     guild_id: mongoose_1.Types.Long,

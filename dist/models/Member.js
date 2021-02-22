@@ -20,7 +20,6 @@ exports.MemberSchema = new mongoose_1.Schema({
     deaf: Boolean,
     mute: Boolean,
     pending: Boolean,
-    permissions: mongoose_1.Types.Long,
     settings: {
         channel_overrides: [
             {

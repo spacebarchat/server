@@ -7,6 +7,7 @@ const Member_1 = require("../models/Member");
 const Channel_1 = require("../models/Channel");
 const Role_1 = require("../models/Role");
 const BitField_1 = require("./BitField");
+const CUSTOM_PERMISSION_OFFSET = 1n << 48n; // 16 free custom permission bits, and 16 for discord to add new ones
 class Permissions extends BitField_1.BitField {
     any(permission, checkAdmin = true) {
         return (checkAdmin && super.has(Permissions.FLAGS.ADMINISTRATOR)) || super.any(permission);
@@ -91,7 +92,7 @@ async function getPermission(user_id, guild_id, channel_id) {
     var roles = await Role_1.RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
     let channel = null;
     if (channel_id) {
-        channel = await Channel_1.ChannelModel.findOne({ id: channel_id }, "permission_overwrites");
+        channel = await Channel_1.ChannelModel.findOne({ id: channel_id }, "permission_overwrites").exec();
     }
     var permission = Permissions.finalPermission({
         user: {

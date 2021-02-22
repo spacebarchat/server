@@ -11,7 +11,6 @@ export interface Member {
     deaf: boolean;
     mute: boolean;
     pending: boolean;
-    permissions: bigint;
     settings: UserGuildSettings;
 }
 export interface MemberDocument extends Member, Document {
