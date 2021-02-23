@@ -19,6 +19,7 @@
 			"request": "launch",
 			"skipFiles": ["<node_internals>/**"],
 			"runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
+			"preLaunchTask": "tsc: build - tsconfig.json",
 			"type": "node",
 			"resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
 		}

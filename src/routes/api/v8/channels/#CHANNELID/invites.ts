@@ -39,7 +39,7 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 		inviter_id: usID,
 	};
 
-	await new InviteModel(invite).save(); // ! samuel ist ein hurensohn
+	await new InviteModel(invite).save();
 
 	await emitEvent({ event: "INVITE_CREATE", data: invite } as InviteCreateEvent);
 	res.status(201).send(invite);
