@@ -16,13 +16,13 @@ class LongSchema extends mongoose.SchemaType {
 	};
 
 	handleSingle(val: any) {
-		return this.cast(val);
+		return this.cast(val, null, null, "handle");
 	}
 
 	handleArray(val: any) {
 		var self = this;
 		return val.map(function (m: any) {
-			return self.cast(m);
+			return self.cast(m, null, null, "handle");
 		});
 	}
 
@@ -30,11 +30,17 @@ class LongSchema extends mongoose.SchemaType {
 		return null != val;
 	}
 
-	cast(val: any, scope?: any, init?: any) {
+	cast(val: any, scope?: any, init?: any, type?: string) {
 		if (null === val) return val;
 		if ("" === val) return null;
-		if (typeof val === "bigint") return mongoose.mongo.Long.fromString(val.toString());
-		if (val instanceof mongoose.mongo.Long) return BigInt(val.toString());
+		if (typeof val === "bigint" && type === "query") {
+			return mongoose.mongo.Long.fromString(val.toString());
+		}
+
+		if (val instanceof mongoose.mongo.Long) {
+			if (type === "handle" || init == false) return val;
+			return BigInt(val.toString());
+		}
 		if (val instanceof Number || "number" == typeof val) return BigInt(val);
 		if (!Array.isArray(val) && val.toString) return BigInt(val.toString());
 
@@ -52,7 +58,7 @@ class LongSchema extends mongoose.SchemaType {
 			}
 			return handler.call(this, value);
 		} else {
-			return this.cast($conditional);
+			return this.cast($conditional, null, null, "query");
 		}
 	}
 }
