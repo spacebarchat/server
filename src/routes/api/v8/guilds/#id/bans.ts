@@ -20,6 +20,15 @@ router.get("/", async (req: Request, res: Response) => {
 	return res.json(bans);
 });
 
+router.get("/:user", async (req: Request, res: Response) => {
+	const guild_id = BigInt(req.params.id);
+	const user_id = BigInt(req.params.ban);
+
+	var ban = await BanModel.findOne({ guild_id: guild_id, user_id: user_id }).exec();
+	if (!ban) throw new HTTPError("Ban not found", 404);
+	return res.json(ban);
+});
+
 router.post("/:userid", check(BanCreateSchema), async (req: Request, res: Response) => {
 	const guild_id = BigInt(req.params.id);
 	const banned_user_id = BigInt(req.params.userid);
