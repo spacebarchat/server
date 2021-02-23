@@ -1,15 +1,19 @@
 import { UserModel } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 
+export const PublicUserProjection = {
+	username: true,
+	discriminator: true,
+	id: true,
+	public_flags: true,
+	avatar: true,
+};
+
 export async function getPublicUser(user_id: bigint, additional_fields?: any) {
 	const user = await UserModel.findOne(
 		{ id: user_id },
 		{
-			username: true,
-			discriminator: true,
-			id: true,
-			public_flags: true,
-			avatar: true,
+			...PublicUserProjection,
 			...additional_fields,
 		}
 	).exec();

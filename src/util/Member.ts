@@ -34,7 +34,7 @@ export async function addMember(user_id: bigint, guild_id: bigint, cache?: { gui
 
 	const { maxGuilds } = Config.get().limits.user;
 	if (guildSize >= maxGuilds) {
-		throw new HTTPError(` You are at the ${maxGuilds}  server limit.`, 403);
+		throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
 	}
 
 	const guild = cache?.guild || (await GuildModel.findOne({ id: guild_id }).exec());

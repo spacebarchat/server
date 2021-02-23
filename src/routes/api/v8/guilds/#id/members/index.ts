@@ -3,6 +3,7 @@ import { GuildModel, MemberModel } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { instanceOf, Length } from "../../../../../../util/instanceOf";
 import { PublicMemberProjection } from "../../../../../../util/Member";
+import { PublicUserProjection } from "../../../../../../util/User";
 
 const router = Router();
 
@@ -30,7 +31,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 	var members = await MemberModel.find({ guild_id, ...query }, PublicMemberProjection)
 		.limit(limit)
-		.populate("user")
+		.populate({ path: "user", select: PublicUserProjection })
 		.exec();
 
 	return res.json(members);
@@ -40,9 +41,10 @@ router.get("/:member", async (req: Request, res: Response) => {
 	const guild_id = BigInt(req.params.id);
 	const user_id = BigInt(req.params.member);
 
-	const member = await MemberModel.findOne({ id: user_id, guild_id }).populate("user").exec();
+	const member = await MemberModel.findOne({ id: user_id, guild_id })
+		.populate({ path: "user", select: PublicUserProjection })
+		.exec();
 	if (!member) throw new HTTPError("Member not found", 404);
-	console.log(member.user);
 
 	return res.json(member);
 });
