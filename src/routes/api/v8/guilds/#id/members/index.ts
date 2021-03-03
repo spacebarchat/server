@@ -49,4 +49,8 @@ router.get("/:member", async (req: Request, res: Response) => {
 	return res.json(member);
 });
 
+router.put("/:member", async (req: Request, res: Response) => {
+	// https://discord.com/developers/docs/resources/guild#add-guild-member
+});
+
 export default router;

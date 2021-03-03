@@ -2,13 +2,26 @@ import mongoose, { Schema, Types } from "mongoose";
 import { Long as MongoTypeLong } from "mongodb";
 require("mongoose-long")(mongoose);
 
-const partSchema = new Schema({
-	long: {
-		type: mongoose.Types.Long,
-	},
+const userSchema = new Schema({
+	id: MongoTypeLong,
 });
 
-const Part = mongoose.model("Part", partSchema, "test");
+const messageSchema = new Schema({
+	id: MongoTypeLong,
+	content: String,
+});
+const message = mongoose.model("message", messageSchema, "messages");
+const user = mongoose.model("user", userSchema, "users");
+
+messageSchema.virtual("u", {
+	ref: user,
+	localField: "id",
+	foreignField: "id",
+	justOne: true,
+});
+
+messageSchema.set("toObject", { virtuals: true });
+messageSchema.set("toJSON", { virtuals: true });
 
 async function main() {
 	const conn = await mongoose.connect("mongodb://localhost:27017/lambert?readPreference=secondaryPreferred", {
@@ -17,12 +30,12 @@ async function main() {
 	});
 	console.log("connected");
 
-	const part = new Part({ long: 390810485244821505n });
+	// const u = await new user({ name: "test" }).save();
+	// await new message({ user: u._id, content: "test" }).save();
 
-	// await part.save();
-	console.log("saved");
-	const test = await Part.find({});
-	console.log(test);
+	const test = await message.findOne({}).populate("u").exec();
+	// @ts-ignore
+	console.log(test?.toJSON());
 }
 
 main();
