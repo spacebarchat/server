@@ -76,7 +76,12 @@ export class Permissions extends BitField {
 		MANAGE_ROLES: 1n << 28n,
 		MANAGE_WEBHOOKS: 1n << 29n,
 		MANAGE_EMOJIS: 1n << 30n,
-		// CUSTOM PERMISSIONS
+		/**
+		 * CUSTOM PERMISSIONS ideas:
+		 * - allow user to dm members
+		 * - allow user to pin messages (without MANAGE_MESSAGES)
+		 * - allow user to publish messages (without MANAGE_MESSAGES)
+		 */
 		// CUSTOM_PERMISSION: 1n << 0n + CUSTOM_PERMISSION_OFFSET
 	};
 
