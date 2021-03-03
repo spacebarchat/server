@@ -13,7 +13,7 @@ const router: Router = Router();
 
 router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) => {
 	const usID = req.userid;
-	const chID = BigInt(req.params.channelid);
+	const chID = BigInt(req.params.channel_id);
 	const channel = await ChannelModel.findOne({ id: chID }).exec();
 
 	if (!channel || !channel.guild_id) {
