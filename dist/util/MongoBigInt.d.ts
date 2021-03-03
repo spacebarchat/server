@@ -16,7 +16,7 @@ declare class LongSchema extends mongoose.SchemaType {
     handleSingle(val: any): any;
     handleArray(val: any): any;
     checkRequired(val: any): boolean;
-    cast(val: any, scope?: any, init?: any): any;
+    cast(val: any, scope?: any, init?: any, type?: string): any;
     castForQuery($conditional: string, value: any): any;
 }
 declare module "mongoose" {

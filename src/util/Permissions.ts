@@ -1,10 +1,11 @@
 // https://github.com/discordjs/discord.js/blob/master/src/util/Permissions.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
-import { MemberModel } from "../models/Member";
+import { MemberDocument, MemberModel } from "../models/Member";
 import { ChannelDocument, ChannelModel } from "../models/Channel";
 import { ChannelPermissionOverwrite } from "../models/Channel";
 import { Role, RoleModel } from "../models/Role";
 import { BitField } from "./BitField";
+import { GuildDocument } from "../models/Guild";
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
@@ -142,12 +143,18 @@ export class Permissions extends BitField {
 	}
 }
 
-export async function getPermission(user_id: bigint, guild_id: bigint, channel_id?: bigint) {
-	var member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
+export async function getPermission(
+	user_id: bigint,
+	guild_id: bigint,
+	channel_id?: bigint,
+	cache?: { channel: ChannelDocument | null; member: MemberDocument | null }
+) {
+	var { channel, member } = cache || {};
+
+	member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
 	if (!member) throw new Error("Member not found");
 
 	var roles = await RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
-	let channel: ChannelDocument | null = null;
 	if (channel_id) {
 		channel = await ChannelModel.findOne({ id: channel_id }, "permission_overwrites").exec();
 	}

@@ -1,3 +1,5 @@
+import { MemberDocument } from "../models/Member";
+import { ChannelDocument } from "../models/Channel";
 import { ChannelPermissionOverwrite } from "../models/Channel";
 import { Role } from "../models/Role";
 import { BitField } from "./BitField";
@@ -57,5 +59,8 @@ export declare class Permissions extends BitField {
         };
     }): bigint;
 }
-export declare function getPermission(user_id: bigint, guild_id: bigint, channel_id?: bigint): Promise<Permissions>;
+export declare function getPermission(user_id: bigint, guild_id: bigint, channel_id?: bigint, cache?: {
+    channel: ChannelDocument | null;
+    member: MemberDocument | null;
+}): Promise<Permissions>;
 export {};

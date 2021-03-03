@@ -22,26 +22,30 @@ class LongSchema extends mongoose_1.default.SchemaType {
         };
     }
     handleSingle(val) {
-        return this.cast(val);
+        return this.cast(val, null, null, "handle");
     }
     handleArray(val) {
         var self = this;
         return val.map(function (m) {
-            return self.cast(m);
+            return self.cast(m, null, null, "handle");
         });
     }
     checkRequired(val) {
         return null != val;
     }
-    cast(val, scope, init) {
+    cast(val, scope, init, type) {
         if (null === val)
             return val;
         if ("" === val)
             return null;
-        if (typeof val === "bigint")
+        if (typeof val === "bigint" && type === "query") {
             return mongoose_1.default.mongo.Long.fromString(val.toString());
-        if (val instanceof mongoose_1.default.mongo.Long)
+        }
+        if (val instanceof mongoose_1.default.mongo.Long) {
+            if (type === "handle" || init == false)
+                return val;
             return BigInt(val.toString());
+        }
         if (val instanceof Number || "number" == typeof val)
             return BigInt(val);
         if (!Array.isArray(val) && val.toString)
@@ -60,7 +64,7 @@ class LongSchema extends mongoose_1.default.SchemaType {
             return handler.call(this, value);
         }
         else {
-            return this.cast($conditional);
+            return this.cast($conditional, null, null, "query");
         }
     }
 }
