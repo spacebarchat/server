@@ -7,11 +7,7 @@ import { getPublicUser } from "../../../../../util/User";
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	const user = await UserModel.findOne(
-		{ id: req.userid },
-		"guilds username discriminator id public_flags avatar"
-	).exec();
-
+	const user = await UserModel.findOne({ id: req.userid }, { guilds: true }).exec();
 	if (!user) throw new HTTPError("User not found", 404);
 
 	var guildIDs = user.guilds || [];
