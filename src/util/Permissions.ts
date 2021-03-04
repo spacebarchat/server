@@ -5,7 +5,7 @@ import { ChannelDocument, ChannelModel } from "../models/Channel";
 import { ChannelPermissionOverwrite } from "../models/Channel";
 import { Role, RoleModel } from "../models/Role";
 import { BitField } from "./BitField";
-import { GuildDocument } from "../models/Guild";
+import { GuildDocument, GuildModel } from "../models/Guild";
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
@@ -150,6 +150,10 @@ export async function getPermission(
 	cache?: { channel?: ChannelDocument | null; member?: MemberDocument | null }
 ) {
 	var { channel, member } = cache || {};
+
+	const guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
+	if (!guild) throw new Error("Guild not found");
+	if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
 	member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
 	if (!member) throw new Error("Member not found");

@@ -20,7 +20,7 @@ export interface User {
     mfa_enabled: boolean;
     created_at: number;
     verified: boolean;
-    email: string;
+    email?: string;
     flags: bigint;
     public_flags: bigint;
     hash: string;
@@ -84,6 +84,7 @@ export interface UserSettings {
     friend_source_flags: {
         all: boolean;
     };
+    gateway_connected: boolean;
     gif_auto_play: boolean;
     guild_folders: {
         color: number;

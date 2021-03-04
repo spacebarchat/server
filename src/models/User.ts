@@ -21,7 +21,7 @@ export interface User {
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 	created_at: number; // registration date
 	verified: boolean; // if the user is offically verified
-	email: string; // email of the user
+	email?: string; // email of the user
 	flags: bigint; // UserFlags
 	public_flags: bigint;
 	hash: string; // hash of the password, salt is saved in password (bcrypt)
@@ -88,6 +88,7 @@ export interface UserSettings {
 	enable_tts_command: boolean;
 	explicit_content_filter: number;
 	friend_source_flags: { all: boolean };
+	gateway_connected: boolean;
 	gif_auto_play: boolean;
 	guild_folders: // every top guild is displayed as a "folder"
 	{
@@ -155,6 +156,7 @@ export const UserSchema = new Schema({
 		enable_tts_command: Boolean,
 		explicit_content_filter: Number,
 		friend_source_flags: { all: Boolean },
+		gateway_connected: Boolean,
 		gif_auto_play: Boolean,
 		// every top guild is displayed as a "folder"
 		guild_folders: [

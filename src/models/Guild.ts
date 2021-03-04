@@ -49,6 +49,7 @@ export interface Guild {
 }
 
 export const GuildSchema = new Schema({
+	id: { type: Types.Long, required: true },
 	afk_channel_id: Types.Long,
 	afk_timeout: Number,
 	application_id: Types.Long,
@@ -59,7 +60,6 @@ export const GuildSchema = new Schema({
 	explicit_content_filter: Number,
 	features: { type: [String], default: [] },
 	icon: String,
-	id: { type: Types.Long, required: true },
 	large: Boolean,
 	max_members: { type: Number, default: 100000 },
 	max_presences: Number,

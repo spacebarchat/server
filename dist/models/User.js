@@ -51,6 +51,7 @@ exports.UserSchema = new mongoose_1.Schema({
         enable_tts_command: Boolean,
         explicit_content_filter: Number,
         friend_source_flags: { all: Boolean },
+        gateway_connected: Boolean,
         gif_auto_play: Boolean,
         // every top guild is displayed as a "folder"
         guild_folders: [

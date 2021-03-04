@@ -124,7 +124,7 @@ class BitField {
             return bit.map((p) => resolve(p)).reduce((prev, p) => BigInt(prev) | BigInt(p), 0n);
         }
         if (typeof bit === "string" && typeof FLAGS[bit] !== "undefined")
-            return this.FLAGS[bit];
+            return FLAGS[bit];
         throw new RangeError("BITFIELD_INVALID: " + bit);
     }
 }

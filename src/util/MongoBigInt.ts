@@ -33,7 +33,7 @@ class LongSchema extends mongoose.SchemaType {
 	cast(val: any, scope?: any, init?: any, type?: string) {
 		if (null === val) return val;
 		if ("" === val) return null;
-		if (typeof val === "bigint" && type === "query") {
+		if (typeof val === "bigint") {
 			return mongoose.mongo.Long.fromString(val.toString());
 		}
 

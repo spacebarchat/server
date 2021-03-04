@@ -7,6 +7,7 @@ exports.GuildModel = exports.GuildSchema = void 0;
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
 exports.GuildSchema = new mongoose_1.Schema({
+    id: { type: mongoose_1.Types.Long, required: true },
     afk_channel_id: mongoose_1.Types.Long,
     afk_timeout: Number,
     application_id: mongoose_1.Types.Long,
@@ -17,7 +18,6 @@ exports.GuildSchema = new mongoose_1.Schema({
     explicit_content_filter: Number,
     features: { type: [String], default: [] },
     icon: String,
-    id: { type: mongoose_1.Types.Long, required: true },
     large: Boolean,
     max_members: { type: Number, default: 100000 },
     max_presences: Number,

@@ -7,6 +7,7 @@ const Member_1 = require("../models/Member");
 const Channel_1 = require("../models/Channel");
 const Role_1 = require("../models/Role");
 const BitField_1 = require("./BitField");
+const Guild_1 = require("../models/Guild");
 const CUSTOM_PERMISSION_OFFSET = 1n << 48n; // 16 free custom permission bits, and 16 for discord to add new ones
 class Permissions extends BitField_1.BitField {
     any(permission, checkAdmin = true) {
@@ -87,6 +88,11 @@ Permissions.FLAGS = {
 };
 async function getPermission(user_id, guild_id, channel_id, cache) {
     var { channel, member } = cache || {};
+    const guild = await Guild_1.GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
+    if (!guild)
+        throw new Error("Guild not found");
+    if (guild.owner_id === user_id)
+        return new Permissions("ADMINISTRATOR");
     member = await Member_1.MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
     if (!member)
         throw new Error("Member not found");

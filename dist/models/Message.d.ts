@@ -1,9 +1,9 @@
 /// <reference path="../util/MongoBigInt.d.ts" />
 import { Schema, Document } from "mongoose";
-import { ChannelType } from "./Channel";
 export interface Message extends Document {
     id: bigint;
     channel_id: bigint;
+    guild_id?: bigint;
     author_id?: bigint;
     webhook_id?: bigint;
     application_id: bigint;
@@ -12,14 +12,9 @@ export interface Message extends Document {
     edited_timestamp: number;
     tts: boolean;
     mention_everyone: boolean;
-    mentions: bigint[];
-    mention_roles: bigint[];
-    mention_channels?: {
-        id: bigint;
-        guild_id: bigint;
-        type: ChannelType;
-        name: string;
-    }[];
+    mention_user_ids: bigint[];
+    mention_role_ids: bigint[];
+    mention_channels_ids: bigint[];
     attachments: Attachment[];
     embeds: Embed[];
     reactions?: Reaction[];

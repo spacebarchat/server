@@ -7,7 +7,7 @@ export interface AuditLogResponse {
 	webhooks: []; // TODO:
 	users: PublicUser[];
 	audit_log_entries: AuditLogEntries[];
-	integrations: [];
+	integrations: []; // TODO:
 }
 
 export interface AuditLogEntries {

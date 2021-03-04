@@ -1,10 +1,13 @@
-import { Schema, model, Types, Document } from "mongoose";
-import { ChannelType } from "./Channel";
+import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
+import { UserModel } from "./User";
+import { MemberModel } from "./Member";
+import { RoleModel } from "./Role";
 
 export interface Message extends Document {
 	id: bigint;
 	channel_id: bigint;
+	guild_id?: bigint;
 	author_id?: bigint;
 	webhook_id?: bigint;
 	application_id: bigint;
@@ -13,14 +16,9 @@ export interface Message extends Document {
 	edited_timestamp: number;
 	tts: boolean;
 	mention_everyone: boolean;
-	mentions: bigint[];
-	mention_roles: bigint[];
-	mention_channels?: {
-		id: bigint;
-		guild_id: bigint;
-		type: ChannelType;
-		name: string;
-	}[];
+	mention_user_ids: bigint[];
+	mention_role_ids: bigint[];
+	mention_channels_ids: bigint[];
 	attachments: Attachment[];
 	embeds: Embed[];
 	reactions?: Reaction[];
@@ -154,7 +152,7 @@ const Reaction = {
 	},
 };
 
-const Embed = {
+export const Embed = {
 	title: String, //title of embed
 	type: String, // type of embed (always "rich" for webhook embeds)
 	description: String, // description of embed
@@ -193,22 +191,16 @@ export const MessageSchema = new Schema({
 	channel_id: Types.Long,
 	author_id: Types.Long,
 	webhook_id: Types.Long,
+	guild_id: Types.Long,
 	application_id: Types.Long,
 	content: String,
 	timestamp: Number,
 	edited_timestamp: Number,
 	tts: Boolean,
 	mention_everyone: Boolean,
-	mentions: [Types.Long],
-	mention_roles: [Types.Long],
-	mention_channels: [
-		{
-			id: Types.Long,
-			guild_id: Types.Long,
-			type: { type: Number },
-			name: String,
-		},
-	],
+	mention_user_ids: [Types.Long],
+	mention_role_ids: [Types.Long],
+	mention_channel_ids: [Types.Long],
 	attachments: [Attachment],
 	embeds: [Embed],
 	reactions: [Reaction],
@@ -227,6 +219,49 @@ export const MessageSchema = new Schema({
 		guild_id: Types.Long,
 	},
 });
+
+MessageSchema.virtual("author", {
+	ref: UserModel,
+	localField: "author_id",
+	foreignField: "id",
+	justOne: true,
+});
+
+MessageSchema.virtual("member", {
+	ref: MemberModel,
+	localField: "author_id",
+	foreignField: "id",
+	justOne: true,
+});
+
+MessageSchema.virtual("mentions", {
+	ref: UserModel,
+	localField: "mention_user_ids",
+	foreignField: "id",
+	justOne: true,
+});
+
+MessageSchema.virtual("mention_roles", {
+	ref: RoleModel,
+	localField: "mention_role_ids",
+	foreignField: "id",
+	justOne: true,
+});
+
+MessageSchema.virtual("mention_channels", {
+	ref: RoleModel,
+	localField: "mention_role_ids",
+	foreignField: "id",
+	justOne: true,
+});
+
+// TODO: missing Application Model
+// MessageSchema.virtual("application", {
+// 	ref: Application,
+// 	localField: "mention_role_ids",
+// 	foreignField: "id",
+// 	justOne: true,
+// });
 
 // @ts-ignore
 export const MessageModel = db.model<Message>("Message", MessageSchema, "messages");

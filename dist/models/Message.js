@@ -6,6 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageModel = exports.MessageSchema = exports.MessageType = void 0;
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
+const User_1 = require("./User");
+const Member_1 = require("./Member");
+const Role_1 = require("./Role");
 var MessageType;
 (function (MessageType) {
     MessageType[MessageType["DEFAULT"] = 0] = "DEFAULT";
@@ -87,22 +90,16 @@ exports.MessageSchema = new mongoose_1.Schema({
     channel_id: mongoose_1.Types.Long,
     author_id: mongoose_1.Types.Long,
     webhook_id: mongoose_1.Types.Long,
+    guild_id: mongoose_1.Types.Long,
     application_id: mongoose_1.Types.Long,
     content: String,
     timestamp: Number,
     edited_timestamp: Number,
     tts: Boolean,
     mention_everyone: Boolean,
-    mentions: [mongoose_1.Types.Long],
-    mention_roles: [mongoose_1.Types.Long],
-    mention_channels: [
-        {
-            id: mongoose_1.Types.Long,
-            guild_id: mongoose_1.Types.Long,
-            type: { type: Number },
-            name: String,
-        },
-    ],
+    mention_user_ids: [mongoose_1.Types.Long],
+    mention_role_ids: [mongoose_1.Types.Long],
+    mention_channel_ids: [mongoose_1.Types.Long],
     attachments: [Attachment],
     embeds: [Embed],
     reactions: [Reaction],
@@ -121,6 +118,43 @@ exports.MessageSchema = new mongoose_1.Schema({
         guild_id: mongoose_1.Types.Long,
     },
 });
+exports.MessageSchema.virtual("author", {
+    ref: User_1.UserModel,
+    localField: "author_id",
+    foreignField: "id",
+    justOne: true,
+});
+exports.MessageSchema.virtual("member", {
+    ref: Member_1.MemberModel,
+    localField: "author_id",
+    foreignField: "id",
+    justOne: true,
+});
+exports.MessageSchema.virtual("mentions", {
+    ref: User_1.UserModel,
+    localField: "mention_user_ids",
+    foreignField: "id",
+    justOne: true,
+});
+exports.MessageSchema.virtual("mention_roles", {
+    ref: Role_1.RoleModel,
+    localField: "mention_role_ids",
+    foreignField: "id",
+    justOne: true,
+});
+exports.MessageSchema.virtual("mention_channels", {
+    ref: Role_1.RoleModel,
+    localField: "mention_role_ids",
+    foreignField: "id",
+    justOne: true,
+});
+// TODO: missing Application Model
+// MessageSchema.virtual("application", {
+// 	ref: Application,
+// 	localField: "mention_role_ids",
+// 	foreignField: "id",
+// 	justOne: true,
+// });
 // @ts-ignore
 exports.MessageModel = Database_1.default.model("Message", exports.MessageSchema, "messages");
 //# sourceMappingURL=Message.js.map

@@ -38,7 +38,7 @@ class LongSchema extends mongoose_1.default.SchemaType {
             return val;
         if ("" === val)
             return null;
-        if (typeof val === "bigint" && type === "query") {
+        if (typeof val === "bigint") {
             return mongoose_1.default.mongo.Long.fromString(val.toString());
         }
         if (val instanceof mongoose_1.default.mongo.Long) {

@@ -75,7 +75,7 @@ export const MemberSchema = new Schema({
 	},
 });
 
-exports.MemberSchema.virtual("user", {
+MemberSchema.virtual("user", {
 	ref: UserModel,
 	localField: "id",
 	foreignField: "id",
