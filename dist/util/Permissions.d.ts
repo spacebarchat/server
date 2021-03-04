@@ -60,7 +60,7 @@ export declare class Permissions extends BitField {
     }): bigint;
 }
 export declare function getPermission(user_id: bigint, guild_id: bigint, channel_id?: bigint, cache?: {
-    channel: ChannelDocument | null;
-    member: MemberDocument | null;
+    channel?: ChannelDocument | null;
+    member?: MemberDocument | null;
 }): Promise<Permissions>;
 export {};

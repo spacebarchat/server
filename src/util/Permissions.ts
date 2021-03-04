@@ -147,7 +147,7 @@ export async function getPermission(
 	user_id: bigint,
 	guild_id: bigint,
 	channel_id?: bigint,
-	cache?: { channel: ChannelDocument | null; member: MemberDocument | null }
+	cache?: { channel?: ChannelDocument | null; member?: MemberDocument | null }
 ) {
 	var { channel, member } = cache || {};
 
