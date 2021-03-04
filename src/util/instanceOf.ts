@@ -66,8 +66,11 @@ export function instanceOf(
 		errors = {},
 		req,
 		ref,
-	}: { path?: string; optional?: boolean; errors?: any; req: Request; ref: { key: string | number; obj: any } }
+	}: { path?: string; optional?: boolean; errors?: any; req: Request; ref?: { key: string | number; obj: any } }
 ): Boolean {
+	if (!ref) ref = { obj: null, key: "" };
+	if (!path) path = "body";
+
 	try {
 		if (!type) return true; // no type was specified
 
