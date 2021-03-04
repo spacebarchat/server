@@ -114,35 +114,10 @@ export function instanceOf(
 		}
 
 		if (typeof type === "object") {
-			if (type?.constructor?.name != "Object") {
-				if (type instanceof Tuple) {
-					if ((<Tuple>type).types.some((x) => instanceOf(x, value, { path, optional, errors, req, ref })))
-						return true;
-					throw new FieldError(
-						"BASE_TYPE_CHOICES",
-						req.t("common:field.BASE_TYPE_CHOICES", { types: type.types })
-					);
-				} else if (type instanceof Length) {
-					let length = <Length>type;
-					if (instanceOf(length.type, value, { path, optional, req, ref, errors }) !== true) return errors;
-					let val = ref.obj[ref.key];
-					if ((<Length>type).check(val)) return true;
-					throw new FieldError(
-						"BASE_TYPE_BAD_LENGTH",
-						req.t("common:field.BASE_TYPE_BAD_LENGTH", {
-							length: `${type.min} - ${type.max}`,
-						})
-					);
-				}
-				if (value instanceof type) return true;
-				throw new FieldError("BASE_TYPE_CLASS", req.t("common:field.BASE_TYPE_CLASS", { type }));
-			}
-			if (typeof value !== "object")
-				throw new FieldError("BASE_TYPE_OBJECT", req.t("common:field.BASE_TYPE_OBJECT"));
+			if (typeof value !== "object") throw new FieldError("BASE_TYPE_OBJECT", req.t("common:field.BASE_TYPE_OBJECT"));
 
 			if (Array.isArray(type)) {
-				if (!Array.isArray(value))
-					throw new FieldError("BASE_TYPE_ARRAY", req.t("common:field.BASE_TYPE_ARRAY"));
+				if (!Array.isArray(value)) throw new FieldError("BASE_TYPE_ARRAY", req.t("common:field.BASE_TYPE_ARRAY"));
 				if (!type.length) return true; // type array didn't specify any type
 
 				return (
@@ -159,6 +134,24 @@ export function instanceOf(
 						);
 					}) || errors
 				);
+			} else if (type?.constructor?.name != "Object") {
+				if (type instanceof Tuple) {
+					if ((<Tuple>type).types.some((x) => instanceOf(x, value, { path, optional, errors, req, ref }))) return true;
+					throw new FieldError("BASE_TYPE_CHOICES", req.t("common:field.BASE_TYPE_CHOICES", { types: type.types }));
+				} else if (type instanceof Length) {
+					let length = <Length>type;
+					if (instanceOf(length.type, value, { path, optional, req, ref, errors }) !== true) return errors;
+					let val = ref.obj[ref.key];
+					if ((<Length>type).check(val)) return true;
+					throw new FieldError(
+						"BASE_TYPE_BAD_LENGTH",
+						req.t("common:field.BASE_TYPE_BAD_LENGTH", {
+							length: `${type.min} - ${type.max}`,
+						})
+					);
+				}
+				if (value instanceof type) return true;
+				throw new FieldError("BASE_TYPE_CLASS", req.t("common:field.BASE_TYPE_CLASS", { type }));
 			}
 
 			const diff = Object.keys(value).missing(

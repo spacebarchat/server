@@ -45,6 +45,7 @@ export interface DefaultOptions {
 			ttsCharacters: number;
 			maxReactions: number;
 			maxAttachmentSize: number;
+			maxBulkDelete: number;
 		};
 		channel: {
 			maxPins: number;
@@ -124,6 +125,7 @@ export const DefaultOptions: DefaultOptions = {
 			ttsCharacters: 200,
 			maxReactions: 20,
 			maxAttachmentSize: 8388608,
+			maxBulkDelete: 100,
 		},
 		channel: {
 			maxPins: 50,

@@ -8,3 +8,5 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 
 	return await new EventModel(obj).save();
 }
+
+export async function emitAuditLog(payload: any) {}
