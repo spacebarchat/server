@@ -65,7 +65,7 @@ router.delete("/:userid", async (req: Request, res: Response) => {
 	var banned_user_id = BigInt(req.params.userid);
 
 	const banned_user = await getPublicUser(banned_user_id);
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
+	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
 	const perms = await getPermission(req.userid, guild.id);

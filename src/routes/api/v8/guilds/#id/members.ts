@@ -1,9 +1,9 @@
 import { Request, Response, Router } from "express";
 import { GuildModel, MemberModel } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
-import { instanceOf, Length } from "../../../../../../util/instanceOf";
-import { PublicMemberProjection } from "../../../../../../util/Member";
-import { PublicUserProjection } from "../../../../../../util/User";
+import { instanceOf, Length } from "../../../../../util/instanceOf";
+import { PublicMemberProjection } from "../../../../../util/Member";
+import { PublicUserProjection } from "../../../../../util/User";
 
 const router = Router();
 
@@ -21,7 +21,7 @@ router.get("/", async (req: Request, res: Response) => {
 			ref: { obj: null, key: "" },
 		});
 	} catch (error) {
-		return res.status(400).json({ code: 50035, message: "Invalid Form Body", success: false, errors: error });
+		return res.status(400).json({ code: 50035, message: "Invalid Query", success: false, errors: error });
 	}
 
 	// @ts-ignore
@@ -41,9 +41,7 @@ router.get("/:member", async (req: Request, res: Response) => {
 	const guild_id = BigInt(req.params.id);
 	const user_id = BigInt(req.params.member);
 
-	const member = await MemberModel.findOne({ id: user_id, guild_id })
-		.populate({ path: "user", select: PublicUserProjection })
-		.exec();
+	const member = await MemberModel.findOne({ id: user_id, guild_id }).populate({ path: "user", select: PublicUserProjection }).exec();
 	if (!member) throw new HTTPError("Member not found", 404);
 
 	return res.json(member);

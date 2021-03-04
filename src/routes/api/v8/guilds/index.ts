@@ -59,8 +59,8 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	};
 
 	await Promise.all([
-		await new GuildModel(guild).save(),
-		await new RoleModel({
+		new GuildModel(guild).save(),
+		new RoleModel({
 			id: guild_id,
 			guild_id: guild_id,
 			color: 0,
