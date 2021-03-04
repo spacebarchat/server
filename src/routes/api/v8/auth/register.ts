@@ -37,10 +37,10 @@ router.post(
 		} = req.body;
 		// TODO: automatically join invite
 		// TODO: gift_code_sku_id?
-		// TODO: check passwort strength
+		// TODO: check password strength
 
 		// adjusted_email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
-		let adjusted_email: string = email;
+		let adjusted_email: string | undefined = adjustEmail(email);
 
 		// adjusted_password will be the hash of the password
 		let adjusted_password: string = "";
@@ -77,7 +77,7 @@ router.post(
 
 		if (email) {
 			// replace all dots and chars after +, if its a gmail.com email
-			adjusted_email = adjustEmail(email);
+			if (!adjusted_email) throw FieldErrors({ email: { code: "INVALID_EMAIL", message: "Invalid Email format" } });
 
 			// check if there is already an account with this email
 			const exists = await UserModel.findOne({ email: adjusted_email }).exec();
@@ -203,6 +203,7 @@ router.post(
 				enable_tts_command: true,
 				explicit_content_filter: 0,
 				friend_source_flags: { all: true },
+				gateway_connected: false,
 				gif_auto_play: true,
 				guild_folders: [],
 				guild_positions: [],
@@ -230,9 +231,11 @@ router.post(
 	}
 );
 
-export function adjustEmail(email: string) {
+export function adjustEmail(email: string): string | undefined {
 	// body parser already checked if it is a valid email
 	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);
+	// @ts-ignore
+	if (!parts || parts.length < 5) return undefined;
 	const domain = parts[5];
 	const user = parts[1];
 

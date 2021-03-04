@@ -21,11 +21,14 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		const { login, password } = req.body;
+		const email = adjustEmail(login);
+		const query: any[] = [{ phone: login }];
+		if (email) query.push({ email });
 
 		// * MongoDB Specific query for user with same email or phone number
 		const user = await UserModel.findOne(
 			{
-				$or: [{ email: adjustEmail(login) }, { phone: login }],
+				$or: query,
 			},
 			`hash id user_settings.locale user_settings.theme`
 		).exec();
