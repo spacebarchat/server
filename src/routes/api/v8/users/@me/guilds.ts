@@ -7,7 +7,7 @@ import { getPublicUser } from "../../../../../util/User";
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	const user = await UserModel.findOne({ id: req.userid }, { guilds: true }).exec();
+	const user = await UserModel.findOne({ id: req.user_id }, { guilds: true }).exec();
 	if (!user) throw new HTTPError("User not found", 404);
 
 	var guildIDs = user.guilds || [];
@@ -21,18 +21,18 @@ router.delete("/:id", async (req: Request, res: Response) => {
 	const guild = await GuildModel.findOne({ id: guildID }).exec();
 
 	if (!guild) throw new HTTPError("Guild doesn't exist", 404);
-	if (guild.owner_id === req.userid) throw new HTTPError("You can't leave your own guild", 400);
+	if (guild.owner_id === req.user_id) throw new HTTPError("You can't leave your own guild", 400);
 
-	await MemberModel.deleteOne({ id: req.userid, guild_id: guildID }).exec();
-	await UserModel.updateOne({ id: req.userid }, { $pull: { guilds: guildID } }).exec();
-	const user = await getPublicUser(req.userid);
+	await MemberModel.deleteOne({ id: req.user_id, guild_id: guildID }).exec();
+	await UserModel.updateOne({ id: req.user_id }, { $pull: { guilds: guildID } }).exec();
+	const user = await getPublicUser(req.user_id);
 
 	await emitEvent({
 		event: "GUILD_DELETE",
 		data: {
 			id: guildID,
 		},
-		user_id: req.userid,
+		user_id: req.user_id,
 	} as GuildDeleteEvent);
 
 	await emitEvent({

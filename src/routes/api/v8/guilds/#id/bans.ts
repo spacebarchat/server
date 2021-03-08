@@ -29,14 +29,14 @@ router.get("/:user", async (req: Request, res: Response) => {
 	return res.json(ban);
 });
 
-router.post("/:userid", check(BanCreateSchema), async (req: Request, res: Response) => {
+router.post("/:user_id", check(BanCreateSchema), async (req: Request, res: Response) => {
 	const guild_id = BigInt(req.params.id);
-	const banned_user_id = BigInt(req.params.userid);
+	const banned_user_id = BigInt(req.params.user_id);
 
 	const banned_user = await getPublicUser(banned_user_id);
-	const perms = await getPermission(req.userid, guild_id);
+	const perms = await getPermission(req.user_id, guild_id);
 	if (!perms.has("BAN_MEMBERS")) throw new HTTPError("You don't have the permission to ban members", 403);
-	if (req.userid === banned_user_id) throw new HTTPError("You can't ban yourself", 400);
+	if (req.user_id === banned_user_id) throw new HTTPError("You can't ban yourself", 400);
 
 	await removeMember(banned_user_id, guild_id);
 
@@ -44,7 +44,7 @@ router.post("/:userid", check(BanCreateSchema), async (req: Request, res: Respon
 		user_id: banned_user_id,
 		guild_id: guild_id,
 		ip: getIpAdress(req),
-		executor_id: req.userid,
+		executor_id: req.user_id,
 		reason: req.body.reason, // || otherwise empty
 	}).save();
 
@@ -60,15 +60,15 @@ router.post("/:userid", check(BanCreateSchema), async (req: Request, res: Respon
 	return res.json(ban).send();
 });
 
-router.delete("/:userid", async (req: Request, res: Response) => {
+router.delete("/:user_id", async (req: Request, res: Response) => {
 	var guild_id = BigInt(req.params.id);
-	var banned_user_id = BigInt(req.params.userid);
+	var banned_user_id = BigInt(req.params.user_id);
 
 	const banned_user = await getPublicUser(banned_user_id);
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
-	const perms = await getPermission(req.userid, guild.id);
+	const perms = await getPermission(req.user_id, guild.id);
 	if (!perms.has("BAN_MEMBERS")) {
 		throw new HTTPError("No permissions", 403);
 	}

@@ -51,7 +51,7 @@ export class Length {
 	constructor(public type: any, public min: number, public max: number) {}
 
 	check(value: string) {
-		if (typeof value === "string") return value.length >= this.min && value.length <= this.max;
+		if (typeof value === "string" || Array.isArray(value)) return value.length >= this.min && value.length <= this.max;
 		if (typeof value === "number" || typeof value === "bigint") return value >= this.min && value <= this.max;
 		return false;
 	}

@@ -43,7 +43,7 @@ export async function addMember(user_id: bigint, guild_id: bigint, cache?: { gui
 		guild_id: guild_id,
 		nick: undefined,
 		roles: [guild_id], // @everyone role
-		joined_at: Date.now(),
+		joined_at: new Date(),
 		premium_since: undefined,
 		deaf: false,
 		mute: false,

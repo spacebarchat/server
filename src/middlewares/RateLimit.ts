@@ -8,7 +8,7 @@ export function RateLimit({ count = 10, timespan = 1000 * 5, name = "/" }) {
 		// TODO: use new db mongoose models
 		/*
 
-		let id = req.userid || getIpAdress(req);
+		let id = req.user_id || getIpAdress(req);
 
 		const limit: { count: number; start: number } = (await db.data.ratelimit.routes[name][id].get()) || {
 			count: 0,

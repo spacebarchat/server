@@ -170,7 +170,7 @@ router.post(
 		// @ts-ignore
 		const user: User = {
 			id: Snowflake.generate(),
-			created_at: Date.now(),
+			created_at: new Date(),
 			username: adjusted_username,
 			discriminator,
 			avatar: null,
@@ -182,7 +182,7 @@ router.post(
 			flags: 0n, // TODO: generate default flags
 			hash: adjusted_password,
 			guilds: [],
-			valid_tokens_since: Date.now(),
+			valid_tokens_since: new Date(),
 			user_settings: {
 				afk_timeout: 300,
 				allow_accessibility_detection: true,

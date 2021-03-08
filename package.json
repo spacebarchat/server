@@ -36,6 +36,7 @@
 		"missing-native-js-functions": "^1.2.4",
 		"mongodb": "^3.6.4",
 		"mongoose-long": "^0.3.2",
+		"multer": "^1.4.2",
 		"patch-package": "^6.2.2"
 	},
 	"devDependencies": {
@@ -43,6 +44,7 @@
 		"@types/express": "^4.17.9",
 		"@types/i18next-node-fs-backend": "^2.1.0",
 		"@types/jsonwebtoken": "^8.5.0",
+		"@types/multer": "^1.4.5",
 		"@types/node": "^14.14.22",
 		"@types/node-fetch": "^2.5.7",
 		"0x": "^4.10.2",

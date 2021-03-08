@@ -13,7 +13,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	const body = req.body as GuildCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
-	const user = await getPublicUser(req.userid, { guilds: true });
+	const user = await getPublicUser(req.user_id, { guilds: true });
 
 	if (user.guilds.length >= maxGuilds) {
 		throw new HTTPError(`Maximum number of guilds reached ${maxGuilds}`, 403);
@@ -23,7 +23,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	const guild: Guild = {
 		name: body.name,
 		region: body.region || "en-US",
-		owner_id: req.userid,
+		owner_id: req.user_id,
 		icon: undefined,
 		afk_channel_id: undefined,
 		afk_timeout: 300,
@@ -73,7 +73,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			tags: null,
 		}).save(),
 	]);
-	await addMember(req.userid, guild_id, { guild });
+	await addMember(req.user_id, guild_id, { guild });
 
 	res.status(201).json({ id: guild.id });
 });

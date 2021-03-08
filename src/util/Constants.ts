@@ -32,9 +32,9 @@ export const Endpoints = {
 			Emoji: (emojiID: string, format = "png") => `${root}/emojis/${emojiID}.${format}`,
 			Asset: (name: string) => `${root}/assets/${name}`,
 			DefaultAvatar: (discriminator: string) => `${root}/embed/avatars/${discriminator}.png`,
-			Avatar: (userID: string, hash: string, format = "webp", size: number, dynamic = false) => {
+			Avatar: (user_id: string, hash: string, format = "webp", size: number, dynamic = false) => {
 				if (dynamic) format = hash.startsWith("a_") ? "gif" : format;
-				return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
+				return makeImageUrl(`${root}/avatars/${user_id}/${hash}`, { format, size });
 			},
 			Banner: (guildID: string, hash: string, format = "webp", size: number) =>
 				makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
@@ -42,27 +42,18 @@ export const Endpoints = {
 				if (dynamic) format = hash.startsWith("a_") ? "gif" : format;
 				return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
 			},
-			AppIcon: (
-				clientID: string,
-				hash: string,
-				{ format = "webp", size }: { format?: string; size?: number } = {}
-			) => makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
-			AppAsset: (
-				clientID: string,
-				hash: string,
-				{ format = "webp", size }: { format?: string; size?: number } = {}
-			) => makeImageUrl(`${root}/app-assets/${clientID}/${hash}`, { size, format }),
+			AppIcon: (clientID: string, hash: string, { format = "webp", size }: { format?: string; size?: number } = {}) =>
+				makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
+			AppAsset: (clientID: string, hash: string, { format = "webp", size }: { format?: string; size?: number } = {}) =>
+				makeImageUrl(`${root}/app-assets/${clientID}/${hash}`, { size, format }),
 			GDMIcon: (channelID: string, hash: string, format = "webp", size: number) =>
 				makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
 			Splash: (guildID: string, hash: string, format = "webp", size: number) =>
 				makeImageUrl(`${root}/splashes/${guildID}/${hash}`, { size, format }),
 			DiscoverySplash: (guildID: string, hash: string, format = "webp", size: number) =>
 				makeImageUrl(`${root}/discovery-splashes/${guildID}/${hash}`, { size, format }),
-			TeamIcon: (
-				teamID: string,
-				hash: string,
-				{ format = "webp", size }: { format?: string; size?: number } = {}
-			) => makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
+			TeamIcon: (teamID: string, hash: string, { format = "webp", size }: { format?: string; size?: number } = {}) =>
+				makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
 		};
 	},
 	invite: (root: string, code: string) => `${root}/${code}`,
@@ -346,9 +337,7 @@ export const MessageTypes = [
  * * REPLY
  * @typedef {string} SystemMessageType
  */
-export const SystemMessageTypes = MessageTypes.filter(
-	(type: string | null) => type && type !== "DEFAULT" && type !== "REPLY"
-);
+export const SystemMessageTypes = MessageTypes.filter((type: string | null) => type && type !== "DEFAULT" && type !== "REPLY");
 
 /**
  * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>

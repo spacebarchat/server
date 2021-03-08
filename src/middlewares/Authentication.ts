@@ -7,7 +7,7 @@ export const NO_AUTHORIZATION_ROUTES = ["/api/v8/auth/login", "/api/v8/auth/regi
 declare global {
 	namespace Express {
 		interface Request {
-			userid: any;
+			user_id: any;
 			token: any;
 		}
 	}
@@ -22,7 +22,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 		const decoded: any = await checkToken(req.headers.authorization);
 
 		req.token = decoded;
-		req.userid = BigInt(decoded.id);
+		req.user_id = BigInt(decoded.id);
 		return next();
 	} catch (error) {
 		return next(new HTTPError(error.toString(), 400));

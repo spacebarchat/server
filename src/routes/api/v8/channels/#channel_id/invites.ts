@@ -12,7 +12,7 @@ import { getPermission, ChannelModel, InviteModel, InviteCreateEvent } from "fos
 const router: Router = Router();
 
 router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) => {
-	const usID = req.userid;
+	const usID = req.user_id;
 	const chID = BigInt(req.params.channel_id);
 	const channel = await ChannelModel.findOne({ id: chID }).exec();
 
@@ -33,7 +33,7 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 		uses: 0,
 		max_uses: req.body.max_uses,
 		max_age: req.body.max_age,
-		created_at: Date.now(),
+		created_at: new Date(),
 		guild_id: guID,
 		channel_id: chID,
 		inviter_id: usID,
