@@ -195,7 +195,7 @@ export interface GuildMemberUpdateEvent extends Event {
 		roles: bigint[];
 		user: User;
 		nick?: string;
-		joined_at: number;
+		joined_at: Date;
 		premium_since?: number;
 		pending?: boolean;
 	};

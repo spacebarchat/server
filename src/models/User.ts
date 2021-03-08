@@ -19,14 +19,14 @@ export interface User {
 	level: string; // organization permission level (owner, moderator, user)
 	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
 	mfa_enabled: boolean; // if multi factor authentication is enabled
-	created_at: number; // registration date
+	created_at: Date; // registration date
 	verified: boolean; // if the user is offically verified
 	email?: string; // email of the user
 	flags: bigint; // UserFlags
 	public_flags: bigint;
 	hash: string; // hash of the password, salt is saved in password (bcrypt)
 	guilds: bigint[]; // array of guild ids the user is part of
-	valid_tokens_since: number; // all tokens with a previous issue date are invalid
+	valid_tokens_since: Date; // all tokens with a previous issue date are invalid
 	user_settings: UserSettings;
 	relationships: Relationship[];
 	connected_accounts: ConnectedAccount[];
@@ -128,14 +128,14 @@ export const UserSchema = new Schema({
 	system: Boolean,
 	nsfw_allowed: Boolean,
 	mfa_enabled: Boolean,
-	created_at: Number,
+	created_at: Date,
 	verified: Boolean,
 	email: String,
 	flags: Types.Long, // TODO: automatically convert Types.Long to BitField of UserFlags
 	public_flags: Types.Long,
 	hash: String, // hash of the password, salt is saved in password (bcrypt)
 	guilds: [Types.Long], // array of guild ids the user is part of
-	valid_tokens_since: Number, // all tokens with a previous issue date are invalid
+	valid_tokens_since: Date, // all tokens with a previous issue date are invalid
 	user_settings: {
 		afk_timeout: Number,
 		allow_accessibility_detection: Boolean,

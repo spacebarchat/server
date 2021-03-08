@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MessageModel = exports.MessageSchema = exports.MessageType = void 0;
+exports.MessageModel = exports.MessageSchema = exports.Embed = exports.EmbedImage = exports.Attachment = exports.MessageType = void 0;
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
 const User_1 = require("./User");
@@ -29,7 +29,7 @@ var MessageType;
     MessageType[MessageType["REPLY"] = 19] = "REPLY";
     MessageType[MessageType["APPLICATION_COMMAND"] = 20] = "APPLICATION_COMMAND";
 })(MessageType = exports.MessageType || (exports.MessageType = {}));
-const Attachment = {
+exports.Attachment = {
     id: mongoose_1.Types.Long,
     filename: String,
     size: Number,
@@ -38,7 +38,7 @@ const Attachment = {
     height: Number,
     width: Number,
 };
-const EmbedImage = {
+exports.EmbedImage = {
     url: String,
     proxy_url: String,
     height: Number,
@@ -52,7 +52,7 @@ const Reaction = {
         animated: Boolean,
     },
 };
-const Embed = {
+exports.Embed = {
     title: String,
     type: String,
     description: String,
@@ -64,9 +64,9 @@ const Embed = {
         icon_url: String,
         proxy_icon_url: String,
     },
-    image: EmbedImage,
-    thumbnail: EmbedImage,
-    video: EmbedImage,
+    image: exports.EmbedImage,
+    thumbnail: exports.EmbedImage,
+    video: exports.EmbedImage,
     provider: {
         name: String,
         url: String,
@@ -100,8 +100,8 @@ exports.MessageSchema = new mongoose_1.Schema({
     mention_user_ids: [mongoose_1.Types.Long],
     mention_role_ids: [mongoose_1.Types.Long],
     mention_channel_ids: [mongoose_1.Types.Long],
-    attachments: [Attachment],
-    embeds: [Embed],
+    attachments: [exports.Attachment],
+    embeds: [exports.Embed],
     reactions: [Reaction],
     nonce: mongoose_1.Schema.Types.Mixed,
     pinned: Boolean,

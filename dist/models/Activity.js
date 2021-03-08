@@ -6,7 +6,7 @@ exports.Activity = {
     name: String,
     type: Number,
     url: String,
-    created_at: Number,
+    created_at: Date,
     timestamps: [
         {
             start: Number,

@@ -4,7 +4,7 @@ import { UserModel } from "./User";
 import { MemberModel } from "./Member";
 import { RoleModel } from "./Role";
 
-export interface Message extends Document {
+export interface Message {
 	id: bigint;
 	channel_id: bigint;
 	guild_id?: bigint;
@@ -36,6 +36,10 @@ export interface Message extends Document {
 		channel_id?: bigint;
 		guild_id?: bigint;
 	};
+}
+
+export interface MessageDocument extends Document, Message {
+	id: bigint;
 }
 
 export enum MessageType {
@@ -126,7 +130,7 @@ export interface AllowedMentions {
 	replied_user?: boolean;
 }
 
-const Attachment = {
+export const Attachment = {
 	id: Types.Long, // attachment id
 	filename: String, // name of file attached
 	size: Number, // size of file in bytes
@@ -136,7 +140,7 @@ const Attachment = {
 	width: Number, // width of file (if image)
 };
 
-const EmbedImage = {
+export const EmbedImage = {
 	url: String,
 	proxy_url: String,
 	height: Number,
@@ -264,4 +268,4 @@ MessageSchema.virtual("mention_channels", {
 // });
 
 // @ts-ignore
-export const MessageModel = db.model<Message>("Message", MessageSchema, "messages");
+export const MessageModel = db.model<MessageDocument>("Message", MessageSchema, "messages");

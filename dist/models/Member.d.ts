@@ -6,7 +6,7 @@ export interface Member {
     guild_id: bigint;
     nick?: string;
     roles: bigint[];
-    joined_at: number;
+    joined_at: Date;
     premium_since?: number;
     deaf: boolean;
     mute: boolean;

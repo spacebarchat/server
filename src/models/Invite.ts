@@ -7,7 +7,7 @@ export interface Invite extends Document {
 	uses: number;
 	max_uses: number;
 	max_age: number;
-	created_at: number;
+	created_at: Date;
 	guild_id: bigint;
 	channel_id: bigint;
 	inviter_id: bigint;
@@ -24,7 +24,7 @@ export const InviteSchema = new Schema({
 	uses: Number,
 	max_uses: Number,
 	max_age: Number,
-	created_at: Number,
+	created_at: Date,
 	guild_id: Types.Long,
 	channel_id: Types.Long,
 	inviter_id: Types.Long,

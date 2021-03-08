@@ -12,7 +12,7 @@ exports.InviteSchema = new mongoose_1.Schema({
     uses: Number,
     max_uses: Number,
     max_age: Number,
-    created_at: Number,
+    created_at: Date,
     guild_id: mongoose_1.Types.Long,
     channel_id: mongoose_1.Types.Long,
     inviter_id: mongoose_1.Types.Long,

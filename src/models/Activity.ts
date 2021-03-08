@@ -14,7 +14,7 @@ export interface Activity {
 	name: string;
 	type: ActivityType;
 	url?: string;
-	created_at: number;
+	created_at: Date;
 	timestamps?: {
 		start: number;
 		end: number;
@@ -50,7 +50,7 @@ export const Activity = {
 	name: String,
 	type: Number,
 	url: String,
-	created_at: Number,
+	created_at: Date,
 	timestamps: [
 		{
 			start: Number,

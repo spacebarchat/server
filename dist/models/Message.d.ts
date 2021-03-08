@@ -1,6 +1,6 @@
 /// <reference path="../util/MongoBigInt.d.ts" />
-import { Schema, Document } from "mongoose";
-export interface Message extends Document {
+import { Schema, Types, Document } from "mongoose";
+export interface Message {
     id: bigint;
     channel_id: bigint;
     guild_id?: bigint;
@@ -32,6 +32,9 @@ export interface Message extends Document {
         channel_id?: bigint;
         guild_id?: bigint;
     };
+}
+export interface MessageDocument extends Document, Message {
+    id: bigint;
 }
 export declare enum MessageType {
     DEFAULT = 0,
@@ -113,5 +116,66 @@ export interface AllowedMentions {
     users?: bigint[];
     replied_user?: boolean;
 }
+export declare const Attachment: {
+    id: typeof Types.Long;
+    filename: StringConstructor;
+    size: NumberConstructor;
+    url: StringConstructor;
+    proxy_url: StringConstructor;
+    height: NumberConstructor;
+    width: NumberConstructor;
+};
+export declare const EmbedImage: {
+    url: StringConstructor;
+    proxy_url: StringConstructor;
+    height: NumberConstructor;
+    width: NumberConstructor;
+};
+export declare const Embed: {
+    title: StringConstructor;
+    type: StringConstructor;
+    description: StringConstructor;
+    url: StringConstructor;
+    timestamp: NumberConstructor;
+    color: NumberConstructor;
+    footer: {
+        text: StringConstructor;
+        icon_url: StringConstructor;
+        proxy_icon_url: StringConstructor;
+    };
+    image: {
+        url: StringConstructor;
+        proxy_url: StringConstructor;
+        height: NumberConstructor;
+        width: NumberConstructor;
+    };
+    thumbnail: {
+        url: StringConstructor;
+        proxy_url: StringConstructor;
+        height: NumberConstructor;
+        width: NumberConstructor;
+    };
+    video: {
+        url: StringConstructor;
+        proxy_url: StringConstructor;
+        height: NumberConstructor;
+        width: NumberConstructor;
+    };
+    provider: {
+        name: StringConstructor;
+        url: StringConstructor;
+    };
+    author: {
+        name: StringConstructor;
+        url: StringConstructor;
+        icon_url: StringConstructor;
+        proxy_icon_url: StringConstructor;
+    };
+    fields: {
+        name: StringConstructor;
+        value: StringConstructor;
+        inline: BooleanConstructor;
+    }[];
+};
 export declare const MessageSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
-export declare const MessageModel: import("mongoose").Model<Message>;
+export declare const MessageModel: import("mongoose").Model<MessageDocument>;

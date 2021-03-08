@@ -6,7 +6,7 @@ export interface Invite extends Document {
     uses: number;
     max_uses: number;
     max_age: number;
-    created_at: number;
+    created_at: Date;
     guild_id: bigint;
     channel_id: bigint;
     inviter_id: bigint;

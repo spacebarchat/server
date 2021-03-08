@@ -7,7 +7,7 @@ export interface Member {
 	guild_id: bigint;
 	nick?: string;
 	roles: bigint[];
-	joined_at: number;
+	joined_at: Date;
 	premium_since?: number;
 	deaf: boolean;
 	mute: boolean;
@@ -51,7 +51,7 @@ export const MemberSchema = new Schema({
 	guild_id: Types.Long,
 	nick: String,
 	roles: [Types.Long],
-	joined_at: Number,
+	joined_at: Date,
 	premium_since: Number,
 	deaf: Boolean,
 	mute: Boolean,

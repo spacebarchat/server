@@ -12,7 +12,7 @@ export interface Activity {
     name: string;
     type: ActivityType;
     url?: string;
-    created_at: number;
+    created_at: Date;
     timestamps?: {
         start: number;
         end: number;
@@ -47,7 +47,7 @@ export declare const Activity: {
     name: StringConstructor;
     type: NumberConstructor;
     url: StringConstructor;
-    created_at: NumberConstructor;
+    created_at: DateConstructor;
     timestamps: {
         start: NumberConstructor;
         end: NumberConstructor;

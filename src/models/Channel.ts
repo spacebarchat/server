@@ -37,7 +37,7 @@ export const ChannelModel = db.model<ChannelDocument>("Channel", ChannelSchema, 
 
 export interface Channel {
 	id: bigint;
-	created_at: number;
+	created_at: Date;
 	name: string;
 	type: number;
 }

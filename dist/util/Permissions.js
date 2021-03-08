@@ -92,7 +92,7 @@ async function getPermission(user_id, guild_id, channel_id, cache) {
     if (!guild)
         throw new Error("Guild not found");
     if (guild.owner_id === user_id)
-        return new Permissions("ADMINISTRATOR");
+        return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
     member = await Member_1.MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
     if (!member)
         throw new Error("Member not found");

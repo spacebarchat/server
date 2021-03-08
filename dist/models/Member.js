@@ -16,7 +16,7 @@ exports.MemberSchema = new mongoose_1.Schema({
     guild_id: mongoose_1.Types.Long,
     nick: String,
     roles: [mongoose_1.Types.Long],
-    joined_at: Number,
+    joined_at: Date,
     premium_since: Number,
     deaf: Boolean,
     mute: Boolean,

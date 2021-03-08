@@ -9,7 +9,7 @@ export declare const ChannelSchema: Schema<Document<any>, import("mongoose").Mod
 export declare const ChannelModel: import("mongoose").Model<ChannelDocument>;
 export interface Channel {
     id: bigint;
-    created_at: number;
+    created_at: Date;
     name: string;
     type: number;
 }

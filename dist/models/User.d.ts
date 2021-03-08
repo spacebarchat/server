@@ -18,14 +18,14 @@ export interface User {
     level: string;
     nsfw_allowed: boolean;
     mfa_enabled: boolean;
-    created_at: number;
+    created_at: Date;
     verified: boolean;
     email?: string;
     flags: bigint;
     public_flags: bigint;
     hash: string;
     guilds: bigint[];
-    valid_tokens_since: number;
+    valid_tokens_since: Date;
     user_settings: UserSettings;
     relationships: Relationship[];
     connected_accounts: ConnectedAccount[];
