@@ -8,6 +8,8 @@ import { check } from "../../../../../../util/instanceOf";
 const router: Router = Router();
 
 export default router;
+
+// TODO: should users be able to bulk delete messages or only bots?
 // TODO: should this request fail, if you provide messages older than 14 days/invalid ids?
 // https://discord.com/developers/docs/resources/channel#bulk-delete-messages
 router.post("/", check({ messages: [BigInt] }), async (req, res) => {
@@ -15,7 +17,7 @@ router.post("/", check({ messages: [BigInt] }), async (req, res) => {
 	const channel = await ChannelModel.findOne({ id: channel_id }, { permission_overwrites: true, guild_id: true }).exec();
 	if (!channel?.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
 
-	const permission = await getPermission(req.userid, channel?.guild_id, channel_id, { channel });
+	const permission = await getPermission(req.user_id, channel?.guild_id, channel_id, { channel });
 	if (!permission.has("MANAGE_MESSAGES")) throw new HTTPError("You are missing the MANAGE_MESSAGES permissions");
 
 	const { maxBulkDelete } = Config.get().limits.message;
