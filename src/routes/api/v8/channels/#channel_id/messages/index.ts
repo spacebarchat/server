@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { ChannelModel, ChannelType, getPermission, Message, MessageCreateEvent, MessageModel, Snowflake } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
-import { MessageCreateSchema } from "../../../../../../schema/Message";
-import { check, instanceOf, Length } from "../../../../../../util/instanceOf";
-import { PublicUserProjection } from "../../../../../../util/User";
+import { MessageCreateSchema } from "@schema/Message";
+import { check, instanceOf, Length } from "@util/instanceOf";
+import { PublicUserProjection } from "@util/User";
 import multer from "multer";
-import { emitEvent } from "../../../../../../util/Event";
+import { emitEvent } from "@util/Event";
 const router: Router = Router();
 
 export default router;
@@ -120,7 +120,7 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		timestamp: new Date(),
 	};
 
-	await new MessageModel().save();
+	await new MessageModel(message).save();
 
 	await emitEvent({ event: "MESSAGE_CREATE", channel_id, data: {} } as MessageCreateEvent);
 });
