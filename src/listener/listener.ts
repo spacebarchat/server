@@ -8,11 +8,11 @@ import WebSocket from "../util/WebSocket";
 // ? How to resubscribe MongooseCache for new dm channel events? Maybe directly send them to the user_id regardless of the channel_id? -> max overhead of creating 10 events in database for dm user group. Or a new field in event -> recipient_ids?
 
 export async function setupListener(this: WebSocket) {
-	const user = await UserModel.findOne({ id: this.userid }).exec();
+	const user = await UserModel.findOne({ id: this.user_id }).exec();
 
 	const eventStream = new MongooseCache(
 		db.collection("events"),
-		[{ $match: { $or: [{ guild_id: { $in: user.guilds } }, { user_id: this.userid }] } }],
+		[{ $match: { $or: [{ guild_id: { $in: user.guilds } }, { user_id: this.user_id }] } }],
 		{ onlyEvents: true }
 	);
 	await eventStream.init();
@@ -27,7 +27,7 @@ export async function dispatch(this: WebSocket, document: Event) {
 	if (document.guild_id) {
 		if (!this.intents.has("GUILDS")) return;
 		const channel_id = document.channel_id || document.data?.channel_id;
-		permission = await getPermission(this.userid, document.guild_id, channel_id);
+		permission = await getPermission(this.user_id, document.guild_id, channel_id);
 	}
 
 	console.log("event", document);

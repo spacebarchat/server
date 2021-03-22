@@ -14,7 +14,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		const identify: IdentifySchema = data.d;
 
 		var decoded = await checkToken(identify.token);
-		this.userid = decoded.id;
+		this.user_id = decoded.id;
 		this.intents = new Intents(identify.intents);
 
 		await setupListener.call(this);

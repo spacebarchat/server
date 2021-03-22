@@ -30,7 +30,8 @@ ws.on("message", (buffer) => {
 			send({
 				op: 2,
 				d: {
-					token: "",
+					token:
+						"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxMTY0MjkxNzQzMjA2NjA0OCIsImlhdCI6MTYxMzU4MTE1MX0.7Qj_z2lYIgJ0rc7NfGtpW5DKGqecQfv1mLpoBUQHKDc",
 					intents: 0n,
 					properties: {},
 				},

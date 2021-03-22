@@ -3,7 +3,7 @@ import WS, { Server, Data } from "ws";
 
 interface WebSocket extends WS {
 	version: number;
-	userid: bigint;
+	user_id: bigint;
 	encoding: "etf" | "json";
 	compress?: "zlib-stream";
 	heartbeatTimeout: NodeJS.Timeout;

@@ -1,3 +1,6 @@
+import "missing-native-js-functions";
+import dotenv from "dotenv";
+dotenv.config();
 import { db } from "fosscord-server-util";
 import { Server as WebSocketServer } from "ws";
 import { Connection } from "./events/Connection";
@@ -19,7 +22,8 @@ export class Server {
 		// @ts-ignore
 		await (db as Promise<Connection>);
 		await this.setupSchema();
+		console.log("[DB] connected");
 		await Config.init();
-		console.log("listening");
+		console.log("[Gateway] online");
 	}
 }
