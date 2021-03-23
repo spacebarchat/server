@@ -111,6 +111,9 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		// TODO: should it be checked if the message exists?
 	}
 
+	const embeds = [];
+	if (body.embed) embeds.push(body.embed);
+
 	const message: Message = {
 		id: Snowflake.generate(),
 		channel_id,
@@ -118,9 +121,11 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		author_id: req.user_id,
 		content: req.body,
 		timestamp: new Date(),
+		embeds,
+		attachments: [],
 	};
 
-	await new MessageModel().save();
+	await new MessageModel(message).save();
 
 	await emitEvent({ event: "MESSAGE_CREATE", channel_id, data: {} } as MessageCreateEvent);
 });
