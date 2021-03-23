@@ -1,4 +1,4 @@
-import { Config } from "fosscord-server-util";
+import { Config, Snowflake } from "fosscord-server-util";
 import crypto from "crypto";
 import fs from "fs";
 
@@ -22,6 +22,9 @@ export interface RateLimit {
 }
 
 export interface DefaultOptions {
+	general: {
+		instance_id: bigint;
+	};
 	permissions: {
 		user: {
 			createGuilds: boolean;
@@ -102,6 +105,9 @@ export interface DefaultOptions {
 }
 
 export const DefaultOptions: DefaultOptions = {
+	general: {
+		instance_id: Snowflake.generate(),
+	},
 	permissions: {
 		user: {
 			createGuilds: true,

@@ -1,11 +1,11 @@
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 
-import { check } from "../../../../../util/instanceOf";
-import { random } from "../../../../../util/RandomInviteID";
-import { emitEvent } from "../../../../../util/Event";
+import { check } from "@util/instanceOf";
+import { random } from "@util/RandomInviteID";
+import { emitEvent } from "@util/Event";
 
-import { InviteCreateSchema } from "../../../../../schema/Invite";
+import { InviteCreateSchema } from "@schema/Invite";
 
 import { getPermission, ChannelModel, InviteModel, InviteCreateEvent } from "fosscord-server-util";
 
