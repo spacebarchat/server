@@ -111,7 +111,9 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		// TODO: should it be checked if the message exists?
 	}
 
-	// TODO: properly build message object
+	const embeds = [];
+	if (body.embed) embeds.push(body.embed);
+
 	const message: Message = {
 		id: Snowflake.generate(),
 		channel_id,
