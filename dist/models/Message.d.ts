@@ -8,8 +8,8 @@ export interface Message {
     webhook_id?: bigint;
     application_id: bigint;
     content: string;
-    timestamp: number;
-    edited_timestamp: number;
+    timestamp: Date;
+    edited_timestamp: Date;
     tts: boolean;
     mention_everyone: boolean;
     mention_user_ids: bigint[];
@@ -69,7 +69,7 @@ export interface Embed {
     type?: string;
     description?: string;
     url?: string;
-    timestamp?: number;
+    timestamp?: Date;
     color?: number;
     footer?: {
         text: string;
@@ -136,7 +136,7 @@ export declare const Embed: {
     type: StringConstructor;
     description: StringConstructor;
     url: StringConstructor;
-    timestamp: NumberConstructor;
+    timestamp: DateConstructor;
     color: NumberConstructor;
     footer: {
         text: StringConstructor;
