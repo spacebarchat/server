@@ -6,20 +6,20 @@ export interface Message {
     guild_id?: bigint;
     author_id?: bigint;
     webhook_id?: bigint;
-    application_id: bigint;
-    content: string;
+    application_id?: bigint;
+    content?: string;
     timestamp: Date;
-    edited_timestamp: Date;
-    tts: boolean;
-    mention_everyone: boolean;
+    edited_timestamp?: Date;
+    tts?: boolean;
+    mention_everyone?: boolean;
     mention_user_ids: bigint[];
     mention_role_ids: bigint[];
     mention_channels_ids: bigint[];
     attachments: Attachment[];
     embeds: Embed[];
-    reactions?: Reaction[];
+    reactions: Reaction[];
     nonce?: string | number;
-    pinned: boolean;
+    pinned?: boolean;
     type: MessageType;
     activity?: {
         type: number;
