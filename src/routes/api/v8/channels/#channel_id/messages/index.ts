@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { ChannelModel, ChannelType, getPermission, Message, MessageCreateEvent, MessageModel, Snowflake } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
-import { MessageCreateSchema } from "@schema/Message";
-import { check, instanceOf, Length } from "@util/instanceOf";
-import { PublicUserProjection } from "@util/User";
+import { MessageCreateSchema } from "../../../../../../schema/Message";
+import { check, instanceOf, Length } from "../../../../../../util/instanceOf";
+import { PublicUserProjection } from "../../../../../../util/User";
 import multer from "multer";
-import { emitEvent } from "@util/Event";
+import { emitEvent } from "../../../../../../util/Event";
 const router: Router = Router();
 
 export default router;
@@ -111,6 +111,7 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		// TODO: should it be checked if the message exists?
 	}
 
+	// TODO: properly build message object
 	const message: Message = {
 		id: Snowflake.generate(),
 		channel_id,
@@ -118,6 +119,13 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		author_id: req.user_id,
 		content: req.body,
 		timestamp: new Date(),
+		mention_channels_ids: [],
+		mention_role_ids: [],
+		mention_user_ids: [],
+		attachments: [],
+		embeds: [],
+		reactions: [],
+		type: 0,
 	};
 
 	await new MessageModel(message).save();

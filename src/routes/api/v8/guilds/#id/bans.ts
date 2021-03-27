@@ -1,12 +1,12 @@
 import { Request, Response, Router } from "express";
 import { BanModel, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, GuildModel } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
-import { getIpAdress } from "@middlewares/GlobalRateLimit";
-import { BanCreateSchema } from "@schema/Ban";
-import { emitEvent } from "@util/Event";
-import { check } from "@util/instanceOf";
-import { removeMember } from "@util/Member";
-import { getPublicUser } from "@util/User";
+import { getIpAdress } from "../../../../../middlewares/GlobalRateLimit";
+import { BanCreateSchema } from "../../../../../schema/Ban";
+import { emitEvent } from "../../../../../util/Event";
+import { check } from "../../../../../util/instanceOf";
+import { removeMember } from "../../../../../util/Member";
+import { getPublicUser } from "../../../../../util/User";
 
 const router: Router = Router();
 
