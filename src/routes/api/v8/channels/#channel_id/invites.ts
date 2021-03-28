@@ -45,4 +45,23 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 	res.status(201).send(invite);
 });
 
+router.get("/", async (req: Request, res: Response) => {
+	const usID = req.user_id;
+	const chID = BigInt(req.params.channel_id);
+	const channel = await ChannelModel.findOne({ id: chID }).exec();
+
+	if (!channel || !channel.guild_id) {
+		throw new HTTPError("This channel doesn't exist", 404);
+	}
+	const { guild_id: guID } = channel;
+	const permission = await getPermission(usID, guID);
+
+	if (!permission.has("MANAGE_CHANNELS")) {
+		throw new HTTPError("You aren't authorised to access this endpoint", 401);
+	}
+
+	const invites = await InviteModel.find({ guild_id: guID }).exec();
+	res.status(200).send(invites);
+});
+
 export default router;
