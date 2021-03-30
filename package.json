@@ -4,7 +4,8 @@
 	"description": "This repository contains the HTTP API Server",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "jest",
+		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/",
 		"build": "tsc -b .",
 		"postinstall": "patch-package"
@@ -21,6 +22,7 @@
 	},
 	"homepage": "https://github.com/fosscord/fosscord-api#readme",
 	"dependencies": {
+		"@types/jest": "^26.0.22",
 		"bcrypt": "^5.0.0",
 		"body-parser": "^1.19.0",
 		"dotenv": "^8.2.0",
@@ -49,6 +51,7 @@
 		"@types/node-fetch": "^2.5.7",
 		"@zerollup/ts-transform-paths": "^1.7.18",
 		"0x": "^4.10.2",
+		"jest": "^26.6.3",
 		"node-fetch": "^2.6.1",
 		"ts-node": "^9.1.1",
 		"typescript": "^4.1.2"
