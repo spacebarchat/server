@@ -12,9 +12,9 @@ import {
 	UserModel,
 } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
-import { GuildUpdateSchema } from "../../../../../schema/Guild";
-import { emitEvent } from "../../../../../util/Event";
-import { check } from "../../../../../util/instanceOf";
+import { GuildUpdateSchema } from "../../../schema/Guild";
+import { emitEvent } from "../../../util/Event";
+import { check } from "../../../util/instanceOf";
 
 const router = Router();
 

@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 import { GuildModel, MemberModel, UserModel, GuildDeleteEvent, GuildMemberRemoveEvent } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "../../../../../util/Event";
-import { getPublicUser } from "../../../../../util/User";
+import { emitEvent } from "../../../util/Event";
+import { getPublicUser } from "../../../util/User";
 
 const router: Router = Router();
 

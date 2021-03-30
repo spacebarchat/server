@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { ChannelModel, ChannelType, GuildModel, Snowflake } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
-import { ChannelModifySchema } from "../../../../../schema/Channel";
-import { check } from "../../../../../util/instanceOf";
+import { ChannelModifySchema } from "../../../schema/Channel";
+import { check } from "../../../util/instanceOf";
 const router = Router();
 
 router.get("/", async (req, res) => {

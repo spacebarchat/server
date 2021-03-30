@@ -1,11 +1,11 @@
 import { Router, Request, Response } from "express";
 import { RoleModel, GuildModel, Snowflake, Guild } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
-import { check } from "./../../../../util/instanceOf";
-import { GuildCreateSchema } from "../../../../schema/Guild";
-import Config from "../../../../util/Config";
-import { getPublicUser } from "../../../../util/User";
-import { addMember } from "../../../../util/Member";
+import { check } from "./../../util/instanceOf";
+import { GuildCreateSchema } from "../../schema/Guild";
+import Config from "../../util/Config";
+import { getPublicUser } from "../../util/User";
+import { addMember } from "../../util/Member";
 
 const router: Router = Router();
 

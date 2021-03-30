@@ -1,9 +1,9 @@
 import { Request, Response, Router } from "express";
 import { GuildModel, MemberModel } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
-import { instanceOf, Length } from "../../../../../util/instanceOf";
-import { PublicMemberProjection } from "../../../../../util/Member";
-import { PublicUserProjection } from "../../../../../util/User";
+import { instanceOf, Length } from "../../../util/instanceOf";
+import { PublicMemberProjection } from "../../../util/Member";
+import { PublicUserProjection } from "../../../util/User";
 
 const router = Router();
 
