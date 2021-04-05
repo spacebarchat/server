@@ -404,6 +404,49 @@ export interface InteractionCreateEvent extends Event {
 
 // located in collection events
 
+export enum EVENTEnum {
+	Ready = "READY",
+	ChannelCreate = "CHANNEL_CREATE",
+	ChannelUpdate = "CHANNEL_UPDATE",
+	ChannelDelete = "CHANNEL_DELETE",
+	ChannelPinsUpdate = "CHANNEL_PINS_UPDATE",
+	GuildCreate = "GUILD_CREATE",
+	GuildUpdate = "GUILD_UPDATE",
+	GuildDelete = "GUILD_DELETE",
+	GuildBanAdd = "GUILD_BAN_ADD",
+	GuildBanRemove = "GUILD_BAN_REMOVE",
+	GuildEmojUpdate = "GUILD_EMOJI_UPDATE",
+	GuildIntegrationsUpdate = "GUILD_INTEGRATIONS_UPDATE",
+	GuildMemberAdd = "GUILD_MEMBER_ADD",
+	GuildMemberRempve = "GUILD_MEMBER_REMOVE",
+	GuildMemberUpdate = "GUILD_MEMBER_UPDATE",
+	GuildMemberSpeaking = "GUILD_MEMBER_SPEAKING",
+	GuildMembersChunk = "GUILD_MEMBERS_CHUNK",
+	GuildRoleCreate = "GUILD_ROLE_CREATE",
+	GuildRoleDelete = "GUILD_ROLE_DELETE",
+	GuildRoleUpdate = "GUILD_ROLE_UPDATE",
+	InviteCreate = "INVITE_CREATE",
+	InviteDelete = "INVITE_DELETE",
+	MessageCreate = "MESSAGE_CREATE",
+	MessageUpdate = "MESSAGE_UPDATE",
+	MessageDelete = "MESSAGE_DELETE",
+	MessageDeleteBulk = "MESSAGE_DELETE_BULK",
+	MessageReactionAdd = "MESSAGE_REACTION_ADD",
+	MessageReactionRemove = "MESSAGE_REACTION_REMOVE",
+	MessageReactionRemoveAll = "MESSAGE_REACTION_REMOVE_ALL",
+	MessageReactionRemoveEmoji = "MESSAGE_REACTION_REMOVE_EMOJI",
+	PresenceUpdate = "PRESENCE_UPDATE",
+	TypingStart = "TYPING_START",
+	UserUpdate = "USER_UPDATE",
+	WebhooksUpdate = "WEBHOOKS_UPDATE",
+	InteractionCreate = "INTERACTION_CREATE",
+	VoiceStateUpdate = "VOICE_STATE_UPDATE",
+	VoiceServerUpdate = "VOICE_SERVER_UPDATE",
+	ApplicationCommandCreate = "APPLICATION_COMMAND_CREATE",
+	ApplicationCommandUpdate = "APPLICATION_COMMAND_UPDATE",
+	ApplicationCommandDelete = "APPLICATION_COMMAND_DELETE",
+}
+
 export type EVENT =
 	| "READY"
 	| "CHANNEL_CREATE"

@@ -353,5 +353,47 @@ export interface InteractionCreateEvent extends Event {
     event: "INTERACTION_CREATE";
     data: Interaction;
 }
+export declare enum EVENTEnum {
+    Ready = "READY",
+    ChannelCreate = "CHANNEL_CREATE",
+    ChannelUpdate = "CHANNEL_UPDATE",
+    ChannelDelete = "CHANNEL_DELETE",
+    ChannelPinsUpdate = "CHANNEL_PINS_UPDATE",
+    GuildCreate = "GUILD_CREATE",
+    GuildUpdate = "GUILD_UPDATE",
+    GuildDelete = "GUILD_DELETE",
+    GuildBanAdd = "GUILD_BAN_ADD",
+    GuildBanRemove = "GUILD_BAN_REMOVE",
+    GuildEmojUpdate = "GUILD_EMOJI_UPDATE",
+    GuildIntegrationsUpdate = "GUILD_INTEGRATIONS_UPDATE",
+    GuildMemberAdd = "GUILD_MEMBER_ADD",
+    GuildMemberRempve = "GUILD_MEMBER_REMOVE",
+    GuildMemberUpdate = "GUILD_MEMBER_UPDATE",
+    GuildMemberSpeaking = "GUILD_MEMBER_SPEAKING",
+    GuildMembersChunk = "GUILD_MEMBERS_CHUNK",
+    GuildRoleCreate = "GUILD_ROLE_CREATE",
+    GuildRoleDelete = "GUILD_ROLE_DELETE",
+    GuildRoleUpdate = "GUILD_ROLE_UPDATE",
+    InviteCreate = "INVITE_CREATE",
+    InviteDelete = "INVITE_DELETE",
+    MessageCreate = "MESSAGE_CREATE",
+    MessageUpdate = "MESSAGE_UPDATE",
+    MessageDelete = "MESSAGE_DELETE",
+    MessageDeleteBulk = "MESSAGE_DELETE_BULK",
+    MessageReactionAdd = "MESSAGE_REACTION_ADD",
+    MessageReactionRemove = "MESSAGE_REACTION_REMOVE",
+    MessageReactionRemoveAll = "MESSAGE_REACTION_REMOVE_ALL",
+    MessageReactionRemoveEmoji = "MESSAGE_REACTION_REMOVE_EMOJI",
+    PresenceUpdate = "PRESENCE_UPDATE",
+    TypingStart = "TYPING_START",
+    UserUpdate = "USER_UPDATE",
+    WebhooksUpdate = "WEBHOOKS_UPDATE",
+    InteractionCreate = "INTERACTION_CREATE",
+    VoiceStateUpdate = "VOICE_STATE_UPDATE",
+    VoiceServerUpdate = "VOICE_SERVER_UPDATE",
+    ApplicationCommandCreate = "APPLICATION_COMMAND_CREATE",
+    ApplicationCommandUpdate = "APPLICATION_COMMAND_UPDATE",
+    ApplicationCommandDelete = "APPLICATION_COMMAND_DELETE"
+}
 export declare type EVENT = "READY" | "CHANNEL_CREATE" | "CHANNEL_UPDATE" | "CHANNEL_DELETE" | "CHANNEL_PINS_UPDATE" | "GUILD_CREATE" | "GUILD_UPDATE" | "GUILD_DELETE" | "GUILD_BAN_ADD" | "GUILD_BAN_REMOVE" | "GUILD_EMOJI_UPDATE" | "GUILD_INTEGRATIONS_UPDATE" | "GUILD_MEMBER_ADD" | "GUILD_MEMBER_REMOVE" | "GUILD_MEMBER_UPDATE" | "GUILD_MEMBER_SPEAKING" | "GUILD_MEMBERS_CHUNK" | "GUILD_ROLE_CREATE" | "GUILD_ROLE_DELETE" | "GUILD_ROLE_UPDATE" | "INVITE_CREATE" | "INVITE_DELETE" | "MESSAGE_CREATE" | "MESSAGE_UPDATE" | "MESSAGE_DELETE" | "MESSAGE_DELETE_BULK" | "MESSAGE_REACTION_ADD" | "MESSAGE_REACTION_REMOVE" | "MESSAGE_REACTION_REMOVE_ALL" | "MESSAGE_REACTION_REMOVE_EMOJI" | "PRESENCE_UPDATE" | "TYPING_START" | "USER_UPDATE" | "WEBHOOKS_UPDATE" | "INTERACTION_CREATE" | "VOICE_STATE_UPDATE" | "VOICE_SERVER_UPDATE" | "APPLICATION_COMMAND_CREATE" | "APPLICATION_COMMAND_UPDATE" | "APPLICATION_COMMAND_DELETE" | CUSTOMEVENTS;
 export declare type CUSTOMEVENTS = "INVALIDATED";
