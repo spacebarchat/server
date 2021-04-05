@@ -114,8 +114,6 @@ export function instanceOf(
 		}
 
 		if (typeof type === "object") {
-			if (typeof value !== "object") throw new FieldError("BASE_TYPE_OBJECT", req.t("common:field.BASE_TYPE_OBJECT"));
-
 			if (Array.isArray(type)) {
 				if (!Array.isArray(value)) throw new FieldError("BASE_TYPE_ARRAY", req.t("common:field.BASE_TYPE_ARRAY"));
 				if (!type.length) return true; // type array didn't specify any type
@@ -153,6 +151,8 @@ export function instanceOf(
 				if (value instanceof type) return true;
 				throw new FieldError("BASE_TYPE_CLASS", req.t("common:field.BASE_TYPE_CLASS", { type }));
 			}
+
+			if (typeof value !== "object") throw new FieldError("BASE_TYPE_OBJECT", req.t("common:field.BASE_TYPE_OBJECT"));
 
 			const diff = Object.keys(value).missing(
 				Object.keys(type).map((x) => (x.startsWith(OPTIONAL_PREFIX) ? x.slice(OPTIONAL_PREFIX.length) : x))

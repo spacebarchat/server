@@ -23,7 +23,8 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 		}
 
 		res.status(httpcode).json({ code: code, message, errors });
-		return next();
+
+		return;
 	} catch (error) {
 		console.error(error);
 		return res.status(500).json({ code: 500, message: "Internal Server Error" });
