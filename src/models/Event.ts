@@ -44,60 +44,62 @@ export interface InvalidatedEvent extends Event {
 
 // ! END Custom Events that shouldn't get sent to the client but processed by the server
 
+export interface ReadyEventData {
+	v: number;
+	user: Omit<User, "guilds" | "user_settings" | "valid_tokens_since" | "connected_accounts" | "relationships">;
+	private_channels: DMChannel[]; // this will be empty for bots
+	session_id: string; // resuming
+	guilds: Guild[];
+	analytics_token?: string;
+	connected_accounts?: ConnectedAccount[];
+	consents?: {
+		personalization?: {
+			consented?: boolean;
+		};
+	};
+	country_code?: string; // e.g. DE
+	friend_suggestion_count?: number;
+	geo_ordered_rtc_regions?: string[]; // ["europe","russie","india","us-east","us-central"]
+	experiments?: [number, number, number, number, number][];
+	guild_experiments?: [
+		// ? what are guild_experiments?
+		// this is the structure of it:
+		number,
+		null,
+		number,
+		[[number, { e: number; s: number }[]]],
+		[number, [[number, [number, number]]]],
+		{ b: number; k: bigint[] }[]
+	][];
+	guild_join_requests?: []; // ? what is this? this is new
+	shard?: [number, number];
+	user_settings?: UserSettings;
+	relationships?: [];
+	user_guild_settings?: {
+		entries: UserGuildSettings[];
+		version: number;
+		partial: boolean;
+	};
+	application?: {
+		id: bigint;
+		flags: bigint;
+	};
+
+	merged_members?: PublicMember[][]; // every guild member object for the current user
+	// probably all users who the user is in contact with
+	users?: {
+		avatar?: string;
+		discriminator: string;
+		id: bigint;
+		username: string;
+		bot: boolean;
+		public_flags: bigint;
+	}[];
+}
+
 export interface ReadyEvent extends Event {
 	event: "READY";
-	data: {
-		v: number;
-		user: Omit<User, "guilds" | "user_settings" | "valid_tokens_since" | "connected_accounts" | "relationships">;
-		private_channels: DMChannel[]; // this will be empty for bots
-		session_id: string; // resuming
-		guilds: Guild[];
-		analytics_token?: string;
-		connected_accounts?: ConnectedAccount[];
-		consents?: {
-			personalization?: {
-				consented?: boolean;
-			};
-		};
-		country_code?: string; // e.g. DE
-		friend_suggestion_count?: number;
-		geo_ordered_rtc_regions?: string[]; // ["europe","russie","india","us-east","us-central"]
-		experiments?: [number, number, number, number, number][];
-		guild_experiments?: [
-			// ? what are guild_experiments?
-			// this is the structure of it:
-			number,
-			null,
-			number,
-			[[number, { e: number; s: number }[]]],
-			[number, [[number, [number, number]]]],
-			{ b: number; k: bigint[] }[]
-		][];
-		guild_join_requests?: []; // ? what is this? this is new
-		shard?: [number, number];
-		user_settings?: UserSettings;
-		relationships?: [];
-		user_guild_settings?: {
-			entries: UserGuildSettings[];
-			version: number;
-			partial: boolean;
-		};
-		application?: {
-			id: bigint;
-			flags: bigint;
-		};
-
-		merged_members?: PublicMember[][]; // every guild member object for the current user
-		// probably all users who the user is in contact with
-		users?: {
-			avatar?: string;
-			discriminator: string;
-			id: bigint;
-			username: string;
-			bot: boolean;
-			public_flags: bigint;
-		}[];
-	};
+	data: ReadyEventData;
 }
 
 export interface ChannelCreateEvent extends Event {
