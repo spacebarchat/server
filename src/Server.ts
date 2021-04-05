@@ -10,6 +10,8 @@ import i18nextMiddleware, { I18next } from "i18next-http-middleware";
 import i18nextBackend from "i18next-node-fs-backend";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
+import { Router } from "express";
+import fetch from "node-fetch";
 
 export interface DiscordServerOptions extends ServerOptions {}
 
@@ -69,15 +71,52 @@ export class DiscordServer extends Server {
 			});
 		this.app.use(i18nextMiddleware.handle(i18next, {}));
 
+		const app = this.app;
+		const prefix = Router();
+		// @ts-ignore
+		this.app = prefix;
+
 		this.routes = await this.registerRoutes(__dirname + "/routes/");
+		app.use("/api/v8", prefix);
+		this.app = app;
 		this.app.use(ErrorHandler);
 		const indexHTML = await fs.readFile(__dirname + "/../client_test/index.html");
 
-		// this.app.get("*", (req, res) => {
-		// 	res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
-		// 	res.set("content-type", "text/html");
-		// 	res.send(indexHTML);
-		// });
+		this.app.get("/assets/:file", async (req, res) => {
+			delete req.headers.host;
+			const response = await fetch(`https://discord.com/assets/${req.params.file}`, {
+				// @ts-ignore
+				headers: {
+					...req.headers,
+				},
+			});
+			const buffer = await response.text();
+
+			response.headers.forEach((value, name) => {
+				if (
+					[
+						"content-length",
+						"content-security-policy",
+						"strict-transport-security",
+						"set-cookie",
+						"transfer-encoding",
+						"expect-ct",
+						"access-control-allow-origin",
+						"content-encoding",
+					].includes(name.toLowerCase())
+				) {
+					return;
+				}
+				res.set(name, value);
+			});
+
+			return res.send(buffer);
+		});
+		this.app.get("*", (req, res) => {
+			res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
+			res.set("content-type", "text/html");
+			res.send(indexHTML);
+		});
 		return super.start();
 	}
 }

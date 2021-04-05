@@ -14,6 +14,7 @@ declare global {
 }
 
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
+	if (!req.url.startsWith("/api")) return next();
 	if (NO_AUTHORIZATION_ROUTES.some((x) => req.url.startsWith(x))) return next();
 	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 	// TODO: check if user is banned/token expired
