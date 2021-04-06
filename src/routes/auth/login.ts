@@ -29,16 +29,7 @@ router.post(
 			{
 				$or: query,
 			},
-			{
-				id: true,
-				user_settings: {
-					locale: true,
-					theme: true,
-				},
-				user_data: {
-					hash: true,
-				},
-			}
+			`user_data.hash id user_settings.locale user_settings.theme`
 		).exec();
 
 		if (!user) {
