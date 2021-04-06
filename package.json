@@ -28,7 +28,7 @@
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
 		"express-validator": "^6.9.2",
-		"fosscord-server-util": "github:fosscord/fosscord-server-util",
+		"fosscord-server-util": "github:fosscord/fosscord-server-util#35da56a",
 		"i18next": "^19.8.5",
 		"i18next-http-middleware": "^3.1.0",
 		"i18next-node-fs-backend": "^2.1.3",
