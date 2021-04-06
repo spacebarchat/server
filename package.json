@@ -5,8 +5,9 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "npm run build:util && npm run build && node dist/",
 		"build": "tsc -b .",
-		"start": "npm run build && node dist/"
+		"build:util": "tsc -b ./node_modules/fosscord-server-util/"
 	},
 	"keywords": [],
 	"author": "",
