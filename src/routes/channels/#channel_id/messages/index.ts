@@ -98,6 +98,7 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();
 	if (!channel) throw new HTTPError("Channel not found", 404);
+	// TODO: are tts messages allowed in dm channels? should permission be checked?
 
 	if (channel.guild_id) {
 		const permissions = await getPermission(req.user_id, channel.guild_id, channel_id, { channel });
@@ -113,7 +114,7 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 
 	if (body.message_reference) {
 		if (body.message_reference.channel_id !== channel_id) throw new HTTPError("You can only reference messages from this channel");
-		// TODO: should it be checked if the message exists?
+		// TODO: should be checked if the referenced message exists?
 	}
 
 	const embeds = [];
@@ -124,7 +125,7 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		channel_id,
 		guild_id: channel.guild_id,
 		author_id: req.user_id,
-		content: req.body,
+		content: body.content,
 		timestamp: new Date(),
 		mention_channels_ids: [],
 		mention_role_ids: [],
@@ -133,6 +134,7 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		embeds: [],
 		reactions: [],
 		type: 0,
+		tts: body.tts,
 	};
 
 	await new MessageModel(message).save();
