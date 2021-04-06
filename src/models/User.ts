@@ -13,6 +13,7 @@ export interface User {
 	mobile: boolean; // if the user has mobile app installed
 	premium: boolean; // if user bought nitro
 	premium_type: number; // nitro level
+	date_of_birth: Date;
 	bot: boolean; // if user is bot
 	system: boolean; // shouldn't be used, the api sents this field type true, if the genetaed message comes from a system generated author
 	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
@@ -126,6 +127,7 @@ export const UserSchema = new Schema({
 	desktop: Boolean,
 	mobile: Boolean,
 	premium: Boolean,
+	date_of_birth: Date,
 	premium_type: Number,
 	bot: Boolean,
 	system: Boolean,

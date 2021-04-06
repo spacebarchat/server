@@ -12,6 +12,7 @@ export interface User {
     mobile: boolean;
     premium: boolean;
     premium_type: number;
+    date_of_birth: Date;
     bot: boolean;
     system: boolean;
     nsfw_allowed: boolean;
