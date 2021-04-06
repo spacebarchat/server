@@ -30,7 +30,7 @@ router.post(
 			{
 				$or: query,
 			},
-			`hash id user_settings.locale user_settings.theme`
+			`user_data.hash id user_settings.locale user_settings.theme`
 		).exec();
 
 		if (!user) {
