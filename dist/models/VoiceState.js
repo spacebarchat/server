@@ -7,9 +7,9 @@ exports.VoiceStateModel = exports.VoiceSateSchema = void 0;
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
 exports.VoiceSateSchema = new mongoose_1.Schema({
-    guild_id: mongoose_1.Types.Long,
-    channel_id: mongoose_1.Types.Long,
-    user_id: mongoose_1.Types.Long,
+    guild_id: String,
+    channel_id: String,
+    user_id: String,
     session_id: String,
     deaf: Boolean,
     mute: Boolean,

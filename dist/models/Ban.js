@@ -7,9 +7,9 @@ exports.BanModel = exports.BanSchema = void 0;
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
 exports.BanSchema = new mongoose_1.Schema({
-    user_id: { type: mongoose_1.Types.Long, required: true },
-    guild_id: { type: mongoose_1.Types.Long, required: true },
-    executor_id: { type: mongoose_1.Types.Long, required: true },
+    user_id: { type: String, required: true },
+    guild_id: { type: String, required: true },
+    executor_id: { type: String, required: true },
     reason: String,
     ip: String,
 });

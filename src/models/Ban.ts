@@ -2,17 +2,17 @@ import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
 
 export interface Ban extends Document {
-	user_id: bigint;
-	guild_id: bigint;
-	executor_id: bigint;
+	user_id: string;
+	guild_id: string;
+	executor_id: string;
 	ip: string;
 	reason?: string;
 }
 
 export const BanSchema = new Schema({
-	user_id: { type: Types.Long, required: true },
-	guild_id: { type: Types.Long, required: true },
-	executor_id: { type: Types.Long, required: true },
+	user_id: { type: String, required: true },
+	guild_id: { type: String, required: true },
+	executor_id: { type: String, required: true },
 	reason: String,
 	ip: String, // ? Should we store this in here, or in the UserModel?
 });

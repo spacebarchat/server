@@ -7,8 +7,8 @@ exports.RoleModel = exports.RoleSchema = void 0;
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
 exports.RoleSchema = new mongoose_1.Schema({
-    id: mongoose_1.Types.Long,
-    guild_id: mongoose_1.Types.Long,
+    id: String,
+    guild_id: String,
     color: Number,
     hoist: Boolean,
     managed: Boolean,
@@ -17,7 +17,7 @@ exports.RoleSchema = new mongoose_1.Schema({
     permissions: mongoose_1.Types.Long,
     position: Number,
     tags: {
-        bot_id: mongoose_1.Types.Long,
+        bot_id: String,
     },
 });
 // @ts-ignore

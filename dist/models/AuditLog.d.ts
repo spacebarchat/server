@@ -1,5 +1,5 @@
 /// <reference path="../util/MongoBigInt.d.ts" />
-import { Schema, Document, Types } from "mongoose";
+import { Schema, Document } from "mongoose";
 import { ChannelPermissionOverwrite } from "./Channel";
 import { PublicUser } from "./User";
 export interface AuditLogResponse {
@@ -9,17 +9,17 @@ export interface AuditLogResponse {
     integrations: [];
 }
 export interface AuditLogEntries {
-    target_id?: bigint;
-    user_id: bigint;
-    id: bigint;
+    target_id?: string;
+    user_id: string;
+    id: string;
     action_type: AuditLogEvents;
     options?: {
         delete_member_days?: string;
         members_removed?: string;
-        channel_id?: bigint;
-        messaged_id?: bigint;
+        channel_id?: string;
+        messaged_id?: string;
         count?: string;
-        id?: bigint;
+        id?: string;
         type?: string;
         role_name?: string;
     };
@@ -38,13 +38,13 @@ export interface AuditLogChangeValue {
     splash_hash?: string;
     discovery_splash_hash?: string;
     banner_hash?: string;
-    owner_id?: bigint;
+    owner_id?: string;
     region?: string;
     preferred_locale?: string;
-    afk_channel_id?: bigint;
+    afk_channel_id?: string;
     afk_timeout?: number;
-    rules_channel_id?: bigint;
-    public_updates_channel_id?: bigint;
+    rules_channel_id?: string;
+    public_updates_channel_id?: string;
     mfa_level?: number;
     verification_level?: number;
     explicit_content_filter?: number;
@@ -54,14 +54,14 @@ export interface AuditLogChangeValue {
     $remove?: {}[];
     prune_delete_days?: number;
     widget_enabled?: boolean;
-    widget_channel_id?: bigint;
-    system_channel_id?: bigint;
+    widget_channel_id?: string;
+    system_channel_id?: string;
     position?: number;
     topic?: string;
     bitrate?: number;
     permission_overwrites?: ChannelPermissionOverwrite[];
     nsfw?: boolean;
-    application_id?: bigint;
+    application_id?: string;
     rate_limit_per_user?: number;
     permissions?: string;
     color?: number;
@@ -70,8 +70,8 @@ export interface AuditLogChangeValue {
     allow?: string;
     deny?: string;
     code?: string;
-    channel_id?: bigint;
-    inviter_id?: bigint;
+    channel_id?: string;
+    inviter_id?: string;
     max_uses?: number;
     uses?: number;
     max_age?: number;
@@ -80,7 +80,7 @@ export interface AuditLogChangeValue {
     mute?: boolean;
     nick?: string;
     avatar_hash?: string;
-    id?: bigint;
+    id?: string;
     type?: number;
     enable_emoticons?: boolean;
     expire_behavior?: number;
@@ -88,7 +88,7 @@ export interface AuditLogChangeValue {
     user_limit?: number;
 }
 export interface AuditLogEntriesDocument extends Document, AuditLogEntries {
-    id: bigint;
+    id: string;
 }
 export declare const AuditLogChanges: {
     name: StringConstructor;
@@ -97,13 +97,13 @@ export declare const AuditLogChanges: {
     splash_hash: StringConstructor;
     discovery_splash_hash: StringConstructor;
     banner_hash: StringConstructor;
-    owner_id: typeof Types.Long;
+    owner_id: StringConstructor;
     region: StringConstructor;
     preferred_locale: StringConstructor;
-    afk_channel_id: typeof Types.Long;
+    afk_channel_id: StringConstructor;
     afk_timeout: NumberConstructor;
-    rules_channel_id: typeof Types.Long;
-    public_updates_channel_id: typeof Types.Long;
+    rules_channel_id: StringConstructor;
+    public_updates_channel_id: StringConstructor;
     mfa_level: NumberConstructor;
     verification_level: NumberConstructor;
     explicit_content_filter: NumberConstructor;
@@ -113,14 +113,14 @@ export declare const AuditLogChanges: {
     $remove: {}[];
     prune_delete_days: NumberConstructor;
     widget_enabled: BooleanConstructor;
-    widget_channel_id: typeof Types.Long;
-    system_channel_id: typeof Types.Long;
+    widget_channel_id: StringConstructor;
+    system_channel_id: StringConstructor;
     position: NumberConstructor;
     topic: StringConstructor;
     bitrate: NumberConstructor;
     permission_overwrites: {}[];
     nsfw: BooleanConstructor;
-    application_id: typeof Types.Long;
+    application_id: StringConstructor;
     rate_limit_per_user: NumberConstructor;
     permissions: StringConstructor;
     color: NumberConstructor;
@@ -129,8 +129,8 @@ export declare const AuditLogChanges: {
     allow: StringConstructor;
     deny: StringConstructor;
     code: StringConstructor;
-    channel_id: typeof Types.Long;
-    inviter_id: typeof Types.Long;
+    channel_id: StringConstructor;
+    inviter_id: StringConstructor;
     max_uses: NumberConstructor;
     uses: NumberConstructor;
     max_age: NumberConstructor;
@@ -139,7 +139,7 @@ export declare const AuditLogChanges: {
     mute: BooleanConstructor;
     nick: StringConstructor;
     avatar_hash: StringConstructor;
-    id: typeof Types.Long;
+    id: StringConstructor;
     type: NumberConstructor;
     enable_emoticons: BooleanConstructor;
     expire_behavior: NumberConstructor;

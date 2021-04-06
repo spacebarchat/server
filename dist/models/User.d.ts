@@ -3,7 +3,7 @@ import { Activity } from "./Activity";
 import { ClientStatus, Status } from "./Status";
 import { Schema, Document } from "mongoose";
 export interface User {
-    id: bigint;
+    id: string;
     username: string;
     discriminator: string;
     avatar: string | null;
@@ -23,7 +23,7 @@ export interface User {
     flags: bigint;
     public_flags: bigint;
     user_settings: UserSettings;
-    guilds: bigint[];
+    guilds: string[];
     user_data: UserData;
     presence: {
         status: Status;
@@ -39,10 +39,10 @@ export interface UserData {
     fingerprints: string[];
 }
 export interface UserDocument extends User, Document {
-    id: bigint;
+    id: string;
 }
 export interface PublicUser {
-    id: bigint;
+    id: string;
     discriminator: string;
     username: string;
     avatar?: string;
@@ -60,10 +60,10 @@ export interface ConnectedAccount {
     visibility: number;
 }
 export interface Relationship {
-    id: bigint;
+    id: string;
     nickname?: string;
     type: number;
-    user_id: bigint;
+    user_id: string;
 }
 export interface UserSettings {
     afk_timeout: number;
@@ -73,7 +73,7 @@ export interface UserSettings {
     contact_sync_enabled: boolean;
     convert_emoticons: boolean;
     custom_status: {
-        emoji_id: bigint | null;
+        emoji_id: string | null;
         emoji_name: string | null;
         expires_at: number | null;
         text: string | null;
@@ -91,11 +91,11 @@ export interface UserSettings {
     gif_auto_play: boolean;
     guild_folders: {
         color: number;
-        guild_ids: bigint[];
+        guild_ids: string[];
         id: number;
         name: string;
     }[];
-    guild_positions: bigint[];
+    guild_positions: string[];
     inline_attachment_media: boolean;
     inline_embed_media: boolean;
     locale: string;
@@ -103,7 +103,7 @@ export interface UserSettings {
     native_phone_integration_enabled: boolean;
     render_embeds: boolean;
     render_reactions: boolean;
-    restricted_guilds: bigint[];
+    restricted_guilds: string[];
     show_current_game: boolean;
     status: "online" | "offline" | "dnd" | "idle";
     stream_notifications_enabled: boolean;

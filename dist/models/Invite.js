@@ -13,11 +13,11 @@ exports.InviteSchema = new mongoose_1.Schema({
     max_uses: Number,
     max_age: Number,
     created_at: Date,
-    guild_id: mongoose_1.Types.Long,
-    channel_id: mongoose_1.Types.Long,
-    inviter_id: mongoose_1.Types.Long,
-    //! What the fucking shit is this
-    target_user_id: mongoose_1.Types.Long,
+    guild_id: String,
+    channel_id: String,
+    inviter_id: String,
+    // ? What the fucking shit is this
+    target_user_id: String,
     target_user_type: Number,
 });
 // @ts-ignore

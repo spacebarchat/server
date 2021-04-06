@@ -12,10 +12,10 @@ const MuteConfig = {
     selected_time_window: Number,
 };
 exports.MemberSchema = new mongoose_1.Schema({
-    id: { type: mongoose_1.Types.Long, required: true },
-    guild_id: mongoose_1.Types.Long,
+    id: { type: String, required: true },
+    guild_id: String,
     nick: String,
-    roles: [mongoose_1.Types.Long],
+    roles: [String],
     joined_at: Date,
     premium_since: Number,
     deaf: Boolean,
@@ -24,7 +24,7 @@ exports.MemberSchema = new mongoose_1.Schema({
     settings: {
         channel_overrides: [
             {
-                channel_id: mongoose_1.Types.Long,
+                channel_id: String,
                 message_notifications: Number,
                 mute_config: MuteConfig,
                 muted: Boolean,

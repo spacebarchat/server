@@ -7,9 +7,9 @@ exports.EVENTEnum = exports.EventModel = exports.EventSchema = void 0;
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
 exports.EventSchema = new mongoose_1.Schema({
-    guild_id: mongoose_1.Types.Long,
-    user_id: mongoose_1.Types.Long,
-    channel_id: mongoose_1.Types.Long,
+    guild_id: String,
+    user_id: String,
+    channel_id: String,
     created_at: { type: Date, required: true },
     event: { type: String, required: true },
     data: Object,

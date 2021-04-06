@@ -4,7 +4,7 @@ import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
 
 export interface User {
-	id: bigint;
+	id: string;
 	username: string; // username max length 32, min 2
 	discriminator: string; // #0001 4 digit long string from #0001 - #9999
 	avatar: string | null; // hash of the user avatar
@@ -24,7 +24,7 @@ export interface User {
 	flags: bigint; // UserFlags
 	public_flags: bigint;
 	user_settings: UserSettings;
-	guilds: bigint[]; // array of guild ids the user is part of
+	guilds: string[]; // array of guild ids the user is part of
 	user_data: UserData;
 	presence: {
 		status: Status;
@@ -43,11 +43,11 @@ export interface UserData {
 }
 
 export interface UserDocument extends User, Document {
-	id: bigint;
+	id: string;
 }
 
 export interface PublicUser {
-	id: bigint;
+	id: string;
 	discriminator: string;
 	username: string;
 	avatar?: string;
@@ -67,10 +67,10 @@ export interface ConnectedAccount {
 }
 
 export interface Relationship {
-	id: bigint;
+	id: string;
 	nickname?: string;
 	type: number;
-	user_id: bigint;
+	user_id: string;
 }
 
 export interface UserSettings {
@@ -81,7 +81,7 @@ export interface UserSettings {
 	contact_sync_enabled: boolean;
 	convert_emoticons: boolean;
 	custom_status: {
-		emoji_id: bigint | null;
+		emoji_id: string | null;
 		emoji_name: string | null;
 		expires_at: number | null;
 		text: string | null;
@@ -98,11 +98,11 @@ export interface UserSettings {
 	guild_folders: // every top guild is displayed as a "folder"
 	{
 		color: number;
-		guild_ids: bigint[];
+		guild_ids: string[];
 		id: number;
 		name: string;
 	}[];
-	guild_positions: bigint[]; // guild ids ordered by position
+	guild_positions: string[]; // guild ids ordered by position
 	inline_attachment_media: boolean;
 	inline_embed_media: boolean;
 	locale: string; // en_US
@@ -110,7 +110,7 @@ export interface UserSettings {
 	native_phone_integration_enabled: boolean;
 	render_embeds: boolean;
 	render_reactions: boolean;
-	restricted_guilds: bigint[];
+	restricted_guilds: string[];
 	show_current_game: boolean;
 	status: "online" | "offline" | "dnd" | "idle";
 	stream_notifications_enabled: boolean;
@@ -119,7 +119,7 @@ export interface UserSettings {
 }
 
 export const UserSchema = new Schema({
-	id: Types.Long,
+	id: String,
 	username: String,
 	discriminator: String,
 	avatar: String,
@@ -138,17 +138,17 @@ export const UserSchema = new Schema({
 	email: String,
 	flags: Types.Long, // TODO: automatically convert Types.Long to BitField of UserFlags
 	public_flags: Types.Long,
-	guilds: [Types.Long], // array of guild ids the user is part of
+	guilds: [String], // array of guild ids the user is part of
 	user_data: {
 		fingerprints: [String],
 		hash: String, // hash of the password, salt is saved in password (bcrypt)
 		valid_tokens_since: Date, // all tokens with a previous issue date are invalid
 		relationships: [
 			{
-				id: Types.Long,
+				id: String,
 				nickname: String,
 				type: Number,
-				user_id: Types.Long,
+				user_id: String,
 			},
 		],
 		connected_accounts: [
@@ -173,7 +173,7 @@ export const UserSchema = new Schema({
 		contact_sync_enabled: Boolean,
 		convert_emoticons: Boolean,
 		custom_status: {
-			emoji_id: Types.Long,
+			emoji_id: String,
 			emoji_name: String,
 			expires_at: Number,
 			text: String,
@@ -191,12 +191,12 @@ export const UserSchema = new Schema({
 		guild_folders: [
 			{
 				color: Number,
-				guild_ids: [Types.Long],
+				guild_ids: [String],
 				id: Number,
 				name: String,
 			},
 		],
-		guild_positions: [Types.Long], // guild ids ordered by position
+		guild_positions: [String], // guild ids ordered by position
 		inline_attachment_media: Boolean,
 		inline_embed_media: Boolean,
 		locale: String, // en_US
@@ -204,7 +204,7 @@ export const UserSchema = new Schema({
 		native_phone_integration_enabled: Boolean,
 		render_embeds: Boolean,
 		render_reactions: Boolean,
-		restricted_guilds: [Types.Long],
+		restricted_guilds: [String],
 		show_current_game: Boolean,
 		status: String,
 		stream_notifications_enabled: Boolean,

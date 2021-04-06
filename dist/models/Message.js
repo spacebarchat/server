@@ -30,7 +30,7 @@ var MessageType;
     MessageType[MessageType["APPLICATION_COMMAND"] = 20] = "APPLICATION_COMMAND";
 })(MessageType = exports.MessageType || (exports.MessageType = {}));
 exports.Attachment = {
-    id: mongoose_1.Types.Long,
+    id: String,
     filename: String,
     size: Number,
     url: String,
@@ -47,7 +47,7 @@ exports.EmbedImage = {
 const Reaction = {
     count: Number,
     emoji: {
-        id: mongoose_1.Types.Long,
+        id: String,
         name: String,
         animated: Boolean,
     },
@@ -86,20 +86,20 @@ exports.Embed = {
     ],
 };
 exports.MessageSchema = new mongoose_1.Schema({
-    id: mongoose_1.Types.Long,
-    channel_id: mongoose_1.Types.Long,
-    author_id: mongoose_1.Types.Long,
-    webhook_id: mongoose_1.Types.Long,
-    guild_id: mongoose_1.Types.Long,
-    application_id: mongoose_1.Types.Long,
+    id: String,
+    channel_id: String,
+    author_id: String,
+    webhook_id: String,
+    guild_id: String,
+    application_id: String,
     content: String,
     timestamp: Date,
     edited_timestamp: Date,
     tts: Boolean,
     mention_everyone: Boolean,
-    mention_user_ids: [mongoose_1.Types.Long],
-    mention_role_ids: [mongoose_1.Types.Long],
-    mention_channel_ids: [mongoose_1.Types.Long],
+    mention_user_ids: [String],
+    mention_role_ids: [String],
+    mention_channel_ids: [String],
     attachments: [exports.Attachment],
     embeds: [exports.Embed],
     reactions: [Reaction],
@@ -113,9 +113,9 @@ exports.MessageSchema = new mongoose_1.Schema({
     flags: mongoose_1.Types.Long,
     stickers: [],
     message_reference: {
-        message_id: mongoose_1.Types.Long,
-        channel_id: mongoose_1.Types.Long,
-        guild_id: mongoose_1.Types.Long,
+        message_id: String,
+        channel_id: String,
+        guild_id: String,
     },
 });
 exports.MessageSchema.virtual("author", {

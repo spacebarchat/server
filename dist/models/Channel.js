@@ -7,16 +7,16 @@ exports.ChannelType = exports.ChannelPermissionOverwriteType = exports.ChannelMo
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
 exports.ChannelSchema = new mongoose_1.Schema({
-    id: mongoose_1.Types.Long,
+    id: String,
     created_at: { type: mongoose_1.Schema.Types.Date, required: true },
     name: { type: String, required: true },
     type: { type: Number, required: true },
-    guild_id: mongoose_1.Types.Long,
-    owner_id: mongoose_1.Types.Long,
-    parent_id: mongoose_1.Types.Long,
-    recipients: [mongoose_1.Types.Long],
+    guild_id: String,
+    owner_id: String,
+    parent_id: String,
+    recipients: [String],
     position: Number,
-    last_message_id: mongoose_1.Types.Long,
+    last_message_id: String,
     last_pin_timestamp: Date,
     nsfw: Boolean,
     rate_limit_per_user: Number,
@@ -25,7 +25,7 @@ exports.ChannelSchema = new mongoose_1.Schema({
         {
             allow: mongoose_1.Types.Long,
             deny: mongoose_1.Types.Long,
-            id: mongoose_1.Types.Long,
+            id: String,
             type: Number,
         },
     ],

@@ -1,20 +1,20 @@
 /// <reference path="../util/MongoBigInt.d.ts" />
-import { Schema, Types, Document } from "mongoose";
+import { Schema, Document } from "mongoose";
 export interface Message {
-    id: bigint;
-    channel_id: bigint;
-    guild_id?: bigint;
-    author_id?: bigint;
-    webhook_id?: bigint;
-    application_id?: bigint;
+    id: string;
+    channel_id: string;
+    guild_id?: string;
+    author_id?: string;
+    webhook_id?: string;
+    application_id?: string;
     content?: string;
     timestamp: Date;
     edited_timestamp?: Date;
     tts?: boolean;
     mention_everyone?: boolean;
-    mention_user_ids: bigint[];
-    mention_role_ids: bigint[];
-    mention_channels_ids: bigint[];
+    mention_user_ids: string[];
+    mention_role_ids: string[];
+    mention_channels_ids: string[];
     attachments: Attachment[];
     embeds: Embed[];
     reactions: Reaction[];
@@ -28,13 +28,13 @@ export interface Message {
     flags?: bigint;
     stickers?: [];
     message_reference?: {
-        message_id: bigint;
-        channel_id?: bigint;
-        guild_id?: bigint;
+        message_id: string;
+        channel_id?: string;
+        guild_id?: string;
     };
 }
 export interface MessageDocument extends Document, Message {
-    id: bigint;
+    id: string;
 }
 export declare enum MessageType {
     DEFAULT = 0,
@@ -56,7 +56,7 @@ export declare enum MessageType {
     APPLICATION_COMMAND = 20
 }
 export interface Attachment {
-    id: bigint;
+    id: string;
     filename: string;
     size: number;
     url: string;
@@ -106,18 +106,18 @@ export interface Reaction {
     emoji: PartialEmoji;
 }
 export interface PartialEmoji {
-    id?: bigint;
+    id?: string;
     name: string;
     animated?: boolean;
 }
 export interface AllowedMentions {
     parse?: ("users" | "roles" | "everyone")[];
-    roles?: bigint[];
-    users?: bigint[];
+    roles?: string[];
+    users?: string[];
     replied_user?: boolean;
 }
 export declare const Attachment: {
-    id: typeof Types.Long;
+    id: StringConstructor;
     filename: StringConstructor;
     size: NumberConstructor;
     url: StringConstructor;

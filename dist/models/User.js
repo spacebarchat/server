@@ -9,7 +9,7 @@ const Status_1 = require("./Status");
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
 exports.UserSchema = new mongoose_1.Schema({
-    id: mongoose_1.Types.Long,
+    id: String,
     username: String,
     discriminator: String,
     avatar: String,
@@ -28,17 +28,17 @@ exports.UserSchema = new mongoose_1.Schema({
     email: String,
     flags: mongoose_1.Types.Long,
     public_flags: mongoose_1.Types.Long,
-    guilds: [mongoose_1.Types.Long],
+    guilds: [String],
     user_data: {
         fingerprints: [String],
         hash: String,
         valid_tokens_since: Date,
         relationships: [
             {
-                id: mongoose_1.Types.Long,
+                id: String,
                 nickname: String,
                 type: Number,
-                user_id: mongoose_1.Types.Long,
+                user_id: String,
             },
         ],
         connected_accounts: [
@@ -63,7 +63,7 @@ exports.UserSchema = new mongoose_1.Schema({
         contact_sync_enabled: Boolean,
         convert_emoticons: Boolean,
         custom_status: {
-            emoji_id: mongoose_1.Types.Long,
+            emoji_id: String,
             emoji_name: String,
             expires_at: Number,
             text: String,
@@ -81,12 +81,12 @@ exports.UserSchema = new mongoose_1.Schema({
         guild_folders: [
             {
                 color: Number,
-                guild_ids: [mongoose_1.Types.Long],
+                guild_ids: [String],
                 id: Number,
                 name: String,
             },
         ],
-        guild_positions: [mongoose_1.Types.Long],
+        guild_positions: [String],
         inline_attachment_media: Boolean,
         inline_embed_media: Boolean,
         locale: String,
@@ -94,7 +94,7 @@ exports.UserSchema = new mongoose_1.Schema({
         native_phone_integration_enabled: Boolean,
         render_embeds: Boolean,
         render_reactions: Boolean,
-        restricted_guilds: [mongoose_1.Types.Long],
+        restricted_guilds: [String],
         show_current_game: Boolean,
         status: String,
         stream_notifications_enabled: Boolean,

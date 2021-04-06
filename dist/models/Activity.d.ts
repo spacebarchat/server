@@ -3,7 +3,7 @@ import { ClientStatus, Status } from "./Status";
 import { Types } from "mongoose";
 export interface Presence {
     user: User;
-    guild_id?: bigint;
+    guild_id?: string;
     status: Status;
     activities: Activity[];
     client_status: ClientStatus;
@@ -17,12 +17,12 @@ export interface Activity {
         start?: number;
         end?: number;
     }[];
-    application_id?: bigint;
+    application_id?: string;
     details?: string;
     state?: string;
     emoji?: {
         name: string;
-        id?: bigint;
+        id?: string;
         amimated?: boolean;
     };
     party?: {
@@ -52,12 +52,12 @@ export declare const Activity: {
         $start: NumberConstructor;
         $end: NumberConstructor;
     }[];
-    $application_id: typeof Types.Long;
+    $application_id: StringConstructor;
     $details: StringConstructor;
     $state: StringConstructor;
     $emoji: {
         $name: StringConstructor;
-        $id: typeof Types.Long;
+        $id: StringConstructor;
         $amimated: BooleanConstructor;
     };
     $party: {

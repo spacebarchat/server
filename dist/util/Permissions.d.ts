@@ -48,8 +48,8 @@ export declare class Permissions extends BitField {
     static rolePermission(roles: Role[]): bigint;
     static finalPermission({ user, guild, channel, }: {
         user: {
-            id: bigint;
-            roles: bigint[];
+            id: string;
+            roles: string[];
         };
         guild: {
             roles: Role[];
@@ -59,7 +59,7 @@ export declare class Permissions extends BitField {
         };
     }): bigint;
 }
-export declare function getPermission(user_id: bigint, guild_id: bigint, channel_id?: bigint, cache?: {
+export declare function getPermission(user_id: string, guild_id: string, channel_id?: string, cache?: {
     channel?: ChannelDocument | null;
     member?: MemberDocument | null;
 }): Promise<Permissions>;

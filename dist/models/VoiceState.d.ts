@@ -1,9 +1,9 @@
 /// <reference path="../util/MongoBigInt.d.ts" />
 import { Schema, Document } from "mongoose";
 export interface VoiceState extends Document {
-    guild_id?: bigint;
-    channel_id: bigint;
-    user_id: bigint;
+    guild_id?: string;
+    channel_id: string;
+    user_id: string;
     session_id: string;
     deaf: boolean;
     mute: boolean;

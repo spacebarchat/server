@@ -11,17 +11,17 @@ export interface AuditLogResponse {
 }
 
 export interface AuditLogEntries {
-	target_id?: bigint;
-	user_id: bigint;
-	id: bigint;
+	target_id?: string;
+	user_id: string;
+	id: string;
 	action_type: AuditLogEvents;
 	options?: {
 		delete_member_days?: string;
 		members_removed?: string;
-		channel_id?: bigint;
-		messaged_id?: bigint;
+		channel_id?: string;
+		messaged_id?: string;
 		count?: string;
-		id?: bigint;
+		id?: string;
 		type?: string;
 		role_name?: string;
 	};
@@ -42,13 +42,13 @@ export interface AuditLogChangeValue {
 	splash_hash?: string;
 	discovery_splash_hash?: string;
 	banner_hash?: string;
-	owner_id?: bigint;
+	owner_id?: string;
 	region?: string;
 	preferred_locale?: string;
-	afk_channel_id?: bigint;
+	afk_channel_id?: string;
 	afk_timeout?: number;
-	rules_channel_id?: bigint;
-	public_updates_channel_id?: bigint;
+	rules_channel_id?: string;
+	public_updates_channel_id?: string;
 	mfa_level?: number;
 	verification_level?: number;
 	explicit_content_filter?: number;
@@ -58,14 +58,14 @@ export interface AuditLogChangeValue {
 	$remove?: {}[];
 	prune_delete_days?: number;
 	widget_enabled?: boolean;
-	widget_channel_id?: bigint;
-	system_channel_id?: bigint;
+	widget_channel_id?: string;
+	system_channel_id?: string;
 	position?: number;
 	topic?: string;
 	bitrate?: number;
 	permission_overwrites?: ChannelPermissionOverwrite[];
 	nsfw?: boolean;
-	application_id?: bigint;
+	application_id?: string;
 	rate_limit_per_user?: number;
 	permissions?: string;
 	color?: number;
@@ -74,8 +74,8 @@ export interface AuditLogChangeValue {
 	allow?: string;
 	deny?: string;
 	code?: string;
-	channel_id?: bigint;
-	inviter_id?: bigint;
+	channel_id?: string;
+	inviter_id?: string;
 	max_uses?: number;
 	uses?: number;
 	max_age?: number;
@@ -84,7 +84,7 @@ export interface AuditLogChangeValue {
 	mute?: boolean;
 	nick?: string;
 	avatar_hash?: string;
-	id?: bigint;
+	id?: string;
 	type?: number;
 	enable_emoticons?: boolean;
 	expire_behavior?: number;
@@ -93,7 +93,7 @@ export interface AuditLogChangeValue {
 }
 
 export interface AuditLogEntriesDocument extends Document, AuditLogEntries {
-	id: bigint;
+	id: string;
 }
 
 export const AuditLogChanges = {
@@ -103,13 +103,13 @@ export const AuditLogChanges = {
 	splash_hash: String,
 	discovery_splash_hash: String,
 	banner_hash: String,
-	owner_id: Types.Long,
+	owner_id: String,
 	region: String,
 	preferred_locale: String,
-	afk_channel_id: Types.Long,
+	afk_channel_id: String,
 	afk_timeout: Number,
-	rules_channel_id: Types.Long,
-	public_updates_channel_id: Types.Long,
+	rules_channel_id: String,
+	public_updates_channel_id: String,
 	mfa_level: Number,
 	verification_level: Number,
 	explicit_content_filter: Number,
@@ -119,14 +119,14 @@ export const AuditLogChanges = {
 	$remove: [{}],
 	prune_delete_days: Number,
 	widget_enabled: Boolean,
-	widget_channel_id: Types.Long,
-	system_channel_id: Types.Long,
+	widget_channel_id: String,
+	system_channel_id: String,
 	position: Number,
 	topic: String,
 	bitrate: Number,
 	permission_overwrites: [{}],
 	nsfw: Boolean,
-	application_id: Types.Long,
+	application_id: String,
 	rate_limit_per_user: Number,
 	permissions: String,
 	color: Number,
@@ -135,8 +135,8 @@ export const AuditLogChanges = {
 	allow: String,
 	deny: String,
 	code: String,
-	channel_id: Types.Long,
-	inviter_id: Types.Long,
+	channel_id: String,
+	inviter_id: String,
 	max_uses: Number,
 	uses: Number,
 	max_age: Number,
@@ -145,7 +145,7 @@ export const AuditLogChanges = {
 	mute: Boolean,
 	nick: String,
 	avatar_hash: String,
-	id: Types.Long,
+	id: String,
 	type: Number,
 	enable_emoticons: Boolean,
 	expire_behavior: Number,
@@ -154,17 +154,17 @@ export const AuditLogChanges = {
 };
 
 export const AuditLogSchema = new Schema({
-	target_id: Types.Long,
-	user_id: { type: Types.Long, required: true },
-	id: { type: Types.Long, required: true },
+	target_id: String,
+	user_id: { type: String, required: true },
+	id: { type: String, required: true },
 	action_type: { type: Number, required: true },
 	options: {
 		delete_member_days: String,
 		members_removed: String,
-		channel_id: Types.Long,
-		messaged_id: Types.Long,
+		channel_id: String,
+		messaged_id: String,
 		count: String,
-		id: Types.Long,
+		id: String,
 		type: String,
 		role_name: String,
 	},

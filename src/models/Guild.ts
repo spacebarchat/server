@@ -6,14 +6,14 @@ import { MemberModel } from "./Member";
 import { RoleModel } from "./Role";
 
 export interface GuildDocument extends Document, Guild {
-	id: bigint;
+	id: string;
 }
 
 export interface Guild {
-	id: bigint;
-	afk_channel_id?: bigint;
+	id: string;
+	afk_channel_id?: string;
 	afk_timeout?: number;
-	application_id?: bigint;
+	application_id?: string;
 	banner?: string;
 	default_message_notifications?: number;
 	description?: string;
@@ -34,29 +34,29 @@ export interface Guild {
 	// voice_states: []; // * voice_states are stored in a seperate collection
 	mfa_level?: number;
 	name: string;
-	owner_id: bigint;
+	owner_id: string;
 	preferred_locale?: string; // only community guilds can choose this
 	premium_subscription_count?: number;
 	premium_tier?: number; // nitro boost level
-	public_updates_channel_id?: bigint;
+	public_updates_channel_id?: string;
 	region?: string;
-	rules_channel_id?: bigint;
+	rules_channel_id?: string;
 	splash?: string;
 	system_channel_flags?: number;
-	system_channel_id?: bigint;
+	system_channel_id?: string;
 	unavailable?: boolean;
 	vanity_url_code?: string;
 	verification_level?: number;
 	welcome_screen: []; // welcome splash screen if a user joins guild
-	widget_channel_id?: bigint;
+	widget_channel_id?: string;
 	widget_enabled?: boolean;
 }
 
 export const GuildSchema = new Schema({
-	id: { type: Types.Long, required: true },
-	afk_channel_id: Types.Long,
+	id: { type: String, required: true },
+	afk_channel_id: String,
 	afk_timeout: Number,
-	application_id: Types.Long,
+	application_id: String,
 	banner: String,
 	default_message_notifications: Number,
 	description: String,
@@ -72,22 +72,22 @@ export const GuildSchema = new Schema({
 	presence_count: Number,
 	mfa_level: Number,
 	name: { type: String, required: true },
-	owner_id: { type: Types.Long, required: true },
+	owner_id: { type: String, required: true },
 	preferred_locale: String,
 	premium_subscription_count: Number,
 	premium_tier: Number,
-	public_updates_channel_id: Types.Long,
+	public_updates_channel_id: String,
 	region: String,
-	rules_channel_id: Types.Long,
+	rules_channel_id: String,
 	splash: String,
 	system_channel_flags: Number,
-	system_channel_id: Types.Long,
+	system_channel_id: String,
 	unavailable: Boolean,
 	vanity_url_code: String,
 	verification_level: Number,
 	voice_states: { type: [Object], default: [] },
 	welcome_screen: { type: [Object], default: [] },
-	widget_channel_id: Types.Long,
+	widget_channel_id: String,
 	widget_enabled: Boolean,
 });
 

@@ -4,7 +4,7 @@ import { Schema, model, Types, Document } from "mongoose";
 
 export interface Presence {
 	user: User;
-	guild_id?: bigint;
+	guild_id?: string;
 	status: Status;
 	activities: Activity[];
 	client_status: ClientStatus;
@@ -19,12 +19,12 @@ export interface Activity {
 		start?: number;
 		end?: number;
 	}[];
-	application_id?: bigint;
+	application_id?: string;
 	details?: string;
 	state?: string;
 	emoji?: {
 		name: string;
-		id?: bigint;
+		id?: string;
 		amimated?: boolean;
 	};
 	party?: {
@@ -57,12 +57,12 @@ export const Activity = {
 			$end: Number,
 		},
 	],
-	$application_id: Types.Long,
+	$application_id: String,
 	$details: String,
 	$state: String,
 	$emoji: {
 		$name: String,
-		$id: Types.Long,
+		$id: String,
 		$amimated: Boolean,
 	},
 	$party: {

@@ -3,30 +3,30 @@ import { Schema, Document } from "mongoose";
 export interface AnyChannel extends Channel, DMChannel, TextChannel, VoiceChannel {
 }
 export interface ChannelDocument extends Document, AnyChannel {
-    id: bigint;
+    id: string;
 }
 export declare const ChannelSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;
 export declare const ChannelModel: import("mongoose").Model<ChannelDocument>;
 export interface Channel {
-    id: bigint;
+    id: string;
     created_at: Date;
     name: string;
     type: number;
 }
 export interface TextBasedChannel {
-    last_message_id?: bigint;
+    last_message_id?: string;
     last_pin_timestamp?: number;
 }
 export interface GuildChannel extends Channel {
-    guild_id: bigint;
+    guild_id: string;
     position: number;
-    parent_id?: bigint;
+    parent_id?: string;
     permission_overwrites: ChannelPermissionOverwrite[];
 }
 export interface ChannelPermissionOverwrite {
     allow: bigint;
     deny: bigint;
-    id: bigint;
+    id: string;
     type: ChannelPermissionOverwriteType;
 }
 export declare enum ChannelPermissionOverwriteType {
@@ -41,8 +41,8 @@ export interface TextChannel extends GuildChannel, TextBasedChannel {
     topic?: string;
 }
 export interface DMChannel extends Channel, TextBasedChannel {
-    owner_id: bigint;
-    recipients: bigint[];
+    owner_id: string;
+    recipients: string[];
 }
 export declare enum ChannelType {
     GUILD_TEXT = 0,

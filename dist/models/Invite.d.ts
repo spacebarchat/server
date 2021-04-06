@@ -7,10 +7,10 @@ export interface Invite extends Document {
     max_uses: number;
     max_age: number;
     created_at: Date;
-    guild_id: bigint;
-    channel_id: bigint;
-    inviter_id: bigint;
-    target_user_id?: bigint;
+    guild_id: string;
+    channel_id: string;
+    inviter_id: string;
+    target_user_id?: string;
     target_user_type?: number;
 }
 export declare const InviteSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;

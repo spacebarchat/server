@@ -14,9 +14,9 @@ import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
 
 export interface Event {
-	guild_id?: bigint;
-	user_id?: bigint;
-	channel_id?: bigint;
+	guild_id?: string;
+	user_id?: string;
+	channel_id?: string;
 	created_at?: Date;
 	event: EVENT;
 	data?: any;
@@ -25,9 +25,9 @@ export interface Event {
 export interface EventDocument extends Event, Document {}
 
 export const EventSchema = new Schema({
-	guild_id: Types.Long,
-	user_id: Types.Long,
-	channel_id: Types.Long,
+	guild_id: String,
+	user_id: String,
+	channel_id: String,
 	created_at: { type: Date, required: true },
 	event: { type: String, required: true },
 	data: Object,
@@ -98,7 +98,7 @@ export interface ReadyEventData {
 		partial: boolean;
 	};
 	application?: {
-		id: bigint;
+		id: string;
 		flags: bigint;
 	};
 	merged_members?: Omit<Member, "settings" | "user">[][];
@@ -106,7 +106,7 @@ export interface ReadyEventData {
 	users?: {
 		avatar?: string;
 		discriminator: string;
-		id: bigint;
+		id: string;
 		username: string;
 		bot: boolean;
 		public_flags: bigint;
@@ -136,8 +136,8 @@ export interface ChannelDeleteEvent extends Event {
 export interface ChannelPinsUpdateEvent extends Event {
 	event: "CHANNEL_PINS_UPDATE";
 	data: {
-		guild_id?: bigint;
-		channel_id: bigint;
+		guild_id?: string;
+		channel_id: string;
 		last_pin_timestamp: number;
 	};
 }
@@ -155,7 +155,7 @@ export interface GuildUpdateEvent extends Event {
 export interface GuildDeleteEvent extends Event {
 	event: "GUILD_DELETE";
 	data: {
-		id: bigint;
+		id: string;
 		unavailable?: boolean;
 	};
 }
@@ -163,7 +163,7 @@ export interface GuildDeleteEvent extends Event {
 export interface GuildBanAddEvent extends Event {
 	event: "GUILD_BAN_ADD";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		user: User;
 	};
 }
@@ -171,7 +171,7 @@ export interface GuildBanAddEvent extends Event {
 export interface GuildBanRemoveEvent extends Event {
 	event: "GUILD_BAN_REMOVE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		user: User;
 	};
 }
@@ -179,7 +179,7 @@ export interface GuildBanRemoveEvent extends Event {
 export interface GuildEmojiUpdateEvent extends Event {
 	event: "GUILD_EMOJI_UPDATE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		emojis: Emoji[];
 	};
 }
@@ -187,21 +187,21 @@ export interface GuildEmojiUpdateEvent extends Event {
 export interface GuildIntegrationUpdateEvent extends Event {
 	event: "GUILD_INTEGRATIONS_UPDATE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 	};
 }
 
 export interface GuildMemberAddEvent extends Event {
 	event: "GUILD_MEMBER_ADD";
 	data: PublicMember & {
-		guild_id: bigint;
+		guild_id: string;
 	};
 }
 
 export interface GuildMemberRemoveEvent extends Event {
 	event: "GUILD_MEMBER_REMOVE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		user: User;
 	};
 }
@@ -209,8 +209,8 @@ export interface GuildMemberRemoveEvent extends Event {
 export interface GuildMemberUpdateEvent extends Event {
 	event: "GUILD_MEMBER_UPDATE";
 	data: {
-		guild_id: bigint;
-		roles: bigint[];
+		guild_id: string;
+		roles: string[];
 		user: User;
 		nick?: string;
 		joined_at: Date;
@@ -222,11 +222,11 @@ export interface GuildMemberUpdateEvent extends Event {
 export interface GuildMembersChunkEvent extends Event {
 	event: "GUILD_MEMBERS_CHUNK";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		members: PublicMember[];
 		chunk_index: number;
 		chunk_count: number;
-		not_found: bigint[];
+		not_found: string[];
 		presences: Presence[];
 		nonce?: string;
 	};
@@ -235,7 +235,7 @@ export interface GuildMembersChunkEvent extends Event {
 export interface GuildRoleCreateEvent extends Event {
 	event: "GUILD_ROLE_CREATE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		role: Role;
 	};
 }
@@ -243,7 +243,7 @@ export interface GuildRoleCreateEvent extends Event {
 export interface GuildRoleUpdateEvent extends Event {
 	event: "GUILD_ROLE_UPDATE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		role: Role;
 	};
 }
@@ -251,31 +251,31 @@ export interface GuildRoleUpdateEvent extends Event {
 export interface GuildRoleDeleteEvent extends Event {
 	event: "GUILD_ROLE_DELETE";
 	data: {
-		guild_id: bigint;
-		role_id: bigint;
+		guild_id: string;
+		role_id: string;
 	};
 }
 
 export interface InviteCreateEvent extends Event {
 	event: "INVITE_CREATE";
 	data: Omit<Invite, "guild" | "channel"> & {
-		channel_id: bigint;
-		guild_id?: bigint;
+		channel_id: string;
+		guild_id?: string;
 	};
 }
 
 export interface InviteDeleteEvent extends Event {
 	event: "INVITE_DELETE";
 	data: {
-		channel_id: bigint;
-		guild_id?: bigint;
+		channel_id: string;
+		guild_id?: string;
 		code: string;
 	};
 }
 
 export type MessagePayload = Omit<Message, "author_id"> & {
-	channel_id: bigint;
-	guild_id?: bigint;
+	channel_id: string;
+	guild_id?: string;
 	author: User;
 	member: PublicMember;
 	mentions: (User & { member: PublicMember })[];
@@ -294,28 +294,28 @@ export interface MessageUpdateEvent extends Event {
 export interface MessageDeleteEvent extends Event {
 	event: "MESSAGE_DELETE";
 	data: {
-		id: bigint;
-		channel_id: bigint;
-		guild_id?: bigint;
+		id: string;
+		channel_id: string;
+		guild_id?: string;
 	};
 }
 
 export interface MessageDeleteBulkEvent extends Event {
 	event: "MESSAGE_DELETE_BULK";
 	data: {
-		ids: bigint[];
-		channel_id: bigint;
-		guild_id?: bigint;
+		ids: string[];
+		channel_id: string;
+		guild_id?: string;
 	};
 }
 
 export interface MessageReactionAddEvent extends Event {
 	event: "MESSAGE_REACTION_ADD";
 	data: {
-		user_id: bigint;
-		channel_id: bigint;
-		message_id: bigint;
-		guild_id?: bigint;
+		user_id: string;
+		channel_id: string;
+		message_id: string;
+		guild_id?: string;
 		member?: PublicMember;
 		emoji: PartialEmoji;
 	};
@@ -324,10 +324,10 @@ export interface MessageReactionAddEvent extends Event {
 export interface MessageReactionRemoveEvent extends Event {
 	event: "MESSAGE_REACTION_REMOVE";
 	data: {
-		user_id: bigint;
-		channel_id: bigint;
-		message_id: bigint;
-		guild_id?: bigint;
+		user_id: string;
+		channel_id: string;
+		message_id: string;
+		guild_id?: string;
 		emoji: PartialEmoji;
 	};
 }
@@ -335,18 +335,18 @@ export interface MessageReactionRemoveEvent extends Event {
 export interface MessageReactionRemoveAllEvent extends Event {
 	event: "MESSAGE_REACTION_REMOVE_ALL";
 	data: {
-		channel_id: bigint;
-		message_id: bigint;
-		guild_id?: bigint;
+		channel_id: string;
+		message_id: string;
+		guild_id?: string;
 	};
 }
 
 export interface MessageReactionRemoveEmojiEvent extends Event {
 	event: "MESSAGE_REACTION_REMOVE_EMOJI";
 	data: {
-		channel_id: bigint;
-		message_id: bigint;
-		guild_id?: bigint;
+		channel_id: string;
+		message_id: string;
+		guild_id?: string;
 		emoji: PartialEmoji;
 	};
 }
@@ -359,10 +359,10 @@ export interface PresenceUpdateEvent extends Event {
 export interface TypingStartEvent extends Event {
 	event: "TYPING_START";
 	data: {
-		channel_id: bigint;
-		user_id: bigint;
+		channel_id: string;
+		user_id: string;
 		timestamp: number;
-		guild_id?: bigint;
+		guild_id?: string;
 		member?: PublicMember;
 	};
 }
@@ -383,7 +383,7 @@ export interface VoiceServerUpdateEvent extends Event {
 	event: "VOICE_SERVER_UPDATE";
 	data: {
 		token: string;
-		guild_id: bigint;
+		guild_id: string;
 		endpoint: string;
 	};
 }
@@ -391,13 +391,13 @@ export interface VoiceServerUpdateEvent extends Event {
 export interface WebhooksUpdateEvent extends Event {
 	event: "WEBHOOKS_UPDATE";
 	data: {
-		guild_id: bigint;
-		channel_id: bigint;
+		guild_id: string;
+		channel_id: string;
 	};
 }
 
 export type ApplicationCommandPayload = ApplicationCommand & {
-	guild_id: bigint;
+	guild_id: string;
 };
 
 export interface ApplicationCommandCreateEvent extends Event {

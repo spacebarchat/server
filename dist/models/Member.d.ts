@@ -2,10 +2,10 @@
 import { PublicUser, User } from "./User";
 import { Schema, Document } from "mongoose";
 export interface Member {
-    id: bigint;
-    guild_id: bigint;
+    id: string;
+    guild_id: string;
     nick?: string;
-    roles: bigint[];
+    roles: string[];
     joined_at: Date;
     premium_since?: number;
     deaf: boolean;
@@ -15,11 +15,11 @@ export interface Member {
     user?: User;
 }
 export interface MemberDocument extends Member, Document {
-    id: bigint;
+    id: string;
 }
 export interface UserGuildSettings {
     channel_overrides: {
-        channel_id: bigint;
+        channel_id: string;
         message_notifications: number;
         mute_config: MuteConfig;
         muted: boolean;

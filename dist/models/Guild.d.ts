@@ -1,13 +1,13 @@
 /// <reference path="../util/MongoBigInt.d.ts" />
 import { Schema, Document } from "mongoose";
 export interface GuildDocument extends Document, Guild {
-    id: bigint;
+    id: string;
 }
 export interface Guild {
-    id: bigint;
-    afk_channel_id?: bigint;
+    id: string;
+    afk_channel_id?: string;
     afk_timeout?: number;
-    application_id?: bigint;
+    application_id?: string;
     banner?: string;
     default_message_notifications?: number;
     description?: string;
@@ -23,21 +23,21 @@ export interface Guild {
     presence_count?: number;
     mfa_level?: number;
     name: string;
-    owner_id: bigint;
+    owner_id: string;
     preferred_locale?: string;
     premium_subscription_count?: number;
     premium_tier?: number;
-    public_updates_channel_id?: bigint;
+    public_updates_channel_id?: string;
     region?: string;
-    rules_channel_id?: bigint;
+    rules_channel_id?: string;
     splash?: string;
     system_channel_flags?: number;
-    system_channel_id?: bigint;
+    system_channel_id?: string;
     unavailable?: boolean;
     vanity_url_code?: string;
     verification_level?: number;
     welcome_screen: [];
-    widget_channel_id?: bigint;
+    widget_channel_id?: string;
     widget_enabled?: boolean;
 }
 export declare const GuildSchema: Schema<Document<any>, import("mongoose").Model<Document<any>>, undefined>;

@@ -13,12 +13,12 @@ exports.Activity = {
             $end: Number,
         },
     ],
-    $application_id: mongoose_1.Types.Long,
+    $application_id: String,
     $details: String,
     $state: String,
     $emoji: {
         $name: String,
-        $id: mongoose_1.Types.Long,
+        $id: String,
         $amimated: Boolean,
     },
     $party: {

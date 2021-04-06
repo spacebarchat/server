@@ -1,6 +1,6 @@
 export interface ApplicationCommand {
-    id: bigint;
-    application_id: bigint;
+    id: string;
+    application_id: string;
     name: string;
     description: string;
     options?: ApplicationCommandOption[];
@@ -28,7 +28,7 @@ export declare enum ApplicationCommandOptionType {
     ROLE = 8
 }
 export interface ApplicationCommandInteractionData {
-    id: bigint;
+    id: string;
     name: string;
     options?: ApplicationCommandInteractionDataOption[];
 }
