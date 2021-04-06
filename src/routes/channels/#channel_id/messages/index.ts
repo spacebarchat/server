@@ -27,23 +27,23 @@ function isTextChannel(type: ChannelType): boolean {
 // https://discord.com/developers/docs/resources/channel#create-message
 // get messages
 router.get("/", async (req, res) => {
-	const channel_id = BigInt(req.params.channel_id);
+	const channel_id = req.params.channel_id;
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();
 	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	isTextChannel(channel.type);
 
 	try {
-		instanceOf({ $around: BigInt, $after: BigInt, $before: BigInt, $limit: new Length(Number, 1, 100) }, req.query, {
+		instanceOf({ $around: String, $after: String, $before: String, $limit: new Length(Number, 1, 100) }, req.query, {
 			path: "query",
 			req,
 		});
 	} catch (error) {
 		return res.status(400).json({ code: 50035, message: "Invalid Query", success: false, errors: error });
 	}
-	var { around, after, before, limit }: { around?: bigint; after?: bigint; before?: bigint; limit?: number } = req.query;
+	var { around, after, before, limit }: { around?: string; after?: string; before?: string; limit?: number } = req.query;
 	if (!limit) limit = 50;
-	var halfLimit = BigInt(Math.floor(limit / 2));
+	var halfLimit = Math.floor(limit / 2);
 
 	if ([ChannelType.GUILD_VOICE, ChannelType.GUILD_CATEGORY, ChannelType.GUILD_STORE].includes(channel.type))
 		throw new HTTPError("Not a text channel");
@@ -89,7 +89,7 @@ const messageUpload = multer({ limits: { fieldSize: 1024 * 1024 * 1024 * 50 } })
 // TODO: trim and replace message content and every embed field
 // Send message
 router.post("/", check(MessageCreateSchema), async (req, res) => {
-	const channel_id = BigInt(req.params.channel_id);
+	const channel_id = req.params.channel_id;
 	const body = req.body as MessageCreateSchema;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();

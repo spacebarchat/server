@@ -19,7 +19,7 @@ import { check } from "../../../util/instanceOf";
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	const guild_id = BigInt(req.params.id);
+	const guild_id = req.params.id;
 
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
 	if (!guild) throw new HTTPError("Guild does not exist", 404);
@@ -32,7 +32,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.patch("/", check(GuildUpdateSchema), async (req: Request, res: Response) => {
 	const body = req.body as GuildUpdateSchema;
-	const guild_id = BigInt(req.params.id);
+	const guild_id = req.params.id;
 
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
 	if (!guild) throw new HTTPError("This guild does not exist", 404);
@@ -45,7 +45,7 @@ router.patch("/", check(GuildUpdateSchema), async (req: Request, res: Response) 
 });
 
 router.delete("/", async (req: Request, res: Response) => {
-	var guild_id = BigInt(req.params.id);
+	var guild_id = req.params.id;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, "owner_id").exec();
 	if (!guild) throw new HTTPError("This guild does not exist", 404);

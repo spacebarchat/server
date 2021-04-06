@@ -166,10 +166,9 @@ router.post(
 		}
 
 		// TODO: save date_of_birth
+		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
+		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 
-		// constructing final user object
-		// TODO fix:
-		// @ts-ignore
 		const user: User = {
 			id: Snowflake.generate(),
 			created_at: new Date(),
@@ -178,10 +177,25 @@ router.post(
 			avatar: null,
 			bot: false,
 			system: false,
+			desktop: false,
+			mobile: false,
+			premium: false,
+			premium_type: 0,
+			phone: undefined,
 			mfa_enabled: false,
 			verified: false,
+			presence: {
+				activities: [],
+				client_status: {
+					desktop: undefined,
+					mobile: undefined,
+					web: undefined,
+				},
+				status: "offline",
+			},
 			email: adjusted_email,
 			nsfw_allowed: true, // TODO: depending on age
+			public_flags: 0n,
 			flags: 0n, // TODO: generate default flags
 			guilds: [],
 			user_data: {
@@ -233,7 +247,7 @@ router.post(
 		};
 
 		// insert user into database
-		await new UserModel(user).save({});
+		await new UserModel(user).save();
 
 		return res.json({ token: await generateToken(user.id) });
 	}

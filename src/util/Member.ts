@@ -25,7 +25,7 @@ export const PublicMemberProjection = {
 	premium_since: true,
 };
 
-export async function addMember(user_id: bigint, guild_id: bigint, cache?: { guild?: Guild }) {
+export async function addMember(user_id: string, guild_id: string, cache?: { guild?: Guild }) {
 	const user = await getPublicUser(user_id, { guilds: true });
 
 	const guildSize = user.guilds.length;
@@ -83,7 +83,7 @@ export async function addMember(user_id: bigint, guild_id: bigint, cache?: { gui
 	]);
 }
 
-export async function removeMember(user_id: bigint, guild_id: bigint) {
+export async function removeMember(user_id: string, guild_id: string) {
 	const user = await getPublicUser(user_id);
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();

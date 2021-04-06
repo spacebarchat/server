@@ -11,7 +11,7 @@ import { getPublicUser } from "../../../util/User";
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	const guild_id = BigInt(req.params.id);
+	const guild_id = req.params.id;
 
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
@@ -21,8 +21,8 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 router.get("/:user", async (req: Request, res: Response) => {
-	const guild_id = BigInt(req.params.id);
-	const user_id = BigInt(req.params.ban);
+	const guild_id = req.params.id;
+	const user_id = req.params.ban;
 
 	var ban = await BanModel.findOne({ guild_id: guild_id, user_id: user_id }).exec();
 	if (!ban) throw new HTTPError("Ban not found", 404);
@@ -30,8 +30,8 @@ router.get("/:user", async (req: Request, res: Response) => {
 });
 
 router.post("/:user_id", check(BanCreateSchema), async (req: Request, res: Response) => {
-	const guild_id = BigInt(req.params.id);
-	const banned_user_id = BigInt(req.params.user_id);
+	const guild_id = req.params.id;
+	const banned_user_id = req.params.user_id;
 
 	const banned_user = await getPublicUser(banned_user_id);
 	const perms = await getPermission(req.user_id, guild_id);
@@ -61,8 +61,8 @@ router.post("/:user_id", check(BanCreateSchema), async (req: Request, res: Respo
 });
 
 router.delete("/:user_id", async (req: Request, res: Response) => {
-	var guild_id = BigInt(req.params.id);
-	var banned_user_id = BigInt(req.params.user_id);
+	var guild_id = req.params.id;
+	var banned_user_id = req.params.user_id;
 
 	const banned_user = await getPublicUser(banned_user_id);
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();

@@ -12,8 +12,8 @@ export default router;
 // TODO: should users be able to bulk delete messages or only bots?
 // TODO: should this request fail, if you provide messages older than 14 days/invalid ids?
 // https://discord.com/developers/docs/resources/channel#bulk-delete-messages
-router.post("/", check({ messages: [BigInt] }), async (req, res) => {
-	const channel_id = BigInt(req.params.channel_id);
+router.post("/", check({ messages: [String] }), async (req, res) => {
+	const channel_id = req.params.channel_id
 	const channel = await ChannelModel.findOne({ id: channel_id }, { permission_overwrites: true, guild_id: true }).exec();
 	if (!channel?.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
 
@@ -22,7 +22,7 @@ router.post("/", check({ messages: [BigInt] }), async (req, res) => {
 
 	const { maxBulkDelete } = Config.get().limits.message;
 
-	const { messages } = req.body as { messages: bigint[] };
+	const { messages } = req.body as { messages: string[] };
 	if (messages.length < 2) throw new HTTPError("You must at least specify 2 messages to bulk delete");
 	if (messages.length > maxBulkDelete) throw new HTTPError(`You cannot delete more than ${maxBulkDelete} messages`);
 

@@ -7,7 +7,7 @@ export const GuildCreateSchema = {
 	$icon: String,
 	$channels: [Object],
 	$guild_template_code: String,
-	$system_channel_id: BigInt,
+	$system_channel_id: String,
 };
 
 export interface GuildCreateSchema {
@@ -16,7 +16,7 @@ export interface GuildCreateSchema {
 	icon?: string;
 	channels?: GuildChannel[];
 	guild_template_code?: string;
-	system_channel_id?: bigint;
+	system_channel_id?: string;
 }
 
 export const GuildUpdateSchema = {
@@ -29,11 +29,11 @@ export const GuildUpdateSchema = {
 	$verification_level: Number,
 	$default_message_notifications: Number,
 	$system_channel_flags: Number,
-	$system_channel_id: BigInt,
+	$system_channel_id: String,
 	$explicit_content_filter: Number,
-	$public_updates_channel_id: BigInt,
+	$public_updates_channel_id: String,
 	$afk_timeout: Number,
-	$afk_channel_id: BigInt,
+	$afk_channel_id: String,
 };
 // @ts-ignore
 delete GuildUpdateSchema.$channels;
@@ -47,9 +47,9 @@ export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels"> {
 	default_message_notifications?: number;
 	system_channel_flags?: number;
 	explicit_content_filter?: number;
-	public_updates_channel_id?: bigint;
+	public_updates_channel_id?: string;
 	afk_timeout?: number;
-	afk_channel_id?: bigint;
+	afk_channel_id?: string;
 }
 
 export const GuildGetSchema = {

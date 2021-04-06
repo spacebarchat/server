@@ -25,12 +25,20 @@ router.post(
 		const query: any[] = [{ phone: login }];
 		if (email) query.push({ email });
 
-		// * MongoDB Specific query for user with same email or phone number
 		const user = await UserModel.findOne(
 			{
 				$or: query,
 			},
-			`user_data.hash id user_settings.locale user_settings.theme`
+			{
+				id: true,
+				user_settings: {
+					locale: true,
+					theme: true,
+				},
+				user_data: {
+					hash: true,
+				},
+			}
 		).exec();
 
 		if (!user) {
@@ -57,13 +65,13 @@ router.post(
 	}
 );
 
-export async function generateToken(id: bigint) {
+export async function generateToken(id: string) {
 	const iat = Math.floor(Date.now() / 1000);
 	const algorithm = "HS256";
 
 	return new Promise((res, rej) => {
 		jwt.sign(
-			{ id: `${id}`, iat },
+			{ id: id, iat },
 			Config.get().security.jwtSecret,
 			{
 				algorithm,
@@ -80,7 +88,6 @@ export async function generateToken(id: bigint) {
  * POST /auth/login
  * @argument { login: "email@gmail.com", password: "cleartextpassword", undelete: false, captcha_key: null, login_source: null, gift_code_sku_id: null, }
  
-
  * MFA required:
  * @returns {"token": null, "mfa": true, "sms": true, "ticket": "SOME TICKET JWT TOKEN"}
  

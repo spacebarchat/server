@@ -6,14 +6,14 @@ import { check } from "../../../util/instanceOf";
 const router = Router();
 
 router.get("/", async (req, res) => {
-	const guild_id = BigInt(req.params.id);
+	const guild_id = (req.params.id);
 	const channels = await ChannelModel.find({ guild_id }).lean().exec();
 
 	res.json(channels);
 });
 
 router.post("/", check(ChannelModifySchema), async (req, res) => {
-	const guild_id = BigInt(req.params.id);
+	const guild_id = (req.params.id);
 	const body = req.body as ChannelModifySchema;
 	if (!body.permission_overwrites) body.permission_overwrites = [];
 	if (!body.topic) body.topic = "";
