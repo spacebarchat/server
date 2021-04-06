@@ -40,7 +40,7 @@ router.post(
 		}
 
 		// the salt is saved in the password refer to bcrypt docs
-		const same_password = await bcrypt.compare(password, user.hash);
+		const same_password = await bcrypt.compare(password, user.user_data.hash);
 		if (!same_password) {
 			throw FieldErrors({
 				password: { message: req.t("auth:login.INVALID_PASSWORD"), code: "INVALID_PASSWORD" },
