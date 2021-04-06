@@ -4,7 +4,7 @@ import { Deflate } from "zlib";
 
 interface WebSocket extends WS {
 	version: number;
-	user_id: bigint;
+	user_id: string;
 	encoding: "etf" | "json";
 	compress?: "zlib-stream";
 	deflate?: Deflate;

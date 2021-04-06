@@ -30,7 +30,7 @@ export const IdentifySchema = {
 	$capabilities: Number,
 	$client_state: {
 		$guild_hashes: Object,
-		$highest_last_message_id: BigInt,
+		$highest_last_message_id: String,
 		$read_state_version: Number,
 		$user_guild_settings_version: Number,
 	},
@@ -66,7 +66,7 @@ export interface IdentifySchema {
 	capabilities?: number;
 	client_state?: {
 		guild_hashes?: any;
-		highest_last_message_id?: bigint;
+		highest_last_message_id?: string;
 		read_state_version?: number;
 		user_guild_settings_version?: number;
 	};

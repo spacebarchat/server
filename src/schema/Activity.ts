@@ -22,7 +22,7 @@ export interface ActivitySchema {
 				start: number;
 				end: number;
 			};
-			application_id?: bigint; // application id for the game
+			application_id?: string; // application id for the game
 			details?: string;
 			state?: string;
 			emoji?: EmojiSchema;
