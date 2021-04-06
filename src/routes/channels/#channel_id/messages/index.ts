@@ -60,7 +60,11 @@ router.get("/", async (req, res) => {
 	var query: any;
 	if (after) query = MessageModel.find({ channel_id, id: { $gt: after } });
 	else if (before) query = MessageModel.find({ channel_id, id: { $lt: before } });
-	else if (around) query = MessageModel.find({ channel_id, id: { $gt: around - halfLimit, $lt: around + halfLimit } });
+	else if (around)
+		query = MessageModel.find({
+			channel_id,
+			id: { $gt: (BigInt(around) - BigInt(halfLimit)).toString(), $lt: (BigInt(around) + BigInt(halfLimit)).toString() },
+		});
 	else {
 		query = MessageModel.find({ channel_id }).sort({ id: -1 });
 	}
