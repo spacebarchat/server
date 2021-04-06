@@ -117,6 +117,14 @@ exports.MessageSchema = new mongoose_1.Schema({
         channel_id: String,
         guild_id: String,
     },
+}, {
+    toJSON: {
+        transform: function (doc, ret) {
+            delete ret.mention_channel_ids;
+            delete ret.mention_user_ids;
+            delete ret.mention_role_ids;
+        },
+    },
 });
 exports.MessageSchema.virtual("author", {
     ref: User_1.UserModel,

@@ -190,39 +190,50 @@ export const Embed = {
 	],
 };
 
-export const MessageSchema = new Schema({
-	id: String,
-	channel_id: String,
-	author_id: String,
-	webhook_id: String,
-	guild_id: String,
-	application_id: String,
-	content: String,
-	timestamp: Date,
-	edited_timestamp: Date,
-	tts: Boolean,
-	mention_everyone: Boolean,
-	mention_user_ids: [String],
-	mention_role_ids: [String],
-	mention_channel_ids: [String],
-	attachments: [Attachment],
-	embeds: [Embed],
-	reactions: [Reaction],
-	nonce: Schema.Types.Mixed, // can be a long or a string
-	pinned: Boolean,
-	type: { type: Number },
-	activity: {
-		type: Number,
-		party_id: String,
-	},
-	flags: Types.Long,
-	stickers: [],
-	message_reference: {
-		message_id: String,
+export const MessageSchema = new Schema(
+	{
+		id: String,
 		channel_id: String,
+		author_id: String,
+		webhook_id: String,
 		guild_id: String,
+		application_id: String,
+		content: String,
+		timestamp: Date,
+		edited_timestamp: Date,
+		tts: Boolean,
+		mention_everyone: Boolean,
+		mention_user_ids: [String],
+		mention_role_ids: [String],
+		mention_channel_ids: [String],
+		attachments: [Attachment],
+		embeds: [Embed],
+		reactions: [Reaction],
+		nonce: Schema.Types.Mixed, // can be a long or a string
+		pinned: Boolean,
+		type: { type: Number },
+		activity: {
+			type: Number,
+			party_id: String,
+		},
+		flags: Types.Long,
+		stickers: [],
+		message_reference: {
+			message_id: String,
+			channel_id: String,
+			guild_id: String,
+		},
 	},
-});
+	{
+		toJSON: {
+			transform: function (doc, ret) {
+				delete ret.mention_channel_ids;
+				delete ret.mention_user_ids;
+				delete ret.mention_role_ids;
+			},
+		},
+	}
+);
 
 MessageSchema.virtual("author", {
 	ref: UserModel,
