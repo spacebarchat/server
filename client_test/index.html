@@ -40,6 +40,11 @@
 			};
 		</script>
 		<script>
+			localStorage.setItem(
+				"DeveloperOptionsStore",
+				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":false,"logAnalyticsEvents":false,"sourceMapsEnabled":false,"axeEnabled":false}`
+			);
+
 			!(function () {
 				if (null != window.WebSocket) {
 					var n = function (n) {
