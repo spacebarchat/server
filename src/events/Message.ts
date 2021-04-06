@@ -3,6 +3,7 @@ import erlpack from "erlpack";
 import OPCodeHandlers from "../opcodes";
 import { Payload, CLOSECODES } from "../util/Constants";
 import { instanceOf, Tuple } from "lambert-server";
+import { check } from "../opcodes/instanceOf";
 
 const PayloadSchema = {
 	op: Number,
@@ -15,14 +16,12 @@ export async function Message(this: WebSocket, buffer: Data) {
 	// TODO: compression
 	var data: Payload;
 
-	try {
-		if (this.encoding === "etf" && buffer instanceof Buffer) data = erlpack.unpack(buffer);
-		else if (this.encoding === "json" && typeof buffer === "string") data = JSON.parse(buffer);
-		const result = instanceOf(PayloadSchema, data);
-		if (result !== true) throw "invalid data";
-	} catch (error) {
-		return this.close(CLOSECODES.Decode_error);
-	}
+	if (this.encoding === "etf" && buffer instanceof Buffer) data = erlpack.unpack(buffer);
+	else if (this.encoding === "json" && typeof buffer === "string") data = JSON.parse(buffer);
+
+	check.call(this, PayloadSchema, data);
+
+	console.log(data);
 
 	// @ts-ignore
 	const OPCodeHandler = OPCodeHandlers[data.op];
