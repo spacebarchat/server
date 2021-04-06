@@ -138,10 +138,10 @@ export const UserSchema = new Schema({
 	email: String,
 	flags: Types.Long, // TODO: automatically convert Types.Long to BitField of UserFlags
 	public_flags: Types.Long,
+	guilds: [Types.Long], // array of guild ids the user is part of
 	user_data: {
 		fingerprints: [String],
 		hash: String, // hash of the password, salt is saved in password (bcrypt)
-		guilds: [Types.Long], // array of guild ids the user is part of
 		valid_tokens_since: Date, // all tokens with a previous issue date are invalid
 		relationships: [
 			{

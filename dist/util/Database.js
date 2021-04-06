@@ -9,6 +9,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const mongodb_1 = require("mongodb");
 const events_1 = __importDefault(require("events"));
 const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPreference=secondaryPreferred";
+console.log(`[DB] connect: ${uri}`);
 const connection = mongoose_1.default.createConnection(uri, { autoIndex: true });
 exports.default = connection;
 class MongooseCache extends events_1.default {

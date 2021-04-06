@@ -4,6 +4,8 @@ import { ChangeStream, ChangeEvent, Long } from "mongodb";
 import EventEmitter from "events";
 const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPreference=secondaryPreferred";
 
+console.log(`[DB] connect: ${uri}`);
+
 const connection = mongoose.createConnection(uri, { autoIndex: true });
 
 export default <Connection>connection;
