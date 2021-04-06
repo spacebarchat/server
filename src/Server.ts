@@ -90,7 +90,7 @@ export class DiscordServer extends Server {
 					...req.headers,
 				},
 			});
-			const buffer = await response.text();
+			const buffer = await response.buffer();
 
 			response.headers.forEach((value, name) => {
 				if (

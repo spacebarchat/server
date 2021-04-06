@@ -29,8 +29,6 @@ export async function addMember(user_id: bigint, guild_id: bigint, cache?: { gui
 	const user = await getPublicUser(user_id, { guilds: true });
 
 	const guildSize = user.guilds.length;
-	// @ts-ignore
-	user.guilds = undefined;
 
 	const { maxGuilds } = Config.get().limits.user;
 	if (guildSize >= maxGuilds) {
