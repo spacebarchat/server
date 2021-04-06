@@ -1,7 +1,7 @@
-import { ConnectedAccount, User, UserSettings } from "./User";
+import { ConnectedAccount, PublicUser, User, UserSettings } from "./User";
 import { DMChannel, Channel } from "./Channel";
 import { Guild } from "./Guild";
-import { PublicMember, UserGuildSettings } from "./Member";
+import { Member, PublicMember, UserGuildSettings } from "./Member";
 import { Emoji } from "./Emoji";
 import { Presence } from "./Activity";
 import { Role } from "./Role";
@@ -46,7 +46,19 @@ export interface InvalidatedEvent extends Event {
 
 export interface ReadyEventData {
 	v: number;
-	user: Omit<User, "guilds" | "user_settings" | "valid_tokens_since" | "connected_accounts" | "relationships">;
+	user: PublicUser & {
+		mobile: boolean;
+		desktop: boolean;
+		email: string;
+		flags: bigint;
+		mfa_enabled: boolean;
+		nsfw_allowed: boolean;
+		phone: string;
+		premium: boolean;
+		premium_type: number;
+		verified: boolean;
+		bot: boolean;
+	};
 	private_channels: DMChannel[]; // this will be empty for bots
 	session_id: string; // resuming
 	guilds: Guild[];
@@ -74,7 +86,12 @@ export interface ReadyEventData {
 	guild_join_requests?: []; // ? what is this? this is new
 	shard?: [number, number];
 	user_settings?: UserSettings;
-	relationships?: [];
+	relationships?: []; // TODO
+	read_state: {
+		entries: []; // TODO
+		partial: boolean;
+		version: number;
+	};
 	user_guild_settings?: {
 		entries: UserGuildSettings[];
 		version: number;
@@ -84,8 +101,7 @@ export interface ReadyEventData {
 		id: bigint;
 		flags: bigint;
 	};
-
-	merged_members?: PublicMember[][]; // every guild member object for the current user
+	merged_members?: Omit<Member, "settings" | "user">[][];
 	// probably all users who the user is in contact with
 	users?: {
 		avatar?: string;
