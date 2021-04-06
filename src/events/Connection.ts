@@ -5,6 +5,7 @@ import { Message } from "./Message";
 import { setHeartbeat } from "../util/setHeartbeat";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
+import { createDeflate } from "zlib";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -24,8 +25,14 @@ export async function Connection(this: Server, socket: WebSocket, request: Incom
 		if (socket.version != 8) return socket.close(CLOSECODES.Invalid_API_version);
 
 		// @ts-ignore
-		socket.compression = searchParams.get("compress") || "";
-		// TODO: compression
+		socket.compress = searchParams.get("compress") || "";
+		if (socket.compress) {
+			if (socket.compress !== "zlib-stream") return socket.close(CLOSECODES.Decode_error);
+			socket.deflate = createDeflate({ chunkSize: 65535 });
+			socket.deflate.on("data", (chunk) => socket.send(chunk));
+		}
+
+		socket.sequence = 0;
 
 		setHeartbeat(socket);
 
