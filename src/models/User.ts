@@ -8,7 +8,6 @@ export interface User {
 	username: string; // username max length 32, min 2
 	discriminator: string; // #0001 4 digit long string from #0001 - #9999
 	avatar: string | null; // hash of the user avatar
-	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
 	phone?: string; // phone number of the user
 	desktop: boolean; // if the user has desktop app installed
 	mobile: boolean; // if the user has mobile app installed
@@ -16,7 +15,6 @@ export interface User {
 	premium_type: number; // nitro level
 	bot: boolean; // if user is bot
 	system: boolean; // shouldn't be used, the api sents this field type true, if the genetaed message comes from a system generated author
-	level: string; // organization permission level (owner, moderator, user)
 	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 	created_at: Date; // registration date
@@ -24,17 +22,23 @@ export interface User {
 	email?: string; // email of the user
 	flags: bigint; // UserFlags
 	public_flags: bigint;
-	hash: string; // hash of the password, salt is saved in password (bcrypt)
-	guilds: bigint[]; // array of guild ids the user is part of
-	valid_tokens_since: Date; // all tokens with a previous issue date are invalid
 	user_settings: UserSettings;
-	relationships: Relationship[];
-	connected_accounts: ConnectedAccount[];
+	user_data: UserData;
 	presence: {
 		status: Status;
 		activities: Activity[];
 		client_status: ClientStatus;
 	};
+}
+
+// Privat user data:
+export interface UserData {
+	valid_tokens_since: Date; // all tokens with a previous issue date are invalid
+	relationships: Relationship[];
+	connected_accounts: ConnectedAccount[];
+	guilds: bigint[]; // array of guild ids the user is part of
+	hash: string; // hash of the password, salt is saved in password (bcrypt)
+	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
 }
 
 export interface UserDocument extends User, Document {
@@ -118,7 +122,6 @@ export const UserSchema = new Schema({
 	username: String,
 	discriminator: String,
 	avatar: String,
-	fingerprints: [String],
 	phone: String,
 	desktop: Boolean,
 	mobile: Boolean,
@@ -133,9 +136,33 @@ export const UserSchema = new Schema({
 	email: String,
 	flags: Types.Long, // TODO: automatically convert Types.Long to BitField of UserFlags
 	public_flags: Types.Long,
-	hash: String, // hash of the password, salt is saved in password (bcrypt)
-	guilds: [Types.Long], // array of guild ids the user is part of
-	valid_tokens_since: Date, // all tokens with a previous issue date are invalid
+	user_data: {
+		fingerprints: [String],
+		hash: String, // hash of the password, salt is saved in password (bcrypt)
+		guilds: [Types.Long], // array of guild ids the user is part of
+		valid_tokens_since: Date, // all tokens with a previous issue date are invalid
+		relationships: [
+			{
+				id: Types.Long,
+				nickname: String,
+				type: Number,
+				user_id: Types.Long,
+			},
+		],
+		connected_accounts: [
+			{
+				access_token: String,
+				friend_sync: Boolean,
+				id: String,
+				name: String,
+				revoked: Boolean,
+				show_activity: Boolean,
+				type: String,
+				verifie: Boolean,
+				visibility: Number,
+			},
+		],
+	},
 	user_settings: {
 		afk_timeout: Number,
 		allow_accessibility_detection: Boolean,
@@ -182,27 +209,7 @@ export const UserSchema = new Schema({
 		theme: String, // dark
 		timezone_offset: Number, // e.g -60,
 	},
-	relationships: [
-		{
-			id: Types.Long,
-			nickname: String,
-			type: Number,
-			user_id: Types.Long,
-		},
-	],
-	connected_accounts: [
-		{
-			access_token: String,
-			friend_sync: Boolean,
-			id: String,
-			name: String,
-			revoked: Boolean,
-			show_activity: Boolean,
-			type: String,
-			verifie: Boolean,
-			visibility: Number,
-		},
-	],
+
 	presence: {
 		status: String,
 		activities: [Activity],
