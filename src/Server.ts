@@ -9,7 +9,15 @@ import Config from "./util/Config";
 export class Server {
 	public ws: WebSocketServer;
 	constructor() {
-		this.ws = new WebSocketServer({ port: 8080, maxPayload: 4096 });
+		this.ws = new WebSocketServer({
+			port: 8080,
+			maxPayload: 4096,
+			// perMessageDeflate: {
+			// 	zlibDeflateOptions: {
+			// 		chunkSize: 65536,
+			// 	},
+			// },
+		});
 		this.ws.on("connection", Connection);
 	}
 

@@ -1,14 +1,15 @@
 import { db, Event, MongooseCache, UserModel, getPermission, Permissions } from "fosscord-server-util";
+import { OPCODES } from "../util/Constants";
+import { Send } from "../util/Send";
 import WebSocket from "../util/WebSocket";
 
-// TODO: bot sharding
 // TODO: close connection on Invalidated Token
 // TODO: check intent
 // TODO: Guild Member Update is sent for current-user updates regardless of whether the GUILD_MEMBERS intent is set.
 // ? How to resubscribe MongooseCache for new dm channel events? Maybe directly send them to the user_id regardless of the channel_id? -> max overhead of creating 10 events in database for dm user group. Or a new field in event -> recipient_ids?
 
 export async function setupListener(this: WebSocket) {
-	const user = await UserModel.findOne({ id: this.user_id }).exec();
+	const user = await UserModel.findOne({ id: this.user_id }).lean().exec();
 
 	const eventStream = new MongooseCache(
 		db.collection("events"),
@@ -23,14 +24,13 @@ export async function setupListener(this: WebSocket) {
 
 export async function dispatch(this: WebSocket, document: Event) {
 	var permission = new Permissions("ADMINISTRATOR"); // default permission for dms
+	console.log("event", document);
 
 	if (document.guild_id) {
 		if (!this.intents.has("GUILDS")) return;
 		const channel_id = document.channel_id || document.data?.channel_id;
 		permission = await getPermission(this.user_id, document.guild_id, channel_id);
 	}
-
-	console.log("event", document);
 
 	// check intents: https://discord.com/developers/docs/topics/gateway#gateway-intents
 	switch (document.event) {
@@ -93,7 +93,7 @@ export async function dispatch(this: WebSocket, document: Event) {
 			if (!this.intents.has("GUILD_MESSAGE_TYPING") && document.guild_id) return;
 			if (!this.intents.has("DIRECT_MESSAGE_TYPING") && !document.guild_id) return;
 			break;
-		case "READY":
+		case "READY": // will be sent by the gateway
 		case "USER_UPDATE":
 		case "APPLICATION_COMMAND_CREATE":
 		case "APPLICATION_COMMAND_DELETE":
@@ -149,7 +149,7 @@ export async function dispatch(this: WebSocket, document: Event) {
 		case "CHANNEL_DELETE":
 		case "CHANNEL_UPDATE":
 		case "GUILD_EMOJI_UPDATE":
-		case "READY":
+		case "READY": // will be sent by the gateway
 		case "USER_UPDATE":
 		case "APPLICATION_COMMAND_CREATE":
 		case "APPLICATION_COMMAND_DELETE":
@@ -160,5 +160,10 @@ export async function dispatch(this: WebSocket, document: Event) {
 			break;
 	}
 
-	return this.emit(document.event, document.data);
+	return Send(this, {
+		op: OPCODES.Dispatch,
+		t: document.event,
+		d: document.data,
+		s: this.sequence++,
+	});
 }

@@ -6,5 +6,5 @@ export function setHeartbeat(socket: WebSocket) {
 
 	socket.heartbeatTimeout = setTimeout(() => {
 		return socket.close(4009);
-	}, 1000 * 30);
+	}, 1000 * 45);
 }

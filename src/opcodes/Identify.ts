@@ -48,6 +48,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const channels = await ChannelModel.find({ recipients: this.user_id }).lean().exec();
 	const user = await UserModel.findOne({ id: this.user_id }).lean().exec();
+	if (!user) return this.close(CLOSECODES.Authentication_failed);
+
 	const public_user = {
 		username: user.username,
 		discriminator: user.discriminator,
