@@ -17,7 +17,6 @@ exports.UserSchema = new mongoose_1.Schema({
     desktop: Boolean,
     mobile: Boolean,
     premium: Boolean,
-    date_of_birth: Date,
     premium_type: Number,
     bot: Boolean,
     system: Boolean,

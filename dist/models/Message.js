@@ -134,19 +134,19 @@ exports.MessageSchema.virtual("mentions", {
     ref: User_1.UserModel,
     localField: "mention_user_ids",
     foreignField: "id",
-    justOne: true,
+    justOne: false,
 });
 exports.MessageSchema.virtual("mention_roles", {
     ref: Role_1.RoleModel,
     localField: "mention_role_ids",
     foreignField: "id",
-    justOne: true,
+    justOne: false,
 });
 exports.MessageSchema.virtual("mention_channels", {
     ref: Role_1.RoleModel,
-    localField: "mention_role_ids",
+    localField: "mention_channel_ids",
     foreignField: "id",
-    justOne: true,
+    justOne: false,
 });
 // TODO: missing Application Model
 // MessageSchema.virtual("application", {
