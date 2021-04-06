@@ -32,7 +32,7 @@ export declare class Snowflake {
      * @private
      */
     static binaryToID(num: any): string;
-    static generate(): bigint;
+    static generate(): string;
     /**
      * A deconstructed snowflake.
      * @typedef {Object} DeconstructedSnowflake

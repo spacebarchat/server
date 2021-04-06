@@ -73,7 +73,7 @@ class Snowflake {
         var worker = Snowflake.workerId << 17n;
         var process = Snowflake.processId << 12n;
         var increment = Snowflake.INCREMENT++;
-        return time | worker | process | increment;
+        return (time | worker | process | increment).toString();
     }
     /**
      * A deconstructed snowflake.
