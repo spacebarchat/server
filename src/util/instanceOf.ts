@@ -121,7 +121,8 @@ export function instanceOf(
 				return (
 					value.every((val, i) => {
 						errors[i] = {};
-						return (
+
+						if (
 							instanceOf(type[0], val, {
 								path: `${path}[${i}]`,
 								optional,
@@ -129,7 +130,12 @@ export function instanceOf(
 								req,
 								ref: { key: i, obj: value },
 							}) === true
-						);
+						) {
+							delete errors[i];
+							return true;
+						}
+
+						return false;
 					}) || errors
 				);
 			} else if (type?.constructor?.name != "Object") {
@@ -170,7 +176,7 @@ export function instanceOf(
 					if (OPTIONAL) newKey = newKey.slice(OPTIONAL_PREFIX.length);
 					errors[newKey] = {};
 
-					return (
+					if (
 						instanceOf(type[key], value[newKey], {
 							path: `${path}.${newKey}`,
 							optional: OPTIONAL,
@@ -178,7 +184,12 @@ export function instanceOf(
 							req,
 							ref: { key: newKey, obj: value },
 						}) === true
-					);
+					) {
+						delete errors[newKey];
+						return true;
+					}
+
+					return false;
 				}) || errors
 			);
 		} else if (typeof type === "number" || typeof type === "string" || typeof type === "boolean") {
