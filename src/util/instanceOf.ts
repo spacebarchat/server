@@ -148,8 +148,11 @@ export function instanceOf(
 						})
 					);
 				}
-				if (value instanceof type) return true;
-				throw new FieldError("BASE_TYPE_CLASS", req.t("common:field.BASE_TYPE_CLASS", { type }));
+				try {
+					if (value instanceof type) return true;
+				} catch (error) {
+					throw new FieldError("BASE_TYPE_CLASS", req.t("common:field.BASE_TYPE_CLASS", { type }));
+				}
 			}
 
 			if (typeof value !== "object") throw new FieldError("BASE_TYPE_OBJECT", req.t("common:field.BASE_TYPE_OBJECT"));
