@@ -2,11 +2,11 @@ import WebSocket, { Data } from "../util/WebSocket";
 import erlpack from "erlpack";
 import OPCodeHandlers from "../opcodes";
 import { Payload, CLOSECODES } from "../util/Constants";
-import { instanceOf } from "lambert-server";
+import { instanceOf, Tuple } from "lambert-server";
 
 const PayloadSchema = {
 	op: Number,
-	$d: Object,
+	$d: new Tuple(Object, Number), // or number for heartbeat sequence
 	$s: Number,
 	$t: String,
 };
@@ -26,7 +26,12 @@ export async function Message(this: WebSocket, buffer: Data) {
 
 	// @ts-ignore
 	const OPCodeHandler = OPCodeHandlers[data.op];
-	if (!OPCodeHandler) return this.close(CLOSECODES.Unknown_opcode);
+	if (!OPCodeHandler) {
+		console.error("Unknown_opcode: " + data.op);
+		// TODO: if all opcodes are implemented comment this out:
+		// this.close(CLOSECODES.Unknown_opcode);
+		return;
+	}
 
 	try {
 		return await OPCodeHandler.call(this, data);
