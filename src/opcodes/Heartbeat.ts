@@ -4,6 +4,8 @@ import { setHeartbeat } from "../util/setHeartbeat";
 import WebSocket from "../util/WebSocket";
 
 export function onHeartbeat(this: WebSocket, data: Payload) {
+	// TODO: validate payload
+
 	setHeartbeat(this);
 
 	Send(this, { op: 11 });

@@ -2,6 +2,7 @@ import { Payload } from "../util/Constants";
 import WebSocket from "../util/WebSocket";
 import { onHeartbeat } from "./Heartbeat";
 import { onIdentify } from "./Identify";
+import { onLazyRequest } from "./LazyRequest";
 import { onPresenceUpdate } from "./PresenceUpdate";
 import { onRequestGuildMembers } from "./RequestGuildMembers";
 import { onResume } from "./Resume";
@@ -14,6 +15,11 @@ export default {
 	2: onIdentify,
 	3: onPresenceUpdate,
 	4: onVoiceStateUpdate,
-	5: onResume,
+	// 5: Voice Server Ping
+	6: onResume,
+	// 7: Reconnect: You should attempt to reconnect and resume immediately.
 	8: onRequestGuildMembers,
+	// 9: Invalid Session
+	// 10: Hello
+	14: onLazyRequest,
 };

@@ -4,9 +4,9 @@ import WebSocket from "../util/WebSocket";
 
 export function check(this: WebSocket, schema: any, data: any) {
 	try {
-		return instanceOf(schema, data);
+		if (instanceOf(schema, data) !== true) throw "invalid";
 	} catch (error) {
-		// invalid identify struct
+		// invalid payload
 		this.close(CLOSECODES.Decode_error);
 		return false;
 	}
