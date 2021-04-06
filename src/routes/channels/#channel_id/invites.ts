@@ -60,7 +60,7 @@ router.get("/", async (req: Request, res: Response) => {
 		throw new HTTPError("You aren't authorised to access this endpoint", 401);
 	}
 
-	const invites = await InviteModel.find({ guild_id: guID }).exec();
+	const invites = await InviteModel.find({ guild_id: guID }).lean().exec();
 	res.status(200).send(invites);
 });
 

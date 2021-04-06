@@ -72,6 +72,7 @@ router.get("/", async (req, res) => {
 		.populate({ path: "mention_channels", select: { id: true, guild_id: true, type: true, name: true } })
 		.populate("mention_roles")
 		// .populate({ path: "member", select: PublicMemberProjection })
+		.lean()
 		.exec();
 
 	return res.json(messages);

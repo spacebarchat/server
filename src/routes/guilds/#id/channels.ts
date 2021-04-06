@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/", async (req, res) => {
 	const guild_id = BigInt(req.params.id);
-	const channels = await ChannelModel.find({ guild_id }).exec();
+	const channels = await ChannelModel.find({ guild_id }).lean().exec();
 
 	res.json(channels);
 });

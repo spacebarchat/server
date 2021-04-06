@@ -16,7 +16,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
-	var bans = await BanModel.find({ guild_id: guild_id }).exec();
+	var bans = await BanModel.find({ guild_id: guild_id }).lean().exec();
 	return res.json(bans);
 });
 

@@ -11,7 +11,9 @@ router.get("/", async (req: Request, res: Response) => {
 	if (!user) throw new HTTPError("User not found", 404);
 
 	var guildIDs = user.guilds || [];
-	var guild = await GuildModel.find({ id: { $in: guildIDs } }).exec();
+	var guild = await GuildModel.find({ id: { $in: guildIDs } })
+		.lean()
+		.exec();
 	res.json(guild);
 });
 

@@ -32,6 +32,7 @@ router.get("/", async (req: Request, res: Response) => {
 	var members = await MemberModel.find({ guild_id, ...query }, PublicMemberProjection)
 		.limit(limit)
 		.populate({ path: "user", select: PublicUserProjection })
+		.lean()
 		.exec();
 
 	return res.json(members);
