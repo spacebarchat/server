@@ -2,7 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { checkToken } from "fosscord-server-util";
 
-export const NO_AUTHORIZATION_ROUTES = ["/api/v8/auth/login", "/api/v8/auth/register", "/api/v8/webhooks/"];
+export const NO_AUTHORIZATION_ROUTES = [
+	"/api/v8/auth/login",
+	"/api/v8/auth/register",
+	"/api/v8/webhooks/",
+	"/api/v8/gateway",
+	"/api/v8/experiments",
+];
 
 declare global {
 	namespace Express {
