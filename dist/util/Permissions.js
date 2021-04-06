@@ -96,7 +96,9 @@ async function getPermission(user_id, guild_id, channel_id, cache) {
     member = await Member_1.MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
     if (!member)
         throw new Error("Member not found");
-    var roles = await Role_1.RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
+    var roles = await Role_1.RoleModel.find({ guild_id, id: { $in: member.roles } })
+        .lean()
+        .exec();
     if (channel_id) {
         channel = await Channel_1.ChannelModel.findOne({ id: channel_id }, "permission_overwrites").exec();
     }

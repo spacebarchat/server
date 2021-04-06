@@ -1,8 +1,8 @@
 /// <reference path="../util/MongoBigInt.d.ts" />
-import { ConnectedAccount, User, UserSettings } from "./User";
+import { ConnectedAccount, PublicUser, User, UserSettings } from "./User";
 import { DMChannel, Channel } from "./Channel";
 import { Guild } from "./Guild";
-import { PublicMember, UserGuildSettings } from "./Member";
+import { Member, PublicMember, UserGuildSettings } from "./Member";
 import { Emoji } from "./Emoji";
 import { Presence } from "./Activity";
 import { Role } from "./Role";
@@ -29,7 +29,19 @@ export interface InvalidatedEvent extends Event {
 }
 export interface ReadyEventData {
     v: number;
-    user: Omit<User, "guilds" | "user_settings" | "valid_tokens_since" | "connected_accounts" | "relationships">;
+    user: PublicUser & {
+        mobile: boolean;
+        desktop: boolean;
+        email: string;
+        flags: bigint;
+        mfa_enabled: boolean;
+        nsfw_allowed: boolean;
+        phone: string;
+        premium: boolean;
+        premium_type: number;
+        verified: boolean;
+        bot: boolean;
+    };
     private_channels: DMChannel[];
     session_id: string;
     guilds: Guild[];
@@ -67,6 +79,11 @@ export interface ReadyEventData {
     shard?: [number, number];
     user_settings?: UserSettings;
     relationships?: [];
+    read_state: {
+        entries: [];
+        partial: boolean;
+        version: number;
+    };
     user_guild_settings?: {
         entries: UserGuildSettings[];
         version: number;
@@ -76,7 +93,7 @@ export interface ReadyEventData {
         id: bigint;
         flags: bigint;
     };
-    merged_members?: PublicMember[][];
+    merged_members?: Omit<Member, "settings" | "user">[][];
     users?: {
         avatar?: string;
         discriminator: string;

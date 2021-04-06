@@ -5,39 +5,39 @@ const mongoose_1 = require("mongoose");
 exports.Activity = {
     name: String,
     type: Number,
-    url: String,
-    created_at: Date,
-    timestamps: [
+    $url: String,
+    $created_at: Date,
+    $timestamps: [
         {
-            start: Number,
-            end: Number,
+            $start: Number,
+            $end: Number,
         },
     ],
-    application_id: mongoose_1.Types.Long,
-    details: String,
-    state: String,
-    emoji: {
-        name: String,
-        id: mongoose_1.Types.Long,
-        amimated: Boolean,
+    $application_id: mongoose_1.Types.Long,
+    $details: String,
+    $state: String,
+    $emoji: {
+        $name: String,
+        $id: mongoose_1.Types.Long,
+        $amimated: Boolean,
     },
-    party: {
-        id: String,
-        size: [Number, Number],
+    $party: {
+        $id: String,
+        $size: [Number, Number],
     },
-    assets: {
-        large_image: String,
-        large_text: String,
-        small_image: String,
-        small_text: String,
+    $assets: {
+        $large_image: String,
+        $large_text: String,
+        $small_image: String,
+        $small_text: String,
     },
-    secrets: {
-        join: String,
-        spectate: String,
-        match: String,
+    $secrets: {
+        $join: String,
+        $spectate: String,
+        $match: String,
     },
-    instance: Boolean,
-    flags: mongoose_1.Types.Long,
+    $instance: Boolean,
+    $flags: mongoose_1.Types.Long,
 };
 var ActivityType;
 (function (ActivityType) {

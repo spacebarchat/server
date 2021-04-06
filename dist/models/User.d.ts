@@ -7,7 +7,6 @@ export interface User {
     username: string;
     discriminator: string;
     avatar: string | null;
-    fingerprints: string[];
     phone?: string;
     desktop: boolean;
     mobile: boolean;
@@ -15,7 +14,6 @@ export interface User {
     premium_type: number;
     bot: boolean;
     system: boolean;
-    level: string;
     nsfw_allowed: boolean;
     mfa_enabled: boolean;
     created_at: Date;
@@ -23,17 +21,21 @@ export interface User {
     email?: string;
     flags: bigint;
     public_flags: bigint;
-    hash: string;
-    guilds: bigint[];
-    valid_tokens_since: Date;
     user_settings: UserSettings;
-    relationships: Relationship[];
-    connected_accounts: ConnectedAccount[];
+    user_data: UserData;
     presence: {
         status: Status;
         activities: Activity[];
         client_status: ClientStatus;
     };
+}
+export interface UserData {
+    valid_tokens_since: Date;
+    relationships: Relationship[];
+    connected_accounts: ConnectedAccount[];
+    guilds: bigint[];
+    hash: string;
+    fingerprints: string[];
 }
 export interface UserDocument extends User, Document {
     id: bigint;

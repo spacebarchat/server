@@ -12,10 +12,10 @@ export interface Activity {
     name: string;
     type: ActivityType;
     url?: string;
-    created_at: Date;
+    created_at?: Date;
     timestamps?: {
-        start: number;
-        end: number;
+        start?: number;
+        end?: number;
     }[];
     application_id?: bigint;
     details?: string;
@@ -30,10 +30,10 @@ export interface Activity {
         size?: [number, number];
     };
     assets?: {
-        large_image: string;
-        large_text: string;
-        small_image: string;
-        small_text: string;
+        large_image?: string;
+        large_text?: string;
+        small_image?: string;
+        small_text?: string;
     };
     secrets?: {
         join?: string;
@@ -46,37 +46,37 @@ export interface Activity {
 export declare const Activity: {
     name: StringConstructor;
     type: NumberConstructor;
-    url: StringConstructor;
-    created_at: DateConstructor;
-    timestamps: {
-        start: NumberConstructor;
-        end: NumberConstructor;
+    $url: StringConstructor;
+    $created_at: DateConstructor;
+    $timestamps: {
+        $start: NumberConstructor;
+        $end: NumberConstructor;
     }[];
-    application_id: typeof Types.Long;
-    details: StringConstructor;
-    state: StringConstructor;
-    emoji: {
-        name: StringConstructor;
-        id: typeof Types.Long;
-        amimated: BooleanConstructor;
+    $application_id: typeof Types.Long;
+    $details: StringConstructor;
+    $state: StringConstructor;
+    $emoji: {
+        $name: StringConstructor;
+        $id: typeof Types.Long;
+        $amimated: BooleanConstructor;
     };
-    party: {
-        id: StringConstructor;
-        size: NumberConstructor[];
+    $party: {
+        $id: StringConstructor;
+        $size: NumberConstructor[];
     };
-    assets: {
-        large_image: StringConstructor;
-        large_text: StringConstructor;
-        small_image: StringConstructor;
-        small_text: StringConstructor;
+    $assets: {
+        $large_image: StringConstructor;
+        $large_text: StringConstructor;
+        $small_image: StringConstructor;
+        $small_text: StringConstructor;
     };
-    secrets: {
-        join: StringConstructor;
-        spectate: StringConstructor;
-        match: StringConstructor;
+    $secrets: {
+        $join: StringConstructor;
+        $spectate: StringConstructor;
+        $match: StringConstructor;
     };
-    instance: BooleanConstructor;
-    flags: typeof Types.Long;
+    $instance: BooleanConstructor;
+    $flags: typeof Types.Long;
 };
 export declare enum ActivityType {
     GAME = 0,

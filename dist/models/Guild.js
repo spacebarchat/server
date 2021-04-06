@@ -6,6 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GuildModel = exports.GuildSchema = void 0;
 const mongoose_1 = require("mongoose");
 const Database_1 = __importDefault(require("../util/Database"));
+const Channel_1 = require("./Channel");
+const Emoji_1 = require("./Emoji");
+const Member_1 = require("./Member");
+const Role_1 = require("./Role");
 exports.GuildSchema = new mongoose_1.Schema({
     id: { type: mongoose_1.Types.Long, required: true },
     afk_channel_id: mongoose_1.Types.Long,
@@ -44,7 +48,40 @@ exports.GuildSchema = new mongoose_1.Schema({
     widget_channel_id: mongoose_1.Types.Long,
     widget_enabled: Boolean,
 });
-// GuildSchema.virtual
+exports.GuildSchema.virtual("channels", {
+    ref: Channel_1.ChannelModel,
+    localField: "id",
+    foreignField: "guild_id",
+    justOne: false,
+});
+exports.GuildSchema.virtual("roles", {
+    ref: Role_1.RoleModel,
+    localField: "id",
+    foreignField: "guild_id",
+    justOne: false,
+});
+// nested populate is needed for member users: https://gist.github.com/yangsu/5312204
+exports.GuildSchema.virtual("members", {
+    ref: Member_1.MemberModel,
+    localField: "id",
+    foreignField: "member_id",
+    justOne: false,
+});
+exports.GuildSchema.virtual("emojis", {
+    ref: Emoji_1.EmojiModel,
+    localField: "id",
+    foreignField: "guild_id",
+    justOne: false,
+});
+exports.GuildSchema.virtual("joined_at", {
+    ref: Member_1.MemberModel,
+    localField: "id",
+    foreignField: "guild_id",
+    justOne: true,
+}).get((member, virtual, doc) => {
+    console.log("get", member, this);
+    return member.joined_at;
+});
 // @ts-ignore
 exports.GuildModel = Database_1.default.model("Guild", exports.GuildSchema, "guilds");
 //# sourceMappingURL=Guild.js.map

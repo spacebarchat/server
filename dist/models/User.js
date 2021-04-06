@@ -13,7 +13,6 @@ exports.UserSchema = new mongoose_1.Schema({
     username: String,
     discriminator: String,
     avatar: String,
-    fingerprints: [String],
     phone: String,
     desktop: Boolean,
     mobile: Boolean,
@@ -28,9 +27,33 @@ exports.UserSchema = new mongoose_1.Schema({
     email: String,
     flags: mongoose_1.Types.Long,
     public_flags: mongoose_1.Types.Long,
-    hash: String,
-    guilds: [mongoose_1.Types.Long],
-    valid_tokens_since: Date,
+    user_data: {
+        fingerprints: [String],
+        hash: String,
+        guilds: [mongoose_1.Types.Long],
+        valid_tokens_since: Date,
+        relationships: [
+            {
+                id: mongoose_1.Types.Long,
+                nickname: String,
+                type: Number,
+                user_id: mongoose_1.Types.Long,
+            },
+        ],
+        connected_accounts: [
+            {
+                access_token: String,
+                friend_sync: Boolean,
+                id: String,
+                name: String,
+                revoked: Boolean,
+                show_activity: Boolean,
+                type: String,
+                verifie: Boolean,
+                visibility: Number,
+            },
+        ],
+    },
     user_settings: {
         afk_timeout: Number,
         allow_accessibility_detection: Boolean,
@@ -77,27 +100,6 @@ exports.UserSchema = new mongoose_1.Schema({
         theme: String,
         timezone_offset: Number,
     },
-    relationships: [
-        {
-            id: mongoose_1.Types.Long,
-            nickname: String,
-            type: Number,
-            user_id: mongoose_1.Types.Long,
-        },
-    ],
-    connected_accounts: [
-        {
-            access_token: String,
-            friend_sync: Boolean,
-            id: String,
-            name: String,
-            revoked: Boolean,
-            show_activity: Boolean,
-            type: String,
-            verifie: Boolean,
-            visibility: Number,
-        },
-    ],
     presence: {
         status: String,
         activities: [Activity_1.Activity],

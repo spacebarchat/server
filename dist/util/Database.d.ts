@@ -22,8 +22,8 @@ export declare class MongooseCache extends EventEmitter {
     constructor(collection: Collection, pipeline: Array<Record<string, unknown>>, opts: {
         onlyEvents: boolean;
     });
-    init(): Promise<void>;
-    convertResult(obj: any): any;
+    init: () => Promise<void>;
+    convertResult: (obj: any) => any;
     change: (doc: ChangeEvent) => boolean | Promise<any> | undefined;
-    destroy(): Promise<any> | undefined;
+    destroy: () => Promise<any> | undefined;
 }
