@@ -23,6 +23,7 @@ export interface User {
 	flags: bigint; // UserFlags
 	public_flags: bigint;
 	user_settings: UserSettings;
+	guilds: bigint[]; // array of guild ids the user is part of
 	user_data: UserData;
 	presence: {
 		status: Status;
@@ -36,7 +37,6 @@ export interface UserData {
 	valid_tokens_since: Date; // all tokens with a previous issue date are invalid
 	relationships: Relationship[];
 	connected_accounts: ConnectedAccount[];
-	guilds: bigint[]; // array of guild ids the user is part of
 	hash: string; // hash of the password, salt is saved in password (bcrypt)
 	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
 }

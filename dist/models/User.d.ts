@@ -22,6 +22,7 @@ export interface User {
     flags: bigint;
     public_flags: bigint;
     user_settings: UserSettings;
+    guilds: bigint[];
     user_data: UserData;
     presence: {
         status: Status;
@@ -33,7 +34,6 @@ export interface UserData {
     valid_tokens_since: Date;
     relationships: Relationship[];
     connected_accounts: ConnectedAccount[];
-    guilds: bigint[];
     hash: string;
     fingerprints: string[];
 }
