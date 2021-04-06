@@ -6,7 +6,7 @@ const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPre
 
 console.log(`[DB] connect: ${uri}`);
 
-const connection = mongoose.createConnection(uri, { autoIndex: true });
+const connection = mongoose.createConnection(uri, { autoIndex: true , useNewUrlParser: true, useUnifiedTopology: true });
 
 export default <Connection>connection;
 
