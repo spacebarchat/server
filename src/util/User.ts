@@ -16,7 +16,9 @@ export async function getPublicUser(user_id: bigint, additional_fields?: any) {
 			...PublicUserProjection,
 			...additional_fields,
 		}
-	).exec();
+	)
+		.lean()
+		.exec();
 	if (!user) throw new HTTPError("User not found", 404);
 	return user;
 }

@@ -165,6 +165,8 @@ router.post(
 			});
 		}
 
+		// TODO: save date_of_birth
+
 		// constructing final user object
 		// TODO fix:
 		// @ts-ignore
@@ -179,6 +181,7 @@ router.post(
 			mfa_enabled: false,
 			verified: false,
 			email: adjusted_email,
+			nsfw_allowed: true, // TODO: depending on age
 			flags: 0n, // TODO: generate default flags
 			guilds: [],
 			user_data: {
