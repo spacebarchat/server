@@ -1,5 +1,9 @@
 import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
+import { ChannelModel } from "./Channel";
+import { EmojiModel } from "./Emoji";
+import { MemberModel } from "./Member";
+import { RoleModel } from "./Role";
 
 export interface GuildDocument extends Document, Guild {
 	id: bigint;
@@ -87,7 +91,43 @@ export const GuildSchema = new Schema({
 	widget_enabled: Boolean,
 });
 
-// GuildSchema.virtual
+GuildSchema.virtual("channels", {
+	ref: ChannelModel,
+	localField: "id",
+	foreignField: "guild_id",
+	justOne: false,
+});
+GuildSchema.virtual("roles", {
+	ref: RoleModel,
+	localField: "id",
+	foreignField: "guild_id",
+	justOne: false,
+});
+
+// nested populate is needed for member users: https://gist.github.com/yangsu/5312204
+GuildSchema.virtual("members", {
+	ref: MemberModel,
+	localField: "id",
+	foreignField: "member_id",
+	justOne: false,
+});
+
+GuildSchema.virtual("emojis", {
+	ref: EmojiModel,
+	localField: "id",
+	foreignField: "guild_id",
+	justOne: false,
+});
+
+GuildSchema.virtual("joined_at", {
+	ref: MemberModel,
+	localField: "id",
+	foreignField: "guild_id",
+	justOne: true,
+}).get((member: any, virtual: any, doc: any) => {
+	console.log("get", member, this);
+	return member.joined_at;
+});
 
 // @ts-ignore
 export const GuildModel = db.model<GuildDocument>("Guild", GuildSchema, "guilds");
