@@ -16,7 +16,7 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 			errors = error.errors;
 		} else {
 			console.error(error);
-			if (req.server.options.production) {
+			if (req.server?.options?.production) {
 				message = "Internal Server Error";
 			}
 			code = httpcode = 500;
