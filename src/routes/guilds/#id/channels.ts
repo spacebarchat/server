@@ -1,19 +1,20 @@
 import { Router } from "express";
-import { ChannelModel, ChannelType, GuildModel, Snowflake } from "fosscord-server-util";
+import { ChannelCreateEvent, ChannelModel, ChannelType, GuildModel, Snowflake, toObject } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
+import { emitEvent } from "../../../util/Event";
 import { check } from "../../../util/instanceOf";
 const router = Router();
 
 router.get("/", async (req, res) => {
-	const guild_id = (req.params.id);
-	const channels = await ChannelModel.find({ guild_id }).lean().exec();
+	const guild_id = req.params.id;
+	const channels = await ChannelModel.find({ guild_id }).exec();
 
-	res.json(channels);
+	res.json(toObject(channels));
 });
 
 router.post("/", check(ChannelModifySchema), async (req, res) => {
-	const guild_id = (req.params.id);
+	const guild_id = req.params.id;
 	const body = req.body as ChannelModifySchema;
 	if (!body.permission_overwrites) body.permission_overwrites = [];
 	if (!body.topic) body.topic = "";
@@ -44,6 +45,8 @@ router.post("/", check(ChannelModifySchema), async (req, res) => {
 		guild_id,
 	};
 	await new ChannelModel(channel).save();
+
+	await emitEvent({ event: "CHANNEL_CREATE", data: channel, guild_id } as ChannelCreateEvent);
 
 	res.json(channel);
 });

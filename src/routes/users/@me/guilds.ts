@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { GuildModel, MemberModel, UserModel, GuildDeleteEvent, GuildMemberRemoveEvent } from "fosscord-server-util";
+import { GuildModel, MemberModel, UserModel, GuildDeleteEvent, GuildMemberRemoveEvent, toObject } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../util/Event";
 import { getPublicUser } from "../../../util/User";
@@ -11,15 +11,13 @@ router.get("/", async (req: Request, res: Response) => {
 	if (!user) throw new HTTPError("User not found", 404);
 
 	var guildIDs = user.guilds || [];
-	var guild = await GuildModel.find({ id: { $in: guildIDs } })
-		.lean()
-		.exec();
-	res.json(guild);
+	var guild = await GuildModel.find({ id: { $in: guildIDs } }).exec();
+	res.json(toObject(guild));
 });
 
 // user send to leave a certain guild
 router.delete("/:id", async (req: Request, res: Response) => {
-	const guildID = (req.params.id);
+	const guildID = req.params.id;
 	const guild = await GuildModel.findOne({ id: guildID }).exec();
 
 	if (!guild) throw new HTTPError("Guild doesn't exist", 404);

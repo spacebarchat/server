@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { GuildModel, MemberModel } from "fosscord-server-util";
+import { GuildModel, MemberModel, toObject } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { instanceOf, Length } from "../../../util/instanceOf";
 import { PublicMemberProjection } from "../../../util/Member";
@@ -32,10 +32,9 @@ router.get("/", async (req: Request, res: Response) => {
 	var members = await MemberModel.find({ guild_id, ...query }, PublicMemberProjection)
 		.limit(limit)
 		.populate({ path: "user", select: PublicUserProjection })
-		.lean()
 		.exec();
 
-	return res.json(members);
+	return res.json(toObject(members));
 });
 
 router.get("/:member", async (req: Request, res: Response) => {

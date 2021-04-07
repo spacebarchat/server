@@ -1,11 +1,22 @@
 import { Router } from "express";
-import { ChannelModel, ChannelType, getPermission, Message, MessageCreateEvent, MessageModel, Snowflake } from "fosscord-server-util";
+import {
+	ChannelModel,
+	ChannelType,
+	getPermission,
+	Message,
+	MessageCreateEvent,
+	MessageDocument,
+	MessageModel,
+	Snowflake,
+	toObject,
+} from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../schema/Message";
 import { check, instanceOf, Length } from "../../../../util/instanceOf";
 import { PublicUserProjection } from "../../../../util/User";
 import multer from "multer";
 import { emitEvent } from "../../../../util/Event";
+import { Query } from "mongoose";
 const router: Router = Router();
 
 export default router;
@@ -57,7 +68,7 @@ router.get("/", async (req, res) => {
 		if (!channel.recipients.includes(req.user_id)) throw new HTTPError("You don't have permission to view this channel", 401);
 	}
 
-	var query: any;
+	var query: Query<MessageDocument[], MessageDocument, {}>;
 	if (after) query = MessageModel.find({ channel_id, id: { $gt: after } });
 	else if (before) query = MessageModel.find({ channel_id, id: { $lt: before } });
 	else if (around)
@@ -76,10 +87,9 @@ router.get("/", async (req, res) => {
 		.populate({ path: "mention_channels", select: { id: true, guild_id: true, type: true, name: true } })
 		.populate("mention_roles")
 		// .populate({ path: "member", select: PublicMemberProjection })
-		.lean()
 		.exec();
 
-	return res.json(messages);
+	return res.json(toObject(messages));
 });
 
 // TODO: config max upload size

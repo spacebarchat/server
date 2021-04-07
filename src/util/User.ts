@@ -1,4 +1,4 @@
-import { UserModel } from "fosscord-server-util";
+import { toObject, UserModel } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 
 export const PublicUserProjection = {
@@ -16,9 +16,7 @@ export async function getPublicUser(user_id: string, additional_fields?: any) {
 			...PublicUserProjection,
 			...additional_fields,
 		}
-	)
-		.lean()
-		.exec();
+	).exec();
 	if (!user) throw new HTTPError("User not found", 404);
-	return user;
+	return toObject(user);
 }

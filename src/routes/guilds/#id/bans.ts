@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { BanModel, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, GuildModel } from "fosscord-server-util";
+import { BanModel, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, GuildModel, toObject } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { getIpAdress } from "../../../middlewares/GlobalRateLimit";
 import { BanCreateSchema } from "../../../schema/Ban";
@@ -16,8 +16,8 @@ router.get("/", async (req: Request, res: Response) => {
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
-	var bans = await BanModel.find({ guild_id: guild_id }).lean().exec();
-	return res.json(bans);
+	var bans = await BanModel.find({ guild_id: guild_id }).exec();
+	return res.json(toObject(bans));
 });
 
 router.get("/:user", async (req: Request, res: Response) => {
