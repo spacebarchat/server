@@ -13,7 +13,7 @@ export async function setupListener(this: WebSocket) {
 
 	const eventStream = new MongooseCache(
 		db.collection("events"),
-		[{ $match: { $or: [{ guild_id: { $in: user.guilds } }, { user_id: this.user_id }] } }],
+		[{ $match:  { $or: [{ 'fullDocument.guild_id': { $in: user.guilds } }, { 'fullDocument.user_id': this.user_id }] } }],
 		{ onlyEvents: true }
 	);
 	await eventStream.init();
