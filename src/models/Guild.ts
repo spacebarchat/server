@@ -110,7 +110,7 @@ GuildSchema.virtual("roles", {
 GuildSchema.virtual("members", {
 	ref: MemberModel,
 	localField: "id",
-	foreignField: "member_id",
+	foreignField: "guild_id",
 	justOne: false,
 });
 
