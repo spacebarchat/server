@@ -5,6 +5,6 @@ export * from "./models/index";
 export * from "./util/index";
 
 import Config, { DefaultOptions } from "./util/Config";
-import db, { MongooseCache } from "./util/Database";
+import db, { MongooseCache, toObject } from "./util/Database";
 
-export { Config, db, DefaultOptions, MongooseCache };
+export { Config, db, DefaultOptions, MongooseCache, toObject };

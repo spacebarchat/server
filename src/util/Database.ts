@@ -2,6 +2,7 @@ import "./MongoBigInt";
 import mongoose, { Collection, Connection } from "mongoose";
 import { ChangeStream, ChangeEvent, Long } from "mongodb";
 import EventEmitter from "events";
+import { Document } from "mongoose";
 const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPreference=secondaryPreferred";
 
 console.log(`[DB] connect: ${uri}`);
@@ -9,6 +10,14 @@ console.log(`[DB] connect: ${uri}`);
 const connection = mongoose.createConnection(uri, { autoIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
 
 export default <Connection>connection;
+
+function transform<T extends Document>(document: T) {
+	return document.toObject({ virtuals: true });
+}
+
+export function toObject<T extends Document>(document: T | T[]) {
+	return Array.isArray(document) ? document.map((x) => transform<T>(x)) : transform(document);
+}
 
 export interface MongooseCache {
 	on(event: "delete", listener: (id: string) => void): this;
