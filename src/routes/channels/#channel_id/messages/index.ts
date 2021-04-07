@@ -130,6 +130,7 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 	const embeds = [];
 	if (body.embed) embeds.push(body.embed);
 
+	// TODO: check and put all in body in it
 	const message: Message = {
 		id: Snowflake.generate(),
 		channel_id,
@@ -145,9 +146,22 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		reactions: [],
 		type: 0,
 		tts: body.tts,
+		nonce: body.nonce,
 	};
 
-	await new MessageModel(message).save();
+	const doc = new MessageModel(message);
+	await doc.save();
 
-	await emitEvent({ event: "MESSAGE_CREATE", channel_id, data: {} } as MessageCreateEvent);
+	const data = toObject(
+		await MessageModel.populate(doc, [
+			{ path: "author", select: PublicUserProjection },
+			{ path: "mentions", select: PublicUserProjection },
+			{ path: "mention_roles" },
+			{ path: "mention_channels", select: { id: true, guild_id: true, type: true, name: true } },
+		])
+	);
+
+	await emitEvent({ event: "MESSAGE_CREATE", channel_id, data, guild_id: channel.guild_id } as MessageCreateEvent);
+
+	return res.send(data);
 });
