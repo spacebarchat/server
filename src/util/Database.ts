@@ -1,5 +1,5 @@
 import "./MongoBigInt";
-import mongoose, { Collection, Connection } from "mongoose";
+import mongoose, { Collection, Connection, LeanDocument } from "mongoose";
 import { ChangeStream, ChangeEvent, Long } from "mongodb";
 import EventEmitter from "events";
 import { Document } from "mongoose";
@@ -11,11 +11,13 @@ const connection = mongoose.createConnection(uri, { autoIndex: true, useNewUrlPa
 
 export default <Connection>connection;
 
-function transform<T extends Document>(document: T) {
+function transform<T>(document: T) {
+	// @ts-ignore
 	return document.toObject({ virtuals: true });
 }
 
-export function toObject<T extends Document>(document: T | T[]) {
+export function toObject<T>(document: T): LeanDocument<T> {
+	// @ts-ignore
 	return Array.isArray(document) ? document.map((x) => transform<T>(x)) : transform(document);
 }
 
