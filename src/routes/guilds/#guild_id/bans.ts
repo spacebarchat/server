@@ -13,7 +13,7 @@ const router: Router = Router();
 router.get("/", async (req: Request, res: Response) => {
 	const guild_id = req.params.id;
 
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
+	const guild = await GuildModel.exists({ id: guild_id });
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
 	var bans = await BanModel.find({ guild_id: guild_id }).exec();
@@ -61,30 +61,30 @@ router.post("/:user_id", check(BanCreateSchema), async (req: Request, res: Respo
 });
 
 router.delete("/:user_id", async (req: Request, res: Response) => {
-	var guild_id = req.params.id;
+	var { guild_id } = req.params;
 	var banned_user_id = req.params.user_id;
 
 	const banned_user = await getPublicUser(banned_user_id);
-	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
+	const guild = await GuildModel.exists({ id: guild_id });
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
-	const perms = await getPermission(req.user_id, guild.id);
+	const perms = await getPermission(req.user_id, guild_id);
 	if (!perms.has("BAN_MEMBERS")) {
 		throw new HTTPError("No permissions", 403);
 	}
 
 	await BanModel.deleteOne({
 		user_id: banned_user_id,
-		guild_id: guild.id,
+		guild_id,
 	}).exec();
 
 	await emitEvent({
 		event: "GUILD_BAN_REMOVE",
 		data: {
-			guild_id: guild.id,
+			guild_id,
 			user: banned_user,
 		},
-		guild_id: guild.id,
+		guild_id,
 	} as GuildBanRemoveEvent);
 
 	return res.status(204).send();

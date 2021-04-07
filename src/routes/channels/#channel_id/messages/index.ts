@@ -17,6 +17,7 @@ import { PublicUserProjection } from "../../../../util/User";
 import multer from "multer";
 import { emitEvent } from "../../../../util/Event";
 import { Query } from "mongoose";
+import { PublicMemberProjection } from "../../../../util/Member";
 const router: Router = Router();
 
 export default router;
@@ -80,14 +81,7 @@ router.get("/", async (req, res) => {
 		query = MessageModel.find({ channel_id }).sort({ id: -1 });
 	}
 
-	const messages = await query
-		.limit(limit)
-		.populate({ path: "author", select: PublicUserProjection })
-		.populate({ path: "mentions", select: PublicUserProjection })
-		.populate({ path: "mention_channels", select: { id: true, guild_id: true, type: true, name: true } })
-		.populate("mention_roles")
-		// .populate({ path: "member", select: PublicMemberProjection })
-		.exec();
+	const messages = await query.limit(limit).exec();
 
 	return res.json(toObject(messages));
 });
@@ -147,19 +141,11 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		type: 0,
 		tts: body.tts,
 		nonce: body.nonce,
+		pinned: false,
 	};
 
-	const doc = new MessageModel(message);
-	await doc.save();
-
-	const data = toObject(
-		await MessageModel.populate(doc, [
-			{ path: "author", select: PublicUserProjection },
-			{ path: "mentions", select: PublicUserProjection },
-			{ path: "mention_roles" },
-			{ path: "mention_channels", select: { id: true, guild_id: true, type: true, name: true } },
-		])
-	);
+	const doc = await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).save();
+	const data = toObject(doc);
 
 	await emitEvent({ event: "MESSAGE_CREATE", channel_id, data, guild_id: channel.guild_id } as MessageCreateEvent);
 

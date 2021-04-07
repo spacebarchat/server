@@ -5,6 +5,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 		created_at: new Date(), // in seconds
 		...payload,
 	};
+	// TODO: bigint isn't working
 
 	return await new EventModel(obj).save();
 }

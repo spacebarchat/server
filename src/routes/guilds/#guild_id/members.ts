@@ -10,7 +10,7 @@ const router = Router();
 // TODO: not allowed for user -> only allowed for bots with privileged intents
 // TODO: send over websocket
 router.get("/", async (req: Request, res: Response) => {
-	const guild_id = req.params.id;
+	const { guild_id } = req.params;
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
@@ -31,17 +31,16 @@ router.get("/", async (req: Request, res: Response) => {
 
 	var members = await MemberModel.find({ guild_id, ...query }, PublicMemberProjection)
 		.limit(limit)
-		.populate({ path: "user", select: PublicUserProjection })
 		.exec();
 
 	return res.json(toObject(members));
 });
 
 router.get("/:member", async (req: Request, res: Response) => {
-	const guild_id = req.params.id;
+	const { guild_id } = req.params;
 	const user_id = req.params.member;
 
-	const member = await MemberModel.findOne({ id: user_id, guild_id }).populate({ path: "user", select: PublicUserProjection }).exec();
+	const member = await MemberModel.findOne({ id: user_id, guild_id }).exec();
 	if (!member) throw new HTTPError("Member not found", 404);
 
 	return res.json(member);

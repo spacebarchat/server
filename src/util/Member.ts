@@ -75,6 +75,7 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 			},
 			guild_id: guild_id,
 		} as GuildMemberAddEvent),
+
 		emitEvent({
 			event: "GUILD_CREATE",
 			data: guild,
