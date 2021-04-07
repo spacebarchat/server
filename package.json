@@ -6,8 +6,8 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "npm run build:util && npm run build && node dist/",
-		"build": "tsc -b .",
-		"build:util": "tsc -b ./node_modules/fosscord-server-util/"
+		"build": "npx tsc -b .",
+		"build:util": "npx tsc -b ./node_modules/fosscord-server-util/"
 	},
 	"keywords": [],
 	"author": "",
@@ -21,6 +21,7 @@
 		"lambert-server": "^1.1.7",
 		"missing-native-js-functions": "^1.2.3",
 		"node-fetch": "^2.6.1",
+		"typescript": "^4.2.3",
 		"uuid": "^8.3.2",
 		"ws": "^7.4.2"
 	},
