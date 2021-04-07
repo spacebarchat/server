@@ -36,7 +36,7 @@
 		"jsonwebtoken": "^8.5.1",
 		"lambert-db": "^1.1.8",
 		"lambert-server": "^1.0.10",
-		"missing-native-js-functions": "^1.2.4",
+		"missing-native-js-functions": "^1.2.6",
 		"mongodb": "^3.6.4",
 		"mongoose": "^5.12.3",
 		"mongoose-long": "^0.3.2",
