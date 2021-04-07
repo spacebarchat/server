@@ -9,6 +9,7 @@ import {
 	MemberModel,
 	ReadyEventData,
 	UserModel,
+	toObject,
 } from "fosscord-server-util";
 import { setupListener } from "../listener/listener";
 import { instanceOf } from "lambert-server";
@@ -31,13 +32,14 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	try {
 		var decoded = await checkToken(identify.token); // will throw an error if invalid
 	} catch (error) {
+		console.error("invalid token", error);
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = decoded.id;
-	if (!identify.intents) identify.intents = BigInt("11111111111111");
+	if (!identify.intents) identify.intents = 0b11111111111111n;
 	this.intents = new Intents(identify.intents);
 
-	const members = await MemberModel.find({ id: this.user_id }).lean().exec();
+	const members = toObject(await MemberModel.find({ id: this.user_id }).exec());
 	const merged_members = members.map((x: any) => {
 		const y = { ...x, user_id: x.id };
 		delete y.settings;
@@ -64,7 +66,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		.populate("roles")
 		.populate("emojis")
 		.populate({ path: "joined_at", match: { id: this.user_id } })
-		.lean()
 		.exec();
 
 	const privateUser = {
@@ -91,7 +92,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		user: privateUser,
 		user_settings: user.user_settings,
 		// @ts-ignore
-		guilds: guilds.map((x) => {
+		guilds: toObject(guilds).map((x) => {
 			// @ts-ignore
 			x.guild_hashes = {
 				channels: { omitted: false, hash: "y4PV2fZ0gmo" },
