@@ -52,7 +52,7 @@ router.post(
 		let discriminator = "";
 
 		// get register Config
-		const { register } = Config.get();
+		const { register, security } = Config.get();
 
 		// check if registration is allowed
 		if (!register.allowNewRegistration) {
@@ -129,9 +129,9 @@ router.post(
 			}
 		}
 
-		if (register.requireCaptcha) {
+		if (register.requireCaptcha && security.captcha.enabled) {
 			if (!captcha_key) {
-				const { sitekey, service } = Config.get().security.captcha;
+				const { sitekey, service } = security.captcha;
 				return res.status(400).json({
 					captcha_key: ["captcha-required"],
 					captcha_sitekey: sitekey,
