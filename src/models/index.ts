@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
+import mongooseAutoPopulate from "mongoose-autopopulate";
+
+mongoose.plugin(mongooseAutoPopulate);
 
 mongoose.plugin((schema: Schema, opts: any) => {
 	schema.set("toObject", {

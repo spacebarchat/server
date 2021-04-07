@@ -34,6 +34,7 @@ export const RoleSchema = new Schema({
 		bot_id: String,
 	},
 });
+RoleSchema.set("removeResponse", ["guild_id"]);
 
 // @ts-ignore
 export const RoleModel = db.model<RoleDocument>("Role", RoleSchema, "roles");

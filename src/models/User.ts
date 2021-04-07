@@ -3,6 +3,13 @@ import { ClientStatus, Status } from "./Status";
 import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
 
+export const PublicUserProjection = {
+	username: true,
+	discriminator: true,
+	id: true,
+	public_flags: true,
+	avatar: true,
+};
 export interface User {
 	id: string;
 	username: string; // username max length 32, min 2

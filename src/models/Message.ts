@@ -1,7 +1,7 @@
 import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
-import { PublicUser, UserModel } from "./User";
-import { MemberModel, PublicMember } from "./Member";
+import { PublicUser, PublicUserProjection, UserModel } from "./User";
+import { MemberModel, PublicMember, PublicMemberProjection } from "./Member";
 import { Role, RoleModel } from "./Role";
 import { Channel } from "./Channel";
 
@@ -229,6 +229,14 @@ export const MessageSchema = new Schema({
 		channel_id: String,
 		guild_id: String,
 	},
+	// virtual:
+	// author: {
+	// 	ref: UserModel,
+	// 	localField: "author_id",
+	// 	foreignField: "id",
+	// 	justOne: true,
+	// 	autopopulate: { select: { id: true, user_data: false } },
+	// },
 });
 
 MessageSchema.virtual("author", {
@@ -236,6 +244,7 @@ MessageSchema.virtual("author", {
 	localField: "author_id",
 	foreignField: "id",
 	justOne: true,
+	autopopulate: { select: PublicUserProjection },
 });
 
 MessageSchema.virtual("member", {
@@ -250,6 +259,7 @@ MessageSchema.virtual("mentions", {
 	localField: "mention_user_ids",
 	foreignField: "id",
 	justOne: false,
+	autopopulate: { select: PublicUserProjection },
 });
 
 MessageSchema.virtual("mention_roles", {
@@ -257,6 +267,7 @@ MessageSchema.virtual("mention_roles", {
 	localField: "mention_role_ids",
 	foreignField: "id",
 	justOne: false,
+	autopopulate: true,
 });
 
 MessageSchema.virtual("mention_channels", {
@@ -264,6 +275,7 @@ MessageSchema.virtual("mention_channels", {
 	localField: "mention_channel_ids",
 	foreignField: "id",
 	justOne: false,
+	autopopulate: { select: { id: true, guild_id: true, type: true, name: true } },
 });
 
 MessageSchema.set("removeResponse", ["mention_channel_ids", "mention_role_ids", "mention_user_ids", "author_id"]);

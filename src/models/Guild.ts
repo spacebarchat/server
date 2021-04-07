@@ -96,12 +96,14 @@ GuildSchema.virtual("channels", {
 	localField: "id",
 	foreignField: "guild_id",
 	justOne: false,
+	autopopulate: true,
 });
 GuildSchema.virtual("roles", {
 	ref: RoleModel,
 	localField: "id",
 	foreignField: "guild_id",
 	justOne: false,
+	autopopulate: true,
 });
 
 // nested populate is needed for member users: https://gist.github.com/yangsu/5312204
@@ -117,6 +119,7 @@ GuildSchema.virtual("emojis", {
 	localField: "id",
 	foreignField: "guild_id",
 	justOne: false,
+	autopopulate: true,
 });
 
 GuildSchema.virtual("joined_at", {
@@ -125,7 +128,6 @@ GuildSchema.virtual("joined_at", {
 	foreignField: "guild_id",
 	justOne: true,
 }).get((member: any, virtual: any, doc: any) => {
-	console.log("get", member, this);
 	return member.joined_at;
 });
 

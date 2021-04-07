@@ -1,6 +1,18 @@
-import { PublicUser, User, UserModel } from "./User";
+import { PublicUser, PublicUserProjection, User, UserModel } from "./User";
 import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
+
+export const PublicMemberProjection = {
+	id: true,
+	guild_id: true,
+	nick: true,
+	roles: true,
+	joined_at: true,
+	pending: true,
+	deaf: true,
+	mute: true,
+	premium_since: true,
+};
 
 export interface Member {
 	id: string;
@@ -80,6 +92,9 @@ MemberSchema.virtual("user", {
 	localField: "id",
 	foreignField: "id",
 	justOne: true,
+	autopopulate: {
+		select: PublicUserProjection,
+	},
 });
 
 // @ts-ignore
