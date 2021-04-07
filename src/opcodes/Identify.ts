@@ -10,12 +10,12 @@ import {
 	ReadyEventData,
 	UserModel,
 	toObject,
+	EVENTEnum,
 } from "fosscord-server-util";
 import { setupListener } from "../listener/listener";
 import { instanceOf } from "lambert-server";
 import { IdentifySchema } from "../schema/Identify";
 import { Send } from "../util/Send";
-import { EVENTEnum } from "fosscord-server-util";
 import experiments from "./experiments.json";
 import { check } from "./instanceOf";
 
@@ -62,9 +62,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	};
 
 	const guilds = await GuildModel.find({ id: { $in: user.guilds } })
-		.populate("channels")
-		.populate("roles")
-		.populate("emojis")
 		.populate({ path: "joined_at", match: { id: this.user_id } })
 		.exec();
 
