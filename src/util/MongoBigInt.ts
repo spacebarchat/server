@@ -44,7 +44,7 @@ class LongSchema extends mongoose.SchemaType {
 		if (val instanceof Number || "number" == typeof val) return BigInt(val);
 		if (!Array.isArray(val) && val.toString) return BigInt(val.toString());
 
-		// @ts-ignore
+		//@ts-ignore
 		throw new SchemaType.CastError("Long", val);
 	}
 

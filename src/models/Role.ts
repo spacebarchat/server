@@ -1,5 +1,6 @@
 import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
+import toBigInt from "../util/toBigInt";
 
 export interface Role {
 	id: string;
@@ -28,12 +29,13 @@ export const RoleSchema = new Schema({
 	managed: Boolean,
 	mentionable: Boolean,
 	name: String,
-	permissions: Types.Long,
+	permissions: { type: String, get: toBigInt },
 	position: Number,
 	tags: {
 		bot_id: String,
 	},
 });
+
 RoleSchema.set("removeResponse", ["guild_id"]);
 
 // @ts-ignore

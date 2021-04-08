@@ -7,7 +7,12 @@ const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPre
 
 console.log(`[DB] connect: ${uri}`);
 
-const connection = mongoose.createConnection(uri, { autoIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
+const connection = mongoose.createConnection(uri, {
+	autoIndex: true,
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useFindAndModify: false,
+});
 
 export default <Connection>connection;
 
@@ -54,6 +59,12 @@ export class MongooseCache extends EventEmitter {
 			const arr = await this.collection.aggregate(this.pipeline).toArray();
 			this.data = arr.length ? arr[0] : arr;
 		}
+	};
+
+	changeStream = (pipeline: any) => {
+		this.pipeline = pipeline;
+		this.destroy();
+		this.init();
 	};
 
 	convertResult = (obj: any) => {
