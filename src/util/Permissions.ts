@@ -97,6 +97,16 @@ export class Permissions extends BitField {
 		return (checkAdmin && super.has(Permissions.FLAGS.ADMINISTRATOR)) || super.has(permission);
 	}
 
+	/**
+	 * Checks whether the bitfield has a permission, or multiple permissions, but throws an Error if user fails to match auth criteria.
+	 */
+	hasThrow(permission: PermissionResolvable, checkAdmin = true) {
+		if ((checkAdmin && super.has(Permissions.FLAGS.ADMINISTRATOR)) || super.has(permission)) {
+			return true;
+		}
+		throw new Error(`User doesn't fulfill the following permission criteria: ${permission}`);
+	}
+
 	static channelPermission(overwrites: ChannelPermissionOverwrite[], init?: bigint) {
 		// TODO: do not deny any permissions if admin
 		return overwrites.reduce((permission, overwrite) => {
