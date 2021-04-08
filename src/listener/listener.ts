@@ -2,6 +2,7 @@ import { db, Event, MongooseCache, UserModel, getPermission, Permissions } from 
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
 import WebSocket from "../util/WebSocket";
+import "missing-native-js-functions";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent
@@ -11,34 +12,40 @@ import WebSocket from "../util/WebSocket";
 // Sharding: calculate if the current shard id matches the formula: shard_id = (guild_id >> 22) % num_shards
 // https://discord.com/developers/docs/topics/gateway#sharding
 
+export interface DispatchOpts {
+	eventStream: MongooseCache;
+	guilds: Array<string>;
+}
+
+function getPipeline(this: WebSocket, guilds: string[]) {
+	if (this.shard_count) {
+		guilds = guilds.filter((x) => (BigInt(x) >> 22n) % this.shard_count === this.shard_id);
+	}
+
+	return [
+		{
+			$match: {
+				$or: [{ "fullDocument.guild_id": { $in: guilds } }, { "fullDocument.user_id": this.user_id }],
+			},
+		},
+	];
+}
+
 export async function setupListener(this: WebSocket) {
 	const user = await UserModel.findOne({ id: this.user_id }).lean().exec();
 	var guilds = user.guilds;
-	const shard_count = 10n;
-	const shard_id = 0n;
 
-	if (shard_count) {
-		guilds = user.guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
-	}
+	const eventStream = new MongooseCache(db.collection("events"), getPipeline.call(this, guilds), {
+		onlyEvents: true,
+	});
 
-	const eventStream = new MongooseCache(
-		db.collection("events"),
-		[
-			{
-				$match: {
-					$or: [{ "fullDocument.guild_id": { $in: guilds } }, { "fullDocument.user_id": this.user_id }],
-				},
-			},
-		],
-		{ onlyEvents: true }
-	);
 	await eventStream.init();
-	eventStream.on("insert", dispatch.bind(this));
+	eventStream.on("insert", (document: Event) => dispatch.call(this, document, { eventStream, guilds }));
 
 	this.once("close", () => eventStream.destroy());
 }
 
-export async function dispatch(this: WebSocket, document: Event) {
+export async function dispatch(this: WebSocket, document: Event, { eventStream, guilds }: DispatchOpts) {
 	var permission = new Permissions("ADMINISTRATOR"); // default permission for dms
 	console.log("event", document);
 
@@ -46,6 +53,14 @@ export async function dispatch(this: WebSocket, document: Event) {
 		if (!this.intents.has("GUILDS")) return;
 		const channel_id = document.channel_id || document.data?.channel_id;
 		permission = await getPermission(this.user_id, document.guild_id, channel_id);
+	}
+
+	if (document.event === "GUILD_CREATE") {
+		guilds.push(document.guild_id);
+		eventStream.changeStream(getPipeline.call(this, guilds));
+	} else if (document.event === "GUILD_DELETE") {
+		guilds.remove(document.guild);
+		eventStream.changeStream(getPipeline.call(this, guilds));
 	}
 
 	// check intents: https://discord.com/developers/docs/topics/gateway#gateway-intents
