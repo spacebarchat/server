@@ -1,12 +1,24 @@
-import { PublicUser, User, UserModel } from "./User";
+import { PublicUser, PublicUserProjection, User, UserModel } from "./User";
 import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
 
+export const PublicMemberProjection = {
+	id: true,
+	guild_id: true,
+	nick: true,
+	roles: true,
+	joined_at: true,
+	pending: true,
+	deaf: true,
+	mute: true,
+	premium_since: true,
+};
+
 export interface Member {
-	id: bigint;
-	guild_id: bigint;
+	id: string;
+	guild_id: string;
 	nick?: string;
-	roles: bigint[];
+	roles: string[];
 	joined_at: Date;
 	premium_since?: number;
 	deaf: boolean;
@@ -17,12 +29,12 @@ export interface Member {
 }
 
 export interface MemberDocument extends Member, Document {
-	id: bigint;
+	id: string;
 }
 
 export interface UserGuildSettings {
 	channel_overrides: {
-		channel_id: bigint;
+		channel_id: string;
 		message_notifications: number;
 		mute_config: MuteConfig;
 		muted: boolean;
@@ -47,10 +59,10 @@ const MuteConfig = {
 };
 
 export const MemberSchema = new Schema({
-	id: { type: Types.Long, required: true },
-	guild_id: Types.Long,
+	id: { type: String, required: true },
+	guild_id: String,
 	nick: String,
-	roles: [Types.Long],
+	roles: [String],
 	joined_at: Date,
 	premium_since: Number,
 	deaf: Boolean,
@@ -59,7 +71,7 @@ export const MemberSchema = new Schema({
 	settings: {
 		channel_overrides: [
 			{
-				channel_id: Types.Long,
+				channel_id: String,
 				message_notifications: Number,
 				mute_config: MuteConfig,
 				muted: Boolean,
@@ -80,6 +92,9 @@ MemberSchema.virtual("user", {
 	localField: "id",
 	foreignField: "id",
 	justOne: true,
+	autopopulate: {
+		select: PublicUserProjection,
+	},
 });
 
 // @ts-ignore

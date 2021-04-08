@@ -1,12 +1,12 @@
 import { AllowedMentions, Embed } from "./Message";
 
 export interface Interaction {
-	id: bigint;
+	id: string;
 	type: InteractionType;
 	data?: {};
-	guild_id: bigint;
-	channel_id: bigint;
-	member_id: bigint;
+	guild_id: string;
+	channel_id: string;
+	member_id: string;
 	token: string;
 	version: number;
 }

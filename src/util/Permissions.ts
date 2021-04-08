@@ -131,7 +131,7 @@ export class Permissions extends BitField {
 		guild,
 		channel,
 	}: {
-		user: { id: bigint; roles: bigint[] };
+		user: { id: string; roles: string[] };
 		guild: { roles: Role[] };
 		channel?: {
 			overwrites?: ChannelPermissionOverwrite[];
@@ -154,22 +154,24 @@ export class Permissions extends BitField {
 }
 
 export async function getPermission(
-	user_id: bigint,
-	guild_id: bigint,
-	channel_id?: bigint,
-	cache?: { channel?: ChannelDocument | null; member?: MemberDocument | null }
+	user_id: string,
+	guild_id: string,
+	channel_id?: string,
+	cache?: { channel?: ChannelDocument | null; member?: MemberDocument | null; guild?: GuildDocument | null }
 ) {
-	var { channel, member } = cache || {};
+	var { channel, member, guild } = cache || {};
 
-	const guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
+	if (!guild) guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
 	if (!guild) throw new Error("Guild not found");
 	if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
-	member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
+	if (!member) member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
 	if (!member) throw new Error("Member not found");
 
-	var roles = await RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
-	if (channel_id) {
+	var roles = await RoleModel.find({ guild_id, id: { $in: member.roles } })
+		.lean()
+		.exec();
+	if (channel_id && !channel) {
 		channel = await ChannelModel.findOne({ id: channel_id }, "permission_overwrites").exec();
 	}
 

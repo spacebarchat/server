@@ -3,12 +3,18 @@ import { ClientStatus, Status } from "./Status";
 import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
 
+export const PublicUserProjection = {
+	username: true,
+	discriminator: true,
+	id: true,
+	public_flags: true,
+	avatar: true,
+};
 export interface User {
-	id: bigint;
+	id: string;
 	username: string; // username max length 32, min 2
 	discriminator: string; // #0001 4 digit long string from #0001 - #9999
 	avatar: string | null; // hash of the user avatar
-	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
 	phone?: string; // phone number of the user
 	desktop: boolean; // if the user has desktop app installed
 	mobile: boolean; // if the user has mobile app installed
@@ -16,7 +22,6 @@ export interface User {
 	premium_type: number; // nitro level
 	bot: boolean; // if user is bot
 	system: boolean; // shouldn't be used, the api sents this field type true, if the genetaed message comes from a system generated author
-	level: string; // organization permission level (owner, moderator, user)
 	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 	created_at: Date; // registration date
@@ -24,12 +29,9 @@ export interface User {
 	email?: string; // email of the user
 	flags: bigint; // UserFlags
 	public_flags: bigint;
-	hash: string; // hash of the password, salt is saved in password (bcrypt)
-	guilds: bigint[]; // array of guild ids the user is part of
-	valid_tokens_since: Date; // all tokens with a previous issue date are invalid
 	user_settings: UserSettings;
-	relationships: Relationship[];
-	connected_accounts: ConnectedAccount[];
+	guilds: string[]; // array of guild ids the user is part of
+	user_data: UserData;
 	presence: {
 		status: Status;
 		activities: Activity[];
@@ -37,12 +39,21 @@ export interface User {
 	};
 }
 
+// Privat user data:
+export interface UserData {
+	valid_tokens_since: Date; // all tokens with a previous issue date are invalid
+	relationships: Relationship[];
+	connected_accounts: ConnectedAccount[];
+	hash: string; // hash of the password, salt is saved in password (bcrypt)
+	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
+}
+
 export interface UserDocument extends User, Document {
-	id: bigint;
+	id: string;
 }
 
 export interface PublicUser {
-	id: bigint;
+	id: string;
 	discriminator: string;
 	username: string;
 	avatar?: string;
@@ -62,10 +73,10 @@ export interface ConnectedAccount {
 }
 
 export interface Relationship {
-	id: bigint;
+	id: string;
 	nickname?: string;
 	type: number;
-	user_id: bigint;
+	user_id: string;
 }
 
 export interface UserSettings {
@@ -76,7 +87,7 @@ export interface UserSettings {
 	contact_sync_enabled: boolean;
 	convert_emoticons: boolean;
 	custom_status: {
-		emoji_id: bigint | null;
+		emoji_id: string | null;
 		emoji_name: string | null;
 		expires_at: number | null;
 		text: string | null;
@@ -93,11 +104,11 @@ export interface UserSettings {
 	guild_folders: // every top guild is displayed as a "folder"
 	{
 		color: number;
-		guild_ids: bigint[];
+		guild_ids: string[];
 		id: number;
 		name: string;
 	}[];
-	guild_positions: bigint[]; // guild ids ordered by position
+	guild_positions: string[]; // guild ids ordered by position
 	inline_attachment_media: boolean;
 	inline_embed_media: boolean;
 	locale: string; // en_US
@@ -105,7 +116,7 @@ export interface UserSettings {
 	native_phone_integration_enabled: boolean;
 	render_embeds: boolean;
 	render_reactions: boolean;
-	restricted_guilds: bigint[];
+	restricted_guilds: string[];
 	show_current_game: boolean;
 	status: "online" | "offline" | "dnd" | "idle";
 	stream_notifications_enabled: boolean;
@@ -114,11 +125,10 @@ export interface UserSettings {
 }
 
 export const UserSchema = new Schema({
-	id: Types.Long,
+	id: String,
 	username: String,
 	discriminator: String,
 	avatar: String,
-	fingerprints: [String],
 	phone: String,
 	desktop: Boolean,
 	mobile: Boolean,
@@ -133,9 +143,33 @@ export const UserSchema = new Schema({
 	email: String,
 	flags: Types.Long, // TODO: automatically convert Types.Long to BitField of UserFlags
 	public_flags: Types.Long,
-	hash: String, // hash of the password, salt is saved in password (bcrypt)
-	guilds: [Types.Long], // array of guild ids the user is part of
-	valid_tokens_since: Date, // all tokens with a previous issue date are invalid
+	guilds: [String], // array of guild ids the user is part of
+	user_data: {
+		fingerprints: [String],
+		hash: String, // hash of the password, salt is saved in password (bcrypt)
+		valid_tokens_since: Date, // all tokens with a previous issue date are invalid
+		relationships: [
+			{
+				id: String,
+				nickname: String,
+				type: Number,
+				user_id: String,
+			},
+		],
+		connected_accounts: [
+			{
+				access_token: String,
+				friend_sync: Boolean,
+				id: String,
+				name: String,
+				revoked: Boolean,
+				show_activity: Boolean,
+				type: String,
+				verifie: Boolean,
+				visibility: Number,
+			},
+		],
+	},
 	user_settings: {
 		afk_timeout: Number,
 		allow_accessibility_detection: Boolean,
@@ -144,7 +178,7 @@ export const UserSchema = new Schema({
 		contact_sync_enabled: Boolean,
 		convert_emoticons: Boolean,
 		custom_status: {
-			emoji_id: Types.Long,
+			emoji_id: String,
 			emoji_name: String,
 			expires_at: Number,
 			text: String,
@@ -162,12 +196,12 @@ export const UserSchema = new Schema({
 		guild_folders: [
 			{
 				color: Number,
-				guild_ids: [Types.Long],
+				guild_ids: [String],
 				id: Number,
 				name: String,
 			},
 		],
-		guild_positions: [Types.Long], // guild ids ordered by position
+		guild_positions: [String], // guild ids ordered by position
 		inline_attachment_media: Boolean,
 		inline_embed_media: Boolean,
 		locale: String, // en_US
@@ -175,34 +209,14 @@ export const UserSchema = new Schema({
 		native_phone_integration_enabled: Boolean,
 		render_embeds: Boolean,
 		render_reactions: Boolean,
-		restricted_guilds: [Types.Long],
+		restricted_guilds: [String],
 		show_current_game: Boolean,
 		status: String,
 		stream_notifications_enabled: Boolean,
 		theme: String, // dark
 		timezone_offset: Number, // e.g -60,
 	},
-	relationships: [
-		{
-			id: Types.Long,
-			nickname: String,
-			type: Number,
-			user_id: Types.Long,
-		},
-	],
-	connected_accounts: [
-		{
-			access_token: String,
-			friend_sync: Boolean,
-			id: String,
-			name: String,
-			revoked: Boolean,
-			show_activity: Boolean,
-			type: String,
-			verifie: Boolean,
-			visibility: Number,
-		},
-	],
+
 	presence: {
 		status: String,
 		activities: [Activity],

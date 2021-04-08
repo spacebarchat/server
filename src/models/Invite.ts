@@ -8,14 +8,13 @@ export interface Invite extends Document {
 	max_uses: number;
 	max_age: number;
 	created_at: Date;
-	guild_id: bigint;
-	channel_id: bigint;
-	inviter_id: bigint;
+	guild_id: string;
+	channel_id: string;
+	inviter_id: string;
 
-	//! What the fucking shit is this
-	target_user_id?: bigint;
+	// ? What the fucking shit is this
+	target_user_id?: string;
 	target_user_type?: number;
-	// !
 }
 
 export const InviteSchema = new Schema({
@@ -25,14 +24,13 @@ export const InviteSchema = new Schema({
 	max_uses: Number,
 	max_age: Number,
 	created_at: Date,
-	guild_id: Types.Long,
-	channel_id: Types.Long,
-	inviter_id: Types.Long,
+	guild_id: String,
+	channel_id: String,
+	inviter_id: String,
 
-	//! What the fucking shit is this
-	target_user_id: Types.Long,
+	// ? What the fucking shit is this
+	target_user_id: String,
 	target_user_type: Number,
-	// !
 });
 
 // @ts-ignore

@@ -102,3 +102,6 @@ typings/
 # TernJS port file
 .tern-port
 .DS_Store
+
+# Compiled TypeScript code
+dist/

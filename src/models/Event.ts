@@ -1,7 +1,7 @@
-import { ConnectedAccount, User, UserSettings } from "./User";
+import { ConnectedAccount, PublicUser, User, UserSettings } from "./User";
 import { DMChannel, Channel } from "./Channel";
 import { Guild } from "./Guild";
-import { PublicMember, UserGuildSettings } from "./Member";
+import { Member, PublicMember, UserGuildSettings } from "./Member";
 import { Emoji } from "./Emoji";
 import { Presence } from "./Activity";
 import { Role } from "./Role";
@@ -14,9 +14,9 @@ import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
 
 export interface Event {
-	guild_id?: bigint;
-	user_id?: bigint;
-	channel_id?: bigint;
+	guild_id?: string;
+	user_id?: string;
+	channel_id?: string;
 	created_at?: Date;
 	event: EVENT;
 	data?: any;
@@ -25,9 +25,9 @@ export interface Event {
 export interface EventDocument extends Event, Document {}
 
 export const EventSchema = new Schema({
-	guild_id: Types.Long,
-	user_id: Types.Long,
-	channel_id: Types.Long,
+	guild_id: String,
+	user_id: String,
+	channel_id: String,
 	created_at: { type: Date, required: true },
 	event: { type: String, required: true },
 	data: Object,
@@ -44,60 +44,78 @@ export interface InvalidatedEvent extends Event {
 
 // ! END Custom Events that shouldn't get sent to the client but processed by the server
 
+export interface ReadyEventData {
+	v: number;
+	user: PublicUser & {
+		mobile: boolean;
+		desktop: boolean;
+		email: string;
+		flags: bigint;
+		mfa_enabled: boolean;
+		nsfw_allowed: boolean;
+		phone: string;
+		premium: boolean;
+		premium_type: number;
+		verified: boolean;
+		bot: boolean;
+	};
+	private_channels: DMChannel[]; // this will be empty for bots
+	session_id: string; // resuming
+	guilds: Guild[];
+	analytics_token?: string;
+	connected_accounts?: ConnectedAccount[];
+	consents?: {
+		personalization?: {
+			consented?: boolean;
+		};
+	};
+	country_code?: string; // e.g. DE
+	friend_suggestion_count?: number;
+	geo_ordered_rtc_regions?: string[]; // ["europe","russie","india","us-east","us-central"]
+	experiments?: [number, number, number, number, number][];
+	guild_experiments?: [
+		// ? what are guild_experiments?
+		// this is the structure of it:
+		number,
+		null,
+		number,
+		[[number, { e: number; s: number }[]]],
+		[number, [[number, [number, number]]]],
+		{ b: number; k: bigint[] }[]
+	][];
+	guild_join_requests?: []; // ? what is this? this is new
+	shard?: [number, number];
+	user_settings?: UserSettings;
+	relationships?: []; // TODO
+	read_state: {
+		entries: []; // TODO
+		partial: boolean;
+		version: number;
+	};
+	user_guild_settings?: {
+		entries: UserGuildSettings[];
+		version: number;
+		partial: boolean;
+	};
+	application?: {
+		id: string;
+		flags: bigint;
+	};
+	merged_members?: Omit<Member, "settings" | "user">[][];
+	// probably all users who the user is in contact with
+	users?: {
+		avatar?: string;
+		discriminator: string;
+		id: string;
+		username: string;
+		bot: boolean;
+		public_flags: bigint;
+	}[];
+}
+
 export interface ReadyEvent extends Event {
 	event: "READY";
-	data: {
-		v: number;
-		user: Omit<User, "guilds" | "user_settings" | "valid_tokens_since" | "connected_accounts" | "relationships">;
-		private_channels: DMChannel[]; // this will be empty for bots
-		session_id: string; // resuming
-		guilds: Guild[];
-		analytics_token?: string;
-		connected_accounts?: ConnectedAccount[];
-		consents?: {
-			personalization?: {
-				consented?: boolean;
-			};
-		};
-		country_code?: string; // e.g. DE
-		friend_suggestion_count?: number;
-		geo_ordered_rtc_regions?: string[]; // ["europe","russie","india","us-east","us-central"]
-		experiments?: [number, number, number, number, number][];
-		guild_experiments?: [
-			// ? what are guild_experiments?
-			// this is the structure of it:
-			number,
-			null,
-			number,
-			[[number, { e: number; s: number }[]]],
-			[number, [[number, [number, number]]]],
-			{ b: number; k: bigint[] }[]
-		][];
-		guild_join_requests?: []; // ? what is this? this is new
-		shard?: [number, number];
-		user_settings?: UserSettings;
-		relationships?: [];
-		user_guild_settings?: {
-			entries: UserGuildSettings[];
-			version: number;
-			partial: boolean;
-		};
-		application?: {
-			id: bigint;
-			flags: bigint;
-		};
-
-		merged_members?: PublicMember[][]; // every guild member object for the current user
-		// probably all users who the user is in contact with
-		users?: {
-			avatar?: string;
-			discriminator: string;
-			id: bigint;
-			username: string;
-			bot: boolean;
-			public_flags: bigint;
-		}[];
-	};
+	data: ReadyEventData;
 }
 
 export interface ChannelCreateEvent extends Event {
@@ -118,8 +136,8 @@ export interface ChannelDeleteEvent extends Event {
 export interface ChannelPinsUpdateEvent extends Event {
 	event: "CHANNEL_PINS_UPDATE";
 	data: {
-		guild_id?: bigint;
-		channel_id: bigint;
+		guild_id?: string;
+		channel_id: string;
 		last_pin_timestamp: number;
 	};
 }
@@ -137,7 +155,7 @@ export interface GuildUpdateEvent extends Event {
 export interface GuildDeleteEvent extends Event {
 	event: "GUILD_DELETE";
 	data: {
-		id: bigint;
+		id: string;
 		unavailable?: boolean;
 	};
 }
@@ -145,7 +163,7 @@ export interface GuildDeleteEvent extends Event {
 export interface GuildBanAddEvent extends Event {
 	event: "GUILD_BAN_ADD";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		user: User;
 	};
 }
@@ -153,7 +171,7 @@ export interface GuildBanAddEvent extends Event {
 export interface GuildBanRemoveEvent extends Event {
 	event: "GUILD_BAN_REMOVE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		user: User;
 	};
 }
@@ -161,7 +179,7 @@ export interface GuildBanRemoveEvent extends Event {
 export interface GuildEmojiUpdateEvent extends Event {
 	event: "GUILD_EMOJI_UPDATE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		emojis: Emoji[];
 	};
 }
@@ -169,21 +187,21 @@ export interface GuildEmojiUpdateEvent extends Event {
 export interface GuildIntegrationUpdateEvent extends Event {
 	event: "GUILD_INTEGRATIONS_UPDATE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 	};
 }
 
 export interface GuildMemberAddEvent extends Event {
 	event: "GUILD_MEMBER_ADD";
 	data: PublicMember & {
-		guild_id: bigint;
+		guild_id: string;
 	};
 }
 
 export interface GuildMemberRemoveEvent extends Event {
 	event: "GUILD_MEMBER_REMOVE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		user: User;
 	};
 }
@@ -191,8 +209,8 @@ export interface GuildMemberRemoveEvent extends Event {
 export interface GuildMemberUpdateEvent extends Event {
 	event: "GUILD_MEMBER_UPDATE";
 	data: {
-		guild_id: bigint;
-		roles: bigint[];
+		guild_id: string;
+		roles: string[];
 		user: User;
 		nick?: string;
 		joined_at: Date;
@@ -204,11 +222,11 @@ export interface GuildMemberUpdateEvent extends Event {
 export interface GuildMembersChunkEvent extends Event {
 	event: "GUILD_MEMBERS_CHUNK";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		members: PublicMember[];
 		chunk_index: number;
 		chunk_count: number;
-		not_found: bigint[];
+		not_found: string[];
 		presences: Presence[];
 		nonce?: string;
 	};
@@ -217,7 +235,7 @@ export interface GuildMembersChunkEvent extends Event {
 export interface GuildRoleCreateEvent extends Event {
 	event: "GUILD_ROLE_CREATE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		role: Role;
 	};
 }
@@ -225,7 +243,7 @@ export interface GuildRoleCreateEvent extends Event {
 export interface GuildRoleUpdateEvent extends Event {
 	event: "GUILD_ROLE_UPDATE";
 	data: {
-		guild_id: bigint;
+		guild_id: string;
 		role: Role;
 	};
 }
@@ -233,31 +251,31 @@ export interface GuildRoleUpdateEvent extends Event {
 export interface GuildRoleDeleteEvent extends Event {
 	event: "GUILD_ROLE_DELETE";
 	data: {
-		guild_id: bigint;
-		role_id: bigint;
+		guild_id: string;
+		role_id: string;
 	};
 }
 
 export interface InviteCreateEvent extends Event {
 	event: "INVITE_CREATE";
 	data: Omit<Invite, "guild" | "channel"> & {
-		channel_id: bigint;
-		guild_id?: bigint;
+		channel_id: string;
+		guild_id?: string;
 	};
 }
 
 export interface InviteDeleteEvent extends Event {
 	event: "INVITE_DELETE";
 	data: {
-		channel_id: bigint;
-		guild_id?: bigint;
+		channel_id: string;
+		guild_id?: string;
 		code: string;
 	};
 }
 
 export type MessagePayload = Omit<Message, "author_id"> & {
-	channel_id: bigint;
-	guild_id?: bigint;
+	channel_id: string;
+	guild_id?: string;
 	author: User;
 	member: PublicMember;
 	mentions: (User & { member: PublicMember })[];
@@ -276,28 +294,28 @@ export interface MessageUpdateEvent extends Event {
 export interface MessageDeleteEvent extends Event {
 	event: "MESSAGE_DELETE";
 	data: {
-		id: bigint;
-		channel_id: bigint;
-		guild_id?: bigint;
+		id: string;
+		channel_id: string;
+		guild_id?: string;
 	};
 }
 
 export interface MessageDeleteBulkEvent extends Event {
 	event: "MESSAGE_DELETE_BULK";
 	data: {
-		ids: bigint[];
-		channel_id: bigint;
-		guild_id?: bigint;
+		ids: string[];
+		channel_id: string;
+		guild_id?: string;
 	};
 }
 
 export interface MessageReactionAddEvent extends Event {
 	event: "MESSAGE_REACTION_ADD";
 	data: {
-		user_id: bigint;
-		channel_id: bigint;
-		message_id: bigint;
-		guild_id?: bigint;
+		user_id: string;
+		channel_id: string;
+		message_id: string;
+		guild_id?: string;
 		member?: PublicMember;
 		emoji: PartialEmoji;
 	};
@@ -306,10 +324,10 @@ export interface MessageReactionAddEvent extends Event {
 export interface MessageReactionRemoveEvent extends Event {
 	event: "MESSAGE_REACTION_REMOVE";
 	data: {
-		user_id: bigint;
-		channel_id: bigint;
-		message_id: bigint;
-		guild_id?: bigint;
+		user_id: string;
+		channel_id: string;
+		message_id: string;
+		guild_id?: string;
 		emoji: PartialEmoji;
 	};
 }
@@ -317,18 +335,18 @@ export interface MessageReactionRemoveEvent extends Event {
 export interface MessageReactionRemoveAllEvent extends Event {
 	event: "MESSAGE_REACTION_REMOVE_ALL";
 	data: {
-		channel_id: bigint;
-		message_id: bigint;
-		guild_id?: bigint;
+		channel_id: string;
+		message_id: string;
+		guild_id?: string;
 	};
 }
 
 export interface MessageReactionRemoveEmojiEvent extends Event {
 	event: "MESSAGE_REACTION_REMOVE_EMOJI";
 	data: {
-		channel_id: bigint;
-		message_id: bigint;
-		guild_id?: bigint;
+		channel_id: string;
+		message_id: string;
+		guild_id?: string;
 		emoji: PartialEmoji;
 	};
 }
@@ -341,10 +359,10 @@ export interface PresenceUpdateEvent extends Event {
 export interface TypingStartEvent extends Event {
 	event: "TYPING_START";
 	data: {
-		channel_id: bigint;
-		user_id: bigint;
+		channel_id: string;
+		user_id: string;
 		timestamp: number;
-		guild_id?: bigint;
+		guild_id?: string;
 		member?: PublicMember;
 	};
 }
@@ -365,7 +383,7 @@ export interface VoiceServerUpdateEvent extends Event {
 	event: "VOICE_SERVER_UPDATE";
 	data: {
 		token: string;
-		guild_id: bigint;
+		guild_id: string;
 		endpoint: string;
 	};
 }
@@ -373,13 +391,13 @@ export interface VoiceServerUpdateEvent extends Event {
 export interface WebhooksUpdateEvent extends Event {
 	event: "WEBHOOKS_UPDATE";
 	data: {
-		guild_id: bigint;
-		channel_id: bigint;
+		guild_id: string;
+		channel_id: string;
 	};
 }
 
 export type ApplicationCommandPayload = ApplicationCommand & {
-	guild_id: bigint;
+	guild_id: string;
 };
 
 export interface ApplicationCommandCreateEvent extends Event {
@@ -403,6 +421,49 @@ export interface InteractionCreateEvent extends Event {
 }
 
 // located in collection events
+
+export enum EVENTEnum {
+	Ready = "READY",
+	ChannelCreate = "CHANNEL_CREATE",
+	ChannelUpdate = "CHANNEL_UPDATE",
+	ChannelDelete = "CHANNEL_DELETE",
+	ChannelPinsUpdate = "CHANNEL_PINS_UPDATE",
+	GuildCreate = "GUILD_CREATE",
+	GuildUpdate = "GUILD_UPDATE",
+	GuildDelete = "GUILD_DELETE",
+	GuildBanAdd = "GUILD_BAN_ADD",
+	GuildBanRemove = "GUILD_BAN_REMOVE",
+	GuildEmojUpdate = "GUILD_EMOJI_UPDATE",
+	GuildIntegrationsUpdate = "GUILD_INTEGRATIONS_UPDATE",
+	GuildMemberAdd = "GUILD_MEMBER_ADD",
+	GuildMemberRempve = "GUILD_MEMBER_REMOVE",
+	GuildMemberUpdate = "GUILD_MEMBER_UPDATE",
+	GuildMemberSpeaking = "GUILD_MEMBER_SPEAKING",
+	GuildMembersChunk = "GUILD_MEMBERS_CHUNK",
+	GuildRoleCreate = "GUILD_ROLE_CREATE",
+	GuildRoleDelete = "GUILD_ROLE_DELETE",
+	GuildRoleUpdate = "GUILD_ROLE_UPDATE",
+	InviteCreate = "INVITE_CREATE",
+	InviteDelete = "INVITE_DELETE",
+	MessageCreate = "MESSAGE_CREATE",
+	MessageUpdate = "MESSAGE_UPDATE",
+	MessageDelete = "MESSAGE_DELETE",
+	MessageDeleteBulk = "MESSAGE_DELETE_BULK",
+	MessageReactionAdd = "MESSAGE_REACTION_ADD",
+	MessageReactionRemove = "MESSAGE_REACTION_REMOVE",
+	MessageReactionRemoveAll = "MESSAGE_REACTION_REMOVE_ALL",
+	MessageReactionRemoveEmoji = "MESSAGE_REACTION_REMOVE_EMOJI",
+	PresenceUpdate = "PRESENCE_UPDATE",
+	TypingStart = "TYPING_START",
+	UserUpdate = "USER_UPDATE",
+	WebhooksUpdate = "WEBHOOKS_UPDATE",
+	InteractionCreate = "INTERACTION_CREATE",
+	VoiceStateUpdate = "VOICE_STATE_UPDATE",
+	VoiceServerUpdate = "VOICE_SERVER_UPDATE",
+	ApplicationCommandCreate = "APPLICATION_COMMAND_CREATE",
+	ApplicationCommandUpdate = "APPLICATION_COMMAND_UPDATE",
+	ApplicationCommandDelete = "APPLICATION_COMMAND_DELETE",
+}
 
 export type EVENT =
 	| "READY"
