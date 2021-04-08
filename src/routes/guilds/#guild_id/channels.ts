@@ -44,6 +44,7 @@ router.post("/", check(ChannelModifySchema), async (req, res) => {
 		created_at: new Date(),
 		guild_id,
 	};
+    
 	await new ChannelModel(channel).save();
 
 	await emitEvent({ event: "CHANNEL_CREATE", data: channel, guild_id } as ChannelCreateEvent);

@@ -1,11 +1,12 @@
 import { Router, Request, Response } from "express";
-import { RoleModel, GuildModel, Snowflake, Guild } from "fosscord-server-util";
+import { RoleModel, GuildModel, Snowflake, Guild, GuildCreateEvent, toObject } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../util/instanceOf";
 import { GuildCreateSchema } from "../../schema/Guild";
 import Config from "../../util/Config";
 import { getPublicUser } from "../../util/User";
-import { addMember } from "../../util/Member";
+import { emitEvent } from "../../util/Event";
+import { addMember, PublicMemberProjection } from "../../util/Member";
 
 const router: Router = Router();
 
@@ -73,7 +74,16 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			tags: null,
 		}).save(),
 	]);
-	await addMember(req.user_id, guild_id, { guild });
+
+	const [, , updated] = await addMember(req.user_id, guild_id);
+
+	const data = toObject(await GuildModel.populate(updated, [{ path: "members", select: PublicMemberProjection }, { path: "joined_at" }]));
+
+	emitEvent({
+		event: "GUILD_CREATE",
+		data,
+		guild_id,
+	} as GuildCreateEvent);
 
 	res.status(201).json({ id: guild.id });
 });

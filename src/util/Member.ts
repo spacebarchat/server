@@ -1,13 +1,4 @@
-import {
-	Guild,
-	GuildCreateEvent,
-	GuildDeleteEvent,
-	GuildMemberAddEvent,
-	GuildMemberRemoveEvent,
-	GuildModel,
-	MemberModel,
-	UserModel,
-} from "fosscord-server-util";
+import { GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildModel, MemberModel, UserModel } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 import Config from "./Config";
 import { emitEvent } from "./Event";
@@ -25,7 +16,7 @@ export const PublicMemberProjection = {
 	premium_since: true,
 };
 
-export async function addMember(user_id: string, guild_id: string, cache?: { guild?: Guild }) {
+export async function addMember(user_id: string, guild_id: string) {
 	const user = await getPublicUser(user_id, { guilds: true });
 
 	const guildSize = user.guilds.length;
@@ -35,7 +26,6 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 		throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
 	}
 
-	const guild = cache?.guild || (await GuildModel.findOne({ id: guild_id }).exec());
 	const member = {
 		id: user_id,
 		guild_id: guild_id,
@@ -64,23 +54,17 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 		}).save(),
 
 		UserModel.updateOne({ id: user_id }, { $push: { guilds: guild_id } }).exec(),
-		GuildModel.updateOne({ id: guild_id }, { $inc: { member_count: 1 } }).exec(),
+		GuildModel.findOneAndUpdate({ id: guild_id }, { $inc: { member_count: 1 } }).exec(),
 
 		emitEvent({
 			event: "GUILD_MEMBER_ADD",
 			data: {
 				...member,
 				user,
-				guild_id: guild_id,
+				guild_id,
 			},
-			guild_id: guild_id,
+			guild_id,
 		} as GuildMemberAddEvent),
-
-		emitEvent({
-			event: "GUILD_CREATE",
-			data: guild,
-			guild_id: guild_id,
-		} as GuildCreateEvent),
 	]);
 }
 
