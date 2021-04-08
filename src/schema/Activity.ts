@@ -1,10 +1,10 @@
-import { Activity } from "fosscord-server-util";
+import { ActivityBodySchema } from "fosscord-server-util";
 import { EmojiSchema } from "./Emoji";
 
 export const ActivitySchema = {
 	afk: Boolean,
 	status: String,
-	$activities: [Activity],
+	$activities: [ActivityBodySchema],
 	$since: Number, // unix time (in milliseconds) of when the client went idle, or null if the client is not idle
 };
 
