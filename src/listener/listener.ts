@@ -11,14 +11,21 @@ import WebSocket from "../util/WebSocket";
 // Sharding: calculate if the current shard id matches the formula: shard_id = (guild_id >> 22) % num_shards
 // https://discord.com/developers/docs/topics/gateway#sharding
 
+export interface DispatchOpts {
+    eventStream: any;
+    user_guilds: Array<string>;
+    shard_count?: bigint;
+    shard_id?: bigint;
+}
+
 export async function setupListener(this: WebSocket) {
     const user = await UserModel.findOne({ id: this.user_id }).lean().exec();
-    var guilds = user.guilds;
+    var user_guilds = user.guilds;
     const shard_count = 10n;
     const shard_id = 0n;
 
     if (shard_count) {
-        guilds = user.guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
+        user_guilds = user.guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
     }
 
     const eventStream = new MongooseCache(
@@ -26,7 +33,7 @@ export async function setupListener(this: WebSocket) {
         [
             {
                 $match: {
-                    $or: [{ "fullDocument.guild_id": { $in: guilds } }, { "fullDocument.user_id": user.id }]
+                    $or: [{ "fullDocument.guild_id": { $in: user_guilds } }, { "fullDocument.user_id": user.id }]
                 }
             }
         ],
@@ -36,12 +43,12 @@ export async function setupListener(this: WebSocket) {
     );
 
     await eventStream.init();
-    eventStream.on("insert", dispatch.bind(this));
+    eventStream.on("insert", (document) => dispatch.call(this, { eventStream, user_guilds, shard_count, shard_id }, document));
 
     this.once("close", () => eventStream.destroy());
 }
 
-export async function dispatch(this: WebSocket, document: Event) {
+export async function dispatch(this: WebSocket, { eventStream, user_guilds, shard_count, shard_id }: DispatchOpts, document: Event) {
     var permission = new Permissions("ADMINISTRATOR"); // default permission for dms
     console.log("event", document);
 
@@ -51,15 +58,14 @@ export async function dispatch(this: WebSocket, document: Event) {
         permission = await getPermission(this.user_id, document.guild_id, channel_id);
     }
 
-    if(document.event === "GUILD_CREATE") {
-        const newUser = await UserModel.findOne({ id: this.user_id }).lean().exec();
-        var newGuilds = newUser.guilds;
+    if (document.event === "GUILD_CREATE") {
+        user_guilds.push(document.guild_id);
 
         if (shard_count) {
-            newGuilds = newUser.guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
+            user_guilds = user_guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
         }
 
-        eventStream.changeStream([{ $match: { $or: [{ "fullDocument.guild_id": { $in: newGuilds } }, { "fullDocument.user_id": newUser.id }] } }]);
+        eventStream.changeStream([{ $match: { $or: [{ "fullDocument.guild_id": { $in: user_guilds } }, { "fullDocument.user_id": document.user_id }] } }]);
     }
 
     // check intents: https://discord.com/developers/docs/topics/gateway#gateway-intents
