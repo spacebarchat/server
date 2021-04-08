@@ -1,4 +1,4 @@
-import { Activity } from "./Activity";
+import { Activity, ActivitySchema } from "./Activity";
 import { ClientStatus, Status } from "./Status";
 import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
@@ -220,7 +220,7 @@ export const UserSchema = new Schema({
 
 	presence: {
 		status: String,
-		activities: [Activity],
+		activities: [ActivitySchema],
 		client_status: ClientStatus,
 	},
 });
