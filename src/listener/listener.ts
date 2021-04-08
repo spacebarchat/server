@@ -12,174 +12,188 @@ import WebSocket from "../util/WebSocket";
 // https://discord.com/developers/docs/topics/gateway#sharding
 
 export async function setupListener(this: WebSocket) {
-	const user = await UserModel.findOne({ id: this.user_id }).lean().exec();
-	var guilds = user.guilds;
-	const shard_count = 10n;
-	const shard_id = 0n;
+    const user = await UserModel.findOne({ id: this.user_id }).lean().exec();
+    var guilds = user.guilds;
+    const shard_count = 10n;
+    const shard_id = 0n;
 
-	if (shard_count) {
-		guilds = user.guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
-	}
+    if (shard_count) {
+        guilds = user.guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
+    }
 
-	const eventStream = new MongooseCache(
-		db.collection("events"),
-		[
-			{
-				$match: {
-					$or: [{ "fullDocument.guild_id": { $in: guilds } }, { "fullDocument.user_id": this.user_id }],
-				},
-			},
-		],
-		{ onlyEvents: true }
-	);
-	await eventStream.init();
-	eventStream.on("insert", dispatch.bind(this));
+    const eventStream = new MongooseCache(
+        db.collection("events"),
+        [
+            {
+                $match: {
+                    $or: [{ "fullDocument.guild_id": { $in: guilds } }, { "fullDocument.user_id": user.id }]
+                }
+            }
+        ],
+        {
+            onlyEvents: true
+        }
+    );
 
-	this.once("close", () => eventStream.destroy());
+    await eventStream.init();
+    eventStream.on("insert", async (document) => {
+        dispatch.call(this, document);
+
+        const newUser = await UserModel.findOne({ id: user.id }).lean().exec();
+        var newGuilds = user.guilds;
+    
+        if (shard_count) {
+            newGuilds = user.guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
+        }
+
+        eventStream.changeStream([{ $match: { $or: [{ "fullDocument.guild_id": { $in: newGuilds } }, { "fullDocument.user_id": newUser.id }] } }]);
+    });
+
+    this.once("close", () => eventStream.destroy());
 }
 
 export async function dispatch(this: WebSocket, document: Event) {
-	var permission = new Permissions("ADMINISTRATOR"); // default permission for dms
-	console.log("event", document);
+    var permission = new Permissions("ADMINISTRATOR"); // default permission for dms
+    console.log("event", document);
 
-	if (document.guild_id) {
-		if (!this.intents.has("GUILDS")) return;
-		const channel_id = document.channel_id || document.data?.channel_id;
-		permission = await getPermission(this.user_id, document.guild_id, channel_id);
-	}
+    if (document.guild_id) {
+        if (!this.intents.has("GUILDS")) return;
+        const channel_id = document.channel_id || document.data?.channel_id;
+        permission = await getPermission(this.user_id, document.guild_id, channel_id);
+    }
 
-	// check intents: https://discord.com/developers/docs/topics/gateway#gateway-intents
-	switch (document.event) {
-		case "GUILD_CREATE":
-		case "GUILD_DELETE":
-		case "GUILD_UPDATE":
-		case "GUILD_ROLE_CREATE":
-		case "GUILD_ROLE_UPDATE":
-		case "GUILD_ROLE_DELETE":
-		case "CHANNEL_CREATE":
-		case "CHANNEL_DELETE":
-		case "CHANNEL_UPDATE":
-			// gets sent if GUILDS intent is set (already checked in if document.guild_id)
-			break;
-		case "GUILD_INTEGRATIONS_UPDATE":
-			if (!this.intents.has("GUILD_INTEGRATIONS")) return;
-			break;
-		case "WEBHOOKS_UPDATE":
-			if (!this.intents.has("GUILD_WEBHOOKS")) return;
-			break;
-		case "GUILD_EMOJI_UPDATE":
-			if (!this.intents.has("GUILD_EMOJIS")) return;
-			break;
-		// only send them, if the user subscribed for this part of the member list, or is a bot
-		case "GUILD_MEMBER_ADD":
-		case "GUILD_MEMBER_REMOVE":
-		case "GUILD_MEMBER_UPDATE":
-			if (!this.intents.has("GUILD_MEMBERS")) return;
-			break;
-		case "VOICE_STATE_UPDATE":
-			if (!this.intents.has("GUILD_VOICE_STATES")) return;
-			break;
-		case "GUILD_BAN_ADD":
-		case "GUILD_BAN_REMOVE":
-			if (!this.intents.has("GUILD_BANS")) return;
-			break;
-		case "INVITE_CREATE":
-		case "INVITE_DELETE":
-			if (!this.intents.has("GUILD_INVITES")) return;
-		case "PRESENCE_UPDATE":
-			if (!this.intents.has("GUILD_PRESENCES")) return;
-			break;
-		case "MESSAGE_CREATE":
-		case "MESSAGE_DELETE":
-		case "MESSAGE_DELETE_BULK":
-		case "MESSAGE_UPDATE":
-		case "CHANNEL_PINS_UPDATE":
-			if (!this.intents.has("GUILD_MESSAGES") && document.guild_id) return;
-			if (!this.intents.has("DIRECT_MESSAGES") && !document.guild_id) return;
-			break;
-		case "MESSAGE_REACTION_ADD":
-		case "MESSAGE_REACTION_REMOVE":
-		case "MESSAGE_REACTION_REMOVE_ALL":
-		case "MESSAGE_REACTION_REMOVE_EMOJI":
-			if (!this.intents.has("GUILD_MESSAGE_REACTIONS") && document.guild_id) return;
-			if (!this.intents.has("DIRECT_MESSAGE_REACTIONS") && !document.guild_id) return;
-			break;
+    // check intents: https://discord.com/developers/docs/topics/gateway#gateway-intents
+    switch (document.event) {
+        case "GUILD_CREATE":
+        case "GUILD_DELETE":
+        case "GUILD_UPDATE":
+        case "GUILD_ROLE_CREATE":
+        case "GUILD_ROLE_UPDATE":
+        case "GUILD_ROLE_DELETE":
+        case "CHANNEL_CREATE":
+        case "CHANNEL_DELETE":
+        case "CHANNEL_UPDATE":
+            // gets sent if GUILDS intent is set (already checked in if document.guild_id)
+            break;
+        case "GUILD_INTEGRATIONS_UPDATE":
+            if (!this.intents.has("GUILD_INTEGRATIONS")) return;
+            break;
+        case "WEBHOOKS_UPDATE":
+            if (!this.intents.has("GUILD_WEBHOOKS")) return;
+            break;
+        case "GUILD_EMOJI_UPDATE":
+            if (!this.intents.has("GUILD_EMOJIS")) return;
+            break;
+        // only send them, if the user subscribed for this part of the member list, or is a bot
+        case "GUILD_MEMBER_ADD":
+        case "GUILD_MEMBER_REMOVE":
+        case "GUILD_MEMBER_UPDATE":
+            if (!this.intents.has("GUILD_MEMBERS")) return;
+            break;
+        case "VOICE_STATE_UPDATE":
+            if (!this.intents.has("GUILD_VOICE_STATES")) return;
+            break;
+        case "GUILD_BAN_ADD":
+        case "GUILD_BAN_REMOVE":
+            if (!this.intents.has("GUILD_BANS")) return;
+            break;
+        case "INVITE_CREATE":
+        case "INVITE_DELETE":
+            if (!this.intents.has("GUILD_INVITES")) return;
+        case "PRESENCE_UPDATE":
+            if (!this.intents.has("GUILD_PRESENCES")) return;
+            break;
+        case "MESSAGE_CREATE":
+        case "MESSAGE_DELETE":
+        case "MESSAGE_DELETE_BULK":
+        case "MESSAGE_UPDATE":
+        case "CHANNEL_PINS_UPDATE":
+            if (!this.intents.has("GUILD_MESSAGES") && document.guild_id) return;
+            if (!this.intents.has("DIRECT_MESSAGES") && !document.guild_id) return;
+            break;
+        case "MESSAGE_REACTION_ADD":
+        case "MESSAGE_REACTION_REMOVE":
+        case "MESSAGE_REACTION_REMOVE_ALL":
+        case "MESSAGE_REACTION_REMOVE_EMOJI":
+            if (!this.intents.has("GUILD_MESSAGE_REACTIONS") && document.guild_id) return;
+            if (!this.intents.has("DIRECT_MESSAGE_REACTIONS") && !document.guild_id) return;
+            break;
 
-		case "TYPING_START":
-			if (!this.intents.has("GUILD_MESSAGE_TYPING") && document.guild_id) return;
-			if (!this.intents.has("DIRECT_MESSAGE_TYPING") && !document.guild_id) return;
-			break;
-		case "READY": // will be sent by the gateway
-		case "USER_UPDATE":
-		case "APPLICATION_COMMAND_CREATE":
-		case "APPLICATION_COMMAND_DELETE":
-		case "APPLICATION_COMMAND_UPDATE":
-		default:
-			// Any events not defined in an intent are considered "passthrough" and will always be sent to you.
-			break;
-	}
+        case "TYPING_START":
+            if (!this.intents.has("GUILD_MESSAGE_TYPING") && document.guild_id) return;
+            if (!this.intents.has("DIRECT_MESSAGE_TYPING") && !document.guild_id) return;
+            break;
+        case "READY": // will be sent by the gateway
+        case "USER_UPDATE":
+        case "APPLICATION_COMMAND_CREATE":
+        case "APPLICATION_COMMAND_DELETE":
+        case "APPLICATION_COMMAND_UPDATE":
+        default:
+            // Any events not defined in an intent are considered "passthrough" and will always be sent to you.
+            break;
+    }
 
-	// check permissions
-	switch (document.event) {
-		case "GUILD_INTEGRATIONS_UPDATE":
-			if (!permission.has("MANAGE_GUILD")) return;
-			break;
-		case "WEBHOOKS_UPDATE":
-			if (!permission.has("MANAGE_WEBHOOKS")) return;
-			break;
-		case "GUILD_MEMBER_ADD":
-		case "GUILD_MEMBER_REMOVE":
-		case "GUILD_MEMBER_UPDATE":
-			// only send them, if the user subscribed for this part of the member list, or is a bot
-			break;
-		case "GUILD_BAN_ADD":
-		case "GUILD_BAN_REMOVE":
-			if (!permission.has("BAN_MEMBERS")) break;
-			break;
-		case "INVITE_CREATE":
-		case "INVITE_DELETE":
-			if (!permission.has("MANAGE_GUILD")) break;
-		case "PRESENCE_UPDATE":
-			break;
-		case "VOICE_STATE_UPDATE":
-		case "MESSAGE_CREATE":
-		case "MESSAGE_DELETE":
-		case "MESSAGE_DELETE_BULK":
-		case "MESSAGE_UPDATE":
-		case "CHANNEL_PINS_UPDATE":
-		case "MESSAGE_REACTION_ADD":
-		case "MESSAGE_REACTION_REMOVE":
-		case "MESSAGE_REACTION_REMOVE_ALL":
-		case "MESSAGE_REACTION_REMOVE_EMOJI":
-		case "TYPING_START":
-			// only gets send if the user is alowed to view the current channel
-			if (!permission.has("VIEW_CHANNEL")) return;
-			break;
-		case "GUILD_CREATE":
-		case "GUILD_DELETE":
-		case "GUILD_UPDATE":
-		case "GUILD_ROLE_CREATE":
-		case "GUILD_ROLE_UPDATE":
-		case "GUILD_ROLE_DELETE":
-		case "CHANNEL_CREATE":
-		case "CHANNEL_DELETE":
-		case "CHANNEL_UPDATE":
-		case "GUILD_EMOJI_UPDATE":
-		case "READY": // will be sent by the gateway
-		case "USER_UPDATE":
-		case "APPLICATION_COMMAND_CREATE":
-		case "APPLICATION_COMMAND_DELETE":
-		case "APPLICATION_COMMAND_UPDATE":
-		default:
-			// always gets sent
-			// Any events not defined in an intent are considered "passthrough" and will always be sent
-			break;
-	}
+    // check permissions
+    switch (document.event) {
+        case "GUILD_INTEGRATIONS_UPDATE":
+            if (!permission.has("MANAGE_GUILD")) return;
+            break;
+        case "WEBHOOKS_UPDATE":
+            if (!permission.has("MANAGE_WEBHOOKS")) return;
+            break;
+        case "GUILD_MEMBER_ADD":
+        case "GUILD_MEMBER_REMOVE":
+        case "GUILD_MEMBER_UPDATE":
+            // only send them, if the user subscribed for this part of the member list, or is a bot
+            break;
+        case "GUILD_BAN_ADD":
+        case "GUILD_BAN_REMOVE":
+            if (!permission.has("BAN_MEMBERS")) break;
+            break;
+        case "INVITE_CREATE":
+        case "INVITE_DELETE":
+            if (!permission.has("MANAGE_GUILD")) break;
+        case "PRESENCE_UPDATE":
+            break;
+        case "VOICE_STATE_UPDATE":
+        case "MESSAGE_CREATE":
+        case "MESSAGE_DELETE":
+        case "MESSAGE_DELETE_BULK":
+        case "MESSAGE_UPDATE":
+        case "CHANNEL_PINS_UPDATE":
+        case "MESSAGE_REACTION_ADD":
+        case "MESSAGE_REACTION_REMOVE":
+        case "MESSAGE_REACTION_REMOVE_ALL":
+        case "MESSAGE_REACTION_REMOVE_EMOJI":
+        case "TYPING_START":
+            // only gets send if the user is alowed to view the current channel
+            if (!permission.has("VIEW_CHANNEL")) return;
+            break;
+        case "GUILD_CREATE":
+        case "GUILD_DELETE":
+        case "GUILD_UPDATE":
+        case "GUILD_ROLE_CREATE":
+        case "GUILD_ROLE_UPDATE":
+        case "GUILD_ROLE_DELETE":
+        case "CHANNEL_CREATE":
+        case "CHANNEL_DELETE":
+        case "CHANNEL_UPDATE":
+        case "GUILD_EMOJI_UPDATE":
+        case "READY": // will be sent by the gateway
+        case "USER_UPDATE":
+        case "APPLICATION_COMMAND_CREATE":
+        case "APPLICATION_COMMAND_DELETE":
+        case "APPLICATION_COMMAND_UPDATE":
+        default:
+            // always gets sent
+            // Any events not defined in an intent are considered "passthrough" and will always be sent
+            break;
+    }
 
-	return Send(this, {
-		op: OPCODES.Dispatch,
-		t: document.event,
-		d: document.data,
-		s: this.sequence++,
-	});
+    return Send(this, {
+        op: OPCODES.Dispatch,
+        t: document.event,
+        d: document.data,
+        s: this.sequence++
+    });
 }
