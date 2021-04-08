@@ -32,6 +32,8 @@ export interface Guild {
 	// channels: GuildChannel[]; // * Channels are stored in a seperate collection
 	// emojis: Emoji[];  // * Emojis are stored in a seperate collection
 	// voice_states: []; // * voice_states are stored in a seperate collection
+    //TODO:
+	presences?: object[];
 	mfa_level?: number;
 	name: string;
 	owner_id: string;
@@ -69,6 +71,7 @@ export const GuildSchema = new Schema({
 	max_presences: Number,
 	max_video_channel_users: { type: Number, default: 25 },
 	member_count: Number,
+	presences: { type: [Object], default: [] },
 	presence_count: Number,
 	mfa_level: Number,
 	name: { type: String, required: true },
@@ -98,6 +101,7 @@ GuildSchema.virtual("channels", {
 	justOne: false,
 	autopopulate: true,
 });
+
 GuildSchema.virtual("roles", {
 	ref: RoleModel,
 	localField: "id",
@@ -128,7 +132,7 @@ GuildSchema.virtual("joined_at", {
 	foreignField: "guild_id",
 	justOne: true,
 }).get((member: any, virtual: any, doc: any) => {
-	return member.joined_at;
+	return member?.joined_at;
 });
 
 // @ts-ignore

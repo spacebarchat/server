@@ -2,6 +2,7 @@ import { Activity } from "./Activity";
 import { ClientStatus, Status } from "./Status";
 import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
+import toBigInt from "../util/toBigInt";
 
 export const PublicUserProjection = {
 	username: true,
@@ -141,8 +142,8 @@ export const UserSchema = new Schema({
 	created_at: Date,
 	verified: Boolean,
 	email: String,
-	flags: Types.Long, // TODO: automatically convert Types.Long to BitField of UserFlags
-	public_flags: Types.Long,
+	flags: { type: String, get: toBigInt }, // TODO: automatically convert Types.Long to BitField of UserFlags
+	public_flags: { type: String, get: toBigInt },
 	guilds: [String], // array of guild ids the user is part of
 	user_data: {
 		fingerprints: [String],

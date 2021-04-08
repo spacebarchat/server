@@ -1,5 +1,6 @@
 import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
+import toBigInt from "../util/toBigInt";
 
 export interface AnyChannel extends Channel, DMChannel, TextChannel, VoiceChannel {}
 
@@ -24,8 +25,8 @@ export const ChannelSchema = new Schema({
 	topic: String,
 	permission_overwrites: [
 		{
-			allow: Types.Long,
-			deny: Types.Long,
+			allow: { type: String, get: toBigInt },
+			deny: { type: String, get: toBigInt },
 			id: String,
 			type: Number,
 		},
