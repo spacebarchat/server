@@ -36,18 +36,7 @@ export async function setupListener(this: WebSocket) {
     );
 
     await eventStream.init();
-    eventStream.on("insert", async (document) => {
-        dispatch.call(this, document);
-
-        const newUser = await UserModel.findOne({ id: user.id }).lean().exec();
-        var newGuilds = user.guilds;
-    
-        if (shard_count) {
-            newGuilds = user.guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
-        }
-
-        eventStream.changeStream([{ $match: { $or: [{ "fullDocument.guild_id": { $in: newGuilds } }, { "fullDocument.user_id": newUser.id }] } }]);
-    });
+    eventStream.on("insert", dispatch.bind(this));
 
     this.once("close", () => eventStream.destroy());
 }
@@ -60,6 +49,17 @@ export async function dispatch(this: WebSocket, document: Event) {
         if (!this.intents.has("GUILDS")) return;
         const channel_id = document.channel_id || document.data?.channel_id;
         permission = await getPermission(this.user_id, document.guild_id, channel_id);
+    }
+
+    if(document.event === "GUILD_CREATE") {
+        const newUser = await UserModel.findOne({ id: this.user_id }).lean().exec();
+        var newGuilds = newUser.guilds;
+
+        if (shard_count) {
+            newGuilds = newUser.guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
+        }
+
+        eventStream.changeStream([{ $match: { $or: [{ "fullDocument.guild_id": { $in: newGuilds } }, { "fullDocument.user_id": newUser.id }] } }]);
     }
 
     // check intents: https://discord.com/developers/docs/topics/gateway#gateway-intents
