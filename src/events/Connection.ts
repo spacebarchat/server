@@ -9,6 +9,7 @@ import { createDeflate } from "zlib";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
+// TODO: check msg max size
 
 export async function Connection(this: Server, socket: WebSocket, request: IncomingMessage) {
 	try {

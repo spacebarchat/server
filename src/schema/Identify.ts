@@ -25,7 +25,7 @@ export const IdentifySchema = {
 	$presence: ActivitySchema,
 	$compress: Boolean,
 	$large_threshold: Number,
-	$shard: [Number],
+	$shard: [BigInt, BigInt],
 	$guild_subscriptions: Boolean,
 	$capabilities: Number,
 	$client_state: {
@@ -61,7 +61,7 @@ export interface IdentifySchema {
 	presence?: ActivitySchema;
 	compress?: boolean;
 	large_threshold?: number;
-	shard?: [number];
+	shard?: [bigint, bigint];
 	guild_subscriptions?: boolean;
 	capabilities?: number;
 	client_state?: {

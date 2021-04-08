@@ -7,6 +7,8 @@ interface WebSocket extends WS {
 	user_id: string;
 	encoding: "etf" | "json";
 	compress?: "zlib-stream";
+	shard_count?: bigint;
+	shard_id?: bigint;
 	deflate?: Deflate;
 	heartbeatTimeout: NodeJS.Timeout;
 	readyTimeout: NodeJS.Timeout;

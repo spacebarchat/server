@@ -38,6 +38,19 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	this.user_id = decoded.id;
 	if (!identify.intents) identify.intents = 0b11111111111111n;
 	this.intents = new Intents(identify.intents);
+	if (identify.shard) {
+		this.shard_id = identify.shard[0];
+		this.shard_count = identify.shard[1];
+		if (
+			!this.shard_count ||
+			!this.shard_id ||
+			this.shard_id >= this.shard_count ||
+			this.shard_id < 0 ||
+			this.shard_count <= 0
+		) {
+			return this.close(CLOSECODES.Invalid_shard);
+		}
+	}
 
 	const members = toObject(await MemberModel.find({ id: this.user_id }).exec());
 	const merged_members = members.map((x: any) => {
@@ -48,8 +61,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	}) as MemberDocument[][];
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
-	const channels = await ChannelModel.find({ recipients: this.user_id }).lean().exec();
-	const user = await UserModel.findOne({ id: this.user_id }).lean().exec();
+	const channels = await ChannelModel.find({ recipients: this.user_id }).exec();
+	const user = await UserModel.findOne({ id: this.user_id }).exec();
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
 	const public_user = {
@@ -113,7 +126,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			partial: false, // TODO partial
 			version: 642,
 		},
-		private_channels: channels,
+		// @ts-ignore
+		private_channels: toObject(channels),
 		session_id: "", // TODO
 		analytics_token: "", // TODO
 		connected_accounts: [], // TODO

@@ -8,12 +8,28 @@ import WebSocket from "../util/WebSocket";
 // TODO: Guild Member Update is sent for current-user updates regardless of whether the GUILD_MEMBERS intent is set.
 // ? How to resubscribe MongooseCache for new dm channel events? Maybe directly send them to the user_id regardless of the channel_id? -> max overhead of creating 10 events in database for dm user group. Or a new field in event -> recipient_ids?
 
+// Sharding: calculate if the current shard id matches the formula: shard_id = (guild_id >> 22) % num_shards
+// https://discord.com/developers/docs/topics/gateway#sharding
+
 export async function setupListener(this: WebSocket) {
 	const user = await UserModel.findOne({ id: this.user_id }).lean().exec();
+	var guilds = user.guilds;
+	const shard_count = 10n;
+	const shard_id = 0n;
+
+	if (shard_count) {
+		guilds = user.guilds.filter((x) => (BigInt(x) >> 22n) % shard_count === shard_id);
+	}
 
 	const eventStream = new MongooseCache(
 		db.collection("events"),
-		[{ $match:  { $or: [{ "fullDocument.guild_id": { $in: user.guilds } }, { "fullDocument.user_id": this.user_id }] } }],
+		[
+			{
+				$match: {
+					$or: [{ "fullDocument.guild_id": { $in: guilds } }, { "fullDocument.user_id": this.user_id }],
+				},
+			},
+		],
 		{ onlyEvents: true }
 	);
 	await eventStream.init();
