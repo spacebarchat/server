@@ -9,7 +9,7 @@
 		"start": "npm run build:util && npm run build && node dist/",
 		"build": "tsc -b .",
 		"build:util": "tsc -b ./node_modules/fosscord-server-util/",
-		"postinstall": "patch-package"
+		"postinstall": "npm i github:fosscord/fosscord-server-util && patch-package"
 	},
 	"repository": {
 		"type": "git",
@@ -39,6 +39,7 @@
 		"missing-native-js-functions": "^1.2.6",
 		"mongodb": "^3.6.4",
 		"mongoose": "^5.12.3",
+		"mongoose-autopopulate": "^0.12.3",
 		"mongoose-long": "^0.3.2",
 		"multer": "^1.4.2",
 		"patch-package": "^6.2.2"
