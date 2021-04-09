@@ -59,7 +59,7 @@ export async function dispatch(this: WebSocket, document: Event, { eventStream, 
 		guilds.push(document.guild_id);
 		eventStream.changeStream(getPipeline.call(this, guilds));
 	} else if (document.event === "GUILD_DELETE") {
-		guilds.remove(document.guild);
+		guilds.remove(document.guild_id);
 		eventStream.changeStream(getPipeline.call(this, guilds));
 	}
 
