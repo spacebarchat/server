@@ -1,6 +1,7 @@
 import { User } from "..";
 import { ClientStatus, Status } from "./Status";
 import { Schema, model, Types, Document } from "mongoose";
+import toBigInt from "../util/toBigInt";
 
 export interface Presence {
 	user: User;
@@ -81,7 +82,7 @@ export const ActivitySchema = {
 		match: String,
 	},
 	instance: Boolean,
-	flags: BigInt,
+	flags: { type: String, get: toBigInt },
 };
 
 export const ActivityBodySchema = {

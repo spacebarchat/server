@@ -19,18 +19,18 @@ mongoose.plugin((schema: Schema, opts: any) => {
 	});
 });
 
+export * from "./Activity";
+export * from "./Application";
 export * from "./Ban";
 export * from "./Channel";
 export * from "./Emoji";
+export * from "./Event";
 export * from "./Guild";
 export * from "./Invite";
-export * from "./Member";
-export * from "./Role";
-export * from "./User";
-export * from "./Activity";
-export * from "./Application";
 export * from "./Interaction";
+export * from "./Member";
 export * from "./Message";
 export * from "./Status";
+export * from "./Role";
+export * from "./User";
 export * from "./VoiceState";
-export * from "./Event";
