@@ -10,11 +10,11 @@ export interface Message {
 	guild_id?: bigint;
 	author_id?: bigint;
 	webhook_id?: bigint;
-	application_id: bigint;
-	content: string;
-	timestamp: number;
-	edited_timestamp: number;
-	tts: boolean;
+	application_id?: bigint;
+	content?: string;
+	timestamp: Date;
+	edited_timestamp?: Date;
+	tts?: boolean;
 	mention_everyone: boolean;
 	mention_user_ids: bigint[];
 	mention_role_ids: bigint[];
@@ -77,7 +77,7 @@ export interface Embed {
 	type?: string; // type of embed (always "rich" for webhook embeds)
 	description?: string; // description of embed
 	url?: string; // url of embed
-	timestamp?: number; // timestamp of embed content
+	timestamp?: Date; // timestamp of embed content
 	color?: number; // color code of the embed
 	footer?: {
 		text: string;
@@ -161,7 +161,7 @@ export const Embed = {
 	type: String, // type of embed (always "rich" for webhook embeds)
 	description: String, // description of embed
 	url: String, // url of embed
-	timestamp: Number, // timestamp of embed content
+	timestamp: Date, // timestamp of embed content
 	color: Number, // color code of the embed
 	footer: {
 		text: String,
@@ -198,8 +198,8 @@ export const MessageSchema = new Schema({
 	guild_id: Types.Long,
 	application_id: Types.Long,
 	content: String,
-	timestamp: Number,
-	edited_timestamp: Number,
+	timestamp: Date,
+	edited_timestamp: Date,
 	tts: Boolean,
 	mention_everyone: Boolean,
 	mention_user_ids: [Types.Long],
