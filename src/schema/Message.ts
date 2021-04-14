@@ -57,7 +57,7 @@ export interface MessageCreateSchema {
 	content?: string;
 	nonce?: string;
 	tts?: boolean;
-	embed?: Embed & { timestamp: string };
+	embed?: Embed & { timestamp?: string };
 	allowed_mentions?: [];
 	message_reference?: {
 		message_id: bigint;
