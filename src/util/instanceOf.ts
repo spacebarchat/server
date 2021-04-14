@@ -114,8 +114,6 @@ export function instanceOf(
 		}
 
 		if (typeof type === "object") {
-			if (typeof value !== "object") throw new FieldError("BASE_TYPE_OBJECT", req.t("common:field.BASE_TYPE_OBJECT"));
-
 			if (Array.isArray(type)) {
 				if (!Array.isArray(value)) throw new FieldError("BASE_TYPE_ARRAY", req.t("common:field.BASE_TYPE_ARRAY"));
 				if (!type.length) return true; // type array didn't specify any type
@@ -123,7 +121,8 @@ export function instanceOf(
 				return (
 					value.every((val, i) => {
 						errors[i] = {};
-						return (
+
+						if (
 							instanceOf(type[0], val, {
 								path: `${path}[${i}]`,
 								optional,
@@ -131,7 +130,12 @@ export function instanceOf(
 								req,
 								ref: { key: i, obj: value },
 							}) === true
-						);
+						) {
+							delete errors[i];
+							return true;
+						}
+
+						return false;
 					}) || errors
 				);
 			} else if (type?.constructor?.name != "Object") {
@@ -150,9 +154,14 @@ export function instanceOf(
 						})
 					);
 				}
-				if (value instanceof type) return true;
-				throw new FieldError("BASE_TYPE_CLASS", req.t("common:field.BASE_TYPE_CLASS", { type }));
+				try {
+					if (value instanceof type) return true;
+				} catch (error) {
+					throw new FieldError("BASE_TYPE_CLASS", req.t("common:field.BASE_TYPE_CLASS", { type }));
+				}
 			}
+
+			if (typeof value !== "object") throw new FieldError("BASE_TYPE_OBJECT", req.t("common:field.BASE_TYPE_OBJECT"));
 
 			const diff = Object.keys(value).missing(
 				Object.keys(type).map((x) => (x.startsWith(OPTIONAL_PREFIX) ? x.slice(OPTIONAL_PREFIX.length) : x))
@@ -167,7 +176,7 @@ export function instanceOf(
 					if (OPTIONAL) newKey = newKey.slice(OPTIONAL_PREFIX.length);
 					errors[newKey] = {};
 
-					return (
+					if (
 						instanceOf(type[key], value[newKey], {
 							path: `${path}.${newKey}`,
 							optional: OPTIONAL,
@@ -175,7 +184,12 @@ export function instanceOf(
 							req,
 							ref: { key: newKey, obj: value },
 						}) === true
-					);
+					) {
+						delete errors[newKey];
+						return true;
+					}
+
+					return false;
 				}) || errors
 			);
 		} else if (typeof type === "number" || typeof type === "string" || typeof type === "boolean") {

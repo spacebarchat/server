@@ -1,13 +1,12 @@
 import mongoose, { Schema, Types } from "mongoose";
-import { Long as MongoTypeLong } from "mongodb";
 require("mongoose-long")(mongoose);
 
 const userSchema = new Schema({
-	id: MongoTypeLong,
+	id: String,
 });
 
 const messageSchema = new Schema({
-	id: MongoTypeLong,
+	id: String,
 	content: String,
 });
 const message = mongoose.model("message", messageSchema, "messages");

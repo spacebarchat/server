@@ -16,14 +16,15 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 			errors = error.errors;
 		} else {
 			console.error(error);
-			if (req.server.options.production) {
+			if (req.server?.options?.production) {
 				message = "Internal Server Error";
 			}
 			code = httpcode = 500;
 		}
 
 		res.status(httpcode).json({ code: code, message, errors });
-		return next();
+
+		return;
 	} catch (error) {
 		console.error(error);
 		return res.status(500).json({ code: 500, message: "Internal Server Error" });

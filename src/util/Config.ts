@@ -23,7 +23,7 @@ export interface RateLimit {
 
 export interface DefaultOptions {
 	general: {
-		instance_id: bigint;
+		instance_id: string;
 	};
 	permissions: {
 		user: {

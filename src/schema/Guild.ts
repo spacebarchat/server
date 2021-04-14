@@ -1,13 +1,22 @@
+import { ChannelSchema, GuildChannel } from "fosscord-server-util";
 import { Length } from "../util/instanceOf";
 
 export const GuildCreateSchema = {
-	name: new Length(String, 2, 100), // ! 2-100 chars
+	name: new Length(String, 2, 100),
 	$region: String, // auto complete voice region of the user
+	$icon: String,
+	$channels: [Object],
+	$guild_template_code: String,
+	$system_channel_id: String,
 };
 
 export interface GuildCreateSchema {
 	name: string;
 	region?: string;
+	icon?: string;
+	channels?: GuildChannel[];
+	guild_template_code?: string;
+	system_channel_id?: string;
 }
 
 export const GuildUpdateSchema = {
@@ -20,27 +29,27 @@ export const GuildUpdateSchema = {
 	$verification_level: Number,
 	$default_message_notifications: Number,
 	$system_channel_flags: Number,
-	$system_channel_id: BigInt,
+	$system_channel_id: String,
 	$explicit_content_filter: Number,
-	$public_updates_channel_id: BigInt,
+	$public_updates_channel_id: String,
 	$afk_timeout: Number,
-	$afk_channel_id: BigInt,
+	$afk_channel_id: String,
 };
+// @ts-ignore
+delete GuildUpdateSchema.$channels;
 
-export interface GuildUpdateSchema extends GuildCreateSchema {
+export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels"> {
 	banner?: string;
 	splash?: string;
 	description?: string;
 	features?: [string];
-	icon?: string;
 	verification_level?: number;
 	default_message_notifications?: number;
 	system_channel_flags?: number;
-	system_channel_id?: bigint;
 	explicit_content_filter?: number;
-	public_updates_channel_id?: bigint;
+	public_updates_channel_id?: string;
 	afk_timeout?: number;
-	afk_channel_id?: bigint;
+	afk_channel_id?: string;
 }
 
 export const GuildGetSchema = {

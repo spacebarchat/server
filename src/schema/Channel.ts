@@ -10,7 +10,7 @@ export const ChannelModifySchema = {
 	$position: Number,
 	$permission_overwrites: [
 		{
-			id: BigInt,
+			id: String,
 			type: new Length(Number, 0, 1), // either 0 (role) or 1 (member)
 			allow: BigInt,
 			deny: BigInt,
@@ -29,23 +29,23 @@ export interface ChannelModifySchema {
 	rate_limit_per_user?: Number;
 	position?: number;
 	permission_overwrites?: {
-		id: bigint;
+		id: string;
 		type: number;
 		allow: bigint;
 		deny: bigint;
 	}[];
-	parent_id?: bigint;
+	parent_id?: string;
 	nsfw?: boolean;
 }
 
 export const ChannelGuildPositionUpdateSchema = [
 	{
-		id: BigInt,
+		id: String,
 		$position: Number,
 	},
 ];
 
 export type ChannelGuildPositionUpdateSchema = {
-	id: bigint;
+	id: string;
 	position?: number;
 }[];

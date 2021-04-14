@@ -44,9 +44,9 @@ export const MessageCreateSchema = {
 	},
 	$allowed_mentions: [],
 	$message_reference: {
-		message_id: BigInt,
-		channel_id: BigInt,
-		$guild_id: BigInt,
+		message_id: String,
+		channel_id: String,
+		$guild_id: String,
 		$fail_if_not_exists: Boolean,
 	},
 	$payload_json: String,
@@ -60,9 +60,9 @@ export interface MessageCreateSchema {
 	embed?: Embed & { timestamp?: string };
 	allowed_mentions?: [];
 	message_reference?: {
-		message_id: bigint;
-		channel_id: bigint;
-		guild_id?: bigint;
+		message_id: string;
+		channel_id: string;
+		guild_id?: string;
 		fail_if_not_exists: boolean;
 	};
 	payload_json?: string;

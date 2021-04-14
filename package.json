@@ -4,10 +4,12 @@
 	"description": "This repository contains the HTTP API Server",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "npm run build && node dist/",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"start": "npm run build:util && npm run build && node dist/",
 		"build": "tsc -b .",
-		"postinstall": "patch-package"
+		"build:util": "tsc -b ./node_modules/fosscord-server-util/",
+		"postinstall": "npm i github:fosscord/fosscord-server-util && patch-package"
 	},
 	"repository": {
 		"type": "git",
@@ -21,6 +23,7 @@
 	},
 	"homepage": "https://github.com/fosscord/fosscord-api#readme",
 	"dependencies": {
+		"@types/jest": "^26.0.22",
 		"bcrypt": "^5.0.0",
 		"body-parser": "^1.19.0",
 		"dotenv": "^8.2.0",
@@ -33,8 +36,10 @@
 		"jsonwebtoken": "^8.5.1",
 		"lambert-db": "^1.1.8",
 		"lambert-server": "^1.0.10",
-		"missing-native-js-functions": "^1.2.4",
+		"missing-native-js-functions": "^1.2.6",
 		"mongodb": "^3.6.4",
+		"mongoose": "^5.12.3",
+		"mongoose-autopopulate": "^0.12.3",
 		"mongoose-long": "^0.3.2",
 		"multer": "^1.4.2",
 		"patch-package": "^6.2.2"
@@ -47,7 +52,9 @@
 		"@types/multer": "^1.4.5",
 		"@types/node": "^14.14.22",
 		"@types/node-fetch": "^2.5.7",
+		"@zerollup/ts-transform-paths": "^1.7.18",
 		"0x": "^4.10.2",
+		"jest": "^26.6.3",
 		"node-fetch": "^2.6.1",
 		"ts-node": "^9.1.1",
 		"typescript": "^4.1.2"

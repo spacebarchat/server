@@ -1,4 +1,4 @@
-import { UserModel } from "fosscord-server-util";
+import { toObject, UserModel } from "fosscord-server-util";
 import { HTTPError } from "lambert-server";
 
 export const PublicUserProjection = {
@@ -9,7 +9,7 @@ export const PublicUserProjection = {
 	avatar: true,
 };
 
-export async function getPublicUser(user_id: bigint, additional_fields?: any) {
+export async function getPublicUser(user_id: string, additional_fields?: any) {
 	const user = await UserModel.findOne(
 		{ id: user_id },
 		{
@@ -18,5 +18,5 @@ export async function getPublicUser(user_id: bigint, additional_fields?: any) {
 		}
 	).exec();
 	if (!user) throw new HTTPError("User not found", 404);
-	return user;
+	return toObject(user);
 }
