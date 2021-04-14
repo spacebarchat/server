@@ -3,9 +3,9 @@ import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
 
 export interface VoiceState extends Document {
-	guild_id?: bigint;
-	channel_id: bigint;
-	user_id: bigint;
+	guild_id?: string;
+	channel_id: string;
+	user_id: string;
 	session_id: string;
 	deaf: boolean;
 	mute: boolean;
@@ -17,9 +17,9 @@ export interface VoiceState extends Document {
 }
 
 export const VoiceSateSchema = new Schema({
-	guild_id: Types.Long,
-	channel_id: Types.Long,
-	user_id: Types.Long,
+	guild_id: String,
+	channel_id: String,
+	user_id: String,
 	session_id: String,
 	deaf: Boolean,
 	mute: Boolean,

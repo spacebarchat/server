@@ -1,9 +1,10 @@
 import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
+import toBigInt from "../util/toBigInt";
 
 export interface Role {
-	id: bigint;
-	guild_id: bigint;
+	id: string;
+	guild_id: string;
 	color: number;
 	hoist: boolean;
 	managed: boolean;
@@ -12,28 +13,30 @@ export interface Role {
 	permissions: bigint;
 	position: number;
 	tags?: {
-		bot_id?: bigint;
+		bot_id?: string;
 	};
 }
 
 export interface RoleDocument extends Document, Role {
-	id: bigint;
+	id: string;
 }
 
 export const RoleSchema = new Schema({
-	id: Types.Long,
-	guild_id: Types.Long,
+	id: String,
+	guild_id: String,
 	color: Number,
 	hoist: Boolean,
 	managed: Boolean,
 	mentionable: Boolean,
 	name: String,
-	permissions: Types.Long,
+	permissions: { type: String, get: toBigInt },
 	position: Number,
 	tags: {
-		bot_id: Types.Long,
+		bot_id: String,
 	},
 });
+
+RoleSchema.set("removeResponse", ["guild_id"]);
 
 // @ts-ignore
 export const RoleModel = db.model<RoleDocument>("Role", RoleSchema, "roles");

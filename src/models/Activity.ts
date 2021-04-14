@@ -1,10 +1,11 @@
 import { User } from "..";
 import { ClientStatus, Status } from "./Status";
 import { Schema, model, Types, Document } from "mongoose";
+import toBigInt from "../util/toBigInt";
 
 export interface Presence {
 	user: User;
-	guild_id?: bigint;
+	guild_id?: string;
 	status: Status;
 	activities: Activity[];
 	client_status: ClientStatus;
@@ -14,17 +15,17 @@ export interface Activity {
 	name: string;
 	type: ActivityType;
 	url?: string;
-	created_at: Date;
+	created_at?: Date;
 	timestamps?: {
-		start: number;
-		end: number;
+		start?: number;
+		end?: number;
 	}[];
-	application_id?: bigint;
+	application_id?: string;
 	details?: string;
 	state?: string;
 	emoji?: {
 		name: string;
-		id?: bigint;
+		id?: string;
 		amimated?: boolean;
 	};
 	party?: {
@@ -32,10 +33,10 @@ export interface Activity {
 		size?: [number, number];
 	};
 	assets?: {
-		large_image: string;
-		large_text: string;
-		small_image: string;
-		small_text: string;
+		large_image?: string;
+		large_text?: string;
+		small_image?: string;
+		small_text?: string;
 	};
 	secrets?: {
 		join?: string;
@@ -46,9 +47,9 @@ export interface Activity {
 	flags?: bigint;
 }
 
-export const Activity = {
-	name: String,
-	type: Number,
+export const ActivitySchema = {
+	name: { type: String, required: true },
+	type: { type: Number, required: true },
 	url: String,
 	created_at: Date,
 	timestamps: [
@@ -57,12 +58,12 @@ export const Activity = {
 			end: Number,
 		},
 	],
-	application_id: Types.Long,
+	application_id: String,
 	details: String,
 	state: String,
 	emoji: {
 		name: String,
-		id: Types.Long,
+		id: String,
 		amimated: Boolean,
 	},
 	party: {
@@ -81,7 +82,45 @@ export const Activity = {
 		match: String,
 	},
 	instance: Boolean,
-	flags: Types.Long,
+	flags: { type: String, get: toBigInt },
+};
+
+export const ActivityBodySchema = {
+	name: String,
+	type: Number,
+	$url: String,
+	$created_at: Date,
+	$timestamps: [
+		{
+			$start: Number,
+			$end: Number,
+		},
+	],
+	$application_id: String,
+	$details: String,
+	$state: String,
+	$emoji: {
+		$name: String,
+		$id: String,
+		$amimated: Boolean,
+	},
+	$party: {
+		$id: String,
+		$size: [Number, Number],
+	},
+	$assets: {
+		$large_image: String,
+		$large_text: String,
+		$small_image: String,
+		$small_text: String,
+	},
+	$secrets: {
+		$join: String,
+		$spectate: String,
+		$match: String,
+	},
+	$instance: Boolean,
+	$flags: Types.Long,
 };
 
 export enum ActivityType {

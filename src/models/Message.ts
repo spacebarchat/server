@@ -1,29 +1,30 @@
 import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
-import { UserModel } from "./User";
-import { MemberModel } from "./Member";
-import { RoleModel } from "./Role";
+import { PublicUser, PublicUserProjection, UserModel } from "./User";
+import { MemberModel, PublicMember, PublicMemberProjection } from "./Member";
+import { Role, RoleModel } from "./Role";
+import { Channel } from "./Channel";
 
 export interface Message {
-	id: bigint;
-	channel_id: bigint;
-	guild_id?: bigint;
-	author_id?: bigint;
-	webhook_id?: bigint;
-	application_id?: bigint;
+	id: string;
+	channel_id: string;
+	guild_id?: string;
+	author_id?: string;
+	webhook_id?: string;
+	application_id?: string;
 	content?: string;
 	timestamp: Date;
 	edited_timestamp?: Date;
 	tts?: boolean;
-	mention_everyone: boolean;
-	mention_user_ids: bigint[];
-	mention_role_ids: bigint[];
-	mention_channels_ids: bigint[];
+	mention_everyone?: boolean;
+	mention_user_ids: string[];
+	mention_role_ids: string[];
+	mention_channels_ids: string[];
 	attachments: Attachment[];
 	embeds: Embed[];
-	reactions?: Reaction[];
+	reactions: Reaction[];
 	nonce?: string | number;
-	pinned: boolean;
+	pinned?: boolean;
 	type: MessageType;
 	activity?: {
 		type: number;
@@ -32,14 +33,20 @@ export interface Message {
 	flags?: bigint;
 	stickers?: [];
 	message_reference?: {
-		message_id: bigint;
-		channel_id?: bigint;
-		guild_id?: bigint;
+		message_id: string;
+		channel_id?: string;
+		guild_id?: string;
 	};
+	// mongoose virtuals:
+	author?: PublicUser;
+	member?: PublicMember;
+	mentions?: PublicUser[];
+	mention_roles?: Role[];
+	mention_channels?: Channel[];
 }
 
 export interface MessageDocument extends Document, Message {
-	id: bigint;
+	id: string;
 }
 
 export enum MessageType {
@@ -63,7 +70,7 @@ export enum MessageType {
 }
 
 export interface Attachment {
-	id: bigint; // attachment id
+	id: string; // attachment id
 	filename: string; // name of file attached
 	size: number; // size of file in bytes
 	url: string; // source url of file
@@ -118,20 +125,20 @@ export interface Reaction {
 }
 
 export interface PartialEmoji {
-	id?: bigint;
+	id?: string;
 	name: string;
 	animated?: boolean;
 }
 
 export interface AllowedMentions {
 	parse?: ("users" | "roles" | "everyone")[];
-	roles?: bigint[];
-	users?: bigint[];
+	roles?: string[];
+	users?: string[];
 	replied_user?: boolean;
 }
 
 export const Attachment = {
-	id: Types.Long, // attachment id
+	id: String, // attachment id
 	filename: String, // name of file attached
 	size: Number, // size of file in bytes
 	url: String, // source url of file
@@ -150,7 +157,7 @@ export const EmbedImage = {
 const Reaction = {
 	count: Number,
 	emoji: {
-		id: Types.Long,
+		id: String,
 		name: String,
 		animated: Boolean,
 	},
@@ -191,20 +198,20 @@ export const Embed = {
 };
 
 export const MessageSchema = new Schema({
-	id: Types.Long,
-	channel_id: Types.Long,
-	author_id: Types.Long,
-	webhook_id: Types.Long,
-	guild_id: Types.Long,
-	application_id: Types.Long,
+	id: String,
+	channel_id: String,
+	author_id: String,
+	webhook_id: String,
+	guild_id: String,
+	application_id: String,
 	content: String,
 	timestamp: Date,
 	edited_timestamp: Date,
 	tts: Boolean,
 	mention_everyone: Boolean,
-	mention_user_ids: [Types.Long],
-	mention_role_ids: [Types.Long],
-	mention_channel_ids: [Types.Long],
+	mention_user_ids: [String],
+	mention_role_ids: [String],
+	mention_channel_ids: [String],
 	attachments: [Attachment],
 	embeds: [Embed],
 	reactions: [Reaction],
@@ -218,10 +225,18 @@ export const MessageSchema = new Schema({
 	flags: Types.Long,
 	stickers: [],
 	message_reference: {
-		message_id: Types.Long,
-		channel_id: Types.Long,
-		guild_id: Types.Long,
+		message_id: String,
+		channel_id: String,
+		guild_id: String,
 	},
+	// virtual:
+	// author: {
+	// 	ref: UserModel,
+	// 	localField: "author_id",
+	// 	foreignField: "id",
+	// 	justOne: true,
+	// 	autopopulate: { select: { id: true, user_data: false } },
+	// },
 });
 
 MessageSchema.virtual("author", {
@@ -229,6 +244,7 @@ MessageSchema.virtual("author", {
 	localField: "author_id",
 	foreignField: "id",
 	justOne: true,
+	autopopulate: { select: PublicUserProjection },
 });
 
 MessageSchema.virtual("member", {
@@ -242,22 +258,27 @@ MessageSchema.virtual("mentions", {
 	ref: UserModel,
 	localField: "mention_user_ids",
 	foreignField: "id",
-	justOne: true,
+	justOne: false,
+	autopopulate: { select: PublicUserProjection },
 });
 
 MessageSchema.virtual("mention_roles", {
 	ref: RoleModel,
 	localField: "mention_role_ids",
 	foreignField: "id",
-	justOne: true,
+	justOne: false,
+	autopopulate: true,
 });
 
 MessageSchema.virtual("mention_channels", {
 	ref: RoleModel,
-	localField: "mention_role_ids",
+	localField: "mention_channel_ids",
 	foreignField: "id",
-	justOne: true,
+	justOne: false,
+	autopopulate: { select: { id: true, guild_id: true, type: true, name: true } },
 });
+
+MessageSchema.set("removeResponse", ["mention_channel_ids", "mention_role_ids", "mention_user_ids", "author_id"]);
 
 // TODO: missing Application Model
 // MessageSchema.virtual("application", {

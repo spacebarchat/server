@@ -1,32 +1,33 @@
 import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
+import toBigInt from "../util/toBigInt";
 
 export interface AnyChannel extends Channel, DMChannel, TextChannel, VoiceChannel {}
 
 export interface ChannelDocument extends Document, AnyChannel {
-	id: bigint;
+	id: string;
 }
 
 export const ChannelSchema = new Schema({
-	id: Types.Long,
+	id: String,
 	created_at: { type: Schema.Types.Date, required: true },
 	name: { type: String, required: true },
 	type: { type: Number, required: true },
-	guild_id: Types.Long,
-	owner_id: Types.Long,
-	parent_id: Types.Long,
-	recipients: [Types.Long],
+	guild_id: String,
+	owner_id: String,
+	parent_id: String,
+	recipients: [String],
 	position: Number,
-	last_message_id: Types.Long,
+	last_message_id: String,
 	last_pin_timestamp: Date,
 	nsfw: Boolean,
 	rate_limit_per_user: Number,
 	topic: String,
 	permission_overwrites: [
 		{
-			allow: Types.Long,
-			deny: Types.Long,
-			id: Types.Long,
+			allow: { type: String, get: toBigInt },
+			deny: { type: String, get: toBigInt },
+			id: String,
 			type: Number,
 		},
 	],
@@ -36,28 +37,28 @@ export const ChannelSchema = new Schema({
 export const ChannelModel = db.model<ChannelDocument>("Channel", ChannelSchema, "channels");
 
 export interface Channel {
-	id: bigint;
+	id: string;
 	created_at: Date;
 	name: string;
 	type: number;
 }
 
 export interface TextBasedChannel {
-	last_message_id?: bigint;
+	last_message_id?: string;
 	last_pin_timestamp?: number;
 }
 
 export interface GuildChannel extends Channel {
-	guild_id: bigint;
+	guild_id: string;
 	position: number;
-	parent_id?: bigint;
+	parent_id?: string;
 	permission_overwrites: ChannelPermissionOverwrite[];
 }
 
 export interface ChannelPermissionOverwrite {
-	allow: bigint;
-	deny: bigint;
-	id: bigint;
+	allow: bigint; // for bitfields we use bigints
+	deny: bigint; // for bitfields we use bigints
+	id: string;
 	type: ChannelPermissionOverwriteType;
 }
 
@@ -75,8 +76,8 @@ export interface TextChannel extends GuildChannel, TextBasedChannel {
 }
 
 export interface DMChannel extends Channel, TextBasedChannel {
-	owner_id: bigint;
-	recipients: bigint[];
+	owner_id: string;
+	recipients: string[];
 }
 
 export enum ChannelType {

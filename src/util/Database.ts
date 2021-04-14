@@ -1,12 +1,30 @@
 import "./MongoBigInt";
-import mongoose, { Collection, Connection } from "mongoose";
+import mongoose, { Collection, Connection, LeanDocument } from "mongoose";
 import { ChangeStream, ChangeEvent, Long } from "mongodb";
 import EventEmitter from "events";
+import { Document } from "mongoose";
 const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPreference=secondaryPreferred";
 
-const connection = mongoose.createConnection(uri, { autoIndex: true });
+console.log(`[DB] connect: ${uri}`);
+
+const connection = mongoose.createConnection(uri, {
+	autoIndex: true,
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useFindAndModify: false,
+});
 
 export default <Connection>connection;
+
+function transform<T>(document: T) {
+	// @ts-ignore
+	return document.toObject({ virtuals: true });
+}
+
+export function toObject<T>(document: T): LeanDocument<T> {
+	// @ts-ignore
+	return Array.isArray(document) ? document.map((x) => transform<T>(x)) : transform(document);
+}
 
 export interface MongooseCache {
 	on(event: "delete", listener: (id: string) => void): this;
@@ -29,7 +47,8 @@ export class MongooseCache extends EventEmitter {
 		super();
 	}
 
-	async init() {
+	init = async () => {
+		// @ts-ignore
 		this.stream = this.collection.watch(this.pipeline, { fullDocument: "updateLookup" });
 
 		this.stream.on("change", this.change);
@@ -40,9 +59,15 @@ export class MongooseCache extends EventEmitter {
 			const arr = await this.collection.aggregate(this.pipeline).toArray();
 			this.data = arr.length ? arr[0] : arr;
 		}
-	}
+	};
 
-	convertResult(obj: any) {
+	changeStream = (pipeline: any) => {
+		this.pipeline = pipeline;
+		this.destroy();
+		this.init();
+	};
+
+	convertResult = (obj: any) => {
 		if (obj instanceof Long) return BigInt(obj.toString());
 		if (typeof obj === "object") {
 			Object.keys(obj).forEach((key) => {
@@ -51,40 +76,44 @@ export class MongooseCache extends EventEmitter {
 		}
 
 		return obj;
-	}
+	};
 
 	change = (doc: ChangeEvent) => {
-		// @ts-ignore
-		if (doc.fullDocument) {
+		try {
 			// @ts-ignore
-			if (!this.opts.onlyEvents) this.data = doc.fullDocument;
-		}
+			if (doc.fullDocument) {
+				// @ts-ignore
+				if (!this.opts.onlyEvents) this.data = doc.fullDocument;
+			}
 
-		switch (doc.operationType) {
-			case "dropDatabase":
-				return this.destroy();
-			case "drop":
-				return this.destroy();
-			case "delete":
-				return this.emit("delete", doc.documentKey._id.toHexString());
-			case "insert":
-				return this.emit("insert", doc.fullDocument);
-			case "update":
-			case "replace":
-				return this.emit("change", doc.fullDocument);
-			case "invalidate":
-				return this.destroy();
-			default:
-				return;
+			switch (doc.operationType) {
+				case "dropDatabase":
+					return this.destroy();
+				case "drop":
+					return this.destroy();
+				case "delete":
+					return this.emit("delete", doc.documentKey._id.toHexString());
+				case "insert":
+					return this.emit("insert", doc.fullDocument);
+				case "update":
+				case "replace":
+					return this.emit("change", doc.fullDocument);
+				case "invalidate":
+					return this.destroy();
+				default:
+					return;
+			}
+		} catch (error) {
+			this.emit("error", error);
 		}
 	};
 
-	destroy() {
-		this.stream.off("change", this.change);
+	destroy = () => {
+		this.stream?.off("change", this.change);
 		this.emit("close");
 
 		if (this.stream.isClosed()) return;
 
 		return this.stream.close();
-	}
+	};
 }
