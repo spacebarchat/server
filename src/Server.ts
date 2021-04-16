@@ -6,11 +6,14 @@ import { Server as WebSocketServer } from "ws";
 import { Connection } from "./events/Connection";
 import Config from "./util/Config";
 
+var port = Number(process.env.PORT);
+if (isNaN(port)) port = 8080;
+
 export class Server {
 	public ws: WebSocketServer;
 	constructor() {
 		this.ws = new WebSocketServer({
-			port: 8080,
+			port,
 			maxPayload: 4096,
 			// perMessageDeflate: {
 			// 	zlibDeflateOptions: {
