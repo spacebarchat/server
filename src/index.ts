@@ -6,7 +6,10 @@ import { config } from "dotenv";
 config();
 import { DiscordServer } from "./Server";
 
-const server = new DiscordServer({ port: 3000 || process.env.PORT });
+var port = Number(process.env.PORT);
+if (isNaN(port)) port = 3000;
+
+const server = new DiscordServer({ port });
 server.start().catch(console.error);
 
 // @ts-ignore
