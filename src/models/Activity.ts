@@ -120,7 +120,7 @@ export const ActivityBodySchema = {
 		$match: String,
 	},
 	$instance: Boolean,
-	$flags: Types.Long,
+	$flags: BigInt,
 };
 
 export enum ActivityType {
