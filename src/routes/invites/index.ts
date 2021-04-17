@@ -22,6 +22,9 @@ router.delete("/:invite_code", async (req: Request, res: Response) => {
 	const perms = await getPermission(req.user_id, guild_id, channel_id);
 
 	if (!perms.has("MANAGE_GUILD") || !perms.has("MANAGE_CHANNELS")) throw new HTTPError("You aren't allow", 401);
+
+	await InviteModel.deleteOne({ code }).exec();
+
 	res.status(200).send({ invite: toObject(invite) });
 });
 
