@@ -7,7 +7,7 @@ config();
 import { DiscordServer } from "./Server";
 
 var port = Number(process.env.PORT);
-if (isNaN(port)) port = 3000;
+if (isNaN(port)) port = 1000;
 
 const server = new DiscordServer({ port });
 server.start().catch(console.error);
