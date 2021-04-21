@@ -1,7 +1,7 @@
 {
 	"name": "@fosscord/fosscord-server-util",
 	"version": "1.0.1",
-	"description": "add to package.json:",
+	"description": "Utility functions for the all server repositories",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
