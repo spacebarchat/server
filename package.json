@@ -1,7 +1,7 @@
 {
-	"name": "fosscord-server-util",
-	"version": "1.0.0",
-	"description": "",
+	"name": "@fosscord/fosscord-server-util",
+	"version": "1.0.1",
+	"description": "add to package.json:",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
@@ -12,7 +12,7 @@
 		"type": "git",
 		"url": "git+https://github.com/fosscord/fosscord-server-util.git"
 	},
-	"keywords": [],
+	"keywords": ["discord", "fosscord", "fosscord-server-util", "foss cord", "discord open source", "discord source", "discord-open-source"],
 	"author": "",
 	"license": "ISC",
 	"bugs": {
