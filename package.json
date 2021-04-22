@@ -1,5 +1,5 @@
 {
-	"name": "@fosscord/fosscord-server-util",
+	"name": "@fosscord/server-util",
 	"version": "1.0.2",
 	"description": "Utility functions for the all server repositories",
 	"main": "dist/index.js",
@@ -12,7 +12,15 @@
 		"type": "git",
 		"url": "git+https://github.com/fosscord/fosscord-server-util.git"
 	},
-	"keywords": ["discord", "fosscord", "fosscord-server-util", "foss cord", "discord open source", "discord source", "discord-open-source"],
+	"keywords": [
+		"discord",
+		"fosscord",
+		"fosscord-server-util",
+		"foss cord",
+		"discord open source",
+		"discord source",
+		"discord-open-source"
+	],
 	"author": "",
 	"license": "ISC",
 	"bugs": {
