@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ChannelModel, getPermission, MessageDeleteBulkEvent, MessageModel } from "fosscord-server-util";
+import { ChannelModel, getPermission, MessageDeleteBulkEvent, MessageModel } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import Config from "../../../../util/Config";
 import { emitEvent } from "../../../../util/Event";
@@ -13,7 +13,7 @@ export default router;
 // TODO: should this request fail, if you provide messages older than 14 days/invalid ids?
 // https://discord.com/developers/docs/resources/channel#bulk-delete-messages
 router.post("/", check({ messages: [String] }), async (req, res) => {
-	const channel_id = req.params.channel_id
+	const channel_id = req.params.channel_id;
 	const channel = await ChannelModel.findOne({ id: channel_id }, { permission_overwrites: true, guild_id: true }).exec();
 	if (!channel?.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
 

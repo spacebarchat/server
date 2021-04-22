@@ -1,4 +1,4 @@
-import { Embed, EmbedImage } from "fosscord-server-util";
+import { Embed, EmbedImage } from "@fosscord/server-util";
 import { Length } from "../util/instanceOf";
 
 export const MessageCreateSchema = {

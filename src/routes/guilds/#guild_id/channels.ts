@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ChannelCreateEvent, ChannelModel, ChannelType, GuildModel, Snowflake, toObject } from "fosscord-server-util";
+import { ChannelCreateEvent, ChannelModel, ChannelType, GuildModel, Snowflake, toObject } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
 import { emitEvent } from "../../../util/Event";

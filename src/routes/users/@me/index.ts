@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { UserModel } from "fosscord-server-util";
+import { UserModel } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 
 const router: Router = Router();

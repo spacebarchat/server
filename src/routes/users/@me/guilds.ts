@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { GuildModel, MemberModel, UserModel, GuildDeleteEvent, GuildMemberRemoveEvent, toObject } from "fosscord-server-util";
+import { GuildModel, MemberModel, UserModel, GuildDeleteEvent, GuildMemberRemoveEvent, toObject } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../util/Event";
 import { getPublicUser } from "../../../util/User";

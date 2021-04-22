@@ -12,7 +12,7 @@ import {
 	RoleModel,
 	toObject,
 	UserModel,
-} from "fosscord-server-util";
+} from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { GuildUpdateSchema } from "../../../schema/Guild";
 import { emitEvent } from "../../../util/Event";

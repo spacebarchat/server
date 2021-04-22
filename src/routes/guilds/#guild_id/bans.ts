@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { BanModel, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, GuildModel, toObject } from "fosscord-server-util";
+import { BanModel, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, GuildModel, toObject } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { getIpAdress } from "../../../middlewares/GlobalRateLimit";
 import { BanCreateSchema } from "../../../schema/Ban";

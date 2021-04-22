@@ -1,4 +1,4 @@
-import { Event, EventModel } from "fosscord-server-util";
+import { Event, EventModel } from "@fosscord/server-util";
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
 	const obj = {

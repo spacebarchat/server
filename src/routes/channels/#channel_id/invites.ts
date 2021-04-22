@@ -7,7 +7,7 @@ import { emitEvent } from "../../../util/Event";
 
 import { InviteCreateSchema } from "../../../schema/Invite";
 
-import { getPermission, ChannelModel, InviteModel, InviteCreateEvent, toObject } from "fosscord-server-util";
+import { getPermission, ChannelModel, InviteModel, InviteCreateEvent, toObject } from "@fosscord/server-util";
 
 const router: Router = Router();
 
