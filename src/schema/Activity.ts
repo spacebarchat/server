@@ -1,4 +1,4 @@
-import { ActivityBodySchema } from "fosscord-server-util";
+import { ActivityBodySchema } from "@fosscord/server-util";
 import { EmojiSchema } from "./Emoji";
 
 export const ActivitySchema = {

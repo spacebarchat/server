@@ -1,4 +1,4 @@
-import { db, Event, MongooseCache, UserModel, getPermission, Permissions } from "fosscord-server-util";
+import { db, Event, MongooseCache, UserModel, getPermission, Permissions } from "@fosscord/server-util";
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
 import WebSocket from "../util/WebSocket";

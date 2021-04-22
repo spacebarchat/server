@@ -1,4 +1,4 @@
-import { Intents } from "fosscord-server-util";
+import { Intents } from "@fosscord/server-util";
 import WS, { Server, Data } from "ws";
 import { Deflate } from "zlib";
 

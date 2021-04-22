@@ -11,7 +11,7 @@ import {
 	UserModel,
 	toObject,
 	EVENTEnum,
-} from "fosscord-server-util";
+} from "@fosscord/server-util";
 import { setupListener } from "../listener/listener";
 import { instanceOf } from "lambert-server";
 import { IdentifySchema } from "../schema/Identify";

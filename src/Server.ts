@@ -1,7 +1,7 @@
 import "missing-native-js-functions";
 import dotenv from "dotenv";
 dotenv.config();
-import { db } from "fosscord-server-util";
+import { db } from "@fosscord/server-util";
 import { Server as WebSocketServer } from "ws";
 import { Connection } from "./events/Connection";
 import Config from "./util/Config";
