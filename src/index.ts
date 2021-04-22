@@ -5,13 +5,29 @@ import "missing-native-js-functions";
 import { config } from "dotenv";
 config();
 import { DiscordServer } from "./Server";
+import cluster from "cluster";
+import os from "os";
+const cores = os.cpus().length;
 
-var port = Number(process.env.PORT);
-if (isNaN(port)) port = 1000;
+if (cluster.isMaster && process.env.production == "true") {
+	console.log(`Primary ${process.pid} is running`);
 
-const server = new DiscordServer({ port });
-server.start().catch(console.error);
+	// Fork workers.
+	for (let i = 0; i < cores; i++) {
+		cluster.fork();
+	}
 
-// @ts-ignore
-global.server = server;
-export default server;
+	cluster.on("exit", (worker, code, signal) => {
+		console.log(`worker ${worker.process.pid} died, restart worker`);
+		cluster.fork();
+	});
+} else {
+	var port = Number(process.env.PORT);
+	if (isNaN(port)) port = 1000;
+
+	const server = new DiscordServer({ port });
+	server.start().catch(console.error);
+
+	// @ts-ignore
+	global.server = server;
+}
