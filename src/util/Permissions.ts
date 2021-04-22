@@ -7,6 +7,14 @@ import { Role, RoleModel } from "../models/Role";
 import { BitField } from "./BitField";
 import { GuildDocument, GuildModel } from "../models/Guild";
 
+var HTTPError: typeof Error;
+
+try {
+	HTTPError = require("lambert-server").HTTPError;
+} catch (e) {
+	HTTPError = Error;
+}
+
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
 type PermissionString =
@@ -101,10 +109,9 @@ export class Permissions extends BitField {
 	 * Checks whether the bitfield has a permission, or multiple permissions, but throws an Error if user fails to match auth criteria.
 	 */
 	hasThrow(permission: PermissionResolvable, checkAdmin = true) {
-		if ((checkAdmin && super.has(Permissions.FLAGS.ADMINISTRATOR)) || super.has(permission)) {
-			return true;
-		}
-		throw new Error(`User doesn't fulfill the following permission criteria: ${permission}`);
+		if (this.has(permission)) return true;
+		// @ts-ignore
+		throw new HTTPError(`You are missing the following permissions ${permission}`, 403);
 	}
 
 	static channelPermission(overwrites: ChannelPermissionOverwrite[], init?: bigint) {
