@@ -1,33 +1,19 @@
-process.on("uncaughtException", console.error);
-process.on("unhandledRejection", console.error);
-
-import "missing-native-js-functions";
-import { config } from "dotenv";
-config();
-import { DiscordServer } from "./Server";
-import cluster from "cluster";
-import os from "os";
-const cores = os.cpus().length;
-
-if (cluster.isMaster && process.env.production == "true") {
-	console.log(`Primary ${process.pid} is running`);
-
-	// Fork workers.
-	for (let i = 0; i < cores; i++) {
-		cluster.fork();
-	}
-
-	cluster.on("exit", (worker, code, signal) => {
-		console.log(`worker ${worker.process.pid} died, restart worker`);
-		cluster.fork();
-	});
-} else {
-	var port = Number(process.env.PORT);
-	if (isNaN(port)) port = 1000;
-
-	const server = new DiscordServer({ port });
-	server.start().catch(console.error);
-
-	// @ts-ignore
-	global.server = server;
-}
+export * from "./Server";
+export * from "./middlewares/";
+export * from "./schema/Ban";
+export * from "./schema/Channel";
+export * from "./schema/Guild";
+export * from "./schema/Invite";
+export * from "./schema/Message";
+export * from "./util/Captcha";
+export * from "./util/Config";
+export * from "./util/Constants";
+export * from "./util/Event";
+export * from "./util/instanceOf";
+export * from "./util/Event";
+export * from "./util/instanceOf";
+export * from "./util/Member";
+export * from "./util/RandomInviteID";
+export * from "./util/String";
+export * from "./util/User";
+export { check as checkPassword } from "./util/passwordStrength";

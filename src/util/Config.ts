@@ -16,7 +16,7 @@ export default {
 	setAll: Config.setAll,
 };
 
-export interface RateLimit {
+export interface RateLimitOptions {
 	count: number;
 	timespan: number;
 }
@@ -62,8 +62,8 @@ export interface DefaultOptions {
 			};
 			routes: {
 				auth?: {
-					login?: RateLimit;
-					register?: RateLimit;
+					login?: RateLimitOptions;
+					register?: RateLimitOptions;
 				};
 				channel?: {};
 				// TODO: rate limit configuration for all routes

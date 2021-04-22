@@ -1,12 +1,13 @@
 {
-	"name": "fosscord-api",
+	"name": "@fosscord/api",
 	"version": "1.0.0",
 	"description": "This repository contains the HTTP API Server",
-	"main": "index.js",
+	"main": "dist/Server.js",
+	"types": "dist/Server.d.ts",
 	"scripts": {
 		"test": "jest",
 		"test:watch": "jest --watch",
-		"start": "npm run build:util && npm run build && node dist/",
+		"start": "npm run build:util && npm run build && node dist/start",
 		"build": "tsc -b .",
 		"build:util": "tsc -b ./node_modules/fosscord-server-util/",
 		"postinstall": "npm i github:fosscord/fosscord-server-util && patch-package"
@@ -15,14 +16,21 @@
 		"type": "git",
 		"url": "git+https://github.com/fosscord/fosscord-api.git"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": [
+		"discord",
+		"fosscord",
+		"fosscord-api",
+		"discord open source",
+		"discord-open-source"
+	],
+	"author": "Fosscord",
 	"license": "ISC",
 	"bugs": {
 		"url": "https://github.com/fosscord/fosscord-api/issues"
 	},
 	"homepage": "https://github.com/fosscord/fosscord-api#readme",
 	"dependencies": {
+		"@fosscord/fosscord-server-util": "github:fosscord/fosscord-server-util",
 		"@types/jest": "^26.0.22",
 		"bcrypt": "^5.0.0",
 		"body-parser": "^1.19.0",
