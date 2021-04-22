@@ -62,7 +62,8 @@ router.get("/", async (req, res) => {
 
 	if (channel.guild_id) {
 		const permissions = await getPermission(req.user_id, channel.guild_id, channel_id, { channel });
-		if (!permissions.has("VIEW_CHANNEL")) throw new HTTPError("You don't have permission to view this channel", 401);
+		permissions.hasThrow("VIEW_CHANNEL");
+
 		if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 	} else if (channel.recipients) {
 		// group/dm channel
@@ -106,11 +107,10 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 
 	if (channel.guild_id) {
 		const permissions = await getPermission(req.user_id, channel.guild_id, channel_id, { channel });
-		if (!permissions.has("SEND_MESSAGES")) throw new HTTPError("You don't have the SEND_MESSAGES permission");
-		if (body.tts && !permissions.has("SEND_TTS_MESSAGES")) throw new HTTPError("You are missing the SEND_TTS_MESSAGES permission");
+		permissions.hasThrow("SEND_MESSAGES");
+		if (body.tts) permissions.hasThrow("SEND_TTS_MESSAGES");
 		if (body.message_reference) {
-			if (!permissions.has("READ_MESSAGE_HISTORY"))
-				throw new HTTPError("You are missing the READ_MESSAGE_HISTORY permission to reply");
+			permissions.hasThrow("READ_MESSAGE_HISTORY");
 			if (body.message_reference.guild_id !== channel.guild_id)
 				throw new HTTPError("You can only reference messages from this guild");
 		}

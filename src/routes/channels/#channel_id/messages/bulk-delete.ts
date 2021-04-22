@@ -18,7 +18,7 @@ router.post("/", check({ messages: [String] }), async (req, res) => {
 	if (!channel?.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
 
 	const permission = await getPermission(req.user_id, channel?.guild_id, channel_id, { channel });
-	if (!permission.has("MANAGE_MESSAGES")) throw new HTTPError("You are missing the MANAGE_MESSAGES permissions");
+	permission.hasThrow("MANAGE_MESSAGES");
 
 	const { maxBulkDelete } = Config.get().limits.message;
 
