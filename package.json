@@ -7,14 +7,13 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "npm run build:util && npm run build && node dist/",
 		"build": "npx tsc -b .",
-		"build:util": "npx tsc -b ./node_modules/@fosscord/server-util/",
-		"postinstall": "npm i github:fosscord/@fosscord/server-util"
+		"build:util": "npx tsc -b ./node_modules/@fosscord/server-util/"
 	},
 	"keywords": [],
 	"author": "Fosscord",
 	"license": "ISC",
 	"dependencies": {
-		"@fosscord/server-util": "^1.0.2",
+		"@fosscord/server-util": "^1.0.3",
 		"dotenv": "^8.2.0",
 		"erlpack": "^0.1.3",
 		"jsonwebtoken": "^8.5.1",
