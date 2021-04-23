@@ -9,7 +9,8 @@
 		"test:watch": "jest --watch",
 		"start": "npm run build:util && npm run build && node dist/start",
 		"build": "tsc -b .",
-		"build:util": "tsc -b ./node_modules/@fosscord/server-util/"
+		"build:util": "tsc -b ./node_modules/@fosscord/server-util/",
+		"postinstall": "patch-package"
 	},
 	"repository": {
 		"type": "git",
