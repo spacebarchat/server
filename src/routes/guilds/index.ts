@@ -9,6 +9,8 @@ import { addMember } from "../../util/Member";
 
 const router: Router = Router();
 
+//TODO: create default channel
+
 router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) => {
 	const body = req.body as GuildCreateSchema;
 
