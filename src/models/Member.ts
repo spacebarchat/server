@@ -97,14 +97,6 @@ MemberSchema.virtual("user", {
 	},
 });
 
-MemberSchema.virtual("roles", {
-	ref: UserModel,
-	localField: "id",
-	foreignField: "id",
-	justOne: true,
-	autopopulate: true,
-});
-
 // @ts-ignore
 export const MemberModel = db.model<MemberDocument>("Member", MemberSchema, "members");
 
