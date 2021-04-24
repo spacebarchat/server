@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { BanModel, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, GuildModel, toObject } from "fosscord-server-util";
+import { BanModel, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, GuildModel, toObject } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { getIpAdress } from "../../../middlewares/GlobalRateLimit";
 import { BanCreateSchema } from "../../../schema/Ban";
@@ -35,7 +35,7 @@ router.post("/:user_id", check(BanCreateSchema), async (req: Request, res: Respo
 
 	const banned_user = await getPublicUser(banned_user_id);
 	const perms = await getPermission(req.user_id, guild_id);
-	if (!perms.has("BAN_MEMBERS")) throw new HTTPError("You don't have the permission to ban members", 403);
+	perms.hasThrow("BAN_MEMBERS");
 	if (req.user_id === banned_user_id) throw new HTTPError("You can't ban yourself", 400);
 
 	await removeMember(banned_user_id, guild_id);
@@ -69,9 +69,7 @@ router.delete("/:user_id", async (req: Request, res: Response) => {
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
 	const perms = await getPermission(req.user_id, guild_id);
-	if (!perms.has("BAN_MEMBERS")) {
-		throw new HTTPError("No permissions", 403);
-	}
+	perms.hasThrow("BAN_MEMBERS");
 
 	await BanModel.deleteOne({
 		user_id: banned_user_id,

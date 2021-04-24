@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { RoleModel, GuildModel, Snowflake, Guild } from "fosscord-server-util";
+import { RoleModel, GuildModel, Snowflake, Guild } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../util/instanceOf";
 import { GuildCreateSchema } from "../../schema/Guild";
@@ -8,6 +8,8 @@ import { getPublicUser } from "../../util/User";
 import { addMember } from "../../util/Member";
 
 const router: Router = Router();
+
+//TODO: create default channel
 
 router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) => {
 	const body = req.body as GuildCreateSchema;

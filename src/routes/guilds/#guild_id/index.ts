@@ -12,7 +12,7 @@ import {
 	RoleModel,
 	toObject,
 	UserModel,
-} from "fosscord-server-util";
+} from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { GuildUpdateSchema } from "../../../schema/Guild";
 import { emitEvent } from "../../../util/Event";
@@ -41,7 +41,7 @@ router.patch("/", check(GuildUpdateSchema), async (req: Request, res: Response) 
 	// TODO: guild update check image
 
 	const perms = await getPermission(req.user_id, guild_id);
-	if (!perms.has("MANAGE_GUILD")) throw new HTTPError("You do not have the MANAGE_GUILD permission", 401);
+	perms.hasThrow("MANAGE_GUILD");
 
 	const guild = await GuildModel.findOneAndUpdate({ id: guild_id }, body)
 		.populate({ path: "joined_at", match: { id: req.user_id } })

@@ -4,7 +4,7 @@ import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, GlobalRateLimit } from "./middlewares/";
 import Config from "./util/Config";
-import { db } from "fosscord-server-util";
+import { db } from "@fosscord/server-util";
 import i18next from "i18next";
 import i18nextMiddleware, { I18next } from "i18next-http-middleware";
 import i18nextBackend from "i18next-node-fs-backend";
@@ -13,21 +13,21 @@ import { BodyParser } from "./middlewares/BodyParser";
 import { Router } from "express";
 import fetch from "node-fetch";
 
-export interface DiscordServerOptions extends ServerOptions {}
+export interface FosscordServerOptions extends ServerOptions {}
 
 declare global {
 	namespace Express {
 		interface Request {
 			// @ts-ignore
-			server: DiscordServer;
+			server: FosscordServer;
 		}
 	}
 }
 
-export class DiscordServer extends Server {
-	public options: DiscordServerOptions;
+export class FosscordServer extends Server {
+	public options: FosscordServerOptions;
 
-	constructor(opts?: Partial<DiscordServerOptions>) {
+	constructor(opts?: Partial<FosscordServerOptions>) {
 		// @ts-ignore
 		super({ ...opts, errorHandler: false, jsonBody: false });
 	}

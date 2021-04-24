@@ -1,5 +1,6 @@
 import { Router } from "express";
-const router: Router = Router();
+
+const router = Router();
 // TODO:
 
 export default router;

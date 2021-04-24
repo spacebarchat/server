@@ -1,4 +1,4 @@
-import { toObject, UserModel } from "fosscord-server-util";
+import { toObject, UserModel } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 
 export const PublicUserProjection = {

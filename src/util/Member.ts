@@ -7,7 +7,7 @@ import {
 	GuildModel,
 	MemberModel,
 	UserModel,
-} from "fosscord-server-util";
+} from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import Config from "./Config";
 import { emitEvent } from "./Event";

@@ -1,3 +1,4 @@
+import { ChannelType } from "@fosscord/server-util";
 import { Length } from "../util/instanceOf";
 
 export const ChannelModifySchema = {
@@ -19,6 +20,24 @@ export const ChannelModifySchema = {
 	$parent_id: BigInt,
 	$nsfw: Boolean,
 };
+
+export const DmChannelCreateSchema = {
+	owner_id: String,
+	$id: String,
+    $created_at: Date,
+    name: String,
+    type: Number,
+	recipients: [String]
+}
+
+export interface DmChannelCreateSchema {
+	owner_id: String;
+	id?: String;
+    created_at?: Date;
+    name: String;
+    type: Number;
+	recipients: String[];
+}
 
 export interface ChannelModifySchema {
 	name: string;

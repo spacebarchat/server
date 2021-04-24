@@ -7,7 +7,7 @@ import { emitEvent } from "../../../util/Event";
 
 import { InviteCreateSchema } from "../../../schema/Invite";
 
-import { getPermission, ChannelModel, InviteModel, InviteCreateEvent, toObject } from "fosscord-server-util";
+import { getPermission, ChannelModel, InviteModel, InviteCreateEvent, toObject } from "@fosscord/server-util";
 
 const router: Router = Router();
 
@@ -22,10 +22,7 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 	const { guild_id } = channel;
 
 	const permission = await getPermission(user_id, guild_id);
-
-	if (!permission.has("CREATE_INSTANT_INVITE")) {
-		throw new HTTPError("You aren't authorised to access this endpoint", 401);
-	}
+	permission.hasThrow("CREATE_INSTANT_INVITE");
 
 	const invite = {
 		code: random(),
@@ -55,10 +52,7 @@ router.get("/", async (req: Request, res: Response) => {
 	}
 	const { guild_id } = channel;
 	const permission = await getPermission(user_id, guild_id);
-
-	if (!permission.has("MANAGE_CHANNELS")) {
-		throw new HTTPError("You aren't authorised to access this endpoint", 401);
-	}
+	permission.hasThrow("MANAGE_CHANNELS");
 
 	const invites = await InviteModel.find({ guild_id }).exec();
 

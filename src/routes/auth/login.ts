@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { check, FieldErrors, Length } from "../../util/instanceOf";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { User, UserModel } from "fosscord-server-util";
+import { UserModel } from "@fosscord/server-util";
 import Config from "../../util/Config";
 import { adjustEmail } from "./register";
 
