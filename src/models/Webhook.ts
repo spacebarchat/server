@@ -80,4 +80,5 @@ WebhookSchema.virtual("source_channel", {
 
 WebhookSchema.set("removeResponse", ["source_channel_id", "source_guild_id"]);
 
+// @ts-ignore
 export const WebhookModel = db.model<WebhookDocument>("Webhook", WebhookSchema, "webhooks");
