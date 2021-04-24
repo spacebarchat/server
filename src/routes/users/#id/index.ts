@@ -1,7 +1,9 @@
 import { Router, Request, Response } from "express";
-import { UserModel} from "@fosscord/server-util";
+import { UserModel, toObject } from "@fosscord/server-util";
 import { getPublicUser } from "../../../util/User";
 import { HTTPError } from "lambert-server";
+import { UserUpdateSchema } from "../../../schema/User";
+import { check } from "../../../util/instanceOf";
 
 const router: Router = Router();
 
@@ -12,7 +14,6 @@ router.get("/", async (req: Request, res: Response) => {
 
 	res.json(user);
 });
-
 
 
 export default router;
