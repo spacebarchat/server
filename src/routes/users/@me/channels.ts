@@ -50,22 +50,12 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.post("/", check(DmChannelCreateSchema), async (req, res) => {
 	const body = req.body as DmChannelCreateSchema;
-	switch (body.type) {
-		case ChannelType.GUILD_CATEGORY:
-		case ChannelType.GUILD_TEXT:
-		case ChannelType.GUILD_VOICE:
-			throw new HTTPError("You can't create a dm channel in a guild");
-			// TODO:
-		case ChannelType.GUILD_STORE:
-			throw new HTTPError("Not yet supported");
-		case ChannelType.GUILD_NEWS:
-			// TODO: check if guild is community server
-	}
 
 	const channel = {
 		...body,
 		owner_id: req.user_id,
 		id: Snowflake.generate(),
+		type: ChannelType.DM,
 		created_at: new Date(),
 	};
 	await new ChannelModel(channel).save();
