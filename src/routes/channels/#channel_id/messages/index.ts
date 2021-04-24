@@ -69,7 +69,7 @@ router.get("/", async (req, res) => {
 		if (!channel.recipients.includes(req.user_id)) throw new HTTPError("You don't have permission to view this channel", 401);
 	}
 
-	var query: Query<MessageDocument[], MessageDocument, {}>;
+	var query: Query<MessageDocument[], MessageDocument>;
 	if (after) query = MessageModel.find({ channel_id, id: { $gt: after } });
 	else if (before) query = MessageModel.find({ channel_id, id: { $lt: before } });
 	else if (around)
