@@ -34,5 +34,5 @@ router.post("/", check({ messages: [String] }), async (req, res) => {
 		data: { ids: messages, channel_id, guild_id: channel.guild_id },
 	} as MessageDeleteBulkEvent);
 
-	res.status(204).send();
+	res.sendStatus(204);
 });

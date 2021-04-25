@@ -49,7 +49,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
 		guild_id: guild_id,
 	} as GuildMemberRemoveEvent);
 
-	return res.status(204).send();
+	return res.sendStatus(204);
 });
 
 export default router;
