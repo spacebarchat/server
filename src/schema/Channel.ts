@@ -37,7 +37,7 @@ export interface ChannelModifySchema {
 	topic?: string;
 	bitrate?: number;
 	user_limit?: number;
-	rate_limit_per_user?: Number;
+	rate_limit_per_user?: number;
 	position?: number;
 	permission_overwrites?: {
 		id: string;
