@@ -35,6 +35,6 @@ export class Server {
 		await this.setupSchema();
 		console.log("[DB] connected");
 		await Config.init();
-		console.log(`[Gateway] online ${port}`);
+		console.log(`[Gateway] online on 0.0.0.0:${port}`);
 	}
 }
