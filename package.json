@@ -11,7 +11,7 @@
 		"build": "tsc -b .",
 		"build:util": "tsc -b ./node_modules/@fosscord/server-util/",
 		"postinstall": "patch-package",
-		"dev": "tsnd --respawn src/"
+		"dev": "tsnd --respawn src/start.ts"
 	},
 	"repository": {
 		"type": "git",
