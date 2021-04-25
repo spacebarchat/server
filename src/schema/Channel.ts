@@ -22,21 +22,13 @@ export const ChannelModifySchema = {
 };
 
 export const DmChannelCreateSchema = {
-	owner_id: String,
-	$id: String,
-    $created_at: Date,
-    name: String,
-    type: Number,
-	recipients: [String]
-}
+	$name: String,
+	recipients: [String],
+};
 
 export interface DmChannelCreateSchema {
-	owner_id: String;
-	id?: String;
-    created_at?: Date;
-    name: String;
-    type: Number;
-	recipients: String[];
+	name?: string;
+	recipients: string[];
 }
 
 export interface ChannelModifySchema {

@@ -25,25 +25,16 @@ router.post(
 		const query: any[] = [{ phone: login }];
 		if (email) query.push({ email });
 
-		const user = await UserModel.findOne(
-			{
-				$or: query,
-			},
-			`user_data.hash id user_settings.locale user_settings.theme`
-		).exec();
+		const user = await UserModel.findOne({ $or: query }, `user_data.hash id user_settings.locale user_settings.theme`).exec();
 
 		if (!user) {
-			throw FieldErrors({
-				login: { message: req.t("auth:login.INVALID_LOGIN"), code: "INVALID_LOGIN" },
-			});
+			throw FieldErrors({ login: { message: req.t("auth:login.INVALID_LOGIN"), code: "INVALID_LOGIN" } });
 		}
 
 		// the salt is saved in the password refer to bcrypt docs
 		const same_password = await bcrypt.compare(password, user.user_data.hash);
 		if (!same_password) {
-			throw FieldErrors({
-				password: { message: req.t("auth:login.INVALID_PASSWORD"), code: "INVALID_PASSWORD" },
-			});
+			throw FieldErrors({ password: { message: req.t("auth:login.INVALID_PASSWORD"), code: "INVALID_PASSWORD" } });
 		}
 
 		const token = await generateToken(user.id);
