@@ -1,6 +1,7 @@
-import { ChannelModel, getPermission, MessageModel } from "@fosscord/server-util";
+import { ChannelModel, getPermission, MessageDeleteEvent, MessageModel } from "@fosscord/server-util";
 import { Router } from "express";
 import { HTTPError } from "lambert-server";
+import { emitEvent } from "../../../../../util/Event";
 import { check } from "../../../../../util/instanceOf";
 
 const router = Router();
@@ -16,6 +17,17 @@ router.delete("/", async (req, res) => {
 	permission.hasThrow("MANAGE_MESSAGES");
 
 	await MessageModel.deleteOne({ id: message_id }).exec();
+
+	await emitEvent({
+		event: "MESSAGE_DELETE",
+		channel_id,
+		guild_id: channel.guild_id,
+		data: {
+			id: message_id,
+			channel_id,
+			guild_id: channel.guild_id,
+		},
+	} as MessageDeleteEvent);
 
 	res.sendStatus(204);
 });
