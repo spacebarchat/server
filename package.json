@@ -7,7 +7,8 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "npm run build:util && npm run build && node dist/",
 		"build": "npx tsc -b .",
-		"build:util": "npx tsc -b ./node_modules/@fosscord/server-util/"
+		"build:util": "npx tsc -b ./node_modules/@fosscord/server-util/",
+		"dev": "tsnd --respawn src/index.ts"
 	},
 	"keywords": [],
 	"author": "Fosscord",
@@ -29,6 +30,7 @@
 		"@types/mongoose-autopopulate": "^0.10.1",
 		"@types/uuid": "^8.3.0",
 		"@types/ws": "^7.4.0",
-		"erlpack": "^0.1.3"
+		"erlpack": "^0.1.3",
+		"ts-node-dev": "^1.1.6"
 	}
 }
