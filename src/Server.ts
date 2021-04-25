@@ -12,8 +12,13 @@ import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import { Router } from "express";
 import fetch from "node-fetch";
+import mongoose from "mongoose";
 
-export interface FosscordServerOptions extends ServerOptions {}
+// this will return the new updated document for findOneAndUpdate
+mongoose.set('returnOriginal', false); // https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate
+
+
+export interface FosscordServerOptions extends ServerOptions { }
 
 declare global {
 	namespace Express {
