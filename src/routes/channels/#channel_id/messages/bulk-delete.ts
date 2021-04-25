@@ -27,6 +27,7 @@ router.post("/", check({ messages: [String] }), async (req, res) => {
 	if (messages.length > maxBulkDelete) throw new HTTPError(`You cannot delete more than ${maxBulkDelete} messages`);
 
 	await MessageModel.deleteMany({ id: { $in: messages } }).exec();
+
 	await emitEvent({
 		event: "MESSAGE_DELETE_BULK",
 		channel_id,
