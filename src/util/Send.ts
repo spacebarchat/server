@@ -1,7 +1,8 @@
-import erlpack from "erlpack";
-import { promisify } from "util";
+var erlpack: any;
+try {
+	erlpack = require("erlpack");
+} catch (error) {}
 import { Payload } from "../util/Constants";
-import { deflateSync } from "zlib";
 
 import WebSocket from "./WebSocket";
 

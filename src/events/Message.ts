@@ -1,5 +1,8 @@
 import WebSocket, { Data } from "../util/WebSocket";
-import erlpack from "erlpack";
+var erlpack: any;
+try {
+	erlpack = require("erlpack");
+} catch (error) {}
 import OPCodeHandlers from "../opcodes";
 import { Payload, CLOSECODES } from "../util/Constants";
 import { instanceOf, Tuple } from "lambert-server";

@@ -6,6 +6,10 @@ import { setHeartbeat } from "../util/setHeartbeat";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { createDeflate } from "zlib";
+var erlpack: any;
+try {
+	erlpack = require("erlpack");
+} catch (error) {}
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -19,7 +23,10 @@ export async function Connection(this: Server, socket: WebSocket, request: Incom
 		const { searchParams } = new URL(`http://localhost${request.url}`);
 		// @ts-ignore
 		socket.encoding = searchParams.get("encoding") || "json";
-		if (!["json", "etf"].includes(socket.encoding)) return socket.close(CLOSECODES.Decode_error);
+		if (!["json", "etf"].includes(socket.encoding)) {
+			if (socket.encoding === "etf" && erlpack) throw new Error("Erlpack is not installed: 'npm i -D erlpack'");
+			return socket.close(CLOSECODES.Decode_error);
+		}
 
 		// @ts-ignore
 		socket.version = Number(searchParams.get("version")) || 8;
