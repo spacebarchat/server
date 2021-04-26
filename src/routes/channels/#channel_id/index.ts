@@ -1,4 +1,4 @@
-import { ChannelDeleteEvent, ChannelModel, ChannelUpdateEvent, getPermission, toObject } from "@fosscord/server-util";
+import { ChannelDeleteEvent, ChannelModel, ChannelUpdateEvent, getPermission, GuildUpdateEvent, toObject } from "@fosscord/server-util";
 import { Router } from "express";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
@@ -11,17 +11,21 @@ const router: Router = Router();
 router.delete("/", async (req, res) => {
 	const { channel_id } = req.params
 
-	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();
+	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
 	if (!channel) throw new HTTPError("Channel not found", 404);
-	const permission = await getPermission(req.user_id, channel.guild_id)
-	permission.hasThrow("MANAGE_CHANNELS")
+	if (channel.guild_id) {
+
+		const permission = await getPermission(req.user_id, channel.guild_id)
+		permission.hasThrow("MANAGE_CHANNELS")
+	}
 
 	// TODO Channel Update Gateway event will fire for each of them
-
 
 	await ChannelModel.deleteOne({ id: channel_id })
 
 	// TODO: Dm channel "close" not delete
+	
+	await emitEvent({ event: "CHANNEL_DELETE", data: channel, guild_id: channel_id, channel_id} as ChannelDeleteEvent);
 
 	const data = toObject(channel);
 	//TODO: Reload channel list if request successful
