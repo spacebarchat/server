@@ -31,8 +31,9 @@ router.post("/", check(ChannelModifySchema), async (req, res) => {
 	}
 
 	if (body.parent_id) {
-		const exists = ChannelModel.findOne({ channel_id: body.parent_id }).exec();
+		const exists = await ChannelModel.findOne({ id: body.parent_id }, {guild_id:true}).exec();
 		if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
+		if (exists.guild_id !== guild_id) throw new HTTPError("The category channel needs to be in the guild")
 	}
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
