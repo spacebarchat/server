@@ -57,18 +57,9 @@ router.get("/", async (req, res) => {
 	if (!limit) limit = 50;
 	var halfLimit = Math.floor(limit / 2);
 
-	if ([ChannelType.GUILD_VOICE, ChannelType.GUILD_CATEGORY, ChannelType.GUILD_STORE].includes(channel.type))
-		throw new HTTPError("Not a text channel");
-
-	if (channel.guild_id) {
-		const permissions = await getPermission(req.user_id, channel.guild_id, channel_id, { channel });
-		permissions.hasThrow("VIEW_CHANNEL");
-
-		if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
-	} else if (channel.recipients) {
-		// group/dm channel
-		if (!channel.recipients.includes(req.user_id)) throw new HTTPError("You don't have permission to view this channel", 401);
-	}
+	const permissions = await getPermission(req.user_id, channel.guild_id, channel_id, { channel });
+	permissions.hasThrow("VIEW_CHANNEL");
+	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
 	var query: Query<MessageDocument[], MessageDocument>;
 	if (after) query = MessageModel.find({ channel_id, id: { $gt: after } });
@@ -105,15 +96,12 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 	if (!channel) throw new HTTPError("Channel not found", 404);
 	// TODO: are tts messages allowed in dm channels? should permission be checked?
 
-	if (channel.guild_id) {
-		const permissions = await getPermission(req.user_id, channel.guild_id, channel_id, { channel });
-		permissions.hasThrow("SEND_MESSAGES");
-		if (body.tts) permissions.hasThrow("SEND_TTS_MESSAGES");
-		if (body.message_reference) {
-			permissions.hasThrow("READ_MESSAGE_HISTORY");
-			if (body.message_reference.guild_id !== channel.guild_id)
-				throw new HTTPError("You can only reference messages from this guild");
-		}
+	const permissions = await getPermission(req.user_id, channel.guild_id, channel_id, { channel });
+	permissions.hasThrow("SEND_MESSAGES");
+	if (body.tts) permissions.hasThrow("SEND_TTS_MESSAGES");
+	if (body.message_reference) {
+		permissions.hasThrow("READ_MESSAGE_HISTORY");
+		if (body.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
 	}
 
 	if (body.message_reference) {
@@ -124,7 +112,7 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 	const embeds = [];
 	if (body.embed) embeds.push(body.embed);
 
-	// TODO: check and put all in body in it
+	// TODO: check and put it all in the body
 	const message: Message = {
 		id: Snowflake.generate(),
 		channel_id,
@@ -144,8 +132,7 @@ router.post("/", check(MessageCreateSchema), async (req, res) => {
 		pinned: false,
 	};
 
-	const doc = await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).save();
-	const data = toObject(doc);
+	const data = toObject(await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).save());
 
 	await emitEvent({ event: "MESSAGE_CREATE", channel_id, data, guild_id: channel.guild_id } as MessageCreateEvent);
 
