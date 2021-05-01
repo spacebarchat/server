@@ -7,7 +7,7 @@ import { Role, RoleModel } from "../models/Role";
 import { BitField } from "./BitField";
 import { GuildDocument, GuildModel } from "../models/Guild";
 
-var HTTPError: typeof Error;
+var HTTPError: any;
 
 try {
 	HTTPError = require("lambert-server").HTTPError;
@@ -142,6 +142,8 @@ export class Permissions extends BitField {
 		guild: { roles: Role[] };
 		channel?: {
 			overwrites?: ChannelPermissionOverwrite[];
+			recipients?: string[];
+			owner_id?: string;
 		};
 	}) {
 		let roles = guild.roles.filter((x) => user.roles.includes(x.id));
@@ -156,42 +158,76 @@ export class Permissions extends BitField {
 			permission = Permissions.channelPermission(overwrites, permission);
 		}
 
+		if (channel?.recipients) {
+			if (channel?.owner_id === user.id) return new Permissions("ADMINISTRATOR");
+			if (channel.recipients.includes(user.id)) {
+				// Default dm permissions
+				return new Permissions([
+					"VIEW_CHANNEL",
+					"SEND_MESSAGES",
+					"STREAM",
+					"ADD_REACTIONS",
+					"EMBED_LINKS",
+					"ATTACH_FILES",
+					"READ_MESSAGE_HISTORY",
+					"MENTION_EVERYONE",
+					"USE_EXTERNAL_EMOJIS",
+					"CONNECT",
+					"SPEAK",
+					"MANAGE_CHANNELS",
+				]);
+			}
+
+			return new Permissions();
+		}
+
 		return permission;
 	}
 }
 
 export async function getPermission(
 	user_id: string,
-	guild_id: string,
+	guild_id?: string,
 	channel_id?: string,
 	cache?: { channel?: ChannelDocument | null; member?: MemberDocument | null; guild?: GuildDocument | null }
 ) {
 	var { channel, member, guild } = cache || {};
+	var roles;
 
-	if (!guild) guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
-	if (!guild) throw new Error("Guild not found");
-	if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
-
-	if (!member) member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
-	if (!member) throw new Error("Member not found");
-
-	var roles = await RoleModel.find({ guild_id, id: { $in: member.roles } })
-		.lean()
-		.exec();
 	if (channel_id && !channel) {
-		channel = await ChannelModel.findOne({ id: channel_id }, "permission_overwrites").exec();
+		channel = await ChannelModel.findOne(
+			{ id: channel_id },
+			{ permission_overwrites: true, recipients: true, owner_id: true, guild_id: true }
+		).exec();
+		if (!channel) throw new HTTPError("Channel not found", 404);
+		if (channel.guild_id) guild_id = channel.guild_id;
+	}
+
+	if (guild_id) {
+		if (!guild) guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
+		if (!guild) throw new Error("Guild not found");
+		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
+
+		if (!member) member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
+		if (!member) throw new Error("Member not found");
+
+		roles = await RoleModel.find({ guild_id, id: { $in: member.roles } })
+			.lean()
+			.exec();
 	}
 
 	var permission = Permissions.finalPermission({
 		user: {
 			id: user_id,
-			roles: member.roles,
+			roles: member?.roles || [],
 		},
 		guild: {
-			roles: roles,
+			roles: roles || [],
 		},
 		channel: {
 			overwrites: channel?.permission_overwrites,
+			owner_id: channel?.owner_id,
+			recipients: channel?.recipients,
 		},
 	});
 
