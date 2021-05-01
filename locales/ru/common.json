@@ -9,10 +9,10 @@
     "BASE_TYPE_CLASS": "Это поле должно быть экземпляром {{type}}",
     "BASE_TYPE_OBJECT": "Это поле должно быть объектом",
     "BASE_TYPE_ARRAY": "Это поле должно быть массивом",
-    "UNKOWN_FIELD": "Неизвестный ключ: {{key}}",
+    "UNKOWN_FIELD": "Неизвестный поле: {{key}}",
     "BASE_TYPE_CONSTANT": "Это поле должно быть {{value}}",
     "EMAIL_TYPE_INVALID_EMAIL": "Неправильный адрес электронной почты",
-    "DATE_TYPE_PARSE": "Не удалось разобрать {{date}}. Должно быть ISO8601",
-    "BASE_TYPE_BAD_LENGTH": "Длина должна быть между {{length}}"
+    "DATE_TYPE_PARSE": "Не удалось разобрать {{date}}. Она должна быть в ISO8601",
+    "BASE_TYPE_BAD_LENGTH": "Длина должна быть между {{length}} в длину"
   }
 }
