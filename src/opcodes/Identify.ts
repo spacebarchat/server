@@ -25,7 +25,7 @@ import { check } from "./instanceOf";
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	clearTimeout(this.readyTimeout);
-	check.call(this, IdentifySchema, data.d);
+	if (!check.call(this, IdentifySchema, data.d)) return;
 
 	const identify: IdentifySchema = data.d;
 

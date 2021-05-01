@@ -6,6 +6,7 @@ export const IdentifySchema = {
 	$properties: {
 		// bruh discord really uses $ in the property key for bots, so we need to double prefix it, because instanceOf treats $ (prefix) as a optional key
 		$os: String,
+		$os_arch: String,
 		$browser: String,
 		$device: String,
 		$$os: String,
@@ -21,6 +22,8 @@ export const IdentifySchema = {
 		$release_channel: String,
 		$client_build_number: Number,
 		$client_event_source: String,
+		$client_version: String,
+		$system_locale: String,
 	},
 	$presence: ActivitySchema,
 	$compress: Boolean,
@@ -41,6 +44,7 @@ export interface IdentifySchema {
 	properties: {
 		// bruh discord really uses $ in the property key, so we need to double prefix it, because instanceOf treats $ (prefix) as a optional key
 		os?: string;
+		os_atch?: string;
 		browser?: string;
 		device?: string;
 		$os?: string;
@@ -56,6 +60,8 @@ export interface IdentifySchema {
 		release_channel?: "stable" | "dev" | "ptb" | "canary";
 		client_build_number?: number;
 		client_event_source?: any;
+		client_version?: string;
+		system_locale?: string;
 	};
 	intents?: bigint; // discord uses a Integer for bitfields we use bigints tho. | instanceOf will automatically convert the Number to a BigInt
 	presence?: ActivitySchema;

@@ -39,6 +39,6 @@ export async function Message(this: WebSocket, buffer: Data) {
 		return await OPCodeHandler.call(this, data);
 	} catch (error) {
 		console.error(error);
-		return this.close(CLOSECODES.Unknown_error);
+		if (!this.CLOSED && this.CLOSING) return this.close(CLOSECODES.Unknown_error);
 	}
 }
