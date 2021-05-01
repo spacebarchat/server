@@ -10,9 +10,9 @@
     "BASE_TYPE_OBJECT": "Гэта поле павінна быць аб'ектам",
     "BASE_TYPE_ARRAY": "Гэта поле павінна быць масівам",
     "UNKOWN_FIELD": "Невядомае поле: {{key}}",
-    "BASE_TYPE_CONSTANT": "This field must be {{value}}",
-    "EMAIL_TYPE_INVALID_EMAIL": "Not a well formed email address",
-    "DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
-    "BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
+    "BASE_TYPE_CONSTANT": "Гэта поле павінна быць {{value}}",
+    "EMAIL_TYPE_INVALID_EMAIL": "Адрас электроннай пошты напісаны ў няправільнай форме",
+    "DATE_TYPE_PARSE": "Немагчыма разабраць {{date}}. Яна павінна быць у ISO8601",
+    "BASE_TYPE_BAD_LENGTH": "Павінна быць паміж {{length}} у даўжыню"
   }
 }
