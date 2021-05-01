@@ -20,10 +20,25 @@ router.post(
 		$gift_code_sku_id: String,
 	}),
 	async (req: Request, res: Response) => {
-		const { login, password } = req.body;
+		const { login, password, captcha_key } = req.body;
 		const email = adjustEmail(login);
 		const query: any[] = [{ phone: login }];
 		if (email) query.push({ email });
+
+		const config = Config.get();
+
+		if (config.login.requireCaptcha && config.security.captcha.enabled) {
+			if (!captcha_key) {
+				const { sitekey, service } = config.security.captcha;
+				return res.status(400).json({
+					captcha_key: ["captcha-required"],
+					captcha_sitekey: sitekey,
+					captcha_service: service,
+				});
+			}
+
+			// TODO: check captcha
+		}
 
 		const user = await UserModel.findOne({ $or: query }, `user_data.hash id user_settings.locale user_settings.theme`).exec();
 

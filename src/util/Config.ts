@@ -1,6 +1,5 @@
 import { Config, Snowflake } from "@fosscord/server-util";
 import crypto from "crypto";
-import fs from "fs";
 
 export default {
 	init() {
@@ -75,9 +74,13 @@ export interface DefaultOptions {
 		forwadedFor: string | null;
 		captcha: {
 			enabled: boolean;
-			service: "recaptcha" | null; // TODO: hcaptcha, custom
+			service: "recaptcha" | "hcaptcha" | null; // TODO: hcaptcha, custom
 			sitekey: string | null;
+			secret: string | null;
 		};
+	};
+	login: {
+		requireCaptcha: boolean;
 	};
 	register: {
 		email: {
@@ -155,7 +158,11 @@ export const DefaultOptions: DefaultOptions = {
 			enabled: false,
 			service: null,
 			sitekey: null,
+			secret: null,
 		},
+	},
+	login: {
+		requireCaptcha: false,
 	},
 	register: {
 		email: {

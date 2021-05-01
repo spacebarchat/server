@@ -2,7 +2,7 @@ import "missing-native-js-functions";
 import fs from "fs/promises";
 import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
-import { Authentication, GlobalRateLimit } from "./middlewares/";
+import { Authentication, CORS, GlobalRateLimit } from "./middlewares/";
 import Config from "./util/Config";
 import { db } from "@fosscord/server-util";
 import i18next from "i18next";
@@ -15,10 +15,9 @@ import fetch from "node-fetch";
 import mongoose from "mongoose";
 
 // this will return the new updated document for findOneAndUpdate
-mongoose.set('returnOriginal', false); // https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate
+mongoose.set("returnOriginal", false); // https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate
 
-
-export interface FosscordServerOptions extends ServerOptions { }
+export interface FosscordServerOptions extends ServerOptions {}
 
 declare global {
 	namespace Express {
@@ -56,6 +55,7 @@ export class FosscordServer extends Server {
 
 		this.app.use(GlobalRateLimit);
 		this.app.use(Authentication);
+		this.app.use(CORS);
 		this.app.use(BodyParser({ inflate: true }));
 		const languages = await fs.readdir(__dirname + "/../locales/");
 		const namespaces = await fs.readdir(__dirname + "/../locales/en/");
