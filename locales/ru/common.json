@@ -1,18 +1,18 @@
 {
-    "field": {
-      "BASE_TYPE_REQUIRED": "Заполните это поле",
-      "BASE_TYPE_STRING": "Это поле должно быть сторокой",
-      "BASE_TYPE_NUMBER": "Это поле должно быть числом",
-      "BASE_TYPE_BIGINT": "Это поле должно быть большим числом",
-      "BASE_TYPE_BOOLEAN": "Это поле должно быть с логическим типом",
-      "BASE_TYPE_CHOICES": "Это поле должно быть ({{types}})",
-      "BASE_TYPE_CLASS": "Это поле должно быть {{type}} объекта",
-      "BASE_TYPE_OBJECT": "Это поле должно быть объектом",
-      "BASE_TYPE_ARRAY": "Это таблица должна быть array",
-      "UNKOWN_FIELD": "Неизвестный ключ: {{key}}",
-      "BASE_TYPE_CONSTANT": "Это поле должно быть {{value}}",
-      "EMAIL_TYPE_INVALID_EMAIL": "Неправильно введён Email",
-      "DATE_TYPE_PARSE": "Не удалось обработать \"{{date}}\". Дата должна быть в формате ISO8601",
-      "BASE_TYPE_BAD_LENGTH": "Длинна должна быть {{length}} символов"
-    }
+  "field": {
+    "BASE_TYPE_REQUIRED": "This field is required",
+    "BASE_TYPE_STRING": "This field must be a string",
+    "BASE_TYPE_NUMBER": "This field must be a number",
+    "BASE_TYPE_BIGINT": "This field must be a bigint",
+    "BASE_TYPE_BOOLEAN": "This field must be a boolean",
+    "BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+    "BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
+    "BASE_TYPE_OBJECT": "This field must be a object",
+    "BASE_TYPE_ARRAY": "This field must be an array",
+    "UNKOWN_FIELD": "Unkown key: {{key}}",
+    "BASE_TYPE_CONSTANT": "This field must be {{value}}",
+    "EMAIL_TYPE_INVALID_EMAIL": "Not a well formed email address",
+    "DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
+    "BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
   }
+}
