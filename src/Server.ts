@@ -7,7 +7,7 @@ import { Connection } from "./events/Connection";
 import Config from "./util/Config";
 
 var port = Number(process.env.PORT);
-if (isNaN(port)) port = 2000;
+if (isNaN(port)) port = 3002;
 
 export class Server {
 	public ws: WebSocketServer;
