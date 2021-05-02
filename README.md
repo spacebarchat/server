@@ -11,4 +11,33 @@
   <a title="Crowdin" target="_blank" href="https://translate.fosscord.com/"><img src="https://badges.crowdin.net/fosscord/localized.svg"></a>
 </p>
 
-## [About](https://github.com/fosscord/fosscord-client/wiki)
+## [About](https://github.com/fosscord/fosscord-gateway/wiki)
+
+Fosscord is **f**ree **o**pen **s**ource **s**oftware compatible to dis**cord**. It is a selfhostable Chat, Voice and Video platform similar to Slack, Rocket.chat and Discord-compatible.
+
+-   Discord-compatible
+-   Selfhostable
+-   Open Source
+-   Configurable
+-   Secure
+-   Decentralized
+-   Extendable
+-   Themeable
+
+logo by [@nwlandas](https://twitter.com/nwlandas)
+
+## Installation
+
+_it is in development and not yet finished_
+
+## Support
+
+https://discord.gg/ZrnGQP6p3d
+
+if we are finished we'll host our own support server.
+
+## Contribute
+
+This project is only possible by volunteers like you and me, your contribution is very much appreciated 🥺.
+
+If you want to make this project reality and and you would like to contribute then [read the wiki](https://github.com/fosscord/fosscord-gateway/wiki) first.
