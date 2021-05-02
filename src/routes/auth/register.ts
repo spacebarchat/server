@@ -77,7 +77,7 @@ router.post(
 
 		if (email) {
 			// replace all dots and chars after +, if its a gmail.com email
-			if (!adjusted_email) throw FieldErrors({ email: { code: "INVALID_EMAIL", message: "Invalid Email format" } });
+			if (!adjusted_email) throw FieldErrors({ email: { code: "INVALID_EMAIL", message: req.t("auth:register.INVALID_EMAIL") } });
 
 			// check if there is already an account with this email
 			const exists = await UserModel.findOne({ email: adjusted_email }).exec();

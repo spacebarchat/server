@@ -23,7 +23,7 @@ if (cluster.isMaster && process.env.production == "true") {
 	});
 } else {
 	var port = Number(process.env.PORT);
-	if (isNaN(port)) port = 1000;
+	if (isNaN(port)) port = 3001;
 
 	const server = new FosscordServer({ port });
 	server.start().catch(console.error);
