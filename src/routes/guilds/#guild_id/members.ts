@@ -1,9 +1,10 @@
 import { Request, Response, Router } from "express";
-import { GuildModel, MemberModel, toObject } from "@fosscord/server-util";
+import { GuildModel, MemberModel, UserModel, toObject, GuildMemberAddEvent } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { instanceOf, Length } from "../../../util/instanceOf";
-import { PublicMemberProjection } from "../../../util/Member";
-import { PublicUserProjection } from "../../../util/User";
+import { PublicMemberProjection, addMember } from "../../../util/Member";
+import { emitEvent } from "../../../util/Event";
+import { getPublicUser } from "../../../util/User";
 
 const router = Router();
 
@@ -47,6 +48,17 @@ router.get("/:member", async (req: Request, res: Response) => {
 });
 
 router.put("/:member", async (req: Request, res: Response) => {
+	const { guild_id } = req.params;
+	const guild = await GuildModel.findOne({ id: guild_id }).exec();
+	if (!guild) throw new HTTPError("Guild not found", 404);
+
+	const user_id = req.params.member;
+
+	const user = await UserModel.findOne({ id: user_id }).exec();
+	if (!user) throw new HTTPError("User not found", 404);
+
+	await addMember(user_id, guild_id);
+
 	// https://discord.com/developers/docs/resources/guild#add-guild-member
 });
 
