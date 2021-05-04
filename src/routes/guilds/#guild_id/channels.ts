@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ChannelCreateEvent, ChannelModel, ChannelType, GuildModel, Snowflake, toObject } from "@fosscord/server-util";
+import { ChannelCreateEvent, ChannelModel, ChannelType, GuildModel, Snowflake, toObject, ChannelUpdateEvent } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
 import { emitEvent } from "../../../util/Event";
@@ -37,7 +37,7 @@ router.post("/", check(ChannelModifySchema), async (req, res) => {
 	}
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 4040);
+	if (!guild) throw new HTTPError("Guild not found", 404);
 
 	const channel = {
 		...body,
@@ -48,6 +48,26 @@ router.post("/", check(ChannelModifySchema), async (req, res) => {
 	await new ChannelModel(channel).save();
 
 	await emitEvent({ event: "CHANNEL_CREATE", data: channel, guild_id } as ChannelCreateEvent);
+
+	res.json(channel);
+});
+
+router.patch("/", check(ChannelModifySchema), async (req, res) => {
+	const { guild_id } = req.params;
+	const body = req.body as ChannelModifySchema;
+
+	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
+	if (!guild) throw new HTTPError("Guild not found", 404);
+
+	const channel = {
+		...body
+	};
+	const channelm = await ChannelModel.find({ guild_id }).exec();
+	if(!channelm) throw new HTTPError("Channel not found", 404);
+
+	await new ChannelModel(channel).save();
+
+	await emitEvent({ event: "CHANNEL_UPDATE", data: channel } as ChannelUpdateEvent);
 
 	res.json(channel);
 });
