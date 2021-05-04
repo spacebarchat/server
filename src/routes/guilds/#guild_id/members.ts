@@ -78,4 +78,5 @@ router.delete("/:member", async (req: Request, res: Response) => {
 	// https://discord.com/developers/docs/resources/guild#remove-guild-member
 });
 
+
 export default router;
