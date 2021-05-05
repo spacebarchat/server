@@ -50,5 +50,30 @@ router.post("/", check(TemplateCreateSchema), async (req: Request, res: Response
 	res.json(toObject(templatenew)).send();
 });
 
+router.delete("/:template_id", async (req: Request, res: Response) => {
+
+    const guild_id = req.params.guild_id;
+    const { template_id } = req.params;
+
+	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
+	if (!guild) throw new HTTPError("Guild not found", 404);
+	if (!template_id) throw new HTTPError("Unknown template_id", 404);
+
+	const user = await UserModel.findOne({ id: req.user_id }).exec();
+	if (!user) throw new HTTPError("User not found", 404);
+
+	const perms = await getPermission(req.user_id, guild_id);
+
+	if (!perms.has("MANAGE_GUILD"))
+		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);
+
+	await TemplateModel.findByIdAndDelete({
+		_id: template_id,
+		source_guild_id: guild_id
+	}).exec();
+
+	res.send("Deleted");
+});
+
 
 export default router;
