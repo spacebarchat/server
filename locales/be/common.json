@@ -1,10 +1,10 @@
 {
   "field": {
     "BASE_TYPE_REQUIRED": "Гэта поле з'яўляецца абавязковым",
-    "BASE_TYPE_STRING": "Гэта поле павінна быць радком",
-    "BASE_TYPE_NUMBER": "Гэта поле павінна быць лікам",
+    "BASE_TYPE_STRING": "Гэта поле павінна быць string",
+    "BASE_TYPE_NUMBER": "Гэта поле павінна быць number",
     "BASE_TYPE_BIGINT": "Гэта поле павінна быць bigint",
-    "BASE_TYPE_BOOLEAN": "У гэтым полі павінны быць значэння толькі лагічнага тыпу",
+    "BASE_TYPE_BOOLEAN": "Гэта поле павінна быць boolean",
     "BASE_TYPE_CHOICES": "Гэта поле павінна быць адным з ({{types}})",
     "BASE_TYPE_CLASS": "Гэта поле павінна быць асобнікам {{type}}",
     "BASE_TYPE_OBJECT": "Гэта поле павінна быць аб'ектам",
