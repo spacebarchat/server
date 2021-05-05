@@ -6,5 +6,5 @@ export const TemplateCreateSchema = {
 
 export interface TemplateCreateSchema {
 	name: string,
-	descriptio?: string,
+	description?: string,
 }
