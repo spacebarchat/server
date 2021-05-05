@@ -30,10 +30,10 @@ router.post("/", check(TemplateCreateSchema), async (req: Request, res: Response
 	const user = await UserModel.findOne({ id: req.user_id }).exec();
 	if (!user) throw new HTTPError("User not found", 404);
 
-	const perms = await getPermission(req.user_id, guild_id);
+	/*const perms = await getPermission(req.user_id, guild_id);
 
 	if (!perms.has("MANAGE_GUILD"))
-		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);
+		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);*/
 
 	var template = {
 		...req.body,
@@ -75,5 +75,32 @@ router.delete("/:template_id", async (req: Request, res: Response) => {
 	res.send("Deleted");
 });
 
+router.put("/:template_id", async (req: Request, res: Response) => {
+
+    const guild_id = req.params.guild_id;
+    const { template_id } = req.params;
+
+	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
+	if (!guild) throw new HTTPError("Guild not found", 404);
+	if (!template_id) throw new HTTPError("Unknown template_id", 404);
+
+	const user = await UserModel.findOne({ id: req.user_id }).exec();
+	if (!user) throw new HTTPError("User not found", 404);
+
+	const template = await TemplateModel.findById({ _id: template_id }).exec();
+	if (!template) throw new HTTPError("template not found", 404);
+
+	/*const perms = await getPermission(req.user_id, guild_id);
+
+	if (!perms.has("MANAGE_GUILD"))
+		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);*/
+
+	var templateobj = await TemplateModel.findByIdAndUpdate({
+		_id: template_id,
+		serialized_source_guild: guild
+	}).exec();
+
+	res.json(toObject(templateobj)).send();
+});
 
 export default router;
