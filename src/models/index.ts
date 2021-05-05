@@ -25,6 +25,7 @@ export * from "./Ban";
 export * from "./Channel";
 export * from "./Emoji";
 export * from "./Event";
+export * from "./Template";
 export * from "./Guild";
 export * from "./Invite";
 export * from "./Interaction";
