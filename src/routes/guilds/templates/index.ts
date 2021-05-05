@@ -1,11 +1,7 @@
 import { Request, Response, Router } from "express";
 const router: Router = Router();
-import { TemplateModel, GuildModel, getPermission, toObject, UserModel } from "@fosscord/server-util";
+import { TemplateModel, GuildModel, toObject, UserModel } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
-import { TemplateCreateSchema } from "../../../schema/Template";
-import { emitEvent } from "../../../util/Event";
-import { check } from "../../../util/instanceOf";
-import { getPublicUser } from "../../../util/User";
 
 router.get("/:template_id", async (req: Request, res: Response) => {
 
