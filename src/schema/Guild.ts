@@ -99,3 +99,14 @@ export const GuildGetSchema = {
 	approximate_presence_count: true,
 	// welcome_screen: true,
 };
+
+export const GuildTemplateCreateSchema = {
+	name: String,
+	$avatar: String,
+
+};
+
+export interface GuildTemplateCreateSchema {
+	name: string,
+	avatar?: string,
+}
