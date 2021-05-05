@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { TemplateModel, GuildModel, getPermission, toObject } from "@fosscord/server-util";
+import { TemplateModel, GuildModel, getPermission, toObject, UserModel } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { TemplateCreateSchema } from "../../../schema/Template";
 import { emitEvent } from "../../../util/Event";
@@ -16,6 +16,38 @@ router.get("/", async (req: Request, res: Response) => {
 
 	var templates = await TemplateModel.find({ source_guild_id: guild_id }).exec();
 	return res.json(toObject(templates));
+});
+
+router.post("/", check(TemplateCreateSchema), async (req: Request, res: Response) => {
+
+    const guild_id = req.params.guild_id;
+    const { name } = req.body;
+
+	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
+	if (!guild) throw new HTTPError("Guild not found", 404);
+	if (!name) throw new HTTPError("Unknown name", 404);
+
+	const user = await UserModel.findOne({ id: req.user_id }).exec();
+	if (!user) throw new HTTPError("User not found", 404);
+
+	const perms = await getPermission(req.user_id, guild_id);
+
+	if (!perms.has("MANAGE_GUILD"))
+		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);
+
+	var template = {
+		...req.body,
+		creator_id: req.user_id,
+		creator: user,
+		created_at: new Date(),
+		updated_at: new Date(),
+		source_guild_id: guild_id,
+		serialized_source_guild: guild
+	}
+
+	const templatenew = await new TemplateModel(template).save();
+
+	res.json(toObject(templatenew)).send();
 });
 
 
