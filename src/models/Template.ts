@@ -20,7 +20,7 @@ export interface Template extends Document {
 	name: string;
 	description ? : string;
 	usage_count ? : number;
-	cretor_id: string;
+	creator_id: string;
 	creator: User;
 	created_at: Date;
 	updated_at: Date;
@@ -33,7 +33,7 @@ export const TemplateSchema = new Schema({
 	name: String,
 	description: String,
 	usage_count: Number,
-	cretor_id: String,
+	creator_id: String,
 	created_at: Date,
 	updated_at: Date,
 	source_guild_id: String,
