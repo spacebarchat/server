@@ -1,10 +1,10 @@
 {
   "field": {
     "BASE_TYPE_REQUIRED": "Это поле является обязательным",
-    "BASE_TYPE_STRING": "Это поле должно быть строкой",
-    "BASE_TYPE_NUMBER": "Это поле должно быть числом",
+    "BASE_TYPE_STRING": "Это поле должно быть string",
+    "BASE_TYPE_NUMBER": "Это поле должно быть number",
     "BASE_TYPE_BIGINT": "Это поле должно быть bigint",
-    "BASE_TYPE_BOOLEAN": "Это поле должно быть в логическом типе",
+    "BASE_TYPE_BOOLEAN": "Это поле должно быть boolean",
     "BASE_TYPE_CHOICES": "Это поле должно быть одним из ({{types}})",
     "BASE_TYPE_CLASS": "Это поле должно быть экземпляром {{type}}",
     "BASE_TYPE_OBJECT": "Это поле должно быть объектом",
