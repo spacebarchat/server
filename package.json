@@ -31,7 +31,7 @@
 	},
 	"homepage": "https://github.com/fosscord/fosscord-api#readme",
 	"dependencies": {
-		"@fosscord/server-util": "^1.1.0",
+		"@fosscord/server-util": "^1.0.9",
 		"@types/jest": "^26.0.22",
 		"bcrypt": "^5.0.0",
 		"body-parser": "^1.19.0",
