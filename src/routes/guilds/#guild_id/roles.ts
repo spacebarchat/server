@@ -15,6 +15,7 @@ router.get("/", async (req: Request, res: Response) => {
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
 	var roles = await RoleModel.find({ guild_id: guild_id }).exec();
+	if(!roles) res.send("No roles");
 	return res.json(toObject(roles));
 });
 
@@ -39,6 +40,10 @@ router.post("/", check(RoleCreateSchema), async (req: Request, res: Response) =>
 	var role = {
 		...body,
 		id: role_id,
+		guild_id: guild_id,
+		managed: false,
+		position: 0,
+		tags: null,
 	}
 
 	const roleNew = await new RoleModel(role).save();
