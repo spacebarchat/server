@@ -117,10 +117,10 @@ router.patch("/:template_id", check(TemplateModifySchema), async (req: Request, 
 	const template = await TemplateModel.findById({ _id: template_id }).exec();
 	if (!template) throw new HTTPError("template not found", 404);
 
-	/*const perms = await getPermission(req.user_id, guild_id);
+	const perms = await getPermission(req.user_id, guild_id);
 
 	if (!perms.has("MANAGE_GUILD"))
-		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);*/
+		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);
 
 	var templateobj = await TemplateModel.findByIdAndUpdate({
 		_id: template_id
