@@ -47,7 +47,6 @@ router.post("/", check(RoleCreateSchema), async (req: Request, res: Response) =>
 	}
 
 	const roleNew = await new RoleModel(role).save();
-
 	res.json(toObject(roleNew)).send();
 });
 
