@@ -16,6 +16,7 @@ import {
 } from "./Guild";
 
 export interface Template extends Document {
+	id: string;
 	code: string;
 	name: string;
 	description ? : string;
@@ -29,6 +30,7 @@ export interface Template extends Document {
 }
 
 export const TemplateSchema = new Schema({
+	id: String,
 	code: String,
 	name: String,
 	description: String,
