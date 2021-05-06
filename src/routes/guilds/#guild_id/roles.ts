@@ -50,4 +50,29 @@ router.post("/", check(RoleCreateSchema), async (req: Request, res: Response) =>
 	res.json(toObject(roleNew)).send();
 });
 
+router.delete("/:role_id", async (req: Request, res: Response) => {
+
+    const guild_id = req.params.guild_id;
+    const { role_id } = req.params;
+
+	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
+	if (!guild) throw new HTTPError("Guild not found", 404);
+	if (!role_id) throw new HTTPError("Unknown role_id", 404);
+
+	const user = await UserModel.findOne({ id: req.user_id }).exec();
+	if (!user) throw new HTTPError("User not found", 404);
+
+	const perms = await getPermission(req.user_id, guild_id);
+
+	if (!perms.has("MANAGE_ROLES"))
+		throw new HTTPError("You missing the MANAGE_ROLES permission", 401);
+
+	await RoleModel.findOneAndDelete({
+		id: role_id,
+		guild_id: guild_id
+	}).exec();
+
+	res.send("Deleted");
+});
+
 export default router;
