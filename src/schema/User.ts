@@ -41,3 +41,13 @@ export interface UserUpdateSchema {
     public_flags: bigint;
     guilds: string[];
 }
+
+export const UserModifySchema = {
+    username: String,
+    avatar: String || null,
+};
+
+export interface UserModifySchema {
+    username: string;
+    avatar: string | null;
+}
