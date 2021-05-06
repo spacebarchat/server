@@ -17,7 +17,7 @@ router.get("/:template_id", async (req: Request, res: Response) => {
 	if (!guild) throw new HTTPError("Guild not found", 404);
 	if (!template_id) throw new HTTPError("Unknown template_id", 404);
 
-	const template = await TemplateModel.findById({ _id: template_id }).exec();
+	const template = await TemplateModel.findOne({ id: template_id }).exec();
 	if (!template) throw new HTTPError("template not found", 404);
 
 	res.json(toObject(template)).send();
