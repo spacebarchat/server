@@ -36,7 +36,7 @@ router.post("/:template_id", check(GuildTemplateCreateSchema), async (req: Reque
 
 	if (!template_id) throw new HTTPError("Unknown template_id", 404);
 
-	const template = await TemplateModel.findById({ _id: template_id }).exec();
+	const template = await TemplateModel.findOne({ id: template_id }).exec();
 	if (!template) throw new HTTPError("template not found", 404);
 
 	const guild_id = Snowflake.generate();

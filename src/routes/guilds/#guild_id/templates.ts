@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { TemplateModel, GuildModel, getPermission, toObject, UserModel } from "@fosscord/server-util";
+import { TemplateModel, GuildModel, getPermission, toObject, UserModel, Snowflake } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { TemplateCreateSchema, TemplateModifySchema } from "../../../schema/Template";
 import { emitEvent } from "../../../util/Event";
@@ -35,8 +35,11 @@ router.post("/", check(TemplateCreateSchema), async (req: Request, res: Response
 	if (!perms.has("MANAGE_GUILD"))
 		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);*/
 
+	const template_id = Snowflake.generate();
+
 	var template = {
 		...req.body,
+		id: template_id,
 		creator_id: req.user_id,
 		creator: user,
 		created_at: new Date(),
@@ -67,8 +70,8 @@ router.delete("/:template_id", async (req: Request, res: Response) => {
 	if (!perms.has("MANAGE_GUILD"))
 		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);
 
-	await TemplateModel.findByIdAndDelete({
-		_id: template_id,
+	await TemplateModel.findOneAndDelete({
+		id: template_id,
 		source_guild_id: guild_id
 	}).exec();
 
@@ -87,7 +90,7 @@ router.put("/:template_id", async (req: Request, res: Response) => {
 	const user = await UserModel.findOne({ id: req.user_id }).exec();
 	if (!user) throw new HTTPError("User not found", 404);
 
-	const template = await TemplateModel.findById({ _id: template_id }).exec();
+	const template = await TemplateModel.findOneAndDelete({ id: template_id }).exec();
 	if (!template) throw new HTTPError("template not found", 404);
 
 	const perms = await getPermission(req.user_id, guild_id);
@@ -95,8 +98,8 @@ router.put("/:template_id", async (req: Request, res: Response) => {
 	if (!perms.has("MANAGE_GUILD"))
 		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);
 
-	var templateobj = await TemplateModel.findByIdAndUpdate({
-		_id: template_id,
+	var templateobj = await TemplateModel.findOneAndUpdate({
+		id: template_id,
 		serialized_source_guild: guild
 	}).exec();
 
@@ -114,7 +117,7 @@ router.patch("/:template_id", check(TemplateModifySchema), async (req: Request, 
 	const user = await UserModel.findOne({ id: req.user_id }).exec();
 	if (!user) throw new HTTPError("User not found", 404);
 
-	const template = await TemplateModel.findById({ _id: template_id }).exec();
+	const template = await TemplateModel.findOne({ id: template_id }).exec();
 	if (!template) throw new HTTPError("template not found", 404);
 
 	const perms = await getPermission(req.user_id, guild_id);
@@ -122,8 +125,8 @@ router.patch("/:template_id", check(TemplateModifySchema), async (req: Request, 
 	if (!perms.has("MANAGE_GUILD"))
 		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);
 
-	var templateobj = await TemplateModel.findByIdAndUpdate({
-		_id: template_id
+	var templateobj = await TemplateModel.findOneAndUpdate({
+		id: template_id
 	}, {name: req.body.name,
 		description: req.body.description || "No description"}).exec();
 
