@@ -30,10 +30,10 @@ router.post("/", check(TemplateCreateSchema), async (req: Request, res: Response
 	const user = await UserModel.findOne({ id: req.user_id }).exec();
 	if (!user) throw new HTTPError("User not found", 404);
 
-	/*const perms = await getPermission(req.user_id, guild_id);
+	const perms = await getPermission(req.user_id, guild_id);
 
 	if (!perms.has("MANAGE_GUILD"))
-		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);*/
+		throw new HTTPError("You missing the MANAGE_GUILD permission", 401);
 
 	const template_id = Snowflake.generate();
 
