@@ -9,9 +9,10 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Launch Server",
-			"program": "${workspaceFolder}/dist/index.js",
+			"program": "${workspaceFolder}/dist/start.js",
 			"preLaunchTask": "tsc: build - tsconfig.json",
-			"outFiles": ["${workspaceFolder}/dist/**/*.js"]
+			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+			"envFile": "${workspaceFolder}/.env"
 		},
 		{
 			"name": "Debug current file",
