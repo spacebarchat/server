@@ -4,11 +4,15 @@ import WebSocket from "../util/WebSocket";
 
 export function check(this: WebSocket, schema: any, data: any) {
 	try {
-		if (instanceOf(schema, data) !== true) throw "invalid";
+		const error = instanceOf(schema, data);
+		if (error !== true) {
+			throw error;
+		}
+		return true;
 	} catch (error) {
 		console.error(error);
 		// invalid payload
 		this.close(CLOSECODES.Decode_error);
-		return false;
+		throw error;
 	}
 }

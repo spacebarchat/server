@@ -13,7 +13,6 @@ import {
 	EVENTEnum,
 } from "@fosscord/server-util";
 import { setupListener } from "../listener/listener";
-import { instanceOf } from "lambert-server";
 import { IdentifySchema } from "../schema/Identify";
 import { Send } from "../util/Send";
 import experiments from "./experiments.json";
@@ -25,7 +24,7 @@ import { check } from "./instanceOf";
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	clearTimeout(this.readyTimeout);
-	if (!check.call(this, IdentifySchema, data.d)) return;
+	check.call(this, IdentifySchema, data.d);
 
 	const identify: IdentifySchema = data.d;
 
