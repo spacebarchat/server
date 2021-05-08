@@ -52,7 +52,11 @@ export interface Guild {
 	welcome_screen: {
 		enabled: boolean;
 		description: string;
-		welcome_channels: [];
+		welcome_channels: { 
+		description: string;
+	    emoji_id?: string;
+	    emoji_name: string;
+	    channel_id: string }[];
 	};
 	widget_channel_id?: string;
 	widget_enabled?: boolean;
@@ -96,7 +100,11 @@ export const GuildSchema = new Schema({
 	welcome_screen: {
 		enabled: Boolean,
 		description: String,
-		welcome_channels: [Object],
+		welcome_channels: [{ 
+		description: String,
+	    emoji_id: String,
+	    emoji_name: String,
+	    channel_id: String }],
 	},
 	widget_channel_id: String,
 	widget_enabled: Boolean,
