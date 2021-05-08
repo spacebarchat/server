@@ -28,7 +28,7 @@ router.post("/", check(GuildAddChannelToWelcomeScreenSchema), async (req: Reques
 		...body
 	}
 
-	if(guild.welcome_screen.welcome_channels.some(channel => channel.channel_id === body.channel_id)){
+	if(guild.welcome_screen.welcome_channels.some(channel => channel.channel_id === body.channel_id)) throw new Error("Welcome Channel exists")
 
 
 	await GuildModel.findOneAndUpdate(
@@ -38,7 +38,7 @@ router.post("/", check(GuildAddChannelToWelcomeScreenSchema), async (req: Reques
 		{ $push: { "welcome_screen.welcome_channels": channelObject } }
 	).exec();
 
-	res.json(toObject(guild.welcome_screen));
+	res.sendStatus(204);
 });
 
 
