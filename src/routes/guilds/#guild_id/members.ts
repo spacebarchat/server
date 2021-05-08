@@ -1,8 +1,16 @@
 import { Request, Response, Router } from "express";
-import { GuildModel, MemberModel, UserModel, toObject, GuildMemberAddEvent, getPermission, PermissionResolvable } from "@fosscord/server-util";
+import {
+	GuildModel,
+	MemberModel,
+	UserModel,
+	toObject,
+	GuildMemberAddEvent,
+	getPermission,
+	PermissionResolvable,
+} from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { instanceOf, Length, check } from "../../../util/instanceOf";
-import { PublicMemberProjection, addMember, removeMember, addRole, removeRole, changeNickname } from "../../../util/Member";
+import { PublicMemberProjection, addMember, removeMember, addRole, removeRole, changeNickname, isMember } from "../../../util/Member";
 import { emitEvent } from "../../../util/Event";
 import { MemberNickChangeSchema } from "../../../schema/Member";
 import { getPublicUser } from "../../../util/User";
@@ -15,6 +23,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
+	await isMember(req.user_id, guild_id);
 
 	try {
 		instanceOf({ $limit: new Length(Number, 1, 1000), $after: String }, req.query, {
@@ -40,6 +49,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.get("/:member_id", async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
+	await isMember(req.user_id, guild_id);
 
 	const member = await MemberModel.findOne({ id: member_id, guild_id }).exec();
 	if (!member) throw new HTTPError("Member not found", 404);
@@ -53,7 +63,6 @@ router.put("/:member_id", async (req: Request, res: Response) => {
 	await addMember(member_id, guild_id);
 	res.sendStatus(204)
 });
-
 
 router.delete("/:member_id", async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
@@ -84,18 +93,17 @@ router.put("/:member_id/roles/:role_id", async (req: Request, res: Response) => 
 
 router.patch("/:member_id/nick", check(MemberNickChangeSchema), async (req: Request, res: Response) => {
 	var { guild_id, member_id } = req.params;
-	var permissionString:PermissionResolvable = "MANAGE_NICKNAMES";
-	if(member_id === "@me") {
+	var permissionString: PermissionResolvable = "MANAGE_NICKNAMES";
+	if (member_id === "@me") {
 		member_id = req.user_id;
 		permissionString = "CHANGE_NICKNAME";
 	}
- 
+
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow(permissionString);
 
 	await changeNickname(member_id, guild_id, req.body.nickname);
 	res.status(204);
 });
-
 
 export default router;
