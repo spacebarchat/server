@@ -11,3 +11,11 @@ export interface MemberCreateSchema {
     guild_id: string;
 	joined_at: Date;
 }
+
+export const MemberNickChangeSchema = {
+	 nick: String,
+}
+
+export interface MemberNickChangeSchema {
+	 nick: string,
+}
