@@ -31,14 +31,16 @@ export const PublicMemberProjection = {
 export async function addMember(user_id: string, guild_id: string, cache?: { guild?: Guild }) {
 	const user = await getPublicUser(user_id, { guilds: true });
 
-	const guildSize = user.guilds.length;
-
 	const { maxGuilds } = Config.get().limits.user;
-	if (guildSize >= maxGuilds) {
+	if (user.guilds.length >= maxGuilds) {
 		throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
 	}
 
 	const guild = cache?.guild || (await GuildModel.findOne({ id: guild_id }).exec());
+	if (!guild) throw new HTTPError("Guild not found", 404);
+
+	if (await MemberModel.exists({ id: user.id, guild_id })) throw new HTTPError("You are already a member of this guild", 400);
+
 	const member = {
 		id: user_id,
 		guild_id: guild_id,
@@ -82,7 +84,7 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 		emitEvent({
 			event: "GUILD_CREATE",
 			data: guild,
-			guild_id: guild_id,
+			user_id,
 		} as GuildCreateEvent),
 	]);
 }
@@ -93,6 +95,7 @@ export async function removeMember(user_id: string, guild_id: string) {
 	const guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
 	if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
+	if (!(await MemberModel.exists({ id: user.id, guild_id }))) throw new HTTPError("You are not member of this guild", 404);
 
 	// use promise all to execute all promises at the same time -> save time
 	return Promise.all([
