@@ -50,6 +50,8 @@ router.get("/:member_id", async (req: Request, res: Response) => {
 router.put("/:member_id", async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
 
+	throw new HTTPError("Maintenance: Currently you can't add a member", 403)
+	// TODO: only for oauth2 applications
 	await addMember(member_id, guild_id);
 	res.sendStatus(204)
 });
@@ -57,6 +59,9 @@ router.put("/:member_id", async (req: Request, res: Response) => {
 
 router.delete("/:member_id", async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
+
+	const perms = await getPermission(req.user_id, guild_id);
+	perms.hasThrow("KICK_MEMBERS");
 
 	await removeMember(member_id, guild_id);
 	res.sendStatus(204)
