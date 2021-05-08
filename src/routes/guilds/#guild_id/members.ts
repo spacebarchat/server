@@ -92,6 +92,26 @@ router.delete("/:member/roles/:role_id", async (req: Request, res: Response) => 
 	if (!member) throw new HTTPError("Member not found", 404);
 
 	await removeRole(user_id, guild_id, role_id);
+	res.status(204);
+
+	// https://discord.com/developers/docs/resources/guild#remove-guild-member-role
+});
+
+router.put("/:member/roles/:role_id", async (req: Request, res: Response) => {
+
+	const { guild_id, role_id } = req.params;
+	if(!role_id) throw new HTTPError("role_id not defined", 404);
+
+	const guild = await GuildModel.findOne({ id: guild_id }).exec();
+	if (!guild) throw new HTTPError("Guild not found", 404);
+
+	const user_id = req.params.member;
+
+	const member = await MemberModel.findOne({ id: user_id, guild_id }).exec();
+	if (!member) throw new HTTPError("Member not found", 404);
+
+	await addRole(user_id, guild_id, role_id);
+	res.status(204);
 
 	// https://discord.com/developers/docs/resources/guild#remove-guild-member-role
 });
