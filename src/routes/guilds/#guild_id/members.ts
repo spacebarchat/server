@@ -92,5 +92,19 @@ router.patch("/:member_id/nick", async (req: Request, res: Response) => {
 	res.status(204);
 });
 
+router.patch("/members/@me/nick", async (req: Request, res: Response) => {
+	const { guild_id, member_id } = req.params;
+	if(!req.body.nickname) throw new HTTPError("No nickname defined", 404);
+
+	const perms = await getPermission(member_id, guild_id);
+	perms.hasThrow("CHANGE_NICKNAME");
+
+	const member = await MemberModel.findOne({ id: req.user_id }).exec();
+	if (!member) throw new HTTPError("Member not found", 404);
+
+	await changeNickname(member_id, guild_id, req.body.nickname);
+	res.status(204);
+});
+
 
 export default router;
