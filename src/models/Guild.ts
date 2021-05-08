@@ -49,7 +49,11 @@ export interface Guild {
 	unavailable?: boolean;
 	vanity_url_code?: string;
 	verification_level?: number;
-	welcome_screen: []; // welcome splash screen if a user joins guild
+	welcome_screen: {
+		enabled: boolean;
+		description: string;
+		welcome_channels: [];
+	};
 	widget_channel_id?: string;
 	widget_enabled?: boolean;
 }
@@ -89,7 +93,11 @@ export const GuildSchema = new Schema({
 	vanity_url_code: String,
 	verification_level: Number,
 	voice_states: { type: [Object], default: [] },
-	welcome_screen: { type: [Object], default: [] },
+	welcome_screen: {
+		enabled: Boolean,
+		description: String,
+		welcome_channels: [Object],
+	},
 	widget_channel_id: String,
 	widget_enabled: Boolean,
 });
