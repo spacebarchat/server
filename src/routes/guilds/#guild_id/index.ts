@@ -90,7 +90,7 @@ router.get("/vanity-url", async (req: Request, res: Response) => {
 
 	if(!guild.vanity_url) throw new HTTPError("This guild has no vanity url", 204)
 
-	return res.json(toObject(guild.vanity_url));
+	return res.json(guild.vanity_url);
 });
 
 export default router;
