@@ -1,2 +1,2 @@
-# Fosscord-voice
-A Fosscord voice and video server
+# Fosscord-media
+A Fosscord media (voice and video) server
