@@ -142,4 +142,33 @@ export async function addRole(user_id: string, guild_id: string, role_id: string
 
 }
 
+export async function removeRole(user_id: string, guild_id: string, role_id: string) {
+	const user = await getPublicUser(user_id);
+
+	const guild = await GuildModel.findOne({ id: guild_id }).exec();
+	if (!guild) throw new HTTPError("Guild not found", 404);
+
+	const role = await RoleModel.findOne({ id: role_id, guild_id: guild_id }).exec();
+	if (!role) throw new HTTPError("role not found", 404);
+
+	var memberObj = await MemberModel.findOneAndUpdate({
+			id: user_id,
+			guild_id: guild_id,
+		}, { $pull: { roles: role_id } }).exec();
+
+	if(!memberObj) throw new Error("Internal server error");
+	
+	emitEvent({
+		event: "GUILD_MEMBER_UPDATE",
+		data: {
+			guild_id: guild_id,
+			user: user,
+			roles: memberObj.roles
+		
+		},
+		user_id: user_id,
+	} as GuildMemberUpdateEvent);
+
+}
+
 
