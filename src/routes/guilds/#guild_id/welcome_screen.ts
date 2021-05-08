@@ -15,7 +15,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const guild = await GuildModel.findOne({ id: guild_id });
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
-	if(!isMember(req.user_id, guild_id)) throw new HTTPError("You are not member of this guild", 403);
+	await isMember(req.user_id, guild_id);
 
 	res.json(toObject(guild.welcome_screen));
 });
@@ -31,7 +31,6 @@ router.post("/", check(GuildAddChannelToWelcomeScreenSchema), async (req: Reques
 		...body
 	}
 
-	if(!isMember(req.user_id, guild_id)) throw new HTTPError("You are not member of this guild", 403);
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
