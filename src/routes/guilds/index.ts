@@ -55,7 +55,11 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		unavailable: false,
 		vanity_url_code: undefined,
 		verification_level: 0,
-		welcome_screen: [],
+		welcome_screen: {
+			enabled: false,
+			description: "No description",
+			welcome_channels: []
+		},
 		widget_channel_id: undefined,
 		widget_enabled: false,
 	};
