@@ -47,7 +47,10 @@ export interface Guild {
 	system_channel_flags?: number;
 	system_channel_id?: string;
 	unavailable?: boolean;
-	vanity_url_code?: string;
+	vanity_url?: {
+		code: string;
+		uses: number;
+	};
 	verification_level?: number;
 	welcome_screen: {
 		enabled: boolean;
@@ -94,7 +97,10 @@ export const GuildSchema = new Schema({
 	system_channel_flags: Number,
 	system_channel_id: String,
 	unavailable: Boolean,
-	vanity_url_code: String,
+	vanity_url: {
+		code: String,
+		uses: Number
+	},
 	verification_level: Number,
 	voice_states: { type: [Object], default: [] },
 	welcome_screen: {
