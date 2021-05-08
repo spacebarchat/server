@@ -213,7 +213,7 @@ export interface GuildMemberUpdateEvent extends Event {
 		roles: string[];
 		user: User;
 		nick?: string;
-		joined_at: Date;
+		joined_at?: Date;
 		premium_since?: number;
 		pending?: boolean;
 	};
