@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { GuildModel, MemberModel, UserModel, toObject, GuildMemberAddEvent, getPermission } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { instanceOf, Length } from "../../../util/instanceOf";
-import { PublicMemberProjection, addMember, removeMember, addRole, removeRole } from "../../../util/Member";
+import { PublicMemberProjection, addMember, removeMember, addRole, removeRole, changeNickname } from "../../../util/Member";
 import { emitEvent } from "../../../util/Event";
 import { getPublicUser } from "../../../util/User";
 
@@ -81,13 +81,14 @@ router.put("/:member_id/roles/:role_id", async (req: Request, res: Response) => 
 	res.sendStatus(204);
 });
 
-router.patch("/:member_id/@me/nick", async (req: Request, res: Response) => {
+router.patch("/:member_id/nick", async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
+	if(!req.body.nickname) throw new HTTPError("No nickname defined", 404);
 
 	const perms = await getPermission(member_id, guild_id);
 	perms.hasThrow("CHANGE_NICKNAME");
 
-	//await addRole(member_id, guild_id, role_id);
+	await changeNickname(member_id, guild_id, req.body.nickname);
 	res.status(204);
 });
 
