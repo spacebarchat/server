@@ -4,10 +4,13 @@ import {
 	GuildDeleteEvent,
 	GuildMemberAddEvent,
 	GuildMemberRemoveEvent,
+	GuildMemberUpdateEvent,
 	GuildModel,
 	MemberModel,
+	RoleModel,
 	UserModel,
 } from "@fosscord/server-util";
+import { response } from "express";
 import { HTTPError } from "lambert-server";
 import Config from "./Config";
 import { emitEvent } from "./Event";
@@ -120,3 +123,80 @@ export async function removeMember(user_id: string, guild_id: string) {
 		} as GuildMemberRemoveEvent),
 	]);
 }
+
+export async function addRole(user_id: string, guild_id: string, role_id: string) {
+	const user = await getPublicUser(user_id);
+
+	const role = await RoleModel.findOne({ id: role_id, guild_id: guild_id }).exec();
+	if (!role) throw new HTTPError("role not found", 404);
+
+	var memberObj = await MemberModel.findOneAndUpdate({
+			id: user_id,
+			guild_id: guild_id,
+		}, { $push: { roles: role_id } }).exec();
+
+	if(!memberObj) throw new HTTPError("Member not found", 404);
+	
+	await emitEvent({
+		event: "GUILD_MEMBER_UPDATE",
+		data: {
+			guild_id: guild_id,
+			user: user,
+			roles: memberObj.roles
+		
+		},
+		guild_id: guild_id,
+	} as GuildMemberUpdateEvent);
+
+}
+
+export async function removeRole(user_id: string, guild_id: string, role_id: string) {
+	const user = await getPublicUser(user_id);
+
+	const role = await RoleModel.findOne({ id: role_id, guild_id: guild_id }).exec();
+	if (!role) throw new HTTPError("role not found", 404);
+
+	var memberObj = await MemberModel.findOneAndUpdate({
+			id: user_id,
+			guild_id: guild_id,
+		}, { $pull: { roles: role_id } }).exec();
+
+	if(!memberObj) throw new HTTPError("Member not found", 404);
+	
+	await emitEvent({
+		event: "GUILD_MEMBER_UPDATE",
+		data: {
+			guild_id: guild_id,
+			user: user,
+			roles: memberObj.roles
+		
+		},
+		guild_id: guild_id,
+	} as GuildMemberUpdateEvent);
+
+}
+
+export async function changeNickname(user_id: string, guild_id: string, nickname: string) {
+	const user = await getPublicUser(user_id);
+
+	var memberObj = await MemberModel.findOneAndUpdate({
+			id: user_id,
+			guild_id: guild_id,
+		}, { nick: nickname } ).exec();
+
+	if(!memberObj) throw new HTTPError("Member not found", 404);
+	
+	await emitEvent({
+		event: "GUILD_MEMBER_UPDATE",
+		data: {
+			guild_id: guild_id,
+			user: user,
+			nick: nickname
+		
+		},
+		guild_id: guild_id,
+	} as GuildMemberUpdateEvent);
+
+}
+
+

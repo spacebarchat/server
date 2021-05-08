@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express";
-import { GuildModel, MemberModel, UserModel, toObject, GuildMemberAddEvent } from "@fosscord/server-util";
+import { GuildModel, MemberModel, UserModel, toObject, GuildMemberAddEvent, getPermission } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { instanceOf, Length } from "../../../util/instanceOf";
-import { PublicMemberProjection, addMember, removeMember } from "../../../util/Member";
+import { PublicMemberProjection, addMember, removeMember, addRole, removeRole, changeNickname } from "../../../util/Member";
 import { emitEvent } from "../../../util/Event";
 import { getPublicUser } from "../../../util/User";
 
@@ -37,45 +37,70 @@ router.get("/", async (req: Request, res: Response) => {
 	return res.json(toObject(members));
 });
 
-router.get("/:member", async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
-	const user_id = req.params.member;
+router.get("/:member_id", async (req: Request, res: Response) => {
+	const { guild_id, member_id } = req.params;
 
-	const member = await MemberModel.findOne({ id: user_id, guild_id }).exec();
+	const member = await MemberModel.findOne({ id: member_id, guild_id }).exec();
 	if (!member) throw new HTTPError("Member not found", 404);
 
-	return res.json(member);
+	return res.json(toObject(member));
 });
 
-router.put("/:member", async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
+router.put("/:member_id", async (req: Request, res: Response) => {
+	const { guild_id, member_id } = req.params;
 
-	const user_id = req.params.member;
-
-	const user = await UserModel.findOne({ id: user_id }).exec();
-	if (!user) throw new HTTPError("User not found", 404);
-
-	await addMember(user_id, guild_id);
-
-	// https://discord.com/developers/docs/resources/guild#add-guild-member
+	await addMember(member_id, guild_id);
+	res.sendStatus(204)
 });
 
 
-router.delete("/:member", async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
+router.delete("/:member_id", async (req: Request, res: Response) => {
+	const { guild_id, member_id } = req.params;
 
-	const user_id = req.params.member;
+	await removeMember(member_id, guild_id);
+	res.sendStatus(204)
+});
 
-	const member = await MemberModel.findOne({ id: user_id, guild_id }).exec();
-	if (!member) throw new HTTPError("Member not found", 404);
+router.delete("/:member_id/roles/:role_id", async (req: Request, res: Response) => {
+	const { guild_id, role_id, member_id } = req.params;
 
-	await removeMember(user_id, guild_id);
+	const perms = await getPermission(member_id, guild_id);
+	perms.hasThrow("MANAGE_ROLES");
 
-	// https://discord.com/developers/docs/resources/guild#remove-guild-member
+	await removeRole(member_id, guild_id, role_id);
+	res.sendStatus(204);
+});
+
+router.put("/:member_id/roles/:role_id", async (req: Request, res: Response) => {
+	const { guild_id, role_id, member_id } = req.params;
+
+	const perms = await getPermission(member_id, guild_id);
+	perms.hasThrow("MANAGE_ROLES");
+
+	await addRole(member_id, guild_id, role_id);
+	res.sendStatus(204);
+});
+
+router.patch("/:member_id/nick", async (req: Request, res: Response) => {
+	const { guild_id, member_id } = req.params;
+	if(!req.body.nickname) throw new HTTPError("No nickname defined", 404);
+
+	const perms = await getPermission(member_id, guild_id);
+	perms.hasThrow("MANAGE_NICKNAMES");
+
+	await changeNickname(member_id, guild_id, req.body.nickname);
+	res.status(204);
+});
+
+router.patch("/members/@me/nick", async (req: Request, res: Response) => {
+	const { guild_id, member_id } = req.params;
+	if(!req.body.nickname) throw new HTTPError("No nickname defined", 404);
+
+	const perms = await getPermission(member_id, guild_id);
+	perms.hasThrow("CHANGE_NICKNAME");
+
+	await changeNickname(member_id, guild_id, req.body.nickname);
+	res.status(204);
 });
 
 
