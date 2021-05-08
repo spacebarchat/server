@@ -137,7 +137,7 @@ export async function addRole(user_id: string, guild_id: string, role_id: string
 
 	if(!memberObj) throw new Error("Internal server error");
 	
-	emitEvent({
+	await emitEvent({
 		event: "GUILD_MEMBER_UPDATE",
 		data: {
 			guild_id: guild_id,
@@ -166,7 +166,7 @@ export async function removeRole(user_id: string, guild_id: string, role_id: str
 
 	if(!memberObj) throw new Error("Internal server error");
 	
-	emitEvent({
+	await emitEvent({
 		event: "GUILD_MEMBER_UPDATE",
 		data: {
 			guild_id: guild_id,
