@@ -132,7 +132,7 @@ export async function addRole(user_id: string, guild_id: string, role_id: string
 			guild_id: guild_id,
 		}, { $push: { roles: role_id } }).exec();
 
-		if(!memberObj) throw new HTTPError("Member not found", 404);
+	if(!memberObj) throw new HTTPError("Member not found", 404);
 	
 	await emitEvent({
 		event: "GUILD_MEMBER_UPDATE",
@@ -142,7 +142,7 @@ export async function addRole(user_id: string, guild_id: string, role_id: string
 			roles: memberObj.roles
 		
 		},
-		user_id: user_id,
+		guild_id: guild_id,
 	} as GuildMemberUpdateEvent);
 
 }
@@ -168,7 +168,7 @@ export async function removeRole(user_id: string, guild_id: string, role_id: str
 			roles: memberObj.roles
 		
 		},
-		user_id: user_id,
+		guild_id: guild_id,
 	} as GuildMemberUpdateEvent);
 
 }
