@@ -9,7 +9,7 @@ import { getPublicUser } from "../../../util/User";
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	const guild_id = req.params.id;
+	const guild_id = req.params.guild_id;
 
 	const guild = await GuildModel.exists({ id: guild_id });
 	if (!guild) throw new HTTPError("Guild not found", 404);
