@@ -110,6 +110,14 @@ export async function removeMember(user_id: string, guild_id: string) {
 			},
 			user_id: user_id,
 		} as GuildDeleteEvent),
+		emitEvent({
+			event: "GUILD_MEMBER_REMOVE",
+			data: {
+				guild_id: guild_id,
+				user: user,
+			},
+			guild_id: guild_id,
+		} as GuildMemberRemoveEvent),
 	]);
 }
 
