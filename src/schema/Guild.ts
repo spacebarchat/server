@@ -110,3 +110,17 @@ export interface GuildTemplateCreateSchema {
 	name: string,
 	avatar?: string,
 }
+
+export const GuildAddChannelToWelcomeScreenSchema = {
+	channel_id: String,
+	description: String,
+	$emoji_id: String,
+	emoji_name: String,
+}
+
+export interface GuildAddChannelToWelcomeScreenSchema {
+	channel_id: string;
+	description: string;
+	emoji_id?: string;
+	emoji_name: string;
+}
