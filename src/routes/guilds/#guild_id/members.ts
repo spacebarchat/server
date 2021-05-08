@@ -1,9 +1,10 @@
 import { Request, Response, Router } from "express";
-import { GuildModel, MemberModel, UserModel, toObject, GuildMemberAddEvent, getPermission } from "@fosscord/server-util";
+import { GuildModel, MemberModel, UserModel, toObject, GuildMemberAddEvent, getPermission, PermissionResolvable } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
-import { instanceOf, Length } from "../../../util/instanceOf";
+import { instanceOf, Length, check } from "../../../util/instanceOf";
 import { PublicMemberProjection, addMember, removeMember, addRole, removeRole, changeNickname } from "../../../util/Member";
 import { emitEvent } from "../../../util/Event";
+import { MemberNickChangeSchema } from "../../../schema/Member";
 import { getPublicUser } from "../../../util/User";
 
 const router = Router();
@@ -64,7 +65,7 @@ router.delete("/:member_id", async (req: Request, res: Response) => {
 router.delete("/:member_id/roles/:role_id", async (req: Request, res: Response) => {
 	const { guild_id, role_id, member_id } = req.params;
 
-	const perms = await getPermission(member_id, guild_id);
+	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");
 
 	await removeRole(member_id, guild_id, role_id);
@@ -74,19 +75,23 @@ router.delete("/:member_id/roles/:role_id", async (req: Request, res: Response) 
 router.put("/:member_id/roles/:role_id", async (req: Request, res: Response) => {
 	const { guild_id, role_id, member_id } = req.params;
 
-	const perms = await getPermission(member_id, guild_id);
+	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");
 
 	await addRole(member_id, guild_id, role_id);
 	res.sendStatus(204);
 });
 
-router.patch("/:member_id/nick", async (req: Request, res: Response) => {
-	const { guild_id, member_id } = req.params;
-	if(!req.body.nickname) throw new HTTPError("No nickname defined", 404);
-
-	const perms = await getPermission(member_id, guild_id);
-	perms.hasThrow("MANAGE_NICKNAMES");
+router.patch("/:member_id/nick", check(MemberNickChangeSchema), async (req: Request, res: Response) => {
+	var { guild_id, member_id } = req.params;
+	var permissionString:PermissionResolvable = "MANAGE_NICKNAMES";
+	if(member_id === "@me") {
+		member_id = req.user_id;
+		permissionString = "CHANGE_NICKNAME";
+	}
+ 
+	const perms = await getPermission(req.user_id, guild_id);
+	perms.hasThrow(permissionString);
 
 	await changeNickname(member_id, guild_id, req.body.nickname);
 	res.status(204);
@@ -96,7 +101,7 @@ router.patch("/members/@me/nick", async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
 	if(!req.body.nickname) throw new HTTPError("No nickname defined", 404);
 
-	const perms = await getPermission(member_id, guild_id);
+	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("CHANGE_NICKNAME");
 
 	await changeNickname(member_id, guild_id, req.body.nickname);
