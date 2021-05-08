@@ -86,7 +86,7 @@ router.patch("/:member_id/nick", async (req: Request, res: Response) => {
 	if(!req.body.nickname) throw new HTTPError("No nickname defined", 404);
 
 	const perms = await getPermission(member_id, guild_id);
-	perms.hasThrow("CHANGE_NICKNAME");
+	perms.hasThrow("MANAGE_NICKNAMES");
 
 	await changeNickname(member_id, guild_id, req.body.nickname);
 	res.status(204);
