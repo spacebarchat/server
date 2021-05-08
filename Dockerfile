@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:lts-alpine
 RUN mkdir -p /usr/src/fosscord-gateway
 WORKDIR /usr/src/fosscord-gateway
 COPY package.json /usr/src/fosscord-gateway
