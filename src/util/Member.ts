@@ -10,7 +10,6 @@ import {
 	RoleModel,
 	UserModel,
 } from "@fosscord/server-util";
-import { response } from "express";
 import { HTTPError } from "lambert-server";
 import Config from "./Config";
 import { emitEvent } from "./Event";
