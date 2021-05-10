@@ -10,7 +10,9 @@ import {
 	RoleModel,
 	toObject,
 	UserModel,
+	GuildDocument,
 } from "@fosscord/server-util";
+
 import { HTTPError } from "lambert-server";
 import Config from "./Config";
 import { emitEvent } from "./Event";
@@ -34,7 +36,7 @@ export async function isMember(user_id: string, guild_id: string) {
 	return exists;
 }
 
-export async function addMember(user_id: string, guild_id: string, cache?: { guild?: Guild }) {
+export async function addMember(user_id: string, guild_id: string, cache?: { guild?: GuildDocument }) {
 	const user = await getPublicUser(user_id, { guilds: true });
 
 	const { maxGuilds } = Config.get().limits.user;
@@ -43,6 +45,7 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 	}
 
 	const guild = cache?.guild || (await GuildModel.findOne({ id: guild_id }).exec());
+
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
 	if (await MemberModel.exists({ id: user.id, guild_id })) throw new HTTPError("You are already a member of this guild", 400);
@@ -59,7 +62,7 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 		pending: false,
 	};
 
-	return Promise.all([
+	Promise.all([
 		new MemberModel({
 			...member,
 			settings: {
@@ -86,13 +89,18 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 			},
 			guild_id: guild_id,
 		} as GuildMemberAddEvent),
-
-		emitEvent({
-			event: "GUILD_CREATE",
-			data: toObject(guild),
-			user_id,
-		} as GuildCreateEvent),
 	]);
+
+	await emitEvent({
+		event: "GUILD_CREATE",
+		data: toObject(
+			await guild
+				.populate({ path: "members", match: { guild_id } })
+				.populate({ path: "joined_at", match: { id: user.id } })
+				.execPopulate()
+		),
+		user_id,
+	} as GuildCreateEvent);
 }
 
 export async function removeMember(user_id: string, guild_id: string) {

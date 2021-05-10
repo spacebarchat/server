@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { RoleModel, GuildModel, Snowflake, Guild } from "@fosscord/server-util";
+import { RoleModel, GuildModel, Snowflake, Guild, RoleDocument } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../util/instanceOf";
 import { GuildCreateSchema } from "../../schema/Guild";
@@ -58,13 +58,13 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		welcome_screen: {
 			enabled: false,
 			description: "No description",
-			welcome_channels: []
+			welcome_channels: [],
 		},
 		widget_channel_id: undefined,
 		widget_enabled: false,
 	};
 
-	await Promise.all([
+	const [guild_doc, role] = await Promise.all([
 		new GuildModel(guild).save(),
 		new RoleModel({
 			id: guild_id,
@@ -79,7 +79,8 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			tags: null,
 		}).save(),
 	]);
-	await addMember(req.user_id, guild_id, { guild });
+
+	await addMember(req.user_id, guild_id, { guild: guild_doc });
 
 	res.status(201).json({ id: guild.id });
 });
