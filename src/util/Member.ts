@@ -62,7 +62,7 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 		pending: false,
 	};
 
-	Promise.all([
+	await Promise.all([
 		new MemberModel({
 			...member,
 			settings: {
