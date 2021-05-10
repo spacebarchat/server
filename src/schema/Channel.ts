@@ -17,7 +17,7 @@ export const ChannelModifySchema = {
 			deny: BigInt,
 		},
 	],
-	$parent_id: BigInt,
+	$parent_id: String,
 	$nsfw: Boolean,
 };
 
