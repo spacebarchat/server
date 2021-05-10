@@ -22,7 +22,7 @@ export class CDNServer extends Server {
 	db: Database;
 	public options: CDNServerOptions;
 
-	constructor(options: CDNServerOptions) {
+	constructor(options: Partial<CDNServerOptions>) {
 		super(options);
 
 		this.db = new MongoDatabase(options?.db);

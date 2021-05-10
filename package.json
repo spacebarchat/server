@@ -1,10 +1,12 @@
 {
-	"name": "discord-cdn",
+	"name": "@fosscord/cdn",
 	"version": "1.0.0",
 	"description": "cdn for discord clone",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsc -b .",
+		"start": "npm run build && node dist/"
 	},
 	"repository": {
 		"type": "git",
@@ -23,18 +25,19 @@
 		"cheerio": "^1.0.0-rc.5",
 		"express": "^4.17.1",
 		"express-async-errors": "^3.1.1",
-		"lambert-db": "^1.0.5",
-		"lambert-server": "^1.0.3",
+		"lambert-db": "^1.2.3",
+		"lambert-server": "^1.2.1",
 		"missing-native-js-functions": "^1.0.8",
 		"multer": "^1.4.2",
 		"node-fetch": "^2.6.1",
 		"uuid": "^8.3.2"
 	},
 	"devDependencies": {
+		"@types/body-parser": "^1.19.0",
 		"@types/btoa": "^1.2.3",
-		"@types/express": "^4.17.9",
+		"@types/express": "^4.17.11",
 		"@types/multer": "^1.4.5",
-		"@types/node": "^14.14.16",
+		"@types/node": "^14.14.43",
 		"@types/node-fetch": "^2.5.7",
 		"@types/uuid": "^8.3.0"
 	}

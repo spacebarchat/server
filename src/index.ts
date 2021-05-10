@@ -1,14 +1,9 @@
-import { Server } from "./Server";
+import { CDNServer } from "./Server";
 
-const server = new Server();
+const server = new CDNServer({ db: "" });
 server
-	.init()
+	.start()
 	.then(() => {
 		console.log("[Server] started on :" + server.options.port);
 	})
 	.catch((e) => console.error("[Server] Error starting: ", e));
-
-//// server
-//// 	.destroy()
-//// 	.then(() => console.log("[Server] closed."))
-//// .catch((e) => console.log("[Server] Error closing: ", e));
