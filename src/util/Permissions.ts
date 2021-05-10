@@ -211,9 +211,7 @@ export async function getPermission(
 		if (!member) member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
 		if (!member) throw new Error("Member not found");
 
-		roles = await RoleModel.find({ guild_id, id: { $in: member.roles } })
-			.lean()
-			.exec();
+		roles = await RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
 	}
 
 	var permission = Permissions.finalPermission({

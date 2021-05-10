@@ -18,6 +18,8 @@ export default <Connection>connection;
 
 function transform<T>(document: T) {
 	// @ts-ignore
+	if (!document || !document.toObject) return document;
+	// @ts-ignore
 	return document.toObject({ virtuals: true });
 }
 
