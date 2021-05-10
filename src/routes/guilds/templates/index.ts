@@ -40,7 +40,7 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 		owner_id: req.user_id,
 	};
 
-	await Promise.all([
+	const [guild_doc, role] = await Promise.all([
 		new GuildModel(guild).save(),
 		new RoleModel({
 			id: guild_id,
@@ -55,7 +55,8 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 			tags: null,
 		}).save(),
 	]);
-	await addMember(req.user_id, guild_id, { guild });
+
+	await addMember(req.user_id, guild_id, { guild: guild_doc });
 
 	res.status(201).json({ id: guild.id });
 });
