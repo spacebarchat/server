@@ -8,6 +8,7 @@ import {
 	GuildModel,
 	MemberModel,
 	RoleModel,
+	toObject,
 	UserModel,
 } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
@@ -88,7 +89,7 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 
 		emitEvent({
 			event: "GUILD_CREATE",
-			data: guild,
+			data: toObject(guild),
 			user_id,
 		} as GuildCreateEvent),
 	]);
