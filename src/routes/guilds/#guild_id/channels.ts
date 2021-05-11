@@ -16,9 +16,11 @@ router.get("/", async (req, res) => {
 router.post("/", check(ChannelModifySchema), async (req, res) => {
 	const { guild_id } = req.params;
 	const body = req.body as ChannelModifySchema;
+
 	if (!body.permission_overwrites) body.permission_overwrites = [];
 	if (!body.topic) body.topic = "";
 	if (!body.rate_limit_per_user) body.rate_limit_per_user = 0;
+
 	switch (body.type) {
 		case ChannelType.DM:
 		case ChannelType.GROUP_DM:
@@ -31,9 +33,9 @@ router.post("/", check(ChannelModifySchema), async (req, res) => {
 	}
 
 	if (body.parent_id) {
-		const exists = await ChannelModel.findOne({ id: body.parent_id }, {guild_id:true}).exec();
+		const exists = await ChannelModel.findOne({ id: body.parent_id }, { guild_id: true }).exec();
 		if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
-		if (exists.guild_id !== guild_id) throw new HTTPError("The category channel needs to be in the guild")
+		if (exists.guild_id !== guild_id) throw new HTTPError("The category channel needs to be in the guild");
 	}
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
@@ -43,8 +45,9 @@ router.post("/", check(ChannelModifySchema), async (req, res) => {
 		...body,
 		id: Snowflake.generate(),
 		created_at: new Date(),
-		guild_id,
+		guild_id
 	};
+
 	await new ChannelModel(channel).save();
 
 	await emitEvent({ event: "CHANNEL_CREATE", data: channel, guild_id } as ChannelCreateEvent);
@@ -63,7 +66,7 @@ router.patch("/", check(ChannelModifySchema), async (req, res) => {
 		...body
 	};
 	const channelm = await ChannelModel.find({ guild_id }).exec();
-	if(!channelm) throw new HTTPError("Channel not found", 404);
+	if (!channelm) throw new HTTPError("Channel not found", 404);
 
 	await new ChannelModel(channel).save();
 
