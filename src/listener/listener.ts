@@ -56,7 +56,7 @@ export async function dispatch(this: WebSocket, document: Event, { eventStream, 
 	}
 
 	if (document.event === "GUILD_CREATE") {
-		guilds.push(document.guild_id);
+		guilds.push(document.data.id);
 		eventStream.changeStream(getPipeline.call(this, guilds));
 	} else if (document.event === "GUILD_DELETE") {
 		guilds.remove(document.guild_id);
