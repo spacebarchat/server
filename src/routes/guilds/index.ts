@@ -58,10 +58,10 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		welcome_screen: {
 			enabled: false,
 			description: "No description",
-			welcome_channels: [],
+			welcome_channels: []
 		},
 		widget_channel_id: undefined,
-		widget_enabled: false,
+		widget_enabled: false
 	};
 
 	const [guild_doc, role] = await Promise.all([
@@ -71,13 +71,13 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			guild_id: guild_id,
 			color: 0,
 			hoist: false,
-			managed: true,
-			mentionable: true,
+			managed: false,
+			mentionable: false,
 			name: "@everyone",
 			permissions: 2251804225n,
 			position: 0,
-			tags: null,
-		}).save(),
+			tags: null
+		}).save()
 	]);
 
 	await addMember(req.user_id, guild_id, { guild: guild_doc });

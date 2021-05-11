@@ -24,15 +24,17 @@ router.delete("/", async (req, res) => {
 	const { channel_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
+	if (!channel) throw new HTTPError("Channel not found", 404);
+
 	const permission = await getPermission(req.user_id, channel?.guild_id, channel_id, { channel });
 	permission.hasThrow("MANAGE_CHANNELS");
-
-	await ChannelModel.deleteOne({ id: channel_id });
 
 	// TODO: Dm channel "close" not delete
 	const data = toObject(channel);
 
 	await emitEvent({ event: "CHANNEL_DELETE", data, guild_id: channel?.guild_id, channel_id } as ChannelDeleteEvent);
+
+	await ChannelModel.deleteOne({ id: channel_id });
 
 	res.send(data);
 });
@@ -47,14 +49,16 @@ router.patch("/", check(ChannelModifySchema), async (req, res) => {
 	const channel = await ChannelModel.findOneAndUpdate({ id: channel_id }, payload).exec();
 	if (!channel) throw new HTTPError("Channel not found", 404);
 
+	const data = toObject(channel);
+
 	await emitEvent({
 		event: "CHANNEL_UPDATE",
-		data: toObject(channel),
+		data,
 		guild_id: channel.guild_id,
-		channel_id,
+		channel_id
 	} as ChannelUpdateEvent);
 
-	res.send(toObject(channel));
+	res.send(data);
 });
 
 export default router;
