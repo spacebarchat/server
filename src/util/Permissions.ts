@@ -6,6 +6,7 @@ import { ChannelPermissionOverwrite } from "../models/Channel";
 import { Role, RoleModel } from "../models/Role";
 import { BitField } from "./BitField";
 import { GuildDocument, GuildModel } from "../models/Guild";
+// TODO: check role hierarchy permission
 
 var HTTPError: any;
 
@@ -186,13 +187,15 @@ export class Permissions extends BitField {
 }
 
 export async function getPermission(
-	user_id: string,
+	user_id?: string,
 	guild_id?: string,
 	channel_id?: string,
 	cache?: { channel?: ChannelDocument | null; member?: MemberDocument | null; guild?: GuildDocument | null }
 ) {
 	var { channel, member, guild } = cache || {};
 	var roles;
+
+	if (!user_id) throw new HTTPError("User not found");
 
 	if (channel_id && !channel) {
 		channel = await ChannelModel.findOne(
@@ -205,11 +208,11 @@ export async function getPermission(
 
 	if (guild_id) {
 		if (!guild) guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
-		if (!guild) throw new Error("Guild not found");
+		if (!guild) throw new HTTPError("Guild not found");
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
 		if (!member) member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
-		if (!member) throw new Error("Member not found");
+		if (!member) throw new HTTPError("Member not found");
 
 		roles = await RoleModel.find({ guild_id, id: { $in: member.roles } })
 			.lean()
