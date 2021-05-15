@@ -21,6 +21,9 @@ export interface RateLimitOptions {
 }
 
 export interface DefaultOptions {
+	server: {
+		root_url: string;
+	};
 	general: {
 		instance_id: string;
 	};
@@ -108,6 +111,9 @@ export interface DefaultOptions {
 }
 
 export const DefaultOptions: DefaultOptions = {
+	server: {
+		root_url: "localhost" // we are localhost unless the oposite is specified
+	},
 	general: {
 		instance_id: Snowflake.generate(),
 	},
