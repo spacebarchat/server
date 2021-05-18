@@ -1,19 +1,4 @@
-import { Config, Snowflake } from "@fosscord/server-util";
-import crypto from "crypto";
-
-export default {
-	init() {
-		return Config.init({ api: DefaultOptions });
-	},
-	get(): DefaultOptions {
-		return Config.getAll().api;
-	},
-	set(val: any) {
-		return Config.setAll({ api: val });
-	},
-	getAll: Config.getAll,
-	setAll: Config.setAll,
-};
+import Ajv, {JTDSchemaType} from "ajv/dist/jtd"
 
 export interface RateLimitOptions {
 	count: number;
@@ -64,7 +49,7 @@ export interface DefaultOptions {
 					login?: RateLimitOptions;
 					register?: RateLimitOptions;
 				};
-				channel?: {};
+				channel?: string;
 				// TODO: rate limit configuration for all routes
 			};
 		};
@@ -107,85 +92,139 @@ export interface DefaultOptions {
 	};
 }
 
-export const DefaultOptions: DefaultOptions = {
-	general: {
-		instance_id: Snowflake.generate(),
+const schema: JTDSchemaType<DefaultOptions, {rateLimitOptions: RateLimitOptions}> = {
+	definitions: {
+		rateLimitOptions: {
+			properties: {
+				count: {type: "int32"},
+				timespan: {type: "int32"}
+			}
+		}
 	},
-	permissions: {
-		user: {
-			createGuilds: true,
+	properties: {
+		general: {
+			properties: {
+				instance_id: {type: "string"}
+			}
 		},
-	},
-	limits: {
-		user: {
-			maxGuilds: 100,
-			maxUsername: 32,
-			maxFriends: 1000,
+		permissions: {
+			properties: {
+				user: {
+					properties: {
+						createGuilds: {type: "boolean"}
+					}
+				}
+			}
 		},
-		guild: {
-			maxRoles: 250,
-			maxMembers: 250000,
-			maxChannels: 500,
-			maxChannelsInCategory: 50,
-			hideOfflineMember: 1000,
+		limits: {
+			properties: {
+				user: {
+					properties: {
+						maxGuilds: {type: "int32"},
+						maxFriends: {type: "int32"},
+						maxUsername: {type: "int32"}
+					}
+				},
+				guild: {
+					properties: {
+						maxRoles: {type: "int32"},
+						maxMembers: {type: "int32"},
+						maxChannels: {type: "int32"},
+						maxChannelsInCategory: {type: "int32"},
+						hideOfflineMember: {type: "int32"}
+					}
+				},
+				message: {
+					properties: {
+						characters: {type: "int32"},
+						ttsCharacters: {type: "int32"},
+						maxReactions: {type: "int32"},
+						maxAttachmentSize: {type: "int32"},
+						maxBulkDelete: {type: "int32"}
+					}
+				},
+				channel: {
+					properties: {
+						maxPins: {type: "int32"},
+						maxTopic: {type: "int32"},
+					},
+				},
+				rate: {
+					properties: {
+						ip: {
+							properties: {
+								enabled: {type: "boolean"},
+								count: {type: "int32"},
+								timespan: {type: "int32"},
+							}
+						},
+						routes: {
+							optionalProperties: {
+								auth: {
+									optionalProperties: {
+										login: {ref: 'rateLimitOptions'},
+										register: {ref: 'rateLimitOptions'}
+									}
+								},
+								channel: {type: "string"}
+							}
+						}
+					}
+				}
+			}
 		},
-		message: {
-			characters: 2000,
-			ttsCharacters: 200,
-			maxReactions: 20,
-			maxAttachmentSize: 8388608,
-			maxBulkDelete: 100,
+		security: {
+			properties: {
+				jwtSecret: {type: "string"},
+				forwadedFor: {type: "string", nullable: true},
+				captcha: {
+					properties: {
+						enabled: {type: "boolean"},
+						service: {enum: ['hcaptcha', 'recaptcha'], nullable: true},
+						sitekey: {type: "string", nullable: true},
+						secret: {type: "string", nullable: true}
+					}
+				}
+			}
 		},
-		channel: {
-			maxPins: 50,
-			maxTopic: 1024,
+		login: {
+			properties: {
+				requireCaptcha: {type: "boolean"}
+			}
 		},
-		rate: {
-			ip: {
-				enabled: true,
-				count: 1000,
-				timespan: 1000 * 60 * 10,
+		register: {
+			properties: {
+				email: {
+					properties: {
+						required: {type: "boolean"},
+						allowlist: {type: "boolean"},
+						blocklist: {type: "boolean"},
+						domains: { elements: {
+							type: "string"
+						}
+					}
+				}
 			},
-			routes: {},
-		},
-	},
-	security: {
-		jwtSecret: crypto.randomBytes(256).toString("base64"),
-		forwadedFor: null,
-		// forwadedFor: "X-Forwarded-For" // nginx/reverse proxy
-		// forwadedFor: "CF-Connecting-IP" // cloudflare:
-		captcha: {
-			enabled: false,
-			service: null,
-			sitekey: null,
-			secret: null,
-		},
-	},
-	login: {
-		requireCaptcha: false,
-	},
-	register: {
-		email: {
-			required: true,
-			allowlist: false,
-			blocklist: true,
-			domains: [], // TODO: efficiently save domain blocklist in database
-			// domains: fs.readFileSync(__dirname + "/blockedEmailDomains.txt", { encoding: "utf8" }).split("\n"),
-		},
-		dateOfBirth: {
-			required: true,
-			minimum: 13,
-		},
-		requireInvite: false,
-		requireCaptcha: true,
-		allowNewRegistration: true,
-		allowMultipleAccounts: true,
-		password: {
-			minLength: 8,
-			minNumbers: 2,
-			minUpperCase: 2,
-			minSymbols: 0,
-			blockInsecureCommonPasswords: false,
-		},
-	},
-};
+			dateOfBirth: {
+				properties: {
+					required: {type: "boolean"},
+					minimum: {type: "int32"}
+				}
+			},
+			requireCaptcha: {type: "boolean"},
+			requireInvite: {type: "boolean"},
+			allowNewRegistration: {type: "boolean"},
+			allowMultipleAccounts: {type: "boolean"},
+			password: {
+				properties: {
+					minLength: {type: "int32"},
+					minNumbers: {type: "int32"},
+					minUpperCase: {type: "int32"},
+					minSymbols: {type: "int32"},
+					blockInsecureCommonPasswords: {type: "boolean"}
+				}
+			}
+		}
+	}
+}
+}
