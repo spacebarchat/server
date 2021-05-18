@@ -14,6 +14,8 @@ export default {
 	setAll: Config.setAll,
 };
 
-export interface DefaultOptions {}
+export interface DefaultOptions {
+	endpoint?: string;
+}
 
 export const DefaultOptions: DefaultOptions = {};

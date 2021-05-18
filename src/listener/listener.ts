@@ -17,7 +17,7 @@ export interface DispatchOpts {
 	guilds: Array<string>;
 }
 
-function getPipeline(this: WebSocket, guilds: string[]) {
+function getPipeline(this: WebSocket, guilds: string[], channels: string[]) {
 	if (this.shard_count) {
 		guilds = guilds.filter((x) => (BigInt(x) >> 22n) % this.shard_count === this.shard_id);
 	}
@@ -25,7 +25,11 @@ function getPipeline(this: WebSocket, guilds: string[]) {
 	return [
 		{
 			$match: {
-				$or: [{ "fullDocument.guild_id": { $in: guilds } }, { "fullDocument.user_id": this.user_id }],
+				$or: [
+					{ "fullDocument.guild_id": { $in: guilds } },
+					{ "fullDocument.user_id": this.user_id },
+					{ "fullDocument.channel_id": { $in: channels } },
+				],
 			},
 		},
 	];
@@ -44,6 +48,8 @@ export async function setupListener(this: WebSocket) {
 
 	this.once("close", () => eventStream.destroy());
 }
+
+// TODO: cache permission
 
 export async function dispatch(this: WebSocket, document: Event, { eventStream, guilds }: DispatchOpts) {
 	var permission = new Permissions("ADMINISTRATOR"); // default permission for dms
