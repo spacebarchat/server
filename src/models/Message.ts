@@ -40,7 +40,9 @@ export interface Message {
 	// mongoose virtuals:
 	author?: PublicUser;
 	member?: PublicMember;
-	mentions?: PublicUser[];
+	mentions?: (PublicUser & {
+		member: PublicMember;
+	})[];
 	mention_roles?: Role[];
 	mention_channels?: Channel[];
 }

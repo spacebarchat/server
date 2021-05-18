@@ -3,7 +3,7 @@
 import { MemberDocument, MemberModel } from "../models/Member";
 import { ChannelDocument, ChannelModel } from "../models/Channel";
 import { ChannelPermissionOverwrite } from "../models/Channel";
-import { Role, RoleModel } from "../models/Role";
+import { Role, RoleDocument, RoleModel } from "../models/Role";
 import { BitField } from "./BitField";
 import { GuildDocument, GuildModel } from "../models/Guild";
 // TODO: check role hierarchy permission
@@ -54,6 +54,8 @@ type PermissionString =
 const CUSTOM_PERMISSION_OFFSET = 1n << 48n; // 16 free custom permission bits, and 16 for discord to add new ones
 
 export class Permissions extends BitField {
+	cache: PermissionCache = {};
+
 	static FLAGS = {
 		CREATE_INSTANT_INVITE: 1n << 0n,
 		KICK_MEMBERS: 1n << 1n,
@@ -186,14 +188,20 @@ export class Permissions extends BitField {
 	}
 }
 
+export type PermissionCache = {
+	channel?: ChannelDocument | null;
+	member?: MemberDocument | null;
+	guild?: GuildDocument | null;
+	roles?: RoleDocument[] | null;
+};
+
 export async function getPermission(
 	user_id?: string,
 	guild_id?: string,
 	channel_id?: string,
-	cache?: { channel?: ChannelDocument | null; member?: MemberDocument | null; guild?: GuildDocument | null }
+	cache: PermissionCache = {}
 ) {
-	var { channel, member, guild } = cache || {};
-	var roles;
+	var { channel, member, guild, roles } = cache;
 
 	if (!user_id) throw new HTTPError("User not found");
 
@@ -214,7 +222,7 @@ export async function getPermission(
 		if (!member) member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
 		if (!member) throw new HTTPError("Member not found");
 
-		roles = await RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
+		if (!roles) roles = await RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
 	}
 
 	var permission = Permissions.finalPermission({
@@ -232,5 +240,10 @@ export async function getPermission(
 		},
 	});
 
-	return new Permissions(permission);
+	const obj = new Permissions(permission);
+
+	// pass cache to permission for possible future getPermission calls
+	obj.cache = { guild, member, channel, roles };
+
+	return obj;
 }

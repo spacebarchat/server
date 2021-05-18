@@ -138,7 +138,7 @@ export interface ChannelPinsUpdateEvent extends Event {
 	data: {
 		guild_id?: string;
 		channel_id: string;
-		last_pin_timestamp: number;
+		last_pin_timestamp?: number;
 	};
 }
 
@@ -276,9 +276,9 @@ export interface InviteDeleteEvent extends Event {
 export type MessagePayload = Omit<Message, "author_id"> & {
 	channel_id: string;
 	guild_id?: string;
-	author: User;
+	author: PublicUser;
 	member: PublicMember;
-	mentions: (User & { member: PublicMember })[];
+	mentions: (PublicUser & { member: PublicMember })[];
 };
 
 export interface MessageCreateEvent extends Event {
