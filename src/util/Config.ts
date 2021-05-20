@@ -1,5 +1,5 @@
-import Ajv, {JSONSchemaType} from "ajv"
-import {ValidateFunction} from 'ajv'
+import Ajv, { JSONSchemaType } from "ajv"
+import { ValidateFunction } from 'ajv'
 import ajvFormats from 'ajv-formats';
 import dotProp from "dot-prop";
 import envPaths from "env-paths";
@@ -111,8 +111,8 @@ const schema: JSONSchemaType<DefaultOptions> & {
 		rateLimitOptions: {
 			type: "object",
 			properties: {
-				count: {type: "number"},
-				timespan: {type: "number"},
+				count: { type: "number" },
+				timespan: { type: "number" },
 			},
 			required: ["count", "timespan"],
 		},
@@ -221,7 +221,7 @@ const schema: JSONSchemaType<DefaultOptions> & {
 							type: "number"
 						}
 					},
-					required: ["maxPins", "maxTopic"], 
+					required: ["maxPins", "maxTopic"],
 					additionalProperties: false
 				},
 				rate: {
@@ -230,9 +230,9 @@ const schema: JSONSchemaType<DefaultOptions> & {
 						ip: {
 							type: "object",
 							properties: {
-								enabled: {type: "boolean"},
-								count: {type: "number"},
-								timespan: {type: "number"}
+								enabled: { type: "boolean" },
+								count: { type: "number" },
+								timespan: { type: "number" }
 							},
 							required: ["enabled", "count", "timespan"],
 							additionalProperties: false
@@ -243,8 +243,8 @@ const schema: JSONSchemaType<DefaultOptions> & {
 								auth: {
 									type: "object",
 									properties: {
-										login: {$ref: '#/definitions/rateLimitOptions'},
-										register: {$ref: '#/definitions/rateLimitOptions'}
+										login: { $ref: '#/definitions/rateLimitOptions' },
+										register: { $ref: '#/definitions/rateLimitOptions' }
 									},
 									nullable: true,
 									required: [],
@@ -278,14 +278,14 @@ const schema: JSONSchemaType<DefaultOptions> & {
 				captcha: {
 					type: "object",
 					properties: {
-						enabled: {type: "boolean"},
+						enabled: { type: "boolean" },
 						service: {
 							type: "string",
 							enum: ["hcaptcha", "recaptcha", null],
 							nullable: true
 						},
 						sitekey: {
-							type: "string", 
+							type: "string",
 							nullable: true
 						},
 						secret: {
@@ -303,9 +303,9 @@ const schema: JSONSchemaType<DefaultOptions> & {
 		login: {
 			type: "object",
 			properties: {
-				requireCaptcha: {type: "boolean"}
+				requireCaptcha: { type: "boolean" }
 			},
-			required: ["requireCaptcha"], 
+			required: ["requireCaptcha"],
 			additionalProperties: false
 		},
 		register: {
@@ -314,9 +314,9 @@ const schema: JSONSchemaType<DefaultOptions> & {
 				email: {
 					type: "object",
 					properties: {
-						necessary: {type: "boolean"},
-						allowlist: {type: "boolean"},
-						blocklist: {type: "boolean"},
+						necessary: { type: "boolean" },
+						allowlist: { type: "boolean" },
+						blocklist: { type: "boolean" },
 						domains: {
 							type: "array",
 							items: {
@@ -330,24 +330,24 @@ const schema: JSONSchemaType<DefaultOptions> & {
 				dateOfBirth: {
 					type: "object",
 					properties: {
-						necessary: {type: "boolean"},
-						minimum: {type: "number"}
+						necessary: { type: "boolean" },
+						minimum: { type: "number" }
 					},
 					required: ["minimum", "necessary"],
 					additionalProperties: false
 				},
-				requireCaptcha: {type: "boolean"},
-				requireInvite: {type: "boolean"},
-				allowNewRegistration: {type: "boolean"},
-				allowMultipleAccounts: {type: "boolean"},
+				requireCaptcha: { type: "boolean" },
+				requireInvite: { type: "boolean" },
+				allowNewRegistration: { type: "boolean" },
+				allowMultipleAccounts: { type: "boolean" },
 				password: {
 					type: "object",
 					properties: {
-						minLength: {type: "number"},
-						minNumbers: {type: "number"},
-						minUpperCase: {type: "number"},
-						minSymbols: {type: "number"},
-						blockInsecureCommonPasswords: {type: "boolean"}
+						minLength: { type: "number" },
+						minNumbers: { type: "number" },
+						minUpperCase: { type: "number" },
+						minSymbols: { type: "number" },
+						blockInsecureCommonPasswords: { type: "boolean" }
 					},
 					required: ["minLength", "minNumbers", "minUpperCase", "minSymbols", "blockInsecureCommonPasswords"],
 					additionalProperties: false
@@ -371,7 +371,7 @@ type Deserialize<T> = (text: string) => T;
 
 class Config<T extends Record<string, any> = Record<string, unknown>> implements Iterable<[keyof T, T[keyof T]]> {
 	readonly path: string;
-	readonly #validator?:  ValidateFunction;
+	readonly #validator?: ValidateFunction;
 	readonly #defaultOptions: Partial<T> = {};
 
 	constructor() {
@@ -386,7 +386,7 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 
 		this.path = path.resolve(base, 'api.json');
 
-		
+
 		const fileStore = this.store;
 		const store = Object.assign(createPlainObject<T>(), fileStore);
 		this._validate(store);
@@ -402,13 +402,13 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 		if (!this.#validator) {
 			return;
 		}
-		
+
 		const valid = this.#validator(data);
 		if (valid || !this.#validator.errors) {
-			return; 
+			return;
 		}
 
-		const errors = this.#validator.errors.map(({instancePath, message = ''})  => `\`${instancePath.slice(1)}\` ${message}`);
+		const errors = this.#validator.errors.map(({ instancePath, message = '' }) => `\`${instancePath.slice(1)}\` ${message}`);
 		throw new Error('The config schema was violated!: ' + errors.join('; '));
 	}
 
@@ -422,7 +422,7 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 			if (error.code == 'ENOENT') {
 				this._ensureDirectory();
 				return createPlainObject();
-				
+
 			}
 
 			throw error;
@@ -430,7 +430,7 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 	}
 
 	private _ensureDirectory(): void {
-		fs.mkdirSync(path.dirname(this.path), {recursive: true})
+		fs.mkdirSync(path.dirname(this.path), { recursive: true })
 	}
 
 	set store(value: T) {
@@ -450,12 +450,12 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 	}
 
 	private _get<Key extends keyof T>(key: Key): T[Key] | undefined;
-	private _get<Key extends keyof T, Default = unknown>(key: Key, defaultValue: Default): T[Key] | Default;	
+	private _get<Key extends keyof T, Default = unknown>(key: Key, defaultValue: Default): T[Key] | Default;
 	private _get<Key extends keyof T, Default = unknown>(key: Key | string, defaultValue?: Default): Default | undefined {
 		return dotProp.get<T[Key] | undefined>(this.store, key as string, defaultValue as T[Key]);
 	}
 
-	* [Symbol.iterator](): IterableIterator<[keyof T, T[keyof T]]> {
+	*[Symbol.iterator](): IterableIterator<[keyof T, T[keyof T]]> {
 		for (const [key, value] of Object.entries(this.store)) {
 			yield [key, value];
 		}
