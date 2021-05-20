@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import Config from "../util/Config";
+import * as Config from '../util/Config'
+import crypto from "crypto";
 
 // TODO: use mongodb ttl index
 // TODO: increment count on serverside
@@ -43,7 +44,8 @@ export async function GlobalRateLimit(req: Request, res: Response, next: NextFun
 }
 
 export function getIpAdress(req: Request): string {
-	const { forwadedFor } = Config.get().security;
+	const rateLimitProperties = Config.apiConfig.get('security', {jwtSecret: crypto.randomBytes(256).toString("base64"), forwadedFor: null, captcha: {enabled:false, service: null, sitekey: null, secret: null}}) as Config.DefaultOptions;
+	const { forwadedFor } = rateLimitProperties.security;
 	const ip = forwadedFor ? <string>req.headers[forwadedFor] : req.ip;
 	return ip.replaceAll(".", "_").replaceAll(":", "_");
 }

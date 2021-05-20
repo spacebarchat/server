@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import Config from "../../util/Config";
+import * as Config from "../../util/Config";
 import { trimSpecial, User, Snowflake, UserModel } from "@fosscord/server-util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../util/instanceOf";
@@ -52,7 +52,8 @@ router.post(
 		let discriminator = "";
 
 		// get register Config
-		const { register, security } = Config.get();
+		const securityProperties = Config.apiConfig.store as unknown as Config.DefaultOptions;
+		const { register, security } = securityProperties;
 
 		// check if registration is allowed
 		if (!register.allowNewRegistration) {
@@ -90,13 +91,13 @@ router.post(
 					},
 				});
 			}
-		} else if (register.email.required) {
+		} else if (register.email.necessary) {
 			throw FieldErrors({
 				email: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") },
 			});
 		}
 
-		if (register.dateOfBirth.required && !date_of_birth) {
+		if (register.dateOfBirth.necessary && !date_of_birth) {
 			throw FieldErrors({
 				date_of_birth: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") },
 			});

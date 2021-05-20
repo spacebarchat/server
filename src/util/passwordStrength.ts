@@ -1,5 +1,5 @@
 import "missing-native-js-functions";
-import Config from "./Config";
+import * as Config from "./Config";
 
 const reNUMBER = /[0-9]/g;
 const reUPPERCASELETTER = /[A-Z]/g;
@@ -17,13 +17,14 @@ const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored
  * Returns: 0 > pw > 1
  */
 export function check(password: string): number {
+	const passwordProperties = Config.apiConfig.get('register.password', { minLength: 8, minNumbers: 2, minUpperCase: 2, minSymbols: 0, blockInsecureCommonPasswords: false }) as Config.DefaultOptions;
 	const {
 		minLength,
 		minNumbers,
 		minUpperCase,
 		minSymbols,
 		blockInsecureCommonPasswords,
-	} = Config.get().register.password;
+	} = passwordProperties.register.password;
 	var strength = 0;
 
 	// checks for total password len
