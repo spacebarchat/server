@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package fosscordMedia;
+
+service fosscordInternals{
+	rpc requestProtocol(voiceRequest) returns (voiceAnswer) {}
+}
+
+message voiceRequest{ //OP1 from gw
+	uint64 userid = 1;
+	uint64 guildid = 2;
+	string IP=3;
+	uint32 port=4;
+	string protocol=5;
+	string rtcConnectionId=6;
+}
+
+message voiceAnswer{//OP2 and OP4 to gw
+	string ip=1;
+	uint32 port=3;
+	repeated string modes=2;
+	int32 ssrc=4;
+	string audioCodec=5;
+}
