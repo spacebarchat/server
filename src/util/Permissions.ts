@@ -128,7 +128,7 @@ export class Permissions extends BitField {
 			// ~ operator inverts deny (e.g. 011 -> 100)
 			// & operator only allows 1 for both ~deny and permission (e.g. 010 & 100 -> 000)
 			// | operators adds both together (e.g. 000 + 100 -> 100)
-		}, 0n ?? init);
+		}, init || 0n);
 	}
 
 	static rolePermission(roles: Role[]) {

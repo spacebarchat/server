@@ -109,7 +109,7 @@ export class Snowflake {
 	static deconstruct(snowflake) {
 		const BINARY = Snowflake.idToBinary(snowflake).toString(2).padStart(64, "0");
 		const res = {
-			timestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
+			timestamp: parseInt(BINARY.substring(0, 42), 2) + Snowflake.EPOCH,
 			workerID: parseInt(BINARY.substring(42, 47), 2),
 			processID: parseInt(BINARY.substring(47, 52), 2),
 			increment: parseInt(BINARY.substring(52, 64), 2),
