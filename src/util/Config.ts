@@ -382,7 +382,7 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 
 		this.#validator = ajv.compile(schema);
 
-		const base = envPaths('fosscord').config;
+		const base = envPaths('fosscord', {suffix: ""}).config;
 
 		this.path = path.resolve(base, 'api.json');
 
