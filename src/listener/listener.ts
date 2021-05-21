@@ -17,7 +17,7 @@ export interface DispatchOpts {
 	guilds: Array<string>;
 }
 
-function getPipeline(this: WebSocket, guilds: string[], channels: string[]) {
+function getPipeline(this: WebSocket, guilds: string[], channels: string[] = []) {
 	if (this.shard_count) {
 		guilds = guilds.filter((x) => (BigInt(x) >> 22n) % this.shard_count === this.shard_id);
 	}
@@ -54,12 +54,7 @@ export async function setupListener(this: WebSocket) {
 export async function dispatch(this: WebSocket, document: Event, { eventStream, guilds }: DispatchOpts) {
 	var permission = new Permissions("ADMINISTRATOR"); // default permission for dms
 	console.log("event", document);
-
-	if (document.guild_id) {
-		if (!this.intents.has("GUILDS")) return;
-		const channel_id = document.channel_id || document.data?.channel_id;
-		permission = await getPermission(this.user_id, document.guild_id, channel_id);
-	}
+	var channel_id = document.channel_id || document.data?.channel_id;
 
 	if (document.event === "GUILD_CREATE") {
 		guilds.push(document.data.id);
@@ -67,12 +62,19 @@ export async function dispatch(this: WebSocket, document: Event, { eventStream, 
 	} else if (document.event === "GUILD_DELETE") {
 		guilds.remove(document.guild_id);
 		eventStream.changeStream(getPipeline.call(this, guilds));
+	} else if (document.event === "CHANNEL_DELETE") channel_id = null;
+	if (document.guild_id && !this.intents.has("GUILDS")) return;
+
+	try {
+		permission = await getPermission(this.user_id, document.guild_id, channel_id);
+	} catch (e) {
+		permission = new Permissions();
 	}
 
 	// check intents: https://discord.com/developers/docs/topics/gateway#gateway-intents
 	switch (document.event) {
-		case "GUILD_CREATE":
 		case "GUILD_DELETE":
+		case "GUILD_CREATE":
 		case "GUILD_UPDATE":
 		case "GUILD_ROLE_CREATE":
 		case "GUILD_ROLE_UPDATE":

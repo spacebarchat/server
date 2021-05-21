@@ -1,15 +1,17 @@
 export interface LazyRequest {
-	activities: boolean;
-	channels: Record<string, [number, number]>;
 	guild_id: string;
-	threads: boolean;
-	typing: true;
+	channels?: Record<string, [number, number]>;
+	activities?: boolean;
+	threads?: boolean;
+	typing?: true;
+	members?: any[];
 }
 
 export const LazyRequest = {
-	activities: Boolean,
-	channels: Object,
 	guild_id: String,
-	threads: Boolean,
-	typing: Boolean,
+	$activities: Boolean,
+	$channels: Object,
+	$typing: Boolean,
+	$threads: Boolean,
+	$members: [] as any[],
 };

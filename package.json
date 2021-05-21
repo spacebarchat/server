@@ -5,16 +5,15 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "npm run build:util && npm run build && node dist/",
+		"start": "npm run build && node dist/",
 		"build": "npx tsc -b .",
-		"build:util": "npx tsc -b ./node_modules/@fosscord/server-util/",
 		"dev": "tsnd --respawn src/index.ts"
 	},
 	"keywords": [],
 	"author": "Fosscord",
 	"license": "ISC",
 	"dependencies": {
-		"@fosscord/server-util": "^1.0.7",
+		"@fosscord/server-util": "^1.2.1",
 		"dotenv": "^8.2.0",
 		"jsonwebtoken": "^8.5.1",
 		"lambert-server": "^1.1.7",

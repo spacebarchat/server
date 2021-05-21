@@ -6,6 +6,9 @@ import { Server as WebSocketServer } from "ws";
 import { Connection } from "./events/Connection";
 import Config from "./util/Config";
 
+// TODO: only listen/start the server if everything got initalized
+// https://www.npmjs.com/package/ws use "External HTTP/S server" and listen manually at the end of listen()
+
 var port = Number(process.env.PORT);
 if (isNaN(port)) port = 3002;
 
@@ -14,6 +17,7 @@ export class Server {
 	constructor() {
 		this.ws = new WebSocketServer({
 			port,
+
 			maxPayload: 4096,
 			// perMessageDeflate: {
 			// 	zlibDeflateOptions: {
