@@ -4,7 +4,8 @@
 class rpcStub{
 	public:
 		rpcStub(int port);
-	private:
 		std::unique_ptr<grpc::Server> server;
+	private:
+		
 
 };

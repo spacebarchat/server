@@ -27,10 +27,11 @@
 
 int main (int argc, char** argv){
 
-	auto handler = std::make_shared<rtcPeerHandler>();
+	auto commsHandler = std::make_shared<rtcPeerHandler>();
     auto rpcHandler = std::unique_ptr<rpcStub>();
 
 	std::cout << "Server created" <<std::endl;
 
+	//rpcHandler->server->Wait(); //blocking, this will need to be threaded
     return 0;
 }
