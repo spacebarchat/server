@@ -19,7 +19,15 @@ export default <Connection>connection;
 
 function transform<T>(document: T) {
 	// @ts-ignore
-	if (!document || !document.toObject) return document;
+	if (!document || !document.toObject) {
+		try {
+			// @ts-ignore
+			delete document._id;
+			// @ts-ignore
+			delete document.__v;
+		} catch (error) {}
+		return document;
+	}
 	// @ts-ignore
 	return document.toObject({ virtuals: true });
 }

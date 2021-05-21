@@ -124,7 +124,7 @@ export class Permissions extends BitField {
 			// * permission: current calculated permission (e.g. 010)
 			// * deny contains all denied permissions (e.g. 011)
 			// * allow contains all explicitly allowed permisions (e.g. 100)
-			return (permission & ~overwrite.deny) | overwrite.allow;
+			return (permission & ~BigInt(overwrite.deny)) | BigInt(overwrite.allow);
 			// ~ operator inverts deny (e.g. 011 -> 100)
 			// & operator only allows 1 for both ~deny and permission (e.g. 010 & 100 -> 000)
 			// | operators adds both together (e.g. 000 + 100 -> 100)
@@ -133,7 +133,7 @@ export class Permissions extends BitField {
 
 	static rolePermission(roles: Role[]) {
 		// adds all permissions of all roles together (Bit OR)
-		return roles.reduce((permission, role) => permission | role.permissions, 0n);
+		return roles.reduce((permission, role) => permission | BigInt(role.permissions), 0n);
 	}
 
 	static finalPermission({
