@@ -46,7 +46,7 @@ export interface Message {
 	})[];
 	mention_roles?: Role[];
 	mention_channels?: Channel[];
-	created_at: Date;
+	created_at?: Date;
 }
 
 export interface MessageDocument extends Document, Message {
