@@ -1,5 +1,14 @@
 import { Router } from "express";
-import { ChannelCreateEvent, ChannelModel, ChannelType, GuildModel, Snowflake, toObject, ChannelUpdateEvent } from "@fosscord/server-util";
+import {
+	ChannelCreateEvent,
+	ChannelModel,
+	ChannelType,
+	GuildModel,
+	Snowflake,
+	toObject,
+	ChannelUpdateEvent,
+	AnyChannel
+} from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
 import { emitEvent } from "../../../util/Event";
@@ -45,7 +54,8 @@ router.post("/", check(ChannelModifySchema), async (req, res) => {
 		...body,
 		id: Snowflake.generate(),
 		created_at: new Date(),
-		guild_id
+		guild_id,
+		recipients: null
 	};
 
 	await new ChannelModel(channel).save();
