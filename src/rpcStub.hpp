@@ -2,6 +2,8 @@
 #include "protodefs/include/protos.grpc.pb.h"
 #include "rtcPeerHandler.hpp"
 
+#ifndef RPCSTUB
+#define RPCSTUB
 class rpcStub{
 	public:
 		rpcStub(std::shared_ptr<rtcPeerHandler> peerHandler, int port);
@@ -10,3 +12,4 @@ class rpcStub{
 	private:
 		std::shared_ptr<rtcPeerHandler> ph;
 };
+#endif
