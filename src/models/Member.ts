@@ -104,6 +104,6 @@ MemberSchema.virtual("user", {
 export const MemberModel = db.model<MemberDocument>("Member", MemberSchema, "members");
 
 // @ts-ignore
-export interface PublicMember extends Omit<Member, "settings" | "id"> {
+export interface PublicMember extends Omit<Member, "settings" | "id" | "read_state"> {
 	user: PublicUser;
 }
