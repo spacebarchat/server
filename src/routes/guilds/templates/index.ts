@@ -21,8 +21,7 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 	const { code } = req.params;
 	const body = req.body as GuildTemplateCreateSchema;
 
-	const limitsProperties = Config.apiConfig.get('limits.user') as Config.DefaultOptions;
-	const { maxGuilds } =  limitsProperties.limits.user;
+	const { maxGuilds } =  Config.apiConfig.getAll().limits.user;
 	const user = await getPublicUser(req.user_id, { guilds: true });
 
 	if (user.guilds.length >= maxGuilds) {

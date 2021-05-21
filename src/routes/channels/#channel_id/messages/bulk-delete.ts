@@ -20,8 +20,7 @@ router.post("/", check({ messages: [String] }), async (req, res) => {
 	const permission = await getPermission(req.user_id, channel?.guild_id, channel_id, { channel });
 	permission.hasThrow("MANAGE_MESSAGES");
 
-	const limitsProperties = Config.apiConfig.get('limits.message') as Config.DefaultOptions;
-	const { maxBulkDelete } =  limitsProperties.limits.message;
+	const { maxBulkDelete } =  Config.apiConfig.getAll().limits.message;
 
 	const { messages } = req.body as { messages: string[] };
 	if (messages.length < 2) throw new HTTPError("You must at least specify 2 messages to bulk delete");

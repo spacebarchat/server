@@ -1,5 +1,4 @@
-import Ajv, { JSONSchemaType } from "ajv"
-import { ValidateFunction } from 'ajv'
+import Ajv, { JSONSchemaType, ValidateFunction } from "ajv"
 import ajvFormats from 'ajv-formats';
 import dotProp from "dot-prop";
 import envPaths from "env-paths";
@@ -100,6 +99,7 @@ export interface DefaultOptions {
 		};
 	};
 }
+
 
 const schema: JSONSchemaType<DefaultOptions> & {
 	definitions: {
@@ -398,6 +398,10 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 		}
 	}
 
+	private _has<Key extends keyof T>(key: Key | string): boolean {
+		return dotProp.has(this.store, key as string);
+	}
+
 	private _validate(data: T | unknown): void {
 		if (!this.#validator) {
 			return;
@@ -432,7 +436,7 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 	private _ensureDirectory(): void {
 		fs.mkdirSync(path.dirname(this.path), { recursive: true })
 	}
-
+	
 	set store(value: T) {
 		this._validate(value);
 
@@ -449,9 +453,17 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 		return this._get(key, defaultValue);
 	}
 
+	public getAll(): DefaultOptions {
+		return this.store as unknown as DefaultOptions
+	}
+
 	private _get<Key extends keyof T>(key: Key): T[Key] | undefined;
 	private _get<Key extends keyof T, Default = unknown>(key: Key, defaultValue: Default): T[Key] | Default;
 	private _get<Key extends keyof T, Default = unknown>(key: Key | string, defaultValue?: Default): Default | undefined {
+		if (!this._has(key)) {
+			throw new Error("Tried to acess a non existant property in the config");
+		}
+
 		return dotProp.get<T[Key] | undefined>(this.store, key as string, defaultValue as T[Key]);
 	}
 

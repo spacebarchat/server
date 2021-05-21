@@ -44,8 +44,7 @@ export async function GlobalRateLimit(req: Request, res: Response, next: NextFun
 }
 
 export function getIpAdress(req: Request): string {
-	const rateLimitProperties = Config.apiConfig.get('security', {jwtSecret: crypto.randomBytes(256).toString("base64"), forwadedFor: null, captcha: {enabled:false, service: null, sitekey: null, secret: null}}) as Config.DefaultOptions;
-	const { forwadedFor } = rateLimitProperties.security;
+	const { forwadedFor } = Config.apiConfig.getAll().security;
 	const ip = forwadedFor ? <string>req.headers[forwadedFor] : req.ip;
 	return ip.replaceAll(".", "_").replaceAll(":", "_");
 }
