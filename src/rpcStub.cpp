@@ -1,24 +1,32 @@
 #include "rpcStub.hpp"
 
-class fossCordInternalsImpl final : public fosscordMedia::fosscordInternals::Service{
-	grpc::Status sendRequest(
-		grpc::ServerContext* ctx,
-		const fosscordMedia::rpcRequest* req,
-		fosscordMedia::rpcResponse* resp
-	) override{
-		resp->set_b(333);
-		return grpc::Status::OK;
+class fossCordInternalsImpl final : public fosscordMedia::fosscordInternals::Service {
+	std::shared_ptr<rtcPeerHandler> ph;
+	fossCordInternalsImpl(std::shared_ptr<rtcPeerHandler> handler){
+		this->ph= handler;
 	}
+    grpc::Status vRequest(grpc::ServerContext* ctx,
+                             const fosscordMedia::voiceRequest* req,
+                             fosscordMedia::voiceAnswer* resp) override {
 
+        this->ph->initiateConnection(req->ip(), req->port());
+        return grpc::Status::OK;
+    }
 };
 
-rpcStub::rpcStub(int port){
-	grpc::ServerBuilder builder;
+rpcStub::rpcStub(std::shared_ptr<rtcPeerHandler> handler, int port) {
+    if (not port) {
+        port = 8057;
+    }
+    this->ph = handler;
 
-	fossCordInternalsImpl* service;
-	builder.AddListeningPort("0.0.0.0:8057", grpc::InsecureServerCredentials() );
-	builder.RegisterService(service);
+    fossCordInternalsImpl* service;
+    grpc::ServerBuilder builder;
+    builder.AddListeningPort("0.0.0.0:" + std::to_string(port),
+                             grpc::InsecureServerCredentials());
+    builder.RegisterService(service);
 
-	std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-	std::cout << "Server listening on port 8057 " << std::endl;
+    this->server = builder.BuildAndStart();
+
+    std::cout << "RPC stub listening on port " << port << std::endl;
 }

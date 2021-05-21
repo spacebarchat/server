@@ -13,6 +13,8 @@ typedef int SOCKET;
 
 using json = nlohmann::json;
 
+#ifndef RTCPEERHANDLER
+#define RTCPEERHANDLER
 class rtcPeerHandler{
 public:
 	rtcPeerHandler();
@@ -27,3 +29,4 @@ public:
 private:
 	std::map<SOCKET, client> clients;
 };
+#endif

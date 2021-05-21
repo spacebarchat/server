@@ -3,13 +3,13 @@ syntax = "proto3";
 package fosscordMedia;
 
 service fosscordInternals{
-	rpc requestProtocol(voiceRequest) returns (voiceAnswer) {}
+	rpc vRequest(voiceRequest) returns (voiceAnswer) {}
 }
 
 message voiceRequest{ //OP1 from gw
 	uint64 userid = 1;
 	uint64 guildid = 2;
-	string IP=3;
+	string ip=3;
 	uint32 port=4;
 	string protocol=5;
 	string rtcConnectionId=6;

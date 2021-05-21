@@ -1,11 +1,12 @@
 #include <grpc++/grpc++.h>
 #include "protodefs/include/protos.grpc.pb.h"
+#include "rtcPeerHandler.hpp"
 
 class rpcStub{
 	public:
-		rpcStub(int port);
+		rpcStub(std::shared_ptr<rtcPeerHandler> peerHandler, int port);
 		std::unique_ptr<grpc::Server> server;
-	private:
 		
-
+	private:
+		std::shared_ptr<rtcPeerHandler> ph;
 };

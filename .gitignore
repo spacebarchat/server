@@ -29,6 +29,10 @@
 # Executables
 *.o
 
+# Protobuffer builds
+*.pb.cc
+*.pb.h
+
 # Directories
 build/
 .vscode/
