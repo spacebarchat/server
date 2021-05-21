@@ -420,6 +420,17 @@ export interface InteractionCreateEvent extends Event {
 	data: Interaction;
 }
 
+export interface MessageAckEvent extends Event {
+	event: "MESSAGE_ACK";
+	data: {
+		channel_id: string;
+		message_id: string;
+		version?: number;
+		manual?: boolean;
+		mention_count?: number;
+	};
+}
+
 // located in collection events
 
 export enum EVENTEnum {
@@ -508,6 +519,7 @@ export type EVENT =
 	| "APPLICATION_COMMAND_CREATE"
 	| "APPLICATION_COMMAND_UPDATE"
 	| "APPLICATION_COMMAND_DELETE"
+	| "MESSAGE_ACK"
 	| CUSTOMEVENTS;
 
 export type CUSTOMEVENTS = "INVALIDATED";

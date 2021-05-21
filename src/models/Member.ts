@@ -25,6 +25,8 @@ export interface Member {
 	mute: boolean;
 	pending: boolean;
 	settings: UserGuildSettings;
+	read_state: Record<string, string | null>;
+	// virtual
 	user?: User;
 }
 
@@ -68,6 +70,7 @@ export const MemberSchema = new Schema({
 	deaf: Boolean,
 	mute: Boolean,
 	pending: Boolean,
+	read_state: Object,
 	settings: {
 		channel_overrides: [
 			{
