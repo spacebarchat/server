@@ -1,9 +1,10 @@
 import { Schema, Types, Document } from "mongoose";
 import db from "../util/Database";
 import { PublicUser, PublicUserProjection, UserModel } from "./User";
-import { MemberModel, PublicMember, PublicMemberProjection } from "./Member";
+import { MemberModel, PublicMember } from "./Member";
 import { Role, RoleModel } from "./Role";
 import { Channel } from "./Channel";
+import { Snowflake } from "../util";
 
 export interface Message {
 	id: string;
@@ -45,6 +46,7 @@ export interface Message {
 	})[];
 	mention_roles?: Role[];
 	mention_channels?: Channel[];
+	created_at: Date;
 }
 
 export interface MessageDocument extends Document, Message {
@@ -278,6 +280,10 @@ MessageSchema.virtual("mention_channels", {
 	foreignField: "id",
 	justOne: false,
 	autopopulate: { select: { id: true, guild_id: true, type: true, name: true } },
+});
+
+MessageSchema.virtual("created_at").get(function (this: MessageDocument) {
+	return new Date(Snowflake.deconstruct(this.id).timestamp);
 });
 
 MessageSchema.set("removeResponse", ["mention_channel_ids", "mention_role_ids", "mention_user_ids", "author_id"]);
