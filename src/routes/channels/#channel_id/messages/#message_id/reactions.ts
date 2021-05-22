@@ -5,6 +5,8 @@ import {
 	MemberModel,
 	MessageModel,
 	MessageReactionAddEvent,
+	MessageReactionRemoveAllEvent,
+	MessageReactionRemoveEmojiEvent,
 	MessageReactionRemoveEvent,
 	PartialEmoji,
 	PublicUserProjection,
@@ -32,6 +34,66 @@ function getEmoji(emoji: string): PartialEmoji {
 		name: emoji
 	};
 }
+
+router.delete("/", async (req, res) => {
+	const { message_id, channel_id } = req.params;
+
+	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true }).exec();
+	if (!channel) throw new HTTPError("Channel not found", 404);
+
+	const permissions = await getPermission(req.user_id, undefined, channel_id);
+	permissions.hasThrow("MANAGE_MESSAGES");
+
+	const message = await MessageModel.findOneAndUpdate({ id: message_id, channel_id }, { reactions: [] }).exec();
+	if (!message) throw new HTTPError("Message not found", 404);
+
+	await emitEvent({
+		event: "MESSAGE_REACTION_REMOVE_ALL",
+		channel_id,
+		guild_id: channel.guild_id,
+		data: {
+			channel_id,
+			message_id,
+			guild_id: channel.guild_id
+		}
+	} as MessageReactionRemoveAllEvent);
+
+	res.sendStatus(204);
+});
+
+router.delete("/:emoji", async (req, res) => {
+	const { message_id, channel_id } = req.params;
+	const emoji = getEmoji(req.params.emoji);
+
+	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true }).exec();
+	if (!channel) throw new HTTPError("Channel not found", 404);
+
+	const permissions = await getPermission(req.user_id, undefined, channel_id);
+	permissions.hasThrow("MANAGE_MESSAGES");
+
+	const message = await MessageModel.findOne({ id: message_id, channel_id }).exec();
+	if (!message) throw new HTTPError("Message not found", 404);
+
+	const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
+	if (!already_added) throw new HTTPError("Reaction not found", 404);
+	message.reactions.remove(already_added);
+
+	await MessageModel.updateOne({ id: message_id, channel_id }, message).exec();
+
+	await emitEvent({
+		event: "MESSAGE_REACTION_REMOVE_EMOJI",
+		channel_id,
+		guild_id: channel.guild_id,
+		data: {
+			channel_id,
+			message_id,
+			guild_id: channel.guild_id,
+			emoji
+		}
+	} as MessageReactionRemoveEmojiEvent);
+
+	res.sendStatus(204);
+});
 
 router.get("/:emoji", async (req, res) => {
 	const { message_id, channel_id } = req.params;
