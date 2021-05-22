@@ -13,7 +13,7 @@ interface Options<T> {
 
 type Deserialize<T> = (text: string) => T;
 
-function getConfigPath(name: string, configFileName: string, extension: string): string {
+export function getConfigPathForFile(name: string, configFileName: string, extension: string): string {
 	const configEnvPath = envPaths(name, { suffix: "" }).config;
 	const configPath = path.resolve(configEnvPath, `${configFileName}${extension}`)
 	return configPath
