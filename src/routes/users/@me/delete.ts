@@ -17,7 +17,7 @@ router.post("/", async (req: Request, res: Response) => {
 	
 	let correctpass = await bcrypt.compare(req.body.password,user!.user_data.hash) //Not sure if user typed right password :/
     if(correctpass){
-	await UserModel.deleteOne({id: req.user_id}).exec() //Yeetus the feetus user deletus
+	await UserModel.deleteOne({id: req.user_id}).exec() //Yeetus user deletus
 
 	res.sendStatus(204);
 	}
