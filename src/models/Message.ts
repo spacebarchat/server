@@ -126,6 +126,7 @@ export interface Reaction {
 	count: number;
 	//// not saved in the database // me: boolean; // whether the current user reacted using this emoji
 	emoji: PartialEmoji;
+	user_ids?: string[];
 }
 
 export interface PartialEmoji {
@@ -160,6 +161,7 @@ export const EmbedImage = {
 
 const Reaction = {
 	count: Number,
+	user_ids: [String],
 	emoji: {
 		id: String,
 		name: String,
