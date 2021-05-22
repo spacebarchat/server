@@ -13,7 +13,7 @@ import {
 	toObject,
 	UserModel
 } from "@fosscord/server-util";
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../../../util/Event";
 
