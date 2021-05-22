@@ -76,7 +76,18 @@ router.get("/", async (req, res) => {
 
 	const messages = await query.limit(limit).exec();
 
-	return res.json(toObject(messages));
+	return res.json(
+		toObject(messages).map((x) => {
+			(x.reactions || []).forEach((x) => {
+				// @ts-ignore
+				if ((x.user_ids || []).includes(req.user_id)) x.me = true;
+				// @ts-ignore
+				delete x.user_ids;
+			});
+
+			return x;
+		})
+	);
 });
 
 // TODO: config max upload size
