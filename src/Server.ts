@@ -30,7 +30,7 @@ export class Server {
 
 	async setupSchema() {
 		// TODO: adjust expireAfterSeconds -> lower
-		await db.collection("events").createIndex({ created_at: 1 }, { expireAfterSeconds: 60 });
+		await Promise.all([db.collection("events").createIndex({ created_at: 1 }, { expireAfterSeconds: 60 })]);
 	}
 
 	async listen(): Promise<void> {

@@ -14,6 +14,7 @@ import { Send } from "../util/Send";
 import WebSocket from "../util/WebSocket";
 import { check } from "./instanceOf";
 
+// TODO: check permission and only show roles/members that have access to this channel
 // TODO: config: if want to list all members (even those who are offline) sorted by role, or just those who are online
 
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
@@ -41,7 +42,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 						let: { id: "$id" },
 						pipeline: [
 							{ $match: { $expr: { $in: ["$$id", "$roles"] } } },
-							{ $limit: 1 },
+							{ $limit: 100 },
 							{
 								$lookup: {
 									from: "users",
