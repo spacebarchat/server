@@ -98,7 +98,7 @@ export class Permissions extends BitField {
 	};
 
 	any(permission: PermissionResolvable, checkAdmin = true) {
-		return (checkAdmin && super.has(Permissions.FLAGS.ADMINISTRATOR)) || super.any(permission);
+		return (checkAdmin && super.any(Permissions.FLAGS.ADMINISTRATOR)) || super.any(permission);
 	}
 
 	/**
@@ -111,8 +111,8 @@ export class Permissions extends BitField {
 	/**
 	 * Checks whether the bitfield has a permission, or multiple permissions, but throws an Error if user fails to match auth criteria.
 	 */
-	hasThrow(permission: PermissionResolvable, checkAdmin = true) {
-		if (this.has(permission)) return true;
+	hasThrow(permission: PermissionResolvable) {
+		if (this.has(permission) && this.has("VIEW_CHANNEL")) return true;
 		// @ts-ignore
 		throw new HTTPError(`You are missing the following permissions ${permission}`, 403);
 	}

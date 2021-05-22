@@ -126,7 +126,7 @@ export interface Reaction {
 	count: number;
 	//// not saved in the database // me: boolean; // whether the current user reacted using this emoji
 	emoji: PartialEmoji;
-	user_ids?: string[];
+	user_ids: string[];
 }
 
 export interface PartialEmoji {
