@@ -149,6 +149,8 @@ export class Permissions extends BitField {
 			owner_id?: string;
 		};
 	}) {
+		if (user.id === "0") return new Permissions("ADMINISTRATOR"); // system user id
+
 		let roles = guild.roles.filter((x) => user.roles.includes(x.id));
 		let permission = Permissions.rolePermission(roles);
 
