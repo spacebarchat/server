@@ -368,23 +368,91 @@ const createPlainObject = <T = unknown>(): T => {
 type Serialize<T> = (value: T) => string;
 type Deserialize<T> = (text: string) => T;
 
+function getConfigPath(): string {
+	const configEnvPath = envPaths('fosscord', {suffix: ""}).config;
+	const configPath = path.resolve(configEnvPath, 'api.json');
+	return configPath
+}
 
-class Config<T extends Record<string, any> = Record<string, unknown>> implements Iterable<[keyof T, T[keyof T]]> {
+
+class Store<T extends Record<string, any> = Record<string, unknown>> implements Iterable<[keyof T, T[keyof T]]>{
 	readonly path: string;
-	readonly #validator?: ValidateFunction;
-	readonly #defaultOptions: Partial<T> = {};
+	readonly validator: ValidateFunction;
+	constructor(path: string, validator: ValidateFunction) {
+		this.validator = validator;
+		if (fs.existsSync(path)) {
+			this.path = path
+		} else {
+			this._ensureDirectory()
+		}
+	}
 
-	constructor() {
+	private _ensureDirectory(): void {
+		fs.mkdirSync(path.dirname(this.path), {recursive: true})
+	}
 
-		const ajv = new Ajv();
+	protected _validate(data: T | unknown): void {
+		const valid = this.validator(data);
+		if (valid || !this.validator.errors) {
+			return;
+		}
 
-		ajvFormats(ajv);
+		const errors = this.validator.errors.map(({ instancePath, message = '' }) => `\`${instancePath.slice(1)}\` ${message}`);
+		throw new Error('The config schema was violated!: ' + errors.join('; '));
+	}
 
-		this.#validator = ajv.compile(schema);
+	private _write(value: T): void {
+		let data: string | Buffer = this._serialize(value);
 
-		const base = envPaths('fosscord', {suffix: ""}).config;
+		try {
+			atomically.writeFileSync(this.path, data);
+		} catch (error) {
+			throw error;
+		}
+	}
 
-		this.path = path.resolve(base, 'api.json');
+	private readonly _serialize: Serialize<T> = value => JSON.stringify(value, undefined, '\t');
+	private readonly _deserialize: Deserialize<T> = value => JSON.parse(value);
+
+	public get store(): T {
+		try {
+			const data = fs.readFileSync(this.path).toString();
+			const deserializedData = this._deserialize(data);
+			this._validate(deserializedData);
+			return Object.assign(Object.create(null), deserializedData)
+		} catch (error) {
+			if (error.code == 'ENOENT') {
+				this._ensureDirectory();
+				return Object.create(null);
+			}
+
+			throw error;
+		}
+	}
+
+	public set store(value: T) {
+		this._validate(value);
+
+		this._write(value);
+	}
+
+	*[Symbol.iterator](): IterableIterator<[keyof T, T[keyof T]]>{
+		for (const [key, value] of Object.entries(this.store)) {
+			yield [key, value]
+		}
+	}
+}
+
+interface Options {
+	path: string;
+	schemaValidator: ValidateFunction;
+}
+
+class Config<T extends Record<string, any> = Record<string, unknown>> extends Store<T> implements Iterable<[keyof T, T[keyof T]]> {
+	readonly path: string;
+
+	constructor(options: Readonly<Partial<Options>> = {}) {
+		super(options.path!, options.schemaValidator!);
 
 
 		const fileStore = this.store;
@@ -398,68 +466,24 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 		}
 	}
 
+	public get<Key extends keyof T>(key: Key): T[Key];
+	public get<Key extends keyof T>(key: Key, defaultValue: Required<T>[Key]): Required<T>[Key];
+	public get<Key extends string, Value = unknown>(key: Exclude<Key, keyof T>, defaultValue?: Value): Value;
+	public get(key: string, defaultValue?: unknown): unknown {
+		return this._get(key, defaultValue);
+	}
+
 	private _has<Key extends keyof T>(key: Key | string): boolean {
 		return dotProp.has(this.store, key as string);
-	}
-
-	private _validate(data: T | unknown): void {
-		if (!this.#validator) {
-			return;
-		}
-
-		const valid = this.#validator(data);
-		if (valid || !this.#validator.errors) {
-			return;
-		}
-
-		const errors = this.#validator.errors.map(({ instancePath, message = '' }) => `\`${instancePath.slice(1)}\` ${message}`);
-		throw new Error('The config schema was violated!: ' + errors.join('; '));
-	}
-
-	get store(): T {
-		try {
-			const data = fs.readFileSync(this.path).toString();
-			const deserializedData = this._deserialize(data);
-			this._validate(deserializedData);
-			return Object.assign(Object.create(null), deserializedData)
-		} catch (error) {
-			if (error.code == 'ENOENT') {
-				this._ensureDirectory();
-				return createPlainObject();
-
-			}
-
-			throw error;
-		}
-	}
-
-	private _ensureDirectory(): void {
-		fs.mkdirSync(path.dirname(this.path), { recursive: true })
-	}
-	
-	set store(value: T) {
-		this._validate(value);
-
-		this._write(value);
-	}
-
-	private readonly _deserialize: Deserialize<T> = value => JSON.parse(value);
-	private readonly _serialize: Serialize<T> = value => JSON.stringify(value, undefined, '\t')
-
-	get<Key extends keyof T>(key: Key): T[Key];
-	get<Key extends keyof T>(key: Key, defaultValue: Required<T>[Key]): Required<T>[Key];
-	get<Key extends string, Value = unknown>(key: Exclude<Key, keyof T>, defaultValue?: Value): Value;
-	get(key: string, defaultValue?: unknown): unknown {
-		return this._get(key, defaultValue);
 	}
 
 	public getAll(): DefaultOptions {
 		return this.store as unknown as DefaultOptions
 	}
 
-	private _get<Key extends keyof T>(key: Key): T[Key] | undefined;
-	private _get<Key extends keyof T, Default = unknown>(key: Key, defaultValue: Default): T[Key] | Default;
-	private _get<Key extends keyof T, Default = unknown>(key: Key | string, defaultValue?: Default): Default | undefined {
+	_get<Key extends keyof T>(key: Key): T[Key] | undefined;
+	_get<Key extends keyof T, Default = unknown>(key: Key, defaultValue: Default): T[Key] | Default;
+	_get<Key extends keyof T, Default = unknown>(key: Key | string, defaultValue?: Default): Default | undefined {
 		if (!this._has(key)) {
 			throw new Error("Tried to acess a non existant property in the config");
 		}
@@ -467,26 +491,18 @@ class Config<T extends Record<string, any> = Record<string, unknown>> implements
 		return dotProp.get<T[Key] | undefined>(this.store, key as string, defaultValue as T[Key]);
 	}
 
-	*[Symbol.iterator](): IterableIterator<[keyof T, T[keyof T]]> {
+	* [Symbol.iterator](): IterableIterator<[keyof T, T[keyof T]]> {
 		for (const [key, value] of Object.entries(this.store)) {
 			yield [key, value];
 		}
 	}
 
-	private _write(value: T): void {
-		let data: string | Buffer = this._serialize(value);
-
-		try {
-			atomically.writeFileSync(this.path, data);
-		} catch (error) {
-			if (error.code == 'EXDEV') {
-				fs.writeFileSync(this.path, data)
-				return
-			}
-
-			throw error;
-		}
-	}
 }
 
-export const apiConfig = new Config();
+const ajv = new Ajv();
+const validator = ajv.compile(schema);
+
+const configPath = getConfigPath()
+console.log(configPath)
+
+export const apiConfig = new Config({path: configPath, schemaValidator: validator});
