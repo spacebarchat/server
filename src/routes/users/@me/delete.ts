@@ -9,15 +9,9 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
 	// TODO:
-	const { authorization } = req.headers;
  //console.log(req.headers);
-	console.log(authorization);
-	var auth = ""+ authorization;
-	let u = JSON.parse(atob(auth.split(".")[1]))
-	var userid = u.id;
-	console.log(userid);
-	const user = await getPublicUser(userid);
-	await UserModel.remove(user).exec();
+ await UserModel.deleteOne({id: req.user_id}).exec()
+	
 	//await usermodel.save();
 
 	res.sendStatus(204);
