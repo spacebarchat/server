@@ -1,21 +1,29 @@
 export const MemberCreateSchema = {
 	id: String,
-    nick: String,
-    guild_id: String,
-	joined_at: Date,
+	nick: String,
+	guild_id: String,
+	joined_at: Date
 };
 
 export interface MemberCreateSchema {
 	id: string;
-    nick: string;
-    guild_id: string;
+	nick: string;
+	guild_id: string;
 	joined_at: Date;
 }
 
 export const MemberNickChangeSchema = {
-	 nick: String,
-}
+	nick: String
+};
 
 export interface MemberNickChangeSchema {
-	 nick: string,
+	nick: string;
+}
+
+export const MemberChangeSchema = {
+	$roles: [String]
+};
+
+export interface MemberChangeSchema {
+	roles?: string[];
 }
