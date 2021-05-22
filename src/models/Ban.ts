@@ -1,5 +1,6 @@
 import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
+import { PublicUserProjection, UserModel } from "./User";
 
 export interface Ban extends Document {
 	user_id: string;
@@ -15,6 +16,14 @@ export const BanSchema = new Schema({
 	executor_id: { type: String, required: true },
 	reason: String,
 	ip: String, // ? Should we store this in here, or in the UserModel?
+});
+
+BanSchema.virtual("user", {
+	ref: UserModel,
+	localField: "id",
+	foreignField: "user_id",
+	justOne: true,
+	autopopulate: { select: PublicUserProjection },
 });
 
 // @ts-ignore
