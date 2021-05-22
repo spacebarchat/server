@@ -1,28 +1,38 @@
 import { Request, Response, Router } from "express";
-import { RoleModel, GuildModel, getPermission, toObject, UserModel, Snowflake, MemberModel } from "@fosscord/server-util";
+import {
+	RoleModel,
+	GuildModel,
+	getPermission,
+	toObject,
+	UserModel,
+	Snowflake,
+	MemberModel,
+	GuildRoleCreateEvent,
+	GuildRoleUpdateEvent,
+	GuildRoleDeleteEvent
+} from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../util/Event";
 import { check } from "../../../util/instanceOf";
-import { RoleCreateSchema, RoleModifySchema } from "../../../schema/Roles";
+import { RoleModifySchema } from "../../../schema/Roles";
 import { getPublicUser } from "../../../util/User";
+import { isMember } from "../../../util/Member";
 
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;
 
-	const guild = await GuildModel.exists({ id: guild_id });
-	if (!guild) throw new HTTPError("Guild not found", 404);
+	await isMember(req.user_id, guild_id);
 
-	var roles = await RoleModel.find({ guild_id: guild_id }).exec();
-	if(!roles) res.send("No roles");
+	const roles = await RoleModel.find({ guild_id: guild_id }).exec();
+
 	return res.json(toObject(roles));
 });
 
-router.post("/", check(RoleCreateSchema), async (req: Request, res: Response) => {
-
-    const guild_id = req.params.guild_id;
-    const body = req.body as RoleCreateSchema;
+router.post("/", check(RoleModifySchema), async (req: Request, res: Response) => {
+	const guild_id = req.params.guild_id;
+	const body = req.body as RoleModifySchema;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
@@ -31,29 +41,34 @@ router.post("/", check(RoleCreateSchema), async (req: Request, res: Response) =>
 	if (!user) throw new HTTPError("User not found", 404);
 
 	const perms = await getPermission(req.user_id, guild_id);
+	perms.hasThrow("MANAGE_ROLES");
+	if (!body.name) throw new HTTPError("You need to specify a name");
 
-	if (!perms.has("MANAGE_ROLES"))
-		throw new HTTPError("You missing the MANAGE_ROLES permission", 401);
-
-	const role_id = Snowflake.generate();
-
-	var role = {
+	const role = await new RoleModel({
 		...body,
-		id: role_id,
+		id: Snowflake.generate(),
 		guild_id: guild_id,
 		managed: false,
 		position: 0,
 		tags: null,
-	}
+		permissions: body.permissions || 0n
+	}).save();
 
-	const roleNew = await new RoleModel(role).save();
-	res.json(toObject(roleNew)).send();
+	await emitEvent({
+		event: "GUILD_ROLE_CREATE",
+		guild_id,
+		data: {
+			guild_id,
+			role: toObject(role)
+		}
+	} as GuildRoleCreateEvent);
+
+	res.json(toObject(role));
 });
 
 router.delete("/:role_id", async (req: Request, res: Response) => {
-
-    const guild_id = req.params.guild_id;
-    const { role_id } = req.params;
+	const guild_id = req.params.guild_id;
+	const { role_id } = req.params;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
@@ -64,21 +79,31 @@ router.delete("/:role_id", async (req: Request, res: Response) => {
 
 	const perms = await getPermission(req.user_id, guild_id);
 
-	if (!perms.has("MANAGE_ROLES"))
-		throw new HTTPError("You missing the MANAGE_ROLES permission", 401);
+	if (!perms.has("MANAGE_ROLES")) throw new HTTPError("You missing the MANAGE_ROLES permission", 401);
 
 	await RoleModel.findOneAndDelete({
 		id: role_id,
 		guild_id: guild_id
 	}).exec();
 
-	res.send("Deleted");
+	await emitEvent({
+		event: "GUILD_ROLE_DELETE",
+		guild_id,
+		data: {
+			guild_id,
+			role_id
+		}
+	} as GuildRoleDeleteEvent);
+
+	res.sendStatus(204);
 });
 
+// TODO: check role hierarchy
 
 router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Response) => {
-    const guild_id = req.params.guild_id;
-    const { role_id } = req.params;
+	const guild_id = req.params.guild_id;
+	const { role_id } = req.params;
+	const body = req.body as RoleModifySchema;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
 	if (!guild) throw new HTTPError("Guild not found", 404);
@@ -87,20 +112,28 @@ router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Res
 	const user = await UserModel.findOne({ id: req.user_id }).exec();
 	if (!user) throw new HTTPError("User not found", 404);
 
-	const role = await RoleModel.findOne({ id: role_id, guild_id: guild_id }).exec();
-	if (!role) throw new HTTPError("role not found", 404);
-
 	const perms = await getPermission(req.user_id, guild_id);
+	perms.hasThrow("MANAGE_ROLES");
 
-	if (!perms.has("MANAGE_ROLES"))
-		throw new HTTPError("You missing the MANAGE_ROLES permission", 401);
+	const role = await RoleModel.findOneAndUpdate(
+		{
+			id: role_id,
+			guild_id: guild_id
+		},
+		// @ts-ignore
+		body
+	).exec();
 
-	var roleObj = await RoleModel.findOneAndUpdate({
-		id: role_id, guild_id: guild_id
-	}, ...req.body).exec();
+	await emitEvent({
+		event: "GUILD_ROLE_UPDATE",
+		guild_id,
+		data: {
+			guild_id,
+			role
+		}
+	} as GuildRoleUpdateEvent);
 
-	res.json(toObject(roleObj)).send();
+	res.json(toObject(role));
 });
-
 
 export default router;

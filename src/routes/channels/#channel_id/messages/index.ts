@@ -8,7 +8,7 @@ import {
 	MessageDocument,
 	MessageModel,
 	Snowflake,
-	toObject,
+	toObject
 } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../schema/Message";
@@ -18,6 +18,7 @@ import multer from "multer";
 import { emitEvent } from "../../../../util/Event";
 import { Query } from "mongoose";
 import { PublicMemberProjection } from "../../../../util/Member";
+import { sendMessage } from "../../../../util/Message";
 const router: Router = Router();
 
 export default router;
@@ -48,7 +49,7 @@ router.get("/", async (req, res) => {
 	try {
 		instanceOf({ $around: String, $after: String, $before: String, $limit: new Length(Number, 1, 100) }, req.query, {
 			path: "query",
-			req,
+			req
 		});
 	} catch (error) {
 		return res.status(400).json({ code: 50035, message: "Invalid Query", success: false, errors: error });
@@ -67,7 +68,7 @@ router.get("/", async (req, res) => {
 	else if (around)
 		query = MessageModel.find({
 			channel_id,
-			id: { $gt: (BigInt(around) - BigInt(halfLimit)).toString(), $lt: (BigInt(around) + BigInt(halfLimit)).toString() },
+			id: { $gt: (BigInt(around) - BigInt(halfLimit)).toString(), $lt: (BigInt(around) + BigInt(halfLimit)).toString() }
 		});
 	else {
 		query = MessageModel.find({ channel_id }).sort({ id: -1 });
@@ -75,7 +76,18 @@ router.get("/", async (req, res) => {
 
 	const messages = await query.limit(limit).exec();
 
-	return res.json(toObject(messages));
+	return res.json(
+		toObject(messages).map((x) => {
+			(x.reactions || []).forEach((x) => {
+				// @ts-ignore
+				if ((x.user_ids || []).includes(req.user_id)) x.me = true;
+				// @ts-ignore
+				delete x.user_ids;
+			});
+
+			return x;
+		})
+	);
 });
 
 // TODO: config max upload size
@@ -89,52 +101,12 @@ const messageUpload = multer({ limits: { fieldSize: 1024 * 1024 * 1024 * 50 } })
 // TODO: trim and replace message content and every embed field
 // Send message
 router.post("/", check(MessageCreateSchema), async (req, res) => {
-	const channel_id = req.params.channel_id;
+	const { channel_id } = req.params;
 	const body = req.body as MessageCreateSchema;
-
-	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
-	// TODO: are tts messages allowed in dm channels? should permission be checked?
-
-	const permissions = await getPermission(req.user_id, channel.guild_id, channel_id, { channel });
-	permissions.hasThrow("SEND_MESSAGES");
-	if (body.tts) permissions.hasThrow("SEND_TTS_MESSAGES");
-	if (body.message_reference) {
-		permissions.hasThrow("READ_MESSAGE_HISTORY");
-		if (body.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
-	}
-
-	if (body.message_reference) {
-		if (body.message_reference.channel_id !== channel_id) throw new HTTPError("You can only reference messages from this channel");
-		// TODO: should be checked if the referenced message exists?
-	}
 
 	const embeds = [];
 	if (body.embed) embeds.push(body.embed);
-
-	// TODO: check and put it all in the body
-	const message: Message = {
-		id: Snowflake.generate(),
-		channel_id,
-		guild_id: channel.guild_id,
-		author_id: req.user_id,
-		content: body.content,
-		timestamp: new Date(),
-		mention_channels_ids: [],
-		mention_role_ids: [],
-		mention_user_ids: [],
-		attachments: [],
-		embeds: [],
-		reactions: [],
-		type: 0,
-		tts: body.tts,
-		nonce: body.nonce,
-		pinned: false,
-	};
-
-	const data = toObject(await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).save());
-
-	await emitEvent({ event: "MESSAGE_CREATE", channel_id, data, guild_id: channel.guild_id } as MessageCreateEvent);
+	const data = await sendMessage({ ...body, type: 0, pinned: false, author_id: req.user_id, embeds, channel_id });
 
 	return res.send(data);
 });

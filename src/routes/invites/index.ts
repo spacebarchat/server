@@ -1,19 +1,31 @@
 import { Router, Request, Response } from "express";
 import { getPermission, InviteModel, toObject } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
+import { addMember } from "../../util/Member";
 const router: Router = Router();
 
-router.get("/:invite_code", async (req: Request, res: Response) => {
-	const { invite_code: code } = req.params;
+router.get("/:code", async (req: Request, res: Response) => {
+	const { code } = req.params;
 
 	const invite = await InviteModel.findOne({ code }).exec();
-
 	if (!invite) throw new HTTPError("Unknown Invite", 404);
-	res.status(200).send({ invite: toObject(invite) });
+
+	res.status(200).send(toObject(invite));
 });
 
-router.delete("/:invite_code", async (req: Request, res: Response) => {
-	const { invite_code: code } = req.params;
+router.post("/:code", async (req: Request, res: Response) => {
+	const { code } = req.params;
+
+	const invite = await InviteModel.findOneAndUpdate({ code }, { $inc: { uses: 1 } }).exec();
+	if (!invite) throw new HTTPError("Unknown Invite", 404);
+
+	await addMember(req.user_id, invite.guild_id);
+
+	res.status(200).send(toObject(invite));
+});
+
+router.delete("/:code", async (req: Request, res: Response) => {
+	const { code } = req.params;
 	const invite = await InviteModel.findOne({ code }).exec();
 
 	if (!invite) throw new HTTPError("Unknown Invite", 404);

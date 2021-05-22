@@ -7,7 +7,7 @@ export const InviteCreateSchema = {
 	$temporary: Boolean,
 	$unique: Boolean,
 	$target_user: String,
-	$target_user_type: Number,
+	$target_user_type: Number
 };
 export interface InviteCreateSchema {
 	target_user_id?: String;

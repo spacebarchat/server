@@ -37,13 +37,17 @@ export class FosscordServer extends Server {
 	}
 
 	async setupSchema() {
-		await db.collection("users").createIndex({ id: 1 }, { unique: true });
-		await db.collection("messages").createIndex({ id: 1 }, { unique: true });
-		await db.collection("channels").createIndex({ id: 1 }, { unique: true });
-		await db.collection("guilds").createIndex({ id: 1 }, { unique: true });
-		await db.collection("members").createIndex({ id: 1, guild_id: 1 }, { unique: true });
-		await db.collection("roles").createIndex({ id: 1 }, { unique: true });
-		await db.collection("emojis").createIndex({ id: 1 }, { unique: true });
+		return Promise.all([
+			db.collection("users").createIndex({ id: 1 }, { unique: true }),
+			db.collection("messages").createIndex({ id: 1 }, { unique: true }),
+			db.collection("channels").createIndex({ id: 1 }, { unique: true }),
+			db.collection("guilds").createIndex({ id: 1 }, { unique: true }),
+			db.collection("members").createIndex({ id: 1, guild_id: 1 }, { unique: true }),
+			db.collection("roles").createIndex({ id: 1 }, { unique: true }),
+			db.collection("emojis").createIndex({ id: 1 }, { unique: true }),
+			db.collection("invites").createIndex({ code: 1 }, { unique: true }),
+			db.collection("invites").createIndex({ expires_at: 1 }, { expireAfterSeconds: 0 }) // after 0 seconds of expires_at the invite will get delete
+		]);
 	}
 
 	async start() {
@@ -70,9 +74,9 @@ export class FosscordServer extends Server {
 				fallbackLng: "en",
 				ns,
 				backend: {
-					loadPath: __dirname + "/../locales/{{lng}}/{{ns}}.json",
+					loadPath: __dirname + "/../locales/{{lng}}/{{ns}}.json"
 				},
-				load: "all",
+				load: "all"
 			});
 		this.app.use(i18nextMiddleware.handle(i18next, {}));
 
@@ -92,8 +96,8 @@ export class FosscordServer extends Server {
 			const response = await fetch(`https://discord.com/assets/${req.params.file}`, {
 				// @ts-ignore
 				headers: {
-					...req.headers,
-				},
+					...req.headers
+				}
 			});
 			const buffer = await response.buffer();
 
@@ -107,7 +111,7 @@ export class FosscordServer extends Server {
 						"transfer-encoding",
 						"expect-ct",
 						"access-control-allow-origin",
-						"content-encoding",
+						"content-encoding"
 					].includes(name.toLowerCase())
 				) {
 					return;

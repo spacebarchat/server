@@ -10,7 +10,7 @@ import {
 	RoleModel,
 	toObject,
 	UserModel,
-	GuildDocument,
+	GuildDocument
 } from "@fosscord/server-util";
 
 import { HTTPError } from "lambert-server";
@@ -27,7 +27,7 @@ export const PublicMemberProjection = {
 	pending: true,
 	deaf: true,
 	mute: true,
-	premium_since: true,
+	premium_since: true
 };
 
 export async function isMember(user_id: string, guild_id: string) {
@@ -59,12 +59,13 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 		premium_since: undefined,
 		deaf: false,
 		mute: false,
-		pending: false,
+		pending: false
 	};
 
 	await Promise.all([
 		new MemberModel({
 			...member,
+			read_state: {},
 			settings: {
 				channel_overrides: [],
 				message_notifications: 0,
@@ -73,8 +74,8 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 				muted: false,
 				suppress_everyone: false,
 				suppress_roles: false,
-				version: 0,
-			},
+				version: 0
+			}
 		}).save(),
 
 		UserModel.updateOne({ id: user_id }, { $push: { guilds: guild_id } }).exec(),
@@ -85,10 +86,10 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 			data: {
 				...member,
 				user,
-				guild_id: guild_id,
+				guild_id: guild_id
 			},
-			guild_id: guild_id,
-		} as GuildMemberAddEvent),
+			guild_id: guild_id
+		} as GuildMemberAddEvent)
 	]);
 
 	await emitEvent({
@@ -99,7 +100,7 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 				.populate({ path: "joined_at", match: { id: user.id } })
 				.execPopulate()
 		),
-		user_id,
+		user_id
 	} as GuildCreateEvent);
 }
 
@@ -115,7 +116,7 @@ export async function removeMember(user_id: string, guild_id: string) {
 	return Promise.all([
 		MemberModel.deleteOne({
 			id: user_id,
-			guild_id: guild_id,
+			guild_id: guild_id
 		}).exec(),
 		UserModel.updateOne({ id: user.id }, { $pull: { guilds: guild_id } }).exec(),
 		GuildModel.updateOne({ id: guild_id }, { $inc: { member_count: -1 } }).exec(),
@@ -123,18 +124,18 @@ export async function removeMember(user_id: string, guild_id: string) {
 		emitEvent({
 			event: "GUILD_DELETE",
 			data: {
-				id: guild_id,
+				id: guild_id
 			},
-			user_id: user_id,
+			user_id: user_id
 		} as GuildDeleteEvent),
 		emitEvent({
 			event: "GUILD_MEMBER_REMOVE",
 			data: {
 				guild_id: guild_id,
-				user: user,
+				user: user
 			},
-			guild_id: guild_id,
-		} as GuildMemberRemoveEvent),
+			guild_id: guild_id
+		} as GuildMemberRemoveEvent)
 	]);
 }
 
@@ -147,7 +148,7 @@ export async function addRole(user_id: string, guild_id: string, role_id: string
 	var memberObj = await MemberModel.findOneAndUpdate(
 		{
 			id: user_id,
-			guild_id: guild_id,
+			guild_id: guild_id
 		},
 		{ $push: { roles: role_id } }
 	).exec();
@@ -159,9 +160,9 @@ export async function addRole(user_id: string, guild_id: string, role_id: string
 		data: {
 			guild_id: guild_id,
 			user: user,
-			roles: memberObj.roles,
+			roles: memberObj.roles
 		},
-		guild_id: guild_id,
+		guild_id: guild_id
 	} as GuildMemberUpdateEvent);
 }
 
@@ -174,7 +175,7 @@ export async function removeRole(user_id: string, guild_id: string, role_id: str
 	var memberObj = await MemberModel.findOneAndUpdate(
 		{
 			id: user_id,
-			guild_id: guild_id,
+			guild_id: guild_id
 		},
 		{ $pull: { roles: role_id } }
 	).exec();
@@ -186,9 +187,9 @@ export async function removeRole(user_id: string, guild_id: string, role_id: str
 		data: {
 			guild_id: guild_id,
 			user: user,
-			roles: memberObj.roles,
+			roles: memberObj.roles
 		},
-		guild_id: guild_id,
+		guild_id: guild_id
 	} as GuildMemberUpdateEvent);
 }
 
@@ -198,7 +199,7 @@ export async function changeNickname(user_id: string, guild_id: string, nickname
 	var memberObj = await MemberModel.findOneAndUpdate(
 		{
 			id: user_id,
-			guild_id: guild_id,
+			guild_id: guild_id
 		},
 		{ nick: nickname }
 	).exec();
@@ -210,8 +211,8 @@ export async function changeNickname(user_id: string, guild_id: string, nickname
 		data: {
 			guild_id: guild_id,
 			user: user,
-			nick: nickname,
+			nick: nickname
 		},
-		guild_id: guild_id,
+		guild_id: guild_id
 	} as GuildMemberUpdateEvent);
 }

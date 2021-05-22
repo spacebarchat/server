@@ -6,6 +6,7 @@ import { GuildCreateSchema } from "../../schema/Guild";
 import * as Config from "../../util/Config";
 import { getPublicUser } from "../../util/User";
 import { addMember } from "../../util/Member";
+import { createChannel } from "../../util/Channel";
 
 const router: Router = Router();
 
@@ -80,7 +81,8 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		}).save()
 	]);
 
-	await addMember(req.user_id, guild_id, { guild: guild_doc });
+	await createChannel({ name: "general", type: 0, guild_id, position: 0, permission_overwrites: [] }, req.user_id);
+	await addMember(req.user_id, guild_id);
 
 	res.status(201).json({ id: guild.id });
 });
