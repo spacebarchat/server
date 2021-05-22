@@ -5,7 +5,8 @@ import { Tuple } from "lambert-server";
 import "missing-native-js-functions";
 
 export const OPTIONAL_PREFIX = "$";
-export const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+export const EMAIL_REGEX =
+	/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export function check(schema: any) {
 	return (req: Request, res: Response, next: NextFunction) => {
@@ -27,9 +28,9 @@ export function FieldErrors(fields: Record<string, { code?: string; message: str
 			_errors: [
 				{
 					message,
-					code: code || "BASE_TYPE_INVALID",
-				},
-			],
+					code: code || "BASE_TYPE_INVALID"
+				}
+			]
 		}))
 	);
 }
@@ -68,7 +69,7 @@ export function instanceOf(
 		optional = false,
 		errors = {},
 		req,
-		ref,
+		ref
 	}: { path?: string; optional?: boolean; errors?: any; req: Request; ref?: { key: string | number; obj: any } }
 ): Boolean {
 	if (!ref) ref = { obj: null, key: "" };
@@ -131,7 +132,7 @@ export function instanceOf(
 								optional,
 								errors: errors[i],
 								req,
-								ref: { key: i, obj: value },
+								ref: { key: i, obj: value }
 							}) === true
 						) {
 							delete errors[i];
@@ -153,7 +154,7 @@ export function instanceOf(
 					throw new FieldError(
 						"BASE_TYPE_BAD_LENGTH",
 						req.t("common:field.BASE_TYPE_BAD_LENGTH", {
-							length: `${type.min} - ${type.max}`,
+							length: `${type.min} - ${type.max}`
 						})
 					);
 				}
@@ -185,7 +186,7 @@ export function instanceOf(
 							optional: OPTIONAL,
 							errors: errors[newKey],
 							req,
-							ref: { key: newKey, obj: value },
+							ref: { key: newKey, obj: value }
 						}) === true
 					) {
 						delete errors[newKey];

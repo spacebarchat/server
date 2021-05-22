@@ -54,15 +54,4 @@ router.patch("/", check(GuildUpdateSchema), async (req: Request, res: Response) 
 	return res.send(data);
 });
 
-router.get("/vanity-url", async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
-
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
-	if (!guild) throw new HTTPError("Guild does not exist", 404);
-
-	if (!guild.vanity_url) throw new HTTPError("This guild has no vanity url", 204);
-
-	return res.json(guild.vanity_url);
-});
-
 export default router;

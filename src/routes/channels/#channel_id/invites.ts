@@ -24,16 +24,19 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 	const permission = await getPermission(user_id, guild_id);
 	permission.hasThrow("CREATE_INSTANT_INVITE");
 
+	const expires_at = new Date(req.body.max_age * 1000 + Date.now());
+
 	const invite = {
 		code: random(),
 		temporary: req.body.temporary,
 		uses: 0,
 		max_uses: req.body.max_uses,
 		max_age: req.body.max_age,
+		expires_at,
 		created_at: new Date(),
 		guild_id,
 		channel_id: channel_id,
-		inviter_id: user_id,
+		inviter_id: user_id
 	};
 
 	await new InviteModel(invite).save();

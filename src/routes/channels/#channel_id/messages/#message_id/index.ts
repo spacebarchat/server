@@ -1,11 +1,47 @@
-import { ChannelModel, getPermission, MessageDeleteEvent, MessageModel } from "@fosscord/server-util";
+import { ChannelModel, getPermission, MessageDeleteEvent, MessageModel, MessageUpdateEvent, toObject } from "@fosscord/server-util";
 import { Router } from "express";
 import { HTTPError } from "lambert-server";
+import { MessageCreateSchema } from "../../../../../schema/Message";
 import { emitEvent } from "../../../../../util/Event";
 import { check } from "../../../../../util/instanceOf";
+import { handleMessage } from "../../../../../util/Message";
 
 const router = Router();
-// TODO:
+
+router.patch("/", check(MessageCreateSchema), async (req, res) => {
+	const { message_id, channel_id } = req.params;
+	var body = req.body as MessageCreateSchema;
+
+	var message = await MessageModel.findOne({ id: message_id, channel_id }, { author_id: true }).exec();
+	if (!message) throw new HTTPError("Message not found", 404);
+
+	const permissions = await getPermission(req.user_id, undefined, channel_id);
+
+	if (req.user_id !== message.author_id) {
+		permissions.hasThrow("MANAGE_MESSAGES");
+		body = { flags: body.flags };
+	}
+
+	const opts = await handleMessage({
+		...body,
+		author_id: message.author_id,
+		channel_id,
+		id: message_id,
+		edited_timestamp: new Date()
+	});
+
+	message = await MessageModel.findOneAndUpdate({ id: message_id }, opts).populate("author").exec();
+	if (!message) throw new HTTPError("Message not found", 404);
+
+	await emitEvent({
+		event: "MESSAGE_UPDATE",
+		channel_id,
+		guild_id: message.guild_id,
+		data: { ...toObject(message), nonce: undefined }
+	} as MessageUpdateEvent);
+
+	return res.json(toObject(message));
+});
 
 router.delete("/", async (req, res) => {
 	const { message_id, channel_id } = req.params;
