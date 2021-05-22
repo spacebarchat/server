@@ -23,7 +23,7 @@ export function check(password: string): number {
 		minUpperCase,
 		minSymbols,
 		blockInsecureCommonPasswords,
-	} = Config.apiConfig.getAll().register.password;
+	} = (Config.apiConfig.getAll() as Config.DefaultOptions).register.password;
 	var strength = 0;
 
 	// checks for total password len

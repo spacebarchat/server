@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { checkToken } from "@fosscord/server-util";
+import * as Config from "../util/Config"
 
 export const NO_AUTHORIZATION_ROUTES = [
 	"/api/v8/auth/login",
@@ -27,7 +28,10 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 	// TODO: check if user is banned/token expired
 
 	try {
-		const decoded: any = await checkToken(req.headers.authorization);
+
+		const { jwtSecret } = (Config.apiConfig.getAll() as Config.DefaultOptions).security;
+
+		const decoded: any = await checkToken(req.headers.authorization, jwtSecret);
 
 		req.token = decoded;
 		req.user_id = decoded.id;

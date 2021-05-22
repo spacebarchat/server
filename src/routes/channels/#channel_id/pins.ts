@@ -18,7 +18,7 @@ router.put("/:message_id", async (req: Request, res: Response) => {
 	if (channel.guild_id) permission.hasThrow("MANAGE_MESSAGES");
 
 	const pinned_count = await MessageModel.count({ channel_id, pinned: true }).exec();
-	const { maxPins } = Config.apiConfig.getAll().limits.channel;
+	const { maxPins } = (Config.apiConfig.getAll() as Config.DefaultOptions).limits.channel;
 	if (pinned_count >= maxPins) throw new HTTPError("Max pin count reached: " + maxPins);
 
 	await MessageModel.updateOne({ id: message_id }, { pinned: true }).exec();

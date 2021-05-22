@@ -39,7 +39,7 @@ export async function isMember(user_id: string, guild_id: string) {
 export async function addMember(user_id: string, guild_id: string, cache?: { guild?: GuildDocument }) {
 	const user = await getPublicUser(user_id, { guilds: true });
 
-	const { maxGuilds } = Config.apiConfig.getAll().limits.user;
+	const { maxGuilds } = (Config.apiConfig.getAll() as Config.DefaultOptions).limits.user;
 	if (user.guilds.length >= maxGuilds) {
 		throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
 	}

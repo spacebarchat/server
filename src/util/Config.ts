@@ -1,11 +1,6 @@
-import Ajv, { JSONSchemaType, ValidateFunction } from "ajv"
-import ajvFormats from 'ajv-formats';
-import dotProp from "dot-prop";
-import envPaths from "env-paths";
-import path from "node:path";
-import fs from 'fs'
-import assert from "assert";
-import atomically from "atomically"
+import Ajv, { JSONSchemaType } from "ajv"
+import { getConfigPathForFile } from "@fosscord/server-util/dist/util/Config";
+import {Config} from "@fosscord/server-util"
 
 export interface RateLimitOptions {
 	count: number;
@@ -362,147 +357,9 @@ const schema: JSONSchemaType<DefaultOptions> & {
 }
 
 
-const createPlainObject = <T = unknown>(): T => {
-	return Object.create(null);
-};
-type Serialize<T> = (value: T) => string;
-type Deserialize<T> = (text: string) => T;
-
-function getConfigPath(): string {
-	const configEnvPath = envPaths('fosscord', {suffix: ""}).config;
-	const configPath = path.resolve(configEnvPath, 'api.json');
-	return configPath
-}
-
-
-class Store<T extends Record<string, any> = Record<string, unknown>> implements Iterable<[keyof T, T[keyof T]]>{
-	readonly path: string;
-	readonly validator: ValidateFunction;
-	constructor(path: string, validator: ValidateFunction) {
-		this.validator = validator;
-		if (fs.existsSync(path)) {
-			this.path = path
-		} else {
-			this._ensureDirectory()
-		}
-	}
-
-	private _ensureDirectory(): void {
-		fs.mkdirSync(path.dirname(this.path), {recursive: true})
-	}
-
-	protected _validate(data: T | unknown): void {
-		const valid = this.validator(data);
-		if (valid || !this.validator.errors) {
-			return;
-		}
-
-		const errors = this.validator.errors.map(({ instancePath, message = '' }) => `\`${instancePath.slice(1)}\` ${message}`);
-		throw new Error('The config schema was violated!: ' + errors.join('; '));
-	}
-
-	private _write(value: T): void {
-		let data: string | Buffer = this._serialize(value);
-
-		try {
-			atomically.writeFileSync(this.path, data);
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	private readonly _serialize: Serialize<T> = value => JSON.stringify(value, undefined, '\t');
-	private readonly _deserialize: Deserialize<T> = value => JSON.parse(value);
-
-	public get store(): T {
-		try {
-			const data = fs.readFileSync(this.path).toString();
-			const deserializedData = this._deserialize(data);
-			this._validate(deserializedData);
-			return Object.assign(Object.create(null), deserializedData)
-		} catch (error) {
-			if (error.code == 'ENOENT') {
-				this._ensureDirectory();
-				return Object.create(null);
-			}
-
-			throw error;
-		}
-	}
-
-	public set store(value: T) {
-		this._validate(value);
-
-		this._write(value);
-	}
-
-	*[Symbol.iterator](): IterableIterator<[keyof T, T[keyof T]]>{
-		for (const [key, value] of Object.entries(this.store)) {
-			yield [key, value]
-		}
-	}
-}
-
-interface Options {
-	path: string;
-	schemaValidator: ValidateFunction;
-}
-
-class Config<T extends Record<string, any> = Record<string, unknown>> extends Store<T> implements Iterable<[keyof T, T[keyof T]]> {
-	readonly path: string;
-
-	constructor(options: Readonly<Partial<Options>> = {}) {
-		super(options.path!, options.schemaValidator!);
-
-
-		const fileStore = this.store;
-		const store = Object.assign(createPlainObject<T>(), fileStore);
-		this._validate(store);
-
-		try {
-			assert.deepStrictEqual(fileStore, store);
-		} catch {
-			this.store = store;
-		}
-	}
-
-	public get<Key extends keyof T>(key: Key): T[Key];
-	public get<Key extends keyof T>(key: Key, defaultValue: Required<T>[Key]): Required<T>[Key];
-	public get<Key extends string, Value = unknown>(key: Exclude<Key, keyof T>, defaultValue?: Value): Value;
-	public get(key: string, defaultValue?: unknown): unknown {
-		return this._get(key, defaultValue);
-	}
-
-	private _has<Key extends keyof T>(key: Key | string): boolean {
-		return dotProp.has(this.store, key as string);
-	}
-
-	public getAll(): DefaultOptions {
-		return this.store as unknown as DefaultOptions
-	}
-
-	_get<Key extends keyof T>(key: Key): T[Key] | undefined;
-	_get<Key extends keyof T, Default = unknown>(key: Key, defaultValue: Default): T[Key] | Default;
-	_get<Key extends keyof T, Default = unknown>(key: Key | string, defaultValue?: Default): Default | undefined {
-		if (!this._has(key)) {
-			throw new Error("Tried to acess a non existant property in the config");
-		}
-
-		return dotProp.get<T[Key] | undefined>(this.store, key as string, defaultValue as T[Key]);
-	}
-
-	* [Symbol.iterator](): IterableIterator<[keyof T, T[keyof T]]> {
-		for (const [key, value] of Object.entries(this.store)) {
-			yield [key, value];
-		}
-	}
-
-}
-
 const ajv = new Ajv();
 const validator = ajv.compile(schema);
 
-const configPath = getConfigPath()
-console.log(configPath)
+const configPath = getConfigPathForFile("fosscord", "api", ".json");
 
-export const apiConfig = new Config({path: configPath, schemaValidator: validator});
+export const apiConfig = new Config({path: configPath, schemaValidator: validator, schema: schema});

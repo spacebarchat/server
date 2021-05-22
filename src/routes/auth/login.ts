@@ -27,7 +27,7 @@ router.post(
 
 		// TODO: Rewrite this to have the proper config syntax on the new method 
  
-		const config = Config.apiConfig.getAll();
+		const config = Config.apiConfig.getAll() as Config.DefaultOptions;
 
 		if (config.login.requireCaptcha && config.security.captcha.enabled) {
 			if (!captcha_key) {
@@ -71,7 +71,7 @@ export async function generateToken(id: string) {
 	return new Promise((res, rej) => {
 		jwt.sign(
 			{ id: id, iat },
-			Config.apiConfig.getAll().security.jwtSecret,
+			(Config.apiConfig.getAll() as Config.DefaultOptions).security.jwtSecret,
 			{
 				algorithm,
 			},
