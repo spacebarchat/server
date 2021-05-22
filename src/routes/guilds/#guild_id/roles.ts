@@ -8,7 +8,8 @@ import {
 	Snowflake,
 	MemberModel,
 	GuildRoleCreateEvent,
-	GuildRoleUpdateEvent
+	GuildRoleUpdateEvent,
+	GuildRoleDeleteEvent
 } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../util/Event";
@@ -84,6 +85,15 @@ router.delete("/:role_id", async (req: Request, res: Response) => {
 		id: role_id,
 		guild_id: guild_id
 	}).exec();
+
+	await emitEvent({
+		event: "GUILD_ROLE_DELETE",
+		guild_id,
+		data: {
+			guild_id,
+			role_id
+		}
+	} as GuildRoleDeleteEvent);
 
 	res.sendStatus(204);
 });

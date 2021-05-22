@@ -9,7 +9,6 @@
 		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/start",
 		"build": "tsc -b .",
-		"postinstall": "patch-package",
 		"dev": "tsnd --respawn src/start.ts"
 	},
 	"repository": {
@@ -47,8 +46,7 @@
 		"mongoose": "^5.12.3",
 		"mongoose-autopopulate": "^0.12.3",
 		"mongoose-long": "^0.3.2",
-		"multer": "^1.4.2",
-		"patch-package": "^6.2.2"
+		"multer": "^1.4.2"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^3.0.0",
