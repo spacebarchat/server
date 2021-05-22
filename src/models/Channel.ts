@@ -2,7 +2,10 @@ import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
 import toBigInt from "../util/toBigInt";
 
-export interface AnyChannel extends Channel, DMChannel, TextChannel, VoiceChannel {}
+// @ts-ignore
+export interface AnyChannel extends Channel, DMChannel, TextChannel, VoiceChannel {
+	recipients: null | string[];
+}
 
 export interface ChannelDocument extends Document, AnyChannel {
 	id: string;
@@ -46,6 +49,7 @@ export interface Channel {
 export interface TextBasedChannel {
 	last_message_id?: string;
 	last_pin_timestamp?: number;
+	recipients: null;
 }
 
 export interface GuildChannel extends Channel {
@@ -67,14 +71,18 @@ export enum ChannelPermissionOverwriteType {
 	member = 1,
 }
 
-export interface VoiceChannel extends GuildChannel {}
+export interface VoiceChannel extends GuildChannel {
+	video_quality_mode?: number;
+	bitrate?: number;
+	user_limit?: number;
+}
 
 export interface TextChannel extends GuildChannel, TextBasedChannel {
 	nsfw: boolean;
 	rate_limit_per_user: number;
 	topic?: string;
 }
-
+// @ts-ignore
 export interface DMChannel extends Channel, TextBasedChannel {
 	owner_id: string;
 	recipients: string[];

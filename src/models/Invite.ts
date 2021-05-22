@@ -4,21 +4,24 @@ import { ChannelModel } from "./Channel";
 import { UserModel } from "./User";
 import { GuildModel } from "./Guild";
 
-export interface Invite extends Document {
+export interface Invite {
 	code: string;
 	temporary: boolean;
 	uses: number;
 	max_uses: number;
 	max_age: number;
 	created_at: Date;
+	expires_at: Date;
 	guild_id: string;
 	channel_id: string;
 	inviter_id: string;
 
-	// ? What the fucking shit is this
+	// ? What is this?
 	target_user_id?: string;
 	target_user_type?: number;
 }
+
+export interface InviteDocument extends Invite, Document {}
 
 export const InviteSchema = new Schema({
 	code: String,
@@ -27,11 +30,12 @@ export const InviteSchema = new Schema({
 	max_uses: Number,
 	max_age: Number,
 	created_at: Date,
+	expires_at: Date,
 	guild_id: String,
 	channel_id: String,
 	inviter_id: String,
 
-	// ? What the fucking shit is this
+	// ? What is this?
 	target_user_id: String,
 	target_user_type: Number,
 });
@@ -94,4 +98,4 @@ InviteSchema.virtual("guild", {
 });
 
 // @ts-ignore
-export const InviteModel = db.model<Invite>("Invite", InviteSchema, "invites");
+export const InviteModel = db.model<InviteDocument>("Invite", InviteSchema, "invites");

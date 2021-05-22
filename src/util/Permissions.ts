@@ -145,7 +145,7 @@ export class Permissions extends BitField {
 		guild: { roles: Role[] };
 		channel?: {
 			overwrites?: ChannelPermissionOverwrite[];
-			recipients?: string[];
+			recipients?: string[] | null;
 			owner_id?: string;
 		};
 	}) {
