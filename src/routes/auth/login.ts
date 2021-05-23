@@ -3,7 +3,7 @@ import { check, FieldErrors, Length } from "../../util/instanceOf";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { UserModel } from "@fosscord/server-util";
-import Config from "../../util/Config";
+import * as Config from "../../util/Config";
 import { adjustEmail } from "./register";
 
 const router: Router = Router();
@@ -25,7 +25,9 @@ router.post(
 		const query: any[] = [{ phone: login }];
 		if (email) query.push({ email });
 
-		const config = Config.get();
+		// TODO: Rewrite this to have the proper config syntax on the new method 
+ 
+		const config = Config.apiConfig.getAll();
 
 		if (config.login.requireCaptcha && config.security.captcha.enabled) {
 			if (!captcha_key) {
@@ -69,7 +71,7 @@ export async function generateToken(id: string) {
 	return new Promise((res, rej) => {
 		jwt.sign(
 			{ id: id, iat },
-			Config.get().security.jwtSecret,
+			Config.apiConfig.getAll().security.jwtSecret,
 			{
 				algorithm,
 			},

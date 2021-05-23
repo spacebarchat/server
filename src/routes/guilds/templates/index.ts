@@ -5,7 +5,7 @@ import { HTTPError } from "lambert-server";
 import { GuildTemplateCreateSchema } from "../../../schema/Guild";
 import { getPublicUser } from "../../../util/User";
 import { check } from "../../../util/instanceOf";
-import Config from "../../../util/Config";
+import * as Config from "../../../util/Config";
 import { addMember } from "../../../util/Member";
 
 router.get("/:code", async (req: Request, res: Response) => {
@@ -21,7 +21,7 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 	const { code } = req.params;
 	const body = req.body as GuildTemplateCreateSchema;
 
-	const { maxGuilds } = Config.get().limits.user;
+	const { maxGuilds } =  Config.apiConfig.getAll().limits.user;
 	const user = await getPublicUser(req.user_id, { guilds: true });
 
 	if (user.guilds.length >= maxGuilds) {

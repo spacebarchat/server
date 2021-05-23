@@ -14,7 +14,7 @@ import {
 } from "@fosscord/server-util";
 
 import { HTTPError } from "lambert-server";
-import Config from "./Config";
+import * as Config from "./Config";
 import { emitEvent } from "./Event";
 import { getPublicUser } from "./User";
 
@@ -39,7 +39,7 @@ export async function isMember(user_id: string, guild_id: string) {
 export async function addMember(user_id: string, guild_id: string, cache?: { guild?: GuildDocument }) {
 	const user = await getPublicUser(user_id, { guilds: true });
 
-	const { maxGuilds } = Config.get().limits.user;
+	const { maxGuilds } = Config.apiConfig.getAll().limits.user;
 	if (user.guilds.length >= maxGuilds) {
 		throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
 	}

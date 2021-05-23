@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import Config from "../../util/Config";
+import * as Config from "../../util/Config";
 import { trimSpecial, User, Snowflake, UserModel } from "@fosscord/server-util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../util/instanceOf";
@@ -40,7 +40,7 @@ router.post(
 		// TODO: check password strength
 
 		// adjusted_email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
-		let adjusted_email: string | undefined = adjustEmail(email);
+		let adjusted_email: string | null = adjustEmail(email);
 
 		// adjusted_password will be the hash of the password
 		let adjusted_password: string = "";
@@ -52,7 +52,7 @@ router.post(
 		let discriminator = "";
 
 		// get register Config
-		const { register, security } = Config.get();
+		const { register, security } = Config.apiConfig.getAll();
 
 		// check if registration is allowed
 		if (!register.allowNewRegistration) {
@@ -90,13 +90,13 @@ router.post(
 					},
 				});
 			}
-		} else if (register.email.required) {
+		} else if (register.email.necessary) {
 			throw FieldErrors({
 				email: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") },
 			});
 		}
 
-		if (register.dateOfBirth.required && !date_of_birth) {
+		if (register.dateOfBirth.necessary && !date_of_birth) {
 			throw FieldErrors({
 				date_of_birth: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") },
 			});
@@ -181,7 +181,7 @@ router.post(
 			mobile: false,
 			premium: false,
 			premium_type: 0,
-			phone: undefined,
+			phone: null,
 			mfa_enabled: false,
 			verified: false,
 			presence: {
@@ -253,7 +253,7 @@ router.post(
 	}
 );
 
-export function adjustEmail(email: string): string | undefined {
+export function adjustEmail(email: string): string | null {
 	// body parser already checked if it is a valid email
 	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);
 	// @ts-ignore

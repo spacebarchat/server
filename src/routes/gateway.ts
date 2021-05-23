@@ -1,12 +1,11 @@
 import { Router } from "express";
-import Config from "../util/Config";
+import * as Config from "../util/Config"
 
 const router = Router();
 
 router.get("/", (req, res) => {
-	const endpoint = Config.getAll()?.gateway?.endpoint;
-
-	res.send({ url: endpoint || "ws://localhost:3002" });
+	const { gateway } = Config.apiConfig.getAll();
+	res.send({ url: gateway || "ws://localhost:3002" });
 });
 
 export default router;

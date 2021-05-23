@@ -1,5 +1,5 @@
 import "missing-native-js-functions";
-import Config from "./Config";
+import * as Config from "./Config";
 
 const reNUMBER = /[0-9]/g;
 const reUPPERCASELETTER = /[A-Z]/g;
@@ -23,7 +23,7 @@ export function check(password: string): number {
 		minUpperCase,
 		minSymbols,
 		blockInsecureCommonPasswords,
-	} = Config.get().register.password;
+	} = Config.apiConfig.getAll().register.password;
 	var strength = 0;
 
 	// checks for total password len
