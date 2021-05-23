@@ -44,7 +44,7 @@ const defaultConfig = {
 				count: 1000,
 				timespan: 1000 * 60 * 10,
 			},
-			routes: "",
+			routes: {},
 		},
 	},
 	security: {
@@ -64,14 +64,14 @@ const defaultConfig = {
 	},
 	register: {
 		email: {
-			required: true,
+			necessary: true,
 			allowlist: false,
 			blocklist: true,
 			domains: [], // TODO: efficiently save domain blocklist in database
 			// domains: fs.readFileSync(__dirname + "/blockedEmailDomains.txt", { encoding: "utf8" }).split("\n"),
 		},
 		dateOfBirth: {
-			required: true,
+			necessary: true,
 			minimum: 13,
 		},
 		requireInvite: false,
