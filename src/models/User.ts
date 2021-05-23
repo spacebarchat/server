@@ -16,7 +16,7 @@ export interface User {
 	username: string; // username max length 32, min 2
 	discriminator: string; // #0001 4 digit long string from #0001 - #9999
 	avatar: string | null; // hash of the user avatar
-	phone?: string; // phone number of the user
+	phone: string | null; // phone number of the user
 	desktop: boolean; // if the user has desktop app installed
 	mobile: boolean; // if the user has mobile app installed
 	premium: boolean; // if user bought nitro
@@ -27,7 +27,7 @@ export interface User {
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 	created_at: Date; // registration date
 	verified: boolean; // if the user is offically verified
-	email?: string; // email of the user
+	email: string | null; // email of the user
 	flags: bigint; // UserFlags
 	public_flags: bigint;
 	user_settings: UserSettings;
@@ -57,7 +57,7 @@ export interface PublicUser {
 	id: string;
 	discriminator: string;
 	username: string;
-	avatar?: string;
+	avatar: string | null;
 	public_flags: bigint;
 }
 

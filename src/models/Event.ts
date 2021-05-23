@@ -53,7 +53,7 @@ export interface ReadyEventData {
 		flags: bigint;
 		mfa_enabled: boolean;
 		nsfw_allowed: boolean;
-		phone: string;
+		phone: string | null;
 		premium: boolean;
 		premium_type: number;
 		verified: boolean;
