@@ -33,4 +33,4 @@ const ajv = new Ajv();
 const validator = ajv.compile(schema);
 
 const configPath = getConfigPathForFile("fosscord", "gateway", ".json"); 
-export const gatewayConfig = new Config({path: configPath, schemaValidator: validator, schema: schema})
+export const gatewayConfig = new Config<DefaultOptions>({path: configPath, schemaValidator: validator, schema: schema})
