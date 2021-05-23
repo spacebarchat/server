@@ -27,7 +27,7 @@ export interface User {
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 	created_at: Date; // registration date
 	verified: boolean; // if the user is offically verified
-	email: string; // email of the user
+	email: string | null; // email of the user
 	flags: bigint; // UserFlags
 	public_flags: bigint;
 	user_settings: UserSettings;
