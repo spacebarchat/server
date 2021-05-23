@@ -362,4 +362,4 @@ const validator = ajv.compile(schema);
 
 const configPath = getConfigPathForFile("fosscord", "api", ".json");
 
-export const apiConfig = new Config({path: configPath, schemaValidator: validator, schema: schema});
+export const apiConfig = new Config<DefaultOptions>({path: configPath, schemaValidator: validator, schema: schema});

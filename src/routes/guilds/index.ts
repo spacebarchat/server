@@ -15,7 +15,7 @@ const router: Router = Router();
 router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) => {
 	const body = req.body as GuildCreateSchema;
 
-	const { maxGuilds } = (Config.apiConfig.getAll() as Config.DefaultOptions).limits.user;
+	const { maxGuilds } = Config.apiConfig.getAll().limits.user;
 	const user = await getPublicUser(req.user_id, { guilds: true });
 
 	if (user.guilds.length >= maxGuilds) {

@@ -52,7 +52,7 @@ router.post(
 		let discriminator = "";
 
 		// get register Config
-		const { register, security } = Config.apiConfig.getAll() as Config.DefaultOptions;
+		const { register, security } = Config.apiConfig.getAll();
 
 		// check if registration is allowed
 		if (!register.allowNewRegistration) {

@@ -29,7 +29,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 
 	try {
 
-		const { jwtSecret } = (Config.apiConfig.getAll() as Config.DefaultOptions).security;
+		const { jwtSecret } = Config.apiConfig.getAll().security;
 
 		const decoded: any = await checkToken(req.headers.authorization, jwtSecret);
 
