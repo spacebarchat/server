@@ -1,21 +1,36 @@
 import { Config } from "@fosscord/server-util";
-
-export default {
-	init() {
-		return Config.init({ gateway: DefaultOptions });
-	},
-	get() {
-		return Config.getAll().gateway;
-	},
-	set(val: any) {
-		return Config.setAll({ gateway: val });
-	},
-	getAll: Config.getAll,
-	setAll: Config.setAll,
-};
+import { getConfigPathForFile } from "@fosscord/server-util/dist/util/Config";
+import Ajv, { JSONSchemaType } from "ajv";
 
 export interface DefaultOptions {
 	endpoint?: string;
+	security: {
+		jwtSecret: string;
+	}
 }
 
-export const DefaultOptions: DefaultOptions = {};
+const schema: JSONSchemaType<DefaultOptions> = {
+	type: "object",
+	properties: {
+		endpoint: {
+			type: "string",
+			nullable: true
+		},
+		security: {
+			type: "object",
+			properties: {
+				jwtSecret: {
+					type: "string"
+				}
+			},
+			required: ["jwtSecret"]
+		},
+	},
+	required: ["security"]
+}
+
+const ajv = new Ajv();
+const validator = ajv.compile(schema);
+
+const configPath = getConfigPathForFile("fosscord", "gateway", ".json"); 
+export const gatewayConfig = new Config<DefaultOptions>({path: configPath, schemaValidator: validator, schema: schema})

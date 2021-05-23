@@ -17,6 +17,7 @@ import { IdentifySchema } from "../schema/Identify";
 import { Send } from "../util/Send";
 import experiments from "./experiments.json";
 import { check } from "./instanceOf";
+import * as Config from "../util/Config";
 
 // TODO: bot sharding
 // TODO: check priviliged intents
@@ -29,7 +30,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const identify: IdentifySchema = data.d;
 
 	try {
-		var decoded = await checkToken(identify.token); // will throw an error if invalid
+		const { jwtSecret } = Config.gatewayConfig.getAll().security;
+		var decoded = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
 	} catch (error) {
 		console.error("invalid token", error);
 		return this.close(CLOSECODES.Authentication_failed);

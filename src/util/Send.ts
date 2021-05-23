@@ -11,7 +11,7 @@ export async function Send(socket: WebSocket, data: Payload) {
 	if (socket.encoding === "etf") buffer = erlpack.pack(data);
 	// TODO: encode circular object
 	else if (socket.encoding === "json") buffer = JSON.stringify(data);
-
+	else return;
 	// TODO: compression
 	if (socket.deflate) {
 		socket.deflate.write(buffer);
