@@ -89,8 +89,8 @@ class Config<T extends Record<string, any> = Record<string, unknown>> extends St
 		return this._get(key, defaultValue);
 	}
 
-	public getAll(): unknown {
-		return this.store as unknown;
+	public getAll(): T {
+		return this.store;
 	}
 
 	private _has<Key extends keyof T>(key: Key | string): boolean {
