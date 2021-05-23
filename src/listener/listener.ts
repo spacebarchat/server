@@ -19,7 +19,7 @@ export interface DispatchOpts {
 
 function getPipeline(this: WebSocket, guilds: string[], channels: string[] = []) {
 	if (this.shard_count) {
-		guilds = guilds.filter((x) => (BigInt(x) >> 22n) % this.shard_count === this.shard_id);
+		guilds = guilds.filter((x) => (BigInt(x) >> 22n) % this.shard_count! === this.shard_id);
 	}
 
 	return [
@@ -37,7 +37,7 @@ function getPipeline(this: WebSocket, guilds: string[], channels: string[] = [])
 
 export async function setupListener(this: WebSocket) {
 	const user = await UserModel.findOne({ id: this.user_id }).lean().exec();
-	var guilds = user.guilds;
+	var guilds = user!.guilds;
 
 	const eventStream = new MongooseCache(db.collection("events"), getPipeline.call(this, guilds), {
 		onlyEvents: true,
@@ -60,7 +60,7 @@ export async function dispatch(this: WebSocket, document: Event, { eventStream, 
 		guilds.push(document.data.id);
 		eventStream.changeStream(getPipeline.call(this, guilds));
 	} else if (document.event === "GUILD_DELETE") {
-		guilds.remove(document.guild_id);
+		guilds.remove(document.guild_id!);
 		eventStream.changeStream(getPipeline.call(this, guilds));
 	} else if (document.event === "CHANNEL_DELETE") channel_id = null;
 	if (document.guild_id && !this.intents.has("GUILDS")) return;
