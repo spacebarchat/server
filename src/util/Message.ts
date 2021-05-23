@@ -9,7 +9,7 @@ import { HTTPError } from "lambert-server";
 import { emitEvent } from "./Event";
 // TODO: check webhook, application, system author
 
-export async function sendMessage(opts: Partial<Message>) {
+export async function handleMessage(opts: Partial<Message>) {
 	const channel = await ChannelModel.findOne({ id: opts.channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();
 	if (!channel || !opts.channel_id) throw new HTTPError("Channel not found", 404);
 	// TODO: are tts messages allowed in dm channels? should permission be checked?
@@ -28,10 +28,8 @@ export async function sendMessage(opts: Partial<Message>) {
 	}
 
 	// TODO: check and put it all in the body
-	const message: Message = {
+	return {
 		...opts,
-		id: Snowflake.generate(),
-		timestamp: new Date(),
 		guild_id: channel.guild_id,
 		channel_id: opts.channel_id,
 		// TODO: generate mentions and check permissions
@@ -43,10 +41,14 @@ export async function sendMessage(opts: Partial<Message>) {
 		reactions: opts.reactions || [],
 		type: opts.type ?? 0
 	};
+}
+
+export async function sendMessage(opts: Partial<Message>) {
+	const message = await handleMessage({ ...opts, id: Snowflake.generate(), timestamp: new Date() });
 
 	const data = toObject(await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).save());
 
-	await emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data, guild_id: channel.guild_id } as MessageCreateEvent);
+	await emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data, guild_id: message.guild_id } as MessageCreateEvent);
 
 	return data;
 }
