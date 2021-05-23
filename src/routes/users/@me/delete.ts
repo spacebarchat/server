@@ -3,7 +3,7 @@ import { UserModel,UserDocument, toObject } from "@fosscord/server-util";
 import { getPublicUser } from "../../../util/User";
 import { HTTPError } from "lambert-server";
 import { UserUpdateSchema } from "../../../schema/User";
-import { check } from "../../../util/instanceOf";
+import { check, FieldErrors, Length } from "../../../util/instanceOf";
 import { db } from "@fosscord/server-util";
 import bcrypt from "bcrypt";
 const router = Router();
@@ -22,7 +22,8 @@ router.post("/", async (req: Request, res: Response) => {
 	res.sendStatus(204);
 	}
 	else{
-		res.sendStatus(204);	
+		res.sendStatus(401);
+
 	}
 });
 
