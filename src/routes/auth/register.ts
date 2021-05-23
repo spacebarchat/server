@@ -40,7 +40,7 @@ router.post(
 		// TODO: check password strength
 
 		// adjusted_email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
-		let adjusted_email: string | undefined = adjustEmail(email);
+		let adjusted_email: string | null = adjustEmail(email);
 
 		// adjusted_password will be the hash of the password
 		let adjusted_password: string = "";
@@ -181,7 +181,7 @@ router.post(
 			mobile: false,
 			premium: false,
 			premium_type: 0,
-			phone: undefined,
+			phone: null,
 			mfa_enabled: false,
 			verified: false,
 			presence: {
@@ -253,7 +253,7 @@ router.post(
 	}
 );
 
-export function adjustEmail(email: string): string | undefined {
+export function adjustEmail(email: string): string | null {
 	// body parser already checked if it is a valid email
 	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);
 	// @ts-ignore
