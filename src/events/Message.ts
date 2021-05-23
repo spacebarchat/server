@@ -21,6 +21,7 @@ export async function Message(this: WebSocket, buffer: Data) {
 
 	if (this.encoding === "etf" && buffer instanceof Buffer) data = erlpack.unpack(buffer);
 	else if (this.encoding === "json" && typeof buffer === "string") data = JSON.parse(buffer);
+	else return;
 
 	check.call(this, PayloadSchema, data);
 
