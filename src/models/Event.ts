@@ -49,7 +49,7 @@ export interface ReadyEventData {
 	user: PublicUser & {
 		mobile: boolean;
 		desktop: boolean;
-		email: string;
+		email: string | null ;
 		flags: bigint;
 		mfa_enabled: boolean;
 		nsfw_allowed: boolean;
@@ -104,7 +104,7 @@ export interface ReadyEventData {
 	merged_members?: Omit<Member, "settings" | "user">[][];
 	// probably all users who the user is in contact with
 	users?: {
-		avatar?: string;
+		avatar: string | null;
 		discriminator: string;
 		id: string;
 		username: string;
