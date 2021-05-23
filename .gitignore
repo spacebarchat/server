@@ -105,3 +105,7 @@ dist
 
 .DS_STORE
 src/ready.json
+
+# Docker
+.docker/config/*
+!.docker/config/.keep
