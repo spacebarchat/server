@@ -26,7 +26,7 @@ export interface RateLimitOptions {
 
 export interface DefaultOptions {
 	gateway: {
-		endpoint: string;
+		endpoint: string | null;
 	};
 	general: {
 		instance_id: string;
@@ -114,7 +114,7 @@ export interface DefaultOptions {
 
 export const DefaultOptions: DefaultOptions = {
 	gateway: {
-		endpoint: "ws://localhost:3001",
+		endpoint: null,
 	},
 	general: {
 		instance_id: Snowflake.generate(),
