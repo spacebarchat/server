@@ -24,7 +24,7 @@
 	"bugs": {
 		"url": "https://github.com/fosscord/fosscord-server-util/issues"
 	},
-	"homepage": "https://github.com/fosscord/fosscord-server-util#readme",
+	"homepage": "https://docs.fosscord.com/",
 	"dependencies": {
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/mongoose-autopopulate": "^0.10.1",
