@@ -27,6 +27,8 @@ export interface User {
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 	created_at: Date; // registration date
 	verified: boolean; // if the user is offically verified
+	disabled: boolean; // if the account is disabled
+	deleted: boolean; // if the user was deleted
 	email: string | null; // email of the user
 	flags: bigint; // UserFlags
 	public_flags: bigint;
@@ -141,6 +143,8 @@ export const UserSchema = new Schema({
 	mfa_enabled: Boolean,
 	created_at: Date,
 	verified: Boolean,
+	disabled: Boolean,
+	deleted: Boolean,
 	email: String,
 	flags: { type: String, get: toBigInt }, // TODO: automatically convert Types.Long to BitField of UserFlags
 	public_flags: { type: String, get: toBigInt },
