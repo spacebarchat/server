@@ -35,6 +35,7 @@
 				HTML_TIMESTAMP: Date.now(),
 				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
 			};
+			localStorage.removeItem("gatewayURL");
 			localStorage.setItem(
 				"DeveloperOptionsStore",
 				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":false,"logAnalyticsEvents":false,"sourceMapsEnabled":false,"axeEnabled":false}`
