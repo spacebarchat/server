@@ -22,15 +22,24 @@
 //
 
 #include "rtcPeerHandler.hpp" //Handle peer connection requests
-#include "rpcStub.hpp"		  //Handle gRPC communications between the different fosscord elements
+#include "mongoStub.hpp"	//Handle communication with the MongoDB server
 
 int main(int argc, char **argv){
 
 	auto commsHandler = std::make_shared<rtcPeerHandler>();
-	auto rpcHandler = std::unique_ptr<rpcStub>(new rpcStub(commsHandler, 8057));
+	auto mongoHandler = std::make_unique<mongoStub>();
 
+	mongocxx::options::change_stream options;
+    mongocxx::change_stream colCs = mongoHandler->getCol().watch(options);
+
+	//Check for new messages in the collection
+	for (;;){
+		std::vector<std::string> t = mongoHandler->getNewMessages(&colCs);
+		for(auto &i : t){
+			std::cout << i << std::endl;
+		}
+	}
 	std::cout << "Server created" << std::endl;
 
-	//rpcHandler->server->Wait(); //blocking, this will need to be threaded
 	return 0;
 }
