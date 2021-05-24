@@ -11,13 +11,13 @@ import {
 	UserModel,
 	toObject,
 	EVENTEnum,
+	Config,
 } from "@fosscord/server-util";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
 import { Send } from "../util/Send";
 import experiments from "./experiments.json";
 import { check } from "./instanceOf";
-import * as Config from "../util/Config";
 
 // TODO: bot sharding
 // TODO: check priviliged intents
@@ -30,7 +30,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const identify: IdentifySchema = data.d;
 
 	try {
-		const { jwtSecret } = Config.gatewayConfig.getAll().security;
+		const { jwtSecret } = Config.get().security;
 		var decoded = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
 	} catch (error) {
 		console.error("invalid token", error);
