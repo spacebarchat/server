@@ -1,113 +1,204 @@
+import { Schema, model, Types, Document } from "mongoose";
 import "missing-native-js-functions";
-import envPaths from "env-paths";
-import path from "path";
-import { JSONSchemaType, ValidateFunction } from "ajv"
-import fs from 'fs'
-import dotProp from "dot-prop";
+import db, { MongooseCache } from "./Database";
+import { Snowflake } from "./Snowflake";
+import crypto from "crypto";
 
-interface Options<T> {
-	path: string;
-	schemaValidator: ValidateFunction;
-	schema: JSONSchemaType<T>;
+var Config = new MongooseCache(db.collection("config"), [], { onlyEvents: false });
+
+export default {
+	init: async function init(defaultOpts: any = DefaultOptions) {
+		await Config.init();
+		return this.set(Config.data.merge(defaultOpts));
+	},
+	get: function get() {
+		return <DefaultOptions>Config.data;
+	},
+	set: function set(val: any) {
+		return db.collection("config").updateOne({}, { $set: val }, { upsert: true });
+	},
+};
+
+export interface RateLimitOptions {
+	count: number;
+	timespan: number;
 }
 
-type Deserialize<T> = (text: string) => T;
-
-export function getConfigPathForFile(name: string, configFileName: string, extension: string): string {
-	const configEnvPath = envPaths(name, { suffix: "" }).config;
-	const configPath = path.resolve(configEnvPath, `${configFileName}${extension}`)
-	return configPath
+export interface DefaultOptions {
+	gateway: {
+		endpoint: string;
+	};
+	general: {
+		instance_id: string;
+	};
+	permissions: {
+		user: {
+			createGuilds: boolean;
+		};
+	};
+	limits: {
+		user: {
+			maxGuilds: number;
+			maxUsername: number;
+			maxFriends: number;
+		};
+		guild: {
+			maxRoles: number;
+			maxMembers: number;
+			maxChannels: number;
+			maxChannelsInCategory: number;
+			hideOfflineMember: number;
+		};
+		message: {
+			maxCharacters: number;
+			maxTTSCharacters: number;
+			maxReactions: number;
+			maxAttachmentSize: number;
+			maxBulkDelete: number;
+		};
+		channel: {
+			maxPins: number;
+			maxTopic: number;
+		};
+		rate: {
+			ip: {
+				enabled: boolean;
+				count: number;
+				timespan: number;
+			};
+			routes: {
+				auth?: {
+					login?: RateLimitOptions;
+					register?: RateLimitOptions;
+				};
+				// TODO: rate limit configuration for all routes
+			};
+		};
+	};
+	security: {
+		jwtSecret: string;
+		forwadedFor: string | null; // header to get the real user ip address
+		captcha: {
+			enabled: boolean;
+			service: "recaptcha" | "hcaptcha" | null; // TODO: hcaptcha, custom
+			sitekey: string | null;
+			secret: string | null;
+		};
+	};
+	login: {
+		requireCaptcha: boolean;
+	};
+	register: {
+		email: {
+			necessary: boolean;
+			allowlist: boolean;
+			blocklist: boolean;
+			domains: string[];
+		};
+		dateOfBirth: {
+			necessary: boolean;
+			minimum: number; // in years
+		};
+		requireCaptcha: boolean;
+		requireInvite: boolean;
+		allowNewRegistration: boolean;
+		allowMultipleAccounts: boolean;
+		password: {
+			minLength: number;
+			minNumbers: number;
+			minUpperCase: number;
+			minSymbols: number;
+		};
+	};
 }
 
-class Store<T extends Record<string, any> = Record<string, unknown>> implements Iterable<[keyof T, T[keyof T]]>{
-	readonly path: string;
-	readonly validator: ValidateFunction;
-	readonly schema: string;
+export const DefaultOptions: DefaultOptions = {
+	gateway: {
+		endpoint: "ws://localhost:3001",
+	},
+	general: {
+		instance_id: Snowflake.generate(),
+	},
+	permissions: {
+		user: {
+			createGuilds: true,
+		},
+	},
+	limits: {
+		user: {
+			maxGuilds: 100,
+			maxUsername: 32,
+			maxFriends: 1000,
+		},
+		guild: {
+			maxRoles: 250,
+			maxMembers: 250000,
+			maxChannels: 500,
+			maxChannelsInCategory: 50,
+			hideOfflineMember: 1000,
+		},
+		message: {
+			maxCharacters: 2000,
+			maxTTSCharacters: 200,
+			maxReactions: 20,
+			maxAttachmentSize: 8388608,
+			maxBulkDelete: 100,
+		},
+		channel: {
+			maxPins: 50,
+			maxTopic: 1024,
+		},
+		rate: {
+			ip: {
+				enabled: true,
+				count: 1000,
+				timespan: 1000 * 60 * 10,
+			},
+			routes: {},
+		},
+	},
+	security: {
+		jwtSecret: crypto.randomBytes(256).toString("base64"),
+		forwadedFor: null,
+		// forwadedFor: "X-Forwarded-For" // nginx/reverse proxy
+		// forwadedFor: "CF-Connecting-IP" // cloudflare:
+		captcha: {
+			enabled: false,
+			service: null,
+			sitekey: null,
+			secret: null,
+		},
+	},
+	login: {
+		requireCaptcha: false,
+	},
+	register: {
+		email: {
+			necessary: true,
+			allowlist: false,
+			blocklist: true,
+			domains: [], // TODO: efficiently save domain blocklist in database
+			// domains: fs.readFileSync(__dirname + "/blockedEmailDomains.txt", { encoding: "utf8" }).split("\n"),
+		},
+		dateOfBirth: {
+			necessary: true,
+			minimum: 13,
+		},
+		requireInvite: false,
+		requireCaptcha: true,
+		allowNewRegistration: true,
+		allowMultipleAccounts: true,
+		password: {
+			minLength: 8,
+			minNumbers: 2,
+			minUpperCase: 2,
+			minSymbols: 0,
+		},
+	},
+};
 
-	constructor(path: string, validator: ValidateFunction, schema: JSONSchemaType<T>) {
-		this.validator = validator;
-		if (fs.existsSync(path)) {
-			this.path = path
-		} else {
-			this._ensureDirectory()
-		}
-	}
+export const ConfigSchema = new Schema(Object);
 
-	private readonly _deserialize: Deserialize<T> = value => JSON.parse(value);
+export interface DefaultOptionsDocument extends DefaultOptions, Document {}
 
-	private _ensureDirectory(): void {
-		fs.mkdirSync(path.dirname(this.path), { recursive: true })
-	}
-
-	protected _validate(data: T | unknown): void {
-		const valid = this.validator(data);
-		if (valid || !this.validator.errors) {
-			return;
-		}
-
-		const errors = this.validator.errors.map(({ instancePath, message = '' }) => `\`${instancePath.slice(1)}\` ${message}`);
-		throw new Error("The configuration schema was violated!: " + errors.join('; '))
-
-	}
-
-	*[Symbol.iterator](): IterableIterator<[keyof T, T[keyof T]]> {
-		for (const [key, value] of Object.entries(this.store)) {
-			yield [key, value]
-		}
-	}
-
-	public get store(): T {
-		try {
-			const data = fs.readFileSync(this.path).toString();
-			const deserializedData = this._deserialize(data);
-			this._validate(deserializedData);
-			return Object.assign(Object.create(null), deserializedData);
-		} catch (error) {
-			if (error == 'ENOENT') {
-				this._ensureDirectory();
-				throw new Error("Critical, config store does not exist, the base directory has been created, copy the necessary config files to the directory");
-			}
-
-			throw error;
-		}
-
-	}
-}
-
-class Config<T extends Record<string, any> = Record<string, unknown>> extends Store<T> implements Iterable<[keyof T, T[keyof T]]> {
-	constructor(options: Readonly<Partial<Options<T>>>) {
-		super(options.path!, options.schemaValidator!, options.schema!);
-
-		this._validate(this.store);
-
-	}
-
-	public get<Key extends keyof T>(key: Key): T[Key];
-	public get<Key extends keyof T>(key: Key, defaultValue: Required<T>[Key]): Required<T>[Key];
-	public get<Key extends string, Value = unknown>(key: Exclude<Key, keyof T>, defaultValue?: Value): Value;
-	public get(key: string, defaultValue?: unknown): unknown {
-		return this._get(key, defaultValue);
-	}
-
-	public getAll(): T {
-		return this.store;
-	}
-
-	private _has<Key extends keyof T>(key: Key | string): boolean {
-		return dotProp.has(this.store, key as string);
-	}
-
-	private _get<Key extends keyof T>(key: Key): T[Key] | undefined;
-	private _get<Key extends keyof T, Default = unknown>(key: Key, defaultValue: Default): T[Key] | Default;
-	private _get<Key extends keyof T, Default = unknown>(key: Key | string, defaultValue?: Default): Default | undefined {
-		if (!this._has(key)) {
-			throw new Error("Tried to acess a non existant property in the config");
-		}
-
-		return dotProp.get<T[Key] | undefined>(this.store, key as string, defaultValue as T[Key]);
-	}
-
-}
-
-export default Config;
-
+export const ConfigModel = model<DefaultOptionsDocument>("Config", ConfigSchema, "config");
