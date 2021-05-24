@@ -85,7 +85,7 @@ export class FosscordServer extends Server {
 		// @ts-ignore
 		this.app = prefix;
 
-		this.routes = await this.registerRoutes(path.join(__dirname, "routes"));
+		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
 		app.use("/api/v8", prefix);
 		this.app = app;
 		this.app.use(ErrorHandler);
