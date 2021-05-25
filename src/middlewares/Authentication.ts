@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { checkToken } from "@fosscord/server-util";
-import * as Config from "../util/Config"
+import { checkToken, Config } from "@fosscord/server-util";
 
 export const NO_AUTHORIZATION_ROUTES = [
 	"/api/v8/auth/login",
 	"/api/v8/auth/register",
 	"/api/v8/webhooks/",
 	"/api/v8/gateway",
-	"/api/v8/experiments",
+	"/api/v8/experiments"
 ];
 
 declare global {
@@ -25,11 +24,9 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 	if (req.url.startsWith("/api/v8/invites") && req.method === "GET") return next();
 	if (NO_AUTHORIZATION_ROUTES.some((x) => req.url.startsWith(x))) return next();
 	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
-	// TODO: check if user is banned/token expired
 
 	try {
-
-		const { jwtSecret } = Config.apiConfig.getAll().security;
+		const { jwtSecret } = Config.get().security;
 
 		const decoded: any = await checkToken(req.headers.authorization, jwtSecret);
 

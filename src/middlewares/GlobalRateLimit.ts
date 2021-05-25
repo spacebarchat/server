@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import * as Config from '../util/Config'
-import crypto from "crypto";
+import { Config } from "@fosscord/server-util";
 
 // TODO: use mongodb ttl index
 // TODO: increment count on serverside
@@ -44,7 +43,7 @@ export async function GlobalRateLimit(req: Request, res: Response, next: NextFun
 }
 
 export function getIpAdress(req: Request): string {
-	const { forwadedFor } = Config.apiConfig.getAll().security;
+	const { forwadedFor } = Config.get().security;
 	const ip = forwadedFor ? <string>req.headers[forwadedFor] : req.ip;
 	return ip.replaceAll(".", "_").replaceAll(":", "_");
 }

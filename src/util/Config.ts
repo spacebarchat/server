@@ -1,6 +1,7 @@
-import Ajv, { JSONSchemaType } from "ajv"
+// @ts-nocheck
+import Ajv, { JSONSchemaType } from "ajv";
 import { getConfigPathForFile } from "@fosscord/server-util/dist/util/Config";
-import {Config} from "@fosscord/server-util"
+import { Config } from "@fosscord/server-util";
 
 export interface RateLimitOptions {
 	count: number;
@@ -95,11 +96,10 @@ export interface DefaultOptions {
 	};
 }
 
-
 const schema: JSONSchemaType<DefaultOptions> & {
 	definitions: {
-		rateLimitOptions: JSONSchemaType<RateLimitOptions>
-	}
+		rateLimitOptions: JSONSchemaType<RateLimitOptions>;
+	};
 } = {
 	type: "object",
 	definitions: {
@@ -107,10 +107,10 @@ const schema: JSONSchemaType<DefaultOptions> & {
 			type: "object",
 			properties: {
 				count: { type: "number" },
-				timespan: { type: "number" },
+				timespan: { type: "number" }
 			},
-			required: ["count", "timespan"],
-		},
+			required: ["count", "timespan"]
+		}
 	},
 	properties: {
 		gateway: {
@@ -238,8 +238,8 @@ const schema: JSONSchemaType<DefaultOptions> & {
 								auth: {
 									type: "object",
 									properties: {
-										login: { $ref: '#/definitions/rateLimitOptions' },
-										register: { $ref: '#/definitions/rateLimitOptions' }
+										login: { $ref: "#/definitions/rateLimitOptions" },
+										register: { $ref: "#/definitions/rateLimitOptions" }
 									},
 									nullable: true,
 									required: [],
@@ -348,18 +348,25 @@ const schema: JSONSchemaType<DefaultOptions> & {
 					additionalProperties: false
 				}
 			},
-			required: ["allowMultipleAccounts", "allowNewRegistration", "dateOfBirth", "email", "password", "requireCaptcha", "requireInvite"],
+			required: [
+				"allowMultipleAccounts",
+				"allowNewRegistration",
+				"dateOfBirth",
+				"email",
+				"password",
+				"requireCaptcha",
+				"requireInvite"
+			],
 			additionalProperties: false
-		},
+		}
 	},
 	required: ["gateway", "general", "limits", "login", "permissions", "register", "security"],
 	additionalProperties: false
-}
-
+};
 
 const ajv = new Ajv();
 const validator = ajv.compile(schema);
 
 const configPath = getConfigPathForFile("fosscord", "api", ".json");
 
-export const apiConfig = new Config<DefaultOptions>({path: configPath, schemaValidator: validator, schema: schema});
+export const apiConfig = new Config<DefaultOptions>({ path: configPath, schemaValidator: validator, schema: schema });

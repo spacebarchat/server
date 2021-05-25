@@ -1,11 +1,10 @@
 import { Request, Response, Router } from "express";
 const router: Router = Router();
-import { TemplateModel, GuildModel, toObject, UserModel, RoleModel, Snowflake, Guild } from "@fosscord/server-util";
+import { TemplateModel, GuildModel, toObject, UserModel, RoleModel, Snowflake, Guild, Config } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { GuildTemplateCreateSchema } from "../../../schema/Guild";
 import { getPublicUser } from "../../../util/User";
 import { check } from "../../../util/instanceOf";
-import * as Config from "../../../util/Config";
 import { addMember } from "../../../util/Member";
 
 router.get("/:code", async (req: Request, res: Response) => {
@@ -21,7 +20,7 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 	const { code } = req.params;
 	const body = req.body as GuildTemplateCreateSchema;
 
-	const { maxGuilds } =  Config.apiConfig.getAll().limits.user;
+	const { maxGuilds } = Config.get().limits.user;
 	const user = await getPublicUser(req.user_id, { guilds: true });
 
 	if (user.guilds.length >= maxGuilds) {
@@ -37,7 +36,7 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 		...body,
 		...template.serialized_source_guild,
 		id: guild_id,
-		owner_id: req.user_id,
+		owner_id: req.user_id
 	};
 
 	const [guild_doc, role] = await Promise.all([
@@ -52,8 +51,8 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 			name: "@everyone",
 			permissions: 2251804225n,
 			position: 0,
-			tags: null,
-		}).save(),
+			tags: null
+		}).save()
 	]);
 
 	await addMember(req.user_id, guild_id, { guild: guild_doc });

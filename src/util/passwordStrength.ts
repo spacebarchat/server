@@ -1,5 +1,5 @@
+import { Config } from "@fosscord/server-util";
 import "missing-native-js-functions";
-import * as Config from "./Config";
 
 const reNUMBER = /[0-9]/g;
 const reUPPERCASELETTER = /[A-Z]/g;
@@ -17,13 +17,7 @@ const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored
  * Returns: 0 > pw > 1
  */
 export function check(password: string): number {
-	const {
-		minLength,
-		minNumbers,
-		minUpperCase,
-		minSymbols,
-		blockInsecureCommonPasswords,
-	} = Config.apiConfig.getAll().register.password;
+	const { minLength, minNumbers, minUpperCase, minSymbols } = Config.get().register.password;
 	var strength = 0;
 
 	// checks for total password len
@@ -51,10 +45,5 @@ export function check(password: string): number {
 		strength = 0;
 	}
 
-	if (blockInsecureCommonPasswords) {
-		if (blocklist.includes(password)) {
-			strength = 0;
-		}
-	}
 	return strength;
 }
