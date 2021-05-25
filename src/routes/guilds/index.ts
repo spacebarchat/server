@@ -1,9 +1,8 @@
 import { Router, Request, Response } from "express";
-import { RoleModel, GuildModel, Snowflake, Guild, RoleDocument } from "@fosscord/server-util";
+import { RoleModel, GuildModel, Snowflake, Guild, RoleDocument, Config } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../util/instanceOf";
 import { GuildCreateSchema } from "../../schema/Guild";
-import * as Config from "../../util/Config";
 import { getPublicUser } from "../../util/User";
 import { addMember } from "../../util/Member";
 import { createChannel } from "../../util/Channel";
@@ -15,7 +14,7 @@ const router: Router = Router();
 router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) => {
 	const body = req.body as GuildCreateSchema;
 
-	const { maxGuilds } = Config.apiConfig.getAll().limits.user;
+	const { maxGuilds } = Config.get().limits.user;
 	const user = await getPublicUser(req.user_id, { guilds: true });
 
 	if (user.guilds.length >= maxGuilds) {

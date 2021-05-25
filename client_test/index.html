@@ -18,6 +18,7 @@
 				MEDIA_PROXY_ENDPOINT: "https://media.discordapp.net",
 				WIDGET_ENDPOINT: "//discord.com/widget",
 				INVITE_HOST: "discord.gg",
+
 				GUILD_TEMPLATE_HOST: "discord.new",
 				GIFT_CODE_HOST: "discord.gift",
 				RELEASE_CHANNEL: "stable",
@@ -32,10 +33,9 @@
 				MIGRATION_SOURCE_ORIGIN: "https://discordapp.com",
 				MIGRATION_DESTINATION_ORIGIN: "https://discord.com",
 				HTML_TIMESTAMP: Date.now(),
-				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0",
+				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
 			};
-		</script>
-		<script>
+			localStorage.removeItem("gatewayURL");
 			localStorage.setItem(
 				"DeveloperOptionsStore",
 				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":false,"logAnalyticsEvents":false,"sourceMapsEnabled":false,"axeEnabled":false}`

@@ -1,6 +1,13 @@
-import { ChannelModel, ChannelPinsUpdateEvent, getPermission, MessageModel, MessageUpdateEvent, toObject } from "@fosscord/server-util";
+import {
+	ChannelModel,
+	ChannelPinsUpdateEvent,
+	Config,
+	getPermission,
+	MessageModel,
+	MessageUpdateEvent,
+	toObject
+} from "@fosscord/server-util";
 import { Router, Request, Response } from "express";
-import * as Config from "../../../util/Config";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../util/Event";
 
@@ -18,7 +25,7 @@ router.put("/:message_id", async (req: Request, res: Response) => {
 	if (channel.guild_id) permission.hasThrow("MANAGE_MESSAGES");
 
 	const pinned_count = await MessageModel.count({ channel_id, pinned: true }).exec();
-	const { maxPins } = Config.apiConfig.getAll().limits.channel;
+	const { maxPins } = Config.get().limits.channel;
 	if (pinned_count >= maxPins) throw new HTTPError("Max pin count reached: " + maxPins);
 
 	await MessageModel.updateOne({ id: message_id }, { pinned: true }).exec();
