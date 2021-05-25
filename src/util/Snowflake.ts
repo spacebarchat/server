@@ -1,8 +1,9 @@
 // @ts-nocheck
+import cluster from "cluster";
 
 // https://github.com/discordjs/discord.js/blob/master/src/util/Snowflake.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
-"use strict";
+("use strict");
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 
@@ -12,8 +13,8 @@
 export class Snowflake {
 	static readonly EPOCH = 1420070400000;
 	static INCREMENT = 0n; // max 4095
-	static processId = 0n; // max 31
-	static workerId = 0n; // max 31
+	static processId = BigInt(process.pid % 31); // max 31
+	static workerId = BigInt(cluster.worker.id % 31); // max 31
 
 	constructor() {
 		throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
