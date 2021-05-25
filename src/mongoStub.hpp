@@ -7,23 +7,32 @@
 #include <vector>
 #include <mongocxx/client.hpp>
 #include <mongocxx/instance.hpp>
-#include <mongocxx/v_noabi/mongocxx/change_stream.hpp>
+#include <mongocxx/change_stream.hpp>
 #include <bsoncxx/json.hpp>
+#include <bsoncxx/document/element.hpp>
 
 
-class mongoStub : boost::noncopyable {
+class mongoStub{
 	public:
 		mongoStub();
-		std::vector<std::string> getNewMessages(mongocxx::change_stream* colCs);
+
+		struct mongoMessage{
+			std::string eventName;
+			std::vector<std::string> data;
+		};
+
+		std::vector<mongoMessage> getNewMessages(mongocxx::change_stream* colCs);
 
 		mongocxx::collection getCol() const { return col; }
+
+		
 		
 	private:
 		mongocxx::instance instance;
 		mongocxx::client client{mongocxx::uri{}};
 		mongocxx::database db;
 		mongocxx::collection col;
-		mongocxx::change_stream* colCs = nullptr;
+		mongocxx::change_stream* colCs = nullptr; 
 };
 
 #endif
