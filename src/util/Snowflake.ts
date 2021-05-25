@@ -14,7 +14,7 @@ export class Snowflake {
 	static readonly EPOCH = 1420070400000;
 	static INCREMENT = 0n; // max 4095
 	static processId = BigInt(process.pid % 31); // max 31
-	static workerId = BigInt(cluster.worker.id % 31); // max 31
+	static workerId = BigInt((cluster.worker?.id || 0) % 31); // max 31
 
 	constructor() {
 		throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
