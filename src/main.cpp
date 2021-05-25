@@ -30,16 +30,18 @@ int main(int argc, char **argv){
 	auto mongoHandler = std::make_unique<mongoStub>();
 
 	mongocxx::options::change_stream options;
+	//voiceEvents collection watcher
     mongocxx::change_stream colCs = mongoHandler->getCol().watch(options);
+
+	std::cout << "Server created and listening for events" << std::endl;
 
 	//Check for new messages in the collection
 	for (;;){
-		std::vector<std::string> t = mongoHandler->getNewMessages(&colCs);
+		std::vector<mongoStub::mongoMessage> t = mongoHandler->getNewMessages(&colCs);
 		for(auto &i : t){
-			std::cout << i << std::endl;
+			std::cout << "[" << i.eventName << "] " << std::endl;
 		}
 	}
-	std::cout << "Server created" << std::endl;
 
 	return 0;
 }
