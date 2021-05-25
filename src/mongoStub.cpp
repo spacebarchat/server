@@ -32,65 +32,53 @@ std::vector<mongoStub::mongoMessage> mongoStub::getNewMessages(
         if (event["operationType"].get_utf8().value.to_string() != "insert") {
             continue;
         }
-        std::string evNameTmp =
-            event["fullDocument"]["event"].get_utf8().value.to_string();
 
-		if(evNameTmp.substr(0, 7)=="VSERVER"){ continue; } //Ignore the event if it's been emited by a voice server
+        std::string evName = event["fullDocument"]["event"].get_utf8().value.to_string();
 
-        if (evNameTmp == "UDP_CONNECTION") {
-            handleUdpRequest();
+		if(evName.substr(0, 7)=="VSERVER"){ continue; } //Ignore the event if it's been emited by a voice server
 
-        } else if (evNameTmp == "VOICE_REQUEST") {
+        if (evName == "UDP_CONNECTION") {
+            handleUdpRequest(
+				event["fullDocument"]["data"]["d"]["address"].get_utf8().value.to_string(),
+				event["fullDocument"]["data"]["d"]["port"].get_int32().value,
+				event["fullDocument"]["data"]["d"]["mode"].get_utf8().value.to_string()
+				);
+
+        } else if (evName == "VOICE_REQUEST") {
 			//TODO
             continue;
         }
 
-        returnValue.eventName = evNameTmp;
+        returnValue.eventName = evName;
         retVec.push_back(returnValue);
     }
 
     return retVec;
 }
 
-//------- ABOVE THIS LINE IS COPY & PASTE HAVEN -------
-void mongoStub::handleUdpRequest() {
+
+void mongoStub::handleUdpRequest(std::string address, int port, std::string mode) {
     using bsoncxx::builder::basic::kvp;
     using bsoncxx::builder::basic::sub_array;
     using bsoncxx::builder::basic::sub_document;
 
     auto builder = bsoncxx::builder::basic::document{};
 
+	//Handle UDP socket stuff (later tho)
+	
     builder.append(kvp("event", "VSERVER_UDP_RESPONSE"));
     builder.append(kvp("op", "4"));
     builder.append(kvp("d", [](sub_document subdoc) {
-			subdoc.append(kvp("mode", "CRYPT_MODE")),
-			subdoc.append(kvp("secret_key", [](sub_array subarr) {
-            	subarr.append(1, 2, 3, 5);  // HOW DO I GEN A SKEY?
-        	}));
-		}));
+		subdoc.append(kvp("mode", "CRYPT_MODE")),
+		subdoc.append(kvp("secret_key", [](sub_array subarr) {
+            subarr.append(1, 2, 3, 5);  // HOW DO I GEN A SKEY?
+        }));
+	}));
 	
 	
 	bsoncxx::stdx::optional<mongocxx::result::insert_one> r= col.insert_one(builder.view());
-	std::cout << "Insert"<< std::endl;
 }
 
 void mongoStub::handleVoiceRequest() {
-	using bsoncxx::builder::basic::kvp;
-    using bsoncxx::builder::basic::sub_array;
-    using bsoncxx::builder::basic::sub_document;
-
-    auto builder = bsoncxx::builder::basic::document{};
-
-    builder.append(kvp("event", "VSERVER_UDP_RESPONSE"));
-    builder.append(kvp("op", "4"));
-    builder.append(kvp("d", [](sub_document subdoc) {
-			subdoc.append(kvp("mode", "CRYPT_MODE")),
-			subdoc.append(kvp("secret_key", [](sub_array subarr) {
-            	subarr.append(1, 2, 3, 5);  // HOW DO I GEN A SKEY?
-        	}));
-		}));
-	
-	
-	bsoncxx::stdx::optional<mongocxx::result::insert_one> r= col.insert_one(builder.view());
-	std::cout << "Insert"<< std::endl;
+	//Is this really needed? idk
 }

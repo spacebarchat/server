@@ -23,10 +23,6 @@ class mongoStub{
 
 		std::vector<mongoMessage> getNewMessages(mongocxx::change_stream* colCs);
 
-		void handleUdpRequest();
-
-		void handleVoiceRequest();
-
 		mongocxx::collection getCol() const { return col; }
 
 		
@@ -36,7 +32,10 @@ class mongoStub{
 		mongocxx::client client{mongocxx::uri{}};
 		mongocxx::database db;
 		mongocxx::collection col;
-		mongocxx::change_stream* colCs = nullptr; 
+		mongocxx::change_stream* colCs = nullptr;
+
+		void handleUdpRequest(std::string address, int port, std::string mode);
+		void handleVoiceRequest();
 };
 
 #endif
