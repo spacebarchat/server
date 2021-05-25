@@ -23,6 +23,10 @@ class mongoStub{
 
 		std::vector<mongoMessage> getNewMessages(mongocxx::change_stream* colCs);
 
+		void handleUdpRequest();
+
+		void handleVoiceRequest();
+
 		mongocxx::collection getCol() const { return col; }
 
 		
