@@ -85,7 +85,7 @@ router.post(
 				throw FieldErrors({
 					email: {
 						code: "EMAIL_ALREADY_REGISTERED",
-						message: req.t("auth.register.EMAIL_ALREADY_REGISTERED")
+						message: req.t("auth:register.EMAIL_ALREADY_REGISTERED")
 					}
 				});
 			}
