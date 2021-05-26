@@ -5,6 +5,7 @@ import { MemberModel, PublicMember } from "./Member";
 import { Role, RoleModel } from "./Role";
 import { Channel } from "./Channel";
 import { Snowflake } from "../util";
+import { InteractionType } from "./Interaction";
 
 export interface Message {
 	id: string;
@@ -38,7 +39,18 @@ export interface Message {
 		channel_id?: string;
 		guild_id?: string;
 	};
-	// mongoose virtuals:
+	interaction?: {
+		id: string;
+		type: InteractionType;
+		name: string;
+		user_id: string; // the user who invoked the interaction
+		// user: User; // TODO: autopopulate user
+	};
+	components: MessageComponent[];
+
+	// * mongoose virtuals:
+	// TODO:
+	// application: Application; // TODO: auto pouplate application
 	author?: PublicUser;
 	member?: PublicMember;
 	mentions?: (PublicUser & {
@@ -47,6 +59,41 @@ export interface Message {
 	mention_roles?: Role[];
 	mention_channels?: Channel[];
 	created_at?: Date;
+	// thread // TODO
+}
+
+const PartialEmoji = {
+	id: String,
+	name: { type: String, required: true },
+	animated: { type: Boolean, required: true },
+};
+
+const MessageComponent: any = {
+	type: { type: Number, required: true },
+	style: Number,
+	label: String,
+	emoji: PartialEmoji,
+	custom_id: String,
+	url: String,
+	disabled: Boolean,
+};
+
+MessageComponent.components = [MessageComponent];
+
+export interface MessageComponent {
+	type: number;
+	style?: number;
+	label?: string;
+	emoji?: PartialEmoji;
+	custom_id?: string;
+	url?: string;
+	disabled?: boolean;
+	components: MessageComponent[];
+}
+
+export enum MessageComponentType {
+	ActionRow = 1,
+	Button = 2,
 }
 
 export interface MessageDocument extends Document, Message {
@@ -235,6 +282,7 @@ export const MessageSchema = new Schema({
 		channel_id: String,
 		guild_id: String,
 	},
+	components: [MessageComponent],
 	// virtual:
 	// author: {
 	// 	ref: UserModel,
