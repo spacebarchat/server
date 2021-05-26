@@ -9,7 +9,7 @@ import cluster from "cluster";
 import os from "os";
 const cores = Number(process.env.threads) || os.cpus().length;
 
-if (cluster.isMaster && process.env.production == "true") {
+if (cluster.isMaster && process.env.NODE_ENV == "production") {
 	console.log(`Primary ${process.pid} is running`);
 
 	// Fork workers.
