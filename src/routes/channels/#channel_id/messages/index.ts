@@ -71,8 +71,10 @@ router.get("/", async (req, res) => {
 			id: { $gt: (BigInt(around) - BigInt(halfLimit)).toString(), $lt: (BigInt(around) + BigInt(halfLimit)).toString() }
 		});
 	else {
-		query = MessageModel.find({ channel_id }).sort({ id: -1 });
+		query = MessageModel.find({ channel_id });
 	}
+
+	query = query.sort({ id: -1 });
 
 	const messages = await query.limit(limit).exec();
 
