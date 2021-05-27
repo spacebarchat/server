@@ -11,17 +11,17 @@ import { getPublicUser } from "../../../util/User";
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	const guild_id = req.params.id;
+	const { guild_id } = req.params;
 
 	const guild = await GuildModel.exists({ id: guild_id });
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
-	var bans = await BanModel.find({ guild_id: guild_id }).exec();
+	var bans = await BanModel.find({ guild_id: guild_id }, { user: true, reason: true }).exec();
 	return res.json(toObject(bans));
 });
 
 router.get("/:user", async (req: Request, res: Response) => {
-	const guild_id = req.params.id;
+	const { guild_id } = req.params;
 	const user_id = req.params.ban;
 
 	var ban = await BanModel.findOne({ guild_id: guild_id, user_id: user_id }).exec();
@@ -29,8 +29,8 @@ router.get("/:user", async (req: Request, res: Response) => {
 	return res.json(ban);
 });
 
-router.post("/:user_id", check(BanCreateSchema), async (req: Request, res: Response) => {
-	const guild_id = req.params.id;
+router.put("/:user_id", check(BanCreateSchema), async (req: Request, res: Response) => {
+	const { guild_id } = req.params;
 	const banned_user_id = req.params.user_id;
 
 	const banned_user = await getPublicUser(banned_user_id);
@@ -45,19 +45,19 @@ router.post("/:user_id", check(BanCreateSchema), async (req: Request, res: Respo
 		guild_id: guild_id,
 		ip: getIpAdress(req),
 		executor_id: req.user_id,
-		reason: req.body.reason, // || otherwise empty
+		reason: req.body.reason // || otherwise empty
 	}).save();
 
 	await emitEvent({
 		event: "GUILD_BAN_ADD",
 		data: {
 			guild_id: guild_id,
-			user: banned_user,
+			user: banned_user
 		},
-		guild_id: guild_id,
+		guild_id: guild_id
 	} as GuildBanAddEvent);
 
-	return res.json(ban).send();
+	return res.json(toObject(ban));
 });
 
 router.delete("/:user_id", async (req: Request, res: Response) => {
@@ -73,16 +73,16 @@ router.delete("/:user_id", async (req: Request, res: Response) => {
 
 	await BanModel.deleteOne({
 		user_id: banned_user_id,
-		guild_id,
+		guild_id
 	}).exec();
 
 	await emitEvent({
 		event: "GUILD_BAN_REMOVE",
 		data: {
 			guild_id,
-			user: banned_user,
+			user: banned_user
 		},
-		guild_id,
+		guild_id
 	} as GuildBanRemoveEvent);
 
 	return res.status(204).send();
