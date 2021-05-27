@@ -2,8 +2,7 @@ import bodyParser from "body-parser";
 import { Router } from "express";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
-import btoa from "btoa";
-import { URL } from "url";
+import crypto from "crypto";
 
 const router = Router();
 
@@ -30,25 +29,21 @@ const DEFAULT_FETCH_OPTIONS: any = {
 router.post("/", bodyParser.json(), async (req, res) => {
 	if (!req.body) throw new Error("Invalid Body (url missing) \nExample: url:https://discord.com");
 
-	const { db } = req.cdn;
 	const { url } = req.body;
 
-	const ID = btoa(url);
-
-	const cache = await db.data.crawler({ id: ID }).get();
-	if (cache) return res.send(cache);
+	const hash = crypto.createHash("md5").update(url).digest("hex");
 
 	try {
 		const request = await fetch(url, DEFAULT_FETCH_OPTIONS);
 
 		const text = await request.text();
-		const ツ: any = cheerio.load(text);
+		const $ = cheerio.load(text);
 
-		const ogTitle = ツ('meta[property="og:title"]').attr("content");
-		const ogDescription = ツ('meta[property="og:description"]').attr("content");
-		const ogImage = ツ('meta[property="og:image"]').attr("content");
-		const ogUrl = ツ('meta[property="og:url"]').attr("content");
-		const ogType = ツ('meta[property="og:type"]').attr("content");
+		const ogTitle = $('meta[property="og:title"]').attr("content");
+		const ogDescription = $('meta[property="og:description"]').attr("content");
+		const ogImage = $('meta[property="og:image"]').attr("content");
+		const ogUrl = $('meta[property="og:url"]').attr("content");
+		const ogType = $('meta[property="og:type"]').attr("content");
 
 		const filename = new URL(url).host.split(".")[0];
 
@@ -72,7 +67,6 @@ router.post("/", bodyParser.json(), async (req, res) => {
 });
 
 router.get("/:id/:filename", async (req, res) => {
-	const { db } = req.cdn;
 	const { id, filename } = req.params;
 	const { image, type } = await db.data.externals({ id: id }).get();
 	const imageBuffer = Buffer.from(image, "base64");

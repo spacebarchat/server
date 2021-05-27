@@ -1,6 +1,14 @@
 import { CDNServer } from "./Server";
+import dotenv from "dotenv";
+dotenv.config();
 
-const server = new CDNServer({ db: "" });
+if (process.env.STORAGE_LOCATION) {
+	if (!process.env.STORAGE_LOCATION.startsWith("/")) {
+		process.env.STORAGE_LOCATION = __dirname + "/../" + process.env.STORAGE_LOCATION;
+	}
+} else process.env.STORAGE_LOCATION = __dirname + "/../files/";
+
+const server = new CDNServer();
 server
 	.start()
 	.then(() => {
