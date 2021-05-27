@@ -8,7 +8,7 @@ if (process.env.STORAGE_LOCATION) {
 	}
 } else process.env.STORAGE_LOCATION = __dirname + "/../files/";
 
-const server = new CDNServer();
+const server = new CDNServer({ port: Number(process.env.PORT) || 3003 });
 server
 	.start()
 	.then(() => {
