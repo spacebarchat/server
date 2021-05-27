@@ -10,11 +10,11 @@ import {
 	RoleModel,
 	toObject,
 	UserModel,
-	GuildDocument
+	GuildDocument,
+	Config
 } from "@fosscord/server-util";
 
 import { HTTPError } from "lambert-server";
-import Config from "./Config";
 import { emitEvent } from "./Event";
 import { getPublicUser } from "./User";
 

@@ -2,8 +2,7 @@ import { Request, Response, Router } from "express";
 import { check, FieldErrors, Length } from "../../util/instanceOf";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserModel } from "@fosscord/server-util";
-import Config from "../../util/Config";
+import { Config, UserModel } from "@fosscord/server-util";
 import { adjustEmail } from "./register";
 
 const router: Router = Router();
@@ -17,13 +16,15 @@ router.post(
 		$undelete: Boolean,
 		$captcha_key: String,
 		$login_source: String,
-		$gift_code_sku_id: String,
+		$gift_code_sku_id: String
 	}),
 	async (req: Request, res: Response) => {
 		const { login, password, captcha_key } = req.body;
 		const email = adjustEmail(login);
 		const query: any[] = [{ phone: login }];
 		if (email) query.push({ email });
+
+		// TODO: Rewrite this to have the proper config syntax on the new method
 
 		const config = Config.get();
 
@@ -33,7 +34,7 @@ router.post(
 				return res.status(400).json({
 					captcha_key: ["captcha-required"],
 					captcha_sitekey: sitekey,
-					captcha_service: service,
+					captcha_service: service
 				});
 			}
 
@@ -71,7 +72,7 @@ export async function generateToken(id: string) {
 			{ id: id, iat },
 			Config.get().security.jwtSecret,
 			{
-				algorithm,
+				algorithm
 			},
 			(err, token) => {
 				if (err) return rej(err);

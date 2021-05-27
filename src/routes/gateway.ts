@@ -1,12 +1,11 @@
+import { Config } from "@fosscord/server-util";
 import { Router } from "express";
-import Config from "../util/Config";
 
 const router = Router();
 
 router.get("/", (req, res) => {
-	const endpoint = Config.getAll()?.gateway?.endpoint;
-
-	res.send({ url: endpoint || "ws://localhost:3002" });
+	const { endpoint } = Config.get().gateway;
+	res.send({ url: endpoint || process.env.GATEWAY || "ws://localhost:3002" });
 });
 
 export default router;

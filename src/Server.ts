@@ -3,16 +3,16 @@ import fs from "fs/promises";
 import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS, GlobalRateLimit } from "./middlewares/";
-import Config from "./util/Config";
-import { db } from "@fosscord/server-util";
+import { Config, db } from "@fosscord/server-util";
 import i18next from "i18next";
 import i18nextMiddleware, { I18next } from "i18next-http-middleware";
 import i18nextBackend from "i18next-node-fs-backend";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
-import { Router } from "express";
+import express, { Router } from "express";
 import fetch from "node-fetch";
 import mongoose from "mongoose";
+import path from "path";
 
 // this will return the new updated document for findOneAndUpdate
 mongoose.set("returnOriginal", false); // https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate
@@ -55,14 +55,14 @@ export class FosscordServer extends Server {
 		await (db as Promise<Connection>);
 		await this.setupSchema();
 		console.log("[DB] connected");
-		await Promise.all([Config.init()]);
+		await Config.init();
 
 		this.app.use(GlobalRateLimit);
 		this.app.use(Authentication);
 		this.app.use(CORS);
 		this.app.use(BodyParser({ inflate: true }));
-		const languages = await fs.readdir(__dirname + "/../locales/");
-		const namespaces = await fs.readdir(__dirname + "/../locales/en/");
+		const languages = await fs.readdir(path.join(__dirname, "..", "locales"));
+		const namespaces = await fs.readdir(path.join(__dirname, "..", "locales", "en"));
 		const ns = namespaces.filter((x) => x.endsWith(".json")).map((x) => x.slice(0, x.length - 5));
 
 		await i18next
@@ -85,11 +85,13 @@ export class FosscordServer extends Server {
 		// @ts-ignore
 		this.app = prefix;
 
-		this.routes = await this.registerRoutes(__dirname + "/routes/");
+		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
 		app.use("/api/v8", prefix);
 		this.app = app;
 		this.app.use(ErrorHandler);
-		const indexHTML = await fs.readFile(__dirname + "/../client_test/index.html");
+		const indexHTML = await fs.readFile(path.join(__dirname, "..", "client_test", "index.html"));
+
+		this.app.use("/assets", express.static(path.join(__dirname, "..", "assets")));
 
 		this.app.get("/assets/:file", async (req, res) => {
 			delete req.headers.host;

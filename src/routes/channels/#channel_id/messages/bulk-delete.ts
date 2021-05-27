@@ -1,7 +1,6 @@
 import { Router } from "express";
-import { ChannelModel, getPermission, MessageDeleteBulkEvent, MessageModel } from "@fosscord/server-util";
+import { ChannelModel, Config, getPermission, MessageDeleteBulkEvent, MessageModel } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
-import Config from "../../../../util/Config";
 import { emitEvent } from "../../../../util/Event";
 import { check } from "../../../../util/instanceOf";
 
