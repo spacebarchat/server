@@ -70,15 +70,16 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const items = [];
 
 	for (const role of roles) {
-		items.push({
-			group: {
-				count: role.members.length,
-				id: role.id,
-			},
-		});
-		for (const member of role.members) {
-			items.push({ member });
-		}
+        items.push({
+            group: {
+                count: role.members.length,
+                id: role.id === guild_id ? "online" : role.name
+            }
+        });
+        for (const member of role.members) {
+            member.roles.remove(guild_id);
+            items.push({ member });
+        }
 	}
 
 	return Send(this, {
@@ -90,7 +91,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 				{
 					range: [0, 99],
 					op: "SYNC",
-					items: items,
+					items,
 				},
 			],
 			online_count: member_count, // TODO count online count
