@@ -76,9 +76,8 @@ const MessageComponent: any = {
 	custom_id: String,
 	url: String,
 	disabled: Boolean,
+	components: [Object],
 };
-
-MessageComponent.components = [MessageComponent];
 
 export interface MessageComponent {
 	type: number;
