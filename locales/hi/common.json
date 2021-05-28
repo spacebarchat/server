@@ -11,7 +11,7 @@
     "BASE_TYPE_ARRAY": "यह फ़ील्ड एक ऐरे होनी चाहिए",
     "UNKOWN_FIELD": "अज्ञात कुंजी: [[key]]",
     "BASE_TYPE_CONSTANT": "This field must be {{value}}",
-    "EMAIL_TYPE_INVALID_EMAIL": "Not a well formed email address",
+    "EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
     "DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
     "BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
   }
