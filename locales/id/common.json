@@ -1,18 +1,18 @@
 {
   "field": {
-    "BASE_TYPE_REQUIRED": "Bagian ini diperlukan",
-    "BASE_TYPE_STRING": "Bagian ini harus diisi string",
-    "BASE_TYPE_NUMBER": "Bagian ini harus diisi angka",
-    "BASE_TYPE_BIGINT": "Bagian ini harus diisi biging",
-    "BASE_TYPE_BOOLEAN": "Bagian ini harus diisi boolean",
-    "BASE_TYPE_CHOICES": "Bagian ini harus diisi salah satu dari ({{types}})",
-    "BASE_TYPE_CLASS": "Bagian ini harus diisi contoh {{type}}",
-    "BASE_TYPE_OBJECT": "Bagian ini harus diisi objek",
-    "BASE_TYPE_ARRAY": "Bagian ini harus diisi array",
-    "UNKOWN_FIELD": "Key tidak diketahui: {{key}}",
-    "BASE_TYPE_CONSTANT": "Kolom ini harus diisi {{value}}",
-    "EMAIL_TYPE_INVALID_EMAIL": "Format email salah",
-    "DATE_TYPE_PARSE": "Tidak bisa mengolah {{date}}. Harus dalam format ISO8601",
-    "BASE_TYPE_BAD_LENGTH": "Panjang harus diantara {{length}}"
+    "BASE_TYPE_REQUIRED": "This field is required",
+    "BASE_TYPE_STRING": "This field must be a string",
+    "BASE_TYPE_NUMBER": "This field must be a number",
+    "BASE_TYPE_BIGINT": "This field must be a bigint",
+    "BASE_TYPE_BOOLEAN": "This field must be a boolean",
+    "BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+    "BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
+    "BASE_TYPE_OBJECT": "This field must be an object",
+    "BASE_TYPE_ARRAY": "This field must be an array",
+    "UNKOWN_FIELD": "Unknown key: {{key}}",
+    "BASE_TYPE_CONSTANT": "This field must be {{value}}",
+    "EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
+    "DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
+    "BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
   }
 }
