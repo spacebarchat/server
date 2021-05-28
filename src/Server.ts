@@ -1,10 +1,9 @@
 import "missing-native-js-functions";
 import dotenv from "dotenv";
 dotenv.config();
-import { db } from "@fosscord/server-util";
+import { Config, db } from "@fosscord/server-util";
 import { Server as WebSocketServer } from "ws";
 import { Connection } from "./events/Connection";
-import Config from "./util/Config";
 
 // TODO: only listen/start the server if everything got initalized
 // https://www.npmjs.com/package/ws use "External HTTP/S server" and listen manually at the end of listen()
@@ -37,8 +36,8 @@ export class Server {
 		// @ts-ignore
 		await (db as Promise<Connection>);
 		await this.setupSchema();
-		console.log("[DB] connected");
 		await Config.init();
+		console.log("[DB] connected");
 		console.log(`[Gateway] online on 0.0.0.0:${port}`);
 	}
 }
