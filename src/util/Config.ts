@@ -28,6 +28,9 @@ export interface DefaultOptions {
 	gateway: {
 		endpoint: string | null;
 	};
+	cdn: {
+		endpoint: string | null;
+	};
 	general: {
 		instance_id: string;
 	};
@@ -114,6 +117,9 @@ export interface DefaultOptions {
 
 export const DefaultOptions: DefaultOptions = {
 	gateway: {
+		endpoint: null,
+	},
+	cdn: {
 		endpoint: null,
 	},
 	general: {
