@@ -1,3 +1,4 @@
+// @ts-nocheck
 import bodyParser from "body-parser";
 import { Router } from "express";
 import fetch from "node-fetch";

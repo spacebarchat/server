@@ -2,6 +2,8 @@ import { Router } from "express";
 import multer from "multer";
 import { Config, Snowflake } from "@fosscord/server-util";
 import { storage } from "../util/Storage";
+import FileType from "file-type";
+import { HTTPError } from "lambert-server";
 
 const multer_ = multer({
 	storage: multer.memoryStorage(),
@@ -13,42 +15,46 @@ const multer_ = multer({
 });
 const router = Router();
 
-router.post("/:channel_id", multer_.single("attachment"), async (req, res) => {
-	const { buffer, mimetype, stream, size, originalname, fieldname } = req.file;
+router.post("/:channel_id", multer_.single("file"), async (req, res) => {
+	const { buffer, mimetype, size, originalname, fieldname } = req.file;
 	const { channel_id } = req.params;
-	const filename = originalname.replaceAll(" ", "_").replace(/\W+/g, "");
-	
+	const filename = originalname.replaceAll(" ", "_").replace(/[^a-zA-Z0-9._]+/g, "");
+	const id = Snowflake.generate();
+	const path = `attachments/${channel_id}/${id}/${filename}`;
+
 	const endpoint = Config.get().cdn.endpoint || "http://localhost:3003";
 
-	await storage.set(originalname, buffer);
-
-	const id = Snowflake.generate();
+	await storage.set(path, buffer);
 
 	const file = {
 		id,
-		type: mimetype,
 		content_type: mimetype,
-		filename: originalname,
+		filename: filename,
 		size,
-		url: `${endpoint}/attachments/${channel_id}/${id}/`,
+		url: `${endpoint}/attachments/${channel_id}/${id}/${filename}`,
 	};
 
 	return res.json(file);
 });
 
-router.get("/:hash/:filename", async (req, res) => {
-	const { hash, filename } = req.params;
+router.get("/:channel_id/:id/:filename", async (req, res) => {
+	const { channel_id, id, filename } = req.params;
 
-	const File = await db.data.attachments({ id: hash, filename: filename }).get();
+	const file = await storage.get(`attachments/${channel_id}/${id}/${filename}`);
+	if (!file) throw new HTTPError("File not found");
+	const result = await FileType.fromBuffer(file);
 
-	res.set("Content-Type", File.type);
-	return res.send(Buffer.from(File.file, "base64"));
+	res.set("Content-Type", result?.mime);
+
+	return res.send(file);
 });
 
-router.delete("/:hash/:filename", async (req, res) => {
-	const { hash, filename } = req.params;
+router.delete("/:channel_id/:id/:filename", async (req, res) => {
+	const { channel_id, id, filename } = req.params;
+	const path = `attachments/${channel_id}/${id}/${filename}`;
 
-	await db.data.attachments({ id: hash, filename: filename }).delete();
+	storage.delete(path);
+
 	return res.send({ success: true, message: "attachment deleted" });
 });
 

@@ -1,8 +1,9 @@
 import { FileStorage } from "./FileStorage";
 
 export interface Storage {
-	set(path: string, data: any): Promise<void>;
-	get(path: string): Promise<any>;
+	set(path: string, data: Buffer): Promise<void>;
+	get(path: string): Promise<Buffer | null>;
+	delete(path: string): Promise<void>;
 }
 
 var storage: Storage;

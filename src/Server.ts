@@ -18,7 +18,7 @@ export class CDNServer extends Server {
 		await Config.init();
 		console.log("[Database] connected");
 
-		await this.registerRoutes(path.join(__dirname, "routes"));
+		await this.registerRoutes(path.join(__dirname, "routes/"));
 		return super.start();
 	}
 
