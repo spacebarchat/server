@@ -4,7 +4,7 @@ import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../../schema/Message";
 import { emitEvent } from "../../../../../util/Event";
 import { check } from "../../../../../util/instanceOf";
-import { handleMessage } from "../../../../../util/Message";
+import { handleMessage, postHandleMessage } from "../../../../../util/Message";
 
 const router = Router();
 
@@ -39,6 +39,8 @@ router.patch("/", check(MessageCreateSchema), async (req, res) => {
 		guild_id: message.guild_id,
 		data: { ...toObject(message), nonce: undefined }
 	} as MessageUpdateEvent);
+
+	postHandleMessage(message);
 
 	return res.json(toObject(message));
 });
