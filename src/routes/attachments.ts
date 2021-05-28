@@ -17,7 +17,7 @@ router.post("/:channel_id", multer_.single("attachment"), async (req, res) => {
 	const { buffer, mimetype, stream, size, originalname, fieldname } = req.file;
 	const { channel_id } = req.params;
 	const filename = originalname.replaceAll(" ", "_").replace(/\W+/g, "");
-	t;
+	
 	const endpoint = Config.get().cdn.endpoint || "http://localhost:3003";
 
 	await storage.set(originalname, buffer);
