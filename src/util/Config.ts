@@ -1,19 +1,7 @@
-import { Config, Snowflake } from "@fosscord/server-util";
-import crypto from "crypto";
-
-export default {
-	init() {
-		return Config.init({ api: DefaultOptions });
-	},
-	get(): DefaultOptions {
-		return Config.getAll().api;
-	},
-	set(val: any) {
-		return Config.setAll({ api: val });
-	},
-	getAll: Config.getAll,
-	setAll: Config.setAll,
-};
+// @ts-nocheck
+import Ajv, { JSONSchemaType } from "ajv";
+import { getConfigPathForFile } from "@fosscord/server-util/dist/util/Config";
+import { Config } from "@fosscord/server-util";
 
 export interface RateLimitOptions {
 	count: number;
@@ -21,6 +9,7 @@ export interface RateLimitOptions {
 }
 
 export interface DefaultOptions {
+	gateway: string;
 	general: {
 		instance_id: string;
 	};
@@ -64,7 +53,7 @@ export interface DefaultOptions {
 					login?: RateLimitOptions;
 					register?: RateLimitOptions;
 				};
-				channel?: {};
+				channel?: string;
 				// TODO: rate limit configuration for all routes
 			};
 		};
@@ -84,13 +73,13 @@ export interface DefaultOptions {
 	};
 	register: {
 		email: {
-			required: boolean;
+			necessary: boolean;
 			allowlist: boolean;
 			blocklist: boolean;
 			domains: string[];
 		};
 		dateOfBirth: {
-			required: boolean;
+			necessary: boolean;
 			minimum: number; // in years
 		};
 		requireCaptcha: boolean;
@@ -107,85 +96,277 @@ export interface DefaultOptions {
 	};
 }
 
-export const DefaultOptions: DefaultOptions = {
-	general: {
-		instance_id: Snowflake.generate(),
-	},
-	permissions: {
-		user: {
-			createGuilds: true,
-		},
-	},
-	limits: {
-		user: {
-			maxGuilds: 100,
-			maxUsername: 32,
-			maxFriends: 1000,
-		},
-		guild: {
-			maxRoles: 250,
-			maxMembers: 250000,
-			maxChannels: 500,
-			maxChannelsInCategory: 50,
-			hideOfflineMember: 1000,
-		},
-		message: {
-			characters: 2000,
-			ttsCharacters: 200,
-			maxReactions: 20,
-			maxAttachmentSize: 8388608,
-			maxBulkDelete: 100,
-		},
-		channel: {
-			maxPins: 50,
-			maxTopic: 1024,
-		},
-		rate: {
-			ip: {
-				enabled: true,
-				count: 1000,
-				timespan: 1000 * 60 * 10,
+const schema: JSONSchemaType<DefaultOptions> & {
+	definitions: {
+		rateLimitOptions: JSONSchemaType<RateLimitOptions>;
+	};
+} = {
+	type: "object",
+	definitions: {
+		rateLimitOptions: {
+			type: "object",
+			properties: {
+				count: { type: "number" },
+				timespan: { type: "number" }
 			},
-			routes: {},
-		},
+			required: ["count", "timespan"]
+		}
 	},
-	security: {
-		jwtSecret: crypto.randomBytes(256).toString("base64"),
-		forwadedFor: null,
-		// forwadedFor: "X-Forwarded-For" // nginx/reverse proxy
-		// forwadedFor: "CF-Connecting-IP" // cloudflare:
-		captcha: {
-			enabled: false,
-			service: null,
-			sitekey: null,
-			secret: null,
+	properties: {
+		gateway: {
+			type: "string"
 		},
+		general: {
+			type: "object",
+			properties: {
+				instance_id: {
+					type: "string"
+				}
+			},
+			required: ["instance_id"],
+			additionalProperties: false
+		},
+		permissions: {
+			type: "object",
+			properties: {
+				user: {
+					type: "object",
+					properties: {
+						createGuilds: {
+							type: "boolean"
+						}
+					},
+					required: ["createGuilds"],
+					additionalProperties: false
+				}
+			},
+			required: ["user"],
+			additionalProperties: false
+		},
+		limits: {
+			type: "object",
+			properties: {
+				user: {
+					type: "object",
+					properties: {
+						maxFriends: {
+							type: "number"
+						},
+						maxGuilds: {
+							type: "number"
+						},
+						maxUsername: {
+							type: "number"
+						}
+					},
+					required: ["maxFriends", "maxGuilds", "maxUsername"],
+					additionalProperties: false
+				},
+				guild: {
+					type: "object",
+					properties: {
+						maxRoles: {
+							type: "number"
+						},
+						maxMembers: {
+							type: "number"
+						},
+						maxChannels: {
+							type: "number"
+						},
+						maxChannelsInCategory: {
+							type: "number"
+						},
+						hideOfflineMember: {
+							type: "number"
+						}
+					},
+					required: ["maxRoles", "maxMembers", "maxChannels", "maxChannelsInCategory", "hideOfflineMember"],
+					additionalProperties: false
+				},
+				message: {
+					type: "object",
+					properties: {
+						characters: {
+							type: "number"
+						},
+						ttsCharacters: {
+							type: "number"
+						},
+						maxReactions: {
+							type: "number"
+						},
+						maxAttachmentSize: {
+							type: "number"
+						},
+						maxBulkDelete: {
+							type: "number"
+						}
+					},
+					required: ["characters", "ttsCharacters", "maxReactions", "maxAttachmentSize", "maxBulkDelete"],
+					additionalProperties: false
+				},
+				channel: {
+					type: "object",
+					properties: {
+						maxPins: {
+							type: "number"
+						},
+						maxTopic: {
+							type: "number"
+						}
+					},
+					required: ["maxPins", "maxTopic"],
+					additionalProperties: false
+				},
+				rate: {
+					type: "object",
+					properties: {
+						ip: {
+							type: "object",
+							properties: {
+								enabled: { type: "boolean" },
+								count: { type: "number" },
+								timespan: { type: "number" }
+							},
+							required: ["enabled", "count", "timespan"],
+							additionalProperties: false
+						},
+						routes: {
+							type: "object",
+							properties: {
+								auth: {
+									type: "object",
+									properties: {
+										login: { $ref: "#/definitions/rateLimitOptions" },
+										register: { $ref: "#/definitions/rateLimitOptions" }
+									},
+									nullable: true,
+									required: [],
+									additionalProperties: false
+								},
+								channel: {
+									type: "string",
+									nullable: true
+								}
+							},
+							required: [],
+							additionalProperties: false
+						}
+					},
+					required: ["ip", "routes"]
+				}
+			},
+			required: ["channel", "guild", "message", "rate", "user"],
+			additionalProperties: false
+		},
+		security: {
+			type: "object",
+			properties: {
+				jwtSecret: {
+					type: "string"
+				},
+				forwadedFor: {
+					type: "string",
+					nullable: true
+				},
+				captcha: {
+					type: "object",
+					properties: {
+						enabled: { type: "boolean" },
+						service: {
+							type: "string",
+							enum: ["hcaptcha", "recaptcha", null],
+							nullable: true
+						},
+						sitekey: {
+							type: "string",
+							nullable: true
+						},
+						secret: {
+							type: "string",
+							nullable: true
+						}
+					},
+					required: ["enabled", "secret", "service", "sitekey"],
+					additionalProperties: false
+				}
+			},
+			required: ["captcha", "forwadedFor", "jwtSecret"],
+			additionalProperties: false
+		},
+		login: {
+			type: "object",
+			properties: {
+				requireCaptcha: { type: "boolean" }
+			},
+			required: ["requireCaptcha"],
+			additionalProperties: false
+		},
+		register: {
+			type: "object",
+			properties: {
+				email: {
+					type: "object",
+					properties: {
+						necessary: { type: "boolean" },
+						allowlist: { type: "boolean" },
+						blocklist: { type: "boolean" },
+						domains: {
+							type: "array",
+							items: {
+								type: "string"
+							}
+						}
+					},
+					required: ["allowlist", "blocklist", "domains", "necessary"],
+					additionalProperties: false
+				},
+				dateOfBirth: {
+					type: "object",
+					properties: {
+						necessary: { type: "boolean" },
+						minimum: { type: "number" }
+					},
+					required: ["minimum", "necessary"],
+					additionalProperties: false
+				},
+				requireCaptcha: { type: "boolean" },
+				requireInvite: { type: "boolean" },
+				allowNewRegistration: { type: "boolean" },
+				allowMultipleAccounts: { type: "boolean" },
+				password: {
+					type: "object",
+					properties: {
+						minLength: { type: "number" },
+						minNumbers: { type: "number" },
+						minUpperCase: { type: "number" },
+						minSymbols: { type: "number" },
+						blockInsecureCommonPasswords: { type: "boolean" }
+					},
+					required: ["minLength", "minNumbers", "minUpperCase", "minSymbols", "blockInsecureCommonPasswords"],
+					additionalProperties: false
+				}
+			},
+			required: [
+				"allowMultipleAccounts",
+				"allowNewRegistration",
+				"dateOfBirth",
+				"email",
+				"password",
+				"requireCaptcha",
+				"requireInvite"
+			],
+			additionalProperties: false
+		}
 	},
-	login: {
-		requireCaptcha: false,
-	},
-	register: {
-		email: {
-			required: true,
-			allowlist: false,
-			blocklist: true,
-			domains: [], // TODO: efficiently save domain blocklist in database
-			// domains: fs.readFileSync(__dirname + "/blockedEmailDomains.txt", { encoding: "utf8" }).split("\n"),
-		},
-		dateOfBirth: {
-			required: true,
-			minimum: 13,
-		},
-		requireInvite: false,
-		requireCaptcha: true,
-		allowNewRegistration: true,
-		allowMultipleAccounts: true,
-		password: {
-			minLength: 8,
-			minNumbers: 2,
-			minUpperCase: 2,
-			minSymbols: 0,
-			blockInsecureCommonPasswords: false,
-		},
-	},
+	required: ["gateway", "general", "limits", "login", "permissions", "register", "security"],
+	additionalProperties: false
 };
+
+const ajv = new Ajv();
+const validator = ajv.compile(schema);
+
+const configPath = getConfigPathForFile("fosscord", "api", ".json");
+
+export const apiConfig = new Config<DefaultOptions>({ path: configPath, schemaValidator: validator, schema: schema });

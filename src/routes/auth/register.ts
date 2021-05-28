@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express";
-import Config from "../../util/Config";
-import { trimSpecial, User, Snowflake, UserModel } from "@fosscord/server-util";
+import { trimSpecial, User, Snowflake, UserModel, Config } from "@fosscord/server-util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../util/instanceOf";
 import "missing-native-js-functions";
@@ -21,7 +20,7 @@ router.post(
 		$invite: String,
 		$date_of_birth: Date, // "2000-04-03"
 		$gift_code_sku_id: String,
-		$captcha_key: String,
+		$captcha_key: String
 	}),
 	async (req: Request, res: Response) => {
 		const {
@@ -33,14 +32,14 @@ router.post(
 			invite,
 			date_of_birth,
 			gift_code_sku_id, // ? what is this
-			captcha_key,
+			captcha_key
 		} = req.body;
 		// TODO: automatically join invite
 		// TODO: gift_code_sku_id?
 		// TODO: check password strength
 
 		// adjusted_email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
-		let adjusted_email: string | undefined = adjustEmail(email);
+		let adjusted_email: string | null = adjustEmail(email);
 
 		// adjusted_password will be the hash of the password
 		let adjusted_password: string = "";
@@ -57,21 +56,21 @@ router.post(
 		// check if registration is allowed
 		if (!register.allowNewRegistration) {
 			throw FieldErrors({
-				email: { code: "REGISTRATION_DISABLED", message: req.t("auth:register.REGISTRATION_DISABLED") },
+				email: { code: "REGISTRATION_DISABLED", message: req.t("auth:register.REGISTRATION_DISABLED") }
 			});
 		}
 
 		// check if the user agreed to the Terms of Service
 		if (!consent) {
 			throw FieldErrors({
-				consent: { code: "CONSENT_REQUIRED", message: req.t("auth:register.CONSENT_REQUIRED") },
+				consent: { code: "CONSENT_REQUIRED", message: req.t("auth:register.CONSENT_REQUIRED") }
 			});
 		}
 
 		// require invite to register -> e.g. for organizations to send invites to their employees
 		if (register.requireInvite && !invite) {
 			throw FieldErrors({
-				email: { code: "INVITE_ONLY", message: req.t("auth:register.INVITE_ONLY") },
+				email: { code: "INVITE_ONLY", message: req.t("auth:register.INVITE_ONLY") }
 			});
 		}
 
@@ -86,19 +85,19 @@ router.post(
 				throw FieldErrors({
 					email: {
 						code: "EMAIL_ALREADY_REGISTERED",
-						message: req.t("auth.register.EMAIL_ALREADY_REGISTERED"),
-					},
+						message: req.t("auth:register.EMAIL_ALREADY_REGISTERED")
+					}
 				});
 			}
-		} else if (register.email.required) {
+		} else if (register.email.necessary) {
 			throw FieldErrors({
-				email: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") },
+				email: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
 			});
 		}
 
-		if (register.dateOfBirth.required && !date_of_birth) {
+		if (register.dateOfBirth.necessary && !date_of_birth) {
 			throw FieldErrors({
-				date_of_birth: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") },
+				date_of_birth: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
 			});
 		} else if (register.dateOfBirth.minimum) {
 			const minimum = new Date();
@@ -109,8 +108,8 @@ router.post(
 				throw FieldErrors({
 					date_of_birth: {
 						code: "DATE_OF_BIRTH_UNDERAGE",
-						message: req.t("auth:register.DATE_OF_BIRTH_UNDERAGE", { years: register.dateOfBirth.minimum }),
-					},
+						message: req.t("auth:register.DATE_OF_BIRTH_UNDERAGE", { years: register.dateOfBirth.minimum })
+					}
 				});
 			}
 		}
@@ -123,8 +122,8 @@ router.post(
 				throw FieldErrors({
 					email: {
 						code: "EMAIL_ALREADY_REGISTERED",
-						message: req.t("auth:register.EMAIL_ALREADY_REGISTERED"),
-					},
+						message: req.t("auth:register.EMAIL_ALREADY_REGISTERED")
+					}
 				});
 			}
 		}
@@ -135,7 +134,7 @@ router.post(
 				return res.status(400).json({
 					captcha_key: ["captcha-required"],
 					captcha_sitekey: sitekey,
-					captcha_service: service,
+					captcha_service: service
 				});
 			}
 
@@ -160,8 +159,8 @@ router.post(
 			throw FieldErrors({
 				username: {
 					code: "USERNAME_TOO_MANY_USERS",
-					message: req.t("auth:register.USERNAME_TOO_MANY_USERS"),
-				},
+					message: req.t("auth:register.USERNAME_TOO_MANY_USERS")
+				}
 			});
 		}
 
@@ -181,17 +180,19 @@ router.post(
 			mobile: false,
 			premium: false,
 			premium_type: 0,
-			phone: undefined,
+			phone: null,
 			mfa_enabled: false,
 			verified: false,
+			disabled: false,
+			deleted: false,
 			presence: {
 				activities: [],
 				client_status: {
 					desktop: undefined,
 					mobile: undefined,
-					web: undefined,
+					web: undefined
 				},
-				status: "offline",
+				status: "offline"
 			},
 			email: adjusted_email,
 			nsfw_allowed: true, // TODO: depending on age
@@ -203,7 +204,7 @@ router.post(
 				valid_tokens_since: new Date(),
 				relationships: [],
 				connected_accounts: [],
-				fingerprints: [],
+				fingerprints: []
 			},
 			user_settings: {
 				afk_timeout: 300,
@@ -216,7 +217,7 @@ router.post(
 					emoji_id: null,
 					emoji_name: null,
 					expires_at: null,
-					text: null,
+					text: null
 				},
 				default_guilds_restricted: false,
 				detect_platform_accounts: true,
@@ -241,9 +242,9 @@ router.post(
 				status: "offline",
 				stream_notifications_enabled: true,
 				theme: "dark",
-				timezone_offset: 0,
+				timezone_offset: 0
 				// timezone_offset: // TODO: timezone from request
-			},
+			}
 		};
 
 		// insert user into database
@@ -253,7 +254,7 @@ router.post(
 	}
 );
 
-export function adjustEmail(email: string): string | undefined {
+export function adjustEmail(email: string): string | null {
 	// body parser already checked if it is a valid email
 	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);
 	// @ts-ignore

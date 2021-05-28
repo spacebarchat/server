@@ -7,9 +7,9 @@ config();
 import { FosscordServer } from "./Server";
 import cluster from "cluster";
 import os from "os";
-const cores = os.cpus().length;
+const cores = Number(process.env.threads) || os.cpus().length;
 
-if (cluster.isMaster && process.env.production == "true") {
+if (cluster.isMaster && process.env.NODE_ENV == "production") {
 	console.log(`Primary ${process.pid} is running`);
 
 	// Fork workers.
@@ -22,8 +22,7 @@ if (cluster.isMaster && process.env.production == "true") {
 		cluster.fork();
 	});
 } else {
-	var port = Number(process.env.PORT);
-	if (isNaN(port)) port = 3001;
+	var port = Number(process.env.PORT) || 3001;
 
 	const server = new FosscordServer({ port });
 	server.start().catch(console.error);

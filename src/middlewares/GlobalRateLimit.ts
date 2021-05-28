@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import Config from "../util/Config";
+import { Config } from "@fosscord/server-util";
 
 // TODO: use mongodb ttl index
 // TODO: increment count on serverside

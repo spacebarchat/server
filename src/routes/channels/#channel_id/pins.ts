@@ -1,6 +1,13 @@
-import { ChannelModel, ChannelPinsUpdateEvent, getPermission, MessageModel, MessageUpdateEvent, toObject } from "@fosscord/server-util";
+import {
+	ChannelModel,
+	ChannelPinsUpdateEvent,
+	Config,
+	getPermission,
+	MessageModel,
+	MessageUpdateEvent,
+	toObject
+} from "@fosscord/server-util";
 import { Router, Request, Response } from "express";
-import Config from "../../../util/Config";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../util/Event";
 
