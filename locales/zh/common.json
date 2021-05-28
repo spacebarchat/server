@@ -1,18 +1,18 @@
 {
   "field": {
-    "BASE_TYPE_REQUIRED": "此區域為必填項",
-    "BASE_TYPE_STRING": "這個區域必須是個字串",
-    "BASE_TYPE_NUMBER": "這個區域必須是個數字",
-    "BASE_TYPE_BIGINT": "該字段必須是bigint",
-    "BASE_TYPE_BOOLEAN": "此字段必須為布爾值",
-    "BASE_TYPE_CHOICES": "此字段必須是（{{types}}）之一",
-    "BASE_TYPE_CLASS": "此字段必須是{{type}} 的實例",
-    "BASE_TYPE_OBJECT": "該字段必須是一個對象",
-    "BASE_TYPE_ARRAY": "該字段必須是數組",
-    "UNKOWN_FIELD": "未知密鑰：{{key}}",
-    "BASE_TYPE_CONSTANT": "此字段必須為{{value}}",
-    "EMAIL_TYPE_INVALID_EMAIL": "電子郵件地址格式不正確",
-    "DATE_TYPE_PARSE": "無法解析{{date}}。 應該是ISO8601",
-    "BASE_TYPE_BAD_LENGTH": "長度必須在{{length}} 之間"
+    "BASE_TYPE_REQUIRED": "此字段是必填项",
+    "BASE_TYPE_STRING": "此字段必须是字符串",
+    "BASE_TYPE_NUMBER": "此字段必须是一个数字",
+    "BASE_TYPE_BIGINT": "此字段必须是很大的",
+    "BASE_TYPE_BOOLEAN": "此字段必须是布尔值",
+    "BASE_TYPE_CHOICES": "此字段必须是 ({{types}})",
+    "BASE_TYPE_CLASS": "此字段必须是 {{type}} 的实例",
+    "BASE_TYPE_OBJECT": "此字段必须是对象",
+    "BASE_TYPE_ARRAY": "此字段必须是一个数组",
+    "UNKOWN_FIELD": "未知密钥: {{key}}",
+    "BASE_TYPE_CONSTANT": "此字段必须是 {{value}}",
+    "EMAIL_TYPE_INVALID_EMAIL": "格式不正确的电子邮件地址",
+    "DATE_TYPE_PARSE": "无法解析 {{date}}。应该为 ISO8601",
+    "BASE_TYPE_BAD_LENGTH": "长度必须介于 {{length}} 之间"
   }
 }
