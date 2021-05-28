@@ -131,7 +131,7 @@ export interface Attachment {
 
 export interface Embed {
 	title?: string; //title of embed
-	type?: string; // type of embed (always "rich" for webhook embeds)
+	type?: EmbedType; // type of embed (always "rich" for webhook embeds)
 	description?: string; // description of embed
 	url?: string; // url of embed
 	timestamp?: Date; // timestamp of embed content
@@ -159,6 +159,15 @@ export interface Embed {
 		value: string;
 		inline?: boolean;
 	}[];
+}
+
+export enum EmbedType {
+	rich = "rich",
+	image = "image",
+	video = "video",
+	gifv = "gifv",
+	article = "article",
+	link = "link",
 }
 
 export interface EmbedImage {
@@ -217,7 +226,7 @@ const Reaction = {
 
 export const Embed = {
 	title: String, //title of embed
-	type: String, // type of embed (always "rich" for webhook embeds)
+	type: { type: String }, // type of embed (always "rich" for webhook embeds)
 	description: String, // description of embed
 	url: String, // url of embed
 	timestamp: Date, // timestamp of embed content
