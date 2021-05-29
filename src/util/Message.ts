@@ -1,13 +1,27 @@
-import { ChannelModel, MessageCreateEvent } from "@fosscord/server-util";
+import { ChannelModel, Embed, Message, MessageCreateEvent, MessageUpdateEvent } from "@fosscord/server-util";
 import { Snowflake } from "@fosscord/server-util";
 import { MessageModel } from "@fosscord/server-util";
 import { PublicMemberProjection } from "@fosscord/server-util";
 import { toObject } from "@fosscord/server-util";
 import { getPermission } from "@fosscord/server-util";
-import { Message } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
+import fetch from "node-fetch";
+import cheerio from "cheerio";
 import { emitEvent } from "./Event";
 // TODO: check webhook, application, system author
+
+const LINK_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
+
+const DEFAULT_FETCH_OPTIONS: any = {
+	redirect: "follow",
+	follow: 1,
+	headers: {
+		"user-agent": "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)"
+	},
+	size: 1024 * 1024 * 1,
+	compress: true,
+	method: "GET"
+};
 
 export async function handleMessage(opts: Partial<Message>) {
 	const channel = await ChannelModel.findOne({ id: opts.channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();
@@ -43,12 +57,68 @@ export async function handleMessage(opts: Partial<Message>) {
 	};
 }
 
+// TODO: cache link result in db
+export async function postHandleMessage(message: Message) {
+	var links = message.content?.match(LINK_REGEX);
+	if (!links) return;
+
+	const data = { ...message };
+	data.embeds = data.embeds.filter((x) => x.type !== "link");
+
+	links = links.slice(0, 5); // embed max 5 links
+
+	for (const link of links) {
+		try {
+			const request = await fetch(link, DEFAULT_FETCH_OPTIONS);
+
+			const text = await request.text();
+			const $ = cheerio.load(text);
+
+			const title = $('meta[property="og:title"]').attr("content");
+			const provider_name = $('meta[property="og:site_name"]').text();
+			const author_name = $('meta[property="article:author"]').attr("content");
+			const description = $('meta[property="og:description"]').attr("content") || $('meta[property="description"]').attr("content");
+			const image = $('meta[property="og:image"]').attr("content");
+			const url = $('meta[property="og:url"]').attr("content");
+			// TODO: color
+			const embed: Embed = {
+				provider: {
+					url: link,
+					name: provider_name
+				}
+			};
+
+			if (author_name) embed.author = { name: author_name };
+			if (image) embed.thumbnail = { proxy_url: image, url: image };
+			if (title) embed.title = title;
+			if (url) embed.url = url;
+			if (description) embed.description = description;
+
+			if (title || description) {
+				data.embeds.push(embed);
+			}
+		} catch (error) {}
+	}
+
+	await Promise.all([
+		emitEvent({
+			event: "MESSAGE_UPDATE",
+			guild_id: message.guild_id,
+			channel_id: message.channel_id,
+			data
+		} as MessageUpdateEvent),
+		MessageModel.updateOne({ id: message.id, channel_id: message.channel_id }, data).exec()
+	]);
+}
+
 export async function sendMessage(opts: Partial<Message>) {
 	const message = await handleMessage({ ...opts, id: Snowflake.generate(), timestamp: new Date() });
 
 	const data = toObject(await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).save());
 
 	await emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data, guild_id: message.guild_id } as MessageCreateEvent);
+
+	postHandleMessage(data); // no await as it shouldnt block the message send function
 
 	return data;
 }
