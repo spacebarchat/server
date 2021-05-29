@@ -8,5 +8,6 @@ RUN apk --no-cache --virtual build-dependencies add \
 RUN npm install
 RUN apk del build-dependencies
 COPY . .
+RUN npm run build
 EXPOSE 3002
 CMD ["npm", "start"]
