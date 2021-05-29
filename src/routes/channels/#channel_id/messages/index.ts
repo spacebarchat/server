@@ -1,24 +1,13 @@
 import { Router } from "express";
-import {
-	ChannelModel,
-	ChannelType,
-	getPermission,
-	Message,
-	MessageCreateEvent,
-	MessageDocument,
-	MessageModel,
-	Snowflake,
-	toObject
-} from "@fosscord/server-util";
+import { Attachment, ChannelModel, ChannelType, getPermission, MessageDocument, MessageModel, toObject } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../schema/Message";
 import { check, instanceOf, Length } from "../../../../util/instanceOf";
-import { PublicUserProjection } from "../../../../util/User";
 import multer from "multer";
-import { emitEvent } from "../../../../util/Event";
 import { Query } from "mongoose";
-import { PublicMemberProjection } from "../../../../util/Member";
 import { sendMessage } from "../../../../util/Message";
+import { uploadFile } from "../../../../util/cdn";
+
 const router: Router = Router();
 
 export default router;
@@ -93,7 +82,14 @@ router.get("/", async (req, res) => {
 });
 
 // TODO: config max upload size
-const messageUpload = multer({ limits: { fieldSize: 1024 * 1024 * 1024 * 50 } }); // max upload 50 mb
+const messageUpload = multer({
+	limits: {
+		fileSize: 1024 * 1024 * 100,
+		fields: 10,
+		files: 1
+	},
+	storage: multer.memoryStorage()
+}); // max upload 50 mb
 
 // TODO: dynamically change limit of MessageCreateSchema with config
 // TODO: check: sum of all characters in an embed structure must not exceed 6000 characters
@@ -101,14 +97,31 @@ const messageUpload = multer({ limits: { fieldSize: 1024 * 1024 * 1024 * 50 } })
 // https://discord.com/developers/docs/resources/channel#create-message
 // TODO: text channel slowdown
 // TODO: trim and replace message content and every embed field
+
 // Send message
-router.post("/", check(MessageCreateSchema), async (req, res) => {
+router.post("/", check(MessageCreateSchema), messageUpload.single("file"), async (req, res) => {
 	const { channel_id } = req.params;
-	const body = req.body as MessageCreateSchema;
+	var body = req.body as MessageCreateSchema;
+	const attachments: Attachment[] = [];
+
+	if (req.file) {
+		try {
+			const file = await uploadFile(`/attachments/${channel_id}`, req.file);
+			attachments.push({ ...file, proxy_url: file.url });
+		} catch (error) {
+			return res.status(400).json(error);
+		}
+	}
+
+	if (body.payload_json) {
+		body = JSON.parse(body.payload_json);
+		const errors = instanceOf(MessageCreateSchema, body, { req });
+		if (errors !== true) throw errors;
+	}
 
 	const embeds = [];
 	if (body.embed) embeds.push(body.embed);
-	const data = await sendMessage({ ...body, type: 0, pinned: false, author_id: req.user_id, embeds, channel_id });
+	const data = await sendMessage({ ...body, type: 0, pinned: false, author_id: req.user_id, embeds, channel_id, attachments });
 
 	return res.send(data);
 });

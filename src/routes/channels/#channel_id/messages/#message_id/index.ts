@@ -45,6 +45,8 @@ router.patch("/", check(MessageCreateSchema), async (req, res) => {
 	return res.json(toObject(message));
 });
 
+// TODO: delete attachments in message
+
 router.delete("/", async (req, res) => {
 	const { message_id, channel_id } = req.params;
 

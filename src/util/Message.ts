@@ -50,7 +50,7 @@ export async function handleMessage(opts: Partial<Message>) {
 		mention_channels_ids: [],
 		mention_role_ids: [],
 		mention_user_ids: [],
-		attachments: [], // TODO: message attachments
+		attachments: opts.attachments || [], // TODO: message attachments
 		embeds: opts.embeds || [],
 		reactions: opts.reactions || [],
 		type: opts.type ?? 0

@@ -68,4 +68,5 @@ export interface MessageCreateSchema {
 		fail_if_not_exists: boolean;
 	};
 	payload_json?: string;
+	file?: any;
 }
