@@ -10,7 +10,7 @@ import i18nextBackend from "i18next-node-fs-backend";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import express, { Router } from "express";
-import fetch from "node-fetch";
+import fetch, { Response } from "node-fetch";
 import mongoose from "mongoose";
 import path from "path";
 
@@ -27,6 +27,14 @@ declare global {
 		}
 	}
 }
+
+const assetCache = new Map<
+	string,
+	{
+		response: Response;
+		buffer: Buffer;
+	}
+>();
 
 export class FosscordServer extends Server {
 	public options: FosscordServerOptions;
@@ -95,13 +103,21 @@ export class FosscordServer extends Server {
 
 		this.app.get("/assets/:file", async (req, res) => {
 			delete req.headers.host;
-			const response = await fetch(`https://discord.com/assets/${req.params.file}`, {
-				// @ts-ignore
-				headers: {
-					...req.headers
-				}
-			});
-			const buffer = await response.buffer();
+			var response: Response;
+			var buffer: Buffer;
+			const cache = assetCache.get(req.params.file);
+			if (!cache) {
+				response = await fetch(`https://discord.com/assets/${req.params.file}`, {
+					// @ts-ignore
+					headers: {
+						...req.headers
+					}
+				});
+				buffer = await response.buffer();
+			} else {
+				response = cache.response;
+				buffer = cache.buffer;
+			}
 
 			response.headers.forEach((value, name) => {
 				if (
@@ -120,6 +136,7 @@ export class FosscordServer extends Server {
 				}
 				res.set(name, value);
 			});
+			assetCache.set(req.params.file, { buffer, response });
 
 			return res.send(buffer);
 		});
