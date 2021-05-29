@@ -4,10 +4,14 @@ import { storage } from "../util/Storage";
 import FileType from "file-type";
 import { HTTPError } from "lambert-server";
 import { multer } from "../Server";
+import imageSize from "image-size";
 
 const router = Router();
 
 router.post("/:channel_id", multer.single("file"), async (req, res) => {
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError("Invalid request signature");
+
 	const { buffer, mimetype, size, originalname, fieldname } = req.file;
 	const { channel_id } = req.params;
 	const filename = originalname.replaceAll(" ", "_").replace(/[^a-zA-Z0-9._]+/g, "");
@@ -17,6 +21,15 @@ router.post("/:channel_id", multer.single("file"), async (req, res) => {
 	const endpoint = Config.get().cdn.endpoint || "http://localhost:3003";
 
 	await storage.set(path, buffer);
+	var width;
+	var height;
+	if (mimetype.includes("image")) {
+		const dimensions = imageSize(buffer);
+		if (dimensions) {
+			width = dimensions.width;
+			height = dimensions.height;
+		}
+	}
 
 	const file = {
 		id,
@@ -24,6 +37,8 @@ router.post("/:channel_id", multer.single("file"), async (req, res) => {
 		filename: filename,
 		size,
 		url: `${endpoint}/${path}`,
+		width,
+		height,
 	};
 
 	return res.json(file);
@@ -42,6 +57,9 @@ router.get("/:channel_id/:id/:filename", async (req, res) => {
 });
 
 router.delete("/:channel_id/:id/:filename", async (req, res) => {
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError("Invalid request signature");
+
 	const { channel_id, id, filename } = req.params;
 	const path = `attachments/${channel_id}/${id}/${filename}`;
 

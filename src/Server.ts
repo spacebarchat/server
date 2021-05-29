@@ -31,8 +31,8 @@ export class CDNServer extends Server {
 export const multer = multerConfig({
 	storage: multerConfig.memoryStorage(),
 	limits: {
-		fields: 0,
-		files: 1,
+		fields: 10,
+		files: 10,
 		fileSize: 1024 * 1024 * 100, // 100 mb
 	},
 });

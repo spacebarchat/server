@@ -4,6 +4,7 @@ import { storage } from "../util/Storage";
 import FileType from "file-type";
 import { HTTPError } from "lambert-server";
 import { multer } from "../Server";
+import crypto from "crypto";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of avatar
@@ -18,10 +19,13 @@ const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 const router = Router();
 
 router.post("/:user_id", multer.single("file"), async (req, res) => {
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError("Invalid request signature");
+	if (!req.file) throw new HTTPError("Missing file");
 	const { buffer, mimetype, size, originalname, fieldname } = req.file;
 	const { user_id } = req.params;
 
-	const id = Snowflake.generate();
+	const id = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
 
 	const type = await FileType.fromBuffer(buffer);
 	if (!type || !ALLOWED_MIME_TYPES.includes(type.mime)) throw new HTTPError("Invalid file type");
@@ -39,7 +43,8 @@ router.post("/:user_id", multer.single("file"), async (req, res) => {
 });
 
 router.get("/:user_id/:id", async (req, res) => {
-	const { user_id, id } = req.params;
+	var { user_id, id } = req.params;
+	id = id.split(".")[0];
 	const path = `avatars/${user_id}/${id}`;
 
 	const file = await storage.get(path);
@@ -52,6 +57,8 @@ router.get("/:user_id/:id", async (req, res) => {
 });
 
 router.delete("/:user_id/:id", async (req, res) => {
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError("Invalid request signature");
 	const { user_id, id } = req.params;
 	const path = `avatars/${user_id}/${id}`;
 
