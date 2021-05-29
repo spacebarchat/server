@@ -79,6 +79,7 @@ export interface DefaultOptions {
 		};
 	};
 	security: {
+		requestSignature: string;
 		jwtSecret: string;
 		forwadedFor: string | null; // header to get the real user ip address
 		captcha: {
@@ -93,7 +94,7 @@ export interface DefaultOptions {
 	};
 	register: {
 		email: {
-			necessary: boolean;
+			necessary: boolean; // we have to use necessary instead of required as the cli tool uses json schema and can't use required
 			allowlist: boolean;
 			blocklist: boolean;
 			domains: string[];
@@ -164,6 +165,7 @@ export const DefaultOptions: DefaultOptions = {
 		},
 	},
 	security: {
+		requestSignature: crypto.randomBytes(32).toString("base64"),
 		jwtSecret: crypto.randomBytes(256).toString("base64"),
 		forwadedFor: null,
 		// forwadedFor: "X-Forwarded-For" // nginx/reverse proxy

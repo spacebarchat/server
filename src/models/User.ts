@@ -11,6 +11,7 @@ export const PublicUserProjection = {
 	public_flags: true,
 	avatar: true,
 };
+
 export interface User {
 	id: string;
 	username: string; // username max length 32, min 2
@@ -22,6 +23,7 @@ export interface User {
 	premium: boolean; // if user bought nitro
 	premium_type: number; // nitro level
 	bot: boolean; // if user is bot
+	bio: string; // short description of the user (max 190 chars)
 	system: boolean; // shouldn't be used, the api sents this field type true, if the genetaed message comes from a system generated author
 	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
 	mfa_enabled: boolean; // if multi factor authentication is enabled
@@ -42,7 +44,7 @@ export interface User {
 	};
 }
 
-// Privat user data:
+// Private user data:
 export interface UserData {
 	valid_tokens_since: Date; // all tokens with a previous issue date are invalid
 	relationships: Relationship[];
@@ -138,6 +140,7 @@ export const UserSchema = new Schema({
 	premium: Boolean,
 	premium_type: Number,
 	bot: Boolean,
+	bio: String,
 	system: Boolean,
 	nsfw_allowed: Boolean,
 	mfa_enabled: Boolean,

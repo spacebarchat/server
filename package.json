@@ -20,7 +20,7 @@
 		"discord-open-source"
 	],
 	"author": "Fosscord",
-	"license": "ISC",
+	"license": "GPLV3",
 	"bugs": {
 		"url": "https://github.com/fosscord/fosscord-server-util/issues"
 	},
