@@ -181,6 +181,7 @@ router.post(
 			premium: false,
 			premium_type: 0,
 			phone: null,
+			bio: "",
 			mfa_enabled: false,
 			verified: false,
 			disabled: false,

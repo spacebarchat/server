@@ -97,7 +97,7 @@ export class FosscordServer extends Server {
 		app.use("/api/v8", prefix);
 		this.app = app;
 		this.app.use(ErrorHandler);
-		const indexHTML = await fs.readFile(path.join(__dirname, "..", "client_test", "index.html"));
+		const indexHTML = await fs.readFile(path.join(__dirname, "..", "client_test", "index.html"), { encoding: "utf8" });
 
 		this.app.use("/assets", express.static(path.join(__dirname, "..", "assets")));
 
@@ -143,7 +143,12 @@ export class FosscordServer extends Server {
 		this.app.get("*", (req, res) => {
 			res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
 			res.set("content-type", "text/html");
-			res.send(indexHTML);
+			res.send(
+				indexHTML.replace(
+					/CDN_HOST: ".+"/,
+					`CDN_HOST: "${(Config.get().cdn.endpoint || "http://localhost:3003").replace(/https?:/, "")}"`
+				)
+			);
 		});
 		return super.start();
 	}

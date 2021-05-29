@@ -6,10 +6,8 @@ const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
 	const { id } = req.params;
-	const user = await getPublicUser(id);
-	if (!user) throw new HTTPError("User not found", 404);
 
-	res.json(user);
+	res.json(await getPublicUser(id));
 });
 
 export default router;

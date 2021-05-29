@@ -74,10 +74,9 @@ export function instanceOf(
 ): Boolean {
 	if (!ref) ref = { obj: null, key: "" };
 	if (!path) path = "body";
+	if (!type) return true; // no type was specified
 
 	try {
-		if (!type) return true; // no type was specified
-
 		if (value == null) {
 			if (optional) return true;
 			throw new FieldError("BASE_TYPE_REQUIRED", req.t("common:field.BASE_TYPE_REQUIRED"));
