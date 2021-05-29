@@ -7,7 +7,7 @@
 	"scripts": {
 		"test": "jest",
 		"test:watch": "jest --watch",
-		"start": "node dist/start",
+		"start": "npm run build && node dist/start",
 		"build": "tsc -b .",
 		"dev": "tsnd --respawn src/start.ts"
 	},
