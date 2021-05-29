@@ -1,6 +1,7 @@
 import { Server, ServerOptions } from "lambert-server";
 import { Config, db } from "@fosscord/server-util";
 import path from "path";
+import multerConfig from "multer";
 
 export interface CDNServerOptions extends ServerOptions {}
 
@@ -26,3 +27,12 @@ export class CDNServer extends Server {
 		return super.stop();
 	}
 }
+
+export const multer = multerConfig({
+	storage: multerConfig.memoryStorage(),
+	limits: {
+		fields: 0,
+		files: 1,
+		fileSize: 1024 * 1024 * 100, // 100 mb
+	},
+});
