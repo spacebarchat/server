@@ -125,8 +125,9 @@ export interface Attachment {
 	size: number; // size of file in bytes
 	url: string; // source url of file
 	proxy_url: string; // a proxied url of file
-	height: number; // height of file (if image)
-	width: number; // width of file (if image)
+	height?: number; // height of file (if image)
+	width?: number; // width of file (if image)
+	content_type?: string;
 }
 
 export interface Embed {
@@ -205,6 +206,7 @@ export const Attachment = {
 	proxy_url: String, // a proxied url of file
 	height: Number, // height of file (if image)
 	width: Number, // width of file (if image)
+	content_type: String,
 };
 
 export const EmbedImage = {
