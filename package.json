@@ -51,7 +51,6 @@
 		"jsonwebtoken": "^8.5.1",
 		"lambert-server": "^1.2.3",
 		"missing-native-js-functions": "^1.2.6",
-		"mongodb": "^3.6.5",
 		"mongoose": "^5.12.3",
 		"mongoose-autopopulate": "^0.12.3",
 		"mongoose-long": "^0.3.2",
