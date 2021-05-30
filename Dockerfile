@@ -10,4 +10,4 @@ RUN apk del build-dependencies
 COPY . .
 RUN npm run build
 EXPOSE 3002
-CMD ["node", "dist/"]
+CMD ["node", "dist/start.js"]

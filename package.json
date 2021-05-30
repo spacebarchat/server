@@ -2,12 +2,12 @@
 	"name": "@fosscord/gateway",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"main": "dist/index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "npm run build && node dist/",
+		"start": "npm run build && node dist/start.js",
 		"build": "npx tsc -b .",
-		"dev": "tsnd --respawn src/index.ts"
+		"dev": "tsnd --respawn src/start.ts"
 	},
 	"keywords": [],
 	"author": "Fosscord",

@@ -62,7 +62,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	}) as MemberDocument[][];
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
-	const channels = await ChannelModel.find({ recipients: this.user_id }).exec();
+	const channels = await ChannelModel.find({ recipient_ids: this.user_id }).exec();
 	const user = await UserModel.findOne({ id: this.user_id }).exec();
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
