@@ -160,7 +160,7 @@ export const UserSchema = new Schema({
 			{
 				id: String,
 				nickname: String,
-				type: Number,
+				type: { type: Number },
 				user_id: String,
 			},
 		],
@@ -172,7 +172,7 @@ export const UserSchema = new Schema({
 				name: String,
 				revoked: Boolean,
 				show_activity: Boolean,
-				type: String,
+				type: { type: String },
 				verifie: Boolean,
 				visibility: Number,
 			},

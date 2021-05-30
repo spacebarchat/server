@@ -31,7 +31,7 @@ export const ChannelSchema = new Schema({
 			allow: { type: String, get: toBigInt },
 			deny: { type: String, get: toBigInt },
 			id: String,
-			type: Number,
+			type: { type: Number },
 		},
 	],
 });

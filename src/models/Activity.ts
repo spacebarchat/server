@@ -87,7 +87,7 @@ export const ActivitySchema = {
 
 export const ActivityBodySchema = {
 	name: String,
-	type: Number,
+	type: { type: Number },
 	$url: String,
 	$created_at: Date,
 	$timestamps: [

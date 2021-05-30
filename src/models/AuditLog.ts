@@ -165,7 +165,7 @@ export const AuditLogSchema = new Schema({
 		messaged_id: String,
 		count: String,
 		id: String,
-		type: String,
+		type: { type: Number },
 		role_name: String,
 	},
 	changes: [

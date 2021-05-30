@@ -282,7 +282,7 @@ export const MessageSchema = new Schema({
 	pinned: Boolean,
 	type: { type: Number },
 	activity: {
-		type: Number,
+		type: { type: Number },
 		party_id: String,
 	},
 	flags: Types.Long,
