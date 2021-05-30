@@ -1,6 +1,7 @@
 import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
 import toBigInt from "../util/toBigInt";
+import { UserModel } from "./User";
 
 // @ts-ignore
 export interface AnyChannel extends Channel, DMChannel, TextChannel, VoiceChannel {
@@ -14,12 +15,12 @@ export interface ChannelDocument extends Document, AnyChannel {
 export const ChannelSchema = new Schema({
 	id: String,
 	created_at: { type: Schema.Types.Date, required: true },
-	name: { type: String, required: true },
+	name: String, // can't be required for dm channels
 	type: { type: Number, required: true },
 	guild_id: String,
 	owner_id: String,
 	parent_id: String,
-	recipients: [String],
+	recipient_ids: [String],
 	position: Number,
 	last_message_id: String,
 	last_pin_timestamp: Date,
@@ -36,6 +37,13 @@ export const ChannelSchema = new Schema({
 	],
 });
 
+ChannelSchema.virtual("recipients", {
+	ref: UserModel,
+	localField: "recipient_ids",
+	foreignField: "id",
+	justOne: false,
+	autopopulate: true,
+});
 // @ts-ignore
 export const ChannelModel = db.model<ChannelDocument>("Channel", ChannelSchema, "channels");
 
@@ -49,7 +57,6 @@ export interface Channel {
 export interface TextBasedChannel {
 	last_message_id?: string;
 	last_pin_timestamp?: number;
-	recipients: null;
 }
 
 export interface GuildChannel extends Channel {
@@ -85,7 +92,7 @@ export interface TextChannel extends GuildChannel, TextBasedChannel {
 // @ts-ignore
 export interface DMChannel extends Channel, TextBasedChannel {
 	owner_id: string;
-	recipients: string[];
+	recipient_ids: string[];
 }
 
 export enum ChannelType {
