@@ -1,4 +1,4 @@
-import { ConnectedAccount, PublicUser, User, UserSettings } from "./User";
+import { ConnectedAccount, PublicUser, Relationship, User, UserSettings } from "./User";
 import { DMChannel, Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { Member, PublicMember, UserGuildSettings } from "./Member";
@@ -49,7 +49,7 @@ export interface ReadyEventData {
 	user: PublicUser & {
 		mobile: boolean;
 		desktop: boolean;
-		email: string | null ;
+		email: string | null;
 		flags: bigint;
 		mfa_enabled: boolean;
 		nsfw_allowed: boolean;
@@ -431,6 +431,19 @@ export interface MessageAckEvent extends Event {
 	};
 }
 
+export interface RelationshipAddEvent extends Event {
+	event: "RELATIONSHIP_ADD";
+	data: Relationship & {
+		should_notify?: boolean;
+		user: PublicUser;
+	};
+}
+
+export interface RelationshipRemoveEvent extends Event {
+	event: "RELATIONSHIP_REMOVE";
+	data: Omit<Relationship, "nickname">;
+}
+
 // located in collection events
 
 export enum EVENTEnum {
@@ -520,6 +533,8 @@ export type EVENT =
 	| "APPLICATION_COMMAND_UPDATE"
 	| "APPLICATION_COMMAND_DELETE"
 	| "MESSAGE_ACK"
+	| "RELATIONSHIP_ADD"
+	| "RELATIONSHIP_REMOVE"
 	| CUSTOMEVENTS;
 
 export type CUSTOMEVENTS = "INVALIDATED";

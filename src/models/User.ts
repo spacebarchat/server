@@ -80,8 +80,14 @@ export interface ConnectedAccount {
 export interface Relationship {
 	id: string;
 	nickname?: string;
-	type: number;
-	user_id: string;
+	type: RelationshipType;
+}
+
+export enum RelationshipType {
+	outgoing = 4,
+	incoming = 3,
+	blocked = 2,
+	friends = 1,
 }
 
 export interface UserSettings {
@@ -158,10 +164,9 @@ export const UserSchema = new Schema({
 		valid_tokens_since: Date, // all tokens with a previous issue date are invalid
 		relationships: [
 			{
-				id: String,
+				id: { type: String, required: true },
 				nickname: String,
 				type: { type: Number },
-				user_id: String,
 			},
 		],
 		connected_accounts: [
