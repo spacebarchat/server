@@ -86,7 +86,7 @@ export interface ReadyEventData {
 	guild_join_requests?: []; // ? what is this? this is new
 	shard?: [number, number];
 	user_settings?: UserSettings;
-	relationships?: []; // TODO
+	relationships?: Relationship[]; // TODO
 	read_state: {
 		entries: []; // TODO
 		partial: boolean;
