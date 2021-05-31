@@ -205,7 +205,7 @@ export const DefaultOptions: DefaultOptions = {
 	},
 };
 
-export const ConfigSchema = new Schema(Object);
+export const ConfigSchema = new Schema({}, { strict: false });
 
 export interface DefaultOptionsDocument extends DefaultOptions, Document {}
 
