@@ -11,7 +11,7 @@ export class Server {
 	public port: number;
 	public server: http.Server;
 
-	constructor({ port, server }: { port: number; server: http.Server }) {
+	constructor({ port, server }: { port: number; server?: http.Server }) {
 		this.port = port;
 		if (server) this.server = server;
 		else this.server = http.createServer({});

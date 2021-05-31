@@ -13,7 +13,7 @@
 	"author": "Fosscord",
 	"license": "ISC",
 	"dependencies": {
-		"@fosscord/server-util": "^1.3.14",
+		"@fosscord/server-util": "^1.3.16",
 		"ajv": "^8.5.0",
 		"dotenv": "^8.2.0",
 		"jsonwebtoken": "^8.5.1",
