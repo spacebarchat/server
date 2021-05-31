@@ -4,25 +4,21 @@ dotenv.config();
 import { Config, db } from "@fosscord/server-util";
 import { Server as WebSocketServer } from "ws";
 import { Connection } from "./events/Connection";
-
-// TODO: only listen/start the server if everything got initalized
-// https://www.npmjs.com/package/ws use "External HTTP/S server" and listen manually at the end of listen()
-
-var port = Number(process.env.PORT);
-if (isNaN(port)) port = 3002;
+import http from "http";
 
 export class Server {
 	public ws: WebSocketServer;
-	constructor() {
-		this.ws = new WebSocketServer({
-			port,
+	public port: number;
+	public server: http.Server;
 
+	constructor({ port, server }: { port: number; server: http.Server }) {
+		this.port = port;
+		if (server) this.server = server;
+		else this.server = http.createServer({});
+
+		this.ws = new WebSocketServer({
 			maxPayload: 4096,
-			// perMessageDeflate: {
-			// 	zlibDeflateOptions: {
-			// 		chunkSize: 65536,
-			// 	},
-			// },
+			server: this.server,
 		});
 		this.ws.on("connection", Connection);
 	}
@@ -38,6 +34,12 @@ export class Server {
 		await this.setupSchema();
 		await Config.init();
 		console.log("[DB] connected");
-		console.log(`[Gateway] online on 0.0.0.0:${port}`);
+		this.server.listen(this.port);
+		console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
+	}
+
+	async stop() {
+		await db.close();
+		this.server.close();
 	}
 }
