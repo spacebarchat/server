@@ -28,7 +28,7 @@ router.get("/", async (req: Request, res: Response) => {
 	return res.json(toObject(member));
 });
 
-router.patch("/", check(MemberChangeSchema), async (req, res) => {
+router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
 	const body = req.body as MemberChangeSchema;
 	if (body.roles) {

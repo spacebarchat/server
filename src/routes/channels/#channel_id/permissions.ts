@@ -1,5 +1,5 @@
 import { ChannelModel, ChannelPermissionOverwrite, ChannelUpdateEvent, getPermission, MemberModel, RoleModel } from "@fosscord/server-util";
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../util/Event";
 import { check } from "../../../util/instanceOf";
@@ -7,7 +7,7 @@ const router: Router = Router();
 
 // TODO: Only permissions your bot has in the guild or channel can be allowed/denied (unless your bot has a MANAGE_ROLES overwrite in the channel)
 
-router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, id: String }), async (req, res) => {
+router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, id: String }), async (req: Request, res: Response) => {
 	const { channel_id, overwrite_id } = req.params;
 	const body = req.body as { allow: bigint; deny: bigint; type: number; id: string };
 
@@ -52,7 +52,7 @@ router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, 
 });
 
 // TODO: check permission hierarchy
-router.delete("/:overwrite_id", async (req, res) => {
+router.delete("/:overwrite_id", async (req: Request, res: Response) => {
 	const { channel_id, overwrite_id } = req.params;
 
 	const permissions = await getPermission(req.user_id, undefined, channel_id);

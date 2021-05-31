@@ -53,7 +53,7 @@ router.put("/:message_id", async (req: Request, res: Response) => {
 	res.sendStatus(204);
 });
 
-router.delete("/:message_id", async (req, res) => {
+router.delete("/:message_id", async (req: Request, res: Response) => {
 	const { channel_id, message_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();

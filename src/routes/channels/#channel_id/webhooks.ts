@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import { check, Length } from "../../../util/instanceOf";
 import { ChannelModel, getPermission, trimSpecial } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
@@ -8,7 +8,7 @@ const router: Router = Router();
 // TODO:
 
 // TODO: use Image Data Type for avatar instead of String
-router.post("/", check({ name: new Length(String, 1, 80), $avatar: String }), async (req, res) => {
+router.post("/", check({ name: new Length(String, 1, 80), $avatar: String }), async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true }).exec();
 	if (!channel) throw new HTTPError("Channel not found", 404);

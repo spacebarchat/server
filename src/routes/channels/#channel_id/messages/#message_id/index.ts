@@ -1,5 +1,5 @@
 import { ChannelModel, getPermission, MessageDeleteEvent, MessageModel, MessageUpdateEvent, toObject } from "@fosscord/server-util";
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../../schema/Message";
 import { emitEvent } from "../../../../../util/Event";
@@ -8,7 +8,7 @@ import { handleMessage, postHandleMessage } from "../../../../../util/Message";
 
 const router = Router();
 
-router.patch("/", check(MessageCreateSchema), async (req, res) => {
+router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 	var body = req.body as MessageCreateSchema;
 
@@ -47,7 +47,7 @@ router.patch("/", check(MessageCreateSchema), async (req, res) => {
 
 // TODO: delete attachments in message
 
-router.delete("/", async (req, res) => {
+router.delete("/", async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true });

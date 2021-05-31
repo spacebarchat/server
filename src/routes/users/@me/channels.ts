@@ -23,7 +23,7 @@ router.get("/", async (req: Request, res: Response) => {
 	res.json(toObject(channels));
 });
 
-router.post("/", check(DmChannelCreateSchema), async (req, res) => {
+router.post("/", check(DmChannelCreateSchema), async (req: Request, res: Response) => {
 	const body = req.body as DmChannelCreateSchema;
 
 	body.recipients = body.recipients.filter((x) => x !== req.user_id).unique();

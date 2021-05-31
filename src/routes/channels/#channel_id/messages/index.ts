@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import { Attachment, ChannelModel, ChannelType, getPermission, MessageDocument, MessageModel, toObject } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../schema/Message";
@@ -28,7 +28,7 @@ export function isTextChannel(type: ChannelType): boolean {
 
 // https://discord.com/developers/docs/resources/channel#create-message
 // get messages
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();
 	if (!channel) throw new HTTPError("Channel not found", 404);
@@ -101,7 +101,7 @@ const messageUpload = multer({
 // TODO: trim and replace message content and every embed field
 
 // Send message
-router.post("/", check(MessageCreateSchema), messageUpload.single("file"), async (req, res) => {
+router.post("/", check(MessageCreateSchema), messageUpload.single("file"), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 	var body = req.body as MessageCreateSchema;
 	const attachments: Attachment[] = [];

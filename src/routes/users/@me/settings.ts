@@ -1,8 +1,8 @@
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 
 const router = Router();
 
-router.patch("/", (req, res) => {
+router.patch("/", (req: Request, res: Response) => {
 	// TODO:
 	res.sendStatus(204);
 });

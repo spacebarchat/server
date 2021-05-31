@@ -1,5 +1,5 @@
 import { ChannelDeleteEvent, ChannelModel, ChannelUpdateEvent, getPermission, GuildUpdateEvent, toObject } from "@fosscord/server-util";
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
 import { emitEvent } from "../../../util/Event";
@@ -8,7 +8,7 @@ const router: Router = Router();
 // TODO: delete channel
 // TODO: Get channel
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
 	return res.send(toObject(channel));
 });
 
-router.delete("/", async (req, res) => {
+router.delete("/", async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
@@ -39,7 +39,7 @@ router.delete("/", async (req, res) => {
 	res.send(data);
 });
 
-router.patch("/", check(ChannelModifySchema), async (req, res) => {
+router.patch("/", check(ChannelModifySchema), async (req: Request, res: Response) => {
 	var payload = req.body as ChannelModifySchema;
 	const { channel_id } = req.params;
 

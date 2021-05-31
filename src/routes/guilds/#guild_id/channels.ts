@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import {
 	ChannelCreateEvent,
 	ChannelModel,
@@ -16,14 +16,14 @@ import { check } from "../../../util/instanceOf";
 import { createChannel } from "../../../util/Channel";
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	const channels = await ChannelModel.find({ guild_id }).exec();
 
 	res.json(toObject(channels));
 });
 
-router.post("/", check(ChannelModifySchema), async (req, res) => {
+router.post("/", check(ChannelModifySchema), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	const body = req.body as ChannelModifySchema;
 
@@ -32,7 +32,7 @@ router.post("/", check(ChannelModifySchema), async (req, res) => {
 	res.json(channel);
 });
 
-router.patch("/", check(ChannelModifySchema), async (req, res) => {
+router.patch("/", check(ChannelModifySchema), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	const body = req.body as ChannelModifySchema;
 

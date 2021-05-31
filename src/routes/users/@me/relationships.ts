@@ -6,7 +6,7 @@ import {
 	RelationshipType,
 	RelationshipRemoveEvent
 } from "@fosscord/server-util";
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import { check, HTTPError } from "lambert-server";
 import { emitEvent } from "../../../util/Event";
 
@@ -14,7 +14,7 @@ const router = Router();
 
 const userProjection = { "user_data.relationships": true, ...PublicUserProjection };
 
-router.put("/:id", check({ $type: Number }), async (req, res) => {
+router.put("/:id", check({ $type: Number }), async (req: Request, res: Response) => {
 	const { id } = req.params;
 	if (id === req.user_id) throw new HTTPError("You can't add yourself as a friend");
 	const body = req.body as { type?: number };
@@ -107,7 +107,7 @@ router.put("/:id", check({ $type: Number }), async (req, res) => {
 	return res.sendStatus(204);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: Request, res: Response) => {
 	const { id } = req.params;
 	if (id === req.user_id) throw new HTTPError("You can't remove yourself as a friend");
 

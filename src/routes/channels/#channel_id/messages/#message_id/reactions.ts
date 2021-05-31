@@ -13,7 +13,7 @@ import {
 	toObject,
 	UserModel
 } from "@fosscord/server-util";
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../../../util/Event";
 
@@ -35,7 +35,7 @@ function getEmoji(emoji: string): PartialEmoji {
 	};
 }
 
-router.delete("/", async (req, res) => {
+router.delete("/", async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true }).exec();
@@ -61,7 +61,7 @@ router.delete("/", async (req, res) => {
 	res.sendStatus(204);
 });
 
-router.delete("/:emoji", async (req, res) => {
+router.delete("/:emoji", async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 	const emoji = getEmoji(req.params.emoji);
 
@@ -95,7 +95,7 @@ router.delete("/:emoji", async (req, res) => {
 	res.sendStatus(204);
 });
 
-router.get("/:emoji", async (req, res) => {
+router.get("/:emoji", async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 	const emoji = getEmoji(req.params.emoji);
 
@@ -112,7 +112,7 @@ router.get("/:emoji", async (req, res) => {
 	res.json(toObject(users));
 });
 
-router.put("/:emoji/:user_id", async (req, res) => {
+router.put("/:emoji/:user_id", async (req: Request, res: Response) => {
 	const { message_id, channel_id, user_id } = req.params;
 	if (user_id !== "@me") throw new HTTPError("Invalid user");
 	const emoji = getEmoji(req.params.emoji);
@@ -162,7 +162,7 @@ router.put("/:emoji/:user_id", async (req, res) => {
 	res.sendStatus(204);
 });
 
-router.delete("/:emoji/:user_id", async (req, res) => {
+router.delete("/:emoji/:user_id", async (req: Request, res: Response) => {
 	var { message_id, channel_id, user_id } = req.params;
 
 	const emoji = getEmoji(req.params.emoji);

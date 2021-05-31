@@ -9,8 +9,8 @@ import i18nextMiddleware, { I18next } from "i18next-http-middleware";
 import i18nextBackend from "i18next-node-fs-backend";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
-import express, { Router } from "express";
-import fetch, { Response } from "node-fetch";
+import express, { Router, Request, Response } from "express";
+import fetch, { Response as FetchResponse } from "node-fetch";
 import mongoose from "mongoose";
 import path from "path";
 
@@ -31,13 +31,13 @@ declare global {
 const assetCache = new Map<
 	string,
 	{
-		response: Response;
+		response: FetchResponse;
 		buffer: Buffer;
 	}
 >();
 
 export class FosscordServer extends Server {
-	public options: FosscordServerOptions;
+	public declare options: FosscordServerOptions;
 
 	constructor(opts?: Partial<FosscordServerOptions>) {
 		// @ts-ignore
@@ -101,9 +101,9 @@ export class FosscordServer extends Server {
 
 		this.app.use("/assets", express.static(path.join(__dirname, "..", "assets")));
 
-		this.app.get("/assets/:file", async (req, res) => {
+		this.app.get("/assets/:file", async (req: Request, res: Response) => {
 			delete req.headers.host;
-			var response: Response;
+			var response: FetchResponse;
 			var buffer: Buffer;
 			const cache = assetCache.get(req.params.file);
 			if (!cache) {
@@ -140,7 +140,7 @@ export class FosscordServer extends Server {
 
 			return res.send(buffer);
 		});
-		this.app.get("*", (req, res) => {
+		this.app.get("*", (req: Request, res: Response) => {
 			res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
 			res.set("content-type", "text/html");
 			res.send(
