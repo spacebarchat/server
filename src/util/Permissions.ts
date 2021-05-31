@@ -145,7 +145,7 @@ export class Permissions extends BitField {
 		guild: { roles: Role[] };
 		channel?: {
 			overwrites?: ChannelPermissionOverwrite[];
-			recipients?: string[] | null;
+			recipient_ids?: string[] | null;
 			owner_id?: string;
 		};
 	}) {
@@ -163,9 +163,9 @@ export class Permissions extends BitField {
 			permission = Permissions.channelPermission(overwrites, permission);
 		}
 
-		if (channel?.recipients) {
+		if (channel?.recipient_ids) {
 			if (channel?.owner_id === user.id) return new Permissions("ADMINISTRATOR");
-			if (channel.recipients.includes(user.id)) {
+			if (channel.recipient_ids.includes(user.id)) {
 				// Default dm permissions
 				return new Permissions([
 					"VIEW_CHANNEL",
@@ -210,7 +210,7 @@ export async function getPermission(
 	if (channel_id && !channel) {
 		channel = await ChannelModel.findOne(
 			{ id: channel_id },
-			{ permission_overwrites: true, recipients: true, owner_id: true, guild_id: true }
+			{ permission_overwrites: true, recipient_ids: true, owner_id: true, guild_id: true }
 		).exec();
 		if (!channel) throw new HTTPError("Channel not found", 404);
 		if (channel.guild_id) guild_id = channel.guild_id;
@@ -238,7 +238,7 @@ export async function getPermission(
 		channel: {
 			overwrites: channel?.permission_overwrites,
 			owner_id: channel?.owner_id,
-			recipients: channel?.recipients,
+			recipient_ids: channel?.recipient_ids,
 		},
 	});
 

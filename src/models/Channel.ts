@@ -5,7 +5,7 @@ import { UserModel } from "./User";
 
 // @ts-ignore
 export interface AnyChannel extends Channel, DMChannel, TextChannel, VoiceChannel {
-	recipients: null | string[];
+	recipient_ids: null | string[];
 }
 
 export interface ChannelDocument extends Document, AnyChannel {
@@ -44,6 +44,9 @@ ChannelSchema.virtual("recipients", {
 	justOne: false,
 	autopopulate: true,
 });
+
+ChannelSchema.set("removeResponse", ["recipient_ids"]);
+
 // @ts-ignore
 export const ChannelModel = db.model<ChannelDocument>("Channel", ChannelSchema, "channels");
 
