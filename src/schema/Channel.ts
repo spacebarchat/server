@@ -14,16 +14,16 @@ export const ChannelModifySchema = {
 			id: String,
 			type: new Length(Number, 0, 1), // either 0 (role) or 1 (member)
 			allow: BigInt,
-			deny: BigInt,
-		},
+			deny: BigInt
+		}
 	],
 	$parent_id: String,
-	$nsfw: Boolean,
+	$nsfw: Boolean
 };
 
 export const DmChannelCreateSchema = {
 	$name: String,
-	recipients: [String],
+	recipients: new Length([String], 1, 10)
 };
 
 export interface DmChannelCreateSchema {
@@ -52,8 +52,8 @@ export interface ChannelModifySchema {
 export const ChannelGuildPositionUpdateSchema = [
 	{
 		id: String,
-		$position: Number,
-	},
+		$position: Number
+	}
 ];
 
 export type ChannelGuildPositionUpdateSchema = {

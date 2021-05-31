@@ -45,7 +45,7 @@ export async function createChannel(channel: Partial<TextChannel | VoiceChannel>
 		id: Snowflake.generate(),
 		created_at: new Date(),
 		// @ts-ignore
-		recipients: null
+		recipient_ids: null
 	}).save();
 
 	await emitEvent({ event: "CHANNEL_CREATE", data: channel, guild_id: channel.guild_id } as ChannelCreateEvent);

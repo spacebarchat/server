@@ -2,50 +2,52 @@ import { Router, Request, Response } from "express";
 import {
 	ChannelModel,
 	ChannelCreateEvent,
-	DMChannel,
-	UserModel,
 	toObject,
 	ChannelType,
 	Snowflake,
 	trimSpecial,
+	Channel,
+	DMChannel,
+	UserModel
 } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../util/Event";
-import { getPublicUser } from "../../../util/User";
 import { DmChannelCreateSchema } from "../../../schema/Channel";
 import { check } from "../../../util/instanceOf";
 
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	var channels = await ChannelModel.find({
-		$or: [
-			{ recipients: req.user_id, type: ChannelType.DM },
-			{ recipients: req.user_id, type: ChannelType.GROUP_DM },
-		],
-	}).exec();
+	var channels = await ChannelModel.find({ recipient_ids: req.user_id }).exec();
 
 	res.json(toObject(channels));
 });
 
 router.post("/", check(DmChannelCreateSchema), async (req, res) => {
 	const body = req.body as DmChannelCreateSchema;
-	if (body.recipients.length === 0) throw new HTTPError("You need to specify at least one recipient");
+
+	body.recipients = body.recipients.filter((x) => x !== req.user_id).unique();
+
+	if (!(await Promise.all(body.recipients.map((x) => UserModel.exists({ id: x })))).every((x) => x)) {
+		throw new HTTPError("Recipient not found");
+	}
+
 	const type = body.recipients.length === 1 ? ChannelType.DM : ChannelType.GROUP_DM;
 	const name = trimSpecial(body.name);
 
-	const channel = {
+	const channel = await new ChannelModel({
 		name,
 		type,
 		owner_id: req.user_id,
 		id: Snowflake.generate(),
 		created_at: new Date(),
-	};
-	await new ChannelModel(channel).save();
+		last_message_id: null,
+		recipient_ids: [...body.recipients, req.user_id]
+	}).save();
 
-	/*Event({ event: "CHANNEL_CREATE", data: channel } as ChannelCreateEvent);*/
+	await emitEvent({ event: "CHANNEL_CREATE", data: toObject(channel), user_id: req.user_id } as ChannelCreateEvent);
 
-	res.json(channel);
+	res.json(toObject(channel));
 });
 
 export default router;
