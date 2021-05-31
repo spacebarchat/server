@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import { Config, Snowflake } from "@fosscord/server-util";
 import { storage } from "../util/Storage";
 import FileType from "file-type";
@@ -8,7 +8,7 @@ import imageSize from "image-size";
 
 const router = Router();
 
-router.post("/:channel_id", multer.single("file"), async (req, res) => {
+router.post("/:channel_id", multer.single("file"), async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature)
 		throw new HTTPError("Invalid request signature");
 
@@ -44,7 +44,7 @@ router.post("/:channel_id", multer.single("file"), async (req, res) => {
 	return res.json(file);
 });
 
-router.get("/:channel_id/:id/:filename", async (req, res) => {
+router.get("/:channel_id/:id/:filename", async (req: Request, res: Response) => {
 	const { channel_id, id, filename } = req.params;
 
 	const file = await storage.get(`attachments/${channel_id}/${id}/${filename}`);
@@ -56,7 +56,7 @@ router.get("/:channel_id/:id/:filename", async (req, res) => {
 	return res.send(file);
 });
 
-router.delete("/:channel_id/:id/:filename", async (req, res) => {
+router.delete("/:channel_id/:id/:filename", async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature)
 		throw new HTTPError("Invalid request signature");
 

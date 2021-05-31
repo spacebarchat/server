@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import { Config, Snowflake } from "@fosscord/server-util";
 import { storage } from "../util/Storage";
 import FileType from "file-type";
@@ -18,7 +18,7 @@ const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 
 const router = Router();
 
-router.post("/:user_id", multer.single("file"), async (req, res) => {
+router.post("/:user_id", multer.single("file"), async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature)
 		throw new HTTPError("Invalid request signature");
 	if (!req.file) throw new HTTPError("Missing file");
@@ -42,7 +42,7 @@ router.post("/:user_id", multer.single("file"), async (req, res) => {
 	});
 });
 
-router.get("/:user_id/:id", async (req, res) => {
+router.get("/:user_id/:id", async (req: Request, res: Response) => {
 	var { user_id, id } = req.params;
 	id = id.split(".")[0];
 	const path = `avatars/${user_id}/${id}`;
@@ -56,7 +56,7 @@ router.get("/:user_id/:id", async (req, res) => {
 	return res.send(file);
 });
 
-router.delete("/:user_id/:id", async (req, res) => {
+router.delete("/:user_id/:id", async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature)
 		throw new HTTPError("Invalid request signature");
 	const { user_id, id } = req.params;

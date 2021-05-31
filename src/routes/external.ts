@@ -1,6 +1,6 @@
 // @ts-nocheck
 import bodyParser from "body-parser";
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import fetch from "node-fetch";
 import crypto from "crypto";
 import { HTTPError } from "lambert-server";
@@ -29,7 +29,7 @@ const DEFAULT_FETCH_OPTIONS: any = {
 	method: "GET",
 };
 
-router.post("/", bodyParser.json(), async (req, res) => {
+router.post("/", bodyParser.json(), async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature)
 		throw new HTTPError("Invalid request signature");
 	if (!req.body) throw new HTTPError("Invalid Body");
@@ -50,7 +50,7 @@ router.post("/", bodyParser.json(), async (req, res) => {
 	}
 });
 
-router.get("/:id/", async (req, res) => {
+router.get("/:id/", async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	const file = await storage.get(`/external/${id}`);
