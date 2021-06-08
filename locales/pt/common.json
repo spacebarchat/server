@@ -1,6 +1,6 @@
 {
   "field": {
-    "BASE_TYPE_REQUIRED": "Este campo é obrigatório",
+    "BASE_TYPE_REQUIRED": "Este campo é obrigatório.",
     "BASE_TYPE_STRING": "Este campo deve ser uma string",
     "BASE_TYPE_NUMBER": "Este campo deve ser um número",
     "BASE_TYPE_BIGINT": "Este campo deve ser um grande",
