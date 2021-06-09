@@ -16,7 +16,8 @@ import {
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
 import { Send } from "../util/Send";
-import experiments from "./experiments.json";
+// import experiments from "./experiments.json";
+const experiments: any = [];
 import { check } from "./instanceOf";
 
 // TODO: bot sharding

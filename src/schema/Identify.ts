@@ -39,6 +39,7 @@ export const IdentifySchema = {
 		$read_state_version: Number,
 		$user_guild_settings_version: Number,
 	},
+	$v: Number,
 };
 
 export interface IdentifySchema {
@@ -78,4 +79,5 @@ export interface IdentifySchema {
 		read_state_version?: number;
 		user_guild_settings_version?: number;
 	};
+	v?: number;
 }
