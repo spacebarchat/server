@@ -3,11 +3,11 @@ import { HTTPError } from "lambert-server";
 import { checkToken, Config } from "@fosscord/server-util";
 
 export const NO_AUTHORIZATION_ROUTES = [
-	/^\/api\/v8\/auth\/login/,
-	/^\/api\/v8\/auth\/register/,
-	/^\/api\/v8\/webhooks\//,
-	/^\/api\/v8\/gateway/,
-	/^\/api\/v8\/experiments/,
+	/^\/api(\/v\d+)?\/auth\/login/,
+	/^\/api(\/v\d+)?\/auth\/register/,
+	/^\/api(\/v\d+)?\/webhooks\//,
+	/^\/api(\/v\d+)?\/gateway/,
+	/^\/api(\/v\d+)?\/experiments/,
 	/^\/api(\/v\d+)?\/guilds\/\d+\/widget\.(json|png)/
 ];
 
