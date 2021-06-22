@@ -29,6 +29,7 @@ router.patch("/", check(UserModifySchema), async (req: Request, res: Response) =
 	}
 
 	const user = await UserModel.findOneAndUpdate({ id: req.user_id }, body).exec();
+	// TODO: dispatch user update event
 
 	res.json(toObject(user));
 });
