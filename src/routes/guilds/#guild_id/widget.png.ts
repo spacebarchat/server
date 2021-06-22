@@ -3,8 +3,11 @@ import { GuildModel } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { Image } from "canvas";
 import fs from "fs";
+import path from "path"
 
 const router: Router = Router();
+
+// TODO: use svg templates instead of node-canvas for improved performance and to change it easily
 
 // https://discord.com/developers/docs/resources/guild#get-guild-widget-image
 // TODO: Cache the response
@@ -32,7 +35,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const sizeOf = require("image-size");
 
 	// TODO: Widget style templates need Fosscord branding
-	const source = __dirname + "../../../../../cache/widget/" + style + ".png";
+	const source = path.join(__dirname, "..", "..", "..", "..", "cache","widget", `${style}.png`)
 	if (!fs.existsSync(source)) {
 		throw new HTTPError("Widget template does not exist.", 400);
 	}

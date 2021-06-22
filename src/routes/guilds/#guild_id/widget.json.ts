@@ -75,48 +75,48 @@ router.get("/", async (req: Request, res: Response) => {
 	.select("id user nick deaf mute")
 	.cursor()
 	.eachAsync(doc => {
-		const status = doc.user?.presence.status || "offline";
-		if (status != "offline") {
-			let item = {}
+		const status = doc.user?.presence?.status || "offline";
+		if (status == "offline")return
 
+		let item = {}
+
+		item = {
+			...item,
+			id: null, // this is updated during the sort outside of the query  
+			username: doc.nick || doc.user?.username,
+			discriminator: "0000", // intended (https://github.com/discord/discord-api-docs/issues/1287)
+			avatar: null, // intended, avatar_url below will return a unique guild + user url to the avatar
+			status: status
+		}
+
+		const activity = doc.user?.presence?.activities?.[0];
+		if (activity) {
 			item = {
 				...item,
-				id: null, // this is updated during the sort outside of the query  
-				username: doc.nick || doc.user?.username,
-				discriminator: "0000", // intended (https://github.com/discord/discord-api-docs/issues/1287)
-				avatar: null, // intended, avatar_url below will return a unique guild + user url to the avatar
-				status: status
+				game: { name: activity.name }
 			}
-
-			const activity = doc.user?.presence.activities[0];
-			if (activity) {
-				item = {
-					...item,
-					game: { name: activity.name }
-				}
-			}
-
-			// TODO: If the member is in a voice channel, return extra widget details
-			// Extra fields returned include deaf, mute, self_deaf, self_mute, supress, and channel_id (voice channel connected to)
-			// Get this from VoiceState
-
-
-			// TODO: Implement a widget-avatar endpoint on the CDN, and implement logic here to request it
-			// Get unique avatar url for guild user, cdn to serve the actual avatar image on this url
-			/*
-			const avatar = doc.user?.avatar;
-			if (avatar) {
-				const CDN_HOST = Config.get().cdn.endpoint || "http://localhost:3003";
-				const avatar_url = "/widget-avatars/" + ;
-				item = {
-					...item,
-					avatar_url: avatar_url
-				}
-			}
-			*/
-
-			members.push(item);
 		}
+
+		// TODO: If the member is in a voice channel, return extra widget details
+		// Extra fields returned include deaf, mute, self_deaf, self_mute, supress, and channel_id (voice channel connected to)
+		// Get this from VoiceState
+
+
+		// TODO: Implement a widget-avatar endpoint on the CDN, and implement logic here to request it
+		// Get unique avatar url for guild user, cdn to serve the actual avatar image on this url
+		/*
+		const avatar = doc.user?.avatar;
+		if (avatar) {
+			const CDN_HOST = Config.get().cdn.endpoint || "http://localhost:3003";
+			const avatar_url = "/widget-avatars/" + ;
+			item = {
+				...item,
+				avatar_url: avatar_url
+			}
+		}
+		*/
+
+		members.push(item);
 	});
 
 	// Sort members, and update ids (Unable to do under the mongoose query due to https://mongoosejs.com/docs/faq.html#populate_sort_order)

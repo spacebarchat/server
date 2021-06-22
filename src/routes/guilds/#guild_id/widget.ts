@@ -27,10 +27,7 @@ router.patch("/", check(WidgetModifySchema), async (req: Request, res: Response)
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
-
-	await GuildModel.updateOne({ id: guild_id }, { widget_enabled: body['enabled'], widget_channel_id: body['channel_id'] }).exec();
+	await GuildModel.updateOne({ id: guild_id }, { widget_enabled: body.enabled, widget_channel_id: body.channel_id }).exec();
 	// Widget invite for the widget_channel_id gets created as part of the /guilds/{guild.id}/widget.json request
 
 	return res.json(body);
