@@ -2,7 +2,8 @@
 	"name": "@fosscord/cdn",
 	"version": "1.0.0",
 	"description": "cdn for discord clone",
-	"main": "index.js",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsc -b .",
@@ -30,7 +31,7 @@
 		"file-type": "^16.5.0",
 		"image-size": "^1.0.0",
 		"lambert-db": "^1.2.3",
-		"lambert-server": "^1.2.4",
+		"lambert-server": "^1.2.5",
 		"missing-native-js-functions": "^1.0.8",
 		"multer": "^1.4.2",
 		"node-fetch": "^2.6.1",

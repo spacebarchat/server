@@ -1,6 +1,7 @@
-import { CDNServer } from "./Server";
 import dotenv from "dotenv";
 dotenv.config();
+
+import { CDNServer } from "./Server";
 
 if (process.env.STORAGE_LOCATION) {
 	if (!process.env.STORAGE_LOCATION.startsWith("/")) {
