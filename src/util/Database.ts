@@ -2,7 +2,6 @@ import "./MongoBigInt";
 import mongoose, { Collection, Connection, LeanDocument } from "mongoose";
 import { ChangeStream, ChangeEvent, Long } from "mongodb";
 import EventEmitter from "events";
-import { Document } from "mongoose";
 const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPreference=secondaryPreferred";
 
 // TODO: auto throw error if findOne doesn't find anything
