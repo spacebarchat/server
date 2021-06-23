@@ -43,7 +43,12 @@ export const MessageCreateSchema = {
 			25
 		)
 	},
-	$allowed_mentions: [],
+	$allowed_mentions: {
+		$parse: [String],
+		$roles: [String],
+		$users: [String],
+		$replied_user: Boolean
+	},
 	$message_reference: {
 		message_id: String,
 		channel_id: String,
@@ -60,7 +65,12 @@ export interface MessageCreateSchema {
 	tts?: boolean;
 	flags?: bigint;
 	embed?: Embed & { timestamp?: string };
-	allowed_mentions?: [];
+	allowed_mentions?: {
+		parse?: string[];
+		roles?: string[];
+		users?: string[];
+		replied_user?: boolean;
+	};
 	message_reference?: {
 		message_id: string;
 		channel_id: string;

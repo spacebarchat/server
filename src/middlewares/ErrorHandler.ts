@@ -22,6 +22,8 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 			code = httpcode = 500;
 		}
 
+		if (httpcode > 511) httpcode = 400;
+
 		res.status(httpcode).json({ code: code, message, errors });
 
 		return;

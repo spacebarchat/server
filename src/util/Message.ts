@@ -8,6 +8,7 @@ import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
 import { emitEvent } from "./Event";
+import { MessageType } from "@fosscord/server-util/dist/util/Constants";
 // TODO: check webhook, application, system author
 
 const LINK_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
@@ -34,11 +35,14 @@ export async function handleMessage(opts: Partial<Message>) {
 	if (opts.message_reference) {
 		permissions.hasThrow("READ_MESSAGE_HISTORY");
 		if (opts.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
-	}
-
-	if (opts.message_reference) {
 		if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
 		// TODO: should be checked if the referenced message exists?
+		// @ts-ignore
+		opts.type = MessageType.REPLY;
+	}
+
+	if (!opts.content && !opts.embeds?.length) {
+		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 
 	// TODO: check and put it all in the body
@@ -114,7 +118,9 @@ export async function postHandleMessage(message: Message) {
 export async function sendMessage(opts: Partial<Message>) {
 	const message = await handleMessage({ ...opts, id: Snowflake.generate(), timestamp: new Date() });
 
-	const data = toObject(await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).save());
+	const data = toObject(
+		await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).populate("referenced_message").save()
+	);
 
 	await emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data, guild_id: message.guild_id } as MessageCreateEvent);
 

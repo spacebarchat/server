@@ -99,12 +99,15 @@ const messageUpload = multer({
 // https://discord.com/developers/docs/resources/channel#create-message
 // TODO: text channel slowdown
 // TODO: trim and replace message content and every embed field
+// TODO: check allowed_mentions
 
 // Send message
-router.post("/", check(MessageCreateSchema), messageUpload.single("file"), async (req: Request, res: Response) => {
+router.post("/", messageUpload.single("file"), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 	var body = req.body as MessageCreateSchema;
 	const attachments: Attachment[] = [];
+
+	console.log(body);
 
 	if (req.file) {
 		try {
@@ -117,9 +120,10 @@ router.post("/", check(MessageCreateSchema), messageUpload.single("file"), async
 
 	if (body.payload_json) {
 		body = JSON.parse(body.payload_json);
-		const errors = instanceOf(MessageCreateSchema, body, { req });
-		if (errors !== true) throw errors;
 	}
+
+	const errors = instanceOf(MessageCreateSchema, body, { req });
+	if (errors !== true) throw errors;
 
 	const embeds = [];
 	if (body.embed) embeds.push(body.embed);

@@ -21,7 +21,7 @@ router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, 
 		if (!(await RoleModel.exists({ id: overwrite_id }))) throw new HTTPError("role not found", 404);
 	} else if (body.type === 1) {
 		if (!(await MemberModel.exists({ id: overwrite_id }))) throw new HTTPError("user not found", 404);
-	} else throw new HTTPError("type not supported");
+	} else throw new HTTPError("type not supported", 501);
 
 	// @ts-ignore
 	var overwrite: ChannelPermissionOverwrite = channel.permission_overwrites.find((x) => x.id === overwrite_id);
