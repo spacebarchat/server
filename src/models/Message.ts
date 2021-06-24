@@ -342,6 +342,15 @@ MessageSchema.virtual("mention_channels", {
 	autopopulate: { select: { id: true, guild_id: true, type: true, name: true } },
 });
 
+
+MessageSchema.virtual("referenced_message", {
+	ref: "Message",
+	localField: "message_reference.message_id",
+	foreignField: "id",
+	justOne: true,
+	autopopulate: true,
+});
+
 MessageSchema.virtual("created_at").get(function (this: MessageDocument) {
 	return new Date(Snowflake.deconstruct(this.id).timestamp);
 });
@@ -358,3 +367,4 @@ MessageSchema.set("removeResponse", ["mention_channel_ids", "mention_role_ids", 
 
 // @ts-ignore
 export const MessageModel = db.model<MessageDocument>("Message", MessageSchema, "messages");
+
