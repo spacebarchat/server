@@ -4,6 +4,7 @@ import { UserModel } from "../models";
 
 export function checkToken(token: string, jwtSecret: string): Promise<any> {
 	return new Promise((res, rej) => {
+		token = token.replace("Bot ", ""); // TODO: proper bot support
 		jwt.verify(token, jwtSecret, JWTOptions, async (err, decoded: any) => {
 			if (err || !decoded) return rej("Invalid Token");
 
