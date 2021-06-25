@@ -17,10 +17,10 @@ export class FileStorage implements Storage {
 
 	async set(path: string, value: any) {
 		path = join(process.env.STORAGE_LOCATION || "", path).replace(/[\\]/g, "/");
-    	const dir = path.split("/").slice(0, -1).join("/");
-    	await fs.mkdir(dir, { recursive: true }).caught();
+		const dir = path.split("/").slice(0, -1).join("/");
+		await fs.mkdir(dir, { recursive: true }).caught();
 
-    	return fs.writeFile(path, value, { encoding: "binary" });
+		return fs.writeFile(path, value, { encoding: "binary" });
 	}
 
 	async delete(path: string) {
