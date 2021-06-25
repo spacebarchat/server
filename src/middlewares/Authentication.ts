@@ -21,6 +21,7 @@ declare global {
 }
 
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
+	if (req.method === "OPTIONS") return res.sendStatus(204);
 	if (!req.url.startsWith("/api")) return next();
 	if (req.url.startsWith("/api/v8/invites") && req.method === "GET") return next();
 	if (NO_AUTHORIZATION_ROUTES.some((x) => x.test(req.url))) return next();

@@ -66,8 +66,8 @@ export class FosscordServer extends Server {
 		await Config.init();
 
 		this.app.use(GlobalRateLimit);
-		this.app.use(Authentication);
 		this.app.use(CORS);
+		this.app.use(Authentication);
 		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 2 }));
 		const languages = await fs.readdir(path.join(__dirname, "..", "locales"));
 		const namespaces = await fs.readdir(path.join(__dirname, "..", "locales", "en"));
