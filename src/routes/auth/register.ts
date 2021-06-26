@@ -34,6 +34,7 @@ router.post(
 			gift_code_sku_id, // ? what is this
 			captcha_key
 		} = req.body;
+		console.log("register", req.body.email, req.body.username, req.headers["cf-connecting-ip"]);
 		// TODO: automatically join invite
 		// TODO: gift_code_sku_id?
 		// TODO: check password strength

@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { UserModel, toObject } from "@fosscord/server-util";
+import { UserModel, toObject, PublicUserProjection } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
 import { getPublicUser } from "../../../util/User";
 import { UserModifySchema } from "../../../schema/User";
@@ -28,7 +28,7 @@ router.patch("/", check(UserModifySchema), async (req: Request, res: Response) =
 		}
 	}
 
-	const user = await UserModel.findOneAndUpdate({ id: req.user_id }, body).exec();
+	const user = await UserModel.findOneAndUpdate({ id: req.user_id }, body, { projection: PublicUserProjection }).exec();
 	// TODO: dispatch user update event
 
 	res.json(toObject(user));
