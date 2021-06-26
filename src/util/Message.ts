@@ -41,7 +41,7 @@ export async function handleMessage(opts: Partial<Message>) {
 		opts.type = MessageType.REPLY;
 	}
 
-	if (!opts.content && !opts.embeds?.length) {
+	if (!opts.content && !opts.embeds?.length && !opts.attachments?.length && !opts.stickers?.length && !opts.activity) {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 
