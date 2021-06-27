@@ -75,6 +75,7 @@ export async function IPAnalysis(ip: string): Promise<LookupResponse> {
 }
 
 export function isProxy(data: LookupResponse) {
+	if (!data || !data.asn || !data.threat) return false;
 	if (data.asn.type !== "isp") return true;
 	if (Object.values(data.threat).some((x) => x)) return true;
 
