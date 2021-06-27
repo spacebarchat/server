@@ -4,7 +4,7 @@ import db, { MongooseCache } from "./Database";
 import { Snowflake } from "./Snowflake";
 import crypto from "crypto";
 
-var Config = new MongooseCache(db.collection("config"), [], { onlyEvents: false });
+var Config = new MongooseCache(db.collection("config"), [], { onlyEvents: false, array: false });
 
 export default {
 	init: async function init(defaultOpts: any = DefaultOptions) {
