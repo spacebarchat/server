@@ -2,7 +2,7 @@ import "missing-native-js-functions";
 import fs from "fs/promises";
 import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
-import { Authentication, CORS, GlobalRateLimit } from "./middlewares/";
+import { Authentication, CORS } from "./middlewares/";
 import { Config, db } from "@fosscord/server-util";
 import i18next from "i18next";
 import i18nextMiddleware, { I18next } from "i18next-http-middleware";
@@ -65,7 +65,6 @@ export class FosscordServer extends Server {
 		console.log("[DB] connected");
 		await Config.init();
 
-		this.app.use(GlobalRateLimit);
 		this.app.use(CORS);
 		this.app.use(Authentication);
 		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 2 }));

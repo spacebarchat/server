@@ -4,6 +4,8 @@ import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../util/instanceOf";
 import "missing-native-js-functions";
 import { generateToken } from "./login";
+import { getIpAdress, IPAnalysis, isProxy } from "../../util/ipAddress";
+import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
@@ -34,7 +36,19 @@ router.post(
 			gift_code_sku_id, // ? what is this
 			captcha_key
 		} = req.body;
-		console.log("register", req.body.email, req.body.username, req.headers["cf-connecting-ip"]);
+
+		// get register Config
+		const { register, security } = Config.get();
+		const ip = getIpAdress(req);
+
+		if (register.blockProxies) {
+			if (isProxy(await IPAnalysis(ip))) {
+				console.log(`proxy ${ip} blocked from registration`);
+				throw new HTTPError("Your IP is blocked from registration");
+			}
+		}
+
+		console.log("register", req.body.email, req.body.username, ip);
 		// TODO: automatically join invite
 		// TODO: gift_code_sku_id?
 		// TODO: check password strength
@@ -50,9 +64,6 @@ router.post(
 
 		// discriminator will be randomly generated
 		let discriminator = "";
-
-		// get register Config
-		const { register, security } = Config.get();
 
 		// check if registration is allowed
 		if (!register.allowNewRegistration) {
