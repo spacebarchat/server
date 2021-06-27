@@ -1,4 +1,3 @@
-export * from "./GlobalRateLimit";
 export * from "./Authentication";
 export * from "./BodyParser";
 export * from "./CORS";
