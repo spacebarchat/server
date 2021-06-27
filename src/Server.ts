@@ -95,6 +95,7 @@ export class FosscordServer extends Server {
 		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
 		app.use("/api", prefix); // allow unversioned requests
 		app.use("/api/v8", prefix);
+		app.use("/api/v9", prefix);
 		this.app = app;
 		this.app.use(ErrorHandler);
 		const indexHTML = await fs.readFile(path.join(__dirname, "..", "client_test", "index.html"), { encoding: "utf8" });
