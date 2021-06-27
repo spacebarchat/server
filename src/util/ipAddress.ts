@@ -1,5 +1,5 @@
+import { Config } from "@fosscord/server-util";
 import { Request } from "express";
-import { Config } from "../../../server-util/dist";
 // use ipdata package instead of simple fetch because of integrated caching
 import IPData, { LookupResponse } from "ipdata";
 
