@@ -46,6 +46,7 @@ export interface MongooseCache {
 export class MongooseCache extends EventEmitter {
 	public stream: ChangeStream;
 	public data: any;
+	public initalizing?: Promise<void>;
 
 	constructor(
 		public collection: Collection,
@@ -59,19 +60,24 @@ export class MongooseCache extends EventEmitter {
 		if (this.opts.array == null) this.opts.array = true;
 	}
 
-	init = async () => {
-		// @ts-ignore
-		this.stream = this.collection.watch(this.pipeline, { fullDocument: "updateLookup" });
+	init = () => {
+		if (this.initalizing) return this.initalizing;
+		this.initalizing = new Promise(async (resolve, reject) => {
+			// @ts-ignore
+			this.stream = this.collection.watch(this.pipeline, { fullDocument: "updateLookup" });
 
-		this.stream.on("change", this.change);
-		this.stream.on("close", this.destroy);
-		this.stream.on("error", console.error);
+			this.stream.on("change", this.change);
+			this.stream.on("close", this.destroy);
+			this.stream.on("error", console.error);
 
-		if (!this.opts.onlyEvents) {
-			const arr = await this.collection.aggregate(this.pipeline).toArray();
-			if (this.opts.array) this.data = arr || [];
-			else this.data = arr?.[0];
-		}
+			if (!this.opts.onlyEvents) {
+				const arr = await this.collection.aggregate(this.pipeline).toArray();
+				if (this.opts.array) this.data = arr || [];
+				else this.data = arr?.[0];
+			}
+			resolve();
+		});
+		return this.initalizing;
 	};
 
 	changeStream = (pipeline: any) => {
