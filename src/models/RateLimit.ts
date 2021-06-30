@@ -9,6 +9,7 @@ export interface Bucket {
 	user: string;
 	hits: number;
 	blocked: boolean;
+	created_at: Date;
 }
 
 export interface BucketDocument extends Bucket, Document {
@@ -20,6 +21,7 @@ export const BucketSchema = new Schema({
 	user_id: { type: String, required: true }, // bot, user, oauth_application, webhook
 	hits: { type: Number, required: true }, // Number of times the user hit this bucket
 	blocked: { type: Boolean, required: true },
+	created_at: { type: Date, required: true },
 });
 
 // @ts-ignore
