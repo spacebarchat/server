@@ -1,8 +1,16 @@
 import { db, MongooseCache, Bucket } from "@fosscord/server-util";
 import { NextFunction, Request, Response } from "express";
-import { API_PREFIX, API_PREFIX_TRAILING_SLASH } from "./Authentication";
+import { getIpAdress } from "../util/ipAddress";
+import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
-const Cache = new MongooseCache(db.collection("ratelimits"), [{ $match: { blocked: true } }], { onlyEvents: false, array: true });
+const Cache = new MongooseCache(
+	db.collection("ratelimits"),
+	[
+		// TODO: uncomment $match and fix error: not receiving change events
+		// { $match: { blocked: true } }
+	],
+	{ onlyEvents: false, array: true }
+);
 
 // Docs: https://discord.com/developers/docs/topics/rate-limits
 
@@ -37,52 +45,86 @@ export default function RateLimit(opts: {
 	Cache.init(); // will only initalize it once
 
 	return async (req: Request, res: Response, next: NextFunction) => {
-		const bucket_id = req.path.replace(API_PREFIX_TRAILING_SLASH, "");
-		const user_id = req.user_id;
-		const max_hits = req.user_bot ? opts.bot : opts.count;
-		const offender = Cache.data.find((x: Bucket) => x.user && x.id === bucket_id) as Bucket | null;
+		const bucket_id = opts.bucket || req.path.replace(API_PREFIX_TRAILING_SLASH, "");
+		const user_id = req.user_id || getIpAdress(req);
+		var max_hits = opts.count;
+		if (opts.bot && req.user_bot) max_hits = opts.bot;
+		if (opts.GET && ["GET", "OPTIONS", "HEAD"].includes(req.method)) max_hits = opts.GET;
+		else if (opts.MODIFY && ["POST", "DELETE", "PATCH", "PUT"].includes(req.method)) max_hits = opts.MODIFY;
+
+		const offender = Cache.data?.find((x: Bucket) => x.user_id == user_id && x.id === bucket_id) as Bucket | null;
 
 		if (offender && offender.blocked) {
-			const reset = offender.created_at.getTime() + opts.window;
+			const reset = offender.expires_at.getTime();
 			const resetAfterMs = reset - Date.now();
 			const resetAfterSec = resetAfterMs / 1000;
 			const global = bucket_id === "global";
+			console.log("blocked", { resetAfterMs });
 
-			return (
-				res
-					.status(429)
-					.set("X-RateLimit-Limit", `${max_hits}`)
-					.set("X-RateLimit-Remaining", "0")
-					.set("X-RateLimit-Reset", `${reset}`)
-					.set("X-RateLimit-Reset-After", `${resetAfterSec}`)
-					.set("X-RateLimit-Global", `${global}`)
-					.set("Retry-After", `${Math.ceil(resetAfterSec)}`)
-					.set("X-RateLimit-Bucket", `${bucket_id}`)
-					// TODO: error rate limit message translation
-					.send({ message: "You are being rate limited.", retry_after: resetAfterSec, global })
-			);
+			if (resetAfterMs > 0) {
+				return (
+					res
+						.status(429)
+						.set("X-RateLimit-Limit", `${max_hits}`)
+						.set("X-RateLimit-Remaining", "0")
+						.set("X-RateLimit-Reset", `${reset}`)
+						.set("X-RateLimit-Reset-After", `${resetAfterSec}`)
+						.set("X-RateLimit-Global", `${global}`)
+						.set("Retry-After", `${Math.ceil(resetAfterSec)}`)
+						.set("X-RateLimit-Bucket", `${bucket_id}`)
+						// TODO: error rate limit message translation
+						.send({ message: "You are being rate limited.", retry_after: resetAfterSec, global })
+				);
+			} else {
+				// mongodb ttl didn't update yet -> manually update/delete
+				db.collection("ratelimits").updateOne(
+					{ id: bucket_id, user_id },
+					{ $set: { hits: 0, expires_at: new Date(Date.now() + opts.window * 1000), blocked: false } }
+				);
+			}
 		}
 		next();
-		console.log(req.route);
 
 		if (opts.error) {
 			res.once("finish", () => {
 				// check if error and increment error rate limit
+				if (res.statusCode >= 400) {
+					// TODO: use config rate limit values
+					return hitRoute({ bucket_id: "error", user_id, max_hits: opts.error as number, window: opts.window });
+				}
 			});
 		}
 
-		db.collection("ratelimits").updateOne(
-			{ bucket: bucket_id },
+		return hitRoute({ user_id, bucket_id, max_hits, window: opts.window });
+	};
+}
+
+function hitRoute(opts: { user_id: string; bucket_id: string; max_hits: number; window: number }) {
+	return db.collection("ratelimits").updateOne(
+		{ id: opts.bucket_id, user_id: opts.user_id },
+		[
+			{
+				$replaceRoot: {
+					newRoot: {
+						// similar to $setOnInsert
+						$mergeObjects: [
+							{
+								id: opts.bucket_id,
+								user_id: opts.user_id,
+								expires_at: new Date(Date.now() + opts.window * 1000)
+							},
+							"$$ROOT"
+						]
+					}
+				}
+			},
 			{
 				$set: {
-					id: bucket_id,
-					user_id,
-					created_at: new Date(),
-					$cond: { if: { $gt: ["$hits", max_hits] }, then: true, else: false }
-				},
-				$inc: { hits: 1 }
-			},
-			{ upsert: true }
-		);
-	};
+					hits: { $sum: [{ $ifNull: ["$hits", 0] }, 1] },
+					blocked: { $gt: ["$hits", opts.max_hits] }
+				}
+			}
+		],
+		{ upsert: true }
+	);
 }

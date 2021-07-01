@@ -56,7 +56,7 @@ export class FosscordServer extends Server {
 			db.collection("emojis").createIndex({ id: 1 }, { unique: true }),
 			db.collection("invites").createIndex({ code: 1 }, { unique: true }),
 			db.collection("invites").createIndex({ expires_at: 1 }, { expireAfterSeconds: 0 }), // after 0 seconds of expires_at the invite will get delete
-			db.collection("ratelimits").createIndex({ created_at: 1 }, { expireAfterSeconds: 1000 })
+			db.collection("ratelimits").createIndex({ expires_at: 1 }, { expireAfterSeconds: 0 })
 		]);
 	}
 
@@ -69,7 +69,6 @@ export class FosscordServer extends Server {
 
 		this.app.use(CORS);
 		this.app.use(Authentication);
-		this.app.use(RateLimit({ count: 10, error: 10, window: 5 }));
 		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 2 }));
 		const languages = await fs.readdir(path.join(__dirname, "..", "locales"));
 		const namespaces = await fs.readdir(path.join(__dirname, "..", "locales", "en"));
@@ -94,6 +93,7 @@ export class FosscordServer extends Server {
 		const prefix = Router();
 		// @ts-ignore
 		this.app = prefix;
+		prefix.use(RateLimit({ bucket: "global", count: 10, error: 10, window: 5, bot: 250 }));
 		prefix.use("/guilds/:id", RateLimit({ count: 10, window: 5 }));
 		prefix.use("/webhooks/:id", RateLimit({ count: 10, window: 5 }));
 		prefix.use("/channels/:id", RateLimit({ count: 10, window: 5 }));
