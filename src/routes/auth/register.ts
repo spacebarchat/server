@@ -6,11 +6,13 @@ import "missing-native-js-functions";
 import { generateToken } from "./login";
 import { getIpAdress, IPAnalysis, isProxy } from "../../util/ipAddress";
 import { HTTPError } from "lambert-server";
+import RateLimit from "../../middlewares/RateLimit";
 
 const router: Router = Router();
 
 router.post(
 	"/",
+	RateLimit({ count: 2, window: 60 * 60 * 12, onylIp: true, success: true }),
 	check({
 		username: new Length(String, 2, 32),
 		// TODO: check min password length in config

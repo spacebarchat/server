@@ -4,12 +4,14 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Config, UserModel } from "@fosscord/server-util";
 import { adjustEmail } from "./register";
+import RateLimit from "../../middlewares/RateLimit";
 
 const router: Router = Router();
 export default router;
 
 router.post(
 	"/",
+	RateLimit({ count: 5, window: 60, onylIp: true }),
 	check({
 		login: new Length(String, 2, 100), // email or telephone
 		password: new Length(String, 8, 64),

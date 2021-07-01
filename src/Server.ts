@@ -93,10 +93,11 @@ export class FosscordServer extends Server {
 		const prefix = Router();
 		// @ts-ignore
 		this.app = prefix;
-		prefix.use(RateLimit({ bucket: "global", count: 10, error: 10, window: 5, bot: 250 }));
-		prefix.use("/guilds/:id", RateLimit({ count: 10, window: 5 }));
-		prefix.use("/webhooks/:id", RateLimit({ count: 10, window: 5 }));
-		prefix.use("/channels/:id", RateLimit({ count: 10, window: 5 }));
+		prefix.use(RateLimit({ bucket: "global", count: 10, window: 5, bot: 250 }));
+		prefix.use(RateLimit({ bucket: "error", count: 5, error: true, window: 5, bot: 15, onylIp: true }));
+		prefix.use("/guilds/:id", RateLimit({ count: 5, window: 5 }));
+		prefix.use("/webhooks/:id", RateLimit({ count: 5, window: 5 }));
+		prefix.use("/channels/:id", RateLimit({ count: 5, window: 5 }));
 
 		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
 		app.use("/api", prefix); // allow unversioned requests

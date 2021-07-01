@@ -36,17 +36,21 @@ export default function RateLimit(opts: {
 	window: number;
 	count: number;
 	bot?: number;
-	error?: number;
 	webhook?: number;
 	oauth?: number;
 	GET?: number;
 	MODIFY?: number;
+	error?: boolean;
+	success?: boolean;
+	onylIp?: boolean;
 }) {
 	Cache.init(); // will only initalize it once
 
 	return async (req: Request, res: Response, next: NextFunction) => {
-		const bucket_id = opts.bucket || req.path.replace(API_PREFIX_TRAILING_SLASH, "");
-		const user_id = req.user_id || getIpAdress(req);
+		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
+		var user_id = getIpAdress(req);
+		if (!opts.onylIp && req.user_id) user_id = req.user_id;
+
 		var max_hits = opts.count;
 		if (opts.bot && req.user_bot) max_hits = opts.bot;
 		if (opts.GET && ["GET", "OPTIONS", "HEAD"].includes(req.method)) max_hits = opts.GET;
@@ -59,9 +63,9 @@ export default function RateLimit(opts: {
 			const resetAfterMs = reset - Date.now();
 			const resetAfterSec = resetAfterMs / 1000;
 			const global = bucket_id === "global";
-			console.log("blocked", { resetAfterMs });
 
 			if (resetAfterMs > 0) {
+				console.log("blocked", { resetAfterMs });
 				return (
 					res
 						.status(429)
@@ -76,26 +80,28 @@ export default function RateLimit(opts: {
 						.send({ message: "You are being rate limited.", retry_after: resetAfterSec, global })
 				);
 			} else {
+				offender.hits = 0;
+				offender.expires_at = new Date(Date.now() + opts.window * 1000);
+				offender.blocked = false;
 				// mongodb ttl didn't update yet -> manually update/delete
-				db.collection("ratelimits").updateOne(
-					{ id: bucket_id, user_id },
-					{ $set: { hits: 0, expires_at: new Date(Date.now() + opts.window * 1000), blocked: false } }
-				);
+				db.collection("ratelimits").updateOne({ id: bucket_id, user_id }, { $set: offender });
 			}
 		}
 		next();
+		const hitRouteOpts = { bucket_id, user_id, max_hits, window: opts.window };
 
-		if (opts.error) {
+		if (opts.error || opts.success) {
 			res.once("finish", () => {
 				// check if error and increment error rate limit
-				if (res.statusCode >= 400) {
-					// TODO: use config rate limit values
-					return hitRoute({ bucket_id: "error", user_id, max_hits: opts.error as number, window: opts.window });
+				if (res.statusCode >= 400 && opts.error) {
+					return hitRoute(hitRouteOpts);
+				} else if (res.statusCode >= 200 && res.statusCode < 300 && opts.success) {
+					return hitRoute(hitRouteOpts);
 				}
 			});
+		} else {
+			return hitRoute(hitRouteOpts);
 		}
-
-		return hitRoute({ user_id, bucket_id, max_hits, window: opts.window });
 	};
 }
 
@@ -121,7 +127,7 @@ function hitRoute(opts: { user_id: string; bucket_id: string; max_hits: number; 
 			{
 				$set: {
 					hits: { $sum: [{ $ifNull: ["$hits", 0] }, 1] },
-					blocked: { $gt: ["$hits", opts.max_hits] }
+					blocked: { $gte: ["$hits", opts.max_hits] }
 				}
 			}
 		],
