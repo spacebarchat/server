@@ -13,6 +13,7 @@ import express, { Router, Request, Response } from "express";
 import fetch, { Response as FetchResponse } from "node-fetch";
 import mongoose from "mongoose";
 import path from "path";
+import RateLimit from "./middlewares/RateLimit";
 
 // this will return the new updated document for findOneAndUpdate
 mongoose.set("returnOriginal", false); // https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate
@@ -54,7 +55,8 @@ export class FosscordServer extends Server {
 			db.collection("roles").createIndex({ id: 1 }, { unique: true }),
 			db.collection("emojis").createIndex({ id: 1 }, { unique: true }),
 			db.collection("invites").createIndex({ code: 1 }, { unique: true }),
-			db.collection("invites").createIndex({ expires_at: 1 }, { expireAfterSeconds: 0 }) // after 0 seconds of expires_at the invite will get delete
+			db.collection("invites").createIndex({ expires_at: 1 }, { expireAfterSeconds: 0 }), // after 0 seconds of expires_at the invite will get delete
+			db.collection("ratelimits").createIndex({ expires_at: 1 }, { expireAfterSeconds: 0 })
 		]);
 	}
 
@@ -91,6 +93,10 @@ export class FosscordServer extends Server {
 		const prefix = Router();
 		// @ts-ignore
 		this.app = prefix;
+		prefix.use(RateLimit({ bucket: "global", count: 10, error: 10, window: 5, bot: 250 }));
+		prefix.use("/guilds/:id", RateLimit({ count: 10, window: 5 }));
+		prefix.use("/webhooks/:id", RateLimit({ count: 10, window: 5 }));
+		prefix.use("/channels/:id", RateLimit({ count: 10, window: 5 }));
 
 		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
 		app.use("/api", prefix); // allow unversioned requests

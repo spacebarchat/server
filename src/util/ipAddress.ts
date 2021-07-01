@@ -1,13 +1,7 @@
 import { Config } from "@fosscord/server-util";
 import { Request } from "express";
 // use ipdata package instead of simple fetch because of integrated caching
-import IPData, { LookupResponse } from "ipdata";
-
-var ipdata: IPData;
-const cacheConfig = {
-	max: 1000, // max size
-	maxAge: 1000 * 60 * 60 * 24 // max age in ms (i.e. one day)
-};
+import fetch from "node-fetch";
 
 const exampleData = {
 	ip: "",
@@ -66,15 +60,14 @@ const exampleData = {
 	status: 200
 };
 
-export async function IPAnalysis(ip: string): Promise<LookupResponse> {
+export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 	const { ipdataApiKey } = Config.get().security;
 	if (!ipdataApiKey) return { ...exampleData, ip };
-	if (!ipdata) ipdata = new IPData(ipdataApiKey, cacheConfig);
 
-	return await ipdata.lookup(ip);
+	return (await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)).json();
 }
 
-export function isProxy(data: LookupResponse) {
+export function isProxy(data: typeof exampleData) {
 	if (!data || !data.asn || !data.threat) return false;
 	if (data.asn.type !== "isp") return true;
 	if (Object.values(data.threat).some((x) => x)) return true;

@@ -1,9 +1,8 @@
 import { Request, Response, Router } from "express";
 import { GuildModel } from "@fosscord/server-util";
 import { HTTPError } from "lambert-server";
-import { Image } from "canvas";
 import fs from "fs";
-import path from "path"
+import path from "path";
 
 const router: Router = Router();
 
@@ -35,7 +34,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const sizeOf = require("image-size");
 
 	// TODO: Widget style templates need Fosscord branding
-	const source = path.join(__dirname, "..", "..", "..", "..", "assets","widget", `${style}.png`)
+	const source = path.join(__dirname, "..", "..", "..", "..", "assets", "widget", `${style}.png`);
 	if (!fs.existsSync(source)) {
 		throw new HTTPError("Widget template does not exist.", 400);
 	}
@@ -85,16 +84,17 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 async function drawIcon(canvas: any, x: number, y: number, scale: number, icon: string) {
-	const img = new Image();
+	// @ts-ignore
+	const img = new require("canvas").Image();
 	img.src = icon;
-	
+
 	// Do some canvas clipping magic!
 	canvas.save();
 	canvas.beginPath();
 
 	const r = scale / 2; // use scale to determine radius
 	canvas.arc(x + r, y + r, r, 0, 2 * Math.PI, false); // start circle at x, and y coords + radius to find center
-	
+
 	canvas.clip();
 	canvas.drawImage(img, x, y, scale, scale);
 
