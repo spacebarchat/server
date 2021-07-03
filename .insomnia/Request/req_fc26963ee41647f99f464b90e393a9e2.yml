@@ -1,0 +1,34 @@
+_id: req_fc26963ee41647f99f464b90e393a9e2
+type: Request
+parentId: fld_wrk_84bc4b982502477baa52fb4972f3c71728dd7536
+modified: 1625262677200
+created: 1625262677200
+url: "{{ base_url }}/guilds/{{ guildId }}/audit-logs"
+name: Returns an audit log object for the guild. Requires the 'VIEW_AUDIT_LOG'
+  permission.
+description: ""
+method: GET
+body: {}
+parameters:
+  - name: user_id
+    disabled: true
+    value: string
+  - name: action_type
+    disabled: true
+    value: "0"
+  - name: before
+    disabled: true
+    value: string
+  - name: limit
+    disabled: true
+    value: "0"
+headers: []
+authentication: {}
+metaSortKey: -1625262677200
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

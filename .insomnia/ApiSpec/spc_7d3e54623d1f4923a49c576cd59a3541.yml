@@ -1,0 +1,362 @@
+_id: spc_7d3e54623d1f4923a49c576cd59a3541
+type: ApiSpec
+parentId: wrk_84bc4b982502477baa52fb4972f3c717
+modified: 1625309127869
+created: 1625231075476
+fileName: fosscord-api.yaml
+contents: >-
+  swagger: "2.0"
+
+  info:
+      description: "Fosscord backend api docs"
+      version: "1.0.0"
+      title: "Fosscord Backend API"
+      termsOfService: "https://github.com/fosscord/fosscord/blob/master/LICENSE"
+      license:
+          name: "AGPL 3.0"
+          url: "https://www.gnu.org/licenses/agpl-3.0.html"
+  host: "dev.fosscord.com"
+
+  basePath: "/api/v9"
+
+  tags:
+    - name: "Audit Log"
+      description: "Guild Audit Log resource"
+      externalDocs:
+          description: "Find out more"
+          url: "https://discord.com/developers/docs/resources/audit-log"
+    - name: "Channel"
+      description: "Channel resource"
+      externalDocs:
+          description: "Find out more"
+          url: "https://discord.com/developers/docs/resources/channel"
+  schemes:
+    - "https"
+    - "http"
+  paths:
+      /guilds/{guildId}/audit-logs:
+          get:
+              summary: "Returns an audit log object for the guild. Requires the 'VIEW_AUDIT_LOG' permission."
+              tags:
+                - Audit Log
+              parameters:
+                - $ref: "#/definitionsParam/guildId"
+                - name: user_id
+                  in: query
+                  type: string
+                  description: "Type of snowflake - Filter the log for actions made by a user"
+                - name: action_type
+                  in: query
+                  type: integer
+                  description: "The type of audit log event"
+                - name: before
+                  in: query
+                  type: string
+                  description: "Type of snowflake - Filter the log before a certain entry id"
+                - name: limit
+                  in: query
+                  type: integer
+                  description: "How many entries are returned (default 50, minimum 1, maximum 100)"
+              responses:
+                  '200': 
+                      description: "Audit Log Object"
+                      schema:
+                          $ref: "#/definitions/Audit%20Log"
+      /channels/{channelId}:
+          get:
+              summary: "Get a channel by ID. Returns a channel object. If the channel is a thread, a thread member object is included in the returned result."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+              responses:
+                  '200':
+                      description: "Channel Object"
+                      schema:
+                          $ref: "#/definitions/Channel"
+          patch:
+              summary: "Update a channel's settings. Returns a channel on success, and a 400 BAD REQUEST on invalid parameters. All JSON parameters are optional."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - name: body (Group DM)
+                  in: body
+                  description: "The request body when modifying Group DM channels - Fires a Channel Update Gateway event."
+                  schema:
+                      type: object
+                      properties:
+                          name:
+                              type: string
+                              description: "1-100 character channel name"
+                          icon:
+                              type: string
+                              format: byte
+                              description: "base64 encoded icon"
+                - name: body (Guild channel)
+                  in: body
+                  description: "Requires the MANAGE_CHANNELS permission for the guild. Fires a Channel Update Gateway event. If modifying a category, individual Channel Update events will fire for each child channel that also changes. If modifying permission overwrites, the MANAGE_ROLES permission is required. Only permissions your bot has in the guild or channel can be allowed/denied (unless your bot has a MANAGE_ROLES overwrite in the channel)."
+                  schema:
+                      type: object
+                      properties:
+                          name:
+                              type: string
+                              description: "1-100 character channel name"
+                          type:
+                              type: integer
+                              description: "The type of channel; only conversion between text and news is supported and only in guilds with the \"NEWS\" feature"
+                          position:
+                              type: integer
+                              default: null
+                              description: "The position of the channel in the left-hand listing"
+                          topic:
+                              type: string
+                              default: null
+                              description: "0-1024 character channel topic"
+                          nsfw:
+                              type: boolean
+                              default: null
+                              description: "Whether the channel is nsfw"
+                          rate_limit_per_user:
+                              type: integer
+                              default: null
+                              description: "Amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages or manage_channel, are unaffected"
+                          bitrate:
+                              type: integer
+                              default: null
+                              description: "The bitrate (in bits) of the voice channel; 8000 to 96000 (128000 for VIP servers)"
+                          user_limit:
+                              type: integer
+                              default: null
+                              description: "The user limit of the voice channel; 0 refers to no limit, 1 to 99 refers to a user limit"
+                          permission_overwrites:
+                              type: array
+                              items:
+                                  $ref: "#/definitions/Overwrite"
+                              default: null
+                              description: "Channel or category-specific permissions"
+                          parent_id:
+                              $ref: "#/definitions/Snowflake"
+                              default: null
+                              description: "Id of the new parent category for a channel"
+                          rtc_region:
+                              type: string
+                              default: null
+                              description: "Channel voice region id, automatic when set to null"
+                          video_quality_mode:
+                              type: integer
+                              default: null
+                              description: "The camera video quality mode of the voice channel"
+                          default_auto_archive_duration:
+                              type: integer
+                              default: null
+                              description: "The default duration for newly created threads in the channel, in minutes, to automatically archive the thread after recent activity"
+                - name: body (Thread)
+                  in: body
+                  description: "When setting archived to false, when locked is also false, only the SEND_MESSAGES permission is required.Otherwise, requires the MANAGE_THREADS permission. Fires a Thread Update Gateway event. Requires the thread to have archived set to false or be set to false in the request."
+                  schema:
+                      type: object
+                      properties:
+                          name:
+                              type: string
+                              description: "1-100 character channel name"
+                          archived:
+                              type: boolean
+                              description: "Whether the channel is archived"
+                          auto_archive_duration:
+                              type: integer
+                              description: "Duration in minutes to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080 (The 3 day and 7 day archive durations require the server to be boosted. The guild features will indicate if a server is able to use those settings)"
+                          locked:
+                              type: boolean
+                              description: "When a thread is locked, only users with MANAGE_THREADS can unarchive it"
+                          rate_limit_per_user:
+                              type: integer
+                              default: null
+                              description: "Amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages, manage_thread, or manage_channel, are unaffected"
+              responses:
+                  '200':
+                      description: "Channel Object"
+                      schema:
+                          $ref: "#/definitions/Channel"
+                  '400':
+                      description: "Bad Request due to invalid parameters"
+          delete:
+              summary: "Delete a channel, or close a private message. Requires the MANAGE_CHANNELS permission for the guild, or MANAGE_THREADS if the channel is a thread. Deleting a category does not delete its child channels; they will have their parent_id removed and a Channel Update Gateway event will fire for each of them. Returns a channel object on success. Fires a Channel Delete Gateway event (or Thread Delete if the channel was a thread)."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+              responses:
+                  '200':
+                      description: "Channel deleted sucessfully"
+      /channels/{channelId}/messages:
+          get:
+              summary: "Returns the messages for a channel. If operating on a guild channel, this endpoint requires the VIEW_CHANNEL permission to be present on the current user. If the current user is missing the 'READ_MESSAGE_HISTORY' permission in the channel then this will return no messages (since they cannot read the message history). Returns an array of message objects on success."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - name: around
+                  in: query
+                  type: string
+                  description: "Type of snowflake - Get messages around this message ID"
+                - name: before
+                  in: query
+                  type: string
+                  description: "Type of snowflake - Get messages before this message ID"
+                - name: after
+                  in: query
+                  type: string
+                  description: "Type of snowflake - Get messages after this message ID"
+                - name: limit
+                  in: query
+                  type: integer
+                  description: "Max number of messages to return (1-100)"
+                  default: 50
+              responses:
+                  '200':
+                      description: "Returns an array of message objects on success"
+                      schema:
+                          type: array
+                          items:
+                              $ref: "#/definitions/Message"
+      /channels/{channelId}/messages/{messageId}:
+          get:
+              summary: "Returns a specific message in the channel. If operating on a guild channel, this endpoint requires the 'READ_MESSAGE_HISTORY' permission to be present on the current user. Returns a message object on success."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
+              responses:
+                  '200':
+                      description: "Returns a message object on success"
+                      schema:
+                          $ref: "#/definitions/Message"
+          post:
+              summary: "Post a message to a guild text or DM channel. Returns a message object. Fires a Message Create Gateway event. See message formatting for more information on how to properly format messages."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
+                - name: body
+                  in: body
+                  required: true
+                  description: "Request body that contains the necessary data for creating messages"
+                  schema:
+                      type: object
+                      properties:
+                          content:
+                              type: string
+                              description: "The message contents (up to 2000 characters)"
+                          tts:
+                              type: boolean
+                              description: "True if this is a TTS message"
+                          file:
+                              type: string
+                              format: binary
+                              description: "The contents of the file being sent"
+                          embeds:
+                              type: array
+                              items:
+                                  $ref: "#/definitions/Embed"
+                              description: "Embedded rich content (up to 6000 characters)"
+                          payload_json:
+                              type: string
+                              description: "JSON encoded body of non-file params"
+                          allowed_mentions:
+                              $ref: "#/definitions/Allowed%20Mention"
+                              description: "Allowed mentions for the message"
+                          message_refrence:
+                              $ref: "#/definitions/Message%20Refrence"
+                              description: "Include to make your message a reply"
+                          components:
+                              type: array
+                              items:
+                                  $ref: "#/definitions/Message%20Component"
+              responses:
+                  '200':
+                      description: "Returns a message object on success"
+                      schema:
+                          $ref: "#/definitions/Message"
+      /channels/{channelId}/messages/{messageId}/crosspost:
+          post:
+              summary: "Crosspost a message in a News Channel to following channels. This endpoint requires the 'SEND_MESSAGES' permission, if the current user sent the message, or additionally the 'MANAGE_MESSAGES' permission, for all other messages, to be present for the current user."
+              tags:
+                  - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
+  definitions:
+      Snowflake:
+          type: string
+          pattern: "^\\d+$"
+      Audit Log:
+          type: object
+          properties:
+              webhooks:
+                  type: array
+                  items:
+                      $ref: "#/definitions/Webhook"
+                  description: "List of webhooks found in the audit log"
+              users:
+                  type: array
+                  items:
+                      $ref: "#/definitions/User"
+                  description: "List of users found in the audit log"
+              audit_log_entries:
+                  type: array
+                  items:
+                      $ref: "#/definitions/Audit%20Log%20Entry"
+                  description: "List of audit log entries"
+              integrations:
+                  type: array
+                  items:
+                      $ref: "#/definitions/Integration"
+                  description: "List of partial integration objects"
+      Audit Log Entry:
+          type: object
+      Webhook:
+          type: object
+      User:
+          type: object
+      Integration:
+          type: object
+      Channel:
+          type: object
+      Overwrite:
+          type: object
+      Message:
+          type: object
+      Embed:
+          type: object
+      Allowed Mention:
+          type: object
+      Message Refrence:
+          type: object
+      Message Component:
+          type: object
+  definitionsParam:
+      channelId:
+          name: channelId
+          in: path
+          required: true
+          type: string
+          description: "Type of snowflake - The target channel Id"
+      messageId:
+          name: messageId
+          in: path
+          required: true
+          type: string
+          description: "Type of snowflake - The message's ID to get"
+      guildId:
+          name: guildId
+          in: path
+          required: true
+          type: string
+          description: "Type of snowflake - The guild ID to get the audit logs for"
+  externalDocs:
+      description: "Discord API"
+      url: "https://discord.com/developers/docs/"
+contentType: yaml

@@ -1,0 +1,23 @@
+_id: req_0151c09d51324bd78a26c1236c6ce0b2
+type: Request
+parentId: fld_wrk_84bc4b982502477baa52fb4972f3c717879f0b1b
+modified: 1625262677191
+created: 1625262677191
+url: "{{ base_url }}/channels/{{ channelId }}/messages/{{ messageId }}"
+name: Returns a specific message in the channel. If operating on a guild
+  channel, this endpoint requires the 'READ_MESSAGE_HISTORY' permission to be
+  present on the current user. Returns a message object on success.
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1625262677191
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

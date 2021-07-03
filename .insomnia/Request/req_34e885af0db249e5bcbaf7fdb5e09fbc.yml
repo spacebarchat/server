@@ -1,0 +1,22 @@
+_id: req_34e885af0db249e5bcbaf7fdb5e09fbc
+type: Request
+parentId: fld_wrk_84bc4b982502477baa52fb4972f3c717879f0b1b
+modified: 1625309127856
+created: 1625309127856
+url: "{{ base_url }}/channels/{{ channelId }}"
+name: Get a channel by ID. Returns a channel object. If the channel is a thread,
+  a thread member object is included in the returned result.
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1625309127856
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

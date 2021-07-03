@@ -1,0 +1,14 @@
+_id: env_env_7f7715cc4a425b45530e190a1a1d203dd2125894_sub
+type: Environment
+parentId: env_7f7715cc4a425b45530e190a1a1d203dd2125894
+modified: 1625237584737
+created: 1625237584737
+name: Swagger env
+data:
+  base_path: /api/v9
+  scheme: https
+  host: dev.fosscord.com
+dataPropertyOrder: null
+color: null
+isPrivate: false
+metaSortKey: 1625237584738

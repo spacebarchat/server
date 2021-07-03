@@ -1,0 +1,24 @@
+_id: req_546e8de6ddef4b8aa657ecd7d954a83a
+type: Request
+parentId: fld_wrk_84bc4b982502477baa52fb4972f3c717879f0b1b
+modified: 1625309127846
+created: 1625309127846
+url: "{{ base_url }}/channels/{{ channelId }}/messages/{{ messageId }}/crosspost"
+name: Crosspost a message in a News Channel to following channels. This endpoint
+  requires the 'SEND_MESSAGES' permission, if the current user sent the message,
+  or additionally the 'MANAGE_MESSAGES' permission, for all other messages, to
+  be present for the current user.
+description: ""
+method: POST
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1625309127846
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

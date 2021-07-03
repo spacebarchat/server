@@ -1,0 +1,22 @@
+_id: req_144fcf66270e4e4ba3bedf967afa4747
+type: Request
+parentId: fld_wrk_84bc4b982502477baa52fb4972f3c717879f0b1b
+modified: 1625237676383
+created: 1625237676383
+url: "{{ base_url }}/channels/{{ channelId }}"
+name: Update a channel's settings. Returns a channel on success, and a 400 BAD
+  REQUEST on invalid parameters. All JSON parameters are optional.
+description: ""
+method: PATCH
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1625237676383
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

@@ -1,0 +1,23 @@
+_id: req_cece238b361045edae5b0be24cdde2ac
+type: Request
+parentId: fld_wrk_84bc4b982502477baa52fb4972f3c717879f0b1b
+modified: 1625309127848
+created: 1625309127848
+url: "{{ base_url }}/channels/{{ channelId }}/messages/{{ messageId }}"
+name: Post a message to a guild text or DM channel. Returns a message object.
+  Fires a Message Create Gateway event. See message formatting for more
+  information on how to properly format messages.
+description: ""
+method: POST
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1625309127848
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

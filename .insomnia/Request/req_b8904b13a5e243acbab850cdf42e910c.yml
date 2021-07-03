@@ -1,0 +1,37 @@
+_id: req_b8904b13a5e243acbab850cdf42e910c
+type: Request
+parentId: fld_wrk_84bc4b982502477baa52fb4972f3c717879f0b1b
+modified: 1625309127851
+created: 1625309127851
+url: "{{ base_url }}/channels/{{ channelId }}/messages"
+name: Returns the messages for a channel. If operating on a guild channel, this
+  endpoint requires the VIEW_CHANNEL permission to be present on the current
+  user. If the current user is missing the 'READ_MESSAGE_HISTORY' permission in
+  the channel then this will return no messages (since they cannot read the
+  message history). Returns an array of message objects on success.
+description: ""
+method: GET
+body: {}
+parameters:
+  - name: around
+    disabled: true
+    value: string
+  - name: before
+    disabled: true
+    value: string
+  - name: after
+    disabled: true
+    value: string
+  - name: limit
+    disabled: true
+    value: "50"
+headers: []
+authentication: {}
+metaSortKey: -1625309127851
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

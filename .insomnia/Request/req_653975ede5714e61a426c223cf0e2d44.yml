@@ -1,0 +1,26 @@
+_id: req_653975ede5714e61a426c223cf0e2d44
+type: Request
+parentId: fld_wrk_84bc4b982502477baa52fb4972f3c717879f0b1b
+modified: 1625309127852
+created: 1625309127852
+url: "{{ base_url }}/channels/{{ channelId }}"
+name: Delete a channel, or close a private message. Requires the MANAGE_CHANNELS
+  permission for the guild, or MANAGE_THREADS if the channel is a thread.
+  Deleting a category does not delete its child channels; they will have their
+  parent_id removed and a Channel Update Gateway event will fire for each of
+  them. Returns a channel object on success. Fires a Channel Delete Gateway
+  event (or Thread Delete if the channel was a thread).
+description: ""
+method: DELETE
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1625309127852
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
