@@ -1,7 +1,7 @@
 _id: spc_7d3e54623d1f4923a49c576cd59a3541
 type: ApiSpec
 parentId: wrk_84bc4b982502477baa52fb4972f3c717
-modified: 1625309127869
+modified: 1625311095139
 created: 1625231075476
 fileName: fosscord-api.yaml
 contents: >-
@@ -280,6 +280,13 @@ contents: >-
                       description: "Returns a message object on success"
                       schema:
                           $ref: "#/definitions/Message"
+          patch:
+              summary: "Edit a previously sent message. The fields content, embeds, and flags can be edited by the original message author. Other users can only edit flags and only if they have the MANAGE_MESSAGES permission in the corresponding channel. When specifying flags, ensure to include all previously set flags/bits in addition to ones that you are modifying. Only flags documented in the table below may be modified by users (unsupported flag changes are currently ignored without error)."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
       /channels/{channelId}/messages/{messageId}/crosspost:
           post:
               summary: "Crosspost a message in a News Channel to following channels. This endpoint requires the 'SEND_MESSAGES' permission, if the current user sent the message, or additionally the 'MANAGE_MESSAGES' permission, for all other messages, to be present for the current user."
@@ -288,6 +295,94 @@ contents: >-
               parameters:
                 - $ref: "#/definitionsParam/channelId"
                 - $ref: "#/definitionsParam/messageId"
+              responses:
+                  '200':
+                      description: "Returns a message object on success"
+                      schema:
+                          $ref: "#/definitions/Message"
+      /channels/{channelId}/messages/{messageId}/reactions/{emoji}/@me:
+          put:
+              summary: "Create a reaction for the message. This endpoint requires the 'READ_MESSAGE_HISTORY' permission to be present on the current user. Additionally, if nobody else has reacted to the message using this emoji, this endpoint requires the 'ADD_REACTIONS' permission to be present on the current user. Returns a 204 empty response on success. The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
+                - $ref: "#/definitionsParam/emoji"
+              responses:
+                  '204':
+                      description: "Returns a 204 empty response on success."
+          delete:
+              summary: "Delete a reaction the current user has made for the message. Returns a 204 empty response on success. The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
+                - $ref: "#/definitionsParam/emoji"
+              responses:
+                  '204':
+                      description: "Returns a 204 empty response on success."
+      /channels/{channelId}/messages/{messageId}/reactions/{emoji}/{userId}:
+          delete:
+              summary: "Deletes another user's reaction. This endpoint requires the 'MANAGE_MESSAGES' permission to be present on the current user. Returns a 204 empty response on success. The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
+                - $ref: "#/definitionsParam/emoji"
+                - $ref: "#/definitionsParam/userId"
+              responses:
+                  '204':
+                      description: "Returns a 204 empty response on success."
+      /channels/{channelId}/messages/{messageId}/reactions/{emoji}:
+          get:
+              summary: "Get a list of users that reacted with this emoji. Returns an array of user objects on success. The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
+                - $ref: "#/definitionsParam/emoji"
+                - name: after
+                  in: query
+                  type: string
+                  description: "Type of snowflake - Get users after this user ID"
+                - name: limit
+                  in: query
+                  type: integer
+                  description: "Max number of users to return (1-100)"
+                  default: 25
+              responses:
+                  '200':
+                      description: "Returns an array of user objects on success"
+                      schema:
+                          type: array
+                          items:
+                              $ref: "#/definitions/User"
+          delete:
+              summary: "Deletes all the reactions for a given emoji on a message. This endpoint requires the MANAGE_MESSAGES permission to be present on the current user. Fires a Message Reaction Remove Emoji Gateway event. The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
+                - $ref: "#/definitionsParam/emoji"
+              responses:
+                  '204':
+                      description: "Returns a 204 empty response on success."
+      /channels/{channelId}/messages/{messageId}/reactions:
+          delete:
+              summary: "Deletes all reactions on a message. This endpoint requires the 'MANAGE_MESSAGES' permission to be present on the current user. Fires a Message Reaction Remove All Gateway event."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
+              responses:
+                  '204':
+                      description: "Returns a 204 empty response on success."
   definitions:
       Snowflake:
           type: string
@@ -343,19 +438,32 @@ contents: >-
           in: path
           required: true
           type: string
-          description: "Type of snowflake - The target channel Id"
+          description: "Type of snowflake - A channel Id"
       messageId:
           name: messageId
           in: path
           required: true
           type: string
-          description: "Type of snowflake - The message's ID to get"
+          description: "Type of snowflake - A message ID"
       guildId:
           name: guildId
           in: path
           required: true
           type: string
-          description: "Type of snowflake - The guild ID to get the audit logs for"
+          description: "Type of snowflake - A guild ID"
+      emoji:
+          name: emoji
+          in: path
+          required: true
+          type: string
+          format: url
+          description: "The emoji ID to use"
+      userId:
+          name: userId
+          in: path
+          required: true
+          type: string
+          description: "Type of snowflake - A user ID"
   externalDocs:
       description: "Discord API"
       url: "https://discord.com/developers/docs/"
