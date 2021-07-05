@@ -1,7 +1,7 @@
 _id: spc_7d3e54623d1f4923a49c576cd59a3541
 type: ApiSpec
 parentId: wrk_84bc4b982502477baa52fb4972f3c717
-modified: 1625311095139
+modified: 1625502714595
 created: 1625231075476
 fileName: fosscord-api.yaml
 contents: >-
@@ -253,6 +253,7 @@ contents: >-
                           tts:
                               type: boolean
                               description: "True if this is a TTS message"
+                              default: null
                           file:
                               type: string
                               format: binary
@@ -265,16 +266,20 @@ contents: >-
                           payload_json:
                               type: string
                               description: "JSON encoded body of non-file params"
+                              default: null
                           allowed_mentions:
                               $ref: "#/definitions/Allowed%20Mention"
                               description: "Allowed mentions for the message"
+                              default: null
                           message_refrence:
                               $ref: "#/definitions/Message%20Refrence"
                               description: "Include to make your message a reply"
+                              default: null
                           components:
                               type: array
                               items:
                                   $ref: "#/definitions/Message%20Component"
+                              default: null
               responses:
                   '200':
                       description: "Returns a message object on success"
@@ -287,6 +292,58 @@ contents: >-
               parameters:
                 - $ref: "#/definitionsParam/channelId"
                 - $ref: "#/definitionsParam/messageId"
+                - name: body
+                  in: body
+                  required: true
+                  description: "Request body that contains the necessary data for editing messages"
+                  schema:
+                      type: object
+                      properties:
+                          content:
+                              type: string
+                              description: "The message contents (up to 2000 characters)"
+                          embeds:
+                              type: array
+                              items:
+                                  $ref: "#/definitions/Embed"
+                              description: "Embedded rich content (up to 6000 characters)"
+                          flags:
+                              type: integer
+                              description: "Edit the flags of a message (only SUPPRESS_EMBEDS can currently be set/unset)"
+                          file:
+                              type: string
+                              format: binary
+                              description: "The contents of the file being sent/edited"
+                          payload_json:
+                              type: string
+                              description: "JSON encoded body of non-file params (multipart/form-data only)"
+                              default: null
+                          allowed_mentions:
+                              $ref: "#/definitions/Allowed%20Mention"
+                              description: "Allowed mentions for the message"
+                              default: null
+                          message_refrence:
+                              $ref: "#/definitions/Message%20Refrence"
+                              description: "Include to make your message a reply"
+                              default: null
+                          components:
+                              type: array
+                              items:
+                                  $ref: "#/definitions/Message%20Component"
+                              default: null
+              responses:
+                  '200':
+                      description: "Message edited"
+          delete:
+              summary: "Delete a message. If operating on a guild channel and trying to delete a message that was not sent by the current user, this endpoint requires the MANAGE_MESSAGES permission. Returns a 204 empty response on success. Fires a Message Delete Gateway event."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
+                - $ref: "#/definitionsParam/messageId"
+              responses:
+                  '204':
+                      description: "Returns a 204 empty response on success."
       /channels/{channelId}/messages/{messageId}/crosspost:
           post:
               summary: "Crosspost a message in a News Channel to following channels. This endpoint requires the 'SEND_MESSAGES' permission, if the current user sent the message, or additionally the 'MANAGE_MESSAGES' permission, for all other messages, to be present for the current user."
@@ -380,6 +437,16 @@ contents: >-
               parameters:
                 - $ref: "#/definitionsParam/channelId"
                 - $ref: "#/definitionsParam/messageId"
+              responses:
+                  '204':
+                      description: "Returns a 204 empty response on success."
+      /channels/{channelId}/messages/bulk-delete:
+          post:
+              summary: "Delete multiple messages in a single request. This endpoint can only be used on guild channels and requires the MANAGE_MESSAGES permission. Returns a 204 empty response on success. Fires a Message Delete Bulk Gateway event."
+              tags:
+                - Channel
+              parameters:
+                - $ref: "#/definitionsParam/channelId"
               responses:
                   '204':
                       description: "Returns a 204 empty response on success."
