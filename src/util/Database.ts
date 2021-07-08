@@ -3,9 +3,10 @@ import mongoose, { Collection, Connection, LeanDocument } from "mongoose";
 import { ChangeStream, ChangeEvent, Long } from "mongodb";
 import EventEmitter from "events";
 const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPreference=secondaryPreferred";
+import { URL } from "url";
 
 // TODO: auto throw error if findOne doesn't find anything
-console.log(`[DB] connect: ${uri}`);
+const url = new URL(uri.replace("mongodb://", "http://"));
 
 const connection = mongoose.createConnection(uri, {
 	autoIndex: true,
@@ -13,6 +14,7 @@ const connection = mongoose.createConnection(uri, {
 	useUnifiedTopology: true,
 	useFindAndModify: false,
 });
+console.log(`[DB] connect: mongodb://${url.username}@${url.host}${url.pathname}${url.search}`);
 
 export default <Connection>connection;
 
