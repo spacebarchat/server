@@ -105,7 +105,7 @@ export class FosscordServer extends Server {
 		app.use("/api/v9", prefix);
 		this.app = app;
 		this.app.use(ErrorHandler);
-		const indexHTML = await fs.readFile(path.join(__dirname, "..", "client_test", "index.html"), { encoding: "utf8" });
+		const indexHTML = fs.readFileSync(path.join(__dirname, "..", "client_test", "index.html"), { encoding: "utf8" });
 
 		this.app.use("/assets", express.static(path.join(__dirname, "..", "assets")));
 
