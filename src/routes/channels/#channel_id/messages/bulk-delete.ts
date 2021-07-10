@@ -14,7 +14,7 @@ export default router;
 router.post("/", check({ messages: [String] }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 	const channel = await ChannelModel.findOne({ id: channel_id }, { permission_overwrites: true, guild_id: true }).exec();
-	if (!channel?.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
+	if (!channel.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
 
 	const permission = await getPermission(req.user_id, channel?.guild_id, channel_id, { channel });
 	permission.hasThrow("MANAGE_MESSAGES");

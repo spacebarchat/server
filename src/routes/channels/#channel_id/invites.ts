@@ -16,7 +16,7 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 	const { channel_id } = req.params;
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
 
-	if (!channel || !channel.guild_id) {
+	if (!channel.guild_id) {
 		throw new HTTPError("This channel doesn't exist", 404);
 	}
 	const { guild_id } = channel;
@@ -50,7 +50,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
 
-	if (!channel || !channel.guild_id) {
+	if (!channel.guild_id) {
 		throw new HTTPError("This channel doesn't exist", 404);
 	}
 	const { guild_id } = channel;

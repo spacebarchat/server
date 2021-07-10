@@ -37,15 +37,7 @@ router.patch("/", check(ChannelModifySchema), async (req: Request, res: Response
 	const body = req.body as ChannelModifySchema;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
-
-	const channel = {
-		...body
-	};
-	const channelm = await ChannelModel.find({ guild_id }).exec();
-	if (!channelm) throw new HTTPError("Channel not found", 404);
-
-	await new ChannelModel(channel).save();
+	const channel = await ChannelModel.findOneAndUpdate({ guild_id }, body).exec();
 
 	await emitEvent({ event: "CHANNEL_UPDATE", data: channel } as ChannelUpdateEvent);
 

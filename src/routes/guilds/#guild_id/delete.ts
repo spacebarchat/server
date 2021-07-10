@@ -20,7 +20,6 @@ router.post("/", async (req: Request, res: Response) => {
 	var { guild_id } = req.params;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, "owner_id").exec();
-	if (!guild) throw new HTTPError("This guild does not exist", 404);
 	if (guild.owner_id !== req.user_id) throw new HTTPError("You are not the owner of this guild", 401);
 
 	await emitEvent({

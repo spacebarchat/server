@@ -23,7 +23,6 @@ router.get("/", async (req: Request, res: Response) => {
 	await isMember(req.user_id, guild_id);
 
 	const member = await MemberModel.findOne({ id: member_id, guild_id }).exec();
-	if (!member) throw new HTTPError("Member not found", 404);
 
 	return res.json(toObject(member));
 });

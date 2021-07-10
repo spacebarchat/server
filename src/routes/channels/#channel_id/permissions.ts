@@ -12,7 +12,7 @@ router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, 
 	const body = req.body as { allow: bigint; deny: bigint; type: number; id: string };
 
 	var channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, permission_overwrites: true }).exec();
-	if (!channel || !channel.guild_id) throw new HTTPError("Channel not found", 404);
+	if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
 	const permissions = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permissions.hasThrow("MANAGE_ROLES");
@@ -38,8 +38,8 @@ router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, 
 	overwrite.allow = body.allow;
 	overwrite.deny = body.deny;
 
+	// @ts-ignore
 	channel = await ChannelModel.findOneAndUpdate({ id: channel_id }, channel).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	await emitEvent({
 		event: "CHANNEL_UPDATE",
@@ -59,7 +59,7 @@ router.delete("/:overwrite_id", async (req: Request, res: Response) => {
 	permissions.hasThrow("MANAGE_ROLES");
 
 	const channel = await ChannelModel.findOneAndUpdate({ id: channel_id }, { $pull: { permission_overwrites: { id: overwrite_id } } });
-	if (!channel || !channel.guild_id) throw new HTTPError("Channel not found", 404);
+	if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
 	await emitEvent({
 		event: "CHANNEL_UPDATE",

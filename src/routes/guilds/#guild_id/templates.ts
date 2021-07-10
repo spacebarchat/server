@@ -21,7 +21,7 @@ const TemplateGuildProjection = {
 	afk_channel_id: true,
 	system_channel_id: true,
 	system_channel_flags: true,
-	icon_hash: true,
+	icon_hash: true
 };
 
 router.get("/", async (req: Request, res: Response) => {
@@ -35,7 +35,6 @@ router.post("/", check(TemplateCreateSchema), async (req: Request, res: Response
 	const guild_id = req.params.guild_id;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, TemplateGuildProjection).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
@@ -47,7 +46,7 @@ router.post("/", check(TemplateCreateSchema), async (req: Request, res: Response
 		created_at: new Date(),
 		updated_at: new Date(),
 		source_guild_id: guild_id,
-		serialized_source_guild: guild,
+		serialized_source_guild: guild
 	}).save();
 
 	res.json(toObject(template)).send();
@@ -61,7 +60,7 @@ router.delete("/:code", async (req: Request, res: Response) => {
 	perms.hasThrow("MANAGE_GUILD");
 
 	const template = await TemplateModel.findOneAndDelete({
-		code,
+		code
 	}).exec();
 
 	res.send(toObject(template));
@@ -72,7 +71,6 @@ router.put("/:code", async (req: Request, res: Response) => {
 	const { code } = req.params;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, TemplateGuildProjection).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");

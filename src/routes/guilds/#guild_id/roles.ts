@@ -35,10 +35,7 @@ router.post("/", check(RoleModifySchema), async (req: Request, res: Response) =>
 	const body = req.body as RoleModifySchema;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
-
 	const user = await UserModel.findOne({ id: req.user_id }).exec();
-	if (!user) throw new HTTPError("User not found", 404);
 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");
@@ -71,11 +68,7 @@ router.delete("/:role_id", async (req: Request, res: Response) => {
 	const { role_id } = req.params;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
-	if (!role_id) throw new HTTPError("Unknown role_id", 404);
-
 	const user = await UserModel.findOne({ id: req.user_id }).exec();
-	if (!user) throw new HTTPError("User not found", 404);
 
 	const perms = await getPermission(req.user_id, guild_id);
 
@@ -106,11 +99,7 @@ router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Res
 	const body = req.body as RoleModifySchema;
 
 	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
-	if (!role_id) throw new HTTPError("Unknown template_id", 404);
-
 	const user = await UserModel.findOne({ id: req.user_id }).exec();
-	if (!user) throw new HTTPError("User not found", 404);
 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");

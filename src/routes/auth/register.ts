@@ -93,7 +93,9 @@ router.post(
 			if (!adjusted_email) throw FieldErrors({ email: { code: "INVALID_EMAIL", message: req.t("auth:register.INVALID_EMAIL") } });
 
 			// check if there is already an account with this email
-			const exists = await UserModel.findOne({ email: adjusted_email }).exec();
+			const exists = await UserModel.findOne({ email: adjusted_email })
+				.exec()
+				.catch((e) => {});
 
 			if (exists) {
 				throw FieldErrors({
@@ -130,7 +132,9 @@ router.post(
 
 		if (!register.allowMultipleAccounts) {
 			// TODO: check if fingerprint was eligible generated
-			const exists = await UserModel.findOne({ fingerprints: fingerprint }).exec();
+			const exists = await UserModel.findOne({ fingerprints: fingerprint })
+				.exec()
+				.catch((e) => {});
 
 			if (exists) {
 				throw FieldErrors({
@@ -165,8 +169,12 @@ router.post(
 		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the mongodb database?
 		for (let tries = 0; tries < 5; tries++) {
 			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
-			exists = await UserModel.findOne({ discriminator, username: adjusted_username }, "id").exec();
-			if (!exists) break;
+			try {
+				exists = await UserModel.findOne({ discriminator, username: adjusted_username }, "id").exec();
+			} catch (error) {
+				// doesn't exist -> break
+				break;
+			}
 		}
 
 		if (exists) {

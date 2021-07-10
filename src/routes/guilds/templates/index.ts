@@ -11,7 +11,6 @@ router.get("/:code", async (req: Request, res: Response) => {
 	const { code } = req.params;
 
 	const template = await TemplateModel.findOne({ id: code }).exec();
-	if (!template) throw new HTTPError("template not found", 404);
 
 	res.json(toObject(template)).send();
 });
@@ -28,7 +27,6 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 	}
 
 	const template = await TemplateModel.findOne({ code: code }).exec();
-	if (!template) throw new HTTPError("template not found", 404);
 
 	const guild_id = Snowflake.generate();
 

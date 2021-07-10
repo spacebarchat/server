@@ -11,7 +11,6 @@ const router: Router = Router();
 router.post("/", check({ name: new Length(String, 1, 80), $avatar: String }), async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	isTextChannel(channel.type);
 	if (!channel.guild_id) throw new HTTPError("Not a guild channel", 400);

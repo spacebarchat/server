@@ -12,12 +12,10 @@ import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../util/Event";
 
 const router: Router = Router();
-// TODO: auto throw error if findOne doesn't find anything
 
 router.put("/:message_id", async (req: Request, res: Response) => {
 	const { channel_id, message_id } = req.params;
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 	const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permission.hasThrow("VIEW_CHANNEL");
 
@@ -30,7 +28,6 @@ router.put("/:message_id", async (req: Request, res: Response) => {
 
 	await MessageModel.updateOne({ id: message_id }, { pinned: true }).exec();
 	const message = toObject(await MessageModel.findOne({ id: message_id }).exec());
-	if (!message) throw new HTTPError("Message not found", 404);
 
 	await emitEvent({
 		event: "MESSAGE_UPDATE",
@@ -57,7 +54,6 @@ router.delete("/:message_id", async (req: Request, res: Response) => {
 	const { channel_id, message_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permission.hasThrow("VIEW_CHANNEL");
@@ -90,7 +86,6 @@ router.get("/", async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 	const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permission.hasThrow("VIEW_CHANNEL");
 

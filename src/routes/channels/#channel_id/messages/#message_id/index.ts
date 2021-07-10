@@ -13,7 +13,6 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 	var body = req.body as MessageCreateSchema;
 
 	var message = await MessageModel.findOne({ id: message_id, channel_id }, { author_id: true }).exec();
-	if (!message) throw new HTTPError("Message not found", 404);
 
 	const permissions = await getPermission(req.user_id, undefined, channel_id);
 
@@ -30,8 +29,8 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 		edited_timestamp: new Date()
 	});
 
+	// @ts-ignore
 	message = await MessageModel.findOneAndUpdate({ id: message_id }, opts).populate("author").exec();
-	if (!message) throw new HTTPError("Message not found", 404);
 
 	await emitEvent({
 		event: "MESSAGE_UPDATE",
@@ -51,9 +50,7 @@ router.delete("/", async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true });
-	if (!channel) throw new HTTPError("Channel not found", 404);
 	const message = await MessageModel.findOne({ id: message_id }, { author_id: true }).exec();
-	if (!message) throw new HTTPError("Message not found", 404);
 
 	const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
 	if (message.author_id !== req.user_id) permission.hasThrow("MANAGE_MESSAGES");

@@ -14,7 +14,6 @@ router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
-	if (!guild) throw new HTTPError("Guild does not exist", 404);
 	if (!guild.widget_enabled) throw new HTTPError("Unknown Guild", 404);
 
 	// Fetch guild information

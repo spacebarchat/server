@@ -31,7 +31,6 @@ export function isTextChannel(type: ChannelType): boolean {
 router.get("/", async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	isTextChannel(channel.type);
 

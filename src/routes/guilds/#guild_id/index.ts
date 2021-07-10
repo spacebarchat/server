@@ -27,7 +27,6 @@ router.get("/", async (req: Request, res: Response) => {
 	const guild = await GuildModel.findOne({ id: guild_id })
 		.populate({ path: "joined_at", match: { id: req.user_id } })
 		.exec();
-	if (!guild) throw new HTTPError("Guild does not exist", 404);
 
 	const member = await MemberModel.exists({ guild_id: guild_id, id: req.user_id });
 	if (!member) throw new HTTPError("You are not a member of the guild you are trying to access", 401);

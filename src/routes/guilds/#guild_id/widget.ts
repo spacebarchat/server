@@ -14,9 +14,8 @@ router.get("/", async (req: Request, res: Response) => {
 	perms.hasThrow("MANAGE_GUILD");
 
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
 
-	return res.json({ enabled: guild.widget_enabled || false, channel_id: guild.widget_channel_id || null});
+	return res.json({ enabled: guild.widget_enabled || false, channel_id: guild.widget_channel_id || null });
 });
 
 // https://discord.com/developers/docs/resources/guild#modify-guild-widget

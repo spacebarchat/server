@@ -39,13 +39,11 @@ router.delete("/", async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	const permissions = await getPermission(req.user_id, undefined, channel_id);
 	permissions.hasThrow("MANAGE_MESSAGES");
 
-	const message = await MessageModel.findOneAndUpdate({ id: message_id, channel_id }, { reactions: [] }).exec();
-	if (!message) throw new HTTPError("Message not found", 404);
+	await MessageModel.findOneAndUpdate({ id: message_id, channel_id }, { reactions: [] }).exec();
 
 	await emitEvent({
 		event: "MESSAGE_REACTION_REMOVE_ALL",
@@ -66,13 +64,11 @@ router.delete("/:emoji", async (req: Request, res: Response) => {
 	const emoji = getEmoji(req.params.emoji);
 
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	const permissions = await getPermission(req.user_id, undefined, channel_id);
 	permissions.hasThrow("MANAGE_MESSAGES");
 
 	const message = await MessageModel.findOne({ id: message_id, channel_id }).exec();
-	if (!message) throw new HTTPError("Message not found", 404);
 
 	const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
 	if (!already_added) throw new HTTPError("Reaction not found", 404);
@@ -118,10 +114,7 @@ router.put("/:emoji/:user_id", async (req: Request, res: Response) => {
 	const emoji = getEmoji(req.params.emoji);
 
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
-
 	const message = await MessageModel.findOne({ id: message_id, channel_id }).exec();
-	if (!message) throw new HTTPError("Message not found", 404);
 	const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
 
 	const permissions = await getPermission(req.user_id, undefined, channel_id);
@@ -130,7 +123,6 @@ router.put("/:emoji/:user_id", async (req: Request, res: Response) => {
 
 	if (emoji.id) {
 		const external_emoji = await EmojiModel.findOne({ id: emoji.id }).exec();
-		if (!external_emoji) throw new HTTPError("Emoji not found", 404);
 		if (!already_added) permissions.hasThrow("USE_EXTERNAL_EMOJIS");
 		emoji.animated = external_emoji.animated;
 		emoji.name = external_emoji.name;
@@ -168,10 +160,7 @@ router.delete("/:emoji/:user_id", async (req: Request, res: Response) => {
 	const emoji = getEmoji(req.params.emoji);
 
 	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
-
 	const message = await MessageModel.findOne({ id: message_id, channel_id }).exec();
-	if (!message) throw new HTTPError("Message not found", 404);
 
 	const permissions = await getPermission(req.user_id, undefined, channel_id);
 

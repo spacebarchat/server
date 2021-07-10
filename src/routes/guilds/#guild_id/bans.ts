@@ -25,7 +25,6 @@ router.get("/:user", async (req: Request, res: Response) => {
 	const user_id = req.params.ban;
 
 	var ban = await BanModel.findOne({ guild_id: guild_id, user_id: user_id }).exec();
-	if (!ban) throw new HTTPError("Ban not found", 404);
 	return res.json(ban);
 });
 

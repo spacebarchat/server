@@ -11,7 +11,6 @@ const router = Router();
 router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	const guild = await GuildModel.findOne({ id: guild_id }).exec();
-	if (!guild) throw new HTTPError("Guild not found", 404);
 	await isMember(req.user_id, guild_id);
 
 	try {

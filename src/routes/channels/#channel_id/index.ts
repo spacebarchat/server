@@ -12,7 +12,6 @@ router.get("/", async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permission.hasThrow("VIEW_CHANNEL");
@@ -24,7 +23,6 @@ router.delete("/", async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 
 	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	const permission = await getPermission(req.user_id, channel?.guild_id, channel_id, { channel });
 	permission.hasThrow("MANAGE_CHANNELS");
@@ -47,7 +45,6 @@ router.patch("/", check(ChannelModifySchema), async (req: Request, res: Response
 	permission.hasThrow("MANAGE_CHANNELS");
 
 	const channel = await ChannelModel.findOneAndUpdate({ id: channel_id }, payload).exec();
-	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	const data = toObject(channel);
 
