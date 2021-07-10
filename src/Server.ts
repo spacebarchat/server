@@ -1,5 +1,5 @@
 import "missing-native-js-functions";
-import fs from "fs/promises";
+import fs from "fs";
 import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
@@ -70,8 +70,8 @@ export class FosscordServer extends Server {
 		this.app.use(CORS);
 		this.app.use(Authentication);
 		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 2 }));
-		const languages = await fs.readdir(path.join(__dirname, "..", "locales"));
-		const namespaces = await fs.readdir(path.join(__dirname, "..", "locales", "en"));
+		const languages = fs.readdirSync(path.join(__dirname, "..", "locales"));
+		const namespaces = fs.readdirSync(path.join(__dirname, "..", "locales", "en"));
 		const ns = namespaces.filter((x) => x.endsWith(".json")).map((x) => x.slice(0, x.length - 5));
 
 		await i18next
