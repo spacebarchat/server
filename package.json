@@ -77,7 +77,7 @@
 		"require_optional": "^1.0.1"
 	},
 	"devDependencies": {
-		"@types/bcrypt": "^3.0.0",
+		"@types/bcrypt": "^5.0.0",
 		"@types/express": "^4.17.9",
 		"@types/i18next-node-fs-backend": "^2.1.0",
 		"@types/jsonwebtoken": "^8.5.0",
