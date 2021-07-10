@@ -5,7 +5,6 @@ import EventEmitter from "events";
 const uri = process.env.MONGO_URL || "mongodb://localhost:27017/fosscord?readPreference=secondaryPreferred";
 import { URL } from "url";
 
-// TODO: auto throw error if findOne doesn't find anything
 const url = new URL(uri.replace("mongodb://", "http://"));
 
 const connection = mongoose.createConnection(uri, {
