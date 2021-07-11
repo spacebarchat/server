@@ -1,9 +1,17 @@
-on: push
+on:
+  workflow_dispatch:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Publish Release
+
 jobs:
   insiders-build:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows, macos, ubuntu]
         include:
           - os: windows
             build: npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "Fosscord-server-windows-${{ github.sha }}.exe"
@@ -18,7 +26,7 @@ jobs:
               npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "fosscord"
               tar -czf "fosscord-server-linux-${{ github.sha }}.tgz" "fosscord"
             artifact: fosscord-server-linux-${{ github.sha }}.tgz
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
