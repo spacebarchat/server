@@ -58,7 +58,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/api-win
+          asset_path: ./build/api-win.exe
           asset_name: fosscord-api-windows.exe
           asset_content_type: application/x-binary
       - uses: eregon/publish-release@v1
