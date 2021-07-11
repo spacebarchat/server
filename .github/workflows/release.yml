@@ -44,6 +44,10 @@ jobs:
     needs: [insiders-build]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - name: Extract version
+        id: extract_version
+        uses: Saionaro/extract-package-version@v1.0.6
       - uses: actions/download-artifact@v2
         with:
           name: fosscord-api-windows-${{ github.sha }}.exe
@@ -53,10 +57,6 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: fosscord-api-linux-${{ github.sha }}.tgz
-      - uses: actions/checkout@v2
-      - name: Extract version
-        id: extract_version
-        uses: Saionaro/extract-package-version@v1.0.6
       - uses: actions/create-release@v1
         id: create-release
         env:
