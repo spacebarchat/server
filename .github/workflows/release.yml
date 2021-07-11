@@ -14,18 +14,18 @@ jobs:
         os: [windows, macos, ubuntu]
         include:
           - os: windows
-            build: npx caxa -i . --output "windows-${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
-            artifact: windows-${{ github.sha }}.exe
+            build: npx caxa -i . --output "fosscord-api-windows-${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
+            artifact: fosscord-api-windows-${{ github.sha }}.exe
           - os: macos
             build: |
               npx caxa -i . --output "fosscord.app" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
-              tar -czf "macos-${{ github.sha }}.app.tgz" "fosscord.app"
-            artifact: macos-${{ github.sha }}.app.tgz
+              tar -czf "fosscord-api-macos-${{ github.sha }}.app.tgz" "fosscord.app"
+            artifact: fosscord-api-macos-${{ github.sha }}.app.tgz
           - os: ubuntu
             build: |
               npx caxa -i . --output "fosscord" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
-              tar -czf "linux-${{ github.sha }}.tgz" "fosscord"
-            artifact: linux-${{ github.sha }}.tgz
+              tar -czf "fosscord-api-linux-${{ github.sha }}.tgz" "fosscord"
+            artifact: fosscord-api-linux-${{ github.sha }}.tgz
     runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/checkout@v2
@@ -46,10 +46,13 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: windows-${{ github.sha }}.exe
+          name: fosscord-api-windows-${{ github.sha }}.exe
       - uses: actions/download-artifact@v2
         with:
-          name: macos-${{ github.sha }}.app.tgz
+          name: fosscord-api-macos-${{ github.sha }}.app.tgz
+      - uses: actions/download-artifact@v2
+        with:
+          name: fosscord-api-linux-${{ github.sha }}.app.tgz
       - uses: actions/checkout@v2
       - name: Extract version
         id: extract_version
@@ -68,7 +71,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: windows-${{ github.sha }}.exe
+          asset_path: fosscord-api-windows-${{ github.sha }}.exe
           asset_name: fosscord-api-windows.exe
           asset_content_type: application/vnd.microsoft.portable-executable
       - uses: actions/upload-release-asset@v1
@@ -76,7 +79,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: macos-${{ github.sha }}.app.tgz
+          asset_path: fosscord-api-macos-${{ github.sha }}.app.tgz
           asset_name: fosscord-api-macos.app.tgz
           asset_content_type: application/gzip
       - uses: actions/upload-release-asset@v1
@@ -84,6 +87,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: linux-${{ github.sha }}.tgz
+          asset_path: fosscord-api-linux-${{ github.sha }}.tgz
           asset_name: fosscord-api-linux.tgz
           asset_content_type: application/gzip
