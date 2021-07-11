@@ -14,16 +14,16 @@ jobs:
         os: [windows, macos, ubuntu]
         include:
           - os: windows
-            build: npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js" --output "Fosscord-server-windows-${{ github.sha }}.exe"
+            build: npx caxa -i . --output "Fosscord-server-windows-${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
             artifact: Fosscord-server-windows-${{ github.sha }}.exe
           - os: macos
             build: |
-              npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js" --output "Fosscord.app"
-              tar -czf "Fosscord--server-macos-${{ github.sha }}.app.tgz" "Fosscord.app"
-            artifact: Fosscord--server-macos-${{ github.sha }}.app.tgz
+              npx caxa -i . --output "Fosscord.app" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
+              tar -czf "Fosscord-server-macos-${{ github.sha }}.app.tgz" "Fosscord.app"
+            artifact: Fosscord-server-macos-${{ github.sha }}.app.tgz
           - os: ubuntu
             build: |
-              npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js" --output "fosscord"
+              npx caxa -i . --output "fosscord" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
               tar -czf "fosscord-server-linux-${{ github.sha }}.tgz" "fosscord"
             artifact: fosscord-server-linux-${{ github.sha }}.tgz
     runs-on: ${{ matrix.os }}-latest
