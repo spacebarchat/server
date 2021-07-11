@@ -55,20 +55,25 @@ jobs:
           name: fosscord-server-linux-${{ github.sha }}.tgz
       - run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
         id: tag
+      - name: Extract version
+        id: extract_version
+        uses: Saionaro/extract-package-version@v1.0.6
       - uses: actions/create-release@v1
         id: create-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          release_name: Release ${{ steps.tag.outputs.tag }}
+          tag_name: v${{ steps.extract_version.outputs.version }}
+          release_name: Release ${{ steps.extract_version.outputs.version }}
+          draft: true
+          prerelease: true # TODO: change this to false
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: fosscord-server-windows-${{ github.sha }}.exe
-          asset_name: fosscord-server-windows-${{ steps.tag.outputs.tag }}.exe
+          asset_name: fosscord-server-windows.exe
           asset_content_type: application/vnd.microsoft.portable-executable
       - uses: actions/upload-release-asset@v1
         env:
@@ -76,7 +81,7 @@ jobs:
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: fosscord-server-macos-${{ github.sha }}.app.tgz
-          asset_name: fosscord-server-macos-${{ steps.tag.outputs.tag }}.app.tgz
+          asset_name: fosscord-server-macos.app.tgz
           asset_content_type: application/gzip
       - uses: actions/upload-release-asset@v1
         env:
@@ -84,5 +89,5 @@ jobs:
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: fosscord-server-linux-${{ github.sha }}.tgz
-          asset_name: fosscord-server-linux-${{ steps.tag.outputs.tag }}.tgz
+          asset_name: fosscord-server-linux.tgz
           asset_content_type: application/gzip
