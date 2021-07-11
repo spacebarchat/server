@@ -52,7 +52,7 @@ jobs:
           name: fosscord-api-macos-${{ github.sha }}.app.tgz
       - uses: actions/download-artifact@v2
         with:
-          name: fosscord-api-linux-${{ github.sha }}.app.tgz
+          name: fosscord-api-linux-${{ github.sha }}.tgz
       - uses: actions/checkout@v2
       - name: Extract version
         id: extract_version
