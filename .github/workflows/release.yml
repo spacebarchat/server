@@ -1,68 +1,81 @@
-on:
-  workflow_dispatch:
-  push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
-
-name: Publish Release
-
+on: push
 jobs:
-  build:
-    name: Publish Release
+  insiders-build:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        include:
+          - os: windows
+            build: npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "Fosscord-server-windows-${{ github.sha }}.exe"
+            artifact: Fosscord-server-windows-${{ github.sha }}.exe
+          - os: macos
+            build: |
+              npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "Fosscord.app"
+              tar -czf "Fosscord--server-macos-${{ github.sha }}.app.tgz" "Fosscord.app"
+            artifact: Fosscord--server-macos-${{ github.sha }}.app.tgz
+          - os: ubuntu
+            build: |
+              npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "fosscord"
+              tar -czf "fosscord-server-linux-${{ github.sha }}.tgz" "fosscord"
+            artifact: fosscord-server-linux-${{ github.sha }}.tgz
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 15
+      - run: |
+          npm i
+          npm run build
+          ${{ matrix.build }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
+
+  release:
+    needs: [insiders-build]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Extract version
-        id: extract_version
-        uses: Saionaro/extract-package-version@v1.0.6
-      - name: Build
-        run: |
-          npm install
-          npm run bundle
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - uses: actions/download-artifact@v2
+        with:
+          name: Fosscord-windows-${{ github.sha }}.exe
+      - uses: actions/download-artifact@v2
+        with:
+          name: Fosscord-macos-${{ github.sha }}.app.tgz
+      - uses: actions/download-artifact@v2
+        with:
+          name: Fosscord-linux-${{ github.sha }}.tgz
+      - run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+        id: tag
+      - uses: actions/create-release@v1
+        id: create-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.extract_version.outputs.version }}
-          release_name: Release ${{ steps.extract_version.outputs.version }}
-          draft: true
-          prerelease: true # TODO: change this to false
-      - name: Upload Release Linux
-        id: upload-release-asset-linux
-        uses: actions/upload-release-asset@v1
+          tag_name: ${{ steps.tag.outputs.tag }}
+          release_name: Release ${{ steps.tag.outputs.tag }}
+      - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/api-linux
-          asset_name: fosscord-api-linux
-          asset_content_type: application/x-binary
-      - name: Upload Release MacOS
-        id: upload-release-asset-macos
-        uses: actions/upload-release-asset@v1
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: Fosscord-windows-${{ github.sha }}.exe
+          asset_name: Fosscord-windows-${{ steps.tag.outputs.tag }}.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
+      - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/api-macos
-          asset_name: fosscord-api-macos
-          asset_content_type: application/x-binary
-      - name: Upload Release Windows
-        id: upload-release-asset-windows
-        uses: actions/upload-release-asset@v1
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: Fosscord-macos-${{ github.sha }}.app.tgz
+          asset_name: Fosscord-macos-${{ steps.tag.outputs.tag }}.app.tgz
+          asset_content_type: application/gzip
+      - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/api-win.exe
-          asset_name: fosscord-api-windows.exe
-          asset_content_type: application/x-binary
-      - uses: eregon/publish-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_id: ${{ steps.create_release.outputs.id }}
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: Fosscord-linux-${{ github.sha }}.tgz
+          asset_name: Fosscord-linux-${{ steps.tag.outputs.tag }}.tgz
+          asset_content_type: application/gzip

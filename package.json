@@ -87,6 +87,7 @@
 		"@types/node-fetch": "^2.5.7",
 		"@zerollup/ts-transform-paths": "^1.7.18",
 		"0x": "^4.10.2",
+		"caxa": "^2.1.0",
 		"jest": "^26.6.3",
 		"pkg": "^5.3.0",
 		"saslprep": "^1.0.3",
