@@ -14,13 +14,13 @@ jobs:
         os: [windows, macos, ubuntu]
         include:
           - os: windows
-            build: npx caxa -i . --output "Fosscord-server-windows-${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
-            artifact: Fosscord-server-windows-${{ github.sha }}.exe
+            build: npx caxa -i . --output "fosscord-server-windows-${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
+            artifact: fosscord-server-windows-${{ github.sha }}.exe
           - os: macos
             build: |
-              npx caxa -i . --output "Fosscord.app" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
-              tar -czf "Fosscord-server-macos-${{ github.sha }}.app.tgz" "Fosscord.app"
-            artifact: Fosscord-server-macos-${{ github.sha }}.app.tgz
+              npx caxa -i . --output "fosscord.app" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
+              tar -czf "fosscord-server-macos-${{ github.sha }}.app.tgz" "fosscord.app"
+            artifact: fosscord-server-macos-${{ github.sha }}.app.tgz
           - os: ubuntu
             build: |
               npx caxa -i . --output "fosscord" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
