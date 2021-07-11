@@ -32,7 +32,7 @@ jobs:
           draft: true
           prerelease: true # TODO: change this to false
       - name: Upload Release Linux
-        id: upload-release-asset
+        id: upload-release-asset-linux
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +42,7 @@ jobs:
           asset_name: fosscord-api-linux
           asset_content_type: application/x-binary
       - name: Upload Release MacOS
-        id: upload-release-asset
+        id: upload-release-asset-macos
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,7 +52,7 @@ jobs:
           asset_name: fosscord-api-macos
           asset_content_type: application/x-binary
       - name: Upload Release Windows
-        id: upload-release-asset
+        id: upload-release-asset-windows
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
