@@ -14,16 +14,16 @@ jobs:
         os: [windows, macos, ubuntu]
         include:
           - os: windows
-            build: npx caxa -i . --output "fosscord-api-windows-${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
+            build: npx caxa -i . -m "This may take a while to run the first time, please wait..." --output "fosscord-api-windows-${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
             artifact: fosscord-api-windows-${{ github.sha }}.exe
           - os: macos
             build: |
-              npx caxa -i . --output "fosscord.app" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
-              tar -czf "fosscord-api-macos-${{ github.sha }}.app.tgz" "fosscord.app"
+              npx caxa -i . -m "This may take a while to run the first time, please wait..." --output "fosscord-api.app" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
+              tar -czf "fosscord-api-macos-${{ github.sha }}.app.tgz" "fosscord-api.app"
             artifact: fosscord-api-macos-${{ github.sha }}.app.tgz
           - os: ubuntu
             build: |
-              npx caxa -i . --output "fosscord" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
+              npx caxa -i . -m "This may take a while to run the first time, please wait..." --output "fosscord" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/start.js"
               tar -czf "fosscord-api-linux-${{ github.sha }}.tgz" "fosscord"
             artifact: fosscord-api-linux-${{ github.sha }}.tgz
     runs-on: ${{ matrix.os }}-latest
