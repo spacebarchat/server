@@ -28,7 +28,7 @@ export class Server {
 		await Promise.all([db.collection("events").createIndex({ created_at: 1 }, { expireAfterSeconds: 60 })]);
 	}
 
-	async listen(): Promise<void> {
+	async start(): Promise<void> {
 		// @ts-ignore
 		await (db as Promise<Connection>);
 		await this.setupSchema();

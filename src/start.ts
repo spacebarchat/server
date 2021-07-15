@@ -11,4 +11,4 @@ if (isNaN(port)) port = 3002;
 const server = new Server({
 	port,
 });
-server.listen();
+server.start();
