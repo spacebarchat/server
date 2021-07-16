@@ -31,7 +31,7 @@
 		"file-type": "^16.5.0",
 		"image-size": "^1.0.0",
 		"lambert-db": "^1.2.3",
-		"lambert-server": "^1.2.5",
+		"lambert-server": "^1.2.7",
 		"missing-native-js-functions": "^1.0.8",
 		"multer": "^1.4.2",
 		"node-fetch": "^2.6.1",
@@ -40,8 +40,9 @@
 	"devDependencies": {
 		"@types/body-parser": "^1.19.0",
 		"@types/btoa": "^1.2.3",
+		"@types/dotenv": "^8.2.0",
 		"@types/express": "^4.17.12",
-		"@types/multer": "^1.4.5",
+		"@types/multer": "^1.4.7",
 		"@types/node": "^14.17.0",
 		"@types/node-fetch": "^2.5.7",
 		"@types/uuid": "^8.3.0"
