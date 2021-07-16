@@ -10,9 +10,12 @@ export class Server {
 	public ws: WebSocketServer;
 	public port: number;
 	public server: http.Server;
+	public production: boolean;
 
-	constructor({ port, server }: { port: number; server?: http.Server }) {
+	constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
 		this.port = port;
+		this.production = production || false;
+
 		if (server) this.server = server;
 		else this.server = http.createServer({});
 
@@ -34,8 +37,10 @@ export class Server {
 		await this.setupSchema();
 		await Config.init();
 		console.log("[DB] connected");
-		if (!this.server.listening) this.server.listen(this.port);
-		console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
+		if (!this.server.listening) {
+			this.server.listen(this.port);
+			console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
+		}
 	}
 
 	async stop() {
