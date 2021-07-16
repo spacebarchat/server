@@ -3,7 +3,6 @@
 	"version": "1.0.0",
 	"description": "This repository contains the HTTP API Server",
 	"main": "dist/Server.js",
-	"bin": "dist/start.js",
 	"types": "dist/Server.d.ts",
 	"scripts": {
 		"test": "jest",
