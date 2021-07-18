@@ -24,6 +24,7 @@ export class Server {
 			server: this.server,
 		});
 		this.ws.on("connection", Connection);
+		this.ws.on("error", console.error);
 	}
 
 	async setupSchema() {
@@ -36,7 +37,7 @@ export class Server {
 		await (db as Promise<Connection>);
 		await this.setupSchema();
 		await Config.init();
-		console.log("[DB] connected");
+		console.log("[Database] connected");
 		if (!this.server.listening) {
 			this.server.listen(this.port);
 			console.log(`[Gateway] online on 0.0.0.0:${this.port}`);

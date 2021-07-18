@@ -17,7 +17,7 @@
 		"ajv": "^8.5.0",
 		"dotenv": "^8.2.0",
 		"jsonwebtoken": "^8.5.1",
-		"lambert-server": "^1.2.7",
+		"lambert-server": "^1.2.8",
 		"missing-native-js-functions": "^1.2.3",
 		"mongoose-autopopulate": "^0.12.3",
 		"node-fetch": "^2.6.1",
