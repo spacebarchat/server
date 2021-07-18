@@ -13,7 +13,7 @@ const connection = mongoose.createConnection(uri, {
 	useUnifiedTopology: true,
 	useFindAndModify: false,
 });
-console.log(`[DB] connect: mongodb://${url.username}@${url.host}${url.pathname}${url.search}`);
+console.log(`[Database] connect: mongodb://${url.username}@${url.host}${url.pathname}${url.search}`);
 
 export default <Connection>connection;
 
