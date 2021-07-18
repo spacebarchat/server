@@ -64,7 +64,7 @@ export class FosscordServer extends Server {
 		// @ts-ignore
 		await (db as Promise<Connection>);
 		await this.setupSchema();
-		console.log("[DB] connected");
+		console.log("[Database] connected");
 		await Config.init();
 
 		this.app.use(CORS);
@@ -100,9 +100,9 @@ export class FosscordServer extends Server {
 		prefix.use("/channels/:id", RateLimit({ count: 5, window: 5 }));
 
 		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
-		app.use("/api", prefix); // allow unversioned requests
 		app.use("/api/v8", prefix);
 		app.use("/api/v9", prefix);
+		app.use("/api", prefix); // allow unversioned requests
 		this.app = app;
 		this.app.use(ErrorHandler);
 		const indexHTML = fs.readFileSync(path.join(__dirname, "..", "client_test", "index.html"), { encoding: "utf8" });
