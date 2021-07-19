@@ -47,15 +47,13 @@ router.post(
 		const user = await UserModel.findOne(
 			{ $or: query },
 			{
-				projection: {
-					user_data: {
-						hash: true
-					},
-					id: true,
-					user_settings: {
-						locale: true,
-						theme: true
-					}
+				user_data: {
+					hash: true
+				},
+				id: true,
+				user_settings: {
+					locale: true,
+					theme: true
 				}
 			}
 		)
@@ -65,7 +63,7 @@ router.post(
 			});
 
 		// the salt is saved in the password refer to bcrypt docs
-		const same_password = await bcrypt.compare(password, user.user_data.hash);
+		const same_password = await bcrypt.compare(password, user.user_data.hash || "");
 		if (!same_password) {
 			throw FieldErrors({ password: { message: req.t("auth:login.INVALID_PASSWORD"), code: "INVALID_PASSWORD" } });
 		}
