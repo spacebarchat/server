@@ -52,10 +52,17 @@ mongoose.plugin((schema: Schema, opts: any) => {
 			});
 		},
 	});
-	schema.post("findOne", (doc, next) => {
-		if (!doc) return next(new HTTPError("Not found", 404));
-		// @ts-ignore
-		return next();
+	schema.post("findOne", function (doc, next) {
+		try {
+			// @ts-ignore
+			const isExistsQuery = JSON.stringify(this._userProvidedFields) === JSON.stringify({ _id: 1 });
+			if (!doc && !isExistsQuery) return next(new HTTPError("Not found", 404));
+			// @ts-ignore
+			return next();
+		} catch (error) {
+			// @ts-ignore
+			next();
+		}
 	});
 });
 
