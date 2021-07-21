@@ -16,7 +16,7 @@ export interface Message {
 	application_id?: string;
 	content?: string;
 	timestamp: Date;
-	edited_timestamp?: Date;
+	edited_timestamp: Date | null;
 	tts?: boolean;
 	mention_everyone?: boolean;
 	mention_user_ids: string[];
