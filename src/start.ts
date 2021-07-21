@@ -5,6 +5,7 @@ import "missing-native-js-functions";
 import { config } from "dotenv";
 config();
 import { FosscordServer } from "./Server";
+console.log(process.env.MONGO_URL)
 import cluster from "cluster";
 import os from "os";
 const cores = Number(process.env.threads) || os.cpus().length;

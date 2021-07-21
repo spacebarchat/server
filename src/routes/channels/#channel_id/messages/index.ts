@@ -126,7 +126,7 @@ router.post("/", messageUpload.single("file"), async (req: Request, res: Respons
 
 	const embeds = [];
 	if (body.embed) embeds.push(body.embed);
-	const data = await sendMessage({ ...body, type: 0, pinned: false, author_id: req.user_id, embeds, channel_id, attachments });
+	const data = await sendMessage({ ...body, type: 0, pinned: false, author_id: req.user_id, embeds, channel_id, attachments, edited_timestamp: null });
 
 	return res.send(data);
 });
