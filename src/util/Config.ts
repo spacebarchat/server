@@ -4,12 +4,12 @@ import db, { MongooseCache } from "./Database";
 import { Snowflake } from "./Snowflake";
 import crypto from "crypto";
 
-var Config = new MongooseCache(db.collection("config"), [], { onlyEvents: false });
+var Config = new MongooseCache(db.collection("config"), [], { onlyEvents: false, array: false });
 
 export default {
 	init: async function init(defaultOpts: any = DefaultOptions) {
 		await Config.init();
-		return this.set(Config.data.merge(defaultOpts));
+		return this.set((Config.data || {}).merge(defaultOpts));
 	},
 	get: function get() {
 		return <DefaultOptions>Config.data;
@@ -88,6 +88,7 @@ export interface DefaultOptions {
 			sitekey: string | null;
 			secret: string | null;
 		};
+		ipdataApiKey: string | null;
 	};
 	login: {
 		requireCaptcha: boolean;
@@ -107,6 +108,7 @@ export interface DefaultOptions {
 		requireInvite: boolean;
 		allowNewRegistration: boolean;
 		allowMultipleAccounts: boolean;
+		blockProxies: boolean;
 		password: {
 			minLength: number;
 			minNumbers: number;
@@ -176,6 +178,7 @@ export const DefaultOptions: DefaultOptions = {
 			sitekey: null,
 			secret: null,
 		},
+		ipdataApiKey: "eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9",
 	},
 	login: {
 		requireCaptcha: false,
@@ -196,6 +199,7 @@ export const DefaultOptions: DefaultOptions = {
 		requireCaptcha: true,
 		allowNewRegistration: true,
 		allowMultipleAccounts: true,
+		blockProxies: true,
 		password: {
 			minLength: 8,
 			minNumbers: 2,
