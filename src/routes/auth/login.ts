@@ -15,7 +15,7 @@ router.post(
 	RateLimit({ count: 5, window: 60, onylIp: true }),
 	check({
 		login: new Length(String, 2, 100), // email or telephone
-		password: new Length(String, 8, 64),
+		password: new Length(String, 8, 72),
 		$undelete: Boolean,
 		$captcha_key: String,
 		$login_source: String,
