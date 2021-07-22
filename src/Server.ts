@@ -103,6 +103,14 @@ export class FosscordServer extends Server {
 		app.use("/api/v8", prefix);
 		app.use("/api/v9", prefix);
 		app.use("/api", prefix); // allow unversioned requests
+
+		prefix.get("*", (req: Request, res: Response) => {
+			res.status(404).json({
+				message: "404: Not Found",
+				code: 0
+			});
+		});
+
 		this.app = app;
 		this.app.use(ErrorHandler);
 		const indexHTML = fs.readFileSync(path.join(__dirname, "..", "client_test", "index.html"), { encoding: "utf8" });
