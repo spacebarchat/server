@@ -16,8 +16,8 @@ router.post(
 	check({
 		username: new Length(String, 2, 32),
 		// TODO: check min password length in config
-		// prevent Denial of Service with max length of 64 chars
-		password: new Length(String, 8, 64),
+		// prevent Denial of Service with max length of 72 chars
+		password: new Length(String, 8, 72),
 		consent: Boolean,
 		$email: new Length(Email, 5, 100),
 		$fingerprint: String,
