@@ -82,4 +82,5 @@ export * from "./Status";
 export * from "./Role";
 export * from "./User";
 export * from "./VoiceState";
+export * from "./ReadState";
 export * from "./RateLimit";
