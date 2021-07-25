@@ -24,7 +24,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	const guild_id = Snowflake.generate();
 	const guild: Guild = {
 		name: body.name,
-		region: body.region || "en-US",
+		region: Config.get().regions.default,
 		owner_id: req.user_id,
 		icon: undefined,
 		afk_channel_id: undefined,
