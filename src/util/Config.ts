@@ -24,6 +24,15 @@ export interface RateLimitOptions {
 	timespan: number;
 }
 
+export interface Region {
+	id: string,
+	name: string,
+	vip: boolean,
+	custom: boolean,
+	deprecated: boolean,
+	optimal: boolean,
+}
+
 export interface DefaultOptions {
 	gateway: {
 		endpoint: string | null;
@@ -116,6 +125,10 @@ export interface DefaultOptions {
 			minSymbols: number;
 		};
 	};
+	regions: {
+		default: string;
+		available: Region[];
+	}
 }
 
 export const DefaultOptions: DefaultOptions = {
@@ -206,6 +219,12 @@ export const DefaultOptions: DefaultOptions = {
 			minUpperCase: 2,
 			minSymbols: 0,
 		},
+	},
+	regions: {
+		default: "fosscord",
+		available: [ 
+			{ id: "fosscord", name: "Fosscord", vip: false, custom: false, deprecated: false, optimal: false },
+		]
 	},
 };
 
