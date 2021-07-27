@@ -9,6 +9,7 @@
 		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/start",
 		"build": "tsc -b .",
+		"build-docker": "tsc -p tsconfig-docker.json",
 		"dev": "tsnd --respawn src/start.ts",
 		"bundle:macos": "npx caxa -i . -m 'This may take a while to run the first time, please wait...' --output 'fosscord-api.app' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/dist/start.js' && tar -czf 'fosscord-api-macos.app.tgz' 'fosscord-api.app'",
 		"bundle:linux": "npx caxa -i . -m 'This may take a while to run the first time, please wait...' --output 'fosscord' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/dist/start.js' && tar -czf 'fosscord-api-linux.tgz' 'fosscord'",
