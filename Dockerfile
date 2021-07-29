@@ -7,5 +7,5 @@ RUN npm rebuild bcrypt --build-from-source && npm rebuild canvas --build-from-so
 RUN npm install
 COPY . .
 EXPOSE 3001
-RUN npm run build
+RUN npm run build-docker
 CMD ["node", "dist/start.js"]
