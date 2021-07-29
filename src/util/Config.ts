@@ -33,6 +33,11 @@ export interface Region {
 	optimal: boolean,
 }
 
+export interface KafkaBroker {
+	ip: string,
+	port: number
+}
+
 export interface DefaultOptions {
 	gateway: {
 		endpoint: string | null;
@@ -129,6 +134,9 @@ export interface DefaultOptions {
 		default: string;
 		available: Region[];
 	}
+	kafka: {
+		brokers: KafkaBroker[]
+	}
 }
 
 export const DefaultOptions: DefaultOptions = {
@@ -222,14 +230,19 @@ export const DefaultOptions: DefaultOptions = {
 	},
 	regions: {
 		default: "fosscord",
-		available: [ 
+		available: [
 			{ id: "fosscord", name: "Fosscord", vip: false, custom: false, deprecated: false, optimal: false },
 		]
 	},
+	kafka: {
+		brokers: [
+			{ ip: "localhost", port: 9092 }
+		]
+	}
 };
 
 export const ConfigSchema = new Schema({}, { strict: false });
 
-export interface DefaultOptionsDocument extends DefaultOptions, Document {}
+export interface DefaultOptionsDocument extends DefaultOptions, Document { }
 
 export const ConfigModel = model<DefaultOptionsDocument>("Config", ConfigSchema, "config");
