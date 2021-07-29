@@ -1,6 +1,7 @@
 FROM node:lts-alpine
 WORKDIR /usr/src/fosscord-gateway
 COPY package.json .
+COPY package-lock.json .
 RUN apk --no-cache --virtual build-dependencies add \
     python \
     make \
