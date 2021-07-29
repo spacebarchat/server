@@ -3,6 +3,7 @@ FROM node:lts-alpine
 RUN apk add --no-cache make gcc g++ python cairo-dev jpeg-dev pango-dev giflib-dev
 WORKDIR /usr/src/fosscord-api
 COPY package.json .
+COPY package-lock.json .
 RUN npm rebuild bcrypt --build-from-source && npm rebuild canvas --build-from-source
 RUN npm install
 COPY . .
