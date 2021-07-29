@@ -135,7 +135,7 @@ export interface DefaultOptions {
 		available: Region[];
 	}
 	kafka: {
-		brokers: KafkaBroker[]
+		brokers: KafkaBroker[] | null
 	}
 }
 
@@ -235,9 +235,7 @@ export const DefaultOptions: DefaultOptions = {
 		]
 	},
 	kafka: {
-		brokers: [
-			{ ip: "localhost", port: 9092 }
-		]
+		brokers: null
 	}
 };
 
