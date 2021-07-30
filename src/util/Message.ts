@@ -124,7 +124,7 @@ export async function sendMessage(opts: Partial<Message>) {
 
 	await emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data, guild_id: message.guild_id } as MessageCreateEvent);
 
-	postHandleMessage(data); // no await as it shouldnt block the message send function
+	postHandleMessage(data).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
 
 	return data;
 }

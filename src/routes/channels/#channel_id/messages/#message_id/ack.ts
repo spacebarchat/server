@@ -1,29 +1,35 @@
-import { getPermission } from "@fosscord/server-util";
-import { MessageModel } from "@fosscord/server-util";
-import { Event } from "@fosscord/server-util";
-import { ChannelModel } from "@fosscord/server-util";
+import { getPermission, MessageAckEvent, ReadStateModel } from "@fosscord/server-util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
 import { emitEvent } from "../../../../../util/Event";
+import { check } from "../../../../../util/instanceOf";
 
 const router = Router();
 
-// router.pot("/", async (req: Request, res: Response) => {
-// 	const { channel_id, message_id } = req.params;
+// TODO: check if message exists
+// TODO: send read state event to all channel members
 
-// 	const permission = await getPermission(req.user_id, channel?.guild_id, channel_id, { channel });
-// 	permission.hasThrow("MANAGE_MESSAGES");
+router.post("/", check({ $manual: Boolean, $mention_count: Number }), async (req: Request, res: Response) => {
+	const { channel_id, message_id } = req.params;
 
-// 	await emitEvent({
-// 		event: "MESSAGE_ACK",
-// 		channel_id,
-// 		data: {
-// 			channel_id,
-// 			message_id
-// 		}
-// 	} as MessageAckEvent);
+	const permission = await getPermission(req.user_id, undefined, channel_id);
+	permission.hasThrow("VIEW_CHANNEL");
 
-// 	res.sendStatus(204);
-// });
+	await ReadStateModel.updateOne(
+		{ user_id: req.user_id, channel_id, message_id },
+		{ user_id: req.user_id, channel_id, message_id }
+	).exec();
+
+	await emitEvent({
+		event: "MESSAGE_ACK",
+		user_id: req.user_id,
+		data: {
+			channel_id,
+			message_id,
+			version: 496
+		}
+	} as MessageAckEvent);
+
+	res.sendStatus(204);
+});
 
 export default router;
