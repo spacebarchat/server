@@ -11,6 +11,7 @@ export const PublicUserProjection = {
 	public_flags: true,
 	avatar: true,
 	bio: true,
+	bot: true,
 };
 
 export interface User {
@@ -64,6 +65,7 @@ export interface PublicUser {
 	username: string;
 	avatar: string | null;
 	public_flags: bigint;
+	bot: boolean;
 }
 
 export interface ConnectedAccount {
