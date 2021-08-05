@@ -10,6 +10,7 @@ export const PublicUserProjection = {
 	id: true,
 	public_flags: true,
 	avatar: true,
+	bio: true,
 };
 
 export interface User {
