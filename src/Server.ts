@@ -160,10 +160,12 @@ export class FosscordServer extends Server {
 			res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
 			res.set("content-type", "text/html");
 			res.send(
-				indexHTML.replace(
-					/CDN_HOST: ".+"/,
-					`CDN_HOST: "${(Config.get().cdn.endpoint || "http://localhost:3003").replace(/https?:/, "")}"`
-				)
+				indexHTML
+					.replace(
+						/CDN_HOST: ".+"/,
+						`CDN_HOST: "${(Config.get().cdn.endpoint || "http://localhost:3003").replace(/https?:/, "")}"`
+					)
+					.replace(/GATEWAY_ENDPOINT: ".+"/, `GATEWAY_ENDPOINT: "${Config.get().gateway.endpoint || "ws://localhost:3002"}"`)
 			);
 		});
 		return super.start();
