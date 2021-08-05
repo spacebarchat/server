@@ -17,6 +17,7 @@ router.get("/", async (req: Request, res: Response) => {
             public_flags: user.public_flags,
             avatar: user.avatar,
             bio: req.user_bot ? null : user.bio,
+            bot: user.bot,
         }
     });
 });
