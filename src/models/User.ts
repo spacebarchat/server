@@ -20,7 +20,7 @@ export interface User {
 	username: string; // username max length 32, min 2
 	discriminator: string; // #0001 4 digit long string from #0001 - #9999
 	avatar: string | null; // hash of the user avatar
-	accent_color: number; // banner color of user
+	accent_color: number | null; // banner color of user
 	phone: string | null; // phone number of the user
 	desktop: boolean; // if the user has desktop app installed
 	mobile: boolean; // if the user has mobile app installed
