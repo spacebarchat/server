@@ -196,6 +196,7 @@ router.post(
 			username: adjusted_username,
 			discriminator,
 			avatar: null,
+			accent_color: null,
 			bot: false,
 			system: false,
 			desktop: false,
