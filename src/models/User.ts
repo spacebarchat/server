@@ -11,6 +11,7 @@ export const PublicUserProjection = {
 	public_flags: true,
 	avatar: true,
 	accent_color: true,
+	banner: true,
 	bio: true,
 	bot: true,
 };
@@ -21,6 +22,7 @@ export interface User {
 	discriminator: string; // #0001 4 digit long string from #0001 - #9999
 	avatar: string | null; // hash of the user avatar
 	accent_color: number | null; // banner color of user
+	banner: string | null;
 	phone: string | null; // phone number of the user
 	desktop: boolean; // if the user has desktop app installed
 	mobile: boolean; // if the user has mobile app installed
@@ -67,6 +69,7 @@ export interface PublicUser {
 	username: string;
 	avatar: string | null;
 	accent_color: number;
+	banner: string | null;
 	public_flags: bigint;
 	bot: boolean;
 }
@@ -147,6 +150,7 @@ export const UserSchema = new Schema({
 	discriminator: String,
 	avatar: String,
 	accent_color: Number,
+	banner: String,
 	phone: String,
 	desktop: Boolean,
 	mobile: Boolean,
