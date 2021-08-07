@@ -98,6 +98,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		verified: user.verified,
 		bot: user.bot,
 		accent_color: user.accent_color || 0,
+		banner: user.banner,
 	};
 
 	const d: ReadyEventData = {
@@ -130,7 +131,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			version: 642,
 		},
 		// @ts-ignore
-		private_channels: toObject(channels),
+		private_channels: toObject(channels).map((x: ChannelDocument) => {
+			x.recipient_ids = x.recipients.map((y: any) => y.id);
+			delete x.recipients;
+			return x;
+		}),
 		session_id: "", // TODO
 		analytics_token: "", // TODO
 		connected_accounts: [], // TODO
@@ -144,7 +149,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
-		users: [public_user], // TODO
+		users: [
+			public_user,
+			...toObject(channels)
+				.map((x: any) => x.recipients)
+				.flat(),
+		].unique(), // TODO
 		merged_members: merged_members,
 		// shard // TODO: only for bots sharding
 		// application // TODO for applications

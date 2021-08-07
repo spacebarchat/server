@@ -1,4 +1,4 @@
-import { db, Event, MongooseCache, UserModel, getPermission, Permissions } from "@fosscord/server-util";
+import { db, Event, MongooseCache, UserModel, getPermission, Permissions, ChannelModel } from "@fosscord/server-util";
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
 import WebSocket from "../util/WebSocket";
@@ -36,12 +36,25 @@ function getPipeline(this: WebSocket, guilds: string[], channels: string[] = [])
 }
 
 export async function setupListener(this: WebSocket) {
+	const channels = await ChannelModel.find({ recipient_ids: this.user_id }, { id: true }).exec();
+	console.log(
+		"subscribe to channels",
+		channels.map((x) => x.id)
+	);
 	const user = await UserModel.findOne({ id: this.user_id }).lean().exec();
 	var guilds = user!.guilds;
 
-	const eventStream = new MongooseCache(db.collection("events"), getPipeline.call(this, guilds), {
-		onlyEvents: true,
-	});
+	const eventStream = new MongooseCache(
+		db.collection("events"),
+		getPipeline.call(
+			this,
+			guilds,
+			channels.map((x) => x.id)
+		),
+		{
+			onlyEvents: true,
+		}
+	);
 
 	await eventStream.init();
 	eventStream.on("insert", (document: Event) => dispatch.call(this, document, { eventStream, guilds }));
