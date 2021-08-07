@@ -1,6 +1,6 @@
 {
 	"name": "@fosscord/server-util",
-	"version": "1.3.39",
+	"version": "1.3.40",
 	"description": "Utility functions for the all server repositories",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
