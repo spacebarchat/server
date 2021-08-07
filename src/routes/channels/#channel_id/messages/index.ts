@@ -30,7 +30,13 @@ export function isTextChannel(type: ChannelType): boolean {
 // get messages
 router.get("/", async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
-	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();
+	const channel = await ChannelModel.findOne(
+		{ id: channel_id },
+		{ guild_id: true, type: true, permission_overwrites: true, recipient_ids: true, owner_id: true }
+	)
+		.lean() // lean is needed, because we don't want to populate .recipients that also auto deletes .recipient_ids
+		.exec();
+	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	isTextChannel(channel.type);
 
@@ -46,6 +52,7 @@ router.get("/", async (req: Request, res: Response) => {
 	if (!limit) limit = 50;
 	var halfLimit = Math.floor(limit / 2);
 
+	// @ts-ignore
 	const permissions = await getPermission(req.user_id, channel.guild_id, channel_id, { channel });
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
@@ -126,7 +133,16 @@ router.post("/", messageUpload.single("file"), async (req: Request, res: Respons
 
 	const embeds = [];
 	if (body.embed) embeds.push(body.embed);
-	const data = await sendMessage({ ...body, type: 0, pinned: false, author_id: req.user_id, embeds, channel_id, attachments, edited_timestamp: null });
+	const data = await sendMessage({
+		...body,
+		type: 0,
+		pinned: false,
+		author_id: req.user_id,
+		embeds,
+		channel_id,
+		attachments,
+		edited_timestamp: null
+	});
 
 	return res.send(data);
 });

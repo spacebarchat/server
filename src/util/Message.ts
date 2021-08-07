@@ -25,10 +25,16 @@ const DEFAULT_FETCH_OPTIONS: any = {
 };
 
 export async function handleMessage(opts: Partial<Message>) {
-	const channel = await ChannelModel.findOne({ id: opts.channel_id }, { guild_id: true, type: true, permission_overwrites: true }).exec();
+	const channel = await ChannelModel.findOne(
+		{ id: opts.channel_id },
+		{ guild_id: true, type: true, permission_overwrites: true, recipient_ids: true, owner_id: true }
+	)
+		.lean() // lean is needed, because we don't want to populate .recipients that also auto deletes .recipient_ids
+		.exec();
 	if (!channel || !opts.channel_id) throw new HTTPError("Channel not found", 404);
 	// TODO: are tts messages allowed in dm channels? should permission be checked?
 
+	// @ts-ignore
 	const permissions = await getPermission(opts.author_id, channel.guild_id, opts.channel_id, { channel });
 	permissions.hasThrow("SEND_MESSAGES");
 	if (opts.tts) permissions.hasThrow("SEND_TTS_MESSAGES");
