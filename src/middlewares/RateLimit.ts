@@ -1,5 +1,5 @@
 import { db, MongooseCache, Bucket } from "@fosscord/server-util";
-import { NextFunction, Request, Response } from "express";
+import { IRouterHandler, NextFunction, Request, Response } from "express";
 import { getIpAdress } from "../util/ipAddress";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
@@ -43,10 +43,10 @@ export default function RateLimit(opts: {
 	error?: boolean;
 	success?: boolean;
 	onylIp?: boolean;
-}) {
+}): any {
 	Cache.init(); // will only initalize it once
 
-	return async (req: Request, res: Response, next: NextFunction) => {
+	return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
 		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
 		var user_id = getIpAdress(req);
 		if (!opts.onylIp && req.user_id) user_id = req.user_id;

@@ -165,7 +165,10 @@ export class FosscordServer extends Server {
 						/CDN_HOST: ".+"/,
 						`CDN_HOST: "${(Config.get().cdn.endpoint || "http://localhost:3003").replace(/https?:/, "")}"`
 					)
-					.replace(/GATEWAY_ENDPOINT: ".+"/, `GATEWAY_ENDPOINT: "${Config.get().gateway.endpoint || "ws://localhost:3002"}"`)
+					.replace(
+						/GATEWAY_ENDPOINT: ".+"/,
+						`GATEWAY_ENDPOINT: "${Config.get().gateway.endpoint || process.env.GATEWAY || "ws://localhost:3002"}"`
+					)
 			);
 		});
 		return super.start();
