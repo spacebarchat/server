@@ -7,10 +7,9 @@ import { multer } from "../util/multer";
 import crypto from "crypto";
 
 // TODO: check premium and animated pfp are allowed in the config
-// TODO: generate different sizes of avatar
-// TODO: generate different image types of avatar
-// TODO: delete old avatars
-// TODO: check request signature for modify methods
+// TODO: generate different sizes of icon
+// TODO: generate different image types of icon
+// TODO: delete old icons
 
 const ANIMATED_MIME_TYPES = ["image/apng", "image/gif", "image/gifv"];
 const STATIC_MIME_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml", "image/svg"];
@@ -25,27 +24,29 @@ router.post("/:user_id", multer.single("file"), async (req: Request, res: Respon
 	const { buffer, mimetype, size, originalname, fieldname } = req.file;
 	const { user_id } = req.params;
 
-	const id = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
+	var hash = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
 
 	const type = await FileType.fromBuffer(buffer);
 	if (!type || !ALLOWED_MIME_TYPES.includes(type.mime)) throw new HTTPError("Invalid file type");
-	const path = `avatars/${user_id}/${id}`;
+	if (ANIMATED_MIME_TYPES.includes(type.mime)) hash = `a_${hash}`; // animated icons have a_ infront of the hash
+
+	const path = `avatars/${user_id}/${hash}`;
 	const endpoint = Config.get().cdn.endpoint || "http://localhost:3003";
 
 	await storage.set(path, buffer);
 
 	return res.json({
-		id,
+		hash,
 		content_type: type.mime,
 		size,
-		url: `${endpoint}${req.baseUrl}/${user_id}/${id}`,
+		url: `${endpoint}${req.baseUrl}/${user_id}/${hash}`,
 	});
 });
 
-router.get("/:user_id/:id", async (req: Request, res: Response) => {
-	var { user_id, id } = req.params;
-	id = id.split(".")[0];
-	const path = `avatars/${user_id}/${id}`;
+router.get("/:user_id/:hash", async (req: Request, res: Response) => {
+	var { user_id, hash } = req.params;
+	hash = hash.split(".")[0]; // remove .file extension
+	const path = `avatars/${user_id}/${hash}`;
 
 	const file = await storage.get(path);
 	if (!file) throw new HTTPError("not found", 404);

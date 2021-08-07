@@ -1,6 +1,7 @@
 import { Storage } from "./Storage";
 import fs from "fs";
-import { join, relative } from "path";
+import fse from "fs-extra";
+import { join, relative, dirname } from "path";
 import "missing-native-js-functions";
 
 function getPath(path: string) {
@@ -23,8 +24,7 @@ export class FileStorage implements Storage {
 
 	async set(path: string, value: any) {
 		path = getPath(path);
-		const dir = path.split("/").slice(0, -1).join("/");
-		fs.mkdirSync(dir, { recursive: true });
+		fse.ensureDirSync(dirname(path));
 
 		return fs.writeFileSync(path, value, { encoding: "binary" });
 	}
