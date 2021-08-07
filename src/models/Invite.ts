@@ -1,7 +1,7 @@
 import { Schema, Document, Types } from "mongoose";
 import db from "../util/Database";
 import { ChannelModel } from "./Channel";
-import { UserModel } from "./User";
+import { PublicUserProjection, UserModel } from "./User";
 import { GuildModel } from "./Guild";
 
 export interface Invite {
@@ -60,13 +60,7 @@ InviteSchema.virtual("inviter", {
 	foreignField: "id",
 	justOne: true,
 	autopopulate: {
-		select: {
-			id: true,
-			username: true,
-			avatar: true,
-			discriminater: true,
-			public_flags: true,
-		},
+		select: PublicUserProjection,
 	},
 });
 

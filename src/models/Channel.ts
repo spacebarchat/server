@@ -1,7 +1,7 @@
 import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
 import toBigInt from "../util/toBigInt";
-import { UserModel } from "./User";
+import { PublicUserProjection, UserModel } from "./User";
 
 // @ts-ignore
 export interface AnyChannel extends Channel, DMChannel, TextChannel, VoiceChannel {
@@ -42,7 +42,7 @@ ChannelSchema.virtual("recipients", {
 	localField: "recipient_ids",
 	foreignField: "id",
 	justOne: false,
-	autopopulate: true,
+	autopopulate: { select: PublicUserProjection },
 });
 
 ChannelSchema.set("removeResponse", ["recipient_ids"]);
