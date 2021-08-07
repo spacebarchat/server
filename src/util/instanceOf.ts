@@ -84,6 +84,8 @@ export function instanceOf(
 
 		switch (type) {
 			case String:
+				value = `${value}`;
+				ref.obj[ref.key] = value;
 				if (typeof value === "string") return true;
 				throw new FieldError("BASE_TYPE_STRING", req.t("common:field.BASE_TYPE_STRING"));
 			case Number:
