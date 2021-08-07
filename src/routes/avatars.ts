@@ -36,7 +36,7 @@ router.post("/:user_id", multer.single("file"), async (req: Request, res: Respon
 	await storage.set(path, buffer);
 
 	return res.json({
-		hash,
+		id: hash,
 		content_type: type.mime,
 		size,
 		url: `${endpoint}${req.baseUrl}/${user_id}/${hash}`,
