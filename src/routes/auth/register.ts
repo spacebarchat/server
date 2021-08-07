@@ -197,6 +197,7 @@ router.post(
 			discriminator,
 			avatar: null,
 			accent_color: null,
+			banner: null,
 			bot: false,
 			system: false,
 			desktop: false,

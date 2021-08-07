@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import { UserModel, toObject, PublicUserProjection } from "@fosscord/server-util";
-import { HTTPError } from "lambert-server";
 import { getPublicUser } from "../../../util/User";
 import { UserModifySchema } from "../../../schema/User";
 import { check } from "../../../util/instanceOf";
@@ -14,7 +13,9 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.patch("/", check(UserModifySchema), async (req: Request, res: Response) => {
 	const body = req.body as UserModifySchema;
-	body.avatar = await handleFile(`/avatars/${req.user_id}`, body.avatar as string);
+
+	if(body.avatar) body.avatar = await handleFile(`/avatars/${req.user_id}`, body.avatar as string);
+	if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
 
 	const user = await UserModel.findOneAndUpdate({ id: req.user_id }, body, { projection: PublicUserProjection }).exec();
 	// TODO: dispatch user update event
