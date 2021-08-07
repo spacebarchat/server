@@ -35,6 +35,6 @@ export async function handleFile(path: string, body?: string): Promise<string | 
 		return id;
 	} catch (error) {
 		console.error(error);
-		throw new HTTPError("Invalid icon");
+		throw new HTTPError("Invalid file");
 	}
 }
