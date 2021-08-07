@@ -3,7 +3,7 @@ import { Config, Snowflake } from "@fosscord/server-util";
 import { storage } from "../util/Storage";
 import FileType from "file-type";
 import { HTTPError } from "lambert-server";
-import { multer } from "../Server";
+import { multer } from "../util/multer";
 import crypto from "crypto";
 
 // TODO: check premium and animated pfp are allowed in the config
@@ -13,7 +13,7 @@ import crypto from "crypto";
 // TODO: check request signature for modify methods
 
 const ANIMATED_MIME_TYPES = ["image/apng", "image/gif", "image/gifv"];
-const STATIC_MIME_TYPES = ["image/png", "image/jpeg", "image/webp"];
+const STATIC_MIME_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml", "image/svg"];
 const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 
 const router = Router();
@@ -38,7 +38,7 @@ router.post("/:user_id", multer.single("file"), async (req: Request, res: Respon
 		id,
 		content_type: type.mime,
 		size,
-		url: `${endpoint}/path`,
+		url: `${endpoint}${req.baseUrl}/${user_id}/${id}`,
 	});
 });
 

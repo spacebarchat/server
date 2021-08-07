@@ -1,7 +1,7 @@
 import { Server, ServerOptions } from "lambert-server";
 import { Config, db } from "@fosscord/server-util";
 import path from "path";
-import multerConfig from "multer";
+import avatarsRoute from "./routes/avatars";
 
 export interface CDNServerOptions extends ServerOptions {}
 
@@ -20,6 +20,10 @@ export class CDNServer extends Server {
 		console.log("[Database] connected");
 
 		await this.registerRoutes(path.join(__dirname, "routes/"));
+		this.app.use("/icons/", avatarsRoute);
+		this.log("info", "[Server] Route /icons registered");
+		this.app.use("/banners/", avatarsRoute);
+		this.log("info", "[Server] Route /banners registered");
 		return super.start();
 	}
 
@@ -27,12 +31,3 @@ export class CDNServer extends Server {
 		return super.stop();
 	}
 }
-
-export const multer = multerConfig({
-	storage: multerConfig.memoryStorage(),
-	limits: {
-		fields: 10,
-		files: 10,
-		fileSize: 1024 * 1024 * 100, // 100 mb
-	},
-});

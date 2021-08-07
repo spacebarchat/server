@@ -3,7 +3,7 @@ import { Config, Snowflake } from "@fosscord/server-util";
 import { storage } from "../util/Storage";
 import FileType from "file-type";
 import { HTTPError } from "lambert-server";
-import { multer } from "../Server";
+import { multer } from "../util/multer";
 import imageSize from "image-size";
 
 const router = Router();
