@@ -69,7 +69,7 @@ export class FosscordServer extends Server {
 
 		this.app.use(CORS);
 		this.app.use(Authentication);
-		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 2 }));
+		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 10 })); // 2MB
 		const languages = fs.readdirSync(path.join(__dirname, "..", "locales"));
 		const namespaces = fs.readdirSync(path.join(__dirname, "..", "locales", "en"));
 		const ns = namespaces.filter((x) => x.endsWith(".json")).map((x) => x.slice(0, x.length - 5));
