@@ -17,7 +17,7 @@ import { HTTPError } from "lambert-server";
 import { GuildUpdateSchema } from "../../../schema/Guild";
 import { emitEvent } from "../../../util/Event";
 import { check } from "../../../util/instanceOf";
-import { uploadFile } from "../../../util/cdn";
+import { handleFile } from "../../../util/cdn";
 import "missing-native-js-functions";
 
 const router = Router();
@@ -43,31 +43,8 @@ router.patch("/", check(GuildUpdateSchema), async (req: Request, res: Response) 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
-	if (body.icon && body.icon.startsWith('data')) {
-		try {
-			const mimetype = body.icon.split(":")[1].split(";")[0];
-			const buffer = Buffer.from(body.icon.split(",")[1], "base64");
-
-			// @ts-ignore
-			const { id } = await uploadFile(`/icons/${guild_id}`, { buffer, mimetype, originalname: "icon" });
-			body.icon = id;
-		} catch (error) {
-			throw new HTTPError("Invalid icon");
-		}
-	}
-
-	if (body.banner && body.banner.startsWith('data')) {
-		try {
-			const mimetype = body.banner.split(":")[1].split(";")[0];
-			const buffer = Buffer.from(body.banner.split(",")[1], "base64");
-
-			// @ts-ignore
-			const { id } = await uploadFile(`/banners/${guild_id}`, { buffer, mimetype, originalname: "banner" });
-			body.banner = id;
-		} catch (error) {
-			throw new HTTPError("Invalid banner");
-		}
-	}
+	body.icon = await handleFile("icons", body.icon);
+	body.banner = await handleFile("banners", body.banner);
 
 	const guild = await GuildModel.findOneAndUpdate({ id: guild_id }, body)
 		.populate({ path: "joined_at", match: { id: req.user_id } })
