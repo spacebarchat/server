@@ -97,6 +97,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		username: user.username,
 		verified: user.verified,
 		bot: user.bot,
+		accent_color: user.accent_color || 0,
 	};
 
 	const d: ReadyEventData = {
