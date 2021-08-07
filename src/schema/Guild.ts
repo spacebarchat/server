@@ -8,6 +8,7 @@ export const GuildCreateSchema = {
 	$channels: [Object],
 	$guild_template_code: String,
 	$system_channel_id: String,
+	$rules_channel_id: String
 };
 
 export interface GuildCreateSchema {
@@ -17,10 +18,13 @@ export interface GuildCreateSchema {
 	channels?: GuildChannel[];
 	guild_template_code?: string;
 	system_channel_id?: string;
+	rules_channel_id?: string;
 }
 
 export const GuildUpdateSchema = {
 	...GuildCreateSchema,
+	name: undefined,
+	$name: new Length(String, 2, 100),
 	$banner: String,
 	$splash: String,
 	$description: String,
@@ -34,6 +38,7 @@ export const GuildUpdateSchema = {
 	$public_updates_channel_id: String,
 	$afk_timeout: Number,
 	$afk_channel_id: String,
+	$preferred_locale: String
 };
 // @ts-ignore
 delete GuildUpdateSchema.$channels;
@@ -50,6 +55,7 @@ export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels"> {
 	public_updates_channel_id?: string;
 	afk_timeout?: number;
 	afk_channel_id?: string;
+	preferred_locale?: string;
 }
 
 export const GuildGetSchema = {
@@ -96,27 +102,26 @@ export const GuildGetSchema = {
 	public_updates_channel_id: true,
 	max_video_channel_users: true,
 	approximate_member_count: true,
-	approximate_presence_count: true,
+	approximate_presence_count: true
 	// welcome_screen: true,
 };
 
 export const GuildTemplateCreateSchema = {
 	name: String,
-	$avatar: String,
-
+	$avatar: String
 };
 
 export interface GuildTemplateCreateSchema {
-	name: string,
-	avatar?: string,
+	name: string;
+	avatar?: string;
 }
 
 export const GuildAddChannelToWelcomeScreenSchema = {
 	channel_id: String,
 	description: String,
 	$emoji_id: String,
-	emoji_name: String,
-}
+	emoji_name: String
+};
 
 export interface GuildAddChannelToWelcomeScreenSchema {
 	channel_id: string;
