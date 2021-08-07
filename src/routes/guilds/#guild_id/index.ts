@@ -17,6 +17,7 @@ import { HTTPError } from "lambert-server";
 import { GuildUpdateSchema } from "../../../schema/Guild";
 import { emitEvent } from "../../../util/Event";
 import { check } from "../../../util/instanceOf";
+import { handleFile } from "../../../util/cdn";
 import "missing-native-js-functions";
 
 const router = Router();
@@ -42,6 +43,9 @@ router.patch("/", check(GuildUpdateSchema), async (req: Request, res: Response) 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
+	body.icon = await handleFile(`/icons/${guild_id}`, body.icon);
+	body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
+
 	const guild = await GuildModel.findOneAndUpdate({ id: guild_id }, body)
 		.populate({ path: "joined_at", match: { id: req.user_id } })
 		.exec();
@@ -50,7 +54,7 @@ router.patch("/", check(GuildUpdateSchema), async (req: Request, res: Response) 
 
 	emitEvent({ event: "GUILD_UPDATE", data: data, guild_id } as GuildUpdateEvent);
 
-	return res.send(data);
+	return res.json(data);
 });
 
 export default router;

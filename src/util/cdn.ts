@@ -1,5 +1,6 @@
 import { Config } from "@fosscord/server-util";
 import FormData from "form-data";
+import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 
 export async function uploadFile(path: string, file: Express.Multer.File) {
@@ -21,4 +22,19 @@ export async function uploadFile(path: string, file: Express.Multer.File) {
 
 	if (response.status !== 200) throw result;
 	return result;
+}
+
+export async function handleFile(path: string, body?: string): Promise<string | undefined> {
+	if (!body || !body.startsWith("data:")) return body;
+	try {
+		const mimetype = body.split(":")[1].split(";")[0];
+		const buffer = Buffer.from(body.split(",")[1], "base64");
+
+		// @ts-ignore
+		const { id } = await uploadFile(path, { buffer, mimetype, originalname: "banner" });
+		return id;
+	} catch (error) {
+		console.error(error);
+		throw new HTTPError("Invalid icon");
+	}
 }
