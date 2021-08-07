@@ -31,9 +31,10 @@ export async function handleFile(path: string, body?: string): Promise<string | 
 		const buffer = Buffer.from(body.split(",")[1], "base64");
 
 		// @ts-ignore
-		const { id } = await uploadFile(`/${path}/${guild_id}`, { buffer, mimetype, originalname: "banner" });
+		const { id } = await uploadFile(path, { buffer, mimetype, originalname: "banner" });
 		return id;
 	} catch (error) {
-		throw new HTTPError("Invalid " + path);
+		console.error(error);
+		throw new HTTPError("Invalid icon");
 	}
 }

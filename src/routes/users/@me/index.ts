@@ -14,7 +14,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.patch("/", check(UserModifySchema), async (req: Request, res: Response) => {
 	const body = req.body as UserModifySchema;
-	body.avatar = await handleFile(body.avatar as string);
+	body.avatar = await handleFile(`/avatars/${req.user_id}`, body.avatar as string);
 
 	const user = await UserModel.findOneAndUpdate({ id: req.user_id }, body, { projection: PublicUserProjection }).exec();
 	// TODO: dispatch user update event
