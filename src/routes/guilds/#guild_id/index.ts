@@ -44,7 +44,8 @@ router.patch("/", check(GuildUpdateSchema), async (req: Request, res: Response) 
 	perms.hasThrow("MANAGE_GUILD");
 
 	if (body.icon) body.icon = await handleFile(`/icons/${guild_id}`, body.icon);
-	if(body.banner) body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
+	if (body.banner) body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
+	if (body.splash) body.splash = await handleFile(`/splashes/${guild_id}`, body.splash);
 
 	const guild = await GuildModel.findOneAndUpdate({ id: guild_id }, body)
 		.populate({ path: "joined_at", match: { id: req.user_id } })
