@@ -4,8 +4,9 @@ import { join, relative } from "path";
 import "missing-native-js-functions";
 
 function getPath(path: string) {
+	if (path.indexOf("\0") !== -1 || !/^[a-z0-9]+$/.test(path)) throw new Error("invalid path");
 	// STORAGE_LOCATION has a default value in start.ts
-	return join(process.env.STORAGE_LOCATION || "../", relative("/", path));
+	return join(process.env.STORAGE_LOCATION || "../", path);
 }
 
 export class FileStorage implements Storage {
@@ -22,7 +23,6 @@ export class FileStorage implements Storage {
 	}
 
 	async delete(path: string) {
-		path = join(process.env.STORAGE_LOCATION || "", path);
-		fs.unlinkSync(path);
+		fs.unlinkSync(getPath(path));
 	}
 }
