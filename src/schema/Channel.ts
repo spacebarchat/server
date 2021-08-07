@@ -3,7 +3,7 @@ import { Length } from "../util/instanceOf";
 
 export const ChannelModifySchema = {
 	name: new Length(String, 2, 100),
-	type: Number,
+	type: new Length(Number, 0, 13),
 	$topic: new Length(String, 0, 1024),
 	$bitrate: Number,
 	$user_limit: Number,
