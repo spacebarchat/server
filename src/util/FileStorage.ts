@@ -4,9 +4,12 @@ import { join, relative } from "path";
 import "missing-native-js-functions";
 
 function getPath(path: string) {
-	if (path.indexOf("\0") !== -1 || !/^[a-z0-9]+$/.test(path)) throw new Error("invalid path");
 	// STORAGE_LOCATION has a default value in start.ts
-	return join(process.env.STORAGE_LOCATION || "../", path);
+	const root = process.env.STORAGE_LOCATION || "../";
+	var filename = join(root, path);
+
+	if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
+	return filename;
 }
 
 export class FileStorage implements Storage {
@@ -19,7 +22,11 @@ export class FileStorage implements Storage {
 	}
 
 	async set(path: string, value: any) {
-		return fs.writeFileSync(getPath(path), value, { encoding: "binary" });
+		path = getPath(path);
+		const dir = path.split("/").slice(0, -1).join("/");
+		fs.mkdirSync(dir, { recursive: true });
+
+		return fs.writeFileSync(path, value, { encoding: "binary" });
 	}
 
 	async delete(path: string) {
