@@ -17,6 +17,7 @@ router.get("/", async (req: Request, res: Response) => {
             public_flags: user.public_flags,
             avatar: user.avatar,
             accent_color: user.accent_color,
+            banner: user.banner,
             bio: user.bio,
             bot: user.bot,
         }
