@@ -135,7 +135,7 @@ export class BitField {
 		if (Array.isArray(bit)) {
 			// @ts-ignore
 			const resolve = this.constructor?.resolve || this.resolve;
-			return bit.map((p) => resolve(p)).reduce((prev, p) => BigInt(prev) | BigInt(p), 0n);
+			return bit.map((p) => resolve.call(this, p)).reduce((prev, p) => BigInt(prev) | BigInt(p), 0n);
 		}
 		if (typeof bit === "string" && typeof FLAGS[bit] !== "undefined") return FLAGS[bit];
 		throw new RangeError("BITFIELD_INVALID: " + bit);
