@@ -38,11 +38,17 @@ export class CDNServer extends Server {
 		this.app.use("/emojis/", avatarsRoute);
 		this.log("info", "[Server] Route /emojis registered");
 
-		this.app.use("/banners/", avatarsRoute);
-		this.log("info", "[Server] Route /banners registered");
+		this.app.use("/stickers/", avatarsRoute);
+		this.log("info", "[Server] Route /stickers registered");
 
 		this.app.use("/banners/", avatarsRoute);
 		this.log("info", "[Server] Route /banners registered");
+
+		this.app.use("/app-icons/", avatarsRoute);
+		this.log("info", "[Server] Route /app-icons registered");
+
+		this.app.use("/app-assets/", avatarsRoute);
+		this.log("info", "[Server] Route /app-assets registered");
 
 		this.app.use("/discover-splashes/", avatarsRoute);
 		this.log("info", "[Server] Route /discover-splashes registered");
