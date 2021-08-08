@@ -6,6 +6,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	/^\/api(\/v\d+)?\/auth\/login/,
 	/^\/api(\/v\d+)?\/auth\/register/,
 	/^\/api(\/v\d+)?\/webhooks\//,
+	/^\/api(\/v\d+)?\/ping/,
 	/^\/api(\/v\d+)?\/gateway/,
 	/^\/api(\/v\d+)?\/experiments/,
 	/^\/api(\/v\d+)?\/guilds\/\d+\/widget\.(json|png)/
