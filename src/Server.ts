@@ -163,7 +163,7 @@ export class FosscordServer extends Server {
 				indexHTML
 					.replace(
 						/CDN_HOST: ".+"/,
-						`CDN_HOST: "${(Config.get().cdn.endpoint || "http://localhost:3003").replace(/https?:/, "")}"`
+						`CDN_HOST: "${(Config.get().cdn.endpoint || process.env.CDN || "http://localhost:3003").replace(/https?:/, "")}"`
 					)
 					.replace(
 						/GATEWAY_ENDPOINT: ".+"/,
