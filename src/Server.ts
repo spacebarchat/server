@@ -17,7 +17,10 @@ export class Server {
 		this.production = production || false;
 
 		if (server) this.server = server;
-		else this.server = http.createServer({});
+		else
+			this.server = http.createServer(function (req, res) {
+				res.writeHead(200).end("Online");
+			});
 
 		this.ws = new WebSocketServer({
 			maxPayload: 4096,
