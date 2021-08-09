@@ -55,8 +55,8 @@ export default function TestClient(app: Application) {
 		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
 		res.set("content-type", "text/html");
 		var html = indexHTML;
-		const CDN_ENDPOINT = Config.get()?.cdn.endpoint || process.env.CDN;
-		const GATEWAY_ENDPOINT = (Config.get()?.gateway.endpoint || process.env.GATEWAY || "").replace(/(https?)?(:\/\/?)/g, "");
+		const CDN_ENDPOINT = (Config.get()?.cdn.endpoint || process.env.CDN || "").replace(/(https?)?(:\/\/?)/g, "");
+		const GATEWAY_ENDPOINT = Config.get()?.gateway.endpoint || process.env.GATEWAY || "";
 
 		if (CDN_ENDPOINT) html = html.replace(/CDN_HOST: .+/, `CDN_HOST: "${CDN_ENDPOINT}",`);
 		if (GATEWAY_ENDPOINT) html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: "${GATEWAY_ENDPOINT}",`);
