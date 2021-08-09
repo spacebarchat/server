@@ -20,11 +20,13 @@ export const BanSchema = new Schema({
 
 BanSchema.virtual("user", {
 	ref: UserModel,
-	localField: "id",
-	foreignField: "user_id",
+	localField: "user_id",
+	foreignField: "id",
 	justOne: true,
 	autopopulate: { select: PublicUserProjection },
 });
+
+BanSchema.set("removeResponse", ["user_id"]);
 
 // @ts-ignore
 export const BanModel = db.model<Ban>("Ban", BanSchema, "bans");
