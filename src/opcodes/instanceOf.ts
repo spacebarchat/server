@@ -4,7 +4,7 @@ import WebSocket from "../util/WebSocket";
 
 export function check(this: WebSocket, schema: any, data: any) {
 	try {
-		const error = instanceOf(schema, data);
+		const error = instanceOf(schema, data, { path: "body" });
 		if (error !== true) {
 			throw error;
 		}

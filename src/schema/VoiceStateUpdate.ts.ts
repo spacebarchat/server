@@ -1,5 +1,5 @@
 export const VoiceStateUpdateSchema = {
-	guild_id: String,
+	$guild_id: String,
 	channel_id: String,
 	self_mute: Boolean,
 	self_deaf: Boolean,
@@ -7,7 +7,7 @@ export const VoiceStateUpdateSchema = {
 };
 
 export interface VoiceStateUpdateSchema {
-	guild_id: string;
+	guild_id?: string;
 	channel_id: string;
 	self_mute: boolean;
 	self_deaf: boolean;
