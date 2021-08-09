@@ -4,6 +4,7 @@ import {
 	GuildDeleteEvent,
 	GuildModel,
 	InviteModel,
+	MemberModel,
 	MessageModel,
 	RoleModel,
 	UserModel
@@ -30,13 +31,16 @@ router.post("/", async (req: Request, res: Response) => {
 		guild_id: guild_id
 	} as GuildDeleteEvent);
 
-	await GuildModel.deleteOne({ id: guild_id }).exec();
-	await UserModel.updateMany({ guilds: guild_id }, { $pull: { guilds: guild_id } }).exec();
-	await RoleModel.deleteMany({ guild_id }).exec();
-	await ChannelModel.deleteMany({ guild_id }).exec();
-	await EmojiModel.deleteMany({ guild_id }).exec();
-	await InviteModel.deleteMany({ guild_id }).exec();
-	await MessageModel.deleteMany({ guild_id }).exec();
+	await Promise.all([
+		GuildModel.deleteOne({ id: guild_id }).exec(),
+		UserModel.updateMany({ guilds: guild_id }, { $pull: { guilds: guild_id } }).exec(),
+		RoleModel.deleteMany({ guild_id }).exec(),
+		ChannelModel.deleteMany({ guild_id }).exec(),
+		EmojiModel.deleteMany({ guild_id }).exec(),
+		InviteModel.deleteMany({ guild_id }).exec(),
+		MessageModel.deleteMany({ guild_id }).exec(),
+		MemberModel.deleteMany({ guild_id }).exec()
+	]);
 
 	return res.sendStatus(204);
 });
