@@ -10,10 +10,10 @@ import i18nextBackend from "i18next-node-fs-backend";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import express, { Router, Request, Response } from "express";
-import fetch, { Response as FetchResponse } from "node-fetch";
 import mongoose from "mongoose";
 import path from "path";
 import RateLimit from "./middlewares/RateLimit";
+import TestClient from "./middlewares/TestClient";
 
 // this will return the new updated document for findOneAndUpdate
 mongoose.set("returnOriginal", false); // https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate
@@ -28,14 +28,6 @@ declare global {
 		}
 	}
 }
-
-const assetCache = new Map<
-	string,
-	{
-		response: FetchResponse;
-		buffer: Buffer;
-	}
->();
 
 export class FosscordServer extends Server {
 	public declare options: FosscordServerOptions;
@@ -90,21 +82,21 @@ export class FosscordServer extends Server {
 		this.app.use(i18nextMiddleware.handle(i18next, {}));
 
 		const app = this.app;
-		const prefix = Router();
+		const api = Router();
 		// @ts-ignore
-		this.app = prefix;
-		prefix.use(RateLimit({ bucket: "global", count: 10, window: 5, bot: 250 }));
-		prefix.use(RateLimit({ bucket: "error", count: 5, error: true, window: 5, bot: 15, onylIp: true }));
-		prefix.use("/guilds/:id", RateLimit({ count: 5, window: 5 }));
-		prefix.use("/webhooks/:id", RateLimit({ count: 5, window: 5 }));
-		prefix.use("/channels/:id", RateLimit({ count: 5, window: 5 }));
+		this.app = api;
+		api.use(RateLimit({ bucket: "global", count: 10, window: 5, bot: 250 }));
+		api.use(RateLimit({ bucket: "error", count: 5, error: true, window: 5, bot: 15, onylIp: true }));
+		api.use("/guilds/:id", RateLimit({ count: 5, window: 5 }));
+		api.use("/webhooks/:id", RateLimit({ count: 5, window: 5 }));
+		api.use("/channels/:id", RateLimit({ count: 5, window: 5 }));
 
 		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
-		app.use("/api/v8", prefix);
-		app.use("/api/v9", prefix);
-		app.use("/api", prefix); // allow unversioned requests
+		app.use("/api/v8", api);
+		app.use("/api/v9", api);
+		app.use("/api", api); // allow unversioned requests
 
-		prefix.get("*", (req: Request, res: Response) => {
+		api.get("*", (req: Request, res: Response) => {
 			res.status(404).json({
 				message: "404: Not Found",
 				code: 0
@@ -113,64 +105,8 @@ export class FosscordServer extends Server {
 
 		this.app = app;
 		this.app.use(ErrorHandler);
-		const indexHTML = fs.readFileSync(path.join(__dirname, "..", "client_test", "index.html"), { encoding: "utf8" });
+		TestClient(this.app);
 
-		this.app.use("/assets", express.static(path.join(__dirname, "..", "assets")));
-
-		this.app.get("/assets/:file", async (req: Request, res: Response) => {
-			delete req.headers.host;
-			var response: FetchResponse;
-			var buffer: Buffer;
-			const cache = assetCache.get(req.params.file);
-			if (!cache) {
-				response = await fetch(`https://discord.com/assets/${req.params.file}`, {
-					// @ts-ignore
-					headers: {
-						...req.headers
-					}
-				});
-				buffer = await response.buffer();
-			} else {
-				response = cache.response;
-				buffer = cache.buffer;
-			}
-
-			response.headers.forEach((value, name) => {
-				if (
-					[
-						"content-length",
-						"content-security-policy",
-						"strict-transport-security",
-						"set-cookie",
-						"transfer-encoding",
-						"expect-ct",
-						"access-control-allow-origin",
-						"content-encoding"
-					].includes(name.toLowerCase())
-				) {
-					return;
-				}
-				res.set(name, value);
-			});
-			assetCache.set(req.params.file, { buffer, response });
-
-			return res.send(buffer);
-		});
-		this.app.get("*", (req: Request, res: Response) => {
-			res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
-			res.set("content-type", "text/html");
-			res.send(
-				indexHTML
-					.replace(
-						/CDN_HOST: ".+"/,
-						`CDN_HOST: "${(Config.get().cdn.endpoint || process.env.CDN || "http://localhost:3003").replace(/https?:/, "")}"`
-					)
-					.replace(
-						/GATEWAY_ENDPOINT: ".+"/,
-						`GATEWAY_ENDPOINT: "${Config.get().gateway.endpoint || process.env.GATEWAY || "ws://localhost:3002"}"`
-					)
-			);
-		});
 		return super.start();
 	}
 }
