@@ -51,50 +51,50 @@ type PermissionString =
 	| "MANAGE_WEBHOOKS"
 	| "MANAGE_EMOJIS";
 
-const CUSTOM_PERMISSION_OFFSET = 1n << 48n; // 16 free custom permission bits, and 16 for discord to add new ones
+const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(48); // 16 free custom permission bits, and 16 for discord to add new ones
 
 export class Permissions extends BitField {
 	cache: PermissionCache = {};
 
 	static FLAGS = {
-		CREATE_INSTANT_INVITE: 1n << 0n,
-		KICK_MEMBERS: 1n << 1n,
-		BAN_MEMBERS: 1n << 2n,
-		ADMINISTRATOR: 1n << 3n,
-		MANAGE_CHANNELS: 1n << 4n,
-		MANAGE_GUILD: 1n << 5n,
-		ADD_REACTIONS: 1n << 6n,
-		VIEW_AUDIT_LOG: 1n << 7n,
-		PRIORITY_SPEAKER: 1n << 8n,
-		STREAM: 1n << 9n,
-		VIEW_CHANNEL: 1n << 10n,
-		SEND_MESSAGES: 1n << 11n,
-		SEND_TTS_MESSAGES: 1n << 12n,
-		MANAGE_MESSAGES: 1n << 13n,
-		EMBED_LINKS: 1n << 14n,
-		ATTACH_FILES: 1n << 15n,
-		READ_MESSAGE_HISTORY: 1n << 16n,
-		MENTION_EVERYONE: 1n << 17n,
-		USE_EXTERNAL_EMOJIS: 1n << 18n,
-		VIEW_GUILD_INSIGHTS: 1n << 19n,
-		CONNECT: 1n << 20n,
-		SPEAK: 1n << 21n,
-		MUTE_MEMBERS: 1n << 22n,
-		DEAFEN_MEMBERS: 1n << 23n,
-		MOVE_MEMBERS: 1n << 24n,
-		USE_VAD: 1n << 25n,
-		CHANGE_NICKNAME: 1n << 26n,
-		MANAGE_NICKNAMES: 1n << 27n,
-		MANAGE_ROLES: 1n << 28n,
-		MANAGE_WEBHOOKS: 1n << 29n,
-		MANAGE_EMOJIS: 1n << 30n,
+		CREATE_INSTANT_INVITE: BigInt(1) << BigInt(0),
+		KICK_MEMBERS: BigInt(1) << BigInt(1),
+		BAN_MEMBERS: BigInt(1) << BigInt(2),
+		ADMINISTRATOR: BigInt(1) << BigInt(3),
+		MANAGE_CHANNELS: BigInt(1) << BigInt(4),
+		MANAGE_GUILD: BigInt(1) << BigInt(5),
+		ADD_REACTIONS: BigInt(1) << BigInt(6),
+		VIEW_AUDIT_LOG: BigInt(1) << BigInt(7),
+		PRIORITY_SPEAKER: BigInt(1) << BigInt(8),
+		STREAM: BigInt(1) << BigInt(9),
+		VIEW_CHANNEL: BigInt(1) << BigInt(10),
+		SEND_MESSAGES: BigInt(1) << BigInt(11),
+		SEND_TTS_MESSAGES: BigInt(1) << BigInt(12),
+		MANAGE_MESSAGES: BigInt(1) << BigInt(13),
+		EMBED_LINKS: BigInt(1) << BigInt(14),
+		ATTACH_FILES: BigInt(1) << BigInt(15),
+		READ_MESSAGE_HISTORY: BigInt(1) << BigInt(16),
+		MENTION_EVERYONE: BigInt(1) << BigInt(17),
+		USE_EXTERNAL_EMOJIS: BigInt(1) << BigInt(18),
+		VIEW_GUILD_INSIGHTS: BigInt(1) << BigInt(19),
+		CONNECT: BigInt(1) << BigInt(20),
+		SPEAK: BigInt(1) << BigInt(21),
+		MUTE_MEMBERS: BigInt(1) << BigInt(22),
+		DEAFEN_MEMBERS: BigInt(1) << BigInt(23),
+		MOVE_MEMBERS: BigInt(1) << BigInt(24),
+		USE_VAD: BigInt(1) << BigInt(25),
+		CHANGE_NICKNAME: BigInt(1) << BigInt(26),
+		MANAGE_NICKNAMES: BigInt(1) << BigInt(27),
+		MANAGE_ROLES: BigInt(1) << BigInt(28),
+		MANAGE_WEBHOOKS: BigInt(1) << BigInt(29),
+		MANAGE_EMOJIS: BigInt(1) << BigInt(30),
 		/**
 		 * CUSTOM PERMISSIONS ideas:
 		 * - allow user to dm members
 		 * - allow user to pin messages (without MANAGE_MESSAGES)
 		 * - allow user to publish messages (without MANAGE_MESSAGES)
 		 */
-		// CUSTOM_PERMISSION: 1n << 0n + CUSTOM_PERMISSION_OFFSET
+		// CUSTOM_PERMISSION: BigInt(1) << BigInt(0) + CUSTOM_PERMISSION_OFFSET
 	};
 
 	any(permission: PermissionResolvable, checkAdmin = true) {

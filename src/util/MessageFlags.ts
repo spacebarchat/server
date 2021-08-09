@@ -5,10 +5,10 @@ import { BitField } from "./BitField";
 
 export class MessageFlags extends BitField {
 	static FLAGS = {
-		CROSSPOSTED: 1n << 0n,
-		IS_CROSSPOST: 1n << 1n,
-		SUPPRESS_EMBEDS: 1n << 2n,
-		SOURCE_MESSAGE_DELETED: 1n << 3n,
-		URGENT: 1n << 4n,
+		CROSSPOSTED: BigInt(1) << BigInt(0),
+		IS_CROSSPOST: BigInt(1) << BigInt(1),
+		SUPPRESS_EMBEDS: BigInt(1) << BigInt(2),
+		SOURCE_MESSAGE_DELETED: BigInt(1) << BigInt(3),
+		URGENT: BigInt(1) << BigInt(4),
 	};
 }
