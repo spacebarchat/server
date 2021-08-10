@@ -19,7 +19,7 @@ router.post("/:channel_id", multer.single("file"), async (req: Request, res: Res
 	const id = Snowflake.generate();
 	const path = `attachments/${channel_id}/${id}/${filename}`;
 
-	const endpoint = Config.get().cdn.endpoint || "http://localhost:3003";
+	const endpoint = Config.get()?.cdn.endpoint || "http://localhost:3003";
 
 	await storage.set(path, buffer);
 	var width;
