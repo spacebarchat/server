@@ -10,7 +10,7 @@ export function checkToken(token: string, jwtSecret: string): Promise<any> {
 
 			const user = await UserModel.findOne(
 				{ id: decoded.id },
-				{ "user_data.valid_tokens_since": true, bot: true }
+				{ "user_data.valid_tokens_since": true, bot: true, disabled: true, deleted: true }
 			).exec();
 			if (!user) return rej("Invalid Token");
 			// we need to round it to seconds as it saved as seconds in jwt iat and valid_tokens_since is stored in milliseconds
