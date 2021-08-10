@@ -26,6 +26,7 @@
 		"btoa": "^1.2.1",
 		"cheerio": "^1.0.0-rc.5",
 		"dotenv": "^10.0.0",
+		"exif-be-gone": "^1.2.0",
 		"express": "^4.17.1",
 		"express-async-errors": "^3.1.1",
 		"file-type": "^16.5.0",

@@ -3,6 +3,8 @@ import fs from "fs";
 import fse from "fs-extra";
 import { join, relative, dirname } from "path";
 import "missing-native-js-functions";
+import { Readable } from "stream";
+import ExifTransformer = require("exif-be-gone");
 
 function getPath(path: string) {
 	// STORAGE_LOCATION has a default value in start.ts
@@ -26,7 +28,10 @@ export class FileStorage implements Storage {
 		path = getPath(path);
 		fse.ensureDirSync(dirname(path));
 
-		return fs.writeFileSync(path, value, { encoding: "binary" });
+		value = Readable.from(value);
+		const cleaned_file = fs.createWriteStream(path);
+
+		return value.pipe(new ExifTransformer()).pipe(cleaned_file);
 	}
 
 	async delete(path: string) {
