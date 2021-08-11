@@ -9,7 +9,8 @@ import RateLimit from "../../middlewares/RateLimit";
 const router: Router = Router();
 export default router;
 
-// TODO: check if user is deleted/restricted
+// TODO: check if user is deleted --> prohibit login
+
 router.post(
 	"/",
 	RateLimit({ count: 5, window: 60, onlyIp: true }),
@@ -22,7 +23,7 @@ router.post(
 		$gift_code_sku_id: String
 	}),
 	async (req: Request, res: Response) => {
-		const { login, password, captcha_key } = req.body;
+		const { login, password, captcha_key, undelete } = req.body;
 		const email = adjustEmail(login);
 		const query: any[] = [{ phone: login }];
 		if (email) query.push({ email });
@@ -62,6 +63,13 @@ router.post(
 				throw FieldErrors({ login: { message: req.t("auth:login.INVALID_LOGIN"), code: "INVALID_LOGIN" } });
 			});
 
+		if (user.disabled && undelete) {
+			// undelete refers to un'disable' here
+			await UserModel.updateOne({ id: req.user_id }, { disabled: false }).exec();
+		} else if (user.disabled) {
+			return res.status(400).json({ message: req.t("auth:login.ACCOUNT_DISABLED"), code: 20013 });
+		}
+
 		// the salt is saved in the password refer to bcrypt docs
 		const same_password = await bcrypt.compare(password, user.user_data.hash || "");
 		if (!same_password) {
@@ -100,14 +108,14 @@ export async function generateToken(id: string) {
 /**
  * POST /auth/login
  * @argument { login: "email@gmail.com", password: "cleartextpassword", undelete: false, captcha_key: null, login_source: null, gift_code_sku_id: null, }
- 
+
  * MFA required:
  * @returns {"token": null, "mfa": true, "sms": true, "ticket": "SOME TICKET JWT TOKEN"}
- 
+
  * Captcha required:
  * @returns {"captcha_key": ["captcha-required"], "captcha_sitekey": null, "captcha_service": "recaptcha"}
- 
+
  * Sucess:
  * @returns {"token": "USERTOKEN", "user_settings": {"locale": "en", "theme": "dark"}}
- 
+
  */
