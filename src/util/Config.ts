@@ -25,17 +25,17 @@ export interface RateLimitOptions {
 }
 
 export interface Region {
-	id: string,
-	name: string,
-	vip: boolean,
-	custom: boolean,
-	deprecated: boolean,
-	optimal: boolean,
+	id: string;
+	name: string;
+	vip: boolean;
+	custom: boolean;
+	deprecated: boolean;
+	optimal: boolean;
 }
 
 export interface KafkaBroker {
-	ip: string,
-	port: number
+	ip: string;
+	port: number;
 }
 
 export interface DefaultOptions {
@@ -133,10 +133,13 @@ export interface DefaultOptions {
 	regions: {
 		default: string;
 		available: Region[];
-	}
+	};
+	rabbitmq: {
+		host: string | null;
+	};
 	kafka: {
-		brokers: KafkaBroker[] | null
-	}
+		brokers: KafkaBroker[] | null;
+	};
 }
 
 export const DefaultOptions: DefaultOptions = {
@@ -230,17 +233,18 @@ export const DefaultOptions: DefaultOptions = {
 	},
 	regions: {
 		default: "fosscord",
-		available: [
-			{ id: "fosscord", name: "Fosscord", vip: false, custom: false, deprecated: false, optimal: false },
-		]
+		available: [{ id: "fosscord", name: "Fosscord", vip: false, custom: false, deprecated: false, optimal: false }],
+	},
+	rabbitmq: {
+		host: null,
 	},
 	kafka: {
-		brokers: null
-	}
+		brokers: null,
+	},
 };
 
 export const ConfigSchema = new Schema({}, { strict: false });
 
-export interface DefaultOptionsDocument extends DefaultOptions, Document { }
+export interface DefaultOptionsDocument extends DefaultOptions, Document {}
 
 export const ConfigModel = model<DefaultOptionsDocument>("Config", ConfigSchema, "config");
