@@ -117,6 +117,16 @@ export class Permissions extends BitField {
 		throw new HTTPError(`You are missing the following permissions ${permission}`, 403);
 	}
 
+	overwriteChannel(overwrites: ChannelPermissionOverwrite[]) {
+		if (!this.cache) throw new Error("permission chache not available");
+		overwrites = overwrites.filter((x) => {
+			if (x.type === 0 && this.cache.roles?.some((r) => r.id === x.id)) return true;
+			if (x.type === 1 && x.id == this.cache.user_id) return true;
+			return false;
+		});
+		return new Permissions(Permissions.channelPermission(overwrites, this.bitfield));
+	}
+
 	static channelPermission(overwrites: ChannelPermissionOverwrite[], init?: bigint) {
 		// TODO: do not deny any permissions if admin
 		return overwrites.reduce((permission, overwrite) => {
@@ -186,7 +196,7 @@ export class Permissions extends BitField {
 			return new Permissions();
 		}
 
-		return permission;
+		return new Permissions(permission);
 	}
 }
 
@@ -195,6 +205,7 @@ export type PermissionCache = {
 	member?: MemberDocument | null;
 	guild?: GuildDocument | null;
 	roles?: RoleDocument[] | null;
+	user_id?: string;
 };
 
 export async function getPermission(
@@ -245,7 +256,7 @@ export async function getPermission(
 	const obj = new Permissions(permission);
 
 	// pass cache to permission for possible future getPermission calls
-	obj.cache = { guild, member, channel, roles };
+	obj.cache = { guild, member, channel, roles, user_id };
 
 	return obj;
 }
