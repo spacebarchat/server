@@ -40,7 +40,7 @@ router.post("/", check(ChannelModifySchema), async (req: Request, res: Response)
 // TODO: check if parent_id exists
 router.patch(
 	"/",
-	check({ id: String, $position: Number, $lock_permissions: Boolean, $parent_id: String }),
+	check([{ id: String, $position: Number, $lock_permissions: Boolean, $parent_id: String }]),
 	async (req: Request, res: Response) => {
 		// changes guild channel position
 		const { guild_id } = req.params;
@@ -64,7 +64,7 @@ router.patch(
 
 		const channel = await ChannelModel.findOneAndUpdate({ id: req.body, guild_id }, opts).exec();
 
-		await emitEvent({ event: "CHANNEL_UPDATE", data: channel, channel_id: body.id } as ChannelUpdateEvent);
+		await emitEvent({ event: "CHANNEL_UPDATE", data: channel, channel_id: body.id, guild_id } as ChannelUpdateEvent);
 
 		res.json(toObject(channel));
 	}
