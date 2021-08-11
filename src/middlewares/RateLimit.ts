@@ -42,14 +42,14 @@ export default function RateLimit(opts: {
 	MODIFY?: number;
 	error?: boolean;
 	success?: boolean;
-	onylIp?: boolean;
+	onlyIp?: boolean;
 }): any {
 	Cache.init(); // will only initalize it once
 
 	return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
 		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
 		var user_id = getIpAdress(req);
-		if (!opts.onylIp && req.user_id) user_id = req.user_id;
+		if (!opts.onlyIp && req.user_id) user_id = req.user_id;
 
 		var max_hits = opts.count;
 		if (opts.bot && req.user_bot) max_hits = opts.bot;
