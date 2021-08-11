@@ -12,7 +12,7 @@ export default router;
 // TODO: check if user is deleted/restricted
 router.post(
 	"/",
-	RateLimit({ count: 5, window: 60, onylIp: true }),
+	RateLimit({ count: 5, window: 60, onlyIp: true }),
 	check({
 		login: new Length(String, 2, 100), // email or telephone
 		password: new Length(String, 8, 72),
