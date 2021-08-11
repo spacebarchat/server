@@ -32,14 +32,12 @@ router.put("/:message_id", async (req: Request, res: Response) => {
 	await emitEvent({
 		event: "MESSAGE_UPDATE",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: message
 	} as MessageUpdateEvent);
 
 	await emitEvent({
 		event: "CHANNEL_PINS_UPDATE",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: {
 			channel_id,
 			guild_id: channel.guild_id,
@@ -64,14 +62,12 @@ router.delete("/:message_id", async (req: Request, res: Response) => {
 	await emitEvent({
 		event: "MESSAGE_UPDATE",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: message
 	} as MessageUpdateEvent);
 
 	await emitEvent({
 		event: "CHANNEL_PINS_UPDATE",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: {
 			channel_id,
 			guild_id: channel.guild_id,

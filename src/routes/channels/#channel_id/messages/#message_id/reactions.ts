@@ -48,7 +48,6 @@ router.delete("/", async (req: Request, res: Response) => {
 	await emitEvent({
 		event: "MESSAGE_REACTION_REMOVE_ALL",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: {
 			channel_id,
 			message_id,
@@ -79,7 +78,6 @@ router.delete("/:emoji", async (req: Request, res: Response) => {
 	await emitEvent({
 		event: "MESSAGE_REACTION_REMOVE_EMOJI",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: {
 			channel_id,
 			message_id,
@@ -140,7 +138,6 @@ router.put("/:emoji/:user_id", async (req: Request, res: Response) => {
 	await emitEvent({
 		event: "MESSAGE_REACTION_ADD",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: {
 			user_id: req.user_id,
 			channel_id,
@@ -179,7 +176,6 @@ router.delete("/:emoji/:user_id", async (req: Request, res: Response) => {
 	await emitEvent({
 		event: "MESSAGE_REACTION_REMOVE",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: {
 			user_id: req.user_id,
 			channel_id,
