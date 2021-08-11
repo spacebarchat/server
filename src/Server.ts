@@ -86,7 +86,7 @@ export class FosscordServer extends Server {
 		// @ts-ignore
 		this.app = api;
 		api.use(RateLimit({ bucket: "global", count: 10, window: 5, bot: 250 }));
-		api.use(RateLimit({ bucket: "error", count: 5, error: true, window: 5, bot: 15, onylIp: true }));
+		api.use(RateLimit({ bucket: "error", count: 5, error: true, window: 5, bot: 15, onlyIp: true }));
 		api.use("/guilds/:id", RateLimit({ count: 5, window: 5 }));
 		api.use("/webhooks/:id", RateLimit({ count: 5, window: 5 }));
 		api.use("/channels/:id", RateLimit({ count: 5, window: 5 }));
