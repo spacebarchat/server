@@ -5,7 +5,10 @@ export const UserModifySchema = {
 	$avatar: String,
 	$bio: new Length(String, 0, 190),
 	$accent_color: Number,
-	$banner: String
+	$banner: String,
+	$password: String,
+	$new_password: String,
+	$code: String // 2fa code
 };
 
 export interface UserModifySchema {
@@ -14,4 +17,7 @@ export interface UserModifySchema {
 	bio?: string;
 	accent_color?: number | null;
 	banner?: string | null;
+	password?: string;
+	new_password?: string;
+	code?: string;
 }
