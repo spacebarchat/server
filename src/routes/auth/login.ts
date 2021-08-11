@@ -47,27 +47,20 @@ router.post(
 
 		const user = await UserModel.findOne(
 			{ $or: query },
-			{
-				user_data: {
-					hash: true
-				},
-				id: true,
-				user_settings: {
-					locale: true,
-					theme: true
-				}
-			}
+			{ user_data: { hash: true }, id: true, disabled: true, deleted: true, user_settings: { locale: true, theme: true } }
 		)
 			.exec()
 			.catch((e) => {
 				throw FieldErrors({ login: { message: req.t("auth:login.INVALID_LOGIN"), code: "INVALID_LOGIN" } });
 			});
 
-		if (user.disabled && undelete) {
+		if (undelete) {
 			// undelete refers to un'disable' here
-			await UserModel.updateOne({ id: req.user_id }, { disabled: false }).exec();
-		} else if (user.disabled) {
-			return res.status(400).json({ message: req.t("auth:login.ACCOUNT_DISABLED"), code: 20013 });
+			if (user.disabled) await UserModel.updateOne({ id: user.id }, { disabled: false }).exec();
+			if (user.deleted) await UserModel.updateOne({ id: user.id }, { deleted: false }).exec();
+		} else {
+			if (user.deleted) return res.status(400).json({ message: "This account is scheduled for deletion.", code: 20011 });
+			if (user.disabled) return res.status(400).json({ message: req.t("auth:login.ACCOUNT_DISABLED"), code: 20013 });
 		}
 
 		// the salt is saved in the password refer to bcrypt docs
