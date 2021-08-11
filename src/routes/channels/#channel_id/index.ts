@@ -30,7 +30,7 @@ router.delete("/", async (req: Request, res: Response) => {
 	// TODO: Dm channel "close" not delete
 	const data = toObject(channel);
 
-	await emitEvent({ event: "CHANNEL_DELETE", data, guild_id: channel?.guild_id, channel_id } as ChannelDeleteEvent);
+	await emitEvent({ event: "CHANNEL_DELETE", data, channel_id } as ChannelDeleteEvent);
 
 	await ChannelModel.deleteOne({ id: channel_id });
 
@@ -51,7 +51,6 @@ router.patch("/", check(ChannelModifySchema), async (req: Request, res: Response
 	await emitEvent({
 		event: "CHANNEL_UPDATE",
 		data,
-		guild_id: channel.guild_id,
 		channel_id
 	} as ChannelUpdateEvent);
 

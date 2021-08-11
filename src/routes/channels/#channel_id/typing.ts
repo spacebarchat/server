@@ -16,7 +16,6 @@ router.post("/", async (req: Request, res: Response) => {
 	await emitEvent({
 		event: "TYPING_START",
 		channel_id: channel_id,
-		guild_id: channel.guild_id,
 		data: {
 			// this is the paylod
 			member: toObject(member),

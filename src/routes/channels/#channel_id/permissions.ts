@@ -44,7 +44,6 @@ router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, 
 	await emitEvent({
 		event: "CHANNEL_UPDATE",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: channel
 	} as ChannelUpdateEvent);
 
@@ -64,7 +63,6 @@ router.delete("/:overwrite_id", async (req: Request, res: Response) => {
 	await emitEvent({
 		event: "CHANNEL_UPDATE",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: channel
 	} as ChannelUpdateEvent);
 

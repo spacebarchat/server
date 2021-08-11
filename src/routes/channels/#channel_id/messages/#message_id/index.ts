@@ -35,7 +35,6 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 	await emitEvent({
 		event: "MESSAGE_UPDATE",
 		channel_id,
-		guild_id: message.guild_id,
 		data: { ...toObject(message), nonce: undefined }
 	} as MessageUpdateEvent);
 
@@ -60,7 +59,6 @@ router.delete("/", async (req: Request, res: Response) => {
 	await emitEvent({
 		event: "MESSAGE_DELETE",
 		channel_id,
-		guild_id: channel.guild_id,
 		data: {
 			id: message_id,
 			channel_id,
