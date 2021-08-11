@@ -4,15 +4,15 @@ import db, { MongooseCache } from "./Database";
 import { Snowflake } from "./Snowflake";
 import crypto from "crypto";
 
-var Config = new MongooseCache(db.collection("config"), [], { onlyEvents: false, array: false });
+var config: any;
 
 export default {
 	init: async function init(defaultOpts: any = DefaultOptions) {
-		await Config.init();
-		return this.set((Config.data || {}).merge(defaultOpts));
+		config = await db.collection("config").findOne({});
+		return this.set((config || {}).merge(defaultOpts));
 	},
 	get: function get() {
-		return <DefaultOptions>Config.data;
+		return config as DefaultOptions;
 	},
 	set: function set(val: any) {
 		return db.collection("config").updateOne({}, { $set: val }, { upsert: true });
