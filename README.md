@@ -20,7 +20,7 @@ This repository contains the Fosscord HTTP API Server
 
 ## Bug Tracker
 
-[Project Board](https://github.com/fosscord/fosscord-api/projects/2)
+[Project Board](https://fosscord.notion.site/2c7fe9e73f9842d3bab3a4912dedd091)
 
 ## API
 
