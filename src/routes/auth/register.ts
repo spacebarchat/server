@@ -12,7 +12,6 @@ const router: Router = Router();
 
 router.post(
 	"/",
-	RateLimit({ count: 2, window: 60 * 60 * 12, onlyIp: true, success: true }),
 	check({
 		username: new Length(String, 2, 32),
 		// TODO: check min password length in config

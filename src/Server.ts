@@ -12,7 +12,7 @@ import { BodyParser } from "./middlewares/BodyParser";
 import express, { Router, Request, Response } from "express";
 import mongoose from "mongoose";
 import path from "path";
-import RateLimit from "./middlewares/RateLimit";
+import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
 
 // this will return the new updated document for findOneAndUpdate
@@ -86,12 +86,8 @@ export class FosscordServer extends Server {
 		const api = Router();
 		// @ts-ignore
 		this.app = api;
-		api.use(RateLimit({ bucket: "global", count: 10, window: 5, bot: 250 }));
-		api.use(RateLimit({ bucket: "error", count: 5, error: true, window: 5, bot: 15, onlyIp: true }));
-		api.use("/guilds/:id", RateLimit({ count: 5, window: 5 }));
-		api.use("/webhooks/:id", RateLimit({ count: 5, window: 5 }));
-		api.use("/channels/:id", RateLimit({ count: 5, window: 5 }));
 
+		initRateLimits(api);
 		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
 		app.use("/api/v8", api);
 		app.use("/api/v9", api);
