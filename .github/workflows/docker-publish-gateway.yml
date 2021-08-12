@@ -35,7 +35,7 @@ jobs:
         with:
           context: ./gateway
           push: true
-          tags: ${{ secrets.DOCKERHUB_TAGS }}
+          tags: ${{ secrets.DOCKERHUB_TAGS_GW }}
           cache-from: type=local,src=/tmp/.buildx-cache/gw
           cache-to: type=local,dest=/tmp/.buildx-cache-new/gw
       -

@@ -35,7 +35,7 @@ jobs:
         with:
           context: ./api
           push: true
-          tags: ${{ secrets.DOCKERHUB_TAGS }}
+          tags: ${{ secrets.DOCKERHUB_TAGS_API }}
           cache-from: type=local,src=/tmp/.buildx-cache/api
           cache-to: type=local,dest=/tmp/.buildx-cache-new/api
       -
