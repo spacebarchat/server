@@ -20,8 +20,10 @@ export default {
 };
 
 export interface RateLimitOptions {
+	bot?: number;
 	count: number;
-	timespan: number;
+	window: number;
+	onyIp?: boolean;
 }
 
 export interface Region {
@@ -78,15 +80,16 @@ export interface DefaultOptions {
 			maxTopic: number;
 		};
 		rate: {
-			ip: {
-				enabled: boolean;
-				count: number;
-				timespan: number;
-			};
+			ip: Omit<RateLimitOptions, "bot_count">;
+			global: RateLimitOptions;
+			error: RateLimitOptions;
 			routes: {
-				auth?: {
-					login?: RateLimitOptions;
-					register?: RateLimitOptions;
+				guild: RateLimitOptions;
+				webhook: RateLimitOptions;
+				channel: RateLimitOptions;
+				auth: {
+					login: RateLimitOptions;
+					register: RateLimitOptions;
 				};
 				// TODO: rate limit configuration for all routes
 			};
@@ -183,11 +186,42 @@ export const DefaultOptions: DefaultOptions = {
 		},
 		rate: {
 			ip: {
-				enabled: true,
-				count: 1000,
-				timespan: 1000 * 60 * 10,
+				count: 500,
+				window: 5,
 			},
-			routes: {},
+			global: {
+				count: 20,
+				window: 5,
+				bot: 250,
+			},
+			error: {
+				count: 10,
+				window: 5,
+			},
+			routes: {
+				guild: {
+					count: 5,
+					window: 5,
+				},
+				webhook: {
+					count: 5,
+					window: 5,
+				},
+				channel: {
+					count: 5,
+					window: 5,
+				},
+				auth: {
+					login: {
+						count: 5,
+						window: 60,
+					},
+					register: {
+						count: 2,
+						window: 60 * 60 * 12,
+					},
+				},
+			},
 		},
 	},
 	security: {
