@@ -15,7 +15,7 @@ interface WebSocket extends WS {
 	readyTimeout: NodeJS.Timeout;
 	intents: Intents;
 	sequence: number;
-	rabbitCh?: Channel;
+	rabbitCh?: Channel & { queues: Record<string, string> };
 	permissions: Record<string, Permissions>;
 }
 
