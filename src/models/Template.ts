@@ -1,26 +1,14 @@
-import {
-	Schema,
-	model,
-	Types,
-	Document
-} from "mongoose";
+import { Schema, model, Types, Document } from "mongoose";
 import db from "../util/Database";
-import {
-	PublicUser,
-	User,
-	UserModel,
-	PublicUserProjection
-} from "./User";
-import {
-	Guild, GuildModel
-} from "./Guild";
+import { PublicUser, User, UserModel, PublicUserProjection } from "./User";
+import { Guild, GuildModel } from "./Guild";
 
 export interface Template extends Document {
 	id: string;
 	code: string;
 	name: string;
-	description ? : string;
-	usage_count ? : number;
+	description?: string;
+	usage_count?: number;
 	creator_id: string;
 	creator: User;
 	created_at: Date;
@@ -45,9 +33,9 @@ TemplateSchema.virtual("creator", {
 	ref: UserModel,
 	localField: "creator_id",
 	foreignField: "id",
-	justOne: false,
+	justOne: true,
 	autopopulate: {
-		select: PublicUserProjection
+		select: PublicUserProjection,
 	},
 });
 
@@ -55,9 +43,9 @@ TemplateSchema.virtual("serialized_source_guild", {
 	ref: GuildModel,
 	localField: "source_guild_id",
 	foreignField: "id",
-	justOne: false,
+	justOne: true,
 	autopopulate: true,
 });
 
 // @ts-ignore
-export const TemplateModel = db.model < Template > ("Template", TemplateSchema, "templates");
+export const TemplateModel = db.model<Template>("Template", TemplateSchema, "templates");
