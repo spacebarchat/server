@@ -1,6 +1,7 @@
-import { Intents } from "@fosscord/server-util";
+import { Intents, Permissions } from "@fosscord/server-util";
 import WS, { Server, Data } from "ws";
 import { Deflate } from "zlib";
+import { Channel } from "amqplib";
 
 interface WebSocket extends WS {
 	version: number;
@@ -14,6 +15,8 @@ interface WebSocket extends WS {
 	readyTimeout: NodeJS.Timeout;
 	intents: Intents;
 	sequence: number;
+	rabbitCh?: Channel;
+	permissions: Record<string, Permissions>;
 }
 
 export default WebSocket;

@@ -23,6 +23,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const { guild_id, typing, channels, activities } = d as LazyRequest;
 
 	const permissions = await getPermission(this.user_id, guild_id);
+	permissions.hasThrow("VIEW_CHANNEL");
 
 	// MongoDB query to retrieve all hoisted roles and join them with the members and users collection
 	const roles = toObject(
@@ -70,16 +71,16 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const items = [];
 
 	for (const role of roles) {
-        items.push({
-            group: {
-                count: role.members.length,
-                id: role.id === guild_id ? "online" : role.name
-            }
-        });
-        for (const member of role.members) {
-            member.roles.remove(guild_id);
-            items.push({ member });
-        }
+		items.push({
+			group: {
+				count: role.members.length,
+				id: role.id === guild_id ? "online" : role.name,
+			},
+		});
+		for (const member of role.members) {
+			member.roles.remove(guild_id);
+			items.push({ member });
+		}
 	}
 
 	return Send(this, {

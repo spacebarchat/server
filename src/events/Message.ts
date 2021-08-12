@@ -25,8 +25,6 @@ export async function Message(this: WebSocket, buffer: Data) {
 
 	check.call(this, PayloadSchema, data);
 
-	console.log(data);
-
 	// @ts-ignore
 	const OPCodeHandler = OPCodeHandlers[data.op];
 	if (!OPCodeHandler) {
@@ -35,6 +33,8 @@ export async function Message(this: WebSocket, buffer: Data) {
 		// this.close(CLOSECODES.Unknown_opcode);
 		return;
 	}
+
+	console.log("got: " + OPCodeHandler.name);
 
 	try {
 		return await OPCodeHandler.call(this, data);
