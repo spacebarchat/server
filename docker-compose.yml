@@ -1,0 +1,24 @@
+version: "3"
+services:
+    db:
+        hostname: fosscord_db
+        image: mongo:latest
+        volumes:
+            - ./db:/data/db
+        restart: unless-stopped
+    api:
+        hostname: fosscord_api
+        image: fosscord/api
+        depends_on:
+            - db
+        ports:
+            - 3001:3001
+        env_file: ./.docker/env
+    gateway:
+        hostname: fosscord_gateway
+        image: fosscord/gateway
+        depends_on:
+            - db
+        ports:
+            - 3002:3002
+        env_file: ./.docker/env
