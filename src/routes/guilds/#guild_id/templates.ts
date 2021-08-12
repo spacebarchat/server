@@ -28,16 +28,20 @@ router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
 	var templates = await TemplateModel.find({ source_guild_id: guild_id }).exec();
+
 	return res.json(toObject(templates));
 });
 
 router.post("/", check(TemplateCreateSchema), async (req: Request, res: Response) => {
-	const guild_id = req.params.guild_id;
-
+	const { guild_id } = req.params;
 	const guild = await GuildModel.findOne({ id: guild_id }, TemplateGuildProjection).exec();
-
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
+
+	const exists = await TemplateModel.findOne({ id: guild_id })
+		.exec()
+		.catch((e) => {});
+	if (exists) throw new HTTPError("Template already exists", 400);
 
 	const template = await new TemplateModel({
 		...req.body,
