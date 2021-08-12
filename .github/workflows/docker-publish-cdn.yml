@@ -35,7 +35,7 @@ jobs:
         with:
           context: ./cdn
           push: true
-          tags: ${{ secrets.DOCKERHUB_TAGS }}
+          tags: ${{ secrets.DOCKERHUB_TAGS_CDN }}
           cache-from: type=local,src=/tmp/.buildx-cache/cdn
           cache-to: type=local,dest=/tmp/.buildx-cache-new/cdn
       -
