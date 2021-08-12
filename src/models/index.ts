@@ -56,7 +56,10 @@ mongoose.plugin((schema: Schema, opts: any) => {
 		try {
 			// @ts-ignore
 			const isExistsQuery = JSON.stringify(this._userProvidedFields) === JSON.stringify({ _id: 1 });
-			if (!doc && !isExistsQuery) return next(new HTTPError("Not found", 404));
+			if (!doc && !isExistsQuery) {
+				// @ts-ignore
+				return next(new HTTPError(`${this?.mongooseCollection?.name}.${this?._conditions?.id} not found`, 400));
+			}
 			// @ts-ignore
 			return next();
 		} catch (error) {
