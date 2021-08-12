@@ -113,8 +113,6 @@ router.post("/", messageUpload.single("file"), async (req: Request, res: Respons
 	var body = req.body as MessageCreateSchema;
 	const attachments: Attachment[] = [];
 
-	console.log(body);
-
 	if (req.file) {
 		try {
 			const file = await uploadFile(`/attachments/${channel_id}`, req.file);
