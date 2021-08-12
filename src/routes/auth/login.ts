@@ -13,7 +13,6 @@ export default router;
 
 router.post(
 	"/",
-	RateLimit({ count: 5, window: 60, onlyIp: true }),
 	check({
 		login: new Length(String, 2, 100), // email or telephone
 		password: new Length(String, 8, 72),

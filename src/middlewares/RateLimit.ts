@@ -1,5 +1,5 @@
-import { db, MongooseCache, Bucket } from "@fosscord/server-util";
-import { IRouterHandler, NextFunction, Request, Response } from "express";
+import { db, MongooseCache, Bucket, Config } from "@fosscord/server-util";
+import { NextFunction, Request, Response, Router } from "express";
 import { getIpAdress } from "../util/ipAddress";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
@@ -65,7 +65,7 @@ export default function RateLimit(opts: {
 			const global = bucket_id === "global";
 
 			if (resetAfterMs > 0) {
-				console.log("blocked", { resetAfterMs });
+				console.log("blocked bucket: " + bucket_id, { resetAfterMs });
 				return (
 					res
 						.status(429)
@@ -103,6 +103,32 @@ export default function RateLimit(opts: {
 			return hitRoute(hitRouteOpts);
 		}
 	};
+}
+
+export function initRateLimits(app: Router) {
+	const { routes, global, ip, error } = Config.get().limits.rate;
+
+	app.use(
+		RateLimit({
+			bucket: "global",
+			onlyIp: true,
+			...ip
+		})
+	);
+	app.use(RateLimit({ bucket: "global", ...global }));
+	app.use(
+		RateLimit({
+			bucket: "error",
+			error: true,
+			onlyIp: true,
+			...error
+		})
+	);
+	app.use("/guilds/:id", RateLimit(routes.guild));
+	app.use("/webhooks/:id", RateLimit(routes.webhook));
+	app.use("/channels/:id", RateLimit(routes.channel));
+	app.use("/auth/login", RateLimit(routes.auth.login));
+	app.use("/auth/register", RateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
 }
 
 function hitRoute(opts: { user_id: string; bucket_id: string; max_hits: number; window: number }) {
