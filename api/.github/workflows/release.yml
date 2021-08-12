@@ -1,0 +1,88 @@
+on:
+  workflow_dispatch:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Publish Release
+
+jobs:
+  insiders-build:
+    strategy:
+      matrix:
+        os: [windows, macos, ubuntu]
+        include:
+          - os: windows
+            build: npm run bundle:windows
+            artifact: fosscord-api-windows.exe
+          - os: macos
+            build: npm run bundle:macos
+            artifact: fosscord-api-macos.app.tgz
+          - os: ubuntu
+            build: npm run bundle:linux
+            artifact: fosscord-api-linux.tgz
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - run: npm install
+      - run: npm run build
+      - run: ${{ matrix.build }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
+
+  release:
+    needs: [insiders-build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract version
+        id: extract_version
+        uses: Saionaro/extract-package-version@v1.0.6
+      - uses: actions/download-artifact@v2
+        with:
+          name: fosscord-api-windows-${{ github.sha }}.exe
+      - uses: actions/download-artifact@v2
+        with:
+          name: fosscord-api-macos-${{ github.sha }}.app.tgz
+      - uses: actions/download-artifact@v2
+        with:
+          name: fosscord-api-linux-${{ github.sha }}.tgz
+      - uses: actions/create-release@v1
+        id: create-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.extract_version.outputs.version }}
+          release_name: Release ${{ steps.extract_version.outputs.version }}
+          draft: false
+          prerelease: true # TODO: change this to false
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: fosscord-api-windows-${{ github.sha }}.exe
+          asset_name: fosscord-api-windows.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: fosscord-api-macos-${{ github.sha }}.app.tgz
+          asset_name: fosscord-api-macos.app.tgz
+          asset_content_type: application/gzip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: fosscord-api-linux-${{ github.sha }}.tgz
+          asset_name: fosscord-api-linux.tgz
+          asset_content_type: application/gzip

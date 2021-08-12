@@ -1,0 +1,18 @@
+{
+  "field": {
+    "BASE_TYPE_REQUIRED": "Ce champ est obligatoire",
+    "BASE_TYPE_STRING": "Ce champ doit être une chaîne de caractères",
+    "BASE_TYPE_NUMBER": "Ce champ doit être un nombre",
+    "BASE_TYPE_BIGINT": "Ce champ doit être un bigint",
+    "BASE_TYPE_BOOLEAN": "Ce champ doit être un boolean",
+    "BASE_TYPE_CHOICES": "Ce champ doit être l'un des ({{types}})",
+    "BASE_TYPE_CLASS": "Ce champ doit être une instance de {{type}}",
+    "BASE_TYPE_OBJECT": "Ce champ doit être un objet",
+    "BASE_TYPE_ARRAY": "Ce champ doit être un tableau",
+    "UNKOWN_FIELD": "Clé inconnue: {{key}}",
+    "BASE_TYPE_CONSTANT": "Ce champ doit être {{value}}",
+    "EMAIL_TYPE_INVALID_EMAIL": "Adresse e-mail mal formaté",
+    "DATE_TYPE_PARSE": "Impossible d'analyser {{date}}. Doit être ISO8601",
+    "BASE_TYPE_BAD_LENGTH": "Doit être entre {{length}} de longueur"
+  }
+}
