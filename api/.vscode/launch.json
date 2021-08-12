@@ -1,0 +1,28 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"sourceMaps": true,
+			"type": "node",
+			"request": "launch",
+			"name": "Launch Server",
+			"program": "${workspaceFolder}/dist/start.js",
+			"preLaunchTask": "tsc: build - tsconfig.json",
+			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+			"envFile": "${workspaceFolder}/.env"
+		},
+		{
+			"name": "Debug current file",
+			"program": "${file}",
+			"request": "launch",
+			"skipFiles": ["<node_internals>/**"],
+			"runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
+			"preLaunchTask": "tsc: build - tsconfig.json",
+			"type": "node",
+			"resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
+		}
+	]
+}

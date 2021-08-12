@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@util/*": ["./src/util/*"],
+			"@middlewares/*": ["./src/middlewares/*"],
+			"@schema/*": ["./src/schema/*"]
+		}
+	},
+	"include": ["src"]
+}

@@ -1,0 +1,18 @@
+{
+  "field": {
+    "BASE_TYPE_REQUIRED": "Гэта поле з'яўляецца абавязковым",
+    "BASE_TYPE_STRING": "Гэта поле павінна быць string",
+    "BASE_TYPE_NUMBER": "Гэта поле павінна быць number",
+    "BASE_TYPE_BIGINT": "Гэта поле павінна быць bigint",
+    "BASE_TYPE_BOOLEAN": "Гэта поле павінна быць boolean",
+    "BASE_TYPE_CHOICES": "Гэта поле павінна быць адным з ({{types}})",
+    "BASE_TYPE_CLASS": "Гэта поле павінна быць асобнікам {{type}}",
+    "BASE_TYPE_OBJECT": "Гэта поле павінна быць аб'ектам",
+    "BASE_TYPE_ARRAY": "Гэта поле павінна быць масівам",
+    "UNKOWN_FIELD": "Невядомае поле: {{key}}",
+    "BASE_TYPE_CONSTANT": "Гэта поле павінна быць {{value}}",
+    "EMAIL_TYPE_INVALID_EMAIL": "Няправільны фармат адрасы электроннай пошты",
+    "DATE_TYPE_PARSE": "Немагчыма разабраць {{date}}. Яна павінна быць у ISO8601",
+    "BASE_TYPE_BAD_LENGTH": "Павінна быць паміж {{length}} у даўжыню"
+  }
+}

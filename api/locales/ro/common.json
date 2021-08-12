@@ -1,0 +1,18 @@
+{
+  "field": {
+    "BASE_TYPE_REQUIRED": "Acest câmp este necesar",
+    "BASE_TYPE_STRING": "Acest câmp trebuie să fie un şir de caractere",
+    "BASE_TYPE_NUMBER": "Acest câmp trebuie să fie un număr",
+    "BASE_TYPE_BIGINT": "Acest câmp trebuie să fie mare",
+    "BASE_TYPE_BOOLEAN": "Acest câmp trebuie să fie un boolean",
+    "BASE_TYPE_CHOICES": "Acest câmp trebuie să fie unul din ({{types}})",
+    "BASE_TYPE_CLASS": "Acest câmp trebuie să fie o instanță de {{type}}",
+    "BASE_TYPE_OBJECT": "Acest câmp trebuie să fie un obiect",
+    "BASE_TYPE_ARRAY": "Acest câmp trebuie să fie un array",
+    "UNKOWN_FIELD": "Cheie necunoscută: {{key}}",
+    "BASE_TYPE_CONSTANT": "Acest câmp trebuie să fie {{value}}",
+    "EMAIL_TYPE_INVALID_EMAIL": "Adresa de email nu este bine formatata",
+    "DATE_TYPE_PARSE": "Nu s-a putut analiza {{date}}. Ar trebui să fie ISO8601",
+    "BASE_TYPE_BAD_LENGTH": "Trebuie să fie între {{length}} lungime"
+  }
+}
