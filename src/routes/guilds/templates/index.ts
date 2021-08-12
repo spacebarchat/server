@@ -10,7 +10,7 @@ import { addMember } from "../../../util/Member";
 router.get("/:code", async (req: Request, res: Response) => {
 	const { code } = req.params;
 
-	const template = await TemplateModel.findOne({ id: code }).exec();
+	const template = await TemplateModel.findOne({ code: code }).exec();
 
 	res.json(toObject(template)).send();
 });
