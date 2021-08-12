@@ -1,14 +1,18 @@
 import amqp, { Connection, Channel } from "amqplib";
 import Config from "./Config";
 
-var rabbitCon: Connection;
-var rabbitCh: Channel;
-
-export async function init() {
-	const host = Config.get().rabbitmq.host;
-	if (!host) return;
-	rabbitCon = await amqp.connect(host);
-	rabbitCh = await rabbitCon.createChannel();
-}
-
-export { rabbitCon, rabbitCh };
+export const RabbitMQ: { connection: Connection | null; channel: Channel | null; init: () => Promise<void> } = {
+	connection: null,
+	channel: null,
+	init: async function () {
+		const host = Config.get().rabbitmq.host;
+		if (!host) return;
+		console.log(`[RabbitMQ] connect: ${host}`);
+		this.connection = await amqp.connect(host, {
+			timeout: 1000 * 60,
+		});
+		console.log(`[RabbitMQ] connected`);
+		this.channel = await this.connection.createChannel();
+		console.log(`[RabbitMQ] channel created`);
+	},
+};
