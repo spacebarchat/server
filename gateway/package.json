@@ -1,0 +1,38 @@
+{
+	"name": "@fosscord/gateway",
+	"version": "1.0.0",
+	"description": "",
+	"main": "dist/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "npm run build && node dist/start.js",
+		"build": "npx tsc -b .",
+		"dev": "tsnd --respawn src/start.ts"
+	},
+	"keywords": [],
+	"author": "Fosscord",
+	"license": "ISC",
+	"dependencies": {
+		"@fosscord/server-util": "^1.3.51",
+		"ajv": "^8.5.0",
+		"amqplib": "^0.8.0",
+		"dotenv": "^8.2.0",
+		"jsonwebtoken": "^8.5.1",
+		"lambert-server": "^1.2.8",
+		"missing-native-js-functions": "^1.2.3",
+		"mongoose-autopopulate": "^0.12.3",
+		"node-fetch": "^2.6.1",
+		"typescript": "^4.2.3",
+		"uuid": "^8.3.2",
+		"ws": "^7.4.2"
+	},
+	"devDependencies": {
+		"@types/amqplib": "^0.8.1",
+		"@types/jsonwebtoken": "^8.5.0",
+		"@types/mongoose-autopopulate": "^0.10.1",
+		"@types/uuid": "^8.3.0",
+		"@types/ws": "^7.4.0",
+		"erlpack": "^0.1.3",
+		"ts-node-dev": "^1.1.6"
+	}
+}

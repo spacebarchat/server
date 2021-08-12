@@ -1,0 +1,136 @@
+openapi: 3.0.3
+info:
+  title: Fosscord
+  version: '9'
+  license:
+    name: GNU AGPLv3
+    url: https://www.gnu.org/licenses/agpl.txt
+    x-last-modified: 1625409195984
+  x-logo:
+    url: ''
+servers:
+  - url: https://api.fosscord.com
+    description: ''
+    x-last-modified: 1625407844365
+paths:
+  /users/:id:
+    summary: get user
+    description: test
+    get:
+      tags: []
+      responses:
+        '200':
+          $ref: '#/components/responses/User'
+          x-last-modified: 1625409722629
+      parameters:
+        - name: id
+          in: path
+          required: true
+          deprecated: false
+          x-last-modified: 1625409813480
+    x-last-modified: 1625409704895
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        avatar:
+          type: string
+          example:
+            - d83f330fc30367f859bc6ee358b14319
+        bot:
+          type: boolean
+          example:
+            - false
+        desktop:
+          type: boolean
+          example:
+            - false
+        discriminator:
+          type: string
+          example:
+            - '0001'
+        email:
+          type: string
+          example:
+            - example@example.org
+        flags:
+          type: string
+          example:
+            - '0'
+        id:
+          type: string
+          example:
+            - '732645009894277321'
+        mfa_enabled:
+          type: boolean
+          example:
+            - false
+        mobile:
+          type: boolean
+          example:
+            - false
+        nsfw_allowed:
+          type: boolean
+          example:
+            - true
+        premium:
+          type: boolean
+          example:
+            - false
+        premium_type:
+          type: number
+          example:
+            - 0
+        public_flags:
+          type: string
+          example:
+            - '0'
+        username:
+          type: string
+          example:
+            - Example
+        verified:
+          type: boolean
+          example:
+            - true
+      example:
+        avatar: d83f330fc30367f859bc6ee358b14319
+        bot: false
+        desktop: false
+        discriminator: '0001'
+        email: example@example.org
+        flags: '0'
+        id: '732645009894277321'
+        mfa_enabled: false
+        mobile: false
+        nsfw_allowed: true
+        premium: false
+        premium_type: 0
+        public_flags: '0'
+        username: Example
+        verified: true
+      x-last-modified: 1625409630283
+      required: []
+      description: test
+  securitySchemes:
+    JWTAuth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+      description: |-
+        Example: 
+        > Authorization: Bot <token>
+      x-last-modified: 1625407825787
+  headers: {}
+  responses:
+    User:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+      x-last-modified: 1625409578903
+  parameters: {}
+security:
+  - JWTAuth: []
+tags: []

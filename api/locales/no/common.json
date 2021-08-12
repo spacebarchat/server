@@ -1,0 +1,18 @@
+{
+  "field": {
+    "BASE_TYPE_REQUIRED": "Dette feltet er obligatorisk",
+    "BASE_TYPE_STRING": "Dette feltet må være en streng",
+    "BASE_TYPE_NUMBER": "Dette feltet må være et tall",
+    "BASE_TYPE_BIGINT": "Dette feltet må være en stor",
+    "BASE_TYPE_BOOLEAN": "Dette feltet må være en boolsk verdi",
+    "BASE_TYPE_CHOICES": "Dette feltet må være ett av ({{types}})",
+    "BASE_TYPE_CLASS": "Dette feltet må være en forekomst av {{type}}",
+    "BASE_TYPE_OBJECT": "Dette feltet må være et objekt",
+    "BASE_TYPE_ARRAY": "Dette feltet må være en liste",
+    "UNKOWN_FIELD": "Ukjent nøkkel: {{key}}",
+    "BASE_TYPE_CONSTANT": "Dette feltet må være {{value}}",
+    "EMAIL_TYPE_INVALID_EMAIL": "Ikke et gyldig e-postadresse format",
+    "DATE_TYPE_PARSE": "Kunne ikke analysere {{date}}. Skal være ISO8601",
+    "BASE_TYPE_BAD_LENGTH": "Må være mellom {{length}} i lengde"
+  }
+}

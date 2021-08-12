@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Discord Test Client</title>
+	</head>
+	<body>
+		<div id="app-mount"></div>
+		<script>
+			window.__OVERLAY__ = /overlay/.test(location.pathname);
+			window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
+			window.GLOBAL_ENV = {
+				API_ENDPOINT: "/api",
+				API_VERSION: 9,
+				GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}${location.hostname}:3002`,
+				WEBAPP_ENDPOINT: "",
+				CDN_HOST: `${location.hostname}:3003`,
+				ASSET_ENDPOINT: "",
+				MEDIA_PROXY_ENDPOINT: "https://media.discordapp.net",
+				WIDGET_ENDPOINT: `//${location.host}/widget`,
+				INVITE_HOST: `${location.hostname}`,
+				GUILD_TEMPLATE_HOST: "discord.new",
+				GIFT_CODE_HOST: "discord.gift",
+				RELEASE_CHANNEL: "stable",
+				MARKETING_ENDPOINT: "//discord.com",
+				BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
+				STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
+				NETWORKING_ENDPOINT: "//router.discordapp.net",
+				RTC_LATENCY_ENDPOINT: "//latency.discord.media/rtc",
+				PROJECT_ENV: "production",
+				REMOTE_AUTH_ENDPOINT: "//remote-auth-gateway.discord.gg",
+				SENTRY_TAGS: { buildId: "75e36d9", buildType: "normal" },
+				MIGRATION_SOURCE_ORIGIN: "https://discordapp.com",
+				MIGRATION_DESTINATION_ORIGIN: "https://discord.com",
+				HTML_TIMESTAMP: Date.now(),
+				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
+			};
+			localStorage.removeItem("gatewayURL");
+			localStorage.setItem(
+				"DeveloperOptionsStore",
+				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":false,"logAnalyticsEvents":false,"sourceMapsEnabled":false,"axeEnabled":false}`
+			);
+		</script>
+		<script src="/assets/f4cfdce920759d48b997.js"></script>
+		<script src="/assets/fee63b3d875ea42099e2.js"></script>
+		<script src="/assets/f291c7bb28bfcc2c10ab.js"></script>
+		<script src="/assets/2d959037561522bd3b2a.js"></script>
+	</body>
+</html>
