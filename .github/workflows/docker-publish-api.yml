@@ -20,9 +20,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache/api
-          key: ${{ runner.os }}-buildx-${{ github.sha }}-api
+          key: ${{ runner.os }}-buildx-api-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-api
+            ${{ runner.os }}-buildx-api-
       -
         name: Login to DockerHub
         uses: docker/login-action@v1
