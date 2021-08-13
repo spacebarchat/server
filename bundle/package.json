@@ -4,9 +4,12 @@
 	"description": "",
 	"main": "src/start.js",
 	"scripts": {
-		"linkInstall": "npm run --prefix ../util/ link && npm run --prefix ../api/ link && npm run --prefix ../cdn/ link && npm run --prefix ../gateway/ link",
-		"postinstall": "npm run linkInstall && npm link @fosscord/util && npm link @fosscord/api && npm link @fosscord/gateway && npm link @fosscord/cdn",
-		"build": "tsc -b .",
+		"postinstall": "cd ../api/ && npm i && cd ../cdn/ && npm i && cd ../gateway/ && npm i && ",
+		"build": "npm run build:api && npm run build:cdn && npm run build:gateway && npm run build:bundle",
+		"build:bundle": "tsc -b .",
+		"build:api": "cd ../api/ && npm run build",
+		"build:cdn": "cd ../cdn/ && npm run build",
+		"build:gateway": "cd ../gateway/ && npm run build",
 		"start": "npm run build && node dist/start.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
@@ -21,14 +24,12 @@
 		"url": "https://github.com/fosscord/fosscord-server/issues"
 	},
 	"homepage": "https://fosscord.com",
-	"devDependencies": {
+	"dependencies": {
 		"@types/async-exit-hook": "^2.0.0",
 		"@types/express": "^4.17.13",
-		"@types/node": "^16.6.1",
 		"@types/node-os-utils": "^1.2.0",
-		"typescript": "^4.3.5"
-	},
-	"dependencies": {
+		"typescript": "^4.3.5",
+		"@types/node": "^16.6.1",
 		"@fosscord/api": "file:../api",
 		"@fosscord/cdn": "file:../cdn",
 		"@fosscord/gateway": "file:../gateway",

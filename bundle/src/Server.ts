@@ -22,12 +22,14 @@ const cdn = new CDNServer({ server, port, production, app });
 const gateway = new GatewayServer({ server, port, production });
 
 async function main() {
+	await Config.set({
+		cdn: { endpointClientKeepDefault: true, endpoint: `http://localhost:${port}` },
+		gateway: { endpointClientKeepDefault: true, endpoint: `ws://localhost:${port}` },
+	});
+
 	await api.start();
 	await cdn.start();
 	await gateway.start();
-
-	if (!Config.get().gateway.endpoint) await Config.set({ gateway: { endpoint: `ws://localhost:${port}` } });
-	if (!Config.get().cdn.endpoint) await Config.set({ cdn: { endpoint: `http://localhost:${port}` } });
 }
 
 main().catch(console.error);
