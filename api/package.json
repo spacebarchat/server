@@ -12,18 +12,16 @@
 		"start": "npm run build && node dist/start",
 		"build": "tsc -b .",
 		"build-docker": "tsc -p tsconfig-docker.json",
-		"dev": "tsnd --respawn src/start.ts",
-		"bundle:macos": "npx caxa -i . -m 'This may take a while to run the first time, please wait...' --output 'fosscord-api.app' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/dist/start.js' && tar -czf 'fosscord-api-macos.app.tgz' 'fosscord-api.app'",
-		"bundle:linux": "npx caxa -i . -m 'This may take a while to run the first time, please wait...' --output 'fosscord' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/dist/start.js' && tar -czf 'fosscord-api-linux.tgz' 'fosscord'",
-		"bundle:windows": "npx caxa -i . -m 'This may take a while to run the first time, please wait...' --output 'fosscord-api-windows.exe' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/dist/start.js'"
+		"dev": "tsnd --respawn src/start.ts"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/fosscord/fosscord-api.git"
+		"url": "git+https://github.com/fosscord/fosscord-server.git"
 	},
 	"keywords": [
 		"discord",
 		"fosscord",
+		"fosscord-server",
 		"fosscord-api",
 		"discord open source",
 		"discord-open-source"
@@ -31,9 +29,9 @@
 	"author": "Fosscord",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/fosscord/fosscord-api/issues"
+		"url": "https://github.com/fosscord/fosscord-server/issues"
 	},
-	"homepage": "https://github.com/fosscord/fosscord-api#readme",
+	"homepage": "https://fosscord.com",
 	"dependencies": {
 		"@fosscord/util": "file:../util",
 		"@types/jest": "^26.0.22",

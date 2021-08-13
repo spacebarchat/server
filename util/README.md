@@ -18,7 +18,7 @@
 
 Fosscord is a free open source selfhostable chat, voice and video discord-compatible platform.
 
-Fosscord server util contains all necessary logic that is shared between the [api](https://github.com/fosscord/fosscord-api), [gateway](https://github.com/fosscord/fosscord-gateway) and [cdn](https://github.com/fosscord/fosscord-cdn).
+Fosscord server util contains all necessary logic that is shared between the [api](https://github.com/fosscord/fosscord-server/tree/master/api), [gateway](https://github.com/fosscord/fosscord-server/tree/master/gateway) and [cdn](https://github.com/fosscord/fosscord-server/tree/master/cdn).
 
 It contains all mongoose database models and utility functions.
 

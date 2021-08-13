@@ -14,7 +14,7 @@
   </a>
 </p>
 
-## [About](https://github.com/fosscord/fosscord-api/wiki)
+## [About](https://github.com/fosscord/fosscord-server/wiki)
 
 This repository contains the Fosscord HTTP API Server
 
@@ -43,8 +43,8 @@ and the other technologies we use
 Clone the Repository:
 
 ```bash
-git clone https://github.com/fosscord/fosscord-api
-cd discord-server
+git clone https://github.com/fosscord/fosscord-server
+cd fosscord-server
 ```
 
 #### Install (dev)dependencies:

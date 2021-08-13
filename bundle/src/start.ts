@@ -6,7 +6,8 @@ import os from "os";
 import osu from "node-os-utils";
 import exitHook from "async-exit-hook";
 
-const cores = Number(process.env.threads) || 1 || os.cpus().length;
+// TODO: add tcp socket event transmission
+const cores = 1 || Number(process.env.threads) || os.cpus().length;
 
 if (cluster.isMaster && !process.env.masterStarted) {
 	const dbPath = path.join(__dirname, "..", "..", "db");
