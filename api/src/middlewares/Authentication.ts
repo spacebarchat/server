@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { checkToken, Config } from "@fosscord/server-util";
+import { checkToken, Config } from "@fosscord/util";
 
 export const NO_AUTHORIZATION_ROUTES = [
-	/^\/api(\/v\d+)?\/auth\/login/,
-	/^\/api(\/v\d+)?\/auth\/register/,
-	/^\/api(\/v\d+)?\/webhooks\//,
-	/^\/api(\/v\d+)?\/ping/,
-	/^\/api(\/v\d+)?\/gateway/,
-	/^\/api(\/v\d+)?\/experiments/,
-	/^\/api(\/v\d+)?\/guilds\/\d+\/widget\.(json|png)/
+	"/auth/login",
+	"/auth/register",
+	"/webhooks/",
+	"/ping",
+	"/gateway",
+	"/experiments"
+	// /^\/api(\/v\d+)?\/guilds\/\d+\/widget\.(json|png)/
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;
@@ -24,13 +24,14 @@ declare global {
 		}
 	}
 }
+// TODO wenn client offen ist, wird http://localhost:8080/api/v9/users/@me/guild-events blockiert?
 
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
 	if (req.method === "OPTIONS") return res.sendStatus(204);
 	if (!req.url.startsWith("/api")) return next();
 	const apiPath = req.url.replace(API_PREFIX, "");
-	if (apiPath.startsWith("/invites") && req.method === "GET") return next();
-	if (NO_AUTHORIZATION_ROUTES.some((x) => x.test(req.url))) return next();
+	if (apiPath.startsWith("/invites") && req.method === "GET") return next(); // @ts-ignore
+	if (NO_AUTHORIZATION_ROUTES.some((x) => apiPath.startsWith(x) || x.test?.(req.url))) return next();
 	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 
 	try {

@@ -1,4 +1,4 @@
-import { getPermission, InviteModel, toObject } from "@fosscord/server-util";
+import { getPermission, InviteModel, toObject } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();

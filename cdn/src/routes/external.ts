@@ -4,7 +4,7 @@ import { Router, Response, Request } from "express";
 import fetch from "node-fetch";
 import crypto from "crypto";
 import { HTTPError } from "lambert-server";
-import { Snowflake } from "@fosscord/server-util";
+import { Snowflake } from "@fosscord/util";
 import { storage } from "../util/Storage";
 
 const router = Router();

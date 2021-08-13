@@ -1,3 +1,3 @@
-import { Snowflake } from "@fosscord/server-util";
+import { Snowflake } from "@fosscord/util";
 
 console.log(Snowflake.deconstruct("0"));

@@ -1,8 +1,8 @@
-import { ChannelModel, getPermission, MessageDeleteEvent, MessageModel, MessageUpdateEvent, toObject } from "@fosscord/server-util";
+import { ChannelModel, emitEvent, getPermission, MessageDeleteEvent, MessageModel, MessageUpdateEvent, toObject } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../../schema/Message";
-import { emitEvent } from "../../../../../util/Event";
+
 import { check } from "../../../../../util/instanceOf";
 import { handleMessage, postHandleMessage } from "../../../../../util/Message";
 

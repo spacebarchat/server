@@ -2,14 +2,14 @@ import {
 	ChannelModel,
 	ChannelPinsUpdateEvent,
 	Config,
+	emitEvent,
 	getPermission,
 	MessageModel,
 	MessageUpdateEvent,
 	toObject
-} from "@fosscord/server-util";
+} from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "../../../util/Event";
 
 const router: Router = Router();
 

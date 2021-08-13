@@ -1,4 +1,4 @@
-import { Config } from "@fosscord/server-util";
+import { Config } from "@fosscord/util";
 import "missing-native-js-functions";
 
 const reNUMBER = /[0-9]/g;

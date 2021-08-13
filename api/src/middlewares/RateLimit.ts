@@ -1,16 +1,17 @@
-import { db, MongooseCache, Bucket, Config } from "@fosscord/server-util";
+// @ts-nocheck
+import { db, Bucket, Config } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { getIpAdress } from "../util/ipAddress";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
-const Cache = new MongooseCache(
-	db.collection("ratelimits"),
-	[
-		// TODO: uncomment $match and fix error: not receiving change events
-		// { $match: { blocked: true } }
-	],
-	{ onlyEvents: false, array: true }
-);
+// const Cache = new MongooseCache(
+// 	db.collection("ratelimits"),
+// 	[
+// 		// TODO: uncomment $match and fix error: not receiving change events
+// 		// { $match: { blocked: true } }
+// 	],
+// 	{ onlyEvents: false, array: true }
+// );
 
 // Docs: https://discord.com/developers/docs/topics/rate-limits
 
@@ -31,6 +32,7 @@ TODO: use config values
 
 */
 
+// TODO: FIX with new event handling
 export default function RateLimit(opts: {
 	bucket?: string;
 	window: number;
@@ -44,6 +46,7 @@ export default function RateLimit(opts: {
 	success?: boolean;
 	onlyIp?: boolean;
 }): any {
+	return (req, res, next) => next();
 	Cache.init(); // will only initalize it once
 
 	return async (req: Request, res: Response, next: NextFunction): Promise<any> => {

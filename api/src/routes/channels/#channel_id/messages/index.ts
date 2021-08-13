@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import { Attachment, ChannelModel, ChannelType, getPermission, MessageDocument, MessageModel, toObject } from "@fosscord/server-util";
+import { Attachment, ChannelModel, ChannelType, getPermission, MessageDocument, MessageModel, toObject } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../schema/Message";
 import { check, instanceOf, Length } from "../../../../util/instanceOf";

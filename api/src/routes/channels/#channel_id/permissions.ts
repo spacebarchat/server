@@ -1,7 +1,15 @@
-import { ChannelModel, ChannelPermissionOverwrite, ChannelUpdateEvent, getPermission, MemberModel, RoleModel } from "@fosscord/server-util";
+import {
+	ChannelModel,
+	ChannelPermissionOverwrite,
+	ChannelUpdateEvent,
+	emitEvent,
+	getPermission,
+	MemberModel,
+	RoleModel
+} from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "../../../util/Event";
+
 import { check } from "../../../util/instanceOf";
 const router: Router = Router();
 
