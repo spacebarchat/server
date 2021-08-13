@@ -1,8 +1,7 @@
-import { ChannelModel, MemberModel, toObject, TypingStartEvent } from "@fosscord/server-util";
+import { ChannelModel, emitEvent, MemberModel, toObject, TypingStartEvent } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "../../../util/Event";
 
 const router: Router = Router();
 

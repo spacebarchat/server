@@ -11,11 +11,12 @@ import {
 	toObject,
 	UserModel,
 	GuildDocument,
-	Config
-} from "@fosscord/server-util";
+	Config,
+	emitEvent
+} from "@fosscord/util";
 
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "./Event";
+
 import { getPublicUser } from "./User";
 
 export const PublicMemberProjection = {

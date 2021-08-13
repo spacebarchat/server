@@ -1,6 +1,6 @@
 import { Router, Response, Request } from "express";
 import { check, Length } from "../../../util/instanceOf";
-import { ChannelModel, getPermission, trimSpecial } from "@fosscord/server-util";
+import { ChannelModel, getPermission, trimSpecial } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { isTextChannel } from "./messages/index";
 

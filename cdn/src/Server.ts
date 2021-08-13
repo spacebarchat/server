@@ -1,5 +1,5 @@
 import { Server, ServerOptions } from "lambert-server";
-import { Config, db } from "@fosscord/server-util";
+import { Config, db } from "@fosscord/util";
 import path from "path";
 import avatarsRoute from "./routes/avatars";
 
@@ -13,11 +13,9 @@ export class CDNServer extends Server {
 	}
 
 	async start() {
-		console.log("[Database] connecting ...");
 		// @ts-ignore
 		await (db as Promise<Connection>);
 		await Config.init();
-		console.log("[Database] connected");
 		this.app.use((req, res, next) => {
 			res.set("Access-Control-Allow-Origin", "*");
 			// TODO: use better CSP policy
@@ -33,31 +31,31 @@ export class CDNServer extends Server {
 		await this.registerRoutes(path.join(__dirname, "routes/"));
 
 		this.app.use("/icons/", avatarsRoute);
-		this.log("info", "[Server] Route /icons registered");
+		this.log("verbose", "[Server] Route /icons registered");
 
 		this.app.use("/emojis/", avatarsRoute);
-		this.log("info", "[Server] Route /emojis registered");
+		this.log("verbose", "[Server] Route /emojis registered");
 
 		this.app.use("/stickers/", avatarsRoute);
-		this.log("info", "[Server] Route /stickers registered");
+		this.log("verbose", "[Server] Route /stickers registered");
 
 		this.app.use("/banners/", avatarsRoute);
-		this.log("info", "[Server] Route /banners registered");
-		
+		this.log("verbose", "[Server] Route /banners registered");
+
 		this.app.use("/splashes/", avatarsRoute);
-		this.log("info", "[Server] Route /splashes registered");
+		this.log("verbose", "[Server] Route /splashes registered");
 
 		this.app.use("/app-icons/", avatarsRoute);
-		this.log("info", "[Server] Route /app-icons registered");
+		this.log("verbose", "[Server] Route /app-icons registered");
 
 		this.app.use("/app-assets/", avatarsRoute);
-		this.log("info", "[Server] Route /app-assets registered");
+		this.log("verbose", "[Server] Route /app-assets registered");
 
 		this.app.use("/discover-splashes/", avatarsRoute);
-		this.log("info", "[Server] Route /discover-splashes registered");
+		this.log("verbose", "[Server] Route /discover-splashes registered");
 
 		this.app.use("/team-icons/", avatarsRoute);
-		this.log("info", "[Server] Route /team-icons registered");
+		this.log("verbose", "[Server] Route /team-icons registered");
 
 		return super.start();
 	}

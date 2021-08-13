@@ -3,7 +3,7 @@ import fs from "fs";
 import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
-import { Config, db, RabbitMQ } from "@fosscord/server-util";
+import { Config, db, initEvent, RabbitMQ } from "@fosscord/util";
 import i18next from "i18next";
 import i18nextMiddleware, { I18next } from "i18next-http-middleware";
 import i18nextBackend from "i18next-node-fs-backend";
@@ -56,9 +56,8 @@ export class FosscordServer extends Server {
 		// @ts-ignore
 		await (db as Promise<Connection>);
 		await this.setupSchema();
-		console.log("[Database] connected");
 		await Config.init();
-		await RabbitMQ.init();
+		await initEvent();
 
 		this.app.use(CORS);
 		this.app.use(Authentication);
@@ -93,11 +92,12 @@ export class FosscordServer extends Server {
 		app.use("/api/v9", api);
 		app.use("/api", api); // allow unversioned requests
 
-		api.get("*", (req: Request, res: Response) => {
+		api.get("*", (req: Request, res: Response, next) => {
 			res.status(404).json({
 				message: "404: Not Found",
 				code: 0
 			});
+			next();
 		});
 
 		this.app = app;

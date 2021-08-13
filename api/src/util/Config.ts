@@ -1,7 +1,7 @@
 // @ts-nocheck
 import Ajv, { JSONSchemaType } from "ajv";
-import { getConfigPathForFile } from "@fosscord/server-util/dist/util/Config";
-import { Config } from "@fosscord/server-util";
+import { getConfigPathForFile } from "@fosscord/util/dist/util/Config";
+import { Config } from "@fosscord/util";
 
 export interface RateLimitOptions {
 	count: number;

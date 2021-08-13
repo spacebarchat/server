@@ -2,18 +2,18 @@ import {
 	ChannelCreateEvent,
 	ChannelModel,
 	ChannelType,
+	emitEvent,
 	getPermission,
 	GuildModel,
 	Snowflake,
 	TextChannel,
+	toObject,
 	VoiceChannel
-} from "@fosscord/server-util";
+} from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "./Event";
 
 // TODO: DM channel
 export async function createChannel(channel: Partial<TextChannel | VoiceChannel>, user_id: string = "0") {
-
 	// Always check if user has permission first
 	const permissions = await getPermission(user_id, channel.guild_id);
 	permissions.hasThrow("MANAGE_CHANNELS");
@@ -50,7 +50,7 @@ export async function createChannel(channel: Partial<TextChannel | VoiceChannel>
 		recipient_ids: null
 	}).save();
 
-	await emitEvent({ event: "CHANNEL_CREATE", data: channel, guild_id: channel.guild_id } as ChannelCreateEvent);
+	await emitEvent({ event: "CHANNEL_CREATE", data: toObject(channel), guild_id: channel.guild_id } as ChannelCreateEvent);
 
 	return channel;
 }

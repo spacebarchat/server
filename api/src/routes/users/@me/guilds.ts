@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
-import { GuildModel, MemberModel, UserModel, GuildDeleteEvent, GuildMemberRemoveEvent, toObject } from "@fosscord/server-util";
+import { GuildModel, MemberModel, UserModel, GuildDeleteEvent, GuildMemberRemoveEvent, toObject, emitEvent } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "../../../util/Event";
+
 import { getPublicUser } from "../../../util/User";
 
 const router: Router = Router();
@@ -32,10 +32,10 @@ router.delete("/:id", async (req: Request, res: Response) => {
 		emitEvent({
 			event: "GUILD_DELETE",
 			data: {
-				id: guild_id,
+				id: guild_id
 			},
-			user_id: req.user_id,
-		} as GuildDeleteEvent),
+			user_id: req.user_id
+		} as GuildDeleteEvent)
 	]);
 
 	const user = await getPublicUser(req.user_id);
@@ -44,9 +44,9 @@ router.delete("/:id", async (req: Request, res: Response) => {
 		event: "GUILD_MEMBER_REMOVE",
 		data: {
 			guild_id: guild_id,
-			user: user,
+			user: user
 		},
-		guild_id: guild_id,
+		guild_id: guild_id
 	} as GuildMemberRemoveEvent);
 
 	return res.sendStatus(204);

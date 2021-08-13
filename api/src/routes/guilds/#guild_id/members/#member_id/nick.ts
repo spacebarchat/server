@@ -1,4 +1,4 @@
-import { getPermission, PermissionResolvable } from "@fosscord/server-util";
+import { getPermission, PermissionResolvable } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { check } from "lambert-server";
 import { MemberNickChangeSchema } from "../../../../../schema/Member";

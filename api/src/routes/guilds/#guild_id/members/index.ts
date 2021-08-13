@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { GuildModel, MemberModel, toObject } from "@fosscord/server-util";
+import { GuildModel, MemberModel, toObject } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { instanceOf, Length } from "../../../../util/instanceOf";
 import { PublicMemberProjection, isMember } from "../../../../util/Member";

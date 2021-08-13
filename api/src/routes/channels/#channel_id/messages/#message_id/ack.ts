@@ -1,6 +1,6 @@
-import { getPermission, MessageAckEvent, ReadStateModel } from "@fosscord/server-util";
+import { emitEvent, getPermission, MessageAckEvent, ReadStateModel } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { emitEvent } from "../../../../../util/Event";
+
 import { check } from "../../../../../util/instanceOf";
 
 const router = Router();

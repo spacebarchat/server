@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { Config, Permissions, GuildModel, InviteModel, ChannelModel, MemberModel } from "@fosscord/server-util";
+import { Config, Permissions, GuildModel, InviteModel, ChannelModel, MemberModel } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { random } from "../../../util/RandomInviteID";
 

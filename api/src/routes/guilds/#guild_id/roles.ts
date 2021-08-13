@@ -9,10 +9,11 @@ import {
 	MemberModel,
 	GuildRoleCreateEvent,
 	GuildRoleUpdateEvent,
-	GuildRoleDeleteEvent
-} from "@fosscord/server-util";
+	GuildRoleDeleteEvent,
+	emitEvent
+} from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "../../../util/Event";
+
 import { check } from "../../../util/instanceOf";
 import { RoleModifySchema } from "../../../schema/Roles";
 import { getPublicUser } from "../../../util/User";
