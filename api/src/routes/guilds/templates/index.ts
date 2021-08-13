@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 const router: Router = Router();
-import { TemplateModel, GuildModel, toObject, UserModel, RoleModel, Snowflake, Guild, Config } from "@fosscord/server-util";
+import { TemplateModel, GuildModel, toObject, UserModel, RoleModel, Snowflake, Guild, Config } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { GuildTemplateCreateSchema } from "../../../schema/Guild";
 import { getPublicUser } from "../../../util/User";

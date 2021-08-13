@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import {
 	ChannelModel,
+	emitEvent,
 	EmojiModel,
 	getPermission,
 	GuildDeleteEvent,
@@ -12,10 +13,10 @@ import {
 	RoleModel,
 	toObject,
 	UserModel
-} from "@fosscord/server-util";
+} from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { GuildUpdateSchema } from "../../../schema/Guild";
-import { emitEvent } from "../../../util/Event";
+
 import { check } from "../../../util/instanceOf";
 import { handleFile } from "../../../util/cdn";
 import "missing-native-js-functions";

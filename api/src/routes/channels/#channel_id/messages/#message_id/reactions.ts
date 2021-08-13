@@ -1,5 +1,6 @@
 import {
 	ChannelModel,
+	emitEvent,
 	EmojiModel,
 	getPermission,
 	MemberModel,
@@ -12,10 +13,9 @@ import {
 	PublicUserProjection,
 	toObject,
 	UserModel
-} from "@fosscord/server-util";
+} from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "../../../../../util/Event";
 
 const router = Router();
 // TODO: check if emoji is really an unicode emoji or a prperly encoded external emoji

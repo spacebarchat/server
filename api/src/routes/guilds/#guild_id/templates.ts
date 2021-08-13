@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { TemplateModel, GuildModel, getPermission, toObject, UserModel, Snowflake } from "@fosscord/server-util";
+import { TemplateModel, GuildModel, getPermission, toObject, UserModel, Snowflake } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { TemplateCreateSchema, TemplateModifySchema } from "../../../schema/Template";
 import { check } from "../../../util/instanceOf";

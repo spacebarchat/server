@@ -1,4 +1,4 @@
-import { Config } from "@fosscord/server-util";
+import { Config } from "@fosscord/util";
 import FormData from "form-data";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";

@@ -8,13 +8,13 @@ import {
 	getPermission,
 	PermissionResolvable,
 	RoleModel,
-	GuildMemberUpdateEvent
-} from "@fosscord/server-util";
+	GuildMemberUpdateEvent,
+	emitEvent
+} from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { addMember, isMember, removeMember } from "../../../../../util/Member";
 import { check } from "../../../../../util/instanceOf";
 import { MemberChangeSchema } from "../../../../../schema/Member";
-import { emitEvent } from "../../../../../util/Event";
 
 const router = Router();
 

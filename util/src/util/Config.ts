@@ -1,6 +1,6 @@
 import { Schema, model, Types, Document } from "mongoose";
 import "missing-native-js-functions";
-import db, { MongooseCache } from "./Database";
+import db from "./Database";
 import { Snowflake } from "./Snowflake";
 import crypto from "crypto";
 
@@ -15,6 +15,7 @@ export default {
 		return config as DefaultOptions;
 	},
 	set: function set(val: any) {
+		config = val.merge(config);
 		return db.collection("config").updateOne({}, { $set: val }, { upsert: true });
 	},
 };

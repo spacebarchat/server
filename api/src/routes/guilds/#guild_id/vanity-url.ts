@@ -1,4 +1,4 @@
-import { getPermission, GuildModel, InviteModel, trimSpecial } from "@fosscord/server-util";
+import { getPermission, GuildModel, InviteModel, trimSpecial } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { check, Length } from "../../../util/instanceOf";

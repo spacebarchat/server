@@ -1,4 +1,4 @@
-import { Config } from "@fosscord/server-util";
+import { Config } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();

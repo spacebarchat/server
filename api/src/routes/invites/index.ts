@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { getPermission, InviteModel, toObject } from "@fosscord/server-util";
+import { getPermission, InviteModel, toObject } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { addMember } from "../../util/Member";
 const router: Router = Router();

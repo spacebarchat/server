@@ -5,11 +5,12 @@ import {
 	toObject,
 	RelationshipType,
 	RelationshipRemoveEvent,
-	UserDocument
-} from "@fosscord/server-util";
+	UserDocument,
+	emitEvent
+} from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "../../../util/Event";
+
 import { check, Length } from "../../../util/instanceOf";
 
 const router = Router();

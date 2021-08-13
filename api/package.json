@@ -5,6 +5,8 @@
 	"main": "dist/Server.js",
 	"types": "dist/Server.d.ts",
 	"scripts": {
+		"link": "npm run build && npm link",
+		"postinstall": "npm run --prefix ../util/ link && npm link @fosscord/util && npm run link",
 		"test": "jest",
 		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/start",
@@ -33,7 +35,7 @@
 	},
 	"homepage": "https://github.com/fosscord/fosscord-api#readme",
 	"dependencies": {
-		"@fosscord/server-util": "file:../util",
+		"@fosscord/util": "file:../util",
 		"@types/jest": "^26.0.22",
 		"@types/json-schema": "^7.0.7",
 		"ajv": "^8.4.0",

@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
-import { GuildModel, getPermission, toObject, Snowflake } from "@fosscord/server-util";
+import { GuildModel, getPermission, toObject, Snowflake } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "../../../util/Event";
+
 import { check } from "../../../util/instanceOf";
 import { isMember } from "../../../util/Member";
 import { GuildAddChannelToWelcomeScreenSchema } from "../../../schema/Guild";

@@ -8,10 +8,11 @@ import {
 	trimSpecial,
 	Channel,
 	DMChannel,
-	UserModel
-} from "@fosscord/server-util";
+	UserModel,
+	emitEvent
+} from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { emitEvent } from "../../../util/Event";
+
 import { DmChannelCreateSchema } from "../../../schema/Channel";
 import { check } from "../../../util/instanceOf";
 

@@ -1,4 +1,4 @@
-import { UserModel } from "@fosscord/server-util";
+import { UserModel } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import bcrypt from "bcrypt";
 
