@@ -1,7 +1,7 @@
 import "missing-native-js-functions";
 import dotenv from "dotenv";
 dotenv.config();
-import { Config, db, RabbitMQ } from "@fosscord/server-util";
+import { Config, db, initEvent, RabbitMQ } from "@fosscord/util";
 import { Server as WebSocketServer } from "ws";
 import { Connection } from "./events/Connection";
 import http from "http";
@@ -40,8 +40,7 @@ export class Server {
 		await (db as Promise<Connection>);
 		await this.setupSchema();
 		await Config.init();
-		await RabbitMQ.init();
-		console.log("[Database] connected");
+		await initEvent();
 		if (!this.server.listening) {
 			this.server.listen(this.port);
 			console.log(`[Gateway] online on 0.0.0.0:${this.port}`);

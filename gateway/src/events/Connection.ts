@@ -40,6 +40,7 @@ export async function Connection(this: Server, socket: WebSocket, request: Incom
 			socket.deflate.on("data", (chunk) => socket.send(chunk));
 		}
 
+		socket.events = {};
 		socket.permissions = {};
 		socket.sequence = 0;
 
