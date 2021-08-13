@@ -1,19 +1,16 @@
 import "missing-native-js-functions";
-import fs from "fs";
 import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
-import { Config, db, initEvent, RabbitMQ } from "@fosscord/util";
-import i18next from "i18next";
-import i18nextMiddleware, { I18next } from "i18next-http-middleware";
-import i18nextBackend from "i18next-node-fs-backend";
+import { Config, db, initEvent } from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
-import express, { Router, Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import mongoose from "mongoose";
 import path from "path";
 import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
+import { initTranslation } from "./middlewares/Translation";
 
 // this will return the new updated document for findOneAndUpdate
 mongoose.set("returnOriginal", false); // https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate
@@ -60,47 +57,29 @@ export class FosscordServer extends Server {
 		await initEvent();
 
 		this.app.use(CORS);
-		this.app.use(Authentication);
 		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 10 })); // 2MB
-		const languages = fs.readdirSync(path.join(__dirname, "..", "locales"));
-		const namespaces = fs.readdirSync(path.join(__dirname, "..", "locales", "en"));
-		const ns = namespaces.filter((x) => x.endsWith(".json")).map((x) => x.slice(0, x.length - 5));
-
-		await i18next
-			.use(i18nextBackend)
-			.use(i18nextMiddleware.LanguageDetector)
-			.init({
-				preload: languages,
-				// debug: true,
-				fallbackLng: "en",
-				ns,
-				backend: {
-					loadPath: __dirname + "/../locales/{{lng}}/{{ns}}.json"
-				},
-				load: "all"
-			});
-		this.app.use(i18nextMiddleware.handle(i18next, {}));
 
 		const app = this.app;
-		const api = Router();
-		// @ts-ignore
+		const api = Router(); // @ts-ignore
 		this.app = api;
 
+		api.use(Authentication);
 		initRateLimits(api);
-		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
-		app.use("/api/v8", api);
-		app.use("/api/v9", api);
-		app.use("/api", api); // allow unversioned requests
+		await initTranslation(api);
 
-		api.get("*", (req: Request, res: Response, next) => {
+		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
+
+		api.use("*", (req: Request, res: Response) => {
 			res.status(404).json({
 				message: "404: Not Found",
 				code: 0
 			});
-			next();
 		});
 
 		this.app = app;
+		app.use("/api/v8", api);
+		app.use("/api/v9", api);
+		app.use("/api", api); // allow unversioned requests
 		this.app.use(ErrorHandler);
 		TestClient(this.app);
 

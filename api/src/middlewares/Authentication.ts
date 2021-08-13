@@ -28,10 +28,8 @@ declare global {
 
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
 	if (req.method === "OPTIONS") return res.sendStatus(204);
-	if (!req.url.startsWith("/api")) return next();
-	const apiPath = req.url.replace(API_PREFIX, "");
-	if (apiPath.startsWith("/invites") && req.method === "GET") return next(); // @ts-ignore
-	if (NO_AUTHORIZATION_ROUTES.some((x) => apiPath.startsWith(x) || x.test?.(req.url))) return next();
+	if (req.url.startsWith("/invites") && req.method === "GET") return next(); // @ts-ignore
+	if (NO_AUTHORIZATION_ROUTES.some((x) => req.url.startsWith(x) || x.test?.(req.url))) return next();
 	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 
 	try {
