@@ -5,8 +5,6 @@
 	"main": "dist/Server.js",
 	"types": "dist/Server.d.ts",
 	"scripts": {
-		"link": "npm run build && npm link",
-		"postinstall": "npm run --prefix ../util/ link && npm link @fosscord/util && npm run link",
 		"test": "jest",
 		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/start",
@@ -66,16 +64,16 @@
 		"require_optional": "^1.0.1"
 	},
 	"devDependencies": {
+		"0x": "^4.10.2",
 		"@types/amqplib": "^0.8.1",
 		"@types/bcrypt": "^5.0.0",
 		"@types/express": "^4.17.9",
 		"@types/i18next-node-fs-backend": "^2.1.0",
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/multer": "^1.4.5",
-		"@types/node": "^14.14.22",
+		"@types/node": "^14.17.9",
 		"@types/node-fetch": "^2.5.7",
 		"@zerollup/ts-transform-paths": "^1.7.18",
-		"0x": "^4.10.2",
 		"caxa": "^2.1.0",
 		"jest": "^26.6.3",
 		"saslprep": "^1.0.3",

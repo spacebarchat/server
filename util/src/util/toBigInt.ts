@@ -1,3 +1,4 @@
-export default function toBigInt(string: String): BigInt {
+export default function toBigInt(string: string): bigint {
 	return BigInt(string);
 }
+

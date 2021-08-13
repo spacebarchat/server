@@ -1,1 +1,0 @@
-// TODO: start api AND cdn AND gateway
