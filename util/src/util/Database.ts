@@ -14,6 +14,9 @@ const connection = mongoose.createConnection(uri, {
 	useFindAndModify: false,
 });
 console.log(`[Database] connect: mongodb://${url.username}@${url.host}${url.pathname}${url.search}`);
+connection.once("open", () => {
+	console.log("[Database] connected");
+});
 
 export default <Connection>connection;
 
