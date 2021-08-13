@@ -1,4 +1,4 @@
-import { ChannelSchema, GuildChannel } from "@fosscord/server-util";
+import { ChannelSchema, GuildChannel } from "@fosscord/util";
 import { Length } from "../util/instanceOf";
 
 export const GuildCreateSchema = {

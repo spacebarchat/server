@@ -1,8 +1,7 @@
-import { ChannelDeleteEvent, ChannelModel, ChannelUpdateEvent, getPermission, GuildUpdateEvent, toObject } from "@fosscord/server-util";
+import { ChannelDeleteEvent, ChannelModel, ChannelUpdateEvent, emitEvent, getPermission, GuildUpdateEvent, toObject } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
-import { emitEvent } from "../../../util/Event";
 import { check } from "../../../util/instanceOf";
 const router: Router = Router();
 // TODO: delete channel

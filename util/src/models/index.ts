@@ -12,6 +12,9 @@ type UpdateAggregationStage =
 type EnforceDocument<T, TMethods> = T extends Document ? T : T & Document & TMethods;
 
 declare module "mongoose" {
+	interface SchemaOptions {
+		removeResponse?: string[];
+	}
 	interface Model<T, TQueryHelpers = {}, TMethods = {}> {
 		// removed null -> always return document -> throw error if it doesn't exist
 		findOne(

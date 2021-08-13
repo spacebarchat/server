@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { GuildModel, MemberModel, UserModel } from "@fosscord/server-util";
+import { GuildModel, MemberModel, UserModel } from "@fosscord/util";
 import bcrypt from "bcrypt";
 const router = Router();
 

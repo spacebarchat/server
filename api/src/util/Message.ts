@@ -1,14 +1,14 @@
-import { ChannelModel, Embed, Message, MessageCreateEvent, MessageUpdateEvent } from "@fosscord/server-util";
-import { Snowflake } from "@fosscord/server-util";
-import { MessageModel } from "@fosscord/server-util";
-import { PublicMemberProjection } from "@fosscord/server-util";
-import { toObject } from "@fosscord/server-util";
-import { getPermission } from "@fosscord/server-util";
+import { ChannelModel, Embed, emitEvent, Message, MessageCreateEvent, MessageUpdateEvent } from "@fosscord/util";
+import { Snowflake } from "@fosscord/util";
+import { MessageModel } from "@fosscord/util";
+import { PublicMemberProjection } from "@fosscord/util";
+import { toObject } from "@fosscord/util";
+import { getPermission } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
-import { emitEvent } from "./Event";
-import { MessageType } from "@fosscord/server-util/dist/util/Constants";
+
+import { MessageType } from "@fosscord/util/dist/util/Constants";
 // TODO: check webhook, application, system author
 
 const LINK_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;

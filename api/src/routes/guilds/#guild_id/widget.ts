@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { getPermission, GuildModel } from "@fosscord/server-util";
+import { getPermission, GuildModel } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { check } from "../../../util/instanceOf";
 import { WidgetModifySchema } from "../../../schema/Widget";

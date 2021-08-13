@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { UserModel, toObject, PublicUserProjection } from "@fosscord/server-util";
+import { UserModel, toObject, PublicUserProjection } from "@fosscord/util";
 import { getPublicUser } from "../../../util/User";
 import { UserModifySchema } from "../../../schema/User";
 import { check } from "../../../util/instanceOf";

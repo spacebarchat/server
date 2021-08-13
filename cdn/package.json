@@ -5,6 +5,8 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
+		"link": "npm run build && npm link",
+		"postinstall": "npm run --prefix ../util/ link && npm link @fosscord/util && npm run link",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsc -b .",
 		"start": "npm run build && node dist/start.js"
@@ -21,7 +23,7 @@
 	},
 	"homepage": "https://github.com/discord-open-source/discord-cdn#readme",
 	"dependencies": {
-		"@fosscord/server-util": "file:../util",
+		"@fosscord/util": "file:../util",
 		"body-parser": "^1.19.0",
 		"btoa": "^1.2.1",
 		"cheerio": "^1.0.0-rc.5",

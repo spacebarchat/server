@@ -15,13 +15,13 @@ jobs:
         include:
           - os: windows
             build: npm run bundle:windows
-            artifact: fosscord-api-windows.exe
+            artifact: fosscord-server-windows.exe
           - os: macos
             build: npm run bundle:macos
-            artifact: fosscord-api-macos.app.tgz
+            artifact: fosscord-server-macos.app.tgz
           - os: ubuntu
             build: npm run bundle:linux
-            artifact: fosscord-api-linux.tgz
+            artifact: fosscord-server-linux.tgz
     runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,6 +29,8 @@ jobs:
         with:
           node-version: 14
       - run: npm install
+        env:
+          MONGOMS_VERSION: 4.4.3
       - run: npm run build
       - run: ${{ matrix.build }}
       - uses: actions/upload-artifact@v2
@@ -46,43 +48,52 @@ jobs:
         uses: Saionaro/extract-package-version@v1.0.6
       - uses: actions/download-artifact@v2
         with:
-          name: fosscord-api-windows-${{ github.sha }}.exe
+          name: fosscord-server-windows.exe
       - uses: actions/download-artifact@v2
         with:
-          name: fosscord-api-macos-${{ github.sha }}.app.tgz
+          name: fosscord-server-macos.app.tgz
       - uses: actions/download-artifact@v2
         with:
-          name: fosscord-api-linux-${{ github.sha }}.tgz
+          name: fosscord-server-linux.tgz
       - uses: actions/create-release@v1
         id: create-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.extract_version.outputs.version }}
-          release_name: Release ${{ steps.extract_version.outputs.version }}
+          release_name: Server v${{ steps.extract_version.outputs.version }}
           draft: false
           prerelease: true # TODO: change this to false
+          body: >
+            ## Download
+
+            - [Windows](https://github.com/fosscord/fosscord-server/releases/download/v${{ steps.extract_version.outputs.version }}/fosscord-server-windows.exe)
+
+            - [MacOS](https://github.com/fosscord/fosscord-server/releases/download/v${{ steps.extract_version.outputs.version }}/fosscord-server-macos.app.tgz)
+
+            - [Linux](https://github.com/fosscord/fosscord-server/releases/download/v${{ steps.extract_version.outputs.version }}/fosscord-server-linux.tgz)
+
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: fosscord-api-windows-${{ github.sha }}.exe
-          asset_name: fosscord-api-windows.exe
+          asset_path: fosscord-server-windows.exe
+          asset_name: fosscord-server-windows.exe
           asset_content_type: application/vnd.microsoft.portable-executable
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: fosscord-api-macos-${{ github.sha }}.app.tgz
-          asset_name: fosscord-api-macos.app.tgz
+          asset_path: fosscord-server-macos.app.tgz
+          asset_name: fosscord-server-macos.app.tgz
           asset_content_type: application/gzip
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: fosscord-api-linux-${{ github.sha }}.tgz
-          asset_name: fosscord-api-linux.tgz
+          asset_path: fosscord-server-linux.tgz
+          asset_name: fosscord-server-linux.tgz
           asset_content_type: application/gzip

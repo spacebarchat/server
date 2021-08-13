@@ -12,7 +12,7 @@ import {
 	toObject,
 	EVENTEnum,
 	Config,
-} from "@fosscord/server-util";
+} from "@fosscord/util";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
 import { Send } from "../util/Send";

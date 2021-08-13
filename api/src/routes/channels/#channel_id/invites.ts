@@ -3,11 +3,10 @@ import { HTTPError } from "lambert-server";
 
 import { check } from "../../../util/instanceOf";
 import { random } from "../../../util/RandomInviteID";
-import { emitEvent } from "../../../util/Event";
 
 import { InviteCreateSchema } from "../../../schema/Invite";
 
-import { getPermission, ChannelModel, InviteModel, InviteCreateEvent, toObject } from "@fosscord/server-util";
+import { getPermission, ChannelModel, InviteModel, InviteCreateEvent, toObject, emitEvent } from "@fosscord/util";
 
 const router: Router = Router();
 

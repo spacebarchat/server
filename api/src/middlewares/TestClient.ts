@@ -4,7 +4,7 @@ import { HTTPError } from "lambert-server";
 import fs from "fs";
 import path from "path";
 import fetch, { Response as FetchResponse } from "node-fetch";
-import { Config } from "@fosscord/server-util";
+import { Config } from "@fosscord/util";
 
 export default function TestClient(app: Application) {
 	const assetCache = new Map<string, { response: FetchResponse; buffer: Buffer }>();

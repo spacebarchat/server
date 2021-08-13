@@ -1,4 +1,4 @@
-import { ChannelType } from "@fosscord/server-util";
+import { ChannelType } from "@fosscord/util";
 import { Length } from "../util/instanceOf";
 
 export const ChannelModifySchema = {

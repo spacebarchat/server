@@ -4,16 +4,18 @@
 	"description": "",
 	"main": "dist/index.js",
 	"scripts": {
+		"link": "npm run build && npm link",
+		"postinstall": "npm run --prefix ../util/ link && npm link @fosscord/util && npm run link",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "npm run build && node dist/start.js",
-		"build": "npx tsc -b .",
+		"build": "tsc -b .",
 		"dev": "tsnd --respawn src/start.ts"
 	},
 	"keywords": [],
 	"author": "Fosscord",
 	"license": "ISC",
 	"dependencies": {
-		"@fosscord/server-util": "file:../util",
+		"@fosscord/util": "file:../util",
 		"ajv": "^8.5.0",
 		"amqplib": "^0.8.0",
 		"dotenv": "^8.2.0",
