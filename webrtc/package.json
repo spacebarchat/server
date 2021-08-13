@@ -4,7 +4,6 @@
 	"description": "A javascript fosscord webrtc server for voice and video communication",
 	"main": "index.js",
 	"scripts": {
-		"postinstall": "npm link @fosscord/util",
 		"test": "npm run build && node dist/test.js",
 		"build": "tsc -b .",
 		"start": "npm run build && node dist/start.js"
