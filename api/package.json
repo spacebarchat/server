@@ -1,5 +1,5 @@
 {
-	"name": "api",
+	"name": "@fosscord/api",
 	"version": "1.0.0",
 	"description": "This repository contains the HTTP API Server",
 	"main": "dist/Server.js",
