@@ -26,6 +26,8 @@ export const IdentifySchema = {
 		$client_event_source: String,
 		$client_version: String,
 		$system_locale: String,
+		$window_manager: String,
+		$distro: String,
 	},
 	$presence: ActivitySchema,
 	$compress: Boolean,
