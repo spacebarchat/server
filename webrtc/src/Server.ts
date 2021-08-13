@@ -1,6 +1,6 @@
 import { Server as WebSocketServer } from "ws";
-import { Config, db } from "@fosscord/server-util";
-import mediasoup from "mediasoup"
+import { Config, db } from "@fosscord/util";
+import mediasoup from "mediasoup";
 
 var port = Number(process.env.PORT);
 if (isNaN(port)) port = 3004;
@@ -30,7 +30,6 @@ export class Server {
 				);
 			});
 		});
-
 	}
 
 	async listen(): Promise<void> {
