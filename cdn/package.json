@@ -5,8 +5,6 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"link": "npm run build && npm link",
-		"postinstall": "npm run --prefix ../util/ link && npm link @fosscord/util && npm run link",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsc -b .",
 		"start": "npm run build && node dist/start.js"
