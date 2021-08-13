@@ -49,7 +49,7 @@ type PermissionString =
 	| "MANAGE_NICKNAMES"
 	| "MANAGE_ROLES"
 	| "MANAGE_WEBHOOKS"
-	| "MANAGE_EMOJIS";
+	| "MANAGE_EMOJIS_AND_STICKERS";
 
 const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(48); // 16 free custom permission bits, and 16 for discord to add new ones
 
@@ -87,7 +87,7 @@ export class Permissions extends BitField {
 		MANAGE_NICKNAMES: BigInt(1) << BigInt(27),
 		MANAGE_ROLES: BigInt(1) << BigInt(28),
 		MANAGE_WEBHOOKS: BigInt(1) << BigInt(29),
-		MANAGE_EMOJIS: BigInt(1) << BigInt(30),
+		MANAGE_EMOJIS_AND_STICKERS: BigInt(1) << BigInt(30),
 		/**
 		 * CUSTOM PERMISSIONS ideas:
 		 * - allow user to dm members

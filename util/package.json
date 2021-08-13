@@ -1,7 +1,7 @@
 {
 	"name": "@fosscord/util",
-	"version": "1.3.52",
-	"description": "Utility functions and database models for fosscord",
+	"version": "1.3.55",
+	"description": "Utility functions for the all server repositories",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {

@@ -17,8 +17,8 @@ router.patch("/", check(MemberNickChangeSchema), async (req: Request, res: Respo
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow(permissionString);
 
-	await changeNickname(member_id, guild_id, req.body.nickname);
-	res.status(204);
+	await changeNickname(member_id, guild_id, req.body.nick);
+	res.status(200).send();
 });
 
 export default router;
