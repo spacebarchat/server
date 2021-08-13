@@ -9,9 +9,10 @@ import express from "express";
 import { Config } from "../../util/dist";
 
 const app = express();
-const server = http.createServer(app);
+const server = http.createServer();
 const port = Number(process.env.PORT) || 8080;
 const production = true;
+server.on("request", app);
 
 // @ts-ignore
 const api = new APIServer({ server, port, production, app });
@@ -22,8 +23,14 @@ const gateway = new GatewayServer({ server, port, production });
 
 async function main() {
 	await Config.set({
-		cdn: { endpointClientKeepDefault: true, endpoint: `http://localhost:${port}` },
-		gateway: { endpointClientKeepDefault: true, endpoint: `ws://localhost:${port}` },
+		cdn: {
+			endpointClient: "${location.host}",
+			endpoint: `http://localhost:${port}`,
+		},
+		gateway: {
+			endpointClient: '${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}',
+			endpoint: `ws://localhost:${port}`,
+		},
 	});
 
 	await api.start();
