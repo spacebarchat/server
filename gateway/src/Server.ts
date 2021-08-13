@@ -22,9 +22,15 @@ export class Server {
 				res.writeHead(200).end("Online");
 			});
 
+		this.server.on("upgrade", (request, socket, head) => {
+			this.ws.handleUpgrade(request, socket, head, (socket) => {
+				this.ws.emit("connection", socket, request);
+			});
+		});
+
 		this.ws = new WebSocketServer({
 			maxPayload: 4096,
-			server: this.server,
+			noServer: true,
 		});
 		this.ws.on("connection", Connection);
 		this.ws.on("error", console.error);
