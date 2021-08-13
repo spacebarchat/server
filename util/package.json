@@ -1,10 +1,11 @@
 {
-	"name": "@fosscord/server-util",
+	"name": "@fosscord/util",
 	"version": "1.3.52",
-	"description": "Utility functions for the all server repositories",
+	"description": "Utility functions and database models for fosscord",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
+		"link": "npm run build && npm link",
 		"build": "tsc -b ."
 	},
 	"repository": {
@@ -36,7 +37,7 @@
 		"jsonwebtoken": "^8.5.1",
 		"missing-native-js-functions": "^1.2.2",
 		"mongodb": "^3.6.9",
-		"mongoose": "^5.12.3",
+		"mongoose": "^5.13.7",
 		"mongoose-autopopulate": "^0.12.3",
 		"typescript": "^4.1.3"
 	},
