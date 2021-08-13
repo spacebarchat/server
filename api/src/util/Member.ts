@@ -196,6 +196,7 @@ export async function removeRole(user_id: string, guild_id: string, role_id: str
 export async function changeNickname(user_id: string, guild_id: string, nickname: string) {
 	const user = await getPublicUser(user_id);
 
+
 	var memberObj = await MemberModel.findOneAndUpdate(
 		{
 			id: user_id,
