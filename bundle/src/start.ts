@@ -60,6 +60,11 @@ if (cluster.isMaster && !process.env.masterStarted) {
 		console.log(`[Database] started`);
 		console.log(`[Process] running with pid: ${process.pid}`);
 
+		if (cores === 1) {
+			require("./Server.js");
+			return;
+		}
+
 		// Fork workers.
 		for (let i = 0; i < cores; i++) {
 			cluster.fork();

@@ -9,10 +9,9 @@ import express from "express";
 import { Config } from "../../util/dist";
 
 const app = express();
-const server = http.createServer();
+const server = http.createServer(app);
 const port = Number(process.env.PORT) || 8080;
 const production = true;
-server.on("request", app);
 
 // @ts-ignore
 const api = new APIServer({ server, port, production, app });
