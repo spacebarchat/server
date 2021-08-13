@@ -26,8 +26,8 @@
 	},
 	"homepage": "https://docs.fosscord.com/",
 	"dependencies": {
-		"api": "file:api",
-		"cdn": "file:cdn",
-		"gateway": "file:gateway"
+		"@fosscord/api": "file:api",
+		"@fosscord/cdn": "file:cdn",
+		"@fosscord/gateway": "file:gateway"
 	}
 }

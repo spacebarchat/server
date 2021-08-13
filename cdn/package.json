@@ -1,5 +1,5 @@
 {
-	"name": "cdn",
+	"name": "@fosscord/cdn",
 	"version": "1.0.0",
 	"description": "cdn for discord clone",
 	"main": "dist/index.js",
