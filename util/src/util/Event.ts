@@ -16,6 +16,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 		const successful = RabbitMQ.channel?.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
 		if (!successful) throw new Error("failed to send event");
 	} else {
+		console.log("emit event", id);
 		events.emit(id, payload);
 	}
 }
@@ -44,7 +45,11 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 		// @ts-ignore
 		return rabbitListen(opts?.channel || RabbitMQ.channel, event, callback, { acknowledge: opts?.acknowledge });
 	} else {
-		const cancel = () => events.removeListener(event, callback);
+		const cancel = () => {
+			console.log("cancel event", event);
+			events.removeListener(event, callback);
+		};
+		console.log("listen event", event);
 		events.addListener(event, (opts) => callback({ ...opts, cancel }));
 
 		return cancel;

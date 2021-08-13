@@ -43,11 +43,11 @@ export interface KafkaBroker {
 
 export interface DefaultOptions {
 	gateway: {
-		endpointClientKeepDefault?: boolean;
+		endpointClient: string | null;
 		endpoint: string | null;
 	};
 	cdn: {
-		endpointClientKeepDefault?: boolean;
+		endpointClient: string | null;
 		endpoint: string | null;
 	};
 	general: {
@@ -150,11 +150,11 @@ export interface DefaultOptions {
 
 export const DefaultOptions: DefaultOptions = {
 	gateway: {
-		endpointClientKeepDefault: false,
+		endpointClient: null,
 		endpoint: null,
 	},
 	cdn: {
-		endpointClientKeepDefault: false,
+		endpointClient: null,
 		endpoint: null,
 	},
 	general: {

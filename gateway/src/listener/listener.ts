@@ -58,13 +58,14 @@ export async function setupListener(this: WebSocket) {
 				this.permissions[guild] = x;
 				this.listeners;
 				this.events[guild] = await listenEvent(guild, consumer, opts);
-				for (const channel of guild_channels) {
+
+				for (const channel of guild_channels.filter((c) => c.guild_id === guild)) {
 					if (x.overwriteChannel(channel.permission_overwrites).has("VIEW_CHANNEL")) {
 						this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
 					}
 				}
 			})
-			.catch((e) => {});
+			.catch((e) => console.log("couldn't get permission for guild " + guild, e));
 	}
 
 	this.once("close", () => {
@@ -74,14 +75,14 @@ export async function setupListener(this: WebSocket) {
 }
 
 // TODO: only subscribe for events that are in the connection intents
-function consume(this: WebSocket, opts: EventOpts) {
+async function consume(this: WebSocket, opts: EventOpts) {
 	const { data, event } = opts;
 	const id = data.id as string;
 	const permission = this.permissions[id] || new Permissions("ADMINISTRATOR"); // default permission for dm
 
 	const consumer = consume.bind(this);
 	const listenOpts = opts as ListenEventOpts;
-	console.log("event", event);
+	// console.log("event", event);
 
 	// subscription managment
 	switch (event) {
@@ -94,14 +95,14 @@ function consume(this: WebSocket, opts: EventOpts) {
 			if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) return;
 		// TODO: check if user has permission to channel
 		case "GUILD_CREATE":
-			listenEvent(id, consumer, listenOpts);
+			this.events[id] = await listenEvent(id, consumer, listenOpts);
 			break;
 		case "CHANNEL_UPDATE":
 			const exists = this.events[id];
 			// @ts-ignore
 			if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
 				if (exists) break;
-				listenEvent(id, consumer, listenOpts);
+				this.events[id] = await listenEvent(id, consumer, listenOpts);
 			} else {
 				if (!exists) return; // return -> do not send channel update events for hidden channels
 				opts.cancel(id);

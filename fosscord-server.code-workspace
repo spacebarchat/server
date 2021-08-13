@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "api"
+		},
+		{
+			"path": "dashboard"
+		},
+		{
+			"path": "bundle"
+		},
+		{
+			"path": "cdn"
+		},
+		{
+			"path": "gateway"
+		},
+		{
+			"path": "rtc"
+		},
+		{
+			"path": "util"
+		},
+		{
+			"path": "webrtc"
+		}
+	],
+	"settings": {}
+}
