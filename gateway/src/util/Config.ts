@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Config } from "@fosscord/server-util";
-import { getConfigPathForFile } from "@fosscord/server-util/dist/util/Config";
+import { Config } from "@fosscord/util";
+import { getConfigPathForFile } from "@fosscord/util/dist/util/Config";
 import Ajv, { JSONSchemaType } from "ajv";
 
 export interface DefaultOptions {
