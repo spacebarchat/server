@@ -18,6 +18,7 @@ export const ChannelModifySchema = {
 		}
 	],
 	$parent_id: String,
+	$id: String, // kept for backwards compatibility does nothing (need for guild create)
 	$nsfw: Boolean
 };
 
@@ -46,6 +47,7 @@ export interface ChannelModifySchema {
 		deny: bigint;
 	}[];
 	parent_id?: string;
+	id?: string; // is not used (only for guild create)
 	nsfw?: boolean;
 }
 
