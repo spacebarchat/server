@@ -10,8 +10,8 @@
 		"build:api": "cd ../api/ && npm run build",
 		"build:cdn": "cd ../cdn/ && npm run build",
 		"build:gateway": "cd ../gateway/ && npm run build",
-		"start": "npm run build && node dist/start.js",
-		"root": "npm run build && node dist/root.js",
+		"bundle": "npm run build && node dist/start.js",
+		"start": "npm run build && node dist/root.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
