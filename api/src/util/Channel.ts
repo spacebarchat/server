@@ -13,7 +13,14 @@ import {
 import { HTTPError } from "lambert-server";
 
 // TODO: DM channel
-export async function createChannel(channel: Partial<TextChannel | VoiceChannel>, user_id: string = "0") {
+export async function createChannel(
+	channel: Partial<TextChannel | VoiceChannel>,
+	user_id: string = "0",
+	opts?: {
+		keepId?: boolean;
+		skipExistsCheck?: boolean;
+	}
+) {
 	// Always check if user has permission first
 	const permissions = await getPermission(user_id, channel.guild_id);
 	permissions.hasThrow("MANAGE_CHANNELS");
@@ -21,7 +28,7 @@ export async function createChannel(channel: Partial<TextChannel | VoiceChannel>
 	switch (channel.type) {
 		case ChannelType.GUILD_TEXT:
 		case ChannelType.GUILD_VOICE:
-			if (channel.parent_id) {
+			if (channel.parent_id && !opts?.skipExistsCheck) {
 				const exists = await ChannelModel.findOne({ id: channel.parent_id }, { guild_id: true }).exec();
 				if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
 				if (exists.guild_id !== channel.guild_id) throw new HTTPError("The category channel needs to be in the guild");
@@ -44,7 +51,7 @@ export async function createChannel(channel: Partial<TextChannel | VoiceChannel>
 
 	channel = await new ChannelModel({
 		...channel,
-		id: Snowflake.generate(),
+		...(!opts?.keepId && { id: Snowflake.generate() }),
 		created_at: new Date(),
 		// @ts-ignore
 		recipient_ids: null

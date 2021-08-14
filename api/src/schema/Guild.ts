@@ -1,11 +1,12 @@
 import { ChannelSchema, GuildChannel } from "@fosscord/util";
 import { Length } from "../util/instanceOf";
+import { ChannelModifySchema } from "./Channel";
 
 export const GuildCreateSchema = {
 	name: new Length(String, 2, 100),
 	$region: String, // auto complete voice region of the user
 	$icon: String,
-	$channels: [Object],
+	$channels: [ChannelModifySchema],
 	$guild_template_code: String,
 	$system_channel_id: String,
 	$rules_channel_id: String
@@ -15,7 +16,7 @@ export interface GuildCreateSchema {
 	name: string;
 	region?: string;
 	icon?: string;
-	channels?: GuildChannel[];
+	channels?: ChannelModifySchema[];
 	guild_template_code?: string;
 	system_channel_id?: string;
 	rules_channel_id?: string;
