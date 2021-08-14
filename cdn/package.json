@@ -22,6 +22,15 @@
 	"homepage": "https://github.com/discord-open-source/discord-cdn#readme",
 	"dependencies": {
 		"@fosscord/util": "file:../util",
+		"@types/body-parser": "^1.19.0",
+		"@types/btoa": "^1.2.3",
+		"@types/dotenv": "^8.2.0",
+		"@types/express": "^4.17.12",
+		"@types/fs-extra": "^9.0.12",
+		"@types/multer": "^1.4.7",
+		"@types/node": "^14.17.0",
+		"@types/node-fetch": "^2.5.7",
+		"@types/uuid": "^8.3.0",
 		"body-parser": "^1.19.0",
 		"btoa": "^1.2.1",
 		"cheerio": "^1.0.0-rc.5",
@@ -37,16 +46,7 @@
 		"missing-native-js-functions": "^1.0.8",
 		"multer": "^1.4.2",
 		"node-fetch": "^2.6.1",
-		"uuid": "^8.3.2",
 		"typescript": "^4.1.2",
-		"@types/body-parser": "^1.19.0",
-		"@types/btoa": "^1.2.3",
-		"@types/dotenv": "^8.2.0",
-		"@types/express": "^4.17.12",
-		"@types/fs-extra": "^9.0.12",
-		"@types/multer": "^1.4.7",
-		"@types/node": "^14.17.0",
-		"@types/node-fetch": "^2.5.7",
-		"@types/uuid": "^8.3.0"
+		"uuid": "^8.3.2"
 	}
 }
