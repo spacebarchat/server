@@ -1,5 +1,4 @@
-process.env.MONGOMS_DEBUG = "true";
-
+// process.env.MONGOMS_DEBUG = "true";
 import cluster from "cluster";
 import os from "os";
 import { setupDatabase } from "./Database";
