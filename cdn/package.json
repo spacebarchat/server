@@ -37,9 +37,8 @@
 		"missing-native-js-functions": "^1.0.8",
 		"multer": "^1.4.2",
 		"node-fetch": "^2.6.1",
-		"uuid": "^8.3.2"
-	},
-	"devDependencies": {
+		"uuid": "^8.3.2",
+		"typescript": "^4.1.2",
 		"@types/body-parser": "^1.19.0",
 		"@types/btoa": "^1.2.3",
 		"@types/dotenv": "^8.2.0",
