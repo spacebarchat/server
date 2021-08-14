@@ -80,7 +80,27 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		}).save()
 	]);
 
-	await createChannel({ name: "general", type: 0, guild_id, position: 0, permission_overwrites: [] }, req.user_id);
+	if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
+
+	const ids = new Map();
+
+	body.channels.forEach((x) => {
+		if (x.id) {
+			ids.set(x.id, Snowflake.generate());
+		}
+	});
+
+	await Promise.all(
+		body.channels?.map((x) => {
+			var id = ids.get(x.id) || Snowflake.generate();
+
+			// TODO: should we abort if parent_id is a category? (or not to allow sub category channels)
+			var parent_id = ids.get(x.parent_id);
+
+			return createChannel({ ...x, guild_id, id, parent_id }, req.user_id, { keepId: true, skipExistsCheck: true });
+		})
+	);
+
 	await addMember(req.user_id, guild_id);
 
 	res.status(201).json({ id: guild.id });
