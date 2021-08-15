@@ -5,6 +5,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
+		"postinstall": "npm run build",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "npx tsc -b .",
 		"start": "npm run build && node dist/start.js"
@@ -29,7 +30,6 @@
 		"@types/fs-extra": "^9.0.12",
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/mongodb": "^3.6.9",
-		"@types/mongoose": "^5.10.5",
 		"@types/mongoose-autopopulate": "^0.10.1",
 		"@types/mongoose-lean-virtuals": "^0.5.1",
 		"@types/multer": "^1.4.7",

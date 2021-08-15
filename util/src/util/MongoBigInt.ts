@@ -1,3 +1,4 @@
+// @ts-nocheck
 import mongoose from "mongoose";
 
 class LongSchema extends mongoose.SchemaType {

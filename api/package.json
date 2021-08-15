@@ -5,6 +5,7 @@
 	"main": "dist/Server.js",
 	"types": "dist/Server.d.ts",
 	"scripts": {
+		"postinstall": "npm run build",
 		"test": "jest",
 		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/start",
