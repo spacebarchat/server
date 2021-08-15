@@ -2,3 +2,5 @@
 db/
 dist/
 node_modules
+api/assets/*.js
+api/assets/*.css
