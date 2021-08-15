@@ -6,6 +6,7 @@ import { setHeartbeat } from "../util/setHeartbeat";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { createDeflate } from "zlib";
+import { URL } from "url";
 var erlpack: any;
 try {
 	erlpack = require("erlpack");
@@ -18,6 +19,7 @@ try {
 export async function Connection(this: Server, socket: WebSocket, request: IncomingMessage) {
 	try {
 		socket.on("close", Close);
+		// @ts-ignore
 		socket.on("message", Message);
 
 		const { searchParams } = new URL(`http://localhost${request.url}`);

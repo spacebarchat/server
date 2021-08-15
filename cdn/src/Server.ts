@@ -6,7 +6,7 @@ import avatarsRoute from "./routes/avatars";
 export interface CDNServerOptions extends ServerOptions {}
 
 export class CDNServer extends Server {
-	public options: CDNServerOptions;
+	public declare options: CDNServerOptions;
 
 	constructor(options?: Partial<CDNServerOptions>) {
 		super(options);
