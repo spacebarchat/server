@@ -14,13 +14,13 @@ jobs:
         os: [windows, macos, ubuntu]
         include:
           - os: windows
-            build: npm run bundle:windows
+            build: npx caxa -i . -m 'This may take a while to run the first time, please wait...' --output 'fosscord-server-windows.exe' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/dist/start.js'
             artifact: fosscord-server-windows.exe
           - os: macos
-            build: npm run bundle:macos
+            build: npx caxa -i . -m 'This may take a while to run the first time, please wait...' --output 'fosscord-server.app' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/dist/start.js' && tar -czf 'fosscord-server-macos.app.tgz' 'fosscord-server.app'
             artifact: fosscord-server-macos.app.tgz
           - os: ubuntu
-            build: npm run bundle:linux
+            build: npx caxa -i . -m 'This may take a while to run the first time, please wait...' --output 'fosscord' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/dist/start.js' && tar -czf 'fosscord-server-linux.tgz' 'fosscord'
             artifact: fosscord-server-linux.tgz
     runs-on: ${{ matrix.os }}-latest
     steps:
@@ -28,7 +28,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 14
+      - run: cd bundle
       - run: npm install
+      - run: npm i caxa
         env:
           MONGOMS_VERSION: 4.4.3
       - run: npm run build
