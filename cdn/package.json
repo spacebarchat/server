@@ -20,8 +20,7 @@
 		"url": "https://github.com/discord-open-source/discord-cdn/issues"
 	},
 	"homepage": "https://github.com/discord-open-source/discord-cdn#readme",
-	"dependencies": {
-		"@fosscord/util": "file:../util",
+	"devDependencies": {
 		"@types/body-parser": "^1.19.0",
 		"@types/btoa": "^1.2.3",
 		"@types/dotenv": "^8.2.0",
@@ -31,6 +30,14 @@
 		"@types/node": "^14.17.0",
 		"@types/node-fetch": "^2.5.7",
 		"@types/uuid": "^8.3.0",
+		"@types/amqplib": "^0.8.1",
+		"@types/jsonwebtoken": "^8.5.0",
+		"@types/mongodb": "^3.6.9",
+		"@types/mongoose-autopopulate": "^0.10.1",
+		"@types/mongoose-lean-virtuals": "^0.5.1"
+	},
+	"dependencies": {
+		"@fosscord/util": "file:../util",
 		"body-parser": "^1.19.0",
 		"btoa": "^1.2.1",
 		"cheerio": "^1.0.0-rc.5",
