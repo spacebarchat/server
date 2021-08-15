@@ -1,3 +1,4 @@
+// @ts-nocheck
 import "./MongoBigInt";
 import mongoose, { Collection, Connection, LeanDocument } from "mongoose";
 import { ChangeStream, ChangeEvent, Long } from "mongodb";
