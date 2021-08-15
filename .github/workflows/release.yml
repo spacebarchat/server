@@ -31,11 +31,11 @@ jobs:
         with:
           node-version: 14
       - run: |
-        cd bundle
-        npm install
-        npm i caxa
-        npm run build
-        ${{ matrix.build }}
+          cd bundle
+          npm install
+          npm i caxa
+          npm run build
+          ${{ matrix.build }}
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.artifact }}
