@@ -31,6 +31,7 @@
 		"@types/i18next-node-fs-backend": "^2.1.0",
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/mongodb": "^3.6.9",
+		"@types/mongoose": "^5.10.5",
 		"@types/mongoose-autopopulate": "^0.10.1",
 		"@types/mongoose-lean-virtuals": "^0.5.1",
 		"@types/multer": "^1.4.5",
