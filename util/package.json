@@ -5,7 +5,6 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"postinstall": "npm run build",
 		"build": "npx tsc -b ."
 	},
 	"repository": {
