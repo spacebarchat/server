@@ -67,15 +67,12 @@ router.post("/", check(RoleModifySchema), async (req: Request, res: Response) =>
 router.delete("/:role_id", async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;
 	const { role_id } = req.params;
+	if (role_id === guild_id) throw new HTTPError("You can't delete the @everyone role");
 
-	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
-	const user = await UserModel.findOne({ id: req.user_id }).exec();
+	const permissions = await getPermission(req.user_id, guild_id);
+	permissions.hasThrow("MANAGE_ROLES");
 
-	const perms = await getPermission(req.user_id, guild_id);
-
-	if (!perms.has("MANAGE_ROLES")) throw new HTTPError("You missing the MANAGE_ROLES permission", 401);
-
-	await RoleModel.findOneAndDelete({
+	await RoleModel.deleteOne({
 		id: role_id,
 		guild_id: guild_id
 	}).exec();
