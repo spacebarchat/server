@@ -5,7 +5,11 @@
 	"main": "src/start.js",
 	"scripts": {
 		"postinstall": "cd ../util && npm i && cd ../api && npm i && cd ../cdn && npm i && cd ../gateway && npm i",
-		"build": "npx tsc -b .",
+		"build": "npm run build:api && npm run build:cdn && npm run build:gateway && npm run build:bundle",
+		"build:bundle": "npx tsc -b .",
+		"build:api": "cd ../api/ && npm run build",
+		"build:cdn": "cd ../cdn/ && npm run build",
+		"build:gateway": "cd ../gateway/ && npm run build",
 		"start": "npm run build && node dist/start.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
