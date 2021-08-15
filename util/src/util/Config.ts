@@ -99,6 +99,7 @@ export interface DefaultOptions {
 		};
 	};
 	security: {
+		autoUpdate: boolean | number;
 		requestSignature: string;
 		jwtSecret: string;
 		forwadedFor: string | null; // header to get the real user ip address
@@ -230,6 +231,7 @@ export const DefaultOptions: DefaultOptions = {
 		},
 	},
 	security: {
+		autoUpdate: true,
 		requestSignature: crypto.randomBytes(32).toString("base64"),
 		jwtSecret: crypto.randomBytes(256).toString("base64"),
 		forwadedFor: null,
