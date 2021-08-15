@@ -2,7 +2,7 @@ import fs from "fs";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import path from "path";
 import exitHook from "async-exit-hook";
-console.log(process.arch, process.platform);
+
 if (process.arch == "ia32") {
 	Object.defineProperty(process, "arch", {
 		value: "x64",
