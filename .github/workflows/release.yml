@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Extract version
         id: extract_version
-        uses: Saionaro/extract-package-version@v1.0.6
+        uses: Saionaro/extract-package-version@v1.1.1
         with:
           path: api
       - uses: actions/download-artifact@v2
