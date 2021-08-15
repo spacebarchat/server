@@ -31,7 +31,9 @@ jobs:
         with:
           node-version: 14
       - run: |
-          cd bundle
+          cd util
+          npm install
+          cd ../bundle
           npm install
           npm i caxa
           npm run build
