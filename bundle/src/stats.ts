@@ -18,5 +18,5 @@ export function initStats() {
 				process.memoryUsage().rss / 1024 / 1024
 			)}mb/${memory.totalMemMb.toFixed(0)}mb`
 		);
-	}, 1000 * 60);
+	}, 1000 * 30);
 }

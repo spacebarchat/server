@@ -1,27 +1,35 @@
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
+import http from "http";
 import { FosscordServer as APIServer } from "@fosscord/api";
 import { Server as GatewayServer } from "@fosscord/gateway";
 import { CDNServer } from "@fosscord/cdn/";
+import express from "express";
 import { Config } from "../../util/dist";
 
-const production = true;
+const app = express();
+const server = http.createServer();
+const port = Number(process.env.PORT) || 8080;
+const production = false;
+server.on("request", app);
 
-const api = new APIServer({ production, port: Number(process.env.API_PORT) || 3001 });
-const gateway = new GatewayServer({ port: Number(process.env.GATEWAY_PORT) || 3002 });
-const cdn = new CDNServer({ production, port: Number(process.env.CDN_PORT) || 3003 });
+// @ts-ignore
+const api = new APIServer({ server, port, production, app });
+// @ts-ignore
+const cdn = new CDNServer({ server, port, production, app });
+// @ts-ignore
+const gateway = new GatewayServer({ server, port, production });
 
 async function main() {
 	await Config.set({
 		cdn: {
 			endpointClient: "${location.host}",
-			endpoint: `http://localhost:${cdn.options.port}`,
+			endpoint: `http://localhost:${port}`,
 		},
 		gateway: {
-			endpointClient:
-				'${location.protocol === "https:" ? "wss://" : "ws://"}${location.hostname}:' + gateway.port,
-			endpoint: `ws://localhost:${gateway.port}`,
+			endpointClient: '${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}',
+			endpoint: `ws://localhost:${port}`,
 		},
 	});
 

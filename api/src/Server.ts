@@ -69,11 +69,12 @@ export class FosscordServer extends Server {
 
 		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
 
-		api.use("*", (req: Request, res: Response) => {
+		api.use("*", (req: Request, res: Response, next) => {
 			res.status(404).json({
 				message: "404: Not Found",
 				code: 0
 			});
+			next();
 		});
 
 		this.app = app;
