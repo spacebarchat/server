@@ -7,6 +7,7 @@ import OPCodeHandlers from "../opcodes";
 import { Payload, CLOSECODES } from "../util/Constants";
 import { instanceOf, Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
+import WS from "ws";
 
 const PayloadSchema = {
 	op: Number,
@@ -15,7 +16,7 @@ const PayloadSchema = {
 	$t: String,
 };
 
-export async function Message(this: WebSocket, buffer: Data) {
+export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
 	var data: Payload;
 
