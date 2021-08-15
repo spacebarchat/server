@@ -39,7 +39,7 @@ jobs:
 			- uses: actions/upload-artifact@v2
 			  with:
 				  name: ${{ matrix.artifact }}
-				  path: bundle/${{ matrix.artifact }}
+				  path: ${{ matrix.artifact }}
 
 	release:
 		needs: [insiders-build]
