@@ -24,18 +24,18 @@ jobs:
             artifact: fosscord-server-windows.exe
           - os: macos
             pre: |
-              ln -sf node_modules/@fosscord/api ../api 
-              ln -sf node_modules/@fosscord/cdn ../cdn 
-              ln -sf node_modules/@fosscord/gateway ../gateway 
-              ln -sf node_modules/@fosscord/util ../util
+              ln -sf ../api node_modules/@fosscord/api 
+              ln -sf ../cdn node_modules/@fosscord/cdn 
+              ln -sf ../gateway node_modules/@fosscord/gateway 
+              ln -sf ../util node_modules/@fosscord/util
             build: npx caxa -i .. -m 'This may take a while to run the first time, please wait...' --output 'fosscord-server.app' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/bundle/dist/start.js' && tar -czf 'fosscord-server-macos.app.tgz' 'fosscord-server.app'
             artifact: fosscord-server-macos.app.tgz
           - os: ubuntu
             pre: |
-              ln -sf node_modules/@fosscord/api ../api 
-              ln -sf node_modules/@fosscord/cdn ../cdn 
-              ln -sf node_modules/@fosscord/gateway ../gateway 
-              ln -sf node_modules/@fosscord/util ../util
+              ln -sf ../api node_modules/@fosscord/api 
+              ln -sf ../cdn node_modules/@fosscord/cdn 
+              ln -sf ../gateway node_modules/@fosscord/gateway 
+              ln -sf ../util node_modules/@fosscord/util
             build: npx caxa -i .. -m 'This may take a while to run the first time, please wait...' --output 'fosscord' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/bundle/dist/start.js' && tar -czf 'fosscord-server-linux.tgz' 'fosscord'
             artifact: fosscord-server-linux.tgz
     runs-on: ${{ matrix.os }}-latest
