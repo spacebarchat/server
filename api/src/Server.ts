@@ -64,7 +64,7 @@ export class FosscordServer extends Server {
 		this.app = api;
 
 		api.use(Authentication);
-		initRateLimits(api);
+		await initRateLimits(api);
 		await initTranslation(api);
 
 		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
