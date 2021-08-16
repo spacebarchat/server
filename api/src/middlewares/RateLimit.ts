@@ -21,7 +21,6 @@ TODO: different for methods (GET/POST)
 var Cache = new Map<string, Bucket>();
 const EventRateLimit = "ratelimit";
 
-// TODO: FIX with new event handling
 export default function RateLimit(opts: {
 	bucket?: string;
 	window: number;

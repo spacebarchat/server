@@ -24,7 +24,6 @@ declare global {
 		}
 	}
 }
-// TODO wenn client offen ist, wird http://localhost:8080/api/v9/users/@me/guild-events blockiert?
 
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
 	if (req.method === "OPTIONS") return res.sendStatus(204);

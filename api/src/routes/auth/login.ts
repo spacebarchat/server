@@ -9,8 +9,6 @@ import RateLimit from "../../middlewares/RateLimit";
 const router: Router = Router();
 export default router;
 
-// TODO: check if user is deleted --> prohibit login
-
 router.post(
 	"/",
 	check({
@@ -26,8 +24,6 @@ router.post(
 		const email = adjustEmail(login);
 		const query: any[] = [{ phone: login }];
 		if (email) query.push({ email });
-
-		// TODO: Rewrite this to have the proper config syntax on the new method
 
 		const config = Config.get();
 
