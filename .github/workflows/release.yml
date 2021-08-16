@@ -15,6 +15,7 @@ jobs:
         include:
           - os: windows
             pre: |
+              cmd
               del /F /S /Q node_modules/@fosscord
               mklink /D node_modules/@fosscord/api ../api
               mklink /D node_modules/@fosscord/cdn ../cdn
