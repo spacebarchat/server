@@ -1,5 +1,5 @@
-import { Channel, ConsumeMessage } from "amqplib";
-import { EVENT, Event, EventModel } from "../models";
+import { Channel } from "amqplib";
+import { EVENT, Event } from "../models";
 import { RabbitMQ } from "./RabbitMQ";
 import EventEmitter from "events";
 const events = new EventEmitter();
