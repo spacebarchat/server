@@ -10,7 +10,7 @@ import { Config } from "../../util/dist";
 
 const app = express();
 const server = http.createServer();
-const port = Number(process.env.PORT) || 8080;
+const port = Number(process.env.PORT) || 3001;
 const production = false;
 server.on("request", app);
 

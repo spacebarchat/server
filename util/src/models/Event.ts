@@ -10,8 +10,6 @@ import { Message, PartialEmoji } from "./Message";
 import { VoiceState } from "./VoiceState";
 import { ApplicationCommand } from "./Application";
 import { Interaction } from "./Interaction";
-import { Schema, model, Types, Document } from "mongoose";
-import db from "../util/Database";
 
 export interface Event {
 	guild_id?: string;
@@ -21,20 +19,6 @@ export interface Event {
 	event: EVENT;
 	data?: any;
 }
-
-export interface EventDocument extends Event, Document {}
-
-export const EventSchema = new Schema({
-	guild_id: String,
-	user_id: String,
-	channel_id: String,
-	created_at: { type: Date, required: true },
-	event: { type: String, required: true },
-	data: Object,
-});
-
-// @ts-ignore
-export const EventModel = db.model<EventDocument>("Event", EventSchema, "events");
 
 // ! Custom Events that shouldn't get sent to the client but processed by the server
 
