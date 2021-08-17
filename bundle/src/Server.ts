@@ -2,9 +2,9 @@ process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
 import http from "http";
-import { FosscordServer as APIServer } from "../../api";
-import { Server as GatewayServer } from "../../gateway";
-import { CDNServer } from "../../cdn/";
+import { FosscordServer as APIServer } from "@fosscord/api";
+import { Server as GatewayServer } from "@fosscord/gateway";
+import { CDNServer } from "@fosscord/cdn/";
 import express from "express";
 import { Config } from "../../util/dist";
 
