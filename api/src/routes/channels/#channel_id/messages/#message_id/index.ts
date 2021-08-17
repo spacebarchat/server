@@ -23,9 +23,7 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 
 	const opts = await handleMessage({
 		...body,
-		author_id: message.author_id,
-		channel_id,
-		id: message_id,
+		...message,
 		edited_timestamp: new Date()
 	});
 
