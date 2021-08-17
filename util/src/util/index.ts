@@ -1,3 +1,4 @@
+export * from "./Regex";
 export * from "./String";
 export * from "./BitField";
 export * from "./Intents";
