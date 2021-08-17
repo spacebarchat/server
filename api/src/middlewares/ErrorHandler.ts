@@ -3,6 +3,8 @@ import { HTTPError } from "lambert-server";
 import { FieldError } from "../util/instanceOf";
 
 export function ErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
+	if (!error) next();
+
 	try {
 		let code = 400;
 		let httpcode = code;
@@ -24,9 +26,11 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 
 		if (httpcode > 511) httpcode = 400;
 
+		console.error(`[Error] ${code} ${req.url} ${message}`, errors || error);
+
 		res.status(httpcode).json({ code: code, message, errors });
 	} catch (error) {
-		console.error(error);
+		console.error(`[Internal Server Error] 500`, error);
 		return res.status(500).json({ code: 500, message: "Internal Server Error" });
 	}
 }

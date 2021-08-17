@@ -5,7 +5,7 @@ import { Authentication, CORS } from "./middlewares/";
 import { Config, db, initEvent } from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import path from "path";
 import { initRateLimits } from "./middlewares/RateLimit";
@@ -69,7 +69,8 @@ export class FosscordServer extends Server {
 
 		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
 
-		api.use("*", (req: Request, res: Response, next) => {
+		api.use("*", (error: any, req: Request, res: Response, next: NextFunction) => {
+			if (error) return next(error);
 			res.status(404).json({
 				message: "404: Not Found",
 				code: 0
