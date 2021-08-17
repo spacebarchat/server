@@ -32,15 +32,19 @@ jobs:
           node-version: 14
       - run: |
           cd util
+          npm run build
           npm pack
           cd ../api
           npm i ../util/fosscord-util-1.0.0.tgz
+          npm run build
           npm pack
           cd ../cdn
           npm i ../util/fosscord-util-1.0.0.tgz
+          npm run build
           npm pack
           cd ../gateway
           npm i ../util/fosscord-util-1.0.0.tgz
+          npm run build
           npm pack
           cd ../bundle
           npm i ../util/fosscord-util-1.0.0.tgz
@@ -48,7 +52,7 @@ jobs:
           npm i ../gateway/fosscord-gateway-1.0.0.tgz
           npm i ../api/fosscord-api-1.0.0.tgz
           npm i caxa
-          npm run build
+          npm run build:bundle
           ${{ matrix.build }}
       - uses: actions/upload-artifact@v2
         with:
