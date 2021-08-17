@@ -1,9 +1,22 @@
-import { ChannelModel, Embed, emitEvent, Message, MessageCreateEvent, MessageUpdateEvent } from "@fosscord/util";
-import { Snowflake } from "@fosscord/util";
-import { MessageModel } from "@fosscord/util";
-import { PublicMemberProjection } from "@fosscord/util";
-import { toObject } from "@fosscord/util";
-import { getPermission } from "@fosscord/util";
+import {
+	ChannelModel,
+	Embed,
+	emitEvent,
+	Message,
+	MessageCreateEvent,
+	MessageUpdateEvent,
+	getPermission,
+	CHANNEL_MENTION,
+	toObject,
+	MessageModel,
+	Snowflake,
+	PublicMemberProjection,
+	USER_MENTION,
+	ROLE_MENTION,
+	RoleModel,
+	EVERYONE_MENTION,
+	HERE_MENTION
+} from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
@@ -35,11 +48,11 @@ export async function handleMessage(opts: Partial<Message>) {
 	// TODO: are tts messages allowed in dm channels? should permission be checked?
 
 	// @ts-ignore
-	const permissions = await getPermission(opts.author_id, channel.guild_id, opts.channel_id, { channel });
-	permissions.hasThrow("SEND_MESSAGES");
-	if (opts.tts) permissions.hasThrow("SEND_TTS_MESSAGES");
+	const permission = await getPermission(opts.author_id, channel.guild_id, opts.channel_id, { channel });
+	permission.hasThrow("SEND_MESSAGES");
+	if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
 	if (opts.message_reference) {
-		permissions.hasThrow("READ_MESSAGE_HISTORY");
+		permission.hasThrow("READ_MESSAGE_HISTORY");
 		if (opts.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
 		if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
 		// TODO: should be checked if the referenced message exists?
@@ -51,16 +64,47 @@ export async function handleMessage(opts: Partial<Message>) {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 
+	var content = opts.content;
+	var mention_channels_ids = [] as string[];
+	var mention_role_ids = [] as string[];
+	var mention_user_ids = [] as string[];
+	var mention_everyone = false;
+	var mention_everyone = false;
+
+	if (content) {
+		content = content.trim();
+		for (const [_, mention] of content.matchAll(CHANNEL_MENTION)) {
+			if (!mention_channels_ids.includes(mention)) mention_channels_ids.push(mention);
+		}
+
+		for (const [_, mention] of content.matchAll(USER_MENTION)) {
+			if (!mention_user_ids.includes(mention)) mention_user_ids.push(mention);
+		}
+
+		await Promise.all(
+			Array.from(content.matchAll(ROLE_MENTION)).map(async ([_, mention]) => {
+				const role = await RoleModel.findOne({ id: mention, guild_id: channel.guild_id }).exec();
+				if (role.mentionable || permission.has("MANAGE_ROLES")) {
+					mention_role_ids.push(mention);
+				}
+			})
+		);
+
+		if (permission.has("MENTION_EVERYONE")) {
+			mention_everyone = !!content.match(EVERYONE_MENTION) || !!content.match(HERE_MENTION);
+		}
+	}
+
 	// TODO: check and put it all in the body
 	return {
 		...opts,
 		guild_id: channel.guild_id,
 		channel_id: opts.channel_id,
-		// TODO: generate mentions and check permissions
-		mention_channels_ids: [],
-		mention_role_ids: [],
-		mention_user_ids: [],
-		attachments: opts.attachments || [], // TODO: message attachments
+		mention_channels_ids,
+		mention_role_ids,
+		mention_user_ids,
+		mention_everyone,
+		attachments: opts.attachments || [],
 		embeds: opts.embeds || [],
 		reactions: opts.reactions || [],
 		type: opts.type ?? 0
