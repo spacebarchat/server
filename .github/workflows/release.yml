@@ -32,6 +32,7 @@ jobs:
           node-version: 14
       - run: |
           cd util
+          npm i
           npm run build
           npm pack
           cd ../api
