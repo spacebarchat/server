@@ -6,7 +6,7 @@ const events = new EventEmitter();
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
 	const id = (payload.channel_id || payload.user_id || payload.guild_id) as string;
-	if (!id) console.error("event doesn't contain any id", payload);
+	if (!id) return console.error("event doesn't contain any id", payload);
 
 	if (RabbitMQ.connection) {
 		const data = typeof payload.data === "object" ? JSON.stringify(payload.data) : payload.data; // use rabbitmq for event transmission
@@ -16,7 +16,6 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 		const successful = RabbitMQ.channel?.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
 		if (!successful) throw new Error("failed to send event");
 	} else {
-		console.log("emit event", id);
 		events.emit(id, payload);
 	}
 }
@@ -46,10 +45,8 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 		return rabbitListen(opts?.channel || RabbitMQ.channel, event, callback, { acknowledge: opts?.acknowledge });
 	} else {
 		const cancel = () => {
-			console.log("cancel event", event);
 			events.removeListener(event, callback);
 		};
-		console.log("listen event", event);
 		events.addListener(event, (opts) => callback({ ...opts, cancel }));
 
 		return cancel;
