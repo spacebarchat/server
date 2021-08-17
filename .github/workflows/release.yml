@@ -65,11 +65,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Extract version
-        id: extract_version
-        uses: Saionaro/extract-package-version@v1.1.1
-        with:
-          path: api
       - uses: actions/download-artifact@v2
         with:
           name: fosscord-server-windows.exe

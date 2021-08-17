@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Config, UserModel } from "@fosscord/util";
 import { adjustEmail } from "./register";
-import RateLimit from "../../middlewares/RateLimit";
 
 const router: Router = Router();
 export default router;

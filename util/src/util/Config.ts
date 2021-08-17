@@ -211,11 +211,11 @@ export const DefaultOptions: DefaultOptions = {
 				},
 				webhook: {
 					count: 5,
-					window: 5,
+					window: 20,
 				},
 				channel: {
 					count: 5,
-					window: 5,
+					window: 20,
 				},
 				auth: {
 					login: {

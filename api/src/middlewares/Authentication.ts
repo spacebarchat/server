@@ -27,11 +27,12 @@ declare global {
 
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
 	if (req.method === "OPTIONS") return res.sendStatus(204);
-	if (req.url.startsWith("/invites") && req.method === "GET") return next(); // @ts-ignore
+	const url = req.url.replace(API_PREFIX, "");
+	if (url.startsWith("/invites") && req.method === "GET") return next(); // @ts-ignore
 	if (
 		NO_AUTHORIZATION_ROUTES.some((x) => {
-			if (typeof x === "string") return req.url.startsWith(x);
-			return x.test(req.url);
+			if (typeof x === "string") return url.startsWith(x);
+			return x.test(url);
 		})
 	)
 		return next();

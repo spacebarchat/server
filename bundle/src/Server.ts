@@ -33,9 +33,8 @@ async function main() {
 		},
 	});
 
-	await api.start();
-	await cdn.start();
-	await gateway.start();
+	await Promise.all([api.start(), cdn.start(), gateway.start()]);
+	console.log(`[Server] listening on port ${port}`);
 }
 
 main().catch(console.error);
