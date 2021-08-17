@@ -6,7 +6,7 @@ import { FosscordServer as APIServer } from "@fosscord/api";
 import { Server as GatewayServer } from "@fosscord/gateway";
 import { CDNServer } from "@fosscord/cdn/";
 import express from "express";
-import { Config } from "../../util/dist";
+import { Config } from "@fosscord/util";
 
 const app = express();
 const server = http.createServer();
