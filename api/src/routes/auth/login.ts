@@ -25,6 +25,8 @@ router.post(
 		const query: any[] = [{ phone: login }];
 		if (email) query.push({ email });
 
+		console.log(req.body, email);
+
 		const config = Config.get();
 
 		if (config.login.requireCaptcha && config.security.captcha.enabled) {
@@ -42,10 +44,11 @@ router.post(
 
 		const user = await UserModel.findOne(
 			{ $or: query },
-			{ user_data: { hash: true }, id: true, disabled: true, deleted: true, user_settings: { locale: true, theme: true } }
+			{ "user_data.hash": true, id: true, disabled: true, deleted: true, "user_settings.locale": true, "user_settings.theme": true }
 		)
 			.exec()
 			.catch((e) => {
+				console.log(e, query);
 				throw FieldErrors({ login: { message: req.t("auth:login.INVALID_LOGIN"), code: "INVALID_LOGIN" } });
 			});
 
