@@ -6,7 +6,7 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"postinstall": "npm run build",
-		"build": "npx tsc -b ."
+		"build": "npx typescript -b ."
 	},
 	"repository": {
 		"type": "git",
