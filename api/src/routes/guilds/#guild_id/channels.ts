@@ -24,7 +24,7 @@ router.post("/", check(ChannelModifySchema), async (req: Request, res: Response)
 
 	const channel = await createChannel({ ...body, guild_id }, req.user_id);
 
-	res.json(toObject(channel));
+	res.status(201).json(toObject(channel));
 });
 
 // TODO: check if parent_id exists
