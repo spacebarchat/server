@@ -12,3 +12,7 @@ npm start
 ```
 npm test
 ```
+
+#### common errors:
+
+-   db not connecting --> start mongod in a seperate terminal window
