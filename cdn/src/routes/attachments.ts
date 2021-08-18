@@ -11,7 +11,7 @@ const router = Router();
 router.post("/:channel_id", multer.single("file"), async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature)
 		throw new HTTPError("Invalid request signature");
-	if (!req.file) throw new HTTPError("Invalid request signature");
+	if (!req.file) throw new HTTPError("file missing");
 
 	const { buffer, mimetype, size, originalname, fieldname } = req.file;
 	const { channel_id } = req.params;
