@@ -24,21 +24,21 @@ const server = new CDNServer({ port: Number(process.env.PORT) || 3003 });
 
 beforeAll(async () => {
 	await server.start();
-	db.close();
 	return server;
 });
 
 afterAll(() => {
+	db.close();
 	return server.stop();
 });
 
-let attachment_url = "";
-
 describe("/ping", () => {
 	describe("GET", () => {
-		test("route should return pong", async () => {
-			const response = await request.get("/ping").set({ signature: Config.get().security.requestSignature });
-			expect(response.text).toBe("pong");
+		describe("without signature specified", () => {
+			test("route should respond with 200", async () => {
+				let response = await request.get("/ping");
+				expect(response.text).toBe("pong");
+			});
 		});
 	});
 });
@@ -51,7 +51,7 @@ describe("/attachments", () => {
 				expect(response.statusCode).toBe(400);
 			});
 		});
-		describe("without file specified and with signature specified", () => {
+		describe("with signature specified, without file specified", () => {
 			test("route should respond with 400", async () => {
 				const response = await request
 					.post("/attachments/123456789")
@@ -59,8 +59,8 @@ describe("/attachments", () => {
 				expect(response.statusCode).toBe(400);
 			});
 		});
-		describe("with file specified and with signature specified", () => {
-			test("route should respond with Content-type application/json and 200 and res.body.url", async () => {
+		describe("with signature specified, with file specified ", () => {
+			test("route should respond with Content-type: application/json, 200 and res.body.url", async () => {
 				const response = await request
 					.post("/attachments/123456789")
 					.set({ signature: Config.get().security.requestSignature })
@@ -72,19 +72,19 @@ describe("/attachments", () => {
 			});
 		});
 	});
-	// describe("GET", () => {
-	// 	describe("getting uploaded image by url returned by POST /attachments", () => {
-	// 		test("route should respond with 200", async () => {
-	// 			let response = await request
-	// 				.post("/attachments/123456789")
-	// 				.set({ signature: Config.get().security.requestSignature })
-	// 				.attach("file", __dirname + "/antman.jpg");
-	// 			console.warn(response.body.url.replace("http://localhost:3003", ""));
-	// 			response = request.get(response.body.url.replace("http://localhost:3003", ""));
-	// 			expect(response.statusCode).toBe(400);
-	// 		});
-	// 	});
-	// });
+	describe("GET", () => {
+		describe("getting uploaded image by url returned by POST /attachments", () => {
+			test("route should respond with 200", async () => {
+				let response = await request
+					.post("/attachments/123456789")
+					.set({ signature: Config.get().security.requestSignature })
+					.attach("file", __dirname + "/antman.jpg");
+				request.get(response.body.url.replace("http://localhost:3003", "")).then((x) => {
+					expect(x.statusCode).toBe(400);
+				});
+			});
+		});
+	});
 	describe("DELETE", () => {
 		describe("without signature specified", () => {});
 	});
