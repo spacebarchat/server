@@ -6,7 +6,7 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"test": "npm run build && jest --coverage ./tests",
-		"build": "npx tsc -b .",
+		"build": "npx typescript -b .",
 		"start": "npm run build && node dist/start.js"
 	},
 	"repository": {
