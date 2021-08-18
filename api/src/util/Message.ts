@@ -157,7 +157,6 @@ export async function postHandleMessage(message: Message) {
 	await Promise.all([
 		emitEvent({
 			event: "MESSAGE_UPDATE",
-			guild_id: message.guild_id,
 			channel_id: message.channel_id,
 			data
 		} as MessageUpdateEvent),
@@ -172,7 +171,7 @@ export async function sendMessage(opts: Partial<Message>) {
 		await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).populate("referenced_message").save()
 	);
 
-	await emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data, guild_id: message.guild_id } as MessageCreateEvent);
+	await emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data } as MessageCreateEvent);
 
 	postHandleMessage(data).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
 

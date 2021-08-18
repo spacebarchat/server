@@ -151,7 +151,8 @@ export async function addRole(user_id: string, guild_id: string, role_id: string
 			id: user_id,
 			guild_id: guild_id
 		},
-		{ $push: { roles: role_id } }
+		{ $push: { roles: role_id } },
+		{ new: true }
 	).exec();
 
 	if (!memberObj) throw new HTTPError("Member not found", 404);
@@ -178,7 +179,8 @@ export async function removeRole(user_id: string, guild_id: string, role_id: str
 			id: user_id,
 			guild_id: guild_id
 		},
-		{ $pull: { roles: role_id } }
+		{ $pull: { roles: role_id } },
+		{ new: true }
 	).exec();
 
 	if (!memberObj) throw new HTTPError("Member not found", 404);
@@ -197,13 +199,13 @@ export async function removeRole(user_id: string, guild_id: string, role_id: str
 export async function changeNickname(user_id: string, guild_id: string, nickname: string) {
 	const user = await getPublicUser(user_id);
 
-
 	var memberObj = await MemberModel.findOneAndUpdate(
 		{
 			id: user_id,
 			guild_id: guild_id
 		},
-		{ nick: nickname }
+		{ nick: nickname },
+		{ new: true }
 	).exec();
 
 	if (!memberObj) throw new HTTPError("Member not found", 404);

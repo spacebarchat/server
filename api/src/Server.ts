@@ -12,9 +12,6 @@ import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
 
-// this will return the new updated document for findOneAndUpdate
-mongoose.set("returnOriginal", false); // https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate
-
 export interface FosscordServerOptions extends ServerOptions {}
 
 declare global {

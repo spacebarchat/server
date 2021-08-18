@@ -12,8 +12,12 @@ const connection = mongoose.createConnection(uri, {
 	autoIndex: true,
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
-	useFindAndModify: false,
+	useFindAndModify: true,
 });
+
+// this will return the new updated document for findOneAndUpdate
+mongoose.set("returnOriginal", false); // https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndUpdate
+
 console.log(`[Database] connect: mongodb://${url.username}@${url.host}${url.pathname}${url.search}`);
 connection.once("open", () => {
 	console.log("[Database] connected");

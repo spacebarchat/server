@@ -43,7 +43,7 @@ router.patch("/", check(ChannelModifySchema), async (req: Request, res: Response
 	const permission = await getPermission(req.user_id, undefined, channel_id);
 	permission.hasThrow("MANAGE_CHANNELS");
 
-	const channel = await ChannelModel.findOneAndUpdate({ id: channel_id }, payload).exec();
+	const channel = await ChannelModel.findOneAndUpdate({ id: channel_id }, payload, { new: true }).exec();
 
 	const data = toObject(channel);
 

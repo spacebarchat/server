@@ -36,7 +36,7 @@ router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response)
 		// TODO: check if user has permission to add role
 	}
 
-	const member = await MemberModel.findOneAndUpdate({ id: member_id, guild_id }, body).exec();
+	const member = await MemberModel.findOneAndUpdate({ id: member_id, guild_id }, body, { new: true }).exec();
 
 	await emitEvent({
 		event: "GUILD_MEMBER_UPDATE",

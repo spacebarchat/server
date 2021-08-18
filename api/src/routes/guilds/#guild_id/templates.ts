@@ -79,7 +79,7 @@ router.put("/:code", async (req: Request, res: Response) => {
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
-	const template = await TemplateModel.findOneAndUpdate({ code }, { serialized_source_guild: guild }).exec();
+	const template = await TemplateModel.findOneAndUpdate({ code }, { serialized_source_guild: guild }, { new: true }).exec();
 
 	res.json(toObject(template)).send();
 });
@@ -91,7 +91,11 @@ router.patch("/:code", check(TemplateModifySchema), async (req: Request, res: Re
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
-	const template = await TemplateModel.findOneAndUpdate({ code }, { name: req.body.name, description: req.body.description }).exec();
+	const template = await TemplateModel.findOneAndUpdate(
+		{ code },
+		{ name: req.body.name, description: req.body.description },
+		{ new: true }
+	).exec();
 
 	res.json(toObject(template)).send();
 });

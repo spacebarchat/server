@@ -16,7 +16,7 @@ router.get("/:code", async (req: Request, res: Response) => {
 router.post("/:code", async (req: Request, res: Response) => {
 	const { code } = req.params;
 
-	const invite = await InviteModel.findOneAndUpdate({ code }, { $inc: { uses: 1 } }).exec();
+	const invite = await InviteModel.findOneAndUpdate({ code }, { $inc: { uses: 1 } }, { new: true }).exec();
 	if (!invite) throw new HTTPError("Unknown Invite", 404);
 
 	await addMember(req.user_id, invite.guild_id);

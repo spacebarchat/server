@@ -57,7 +57,7 @@ router.delete("/:message_id", async (req: Request, res: Response) => {
 	permission.hasThrow("VIEW_CHANNEL");
 	if (channel.guild_id) permission.hasThrow("MANAGE_MESSAGES");
 
-	const message = toObject(await MessageModel.findOneAndUpdate({ id: message_id }, { pinned: false }).exec());
+	const message = toObject(await MessageModel.findOneAndUpdate({ id: message_id }, { pinned: false }, { new: true }).exec());
 
 	await emitEvent({
 		event: "MESSAGE_UPDATE",
