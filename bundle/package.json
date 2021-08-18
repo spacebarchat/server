@@ -6,7 +6,7 @@
 	"scripts": {
 		"postinstall": "cd ../util && npm i && cd ../api && npm i && cd ../cdn && npm i && cd ../gateway && npm i",
 		"build": "npm run build:api && npm run build:cdn && npm run build:gateway && npm run build:bundle",
-		"build:bundle": "npx typescript -b .",
+		"build:bundle": "npx tsc -b .",
 		"build:api": "cd ../api/ && npm run build",
 		"build:cdn": "cd ../cdn/ && npm run build",
 		"build:gateway": "cd ../gateway/ && npm run build",

@@ -6,7 +6,7 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "npx typescript -b .",
+		"build": "npx tsc -b .",
 		"start": "npm run build && node dist/start.js"
 	},
 	"repository": {

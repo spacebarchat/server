@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "npm run build && node dist/test.js",
-		"build": "npx typescript -b .",
+		"build": "npx tsc -b .",
 		"start": "npm run build && node dist/start.js"
 	},
 	"keywords": [],

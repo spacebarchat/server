@@ -8,7 +8,7 @@
 		"test": "jest",
 		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/start",
-		"build": "npx typescript -b .",
+		"build": "npx tsc -b .",
 		"build-docker": "tsc -p tsconfig-docker.json",
 		"dev": "tsnd --respawn src/start.ts"
 	},
