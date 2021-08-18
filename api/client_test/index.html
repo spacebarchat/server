@@ -29,17 +29,20 @@
 				NETWORKING_ENDPOINT: "//router.discordapp.net",
 				RTC_LATENCY_ENDPOINT: "//latency.discord.media/rtc",
 				PROJECT_ENV: "production",
-				REMOTE_AUTH_ENDPOINT: "//remote-auth-gateway.discord.gg",
+				REMOTE_AUTH_ENDPOINT: "//localhost:3020",
 				SENTRY_TAGS: { buildId: "75e36d9", buildType: "normal" },
 				MIGRATION_SOURCE_ORIGIN: "https://discordapp.com",
 				MIGRATION_DESTINATION_ORIGIN: "https://discord.com",
 				HTML_TIMESTAMP: Date.now(),
 				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
 			};
+			// TODO: remote auth
+			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
 			localStorage.removeItem("gatewayURL");
+
 			localStorage.setItem(
 				"DeveloperOptionsStore",
-				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":false,"logAnalyticsEvents":false,"sourceMapsEnabled":false,"axeEnabled":false}`
+				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
 			);
 		</script>
 		<script src="/assets/042023d8ee73c0c3fd74.js"></script>
