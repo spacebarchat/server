@@ -25,3 +25,5 @@ server
 		console.log("[Server] started on :" + server.options.port);
 	})
 	.catch((e) => console.error("[Server] Error starting: ", e));
+
+module.exports = server;
