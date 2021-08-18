@@ -4,7 +4,7 @@ try {
 	erlpack = require("erlpack");
 } catch (error) {}
 import OPCodeHandlers from "../opcodes";
-import { Payload, CLOSECODES } from "../util/Constants";
+import { Payload, CLOSECODES, OPCODES } from "../util/Constants";
 import { instanceOf, Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";
@@ -29,13 +29,13 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	// @ts-ignore
 	const OPCodeHandler = OPCodeHandlers[data.op];
 	if (!OPCodeHandler) {
-		console.error("Unknown_opcode: " + data.op);
+		console.error("[Gateway] Unkown opcode " + data.op);
 		// TODO: if all opcodes are implemented comment this out:
 		// this.close(CLOSECODES.Unknown_opcode);
 		return;
 	}
 
-	console.log("got: " + OPCodeHandler.name);
+	console.log("[Gateway] Opcode " + OPCODES[data.op]);
 
 	try {
 		return await OPCodeHandler.call(this, data);
