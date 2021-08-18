@@ -80,12 +80,22 @@ describe("/attachments", () => {
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
 				request.get(response.body.url.replace("http://localhost:3003", "")).then((x) => {
-					expect(x.statusCode).toBe(400);
+					expect(x.statusCode).toBe(200);
 				});
 			});
 		});
 	});
 	describe("DELETE", () => {
-		describe("without signature specified", () => {});
+		describe("deleting uploaded image by url returned by POST /attachments", () => {
+			test("route should respond with res.body.success", async () => {
+				let response = await request
+					.post("/attachments/123456789")
+					.set({ signature: Config.get().security.requestSignature })
+					.attach("file", __dirname + "/antman.jpg");
+				request.delete(response.body.url.replace("http://localhost:3003", "")).then((x) => {
+					expect(x.body.success).toBeDefined();
+				});
+			});
+		});
 	});
 });
