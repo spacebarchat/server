@@ -2,6 +2,7 @@ import path from "path";
 import dotenv from "dotenv";
 import fse from "fs-extra";
 dotenv.config();
+import { CDNServer } from "./Server";
 
 if (!process.env.STORAGE_PROVIDER) process.env.STORAGE_PROVIDER = "file";
 // TODO:nodejs path.join trailing slash windows compatible
@@ -15,8 +16,6 @@ if (process.env.STORAGE_PROVIDER === "file") {
 	}
 	fse.ensureDirSync(process.env.STORAGE_LOCATION);
 }
-
-import { CDNServer } from "./Server";
 
 const server = new CDNServer({ port: Number(process.env.PORT) || 3003 });
 server
