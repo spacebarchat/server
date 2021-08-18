@@ -34,29 +34,36 @@ router.patch(
 	async (req: Request, res: Response) => {
 		// changes guild channel position
 		const { guild_id } = req.params;
-		const body = req.body as { id: string; position?: number; lock_permissions?: boolean; parent_id?: string };
-		body.position = Math.floor(body.position || 0);
-		if (!body.position && !body.parent_id) throw new HTTPError(`You need to at least specify position or parent_id`, 400);
+		const body = req.body as { id: string; position?: number; lock_permissions?: boolean; parent_id?: string }[];
 
 		const permission = await getPermission(req.user_id, guild_id);
 		permission.hasThrow("MANAGE_CHANNELS");
 
-		const opts: any = {};
-		if (body.position) opts.position = body.position;
+		await Promise.all([
+			body.map(async (x) => {
+				if (!x.position && !x.parent_id) throw new HTTPError(`You need to at least specify position or parent_id`, 400);
 
-		if (body.parent_id) {
-			opts.parent_id = body.parent_id;
-			const parent_channel = await ChannelModel.findOne({ id: body.parent_id, guild_id }, { permission_overwrites: true }).exec();
-			if (body.lock_permissions) {
-				opts.permission_overwrites = parent_channel.permission_overwrites;
-			}
-		}
+				const opts: any = {};
+				if (x.position) opts.position = x.position;
 
-		const channel = await ChannelModel.findOneAndUpdate({ id: req.body, guild_id }, opts, { new: true }).exec();
+				if (x.parent_id) {
+					opts.parent_id = x.parent_id;
+					const parent_channel = await ChannelModel.findOne(
+						{ id: x.parent_id, guild_id },
+						{ permission_overwrites: true }
+					).exec();
+					if (x.lock_permissions) {
+						opts.permission_overwrites = parent_channel.permission_overwrites;
+					}
+				}
 
-		await emitEvent({ event: "CHANNEL_UPDATE", data: toObject(channel), channel_id: body.id, guild_id } as ChannelUpdateEvent);
+				const channel = await ChannelModel.findOneAndUpdate({ id: x.id, guild_id }, opts, { new: true }).exec();
 
-		res.json(toObject(channel));
+				await emitEvent({ event: "CHANNEL_UPDATE", data: toObject(channel), channel_id: x.id, guild_id } as ChannelUpdateEvent);
+			})
+		]);
+
+		res.sendStatus(204);
 	}
 );
 
