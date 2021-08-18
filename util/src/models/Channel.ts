@@ -26,6 +26,7 @@ export const ChannelSchema = new Schema({
 	last_pin_timestamp: Date,
 	nsfw: Boolean,
 	rate_limit_per_user: Number,
+	default_auto_archive_duration: Number,
 	topic: String,
 	permission_overwrites: [
 		{
@@ -60,6 +61,7 @@ export interface Channel {
 export interface TextBasedChannel {
 	last_message_id?: string;
 	last_pin_timestamp?: number;
+	default_auto_archive_duration?: number;
 }
 
 export interface GuildChannel extends Channel {

@@ -18,6 +18,8 @@ export const ChannelModifySchema = {
 		}
 	],
 	$parent_id: String,
+	$rtc_region: String,
+	$default_auto_archive_duration: Number,
 	$id: String, // kept for backwards compatibility does nothing (need for guild create)
 	$nsfw: Boolean
 };
@@ -49,6 +51,8 @@ export interface ChannelModifySchema {
 	parent_id?: string;
 	id?: string; // is not used (only for guild create)
 	nsfw?: boolean;
+	rtc_region?: string;
+	default_auto_archive_duration?: number;
 }
 
 export const ChannelGuildPositionUpdateSchema = [
