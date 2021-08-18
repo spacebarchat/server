@@ -108,7 +108,8 @@ router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Res
 			guild_id: guild_id
 		},
 		// @ts-ignore
-		body
+		body,
+		{ new: true }
 	).exec();
 
 	await emitEvent({

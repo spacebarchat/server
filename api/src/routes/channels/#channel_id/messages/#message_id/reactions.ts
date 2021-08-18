@@ -43,7 +43,7 @@ router.delete("/", async (req: Request, res: Response) => {
 	const permissions = await getPermission(req.user_id, undefined, channel_id);
 	permissions.hasThrow("MANAGE_MESSAGES");
 
-	await MessageModel.findOneAndUpdate({ id: message_id, channel_id }, { reactions: [] }).exec();
+	await MessageModel.findOneAndUpdate({ id: message_id, channel_id }, { reactions: [] }, { new: true }).exec();
 
 	await emitEvent({
 		event: "MESSAGE_REACTION_REMOVE_ALL",

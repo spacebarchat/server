@@ -1,16 +1,5 @@
 import { Router, Response, Request } from "express";
-import {
-	ChannelCreateEvent,
-	ChannelModel,
-	ChannelType,
-	GuildModel,
-	Snowflake,
-	toObject,
-	ChannelUpdateEvent,
-	AnyChannel,
-	getPermission,
-	emitEvent
-} from "@fosscord/util";
+import { ChannelModel, toObject, ChannelUpdateEvent, getPermission, emitEvent } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
 
@@ -63,7 +52,7 @@ router.patch(
 			}
 		}
 
-		const channel = await ChannelModel.findOneAndUpdate({ id: req.body, guild_id }, opts).exec();
+		const channel = await ChannelModel.findOneAndUpdate({ id: req.body, guild_id }, opts, { new: true }).exec();
 
 		await emitEvent({ event: "CHANNEL_UPDATE", data: toObject(channel), channel_id: body.id, guild_id } as ChannelUpdateEvent);
 

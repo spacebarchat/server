@@ -5,7 +5,8 @@ import {
 	emitEvent,
 	getPermission,
 	MemberModel,
-	RoleModel
+	RoleModel,
+	toObject
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
@@ -47,12 +48,12 @@ router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, 
 	overwrite.deny = body.deny;
 
 	// @ts-ignore
-	channel = await ChannelModel.findOneAndUpdate({ id: channel_id }, channel).exec();
+	channel = await ChannelModel.findOneAndUpdate({ id: channel_id }, channel, { new: true }).exec();
 
 	await emitEvent({
 		event: "CHANNEL_UPDATE",
 		channel_id,
-		data: channel
+		data: toObject(channel)
 	} as ChannelUpdateEvent);
 
 	return res.sendStatus(204);
@@ -65,13 +66,17 @@ router.delete("/:overwrite_id", async (req: Request, res: Response) => {
 	const permissions = await getPermission(req.user_id, undefined, channel_id);
 	permissions.hasThrow("MANAGE_ROLES");
 
-	const channel = await ChannelModel.findOneAndUpdate({ id: channel_id }, { $pull: { permission_overwrites: { id: overwrite_id } } });
+	const channel = await ChannelModel.findOneAndUpdate(
+		{ id: channel_id },
+		{ $pull: { permission_overwrites: { id: overwrite_id } } },
+		{ new: true }
+	);
 	if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
 	await emitEvent({
 		event: "CHANNEL_UPDATE",
 		channel_id,
-		data: channel
+		data: toObject(channel)
 	} as ChannelUpdateEvent);
 
 	return res.sendStatus(204);
