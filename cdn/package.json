@@ -5,7 +5,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "npm run build && jest --coverage ./tests",
 		"build": "npx tsc -b .",
 		"start": "npm run build && node dist/start.js"
 	},
@@ -48,12 +48,19 @@
 		"file-type": "^16.5.0",
 		"fs-extra": "^10.0.0",
 		"image-size": "^1.0.0",
+		"jest": "^27.0.6",
 		"lambert-db": "^1.2.3",
 		"lambert-server": "^1.2.8",
 		"missing-native-js-functions": "^1.2.10",
 		"multer": "^1.4.2",
 		"node-fetch": "^2.6.1",
+		"supertest": "^6.1.6",
 		"typescript": "^4.1.2",
 		"uuid": "^8.3.2"
+	},
+	"jest": {
+		"setupFilesAfterEnv": [
+			"<rootDir>/jest/setup.js"
+		]
 	}
 }
