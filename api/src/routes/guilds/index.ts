@@ -53,7 +53,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		system_channel_flags: 0,
 		system_channel_id: undefined,
 		unavailable: false,
-		vanity_url: undefined,
+		vanity_url_code: undefined,
 		verification_level: 0,
 		welcome_screen: {
 			enabled: false,
