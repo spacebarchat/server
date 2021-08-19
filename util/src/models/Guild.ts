@@ -32,7 +32,7 @@ export interface Guild {
 	// channels: GuildChannel[]; // * Channels are stored in a seperate collection
 	// emojis: Emoji[];  // * Emojis are stored in a seperate collection
 	// voice_states: []; // * voice_states are stored in a seperate collection
-    //TODO:
+	//TODO:
 	presences?: object[];
 	mfa_level?: number;
 	name: string;
@@ -47,19 +47,17 @@ export interface Guild {
 	system_channel_flags?: number;
 	system_channel_id?: string;
 	unavailable?: boolean;
-	vanity_url?: {
-		code: string;
-		uses: number;
-	};
+	vanity_url_code?: string;
 	verification_level?: number;
 	welcome_screen: {
 		enabled: boolean;
 		description: string;
-		welcome_channels: { 
-		description: string;
-	    emoji_id?: string;
-	    emoji_name: string;
-	    channel_id: string }[];
+		welcome_channels: {
+			description: string;
+			emoji_id?: string;
+			emoji_name: string;
+			channel_id: string;
+		}[];
 	};
 	widget_channel_id?: string;
 	widget_enabled?: boolean;
@@ -97,20 +95,20 @@ export const GuildSchema = new Schema({
 	system_channel_flags: Number,
 	system_channel_id: String,
 	unavailable: Boolean,
-	vanity_url: {
-		code: String,
-		uses: Number
-	},
+	vanity_url_code: String,
 	verification_level: Number,
 	voice_states: { type: [Object], default: [] },
 	welcome_screen: {
 		enabled: Boolean,
 		description: String,
-		welcome_channels: [{ 
-		description: String,
-	    emoji_id: String,
-	    emoji_name: String,
-	    channel_id: String }],
+		welcome_channels: [
+			{
+				description: String,
+				emoji_id: String,
+				emoji_name: String,
+				channel_id: String,
+			},
+		],
 	},
 	widget_channel_id: String,
 	widget_enabled: Boolean,
