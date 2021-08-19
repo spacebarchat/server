@@ -10,6 +10,7 @@ if (process.arch == "ia32") {
 }
 
 export async function setupDatabase() {
+	if (process.env.MONGO_URL) return; // exit because the user provides his own mongodb
 	const dbPath = path.join(__dirname, "..", "..", "db");
 	const dbName = "fosscord";
 	const storageEngine = "wiredTiger";
