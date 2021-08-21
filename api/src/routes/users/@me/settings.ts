@@ -8,7 +8,8 @@ const router = Router();
 router.patch("/", check(UserSettingsSchema), async (req: Request, res: Response) => {
 	const body = req.body as UserSettings;
 
-	await UserModel.updateOne({ id: req.user_id }, body).exec();
+	// only users can update user settings
+	await UserModel.updateOne({ id: req.user_id, bot: false }, body).exec();
 
 	res.sendStatus(204);
 });

@@ -9,3 +9,4 @@ export * from "./UserFlags";
 export * from "./toBigInt";
 export * from "./RabbitMQ";
 export * from "./Event";
+export * from "./checkToken";

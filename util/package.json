@@ -45,6 +45,9 @@
 		"mongoose": "^5.13.7",
 		"mongoose-autopopulate": "^0.12.3",
 		"node-fetch": "^2.6.1",
+		"reflect-metadata": "^0.1.13",
+		"sqlite3": "^5.0.2",
+		"typeorm": "^0.2.37",
 		"typescript": "^4.1.3"
 	}
 }
