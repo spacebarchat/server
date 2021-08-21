@@ -1,8 +1,7 @@
-import { Activity, ActivitySchema } from "./Activity";
+import { Column, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Activity } from "./Activity";
+import { BaseClass } from "./BaseClass";
 import { ClientStatus, Status } from "./Status";
-import { Schema, Types, Document } from "mongoose";
-import db from "../util/Database";
-import toBigInt from "../util/toBigInt";
 
 export const PublicUserProjection = {
 	username: true,
@@ -16,51 +15,107 @@ export const PublicUserProjection = {
 	bot: true,
 };
 
-export interface User {
+export class User extends BaseClass {
+	@PrimaryGeneratedColumn()
 	id: string;
-	username: string; // username max length 32, min 2
+
+	@Column()
+	username: string; // username max length 32, min 2 (should be configurable)
+
+	@Column()
 	discriminator: string; // #0001 4 digit long string from #0001 - #9999
+
+	@Column()
 	avatar: string | null; // hash of the user avatar
+
+	@Column()
 	accent_color: number | null; // banner color of user
-	banner: string | null;
+
+	@Column()
+	banner: string | null; // hash of the user banner
+
+	@Column()
 	phone: string | null; // phone number of the user
+
+	@Column()
 	desktop: boolean; // if the user has desktop app installed
+
+	@Column()
 	mobile: boolean; // if the user has mobile app installed
+
+	@Column()
 	premium: boolean; // if user bought nitro
+
+	@Column()
 	premium_type: number; // nitro level
+
+	@Column()
 	bot: boolean; // if user is bot
-	bio: string; // short description of the user (max 190 chars)
-	system: boolean; // shouldn't be used, the api sents this field type true, if the genetaed message comes from a system generated author
+
+	@Column()
+	bio: string; // short description of the user (max 190 chars -> should be configurable)
+
+	@Column()
+	system: boolean; // shouldn't be used, the api sents this field type true, if the generated message comes from a system generated author
+
+	@Column()
 	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
+
+	@Column()
 	mfa_enabled: boolean; // if multi factor authentication is enabled
+
+	@Column()
 	created_at: Date; // registration date
+
+	@Column()
 	verified: boolean; // if the user is offically verified
+
+	@Column()
 	disabled: boolean; // if the account is disabled
+
+	@Column()
 	deleted: boolean; // if the user was deleted
+
+	@Column()
 	email: string | null; // email of the user
+
+	@Column()
 	flags: bigint; // UserFlags
+
+	@Column()
 	public_flags: bigint;
-	user_settings: UserSettings;
+
+	@Column("simple-array") // string in simple-array must not contain commas
 	guilds: string[]; // array of guild ids the user is part of
+
+	@Column("simple-json")
+	user_settings: UserSettings;
+
+	@Column("simple-json")
 	user_data: UserData;
+
+	@Column("simple-json")
 	presence: {
 		status: Status;
 		activities: Activity[];
 		client_status: ClientStatus;
 	};
+
+	@Column("simple-json")
+	relationships: Relationship[];
+
+	@Column("simple-json")
+	connected_accounts: ConnectedAccount[];
 }
 
-// Private user data:
+// @ts-ignore
+global.User = User;
+
+// Private user data that should never get sent to the client
 export interface UserData {
 	valid_tokens_since: Date; // all tokens with a previous issue date are invalid
-	relationships: Relationship[];
-	connected_accounts: ConnectedAccount[];
 	hash: string; // hash of the password, salt is saved in password (bcrypt)
 	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
-}
-
-export interface UserDocument extends User, Document {
-	id: string;
 }
 
 export interface PublicUser {
@@ -143,110 +198,3 @@ export interface UserSettings {
 	theme: "dark" | "white"; // dark
 	timezone_offset: number; // e.g -60
 }
-
-export const UserSchema = new Schema({
-	id: String,
-	username: String,
-	discriminator: String,
-	avatar: String,
-	accent_color: Number,
-	banner: String,
-	phone: String,
-	desktop: Boolean,
-	mobile: Boolean,
-	premium: Boolean,
-	premium_type: Number,
-	bot: Boolean,
-	bio: String,
-	system: Boolean,
-	nsfw_allowed: Boolean,
-	mfa_enabled: Boolean,
-	created_at: Date,
-	verified: Boolean,
-	disabled: Boolean,
-	deleted: Boolean,
-	email: String,
-	flags: { type: String, get: toBigInt }, // TODO: automatically convert Types.Long to BitField of UserFlags
-	public_flags: { type: String, get: toBigInt },
-	guilds: [String], // array of guild ids the user is part of
-	user_data: {
-		fingerprints: [String],
-		hash: String, // hash of the password, salt is saved in password (bcrypt)
-		valid_tokens_since: Date, // all tokens with a previous issue date are invalid
-		relationships: [
-			{
-				id: { type: String, required: true },
-				nickname: String,
-				type: { type: Number },
-			},
-		],
-		connected_accounts: [
-			{
-				access_token: String,
-				friend_sync: Boolean,
-				id: String,
-				name: String,
-				revoked: Boolean,
-				show_activity: Boolean,
-				type: { type: String },
-				verifie: Boolean,
-				visibility: Number,
-			},
-		],
-	},
-	user_settings: {
-		afk_timeout: Number,
-		allow_accessibility_detection: Boolean,
-		animate_emoji: Boolean,
-		animate_stickers: Number,
-		contact_sync_enabled: Boolean,
-		convert_emoticons: Boolean,
-		custom_status: {
-			emoji_id: String,
-			emoji_name: String,
-			expires_at: Number,
-			text: String,
-		},
-		default_guilds_restricted: Boolean,
-		detect_platform_accounts: Boolean,
-		developer_mode: Boolean,
-		disable_games_tab: Boolean,
-		enable_tts_command: Boolean,
-		explicit_content_filter: Number,
-		friend_source_flags: { all: Boolean },
-		gateway_connected: Boolean,
-		gif_auto_play: Boolean,
-		// every top guild is displayed as a "folder"
-		guild_folders: [
-			{
-				color: Number,
-				guild_ids: [String],
-				id: Number,
-				name: String,
-			},
-		],
-		guild_positions: [String], // guild ids ordered by position
-		inline_attachment_media: Boolean,
-		inline_embed_media: Boolean,
-		locale: String, // en_US
-		message_display_compact: Boolean,
-		native_phone_integration_enabled: Boolean,
-		render_embeds: Boolean,
-		render_reactions: Boolean,
-		restricted_guilds: [String],
-		show_current_game: Boolean,
-		status: String,
-		stream_notifications_enabled: Boolean,
-		theme: String, // dark
-		timezone_offset: Number, // e.g -60,
-	},
-
-	presence: {
-		status: String,
-		activities: [ActivitySchema],
-		client_status: ClientStatus,
-	},
-});
-
-// @ts-ignore
-export const UserModel = db.model<UserDocument>("User", UserSchema, "users");

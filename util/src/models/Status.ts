@@ -5,9 +5,3 @@ export interface ClientStatus {
 	mobile?: string; // e.g. iOS/Android
 	web?: string; // e.g. browser, bot account
 }
-
-export const ClientStatus = {
-	desktop: String,
-	mobile: String,
-	web: String,
-};
