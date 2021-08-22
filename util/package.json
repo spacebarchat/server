@@ -37,6 +37,7 @@
 	"dependencies": {
 		"ajv": "^8.5.0",
 		"amqplib": "^0.8.0",
+		"class-validator": "^0.13.1",
 		"dot-prop": "^6.0.1",
 		"env-paths": "^2.2.1",
 		"jsonwebtoken": "^8.5.1",
@@ -47,7 +48,8 @@
 		"node-fetch": "^2.6.1",
 		"reflect-metadata": "^0.1.13",
 		"sqlite3": "^5.0.2",
+		"ts-transform-json-schema": "^2.0.3",
 		"typeorm": "^0.2.37",
-		"typescript": "^4.1.3"
+		"typescript": "^4.3.5"
 	}
 }
