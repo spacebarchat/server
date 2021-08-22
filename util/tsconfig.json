@@ -67,6 +67,12 @@
 		"skipLibCheck": true /* Skip type checking of declaration files. */,
 		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
 		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true
+		"experimentalDecorators": true,
+		"plugins": [
+			{
+				"transform": "ts-transform-json-schema",
+				"type": "program"
+			}
+		]
 	}
 }
