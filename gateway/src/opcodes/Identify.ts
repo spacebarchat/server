@@ -1,18 +1,6 @@
 import { CLOSECODES, Payload, OPCODES } from "../util/Constants";
 import WebSocket from "../util/WebSocket";
-import {
-	ChannelModel,
-	checkToken,
-	GuildModel,
-	Intents,
-	MemberDocument,
-	MemberModel,
-	ReadyEventData,
-	UserModel,
-	toObject,
-	EVENTEnum,
-	Config,
-} from "@fosscord/util";
+import { Channel, checkToken, Guild, Intents, Member, ReadyEventData, User, EVENTEnum, Config } from "@fosscord/util";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
 import { Send } from "../util/Send";
@@ -54,7 +42,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}
 	}
 
-	const members = toObject(await MemberModel.find({ id: this.user_id }).exec());
+	const members = await Member.find({ id: this.user_id });
 	const merged_members = members.map((x: any) => {
 		const y = { ...x, user_id: x.id };
 		delete y.settings;
@@ -63,8 +51,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	}) as MemberDocument[][];
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
-	const channels = await ChannelModel.find({ recipient_ids: this.user_id }).exec();
-	const user = await UserModel.findOne({ id: this.user_id }).exec();
+	const channels = await Channel.find({ recipient_ids: this.user_id });
+	const user = await User.findOneOrFail({ id: this.user_id });
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
 	const public_user = {
@@ -76,10 +64,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		bot: user.bot,
 	};
 
-	const guilds = await GuildModel.find({ id: { $in: user.guilds } })
-		.populate({ path: "joined_at", match: { id: this.user_id } })
-		.exec();
-
+	const guilds = await Guild.find({ id: { $in: user.guilds } }).populate({
+		path: "joined_at",
+		match: { id: this.user_id },
+	});
 	const privateUser = {
 		avatar: user.avatar,
 		mobile: user.mobile,
@@ -104,9 +92,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const d: ReadyEventData = {
 		v: 8,
 		user: privateUser,
-		user_settings: user.user_settings,
+		user_settings: user.settings,
 		// @ts-ignore
-		guilds: toObject(guilds).map((x) => {
+		guilds: guilds.map((x) => {
 			// @ts-ignore
 			x.guild_hashes = {
 				channels: { omitted: false, hash: "y4PV2fZ0gmo" },
@@ -131,7 +119,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			version: 642,
 		},
 		// @ts-ignore
-		private_channels: toObject(channels).map((x: ChannelDocument) => {
+		private_channels: channels.map((x): ChannelDocument => {
 			x.recipient_ids = x.recipients.map((y: any) => y.id);
 			delete x.recipients;
 			return x;
@@ -144,17 +132,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				consented: false, // TODO
 			},
 		},
-		country_code: user.user_settings.locale,
+		country_code: user.settings.locale,
 		friend_suggestion_count: 0, // TODO
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
-		users: [
-			public_user,
-			...toObject(channels)
-				.map((x: any) => x.recipients)
-				.flat(),
-		].unique(), // TODO
+		users: [public_user, ...channels.map((x: any) => x.recipients).flat()].unique(), // TODO
 		merged_members: merged_members,
 		// shard // TODO: only for bots sharding
 		// application // TODO for applications

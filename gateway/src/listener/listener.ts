@@ -1,10 +1,10 @@
 import {
 	db,
 	Event,
-	UserModel,
+	User,
 	getPermission,
 	Permissions,
-	ChannelModel,
+	Channel,
 	RabbitMQ,
 	EVENT,
 	listenEvent,
@@ -27,11 +27,11 @@ import { Channel } from "amqplib";
 
 // TODO: use already queried guilds/channels of Identify and don't fetch them again
 export async function setupListener(this: WebSocket) {
-	const user = await UserModel.findOne({ id: this.user_id }, { guilds: true }).exec();
-	const channels = await ChannelModel.find(
+	const user = await User.findOneOrFail({ id: this.user_id }, { guilds: true });
+	const channels = await Channel.find(
 		{ $or: [{ recipient_ids: this.user_id }, { guild_id: { $in: user.guilds } }] },
 		{ id: true, permission_overwrites: true }
-	).exec();
+	);
 	const dm_channels = channels.filter((x) => !x.guild_id);
 	const guild_channels = channels.filter((x) => x.guild_id);
 
