@@ -1,11 +1,8 @@
 // https://github.com/discordjs/discord.js/blob/master/src/util/Permissions.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
-import { MemberDocument, MemberModel } from "../models/Member";
-import { ChannelDocument, ChannelModel } from "../models/Channel";
-import { ChannelPermissionOverwrite } from "../models/Channel";
-import { Role, RoleDocument, RoleModel } from "../models/Role";
+import { In } from "typeorm";
+import { Channel, ChannelPermissionOverwrite, Guild, Member, Role } from "../entities";
 import { BitField } from "./BitField";
-import { GuildDocument, GuildModel } from "../models/Guild";
 // TODO: check role hierarchy permission
 
 var HTTPError: any;
@@ -138,12 +135,12 @@ export class Permissions extends BitField {
 			// ~ operator inverts deny (e.g. 011 -> 100)
 			// & operator only allows 1 for both ~deny and permission (e.g. 010 & 100 -> 000)
 			// | operators adds both together (e.g. 000 + 100 -> 100)
-		}, init || 0n);
+		}, init || BigInt(0));
 	}
 
 	static rolePermission(roles: Role[]) {
 		// adds all permissions of all roles together (Bit OR)
-		return roles.reduce((permission, role) => permission | BigInt(role.permissions), 0n);
+		return roles.reduce((permission, role) => permission | BigInt(role.permissions), BigInt(0));
 	}
 
 	static finalPermission({
@@ -201,10 +198,10 @@ export class Permissions extends BitField {
 }
 
 export type PermissionCache = {
-	channel?: ChannelDocument | null;
-	member?: MemberDocument | null;
-	guild?: GuildDocument | null;
-	roles?: RoleDocument[] | null;
+	channel?: Channel | null;
+	member?: Member | null;
+	guild?: Guild | null;
+	roles?: Role[] | null;
 	user_id?: string;
 };
 
@@ -219,23 +216,23 @@ export async function getPermission(
 	if (!user_id) throw new HTTPError("User not found");
 
 	if (channel_id && !channel) {
-		channel = await ChannelModel.findOne(
+		channel = await Channel.findOneOrFail(
 			{ id: channel_id },
-			{ permission_overwrites: true, recipient_ids: true, owner_id: true, guild_id: true }
-		).exec();
+			{ select: ["permission_overwrites", "recipients", "owner", "guild"] }
+		);
 		if (!channel) throw new HTTPError("Channel not found", 404);
 		if (channel.guild_id) guild_id = channel.guild_id;
 	}
 
 	if (guild_id) {
-		if (!guild) guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
+		if (!guild) guild = await Guild.findOneOrFail({ id: guild_id }, { select: ["owner"] });
 		if (!guild) throw new HTTPError("Guild not found");
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
-		if (!member) member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
+		if (!member) member = await Member.findOneOrFail({ guild_id, id: user_id }, { select: ["roles"] });
 		if (!member) throw new HTTPError("Member not found");
 
-		if (!roles) roles = await RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
+		if (!roles) roles = await Role.find({ guild_id, id: In(member.roles) });
 	}
 
 	var permission = Permissions.finalPermission({

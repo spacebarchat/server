@@ -1,6 +1,5 @@
 import { Schema, model, Types, Document } from "mongoose";
 import "missing-native-js-functions";
-import db from "./Database";
 import { Snowflake } from "./Snowflake";
 import crypto from "crypto";
 
@@ -8,7 +7,7 @@ var config: any;
 
 export default {
 	init: async function init(defaultOpts: any = DefaultOptions) {
-		config = await db.collection("config").findOne({});
+		config = await db.collection("config").findOneOrFail({});
 		return this.set((config || {}).merge(defaultOpts));
 	},
 	get: function get() {
@@ -16,7 +15,7 @@ export default {
 	},
 	set: function set(val: any) {
 		config = val.merge(config);
-		return db.collection("config").updateOne({}, { $set: val }, { upsert: true });
+		return db.collection("config").update({}, { $set: val }, { upsert: true });
 	},
 };
 

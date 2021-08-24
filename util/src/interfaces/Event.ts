@@ -1,15 +1,17 @@
-import { ConnectedAccount, PublicUser, Relationship, User, UserSettings } from "./User";
-import { DMChannel, Channel } from "./Channel";
-import { Guild } from "./Guild";
-import { Member, PublicMember, UserGuildSettings } from "./Member";
-import { Emoji } from "./Emoji";
-import { Presence } from "../models/Activity";
-import { Role } from "./Role";
-import { Invite } from "./Invite";
-import { Message, PartialEmoji } from "./Message";
-import { VoiceState } from "./VoiceState";
-import { ApplicationCommand } from "./Application";
+import { PublicUser, User, UserSettings } from "../entities/User";
+import { Channel } from "../entities/Channel";
+import { Guild } from "../entities/Guild";
+import { Member, PublicMember, UserGuildSettings } from "../entities/Member";
+import { Emoji } from "../entities/Emoji";
+import { Role } from "../entities/Role";
+import { Invite } from "../entities/Invite";
+import { Message, PartialEmoji } from "../entities/Message";
+import { VoiceState } from "../entities/VoiceState";
+import { ApplicationCommand } from "../entities/Application";
 import { Interaction } from "./Interaction";
+import { ConnectedAccount } from "../entities/ConnectedAccount";
+import { Relationship } from "../entities/Relationship";
+import { Presence } from "./Presence";
 
 export interface Event {
 	guild_id?: string;
@@ -43,7 +45,7 @@ export interface ReadyEventData {
 		verified: boolean;
 		bot: boolean;
 	};
-	private_channels: DMChannel[]; // this will be empty for bots
+	private_channels: Channel[]; // this will be empty for bots
 	session_id: string; // resuming
 	guilds: Guild[];
 	analytics_token?: string;
@@ -67,12 +69,12 @@ export interface ReadyEventData {
 		[number, [[number, [number, number]]]],
 		{ b: number; k: bigint[] }[]
 	][];
-	guild_join_requests?: []; // ? what is this? this is new
+	guild_join_requests?: any[]; // ? what is this? this is new
 	shard?: [number, number];
 	user_settings?: UserSettings;
 	relationships?: Relationship[]; // TODO
 	read_state: {
-		entries: []; // TODO
+		entries: any[]; // TODO
 		partial: boolean;
 		version: number;
 	};
