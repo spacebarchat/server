@@ -18,45 +18,43 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	permissions.hasThrow("VIEW_CHANNEL");
 
 	// MongoDB query to retrieve all hoisted roles and join them with the members and users collection
-	const roles = toObject(
-		await db
-			.collection("roles")
-			.aggregate([
-				{
-					$match: {
-						guild_id,
-						// hoist: true // TODO: also match @everyone role
-					},
+	const roles = await db
+		.collection("roles")
+		.aggregate([
+			{
+				$match: {
+					guild_id,
+					// hoist: true // TODO: also match @everyone role
 				},
-				{ $sort: { position: 1 } },
-				{
-					$lookup: {
-						from: "members",
-						let: { id: "$id" },
-						pipeline: [
-							{ $match: { $expr: { $in: ["$$id", "$roles"] } } },
-							{ $limit: 100 },
-							{
-								$lookup: {
-									from: "users",
-									let: { user_id: "$id" },
-									pipeline: [
-										{ $match: { $expr: { $eq: ["$id", "$$user_id"] } } },
-										{ $project: PublicUserProjection },
-									],
-									as: "user",
-								},
+			},
+			{ $sort: { position: 1 } },
+			{
+				$lookup: {
+					from: "members",
+					let: { id: "$id" },
+					pipeline: [
+						{ $match: { $expr: { $in: ["$$id", "$roles"] } } },
+						{ $limit: 100 },
+						{
+							$lookup: {
+								from: "users",
+								let: { user_id: "$id" },
+								pipeline: [
+									{ $match: { $expr: { $eq: ["$id", "$$user_id"] } } },
+									{ $project: PublicUserProjection },
+								],
+								as: "user",
 							},
-							{
-								$unwind: "$user",
-							},
-						],
-						as: "members",
-					},
+						},
+						{
+							$unwind: "$user",
+						},
+					],
+					as: "members",
 				},
-			])
-			.toArray()
-	);
+			},
+		])
+		.toArray();
 
 	const groups = roles.map((x) => ({ id: x.id === guild_id ? "online" : x.id, count: x.members.length }));
 	const member_count = roles.reduce((a, b) => b.members.length + a, 0);
