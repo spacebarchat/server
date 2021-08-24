@@ -1,14 +1,3 @@
-import { User } from "./User";
-import { ClientStatus, Status } from "./Status";
-
-export interface Presence {
-	user: User;
-	guild_id?: string;
-	status: Status;
-	activities: Activity[];
-	client_status: ClientStatus;
-}
-
 export interface Activity {
 	name: string;
 	type: ActivityType;

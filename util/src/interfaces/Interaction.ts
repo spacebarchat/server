@@ -1,4 +1,4 @@
-import { AllowedMentions, Embed } from "./Message";
+import { AllowedMentions, Embed } from "../entities/Message";
 
 export interface Interaction {
 	id: string;
