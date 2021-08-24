@@ -5,11 +5,11 @@ import {
 	GuildMemberAddEvent,
 	GuildMemberRemoveEvent,
 	GuildMemberUpdateEvent,
-	GuildModel,
-	MemberModel,
-	RoleModel,
+	Guild,
+	Member,
+	Role,
 	toObject,
-	UserModel,
+	User,
 	GuildDocument,
 	Config,
 	emitEvent
@@ -32,7 +32,7 @@ export const PublicMemberProjection = {
 };
 
 export async function isMember(user_id: string, guild_id: string) {
-	const exists = await MemberModel.exists({ id: user_id, guild_id });
+	const exists = await Member.exists({ id: user_id, guild_id });
 	if (!exists) throw new HTTPError("You are not a member of this guild", 403);
 	return exists;
 }
@@ -45,11 +45,11 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 		throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
 	}
 
-	const guild = cache?.guild || (await GuildModel.findOne({ id: guild_id }).exec());
+	const guild = cache?.guild || (await Guild.findOneOrFail({ id: guild_id }));
 
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
-	if (await MemberModel.exists({ id: user.id, guild_id })) throw new HTTPError("You are already a member of this guild", 400);
+	if (await Member.exists({ id: user.id, guild_id })) throw new HTTPError("You are already a member of this guild", 400);
 
 	const member = {
 		id: user_id,
@@ -64,7 +64,7 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 	};
 
 	await Promise.all([
-		new MemberModel({
+		new Member({
 			...member,
 			read_state: {},
 			settings: {
@@ -79,8 +79,8 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 			}
 		}).save(),
 
-		UserModel.updateOne({ id: user_id }, { $push: { guilds: guild_id } }).exec(),
-		GuildModel.updateOne({ id: guild_id }, { $inc: { member_count: 1 } }).exec(),
+		User.update({ id: user_id }, { $push: { guilds: guild_id } }),
+		Guild.update({ id: guild_id }, { $inc: { member_count: 1 } }),
 
 		emitEvent({
 			event: "GUILD_MEMBER_ADD",
@@ -95,12 +95,10 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 
 	await emitEvent({
 		event: "GUILD_CREATE",
-		data: toObject(
-			await guild
-				.populate({ path: "members", match: { guild_id } })
-				.populate({ path: "joined_at", match: { id: user.id } })
-				.execPopulate()
-		),
+		data: await guild
+			.populate({ path: "members", match: { guild_id } })
+			.populate({ path: "joined_at", match: { id: user.id } })
+			.execPopulate(),
 		user_id
 	} as GuildCreateEvent);
 }
@@ -108,19 +106,19 @@ export async function addMember(user_id: string, guild_id: string, cache?: { gui
 export async function removeMember(user_id: string, guild_id: string) {
 	const user = await getPublicUser(user_id);
 
-	const guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
+	const guild = await Guild.findOneOrFail({ id: guild_id }, { owner_id: true });
 	if (!guild) throw new HTTPError("Guild not found", 404);
 	if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
-	if (!(await MemberModel.exists({ id: user.id, guild_id }))) throw new HTTPError("Is not member of this guild", 404);
+	if (!(await Member.exists({ id: user.id, guild_id }))) throw new HTTPError("Is not member of this guild", 404);
 
 	// use promise all to execute all promises at the same time -> save time
 	return Promise.all([
-		MemberModel.deleteOne({
+		Member.deleteOne({
 			id: user_id,
 			guild_id: guild_id
-		}).exec(),
-		UserModel.updateOne({ id: user.id }, { $pull: { guilds: guild_id } }).exec(),
-		GuildModel.updateOne({ id: guild_id }, { $inc: { member_count: -1 } }).exec(),
+		}),
+		User.update({ id: user.id }, { $pull: { guilds: guild_id } }),
+		Guild.update({ id: guild_id }, { $inc: { member_count: -1 } }),
 
 		emitEvent({
 			event: "GUILD_DELETE",
@@ -143,17 +141,17 @@ export async function removeMember(user_id: string, guild_id: string) {
 export async function addRole(user_id: string, guild_id: string, role_id: string) {
 	const user = await getPublicUser(user_id);
 
-	const role = await RoleModel.findOne({ id: role_id, guild_id: guild_id }).exec();
+	const role = await Role.findOneOrFail({ id: role_id, guild_id: guild_id });
 	if (!role) throw new HTTPError("role not found", 404);
 
-	var memberObj = await MemberModel.findOneAndUpdate(
+	var memberObj = await Member.findOneOrFailAndUpdate(
 		{
 			id: user_id,
 			guild_id: guild_id
 		},
 		{ $push: { roles: role_id } },
 		{ new: true }
-	).exec();
+	);
 
 	if (!memberObj) throw new HTTPError("Member not found", 404);
 
@@ -171,17 +169,17 @@ export async function addRole(user_id: string, guild_id: string, role_id: string
 export async function removeRole(user_id: string, guild_id: string, role_id: string) {
 	const user = await getPublicUser(user_id);
 
-	const role = await RoleModel.findOne({ id: role_id, guild_id: guild_id }).exec();
+	const role = await Role.findOneOrFail({ id: role_id, guild_id: guild_id });
 	if (!role) throw new HTTPError("role not found", 404);
 
-	var memberObj = await MemberModel.findOneAndUpdate(
+	var memberObj = await Member.findOneOrFailAndUpdate(
 		{
 			id: user_id,
 			guild_id: guild_id
 		},
 		{ $pull: { roles: role_id } },
 		{ new: true }
-	).exec();
+	);
 
 	if (!memberObj) throw new HTTPError("Member not found", 404);
 
@@ -199,14 +197,14 @@ export async function removeRole(user_id: string, guild_id: string, role_id: str
 export async function changeNickname(user_id: string, guild_id: string, nickname: string) {
 	const user = await getPublicUser(user_id);
 
-	var memberObj = await MemberModel.findOneAndUpdate(
+	var memberObj = await Member.findOneOrFailAndUpdate(
 		{
 			id: user_id,
 			guild_id: guild_id
 		},
 		{ nick: nickname },
 		{ new: true }
-	).exec();
+	);
 
 	if (!memberObj) throw new HTTPError("Member not found", 404);
 

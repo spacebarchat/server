@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { getPermission, GuildModel } from "@fosscord/util";
+import { getPermission, Guild } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { check } from "../../../util/instanceOf";
 import { WidgetModifySchema } from "../../../schema/Widget";
@@ -13,7 +13,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
+	const guild = await Guild.findOneOrFail({ id: guild_id });
 
 	return res.json({ enabled: guild.widget_enabled || false, channel_id: guild.widget_channel_id || null });
 });
@@ -26,7 +26,7 @@ router.patch("/", check(WidgetModifySchema), async (req: Request, res: Response)
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
-	await GuildModel.updateOne({ id: guild_id }, { widget_enabled: body.enabled, widget_channel_id: body.channel_id }).exec();
+	await Guild.update({ id: guild_id }, { widget_enabled: body.enabled, widget_channel_id: body.channel_id });
 	// Widget invite for the widget_channel_id gets created as part of the /guilds/{guild.id}/widget.json request
 
 	return res.json(body);

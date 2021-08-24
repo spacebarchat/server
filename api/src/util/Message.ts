@@ -1,5 +1,5 @@
 import {
-	ChannelModel,
+	Channel,
 	Embed,
 	emitEvent,
 	Message,
@@ -7,13 +7,11 @@ import {
 	MessageUpdateEvent,
 	getPermission,
 	CHANNEL_MENTION,
-	toObject,
-	MessageModel,
 	Snowflake,
 	PublicMemberProjection,
 	USER_MENTION,
 	ROLE_MENTION,
-	RoleModel,
+	Role,
 	EVERYONE_MENTION,
 	HERE_MENTION
 } from "@fosscord/util";
@@ -37,13 +35,11 @@ const DEFAULT_FETCH_OPTIONS: any = {
 	method: "GET"
 };
 
-export async function handleMessage(opts: Partial<Message>) {
-	const channel = await ChannelModel.findOne(
+export async function handleMessage(opts: Partial<Message>): Promise<Message> {
+	const channel = await Channel.findOneOrFail(
 		{ id: opts.channel_id },
-		{ guild_id: true, type: true, permission_overwrites: true, recipient_ids: true, owner_id: true }
-	)
-		.lean() // lean is needed, because we don't want to populate .recipients that also auto deletes .recipient_ids
-		.exec();
+		{ select: ["guild_id", "type", "permission_overwrites", "recipient_ids", "owner_id"] }
+	); // lean is needed, because we don't want to populate .recipients that also auto deletes .recipient_ids
 	if (!channel || !opts.channel_id) throw new HTTPError("Channel not found", 404);
 	// TODO: are tts messages allowed in dm channels? should permission be checked?
 
@@ -83,7 +79,7 @@ export async function handleMessage(opts: Partial<Message>) {
 
 		await Promise.all(
 			Array.from(content.matchAll(ROLE_MENTION)).map(async ([_, mention]) => {
-				const role = await RoleModel.findOne({ id: mention, guild_id: channel.guild_id }).exec();
+				const role = await Role.findOneOrFail({ id: mention, guild_id: channel.guild_id });
 				if (role.mentionable || permission.has("MANAGE_ROLES")) {
 					mention_role_ids.push(mention);
 				}
@@ -160,16 +156,17 @@ export async function postHandleMessage(message: Message) {
 			channel_id: message.channel_id,
 			data
 		} as MessageUpdateEvent),
-		MessageModel.updateOne({ id: message.id, channel_id: message.channel_id }, data).exec()
+		Message.update({ id: message.id, channel_id: message.channel_id }, data)
 	]);
 }
 
 export async function sendMessage(opts: Partial<Message>) {
 	const message = await handleMessage({ ...opts, id: Snowflake.generate(), timestamp: new Date() });
 
-	const data = toObject(
-		await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).populate("referenced_message").save()
-	);
+	const data = await new Message(message)
+		.populate({ path: "member", select: PublicMemberProjection })
+		.populate("referenced_message")
+		.save();
 
 	await emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data } as MessageCreateEvent);
 

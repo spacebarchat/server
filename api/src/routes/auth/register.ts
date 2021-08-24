@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { trimSpecial, User, Snowflake, UserModel, Config } from "@fosscord/util";
+import { trimSpecial, User, Snowflake, User, Config } from "@fosscord/util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../util/instanceOf";
 import "missing-native-js-functions";
@@ -92,9 +92,7 @@ router.post(
 			if (!adjusted_email) throw FieldErrors({ email: { code: "INVALID_EMAIL", message: req.t("auth:register.INVALID_EMAIL") } });
 
 			// check if there is already an account with this email
-			const exists = await UserModel.findOne({ email: adjusted_email })
-				.exec()
-				.catch((e) => {});
+			const exists = await User.findOneOrFail({ email: adjusted_email }).catch((e) => {});
 
 			if (exists) {
 				throw FieldErrors({
@@ -131,9 +129,7 @@ router.post(
 
 		if (!register.allowMultipleAccounts) {
 			// TODO: check if fingerprint was eligible generated
-			const exists = await UserModel.findOne({ fingerprints: fingerprint })
-				.exec()
-				.catch((e) => {});
+			const exists = await User.findOneOrFail({ fingerprints: fingerprint }).catch((e) => {});
 
 			if (exists) {
 				throw FieldErrors({
@@ -169,7 +165,7 @@ router.post(
 		for (let tries = 0; tries < 5; tries++) {
 			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
 			try {
-				exists = await UserModel.findOne({ discriminator, username: adjusted_username }, "id").exec();
+				exists = await User.findOneOrFail({ discriminator, username: adjusted_username }, "id");
 			} catch (error) {
 				// doesn't exist -> break
 				break;
@@ -223,14 +219,14 @@ router.post(
 			public_flags: 0n,
 			flags: 0n, // TODO: generate default flags
 			guilds: [],
-			user_data: {
+			data: {
 				hash: adjusted_password,
 				valid_tokens_since: new Date(),
 				relationships: [],
 				connected_accounts: [],
 				fingerprints: []
 			},
-			user_settings: {
+			settings: {
 				afk_timeout: 300,
 				allow_accessibility_detection: true,
 				animate_emoji: true,
@@ -272,7 +268,7 @@ router.post(
 		};
 
 		// insert user into database
-		await new UserModel(user).save();
+		await new User(user).save();
 
 		return res.json({ token: await generateToken(user.id) });
 	}

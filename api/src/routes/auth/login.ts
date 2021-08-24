@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { check, FieldErrors, Length } from "../../util/instanceOf";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Config, UserModel } from "@fosscord/util";
+import { Config, User } from "@fosscord/util";
 import { adjustEmail } from "./register";
 
 const router: Router = Router();
@@ -41,27 +41,25 @@ router.post(
 			// TODO: check captcha
 		}
 
-		const user = await UserModel.findOne(
+		const user = await User.findOneOrFail(
 			{ $or: query },
-			{ "user_data.hash": true, id: true, disabled: true, deleted: true, "user_settings.locale": true, "user_settings.theme": true }
-		)
-			.exec()
-			.catch((e) => {
-				console.log(e, query);
-				throw FieldErrors({ login: { message: req.t("auth:login.INVALID_LOGIN"), code: "INVALID_LOGIN" } });
-			});
+			{ "data.hash": true, id: true, disabled: true, deleted: true, "settings.locale": true, "settings.theme": true }
+		).catch((e) => {
+			console.log(e, query);
+			throw FieldErrors({ login: { message: req.t("auth:login.INVALID_LOGIN"), code: "INVALID_LOGIN" } });
+		});
 
 		if (undelete) {
 			// undelete refers to un'disable' here
-			if (user.disabled) await UserModel.updateOne({ id: user.id }, { disabled: false }).exec();
-			if (user.deleted) await UserModel.updateOne({ id: user.id }, { deleted: false }).exec();
+			if (user.disabled) await User.update({ id: user.id }, { disabled: false });
+			if (user.deleted) await User.update({ id: user.id }, { deleted: false });
 		} else {
 			if (user.deleted) return res.status(400).json({ message: "This account is scheduled for deletion.", code: 20011 });
 			if (user.disabled) return res.status(400).json({ message: req.t("auth:login.ACCOUNT_DISABLED"), code: 20013 });
 		}
 
 		// the salt is saved in the password refer to bcrypt docs
-		const same_password = await bcrypt.compare(password, user.user_data.hash || "");
+		const same_password = await bcrypt.compare(password, user.data.hash || "");
 		if (!same_password) {
 			throw FieldErrors({ password: { message: req.t("auth:login.INVALID_PASSWORD"), code: "INVALID_PASSWORD" } });
 		}
@@ -72,7 +70,7 @@ router.post(
 		// Discord header is just the user id as string, which is not possible with npm-jsonwebtoken package
 		// https://user-images.githubusercontent.com/6506416/81051916-dd8c9900-8ec2-11ea-8794-daf12d6f31f0.png
 
-		res.json({ token, user_settings: user.user_settings });
+		res.json({ token, settings: user.settings });
 	}
 );
 
@@ -106,6 +104,6 @@ export async function generateToken(id: string) {
  * @returns {"captcha_key": ["captcha-required"], "captcha_sitekey": null, "captcha_service": "recaptcha"}
 
  * Sucess:
- * @returns {"token": "USERTOKEN", "user_settings": {"locale": "en", "theme": "dark"}}
+ * @returns {"token": "USERTOKEN", "settings": {"locale": "en", "theme": "dark"}}
 
  */

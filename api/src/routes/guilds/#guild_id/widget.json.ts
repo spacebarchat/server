@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { Config, Permissions, GuildModel, InviteModel, ChannelModel, MemberModel } from "@fosscord/util";
+import { Config, Permissions, Guild, InviteModel, Channel, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { random } from "../../../util/RandomInviteID";
 
@@ -17,11 +17,11 @@ const router: Router = Router();
 router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
+	const guild = await Guild.findOneOrFail({ id: guild_id });
 	if (!guild.widget_enabled) throw new HTTPError("Widget Disabled", 404);
 
 	// Fetch existing widget invite for widget channel
-	var invite = await InviteModel.findOne({ channel_id: guild.widget_channel_id, inviter_id: { $type: 10 } }).exec();
+	var invite = await Invite.findOneOrFail({ channel_id: guild.widget_channel_id, inviter_id: { $type: 10 } });
 	if (guild.widget_channel_id && !invite) {
 		// Create invite for channel if none exists
 		// TODO: Refactor invite create code to a shared function
@@ -45,8 +45,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 	// Fetch voice channels, and the @everyone permissions object
 	let channels: any[] = [];
-	await ChannelModel.find({ guild_id: guild_id, type: 2 }, { permission_overwrites: { $elemMatch: { id: guild_id } } })
-		.lean()
+	await Channel.find({ guild_id: guild_id, type: 2 }, { permission_overwrites: { $elemMatch: { id: guild_id } } })
 		.select("id name position permission_overwrites")
 		.sort({ position: 1 })
 		.cursor()
@@ -67,8 +66,7 @@ router.get("/", async (req: Request, res: Response) => {
 	// Fetch members
 	// TODO: Understand how Discord's max 100 random member sample works, and apply to here (see top of this file)
 	let members: any[] = [];
-	await MemberModel.find({ guild_id: guild_id })
-		.lean()
+	await Member.find({ guild_id: guild_id })
 		.populate({ path: "user", select: { _id: 0, username: 1, avatar: 1, presence: 1 } })
 		.select("id user nick deaf mute")
 		.cursor()

@@ -1,13 +1,13 @@
 import { Request, Response, Router } from "express";
 import {
-	GuildModel,
-	MemberModel,
-	UserModel,
+	Guild,
+	Member,
+	User,
 	toObject,
 	GuildMemberAddEvent,
 	getPermission,
 	PermissionResolvable,
-	RoleModel,
+	Role,
 	GuildMemberUpdateEvent,
 	emitEvent
 } from "@fosscord/util";
@@ -22,29 +22,29 @@ router.get("/", async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
 	await isMember(req.user_id, guild_id);
 
-	const member = await MemberModel.findOne({ id: member_id, guild_id }).exec();
+	const member = await Member.findOneOrFail({ id: member_id, guild_id });
 
-	return res.json(toObject(member));
+	return res.json(member);
 });
 
 router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
 	const body = req.body as MemberChangeSchema;
 	if (body.roles) {
-		const roles = await RoleModel.find({ id: { $in: body.roles } }).exec();
+		const roles = await Role.find({ id: { $in: body.roles } });
 		if (body.roles.length !== roles.length) throw new HTTPError("Roles not found", 404);
 		// TODO: check if user has permission to add role
 	}
 
-	const member = await MemberModel.findOneAndUpdate({ id: member_id, guild_id }, body, { new: true }).exec();
+	const member = await Member.findOneOrFailAndUpdate({ id: member_id, guild_id }, body, { new: true });
 
 	await emitEvent({
 		event: "GUILD_MEMBER_UPDATE",
 		guild_id,
-		data: toObject(member)
+		data: member
 	} as GuildMemberUpdateEvent);
 
-	res.json(toObject(member));
+	res.json(member);
 });
 
 router.put("/", async (req: Request, res: Response) => {

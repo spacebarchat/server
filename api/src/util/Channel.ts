@@ -1,10 +1,10 @@
 import {
 	ChannelCreateEvent,
-	ChannelModel,
+	Channel,
 	ChannelType,
 	emitEvent,
 	getPermission,
-	GuildModel,
+	Guild,
 	Snowflake,
 	TextChannel,
 	toObject,
@@ -29,7 +29,7 @@ export async function createChannel(
 		case ChannelType.GUILD_TEXT:
 		case ChannelType.GUILD_VOICE:
 			if (channel.parent_id && !opts?.skipExistsCheck) {
-				const exists = await ChannelModel.findOne({ id: channel.parent_id }, { guild_id: true }).exec();
+				const exists = await Channel.findOneOrFail({ id: channel.parent_id }, { guild_id: true });
 				if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
 				if (exists.guild_id !== channel.guild_id) throw new HTTPError("The category channel needs to be in the guild");
 			}
@@ -49,7 +49,7 @@ export async function createChannel(
 	if (!channel.permission_overwrites) channel.permission_overwrites = [];
 	// TODO: auto generate position
 
-	channel = await new ChannelModel({
+	channel = await new Channel({
 		...channel,
 		...(!opts?.keepId && { id: Snowflake.generate() }),
 		created_at: new Date(),
@@ -57,7 +57,7 @@ export async function createChannel(
 		recipient_ids: null
 	}).save();
 
-	await emitEvent({ event: "CHANNEL_CREATE", data: toObject(channel), guild_id: channel.guild_id } as ChannelCreateEvent);
+	await emitEvent({ event: "CHANNEL_CREATE", data: channel), guild_id: channel.guild_id } as ChannelCreateEvent;
 
 	return channel;
 }

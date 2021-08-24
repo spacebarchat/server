@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { TemplateModel, GuildModel, getPermission, toObject, UserModel, Snowflake } from "@fosscord/util";
+import { TemplateModel, Guild, getPermission, toObject, User, Snowflake } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { TemplateCreateSchema, TemplateModifySchema } from "../../../schema/Template";
 import { check } from "../../../util/instanceOf";
@@ -27,20 +27,18 @@ const TemplateGuildProjection = {
 router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	var templates = await TemplateModel.find({ source_guild_id: guild_id }).exec();
+	var templates = await Template.find({ source_guild_id: guild_id });
 
-	return res.json(toObject(templates));
+	return res.json(templates);
 });
 
 router.post("/", check(TemplateCreateSchema), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
-	const guild = await GuildModel.findOne({ id: guild_id }, TemplateGuildProjection).exec();
+	const guild = await Guild.findOneOrFail({ id: guild_id }, TemplateGuildProjection);
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
-	const exists = await TemplateModel.findOne({ id: guild_id })
-		.exec()
-		.catch((e) => {});
+	const exists = await Template.findOneOrFail({ id: guild_id }).catch((e) => {});
 	if (exists) throw new HTTPError("Template already exists", 400);
 
 	const template = await new TemplateModel({
@@ -53,7 +51,7 @@ router.post("/", check(TemplateCreateSchema), async (req: Request, res: Response
 		serialized_source_guild: guild
 	}).save();
 
-	res.json(toObject(template)).send();
+	res.json(template)).send(;
 });
 
 router.delete("/:code", async (req: Request, res: Response) => {
@@ -63,25 +61,25 @@ router.delete("/:code", async (req: Request, res: Response) => {
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
-	const template = await TemplateModel.findOneAndDelete({
+	const template = await Template.findOneOrFailAndDelete({
 		code
-	}).exec();
+	});
 
-	res.send(toObject(template));
+	res.send(template);
 });
 
 router.put("/:code", async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;
 	const { code } = req.params;
 
-	const guild = await GuildModel.findOne({ id: guild_id }, TemplateGuildProjection).exec();
+	const guild = await Guild.findOneOrFail({ id: guild_id }, TemplateGuildProjection);
 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
-	const template = await TemplateModel.findOneAndUpdate({ code }, { serialized_source_guild: guild }, { new: true }).exec();
+	const template = await Template.findOneOrFailAndUpdate({ code }, { serialized_source_guild: guild }, { new: true });
 
-	res.json(toObject(template)).send();
+	res.json(template)).send(;
 });
 
 router.patch("/:code", check(TemplateModifySchema), async (req: Request, res: Response) => {
@@ -91,13 +89,9 @@ router.patch("/:code", check(TemplateModifySchema), async (req: Request, res: Re
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
-	const template = await TemplateModel.findOneAndUpdate(
-		{ code },
-		{ name: req.body.name, description: req.body.description },
-		{ new: true }
-	).exec();
+	const template = await Template.findOneOrFailAndUpdate({ code }, { name: req.body.name, description: req.body.description }, { new: true });
 
-	res.json(toObject(template)).send();
+	res.json(template)).send(;
 });
 
 export default router;

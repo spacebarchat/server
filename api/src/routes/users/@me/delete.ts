@@ -1,16 +1,16 @@
 import { Router, Request, Response } from "express";
-import { GuildModel, MemberModel, UserModel } from "@fosscord/util";
+import { Guild, Member, User } from "@fosscord/util";
 import bcrypt from "bcrypt";
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
-	const user = await UserModel.findOne({ id: req.user_id }).exec(); //User object
+	const user = await User.findOneOrFail({ id: req.user_id }); //User object
 
-	let correctpass = await bcrypt.compare(req.body.password, user!.user_data.hash); //Not sure if user typed right password :/
+	let correctpass = await bcrypt.compare(req.body.password, user!.data.hash); //Not sure if user typed right password :/
 	if (correctpass) {
 		await Promise.all([
-			UserModel.deleteOne({ id: req.user_id }).exec(), //Yeetus user deletus
-			MemberModel.deleteMany({ id: req.user_id }).exec()
+			User.deleteOne({ id: req.user_id }), //Yeetus user deletus
+			Member.deleteMany({ id: req.user_id })
 		]);
 
 		res.sendStatus(204);
