@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { BanModel, emitEvent, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, GuildModel, toObject } from "@fosscord/util";
+import { BanModel, emitEvent, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, Guild, toObject } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { getIpAdress } from "../../../util/ipAddress";
 import { BanCreateSchema } from "../../../schema/Ban";
@@ -13,18 +13,18 @@ const router: Router = Router();
 router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	const guild = await GuildModel.exists({ id: guild_id });
+	const guild = await Guild.exists({ id: guild_id });
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
-	var bans = await BanModel.find({ guild_id: guild_id }, { user_id: true, reason: true }).exec();
-	return res.json(toObject(bans));
+	var bans = await Ban.find({ guild_id: guild_id }, { user_id: true, reason: true });
+	return res.json(bans);
 });
 
 router.get("/:user", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	const user_id = req.params.ban;
 
-	var ban = await BanModel.findOne({ guild_id: guild_id, user_id: user_id }).exec();
+	var ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id });
 	return res.json(ban);
 });
 
@@ -56,7 +56,7 @@ router.put("/:user_id", check(BanCreateSchema), async (req: Request, res: Respon
 		guild_id: guild_id
 	} as GuildBanAddEvent);
 
-	return res.json(toObject(ban));
+	return res.json(ban);
 });
 
 router.delete("/:user_id", async (req: Request, res: Response) => {
@@ -64,16 +64,16 @@ router.delete("/:user_id", async (req: Request, res: Response) => {
 	var banned_user_id = req.params.user_id;
 
 	const banned_user = await getPublicUser(banned_user_id);
-	const guild = await GuildModel.exists({ id: guild_id });
+	const guild = await Guild.exists({ id: guild_id });
 	if (!guild) throw new HTTPError("Guild not found", 404);
 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("BAN_MEMBERS");
 
-	await BanModel.deleteOne({
+	await Ban.deleteOne({
 		user_id: banned_user_id,
 		guild_id
-	}).exec();
+	});
 
 	await emitEvent({
 		event: "GUILD_BAN_REMOVE",

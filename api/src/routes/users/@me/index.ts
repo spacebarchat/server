@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { UserModel, toObject, PublicUserProjection } from "@fosscord/util";
+import { User, toObject, PublicUserProjection } from "@fosscord/util";
 import { getPublicUser } from "../../../util/User";
 import { UserModifySchema } from "../../../schema/User";
 import { check } from "../../../util/instanceOf";
@@ -38,10 +38,10 @@ router.patch("/", check(UserModifySchema), async (req: Request, res: Response) =
 	if (body.avatar) body.avatar = await handleFile(`/avatars/${req.user_id}`, body.avatar as string);
 	if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
 
-	const user = await UserModel.findOneAndUpdate({ id: req.user_id }, body, { projection: UserUpdateProjection, new: true }).exec();
+	const user = await User.findOneOrFailAndUpdate({ id: req.user_id }, body, { projection: UserUpdateProjection, new: true });
 	// TODO: dispatch user update event
 
-	res.json(toObject(user));
+	res.json(user);
 });
 
 export default router;

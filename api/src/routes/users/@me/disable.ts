@@ -1,15 +1,15 @@
-import { UserModel } from "@fosscord/util";
+import { User } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import bcrypt from "bcrypt";
 
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
-	const user = await UserModel.findOne({ id: req.user_id }).exec(); //User object
+	const user = await User.findOneOrFail({ id: req.user_id }); //User object
 
-	let correctpass = await bcrypt.compare(req.body.password, user!.user_data.hash); //Not sure if user typed right password :/
+	let correctpass = await bcrypt.compare(req.body.password, user!.data.hash); //Not sure if user typed right password :/
 	if (correctpass) {
-		await UserModel.updateOne({ id: req.user_id }, { disabled: true }).exec();
+		await User.update({ id: req.user_id }, { disabled: true });
 
 		res.sendStatus(204);
 	} else {

@@ -1,6 +1,6 @@
 import { Router, Response, Request } from "express";
 import { check, Length } from "../../../util/instanceOf";
-import { ChannelModel, getPermission, trimSpecial } from "@fosscord/util";
+import { Channel, getPermission, trimSpecial } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { isTextChannel } from "./messages/index";
 
@@ -10,7 +10,7 @@ const router: Router = Router();
 // TODO: use Image Data Type for avatar instead of String
 router.post("/", check({ name: new Length(String, 1, 80), $avatar: String }), async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
-	const channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, type: true }).exec();
+	const channel = await Channel.findOneOrFail({ id: channel_id }, { guild_id: true, type: true });
 
 	isTextChannel(channel.type);
 	if (!channel.guild_id) throw new HTTPError("Not a guild channel", 400);

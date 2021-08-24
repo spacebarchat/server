@@ -72,7 +72,7 @@ export default function RateLimit(opts: {
 				offender.expires_at = new Date(Date.now() + opts.window * 1000);
 				offender.blocked = false;
 				// mongodb ttl didn't update yet -> manually update/delete
-				db.collection("ratelimits").updateOne({ id: bucket_id, user_id }, { $set: offender });
+				db.collection("ratelimits").update({ id: bucket_id, user_id }, { $set: offender });
 				Cache.delete(user_id + bucket_id);
 			}
 		}
@@ -132,7 +132,7 @@ export async function initRateLimits(app: Router) {
 
 async function hitRoute(opts: { user_id: string; bucket_id: string; max_hits: number; window: number }) {
 	const filter = { id: opts.bucket_id, user_id: opts.user_id };
-	const { value } = await db.collection("ratelimits").findOneAndUpdate(
+	const { value } = await db.collection("ratelimits").findOneOrFailAndUpdate(
 		filter,
 		{
 			$setOnInsert: {
@@ -158,7 +158,7 @@ async function hitRoute(opts: { user_id: string; bucket_id: string; max_hits: nu
 			event: EventRateLimit,
 			data: value
 		});
-		await db.collection("ratelimits").updateOne(filter, { $set: { blocked: true } });
+		await db.collection("ratelimits").update(filter, { $set: { blocked: true } });
 	} else {
 		Cache.delete(opts.user_id);
 	}

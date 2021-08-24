@@ -1,12 +1,12 @@
 import { Request, Response, Router } from "express";
 import {
-	RoleModel,
-	GuildModel,
+	Role,
+	Guild,
 	getPermission,
 	toObject,
-	UserModel,
+	User,
 	Snowflake,
-	MemberModel,
+	Member,
 	GuildRoleCreateEvent,
 	GuildRoleUpdateEvent,
 	GuildRoleDeleteEvent,
@@ -26,23 +26,23 @@ router.get("/", async (req: Request, res: Response) => {
 
 	await isMember(req.user_id, guild_id);
 
-	const roles = await RoleModel.find({ guild_id: guild_id }).exec();
+	const roles = await Role.find({ guild_id: guild_id });
 
-	return res.json(toObject(roles));
+	return res.json(roles);
 });
 
 router.post("/", check(RoleModifySchema), async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;
 	const body = req.body as RoleModifySchema;
 
-	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
-	const user = await UserModel.findOne({ id: req.user_id }).exec();
+	const guild = await Guild.findOneOrFail({ id: guild_id }, { id: true });
+	const user = await User.findOneOrFail({ id: req.user_id });
 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");
 	if (!body.name) throw new HTTPError("You need to specify a name");
 
-	const role = await new RoleModel({
+	const role = await new Role({
 		...body,
 		id: Snowflake.generate(),
 		guild_id: guild_id,
@@ -57,11 +57,11 @@ router.post("/", check(RoleModifySchema), async (req: Request, res: Response) =>
 		guild_id,
 		data: {
 			guild_id,
-			role: toObject(role)
+			role: role
 		}
 	} as GuildRoleCreateEvent);
 
-	res.json(toObject(role));
+	res.json(role);
 });
 
 router.delete("/:role_id", async (req: Request, res: Response) => {
@@ -72,10 +72,10 @@ router.delete("/:role_id", async (req: Request, res: Response) => {
 	const permissions = await getPermission(req.user_id, guild_id);
 	permissions.hasThrow("MANAGE_ROLES");
 
-	await RoleModel.deleteOne({
+	await Role.deleteOne({
 		id: role_id,
 		guild_id: guild_id
-	}).exec();
+	});
 
 	await emitEvent({
 		event: "GUILD_ROLE_DELETE",
@@ -96,13 +96,13 @@ router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Res
 	const { role_id } = req.params;
 	const body = req.body as RoleModifySchema;
 
-	const guild = await GuildModel.findOne({ id: guild_id }, { id: true }).exec();
-	const user = await UserModel.findOne({ id: req.user_id }).exec();
+	const guild = await Guild.findOneOrFail({ id: guild_id }, { id: true });
+	const user = await User.findOneOrFail({ id: req.user_id });
 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");
 
-	const role = await RoleModel.findOneAndUpdate(
+	const role = await Role.findOneOrFailAndUpdate(
 		{
 			id: role_id,
 			guild_id: guild_id
@@ -110,7 +110,7 @@ router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Res
 		// @ts-ignore
 		body,
 		{ new: true }
-	).exec();
+	);
 
 	await emitEvent({
 		event: "GUILD_ROLE_UPDATE",
@@ -121,7 +121,7 @@ router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Res
 		}
 	} as GuildRoleUpdateEvent);
 
-	res.json(toObject(role));
+	res.json(role);
 });
 
 export default router;

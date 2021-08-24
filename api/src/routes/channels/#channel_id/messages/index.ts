@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import { Attachment, ChannelModel, ChannelType, getPermission, MessageDocument, MessageModel, toObject } from "@fosscord/util";
+import { Attachment, Channel, ChannelType, getPermission, MessageDocument, Message, toObject } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../schema/Message";
 import { check, instanceOf, Length } from "../../../../util/instanceOf";
@@ -30,12 +30,10 @@ export function isTextChannel(type: ChannelType): boolean {
 // get messages
 router.get("/", async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
-	const channel = await ChannelModel.findOne(
+	const channel = await Channel.findOneOrFail(
 		{ id: channel_id },
-		{ guild_id: true, type: true, permission_overwrites: true, recipient_ids: true, owner_id: true }
-	)
-		.lean() // lean is needed, because we don't want to populate .recipients that also auto deletes .recipient_ids
-		.exec();
+		{ select: ["guild_id", "type", "permission_overwrites", "recipient_ids", "owner_id"] }
+	); // lean is needed, because we don't want to populate .recipients that also auto deletes .recipient_ids
 	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	isTextChannel(channel.type);
@@ -58,35 +56,33 @@ router.get("/", async (req: Request, res: Response) => {
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
 	var query: Query<MessageDocument[], MessageDocument>;
-	if (after) query = MessageModel.find({ channel_id, id: { $gt: after } });
-	else if (before) query = MessageModel.find({ channel_id, id: { $lt: before } });
+	if (after) query = Message.find({ channel_id, id: { $gt: after } });
+	else if (before) query = Message.find({ channel_id, id: { $lt: before } });
 	else if (around)
-		query = MessageModel.find({
+		query = Message.find({
 			channel_id,
 			id: { $gt: (BigInt(around) - BigInt(halfLimit)).toString(), $lt: (BigInt(around) + BigInt(halfLimit)).toString() }
 		});
 	else {
-		query = MessageModel.find({ channel_id });
+		query = Message.find({ channel_id });
 	}
 
 	query = query.sort({ id: -1 });
 
-	const messages = await query.limit(limit).exec();
+	const messages = await query.limit(limit);
 
-	return res.json(
-		toObject(messages).map((x) => {
-			(x.reactions || []).forEach((x) => {
-				// @ts-ignore
-				if ((x.user_ids || []).includes(req.user_id)) x.me = true;
-				// @ts-ignore
-				delete x.user_ids;
-			});
+	return res.json(messages).map((x) => {
+		(x.reactions || []).forEach((x) => {
 			// @ts-ignore
-			if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: 0n, avatar: null };
+			if ((x.user_ids || []).includes(req.user_id)) x.me = true;
+			// @ts-ignore
+			delete x.user_ids;
+		});
+		// @ts-ignore
+		if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: 0n, avatar: null };
 
-			return x;
-		})
-	);
+		return x;
+	});
 });
 
 // TODO: config max upload size

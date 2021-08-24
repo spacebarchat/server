@@ -1,6 +1,6 @@
 import {
 	RelationshipAddEvent,
-	UserModel,
+	User,
 	PublicUserProjection,
 	toObject,
 	RelationshipType,
@@ -18,18 +18,18 @@ const router = Router();
 const userProjection = { "user_data.relationships": true, ...PublicUserProjection };
 
 router.get("/", async (req: Request, res: Response) => {
-	const user = await UserModel.findOne({ id: req.user_id }, { user_data: { relationships: true } })
-		.populate({ path: "user_data.relationships.id", model: UserModel })
-		.exec();
-
-	return res.json(toObject(user.user_data.relationships));
+	const user = await User.findOneOrFail({ id: req.user_id }, { user_data: { relationships: true } }).populate({
+		path: "user_data.relationships.id",
+		model: User
+	});
+	return res.json(user.user_data.relationships);
 });
 
 async function addRelationship(req: Request, res: Response, friend: UserDocument, type: RelationshipType) {
 	const id = friend.id;
 	if (id === req.user_id) throw new HTTPError("You can't add yourself as a friend");
 
-	const user = await UserModel.findOne({ id: req.user_id }, userProjection).exec();
+	const user = await User.findOneOrFail({ id: req.user_id }, userProjection);
 	const newUserRelationships = [...user.user_data.relationships];
 	const newFriendRelationships = [...friend.user_data.relationships];
 
@@ -48,7 +48,7 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 		if (friendRequest && friendRequest.type !== RelationshipType.blocked) {
 			newFriendRelationships.remove(friendRequest);
 			await Promise.all([
-				UserModel.updateOne({ id: friend.id }, { "user_data.relationships": newFriendRelationships }).exec(),
+				User.update({ id: friend.id }, { "user_data.relationships": newFriendRelationships }),
 				emitEvent({
 					event: "RELATIONSHIP_REMOVE",
 					data: friendRequest,
@@ -58,12 +58,12 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 		}
 
 		await Promise.all([
-			UserModel.updateOne({ id: req.user_id }, { "user_data.relationships": newUserRelationships }).exec(),
+			User.update({ id: req.user_id }, { "user_data.relationships": newUserRelationships }),
 			emitEvent({
 				event: "RELATIONSHIP_ADD",
 				data: {
-					...toObject(relationship),
-					user: { ...toObject(friend), user_data: undefined }
+					...relationship,
+					user: { ...friend, user_data: undefined }
 				},
 				user_id: req.user_id
 			} as RelationshipAddEvent)
@@ -91,22 +91,22 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 	} else newUserRelationships.push(outgoing_relationship);
 
 	await Promise.all([
-		UserModel.updateOne({ id: req.user_id }, { "user_data.relationships": newUserRelationships }).exec(),
-		UserModel.updateOne({ id: friend.id }, { "user_data.relationships": newFriendRelationships }).exec(),
+		User.update({ id: req.user_id }, { "user_data.relationships": newUserRelationships }),
+		User.update({ id: friend.id }, { "user_data.relationships": newFriendRelationships }),
 		emitEvent({
 			event: "RELATIONSHIP_ADD",
 			data: {
 				...outgoing_relationship,
-				user: { ...toObject(friend), user_data: undefined }
+				user: { ...friend, user_data: undefined }
 			},
 			user_id: req.user_id
 		} as RelationshipAddEvent),
 		emitEvent({
 			event: "RELATIONSHIP_ADD",
 			data: {
-				...toObject(incoming_relationship),
+				...incoming_relationship,
 				should_notify: true,
-				user: { ...toObject(user), user_data: undefined }
+				user: { ...user, user_data: undefined }
 			},
 			user_id: id
 		} as RelationshipAddEvent)
@@ -116,14 +116,14 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 }
 
 router.put("/:id", check({ $type: new Length(Number, 1, 4) }), async (req: Request, res: Response) => {
-	return await addRelationship(req, res, await UserModel.findOne({ id: req.params.id }), req.body.type);
+	return await addRelationship(req, res, await User.findOneOrFail({ id: req.params.id }), req.body.type);
 });
 
 router.post("/", check({ discriminator: String, username: String }), async (req: Request, res: Response) => {
 	return await addRelationship(
 		req,
 		res,
-		await UserModel.findOne(req.body as { discriminator: string; username: string }).exec(),
+		await User.findOneOrFail(req.body as { discriminator: string; username: string }),
 		req.body.type
 	);
 });
@@ -132,10 +132,10 @@ router.delete("/:id", async (req: Request, res: Response) => {
 	const { id } = req.params;
 	if (id === req.user_id) throw new HTTPError("You can't remove yourself as a friend");
 
-	const user = await UserModel.findOne({ id: req.user_id }).exec();
+	const user = await User.findOneOrFail({ id: req.user_id });
 	if (!user) throw new HTTPError("Invalid token", 400);
 
-	const friend = await UserModel.findOne({ id }, userProjection).exec();
+	const friend = await User.findOneOrFail({ id }, userProjection);
 	if (!friend) throw new HTTPError("User not found", 404);
 
 	const relationship = user.user_data.relationships.find((x) => x.id === id);

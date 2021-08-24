@@ -1,13 +1,4 @@
-import {
-	ChannelModel,
-	ChannelPermissionOverwrite,
-	ChannelUpdateEvent,
-	emitEvent,
-	getPermission,
-	MemberModel,
-	RoleModel,
-	toObject
-} from "@fosscord/util";
+import { Channel, ChannelPermissionOverwrite, ChannelUpdateEvent, emitEvent, getPermission, Member, Role, toObject } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -20,16 +11,16 @@ router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, 
 	const { channel_id, overwrite_id } = req.params;
 	const body = req.body as { allow: bigint; deny: bigint; type: number; id: string };
 
-	var channel = await ChannelModel.findOne({ id: channel_id }, { guild_id: true, permission_overwrites: true }).exec();
+	var channel = await Channel.findOneOrFail({ id: channel_id }, { guild_id: true, permission_overwrites: true });
 	if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
 	const permissions = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permissions.hasThrow("MANAGE_ROLES");
 
 	if (body.type === 0) {
-		if (!(await RoleModel.exists({ id: overwrite_id }))) throw new HTTPError("role not found", 404);
+		if (!(await Role.exists({ id: overwrite_id }))) throw new HTTPError("role not found", 404);
 	} else if (body.type === 1) {
-		if (!(await MemberModel.exists({ id: overwrite_id }))) throw new HTTPError("user not found", 404);
+		if (!(await Member.exists({ id: overwrite_id }))) throw new HTTPError("user not found", 404);
 	} else throw new HTTPError("type not supported", 501);
 
 	// @ts-ignore
@@ -48,12 +39,12 @@ router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, 
 	overwrite.deny = body.deny;
 
 	// @ts-ignore
-	channel = await ChannelModel.findOneAndUpdate({ id: channel_id }, channel, { new: true }).exec();
+	channel = await Channel.findOneOrFailAndUpdate({ id: channel_id }, channel, { new: true });
 
 	await emitEvent({
 		event: "CHANNEL_UPDATE",
 		channel_id,
-		data: toObject(channel)
+		data: channel
 	} as ChannelUpdateEvent);
 
 	return res.sendStatus(204);
@@ -66,7 +57,7 @@ router.delete("/:overwrite_id", async (req: Request, res: Response) => {
 	const permissions = await getPermission(req.user_id, undefined, channel_id);
 	permissions.hasThrow("MANAGE_ROLES");
 
-	const channel = await ChannelModel.findOneAndUpdate(
+	const channel = await Channel.findOneOrFailAndUpdate(
 		{ id: channel_id },
 		{ $pull: { permission_overwrites: { id: overwrite_id } } },
 		{ new: true }
@@ -76,7 +67,7 @@ router.delete("/:overwrite_id", async (req: Request, res: Response) => {
 	await emitEvent({
 		event: "CHANNEL_UPDATE",
 		channel_id,
-		data: toObject(channel)
+		data: channel
 	} as ChannelUpdateEvent);
 
 	return res.sendStatus(204);

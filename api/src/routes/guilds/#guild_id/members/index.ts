@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { GuildModel, MemberModel, toObject } from "@fosscord/util";
+import { Guild, Member, toObject } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { instanceOf, Length } from "../../../../util/instanceOf";
 import { PublicMemberProjection, isMember } from "../../../../util/Member";
@@ -10,7 +10,7 @@ const router = Router();
 // TODO: send over websocket
 router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
+	const guild = await Guild.findOneOrFail({ id: guild_id });
 	await isMember(req.user_id, guild_id);
 
 	try {
@@ -28,11 +28,8 @@ router.get("/", async (req: Request, res: Response) => {
 	const { limit, after } = (<unknown>req.query) as { limit: number; after: string };
 	const query = after ? { id: { $gt: after } } : {};
 
-	var members = await MemberModel.find({ guild_id, ...query }, PublicMemberProjection)
-		.limit(limit)
-		.exec();
-
-	return res.json(toObject(members));
+	var members = await Member.find({ guild_id, ...query }, PublicMemberProjection).limit(limit);
+	return res.json(members);
 });
 
 export default router;

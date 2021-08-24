@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import {
-	ChannelModel,
+	Channel,
 	ChannelCreateEvent,
 	toObject,
 	ChannelType,
@@ -8,7 +8,7 @@ import {
 	trimSpecial,
 	Channel,
 	DMChannel,
-	UserModel,
+	User,
 	emitEvent
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
@@ -19,9 +19,9 @@ import { check } from "../../../util/instanceOf";
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	var channels = await ChannelModel.find({ recipient_ids: req.user_id }).exec();
+	var channels = await Channel.find({ recipient_ids: req.user_id });
 
-	res.json(toObject(channels));
+	res.json(channels);
 });
 
 router.post("/", check(DmChannelCreateSchema), async (req: Request, res: Response) => {
@@ -29,14 +29,14 @@ router.post("/", check(DmChannelCreateSchema), async (req: Request, res: Respons
 
 	body.recipients = body.recipients.filter((x) => x !== req.user_id).unique();
 
-	if (!(await Promise.all(body.recipients.map((x) => UserModel.exists({ id: x })))).every((x) => x)) {
+	if (!(await Promise.all(body.recipients.map((x) => User.exists({ id: x })))).every((x) => x)) {
 		throw new HTTPError("Recipient not found");
 	}
 
 	const type = body.recipients.length === 1 ? ChannelType.DM : ChannelType.GROUP_DM;
 	const name = trimSpecial(body.name);
 
-	const channel = await new ChannelModel({
+	const channel = await new Channel({
 		name,
 		type,
 		owner_id: req.user_id,
@@ -46,9 +46,9 @@ router.post("/", check(DmChannelCreateSchema), async (req: Request, res: Respons
 		recipient_ids: [...body.recipients, req.user_id]
 	}).save();
 
-	await emitEvent({ event: "CHANNEL_CREATE", data: toObject(channel), user_id: req.user_id } as ChannelCreateEvent);
+	await emitEvent({ event: "CHANNEL_CREATE", data: channel), user_id: req.user_id } as ChannelCreateEvent;
 
-	res.json(toObject(channel));
+	res.json(channel);
 });
 
 export default router;

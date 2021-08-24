@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { GuildModel, getPermission, toObject, Snowflake } from "@fosscord/util";
+import { Guild, getPermission, toObject, Snowflake } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 
 import { check } from "../../../util/instanceOf";
@@ -12,18 +12,18 @@ const router: Router = Router();
 router.get("/", async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;
 
-	const guild = await GuildModel.findOne({ id: guild_id });
+	const guild = await Guild.findOneOrFail({ id: guild_id });
 
 	await isMember(req.user_id, guild_id);
 
-	res.json(toObject(guild.welcome_screen));
+	res.json(guild.welcome_screen);
 });
 
 router.post("/", check(GuildAddChannelToWelcomeScreenSchema), async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;
 	const body = req.body as GuildAddChannelToWelcomeScreenSchema;
 
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
+	const guild = await Guild.findOneOrFail({ id: guild_id });
 
 	var channelObject = {
 		...body
@@ -36,12 +36,12 @@ router.post("/", check(GuildAddChannelToWelcomeScreenSchema), async (req: Reques
 	if (guild.welcome_screen.welcome_channels.some((channel) => channel.channel_id === body.channel_id))
 		throw new Error("Welcome Channel exists");
 
-	await GuildModel.findOneAndUpdate(
+	await Guild.findOneOrFailAndUpdate(
 		{
 			id: guild_id
 		},
 		{ $push: { "welcome_screen.welcome_channels": channelObject } }
-	).exec();
+	);
 
 	res.sendStatus(204);
 });

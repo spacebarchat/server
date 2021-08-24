@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import { ChannelModel, toObject, ChannelUpdateEvent, getPermission, emitEvent } from "@fosscord/util";
+import { Channel, toObject, ChannelUpdateEvent, getPermission, emitEvent } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
 
@@ -9,9 +9,9 @@ const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
-	const channels = await ChannelModel.find({ guild_id }).exec();
+	const channels = await Channel.find({ guild_id });
 
-	res.json(toObject(channels));
+	res.json(channels);
 });
 
 // TODO: check if channel type is permitted
@@ -24,7 +24,7 @@ router.post("/", check(ChannelModifySchema), async (req: Request, res: Response)
 
 	const channel = await createChannel({ ...body, guild_id }, req.user_id);
 
-	res.status(201).json(toObject(channel));
+	res.status(201).json(channel);
 });
 
 // TODO: check if parent_id exists
@@ -48,18 +48,15 @@ router.patch(
 
 				if (x.parent_id) {
 					opts.parent_id = x.parent_id;
-					const parent_channel = await ChannelModel.findOne(
-						{ id: x.parent_id, guild_id },
-						{ permission_overwrites: true }
-					).exec();
+					const parent_channel = await Channel.findOneOrFail({ id: x.parent_id, guild_id }, { permission_overwrites: true });
 					if (x.lock_permissions) {
 						opts.permission_overwrites = parent_channel.permission_overwrites;
 					}
 				}
 
-				const channel = await ChannelModel.findOneAndUpdate({ id: x.id, guild_id }, opts, { new: true }).exec();
+				const channel = await Channel.findOneOrFailAndUpdate({ id: x.id, guild_id }, opts, { new: true });
 
-				await emitEvent({ event: "CHANNEL_UPDATE", data: toObject(channel), channel_id: x.id, guild_id } as ChannelUpdateEvent);
+				await emitEvent({ event: "CHANNEL_UPDATE", data: channel), channel_id: x.id, guild_id } as ChannelUpdateEvent;
 			})
 		]);
 

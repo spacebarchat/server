@@ -1,13 +1,4 @@
-import {
-	ChannelModel,
-	ChannelPinsUpdateEvent,
-	Config,
-	emitEvent,
-	getPermission,
-	MessageModel,
-	MessageUpdateEvent,
-	toObject
-} from "@fosscord/util";
+import { Channel, ChannelPinsUpdateEvent, Config, emitEvent, getPermission, Message, MessageUpdateEvent, toObject } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -15,19 +6,19 @@ const router: Router = Router();
 
 router.put("/:message_id", async (req: Request, res: Response) => {
 	const { channel_id, message_id } = req.params;
-	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
+	const channel = await Channel.findOneOrFail({ id: channel_id });
 	const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permission.hasThrow("VIEW_CHANNEL");
 
 	// * in dm channels anyone can pin messages -> only check for guilds
 	if (channel.guild_id) permission.hasThrow("MANAGE_MESSAGES");
 
-	const pinned_count = await MessageModel.count({ channel_id, pinned: true }).exec();
+	const pinned_count = await Messagecount({ channel_id, pinned: true });
 	const { maxPins } = Config.get().limits.channel;
 	if (pinned_count >= maxPins) throw new HTTPError("Max pin count reached: " + maxPins);
 
-	await MessageModel.updateOne({ id: message_id }, { pinned: true }).exec();
-	const message = toObject(await MessageModel.findOne({ id: message_id }).exec());
+	await Message.update({ id: message_id }, { pinned: true });
+	const message = await Message.findOneOrFail({ id: message_id });
 
 	await emitEvent({
 		event: "MESSAGE_UPDATE",
@@ -51,13 +42,13 @@ router.put("/:message_id", async (req: Request, res: Response) => {
 router.delete("/:message_id", async (req: Request, res: Response) => {
 	const { channel_id, message_id } = req.params;
 
-	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
+	const channel = await Channel.findOneOrFail({ id: channel_id });
 
 	const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permission.hasThrow("VIEW_CHANNEL");
 	if (channel.guild_id) permission.hasThrow("MANAGE_MESSAGES");
 
-	const message = toObject(await MessageModel.findOneAndUpdate({ id: message_id }, { pinned: false }, { new: true }).exec());
+	const message = await Message.findOneOrFailAndUpdate({ id: message_id }, { pinned: false }, { new: true });
 
 	await emitEvent({
 		event: "MESSAGE_UPDATE",
@@ -81,13 +72,13 @@ router.delete("/:message_id", async (req: Request, res: Response) => {
 router.get("/", async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 
-	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
+	const channel = await Channel.findOneOrFail({ id: channel_id });
 	const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permission.hasThrow("VIEW_CHANNEL");
 
-	let pins = await MessageModel.find({ channel_id: channel_id, pinned: true }).exec();
+	let pins = await Message.find({ channel_id: channel_id, pinned: true });
 
-	res.send(toObject(pins));
+	res.send(pins);
 });
 
 export default router;

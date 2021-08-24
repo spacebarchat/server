@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { RoleModel, GuildModel, Snowflake, Guild, RoleDocument, Config } from "@fosscord/util";
+import { Role, Guild, Snowflake, Guild, RoleDocument, Config } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../util/instanceOf";
 import { GuildCreateSchema } from "../../schema/Guild";
@@ -65,8 +65,8 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	};
 
 	const [guild_doc, role] = await Promise.all([
-		new GuildModel(guild).save(),
-		new RoleModel({
+		new Guild(guild).save(),
+		new Role({
 			id: guild_id,
 			guild_id: guild_id,
 			color: 0,
