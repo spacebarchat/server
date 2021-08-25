@@ -3,8 +3,7 @@ const { User } = require("../dist/entities/User");
 
 beforeAll(async () => {
 	await initDatabase();
-
-	new User().validate(); // initalize schema validator
+	new User().validate();
 });
 
 describe("Validate model class properties", () => {
@@ -23,5 +22,9 @@ describe("Validate model class properties", () => {
 	test("should not set opts", () => {
 		const user = new User({ opts: { id: 0 } });
 		expect(user.opts.id).not.toBe(0);
+	});
+
+	test("test", () => {
+		expect(1).toBe(1);
 	});
 });
