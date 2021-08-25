@@ -9,7 +9,7 @@ export function checkToken(token: string, jwtSecret: string): Promise<any> {
 		jwt.verify(token, jwtSecret, JWTOptions, async (err, decoded: any) => {
 			if (err || !decoded) return rej("Invalid Token");
 
-			const user = await User.findOneOrFail(
+			const user = await User.findOne(
 				{ id: decoded.id },
 				{ select: ["user_data", "bot", "disabled", "deleted"] }
 			);

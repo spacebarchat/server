@@ -6,8 +6,9 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"start": "npm run build && node dist/",
+		"patch": "patch-package",
 		"test": "npm run build && jest",
-		"postinstall": "npm run build",
+		"postinstall": "npm run patch && npm run build",
 		"build": "npx tsc -b .",
 		"generate:schema": "npx typescript-json-schema tsconfig.json '*' -o src/entities/schema.json"
 	},
@@ -46,12 +47,12 @@
 		"jsonwebtoken": "^8.5.1",
 		"missing-native-js-functions": "^1.2.10",
 		"node-fetch": "^2.6.1",
+		"patch-package": "^6.4.7",
 		"reflect-metadata": "^0.1.13",
 		"sqlite3": "^5.0.2",
-		"ts-transform-json-schema": "^2.0.3",
 		"typeorm": "^0.2.37",
 		"typescript": "^4.3.5",
-		"typescript-json-schema": "github:fosscord/typescript-json-schema"
+		"typescript-json-schema": "^0.50.1"
 	},
 	"jest": {
 		"setupFilesAfterEnv": [

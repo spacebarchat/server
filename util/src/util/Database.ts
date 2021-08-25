@@ -10,6 +10,7 @@ var promise: Promise<any>;
 export function initDatabase() {
 	if (promise) return promise; // prevent initalizing multiple times
 
+	console.log("[Database] connecting ...");
 	// @ts-ignore
 	promise = createConnection({
 		type: "sqlite",
@@ -19,7 +20,7 @@ export function initDatabase() {
 		logging: false,
 	});
 
+	promise.then(() => console.log("[Database] connected"));
+
 	return promise;
 }
-
-initDatabase();

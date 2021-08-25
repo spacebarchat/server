@@ -8,10 +8,19 @@
 			"sourceMaps": true,
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Server",
+			"name": "Launch Util",
 			"program": "${workspaceFolder}/dist/index.js",
 			"preLaunchTask": "tsc: build - tsconfig.json",
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"]
+		},
+		{
+			"name": "Debug Jest Tests",
+			"type": "node",
+			"request": "launch",
+			"runtimeArgs": ["--inspect-brk", "${workspaceRoot}/node_modules/jest/bin/jest.js", "--runInBand"],
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"port": 9229
 		}
 	]
 }

@@ -1,7 +1,8 @@
+export * from "./Database";
+
 export * from "./Regex";
 export * from "./String";
 export * from "./BitField";
-export * from "./Database";
 export * from "./Intents";
 export * from "./MessageFlags";
 export * from "./Permissions";

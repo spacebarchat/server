@@ -8,6 +8,7 @@ const ajv = new Ajv({
 	removeAdditional: "all",
 	useDefaults: true,
 	coerceTypes: true,
+	// @ts-ignore
 	validateFormats: false,
 	allowUnionTypes: true,
 });
@@ -23,10 +24,16 @@ export class BaseClass extends BaseEntity {
 		this.assign(props);
 
 		if (!this.construct.schema) this.construct.schema = { ...schema, $ref: `#/definitions/${this.construct.name}` };
+
+		this.id = this.opts.id || Snowflake.generate();
 	}
 
 	get construct(): any {
 		return this.constructor;
+	}
+
+	get metadata() {
+		return this.construct.getRepository().metadata;
 	}
 
 	assign(props: any) {
@@ -39,8 +46,6 @@ export class BaseClass extends BaseEntity {
 
 			Object.defineProperty(this, key, { value: props[key] });
 		}
-
-		this.id = this.opts.id || Snowflake.generate();
 	}
 
 	@BeforeUpdate()
@@ -48,10 +53,7 @@ export class BaseClass extends BaseEntity {
 	validate() {
 		const valid = ajv.validate(this.construct.schema, this.toJSON());
 		if (!valid) throw ajv.errors;
-	}
-
-	get metadata() {
-		return this.construct.getRepository().metadata;
+		return this;
 	}
 
 	toJSON(): any {

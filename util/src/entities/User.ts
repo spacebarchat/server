@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
