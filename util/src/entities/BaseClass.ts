@@ -23,7 +23,9 @@ export class BaseClass extends BaseEntity {
 		super();
 		this.assign(props);
 
-		if (!this.construct.schema) this.construct.schema = { ...schema, $ref: `#/definitions/${this.construct.name}` };
+		if (!this.construct.schema) {
+			this.construct.schema = ajv.compile({ ...schema, $ref: `#/definitions/${this.construct.name}` });
+		}
 
 		this.id = this.opts.id || Snowflake.generate();
 	}
@@ -51,7 +53,7 @@ export class BaseClass extends BaseEntity {
 	@BeforeUpdate()
 	@BeforeInsert()
 	validate() {
-		const valid = ajv.validate(this.construct.schema, this.toJSON());
+		const valid = this.construct.schema(this.toJSON());
 		if (!valid) throw ajv.errors;
 		return this;
 	}
