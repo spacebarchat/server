@@ -3,6 +3,7 @@ export * from "./AuditLog";
 export * from "./Ban";
 export * from "./BaseClass";
 export * from "./Channel";
+export * from "./Config";
 export * from "./ConnectedAccount";
 export * from "./Emoji";
 export * from "./Guild";

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -11,7 +11,7 @@ export enum RelationshipType {
 
 @Entity("relationships")
 export class Relationship extends BaseClass {
-	@Column()
+	@RelationId((relationship: Relationship) => relationship.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { ChannelPermissionOverwrite } from "./Channel";
 import { User } from "./User";
@@ -43,14 +43,14 @@ export enum AuditLogEvents {
 
 @Entity("audit_logs")
 export class AuditLogEntry extends BaseClass {
-	@Column()
+	@RelationId((auditlog: AuditLogEntry) => auditlog.target)
 	target_id: string;
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, (user: User) => user.id)
 	target?: User;
 
-	@Column()
+	@RelationId((auditlog: AuditLogEntry) => auditlog.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Role } from "./Role";
@@ -30,7 +30,7 @@ export class Emoji extends BaseClass {
 	@Column()
 	url: string;
 
-	@Column("simple-array")
+	@RelationId((emoji: Emoji) => emoji.roles)
 	role_ids: string[];
 
 	@JoinColumn({ name: "role_ids" })

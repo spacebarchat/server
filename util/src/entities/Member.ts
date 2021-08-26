@@ -1,18 +1,18 @@
 import { PublicUser, User } from "./User";
 import { BaseClass } from "./BaseClass";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { Guild } from "./Guild";
 
 @Entity("members")
 export class Member extends BaseClass {
-	@Column()
+	@RelationId((member: Member) => member.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, (user: User) => user.id)
 	user: User;
 
-	@Column()
+	@RelationId((member: Member) => member.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })

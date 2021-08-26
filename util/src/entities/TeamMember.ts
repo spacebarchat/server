@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -15,14 +15,14 @@ export class TeamMember extends BaseClass {
 	@Column("simple-array")
 	permissions: string[];
 
-	@Column()
+	@RelationId((member: TeamMember) => member.team)
 	team_id: string;
 
 	@JoinColumn({ name: "team_id" })
 	@ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.id)
 	team: import("./Team").Team;
 
-	@Column()
+	@RelationId((member: TeamMember) => member.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
