@@ -1,10 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 
 @Entity("roles")
 export class Role extends BaseClass {
-	@Column()
+	@RelationId((role: Role) => role.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Team } from "./Team";
@@ -38,14 +38,14 @@ export class Application extends BaseClass {
 	@Column()
 	verify_key: string;
 
-	@Column()
+	@RelationId((application: Application) => application.team)
 	team_id: string;
 
 	@JoinColumn({ name: "team_id" })
 	@ManyToOne(() => Team, (team: Team) => team.id)
 	team?: Team;
 
-	@Column()
+	@RelationId((application: Application) => application.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })

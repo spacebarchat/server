@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
@@ -17,6 +17,9 @@ export class Template extends BaseClass {
 	@Column()
 	usage_count?: number;
 
+	@RelationId((template: Template) => template.creator)
+	creator_id: string;
+
 	@JoinColumn({ name: "creator_id" })
 	@ManyToOne(() => User, (user: User) => user.id)
 	creator: User;
@@ -26,6 +29,9 @@ export class Template extends BaseClass {
 
 	@Column()
 	updated_at: Date;
+
+	@RelationId((template: Template) => template.source_guild)
+	source_guild_id: string;
 
 	@JoinColumn({ name: "source_guild_id" })
 	@ManyToOne(() => Guild, (guild: Guild) => guild.id)

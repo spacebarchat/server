@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Message } from "./Message";
@@ -25,35 +25,35 @@ export class Channel extends BaseClass {
 	@Column({ type: "simple-enum", enum: ChannelType })
 	type: ChannelType;
 
-	@Column("simple-array")
+	@RelationId((channel: Channel) => channel.recipients)
 	recipient_ids: string[];
 
 	@JoinColumn({ name: "recipient_ids" })
 	@ManyToMany(() => User, (user: User) => user.id)
 	recipients?: User[];
 
-	@Column()
+	@RelationId((channel: Channel) => channel.last_message)
 	last_message_id: string;
 
 	@JoinColumn({ name: "last_message_id" })
 	@ManyToOne(() => Message, (message: Message) => message.id)
 	last_message?: Message;
 
-	@Column()
+	@RelationId((channel: Channel) => channel.guild)
 	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
 	guild: Guild;
 
-	@Column()
+	@RelationId((channel: Channel) => channel.parent)
 	parent_id: string;
 
 	@JoinColumn({ name: "parent_id" })
 	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
 	parent?: Channel;
 
-	@Column()
+	@RelationId((channel: Channel) => channel.owner)
 	owner_id: string;
 
 	@JoinColumn({ name: "owner_id" })

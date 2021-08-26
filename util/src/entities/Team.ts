@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { TeamMember } from "./TeamMember";
 import { User } from "./User";
@@ -8,7 +8,7 @@ export class Team extends BaseClass {
 	@Column()
 	icon?: string;
 
-	@Column("simple-array")
+	@RelationId((team: Team) => team.members)
 	member_ids: string[];
 
 	@JoinColumn({ name: "member_ids" })
@@ -18,7 +18,7 @@ export class Team extends BaseClass {
 	@Column()
 	name: string;
 
-	@Column()
+	@RelationId((team: Team) => team.owner_user)
 	owner_user_id: string;
 
 	@JoinColumn({ name: "owner_user_id" })

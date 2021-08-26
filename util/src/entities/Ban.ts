@@ -1,25 +1,25 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
 
 @Entity("bans")
 export class Ban extends BaseClass {
-	@Column()
+	@RelationId((ban: Ban) => ban.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, (user: User) => user.id)
 	user: User;
 
-	@Column()
+	@RelationId((ban: Ban) => ban.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
 	guild: Guild;
 
-	@Column()
+	@RelationId((ban: Ban) => ban.executor)
 	executor_id: string;
 
 	@JoinColumn({ name: "executor_id" })

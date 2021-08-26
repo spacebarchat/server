@@ -1,8 +1,10 @@
-import { Column, Entity, JoinColumn, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
+import { HTTPError } from "lambert-server";
+import { Guild } from "./Guild";
 
 export const PublicUserProjection = {
 	username: true,
@@ -23,6 +25,13 @@ export class User extends BaseClass {
 
 	@Column()
 	discriminator: string; // #0001 4 digit long string from #0001 - #9999
+
+	setDiscriminator(val: string) {
+		const number = Number(val);
+		if (isNaN(number)) throw new Error("invalid discriminator");
+		if (number > 0 && number < 10000) throw new Error("discriminator must be between 1 and 9999");
+		this.discriminator = val;
+	}
 
 	@Column()
 	avatar?: string; // hash of the user avatar
@@ -84,17 +93,21 @@ export class User extends BaseClass {
 	@Column({ type: "bigint" })
 	public_flags: bigint;
 
-	@Column("simple-array") // string in simple-array must not contain commas
-	guilds: string[]; // array of guild ids the user is part of
+	@RelationId((user: User) => user.guilds)
+	guild_ids: string[]; // array of guild ids the user is part of
 
-	@Column("simple-array") // string in simple-array must not contain commas
+	@JoinColumn({ name: "guild_ids" })
+	@OneToMany(() => Guild, (guild: Guild) => guild.id)
+	guilds: Guild[];
+
+	@RelationId((user: User) => user.relationships)
 	relationship_ids: string[]; // array of guild ids the user is part of
 
 	@JoinColumn({ name: "relationship_ids" })
 	@OneToMany(() => User, (user: User) => user.id)
 	relationships: Relationship[];
 
-	@Column("simple-array") // string in simple-array must not contain commas
+	@RelationId((user: User) => user.connected_accounts)
 	connected_account_ids: string[]; // array of guild ids the user is part of
 
 	@JoinColumn({ name: "connected_account_ids" })
@@ -102,14 +115,28 @@ export class User extends BaseClass {
 	connected_accounts: ConnectedAccount[];
 
 	@Column({ type: "simple-json", select: false })
-	user_data: {
+	data: {
 		valid_tokens_since: Date; // all tokens with a previous issue date are invalid
 		hash: string; // hash of the password, salt is saved in password (bcrypt)
-		fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
 	};
+
+	@Column({ type: "simple-array" })
+	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
 
 	@Column("simple-json")
 	settings: UserSettings;
+
+	static async getPublicUser(user_id: string, additional_fields?: any) {
+		const user = await User.findOne(
+			{ id: user_id },
+			{
+				...PublicUserProjection,
+				...additional_fields,
+			}
+		);
+		if (!user) throw new HTTPError("User not found", 404);
+		return user;
+	}
 }
 
 export interface UserSettings {

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Message } from "./Message";
@@ -6,19 +6,22 @@ import { User } from "./User";
 
 @Entity("read_states")
 export class ReadState extends BaseClass {
-	@Column()
+	@RelationId((read_state: ReadState) => read_state.channel)
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
 	channel: Channel;
 
-	@Column()
+	@RelationId((read_state: ReadState) => read_state.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, (user: User) => user.id)
 	user: User;
+
+	@RelationId((read_state: ReadState) => read_state.last_message)
+	last_message_id: string;
 
 	@JoinColumn({ name: "last_message_id" })
 	@ManyToOne(() => Message, (message: Message) => message.id)

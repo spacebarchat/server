@@ -4,7 +4,16 @@ import { Role } from "./Role";
 import { Channel } from "./Channel";
 import { InteractionType } from "../interfaces/Interaction";
 import { Application } from "./Application";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, UpdateDateColumn } from "typeorm";
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	JoinColumn,
+	ManyToMany,
+	ManyToOne,
+	RelationId,
+	UpdateDateColumn,
+} from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
@@ -34,42 +43,42 @@ export class Message extends BaseClass {
 	@Column()
 	id: string;
 
-	@Column()
+	@RelationId((message: Message) => message.channel)
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
 	channel: Channel;
 
-	@Column()
+	@RelationId((message: Message) => message.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
 	guild?: Guild;
 
-	@Column()
+	@RelationId((message: Message) => message.author)
 	author_id: string;
 
 	@JoinColumn({ name: "author_id" })
 	@ManyToOne(() => User, (user: User) => user.id)
 	author?: User;
 
-	@Column()
+	@RelationId((message: Message) => message.member)
 	member_id: string;
 
 	@JoinColumn({ name: "member_id" })
 	@ManyToOne(() => Member, (member: Member) => member.id)
 	member?: Member;
 
-	@Column()
+	@RelationId((message: Message) => message.webhook)
 	webhook_id: string;
 
 	@JoinColumn({ name: "webhook_id" })
 	@ManyToOne(() => Webhook, (webhook: Webhook) => webhook.id)
 	webhook?: Webhook;
 
-	@Column()
+	@RelationId((message: Message) => message.application)
 	application_id: string;
 
 	@JoinColumn({ name: "application_id" })
@@ -93,21 +102,21 @@ export class Message extends BaseClass {
 	@Column()
 	mention_everyone?: boolean;
 
-	@Column("simple-array")
+	@RelationId((message: Message) => message.mention_users)
 	mention_user_ids: string[];
 
 	@JoinColumn({ name: "mention_user_ids" })
 	@ManyToMany(() => User, (user: User) => user.id)
 	mention_users: User[];
 
-	@Column("simple-array")
+	@RelationId((message: Message) => message.mention_roles)
 	mention_role_ids: string[];
 
 	@JoinColumn({ name: "mention_role_ids" })
 	@ManyToMany(() => Role, (role: Role) => role.id)
 	mention_roles: Role[];
 
-	@Column("simple-array")
+	@RelationId((message: Message) => message.mention_channels)
 	mention_channel_ids: string[];
 
 	@JoinColumn({ name: "mention_channel_ids" })

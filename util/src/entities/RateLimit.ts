@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -7,7 +7,7 @@ export class RateLimit extends BaseClass {
 	@Column()
 	id: "global" | "error" | string; // channel_239842397 | guild_238927349823 | webhook_238923423498
 
-	@Column()
+	@RelationId((rate_limit: RateLimit) => rate_limit.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })

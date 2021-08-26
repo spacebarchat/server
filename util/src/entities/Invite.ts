@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
@@ -27,29 +27,29 @@ export class Invite extends BaseClass {
 	@Column()
 	expires_at: Date;
 
-	@Column()
+	@RelationId((invite: Invite) => invite.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
 	guild: Guild;
 
-	@Column()
+	@RelationId((invite: Invite) => invite.channel)
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
 	channel: Channel;
 
-	@Column()
+	@RelationId((invite: Invite) => invite.inviter)
 	inviter_id: string;
 
 	@JoinColumn({ name: "inviter_id" })
 	@ManyToOne(() => User, (user: User) => user.id)
 	inviter: User;
 
-	@Column()
-	target_usser_id: string;
+	@RelationId((invite: Invite) => invite.target_user)
+	target_user_id: string;
 
 	@JoinColumn({ name: "target_user_id" })
 	@ManyToOne(() => User, (user: User) => user.id)
