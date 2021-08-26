@@ -43,7 +43,6 @@
 		"class-validator": "^0.13.1",
 		"dot-prop": "^6.0.1",
 		"env-paths": "^2.2.1",
-		"jest-test-performance": "^1.0.1",
 		"jsonwebtoken": "^8.5.1",
 		"missing-native-js-functions": "^1.2.10",
 		"node-fetch": "^2.6.1",
@@ -56,7 +55,7 @@
 	},
 	"jest": {
 		"setupFilesAfterEnv": [
-			"jest-test-performance"
+			"./tests/setupJest.js"
 		]
 	}
 }
