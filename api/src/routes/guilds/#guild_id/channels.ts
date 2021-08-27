@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import { Channel, toObject, ChannelUpdateEvent, getPermission, emitEvent } from "@fosscord/util";
+import { Channel, ChannelUpdateEvent, getPermission, emitEvent } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
 
@@ -48,15 +48,19 @@ router.patch(
 
 				if (x.parent_id) {
 					opts.parent_id = x.parent_id;
-					const parent_channel = await Channel.findOneOrFail({ id: x.parent_id, guild_id }, { permission_overwrites: true });
+					const parent_channel = await Channel.findOneOrFail({
+						where: { id: x.parent_id, guild_id },
+						select: ["permission_overwrites"]
+					});
 					if (x.lock_permissions) {
 						opts.permission_overwrites = parent_channel.permission_overwrites;
 					}
 				}
 
-				const channel = await Channel.findOneOrFailAndUpdate({ id: x.id, guild_id }, opts, { new: true });
+				await Channel.update({ guild_id, id: x.id }, opts);
+				const channel = await Channel.findOneOrFail({ guild_id, id: x.id });
 
-				await emitEvent({ event: "CHANNEL_UPDATE", data: channel), channel_id: x.id, guild_id } as ChannelUpdateEvent;
+				await emitEvent({ event: "CHANNEL_UPDATE", data: channel, channel_id: x.id, guild_id } as ChannelUpdateEvent);
 			})
 		]);
 

@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { getPermission, Guild, InviteModel, toObject } from "@fosscord/util";
+import { getPermission, Guild, Invite } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { addMember } from "../../util/Member";
 const router: Router = Router();
@@ -40,7 +40,7 @@ router.delete("/:code", async (req: Request, res: Response) => {
 
 	await Guild.update({ vanity_url_code: code }, { $unset: { vanity_url_code: 1 } }).catch((e) => {});
 
-	res.status(200).send({ invite: invite) };
+	res.json({ invite: invite });
 });
 
 export default router;

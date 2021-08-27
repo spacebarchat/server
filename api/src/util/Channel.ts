@@ -57,7 +57,7 @@ export async function createChannel(
 		recipient_ids: null
 	}).save();
 
-	await emitEvent({ event: "CHANNEL_CREATE", data: channel), guild_id: channel.guild_id } as ChannelCreateEvent;
+	await emitEvent({ event: "CHANNEL_CREATE", data: channel, guild_id: channel.guild_id } as ChannelCreateEvent);
 
 	return channel;
 }

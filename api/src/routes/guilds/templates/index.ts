@@ -1,9 +1,8 @@
 import { Request, Response, Router } from "express";
 const router: Router = Router();
-import { TemplateModel, Guild, toObject, User, Role, Snowflake, Guild, Config } from "@fosscord/util";
+import { Template, Guild, Role, Snowflake, Config, User } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { GuildTemplateCreateSchema } from "../../../schema/Guild";
-import { getPublicUser } from "../../../util/User";
 import { check } from "../../../util/instanceOf";
 import { addMember } from "../../../util/Member";
 
@@ -12,7 +11,7 @@ router.get("/:code", async (req: Request, res: Response) => {
 
 	const template = await Template.findOneOrFail({ code: code });
 
-	res.json(template)).send(;
+	res.json(template);
 });
 
 router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res: Response) => {
@@ -20,7 +19,7 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 	const body = req.body as GuildTemplateCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
-	const user = await getPublicUser(req.user_id, { guilds: true });
+	const user = await User.getPublicUser(req.user_id, { guilds: true });
 
 	if (user.guilds.length >= maxGuilds) {
 		throw new HTTPError(`Maximum number of guilds reached ${maxGuilds}`, 403);
