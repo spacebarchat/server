@@ -1,11 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
 
 @Entity("templates")
 export class Template extends BaseClass {
-	@Column()
+	@PrimaryColumn()
 	code: string;
 
 	@Column()
@@ -36,4 +36,7 @@ export class Template extends BaseClass {
 	@JoinColumn({ name: "source_guild_id" })
 	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
 	source_guild: Guild;
+
+	@Column("simple-json")
+	serialized_source_guild: Guild;
 }

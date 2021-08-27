@@ -3,6 +3,10 @@ import { BaseEntity, BeforeInsert, BeforeUpdate, PrimaryColumn } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
 import Ajv, { ValidateFunction } from "ajv";
 import schema from "./schema.json";
+import "missing-native-js-functions";
+
+// TODO use class-validator https://typeorm.io/#/validation with class annotators (isPhone/isEmail) combined with types from typescript-json-schema
+// btw. we don't use class-validator for everything, because we need to explicitly set the type instead of deriving it from typescript also it doesn't easily support nested objects
 
 const ajv = new Ajv({
 	removeAdditional: "all",
@@ -12,7 +16,6 @@ const ajv = new Ajv({
 	validateFormats: false,
 	allowUnionTypes: true,
 });
-// const validator = ajv.compile<BaseClass>(schema);
 
 export class BaseClass extends BaseEntity {
 	@PrimaryColumn()
@@ -43,10 +46,20 @@ export class BaseClass extends BaseEntity {
 
 		delete props.opts;
 
+		const properties = new Set(this.metadata.columns.map((x: any) => x.propertyName));
+		// will not include relational properties (e.g. @RelationId @ManyToMany)
+
 		for (const key in props) {
 			if (this.hasOwnProperty(key)) continue;
+			if (!properties.has(key)) continue;
+			// @ts-ignore
+			const setter = this[`set${key.capitalize()}`];
 
-			Object.defineProperty(this, key, { value: props[key] });
+			if (setter) {
+				setter.call(this, props[key]);
+			} else {
+				Object.defineProperty(this, key, { value: props[key] });
+			}
 		}
 	}
 
