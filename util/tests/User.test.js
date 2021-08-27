@@ -13,21 +13,19 @@ afterAll(() => {
 	closeDatabase();
 });
 
-describe("Validate model class properties", () => {
-	test("object instead of string", async () => {
+describe("User", () => {
+	test("valid discriminator: 1", async () => {
+		new User({ discriminator: "1" }).validate();
+	});
+	test("invalid discriminator: test", async () => {
 		expect(() => {
-			new User({}, { id: {} }).validate();
+			new User({ discriminator: "test" }).validate();
 		}).toThrow();
 	});
 
-	test("validation should be faster than 20ms", () => {
+	test("invalid discriminator: 0", async () => {
 		expect(() => {
-			new User().validate();
-		}).toBeFasterThan(20);
-	});
-
-	test("should not set opts", () => {
-		const user = new User({ opts: { id: 0 } });
-		expect(user.opts.id).not.toBe(0);
+			new User({ discriminator: "0" }).validate();
+		}).toThrow();
 	});
 });

@@ -106,7 +106,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}),
 		guild_experiments: [], // TODO
 		geo_ordered_rtc_regions: [], // TODO
-		relationships: user.user_data.relationships,
+		relationships: user.data.relationships,
 		read_state: {
 			// TODO
 			entries: [],

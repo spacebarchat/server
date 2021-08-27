@@ -44,6 +44,7 @@
 		"dot-prop": "^6.0.1",
 		"env-paths": "^2.2.1",
 		"jsonwebtoken": "^8.5.1",
+		"lambert-server": "^1.2.8",
 		"missing-native-js-functions": "^1.2.10",
 		"node-fetch": "^2.6.1",
 		"patch-package": "^6.4.7",

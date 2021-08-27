@@ -1198,6 +1198,380 @@
             },
             "type": "object"
         },
+        "ConfigEntity": {
+            "properties": {
+                "construct": {
+                },
+                "id": {
+                    "type": "string"
+                },
+                "metadata": {
+                },
+                "opts": {
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "value": {
+                    "$ref": "#/definitions/ConfigValue"
+                }
+            },
+            "type": "object"
+        },
+        "ConfigValue": {
+            "properties": {
+                "cdn": {
+                    "properties": {
+                        "endpoint": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "endpointClient": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        }
+                    },
+                    "type": "object"
+                },
+                "gateway": {
+                    "properties": {
+                        "endpoint": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "endpointClient": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        }
+                    },
+                    "type": "object"
+                },
+                "general": {
+                    "properties": {
+                        "instance_id": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "kafka": {
+                    "properties": {
+                        "brokers": {
+                            "anyOf": [
+                                {
+                                    "items": {
+                                        "$ref": "#/definitions/KafkaBroker"
+                                    },
+                                    "type": "array"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        }
+                    },
+                    "type": "object"
+                },
+                "limits": {
+                    "properties": {
+                        "channel": {
+                            "properties": {
+                                "maxPins": {
+                                    "type": "number"
+                                },
+                                "maxTopic": {
+                                    "type": "number"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "guild": {
+                            "properties": {
+                                "hideOfflineMember": {
+                                    "type": "number"
+                                },
+                                "maxChannels": {
+                                    "type": "number"
+                                },
+                                "maxChannelsInCategory": {
+                                    "type": "number"
+                                },
+                                "maxMembers": {
+                                    "type": "number"
+                                },
+                                "maxRoles": {
+                                    "type": "number"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "message": {
+                            "properties": {
+                                "maxAttachmentSize": {
+                                    "type": "number"
+                                },
+                                "maxBulkDelete": {
+                                    "type": "number"
+                                },
+                                "maxCharacters": {
+                                    "type": "number"
+                                },
+                                "maxReactions": {
+                                    "type": "number"
+                                },
+                                "maxTTSCharacters": {
+                                    "type": "number"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "rate": {
+                            "properties": {
+                                "error": {
+                                    "$ref": "#/definitions/RateLimitOptions"
+                                },
+                                "global": {
+                                    "$ref": "#/definitions/RateLimitOptions"
+                                },
+                                "ip": {
+                                    "$ref": "#/definitions/Omit<RateLimitOptions,\"bot_count\">"
+                                },
+                                "routes": {
+                                    "properties": {
+                                        "auth": {
+                                            "properties": {
+                                                "login": {
+                                                    "$ref": "#/definitions/RateLimitOptions"
+                                                },
+                                                "register": {
+                                                    "$ref": "#/definitions/RateLimitOptions"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "channel": {
+                                            "$ref": "#/definitions/RateLimitOptions"
+                                        },
+                                        "guild": {
+                                            "$ref": "#/definitions/RateLimitOptions"
+                                        },
+                                        "webhook": {
+                                            "$ref": "#/definitions/RateLimitOptions"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "user": {
+                            "properties": {
+                                "maxFriends": {
+                                    "type": "number"
+                                },
+                                "maxGuilds": {
+                                    "type": "number"
+                                },
+                                "maxUsername": {
+                                    "type": "number"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "login": {
+                    "properties": {
+                        "requireCaptcha": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                },
+                "permissions": {
+                    "properties": {
+                        "user": {
+                            "properties": {
+                                "createGuilds": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "rabbitmq": {
+                    "properties": {
+                        "host": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        }
+                    },
+                    "type": "object"
+                },
+                "regions": {
+                    "properties": {
+                        "available": {
+                            "items": {
+                                "$ref": "#/definitions/Region"
+                            },
+                            "type": "array"
+                        },
+                        "default": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "register": {
+                    "properties": {
+                        "allowMultipleAccounts": {
+                            "type": "boolean"
+                        },
+                        "allowNewRegistration": {
+                            "type": "boolean"
+                        },
+                        "blockProxies": {
+                            "type": "boolean"
+                        },
+                        "dateOfBirth": {
+                            "properties": {
+                                "minimum": {
+                                    "type": "number"
+                                },
+                                "necessary": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "email": {
+                            "properties": {
+                                "allowlist": {
+                                    "type": "boolean"
+                                },
+                                "blocklist": {
+                                    "type": "boolean"
+                                },
+                                "domains": {
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "type": "array"
+                                },
+                                "necessary": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "password": {
+                            "properties": {
+                                "minLength": {
+                                    "type": "number"
+                                },
+                                "minNumbers": {
+                                    "type": "number"
+                                },
+                                "minSymbols": {
+                                    "type": "number"
+                                },
+                                "minUpperCase": {
+                                    "type": "number"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "requireCaptcha": {
+                            "type": "boolean"
+                        },
+                        "requireInvite": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                },
+                "security": {
+                    "properties": {
+                        "autoUpdate": {
+                            "type": [
+                                "number",
+                                "boolean"
+                            ]
+                        },
+                        "captcha": {
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "secret": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                },
+                                "service": {
+                                    "anyOf": [
+                                        {
+                                            "enum": [
+                                                "hcaptcha",
+                                                "recaptcha"
+                                            ],
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "null"
+                                        }
+                                    ]
+                                },
+                                "sitekey": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "forwadedFor": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "ipdataApiKey": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "jwtSecret": {
+                            "type": "string"
+                        },
+                        "requestSignature": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
         "ConnectedAccount": {
             "properties": {
                 "access_token": {
@@ -1721,6 +2095,9 @@
                 "public_updates_channel": {
                     "$ref": "#/definitions/Channel"
                 },
+                "public_updates_channel_id": {
+                    "type": "string"
+                },
                 "region": {
                     "type": "string"
                 },
@@ -1759,6 +2136,9 @@
                 },
                 "vanity_url": {
                     "$ref": "#/definitions/Invite"
+                },
+                "vanity_url_code": {
+                    "type": "string"
                 },
                 "verification_level": {
                     "type": "number"
@@ -1808,6 +2188,9 @@
                 },
                 "widget_channel": {
                     "$ref": "#/definitions/Channel"
+                },
+                "widget_channel_id": {
+                    "type": "string"
                 },
                 "widget_enabled": {
                     "type": "boolean"
@@ -2520,11 +2903,11 @@
                 "target_user": {
                     "type": "string"
                 },
+                "target_user_id": {
+                    "type": "string"
+                },
                 "target_user_type": {
                     "type": "number"
-                },
-                "target_usser_id": {
-                    "type": "string"
                 },
                 "temporary": {
                     "type": "boolean"
@@ -2611,6 +2994,17 @@
                 },
                 "user_id": {
                     "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "KafkaBroker": {
+            "properties": {
+                "ip": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "number"
                 }
             },
             "type": "object"
@@ -3507,11 +3901,11 @@
                 "target_user": {
                     "type": "string"
                 },
+                "target_user_id": {
+                    "type": "string"
+                },
                 "target_user_type": {
                     "type": "number"
-                },
-                "target_usser_id": {
-                    "type": "string"
                 },
                 "temporary": {
                     "type": "boolean"
@@ -3839,6 +4233,23 @@
                 },
                 "webhook_id": {
                     "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Omit<RateLimitOptions,\"bot_count\">": {
+            "properties": {
+                "bot": {
+                    "type": "number"
+                },
+                "count": {
+                    "type": "number"
+                },
+                "onyIp": {
+                    "type": "boolean"
+                },
+                "window": {
+                    "type": "number"
                 }
             },
             "type": "object"
@@ -4322,6 +4733,23 @@
             },
             "type": "object"
         },
+        "RateLimitOptions": {
+            "properties": {
+                "bot": {
+                    "type": "number"
+                },
+                "count": {
+                    "type": "number"
+                },
+                "onyIp": {
+                    "type": "boolean"
+                },
+                "window": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
         "Reaction": {
             "properties": {
                 "count": {
@@ -4354,6 +4782,9 @@
                 },
                 "last_message": {
                     "$ref": "#/definitions/Message"
+                },
+                "last_message_id": {
+                    "type": "string"
                 },
                 "last_pin_timestamp": {
                     "format": "date-time",
@@ -4763,6 +5194,29 @@
         "Record<string,string|null>": {
             "type": "object"
         },
+        "Region": {
+            "properties": {
+                "custom": {
+                    "type": "boolean"
+                },
+                "deprecated": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "optimal": {
+                    "type": "boolean"
+                },
+                "vip": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
         "Relationship": {
             "properties": {
                 "construct": {
@@ -5053,6 +5507,9 @@
                 "creator": {
                     "$ref": "#/definitions/User"
                 },
+                "creator_id": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -5072,8 +5529,14 @@
                     },
                     "type": "object"
                 },
+                "serialized_source_guild": {
+                    "$ref": "#/definitions/Guild"
+                },
                 "source_guild": {
                     "$ref": "#/definitions/Guild"
+                },
+                "source_guild_id": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "format": "date-time",
@@ -5164,6 +5627,18 @@
                     "format": "date-time",
                     "type": "string"
                 },
+                "data": {
+                    "properties": {
+                        "hash": {
+                            "type": "string"
+                        },
+                        "valid_tokens_since": {
+                            "format": "date-time",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
                 "deleted": {
                     "type": "boolean"
                 },
@@ -5179,12 +5654,24 @@
                 "email": {
                     "type": "string"
                 },
+                "fingerprints": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "flags": {
                     "type": "bigint"
                 },
-                "guilds": {
+                "guild_ids": {
                     "items": {
                         "type": "string"
+                    },
+                    "type": "array"
+                },
+                "guilds": {
+                    "items": {
+                        "$ref": "#/definitions/Guild"
                     },
                     "type": "array"
                 },
@@ -5239,24 +5726,6 @@
                 },
                 "system": {
                     "type": "boolean"
-                },
-                "user_data": {
-                    "properties": {
-                        "fingerprints": {
-                            "items": {
-                                "type": "string"
-                            },
-                            "type": "array"
-                        },
-                        "hash": {
-                            "type": "string"
-                        },
-                        "valid_tokens_since": {
-                            "format": "date-time",
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
                 },
                 "username": {
                     "type": "string"
@@ -5544,6 +6013,9 @@
                 "channel": {
                     "$ref": "#/definitions/Channel"
                 },
+                "channel_id": {
+                    "type": "string"
+                },
                 "construct": {
                 },
                 "deaf": {
@@ -5551,6 +6023,9 @@
                 },
                 "guild": {
                     "$ref": "#/definitions/Guild"
+                },
+                "guild_id": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -5588,6 +6063,9 @@
                 },
                 "user": {
                     "$ref": "#/definitions/User"
+                },
+                "user_id": {
+                    "type": "string"
                 }
             },
             "type": "object"
@@ -5634,17 +6112,26 @@
         "Webhook": {
             "properties": {
                 "application": {
+                    "$ref": "#/definitions/Application"
+                },
+                "application_id": {
                     "type": "string"
                 },
                 "avatar": {
                     "type": "string"
                 },
                 "channel": {
+                    "$ref": "#/definitions/Channel"
+                },
+                "channel_id": {
                     "type": "string"
                 },
                 "construct": {
                 },
                 "guild": {
+                    "$ref": "#/definitions/Guild"
+                },
+                "guild_id": {
                     "type": "string"
                 },
                 "id": {
@@ -5664,6 +6151,9 @@
                     "type": "object"
                 },
                 "source_guild": {
+                    "$ref": "#/definitions/Guild"
+                },
+                "source_guild_id": {
                     "type": "string"
                 },
                 "token": {
@@ -5673,6 +6163,9 @@
                     "$ref": "#/definitions/WebhookType"
                 },
                 "user": {
+                    "$ref": "#/definitions/User"
+                },
+                "user_id": {
                     "type": "string"
                 }
             },

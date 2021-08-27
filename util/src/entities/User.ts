@@ -29,8 +29,8 @@ export class User extends BaseClass {
 	setDiscriminator(val: string) {
 		const number = Number(val);
 		if (isNaN(number)) throw new Error("invalid discriminator");
-		if (number > 0 && number < 10000) throw new Error("discriminator must be between 1 and 9999");
-		this.discriminator = val;
+		if (number <= 0 || number > 10000) throw new Error("discriminator must be between 1 and 9999");
+		this.discriminator = val.toString();
 	}
 
 	@Column()

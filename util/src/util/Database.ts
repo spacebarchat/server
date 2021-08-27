@@ -1,11 +1,12 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { Connection, createConnection } from "typeorm";
 import * as Models from "../entities";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
 
 var promise: Promise<any>;
+var dbConnection: Connection | undefined;
 
 export function initDatabase() {
 	if (promise) return promise; // prevent initalizing multiple times
@@ -20,7 +21,16 @@ export function initDatabase() {
 		logging: false,
 	});
 
-	promise.then(() => console.log("[Database] connected"));
+	promise.then((connection) => {
+		dbConnection = connection;
+		console.log("[Database] connected");
+	});
 
 	return promise;
+}
+
+export { dbConnection };
+
+export function closeDatabase() {
+	dbConnection?.close();
 }

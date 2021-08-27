@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { Snowflake } from "../util";
 import { BaseClass } from "./BaseClass";
 import crypto from "crypto";
+import { Snowflake } from "../util/Snowflake";
 
 @Entity("config")
 export class ConfigEntity extends BaseClass {
