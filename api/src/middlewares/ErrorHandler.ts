@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { FieldError } from "../util/instanceOf";
 
+// TODO: update with new body/typorm validation
 export function ErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
 	if (!error) next();
 

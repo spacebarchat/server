@@ -1,12 +1,12 @@
 import { Request, Response, Router } from "express";
-import { trimSpecial, User, Snowflake, User, Config } from "@fosscord/util";
+import { trimSpecial, User, Snowflake, Config } from "@fosscord/util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../util/instanceOf";
 import "missing-native-js-functions";
 import { generateToken } from "./login";
 import { getIpAdress, IPAnalysis, isProxy } from "../../util/ipAddress";
 import { HTTPError } from "lambert-server";
-import RateLimit from "../../middlewares/RateLimit";
+import { In } from "typeorm";
 
 const router: Router = Router();
 
@@ -55,13 +55,13 @@ router.post(
 		// TODO: check password strength
 
 		// adjusted_email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
-		let adjusted_email: string | null = adjustEmail(email);
+		let adjusted_email = adjustEmail(email);
 
 		// adjusted_password will be the hash of the password
-		let adjusted_password: string = "";
+		let adjusted_password = "";
 
 		// trim special uf8 control characters -> Backspace, Newline, ...
-		let adjusted_username: string = trimSpecial(username);
+		let adjusted_username = trimSpecial(username);
 
 		// discriminator will be randomly generated
 		let discriminator = "";
@@ -129,7 +129,7 @@ router.post(
 
 		if (!register.allowMultipleAccounts) {
 			// TODO: check if fingerprint was eligible generated
-			const exists = await User.findOneOrFail({ fingerprints: fingerprint }).catch((e) => {});
+			const exists = await User.findOne({ where: { fingerprints: In(fingerprint) } });
 
 			if (exists) {
 				throw FieldErrors({
@@ -164,12 +164,8 @@ router.post(
 		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the mongodb database?
 		for (let tries = 0; tries < 5; tries++) {
 			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
-			try {
-				exists = await User.findOneOrFail({ discriminator, username: adjusted_username }, "id");
-			} catch (error) {
-				// doesn't exist -> break
-				break;
-			}
+			exists = await User.findOne({ where: { discriminator, username: adjusted_username }, select: ["id"] });
+			if (!exists) break;
 		}
 
 		if (exists) {
@@ -185,35 +181,26 @@ router.post(
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 
-		const user: User = {
+		const user = await new User({
 			id: Snowflake.generate(),
 			created_at: new Date(),
 			username: adjusted_username,
 			discriminator,
-			avatar: null,
-			accent_color: null,
-			banner: null,
+			avatar: undefined,
+			accent_color: undefined,
+			banner: undefined,
 			bot: false,
 			system: false,
 			desktop: false,
 			mobile: false,
 			premium: true,
 			premium_type: 2,
-			phone: null,
+			phone: undefined,
 			bio: "",
 			mfa_enabled: false,
 			verified: false,
 			disabled: false,
 			deleted: false,
-			presence: {
-				activities: [],
-				client_status: {
-					desktop: undefined,
-					mobile: undefined,
-					web: undefined
-				},
-				status: "offline"
-			},
 			email: adjusted_email,
 			nsfw_allowed: true, // TODO: depending on age
 			public_flags: 0n,
@@ -221,10 +208,7 @@ router.post(
 			guilds: [],
 			data: {
 				hash: adjusted_password,
-				valid_tokens_since: new Date(),
-				relationships: [],
-				connected_accounts: [],
-				fingerprints: []
+				valid_tokens_since: new Date()
 			},
 			settings: {
 				afk_timeout: 300,
@@ -234,10 +218,10 @@ router.post(
 				contact_sync_enabled: false,
 				convert_emoticons: false,
 				custom_status: {
-					emoji_id: null,
-					emoji_name: null,
-					expires_at: null,
-					text: null
+					emoji_id: undefined,
+					emoji_name: undefined,
+					expires_at: undefined,
+					text: undefined
 				},
 				default_guilds_restricted: false,
 				detect_platform_accounts: true,
@@ -265,16 +249,13 @@ router.post(
 				timezone_offset: 0
 				// timezone_offset: // TODO: timezone from request
 			}
-		};
-
-		// insert user into database
-		await new User(user).save();
+		}).save();
 
 		return res.json({ token: await generateToken(user.id) });
 	}
 );
 
-export function adjustEmail(email: string): string | null {
+export function adjustEmail(email: string): string | undefined {
 	// body parser already checked if it is a valid email
 	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);
 	// @ts-ignore

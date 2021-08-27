@@ -15,14 +15,14 @@ import { check, Length } from "../../../util/instanceOf";
 
 const router = Router();
 
-const userProjection = { "user_data.relationships": true, ...PublicUserProjection };
+const userProjection = { "data.relationships": true, ...PublicUserProjection };
 
 router.get("/", async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({ id: req.user_id }, { user_data: { relationships: true } }).populate({
-		path: "user_data.relationships.id",
+	const user = await User.findOneOrFail({ id: req.user_id }, { data: { relationships: true } }).populate({
+		path: "data.relationships.id",
 		model: User
 	});
-	return res.json(user.user_data.relationships);
+	return res.json(user.data.relationships);
 });
 
 async function addRelationship(req: Request, res: Response, friend: UserDocument, type: RelationshipType) {
@@ -30,8 +30,8 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 	if (id === req.user_id) throw new HTTPError("You can't add yourself as a friend");
 
 	const user = await User.findOneOrFail({ id: req.user_id }, userProjection);
-	const newUserRelationships = [...user.user_data.relationships];
-	const newFriendRelationships = [...friend.user_data.relationships];
+	const newUserRelationships = [...user.data.relationships];
+	const newFriendRelationships = [...friend.data.relationships];
 
 	var relationship = newUserRelationships.find((x) => x.id === id);
 	const friendRequest = newFriendRelationships.find((x) => x.id === req.user_id);
@@ -48,7 +48,7 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 		if (friendRequest && friendRequest.type !== RelationshipType.blocked) {
 			newFriendRelationships.remove(friendRequest);
 			await Promise.all([
-				User.update({ id: friend.id }, { "user_data.relationships": newFriendRelationships }),
+				User.update({ id: friend.id }, { "data.relationships": newFriendRelationships }),
 				emitEvent({
 					event: "RELATIONSHIP_REMOVE",
 					data: friendRequest,
@@ -58,12 +58,12 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 		}
 
 		await Promise.all([
-			User.update({ id: req.user_id }, { "user_data.relationships": newUserRelationships }),
+			User.update({ id: req.user_id }, { "data.relationships": newUserRelationships }),
 			emitEvent({
 				event: "RELATIONSHIP_ADD",
 				data: {
 					...relationship,
-					user: { ...friend, user_data: undefined }
+					user: { ...friend, data: undefined }
 				},
 				user_id: req.user_id
 			} as RelationshipAddEvent)
@@ -91,13 +91,13 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 	} else newUserRelationships.push(outgoing_relationship);
 
 	await Promise.all([
-		User.update({ id: req.user_id }, { "user_data.relationships": newUserRelationships }),
-		User.update({ id: friend.id }, { "user_data.relationships": newFriendRelationships }),
+		User.update({ id: req.user_id }, { "data.relationships": newUserRelationships }),
+		User.update({ id: friend.id }, { "data.relationships": newFriendRelationships }),
 		emitEvent({
 			event: "RELATIONSHIP_ADD",
 			data: {
 				...outgoing_relationship,
-				user: { ...friend, user_data: undefined }
+				user: { ...friend, data: undefined }
 			},
 			user_id: req.user_id
 		} as RelationshipAddEvent),
@@ -106,7 +106,7 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 			data: {
 				...incoming_relationship,
 				should_notify: true,
-				user: { ...user, user_data: undefined }
+				user: { ...user, data: undefined }
 			},
 			user_id: id
 		} as RelationshipAddEvent)
@@ -138,11 +138,11 @@ router.delete("/:id", async (req: Request, res: Response) => {
 	const friend = await User.findOneOrFail({ id }, userProjection);
 	if (!friend) throw new HTTPError("User not found", 404);
 
-	const relationship = user.user_data.relationships.find((x) => x.id === id);
-	const friendRequest = friend.user_data.relationships.find((x) => x.id === req.user_id);
+	const relationship = user.data.relationships.find((x) => x.id === id);
+	const friendRequest = friend.data.relationships.find((x) => x.id === req.user_id);
 	if (relationship?.type === RelationshipType.blocked) {
 		// unblock user
-		user.user_data.relationships.remove(relationship);
+		user.data.relationships.remove(relationship);
 
 		await Promise.all([
 			user.save(),
@@ -153,8 +153,8 @@ router.delete("/:id", async (req: Request, res: Response) => {
 	if (!relationship || !friendRequest) throw new HTTPError("You are not friends with the user", 404);
 	if (friendRequest.type === RelationshipType.blocked) throw new HTTPError("The user blocked you");
 
-	user.user_data.relationships.remove(relationship);
-	friend.user_data.relationships.remove(friendRequest);
+	user.data.relationships.remove(relationship);
+	friend.data.relationships.remove(friendRequest);
 
 	await Promise.all([
 		user.save(),

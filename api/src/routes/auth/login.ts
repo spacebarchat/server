@@ -21,9 +21,6 @@ router.post(
 	async (req: Request, res: Response) => {
 		const { login, password, captcha_key, undelete } = req.body;
 		const email = adjustEmail(login);
-		const query: any[] = [{ phone: login }];
-		if (email) query.push({ email });
-
 		console.log(req.body, email);
 
 		const config = Config.get();
@@ -41,11 +38,10 @@ router.post(
 			// TODO: check captcha
 		}
 
-		const user = await User.findOneOrFail(
-			{ $or: query },
-			{ "data.hash": true, id: true, disabled: true, deleted: true, "settings.locale": true, "settings.theme": true }
-		).catch((e) => {
-			console.log(e, query);
+		const user = await User.findOneOrFail({
+			where: [{ phone: login }, { email: login }],
+			select: ["data", "id", "disabled", "deleted", "settings"]
+		}).catch((e) => {
 			throw FieldErrors({ login: { message: req.t("auth:login.INVALID_LOGIN"), code: "INVALID_LOGIN" } });
 		});
 

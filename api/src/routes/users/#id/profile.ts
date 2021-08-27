@@ -7,7 +7,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const user = await getPublicUser(req.params.id, { data: true });
 
 	res.json({
-		connected_accounts: user.data.connected_accounts,
+		connected_accounts: user.connected_accounts,
 		premium_guild_since: null, // TODO
 		premium_since: null, // TODO
 		user: {
