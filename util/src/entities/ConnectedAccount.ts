@@ -1,21 +1,29 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
+import { User } from "./User";
 
 @Entity("connected_accounts")
 export class ConnectedAccount extends BaseClass {
-	@Column()
+	@RelationId((account: ConnectedAccount) => account.user)
+	user_id: string;
+
+	@JoinColumn({ name: "user_id" })
+	@ManyToOne(() => User, (user: User) => user.connected_accounts)
+	user: User;
+
+	@Column({ select: false })
 	access_token: string;
 
-	@Column()
+	@Column({ select: false })
 	friend_sync: boolean;
 
 	@Column()
 	name: string;
 
-	@Column()
+	@Column({ select: false })
 	revoked: boolean;
 
-	@Column()
+	@Column({ select: false })
 	show_activity: boolean;
 
 	@Column()
@@ -24,6 +32,6 @@ export class ConnectedAccount extends BaseClass {
 	@Column()
 	verifie: boolean;
 
-	@Column()
+	@Column({ select: false })
 	visibility: number;
 }

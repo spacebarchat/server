@@ -12,7 +12,7 @@ export class TeamMember extends BaseClass {
 	@Column({ type: "simple-enum", enum: TeamMemberState })
 	membership_state: TeamMemberState;
 
-	@Column("simple-array")
+	@Column({ type: "simple-array" })
 	permissions: string[];
 
 	@RelationId((member: TeamMember) => member.team)

@@ -5,7 +5,7 @@ import { User } from "./User";
 
 @Entity("teams")
 export class Team extends BaseClass {
-	@Column()
+	@Column({ nullable: true })
 	icon?: string;
 
 	@RelationId((team: Team) => team.members)

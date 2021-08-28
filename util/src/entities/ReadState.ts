@@ -31,7 +31,7 @@ export class ReadState extends BaseClass {
 	@ManyToOne(() => Message, (message: Message) => message.id)
 	last_message?: Message;
 
-	@Column()
+	@Column({ nullable: true })
 	last_pin_timestamp?: Date;
 
 	@Column()

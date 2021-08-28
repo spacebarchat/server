@@ -46,7 +46,7 @@ export class AuditLogEntry extends BaseClass {
 	@RelationId((auditlog: AuditLogEntry) => auditlog.target)
 	target_id: string;
 
-	@JoinColumn({ name: "user_id" })
+	@JoinColumn({ name: "target_id" })
 	@ManyToOne(() => User, (user: User) => user.id)
 	target?: User;
 
@@ -63,7 +63,7 @@ export class AuditLogEntry extends BaseClass {
 	})
 	action_type: AuditLogEvents;
 
-	@Column("simple-json")
+	@Column({ type: "simple-json", nullable: true })
 	options?: {
 		delete_member_days?: string;
 		members_removed?: string;
@@ -76,10 +76,10 @@ export class AuditLogEntry extends BaseClass {
 	};
 
 	@Column()
-	@Column("simple-json")
+	@Column({ type: "simple-json" })
 	changes: AuditLogChange[];
 
-	@Column()
+	@Column({ nullable: true })
 	reason?: string;
 }
 

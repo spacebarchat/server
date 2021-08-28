@@ -1,34 +1,26 @@
 import "reflect-metadata";
-import { BaseEntity, BeforeInsert, BeforeUpdate, PrimaryColumn } from "typeorm";
+import {
+	BaseEntity,
+	BeforeInsert,
+	BeforeUpdate,
+	EntityMetadata,
+	FindConditions,
+	FindManyOptions,
+	PrimaryColumn,
+} from "typeorm";
 import { Snowflake } from "../util/Snowflake";
-import Ajv, { ValidateFunction } from "ajv";
-import schema from "./schema.json";
 import "missing-native-js-functions";
 
 // TODO use class-validator https://typeorm.io/#/validation with class annotators (isPhone/isEmail) combined with types from typescript-json-schema
 // btw. we don't use class-validator for everything, because we need to explicitly set the type instead of deriving it from typescript also it doesn't easily support nested objects
-
-const ajv = new Ajv({
-	removeAdditional: "all",
-	useDefaults: true,
-	coerceTypes: true,
-	// @ts-ignore
-	validateFormats: false,
-	allowUnionTypes: true,
-});
 
 export class BaseClass extends BaseEntity {
 	@PrimaryColumn()
 	id: string;
 
 	// @ts-ignore
-	constructor(props?: any, public opts: { id?: string } = {}) {
+	constructor(public props?: any, public opts: { id?: string } = {}) {
 		super();
-		this.assign(props);
-
-		if (!this.construct.schema) {
-			this.construct.schema = ajv.compile({ ...schema, $ref: `#/definitions/${this.construct.name}` });
-		}
 
 		this.id = this.opts.id || Snowflake.generate();
 	}
@@ -38,19 +30,20 @@ export class BaseClass extends BaseEntity {
 	}
 
 	get metadata() {
-		return this.construct.getRepository().metadata;
+		return this.construct.getRepository().metadata as EntityMetadata;
 	}
 
 	assign(props: any) {
 		if (!props || typeof props !== "object") return;
 
+		delete props.id;
 		delete props.opts;
+		delete props.props;
 
 		const properties = new Set(this.metadata.columns.map((x: any) => x.propertyName));
 		// will not include relational properties (e.g. @RelationId @ManyToMany)
 
 		for (const key in props) {
-			if (this.hasOwnProperty(key)) continue;
 			if (!properties.has(key)) continue;
 			// @ts-ignore
 			const setter = this[`set${key.capitalize()}`];
@@ -66,13 +59,22 @@ export class BaseClass extends BaseEntity {
 	@BeforeUpdate()
 	@BeforeInsert()
 	validate() {
-		const valid = this.construct.schema(this.toJSON());
-		if (!valid) throw ajv.errors;
+		this.assign(this.props);
 		return this;
 	}
 
 	toJSON(): any {
 		// @ts-ignore
 		return Object.fromEntries(this.metadata.columns.map((x) => [x.propertyName, this[x.propertyName]]));
+	}
+
+	static increment<T extends BaseClass>(conditions: FindConditions<T>, propertyPath: string, value: number | string) {
+		const repository = this.getRepository();
+		return repository.increment(conditions, propertyPath, value);
+	}
+
+	static decrement<T extends BaseClass>(conditions: FindConditions<T>, propertyPath: string, value: number | string) {
+		const repository = this.getRepository();
+		return repository.decrement(conditions, propertyPath, value);
 	}
 }

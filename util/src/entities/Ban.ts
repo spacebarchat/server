@@ -29,6 +29,6 @@ export class Ban extends BaseClass {
 	@Column()
 	ip: string;
 
-	@Column()
+	@Column({ nullable: true })
 	reason?: string;
 }

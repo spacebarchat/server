@@ -17,6 +17,7 @@ import {
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
+import { Sticker } from "./Sticker";
 
 export enum MessageType {
 	DEFAULT = 0,
@@ -51,7 +52,7 @@ export class Message extends BaseClass {
 	channel: Channel;
 
 	@RelationId((message: Message) => message.guild)
-	guild_id: string;
+	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
@@ -85,7 +86,7 @@ export class Message extends BaseClass {
 	@ManyToOne(() => Application, (application: Application) => application.id)
 	application?: Application;
 
-	@Column()
+	@Column({ nullable: true })
 	content?: string;
 
 	@Column()
@@ -96,18 +97,18 @@ export class Message extends BaseClass {
 	@UpdateDateColumn()
 	edited_timestamp?: Date;
 
-	@Column()
+	@Column({ nullable: true })
 	tts?: boolean;
 
-	@Column()
+	@Column({ nullable: true })
 	mention_everyone?: boolean;
 
-	@RelationId((message: Message) => message.mention_users)
+	@RelationId((message: Message) => message.mentions)
 	mention_user_ids: string[];
 
 	@JoinColumn({ name: "mention_user_ids" })
 	@ManyToMany(() => User, (user: User) => user.id)
-	mention_users: User[];
+	mentions: User[];
 
 	@RelationId((message: Message) => message.mention_roles)
 	mention_role_ids: string[];
@@ -123,44 +124,52 @@ export class Message extends BaseClass {
 	@ManyToMany(() => Channel, (channel: Channel) => channel.id)
 	mention_channels: Channel[];
 
-	@Column("simple-json")
+	@Column({ type: "simple-json" })
 	attachments: Attachment[];
 
-	@Column("simple-json")
+	@Column({ type: "simple-json" })
 	embeds: Embed[];
 
-	@Column("simple-json")
+	@Column({ type: "simple-json" })
 	reactions: Reaction[];
 
-	@Column({ type: "text" })
+	@Column({ type: "text", nullable: true })
 	nonce?: string | number;
 
-	@Column()
+	@Column({ nullable: true })
 	pinned?: boolean;
 
 	@Column({ type: "simple-enum", enum: MessageType })
 	type: MessageType;
 
-	@Column("simple-json")
+	@Column({ type: "simple-json", nullable: true })
 	activity?: {
 		type: number;
 		party_id: string;
 	};
 
-	@Column({ type: "bigint" })
+	@Column({ type: "bigint", nullable: true })
 	flags?: bigint;
 
-	@Column("simple-json")
-	stickers?: any[];
+	@RelationId((message: Message) => message.stickers)
+	sticker_ids: string[];
 
-	@Column("simple-json")
+	@JoinColumn({ name: "sticker_ids" })
+	@ManyToMany(() => Sticker, (sticker: Sticker) => sticker.id)
+	stickers?: Sticker[];
+
+	@Column({ type: "simple-json", nullable: true })
 	message_reference?: {
 		message_id: string;
 		channel_id?: string;
 		guild_id?: string;
 	};
 
-	@Column("simple-json")
+	@JoinColumn({ name: "message_reference_id" })
+	@ManyToOne(() => Message, (message: Message) => message.id)
+	referenced_message?: Message;
+
+	@Column({ type: "simple-json", nullable: true })
 	interaction?: {
 		id: string;
 		type: InteractionType;
@@ -169,7 +178,7 @@ export class Message extends BaseClass {
 		// user: User; // TODO: autopopulate user
 	};
 
-	@Column("simple-json")
+	@Column({ type: "simple-json" })
 	components: MessageComponent[];
 }
 

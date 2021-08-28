@@ -1,10 +1,9 @@
 const { initDatabase, closeDatabase } = require("../dist/util/Database");
 const { User } = require("../dist/entities/User");
-jest.setTimeout(10000);
+jest.setTimeout(20000);
 
 beforeAll((done) => {
 	initDatabase().then(() => {
-		new User().validate(); // warm up schema/model
 		done();
 	});
 });
@@ -27,5 +26,18 @@ describe("User", () => {
 		expect(() => {
 			new User({ discriminator: "0" }).validate();
 		}).toThrow();
+	});
+
+	test("add guild", async () => {
+		try {
+			await new User({ guilds: [], discriminator: "1" }, { id: "0" }).save();
+			const user = await User.find("0");
+
+			user.guilds.push(new Guild({ name: "test" }));
+
+			user.save();
+		} catch (error) {
+			console.error(error);
+		}
 	});
 });

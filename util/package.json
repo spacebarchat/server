@@ -9,8 +9,7 @@
 		"patch": "patch-package",
 		"test": "npm run build && jest",
 		"postinstall": "npm run patch && npm run build",
-		"build": "npx tsc -b .",
-		"generate:schema": "npx typescript-json-schema tsconfig.json '*' -o src/entities/schema.json"
+		"build": "npx tsc -b ."
 	},
 	"repository": {
 		"type": "git",
@@ -44,10 +43,11 @@
 		"dot-prop": "^6.0.1",
 		"env-paths": "^2.2.1",
 		"jsonwebtoken": "^8.5.1",
-		"lambert-server": "^1.2.8",
-		"missing-native-js-functions": "^1.2.10",
+		"lambert-server": "^1.2.10",
+		"missing-native-js-functions": "^1.2.11",
 		"node-fetch": "^2.6.1",
 		"patch-package": "^6.4.7",
+		"pg": "^8.7.1",
 		"reflect-metadata": "^0.1.13",
 		"sqlite3": "^5.0.2",
 		"typeorm": "^0.2.37",

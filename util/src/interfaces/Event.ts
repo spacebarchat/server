@@ -259,22 +259,14 @@ export interface InviteDeleteEvent extends Event {
 	};
 }
 
-export type MessagePayload = Omit<Message, "author_id"> & {
-	channel_id: string;
-	guild_id?: string;
-	author: PublicUser;
-	member: PublicMember;
-	mentions: (PublicUser & { member: PublicMember })[];
-};
-
 export interface MessageCreateEvent extends Event {
 	event: "MESSAGE_CREATE";
-	data: MessagePayload;
+	data: Message;
 }
 
 export interface MessageUpdateEvent extends Event {
 	event: "MESSAGE_UPDATE";
-	data: MessagePayload;
+	data: Message;
 }
 
 export interface MessageDeleteEvent extends Event {

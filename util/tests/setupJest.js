@@ -1,4 +1,8 @@
 const { performance } = require("perf_hooks");
+const fs = require("fs");
+const path = require("path");
+
+// fs.unlinkSync(path.join(__dirname, "..", "database.db"));
 
 global.expect.extend({
 	toBeFasterThan: async (func, target) => {

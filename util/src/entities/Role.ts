@@ -32,7 +32,7 @@ export class Role extends BaseClass {
 	@Column()
 	position: number;
 
-	@Column({ type: "simple-json" })
+	@Column({ type: "simple-json", nullable: true })
 	tags?: {
 		bot_id?: string;
 		integration_id?: string;

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
@@ -6,7 +6,7 @@ import { User } from "./User";
 
 @Entity("invites")
 export class Invite extends BaseClass {
-	@Column()
+	@PrimaryColumn()
 	code: string;
 
 	@Column()
@@ -55,6 +55,6 @@ export class Invite extends BaseClass {
 	@ManyToOne(() => User, (user: User) => user.id)
 	target_user?: string; // could be used for "User specific invites" https://github.com/fosscord/fosscord/issues/62
 
-	@Column()
+	@Column({ nullable: true })
 	target_user_type?: number;
 }
