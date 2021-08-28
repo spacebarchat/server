@@ -5,7 +5,7 @@ import { Snowflake } from "../util/Snowflake";
 
 @Entity("config")
 export class ConfigEntity extends BaseClass {
-	@Column("simple-json")
+	@Column({ type: "simple-json" })
 	value: ConfigValue;
 }
 

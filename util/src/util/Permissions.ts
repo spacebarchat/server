@@ -198,50 +198,41 @@ export class Permissions extends BitField {
 }
 
 export type PermissionCache = {
-	channel?: Channel | null;
-	member?: Member | null;
-	guild?: Guild | null;
-	roles?: Role[] | null;
+	channel?: Channel | undefined;
+	member?: Member | undefined;
+	guild?: Guild | undefined;
+	roles?: Role[] | undefined;
 	user_id?: string;
 };
 
-export async function getPermission(
-	user_id?: string,
-	guild_id?: string,
-	channel_id?: string,
-	cache: PermissionCache = {}
-) {
-	var { channel, member, guild, roles } = cache;
-
+export async function getPermission(user_id?: string, guild_id?: string, channel_id?: string) {
 	if (!user_id) throw new HTTPError("User not found");
+	var channel: Channel | undefined;
+	var member: Member | undefined;
+	var guild: Guild | undefined;
 
-	if (channel_id && !channel) {
+	if (channel_id) {
 		channel = await Channel.findOneOrFail(
 			{ id: channel_id },
 			{ select: ["permission_overwrites", "recipients", "owner", "guild"] }
 		);
-		if (!channel) throw new HTTPError("Channel not found", 404);
-		if (channel.guild_id) guild_id = channel.guild_id;
+		if (channel.guild_id) guild_id = channel.guild_id; // derive guild_id from the channel
 	}
 
 	if (guild_id) {
-		if (!guild) guild = await Guild.findOneOrFail({ id: guild_id }, { select: ["owner"] });
-		if (!guild) throw new HTTPError("Guild not found");
+		guild = await Guild.findOneOrFail({ id: guild_id }, { select: ["owner"] });
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
-		if (!member) member = await Member.findOneOrFail({ guild_id, id: user_id }, { select: ["roles"] });
-		if (!member) throw new HTTPError("Member not found");
-
-		if (!roles) roles = await Role.find({ guild_id, id: In(member.roles) });
+		member = await Member.findOneOrFail({ guild_id, id: user_id }, { select: ["roles"] });
 	}
 
 	var permission = Permissions.finalPermission({
 		user: {
 			id: user_id,
-			roles: member?.roles || [],
+			roles: member?.role_ids || [],
 		},
 		guild: {
-			roles: roles || [],
+			roles: member?.roles || [],
 		},
 		channel: {
 			overwrites: channel?.permission_overwrites,
@@ -253,7 +244,7 @@ export async function getPermission(
 	const obj = new Permissions(permission);
 
 	// pass cache to permission for possible future getPermission calls
-	obj.cache = { guild, member, channel, roles, user_id };
+	obj.cache = { guild, member, channel, roles: member?.roles, user_id };
 
 	return obj;
 }

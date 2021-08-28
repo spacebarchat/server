@@ -18,13 +18,13 @@ export class Webhook extends BaseClass {
 	@Column({ type: "simple-enum", enum: WebhookType })
 	type: WebhookType;
 
-	@Column()
+	@Column({ nullable: true })
 	name?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	avatar?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	token?: string;
 
 	@RelationId((webhook: Webhook) => webhook.guild)

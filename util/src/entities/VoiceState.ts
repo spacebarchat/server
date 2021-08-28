@@ -42,7 +42,7 @@ export class VoiceState extends BaseClass {
 	@Column()
 	self_mute: boolean;
 
-	@Column()
+	@Column({ nullable: true })
 	self_stream?: boolean;
 
 	@Column()

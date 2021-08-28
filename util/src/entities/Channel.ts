@@ -60,25 +60,25 @@ export class Channel extends BaseClass {
 	@ManyToOne(() => User, (user: User) => user.id)
 	owner: User;
 
-	@Column()
+	@Column({ nullable: true })
 	last_pin_timestamp?: number;
 
-	@Column()
+	@Column({ nullable: true })
 	default_auto_archive_duration?: number;
 
 	@Column()
 	position: number;
 
-	@Column("simple-json")
+	@Column({ type: "simple-json" })
 	permission_overwrites: ChannelPermissionOverwrite[];
 
-	@Column()
+	@Column({ nullable: true })
 	video_quality_mode?: number;
 
-	@Column()
+	@Column({ nullable: true })
 	bitrate?: number;
 
-	@Column()
+	@Column({ nullable: true })
 	user_limit?: number;
 
 	@Column()
@@ -87,7 +87,7 @@ export class Channel extends BaseClass {
 	@Column()
 	rate_limit_per_user: number;
 
-	@Column()
+	@Column({ nullable: true })
 	topic?: string;
 }
 

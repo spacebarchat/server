@@ -9,7 +9,7 @@ export class Emoji extends BaseClass {
 	animated: boolean;
 
 	@Column()
-	available: boolean;
+	available: boolean; // whether this emoji can be used, may be false due to loss of Server Boosts
 
 	@Column()
 	guild_id: string;
@@ -26,9 +26,6 @@ export class Emoji extends BaseClass {
 
 	@Column()
 	require_colons: boolean;
-
-	@Column()
-	url: string;
 
 	@RelationId((emoji: Emoji) => emoji.roles)
 	role_ids: string[];

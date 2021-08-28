@@ -17,51 +17,51 @@ export class Guild extends BaseClass {
 	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
 	afk_channel?: Channel;
 
-	@Column()
+	@Column({ nullable: true })
 	afk_timeout?: number;
 
 	// * commented out -> use owner instead
 	// application id of the guild creator if it is bot-created
-	// @Column()
+	// @Column({ nullable: true })
 	// application?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	banner?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	default_message_notifications?: number;
 
-	@Column()
+	@Column({ nullable: true })
 	description?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	discovery_splash?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	explicit_content_filter?: number;
 
-	@Column("simple-array")
+	@Column({ type: "simple-array" })
 	features: string[];
 
-	@Column()
+	@Column({ nullable: true })
 	icon?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	large?: boolean;
 
-	@Column()
+	@Column({ nullable: true })
 	max_members?: number; // e.g. default 100.000
 
-	@Column()
+	@Column({ nullable: true })
 	max_presences?: number;
 
-	@Column()
+	@Column({ nullable: true })
 	max_video_channel_users?: number; // ? default: 25, is this max 25 streaming or watching
 
-	@Column()
+	@Column({ nullable: true })
 	member_count?: number;
 
-	@Column()
+	@Column({ nullable: true })
 	presence_count?: number; // users online
 
 	@RelationId((guild: Guild) => guild.members)
@@ -99,7 +99,7 @@ export class Guild extends BaseClass {
 	@ManyToMany(() => VoiceState, (voicestate: VoiceState) => voicestate.id)
 	voice_states: VoiceState[];
 
-	@Column()
+	@Column({ nullable: true })
 	mfa_level?: number;
 
 	@Column()
@@ -112,13 +112,13 @@ export class Guild extends BaseClass {
 	@ManyToOne(() => User, (user: User) => user.id)
 	owner: User;
 
-	@Column()
+	@Column({ nullable: true })
 	preferred_locale?: string; // only community guilds can choose this
 
-	@Column()
+	@Column({ nullable: true })
 	premium_subscription_count?: number;
 
-	@Column()
+	@Column({ nullable: true })
 	premium_tier?: number; // nitro boost level
 
 	@RelationId((guild: Guild) => guild.public_updates_channel)
@@ -135,10 +135,10 @@ export class Guild extends BaseClass {
 	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
 	rules_channel?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	region?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	splash?: string;
 
 	@RelationId((guild: Guild) => guild.system_channel)
@@ -148,10 +148,10 @@ export class Guild extends BaseClass {
 	@ManyToMany(() => Channel, (channel: Channel) => channel.id)
 	system_channel?: Channel;
 
-	@Column()
+	@Column({ nullable: true })
 	system_channel_flags?: number;
 
-	@Column()
+	@Column({ nullable: true })
 	unavailable?: boolean;
 
 	@RelationId((guild: Guild) => guild.vanity_url)
@@ -161,10 +161,10 @@ export class Guild extends BaseClass {
 	@OneToOne(() => Invite, (invite: Invite) => invite.code)
 	vanity_url?: Invite;
 
-	@Column()
+	@Column({ nullable: true })
 	verification_level?: number;
 
-	@Column("simple-json")
+	@Column({ type: "simple-json" })
 	welcome_screen: {
 		enabled: boolean;
 		description: string;
@@ -183,6 +183,6 @@ export class Guild extends BaseClass {
 	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
 	widget_channel?: Channel;
 
-	@Column()
+	@Column({ nullable: true })
 	widget_enabled?: boolean;
 }

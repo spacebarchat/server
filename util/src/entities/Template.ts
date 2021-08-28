@@ -11,10 +11,10 @@ export class Template extends BaseClass {
 	@Column()
 	name: string;
 
-	@Column()
+	@Column({ nullable: true })
 	description?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	usage_count?: number;
 
 	@RelationId((template: Template) => template.creator)
@@ -37,6 +37,6 @@ export class Template extends BaseClass {
 	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
 	source_guild: Guild;
 
-	@Column("simple-json")
+	@Column({ type: "simple-json" })
 	serialized_source_guild: Guild;
 }

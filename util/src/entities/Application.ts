@@ -8,13 +8,13 @@ export class Application extends BaseClass {
 	@Column()
 	name: string;
 
-	@Column()
+	@Column({ nullable: true })
 	icon?: string;
 
 	@Column()
 	description: string;
 
-	@Column("simple-array")
+	@Column({ type: "simple-array", nullable: true })
 	rpc_origins?: string[];
 
 	@Column()
@@ -23,16 +23,16 @@ export class Application extends BaseClass {
 	@Column()
 	bot_require_code_grant: boolean;
 
-	@Column()
+	@Column({ nullable: true })
 	terms_of_service_url?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	privacy_policy_url?: string;
 
 	@Column()
 	owner_id: string;
 
-	@Column()
+	@Column({ nullable: true })
 	summary?: string;
 
 	@Column()
@@ -52,13 +52,13 @@ export class Application extends BaseClass {
 	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
 	guild: Guild; // if this application is a game sold, this field will be the guild to which it has been linked
 
-	@Column()
+	@Column({ nullable: true })
 	primary_sku_id?: string; // if this application is a game sold, this field will be the id of the "Game SKU" that is created,
 
-	@Column()
+	@Column({ nullable: true })
 	slug?: string; // if this application is a game sold, this field will be the URL slug that links to the store page
 
-	@Column()
+	@Column({ nullable: true })
 	cover_image?: string; // the application's default rich presence invite cover image hash
 
 	@Column()

@@ -1,22 +1,34 @@
-import { Column, Entity, JoinColumn, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, FindOneOptions, JoinColumn, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { HTTPError } from "lambert-server";
-import { Guild } from "./Guild";
 
-export const PublicUserProjection = {
-	username: true,
-	discriminator: true,
-	id: true,
-	public_flags: true,
-	avatar: true,
-	accent_color: true,
-	banner: true,
-	bio: true,
-	bot: true,
-};
+type PublicUserKeys =
+	| "username"
+	| "discriminator"
+	| "id"
+	| "public_flags"
+	| "avatar"
+	| "accent_color"
+	| "banner"
+	| "bio"
+	| "bot";
+export const PublicUserProjection: PublicUserKeys[] = [
+	"username",
+	"discriminator",
+	"id",
+	"public_flags",
+	"avatar",
+	"accent_color",
+	"banner",
+	"bio",
+	"bot",
+];
+
+// Private user data that should never get sent to the client
+export type PublicUser = Pick<User, PublicUserKeys>;
 
 @Entity("users")
 export class User extends BaseClass {
@@ -30,114 +42,144 @@ export class User extends BaseClass {
 		const number = Number(val);
 		if (isNaN(number)) throw new Error("invalid discriminator");
 		if (number <= 0 || number > 10000) throw new Error("discriminator must be between 1 and 9999");
-		this.discriminator = val.toString();
+		this.discriminator = val.toString().padStart(4, "0");
 	}
 
-	@Column()
+	@Column({ nullable: true })
 	avatar?: string; // hash of the user avatar
 
-	@Column()
-	accent_color?: number; // banner color of user
+	@Column({ nullable: true })
+	accent_color?: number = 0; // banner color of user
 
-	@Column()
+	@Column({ nullable: true })
 	banner?: string; // hash of the user banner
 
-	@Column()
+	@Column({ nullable: true })
 	phone?: string; // phone number of the user
 
 	@Column()
-	desktop: boolean; // if the user has desktop app installed
+	desktop: boolean = false; // if the user has desktop app installed
 
 	@Column()
-	mobile: boolean; // if the user has mobile app installed
+	mobile: boolean = false; // if the user has mobile app installed
 
 	@Column()
-	premium: boolean; // if user bought nitro
+	premium: boolean = false; // if user bought nitro
 
 	@Column()
-	premium_type: number; // nitro level
+	premium_type: number = 0; // nitro level
 
 	@Column()
-	bot: boolean; // if user is bot
+	bot: boolean = false; // if user is bot
 
 	@Column()
-	bio: string; // short description of the user (max 190 chars -> should be configurable)
+	bio: string = ""; // short description of the user (max 190 chars -> should be configurable)
 
 	@Column()
-	system: boolean; // shouldn't be used, the api sents this field type true, if the generated message comes from a system generated author
+	system: boolean = false; // shouldn't be used, the api sents this field type true, if the generated message comes from a system generated author
 
 	@Column()
-	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
+	nsfw_allowed: boolean = false; // if the user is older than 18 (resp. Config)
 
 	@Column()
-	mfa_enabled: boolean; // if multi factor authentication is enabled
+	mfa_enabled: boolean = false; // if multi factor authentication is enabled
 
 	@Column()
-	created_at: Date; // registration date
+	created_at: Date = new Date(); // registration date
 
 	@Column()
-	verified: boolean; // if the user is offically verified
+	verified: boolean = false; // if the user is offically verified
 
 	@Column()
-	disabled: boolean; // if the account is disabled
+	disabled: boolean = false; // if the account is disabled
 
 	@Column()
-	deleted: boolean; // if the user was deleted
+	deleted: boolean = false; // if the user was deleted
 
-	@Column()
+	@Column({ nullable: true })
 	email?: string; // email of the user
 
 	@Column({ type: "bigint" })
-	flags: bigint; // UserFlags
+	flags: bigint = BigInt(0); // UserFlags
 
 	@Column({ type: "bigint" })
-	public_flags: bigint;
-
-	@RelationId((user: User) => user.guilds)
-	guild_ids: string[]; // array of guild ids the user is part of
-
-	@JoinColumn({ name: "guild_ids" })
-	@OneToMany(() => Guild, (guild: Guild) => guild.id)
-	guilds: Guild[];
+	public_flags: bigint = BigInt(0);
 
 	@RelationId((user: User) => user.relationships)
 	relationship_ids: string[]; // array of guild ids the user is part of
 
 	@JoinColumn({ name: "relationship_ids" })
-	@OneToMany(() => User, (user: User) => user.id)
+	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.user, { cascade: true })
 	relationships: Relationship[];
 
 	@RelationId((user: User) => user.connected_accounts)
 	connected_account_ids: string[]; // array of guild ids the user is part of
 
 	@JoinColumn({ name: "connected_account_ids" })
-	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.id)
+	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user)
 	connected_accounts: ConnectedAccount[];
 
 	@Column({ type: "simple-json", select: false })
 	data: {
 		valid_tokens_since: Date; // all tokens with a previous issue date are invalid
-		hash: string; // hash of the password, salt is saved in password (bcrypt)
-	};
+		hash?: string; // hash of the password, salt is saved in password (bcrypt)
+	} = { valid_tokens_since: new Date() };
 
 	@Column({ type: "simple-array" })
-	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
+	fingerprints: string[] = []; // array of fingerprints -> used to prevent multiple accounts
 
-	@Column("simple-json")
-	settings: UserSettings;
+	@Column({ type: "simple-json" })
+	settings: UserSettings = defaultSettings;
 
-	static async getPublicUser(user_id: string, additional_fields?: any) {
-		const user = await User.findOne(
-			{ id: user_id },
-			{
-				...PublicUserProjection,
-				...additional_fields,
-			}
-		);
+	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {
+		const user = await User.findOne(user_id, {
+			...opts,
+			select: [...PublicUserProjection, ...(opts?.select || [])],
+		});
 		if (!user) throw new HTTPError("User not found", 404);
 		return user;
 	}
 }
+
+export const defaultSettings: UserSettings = {
+	afk_timeout: 300,
+	allow_accessibility_detection: true,
+	animate_emoji: true,
+	animate_stickers: 0,
+	contact_sync_enabled: false,
+	convert_emoticons: false,
+	custom_status: {
+		emoji_id: undefined,
+		emoji_name: undefined,
+		expires_at: undefined,
+		text: undefined,
+	},
+	default_guilds_restricted: false,
+	detect_platform_accounts: true,
+	developer_mode: false,
+	disable_games_tab: false,
+	enable_tts_command: true,
+	explicit_content_filter: 0,
+	friend_source_flags: { all: true },
+	gateway_connected: false,
+	gif_auto_play: true,
+	guild_folders: [],
+	guild_positions: [],
+	inline_attachment_media: true,
+	inline_embed_media: true,
+	locale: "en",
+	message_display_compact: false,
+	native_phone_integration_enabled: true,
+	render_embeds: true,
+	render_reactions: true,
+	restricted_guilds: [],
+	show_current_game: true,
+	status: "offline",
+	stream_notifications_enabled: true,
+	theme: "dark",
+	timezone_offset: 0,
+	// timezone_offset: // TODO: timezone from request
+};
 
 export interface UserSettings {
 	afk_timeout: number;
@@ -182,18 +224,6 @@ export interface UserSettings {
 	stream_notifications_enabled: boolean;
 	theme: "dark" | "white"; // dark
 	timezone_offset: number; // e.g -60
-}
-
-// Private user data that should never get sent to the client
-export interface PublicUser {
-	id: string;
-	discriminator: string;
-	username: string;
-	avatar?: string;
-	accent_color?: number;
-	banner?: string;
-	public_flags: bigint;
-	bot: boolean;
 }
 
 export class UserFlags extends BitField {
