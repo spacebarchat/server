@@ -42,16 +42,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}
 	}
 
-	const members = await Member.find({ id: this.user_id });
+	const members = await Member.find({ where: { id: this.user_id }, relations: ["guilds"] });
 	const merged_members = members.map((x: any) => {
 		const y = { ...x, user_id: x.id };
 		delete y.settings;
 		delete y.id;
 		return [y];
-	}) as MemberDocument[][];
+	}) as Member[][];
+	const guilds = members.map((x) => x.guild);
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
-	const channels = await Channel.find({ recipient_ids: this.user_id });
+	const channels = await Channel.find({ where: { recipient_ids: this.user_id } });
 	const user = await User.findOneOrFail({ id: this.user_id });
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
@@ -64,10 +65,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		bot: user.bot,
 	};
 
-	const guilds = await Guild.find({ id: { $in: user.guilds } }).populate({
-		path: "joined_at",
-		match: { id: this.user_id },
-	});
 	const privateUser = {
 		avatar: user.avatar,
 		mobile: user.mobile,
@@ -87,6 +84,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		bot: user.bot,
 		accent_color: user.accent_color || 0,
 		banner: user.banner,
+		bio: user.bio,
 	};
 
 	const d: ReadyEventData = {
@@ -106,7 +104,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}),
 		guild_experiments: [], // TODO
 		geo_ordered_rtc_regions: [], // TODO
-		relationships: user.data.relationships,
+		relationships: user.relationships,
 		read_state: {
 			// TODO
 			entries: [],
@@ -120,7 +118,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		},
 		// @ts-ignore
 		private_channels: channels.map((x): ChannelDocument => {
-			x.recipient_ids = x.recipients.map((y: any) => y.id);
 			delete x.recipients;
 			return x;
 		}),

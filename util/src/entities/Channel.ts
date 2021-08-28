@@ -25,6 +25,7 @@ export class Channel extends BaseClass {
 	@Column({ type: "simple-enum", enum: ChannelType })
 	type: ChannelType;
 
+	@Column("simple-array")
 	@RelationId((channel: Channel) => channel.recipients)
 	recipient_ids: string[];
 
