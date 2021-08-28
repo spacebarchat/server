@@ -1,4 +1,4 @@
-import { ChannelSchema, GuildChannel } from "@fosscord/util";
+import { Channel } from "@fosscord/util";
 import { Length } from "../util/instanceOf";
 import { ChannelModifySchema } from "./Channel";
 
@@ -59,54 +59,6 @@ export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels"> {
 	preferred_locale?: string;
 }
 
-export const GuildGetSchema = {
-	id: true,
-	name: true,
-	icon: true,
-	splash: true,
-	discovery_splash: true,
-	owner: true,
-	owner_id: true,
-	permissions: true,
-	region: true,
-	afk_channel_id: true,
-	afk_timeout: true,
-	widget_enabled: true,
-	widget_channel_id: true,
-	verification_level: true,
-	default_message_notifications: true,
-	explicit_content_filter: true,
-	roles: true,
-	emojis: true,
-	features: true,
-	mfa_level: true,
-	application_id: true,
-	system_channel_id: true,
-	system_channel_flags: true,
-	rules_channel_id: true,
-	joined_at: true,
-	// large: true,
-	// unavailable: true,
-	member_count: true,
-	// voice_states: true,
-	// members: true,
-	// channels: true,
-	// presences: true,
-	max_presences: true,
-	max_members: true,
-	vanity_url_code: true,
-	description: true,
-	banner: true,
-	premium_tier: true,
-	premium_subscription_count: true,
-	preferred_locale: true,
-	public_updates_channel_id: true,
-	max_video_channel_users: true,
-	approximate_member_count: true,
-	approximate_presence_count: true
-	// welcome_screen: true,
-};
-
 export const GuildTemplateCreateSchema = {
 	name: String,
 	$avatar: String
@@ -117,16 +69,26 @@ export interface GuildTemplateCreateSchema {
 	avatar?: string;
 }
 
-export const GuildAddChannelToWelcomeScreenSchema = {
-	channel_id: String,
-	description: String,
-	$emoji_id: String,
-	emoji_name: String
+export const GuildUpdateWelcomeScreenSchema = {
+	$welcome_channels: [
+		{
+			channel_id: String,
+			description: String,
+			$emoji_id: String,
+			emoji_name: String
+		}
+	],
+	$enabled: Boolean,
+	$description: new Length(String, 0, 140)
 };
 
-export interface GuildAddChannelToWelcomeScreenSchema {
-	channel_id: string;
-	description: string;
-	emoji_id?: string;
-	emoji_name: string;
+export interface GuildUpdateWelcomeScreenSchema {
+	welcome_channels?: {
+		channel_id: string;
+		description: string;
+		emoji_id?: string;
+		emoji_name: string;
+	}[];
+	enabled?: boolean;
+	description?: string;
 }

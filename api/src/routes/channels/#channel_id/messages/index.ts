@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import { Attachment, Channel, ChannelType, getPermission, MessageDocument, Message, toObject } from "@fosscord/util";
+import { Attachment, Channel, ChannelType, getPermission, Message } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../schema/Message";
 import { check, instanceOf, Length } from "../../../../util/instanceOf";
@@ -7,6 +7,7 @@ import multer from "multer";
 import { Query } from "mongoose";
 import { sendMessage } from "../../../../util/Message";
 import { uploadFile } from "../../../../util/cdn";
+import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 
 const router: Router = Router();
 
@@ -55,24 +56,21 @@ router.get("/", async (req: Request, res: Response) => {
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	var query: Query<MessageDocument[], MessageDocument>;
-	if (after) query = Message.find({ channel_id, id: { $gt: after } });
-	else if (before) query = Message.find({ channel_id, id: { $lt: before } });
-	else if (around)
-		query = Message.find({
-			channel_id,
-			id: { $gt: (BigInt(around) - BigInt(halfLimit)).toString(), $lt: (BigInt(around) + BigInt(halfLimit)).toString() }
-		});
-	else {
-		query = Message.find({ channel_id });
+	var query: FindManyOptions<Message> & { where: { id?: any } } = { order: { id: "DESC" }, take: limit, where: { channel_id } };
+
+	if (after) query.where.id = MoreThan(after);
+	else if (before) query.where.id = LessThan(before);
+	else if (around) {
+		query.where.id = [
+			MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
+			LessThan((BigInt(around) + BigInt(halfLimit)).toString())
+		];
 	}
 
-	query = query.sort({ id: -1 });
-
-	const messages = await query.limit(limit);
+	const messages = await Message.find(query);
 
 	return res.json(messages).map((x) => {
-		(x.reactions || []).forEach((x) => {
+		(x.reactions || []).forEach((x: any) => {
 			// @ts-ignore
 			if ((x.user_ids || []).includes(req.user_id)) x.me = true;
 			// @ts-ignore
@@ -135,7 +133,7 @@ router.post("/", messageUpload.single("file"), async (req: Request, res: Respons
 		embeds,
 		channel_id,
 		attachments,
-		edited_timestamp: null
+		edited_timestamp: undefined
 	});
 
 	return res.send(data);

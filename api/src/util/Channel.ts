@@ -1,20 +1,9 @@
-import {
-	ChannelCreateEvent,
-	Channel,
-	ChannelType,
-	emitEvent,
-	getPermission,
-	Guild,
-	Snowflake,
-	TextChannel,
-	toObject,
-	VoiceChannel
-} from "@fosscord/util";
+import { ChannelCreateEvent, Channel, ChannelType, emitEvent, getPermission, Snowflake } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 
 // TODO: DM channel
 export async function createChannel(
-	channel: Partial<TextChannel | VoiceChannel>,
+	channel: Partial<Channel>,
 	user_id: string = "0",
 	opts?: {
 		keepId?: boolean;
@@ -29,7 +18,7 @@ export async function createChannel(
 		case ChannelType.GUILD_TEXT:
 		case ChannelType.GUILD_VOICE:
 			if (channel.parent_id && !opts?.skipExistsCheck) {
-				const exists = await Channel.findOneOrFail({ id: channel.parent_id }, { guild_id: true });
+				const exists = await Channel.findOneOrFail({ id: channel.parent_id });
 				if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
 				if (exists.guild_id !== channel.guild_id) throw new HTTPError("The category channel needs to be in the guild");
 			}

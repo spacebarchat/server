@@ -1,5 +1,11 @@
-import { Embed, EmbedImage } from "@fosscord/util";
+import { Embed } from "@fosscord/util";
 import { Length } from "../util/instanceOf";
+
+export const EmbedImage = {
+	$url: String,
+	$width: Number,
+	$height: Number
+};
 
 export const MessageCreateSchema = {
 	$content: new Length(String, 0, 2000),

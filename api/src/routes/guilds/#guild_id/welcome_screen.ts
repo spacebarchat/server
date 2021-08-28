@@ -1,11 +1,9 @@
 import { Request, Response, Router } from "express";
-import { Guild, getPermission, toObject, Snowflake } from "@fosscord/util";
+import { Guild, getPermission, Snowflake, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 
 import { check } from "../../../util/instanceOf";
-import { isMember } from "../../../util/Member";
-import { GuildAddChannelToWelcomeScreenSchema } from "../../../schema/Guild";
-import { getPublicUser } from "../../../util/User";
+import { GuildUpdateWelcomeScreenSchema } from "../../../schema/Guild";
 
 const router: Router = Router();
 
@@ -14,34 +12,24 @@ router.get("/", async (req: Request, res: Response) => {
 
 	const guild = await Guild.findOneOrFail({ id: guild_id });
 
-	await isMember(req.user_id, guild_id);
+	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
 	res.json(guild.welcome_screen);
 });
 
-router.post("/", check(GuildAddChannelToWelcomeScreenSchema), async (req: Request, res: Response) => {
+router.patch("/", check(GuildUpdateWelcomeScreenSchema), async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;
-	const body = req.body as GuildAddChannelToWelcomeScreenSchema;
+	const body = req.body as GuildUpdateWelcomeScreenSchema;
 
 	const guild = await Guild.findOneOrFail({ id: guild_id });
-
-	var channelObject = {
-		...body
-	};
 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_GUILD");
 
 	if (!guild.welcome_screen.enabled) throw new HTTPError("Welcome screen disabled", 400);
-	if (guild.welcome_screen.welcome_channels.some((channel) => channel.channel_id === body.channel_id))
-		throw new Error("Welcome Channel exists");
-
-	await Guild.findOneOrFailAndUpdate(
-		{
-			id: guild_id
-		},
-		{ $push: { "welcome_screen.welcome_channels": channelObject } }
-	);
+	if (body.welcome_channels) guild.welcome_screen.welcome_channels = body.welcome_channels; // TODO: check if they exist and are valid
+	if (body.description) guild.welcome_screen.description = body.description;
+	if (body.enabled != null) guild.welcome_screen.enabled = body.enabled;
 
 	res.sendStatus(204);
 });

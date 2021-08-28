@@ -8,18 +8,17 @@ import {
 	getPermission,
 	CHANNEL_MENTION,
 	Snowflake,
-	PublicMemberProjection,
 	USER_MENTION,
 	ROLE_MENTION,
 	Role,
 	EVERYONE_MENTION,
-	HERE_MENTION
+	HERE_MENTION,
+	MessageType
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
 
-import { MessageType } from "@fosscord/util/dist/util/Constants";
 // TODO: check webhook, application, system author
 
 const LINK_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
@@ -61,7 +60,7 @@ export async function handleMessage(opts: Partial<Message>): Promise<Message> {
 	}
 
 	var content = opts.content;
-	var mention_channels_ids = [] as string[];
+	var mention_channel_ids = [] as string[];
 	var mention_role_ids = [] as string[];
 	var mention_user_ids = [] as string[];
 	var mention_everyone = false;
@@ -70,7 +69,7 @@ export async function handleMessage(opts: Partial<Message>): Promise<Message> {
 	if (content) {
 		content = content.trim();
 		for (const [_, mention] of content.matchAll(CHANNEL_MENTION)) {
-			if (!mention_channels_ids.includes(mention)) mention_channels_ids.push(mention);
+			if (!mention_channel_ids.includes(mention)) mention_channel_ids.push(mention);
 		}
 
 		for (const [_, mention] of content.matchAll(USER_MENTION)) {
@@ -92,11 +91,12 @@ export async function handleMessage(opts: Partial<Message>): Promise<Message> {
 	}
 
 	// TODO: check and put it all in the body
+
 	return {
 		...opts,
 		guild_id: channel.guild_id,
 		channel_id: opts.channel_id,
-		mention_channels_ids,
+		mention_channel_ids,
 		mention_role_ids,
 		mention_user_ids,
 		mention_everyone,
@@ -104,7 +104,7 @@ export async function handleMessage(opts: Partial<Message>): Promise<Message> {
 		embeds: opts.embeds || [],
 		reactions: opts.reactions || [],
 		type: opts.type ?? 0
-	};
+	} as Message;
 }
 
 // TODO: cache link result in db
@@ -163,10 +163,7 @@ export async function postHandleMessage(message: Message) {
 export async function sendMessage(opts: Partial<Message>) {
 	const message = await handleMessage({ ...opts, id: Snowflake.generate(), timestamp: new Date() });
 
-	const data = await new Message(message)
-		.populate({ path: "member", select: PublicMemberProjection })
-		.populate("referenced_message")
-		.save();
+	const data = await new Message(message).save();
 
 	await emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data } as MessageCreateEvent);
 

@@ -1,4 +1,4 @@
-import { Channel, emitEvent, Member, toObject, TypingStartEvent } from "@fosscord/util";
+import { Channel, emitEvent, Member, TypingStartEvent } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 
 import { HTTPError } from "lambert-server";
@@ -17,7 +17,7 @@ router.post("/", async (req: Request, res: Response) => {
 		channel_id: channel_id,
 		data: {
 			// this is the paylod
-			member: member,
+			member: { ...member, roles: member.role_ids },
 			channel_id,
 			timestamp,
 			user_id,

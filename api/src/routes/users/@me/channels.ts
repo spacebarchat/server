@@ -1,20 +1,10 @@
 import { Router, Request, Response } from "express";
-import {
-	Channel,
-	ChannelCreateEvent,
-	toObject,
-	ChannelType,
-	Snowflake,
-	trimSpecial,
-	Channel,
-	DMChannel,
-	User,
-	emitEvent
-} from "@fosscord/util";
+import { Channel, ChannelCreateEvent, ChannelType, Snowflake, trimSpecial, User, emitEvent } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 
 import { DmChannelCreateSchema } from "../../../schema/Channel";
 import { check } from "../../../util/instanceOf";
+import { In } from "typeorm";
 
 const router: Router = Router();
 
@@ -29,8 +19,10 @@ router.post("/", check(DmChannelCreateSchema), async (req: Request, res: Respons
 
 	body.recipients = body.recipients.filter((x) => x !== req.user_id).unique();
 
-	if (!(await Promise.all(body.recipients.map((x) => User.exists({ id: x })))).every((x) => x)) {
-		throw new HTTPError("Recipient not found");
+	const recipients = await User.find({ id: In(body.recipients) });
+
+	if (recipients.length !== body.recipients.length) {
+		throw new HTTPError("Recipient/s not found");
 	}
 
 	const type = body.recipients.length === 1 ? ChannelType.DM : ChannelType.GROUP_DM;
@@ -40,13 +32,12 @@ router.post("/", check(DmChannelCreateSchema), async (req: Request, res: Respons
 		name,
 		type,
 		owner_id: req.user_id,
-		id: Snowflake.generate(),
 		created_at: new Date(),
 		last_message_id: null,
 		recipient_ids: [...body.recipients, req.user_id]
 	}).save();
 
-	await emitEvent({ event: "CHANNEL_CREATE", data: channel), user_id: req.user_id } as ChannelCreateEvent;
+	await emitEvent({ event: "CHANNEL_CREATE", data: channel, user_id: req.user_id } as ChannelCreateEvent);
 
 	res.json(channel);
 });

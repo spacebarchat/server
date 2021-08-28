@@ -5,9 +5,14 @@ import bcrypt from "bcrypt";
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({ id: req.user_id }); //User object
+	const user = await User.findOneOrFail(req.user_id); //User object
+	let correctpass = true;
 
-	let correctpass = await bcrypt.compare(req.body.password, user!.data.hash); //Not sure if user typed right password :/
+	if (user.data.hash) {
+		// guest accounts can delete accounts without password
+		correctpass = await bcrypt.compare(req.body.password, user.data.hash); //Not sure if user typed right password :/
+	}
+
 	if (correctpass) {
 		await User.update({ id: req.user_id }, { disabled: true });
 

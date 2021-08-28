@@ -1,6 +1,5 @@
-import { Channel, emitEvent, getPermission, MessageDeleteEvent, Message, MessageUpdateEvent, toObject } from "@fosscord/util";
+import { Channel, emitEvent, getPermission, MessageDeleteEvent, Message, MessageUpdateEvent } from "@fosscord/util";
 import { Router, Response, Request } from "express";
-import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../../schema/Message";
 
 import { check } from "../../../../../util/instanceOf";
@@ -12,7 +11,7 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 	const { message_id, channel_id } = req.params;
 	var body = req.body as MessageCreateSchema;
 
-	var message = await Message.findOneOrFail({ id: message_id, channel_id }, { author_id: true, message_reference: true });
+	const message = await Message.findOneOrFail({ id: message_id, channel_id });
 
 	const permissions = await getPermission(req.user_id, undefined, channel_id);
 
@@ -29,15 +28,16 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 		id: message_id,
 		edited_timestamp: new Date()
 	});
+	message.assign(opts);
 
-	// @ts-ignore
-	message = await Message.findOneOrFailAndUpdate({ id: message_id }, opts, { new: true }).populate("author");
-
-	await emitEvent({
-		event: "MESSAGE_UPDATE",
-		channel_id,
-		data: { ...message, nonce: undefined }
-	} as MessageUpdateEvent);
+	await Promise.all([
+		message.save(),
+		await emitEvent({
+			event: "MESSAGE_UPDATE",
+			channel_id,
+			data: { ...message, nonce: undefined }
+		} as MessageUpdateEvent)
+	]);
 
 	postHandleMessage(message);
 
@@ -49,13 +49,13 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 router.delete("/", async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 
-	const channel = await Channel.findOneOrFail({ id: channel_id }, { guild_id: true });
-	const message = await Message.findOneOrFail({ id: message_id }, { author_id: true });
+	const channel = await Channel.findOneOrFail({ id: channel_id });
+	const message = await Message.findOneOrFail({ id: message_id });
 
 	const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
 	if (message.author_id !== req.user_id) permission.hasThrow("MANAGE_MESSAGES");
 
-	await Message.deleteOne({ id: message_id });
+	await Message.delete({ id: message_id });
 
 	await emitEvent({
 		event: "MESSAGE_DELETE",

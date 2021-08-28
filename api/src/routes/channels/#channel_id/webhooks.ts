@@ -10,7 +10,7 @@ const router: Router = Router();
 // TODO: use Image Data Type for avatar instead of String
 router.post("/", check({ name: new Length(String, 1, 80), $avatar: String }), async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
-	const channel = await Channel.findOneOrFail({ id: channel_id }, { guild_id: true, type: true });
+	const channel = await Channel.findOneOrFail({ id: channel_id });
 
 	isTextChannel(channel.type);
 	if (!channel.guild_id) throw new HTTPError("Not a guild channel", 400);
