@@ -1,10 +1,47 @@
-import { ActivityBodySchema } from "@fosscord/util";
 import { EmojiSchema } from "./Emoji";
 
 export const ActivitySchema = {
 	afk: Boolean,
 	status: String,
-	$activities: [ActivityBodySchema],
+	$activities: [
+		{
+			name: String,
+			type: Number,
+			$url: String,
+			$created_at: Date,
+			$timestamps: [
+				{
+					$start: Number,
+					$end: Number,
+				},
+			],
+			$application_id: String,
+			$details: String,
+			$state: String,
+			$emoji: {
+				$name: String,
+				$id: String,
+				$amimated: Boolean,
+			},
+			$party: {
+				$id: String,
+				$size: [Number, Number],
+			},
+			$assets: {
+				$large_image: String,
+				$large_text: String,
+				$small_image: String,
+				$small_text: String,
+			},
+			$secrets: {
+				$join: String,
+				$spectate: String,
+				$match: String,
+			},
+			$instance: Boolean,
+			$flags: BigInt,
+		},
+	],
 	$since: Number, // unix time (in milliseconds) of when the client went idle, or null if the client is not idle
 };
 
