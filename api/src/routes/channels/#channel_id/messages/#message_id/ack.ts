@@ -14,7 +14,7 @@ router.post("/", check({ $manual: Boolean, $mention_count: Number }), async (req
 	const permission = await getPermission(req.user_id, undefined, channel_id);
 	permission.hasThrow("VIEW_CHANNEL");
 
-	await ReadState.update({ user_id: req.user_id, channel_id, message_id }, { user_id: req.user_id, channel_id, message_id });
+	await ReadState.update({ user_id: req.user_id, channel_id }, { user_id: req.user_id, channel_id, last_message_id: message_id });
 
 	await emitEvent({
 		event: "MESSAGE_ACK",

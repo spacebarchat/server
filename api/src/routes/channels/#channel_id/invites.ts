@@ -6,7 +6,7 @@ import { random } from "../../../util/RandomInviteID";
 
 import { InviteCreateSchema } from "../../../schema/Invite";
 
-import { getPermission, Channel, InviteModel, InviteCreateEvent, toObject, emitEvent } from "@fosscord/util";
+import { getPermission, Channel, Invite, InviteCreateEvent, emitEvent } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -38,7 +38,7 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 		inviter_id: user_id
 	};
 
-	await new InviteModel(invite).save();
+	await new Invite(invite).save();
 
 	await emitEvent({ event: "INVITE_CREATE", data: invite, guild_id } as InviteCreateEvent);
 	res.status(201).send(invite);

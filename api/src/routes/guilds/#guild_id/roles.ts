@@ -1,10 +1,7 @@
 import { Request, Response, Router } from "express";
 import {
 	Role,
-	Guild,
 	getPermission,
-	toObject,
-	User,
 	Snowflake,
 	Member,
 	GuildRoleCreateEvent,
@@ -16,15 +13,13 @@ import { HTTPError } from "lambert-server";
 
 import { check } from "../../../util/instanceOf";
 import { RoleModifySchema } from "../../../schema/Roles";
-import { getPublicUser } from "../../../util/User";
-import { isMember } from "../../../util/Member";
 
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;
 
-	await isMember(req.user_id, guild_id);
+	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
 	const roles = await Role.find({ guild_id: guild_id });
 
@@ -35,12 +30,8 @@ router.post("/", check(RoleModifySchema), async (req: Request, res: Response) =>
 	const guild_id = req.params.guild_id;
 	const body = req.body as RoleModifySchema;
 
-	const guild = await Guild.findOneOrFail({ id: guild_id }, { id: true });
-	const user = await User.findOneOrFail({ id: req.user_id });
-
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");
-	if (!body.name) throw new HTTPError("You need to specify a name");
 
 	const role = await new Role({
 		...body,
@@ -49,7 +40,7 @@ router.post("/", check(RoleModifySchema), async (req: Request, res: Response) =>
 		managed: false,
 		position: 0,
 		tags: null,
-		permissions: body.permissions || 0n
+		permissions: perms.bitfield & (body.permissions || 0n)
 	}).save();
 
 	await emitEvent({
@@ -72,19 +63,20 @@ router.delete("/:role_id", async (req: Request, res: Response) => {
 	const permissions = await getPermission(req.user_id, guild_id);
 	permissions.hasThrow("MANAGE_ROLES");
 
-	await Role.deleteOne({
-		id: role_id,
-		guild_id: guild_id
-	});
-
-	await emitEvent({
-		event: "GUILD_ROLE_DELETE",
-		guild_id,
-		data: {
+	await Promise.all([
+		Role.delete({
+			id: role_id,
+			guild_id: guild_id
+		}),
+		emitEvent({
+			event: "GUILD_ROLE_DELETE",
 			guild_id,
-			role_id
-		}
-	} as GuildRoleDeleteEvent);
+			data: {
+				guild_id,
+				role_id
+			}
+		} as GuildRoleDeleteEvent)
+	]);
 
 	res.sendStatus(204);
 });
@@ -96,30 +88,22 @@ router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Res
 	const { role_id } = req.params;
 	const body = req.body as RoleModifySchema;
 
-	const guild = await Guild.findOneOrFail({ id: guild_id }, { id: true });
-	const user = await User.findOneOrFail({ id: req.user_id });
-
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");
 
-	const role = await Role.findOneOrFailAndUpdate(
-		{
-			id: role_id,
-			guild_id: guild_id
-		},
-		// @ts-ignore
-		body,
-		{ new: true }
-	);
+	const role = new Role({ ...body, role_id, guild_id, permissions: perms.bitfield & (body.permissions || 0n) });
 
-	await emitEvent({
-		event: "GUILD_ROLE_UPDATE",
-		guild_id,
-		data: {
+	await Promise.all([
+		role.save(),
+		emitEvent({
+			event: "GUILD_ROLE_UPDATE",
 			guild_id,
-			role
-		}
-	} as GuildRoleUpdateEvent);
+			data: {
+				guild_id,
+				role
+			}
+		} as GuildRoleUpdateEvent)
+	]);
 
 	res.json(role);
 });

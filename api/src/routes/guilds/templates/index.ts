@@ -1,10 +1,9 @@
 import { Request, Response, Router } from "express";
 const router: Router = Router();
-import { Template, Guild, Role, Snowflake, Config, User } from "@fosscord/util";
+import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { GuildTemplateCreateSchema } from "../../../schema/Guild";
 import { check } from "../../../util/instanceOf";
-import { addMember } from "../../../util/Member";
 
 router.get("/:code", async (req: Request, res: Response) => {
 	const { code } = req.params;
@@ -19,9 +18,9 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 	const body = req.body as GuildTemplateCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
-	const user = await User.getPublicUser(req.user_id, { guilds: true });
 
-	if (user.guilds.length >= maxGuilds) {
+	const guild_count = await Member.count({ id: req.user_id });
+	if (guild_count >= maxGuilds) {
 		throw new HTTPError(`Maximum number of guilds reached ${maxGuilds}`, 403);
 	}
 
@@ -29,15 +28,13 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 
 	const guild_id = Snowflake.generate();
 
-	const guild: Guild = {
-		...body,
-		...template.serialized_source_guild,
-		id: guild_id,
-		owner_id: req.user_id
-	};
-
-	const [guild_doc, role] = await Promise.all([
-		new Guild(guild).save(),
+	const [guild, role] = await Promise.all([
+		new Guild({
+			...body,
+			...template.serialized_source_guild,
+			id: guild_id,
+			owner_id: req.user_id
+		}).save(),
 		new Role({
 			id: guild_id,
 			guild_id: guild_id,
@@ -52,7 +49,7 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 		}).save()
 	]);
 
-	await addMember(req.user_id, guild_id, { guild: guild_doc });
+	await Member.addToGuild(req.user_id, guild_id);
 
 	res.status(201).json({ id: guild.id });
 });

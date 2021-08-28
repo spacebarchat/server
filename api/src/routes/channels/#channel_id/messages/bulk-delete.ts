@@ -3,6 +3,7 @@ import { Channel, Config, emitEvent, getPermission, MessageDeleteBulkEvent, Mess
 import { HTTPError } from "lambert-server";
 
 import { check } from "../../../../util/instanceOf";
+import { In } from "typeorm";
 
 const router: Router = Router();
 
@@ -13,10 +14,10 @@ export default router;
 // https://discord.com/developers/docs/resources/channel#bulk-delete-messages
 router.post("/", check({ messages: [String] }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
-	const channel = await Channel.findOneOrFail({ id: channel_id }, { permission_overwrites: true, guild_id: true });
+	const channel = await Channel.findOneOrFail({ id: channel_id });
 	if (!channel.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
 
-	const permission = await getPermission(req.user_id, channel?.guild_id, channel_id, { channel });
+	const permission = await getPermission(req.user_id, channel?.guild_id, channel_id);
 	permission.hasThrow("MANAGE_MESSAGES");
 
 	const { maxBulkDelete } = Config.get().limits.message;
@@ -25,7 +26,7 @@ router.post("/", check({ messages: [String] }), async (req: Request, res: Respon
 	if (messages.length < 2) throw new HTTPError("You must at least specify 2 messages to bulk delete");
 	if (messages.length > maxBulkDelete) throw new HTTPError(`You cannot delete more than ${maxBulkDelete} messages`);
 
-	await Message.deleteMany({ id: { $in: messages } });
+	await Message.delete({ id: In(messages) });
 
 	await emitEvent({
 		event: "MESSAGE_DELETE_BULK",

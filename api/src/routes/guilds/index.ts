@@ -1,10 +1,8 @@
 import { Router, Request, Response } from "express";
-import { Role, Guild, Snowflake, Guild, RoleDocument, Config } from "@fosscord/util";
+import { Role, Guild, Snowflake, Config, User, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../util/instanceOf";
 import { GuildCreateSchema } from "../../schema/Guild";
-import { getPublicUser } from "../../util/User";
-import { addMember } from "../../util/Member";
 import { createChannel } from "../../util/Channel";
 
 const router: Router = Router();
@@ -15,14 +13,13 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	const body = req.body as GuildCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
-	const user = await getPublicUser(req.user_id, { guilds: true });
-
-	if (user.guilds.length >= maxGuilds) {
+	const guild_count = await Member.count({ where: { id: req.user_id } });
+	if (guild_count >= maxGuilds) {
 		throw new HTTPError(`Maximum number of guilds reached ${maxGuilds}`, 403);
 	}
 
 	const guild_id = Snowflake.generate();
-	const guild: Guild = {
+	const guild = new Guild({
 		name: body.name,
 		region: Config.get().regions.default,
 		owner_id: req.user_id,
@@ -62,7 +59,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		},
 		widget_channel_id: undefined,
 		widget_enabled: false
-	};
+	});
 
 	const [guild_doc, role] = await Promise.all([
 		new Guild(guild).save(),
@@ -94,14 +91,14 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		body.channels?.map((x) => {
 			var id = ids.get(x.id) || Snowflake.generate();
 
-			// TODO: should we abort if parent_id is a category? (or not to allow sub category channels)
+			// TODO: should we abort if parent_id is a category? (to disallow sub category channels)
 			var parent_id = ids.get(x.parent_id);
 
 			return createChannel({ ...x, guild_id, id, parent_id }, req.user_id, { keepId: true, skipExistsCheck: true });
 		})
 	);
 
-	await addMember(req.user_id, guild_id);
+	await Member.addToGuild(req.user_id, guild_id);
 
 	res.status(201).json({ id: guild.id });
 });

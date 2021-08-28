@@ -2,11 +2,10 @@ import {
 	RelationshipAddEvent,
 	User,
 	PublicUserProjection,
-	toObject,
 	RelationshipType,
 	RelationshipRemoveEvent,
-	UserDocument,
-	emitEvent
+	emitEvent,
+	Relationship
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
@@ -15,40 +14,36 @@ import { check, Length } from "../../../util/instanceOf";
 
 const router = Router();
 
-const userProjection = { "data.relationships": true, ...PublicUserProjection };
+const userProjection: (keyof User)[] = ["relationships", ...PublicUserProjection];
 
 router.get("/", async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({ id: req.user_id }, { data: { relationships: true } }).populate({
-		path: "data.relationships.id",
-		model: User
-	});
-	return res.json(user.data.relationships);
+	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["relationships"] });
+
+	return res.json(user.relationships);
 });
 
-async function addRelationship(req: Request, res: Response, friend: UserDocument, type: RelationshipType) {
+async function updateRelationship(req: Request, res: Response, friend: User, type: RelationshipType) {
 	const id = friend.id;
 	if (id === req.user_id) throw new HTTPError("You can't add yourself as a friend");
 
-	const user = await User.findOneOrFail({ id: req.user_id }, userProjection);
-	const newUserRelationships = [...user.data.relationships];
-	const newFriendRelationships = [...friend.data.relationships];
+	const user = await User.findOneOrFail(req.user_id, { relations: ["relationships"], select: userProjection });
 
-	var relationship = newUserRelationships.find((x) => x.id === id);
-	const friendRequest = newFriendRelationships.find((x) => x.id === req.user_id);
+	var relationship = user.relationships.find((x) => x.id === id);
+	const friendRequest = friend.relationships.find((x) => x.id === req.user_id);
 
 	if (type === RelationshipType.blocked) {
 		if (relationship) {
 			if (relationship.type === RelationshipType.blocked) throw new HTTPError("You already blocked the user");
 			relationship.type = RelationshipType.blocked;
 		} else {
-			relationship = { id, type: RelationshipType.blocked };
-			newUserRelationships.push(relationship);
+			relationship = new Relationship({ id, type: RelationshipType.blocked });
+			user.relationships.push(relationship);
 		}
 
 		if (friendRequest && friendRequest.type !== RelationshipType.blocked) {
-			newFriendRelationships.remove(friendRequest);
+			friend.relationships.remove(friendRequest);
 			await Promise.all([
-				User.update({ id: friend.id }, { "data.relationships": newFriendRelationships }),
+				user.save(),
 				emitEvent({
 					event: "RELATIONSHIP_REMOVE",
 					data: friendRequest,
@@ -58,12 +53,12 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 		}
 
 		await Promise.all([
-			User.update({ id: req.user_id }, { "data.relationships": newUserRelationships }),
+			user.save(),
 			emitEvent({
 				event: "RELATIONSHIP_ADD",
 				data: {
 					...relationship,
-					user: { ...friend, data: undefined }
+					user: { ...friend }
 				},
 				user_id: req.user_id
 			} as RelationshipAddEvent)
@@ -72,32 +67,31 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 		return res.sendStatus(204);
 	}
 
-	var incoming_relationship = { id: req.user_id, nickname: undefined, type: RelationshipType.incoming };
-	var outgoing_relationship = { id, nickname: undefined, type: RelationshipType.outgoing };
+	var incoming_relationship = new Relationship({ nickname: undefined, type: RelationshipType.incoming }, { id: req.user_id });
+	var outgoing_relationship = new Relationship({ nickname: undefined, type: RelationshipType.outgoing }, { id });
 
 	if (friendRequest) {
 		if (friendRequest.type === RelationshipType.blocked) throw new HTTPError("The user blocked you");
 		// accept friend request
-		// @ts-ignore
 		incoming_relationship = friendRequest;
 		incoming_relationship.type = RelationshipType.friends;
 		outgoing_relationship.type = RelationshipType.friends;
-	} else newFriendRelationships.push(incoming_relationship);
+	} else friend.relationships.push(incoming_relationship);
 
 	if (relationship) {
 		if (relationship.type === RelationshipType.outgoing) throw new HTTPError("You already sent a friend request");
 		if (relationship.type === RelationshipType.blocked) throw new HTTPError("Unblock the user before sending a friend request");
 		if (relationship.type === RelationshipType.friends) throw new HTTPError("You are already friends with the user");
-	} else newUserRelationships.push(outgoing_relationship);
+	} else user.relationships.push(outgoing_relationship);
 
 	await Promise.all([
-		User.update({ id: req.user_id }, { "data.relationships": newUserRelationships }),
-		User.update({ id: friend.id }, { "data.relationships": newFriendRelationships }),
+		user.save(),
+		friend.save(),
 		emitEvent({
 			event: "RELATIONSHIP_ADD",
 			data: {
 				...outgoing_relationship,
-				user: { ...friend, data: undefined }
+				user: { ...friend }
 			},
 			user_id: req.user_id
 		} as RelationshipAddEvent),
@@ -106,7 +100,7 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 			data: {
 				...incoming_relationship,
 				should_notify: true,
-				user: { ...user, data: undefined }
+				user: { ...user }
 			},
 			user_id: id
 		} as RelationshipAddEvent)
@@ -116,14 +110,23 @@ async function addRelationship(req: Request, res: Response, friend: UserDocument
 }
 
 router.put("/:id", check({ $type: new Length(Number, 1, 4) }), async (req: Request, res: Response) => {
-	return await addRelationship(req, res, await User.findOneOrFail({ id: req.params.id }), req.body.type);
+	return await updateRelationship(
+		req,
+		res,
+		await User.findOneOrFail(req.params.id, { relations: ["relationships"], select: userProjection }),
+		req.body.type
+	);
 });
 
 router.post("/", check({ discriminator: String, username: String }), async (req: Request, res: Response) => {
-	return await addRelationship(
+	return await updateRelationship(
 		req,
 		res,
-		await User.findOneOrFail(req.body as { discriminator: string; username: string }),
+		await User.findOneOrFail({
+			relations: ["relationships"],
+			select: userProjection,
+			where: req.body as { discriminator: string; username: string }
+		}),
 		req.body.type
 	);
 });
@@ -132,17 +135,15 @@ router.delete("/:id", async (req: Request, res: Response) => {
 	const { id } = req.params;
 	if (id === req.user_id) throw new HTTPError("You can't remove yourself as a friend");
 
-	const user = await User.findOneOrFail({ id: req.user_id });
-	if (!user) throw new HTTPError("Invalid token", 400);
+	const user = await User.findOneOrFail(req.user_id, { select: userProjection, relations: ["relationships"] });
+	const friend = await User.findOneOrFail(id, { select: userProjection, relations: ["relationships"] });
 
-	const friend = await User.findOneOrFail({ id }, userProjection);
-	if (!friend) throw new HTTPError("User not found", 404);
+	const relationship = user.relationships.find((x) => x.id === id);
+	const friendRequest = friend.relationships.find((x) => x.id === req.user_id);
 
-	const relationship = user.data.relationships.find((x) => x.id === id);
-	const friendRequest = friend.data.relationships.find((x) => x.id === req.user_id);
 	if (relationship?.type === RelationshipType.blocked) {
 		// unblock user
-		user.data.relationships.remove(relationship);
+		user.relationships.remove(relationship);
 
 		await Promise.all([
 			user.save(),
@@ -153,8 +154,8 @@ router.delete("/:id", async (req: Request, res: Response) => {
 	if (!relationship || !friendRequest) throw new HTTPError("You are not friends with the user", 404);
 	if (friendRequest.type === RelationshipType.blocked) throw new HTTPError("The user blocked you");
 
-	user.data.relationships.remove(relationship);
-	friend.data.relationships.remove(friendRequest);
+	user.relationships.remove(relationship);
+	friend.relationships.remove(friendRequest);
 
 	await Promise.all([
 		user.save(),

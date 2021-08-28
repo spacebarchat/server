@@ -182,72 +182,16 @@ router.post(
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 
 		const user = await new User({
-			id: Snowflake.generate(),
-			created_at: new Date(),
 			username: adjusted_username,
 			discriminator,
-			avatar: undefined,
-			accent_color: undefined,
-			banner: undefined,
-			bot: false,
-			system: false,
-			desktop: false,
-			mobile: false,
 			premium: true,
 			premium_type: 2,
-			phone: undefined,
-			bio: "",
-			mfa_enabled: false,
-			verified: false,
-			disabled: false,
-			deleted: false,
 			email: adjusted_email,
 			nsfw_allowed: true, // TODO: depending on age
-			public_flags: 0n,
-			flags: 0n, // TODO: generate default flags
 			guilds: [],
 			data: {
 				hash: adjusted_password,
 				valid_tokens_since: new Date()
-			},
-			settings: {
-				afk_timeout: 300,
-				allow_accessibility_detection: true,
-				animate_emoji: true,
-				animate_stickers: 0,
-				contact_sync_enabled: false,
-				convert_emoticons: false,
-				custom_status: {
-					emoji_id: undefined,
-					emoji_name: undefined,
-					expires_at: undefined,
-					text: undefined
-				},
-				default_guilds_restricted: false,
-				detect_platform_accounts: true,
-				developer_mode: false,
-				disable_games_tab: false,
-				enable_tts_command: true,
-				explicit_content_filter: 0,
-				friend_source_flags: { all: true },
-				gateway_connected: false,
-				gif_auto_play: true,
-				guild_folders: [],
-				guild_positions: [],
-				inline_attachment_media: true,
-				inline_embed_media: true,
-				locale: req.language,
-				message_display_compact: false,
-				native_phone_integration_enabled: true,
-				render_embeds: true,
-				render_reactions: true,
-				restricted_guilds: [],
-				show_current_game: true,
-				status: "offline",
-				stream_notifications_enabled: true,
-				theme: "dark",
-				timezone_offset: 0
-				// timezone_offset: // TODO: timezone from request
 			}
 		}).save();
 
