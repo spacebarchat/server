@@ -39,7 +39,7 @@ export const ActivitySchema = {
 				$match: String,
 			},
 			$instance: Boolean,
-			$flags: BigInt,
+			$flags: String,
 		},
 	],
 	$since: Number, // unix time (in milliseconds) of when the client went idle, or null if the client is not idle
@@ -79,7 +79,7 @@ export interface ActivitySchema {
 				match?: string; // the secret for a specific instanced match
 			};
 			instance?: boolean;
-			flags: bigint; // activity flags OR d together, describes what the payload includes
+			flags: string; // activity flags OR d together, describes what the payload includes
 		}
 	];
 	since?: number; // unix time (in milliseconds) of when the client went idle, or null if the client is not idle

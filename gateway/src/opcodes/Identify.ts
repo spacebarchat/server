@@ -42,7 +42,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}
 	}
 
-	const members = await Member.find({ where: { id: this.user_id }, relations: ["guilds"] });
+	const members = await Member.find({ where: { id: this.user_id }, relations: ["guild"] });
 	const merged_members = members.map((x: any) => {
 		const y = { ...x, user_id: x.id };
 		delete y.settings;

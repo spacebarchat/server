@@ -36,7 +36,7 @@ export interface ReadyEventData {
 		mobile: boolean;
 		desktop: boolean;
 		email: string | undefined;
-		flags: bigint;
+		flags: string;
 		mfa_enabled: boolean;
 		nsfw_allowed: boolean;
 		phone: string | undefined;
@@ -85,7 +85,7 @@ export interface ReadyEventData {
 	};
 	application?: {
 		id: string;
-		flags: bigint;
+		flags: string;
 	};
 	merged_members?: Omit<Member, "settings" | "user">[][];
 	// probably all users who the user is in contact with
@@ -95,7 +95,7 @@ export interface ReadyEventData {
 		id: string;
 		username: string;
 		bot: boolean;
-		public_flags: bigint;
+		public_flags: string;
 	}[];
 }
 

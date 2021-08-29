@@ -47,7 +47,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		premium_tier: 0,
 		public_updates_channel_id: undefined,
 		rules_channel_id: undefined,
-		system_channel_flags: 0,
+		system_channel_flags: "0",
 		system_channel_id: undefined,
 		unavailable: false,
 		vanity_url_code: undefined,
