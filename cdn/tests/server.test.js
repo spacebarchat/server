@@ -17,7 +17,7 @@ if (process.env.STORAGE_PROVIDER === "file") {
 }
 
 const { CDNServer } = require("../dist/Server");
-const { db, Config } = require("@fosscord/util");
+const { Config } = require("@fosscord/util");
 const supertest = require("supertest");
 const request = supertest("http://localhost:3003");
 const server = new CDNServer({ port: Number(process.env.PORT) || 3003 });
@@ -28,7 +28,6 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
-	db.close();
 	return server.stop();
 });
 
