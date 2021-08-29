@@ -4,7 +4,7 @@ import { FieldError } from "../util/instanceOf";
 
 // TODO: update with new body/typorm validation
 export function ErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
-	if (!error) next();
+	if (!error) return next();
 
 	try {
 		let code = 400;
@@ -18,7 +18,6 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 			message = error.message;
 			errors = error.errors;
 		} else {
-			console.error(error);
 			if (req.server?.options?.production) {
 				message = "Internal Server Error";
 			}
@@ -27,7 +26,7 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 
 		if (httpcode > 511) httpcode = 400;
 
-		console.error(`[Error] ${code} ${req.url} ${message}`, errors || error);
+		console.error(`[Error] ${code} ${req.url}`, errors || error, "body:", req.body);
 
 		res.status(httpcode).json({ code: code, message, errors });
 	} catch (error) {

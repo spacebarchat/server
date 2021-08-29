@@ -1,6 +1,6 @@
-// @ts-nocheck
-import { db, Bucket, Config, listenEvent, emitEvent } from "@fosscord/util";
+import { Config, listenEvent, emitEvent, RateLimit } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
+import { LessThan } from "typeorm";
 import { getIpAdress } from "../util/ipAddress";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
@@ -18,10 +18,10 @@ TODO: different for methods (GET/POST)
 
 */
 
-var Cache = new Map<string, Bucket>();
-const EventRateLimit = "ratelimit";
+var Cache = new Map<string, RateLimit>();
+const EventRateLimit = "RATELIMIT";
 
-export default function RateLimit(opts: {
+export default function rateLimit(opts: {
 	bucket?: string;
 	window: number;
 	count: number;
@@ -36,15 +36,15 @@ export default function RateLimit(opts: {
 }): any {
 	return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
 		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
-		var user_id = getIpAdress(req);
-		if (!opts.onlyIp && req.user_id) user_id = req.user_id;
+		var executor_id = getIpAdress(req);
+		if (!opts.onlyIp && req.user_id) executor_id = req.user_id;
 
 		var max_hits = opts.count;
 		if (opts.bot && req.user_bot) max_hits = opts.bot;
 		if (opts.GET && ["GET", "OPTIONS", "HEAD"].includes(req.method)) max_hits = opts.GET;
 		else if (opts.MODIFY && ["POST", "DELETE", "PATCH", "PUT"].includes(req.method)) max_hits = opts.MODIFY;
 
-		const offender = Cache.get(user_id + bucket_id) as Bucket | null;
+		const offender = Cache.get(executor_id + bucket_id);
 
 		if (offender && offender.blocked) {
 			const reset = offender.expires_at.getTime();
@@ -72,12 +72,12 @@ export default function RateLimit(opts: {
 				offender.expires_at = new Date(Date.now() + opts.window * 1000);
 				offender.blocked = false;
 				// mongodb ttl didn't update yet -> manually update/delete
-				db.collection("ratelimits").update({ id: bucket_id, user_id }, { $set: offender });
-				Cache.delete(user_id + bucket_id);
+				RateLimit.delete({ id: bucket_id, executor_id });
+				Cache.delete(executor_id + bucket_id);
 			}
 		}
 		next();
-		const hitRouteOpts = { bucket_id, user_id, max_hits, window: opts.window };
+		const hitRouteOpts = { bucket_id, executor_id, max_hits, window: opts.window };
 
 		if (opts.error || opts.success) {
 			res.once("finish", () => {
@@ -97,69 +97,74 @@ export default function RateLimit(opts: {
 export async function initRateLimits(app: Router) {
 	const { routes, global, ip, error } = Config.get().limits.rate;
 	await listenEvent(EventRateLimit, (event) => {
-		Cache.set(event.channel_id, event.data);
+		Cache.set(event.channel_id as string, event.data);
 		event.acknowledge?.();
+	});
+	await RateLimit.delete({ expires_at: LessThan(new Date()) }); // clean up if not already deleted
+	const limits = await RateLimit.find({ blocked: true });
+	limits.forEach((limit) => {
+		Cache.set(limit.executor_id, limit);
 	});
 
 	setInterval(() => {
 		Cache.forEach((x, key) => {
-			if (Date.now() > x.expires_at) Cache.delete(key);
+			if (new Date() > x.expires_at) {
+				Cache.delete(key);
+				RateLimit.delete({ executor_id: key });
+			}
 		});
 	}, 1000 * 60 * 10);
 
 	app.use(
-		RateLimit({
+		rateLimit({
 			bucket: "global",
 			onlyIp: true,
 			...ip
 		})
 	);
-	app.use(RateLimit({ bucket: "global", ...global }));
+	app.use(rateLimit({ bucket: "global", ...global }));
 	app.use(
-		RateLimit({
+		rateLimit({
 			bucket: "error",
 			error: true,
 			onlyIp: true,
 			...error
 		})
 	);
-	app.use("/guilds/:id", RateLimit(routes.guild));
-	app.use("/webhooks/:id", RateLimit(routes.webhook));
-	app.use("/channels/:id", RateLimit(routes.channel));
-	app.use("/auth/login", RateLimit(routes.auth.login));
-	app.use("/auth/register", RateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
+	app.use("/guilds/:id", rateLimit(routes.guild));
+	app.use("/webhooks/:id", rateLimit(routes.webhook));
+	app.use("/channels/:id", rateLimit(routes.channel));
+	app.use("/auth/login", rateLimit(routes.auth.login));
+	app.use("/auth/register", rateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
 }
 
-async function hitRoute(opts: { user_id: string; bucket_id: string; max_hits: number; window: number }) {
-	const filter = { id: opts.bucket_id, user_id: opts.user_id };
-	const { value } = await db.collection("ratelimits").findOneOrFailAndUpdate(
-		filter,
-		{
-			$setOnInsert: {
-				id: opts.bucket_id,
-				user_id: opts.user_id,
-				expires_at: new Date(Date.now() + opts.window * 1000)
-			},
-			$inc: {
-				hits: 1
-			}
-			// Conditionally update blocked doesn't work
-		},
-		{ upsert: true, returnDocument: "before" }
-	);
-	if (!value) return;
-	const updateBlock = !value.blocked && value.hits >= opts.max_hits;
+async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number }) {
+	var ratelimit = await RateLimit.findOne({ id: opts.bucket_id, executor_id: opts.executor_id });
+	if (!ratelimit) {
+		ratelimit = new RateLimit({
+			id: opts.bucket_id,
+			executor_id: opts.executor_id,
+			expires_at: new Date(Date.now() + opts.window * 1000),
+			hits: 0,
+			blocked: false
+		});
+	}
+
+	ratelimit.hits++;
+
+	const updateBlock = !ratelimit.blocked && ratelimit.hits >= opts.max_hits;
 
 	if (updateBlock) {
-		value.blocked = true;
-		Cache.set(opts.user_id + opts.bucket_id, value);
+		ratelimit.blocked = true;
+		Cache.set(opts.executor_id + opts.bucket_id, ratelimit);
 		await emitEvent({
 			channel_id: EventRateLimit,
 			event: EventRateLimit,
-			data: value
+			data: ratelimit
 		});
-		await db.collection("ratelimits").update(filter, { $set: { blocked: true } });
 	} else {
-		Cache.delete(opts.user_id);
+		Cache.delete(opts.executor_id);
 	}
+
+	await ratelimit.save();
 }
