@@ -77,7 +77,7 @@ router.get("/", async (req: Request, res: Response) => {
 			delete x.user_ids;
 		});
 		// @ts-ignore
-		if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: 0n, avatar: null };
+		if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: "0", avatar: null };
 
 		return x;
 	});

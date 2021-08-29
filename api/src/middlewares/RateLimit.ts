@@ -1,6 +1,6 @@
 import { Config, listenEvent, emitEvent, RateLimit } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
-import { LessThan } from "typeorm";
+import { LessThan, MoreThan } from "typeorm";
 import { getIpAdress } from "../util/ipAddress";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
@@ -100,7 +100,7 @@ export async function initRateLimits(app: Router) {
 		Cache.set(event.channel_id as string, event.data);
 		event.acknowledge?.();
 	});
-	await RateLimit.delete({ expires_at: LessThan(new Date()) }); // clean up if not already deleted
+	await RateLimit.delete({ expires_at: MoreThan(new Date()) }); // cleans up if not already deleted, morethan -> older date
 	const limits = await RateLimit.find({ blocked: true });
 	limits.forEach((limit) => {
 		Cache.set(limit.executor_id, limit);

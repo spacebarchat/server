@@ -62,7 +62,7 @@ export class Application extends BaseClass {
 	cover_image?: string; // the application's default rich presence invite cover image hash
 
 	@Column()
-	flags: number; // the application's public flags
+	flags: string; // the application's public flags
 }
 
 export interface ApplicationCommand {
