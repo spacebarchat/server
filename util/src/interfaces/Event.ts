@@ -35,11 +35,11 @@ export interface ReadyEventData {
 	user: PublicUser & {
 		mobile: boolean;
 		desktop: boolean;
-		email: string | null;
+		email: string | undefined;
 		flags: bigint;
 		mfa_enabled: boolean;
 		nsfw_allowed: boolean;
-		phone: string | null;
+		phone: string | undefined;
 		premium: boolean;
 		premium_type: number;
 		verified: boolean;
