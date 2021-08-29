@@ -21,7 +21,7 @@ router.post(
 	async (req: Request, res: Response) => {
 		const { login, password, captcha_key, undelete } = req.body;
 		const email = adjustEmail(login);
-		console.log(req.body, email);
+		console.log("login", email);
 
 		const config = Config.get();
 

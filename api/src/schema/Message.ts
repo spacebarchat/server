@@ -11,7 +11,7 @@ export const MessageCreateSchema = {
 	$content: new Length(String, 0, 2000),
 	$nonce: String,
 	$tts: Boolean,
-	$flags: BigInt,
+	$flags: String,
 	$embed: {
 		$title: new Length(String, 0, 256), //title of embed
 		$type: String, // type of embed (always "rich" for webhook embeds)
@@ -69,7 +69,7 @@ export interface MessageCreateSchema {
 	content?: string;
 	nonce?: string;
 	tts?: boolean;
-	flags?: bigint;
+	flags?: string;
 	embed?: Embed & { timestamp?: string };
 	allowed_mentions?: {
 		parse?: string[];
