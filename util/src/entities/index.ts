@@ -14,6 +14,7 @@ export * from "./RateLimit";
 export * from "./ReadState";
 export * from "./Relationship";
 export * from "./Role";
+export * from "./Sticker";
 export * from "./Team";
 export * from "./TeamMember";
 export * from "./Template";

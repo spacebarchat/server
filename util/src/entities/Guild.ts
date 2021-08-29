@@ -158,7 +158,7 @@ export class Guild extends BaseClass {
 	vanity_url_code?: string;
 
 	@JoinColumn({ name: "vanity_url_code" })
-	@OneToOne(() => Invite, (invite: Invite) => invite.code)
+	@ManyToOne(() => Invite)
 	vanity_url?: Invite;
 
 	@Column({ nullable: true })

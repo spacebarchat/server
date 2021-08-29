@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 

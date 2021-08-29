@@ -7,12 +7,8 @@ export class RateLimit extends BaseClass {
 	@Column()
 	id: "global" | "error" | string; // channel_239842397 | guild_238927349823 | webhook_238923423498
 
-	@RelationId((rate_limit: RateLimit) => rate_limit.user)
-	user_id: string;
-
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, (user) => user.id)
-	user: User;
+	@Column() // no relation as it also
+	executor_id: string;
 
 	@Column()
 	hits: number;
