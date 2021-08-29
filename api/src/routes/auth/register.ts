@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { trimSpecial, User, Snowflake, Config } from "@fosscord/util";
+import { trimSpecial, User, Snowflake, Config, defaultSettings } from "@fosscord/util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../util/instanceOf";
 import "missing-native-js-functions";
@@ -182,17 +182,29 @@ router.post(
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 
 		const user = await new User({
+			created_at: new Date(),
 			username: adjusted_username,
 			discriminator,
+			bot: false,
+			system: false,
+			desktop: false,
+			mobile: false,
 			premium: true,
 			premium_type: 2,
+			bio: "",
+			mfa_enabled: false,
+			verified: false,
+			disabled: false,
+			deleted: false,
 			email: adjusted_email,
 			nsfw_allowed: true, // TODO: depending on age
-			guilds: [],
+			public_flags: "0",
+			flags: "0", // TODO: generate
 			data: {
 				hash: adjusted_password,
 				valid_tokens_since: new Date()
-			}
+			},
+			settings: defaultSettings
 		}).save();
 
 		return res.json({ token: await generateToken(user.id) });
