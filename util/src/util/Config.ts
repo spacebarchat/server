@@ -6,6 +6,7 @@ var config: ConfigEntity;
 
 export const Config = {
 	init: async function init() {
+		if (config) return config;
 		config = new ConfigEntity({}, { id: "0" });
 		return this.set((config.value || {}).merge(DefaultConfigOptions));
 	},
@@ -13,7 +14,8 @@ export const Config = {
 		return config.value as ConfigValue;
 	},
 	set: function set(val: any) {
-		config.value = val.merge(config.value);
+		if (!config) return;
+		config.value = val.merge(config?.value || {});
 		return config.save();
 	},
 };

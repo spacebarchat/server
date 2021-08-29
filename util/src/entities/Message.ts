@@ -148,8 +148,8 @@ export class Message extends BaseClass {
 		party_id: string;
 	};
 
-	@Column({ type: "bigint", nullable: true })
-	flags?: bigint;
+	@Column({ nullable: true })
+	flags?: string;
 
 	@RelationId((message: Message) => message.stickers)
 	sticker_ids: string[];

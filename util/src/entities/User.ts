@@ -49,7 +49,7 @@ export class User extends BaseClass {
 	avatar?: string; // hash of the user avatar
 
 	@Column({ nullable: true })
-	accent_color?: number = 0; // banner color of user
+	accent_color?: number; // banner color of user
 
 	@Column({ nullable: true })
 	banner?: string; // hash of the user banner
@@ -58,52 +58,52 @@ export class User extends BaseClass {
 	phone?: string; // phone number of the user
 
 	@Column()
-	desktop: boolean = false; // if the user has desktop app installed
+	desktop: boolean; // if the user has desktop app installed
 
 	@Column()
-	mobile: boolean = false; // if the user has mobile app installed
+	mobile: boolean; // if the user has mobile app installed
 
 	@Column()
-	premium: boolean = false; // if user bought nitro
+	premium: boolean; // if user bought nitro
 
 	@Column()
-	premium_type: number = 0; // nitro level
+	premium_type: number; // nitro level
 
 	@Column()
-	bot: boolean = false; // if user is bot
+	bot: boolean; // if user is bot
 
 	@Column()
-	bio: string = ""; // short description of the user (max 190 chars -> should be configurable)
+	bio: string; // short description of the user (max 190 chars -> should be configurable)
 
 	@Column()
-	system: boolean = false; // shouldn't be used, the api sents this field type true, if the generated message comes from a system generated author
+	system: boolean; // shouldn't be used, the api sents this field type true, if the generated message comes from a system generated author
 
 	@Column()
-	nsfw_allowed: boolean = false; // if the user is older than 18 (resp. Config)
+	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
 
 	@Column()
-	mfa_enabled: boolean = false; // if multi factor authentication is enabled
+	mfa_enabled: boolean; // if multi factor authentication is enabled
 
 	@Column()
 	created_at: Date = new Date(); // registration date
 
 	@Column()
-	verified: boolean = false; // if the user is offically verified
+	verified: boolean; // if the user is offically verified
 
 	@Column()
-	disabled: boolean = false; // if the account is disabled
+	disabled: boolean; // if the account is disabled
 
 	@Column()
-	deleted: boolean = false; // if the user was deleted
+	deleted: boolean; // if the user was deleted
 
 	@Column({ nullable: true })
 	email?: string; // email of the user
 
-	@Column({ type: "bigint" })
-	flags: bigint = BigInt(0); // UserFlags
+	@Column()
+	flags: string; // UserFlags
 
-	@Column({ type: "bigint" })
-	public_flags: bigint = BigInt(0);
+	@Column()
+	public_flags: string;
 
 	@RelationId((user: User) => user.relationships)
 	relationship_ids: string[]; // array of guild ids the user is part of
@@ -123,13 +123,13 @@ export class User extends BaseClass {
 	data: {
 		valid_tokens_since: Date; // all tokens with a previous issue date are invalid
 		hash?: string; // hash of the password, salt is saved in password (bcrypt)
-	} = { valid_tokens_since: new Date() };
+	};
 
 	@Column({ type: "simple-array" })
 	fingerprints: string[] = []; // array of fingerprints -> used to prevent multiple accounts
 
 	@Column({ type: "simple-json" })
-	settings: UserSettings = defaultSettings;
+	settings: UserSettings;
 
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {
 		const user = await User.findOne(user_id, {

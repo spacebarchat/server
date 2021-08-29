@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Connection, createConnection } from "typeorm";
+import { Connection, createConnection, ValueTransformer } from "typeorm";
 import * as Models from "../entities";
 
 // UUID extension option is only supported with postgres
@@ -14,10 +14,10 @@ export function initDatabase() {
 	console.log("[Database] connecting ...");
 	// @ts-ignore
 	promise = createConnection({
-		// type: "sqlite",
-		// database: "database.db",
-		type: "postgres",
-		url: "postgres://fosscord:wb94SmuURM2Syv&@localhost/fosscord",
+		type: "sqlite",
+		database: "database.db",
+		// type: "postgres",
+		// url: "postgres://fosscord:wb94SmuURM2Syv&@localhost/fosscord",
 		//
 		entities: Object.values(Models).filter((x) => x.constructor.name !== "Object"),
 		synchronize: true,
@@ -25,6 +25,8 @@ export function initDatabase() {
 		cache: {
 			duration: 1000 * 3, // cache all find queries for 3 seconds
 		},
+		bigNumberStrings: false,
+		supportBigNumbers: true,
 	});
 
 	promise.then((connection) => {
