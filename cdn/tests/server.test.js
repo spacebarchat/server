@@ -67,7 +67,6 @@ describe("/attachments", () => {
 				expect(response.statusCode).toBe(200);
 				expect(response.headers["content-type"]).toEqual(expect.stringContaining("json"));
 				expect(response.body.url).toBeDefined();
-				attachment_url = response.body.url;
 			});
 		});
 	});
@@ -89,6 +88,62 @@ describe("/attachments", () => {
 			test("route should respond with res.body.success", async () => {
 				let response = await request
 					.post("/attachments/123456789")
+					.set({ signature: Config.get().security.requestSignature })
+					.attach("file", __dirname + "/antman.jpg");
+				request.delete(response.body.url.replace("http://localhost:3003", "")).then((x) => {
+					expect(x.body.success).toBeDefined();
+				});
+			});
+		});
+	});
+});
+
+describe("/avatars", () => {
+	describe("POST", () => {
+		describe("without signature specified", () => {
+			test("route should respond with 400", async () => {
+				const response = await request.post("/avatars/123456789");
+				expect(response.statusCode).toBe(400);
+			});
+		});
+		describe("with signature specified, without file specified", () => {
+			test("route should respond with 400", async () => {
+				const response = await request
+					.post("/avatars/123456789")
+					.set({ signature: Config.get().security.requestSignature });
+				expect(response.statusCode).toBe(400);
+			});
+		});
+		describe("with signature specified, with file specified ", () => {
+			test("route should respond with Content-type: application/json, 200 and res.body.url", async () => {
+				const response = await request
+					.post("/avatars/123456789")
+					.set({ signature: Config.get().security.requestSignature })
+					.attach("file", __dirname + "/antman.jpg");
+				expect(response.statusCode).toBe(200);
+				expect(response.headers["content-type"]).toEqual(expect.stringContaining("json"));
+				expect(response.body.url).toBeDefined();
+			});
+		});
+	});
+	describe("GET", () => {
+		describe("getting uploaded image by url returned by POST /avatars", () => {
+			test("route should respond with 200", async () => {
+				let response = await request
+					.post("/avatars/123456789")
+					.set({ signature: Config.get().security.requestSignature })
+					.attach("file", __dirname + "/antman.jpg");
+				request.get(response.body.url.replace("http://localhost:3003", "")).then((x) => {
+					expect(x.statusCode).toBe(200);
+				});
+			});
+		});
+	});
+	describe("DELETE", () => {
+		describe("deleting uploaded image by url returned by POST /avatars", () => {
+			test("route should respond with res.body.success", async () => {
+				let response = await request
+					.post("/avatars/123456789")
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
 				request.delete(response.body.url.replace("http://localhost:3003", "")).then((x) => {
