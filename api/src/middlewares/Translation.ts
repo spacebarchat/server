@@ -19,7 +19,7 @@ export async function initTranslation(router: Router) {
 			fallbackLng: "en",
 			ns,
 			backend: {
-				loadPath: __dirname + "/../locales/{{lng}}/{{ns}}.json"
+				loadPath: __dirname + "/../../locales/{{lng}}/{{ns}}.json"
 			},
 			load: "all"
 		});
