@@ -51,7 +51,8 @@ export class BaseClass extends BaseEntity {
 			if (setter) {
 				setter.call(this, props[key]);
 			} else {
-				Object.defineProperty(this, key, { value: props[key] });
+				// @ts-ignore
+				this[key] = props[key];
 			}
 		}
 	}

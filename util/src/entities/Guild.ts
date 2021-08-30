@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Emoji } from "./Emoji";
@@ -68,35 +68,35 @@ export class Guild extends BaseClass {
 	member_ids: string[];
 
 	@JoinColumn({ name: "member_ids" })
-	@ManyToMany(() => Member, (member: Member) => member.id)
+	@OneToMany(() => Member, (member: Member) => member.guild)
 	members: Member[];
 
 	@RelationId((guild: Guild) => guild.roles)
 	role_ids: string[];
 
 	@JoinColumn({ name: "role_ids" })
-	@ManyToMany(() => Role, (role: Role) => role.id)
+	@OneToMany(() => Role, (role: Role) => role.guild)
 	roles: Role[];
 
 	@RelationId((guild: Guild) => guild.channels)
 	channel_ids: string[];
 
 	@JoinColumn({ name: "channel_ids" })
-	@ManyToMany(() => Channel, (channel: Channel) => channel.id)
+	@OneToMany(() => Channel, (channel: Channel) => channel.guild)
 	channels: Channel[];
 
 	@RelationId((guild: Guild) => guild.emojis)
 	emoji_ids: string[];
 
 	@JoinColumn({ name: "emoji_ids" })
-	@ManyToMany(() => Emoji, (emoji: Emoji) => emoji.id)
+	@OneToMany(() => Emoji, (emoji: Emoji) => emoji.guild)
 	emojis: Emoji[];
 
 	@RelationId((guild: Guild) => guild.voice_states)
 	voice_state_ids: string[];
 
 	@JoinColumn({ name: "voice_state_ids" })
-	@ManyToMany(() => VoiceState, (voicestate: VoiceState) => voicestate.id)
+	@OneToMany(() => VoiceState, (voicestate: VoiceState) => voicestate.guild)
 	voice_states: VoiceState[];
 
 	@Column({ nullable: true })
@@ -109,7 +109,7 @@ export class Guild extends BaseClass {
 	owner_id: string;
 
 	@JoinColumn({ name: "owner_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@OneToOne(() => User)
 	owner: User;
 
 	@Column({ nullable: true })
@@ -125,14 +125,14 @@ export class Guild extends BaseClass {
 	public_updates_channel_id: string;
 
 	@JoinColumn({ name: "public_updates_channel_id" })
-	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
+	@OneToOne(() => Channel, (channel: Channel) => channel.id)
 	public_updates_channel?: Channel;
 
 	@RelationId((guild: Guild) => guild.rules_channel)
 	rules_channel_id?: string;
 
 	@JoinColumn({ name: "rules_channel_id" })
-	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
+	@OneToOne(() => Channel, (channel: Channel) => channel.id)
 	rules_channel?: string;
 
 	@Column({ nullable: true })
@@ -145,7 +145,7 @@ export class Guild extends BaseClass {
 	system_channel_id?: string;
 
 	@JoinColumn({ name: "system_channel_id" })
-	@ManyToMany(() => Channel, (channel: Channel) => channel.id)
+	@OneToOne(() => Channel, (channel: Channel) => channel.id)
 	system_channel?: Channel;
 
 	@Column({ nullable: true })
@@ -158,7 +158,7 @@ export class Guild extends BaseClass {
 	vanity_url_code?: string;
 
 	@JoinColumn({ name: "vanity_url_code" })
-	@ManyToOne(() => Invite)
+	@OneToOne(() => Invite)
 	vanity_url?: Invite;
 
 	@Column({ nullable: true })
@@ -180,7 +180,7 @@ export class Guild extends BaseClass {
 	widget_channel_id?: string;
 
 	@JoinColumn({ name: "widget_channel_id" })
-	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
+	@OneToOne(() => Channel, (channel: Channel) => channel.id)
 	widget_channel?: Channel;
 
 	@Column({ nullable: true })

@@ -19,63 +19,55 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	}
 
 	const guild_id = Snowflake.generate();
-	const guild = new Guild({
-		name: body.name,
-		region: Config.get().regions.default,
-		owner_id: req.user_id,
-		icon: undefined,
-		afk_channel_id: undefined,
-		afk_timeout: 300,
-		application_id: undefined,
-		banner: undefined,
-		default_message_notifications: 0,
-		description: undefined,
-		splash: undefined,
-		discovery_splash: undefined,
-		explicit_content_filter: 0,
-		features: [],
-		id: guild_id,
-		large: undefined,
-		max_members: 250000,
-		max_presences: 250000,
-		max_video_channel_users: 25,
-		presence_count: 0,
-		member_count: 0, // will automatically be increased by addMember()
-		mfa_level: 0,
-		preferred_locale: "en-US",
-		premium_subscription_count: 0,
-		premium_tier: 0,
-		public_updates_channel_id: undefined,
-		rules_channel_id: undefined,
-		system_channel_flags: "0",
-		system_channel_id: undefined,
-		unavailable: false,
-		vanity_url_code: undefined,
-		verification_level: 0,
-		welcome_screen: {
-			enabled: false,
-			description: "No description",
-			welcome_channels: []
-		},
-		widget_channel_id: undefined,
-		widget_enabled: false
-	});
-
-	const [guild_doc, role] = await Promise.all([
-		new Guild(guild).save(),
-		new Role({
+	const guild = new Guild(
+		{
+			name: body.name,
+			region: Config.get().regions.default,
+			owner_id: req.user_id,
+			afk_timeout: 300,
+			default_message_notifications: 0,
+			explicit_content_filter: 0,
+			features: [],
 			id: guild_id,
+			max_members: 250000,
+			max_presences: 250000,
+			max_video_channel_users: 25,
+			presence_count: 0,
+			member_count: 0, // will automatically be increased by addMember()
+			mfa_level: 0,
+			preferred_locale: "en-US",
+			premium_subscription_count: 0,
+			premium_tier: 0,
+			system_channel_flags: "0",
+			unavailable: false,
+			verification_level: 0,
+			welcome_screen: {
+				enabled: false,
+				description: "No description",
+				welcome_channels: []
+			},
+			widget_enabled: false
+		},
+		{ id: guild_id }
+	);
+	const role = new Role(
+		{
 			guild_id: guild_id,
 			color: 0,
 			hoist: false,
 			managed: false,
 			mentionable: false,
 			name: "@everyone",
-			permissions: 2251804225n,
+			permissions: String("2251804225"),
 			position: 0,
 			tags: null
-		}).save()
-	]);
+		},
+		{
+			id: guild_id
+		}
+	);
+
+	await Promise.all([guild.save(), role.save()]);
 
 	if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
 

@@ -15,7 +15,7 @@ export class Emoji extends BaseClass {
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
+	@ManyToOne(() => Guild, (guild: Guild) => guild.emojis)
 	guild: Guild;
 
 	@Column()

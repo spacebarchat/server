@@ -1,6 +1,6 @@
 import { PublicUser, User } from "./User";
 import { BaseClass } from "./BaseClass";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { Guild } from "./Guild";
 import { Config, emitEvent } from "../util";
 import {
@@ -26,7 +26,7 @@ export class Member extends BaseClass {
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
+	@ManyToOne(() => Guild, (guild: Guild) => guild.members)
 	guild: Guild;
 
 	@Column({ nullable: true })
@@ -35,7 +35,7 @@ export class Member extends BaseClass {
 	@RelationId((member: Member) => member.roles)
 	role_ids: string[];
 
-	@JoinColumn({ name: "role_ids" })
+	@JoinTable()
 	@ManyToMany(() => Role)
 	roles: Role[];
 
