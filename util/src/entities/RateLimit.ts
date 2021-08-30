@@ -1,6 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { User } from "./User";
 
 @Entity("rate_limits")
 export class RateLimit extends BaseClass {

@@ -1,10 +1,11 @@
-import { Config, listenEvent, emitEvent, RateLimit } from "@fosscord/util";
+import { Config, listenEvent } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
-import { LessThan, MoreThan } from "typeorm";
 import { getIpAdress } from "../util/ipAddress";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
 // Docs: https://discord.com/developers/docs/topics/rate-limits
+
+// TODO: use better caching (e.g. redis) as else it creates to much pressure on the database
 
 /*
 ? bucket limit? Max actions/sec per bucket?
@@ -17,6 +18,14 @@ TODO: different for methods (GET/POST)
 > All bots can make up to 50 requests per second to our API. This is independent of any individual rate limit on a route. If your bot gets big enough, based on its functionality, it may be impossible to stay below 50 requests per second during normal operations.
 
 */
+
+type RateLimit = {
+	id: "global" | "error" | string;
+	executor_id: string;
+	hits: number;
+	blocked: boolean;
+	expires_at: Date;
+};
 
 var Cache = new Map<string, RateLimit>();
 const EventRateLimit = "RATELIMIT";
@@ -46,13 +55,22 @@ export default function rateLimit(opts: {
 
 		const offender = Cache.get(executor_id + bucket_id);
 
-		if (offender && offender.blocked) {
+		if (offender) {
 			const reset = offender.expires_at.getTime();
 			const resetAfterMs = reset - Date.now();
 			const resetAfterSec = resetAfterMs / 1000;
-			const global = bucket_id === "global";
 
-			if (resetAfterMs > 0) {
+			if (resetAfterMs <= 0) {
+				offender.hits = 0;
+				offender.expires_at = new Date(Date.now() + opts.window * 1000);
+				offender.blocked = false;
+
+				Cache.delete(executor_id + bucket_id);
+			}
+
+			if (offender.blocked) {
+				const global = bucket_id === "global";
+
 				console.log("blocked bucket: " + bucket_id, { resetAfterMs });
 				return (
 					res
@@ -67,15 +85,9 @@ export default function rateLimit(opts: {
 						// TODO: error rate limit message translation
 						.send({ message: "You are being rate limited.", retry_after: resetAfterSec, global })
 				);
-			} else {
-				offender.hits = 0;
-				offender.expires_at = new Date(Date.now() + opts.window * 1000);
-				offender.blocked = false;
-				// mongodb ttl didn't update yet -> manually update/delete
-				RateLimit.delete({ id: bucket_id, executor_id });
-				Cache.delete(executor_id + bucket_id);
 			}
 		}
+
 		next();
 		const hitRouteOpts = { bucket_id, executor_id, max_hits, window: opts.window };
 
@@ -100,20 +112,20 @@ export async function initRateLimits(app: Router) {
 		Cache.set(event.channel_id as string, event.data);
 		event.acknowledge?.();
 	});
-	await RateLimit.delete({ expires_at: MoreThan(new Date()) }); // cleans up if not already deleted, morethan -> older date
-	const limits = await RateLimit.find({ blocked: true });
-	limits.forEach((limit) => {
-		Cache.set(limit.executor_id, limit);
-	});
+	// await RateLimit.delete({ expires_at: LessThan(new Date().toISOString()) }); // cleans up if not already deleted, morethan -> older date
+	// const limits = await RateLimit.find({ blocked: true });
+	// limits.forEach((limit) => {
+	// 	Cache.set(limit.executor_id, limit);
+	// });
 
 	setInterval(() => {
 		Cache.forEach((x, key) => {
 			if (new Date() > x.expires_at) {
 				Cache.delete(key);
-				RateLimit.delete({ executor_id: key });
+				// RateLimit.delete({ executor_id: key });
 			}
 		});
-	}, 1000 * 60 * 10);
+	}, 1000 * 60);
 
 	app.use(
 		rateLimit({
@@ -139,6 +151,25 @@ export async function initRateLimits(app: Router) {
 }
 
 async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number }) {
+	const id = opts.executor_id + opts.bucket_id;
+	var limit = Cache.get(id);
+	if (!limit) {
+		limit = {
+			id: opts.bucket_id,
+			executor_id: opts.executor_id,
+			expires_at: new Date(Date.now() + opts.window * 1000),
+			hits: 0,
+			blocked: false
+		};
+		Cache.set(id, limit);
+	}
+
+	limit.hits++;
+	if (limit.hits >= opts.max_hits) {
+		limit.blocked = true;
+	}
+
+	/*
 	var ratelimit = await RateLimit.findOne({ id: opts.bucket_id, executor_id: opts.executor_id });
 	if (!ratelimit) {
 		ratelimit = new RateLimit({
@@ -167,4 +198,5 @@ async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits
 	}
 
 	await ratelimit.save();
+	*/
 }
