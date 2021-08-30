@@ -237,6 +237,6 @@ export default router;
  * Field Error
  * @returns { "code": 50035, "errors": { "consent": { "_errors": [{ "code": "CONSENT_REQUIRED", "message": "You must agree to Discord's Terms of Service and Privacy Policy." }]}}, "message": "Invalid Form Body"}
  *
- * Success 201:
+ * Success 200:
  * @returns {token: "OMITTED"}
  */
