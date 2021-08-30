@@ -212,18 +212,15 @@ export async function getPermission(user_id?: string, guild_id?: string, channel
 	var guild: Guild | undefined;
 
 	if (channel_id) {
-		channel = await Channel.findOneOrFail(
-			{ id: channel_id },
-			{ select: ["permission_overwrites", "recipients", "owner", "guild"] }
-		);
+		channel = await Channel.findOneOrFail({ id: channel_id });
 		if (channel.guild_id) guild_id = channel.guild_id; // derive guild_id from the channel
 	}
 
 	if (guild_id) {
-		guild = await Guild.findOneOrFail({ id: guild_id }, { select: ["owner"] });
+		guild = await Guild.findOneOrFail({ id: guild_id });
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
-		member = await Member.findOneOrFail({ guild_id, id: user_id }, { select: ["roles"] });
+		member = await Member.findOneOrFail({ where: { guild_id, id: user_id }, relations: ["roles"] });
 	}
 
 	var permission = Permissions.finalPermission({

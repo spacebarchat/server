@@ -40,7 +40,7 @@ router.post("/", check(RoleModifySchema), async (req: Request, res: Response) =>
 		managed: false,
 		position: 0,
 		tags: null,
-		permissions: perms.bitfield & (body.permissions || 0n)
+		permissions: String(perms.bitfield & (body.permissions || 0n))
 	}).save();
 
 	await emitEvent({

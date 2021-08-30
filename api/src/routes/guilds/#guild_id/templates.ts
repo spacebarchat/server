@@ -17,7 +17,7 @@ const TemplateGuildProjection: (keyof Guild)[] = [
 	"preferred_locale",
 	"afk_timeout",
 	"roles",
-	"channels",
+	// "channels",
 	"afk_channel_id",
 	"system_channel_id",
 	"system_channel_flags",

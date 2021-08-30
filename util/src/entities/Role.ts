@@ -27,8 +27,8 @@ export class Role extends BaseClass {
 	@Column()
 	name: string;
 
-	@Column({ type: "bigint" })
-	permissions: bigint;
+	@Column()
+	permissions: string;
 
 	@Column()
 	position: number;
