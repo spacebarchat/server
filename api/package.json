@@ -5,7 +5,7 @@
 	"main": "dist/Server.js",
 	"types": "dist/Server.d.ts",
 	"scripts": {
-		"test": "npm run build && jest",
+		"test": "npm run build && jest --coverage --verbose ./tests",
 		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/start",
 		"build": "npx tsc -b .",
@@ -81,6 +81,14 @@
 		"mongoose-long": "^0.3.2",
 		"multer": "^1.4.2",
 		"node-fetch": "^2.6.1",
+		"supertest": "^6.1.6",
 		"typeorm": "^0.2.37"
+	},
+	"jest": {
+		"setupFilesAfterEnv": [
+			"<rootDir>/jest/setup.js",
+			"<rootDir>/scripts/setup_test.js"
+		],
+		"verbose": true
 	}
 }
