@@ -6,6 +6,8 @@ import "missing-native-js-functions";
 import { Readable } from "stream";
 import ExifTransformer = require("exif-be-gone");
 
+// TODO: split stored files into separate folders named after cloned route
+
 function getPath(path: string) {
 	// STORAGE_LOCATION has a default value in start.ts
 	const root = process.env.STORAGE_LOCATION || "../";
