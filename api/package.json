@@ -85,7 +85,7 @@
 		"typeorm": "^0.2.37"
 	},
 	"jest": {
-		"setupFilesAfterEnv": [
+		"setupFiles": [
 			"<rootDir>/jest/setup.js",
 			"<rootDir>/scripts/setup_test.js"
 		],
