@@ -91,7 +91,7 @@ router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Res
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");
 
-	const role = new Role({ ...body, role_id, guild_id, permissions: perms.bitfield & (body.permissions || 0n) });
+	const role = new Role({ ...body, id: role_id, guild_id, permissions: perms.bitfield & (body.permissions || 0n) });
 
 	await Promise.all([
 		role.save(),
