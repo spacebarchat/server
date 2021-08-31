@@ -1,9 +1,8 @@
 import { Router, Request, Response } from "express";
-import { Role, Guild, Snowflake, Config, User, Member } from "@fosscord/util";
+import { Role, Guild, Snowflake, Config, User, Member, Channel } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { check } from "./../../util/instanceOf";
 import { GuildCreateSchema } from "../../schema/Guild";
-import { createChannel } from "../../util/Channel";
 
 const router: Router = Router();
 
@@ -13,14 +12,15 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	const body = req.body as GuildCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
-	const guild_count = await Member.count({ where: { id: req.user_id } });
+	const guild_count = await Member.count({ id: req.user_id });
 	if (guild_count >= maxGuilds) {
 		throw new HTTPError(`Maximum number of guilds reached ${maxGuilds}`, 403);
 	}
 
 	const guild_id = Snowflake.generate();
-	const guild = new Guild(
-		{
+
+	const [guild, role] = await Promise.all([
+		Guild.insert({
 			name: body.name,
 			region: Config.get().regions.default,
 			owner_id: req.user_id,
@@ -38,7 +38,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			preferred_locale: "en-US",
 			premium_subscription_count: 0,
 			premium_tier: 0,
-			system_channel_flags: "0",
+			system_channel_flags: 0,
 			unavailable: false,
 			verification_level: 0,
 			welcome_screen: {
@@ -47,11 +47,9 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 				welcome_channels: []
 			},
 			widget_enabled: false
-		},
-		{ id: guild_id }
-	);
-	const role = new Role(
-		{
+		}),
+		Role.insert({
+			id: guild_id,
 			guild_id: guild_id,
 			color: 0,
 			hoist: false,
@@ -59,15 +57,9 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			mentionable: false,
 			name: "@everyone",
 			permissions: String("2251804225"),
-			position: 0,
-			tags: null
-		},
-		{
-			id: guild_id
-		}
-	);
-
-	await Promise.all([guild.save(), role.save()]);
+			position: 0
+		})
+	]);
 
 	if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
 
@@ -86,13 +78,18 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			// TODO: should we abort if parent_id is a category? (to disallow sub category channels)
 			var parent_id = ids.get(x.parent_id);
 
-			return createChannel({ ...x, guild_id, id, parent_id }, req.user_id, { keepId: true, skipExistsCheck: true });
+			return Channel.createChannel({ ...x, guild_id, id, parent_id }, req.user_id, {
+				keepId: true,
+				skipExistsCheck: true,
+				skipPermissionCheck: true,
+				skipEventEmit: true
+			});
 		})
 	);
 
 	await Member.addToGuild(req.user_id, guild_id);
 
-	res.status(201).json({ id: guild.id });
+	res.status(201).json({ id: guild_id });
 });
 
 export default router;
