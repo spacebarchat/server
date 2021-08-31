@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { FieldError } from "../util/instanceOf";
+import {ApiError} from "../util/ApiError";
 
 // TODO: update with new body/typorm validation
 export function ErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
@@ -13,6 +14,11 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 		let errors = undefined;
 
 		if (error instanceof HTTPError && error.code) code = httpcode = error.code;
+		else if (error instanceof ApiError) {
+			code = error.code;
+			message = error.message;
+			httpcode = error.httpStatus;
+		}
 		else if (error instanceof FieldError) {
 			code = Number(error.code);
 			message = error.message;
