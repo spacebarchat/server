@@ -20,7 +20,9 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 		body = { flags: body.flags }; // admins can only suppress embeds of other messages
 	}
 
-	const opts = await handleMessage({
+	const new_message = await handleMessage({
+		// TODO: should be message_reference overridable?
+		// @ts-ignore
 		message_reference: message.message_reference,
 		...body,
 		author_id: message.author_id,
@@ -28,10 +30,9 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 		id: message_id,
 		edited_timestamp: new Date()
 	});
-	message.assign(opts);
 
 	await Promise.all([
-		message.save(),
+		new_message.save(),
 		await emitEvent({
 			event: "MESSAGE_UPDATE",
 			channel_id,

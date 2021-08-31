@@ -10,25 +10,28 @@ import { User } from "./User";
 
 @Entity("read_states")
 export class ReadState extends BaseClass {
+	@Column({ nullable: true })
 	@RelationId((read_state: ReadState) => read_state.channel)
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
+	@ManyToOne(() => Channel)
 	channel: Channel;
 
+	@Column({ nullable: true })
 	@RelationId((read_state: ReadState) => read_state.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@ManyToOne(() => User)
 	user: User;
 
+	@Column({ nullable: true })
 	@RelationId((read_state: ReadState) => read_state.last_message)
 	last_message_id: string;
 
 	@JoinColumn({ name: "last_message_id" })
-	@ManyToOne(() => Message, (message: Message) => message.id)
+	@ManyToOne(() => Message)
 	last_message?: Message;
 
 	@Column({ nullable: true })

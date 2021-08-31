@@ -17,11 +17,12 @@ export class Template extends BaseClass {
 	@Column({ nullable: true })
 	usage_count?: number;
 
+	@Column({ nullable: true })
 	@RelationId((template: Template) => template.creator)
 	creator_id: string;
 
 	@JoinColumn({ name: "creator_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@ManyToOne(() => User)
 	creator: User;
 
 	@Column()
@@ -30,11 +31,12 @@ export class Template extends BaseClass {
 	@Column()
 	updated_at: Date;
 
+	@Column({ nullable: true })
 	@RelationId((template: Template) => template.source_guild)
 	source_guild_id: string;
 
 	@JoinColumn({ name: "source_guild_id" })
-	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
+	@ManyToOne(() => Guild)
 	source_guild: Guild;
 
 	@Column({ type: "simple-json" })

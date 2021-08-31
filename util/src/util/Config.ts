@@ -7,7 +7,7 @@ var config: ConfigEntity;
 export const Config = {
 	init: async function init() {
 		if (config) return config;
-		config = (await ConfigEntity.findOne({ id: "0" })) || new ConfigEntity({}, { id: "0" });
+		config = (await ConfigEntity.findOne({ id: "0" })) || new ConfigEntity({ id: "0" });
 
 		return this.set((config.value || {}).merge(DefaultConfigOptions));
 	},

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
+import { EntityNotFoundError } from "typeorm";
 import { FieldError } from "../util/instanceOf";
 import {ApiError} from "../util/ApiError";
 
@@ -19,20 +20,24 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 			message = error.message;
 			httpcode = error.httpStatus;
 		}
-		else if (error instanceof FieldError) {
+		else if (error instanceof EntityNotFoundError) {
+			message = `${(error as any).stringifyTarget} can not be found`;
+			code = 404;
+		} else if (error instanceof FieldError) {
 			code = Number(error.code);
 			message = error.message;
 			errors = error.errors;
 		} else {
+			console.error(`[Error] ${code} ${req.url}`, errors || error, "body:", req.body);
+
 			if (req.server?.options?.production) {
+				// don't expose internal errors to the user, instead human errors should be thrown as HTTPError
 				message = "Internal Server Error";
 			}
 			code = httpcode = 500;
 		}
 
 		if (httpcode > 511) httpcode = 400;
-
-		console.error(`[Error] ${code} ${req.url}`, errors || error, "body:", req.body);
 
 		res.status(httpcode).json({ code: code, message, errors });
 	} catch (error) {

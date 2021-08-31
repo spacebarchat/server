@@ -1,13 +1,5 @@
 import "reflect-metadata";
-import {
-	BaseEntity,
-	BeforeInsert,
-	BeforeUpdate,
-	EntityMetadata,
-	FindConditions,
-	FindManyOptions,
-	PrimaryColumn,
-} from "typeorm";
+import { BaseEntity, BeforeInsert, BeforeUpdate, EntityMetadata, FindConditions, PrimaryColumn } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
 import "missing-native-js-functions";
 
@@ -16,13 +8,12 @@ import "missing-native-js-functions";
 
 export class BaseClass extends BaseEntity {
 	@PrimaryColumn()
-	id: string;
+	id: string = Snowflake.generate();
 
 	// @ts-ignore
-	constructor(public props?: any, public opts: { id?: string } = {}) {
+	constructor(public props?: any) {
 		super();
-
-		this.id = this.opts.id || Snowflake.generate();
+		this.assign(props);
 	}
 
 	get construct(): any {
@@ -35,13 +26,15 @@ export class BaseClass extends BaseEntity {
 
 	assign(props: any) {
 		if (!props || typeof props !== "object") return;
-
-		delete props.id;
 		delete props.opts;
 		delete props.props;
 
-		const properties = new Set(this.metadata.columns.map((x: any) => x.propertyName));
-		// will not include relational properties (e.g. @RelationId @ManyToMany)
+		const properties = new Set(
+			this.metadata.columns
+				.map((x: any) => x.propertyName)
+				.concat(this.metadata.relations.map((x) => x.propertyName))
+		);
+		// will not include relational properties
 
 		for (const key in props) {
 			if (!properties.has(key)) continue;
@@ -65,8 +58,11 @@ export class BaseClass extends BaseEntity {
 	}
 
 	toJSON(): any {
-		// @ts-ignore
-		return Object.fromEntries(this.metadata.columns.map((x) => [x.propertyName, this[x.propertyName]]));
+		return Object.fromEntries(
+			this.metadata.columns // @ts-ignore
+				.map((x) => [x.propertyName, this[x.propertyName]]) // @ts-ignore
+				.concat(this.metadata.relations.map((x) => [x.propertyName, this[x.propertyName]]))
+		);
 	}
 
 	static increment<T extends BaseClass>(conditions: FindConditions<T>, propertyPath: string, value: number | string) {

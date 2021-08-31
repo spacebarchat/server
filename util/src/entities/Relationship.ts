@@ -11,11 +11,12 @@ export enum RelationshipType {
 
 @Entity("relationships")
 export class Relationship extends BaseClass {
+	@Column({ nullable: true })
 	@RelationId((relationship: Relationship) => relationship.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, (user: User) => user.relationships)
+	@ManyToOne(() => User)
 	user: User;
 
 	@Column({ nullable: true })

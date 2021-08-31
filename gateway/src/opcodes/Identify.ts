@@ -1,12 +1,25 @@
 import { CLOSECODES, Payload, OPCODES } from "../util/Constants";
 import WebSocket from "../util/WebSocket";
-import { Channel, checkToken, Guild, Intents, Member, ReadyEventData, User, EVENTEnum, Config } from "@fosscord/util";
+import {
+	Channel,
+	checkToken,
+	Guild,
+	Intents,
+	Member,
+	ReadyEventData,
+	User,
+	EVENTEnum,
+	Config,
+	dbConnection,
+} from "@fosscord/util";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
 import { Send } from "../util/Send";
 // import experiments from "./experiments.json";
 const experiments: any = [];
 import { check } from "./instanceOf";
+import { Like } from "../../../util/node_modules/typeorm";
+import { Recipient } from "../../../util/dist/entities/Recipient";
 
 // TODO: bot sharding
 // TODO: check priviliged intents
@@ -42,17 +55,21 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}
 	}
 
-	const members = await Member.find({ where: { id: this.user_id }, relations: ["guild"] });
+	const members = await Member.find({
+		where: { id: this.user_id },
+		relations: ["guild", "guild.channels", "guild.emojis", "guild.roles", "guild.stickers", "user", "roles"],
+	});
 	const merged_members = members.map((x: any) => {
-		const y = { ...x, user_id: x.id };
-		delete y.settings;
-		delete y.id;
-		return [y];
+		return [x];
 	}) as Member[][];
-	const guilds = members.map((x) => x.guild);
+	const guilds = members.map((x) => ({ ...x.guild, joined_at: x.joined_at }));
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
-	const channels = await Channel.find({ where: { recipient_ids: this.user_id } });
+	const recipients = await Recipient.find({
+		where: { id: this.user_id },
+		relations: ["channel", "channel.recipients"],
+	});
+	const channels = recipients.map((x) => x.channel);
 	const user = await User.findOneOrFail({ id: this.user_id });
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
@@ -63,6 +80,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		public_flags: user.public_flags,
 		avatar: user.avatar,
 		bot: user.bot,
+		bio: user.bio,
 	};
 
 	const privateUser = {
@@ -116,11 +134,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			partial: false, // TODO partial
 			version: 642,
 		},
-		// @ts-ignore
-		private_channels: channels.map((x): ChannelDocument => {
-			delete x.recipients;
-			return x;
-		}),
+		private_channels: channels,
 		session_id: "", // TODO
 		analytics_token: "", // TODO
 		connected_accounts: [], // TODO
@@ -134,7 +148,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
-		users: [public_user, ...channels.map((x: any) => x.recipients).flat()].unique(), // TODO
+		users: [public_user].unique(), // TODO
 		merged_members: merged_members,
 		// shard // TODO: only for bots sharding
 		// application // TODO for applications

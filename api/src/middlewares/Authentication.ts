@@ -18,9 +18,9 @@ export const API_PREFIX_TRAILING_SLASH = /^\/api(\/v\d+)?\//;
 declare global {
 	namespace Express {
 		interface Request {
-			user_id: any;
+			user_id: string;
 			user_bot: boolean;
-			token: any;
+			token: string;
 		}
 	}
 }
@@ -47,7 +47,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 		req.user_id = decoded.id;
 		req.user_bot = user.bot;
 		return next();
-	} catch (error) {
-		return next(new HTTPError(error.toString(), 400));
+	} catch (error: any) {
+		return next(new HTTPError(error?.toString(), 400));
 	}
 }

@@ -9,8 +9,10 @@ import {
 	CreateDateColumn,
 	Entity,
 	JoinColumn,
+	JoinTable,
 	ManyToMany,
 	ManyToOne,
+	OneToMany,
 	RelationId,
 	UpdateDateColumn,
 } from "typeorm";
@@ -18,6 +20,7 @@ import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
+import { Attachment } from "./Attachment";
 
 export enum MessageType {
 	DEFAULT = 0,
@@ -44,46 +47,52 @@ export class Message extends BaseClass {
 	@Column()
 	id: string;
 
+	@Column({ nullable: true })
 	@RelationId((message: Message) => message.channel)
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
+	@ManyToOne(() => Channel)
 	channel: Channel;
 
+	@Column({ nullable: true })
 	@RelationId((message: Message) => message.guild)
 	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
+	@ManyToOne(() => Guild)
 	guild?: Guild;
 
+	@Column({ nullable: true })
 	@RelationId((message: Message) => message.author)
 	author_id: string;
 
-	@JoinColumn({ name: "author_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@JoinColumn({ name: "author_id", referencedColumnName: "id" })
+	@ManyToOne(() => User)
 	author?: User;
 
+	@Column({ nullable: true })
 	@RelationId((message: Message) => message.member)
 	member_id: string;
 
 	@JoinColumn({ name: "member_id" })
-	@ManyToOne(() => Member, (member: Member) => member.id)
+	@ManyToOne(() => Member)
 	member?: Member;
 
+	@Column({ nullable: true })
 	@RelationId((message: Message) => message.webhook)
 	webhook_id: string;
 
 	@JoinColumn({ name: "webhook_id" })
-	@ManyToOne(() => Webhook, (webhook: Webhook) => webhook.id)
+	@ManyToOne(() => Webhook)
 	webhook?: Webhook;
 
+	@Column({ nullable: true })
 	@RelationId((message: Message) => message.application)
 	application_id: string;
 
 	@JoinColumn({ name: "application_id" })
-	@ManyToOne(() => Application, (application: Application) => application.id)
+	@ManyToOne(() => Application)
 	application?: Application;
 
 	@Column({ nullable: true })
@@ -103,29 +112,25 @@ export class Message extends BaseClass {
 	@Column({ nullable: true })
 	mention_everyone?: boolean;
 
-	@RelationId((message: Message) => message.mentions)
-	mention_user_ids: string[];
-
-	@JoinColumn({ name: "mention_user_ids" })
-	@ManyToMany(() => User, (user: User) => user.id)
+	@JoinTable({ name: "message_user_mentions" })
+	@ManyToMany(() => User)
 	mentions: User[];
 
-	@RelationId((message: Message) => message.mention_roles)
-	mention_role_ids: string[];
-
-	@JoinColumn({ name: "mention_role_ids" })
-	@ManyToMany(() => Role, (role: Role) => role.id)
+	@JoinTable({ name: "message_role_mentions" })
+	@ManyToMany(() => Role)
 	mention_roles: Role[];
 
-	@RelationId((message: Message) => message.mention_channels)
-	mention_channel_ids: string[];
-
-	@JoinColumn({ name: "mention_channel_ids" })
-	@ManyToMany(() => Channel, (channel: Channel) => channel.id)
+	@JoinTable({ name: "message_channel_mentions" })
+	@ManyToMany(() => Channel)
 	mention_channels: Channel[];
 
-	@Column({ type: "simple-json" })
-	attachments: Attachment[];
+	@JoinTable({ name: "message_stickers" })
+	@ManyToMany(() => Sticker)
+	sticker_items?: Sticker[];
+
+	@JoinColumn({ name: "attachment_ids" })
+	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message)
+	attachments?: Attachment[];
 
 	@Column({ type: "simple-json" })
 	embeds: Embed[];
@@ -150,14 +155,6 @@ export class Message extends BaseClass {
 
 	@Column({ nullable: true })
 	flags?: string;
-
-	@RelationId((message: Message) => message.stickers)
-	sticker_ids: string[];
-
-	@JoinColumn({ name: "sticker_ids" })
-	@ManyToMany(() => Sticker, (sticker: Sticker) => sticker.id)
-	stickers?: Sticker[];
-
 	@Column({ type: "simple-json", nullable: true })
 	message_reference?: {
 		message_id: string;
@@ -166,7 +163,7 @@ export class Message extends BaseClass {
 	};
 
 	@JoinColumn({ name: "message_reference_id" })
-	@ManyToOne(() => Message, (message: Message) => message.id)
+	@ManyToOne(() => Message)
 	referenced_message?: Message;
 
 	@Column({ type: "simple-json", nullable: true })
@@ -178,8 +175,8 @@ export class Message extends BaseClass {
 		// user: User; // TODO: autopopulate user
 	};
 
-	@Column({ type: "simple-json" })
-	components: MessageComponent[];
+	@Column({ type: "simple-json", nullable: true })
+	components?: MessageComponent[];
 }
 
 export interface MessageComponent {
@@ -196,17 +193,6 @@ export interface MessageComponent {
 export enum MessageComponentType {
 	ActionRow = 1,
 	Button = 2,
-}
-
-export interface Attachment {
-	id: string; // attachment id
-	filename: string; // name of file attached
-	size: number; // size of file in bytes
-	url: string; // source url of file
-	proxy_url: string; // a proxied url of file
-	height?: number; // height of file (if image)
-	width?: number; // width of file (if image)
-	content_type?: string;
 }
 
 export interface Embed {

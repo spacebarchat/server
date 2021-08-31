@@ -204,12 +204,12 @@ export const DefaultConfigOptions: ConfigValue = {
 					window: 5,
 				},
 				webhook: {
-					count: 5,
-					window: 20,
+					count: 10,
+					window: 5,
 				},
 				channel: {
-					count: 5,
-					window: 20,
+					count: 10,
+					window: 5,
 				},
 				auth: {
 					login: {

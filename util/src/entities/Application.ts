@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Team } from "./Team";
+import { User } from "./User";
 
 @Entity("applications")
 export class Application extends BaseClass {
@@ -29,8 +30,9 @@ export class Application extends BaseClass {
 	@Column({ nullable: true })
 	privacy_policy_url?: string;
 
-	@Column()
-	owner_id: string;
+	@JoinColumn({ name: "owner_id" })
+	@ManyToOne(() => User)
+	owner?: User;
 
 	@Column({ nullable: true })
 	summary?: string;
@@ -38,18 +40,12 @@ export class Application extends BaseClass {
 	@Column()
 	verify_key: string;
 
-	@RelationId((application: Application) => application.team)
-	team_id: string;
-
 	@JoinColumn({ name: "team_id" })
-	@ManyToOne(() => Team, (team: Team) => team.id)
+	@ManyToOne(() => Team)
 	team?: Team;
 
-	@RelationId((application: Application) => application.guild)
-	guild_id: string;
-
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
+	@ManyToOne(() => Guild)
 	guild: Guild; // if this application is a game sold, this field will be the guild to which it has been linked
 
 	@Column({ nullable: true })
