@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Role } from "./Role";
@@ -15,7 +15,7 @@ export class Emoji extends BaseClass {
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild: Guild) => guild.emojis)
+	@ManyToOne(() => Guild)
 	guild: Guild;
 
 	@Column()
@@ -26,11 +26,4 @@ export class Emoji extends BaseClass {
 
 	@Column()
 	require_colons: boolean;
-
-	@RelationId((emoji: Emoji) => emoji.roles)
-	role_ids: string[];
-
-	@JoinColumn({ name: "role_ids" })
-	@ManyToMany(() => Role, (role: Role) => role.id)
-	roles: Role[]; // roles this emoji is whitelisted to (new discord feature?)
 }

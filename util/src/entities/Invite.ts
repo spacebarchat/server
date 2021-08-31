@@ -27,32 +27,36 @@ export class Invite extends BaseClass {
 	@Column()
 	expires_at: Date;
 
+	@Column({ nullable: true })
 	@RelationId((invite: Invite) => invite.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
+	@ManyToOne(() => Guild)
 	guild: Guild;
 
+	@Column({ nullable: true })
 	@RelationId((invite: Invite) => invite.channel)
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
+	@ManyToOne(() => Channel)
 	channel: Channel;
 
+	@Column({ nullable: true })
 	@RelationId((invite: Invite) => invite.inviter)
 	inviter_id: string;
 
 	@JoinColumn({ name: "inviter_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@ManyToOne(() => User)
 	inviter: User;
 
+	@Column({ nullable: true })
 	@RelationId((invite: Invite) => invite.target_user)
 	target_user_id: string;
 
 	@JoinColumn({ name: "target_user_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@ManyToOne(() => User)
 	target_user?: string; // could be used for "User specific invites" https://github.com/fosscord/fosscord/issues/62
 
 	@Column({ nullable: true })
