@@ -5,13 +5,14 @@ import { HTTPError } from "lambert-server";
 import { DmChannelCreateSchema } from "../../../schema/Channel";
 import { check } from "../../../util/instanceOf";
 import { In } from "typeorm";
+import { Recipient } from "../../../../../util/dist/entities/Recipient";
 
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	var channels = await Channel.find({ recipient_ids: req.user_id });
+	const recipients = await Recipient.find({ where: { id: req.user_id }, relations: ["channel"] });
 
-	res.json(channels);
+	res.json(recipients.map((x) => x.channel));
 });
 
 router.post("/", check(DmChannelCreateSchema), async (req: Request, res: Response) => {
@@ -34,7 +35,7 @@ router.post("/", check(DmChannelCreateSchema), async (req: Request, res: Respons
 		owner_id: req.user_id,
 		created_at: new Date(),
 		last_message_id: null,
-		recipient_ids: [...body.recipients, req.user_id]
+		recipients: [...body.recipients.map((x) => new Recipient({ id: x })), new Recipient({ id: req.user_id })]
 	}).save();
 
 	await emitEvent({ event: "CHANNEL_CREATE", data: channel, user_id: req.user_id } as ChannelCreateEvent);
