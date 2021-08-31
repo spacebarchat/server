@@ -55,7 +55,7 @@ export class Guild extends BaseClass {
 	explicit_content_filter?: number;
 
 	@Column({ type: "simple-array" })
-	features: string[];
+	features: string[]; //TODO use enum
 
 	@Column({ nullable: true })
 	icon?: string;
