@@ -19,10 +19,14 @@ export interface RateLimitOptions {
 export interface Region {
 	id: string;
 	name: string;
+	endpoint: string;
+	location?: {
+		latitude: number;
+		longitude: number;
+	};
 	vip: boolean;
 	custom: boolean;
 	deprecated: boolean;
-	optimal: boolean;
 }
 
 export interface KafkaBroker {
@@ -128,6 +132,7 @@ export interface ConfigValue {
 	};
 	regions: {
 		default: string;
+		useDefaultAsOptimal: boolean;
 		available: Region[];
 	};
 	rabbitmq: {
@@ -263,7 +268,8 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	regions: {
 		default: "fosscord",
-		available: [{ id: "fosscord", name: "Fosscord", vip: false, custom: false, deprecated: false, optimal: false }],
+		useDefaultAsOptimal: true,
+		available: [{ id: "fosscord", name: "Fosscord", endpoint: "127.0.0.1", vip: false, custom: false, deprecated: false }],
 	},
 	rabbitmq: {
 		host: null,
