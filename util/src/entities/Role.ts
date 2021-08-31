@@ -5,11 +5,12 @@ import { Guild } from "./Guild";
 
 @Entity("roles")
 export class Role extends BaseClass {
+	@Column({ nullable: true })
 	@RelationId((role: Role) => role.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
+	@ManyToOne(() => Guild)
 	guild: Guild;
 
 	@Column()

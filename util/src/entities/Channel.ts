@@ -1,8 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Message } from "./Message";
 import { User } from "./User";
+import { HTTPError } from "lambert-server";
+import { emitEvent, getPermission, Snowflake } from "../util";
+import { ChannelCreateEvent } from "../interfaces";
+import { Recipient } from "./Recipient";
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a server
@@ -25,40 +29,39 @@ export class Channel extends BaseClass {
 	@Column({ type: "simple-enum", enum: ChannelType })
 	type: ChannelType;
 
-	@Column("simple-array")
-	@RelationId((channel: Channel) => channel.recipients)
-	recipient_ids: string[];
+	@OneToMany(() => Recipient, (recipient: Recipient) => recipient.channel, { cascade: true })
+	recipients?: Recipient[];
 
-	@JoinColumn({ name: "recipient_ids" })
-	@ManyToMany(() => User, (user: User) => user.id)
-	recipients?: User[];
-
+	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.last_message)
 	last_message_id: string;
 
 	@JoinColumn({ name: "last_message_id" })
-	@ManyToOne(() => Message, (message: Message) => message.id)
+	@ManyToOne(() => Message)
 	last_message?: Message;
 
+	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.guild)
 	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
+	@ManyToOne(() => Guild)
 	guild: Guild;
 
+	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.parent)
 	parent_id: string;
 
 	@JoinColumn({ name: "parent_id" })
-	@ManyToOne(() => Channel, (channel: Channel) => channel.id)
+	@ManyToOne(() => Channel)
 	parent?: Channel;
 
+	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.owner)
 	owner_id: string;
 
 	@JoinColumn({ name: "owner_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@ManyToOne(() => User)
 	owner: User;
 
 	@Column({ nullable: true })
@@ -82,14 +85,77 @@ export class Channel extends BaseClass {
 	@Column({ nullable: true })
 	user_limit?: number;
 
-	@Column()
-	nsfw: boolean;
+	@Column({ nullable: true })
+	nsfw?: boolean;
 
-	@Column()
-	rate_limit_per_user: number;
+	@Column({ nullable: true })
+	rate_limit_per_user?: number;
 
 	@Column({ nullable: true })
 	topic?: string;
+
+	// TODO: DM channel
+	static async createChannel(
+		channel: Partial<Channel>,
+		user_id: string = "0",
+		opts?: {
+			keepId?: boolean;
+			skipExistsCheck?: boolean;
+			skipPermissionCheck?: boolean;
+			skipEventEmit?: boolean;
+		}
+	) {
+		if (!opts?.skipPermissionCheck) {
+			// Always check if user has permission first
+			const permissions = await getPermission(user_id, channel.guild_id);
+			permissions.hasThrow("MANAGE_CHANNELS");
+		}
+
+		switch (channel.type) {
+			case ChannelType.GUILD_TEXT:
+			case ChannelType.GUILD_VOICE:
+				if (channel.parent_id && !opts?.skipExistsCheck) {
+					const exists = await Channel.findOneOrFail({ id: channel.parent_id });
+					if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
+					if (exists.guild_id !== channel.guild_id)
+						throw new HTTPError("The category channel needs to be in the guild");
+				}
+				break;
+			case ChannelType.GUILD_CATEGORY:
+				break;
+			case ChannelType.DM:
+			case ChannelType.GROUP_DM:
+				throw new HTTPError("You can't create a dm channel in a guild");
+			// TODO: check if guild is community server
+			case ChannelType.GUILD_STORE:
+			case ChannelType.GUILD_NEWS:
+			default:
+				throw new HTTPError("Not yet supported");
+		}
+
+		if (!channel.permission_overwrites) channel.permission_overwrites = [];
+		// TODO: auto generate position
+
+		channel = {
+			...channel,
+			...(!opts?.keepId && { id: Snowflake.generate() }),
+			created_at: new Date(),
+			position: channel.position || 0,
+		};
+
+		await Promise.all([
+			Channel.insert(channel),
+			!opts?.skipEventEmit
+				? emitEvent({
+						event: "CHANNEL_CREATE",
+						data: channel,
+						guild_id: channel.guild_id,
+				  } as ChannelCreateEvent)
+				: Promise.resolve(),
+		]);
+
+		return channel;
+	}
 }
 
 export interface ChannelPermissionOverwrite {

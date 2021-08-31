@@ -31,10 +31,7 @@ export function isTextChannel(type: ChannelType): boolean {
 // get messages
 router.get("/", async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
-	const channel = await Channel.findOneOrFail(
-		{ id: channel_id },
-		{ select: ["guild_id", "type", "permission_overwrites", "recipient_ids", "owner_id"] }
-	); // lean is needed, because we don't want to populate .recipients that also auto deletes .recipient_ids
+	const channel = await Channel.findOneOrFail({ id: channel_id });
 	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	isTextChannel(channel.type);
@@ -56,7 +53,12 @@ router.get("/", async (req: Request, res: Response) => {
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	var query: FindManyOptions<Message> & { where: { id?: any } } = { order: { id: "DESC" }, take: limit, where: { channel_id } };
+	var query: FindManyOptions<Message> & { where: { id?: any } } = {
+		order: { id: "DESC" },
+		take: limit,
+		where: { channel_id },
+		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"]
+	};
 
 	if (after) query.where.id = MoreThan(after);
 	else if (before) query.where.id = LessThan(before);
@@ -69,18 +71,20 @@ router.get("/", async (req: Request, res: Response) => {
 
 	const messages = await Message.find(query);
 
-	return res.json(messages).map((x) => {
-		(x.reactions || []).forEach((x: any) => {
+	return res.json(
+		messages.map((x) => {
+			(x.reactions || []).forEach((x: any) => {
+				// @ts-ignore
+				if ((x.user_ids || []).includes(req.user_id)) x.me = true;
+				// @ts-ignore
+				delete x.user_ids;
+			});
 			// @ts-ignore
-			if ((x.user_ids || []).includes(req.user_id)) x.me = true;
-			// @ts-ignore
-			delete x.user_ids;
-		});
-		// @ts-ignore
-		if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: "0", avatar: null };
+			if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: "0", avatar: null };
 
-		return x;
-	});
+			return x;
+		})
+	);
 });
 
 // TODO: config max upload size
@@ -136,5 +140,5 @@ router.post("/", messageUpload.single("file"), async (req: Request, res: Respons
 		edited_timestamp: undefined
 	});
 
-	return res.send(data);
+	return res.json(data);
 });

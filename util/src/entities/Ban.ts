@@ -5,25 +5,28 @@ import { User } from "./User";
 
 @Entity("bans")
 export class Ban extends BaseClass {
+	@Column({ nullable: true })
 	@RelationId((ban: Ban) => ban.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@ManyToOne(() => User)
 	user: User;
 
+	@Column({ nullable: true })
 	@RelationId((ban: Ban) => ban.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild: Guild) => guild.id)
+	@ManyToOne(() => Guild)
 	guild: Guild;
 
+	@Column({ nullable: true })
 	@RelationId((ban: Ban) => ban.executor)
 	executor_id: string;
 
 	@JoinColumn({ name: "executor_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@ManyToOne(() => User)
 	executor: User;
 
 	@Column()

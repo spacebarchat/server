@@ -15,17 +15,19 @@ export class TeamMember extends BaseClass {
 	@Column({ type: "simple-array" })
 	permissions: string[];
 
+	@Column({ nullable: true })
 	@RelationId((member: TeamMember) => member.team)
 	team_id: string;
 
 	@JoinColumn({ name: "team_id" })
-	@ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.id)
+	@ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.members)
 	team: import("./Team").Team;
 
+	@Column({ nullable: true })
 	@RelationId((member: TeamMember) => member.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@ManyToOne(() => User)
 	user: User;
 }

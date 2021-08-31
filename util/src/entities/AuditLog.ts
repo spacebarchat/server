@@ -43,18 +43,16 @@ export enum AuditLogEvents {
 
 @Entity("audit_logs")
 export class AuditLogEntry extends BaseClass {
-	@RelationId((auditlog: AuditLogEntry) => auditlog.target)
-	target_id: string;
-
 	@JoinColumn({ name: "target_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@ManyToOne(() => User)
 	target?: User;
 
+	@Column({ nullable: true })
 	@RelationId((auditlog: AuditLogEntry) => auditlog.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
+	@ManyToOne(() => User)
 	user: User;
 
 	@Column({

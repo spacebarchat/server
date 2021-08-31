@@ -4,7 +4,6 @@ import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
 
 import { check } from "../../../util/instanceOf";
-import { createChannel } from "../../../util/Channel";
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
@@ -22,7 +21,7 @@ router.post("/", check(ChannelModifySchema), async (req: Request, res: Response)
 	const { guild_id } = req.params;
 	const body = req.body as ChannelModifySchema;
 
-	const channel = await createChannel({ ...body, guild_id }, req.user_id);
+	const channel = await Channel.createChannel({ ...body, guild_id }, req.user_id);
 
 	res.status(201).json(channel);
 });

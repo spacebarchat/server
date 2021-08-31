@@ -89,14 +89,7 @@ export interface ReadyEventData {
 	};
 	merged_members?: Omit<Member, "settings" | "user">[][];
 	// probably all users who the user is in contact with
-	users?: {
-		avatar: string | null;
-		discriminator: string;
-		id: string;
-		username: string;
-		bot: boolean;
-		public_flags: string;
-	}[];
+	users?: PublicUser[];
 }
 
 export interface ReadyEvent extends Event {
@@ -130,7 +123,9 @@ export interface ChannelPinsUpdateEvent extends Event {
 
 export interface GuildCreateEvent extends Event {
 	event: "GUILD_CREATE";
-	data: Guild;
+	data: Guild & {
+		joined_at: Date;
+	};
 }
 
 export interface GuildUpdateEvent extends Event {

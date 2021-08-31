@@ -14,7 +14,8 @@ import { Send } from "../util/Send";
 import WebSocket from "../util/WebSocket";
 import "missing-native-js-functions";
 import { Channel as AMQChannel } from "amqplib";
-import { In } from "../../../util/node_modules/typeorm";
+import { In, Like } from "../../../util/node_modules/typeorm";
+import { Recipient } from "../../../util/dist/entities/Recipient";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent
@@ -28,10 +29,9 @@ export async function setupListener(this: WebSocket) {
 	const members = await Member.find({ where: { id: this.user_id } });
 	const guild_ids = members.map((x) => x.guild_id);
 	const user = await User.findOneOrFail({ id: this.user_id });
-	const channels = await Channel.find({
-		where: [{ recipient_ids: this.user_id }, { guild_id: In(guild_ids) }],
-	});
-	const dm_channels = channels.filter((x) => !x.guild_id);
+	const recipients = await Recipient.find({ where: { id: this.user_id }, relations: ["channel"] });
+	const channels = await Channel.find({ guild_id: In(guild_ids) });
+	const dm_channels = recipients.map((x) => x.channel);
 	const guild_channels = channels.filter((x) => x.guild_id);
 
 	const opts: { acknowledge: boolean; channel?: AMQChannel } = { acknowledge: true };

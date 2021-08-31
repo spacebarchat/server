@@ -43,7 +43,7 @@ router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response)
 		emitEvent({
 			event: "GUILD_MEMBER_UPDATE",
 			guild_id,
-			data: { ...member, roles: member.role_ids }
+			data: { ...member, roles: member.roles.map((x) => x.id) }
 		} as GuildMemberUpdateEvent)
 	]);
 

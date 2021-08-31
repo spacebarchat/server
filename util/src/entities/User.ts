@@ -1,9 +1,10 @@
-import { Column, Entity, FindOneOptions, JoinColumn, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, FindOneOptions, JoinColumn, ManyToMany, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { HTTPError } from "lambert-server";
+import { Channel } from "./Channel";
 
 type PublicUserKeys =
 	| "username"
@@ -105,15 +106,9 @@ export class User extends BaseClass {
 	@Column()
 	public_flags: string;
 
-	@RelationId((user: User) => user.relationships)
-	relationship_ids: string[]; // array of guild ids the user is part of
-
 	@JoinColumn({ name: "relationship_ids" })
 	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.user, { cascade: true })
 	relationships: Relationship[];
-
-	@RelationId((user: User) => user.connected_accounts)
-	connected_account_ids: string[]; // array of guild ids the user is part of
 
 	@JoinColumn({ name: "connected_account_ids" })
 	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user)
@@ -126,16 +121,19 @@ export class User extends BaseClass {
 	};
 
 	@Column({ type: "simple-array" })
-	fingerprints: string[] = []; // array of fingerprints -> used to prevent multiple accounts
+	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
 
 	@Column({ type: "simple-json" })
 	settings: UserSettings;
 
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {
-		const user = await User.findOne(user_id, {
-			...opts,
-			select: [...PublicUserProjection, ...(opts?.select || [])],
-		});
+		const user = await User.findOne(
+			{ id: user_id },
+			{
+				...opts,
+				select: [...PublicUserProjection, ...(opts?.select || [])],
+			}
+		);
 		if (!user) throw new HTTPError("User not found", 404);
 		return user;
 	}
