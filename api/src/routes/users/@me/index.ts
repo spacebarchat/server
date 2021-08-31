@@ -37,7 +37,7 @@ router.patch("/", check(UserModifySchema), async (req: Request, res: Response) =
 	if (body.avatar) body.avatar = await handleFile(`/avatars/${req.user_id}`, body.avatar as string);
 	if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
 
-	const user = await new User({ ...body }, { id: req.user_id }).save();
+	const user = await new User({ ...body, id: req.user_id }).save();
 	// TODO: dispatch user update event
 
 	res.json(user);

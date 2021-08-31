@@ -26,7 +26,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 	const id = friend.id;
 	if (id === req.user_id) throw new HTTPError("You can't add yourself as a friend");
 
-	const user = await User.findOneOrFail(req.user_id, { relations: ["relationships"], select: userProjection });
+	const user = await User.findOneOrFail({ id: req.user_id }, { relations: ["relationships"], select: userProjection });
 
 	var relationship = user.relationships.find((x) => x.id === id);
 	const friendRequest = friend.relationships.find((x) => x.id === req.user_id);
@@ -67,8 +67,8 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 		return res.sendStatus(204);
 	}
 
-	var incoming_relationship = new Relationship({ nickname: undefined, type: RelationshipType.incoming }, { id: req.user_id });
-	var outgoing_relationship = new Relationship({ nickname: undefined, type: RelationshipType.outgoing }, { id });
+	var incoming_relationship = new Relationship({ nickname: undefined, type: RelationshipType.incoming, id: req.user_id });
+	var outgoing_relationship = new Relationship({ nickname: undefined, type: RelationshipType.outgoing, id });
 
 	if (friendRequest) {
 		if (friendRequest.type === RelationshipType.blocked) throw new HTTPError("The user blocked you");
@@ -113,7 +113,7 @@ router.put("/:id", check({ $type: new Length(Number, 1, 4) }), async (req: Reque
 	return await updateRelationship(
 		req,
 		res,
-		await User.findOneOrFail(req.params.id, { relations: ["relationships"], select: userProjection }),
+		await User.findOneOrFail({ id: req.params.id }, { relations: ["relationships"], select: userProjection }),
 		req.body.type
 	);
 });
@@ -135,8 +135,8 @@ router.delete("/:id", async (req: Request, res: Response) => {
 	const { id } = req.params;
 	if (id === req.user_id) throw new HTTPError("You can't remove yourself as a friend");
 
-	const user = await User.findOneOrFail(req.user_id, { select: userProjection, relations: ["relationships"] });
-	const friend = await User.findOneOrFail(id, { select: userProjection, relations: ["relationships"] });
+	const user = await User.findOneOrFail({ id: req.user_id }, { select: userProjection, relations: ["relationships"] });
+	const friend = await User.findOneOrFail({ id: id }, { select: userProjection, relations: ["relationships"] });
 
 	const relationship = user.relationships.find((x) => x.id === id);
 	const friendRequest = friend.relationships.find((x) => x.id === req.user_id);

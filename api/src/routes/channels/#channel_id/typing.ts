@@ -17,7 +17,7 @@ router.post("/", async (req: Request, res: Response) => {
 		channel_id: channel_id,
 		data: {
 			// this is the paylod
-			member: { ...member, roles: member.role_ids },
+			member: { ...member, roles: member.roles.map((x) => x.id) },
 			channel_id,
 			timestamp,
 			user_id,

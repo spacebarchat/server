@@ -14,7 +14,7 @@ router.put("/:message_id", async (req: Request, res: Response) => {
 	// * in dm channels anyone can pin messages -> only check for guilds
 	if (message.guild_id) permission.hasThrow("MANAGE_MESSAGES");
 
-	const pinned_count = await Message.count({ channel_id, pinned: true });
+	const pinned_count = await Message.count({ channel: { id: channel_id }, pinned: true });
 	const { maxPins } = Config.get().limits.channel;
 	if (pinned_count >= maxPins) throw new HTTPError("Max pin count reached: " + maxPins);
 
