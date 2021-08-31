@@ -1,4 +1,5 @@
 export * from "./Application";
+export * from "./Attachment";
 export * from "./AuditLog";
 export * from "./Ban";
 export * from "./BaseClass";
@@ -12,6 +13,7 @@ export * from "./Member";
 export * from "./Message";
 export * from "./RateLimit";
 export * from "./ReadState";
+export * from "./Recipient";
 export * from "./Relationship";
 export * from "./Role";
 export * from "./Sticker";

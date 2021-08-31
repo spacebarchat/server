@@ -4,11 +4,12 @@ import { User } from "./User";
 
 @Entity("connected_accounts")
 export class ConnectedAccount extends BaseClass {
+	@Column({ nullable: true })
 	@RelationId((account: ConnectedAccount) => account.user)
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, (user: User) => user.connected_accounts)
+	@ManyToOne(() => User)
 	user: User;
 
 	@Column({ select: false })
