@@ -1,11 +1,12 @@
 import { Router, Response, Request } from "express";
 import { check, Length } from "../../../util/instanceOf";
-import { Channel, getPermission, trimSpecial } from "@fosscord/util";
+import { Channel, Config, getPermission, trimSpecial, Webhook } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { isTextChannel } from "./messages/index";
+import { DiscordApiErrors } from "../../../util/Constants";
 
 const router: Router = Router();
-// TODO:
+// TODO: webhooks
 
 // TODO: use Image Data Type for avatar instead of String
 router.post("/", check({ name: new Length(String, 1, 80), $avatar: String }), async (req: Request, res: Response) => {
@@ -14,6 +15,10 @@ router.post("/", check({ name: new Length(String, 1, 80), $avatar: String }), as
 
 	isTextChannel(channel.type);
 	if (!channel.guild_id) throw new HTTPError("Not a guild channel", 400);
+
+	const webhook_count = await Webhook.count({ channel_id });
+	const { maxWebhooks } = Config.get().limits.channel;
+	if (webhook_count > maxWebhooks) throw DiscordApiErrors.MAXIMUM_WEBHOOKS.withParams(maxWebhooks);
 
 	const permission = await getPermission(req.user_id, channel.guild_id);
 	permission.hasThrow("MANAGE_WEBHOOKS");

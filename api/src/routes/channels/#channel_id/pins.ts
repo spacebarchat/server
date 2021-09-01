@@ -1,6 +1,7 @@
 import { Channel, ChannelPinsUpdateEvent, Config, emitEvent, getPermission, Message, MessageUpdateEvent } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
+import { DiscordApiErrors } from "../../../util/Constants";
 
 const router: Router = Router();
 
@@ -16,7 +17,7 @@ router.put("/:message_id", async (req: Request, res: Response) => {
 
 	const pinned_count = await Message.count({ channel: { id: channel_id }, pinned: true });
 	const { maxPins } = Config.get().limits.channel;
-	if (pinned_count >= maxPins) throw new HTTPError("Max pin count reached: " + maxPins);
+	if (pinned_count >= maxPins) throw DiscordApiErrors.MAXIMUM_PINS.withParams(maxPins);
 
 	await Promise.all([
 		Message.update({ id: message_id }, { pinned: true }),
