@@ -40,6 +40,7 @@ export function enableAutoUpdate(opts: {
 						console.log(`[Auto update] updating ...`);
 						download(opts.downloadUrl, opts.path);
 					} else {
+						console.log(`[Auto update] aborted`);
 					}
 				}
 			);

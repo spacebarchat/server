@@ -1,11 +1,17 @@
-import { Embed, EmbedImage } from "@fosscord/util";
+import { Embed } from "@fosscord/util";
 import { Length } from "../util/instanceOf";
+
+export const EmbedImage = {
+	$url: String,
+	$width: Number,
+	$height: Number
+};
 
 export const MessageCreateSchema = {
 	$content: new Length(String, 0, 2000),
 	$nonce: String,
 	$tts: Boolean,
-	$flags: BigInt,
+	$flags: String,
 	$embed: {
 		$title: new Length(String, 0, 256), //title of embed
 		$type: String, // type of embed (always "rich" for webhook embeds)
@@ -63,7 +69,7 @@ export interface MessageCreateSchema {
 	content?: string;
 	nonce?: string;
 	tts?: boolean;
-	flags?: bigint;
+	flags?: string;
 	embed?: Embed & { timestamp?: string };
 	allowed_mentions?: {
 		parse?: string[];
@@ -75,7 +81,7 @@ export interface MessageCreateSchema {
 		message_id: string;
 		channel_id: string;
 		guild_id?: string;
-		fail_if_not_exists: boolean;
+		fail_if_not_exists?: boolean;
 	};
 	payload_json?: string;
 	file?: any;

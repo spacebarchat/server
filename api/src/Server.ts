@@ -2,7 +2,7 @@ import "missing-native-js-functions";
 import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
-import { Config, db, initEvent } from "@fosscord/util";
+import { Config, initDatabase, initEvent } from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import { Router, Request, Response, NextFunction } from "express";
@@ -31,30 +31,13 @@ export class FosscordServer extends Server {
 		super({ ...opts, errorHandler: false, jsonBody: false });
 	}
 
-	async setupSchema() {
-		return Promise.all([
-			db.collection("users").createIndex({ id: 1 }, { unique: true }),
-			db.collection("messages").createIndex({ id: 1 }, { unique: true }),
-			db.collection("channels").createIndex({ id: 1 }, { unique: true }),
-			db.collection("guilds").createIndex({ id: 1 }, { unique: true }),
-			db.collection("members").createIndex({ id: 1, guild_id: 1 }, { unique: true }),
-			db.collection("roles").createIndex({ id: 1 }, { unique: true }),
-			db.collection("emojis").createIndex({ id: 1 }, { unique: true }),
-			db.collection("invites").createIndex({ code: 1 }, { unique: true }),
-			db.collection("invites").createIndex({ expires_at: 1 }, { expireAfterSeconds: 0 }), // after 0 seconds of expires_at the invite will get delete
-			db.collection("ratelimits").createIndex({ expires_at: 1 }, { expireAfterSeconds: 0 })
-		]);
-	}
-
 	async start() {
-		// @ts-ignore
-		await (db as Promise<Connection>);
-		await this.setupSchema();
+		await initDatabase();
 		await Config.init();
 		await initEvent();
 
 		this.app.use(CORS);
-		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 10 })); // 2MB
+		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 10 })); // 10MB
 
 		const app = this.app;
 		const api = Router(); // @ts-ignore

@@ -1,17 +1,16 @@
 import { CLOSECODES, Payload, OPCODES } from "../util/Constants";
 import WebSocket from "../util/WebSocket";
 import {
-	ChannelModel,
+	Channel,
 	checkToken,
-	GuildModel,
+	Guild,
 	Intents,
-	MemberDocument,
-	MemberModel,
+	Member,
 	ReadyEventData,
-	UserModel,
-	toObject,
+	User,
 	EVENTEnum,
 	Config,
+	dbConnection,
 } from "@fosscord/util";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
@@ -19,6 +18,8 @@ import { Send } from "../util/Send";
 // import experiments from "./experiments.json";
 const experiments: any = [];
 import { check } from "./instanceOf";
+import { Like } from "../../../util/node_modules/typeorm";
+import { Recipient } from "../../../util/dist/entities/Recipient";
 
 // TODO: bot sharding
 // TODO: check priviliged intents
@@ -54,17 +55,22 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}
 	}
 
-	const members = toObject(await MemberModel.find({ id: this.user_id }).exec());
+	const members = await Member.find({
+		where: { id: this.user_id },
+		relations: ["guild", "guild.channels", "guild.emojis", "guild.roles", "guild.stickers", "user", "roles"],
+	});
 	const merged_members = members.map((x: any) => {
-		const y = { ...x, user_id: x.id };
-		delete y.settings;
-		delete y.id;
-		return [y];
-	}) as MemberDocument[][];
+		return [x];
+	}) as Member[][];
+	const guilds = members.map((x) => ({ ...x.guild, joined_at: x.joined_at }));
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
-	const channels = await ChannelModel.find({ recipient_ids: this.user_id }).exec();
-	const user = await UserModel.findOne({ id: this.user_id }).exec();
+	const recipients = await Recipient.find({
+		where: { id: this.user_id },
+		relations: ["channel", "channel.recipients"],
+	});
+	const channels = recipients.map((x) => x.channel);
+	const user = await User.findOneOrFail({ id: this.user_id });
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
 	const public_user = {
@@ -74,11 +80,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		public_flags: user.public_flags,
 		avatar: user.avatar,
 		bot: user.bot,
+		bio: user.bio,
 	};
-
-	const guilds = await GuildModel.find({ id: { $in: user.guilds } })
-		.populate({ path: "joined_at", match: { id: this.user_id } })
-		.exec();
 
 	const privateUser = {
 		avatar: user.avatar,
@@ -99,14 +102,15 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		bot: user.bot,
 		accent_color: user.accent_color || 0,
 		banner: user.banner,
+		bio: user.bio,
 	};
 
 	const d: ReadyEventData = {
 		v: 8,
 		user: privateUser,
-		user_settings: user.user_settings,
+		user_settings: user.settings,
 		// @ts-ignore
-		guilds: toObject(guilds).map((x) => {
+		guilds: guilds.map((x) => {
 			// @ts-ignore
 			x.guild_hashes = {
 				channels: { omitted: false, hash: "y4PV2fZ0gmo" },
@@ -118,7 +122,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}),
 		guild_experiments: [], // TODO
 		geo_ordered_rtc_regions: [], // TODO
-		relationships: user.user_data.relationships,
+		relationships: user.relationships,
 		read_state: {
 			// TODO
 			entries: [],
@@ -130,12 +134,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			partial: false, // TODO partial
 			version: 642,
 		},
-		// @ts-ignore
-		private_channels: toObject(channels).map((x: ChannelDocument) => {
-			x.recipient_ids = x.recipients.map((y: any) => y.id);
-			delete x.recipients;
-			return x;
-		}),
+		private_channels: channels,
 		session_id: "", // TODO
 		analytics_token: "", // TODO
 		connected_accounts: [], // TODO
@@ -144,17 +143,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				consented: false, // TODO
 			},
 		},
-		country_code: user.user_settings.locale,
+		country_code: user.settings.locale,
 		friend_suggestion_count: 0, // TODO
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
-		users: [
-			public_user,
-			...toObject(channels)
-				.map((x: any) => x.recipients)
-				.flat(),
-		].unique(), // TODO
+		users: [public_user].unique(), // TODO
 		merged_members: merged_members,
 		// shard // TODO: only for bots sharding
 		// application // TODO for applications

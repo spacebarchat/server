@@ -1,8 +1,7 @@
 import { Request, Response, Router } from "express";
-import { GuildModel, MemberModel, toObject } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
+import { Guild, Member, PublicMemberProjection } from "@fosscord/util";
 import { instanceOf, Length } from "../../../../util/instanceOf";
-import { PublicMemberProjection, isMember } from "../../../../util/Member";
+import { MoreThan } from "typeorm";
 
 const router = Router();
 
@@ -10,8 +9,8 @@ const router = Router();
 // TODO: send over websocket
 router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
-	await isMember(req.user_id, guild_id);
+	const guild = await Guild.findOneOrFail({ id: guild_id });
+	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
 	try {
 		instanceOf({ $limit: new Length(Number, 1, 1000), $after: String }, req.query, {
@@ -23,16 +22,17 @@ router.get("/", async (req: Request, res: Response) => {
 		return res.status(400).json({ code: 50035, message: "Invalid Query", success: false, errors: error });
 	}
 
-	// @ts-ignore
-	if (!req.query.limit) req.query.limit = 1;
-	const { limit, after } = (<unknown>req.query) as { limit: number; after: string };
-	const query = after ? { id: { $gt: after } } : {};
+	const { limit, after } = (<unknown>req.query) as { limit?: number; after?: string };
+	const query = after ? { id: MoreThan(after) } : {};
 
-	var members = await MemberModel.find({ guild_id, ...query }, PublicMemberProjection)
-		.limit(limit)
-		.exec();
+	const members = await Member.find({
+		where: { guild_id, ...query },
+		select: PublicMemberProjection,
+		take: limit || 1,
+		order: { id: "ASC" }
+	});
 
-	return res.json(toObject(members));
+	return res.json(members);
 });
 
 export default router;

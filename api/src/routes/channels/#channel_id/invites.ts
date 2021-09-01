@@ -6,14 +6,14 @@ import { random } from "../../../util/RandomInviteID";
 
 import { InviteCreateSchema } from "../../../schema/Invite";
 
-import { getPermission, ChannelModel, InviteModel, InviteCreateEvent, toObject, emitEvent } from "@fosscord/util";
+import { getPermission, Channel, Invite, InviteCreateEvent, emitEvent } from "@fosscord/util";
 
 const router: Router = Router();
 
 router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) => {
 	const { user_id } = req;
 	const { channel_id } = req.params;
-	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
+	const channel = await Channel.findOneOrFail({ id: channel_id });
 
 	if (!channel.guild_id) {
 		throw new HTTPError("This channel doesn't exist", 404);
@@ -38,7 +38,7 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 		inviter_id: user_id
 	};
 
-	await new InviteModel(invite).save();
+	await new Invite(invite).save();
 
 	await emitEvent({ event: "INVITE_CREATE", data: invite, guild_id } as InviteCreateEvent);
 	res.status(201).send(invite);
@@ -47,7 +47,7 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 router.get("/", async (req: Request, res: Response) => {
 	const { user_id } = req;
 	const { channel_id } = req.params;
-	const channel = await ChannelModel.findOne({ id: channel_id }).exec();
+	const channel = await Channel.findOneOrFail({ id: channel_id });
 
 	if (!channel.guild_id) {
 		throw new HTTPError("This channel doesn't exist", 404);
@@ -56,9 +56,9 @@ router.get("/", async (req: Request, res: Response) => {
 	const permission = await getPermission(user_id, guild_id);
 	permission.hasThrow("MANAGE_CHANNELS");
 
-	const invites = await InviteModel.find({ guild_id }).exec();
+	const invites = await Invite.find({ guild_id });
 
-	res.status(200).send(toObject(invites));
+	res.status(200).send(invites);
 });
 
 export default router;

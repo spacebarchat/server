@@ -1,15 +1,4 @@
-import {
-	ChannelModel,
-	emitEvent,
-	EmojiModel,
-	GuildDeleteEvent,
-	GuildModel,
-	InviteModel,
-	MemberModel,
-	MessageModel,
-	RoleModel,
-	UserModel
-} from "@fosscord/util";
+import { Channel, emitEvent, GuildDeleteEvent, Guild, Member, Message, Role, Invite, Emoji } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -20,7 +9,7 @@ const router = Router();
 router.post("/", async (req: Request, res: Response) => {
 	var { guild_id } = req.params;
 
-	const guild = await GuildModel.findOne({ id: guild_id }, "owner_id").exec();
+	const guild = await Guild.findOneOrFail({ where: { id: guild_id }, select: ["owner_id"] });
 	if (guild.owner_id !== req.user_id) throw new HTTPError("You are not the owner of this guild", 401);
 
 	await emitEvent({
@@ -32,14 +21,13 @@ router.post("/", async (req: Request, res: Response) => {
 	} as GuildDeleteEvent);
 
 	await Promise.all([
-		GuildModel.deleteOne({ id: guild_id }).exec(),
-		UserModel.updateMany({ guilds: guild_id }, { $pull: { guilds: guild_id } }).exec(),
-		RoleModel.deleteMany({ guild_id }).exec(),
-		ChannelModel.deleteMany({ guild_id }).exec(),
-		EmojiModel.deleteMany({ guild_id }).exec(),
-		InviteModel.deleteMany({ guild_id }).exec(),
-		MessageModel.deleteMany({ guild_id }).exec(),
-		MemberModel.deleteMany({ guild_id }).exec()
+		Guild.delete({ id: guild_id }),
+		Role.delete({ guild_id }),
+		Channel.delete({ guild_id }),
+		Emoji.delete({ guild_id }),
+		Invite.delete({ guild_id }),
+		Message.delete({ guild_id }),
+		Member.delete({ guild_id })
 	]);
 
 	return res.sendStatus(204);

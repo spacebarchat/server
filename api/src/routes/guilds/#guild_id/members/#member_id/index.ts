@@ -1,50 +1,53 @@
 import { Request, Response, Router } from "express";
 import {
-	GuildModel,
-	MemberModel,
-	UserModel,
-	toObject,
+	Guild,
+	Member,
+	User,
 	GuildMemberAddEvent,
 	getPermission,
 	PermissionResolvable,
-	RoleModel,
+	Role,
 	GuildMemberUpdateEvent,
 	emitEvent
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { addMember, isMember, removeMember } from "../../../../../util/Member";
 import { check } from "../../../../../util/instanceOf";
 import { MemberChangeSchema } from "../../../../../schema/Member";
+import { In } from "typeorm";
 
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
-	await isMember(req.user_id, guild_id);
+	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	const member = await MemberModel.findOne({ id: member_id, guild_id }).exec();
+	const member = await Member.findOneOrFail({ id: member_id, guild_id });
 
-	return res.json(toObject(member));
+	return res.json(member);
 });
 
 router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
 	const body = req.body as MemberChangeSchema;
 	if (body.roles) {
-		const roles = await RoleModel.find({ id: { $in: body.roles } }).exec();
+		const roles = await Role.find({ id: In(body.roles) });
 		if (body.roles.length !== roles.length) throw new HTTPError("Roles not found", 404);
 		// TODO: check if user has permission to add role
 	}
 
-	const member = await MemberModel.findOneAndUpdate({ id: member_id, guild_id }, body, { new: true }).exec();
+	const member = await Member.findOneOrFail({ id: member_id, guild_id });
+	member.assign(req.body);
 
-	await emitEvent({
-		event: "GUILD_MEMBER_UPDATE",
-		guild_id,
-		data: toObject(member)
-	} as GuildMemberUpdateEvent);
+	Promise.all([
+		member.save(),
+		emitEvent({
+			event: "GUILD_MEMBER_UPDATE",
+			guild_id,
+			data: { ...member, roles: member.roles.map((x) => x.id) }
+		} as GuildMemberUpdateEvent)
+	]);
 
-	res.json(toObject(member));
+	res.json(member);
 });
 
 router.put("/", async (req: Request, res: Response) => {
@@ -52,7 +55,7 @@ router.put("/", async (req: Request, res: Response) => {
 
 	throw new HTTPError("Maintenance: Currently you can't add a member", 403);
 	// TODO: only for oauth2 applications
-	await addMember(member_id, guild_id);
+	await Member.addToGuild(member_id, guild_id);
 	res.sendStatus(204);
 });
 
@@ -62,7 +65,7 @@ router.delete("/", async (req: Request, res: Response) => {
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("KICK_MEMBERS");
 
-	await removeMember(member_id, guild_id);
+	await Member.removeFromGuild(member_id, guild_id);
 	res.sendStatus(204);
 });
 

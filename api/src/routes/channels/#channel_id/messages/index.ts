@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import { Attachment, ChannelModel, ChannelType, getPermission, MessageDocument, MessageModel, toObject } from "@fosscord/util";
+import { Attachment, Channel, ChannelType, getPermission, Message } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../schema/Message";
 import { check, instanceOf, Length } from "../../../../util/instanceOf";
@@ -7,6 +7,7 @@ import multer from "multer";
 import { Query } from "mongoose";
 import { sendMessage } from "../../../../util/Message";
 import { uploadFile } from "../../../../util/cdn";
+import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 
 const router: Router = Router();
 
@@ -30,12 +31,7 @@ export function isTextChannel(type: ChannelType): boolean {
 // get messages
 router.get("/", async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
-	const channel = await ChannelModel.findOne(
-		{ id: channel_id },
-		{ guild_id: true, type: true, permission_overwrites: true, recipient_ids: true, owner_id: true }
-	)
-		.lean() // lean is needed, because we don't want to populate .recipients that also auto deletes .recipient_ids
-		.exec();
+	const channel = await Channel.findOneOrFail({ id: channel_id });
 	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	isTextChannel(channel.type);
@@ -57,32 +53,34 @@ router.get("/", async (req: Request, res: Response) => {
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	var query: Query<MessageDocument[], MessageDocument>;
-	if (after) query = MessageModel.find({ channel_id, id: { $gt: after } });
-	else if (before) query = MessageModel.find({ channel_id, id: { $lt: before } });
-	else if (around)
-		query = MessageModel.find({
-			channel_id,
-			id: { $gt: (BigInt(around) - BigInt(halfLimit)).toString(), $lt: (BigInt(around) + BigInt(halfLimit)).toString() }
-		});
-	else {
-		query = MessageModel.find({ channel_id });
+	var query: FindManyOptions<Message> & { where: { id?: any } } = {
+		order: { id: "DESC" },
+		take: limit,
+		where: { channel_id },
+		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"]
+	};
+
+	if (after) query.where.id = MoreThan(after);
+	else if (before) query.where.id = LessThan(before);
+	else if (around) {
+		query.where.id = [
+			MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
+			LessThan((BigInt(around) + BigInt(halfLimit)).toString())
+		];
 	}
 
-	query = query.sort({ id: -1 });
-
-	const messages = await query.limit(limit).exec();
+	const messages = await Message.find(query);
 
 	return res.json(
-		toObject(messages).map((x) => {
-			(x.reactions || []).forEach((x) => {
+		messages.map((x) => {
+			(x.reactions || []).forEach((x: any) => {
 				// @ts-ignore
 				if ((x.user_ids || []).includes(req.user_id)) x.me = true;
 				// @ts-ignore
 				delete x.user_ids;
 			});
 			// @ts-ignore
-			if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: 0n, avatar: null };
+			if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: "0", avatar: null };
 
 			return x;
 		})
@@ -139,8 +137,8 @@ router.post("/", messageUpload.single("file"), async (req: Request, res: Respons
 		embeds,
 		channel_id,
 		attachments,
-		edited_timestamp: null
+		edited_timestamp: undefined
 	});
 
-	return res.send(data);
+	return res.json(data);
 });
