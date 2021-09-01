@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
-import { UserModel, toObject, PublicUserProjection } from "@fosscord/util";
-import { getPublicUser } from "../../../util/User";
+import { User } from "@fosscord/util";
 import { UserModifySchema } from "../../../schema/User";
 import { check } from "../../../util/instanceOf";
 import { handleFile } from "../../../util/cdn";
@@ -8,29 +7,29 @@ import { handleFile } from "../../../util/cdn";
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	res.json(await getPublicUser(req.user_id));
+	res.json(await User.getPublicUser(req.user_id));
 });
 
-const UserUpdateProjection = {
-	accent_color: true,
-	avatar: true,
-	banner: true,
-	bio: true,
-	bot: true,
-	discriminator: true,
-	email: true,
-	flags: true,
-	id: true,
-	locale: true,
-	mfa_enabled: true,
-	nsfw_alllowed: true,
-	phone: true,
-	public_flags: true,
-	purchased_flags: true,
-	// token: true, // this isn't saved in the db and needs to be set manually
-	username: true,
-	verified: true
-};
+const UserUpdateProjection = [
+	"accent_color",
+	"avatar",
+	"banner",
+	"bio",
+	"bot",
+	"discriminator",
+	"email",
+	"flags",
+	"id",
+	"locale",
+	"mfa_enabled",
+	"nsfw_alllowed",
+	"phone",
+	"public_flags",
+	"purchased_flags",
+	// "token", // this isn't saved in the db and needs to be set manually
+	"username",
+	"verified"
+];
 
 router.patch("/", check(UserModifySchema), async (req: Request, res: Response) => {
 	const body = req.body as UserModifySchema;
@@ -38,10 +37,10 @@ router.patch("/", check(UserModifySchema), async (req: Request, res: Response) =
 	if (body.avatar) body.avatar = await handleFile(`/avatars/${req.user_id}`, body.avatar as string);
 	if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
 
-	const user = await UserModel.findOneAndUpdate({ id: req.user_id }, body, { projection: UserUpdateProjection, new: true }).exec();
+	const user = await new User({ ...body, id: req.user_id }).save();
 	// TODO: dispatch user update event
 
-	res.json(toObject(user));
+	res.json(user);
 });
 
 export default router;

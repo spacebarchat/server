@@ -1,7 +1,7 @@
 import "missing-native-js-functions";
 import dotenv from "dotenv";
 dotenv.config();
-import { Config, db, initEvent, RabbitMQ } from "@fosscord/util";
+import { closeDatabase, Config, initDatabase, initEvent, RabbitMQ } from "@fosscord/util";
 import { Server as WebSocketServer } from "ws";
 import { Connection } from "./events/Connection";
 import http from "http";
@@ -38,15 +38,8 @@ export class Server {
 		this.ws.on("error", console.error);
 	}
 
-	async setupSchema() {
-		// TODO: adjust expireAfterSeconds -> lower
-		await Promise.all([db.collection("events").createIndex({ created_at: 1 }, { expireAfterSeconds: 60 })]);
-	}
-
 	async start(): Promise<void> {
-		// @ts-ignore
-		await (db as Promise<Connection>);
-		await this.setupSchema();
+		await initDatabase();
 		await Config.init();
 		await initEvent();
 		if (!this.server.listening) {
@@ -56,7 +49,7 @@ export class Server {
 	}
 
 	async stop() {
-		await db.close();
+		closeDatabase();
 		this.server.close();
 	}
 }

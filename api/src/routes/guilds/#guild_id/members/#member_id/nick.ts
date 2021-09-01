@@ -1,8 +1,7 @@
-import { getPermission, PermissionResolvable } from "@fosscord/util";
+import { getPermission, Member, PermissionResolvable } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { check } from "lambert-server";
 import { MemberNickChangeSchema } from "../../../../../schema/Member";
-import { changeNickname } from "../../../../../util/Member";
 
 const router = Router();
 
@@ -17,7 +16,7 @@ router.patch("/", check(MemberNickChangeSchema), async (req: Request, res: Respo
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow(permissionString);
 
-	await changeNickname(member_id, guild_id, req.body.nick);
+	await Member.changeNickname(member_id, guild_id, req.body.nick);
 	res.status(200).send();
 });
 

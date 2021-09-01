@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { GuildModel } from "@fosscord/util";
+import { Guild } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import fs from "fs";
 import path from "path";
@@ -13,7 +13,7 @@ const router: Router = Router();
 router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	const guild = await GuildModel.findOne({ id: guild_id }).exec();
+	const guild = await Guild.findOneOrFail({ id: guild_id });
 	if (!guild.widget_enabled) throw new HTTPError("Unknown Guild", 404);
 
 	// Fetch guild information

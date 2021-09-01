@@ -1,7 +1,6 @@
 // process.env.MONGOMS_DEBUG = "true";
 import cluster from "cluster";
 import os from "os";
-import { setupDatabase } from "./Database";
 import { initStats } from "./stats";
 
 // TODO: add tcp socket event transmission
@@ -12,7 +11,6 @@ if (cluster.isMaster && !process.env.masterStarted) {
 
 	(async () => {
 		initStats();
-		await setupDatabase();
 
 		if (cores === 1) {
 			require("./Server.js");

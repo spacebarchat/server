@@ -1,5 +1,5 @@
 import {
-	ChannelModel,
+	Channel,
 	Embed,
 	emitEvent,
 	Message,
@@ -7,21 +7,23 @@ import {
 	MessageUpdateEvent,
 	getPermission,
 	CHANNEL_MENTION,
-	toObject,
-	MessageModel,
 	Snowflake,
-	PublicMemberProjection,
 	USER_MENTION,
 	ROLE_MENTION,
-	RoleModel,
+	Role,
 	EVERYONE_MENTION,
-	HERE_MENTION
+	HERE_MENTION,
+	MessageType,
+	User,
+	Application,
+	Webhook,
+	Attachment
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
+import { MessageCreateSchema } from "../schema/Message";
 
-import { MessageType } from "@fosscord/util/dist/util/Constants";
 // TODO: check webhook, application, system author
 
 const LINK_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
@@ -37,19 +39,37 @@ const DEFAULT_FETCH_OPTIONS: any = {
 	method: "GET"
 };
 
-export async function handleMessage(opts: Partial<Message>) {
-	const channel = await ChannelModel.findOne(
-		{ id: opts.channel_id },
-		{ guild_id: true, type: true, permission_overwrites: true, recipient_ids: true, owner_id: true }
-	)
-		.lean() // lean is needed, because we don't want to populate .recipients that also auto deletes .recipient_ids
-		.exec();
+export async function handleMessage(opts: MessageOptions): Promise<Message> {
+	const channel = await Channel.findOneOrFail({ where: { id: opts.channel_id }, relations: ["recipients"] });
 	if (!channel || !opts.channel_id) throw new HTTPError("Channel not found", 404);
-	// TODO: are tts messages allowed in dm channels? should permission be checked?
 
-	// @ts-ignore
-	const permission = await getPermission(opts.author_id, channel.guild_id, opts.channel_id, { channel });
+	const message = new Message({
+		...opts,
+		guild_id: channel.guild_id,
+		channel_id: opts.channel_id,
+		attachments: opts.attachments || [],
+		embeds: opts.embeds || [],
+		reactions: /*opts.reactions ||*/ [],
+		type: opts.type ?? 0
+	});
+
+	// TODO: are tts messages allowed in dm channels? should permission be checked?
+	if (opts.author_id) {
+		message.author = await User.getPublicUser(opts.author_id);
+	}
+	if (opts.application_id) {
+		message.application = await Application.findOneOrFail({ id: opts.application_id });
+	}
+	if (opts.webhook_id) {
+		message.webhook = await Webhook.findOneOrFail({ id: opts.webhook_id });
+	}
+
+	const permission = await getPermission(opts.author_id, channel.guild_id, opts.channel_id);
 	permission.hasThrow("SEND_MESSAGES");
+	if (permission.cache.member) {
+		message.member = permission.cache.member;
+	}
+
 	if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
 	if (opts.message_reference) {
 		permission.hasThrow("READ_MESSAGE_HISTORY");
@@ -57,24 +77,24 @@ export async function handleMessage(opts: Partial<Message>) {
 		if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
 		// TODO: should be checked if the referenced message exists?
 		// @ts-ignore
-		opts.type = MessageType.REPLY;
+		message.type = MessageType.REPLY;
 	}
 
-	if (!opts.content && !opts.embeds?.length && !opts.attachments?.length && !opts.stickers?.length && !opts.activity) {
+	// TODO: stickers/activity
+	if (!opts.content && !opts.embeds?.length && !opts.attachments?.length) {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 
 	var content = opts.content;
-	var mention_channels_ids = [] as string[];
+	var mention_channel_ids = [] as string[];
 	var mention_role_ids = [] as string[];
 	var mention_user_ids = [] as string[];
 	var mention_everyone = false;
-	var mention_everyone = false;
 
 	if (content) {
-		content = content.trim();
+		message.content = content.trim();
 		for (const [_, mention] of content.matchAll(CHANNEL_MENTION)) {
-			if (!mention_channels_ids.includes(mention)) mention_channels_ids.push(mention);
+			if (!mention_channel_ids.includes(mention)) mention_channel_ids.push(mention);
 		}
 
 		for (const [_, mention] of content.matchAll(USER_MENTION)) {
@@ -83,7 +103,7 @@ export async function handleMessage(opts: Partial<Message>) {
 
 		await Promise.all(
 			Array.from(content.matchAll(ROLE_MENTION)).map(async ([_, mention]) => {
-				const role = await RoleModel.findOne({ id: mention, guild_id: channel.guild_id }).exec();
+				const role = await Role.findOneOrFail({ id: mention, guild_id: channel.guild_id });
 				if (role.mentionable || permission.has("MANAGE_ROLES")) {
 					mention_role_ids.push(mention);
 				}
@@ -95,20 +115,14 @@ export async function handleMessage(opts: Partial<Message>) {
 		}
 	}
 
+	message.mention_channels = mention_channel_ids.map((x) => new Channel({ id: x }));
+	message.mention_roles = mention_role_ids.map((x) => new Role({ id: x }));
+	message.mentions = mention_user_ids.map((x) => new User({ id: x }));
+	message.mention_everyone = mention_everyone;
+
 	// TODO: check and put it all in the body
-	return {
-		...opts,
-		guild_id: channel.guild_id,
-		channel_id: opts.channel_id,
-		mention_channels_ids,
-		mention_role_ids,
-		mention_user_ids,
-		mention_everyone,
-		attachments: opts.attachments || [],
-		embeds: opts.embeds || [],
-		reactions: opts.reactions || [],
-		type: opts.type ?? 0
-	};
+
+	return message;
 }
 
 // TODO: cache link result in db
@@ -160,20 +174,33 @@ export async function postHandleMessage(message: Message) {
 			channel_id: message.channel_id,
 			data
 		} as MessageUpdateEvent),
-		MessageModel.updateOne({ id: message.id, channel_id: message.channel_id }, data).exec()
+		Message.update({ id: message.id, channel_id: message.channel_id }, data)
 	]);
 }
 
-export async function sendMessage(opts: Partial<Message>) {
-	const message = await handleMessage({ ...opts, id: Snowflake.generate(), timestamp: new Date() });
+export async function sendMessage(opts: MessageOptions) {
+	const message = await handleMessage({ ...opts, timestamp: new Date() });
 
-	const data = toObject(
-		await new MessageModel(message).populate({ path: "member", select: PublicMemberProjection }).populate("referenced_message").save()
-	);
+	await Promise.all([
+		message.save(),
+		emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data: message.toJSON() } as MessageCreateEvent)
+	]);
 
-	await emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data } as MessageCreateEvent);
+	postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
 
-	postHandleMessage(data).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
+	return message;
+}
 
-	return data;
+interface MessageOptions extends MessageCreateSchema {
+	id?: string;
+	type?: MessageType;
+	pinned?: boolean;
+	author_id?: string;
+	webhook_id?: string;
+	application_id?: string;
+	embeds?: Embed[];
+	channel_id?: string;
+	attachments?: Attachment[];
+	edited_timestamp?: Date;
+	timestamp?: Date;
 }

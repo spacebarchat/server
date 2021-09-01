@@ -6,7 +6,7 @@ import { FosscordServer as APIServer } from "@fosscord/api";
 import { Server as GatewayServer } from "@fosscord/gateway";
 import { CDNServer } from "@fosscord/cdn/";
 import express from "express";
-import { Config } from "@fosscord/util";
+import { Config, initDatabase } from "@fosscord/util";
 
 const app = express();
 const server = http.createServer();
@@ -22,6 +22,8 @@ const cdn = new CDNServer({ server, port, production, app });
 const gateway = new GatewayServer({ server, port, production });
 
 async function main() {
+	await initDatabase();
+	await Config.init();
 	await Config.set({
 		cdn: {
 			endpointClient: "${location.host}",

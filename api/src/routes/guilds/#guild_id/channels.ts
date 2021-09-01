@@ -1,17 +1,16 @@
 import { Router, Response, Request } from "express";
-import { ChannelModel, toObject, ChannelUpdateEvent, getPermission, emitEvent } from "@fosscord/util";
+import { Channel, ChannelUpdateEvent, getPermission, emitEvent } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
 
 import { check } from "../../../util/instanceOf";
-import { createChannel } from "../../../util/Channel";
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
-	const channels = await ChannelModel.find({ guild_id }).exec();
+	const channels = await Channel.find({ guild_id });
 
-	res.json(toObject(channels));
+	res.json(channels);
 });
 
 // TODO: check if channel type is permitted
@@ -22,9 +21,9 @@ router.post("/", check(ChannelModifySchema), async (req: Request, res: Response)
 	const { guild_id } = req.params;
 	const body = req.body as ChannelModifySchema;
 
-	const channel = await createChannel({ ...body, guild_id }, req.user_id);
+	const channel = await Channel.createChannel({ ...body, guild_id }, req.user_id);
 
-	res.status(201).json(toObject(channel));
+	res.status(201).json(channel);
 });
 
 // TODO: check if parent_id exists
@@ -48,18 +47,19 @@ router.patch(
 
 				if (x.parent_id) {
 					opts.parent_id = x.parent_id;
-					const parent_channel = await ChannelModel.findOne(
-						{ id: x.parent_id, guild_id },
-						{ permission_overwrites: true }
-					).exec();
+					const parent_channel = await Channel.findOneOrFail({
+						where: { id: x.parent_id, guild_id },
+						select: ["permission_overwrites"]
+					});
 					if (x.lock_permissions) {
 						opts.permission_overwrites = parent_channel.permission_overwrites;
 					}
 				}
 
-				const channel = await ChannelModel.findOneAndUpdate({ id: x.id, guild_id }, opts, { new: true }).exec();
+				await Channel.update({ guild_id, id: x.id }, opts);
+				const channel = await Channel.findOneOrFail({ guild_id, id: x.id });
 
-				await emitEvent({ event: "CHANNEL_UPDATE", data: toObject(channel), channel_id: x.id, guild_id } as ChannelUpdateEvent);
+				await emitEvent({ event: "CHANNEL_UPDATE", data: channel, channel_id: x.id, guild_id } as ChannelUpdateEvent);
 			})
 		]);
 

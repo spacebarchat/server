@@ -1,11 +1,8 @@
 // https://github.com/discordjs/discord.js/blob/master/src/util/Permissions.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
-import { MemberDocument, MemberModel } from "../models/Member";
-import { ChannelDocument, ChannelModel } from "../models/Channel";
-import { ChannelPermissionOverwrite } from "../models/Channel";
-import { Role, RoleDocument, RoleModel } from "../models/Role";
+import { In } from "typeorm";
+import { Channel, ChannelPermissionOverwrite, Guild, Member, Role } from "../entities";
 import { BitField } from "./BitField";
-import { GuildDocument, GuildModel } from "../models/Guild";
 // TODO: check role hierarchy permission
 
 var HTTPError: any;
@@ -138,12 +135,12 @@ export class Permissions extends BitField {
 			// ~ operator inverts deny (e.g. 011 -> 100)
 			// & operator only allows 1 for both ~deny and permission (e.g. 010 & 100 -> 000)
 			// | operators adds both together (e.g. 000 + 100 -> 100)
-		}, init || 0n);
+		}, init || BigInt(0));
 	}
 
 	static rolePermission(roles: Role[]) {
 		// adds all permissions of all roles together (Bit OR)
-		return roles.reduce((permission, role) => permission | BigInt(role.permissions), 0n);
+		return roles.reduce((permission, role) => permission | BigInt(role.permissions), BigInt(0));
 	}
 
 	static finalPermission({
@@ -201,62 +198,51 @@ export class Permissions extends BitField {
 }
 
 export type PermissionCache = {
-	channel?: ChannelDocument | null;
-	member?: MemberDocument | null;
-	guild?: GuildDocument | null;
-	roles?: RoleDocument[] | null;
+	channel?: Channel | undefined;
+	member?: Member | undefined;
+	guild?: Guild | undefined;
+	roles?: Role[] | undefined;
 	user_id?: string;
 };
 
-export async function getPermission(
-	user_id?: string,
-	guild_id?: string,
-	channel_id?: string,
-	cache: PermissionCache = {}
-) {
-	var { channel, member, guild, roles } = cache;
-
+export async function getPermission(user_id?: string, guild_id?: string, channel_id?: string) {
 	if (!user_id) throw new HTTPError("User not found");
+	var channel: Channel | undefined;
+	var member: Member | undefined;
+	var guild: Guild | undefined;
 
-	if (channel_id && !channel) {
-		channel = await ChannelModel.findOne(
-			{ id: channel_id },
-			{ permission_overwrites: true, recipient_ids: true, owner_id: true, guild_id: true }
-		).exec();
-		if (!channel) throw new HTTPError("Channel not found", 404);
-		if (channel.guild_id) guild_id = channel.guild_id;
+	if (channel_id) {
+		channel = await Channel.findOneOrFail({ id: channel_id });
+		if (channel.guild_id) guild_id = channel.guild_id; // derive guild_id from the channel
 	}
 
 	if (guild_id) {
-		if (!guild) guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
-		if (!guild) throw new HTTPError("Guild not found");
+		guild = await Guild.findOneOrFail({ id: guild_id });
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
-		if (!member) member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
-		if (!member) throw new HTTPError("Member not found");
-
-		if (!roles) roles = await RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
+		member = await Member.findOneOrFail({ where: { guild: guild_id, id: user_id }, relations: ["roles"] });
 	}
 
+	// TODO: remove guild.roles and convert recipient_ids to recipients
 	var permission = Permissions.finalPermission({
 		user: {
 			id: user_id,
-			roles: member?.roles || [],
+			roles: member?.roles.map((x) => x.id) || [],
 		},
 		guild: {
-			roles: roles || [],
+			roles: member?.roles || [],
 		},
 		channel: {
 			overwrites: channel?.permission_overwrites,
 			owner_id: channel?.owner_id,
-			recipient_ids: channel?.recipient_ids,
+			recipient_ids: channel?.recipients?.map((x) => x.id),
 		},
 	});
 
 	const obj = new Permissions(permission);
 
 	// pass cache to permission for possible future getPermission calls
-	obj.cache = { guild, member, channel, roles, user_id };
+	obj.cache = { guild, member, channel, roles: member?.roles, user_id };
 
 	return obj;
 }

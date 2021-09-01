@@ -1,12 +1,12 @@
 import { Request, Response, Router } from "express";
-import { trimSpecial, User, Snowflake, UserModel, Config } from "@fosscord/util";
+import { trimSpecial, User, Snowflake, Config, defaultSettings } from "@fosscord/util";
 import bcrypt from "bcrypt";
 import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../util/instanceOf";
 import "missing-native-js-functions";
 import { generateToken } from "./login";
 import { getIpAdress, IPAnalysis, isProxy } from "../../util/ipAddress";
 import { HTTPError } from "lambert-server";
-import RateLimit from "../../middlewares/RateLimit";
+import { In } from "typeorm";
 
 const router: Router = Router();
 
@@ -55,13 +55,13 @@ router.post(
 		// TODO: check password strength
 
 		// adjusted_email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
-		let adjusted_email: string | null = adjustEmail(email);
+		let adjusted_email = adjustEmail(email);
 
 		// adjusted_password will be the hash of the password
-		let adjusted_password: string = "";
+		let adjusted_password = "";
 
 		// trim special uf8 control characters -> Backspace, Newline, ...
-		let adjusted_username: string = trimSpecial(username);
+		let adjusted_username = trimSpecial(username);
 
 		// discriminator will be randomly generated
 		let discriminator = "";
@@ -92,9 +92,7 @@ router.post(
 			if (!adjusted_email) throw FieldErrors({ email: { code: "INVALID_EMAIL", message: req.t("auth:register.INVALID_EMAIL") } });
 
 			// check if there is already an account with this email
-			const exists = await UserModel.findOne({ email: adjusted_email })
-				.exec()
-				.catch((e) => {});
+			const exists = await User.findOneOrFail({ email: adjusted_email }).catch((e) => {});
 
 			if (exists) {
 				throw FieldErrors({
@@ -131,9 +129,7 @@ router.post(
 
 		if (!register.allowMultipleAccounts) {
 			// TODO: check if fingerprint was eligible generated
-			const exists = await UserModel.findOne({ fingerprints: fingerprint })
-				.exec()
-				.catch((e) => {});
+			const exists = await User.findOne({ where: { fingerprints: In(fingerprint) } });
 
 			if (exists) {
 				throw FieldErrors({
@@ -168,12 +164,8 @@ router.post(
 		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the mongodb database?
 		for (let tries = 0; tries < 5; tries++) {
 			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
-			try {
-				exists = await UserModel.findOne({ discriminator, username: adjusted_username }, "id").exec();
-			} catch (error) {
-				// doesn't exist -> break
-				break;
-			}
+			exists = await User.findOne({ where: { discriminator, username: adjusted_username }, select: ["id"] });
+			if (!exists) break;
 		}
 
 		if (exists) {
@@ -189,96 +181,40 @@ router.post(
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 
-		const user: User = {
-			id: Snowflake.generate(),
+		const user = {
 			created_at: new Date(),
 			username: adjusted_username,
 			discriminator,
-			avatar: null,
-			accent_color: null,
-			banner: null,
+			id: Snowflake.generate(),
 			bot: false,
 			system: false,
 			desktop: false,
 			mobile: false,
 			premium: true,
 			premium_type: 2,
-			phone: null,
 			bio: "",
 			mfa_enabled: false,
 			verified: false,
 			disabled: false,
 			deleted: false,
-			presence: {
-				activities: [],
-				client_status: {
-					desktop: undefined,
-					mobile: undefined,
-					web: undefined
-				},
-				status: "offline"
-			},
 			email: adjusted_email,
 			nsfw_allowed: true, // TODO: depending on age
-			public_flags: 0n,
-			flags: 0n, // TODO: generate default flags
-			guilds: [],
-			user_data: {
+			public_flags: "0",
+			flags: "0", // TODO: generate
+			data: {
 				hash: adjusted_password,
-				valid_tokens_since: new Date(),
-				relationships: [],
-				connected_accounts: [],
-				fingerprints: []
+				valid_tokens_since: new Date()
 			},
-			user_settings: {
-				afk_timeout: 300,
-				allow_accessibility_detection: true,
-				animate_emoji: true,
-				animate_stickers: 0,
-				contact_sync_enabled: false,
-				convert_emoticons: false,
-				custom_status: {
-					emoji_id: null,
-					emoji_name: null,
-					expires_at: null,
-					text: null
-				},
-				default_guilds_restricted: false,
-				detect_platform_accounts: true,
-				developer_mode: false,
-				disable_games_tab: false,
-				enable_tts_command: true,
-				explicit_content_filter: 0,
-				friend_source_flags: { all: true },
-				gateway_connected: false,
-				gif_auto_play: true,
-				guild_folders: [],
-				guild_positions: [],
-				inline_attachment_media: true,
-				inline_embed_media: true,
-				locale: req.language,
-				message_display_compact: false,
-				native_phone_integration_enabled: true,
-				render_embeds: true,
-				render_reactions: true,
-				restricted_guilds: [],
-				show_current_game: true,
-				status: "offline",
-				stream_notifications_enabled: true,
-				theme: "dark",
-				timezone_offset: 0
-				// timezone_offset: // TODO: timezone from request
-			}
+			settings: defaultSettings,
+			fingerprints: []
 		};
-
-		// insert user into database
-		await new UserModel(user).save();
+		await User.insert(user);
 
 		return res.json({ token: await generateToken(user.id) });
 	}
 );
 
-export function adjustEmail(email: string): string | null {
+export function adjustEmail(email: string): string | undefined {
 	// body parser already checked if it is a valid email
 	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);
 	// @ts-ignore
@@ -304,6 +240,6 @@ export default router;
  * Field Error
  * @returns { "code": 50035, "errors": { "consent": { "_errors": [{ "code": "CONSENT_REQUIRED", "message": "You must agree to Discord's Terms of Service and Privacy Policy." }]}}, "message": "Invalid Form Body"}
  *
- * Success 201:
+ * Success 200:
  * @returns {token: "OMITTED"}
  */

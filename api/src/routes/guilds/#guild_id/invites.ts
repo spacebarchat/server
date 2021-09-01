@@ -1,4 +1,4 @@
-import { getPermission, InviteModel, toObject } from "@fosscord/util";
+import { getPermission, Invite } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();
@@ -9,9 +9,9 @@ router.get("/", async (req: Request, res: Response) => {
 	const permissions = await getPermission(req.user_id, guild_id);
 	permissions.hasThrow("MANAGE_GUILD");
 
-	const invites = await InviteModel.find({ guild_id }).exec();
+	const invites = await Invite.find({ guild_id });
 
-	return res.json(toObject(invites));
+	return res.json(invites);
 });
 
 export default router;

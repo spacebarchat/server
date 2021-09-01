@@ -5,7 +5,10 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"postinstall": "npm run build",
+		"start": "npm run build && node dist/",
+		"patch": "patch-package",
+		"test": "npm run build && jest",
+		"postinstall": "npm run patch && npm run build",
 		"build": "npx tsc -b ."
 	},
 	"repository": {
@@ -28,23 +31,32 @@
 	"devDependencies": {
 		"@types/amqplib": "^0.8.1",
 		"@types/jsonwebtoken": "^8.5.0",
-		"@types/mongodb": "^3.6.9",
 		"@types/mongoose-autopopulate": "^0.10.1",
-		"@types/mongoose-lean-virtuals": "^0.5.1",
 		"@types/node": "^14.17.9",
-		"@types/node-fetch": "^2.5.12"
+		"@types/node-fetch": "^2.5.12",
+		"jest": "^27.0.6"
 	},
 	"dependencies": {
-		"ajv": "^8.5.0",
+		"ajv": "^8.6.2",
 		"amqplib": "^0.8.0",
+		"class-validator": "^0.13.1",
 		"dot-prop": "^6.0.1",
 		"env-paths": "^2.2.1",
 		"jsonwebtoken": "^8.5.1",
-		"missing-native-js-functions": "^1.2.10",
-		"mongodb": "^3.6.9",
-		"mongoose": "^5.13.7",
-		"mongoose-autopopulate": "^0.12.3",
+		"lambert-server": "^1.2.10",
+		"missing-native-js-functions": "^1.2.11",
 		"node-fetch": "^2.6.1",
-		"typescript": "^4.1.3"
+		"patch-package": "^6.4.7",
+		"pg": "^8.7.1",
+		"reflect-metadata": "^0.1.13",
+		"sqlite3": "^5.0.2",
+		"typeorm": "^0.2.37",
+		"typescript": "^4.4.2",
+		"typescript-json-schema": "^0.50.1"
+	},
+	"jest": {
+		"setupFilesAfterEnv": [
+			"./tests/setupJest.js"
+		]
 	}
 }

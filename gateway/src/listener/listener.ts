@@ -1,22 +1,21 @@
 import {
-	db,
-	Event,
-	UserModel,
+	User,
 	getPermission,
 	Permissions,
-	ChannelModel,
+	Channel,
 	RabbitMQ,
-	EVENT,
 	listenEvent,
 	EventOpts,
 	ListenEventOpts,
+	Member,
 } from "@fosscord/util";
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
 import WebSocket from "../util/WebSocket";
 import "missing-native-js-functions";
-import { ConsumeMessage } from "amqplib";
-import { Channel } from "amqplib";
+import { Channel as AMQChannel } from "amqplib";
+import { In, Like } from "../../../util/node_modules/typeorm";
+import { Recipient } from "../../../util/dist/entities/Recipient";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent
@@ -27,15 +26,15 @@ import { Channel } from "amqplib";
 
 // TODO: use already queried guilds/channels of Identify and don't fetch them again
 export async function setupListener(this: WebSocket) {
-	const user = await UserModel.findOne({ id: this.user_id }, { guilds: true }).exec();
-	const channels = await ChannelModel.find(
-		{ $or: [{ recipient_ids: this.user_id }, { guild_id: { $in: user.guilds } }] },
-		{ id: true, permission_overwrites: true }
-	).exec();
-	const dm_channels = channels.filter((x) => !x.guild_id);
+	const members = await Member.find({ where: { id: this.user_id } });
+	const guild_ids = members.map((x) => x.guild_id);
+	const user = await User.findOneOrFail({ id: this.user_id });
+	const recipients = await Recipient.find({ where: { id: this.user_id }, relations: ["channel"] });
+	const channels = await Channel.find({ guild_id: In(guild_ids) });
+	const dm_channels = recipients.map((x) => x.channel);
 	const guild_channels = channels.filter((x) => x.guild_id);
 
-	const opts: { acknowledge: boolean; channel?: Channel } = { acknowledge: true };
+	const opts: { acknowledge: boolean; channel?: AMQChannel } = { acknowledge: true };
 	const consumer = consume.bind(this);
 
 	if (RabbitMQ.connection) {
@@ -50,7 +49,7 @@ export async function setupListener(this: WebSocket) {
 		this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
 	}
 
-	for (const guild of user.guilds) {
+	for (const guild of guild_ids) {
 		// contains guild and dm channels
 
 		getPermission(this.user_id, guild)
