@@ -5,7 +5,7 @@
 	"main": "dist/Server.js",
 	"types": "dist/Server.d.ts",
 	"scripts": {
-		"test": "npm run build && jest --coverage --verbose ./tests",
+		"test": "npm run build && jest --coverage --verbose --forceExit ./tests",
 		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/start",
 		"build": "npx tsc -b .",
@@ -90,9 +90,9 @@
 	},
 	"jest": {
 		"setupFiles": [
-			"<rootDir>/jest/setup.js",
-			"<rootDir>/scripts/setup_test.js"
+			"<rootDir>/jest/setup.js"
 		],
+		"globalSetup": "<rootDir>/scripts/globalSetup.js",
 		"verbose": true
 	}
 }
