@@ -74,6 +74,7 @@ export interface ConfigValue {
 		channel: {
 			maxPins: number;
 			maxTopic: number;
+			maxWebhooks: number;
 		};
 		rate: {
 			ip: Omit<RateLimitOptions, "bot_count">;
@@ -183,6 +184,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		channel: {
 			maxPins: 50,
 			maxTopic: 1024,
+			maxWebhooks: 10,
 		},
 		rate: {
 			ip: {
