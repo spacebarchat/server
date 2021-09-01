@@ -44,7 +44,7 @@
 		"env-paths": "^2.2.1",
 		"jsonwebtoken": "^8.5.1",
 		"lambert-server": "^1.2.10",
-		"missing-native-js-functions": "^1.2.11",
+		"missing-native-js-functions": "^1.2.13",
 		"node-fetch": "^2.6.1",
 		"patch-package": "^6.4.7",
 		"pg": "^8.7.1",

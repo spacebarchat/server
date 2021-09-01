@@ -12,6 +12,7 @@ import {
 } from "../interfaces";
 import { HTTPError } from "lambert-server";
 import { Role } from "./Role";
+import { ReadState } from "./ReadState";
 
 @Entity("members")
 export class Member extends BaseClass {
@@ -53,8 +54,8 @@ export class Member extends BaseClass {
 	settings: UserGuildSettings;
 
 	// TODO: update
-	@Column({ type: "simple-json" })
-	read_state: Record<string, string | null>;
+	// @Column({ type: "simple-json" })
+	// read_state: ReadState;
 
 	static async IsInGuildOrFail(user_id: string, guild_id: string) {
 		if (await Member.count({ id: user_id, guild: { id: guild_id } })) return true;
@@ -206,7 +207,7 @@ export class Member extends BaseClass {
 			Member.insert({
 				...member,
 				roles: undefined,
-				read_state: {},
+				// read_state: {},
 				settings: {
 					channel_overrides: [],
 					message_notifications: 0,

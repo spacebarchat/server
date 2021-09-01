@@ -4,32 +4,52 @@ import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { HTTPError } from "lambert-server";
-import { Channel } from "./Channel";
 
-type PublicUserKeys =
-	| "username"
-	| "discriminator"
-	| "id"
-	| "public_flags"
-	| "avatar"
-	| "accent_color"
-	| "banner"
-	| "bio"
-	| "bot";
-export const PublicUserProjection: PublicUserKeys[] = [
-	"username",
-	"discriminator",
-	"id",
-	"public_flags",
-	"avatar",
-	"accent_color",
-	"banner",
-	"bio",
-	"bot",
-];
+export enum PublicUserEnum {
+	username,
+	discriminator,
+	id,
+	public_flags,
+	avatar,
+	accent_color,
+	banner,
+	bio,
+	bot,
+}
+export type PublicUserKeys = keyof typeof PublicUserEnum;
+
+export enum PrivateUserEnum {
+	flags,
+	mfa_enabled,
+	email,
+	phone,
+	verified,
+	nsfw_allowed,
+	premium,
+	premium_type,
+	disabled,
+	// locale
+}
+export type PrivateUserKeys = keyof typeof PrivateUserEnum | PublicUserKeys;
+
+export const PublicUserProjection = Object.values(PublicUserEnum).filter(
+	(x) => typeof x === "string"
+) as PublicUserKeys[];
+export const PrivateUserProjection = [
+	...PublicUserProjection,
+	Object.values(PrivateUserEnum).filter((x) => typeof x === "string"),
+] as PrivateUserKeys[];
 
 // Private user data that should never get sent to the client
 export type PublicUser = Pick<User, PublicUserKeys>;
+
+export interface UserPublic extends Pick<User, PublicUserKeys> {}
+
+export interface UserPrivate extends Pick<User, PrivateUserKeys> {
+	locale: string;
+}
+
+// TODO: add purchased_flags, premium_usage_flags
 
 @Entity("users")
 export class User extends BaseClass {
