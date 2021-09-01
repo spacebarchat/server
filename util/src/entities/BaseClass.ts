@@ -8,19 +8,19 @@ import "missing-native-js-functions";
 
 export class BaseClass extends BaseEntity {
 	@PrimaryColumn()
-	id: string = Snowflake.generate();
+	id: string;
 
 	// @ts-ignore
-	constructor(public props?: any) {
+	constructor(private props?: any) {
 		super();
 		this.assign(props);
 	}
 
-	get construct(): any {
+	private get construct(): any {
 		return this.constructor;
 	}
 
-	get metadata() {
+	private get metadata() {
 		return this.construct.getRepository().metadata as EntityMetadata;
 	}
 
@@ -48,6 +48,8 @@ export class BaseClass extends BaseEntity {
 				this[key] = props[key];
 			}
 		}
+
+		if (!this.id) this.id = Snowflake.generate();
 	}
 
 	@BeforeUpdate()

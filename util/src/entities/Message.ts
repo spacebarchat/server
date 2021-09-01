@@ -139,7 +139,7 @@ export class Message extends BaseClass {
 	reactions: Reaction[];
 
 	@Column({ type: "text", nullable: true })
-	nonce?: string | number;
+	nonce?: string;
 
 	@Column({ nullable: true })
 	pinned?: boolean;
