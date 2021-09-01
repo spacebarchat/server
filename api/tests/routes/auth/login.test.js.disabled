@@ -1,2 +1,0 @@
-const supertest = require("supertest");
-const request = supertest("http://localhost:1870");
