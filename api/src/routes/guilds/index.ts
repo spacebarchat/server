@@ -3,6 +3,7 @@ import { Role, Guild, Snowflake, Config, User, Member, Channel } from "@fosscord
 import { HTTPError } from "lambert-server";
 import { check } from "./../../util/instanceOf";
 import { GuildCreateSchema } from "../../schema/Guild";
+import { DiscordApiErrors } from "../../util/Constants";
 
 const router: Router = Router();
 
@@ -14,7 +15,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	const { maxGuilds } = Config.get().limits.user;
 	const guild_count = await Member.count({ id: req.user_id });
 	if (guild_count >= maxGuilds) {
-		throw new HTTPError(`Maximum number of guilds reached ${maxGuilds}`, 403);
+		throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
 	}
 
 	const guild_id = Snowflake.generate();

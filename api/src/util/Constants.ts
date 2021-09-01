@@ -1,4 +1,4 @@
-import {ApiError} from "./ApiError";
+import { ApiError } from "./ApiError";
 
 export const WSCodes = {
 	1000: "WS_CLOSE_REQUESTED",
@@ -6,60 +6,7 @@ export const WSCodes = {
 	4010: "SHARDING_INVALID",
 	4011: "SHARDING_REQUIRED",
 	4013: "INVALID_INTENTS",
-	4014: "DISALLOWED_INTENTS",
-};
-
-const AllowedImageFormats = ["webp", "png", "jpg", "jpeg", "gif"];
-
-const AllowedImageSizes = Array.from({ length: 9 }, (e, i) => 2 ** (i + 4));
-
-function makeImageUrl(root: string, { format = "webp", size = 512 } = {}) {
-	if (format && !AllowedImageFormats.includes(format)) throw new Error("IMAGE_FORMAT: " + format);
-	if (size && !AllowedImageSizes.includes(size)) throw new RangeError("IMAGE_SIZE: " + size);
-	return `${root}.${format}${size ? `?size=${size}` : ""}`;
-}
-/**
- * Options for Image URLs.
- * @typedef {Object} ImageURLOptions
- * @property {string} [format] One of `webp`, `png`, `jpg`, `jpeg`, `gif`. If no format is provided,
- * defaults to `webp`.
- * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
- * animated avatars; the default is false.
- * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
- */
-
-export const Endpoints = {
-	CDN(root: string) {
-		return {
-			Emoji: (emojiID: string, format = "png") => `${root}/emojis/${emojiID}.${format}`,
-			Asset: (name: string) => `${root}/assets/${name}`,
-			DefaultAvatar: (discriminator: string) => `${root}/embed/avatars/${discriminator}.png`,
-			Avatar: (user_id: string, hash: string, format = "webp", size: number, dynamic = false) => {
-				if (dynamic) format = hash.startsWith("a_") ? "gif" : format;
-				return makeImageUrl(`${root}/avatars/${user_id}/${hash}`, { format, size });
-			},
-			Banner: (guildID: string, hash: string, format = "webp", size: number) =>
-				makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
-			Icon: (guildID: string, hash: string, format = "webp", size: number, dynamic = false) => {
-				if (dynamic) format = hash.startsWith("a_") ? "gif" : format;
-				return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
-			},
-			AppIcon: (clientID: string, hash: string, { format = "webp", size }: { format?: string; size?: number } = {}) =>
-				makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
-			AppAsset: (clientID: string, hash: string, { format = "webp", size }: { format?: string; size?: number } = {}) =>
-				makeImageUrl(`${root}/app-assets/${clientID}/${hash}`, { size, format }),
-			GDMIcon: (channelID: string, hash: string, format = "webp", size: number) =>
-				makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
-			Splash: (guildID: string, hash: string, format = "webp", size: number) =>
-				makeImageUrl(`${root}/splashes/${guildID}/${hash}`, { size, format }),
-			DiscoverySplash: (guildID: string, hash: string, format = "webp", size: number) =>
-				makeImageUrl(`${root}/discovery-splashes/${guildID}/${hash}`, { size, format }),
-			TeamIcon: (teamID: string, hash: string, { format = "webp", size }: { format?: string; size?: number } = {}) =>
-				makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
-		};
-	},
-	invite: (root: string, code: string) => `${root}/${code}`,
-	botGateway: "/gateway/bot",
+	4014: "DISALLOWED_INTENTS"
 };
 
 /**
@@ -84,7 +31,7 @@ export const Status = {
 	DISCONNECTED: 5,
 	WAITING_FOR_GUILDS: 6,
 	IDENTIFYING: 7,
-	RESUMING: 8,
+	RESUMING: 8
 };
 
 /**
@@ -101,7 +48,7 @@ export const VoiceStatus = {
 	CONNECTING: 1,
 	AUTHENTICATING: 2,
 	RECONNECTING: 3,
-	DISCONNECTED: 4,
+	DISCONNECTED: 4
 };
 
 export const OPCodes = {
@@ -116,7 +63,7 @@ export const OPCodes = {
 	REQUEST_GUILD_MEMBERS: 8,
 	INVALID_SESSION: 9,
 	HELLO: 10,
-	HEARTBEAT_ACK: 11,
+	HEARTBEAT_ACK: 11
 };
 
 export const VoiceOPCodes = {
@@ -128,7 +75,7 @@ export const VoiceOPCodes = {
 	SPEAKING: 5,
 	HELLO: 8,
 	CLIENT_CONNECT: 12,
-	CLIENT_DISCONNECT: 13,
+	CLIENT_DISCONNECT: 13
 };
 
 export const Events = {
@@ -186,7 +133,7 @@ export const Events = {
 	SHARD_READY: "shardReady",
 	SHARD_RESUME: "shardResume",
 	INVALIDATED: "invalidated",
-	RAW: "raw",
+	RAW: "raw"
 };
 
 export const ShardEvents = {
@@ -195,7 +142,7 @@ export const ShardEvents = {
 	INVALID_SESSION: "invalidSession",
 	READY: "ready",
 	RESUMED: "resumed",
-	ALL_READY: "allReady",
+	ALL_READY: "allReady"
 };
 
 /**
@@ -287,7 +234,7 @@ export const WSEvents = keyMirror([
 	"TYPING_START",
 	"VOICE_STATE_UPDATE",
 	"VOICE_SERVER_UPDATE",
-	"WEBHOOKS_UPDATE",
+	"WEBHOOKS_UPDATE"
 ]);
 
 /**
@@ -330,7 +277,7 @@ export const MessageTypes = [
 	null,
 	null,
 	null,
-	"REPLY",
+	"REPLY"
 ];
 
 /**
@@ -361,12 +308,12 @@ export const ChannelTypes = {
 	GROUP: 3,
 	CATEGORY: 4,
 	NEWS: 5,
-	STORE: 6,
+	STORE: 6
 };
 
 export const ClientApplicationAssetTypes = {
 	SMALL: 1,
-	BIG: 2,
+	BIG: 2
 };
 
 export const Colors = {
@@ -398,7 +345,7 @@ export const Colors = {
 	BLURPLE: 0x7289da,
 	GREYPLE: 0x99aab5,
 	DARK_BUT_NOT_BLACK: 0x2c2f33,
-	NOT_QUITE_BLACK: 0x23272a,
+	NOT_QUITE_BLACK: 0x23272a
 };
 
 /**
@@ -613,7 +560,10 @@ export const DiscordApiErrors = {
 	ONLY_OWNER: new ApiError("Only the owner of this account can perform this action", 20018),
 	ANNOUNCEMENT_RATE_LIMITS: new ApiError("This message cannot be edited due to announcement rate limits", 20022),
 	CHANNEL_WRITE_RATELIMIT: new ApiError("The channel you are writing has hit the write rate limit", 20028),
-	WORDS_NOT_ALLOWED: new ApiError("Your Stage topic, server name, server description, or channel names contain words that are not allowed", 20031),
+	WORDS_NOT_ALLOWED: new ApiError(
+		"Your Stage topic, server name, server description, or channel names contain words that are not allowed",
+		20031
+	),
 	GUILD_PREMIUM_LEVEL_TOO_LOW: new ApiError("Guild premium subscription level too low", 20035),
 	MAXIMUM_GUILDS: new ApiError("Maximum number of guilds reached ({})", 30001, undefined, ["100"]),
 	MAXIMUM_FRIENDS: new ApiError("Maximum number of friends reached ({})", 30002, undefined, ["1000"]),
@@ -659,7 +609,12 @@ export const DiscordApiErrors = {
 	MISSING_PERMISSIONS: new ApiError("You lack permissions to perform that action", 50013),
 	INVALID_AUTHENTICATION_TOKEN: new ApiError("Invalid authentication token provided", 50014),
 	NOTE_TOO_LONG: new ApiError("Note was too long", 50015),
-	INVALID_BULK_DELETE_QUANTITY: new ApiError("Provided too few or too many messages to delete. Must provide at least {} and fewer than {} messages to delete", 50016, undefined, ["2","100"]),
+	INVALID_BULK_DELETE_QUANTITY: new ApiError(
+		"Provided too few or too many messages to delete. Must provide at least {} and fewer than {} messages to delete",
+		50016,
+		undefined,
+		["2", "100"]
+	),
 	CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: new ApiError("A message can only be pinned to the channel it was sent in", 50019),
 	INVALID_OR_TAKEN_INVITE_CODE: new ApiError("Invite code was either invalid or taken", 50020),
 	CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: new ApiError("Cannot execute action on a system message", 50021),
@@ -670,7 +625,10 @@ export const DiscordApiErrors = {
 	INVALID_ROLE: new ApiError("Invalid role", 50028),
 	INVALID_RECIPIENT: new ApiError("Invalid Recipient(s)", 50033),
 	BULK_DELETE_MESSAGE_TOO_OLD: new ApiError("A message provided was too old to bulk delete", 50034),
-	INVALID_FORM_BODY: new ApiError("Invalid form body (returned for both application/json and multipart/form-data bodies), or invalid Content-Type provided", 50035),
+	INVALID_FORM_BODY: new ApiError(
+		"Invalid form body (returned for both application/json and multipart/form-data bodies), or invalid Content-Type provided",
+		50035
+	),
 	INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: new ApiError("An invite was accepted to a guild the application's bot is not in", 50036),
 	INVALID_API_VERSION: new ApiError("Invalid API version provided", 50041),
 	FILE_EXCEEDS_MAXIMUM_SIZE: new ApiError("File uploaded exceeds the maximum size", 50045),
@@ -679,7 +637,10 @@ export const DiscordApiErrors = {
 	PAYMENT_SOURCE_REQUIRED: new ApiError("Payment source required to redeem gift", 50070),
 	CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: new ApiError("Cannot delete a channel required for Community guilds", 50074),
 	INVALID_STICKER_SENT: new ApiError("Invalid sticker sent", 50081),
-	CANNOT_EDIT_ARCHIVED_THREAD: new ApiError("Tried to perform an operation on an archived thread, such as editing a message or adding a user to the thread", 50083),
+	CANNOT_EDIT_ARCHIVED_THREAD: new ApiError(
+		"Tried to perform an operation on an archived thread, such as editing a message or adding a user to the thread",
+		50083
+	),
 	INVALID_THREAD_NOTIFICATION_SETTINGS: new ApiError("Invalid thread notification settings", 50084),
 	BEFORE_EARLIER_THAN_THREAD_CREATION_DATE: new ApiError("before value is earlier than the thread creation date", 50085),
 	SERVER_NOT_AVAILABLE_IN_YOUR_LOCATION: new ApiError("This server is not available in your location", 50095),
@@ -701,17 +662,14 @@ export const DiscordApiErrors = {
 	STICKER_FRAME_RATE_TOO_SMALL_OR_TOO_LARGE: new ApiError("Sticker frame rate is either too small or too large", 170006),
 	STICKER_ANIMATION_DURATION_MAXIMUM: new ApiError("Sticker animation duration exceeds maximum of {} seconds", 170007, undefined, ["5"]),
 
-
 	//Other errors
-	UNKNOWN_VOICE_STATE: new ApiError("Unknown Voice State", 10065, 404),
-}
+	UNKNOWN_VOICE_STATE: new ApiError("Unknown Voice State", 10065, 404)
+};
 
 /**
  * An error encountered while performing an API request (Fosscord only). Here are the potential errors:
  */
-export const FosscordApiErrors = {
-
-}
+export const FosscordApiErrors = {};
 
 /**
  * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
@@ -731,7 +689,7 @@ export const MembershipStates = [
 	// They start at 1
 	null,
 	"INVITED",
-	"ACCEPTED",
+	"ACCEPTED"
 ];
 
 /**
@@ -744,7 +702,7 @@ export const WebhookTypes = [
 	// They start at 1
 	null,
 	"Incoming",
-	"Channel Follower",
+	"Channel Follower"
 ];
 
 function keyMirror(arr: string[]) {
