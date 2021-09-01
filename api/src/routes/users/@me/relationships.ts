@@ -5,10 +5,12 @@ import {
 	RelationshipType,
 	RelationshipRemoveEvent,
 	emitEvent,
-	Relationship
+	Relationship,
+	Config
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
+import { DiscordApiErrors } from "../../../util/Constants";
 
 import { check, Length } from "../../../util/instanceOf";
 
@@ -31,6 +33,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 	var relationship = user.relationships.find((x) => x.id === id);
 	const friendRequest = friend.relationships.find((x) => x.id === req.user_id);
 
+	// TODO: you can add infinitely many blocked users (should this be prevented?)
 	if (type === RelationshipType.blocked) {
 		if (relationship) {
 			if (relationship.type === RelationshipType.blocked) throw new HTTPError("You already blocked the user");
@@ -66,6 +69,9 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 
 		return res.sendStatus(204);
 	}
+
+	const { maxFriends } = Config.get().limits.user;
+	if (user.relationships.length >= maxFriends) throw DiscordApiErrors.MAXIMUM_FRIENDS.withParams(maxFriends);
 
 	var incoming_relationship = new Relationship({ nickname: undefined, type: RelationshipType.incoming, id: req.user_id });
 	var outgoing_relationship = new Relationship({ nickname: undefined, type: RelationshipType.outgoing, id });

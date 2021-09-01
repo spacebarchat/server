@@ -7,12 +7,14 @@ import {
 	GuildRoleCreateEvent,
 	GuildRoleUpdateEvent,
 	GuildRoleDeleteEvent,
-	emitEvent
+	emitEvent,
+	Config
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 
 import { check } from "../../../util/instanceOf";
 import { RoleModifySchema } from "../../../schema/Roles";
+import { DiscordApiErrors } from "../../../util/Constants";
 
 const router: Router = Router();
 
@@ -33,24 +35,34 @@ router.post("/", check(RoleModifySchema), async (req: Request, res: Response) =>
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");
 
-	const role = await new Role({
+	const role_count = await Role.count({ guild_id });
+	const { maxRoles } = Config.get().limits.guild;
+
+	if (role_count > maxRoles) throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
+
+	const role = {
+		position: 0,
+		hoist: false,
+		color: 0, // default value
 		...body,
 		id: Snowflake.generate(),
 		guild_id: guild_id,
 		managed: false,
-		position: 0,
-		tags: null,
-		permissions: String(perms.bitfield & (body.permissions || 0n))
-	}).save();
+		permissions: String(perms.bitfield & (body.permissions || 0n)),
+		tags: undefined
+	};
 
-	await emitEvent({
-		event: "GUILD_ROLE_CREATE",
-		guild_id,
-		data: {
+	await Promise.all([
+		Role.insert(role),
+		emitEvent({
+			event: "GUILD_ROLE_CREATE",
 			guild_id,
-			role: role
-		}
-	} as GuildRoleCreateEvent);
+			data: {
+				guild_id,
+				role: role
+			}
+		} as GuildRoleCreateEvent)
+	]);
 
 	res.json(role);
 });
@@ -84,14 +96,13 @@ router.delete("/:role_id", async (req: Request, res: Response) => {
 // TODO: check role hierarchy
 
 router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Response) => {
-	const guild_id = req.params.guild_id;
-	const { role_id } = req.params;
+	const { role_id, guild_id } = req.params;
 	const body = req.body as RoleModifySchema;
 
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow("MANAGE_ROLES");
 
-	const role = new Role({ ...body, id: role_id, guild_id, permissions: perms.bitfield & (body.permissions || 0n) });
+	const role = new Role({ ...body, id: role_id, guild_id, permissions: String(perms.bitfield & (body.permissions || 0n)) });
 
 	await Promise.all([
 		role.save(),
