@@ -4,6 +4,7 @@ import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscor
 import { HTTPError } from "lambert-server";
 import { GuildTemplateCreateSchema } from "../../../schema/Guild";
 import { check } from "../../../util/instanceOf";
+import { DiscordApiErrors } from "../../../util/Constants";
 
 router.get("/:code", async (req: Request, res: Response) => {
 	const { code } = req.params;
@@ -21,7 +22,7 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 
 	const guild_count = await Member.count({ id: req.user_id });
 	if (guild_count >= maxGuilds) {
-		throw new HTTPError(`Maximum number of guilds reached ${maxGuilds}`, 403);
+		throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
 	}
 
 	const template = await Template.findOneOrFail({ code: code });
