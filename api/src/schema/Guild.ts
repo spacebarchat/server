@@ -48,7 +48,7 @@ export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels"> {
 	banner?: string;
 	splash?: string;
 	description?: string;
-	features?: [string];
+	features?: string[];
 	verification_level?: number;
 	default_message_notifications?: number;
 	system_channel_flags?: number;
