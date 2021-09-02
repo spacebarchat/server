@@ -7,6 +7,7 @@ import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { createDeflate } from "zlib";
 import { URL } from "url";
+import {Session} from "@fosscord/util";
 var erlpack: any;
 try {
 	erlpack = require("erlpack");
@@ -56,10 +57,12 @@ export async function Connection(this: Server, socket: WebSocket, request: Incom
 		});
 
 		socket.readyTimeout = setTimeout(() => {
+			Session.delete({session_id: socket.session_id}) //should we await?
 			return socket.close(CLOSECODES.Session_timed_out);
 		}, 1000 * 30);
 	} catch (error) {
 		console.error(error);
+		Session.delete({session_id: socket.session_id}) //should we await?
 		return socket.close(CLOSECODES.Unknown_error);
 	}
 }

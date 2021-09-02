@@ -16,6 +16,7 @@ export * from "./ReadState";
 export * from "./Recipient";
 export * from "./Relationship";
 export * from "./Role";
+export * from "./Session";
 export * from "./Sticker";
 export * from "./Team";
 export * from "./TeamMember";
