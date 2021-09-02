@@ -8,9 +8,9 @@
 		}
 	],
 	"info": {
-		"description": "Fosscord is a free open source selfhostable chat, voice and video discord compatible platform",
+		"description": "Fosscord is a free open source selfhostable discord compatible chat, voice and video platform",
 		"version": "1.0.0",
-		"title": "Swagger Petstore",
+		"title": "Fosscord HTTP API Routes",
 		"termsOfService": "",
 		"contact": { "name": "Fosscord" },
 		"license": { "name": "AGPLV3", "url": "https://www.gnu.org/licenses/agpl-3.0.en.html" }
@@ -1617,9 +1617,9 @@
 				"description": ""
 			}
 		},
-		"securitySchemes": { "authorization": { "type": "oauth2" } },
+		"securitySchemes": {},
 		"links": {},
 		"callbacks": {}
 	},
-	"security": [{ "authorization": [] }]
+	"security": []
 }
