@@ -181,7 +181,7 @@ router.post(
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 
-		const user = {
+		const user = await new User({
 			created_at: new Date(),
 			username: adjusted_username,
 			discriminator,
@@ -207,8 +207,7 @@ router.post(
 			},
 			settings: defaultSettings,
 			fingerprints: []
-		};
-		await User.insert(user);
+		}).save();
 
 		return res.json({ token: await generateToken(user.id) });
 	}
