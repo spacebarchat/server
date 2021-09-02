@@ -2,6 +2,8 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
+export interface PublicConnectedAccount extends Pick<ConnectedAccount, "name" | "type" | "verifie"> {}
+
 @Entity("connected_accounts")
 export class ConnectedAccount extends BaseClass {
 	@Column({ nullable: true })
