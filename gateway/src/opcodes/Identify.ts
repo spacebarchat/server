@@ -8,6 +8,7 @@ import {
 	Member,
 	ReadyEventData,
 	User,
+	Session,
 	EVENTEnum,
 	Config,
 	dbConnection,
@@ -18,8 +19,8 @@ import { Send } from "../util/Send";
 // import experiments from "./experiments.json";
 const experiments: any = [];
 import { check } from "./instanceOf";
-import { Like } from "../../../util/node_modules/typeorm";
 import { Recipient } from "../../../util/dist/entities/Recipient";
+import { genSessionId } from "../util/SessionUtils";
 
 // TODO: bot sharding
 // TODO: check priviliged intents
@@ -72,6 +73,22 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const channels = recipients.map((x) => x.channel);
 	const user = await User.findOneOrFail({ id: this.user_id });
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
+
+	const session_id = genSessionId();
+	this.session_id = session_id; //Set the session of the WebSocket object
+	const session = new Session({
+		user_id: this.user_id,
+		session_id: session_id,
+		status: "online", //does the session always start as online?
+		client_info: { //TODO read from identity
+			client: "desktop",
+			os: "linux",
+			version: 0
+		}
+	});
+
+	//We save the session and we delete it when the websocket is closed
+	await session.save();
 
 	const public_user = {
 		username: user.username,
@@ -135,7 +152,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			version: 642,
 		},
 		private_channels: channels,
-		session_id: "", // TODO
+		session_id: session_id,
 		analytics_token: "", // TODO
 		connected_accounts: [], // TODO
 		consents: {
@@ -163,6 +180,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		s: this.sequence++,
 		d,
 	});
+
+	//TODO send READY_SUPPLEMENTAL
+	//TODO send GUILD_MEMBER_LIST_UPDATE
+	//TODO send SESSIONS_REPLACE
+	//TODO send VOICE_STATE_UPDATE to let the client know if another device is already connected to a voice channel
 
 	await setupListener.call(this);
 }

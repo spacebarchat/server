@@ -6,6 +6,7 @@ import { Channel } from "amqplib";
 interface WebSocket extends WS {
 	version: number;
 	user_id: string;
+	session_id: string;
 	encoding: "etf" | "json";
 	compress?: "zlib-stream";
 	shard_count?: bigint;
