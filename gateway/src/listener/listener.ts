@@ -26,7 +26,7 @@ import { Recipient } from "../../../util/dist/entities/Recipient";
 
 // TODO: use already queried guilds/channels of Identify and don't fetch them again
 export async function setupListener(this: WebSocket) {
-	const members = await Member.find({ where: { id: this.user_id } });
+	const members = await Member.find({ user_id: this.user_id });
 	const guild_ids = members.map((x) => x.guild_id);
 	const user = await User.findOneOrFail({ id: this.user_id });
 	const recipients = await Recipient.find({ where: { id: this.user_id }, relations: ["channel"] });

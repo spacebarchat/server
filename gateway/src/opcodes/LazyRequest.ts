@@ -8,6 +8,7 @@ import { check } from "./instanceOf";
 
 // TODO: check permission and only show roles/members that have access to this channel
 // TODO: config: if want to list all members (even those who are offline) sorted by role, or just those who are online
+// TODO: rewrite typeorm
 
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	// TODO: check data
