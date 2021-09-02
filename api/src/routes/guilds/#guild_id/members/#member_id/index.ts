@@ -21,7 +21,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
 	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	const member = await Member.findOneOrFail({ id: member_id, guild_id });
+	const member = await Member.findOneOrFail({ user_id: member_id, guild_id });
 
 	return res.json(member);
 });
@@ -29,13 +29,17 @@ router.get("/", async (req: Request, res: Response) => {
 router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
 	const body = req.body as MemberChangeSchema;
+
+	const permission = await getPermission(req.user_id, guild_id);
+
 	if (body.roles) {
 		const roles = await Role.find({ id: In(body.roles) });
 		if (body.roles.length !== roles.length) throw new HTTPError("Roles not found", 404);
-		// TODO: check if user has permission to add role
+
+		permission.hasThrow("MANAGE_ROLES");
 	}
 
-	const member = await Member.findOneOrFail({ id: member_id, guild_id });
+	const member = await Member.findOneOrFail({ user_id: member_id, guild_id });
 	member.assign(req.body);
 
 	Promise.all([

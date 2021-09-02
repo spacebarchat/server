@@ -6,7 +6,7 @@ import { In } from "typeorm";
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	const members = await Member.find({ relations: ["guild"], where: { id: req.user_id } });
+	const members = await Member.find({ relations: ["guild"], where: { user_id: req.user_id } });
 
 	res.json(members.map((x) => x.guild));
 });
@@ -20,7 +20,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
 	if (guild.owner_id === req.user_id) throw new HTTPError("You can't leave your own guild", 400);
 
 	await Promise.all([
-		Member.delete({ id: req.user_id, guild_id: guild_id }),
+		Member.delete({ user_id: req.user_id, guild_id: guild_id }),
 		emitEvent({
 			event: "GUILD_DELETE",
 			data: {

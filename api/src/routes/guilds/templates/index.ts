@@ -20,7 +20,7 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 
 	const { maxGuilds } = Config.get().limits.user;
 
-	const guild_count = await Member.count({ id: req.user_id });
+	const guild_count = await Member.count({ user_id: req.user_id });
 	if (guild_count >= maxGuilds) {
 		throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
 	}
