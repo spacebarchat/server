@@ -80,11 +80,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		user_id: this.user_id,
 		session_id: session_id,
 		status: "online", //does the session always start as online?
-		client_info: { //TODO read from identity
+		client_info: {
+			//TODO read from identity
 			client: "desktop",
 			os: "linux",
-			version: 0
-		}
+			version: 0,
+		},
 	});
 
 	//We save the session and we delete it when the websocket is closed

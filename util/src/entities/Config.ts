@@ -271,7 +271,16 @@ export const DefaultConfigOptions: ConfigValue = {
 	regions: {
 		default: "fosscord",
 		useDefaultAsOptimal: true,
-		available: [{ id: "fosscord", name: "Fosscord", endpoint: "127.0.0.1:3004", vip: false, custom: false, deprecated: false }],
+		available: [
+			{
+				id: "fosscord",
+				name: "Fosscord",
+				endpoint: "127.0.0.1:3004",
+				vip: false,
+				custom: false,
+				deprecated: false,
+			},
+		],
 	},
 	rabbitmq: {
 		host: null,
