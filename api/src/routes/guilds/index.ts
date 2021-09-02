@@ -21,7 +21,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	const guild_id = Snowflake.generate();
 
 	const [guild, role] = await Promise.all([
-		Guild.insert({
+		new Guild({
 			name: body.name,
 			region: Config.get().regions.default,
 			owner_id: req.user_id,
@@ -48,8 +48,8 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 				welcome_channels: []
 			},
 			widget_enabled: false
-		}),
-		Role.insert({
+		}).save(),
+		new Role({
 			id: guild_id,
 			guild_id: guild_id,
 			color: 0,
@@ -59,7 +59,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			name: "@everyone",
 			permissions: String("2251804225"),
 			position: 0
-		})
+		}).save()
 	]);
 
 	if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];

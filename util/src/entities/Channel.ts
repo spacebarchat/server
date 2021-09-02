@@ -144,7 +144,7 @@ export class Channel extends BaseClass {
 		};
 
 		await Promise.all([
-			Channel.insert(channel),
+			new Channel(channel).save(),
 			!opts?.skipEventEmit
 				? emitEvent({
 						event: "CHANNEL_CREATE",

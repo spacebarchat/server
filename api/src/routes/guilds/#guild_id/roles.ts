@@ -53,7 +53,7 @@ router.post("/", check(RoleModifySchema), async (req: Request, res: Response) =>
 	};
 
 	await Promise.all([
-		Role.insert(role),
+		new Role(role).save(),
 		emitEvent({
 			event: "GUILD_ROLE_CREATE",
 			guild_id,

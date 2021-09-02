@@ -205,7 +205,7 @@ export class Member extends BaseClass {
 		guild.joined_at = member.joined_at.toISOString();
 
 		await Promise.all([
-			Member.insert({
+			new Member({
 				...member,
 				roles: undefined,
 				// read_state: {},
@@ -218,7 +218,7 @@ export class Member extends BaseClass {
 					suppress_roles: false,
 					version: 0,
 				},
-			}),
+			}).save(),
 			Guild.increment({ id: guild_id }, "member_count", 1),
 			emitEvent({
 				event: "GUILD_MEMBER_ADD",
@@ -231,7 +231,7 @@ export class Member extends BaseClass {
 			} as GuildMemberAddEvent),
 			emitEvent({
 				event: "GUILD_CREATE",
-				data: { ...guild, members: [...guild.members, member] },
+				data: { ...guild, members: [...guild.members, { ...member, user }] },
 				user_id,
 			} as GuildCreateEvent),
 		]);
