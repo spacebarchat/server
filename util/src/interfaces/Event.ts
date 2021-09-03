@@ -125,6 +125,17 @@ export interface GuildCreateEvent extends Event {
 	event: "GUILD_CREATE";
 	data: Guild & {
 		joined_at: Date;
+		// TODO: add them to guild
+		guild_scheduled_events: never[];
+		guild_hashes: {
+			channels: { omitted: boolean; hash: string };
+			metadata: { omitted: boolean; hash: string };
+			roles: { omitted: boolean; hash: string };
+			version: number;
+		};
+		presences: never[];
+		stage_instances: never[];
+		threads: never[];
 	};
 }
 

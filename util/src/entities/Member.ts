@@ -54,13 +54,14 @@ export class Member extends BaseClassWithoutId {
 
 	@JoinTable({
 		name: "member_roles",
-		joinColumn: { name: "id", referencedColumnName: "index" },
+
+		joinColumn: { name: "index", referencedColumnName: "index" },
 		inverseJoinColumn: {
 			name: "role_id",
 			referencedColumnName: "id",
 		},
 	})
-	@ManyToMany(() => Role)
+	@ManyToMany(() => Role, { cascade: true })
 	roles: Role[];
 
 	@Column()
@@ -208,7 +209,7 @@ export class Member extends BaseClassWithoutId {
 			where: {
 				id: guild_id,
 			},
-			relations: ["channels", "emojis", "members", "roles", "stickers"],
+			relations: ["channels", "emojis", "members", "roles", "stickers", "voice_states"],
 		});
 
 		if (await Member.count({ id: user.id, guild: { id: guild_id } }))
@@ -225,11 +226,9 @@ export class Member extends BaseClassWithoutId {
 			mute: false,
 			pending: false,
 		};
-		// @ts-ignore
-		guild.joined_at = member.joined_at.toISOString();
 
 		await Promise.all([
-			Member.insert({
+			new Member({
 				...member,
 				roles: [new Role({ id: guild_id })],
 				// read_state: {},
@@ -242,7 +241,8 @@ export class Member extends BaseClassWithoutId {
 					suppress_roles: false,
 					version: 0,
 				},
-			}),
+				// Member.save is needed because else the roles relations wouldn't be updated
+			}).save(),
 			Guild.increment({ id: guild_id }, "member_count", 1),
 			emitEvent({
 				event: "GUILD_MEMBER_ADD",
@@ -255,7 +255,22 @@ export class Member extends BaseClassWithoutId {
 			} as GuildMemberAddEvent),
 			emitEvent({
 				event: "GUILD_CREATE",
-				data: { ...guild, members: [...guild.members, { ...member, user }] },
+				data: {
+					...guild,
+					members: [...guild.members, { ...member, user }],
+					member_count: (guild.member_count || 0) + 1,
+					guild_hashes: {
+						channels: { omitted: false, hash: "nkMQJ5nl5Cg" },
+						metadata: { omitted: false, hash: "+5ybMfcb8iw" },
+						roles: { omitted: false, hash: "Idhc6P9ktfM" },
+						version: 1,
+					},
+					guild_scheduled_events: [],
+					joined_at: member.joined_at,
+					presences: [],
+					stage_instances: [],
+					threads: [],
+				},
 				user_id,
 			} as GuildCreateEvent),
 		]);
