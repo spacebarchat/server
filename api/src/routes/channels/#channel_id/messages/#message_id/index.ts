@@ -20,7 +20,8 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 	}
 
 	const new_message = await handleMessage({
-		// TODO: should be message_reference overridable?
+		...message,
+		// TODO: should message_reference be overridable?
 		// @ts-ignore
 		message_reference: message.message_reference,
 		...body,
@@ -35,7 +36,7 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 		await emitEvent({
 			event: "MESSAGE_UPDATE",
 			channel_id,
-			data: { ...message, nonce: undefined }
+			data: { ...new_message, nonce: undefined }
 		} as MessageUpdateEvent)
 	]);
 
