@@ -13,8 +13,9 @@ import {
 import { HTTPError } from "lambert-server";
 
 import { check } from "../../../util/instanceOf";
-import { RoleModifySchema } from "../../../schema/Roles";
+import { RoleModifySchema, RolePositionUpdateSchema } from "../../../schema/Roles";
 import { DiscordApiErrors } from "../../../util/Constants";
+import { In } from "typeorm";
 
 const router: Router = Router();
 
@@ -40,20 +41,21 @@ router.post("/", check(RoleModifySchema), async (req: Request, res: Response) =>
 
 	if (role_count > maxRoles) throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
 
-	const role = {
+	const role = new Role({
+		// values before ...body are default and can be overriden
 		position: 0,
 		hoist: false,
-		color: 0, // default value
+		color: 0,
+		mentionable: false,
 		...body,
-		id: Snowflake.generate(),
 		guild_id: guild_id,
 		managed: false,
 		permissions: String(perms.bitfield & (body.permissions || 0n)),
 		tags: undefined
-	};
+	});
 
 	await Promise.all([
-		new Role(role).save(),
+		role.save(),
 		emitEvent({
 			event: "GUILD_ROLE_CREATE",
 			guild_id,
@@ -117,6 +119,33 @@ router.patch("/:role_id", check(RoleModifySchema), async (req: Request, res: Res
 	]);
 
 	res.json(role);
+});
+
+router.patch("/", check(RolePositionUpdateSchema), async (req: Request, res: Response) => {
+	const { guild_id } = req.params;
+	const body = req.body as RolePositionUpdateSchema;
+
+	const perms = await getPermission(req.user_id, guild_id);
+	perms.hasThrow("MANAGE_ROLES");
+
+	await Promise.all(body.map(async (x) => Role.update({ guild_id, id: x.id }, { position: x.position })));
+
+	const roles = await Role.find({ guild_id, id: In(body.map((x) => x.id)) });
+
+	await Promise.all(
+		roles.map((x) =>
+			emitEvent({
+				event: "GUILD_ROLE_UPDATE",
+				guild_id,
+				data: {
+					guild_id,
+					role: x
+				}
+			} as GuildRoleUpdateEvent)
+		)
+	);
+
+	res.json(roles);
 });
 
 export default router;
