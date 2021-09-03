@@ -54,7 +54,7 @@ export class Member extends BaseClassWithoutId {
 
 	@JoinTable({
 		name: "member_roles",
-		joinColumn: { name: "index", referencedColumnName: "index" },
+		joinColumn: { name: "id", referencedColumnName: "index" },
 		inverseJoinColumn: {
 			name: "role_id",
 			referencedColumnName: "id",
@@ -119,14 +119,14 @@ export class Member extends BaseClassWithoutId {
 	}
 
 	static async addRole(user_id: string, guild_id: string, role_id: string) {
-		const [member] = await Promise.all([
+		const [member, role] = await Promise.all([
 			// @ts-ignore
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
-				select: ["roles.id"],
+				select: ["index", "roles.id"],
 			}),
-			await Role.findOneOrFail({ id: role_id, guild_id }),
+			Role.findOneOrFail({ where: { id: role_id, guild_id }, select: ["id"] }),
 		]);
 		member.roles.push(new Role({ id: role_id }));
 
@@ -150,7 +150,7 @@ export class Member extends BaseClassWithoutId {
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
-				select: ["roles.id"],
+				select: ["roles.id", "index"],
 			}),
 			await Role.findOneOrFail({ id: role_id, guild_id }),
 		]);
