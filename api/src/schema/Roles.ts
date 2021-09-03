@@ -15,3 +15,15 @@ export interface RoleModifySchema {
 	mentionable?: boolean; // whether the role should be mentionable
 	position?: number;
 }
+
+export const RolePositionUpdateSchema = [
+	{
+		id: String,
+		position: Number
+	}
+];
+
+export type RolePositionUpdateSchema = {
+	id: string;
+	position: number;
+}[];

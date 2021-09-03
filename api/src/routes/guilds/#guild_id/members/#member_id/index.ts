@@ -33,10 +33,10 @@ router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response)
 	const permission = await getPermission(req.user_id, guild_id);
 
 	if (body.roles) {
+		permission.hasThrow("MANAGE_ROLES");
+
 		const roles = await Role.find({ id: In(body.roles) });
 		if (body.roles.length !== roles.length) throw new HTTPError("Roles not found", 404);
-
-		permission.hasThrow("MANAGE_ROLES");
 	}
 
 	const member = await Member.findOneOrFail({ id: member_id, guild_id });
