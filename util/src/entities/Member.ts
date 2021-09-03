@@ -12,15 +12,16 @@ import {
 } from "../interfaces";
 import { HTTPError } from "lambert-server";
 import { Role } from "./Role";
+import { BaseClassWithoutId } from "./BaseClass";
 
 @Entity("members")
-@Index(["user_id", "guild_id"], { unique: true })
-export class Member extends BaseClass {
-	@Column()
+@Index(["id", "guild_id"], { unique: true })
+export class Member extends BaseClassWithoutId {
+	@Column({ primary: true, unique: false })
 	@RelationId((member: Member) => member.user)
-	user_id: string;
+	id: string;
 
-	@JoinColumn({ name: "user_id" })
+	@JoinColumn({ name: "id" })
 	@ManyToOne(() => User)
 	user: User;
 
@@ -35,7 +36,14 @@ export class Member extends BaseClass {
 	@Column({ nullable: true })
 	nick?: string;
 
-	@JoinTable({ name: "member_roles" })
+	@JoinTable({
+		name: "member_roles",
+		joinColumn: { name: "id", referencedColumnName: "id" },
+		inverseJoinColumn: {
+			name: "role_id",
+			referencedColumnName: "id",
+		},
+	})
 	@ManyToMany(() => Role)
 	roles: Role[];
 
@@ -62,19 +70,19 @@ export class Member extends BaseClass {
 	// read_state: ReadState;
 
 	static async IsInGuildOrFail(user_id: string, guild_id: string) {
-		if (await Member.count({ user_id: user_id, guild: { id: guild_id } })) return true;
+		if (await Member.count({ id: user_id, guild: { id: guild_id } })) return true;
 		throw new HTTPError("You are not member of this guild", 403);
 	}
 
 	static async removeFromGuild(user_id: string, guild_id: string) {
 		const guild = await Guild.findOneOrFail({ select: ["owner_id"], where: { id: guild_id } });
 		if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
-		const member = await Member.findOneOrFail({ where: { user_id, guild_id }, relations: ["user"] });
+		const member = await Member.findOneOrFail({ where: { id: user_id, guild_id }, relations: ["user"] });
 
 		// use promise all to execute all promises at the same time -> save time
 		return Promise.all([
 			Member.delete({
-				user_id,
+				id: user_id,
 				guild_id,
 			}),
 			Guild.decrement({ id: guild_id }, "member_count", -1),
@@ -98,7 +106,7 @@ export class Member extends BaseClass {
 		const [member] = await Promise.all([
 			// @ts-ignore
 			Member.findOneOrFail({
-				where: { user_id: user_id, guild_id },
+				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
 				select: ["roles.id"],
 			}),
@@ -124,7 +132,7 @@ export class Member extends BaseClass {
 		const [member] = await Promise.all([
 			// @ts-ignore
 			Member.findOneOrFail({
-				where: { user_id, guild_id },
+				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
 				select: ["roles.id"],
 			}),
@@ -149,7 +157,7 @@ export class Member extends BaseClass {
 	static async changeNickname(user_id: string, guild_id: string, nickname: string) {
 		const member = await Member.findOneOrFail({
 			where: {
-				user_id: user_id,
+				id: user_id,
 				guild_id,
 			},
 			relations: ["user"],
@@ -175,7 +183,7 @@ export class Member extends BaseClass {
 		const user = await User.getPublicUser(user_id);
 
 		const { maxGuilds } = Config.get().limits.user;
-		const guild_count = await Member.count({ user_id: user_id });
+		const guild_count = await Member.count({ id: user_id });
 		if (guild_count >= maxGuilds) {
 			throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
 		}
@@ -187,11 +195,11 @@ export class Member extends BaseClass {
 			relations: ["channels", "emojis", "members", "roles", "stickers"],
 		});
 
-		if (await Member.count({ user_id: user.id, guild: { id: guild_id } }))
+		if (await Member.count({ id: user.id, guild: { id: guild_id } }))
 			throw new HTTPError("You are already a member of this guild", 400);
 
 		const member = {
-			user_id,
+			id: user_id,
 			guild_id,
 			nick: undefined,
 			roles: [guild_id], // @everyone role
@@ -207,7 +215,7 @@ export class Member extends BaseClass {
 		await Promise.all([
 			new Member({
 				...member,
-				roles: undefined,
+				roles: [new Role({ id: guild_id })],
 				// read_state: {},
 				settings: {
 					channel_overrides: [],

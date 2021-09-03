@@ -11,7 +11,11 @@ export class Recipient extends BaseClass {
 	@ManyToOne(() => require("./Channel").Channel)
 	channel: import("./Channel").Channel;
 
-	@JoinColumn({ name: "id" })
+	@Column()
+	@RelationId((recipient: Recipient) => recipient.user)
+	user_id: string;
+
+	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => require("./User").User)
 	user: import("./User").User;
 

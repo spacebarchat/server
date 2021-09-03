@@ -37,7 +37,7 @@ export const PublicUserProjection = Object.values(PublicUserEnum).filter(
 ) as PublicUserKeys[];
 export const PrivateUserProjection = [
 	...PublicUserProjection,
-	Object.values(PrivateUserEnum).filter((x) => typeof x === "string"),
+	...Object.values(PrivateUserEnum).filter((x) => typeof x === "string"),
 ] as PrivateUserKeys[];
 
 // Private user data that should never get sent to the client
