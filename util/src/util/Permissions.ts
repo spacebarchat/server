@@ -212,15 +212,23 @@ export async function getPermission(user_id?: string, guild_id?: string, channel
 	var guild: Guild | undefined;
 
 	if (channel_id) {
-		channel = await Channel.findOneOrFail({ id: channel_id });
+		channel = await Channel.findOneOrFail({
+			where: { id: channel_id },
+			relations: ["recipients"],
+			select: ["id", "recipients", "permission_overwrites", "owner_id", "guild_id"],
+		});
 		if (channel.guild_id) guild_id = channel.guild_id; // derive guild_id from the channel
 	}
 
 	if (guild_id) {
-		guild = await Guild.findOneOrFail({ id: guild_id });
+		guild = await Guild.findOneOrFail({ where: { id: guild_id }, select: ["id", "owner_id"] });
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
-		member = await Member.findOneOrFail({ where: { guild_id, user_id }, relations: ["roles"] });
+		member = await Member.findOneOrFail({
+			where: { guild_id, user_id },
+			relations: ["roles"],
+			select: ["id", "roles"],
+		});
 	}
 
 	// TODO: remove guild.roles and convert recipient_ids to recipients
