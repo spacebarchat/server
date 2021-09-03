@@ -7,7 +7,10 @@ const router = Router();
 router.get("/", async (req: Request, res: Response) => {
 	const { limit } = req.params;
 
-	const guilds = await Guild.find({ where: { features: "DISCOVERABLE" } }); //, take: Math.abs(Number(limit)) });
+	// ! this only works using SQL querys
+	// TODO: implement this with default typeorm query
+	// const guilds = await Guild.find({ where: { features: "DISCOVERABLE" } }); //, take: Math.abs(Number(limit)) });
+	const guilds = await Guild.find({ where: `"features" LIKE 'COMMUNITY'`, take: Math.abs(Number(limit)) });
 	res.send({ guilds: guilds });
 });
 
