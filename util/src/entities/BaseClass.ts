@@ -6,11 +6,7 @@ import "missing-native-js-functions";
 // TODO use class-validator https://typeorm.io/#/validation with class annotators (isPhone/isEmail) combined with types from typescript-json-schema
 // btw. we don't use class-validator for everything, because we need to explicitly set the type instead of deriving it from typescript also it doesn't easily support nested objects
 
-export class BaseClass extends BaseEntity {
-	@PrimaryColumn()
-	id: string;
-
-	// @ts-ignore
+export class BaseClassWithoutId extends BaseEntity {
 	constructor(private props?: any) {
 		super();
 		this.assign(props);
@@ -24,8 +20,7 @@ export class BaseClass extends BaseEntity {
 		return this.construct.getRepository().metadata as EntityMetadata;
 	}
 
-	assign(props: any) {
-		if (!props || typeof props !== "object") return;
+	assign(props: any = {}) {
 		delete props.opts;
 		delete props.props;
 
@@ -48,8 +43,6 @@ export class BaseClass extends BaseEntity {
 				this[key] = props[key];
 			}
 		}
-
-		if (!this.id) this.id = Snowflake.generate();
 	}
 
 	@BeforeUpdate()
@@ -75,5 +68,16 @@ export class BaseClass extends BaseEntity {
 	static decrement<T extends BaseClass>(conditions: FindConditions<T>, propertyPath: string, value: number | string) {
 		const repository = this.getRepository();
 		return repository.decrement(conditions, propertyPath, value);
+	}
+}
+
+export class BaseClass extends BaseClassWithoutId {
+	@PrimaryColumn()
+	id: string;
+
+	assign(props: any = {}) {
+		super.assign(props);
+		if (!this.id) this.id = Snowflake.generate();
+		return this;
 	}
 }

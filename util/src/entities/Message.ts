@@ -103,7 +103,6 @@ export class Message extends BaseClass {
 	timestamp: Date;
 
 	@Column()
-	@UpdateDateColumn()
 	edited_timestamp?: Date;
 
 	@Column({ nullable: true })
