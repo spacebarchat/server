@@ -20,7 +20,7 @@ router.put("/:overwrite_id", check({ allow: String, deny: String, type: Number, 
 	if (body.type === 0) {
 		if (!(await Role.count({ id: overwrite_id }))) throw new HTTPError("role not found", 404);
 	} else if (body.type === 1) {
-		if (!(await Member.count({ user_id: overwrite_id }))) throw new HTTPError("user not found", 404);
+		if (!(await Member.count({ id: overwrite_id }))) throw new HTTPError("user not found", 404);
 	} else throw new HTTPError("type not supported", 501);
 
 	// @ts-ignore

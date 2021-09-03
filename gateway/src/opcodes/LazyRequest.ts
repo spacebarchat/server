@@ -1,13 +1,19 @@
-// @ts-nocheck WIP
-import { db, getPermission, PublicUserProjection, toObject } from "@fosscord/util";
+import {
+	getPermission,
+	Member,
+	PublicMemberProjection,
+	PublicUserProjection,
+	Role,
+} from "@fosscord/util";
 import { LazyRequest } from "../schema/LazyRequest";
 import { OPCODES, Payload } from "../util/Constants";
 import { Send } from "../util/Send";
 import WebSocket from "../util/WebSocket";
 import { check } from "./instanceOf";
+import "missing-native-js-functions";
 
 // TODO: check permission and only show roles/members that have access to this channel
-// TODO: config: if want to list all members (even those who are offline) sorted by role, or just those who are online
+// TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online
 // TODO: rewrite typeorm
 
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
@@ -18,60 +24,43 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const permissions = await getPermission(this.user_id, guild_id);
 	permissions.hasThrow("VIEW_CHANNEL");
 
-	// MongoDB query to retrieve all hoisted roles and join them with the members and users collection
-	const roles = await db
-		.collection("roles")
-		.aggregate([
-			{
-				$match: {
-					guild_id,
-					// hoist: true // TODO: also match @everyone role
-				},
-			},
-			{ $sort: { position: 1 } },
-			{
-				$lookup: {
-					from: "members",
-					let: { id: "$id" },
-					pipeline: [
-						{ $match: { $expr: { $in: ["$$id", "$roles"] } } },
-						{ $limit: 100 },
-						{
-							$lookup: {
-								from: "users",
-								let: { user_id: "$id" },
-								pipeline: [
-									{ $match: { $expr: { $eq: ["$id", "$$user_id"] } } },
-									{ $project: PublicUserProjection },
-								],
-								as: "user",
-							},
-						},
-						{
-							$unwind: "$user",
-						},
-					],
-					as: "members",
-				},
-			},
-		])
-		.toArray();
+	var members = await Member.find({
+		where: { guild_id: guild_id },
+		relations: ["roles", "user"],
+		select: PublicMemberProjection,
+	});
 
-	const groups = roles.map((x) => ({ id: x.id === guild_id ? "online" : x.id, count: x.members.length }));
-	const member_count = roles.reduce((a, b) => b.members.length + a, 0);
+	const roles = await Role.find({
+		where: { guild_id: guild_id },
+		order: {
+			position: "ASC",
+		},
+	});
+
+	const groups = [] as any[];
+	var member_count = 0;
 	const items = [];
 
 	for (const role of roles) {
-		items.push({
-			group: {
-				count: role.members.length,
-				id: role.id === guild_id ? "online" : role.name,
-			},
-		});
-		for (const member of role.members) {
-			member.roles.remove(guild_id);
-			items.push({ member });
+		const [role_members, other_members] = members.partition((m) =>
+			m.roles.find((r) => r.id === role.id)
+		);
+		const group = {
+			count: role_members.length,
+			id: role.id === guild_id ? "online" : role.name,
+		};
+
+		items.push({ group });
+		groups.push(group);
+
+		for (const member of role_members) {
+			member.roles = member.roles.filter((x) => x.id !== guild_id);
+			items.push({
+				member: { ...member, roles: member.roles.map((x) => x.id) },
+			});
 		}
+		members = other_members;
+		member_count += role_members.length;
 	}
 
 	return Send(this, {

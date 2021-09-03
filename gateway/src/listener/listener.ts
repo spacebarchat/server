@@ -26,15 +26,20 @@ import { Recipient } from "../../../util/dist/entities/Recipient";
 
 // TODO: use already queried guilds/channels of Identify and don't fetch them again
 export async function setupListener(this: WebSocket) {
-	const members = await Member.find({ user_id: this.user_id });
+	const members = await Member.find({ id: this.user_id });
 	const guild_ids = members.map((x) => x.guild_id);
 	const user = await User.findOneOrFail({ id: this.user_id });
-	const recipients = await Recipient.find({ where: { id: this.user_id }, relations: ["channel"] });
+	const recipients = await Recipient.find({
+		where: { user_id: this.user_id },
+		relations: ["channel"],
+	});
 	const channels = await Channel.find({ guild_id: In(guild_ids) });
 	const dm_channels = recipients.map((x) => x.channel);
 	const guild_channels = channels.filter((x) => x.guild_id);
 
-	const opts: { acknowledge: boolean; channel?: AMQChannel } = { acknowledge: true };
+	const opts: { acknowledge: boolean; channel?: AMQChannel } = {
+		acknowledge: true,
+	};
 	const consumer = consume.bind(this);
 
 	if (RabbitMQ.connection) {
@@ -58,13 +63,25 @@ export async function setupListener(this: WebSocket) {
 				this.listeners;
 				this.events[guild] = await listenEvent(guild, consumer, opts);
 
-				for (const channel of guild_channels.filter((c) => c.guild_id === guild)) {
-					if (x.overwriteChannel(channel.permission_overwrites).has("VIEW_CHANNEL")) {
-						this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+				for (const channel of guild_channels.filter(
+					(c) => c.guild_id === guild
+				)) {
+					if (
+						x
+							.overwriteChannel(channel.permission_overwrites)
+							.has("VIEW_CHANNEL")
+					) {
+						this.events[channel.id] = await listenEvent(
+							channel.id,
+							consumer,
+							opts
+						);
 					}
 				}
 			})
-			.catch((e) => console.log("couldn't get permission for guild " + guild, e));
+			.catch((e) =>
+				console.log("couldn't get permission for guild " + guild, e)
+			);
 	}
 
 	this.once("close", () => {
@@ -91,7 +108,12 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			opts.cancel();
 			break;
 		case "CHANNEL_CREATE":
-			if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) return;
+			if (
+				!permission
+					.overwriteChannel(data.permission_overwrites)
+					.has("VIEW_CHANNEL")
+			)
+				return;
 		// TODO: check if user has permission to channel
 		case "GUILD_CREATE":
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
@@ -99,7 +121,11 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		case "CHANNEL_UPDATE":
 			const exists = this.events[id];
 			// @ts-ignore
-			if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
+			if (
+				permission
+					.overwriteChannel(data.permission_overwrites)
+					.has("VIEW_CHANNEL")
+			) {
 				if (exists) break;
 				this.events[id] = await listenEvent(id, consumer, listenOpts);
 			} else {

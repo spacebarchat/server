@@ -10,7 +10,7 @@ router.post("/", async (req: Request, res: Response) => {
 	const user_id = req.user_id;
 	const timestamp = Date.now();
 	const channel = await Channel.findOneOrFail({ id: channel_id });
-	const member = await Member.findOneOrFail({ user_id: user_id });
+	const member = await Member.findOneOrFail({ id: user_id });
 
 	await emitEvent({
 		event: "TYPING_START",

@@ -136,7 +136,7 @@ router.put("/:emoji/:user_id", async (req: Request, res: Response) => {
 
 	await Message.update({ id: message_id, channel_id }, message);
 
-	const member = channel.guild_id && (await Member.findOneOrFail({ user_id: req.user_id }));
+	const member = channel.guild_id && (await Member.findOneOrFail({ id: req.user_id }));
 
 	await emitEvent({
 		event: "MESSAGE_REACTION_ADD",

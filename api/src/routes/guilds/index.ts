@@ -13,54 +13,54 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 	const body = req.body as GuildCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
-	const guild_count = await Member.count({ user_id: req.user_id });
+	const guild_count = await Member.count({ id: req.user_id });
 	if (guild_count >= maxGuilds) {
 		throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
 	}
 
 	const guild_id = Snowflake.generate();
 
-	const [guild, role] = await Promise.all([
-		new Guild({
-			name: body.name,
-			region: Config.get().regions.default,
-			owner_id: req.user_id,
-			afk_timeout: 300,
-			default_message_notifications: 0,
-			explicit_content_filter: 0,
-			features: [],
-			id: guild_id,
-			max_members: 250000,
-			max_presences: 250000,
-			max_video_channel_users: 25,
-			presence_count: 0,
-			member_count: 0, // will automatically be increased by addMember()
-			mfa_level: 0,
-			preferred_locale: "en-US",
-			premium_subscription_count: 0,
-			premium_tier: 0,
-			system_channel_flags: 0,
-			unavailable: false,
-			verification_level: 0,
-			welcome_screen: {
-				enabled: false,
-				description: "No description",
-				welcome_channels: []
-			},
-			widget_enabled: false
-		}).save(),
-		new Role({
-			id: guild_id,
-			guild_id: guild_id,
-			color: 0,
-			hoist: false,
-			managed: false,
-			mentionable: false,
-			name: "@everyone",
-			permissions: String("2251804225"),
-			position: 0
-		}).save()
-	]);
+	const guild = await new Guild({
+		name: body.name,
+		region: Config.get().regions.default,
+		owner_id: req.user_id,
+		afk_timeout: 300,
+		default_message_notifications: 0,
+		explicit_content_filter: 0,
+		features: [],
+		id: guild_id,
+		max_members: 250000,
+		max_presences: 250000,
+		max_video_channel_users: 25,
+		presence_count: 0,
+		member_count: 0, // will automatically be increased by addMember()
+		mfa_level: 0,
+		preferred_locale: "en-US",
+		premium_subscription_count: 0,
+		premium_tier: 0,
+		system_channel_flags: 0,
+		unavailable: false,
+		verification_level: 0,
+		welcome_screen: {
+			enabled: false,
+			description: "No description",
+			welcome_channels: []
+		},
+		widget_enabled: false
+	}).save();
+
+	// we have to create the role _after_ the guild because else we would get a "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" error
+	const role = await new Role({
+		id: guild_id,
+		guild_id: guild_id,
+		color: 0,
+		hoist: false,
+		managed: false,
+		mentionable: false,
+		name: "@everyone",
+		permissions: String("2251804225"),
+		position: 0
+	}).save();
 
 	if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
 
