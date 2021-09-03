@@ -33,7 +33,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const roles = await Role.find({
 		where: { guild_id: guild_id },
 		order: {
-			position: "ASC",
+			position: "DESC",
 		},
 	});
 
@@ -47,7 +47,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 		);
 		const group = {
 			count: role_members.length,
-			id: role.id === guild_id ? "online" : role.name,
+			id: role.id === guild_id ? "online" : role.id,
 		};
 
 		items.push({ group });

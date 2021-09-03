@@ -30,17 +30,13 @@ router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response)
 	const { guild_id, member_id } = req.params;
 	const body = req.body as MemberChangeSchema;
 
+	const member = await Member.findOneOrFail({ where: { id: member_id, guild_id }, relations: ["roles", "user"] });
 	const permission = await getPermission(req.user_id, guild_id);
 
 	if (body.roles) {
 		permission.hasThrow("MANAGE_ROLES");
-
-		const roles = await Role.find({ id: In(body.roles) });
-		if (body.roles.length !== roles.length) throw new HTTPError("Roles not found", 404);
+		member.roles = body.roles.map((x) => new Role({ id: x })); // foreign key constraint will fail if role doesn't exist
 	}
-
-	const member = await Member.findOneOrFail({ id: member_id, guild_id });
-	member.assign(req.body);
 
 	Promise.all([
 		member.save(),
