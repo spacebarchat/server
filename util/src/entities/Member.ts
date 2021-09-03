@@ -1,6 +1,18 @@
 import { PublicUser, User } from "./User";
 import { BaseClass } from "./BaseClass";
-import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
+import {
+	Column,
+	Entity,
+	Index,
+	JoinColumn,
+	JoinTable,
+	ManyToMany,
+	ManyToOne,
+	OneToMany,
+	PrimaryColumn,
+	PrimaryGeneratedColumn,
+	RelationId,
+} from "typeorm";
 import { Guild } from "./Guild";
 import { Config, emitEvent } from "../util";
 import {
@@ -12,12 +24,16 @@ import {
 } from "../interfaces";
 import { HTTPError } from "lambert-server";
 import { Role } from "./Role";
+import { Snowflake } from "../util/Snowflake";
 import { BaseClassWithoutId } from "./BaseClass";
 
 @Entity("members")
 @Index(["id", "guild_id"], { unique: true })
 export class Member extends BaseClassWithoutId {
-	@Column({ primary: true, unique: false })
+	@PrimaryGeneratedColumn()
+	index: string;
+
+	@Column()
 	@RelationId((member: Member) => member.user)
 	id: string;
 
@@ -38,7 +54,7 @@ export class Member extends BaseClassWithoutId {
 
 	@JoinTable({
 		name: "member_roles",
-		joinColumn: { name: "id", referencedColumnName: "id" },
+		joinColumn: { name: "index", referencedColumnName: "index" },
 		inverseJoinColumn: {
 			name: "role_id",
 			referencedColumnName: "id",
@@ -213,7 +229,7 @@ export class Member extends BaseClassWithoutId {
 		guild.joined_at = member.joined_at.toISOString();
 
 		await Promise.all([
-			new Member({
+			Member.insert({
 				...member,
 				roles: [new Role({ id: guild_id })],
 				// read_state: {},
@@ -226,7 +242,7 @@ export class Member extends BaseClassWithoutId {
 					suppress_roles: false,
 					version: 0,
 				},
-			}).save(),
+			}),
 			Guild.increment({ id: guild_id }, "member_count", 1),
 			emitEvent({
 				event: "GUILD_MEMBER_ADD",
