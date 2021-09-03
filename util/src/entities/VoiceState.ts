@@ -32,8 +32,9 @@ export class VoiceState extends BaseClass {
 	@ManyToOne(() => User)
 	user: User;
 
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => Member)
+	// @JoinColumn([{ name: "user_id", referencedColumnName: "id" },{ name: "guild_id", referencedColumnName: "guild_id" }])
+	// @ManyToOne(() => Member)
+	//TODO find a way to make it work without breaking Guild.voice_states
 	member: Member;
 
 	@Column()
