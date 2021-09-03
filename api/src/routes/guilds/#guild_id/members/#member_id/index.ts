@@ -21,7 +21,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
 	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	const member = await Member.findOneOrFail({ user_id: member_id, guild_id });
+	const member = await Member.findOneOrFail({ id: member_id, guild_id });
 
 	return res.json(member);
 });
@@ -39,7 +39,7 @@ router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response)
 		permission.hasThrow("MANAGE_ROLES");
 	}
 
-	const member = await Member.findOneOrFail({ user_id: member_id, guild_id });
+	const member = await Member.findOneOrFail({ id: member_id, guild_id });
 	member.assign(req.body);
 
 	Promise.all([

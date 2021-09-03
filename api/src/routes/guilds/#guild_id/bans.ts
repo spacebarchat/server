@@ -3,7 +3,6 @@ import { emitEvent, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, Guild,
 import { HTTPError } from "lambert-server";
 import { getIpAdress } from "../../../util/ipAddress";
 import { BanCreateSchema } from "../../../schema/Ban";
-
 import { check } from "../../../util/instanceOf";
 
 const router: Router = Router();

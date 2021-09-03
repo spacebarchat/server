@@ -57,8 +57,16 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	}
 
 	const members = await Member.find({
-		where: { user_id: this.user_id },
-		relations: ["guild", "guild.channels", "guild.emojis", "guild.roles", "guild.stickers", "user", "roles"],
+		where: { id: this.user_id },
+		relations: [
+			"guild",
+			"guild.channels",
+			"guild.emojis",
+			"guild.roles",
+			"guild.stickers",
+			"user",
+			"roles",
+		],
 	});
 	const merged_members = members.map((x: any) => {
 		return [x];
@@ -67,7 +75,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
 	const recipients = await Recipient.find({
-		where: { id: this.user_id },
+		where: { user_id: this.user_id },
 		relations: ["channel", "channel.recipients"],
 	});
 	const channels = recipients.map((x) => x.channel);

@@ -10,7 +10,7 @@ import { Recipient } from "../../../../../util/dist/entities/Recipient";
 const router: Router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	const recipients = await Recipient.find({ where: { id: req.user_id }, relations: ["channel"] });
+	const recipients = await Recipient.find({ where: { user_id: req.user_id }, relations: ["channel"] });
 
 	res.json(recipients.map((x) => x.channel));
 });
