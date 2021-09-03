@@ -4,7 +4,7 @@ import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscor
 import { HTTPError } from "lambert-server";
 import { GuildTemplateCreateSchema } from "../../../schema/Guild";
 import { check } from "../../../util/instanceOf";
-import { DiscordApiErrors } from "../../../util/Constants";
+import { DiscordApiErrors } from "@fosscord/util";
 
 router.get("/:code", async (req: Request, res: Response) => {
 	const { code } = req.params;

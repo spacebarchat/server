@@ -10,7 +10,7 @@ import {
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
-import { DiscordApiErrors } from "../../../util/Constants";
+import { DiscordApiErrors } from "@fosscord/util";
 
 import { check, Length } from "../../../util/instanceOf";
 

@@ -2,9 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { EntityNotFoundError } from "typeorm";
 import { FieldError } from "../util/instanceOf";
-import { ApiError } from "../util/ApiError";
+import { ApiError } from "@fosscord/util";
 
-// TODO: update with new body/typorm validation
 export function ErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
 	if (!error) return next();
 
