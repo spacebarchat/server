@@ -1,4 +1,7 @@
 import { FileStorage } from "./FileStorage";
+import path from "path";
+import fse from "fs-extra";
+process.cwd();
 
 export interface Storage {
 	set(path: string, data: Buffer): Promise<void>;
@@ -8,7 +11,17 @@ export interface Storage {
 
 var storage: Storage;
 
-if (process.env.STORAGE_PROVIDER === "file") {
+if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
+	var location = process.env.STORAGE_LOCATION;
+	if (location) {
+		location = path.resolve(location);
+	} else {
+		location = path.join(process.cwd(), "files");
+	}
+	console.log(`[CDN] storage location: ${location}`);
+	fse.ensureDirSync(location);
+	process.env.STORAGE_LOCATION = location;
+
 	storage = new FileStorage();
 }
 
