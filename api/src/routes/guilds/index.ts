@@ -3,7 +3,7 @@ import { Role, Guild, Snowflake, Config, User, Member, Channel } from "@fosscord
 import { HTTPError } from "lambert-server";
 import { check } from "./../../util/instanceOf";
 import { GuildCreateSchema } from "../../schema/Guild";
-import { DiscordApiErrors } from "../../util/Constants";
+import { DiscordApiErrors } from "@fosscord/util";
 
 const router: Router = Router();
 

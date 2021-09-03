@@ -14,7 +14,7 @@ import { HTTPError } from "lambert-server";
 
 import { check } from "../../../util/instanceOf";
 import { RoleModifySchema, RolePositionUpdateSchema } from "../../../schema/Roles";
-import { DiscordApiErrors } from "../../../util/Constants";
+import { DiscordApiErrors } from "@fosscord/util";
 import { In } from "typeorm";
 
 const router: Router = Router();
