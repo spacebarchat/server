@@ -2,7 +2,7 @@ import { VoiceStateUpdateSchema } from "../schema/VoiceStateUpdateSchema";
 import { Payload } from "../util/Constants";
 import WebSocket from "../util/WebSocket";
 import { check } from "./instanceOf";
-import { Config, emitEvent, VoiceServerUpdateEvent, VoiceState, VoiceStateUpdateEvent } from "@fosscord/util";
+import { Config, emitEvent, Member, VoiceServerUpdateEvent, VoiceState, VoiceStateUpdateEvent } from "@fosscord/util";
 import { genVoiceToken } from "../util/SessionUtils";
 // TODO: check if a voice server is setup
 // Notice: Bot users respect the voice channel's user limit, if set. When the voice channel is full, you will not receive the Voice State Update or Voice Server Update events in response to your own Voice State Update. Having MANAGE_CHANNELS permission bypasses this limit and allows you to join regardless of the channel being full or not.
@@ -14,8 +14,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	let voiceState;
 	try {
 		voiceState = await VoiceState.findOneOrFail({
-			where: { user_id: this.user_id },
-			relations: ["member", "member.user", "member.roles"],
+			where: { user_id: this.user_id }
 		});
 		if (voiceState.session_id !== this.session_id && body.channel_id === null) {
 			//Should we also check guild_id === null?
@@ -36,12 +35,18 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		});
 	}
 
+	//TODO the member should only have these properties: hoisted_role, deaf, joined_at, mute, roles, user
+	//TODO the member.user should only have these properties: avatar, discriminator, id, username
+	//TODO this may fail
+	voiceState.member = await Member.findOneOrFail({
+		where: { id: voiceState.user_id, guild_id: voiceState.guild_id },
+		relations: ["user", "roles"],
+	})
+
 	//If the session changed we generate a new token
 	if (voiceState.session_id !== this.session_id) voiceState.token = genVoiceToken();
 	voiceState.session_id = this.session_id;
 
-	//TODO the member should only have these properties: hoisted_role, deaf, joined_at, mute, roles, user
-	//TODO the member.user should only have these properties: avatar, discriminator, id, username
 	const { id, ...newObj } = voiceState;
 
 	await Promise.all([

@@ -32,7 +32,7 @@ export class VoiceState extends BaseClass {
 	@ManyToOne(() => User)
 	user: User;
 
-	@JoinColumn({ name: "user_id" })
+	@JoinColumn([{ name: "user_id", referencedColumnName: "id" },{ name: "guild_id", referencedColumnName: "guild_id" }])
 	@ManyToOne(() => Member)
 	member: Member;
 
