@@ -20,7 +20,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 
 	const guild_id = Snowflake.generate();
 
-	const guild = await new Guild({
+	await Guild.insert({
 		name: body.name,
 		region: Config.get().regions.default,
 		owner_id: req.user_id,
@@ -47,10 +47,10 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 			welcome_channels: []
 		},
 		widget_enabled: false
-	}).save();
+	});
 
 	// we have to create the role _after_ the guild because else we would get a "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" error
-	const role = await new Role({
+	await Role.insert({
 		id: guild_id,
 		guild_id: guild_id,
 		color: 0,
@@ -60,7 +60,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		name: "@everyone",
 		permissions: String("2251804225"),
 		position: 0
-	}).save();
+	});
 
 	if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
 
