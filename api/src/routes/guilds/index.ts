@@ -40,6 +40,8 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 		premium_tier: 0,
 		system_channel_flags: 0,
 		unavailable: false,
+		nsfw: false,
+		nsfw_level: 0,
 		verification_level: 0,
 		welcome_screen: {
 			enabled: false,
