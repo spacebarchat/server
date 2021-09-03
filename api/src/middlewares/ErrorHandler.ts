@@ -19,8 +19,8 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 			code = error.code;
 			message = error.message;
 			httpcode = error.httpStatus;
-		} else if (error as EntityNotFoundError) {
-			message = `${(error as any).stringifyTarget} could not be found`;
+		} else if (error instanceof EntityNotFoundError) {
+			message = `${(error as any).stringifyTarget || "Item"} could not be found`;
 			code = 404;
 		} else if (error instanceof FieldError) {
 			code = Number(error.code);
