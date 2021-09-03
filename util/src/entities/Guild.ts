@@ -17,6 +17,8 @@ import { Webhook } from "./Webhook";
 // TODO: stage_instances
 // TODO: threads
 
+export const PublicGuildRelations = ["channels", "emojis", "members", "roles", "stickers", "voice_states"];
+
 @Entity("guilds")
 export class Guild extends BaseClass {
 	@Column({ nullable: true })
@@ -91,9 +93,9 @@ export class Guild extends BaseClass {
 
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.template)
-	template_id: string;
+	template_id?: string;
 
-	@JoinColumn({ name: "template_id" })
+	@JoinColumn({ name: "template_id", referencedColumnName: "id" })
 	@ManyToOne(() => Template)
 	template: Template;
 
@@ -127,7 +129,7 @@ export class Guild extends BaseClass {
 	@RelationId((guild: Guild) => guild.owner)
 	owner_id: string;
 
-	@JoinColumn([{ name: "owner_id", referencedColumnName: "id" }])
+	@JoinColumn({ name: "owner_id", referencedColumnName: "id" })
 	@ManyToOne(() => User)
 	owner: User;
 
@@ -209,4 +211,10 @@ export class Guild extends BaseClass {
 
 	@Column({ nullable: true })
 	widget_enabled?: boolean;
+
+	@Column({ nullable: true })
+	nsfw_level?: number;
+
+	@Column({ nullable: true })
+	nsfw?: boolean;
 }

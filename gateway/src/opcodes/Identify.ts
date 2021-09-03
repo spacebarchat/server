@@ -138,12 +138,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		guilds: guilds.map((x) => {
 			// @ts-ignore
-			x.guild_hashes = {
-				channels: { omitted: false, hash: "y4PV2fZ0gmo" },
-				metadata: { omitted: false, hash: "bs1/ckvud3Y" },
-				roles: { omitted: false, hash: "SxA+c5CaYpo" },
-				version: 1,
-			};
+			x.guild_hashes = {};
 			return x;
 		}),
 		guild_experiments: [], // TODO

@@ -37,12 +37,22 @@ router.patch("/", check(GuildUpdateSchema), async (req: Request, res: Response) 
 	if (body.banner) body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
 	if (body.splash) body.splash = await handleFile(`/splashes/${guild_id}`, body.splash);
 
-	const guild = await Guild.findOneOrFail({ id: guild_id });
+	var guild = await Guild.findOneOrFail({
+		where: { id: guild_id },
+		relations: ["emojis", "roles", "stickers"]
+	});
+	// TODO: check if body ids are valid
 	guild.assign(body);
 
-	await Promise.all([guild.save(), emitEvent({ event: "GUILD_UPDATE", data: guild, guild_id } as GuildUpdateEvent)]);
+	const data = guild.toJSON();
+	// TODO: guild hashes
+	// TODO: fix vanity_url_code, template_id
+	delete data.vanity_url_code;
+	delete data.template_id;
 
-	return res.json(guild);
+	await Promise.all([guild.save(), emitEvent({ event: "GUILD_UPDATE", data, guild_id } as GuildUpdateEvent)]);
+
+	return res.json(data);
 });
 
 export default router;

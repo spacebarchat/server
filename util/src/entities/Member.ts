@@ -26,6 +26,7 @@ import { HTTPError } from "lambert-server";
 import { Role } from "./Role";
 import { Snowflake } from "../util/Snowflake";
 import { BaseClassWithoutId } from "./BaseClass";
+import { PublicGuildRelations } from ".";
 
 @Entity("members")
 @Index(["id", "guild_id"], { unique: true })
@@ -209,7 +210,7 @@ export class Member extends BaseClassWithoutId {
 			where: {
 				id: guild_id,
 			},
-			relations: ["channels", "emojis", "members", "roles", "stickers", "voice_states"],
+			relations: PublicGuildRelations,
 		});
 
 		if (await Member.count({ id: user.id, guild: { id: guild_id } }))
@@ -259,12 +260,7 @@ export class Member extends BaseClassWithoutId {
 					...guild,
 					members: [...guild.members, { ...member, user }],
 					member_count: (guild.member_count || 0) + 1,
-					guild_hashes: {
-						channels: { omitted: false, hash: "nkMQJ5nl5Cg" },
-						metadata: { omitted: false, hash: "+5ybMfcb8iw" },
-						roles: { omitted: false, hash: "Idhc6P9ktfM" },
-						version: 1,
-					},
+					guild_hashes: {},
 					guild_scheduled_events: [],
 					joined_at: member.joined_at,
 					presences: [],

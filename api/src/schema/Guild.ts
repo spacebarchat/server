@@ -33,7 +33,7 @@ export const GuildUpdateSchema = {
 	$icon: String,
 	$verification_level: Number,
 	$default_message_notifications: Number,
-	$system_channel_flags: String,
+	$system_channel_flags: Number,
 	$system_channel_id: String,
 	$explicit_content_filter: Number,
 	$public_updates_channel_id: String,
