@@ -23,7 +23,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		}
 
 		//If a user change voice channel between guild we should send a left event first
-		if (voiceState.guild_id !== body.guild_id) {
+		if (voiceState.guild_id !== body.guild_id && voiceState.session_id === this.session_id) {
 			await emitEvent({
 				event: "VOICE_STATE_UPDATE",
 				data: { ...voiceState, channel_id: null },
