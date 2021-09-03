@@ -1,8 +1,8 @@
 // https://github.com/discordjs/discord.js/blob/master/src/util/Permissions.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
-import { In } from "typeorm";
 import { Channel, ChannelPermissionOverwrite, Guild, Member, Role } from "../entities";
 import { BitField } from "./BitField";
+import "missing-native-js-functions";
 // TODO: check role hierarchy permission
 
 var HTTPError: any;
@@ -205,7 +205,19 @@ export type PermissionCache = {
 	user_id?: string;
 };
 
-export async function getPermission(user_id?: string, guild_id?: string, channel_id?: string) {
+export async function getPermission(
+	user_id?: string,
+	guild_id?: string,
+	channel_id?: string,
+	opts: {
+		guild_select?: (keyof Guild)[];
+		guild_relations?: string[];
+		channel_select?: (keyof Channel)[];
+		channel_relations?: string[];
+		member_select?: (keyof Member)[];
+		member_relations?: string[];
+	} = {}
+) {
 	if (!user_id) throw new HTTPError("User not found");
 	var channel: Channel | undefined;
 	var member: Member | undefined;
@@ -214,20 +226,42 @@ export async function getPermission(user_id?: string, guild_id?: string, channel
 	if (channel_id) {
 		channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
-			relations: ["recipients"],
-			select: ["id", "recipients", "permission_overwrites", "owner_id", "guild_id"],
+			relations: ["recipients", ...(opts.channel_relations || [])],
+			select: [
+				"id",
+				"recipients",
+				"permission_overwrites",
+				"owner_id",
+				"guild_id",
+				// @ts-ignore
+				...(opts.channel_select || []),
+			],
 		});
 		if (channel.guild_id) guild_id = channel.guild_id; // derive guild_id from the channel
 	}
 
 	if (guild_id) {
-		guild = await Guild.findOneOrFail({ where: { id: guild_id }, select: ["id", "owner_id"] });
+		guild = await Guild.findOneOrFail({
+			where: { id: guild_id },
+			select: [
+				"id",
+				"owner_id",
+				// @ts-ignore
+				...(opts.guild_select || []),
+			],
+			relations: opts.guild_relations,
+		});
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
 		member = await Member.findOneOrFail({
 			where: { guild_id, user_id },
-			relations: ["roles"],
-			select: ["id", "roles"],
+			relations: ["roles", ...(opts.member_relations || [])],
+			select: [
+				"id",
+				"roles",
+				// @ts-ignore
+				...(opts.member_select || []),
+			],
 		});
 	}
 
