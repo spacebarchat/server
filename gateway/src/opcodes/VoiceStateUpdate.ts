@@ -22,6 +22,15 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 			return;
 		}
 
+		//If a user change voice channel between guild we should send a left event first
+		if (voiceState.guild_id !== body.guild_id) {
+			await emitEvent({
+				event: "VOICE_STATE_UPDATE",
+				data: { ...voiceState, channel_id: null },
+				guild_id: voiceState.guild_id,
+			})
+		}
+
 		//The event send by Discord's client on channel leave has both guild_id and channel_id as null
 		if (body.guild_id === null) body.guild_id = voiceState.guild_id;
 		voiceState.assign(body);
