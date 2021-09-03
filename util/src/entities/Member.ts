@@ -54,13 +54,14 @@ export class Member extends BaseClassWithoutId {
 
 	@JoinTable({
 		name: "member_roles",
-		joinColumn: { name: "id", referencedColumnName: "index" },
+
+		joinColumn: { name: "index", referencedColumnName: "index" },
 		inverseJoinColumn: {
 			name: "role_id",
 			referencedColumnName: "id",
 		},
 	})
-	@ManyToMany(() => Role)
+	@ManyToMany(() => Role, { cascade: true })
 	roles: Role[];
 
 	@Column()
@@ -227,7 +228,7 @@ export class Member extends BaseClassWithoutId {
 		};
 
 		await Promise.all([
-			Member.insert({
+			new Member({
 				...member,
 				roles: [new Role({ id: guild_id })],
 				// read_state: {},
@@ -240,7 +241,8 @@ export class Member extends BaseClassWithoutId {
 					suppress_roles: false,
 					version: 0,
 				},
-			}),
+				// Member.save is needed because else the roles relations wouldn't be updated
+			}).save(),
 			Guild.increment({ id: guild_id }, "member_count", 1),
 			emitEvent({
 				event: "GUILD_MEMBER_ADD",
