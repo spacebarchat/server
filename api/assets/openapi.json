@@ -32,7 +32,8 @@
 						"description": "User not found",
 						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
 					}
-				}
+				},
+				"security": [{ "Token": [] }]
 			}
 		},
 		"/users/@me": {
@@ -46,7 +47,8 @@
 						"description": "Authenticated user",
 						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserPublic" } } }
 					}
-				}
+				},
+				"security": [{ "Token": [] }]
 			}
 		}
 	},
@@ -1470,9 +1472,14 @@
 			}
 		},
 		"requestBodies": {},
-		"securitySchemes": {},
+		"securitySchemes": {
+			"Token": {
+				"type": "apiKey",
+				"name": "Authorization",
+				"in": "header"
+			}
+		},
 		"links": {},
 		"callbacks": {}
-	},
-	"security": []
+	}
 }
