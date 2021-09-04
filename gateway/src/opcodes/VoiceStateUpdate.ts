@@ -2,7 +2,7 @@ import { VoiceStateUpdateSchema } from "../schema/VoiceStateUpdateSchema";
 import { Payload } from "../util/Constants";
 import WebSocket from "../util/WebSocket";
 import { check } from "./instanceOf";
-import { Config, emitEvent, Member, VoiceServerUpdateEvent, VoiceState, VoiceStateUpdateEvent } from "@fosscord/util";
+import { Config, emitEvent, Guild, Member, Region, VoiceServerUpdateEvent, VoiceState, VoiceStateUpdateEvent } from "@fosscord/util";
 import { genVoiceToken } from "../util/SessionUtils";
 // TODO: check if a voice server is setup
 // Notice: Bot users respect the voice channel's user limit, if set. When the voice channel is full, you will not receive the Voice State Update or Voice Server Update events in response to your own Voice State Update. Having MANAGE_CHANNELS permission bypasses this limit and allows you to join regardless of the channel being full or not.
@@ -11,7 +11,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	check.call(this, VoiceStateUpdateSchema, data.d);
 	const body = data.d as VoiceStateUpdateSchema;
 
-	let voiceState;
+	let voiceState: VoiceState;
 	try {
 		voiceState = await VoiceState.findOneOrFail({
 			where: { user_id: this.user_id }
@@ -69,14 +69,21 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 
 	//If it's null it means that we are leaving the channel and this event is not needed
 	if (voiceState.channel_id !== null) {
+		const guild = await Guild.findOne({ id: voiceState.guild_id })
 		const regions = Config.get().regions;
+		let guildRegion: Region;
+		if (guild && guild.region) {
+			guildRegion = regions.available.filter(r => (r.id === guild.region))[0]
+		} else {
+			guildRegion = regions.available.filter(r => (r.id === regions.default))[0]
+		}
 
 		await emitEvent({
 			event: "VOICE_SERVER_UPDATE",
 			data: {
 				token: voiceState.token,
 				guild_id: voiceState.guild_id,
-				endpoint: regions.available[0].endpoint, //TODO return best endpoint or default
+				endpoint: guildRegion.endpoint,
 			},
 			guild_id: voiceState.guild_id,
 		} as VoiceServerUpdateEvent);
