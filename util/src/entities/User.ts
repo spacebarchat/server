@@ -185,7 +185,7 @@ export const defaultSettings: UserSettings = {
 	guild_positions: [],
 	inline_attachment_media: true,
 	inline_embed_media: true,
-	locale: "en",
+	locale: "en-US",
 	message_display_compact: false,
 	native_phone_integration_enabled: true,
 	render_embeds: true,
