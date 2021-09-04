@@ -3,7 +3,7 @@ import { check, Length } from "../../../util/instanceOf";
 import { Channel, Config, getPermission, trimSpecial, Webhook } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { isTextChannel } from "./messages/index";
-import { DiscordApiErrors } from "../../../util/Constants";
+import { DiscordApiErrors } from "@fosscord/util";
 
 const router: Router = Router();
 // TODO: webhooks
