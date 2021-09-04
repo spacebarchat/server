@@ -1,12 +1,12 @@
 import { Router, Request, Response } from "express";
-import { getPermission, Guild, Invite, Member } from "@fosscord/util";
+import { getPermission, Guild, Invite, Member, PublicInviteRelation } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 const router: Router = Router();
 
 router.get("/:code", async (req: Request, res: Response) => {
 	const { code } = req.params;
 
-	const invite = await Invite.findOneOrFail({ code });
+	const invite = await Invite.findOneOrFail({ where: { code }, relations: PublicInviteRelation });
 
 	res.status(200).send(invite);
 });

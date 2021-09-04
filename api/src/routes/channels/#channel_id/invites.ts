@@ -1,12 +1,9 @@
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-
 import { check } from "../../../util/instanceOf";
 import { random } from "../../../util/RandomInviteID";
-
 import { InviteCreateSchema } from "../../../schema/Invite";
-
-import { getPermission, Channel, Invite, InviteCreateEvent, emitEvent, User, Guild } from "@fosscord/util";
+import { getPermission, Channel, Invite, InviteCreateEvent, emitEvent, User, Guild, PublicInviteRelation } from "@fosscord/util";
 import { isTextChannel } from "./messages";
 
 const router: Router = Router();
@@ -74,7 +71,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const permission = await getPermission(user_id, guild_id);
 	permission.hasThrow("MANAGE_CHANNELS");
 
-	const invites = await Invite.find({ guild_id });
+	const invites = await Invite.find({ where: { guild_id }, relations: PublicInviteRelation });
 
 	res.status(200).send(invites);
 });
