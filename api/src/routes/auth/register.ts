@@ -205,7 +205,7 @@ router.post(
 				hash: adjusted_password,
 				valid_tokens_since: new Date()
 			},
-			settings: defaultSettings,
+			settings: { ...defaultSettings, locale: req.language || "en-US" },
 			fingerprints: []
 		}).save();
 

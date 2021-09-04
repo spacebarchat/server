@@ -16,7 +16,6 @@ import { Webhook } from "./Webhook";
 // TODO: guild_scheduled_events
 // TODO: stage_instances
 // TODO: threads
-// TODO: description
 // TODO: categories:
 // [{
 // 	"id": 16,

@@ -147,7 +147,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		guilds: guilds.map((x) => {
 			// @ts-ignore
-			x.guild_hashes = {};
+			x.guild_hashes = {}; // @ts-ignore
+			x.guild_scheduled_events = []; // @ts-ignore
+			x.threads = [];
 			return x;
 		}),
 		guild_experiments: [], // TODO

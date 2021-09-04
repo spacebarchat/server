@@ -5,7 +5,7 @@ export const IdentifySchema = {
 	$intents: BigInt, // discord uses a Integer for bitfields we use bigints tho. | instanceOf will automatically convert the Number to a BigInt
 	$properties: Object,
 	// {
-	// 	// bruh discord really uses $ in the property key for bots, so we need to double prefix it, because instanceOf treats $ (prefix) as a optional key
+	// 	// discord uses $ in the property key for bots, so we need to double prefix it, because instanceOf treats $ (prefix) as a optional key
 	// 	$os: String,
 	// 	$os_arch: String,
 	// 	$browser: String,
