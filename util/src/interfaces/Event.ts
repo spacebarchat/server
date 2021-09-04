@@ -87,7 +87,7 @@ export interface ReadyEventData {
 		id: string;
 		flags: string;
 	};
-	merged_members?: Omit<Member, "settings" | "user">[][];
+	merged_members?: PublicMember[][];
 	// probably all users who the user is in contact with
 	users?: PublicUser[];
 }
