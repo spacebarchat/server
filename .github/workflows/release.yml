@@ -31,20 +31,21 @@ jobs:
         with:
           node-version: 14
       - run: |
+          npm config set ignore-scripts true
           cd util
           npm i
           npm run build
           npm pack
           cd ../api
-          npm i ../util/fosscord-util-1.0.0.tgz
+          npm i ../util/
           npm run build
           npm pack
           cd ../cdn
-          npm i ../util/fosscord-util-1.0.0.tgz
+          npm i ../util/
           npm run build
           npm pack
           cd ../gateway
-          npm i ../util/fosscord-util-1.0.0.tgz
+          npm i ../util/
           npm run build
           npm pack
           cd ../bundle
