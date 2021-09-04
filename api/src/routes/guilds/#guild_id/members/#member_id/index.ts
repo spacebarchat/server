@@ -38,14 +38,13 @@ router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response)
 		member.roles = body.roles.map((x) => new Role({ id: x })); // foreign key constraint will fail if role doesn't exist
 	}
 
-	Promise.all([
-		member.save(),
-		emitEvent({
-			event: "GUILD_MEMBER_UPDATE",
-			guild_id,
-			data: { ...member, roles: member.roles.map((x) => x.id) }
-		} as GuildMemberUpdateEvent)
-	]);
+	await member.save();
+	// do not use promise.all as we have to first write to db before emitting the event
+	await emitEvent({
+		event: "GUILD_MEMBER_UPDATE",
+		guild_id,
+		data: { ...member, roles: member.roles.map((x) => x.id) }
+	} as GuildMemberUpdateEvent);
 
 	res.json(member);
 });
