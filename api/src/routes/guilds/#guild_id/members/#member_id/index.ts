@@ -50,7 +50,8 @@ router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response)
 });
 
 router.put("/", async (req: Request, res: Response) => {
-	const { guild_id, member_id } = req.params;
+	let { guild_id, member_id } = req.params;
+	if (member_id === "@me") member_id = req.user_id;
 
 	throw new HTTPError("Maintenance: Currently you can't add a member", 403);
 	// TODO: only for oauth2 applications

@@ -1,7 +1,7 @@
 import { Channel, ChannelPinsUpdateEvent, Config, emitEvent, getPermission, Message, MessageUpdateEvent } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { DiscordApiErrors } from "../../../util/Constants";
+import { DiscordApiErrors } from "@fosscord/util";
 
 const router: Router = Router();
 

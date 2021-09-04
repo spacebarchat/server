@@ -5,7 +5,6 @@ export * from "./schema/Channel";
 export * from "./schema/Guild";
 export * from "./schema/Invite";
 export * from "./schema/Message";
-export * from "./util/Constants";
 export * from "./util/instanceOf";
 export * from "./util/instanceOf";
 export * from "./util/RandomInviteID";

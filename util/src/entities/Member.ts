@@ -25,7 +25,8 @@ import {
 import { HTTPError } from "lambert-server";
 import { Role } from "./Role";
 import { BaseClassWithoutId } from "./BaseClass";
-import { PublicGuildRelations } from ".";
+import { Ban, PublicGuildRelations } from ".";
+import { DiscordApiErrors } from "../util/Constants";
 
 @Entity("members")
 @Index(["id", "guild_id"], { unique: true })
@@ -198,7 +199,10 @@ export class Member extends BaseClassWithoutId {
 
 	static async addToGuild(user_id: string, guild_id: string) {
 		const user = await User.getPublicUser(user_id);
-
+		const isBanned = await Ban.count({ where: { guild_id, user_id } });
+		if (isBanned) {
+			throw DiscordApiErrors.USER_BANNED;
+		}
 		const { maxGuilds } = Config.get().limits.user;
 		const guild_count = await Member.count({ id: user_id });
 		if (guild_count >= maxGuilds) {
