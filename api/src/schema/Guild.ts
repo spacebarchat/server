@@ -92,3 +92,15 @@ export interface GuildUpdateWelcomeScreenSchema {
 	enabled?: boolean;
 	description?: string;
 }
+
+export const VoiceStateUpdateSchema = {
+	channel_id: String, // Snowflake
+	$suppress: Boolean,
+	$request_to_speak_timestamp: String // ISO8601 timestamp
+};
+
+export interface VoiceStateUpdateSchema {
+	channel_id: string; // Snowflake
+	suppress?: boolean;
+	request_to_speak_timestamp?: string // ISO8601 timestamp
+}
