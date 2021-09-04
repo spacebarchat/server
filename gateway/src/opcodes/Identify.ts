@@ -12,6 +12,8 @@ import {
 	EVENTEnum,
 	Config,
 	dbConnection,
+	PublicMemberProjection,
+	PublicMember,
 } from "@fosscord/util";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
@@ -68,9 +70,16 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			"roles",
 		],
 	});
-	const merged_members = members.map((x: any) => {
-		return [x];
-	}) as Member[][];
+	const merged_members = members.map((x: Member) => {
+		return [
+			{
+				...x,
+				roles: x.roles.map((x) => x.id),
+				settings: undefined,
+				guild: undefined,
+			},
+		];
+	}) as PublicMember[][];
 	const guilds = members.map((x) => ({ ...x.guild, joined_at: x.joined_at }));
 	const user_guild_settings_entries = members.map((x) => x.settings);
 

@@ -17,7 +17,15 @@ import { Webhook } from "./Webhook";
 // TODO: stage_instances
 // TODO: threads
 
-export const PublicGuildRelations = ["channels", "emojis", "members", "roles", "stickers", "voice_states"];
+export const PublicGuildRelations = [
+	"channels",
+	"emojis",
+	"members",
+	"roles",
+	"stickers",
+	"voice_states",
+	"members.user",
+];
 
 @Entity("guilds")
 export class Guild extends BaseClass {

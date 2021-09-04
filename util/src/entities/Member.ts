@@ -24,7 +24,6 @@ import {
 } from "../interfaces";
 import { HTTPError } from "lambert-server";
 import { Role } from "./Role";
-import { Snowflake } from "../util/Snowflake";
 import { BaseClassWithoutId } from "./BaseClass";
 import { PublicGuildRelations } from ".";
 
