@@ -15,46 +15,9 @@ try {
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
-type PermissionString =
-	| "CREATE_INSTANT_INVITE"
-	| "KICK_MEMBERS"
-	| "BAN_MEMBERS"
-	| "ADMINISTRATOR"
-	| "MANAGE_CHANNELS"
-	| "MANAGE_GUILD"
-	| "ADD_REACTIONS"
-	| "VIEW_AUDIT_LOG"
-	| "PRIORITY_SPEAKER"
-	| "STREAM"
-	| "VIEW_CHANNEL"
-	| "SEND_MESSAGES"
-	| "SEND_TTS_MESSAGES"
-	| "MANAGE_MESSAGES"
-	| "EMBED_LINKS"
-	| "ATTACH_FILES"
-	| "READ_MESSAGE_HISTORY"
-	| "MENTION_EVERYONE"
-	| "USE_EXTERNAL_EMOJIS"
-	| "VIEW_GUILD_INSIGHTS"
-	| "CONNECT"
-	| "SPEAK"
-	| "MUTE_MEMBERS"
-	| "DEAFEN_MEMBERS"
-	| "MOVE_MEMBERS"
-	| "USE_VAD"
-	| "CHANGE_NICKNAME"
-	| "MANAGE_NICKNAMES"
-	| "MANAGE_ROLES"
-	| "MANAGE_WEBHOOKS"
-	| "MANAGE_EMOJIS_AND_STICKERS"
-	| "USE_APPLICATION_COMMANDS"
-	| "REQUEST_TO_SPEAK"
-	| "MANAGE_THREADS"
-	| "USE_PUBLIC_THREADS"
-	| "USE_PRIVATE_THREADS"
-	| "USE_EXTERNAL_STICKERS";
+type PermissionString = keyof typeof Permissions.FLAGS;
 
-const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(48); // 16 free custom permission bits, and 16 for discord to add new ones
+const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(48); // 16 free custom permission bits, and 11 for discord to add new ones
 
 export class Permissions extends BitField {
 	cache: PermissionCache = {};
@@ -93,6 +56,7 @@ export class Permissions extends BitField {
 		MANAGE_EMOJIS_AND_STICKERS: BigInt(1) << BigInt(30),
 		USE_APPLICATION_COMMANDS: BigInt(1) << BigInt(31),
 		REQUEST_TO_SPEAK: BigInt(1) << BigInt(32),
+		// TODO: what is permission 33?
 		MANAGE_THREADS: BigInt(1) << BigInt(34),
 		USE_PUBLIC_THREADS: BigInt(1) << BigInt(35),
 		USE_PRIVATE_THREADS: BigInt(1) << BigInt(36),
