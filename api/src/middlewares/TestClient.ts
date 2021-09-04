@@ -22,7 +22,7 @@ export default function TestClient(app: Application) {
 		html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${GATEWAY_ENDPOINT}\`,`);
 	}
 
-	app.use("/assets", express.static(path.join(__dirname, "..", "assets")));
+	app.use("/assets", express.static(path.join(__dirname, "..", "..", "assets")));
 
 	app.get("/assets/:file", async (req: Request, res: Response) => {
 		delete req.headers.host;
