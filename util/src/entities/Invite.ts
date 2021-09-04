@@ -4,6 +4,8 @@ import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { User } from "./User";
 
+export const PublicInviteRelation = ["inviter", "guild", "channel"];
+
 @Entity("invites")
 export class Invite extends BaseClass {
 	@PrimaryColumn()
