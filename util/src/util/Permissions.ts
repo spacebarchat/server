@@ -254,7 +254,7 @@ export async function getPermission(
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
 		member = await Member.findOneOrFail({
-			where: { guild_id, user_id },
+			where: { guild_id, id: user_id },
 			relations: ["roles", ...(opts.member_relations || [])],
 			select: [
 				"id",
@@ -264,6 +264,9 @@ export async function getPermission(
 			],
 		});
 	}
+
+	let recipient_ids: any = channel?.recipients?.map((x) => x.id);
+	if (!recipient_ids?.length) recipient_ids = null;
 
 	// TODO: remove guild.roles and convert recipient_ids to recipients
 	var permission = Permissions.finalPermission({
@@ -277,7 +280,7 @@ export async function getPermission(
 		channel: {
 			overwrites: channel?.permission_overwrites,
 			owner_id: channel?.owner_id,
-			recipient_ids: channel?.recipients?.map((x) => x.id),
+			recipient_ids,
 		},
 	});
 
