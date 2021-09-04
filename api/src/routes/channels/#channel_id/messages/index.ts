@@ -15,13 +15,13 @@ export default router;
 
 export function isTextChannel(type: ChannelType): boolean {
 	switch (type) {
+		case ChannelType.GUILD_STORE:
 		case ChannelType.GUILD_VOICE:
 		case ChannelType.GUILD_CATEGORY:
 			throw new HTTPError("not a text channel", 400);
 		case ChannelType.DM:
 		case ChannelType.GROUP_DM:
 		case ChannelType.GUILD_NEWS:
-		case ChannelType.GUILD_STORE:
 		case ChannelType.GUILD_TEXT:
 			return true;
 	}
@@ -48,8 +48,7 @@ router.get("/", async (req: Request, res: Response) => {
 	if (!limit) limit = 50;
 	var halfLimit = Math.floor(limit / 2);
 
-	// @ts-ignore
-	const permissions = await getPermission(req.user_id, channel.guild_id, channel_id, { channel });
+	const permissions = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
