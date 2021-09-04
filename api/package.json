@@ -5,6 +5,7 @@
 	"main": "dist/Server.js",
 	"types": "dist/Server.d.ts",
 	"scripts": {
+		"preinstall": "npm i -g patch-package",
 		"test": "npm run build && jest --coverage --verbose --forceExit ./tests",
 		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/start",

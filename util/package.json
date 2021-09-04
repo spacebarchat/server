@@ -6,9 +6,8 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"start": "npm run build && node dist/",
-		"patch": "patch-package",
 		"test": "npm run build && jest",
-		"postinstall": "npm run patch && npm run build",
+		"postinstall": "npm run build",
 		"build": "npx tsc -b ."
 	},
 	"repository": {
