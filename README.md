@@ -32,4 +32,4 @@ This repository contains:
 
 ## [Download](https://github.com/fosscord/fosscord-server/releases)
 
--   _is not done yet_
+-   _Work in progress_
