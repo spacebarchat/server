@@ -37,7 +37,7 @@ export class FosscordServer extends Server {
 		await initEvent();
 
 		this.app.use(CORS);
-		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 10 })); // 10MB
+		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
 
 		const app = this.app;
 		const api = Router(); // @ts-ignore
