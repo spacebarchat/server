@@ -2,7 +2,6 @@ import { Server, ServerOptions } from "lambert-server";
 import { Config, initDatabase } from "@fosscord/util";
 import path from "path";
 import avatarsRoute from "./routes/avatars";
-import bodyParser from "body-parser";
 
 export interface CDNServerOptions extends ServerOptions {}
 
@@ -27,7 +26,6 @@ export class CDNServer extends Server {
 			res.set("Access-Control-Allow-Methods", req.header("Access-Control-Request-Methods") || "*");
 			next();
 		});
-		this.app.use(bodyParser.json({ inflate: true, limit: "10mb" }));
 
 		await this.registerRoutes(path.join(__dirname, "routes/"));
 
