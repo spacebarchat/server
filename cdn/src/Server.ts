@@ -28,7 +28,6 @@ export class CDNServer extends Server {
 			next();
 		});
 		this.app.use(bodyParser.json({ inflate: true, limit: "10mb" }));
-		this.app.use(bodyParser.urlencoded({ inflate: true, limit: "10mb" }));
 
 		await this.registerRoutes(path.join(__dirname, "routes/"));
 
