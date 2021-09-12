@@ -61,6 +61,7 @@ export class Channel extends BaseClass {
 	@ManyToOne(() => Channel)
 	parent?: Channel;
 
+	// only for group dms
 	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.owner)
 	owner_id: string;
