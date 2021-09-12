@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { Guild } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
+import { route } from "@fosscord/api";
 import fs from "fs";
 import path from "path";
 
@@ -10,7 +11,7 @@ const router: Router = Router();
 
 // https://discord.com/developers/docs/resources/guild#get-guild-widget-image
 // TODO: Cache the response
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
 	const guild = await Guild.findOneOrFail({ id: guild_id });

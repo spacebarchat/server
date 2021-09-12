@@ -33,12 +33,13 @@ function main() {
 		const part = TJS.generateSchema(program, name, settings, [], generator as TJS.JsonSchemaGenerator);
 		if (!part) continue;
 
-		definitions = { ...definitions, ...part.definitions, [name]: { ...part, definitions: undefined } };
+		definitions = { ...definitions, [name]: { ...part } };
 	}
 
 	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
 }
 
+// #/definitions/
 main();
 
 function walk(dir: string) {

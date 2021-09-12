@@ -1,18 +1,21 @@
 import { Router, Response, Request } from "express";
 import { Channel, Config, emitEvent, getPermission, MessageDeleteBulkEvent, Message } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-
-import { check } from "@fosscord/api";
+import { route } from "@fosscord/api";
 import { In } from "typeorm";
 
 const router: Router = Router();
 
 export default router;
 
+export interface BulkDeleteSchema {
+	messages: string[];
+}
+
 // TODO: should users be able to bulk delete messages or only bots?
 // TODO: should this request fail, if you provide messages older than 14 days/invalid ids?
 // https://discord.com/developers/docs/resources/channel#bulk-delete-messages
-router.post("/", check({ messages: [String] }), async (req: Request, res: Response) => {
+router.post("/", route({ body: "BulkDeleteSchema" }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 	const channel = await Channel.findOneOrFail({ id: channel_id });
 	if (!channel.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
