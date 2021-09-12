@@ -15,7 +15,7 @@ const settings: TJS.PartialArgs = {
 	defaultProps: false
 };
 const compilerOptions: TJS.CompilerOptions = {
-	strictNullChecks: false
+	strictNullChecks: true
 };
 const ExcludedSchemas = ["DefaultSchema", "Schema", "EntitySchema"];
 
