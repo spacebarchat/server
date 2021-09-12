@@ -1,6 +1,7 @@
 import { Intents, Permissions } from "@fosscord/util";
 import WS from "ws";
 import { Deflate } from "zlib";
+import { Channel } from "amqplib";
 
 interface WebSocket extends WS {
 	version: number;
