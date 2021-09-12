@@ -1,4 +1,5 @@
-import WebSocket, { Server } from "@fosscord/gateway/util/WebSocket";
+import WS from "ws";
+import WebSocket from "@fosscord/gateway/util/WebSocket";
 import { IncomingMessage } from "http";
 import { Close } from "./Close";
 import { Message } from "./Message";
@@ -18,7 +19,7 @@ try {
 // TODO: check msg max size
 
 export async function Connection(
-	this: Server,
+	this: WS.Server,
 	socket: WebSocket,
 	request: IncomingMessage
 ) {

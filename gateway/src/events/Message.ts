@@ -1,4 +1,4 @@
-import WebSocket, { Data } from "@fosscord/gateway/util/WebSocket";
+import WebSocket from "@fosscord/gateway/util/WebSocket";
 var erlpack: any;
 try {
 	erlpack = require("erlpack");
