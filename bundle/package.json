@@ -11,7 +11,8 @@
 		"build:api": "cd ../api/ && npm run build",
 		"build:cdn": "cd ../cdn/ && npm run build",
 		"build:gateway": "cd ../gateway/ && npm run build",
-		"start": "npm run build && node -r ./tsconfig-paths-bootstrap.js dist/start.js",
+		"start": "npm run build && npm run start:bundle",
+		"start:bundle": "node -r ./tsconfig-paths-bootstrap.js dist/start.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
