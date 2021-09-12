@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 import { User, PrivateUserProjection } from "@fosscord/util";
 import { UserModifySchema } from "../../../schema/User";
-import { check } from "../../../util/instanceOf";
-import { handleFile } from "../../../util/cdn";
+import { check } from "@fosscord/api";
+import { handleFile } from "@fosscord/api";
 
 const router: Router = Router();
 

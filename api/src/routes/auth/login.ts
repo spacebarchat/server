@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { check, FieldErrors, Length } from "../../util/instanceOf";
+import { check, FieldErrors, Length } from "@fosscord/api";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Config, User } from "@fosscord/util";

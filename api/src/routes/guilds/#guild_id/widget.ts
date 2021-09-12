@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { getPermission, Guild } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { check } from "../../../util/instanceOf";
+import { check } from "@fosscord/api";
 import { WidgetModifySchema } from "../../../schema/Widget";
 
 const router: Router = Router();

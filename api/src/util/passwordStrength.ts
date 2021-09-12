@@ -16,7 +16,7 @@ const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored
  *
  * Returns: 0 > pw > 1
  */
-export function check(password: string): number {
+export function checkPassword(password: string): number {
 	const { minLength, minNumbers, minUpperCase, minSymbols } = Config.get().register.password;
 	var strength = 0;
 

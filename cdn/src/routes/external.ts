@@ -2,7 +2,7 @@ import { Router, Response, Request } from "express";
 import fetch from "node-fetch";
 import { HTTPError } from "lambert-server";
 import { Snowflake } from "@fosscord/util";
-import { storage } from "../util/Storage";
+import { storage } from "@fosscord/cdn/util/Storage";
 import FileType from "file-type";
 import { Config } from "@fosscord/util";
 
@@ -13,7 +13,8 @@ const DEFAULT_FETCH_OPTIONS: any = {
 	redirect: "follow",
 	follow: 1,
 	headers: {
-		"user-agent": "Mozilla/5.0 (compatible Fosscordbot/0.1; +https://fosscord.com)",
+		"user-agent":
+			"Mozilla/5.0 (compatible Fosscordbot/0.1; +https://fosscord.com)",
 	},
 	size: 1024 * 1024 * 8,
 	compress: true,

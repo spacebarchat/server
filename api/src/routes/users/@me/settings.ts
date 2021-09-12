@@ -1,6 +1,6 @@
 import { Router, Response, Request } from "express";
 import { User, UserSettings } from "@fosscord/util";
-import { check } from "../../../util/instanceOf";
+import { check } from "@fosscord/api";
 import { UserSettingsSchema } from "../../../schema/User";
 
 const router = Router();

@@ -1,11 +1,9 @@
 import { Router, Request, Response } from "express";
-import { Channel, ChannelCreateEvent, ChannelType, Snowflake, trimSpecial, User, emitEvent } from "@fosscord/util";
+import { Channel, ChannelCreateEvent, ChannelType, Snowflake, trimSpecial, User, emitEvent, Recipient } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-
 import { DmChannelCreateSchema } from "../../../schema/Channel";
-import { check } from "../../../util/instanceOf";
+import { check } from "@fosscord/api";
 import { In } from "typeorm";
-import { Recipient } from "../../../../../util/dist/entities/Recipient";
 
 const router: Router = Router();
 

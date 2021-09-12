@@ -2,7 +2,7 @@ import { ChannelDeleteEvent, Channel, ChannelUpdateEvent, emitEvent, getPermissi
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
-import { check } from "../../../util/instanceOf";
+import { check } from "@fosscord/api";
 const router: Router = Router();
 // TODO: delete channel
 // TODO: Get channel

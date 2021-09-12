@@ -9,13 +9,13 @@ import {
 	ListenEventOpts,
 	Member,
 } from "@fosscord/util";
-import { OPCODES } from "../util/Constants";
-import { Send } from "../util/Send";
-import WebSocket from "../util/WebSocket";
+import { OPCODES } from "@fosscord/gateway/util/Constants";
+import { Send } from "@fosscord/gateway/util/Send";
+import WebSocket from "@fosscord/gateway/util/WebSocket";
 import "missing-native-js-functions";
 import { Channel as AMQChannel } from "amqplib";
-import { In, Like } from "../../../util/node_modules/typeorm";
-import { Recipient } from "../../../util/dist/entities/Recipient";
+import { In, Like } from "typeorm";
+import { Recipient } from "@fosscord/util";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent

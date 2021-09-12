@@ -2,7 +2,7 @@ import { Router, Response, Request } from "express";
 import { Channel, Config, emitEvent, getPermission, MessageDeleteBulkEvent, Message } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 
-import { check } from "../../../../util/instanceOf";
+import { check } from "@fosscord/api";
 import { In } from "typeorm";
 
 const router: Router = Router();
