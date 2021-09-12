@@ -4,11 +4,6 @@ import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 import { In } from "typeorm";
 
-export interface DmChannelCreateSchema {
-	name?: string;
-	recipients: string[];
-}
-
 const router: Router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
@@ -17,12 +12,17 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	res.json(recipients.map((x) => x.channel));
 });
 
+export interface DmChannelCreateSchema {
+	name?: string;
+	recipients: string[];
+}
+
 router.post("/", route({ body: "DmChannelCreateSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as DmChannelCreateSchema;
 
 	body.recipients = body.recipients.filter((x) => x !== req.user_id).unique();
 
-	const recipients = await User.find({ id: In(body.recipients) });
+	const recipients = await User.find({ where: body.recipients.map((x) => ({ id: x })) });
 
 	if (recipients.length !== body.recipients.length) {
 		throw new HTTPError("Recipient/s not found");
@@ -34,10 +34,10 @@ router.post("/", route({ body: "DmChannelCreateSchema" }), async (req: Request, 
 	const channel = await new Channel({
 		name,
 		type,
-		owner_id: req.user_id,
+		// owner_id only for group dm channels
 		created_at: new Date(),
 		last_message_id: null,
-		recipients: [...body.recipients.map((x) => new Recipient({ id: x })), new Recipient({ id: req.user_id })]
+		recipients: [...body.recipients.map((x) => new Recipient({ user_id: x })), new Recipient({ user_id: req.user_id })]
 	}).save();
 
 	await emitEvent({ event: "CHANNEL_CREATE", data: channel, user_id: req.user_id } as ChannelCreateEvent);

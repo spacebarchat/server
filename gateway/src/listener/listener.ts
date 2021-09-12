@@ -70,7 +70,7 @@ export async function setupListener(this: WebSocket) {
 				for (const channel of guild.channels) {
 					if (
 						x
-							.overwriteChannel(channel.permission_overwrites)
+							.overwriteChannel(channel.permission_overwrites!)
 							.has("VIEW_CHANNEL")
 					) {
 						this.events[channel.id] = await listenEvent(

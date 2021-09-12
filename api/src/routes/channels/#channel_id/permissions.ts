@@ -35,7 +35,7 @@ router.put(
 				allow: body.allow,
 				deny: body.deny
 			};
-			channel.permission_overwrites.push(overwrite);
+			channel.permission_overwrites!.push(overwrite);
 		}
 		overwrite.allow = body.allow;
 		overwrite.deny = body.deny;
@@ -60,7 +60,7 @@ router.delete("/:overwrite_id", route({ permission: "MANAGE_ROLES" }), async (re
 	const channel = await Channel.findOneOrFail({ id: channel_id });
 	if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
-	channel.permission_overwrites = channel.permission_overwrites.filter((x) => x.id === overwrite_id);
+	channel.permission_overwrites = channel.permission_overwrites!.filter((x) => x.id === overwrite_id);
 
 	await Promise.all([
 		channel.save(),

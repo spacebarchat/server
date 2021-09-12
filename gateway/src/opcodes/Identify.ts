@@ -14,6 +14,8 @@ import {
 	dbConnection,
 	PublicMemberProjection,
 	PublicMember,
+	ChannelType,
+	PublicUser,
 } from "@fosscord/util";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
@@ -57,6 +59,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			return this.close(CLOSECODES.Invalid_shard);
 		}
 	}
+	var users: PublicUser[] = [];
 
 	const members = await Member.find({
 		where: { id: this.user_id },
@@ -85,11 +88,35 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const recipients = await Recipient.find({
 		where: { user_id: this.user_id },
-		relations: ["channel", "channel.recipients"],
+		relations: ["channel", "channel.recipients", "channel.recipients.user"],
+		// TODO: public user selection
 	});
-	const channels = recipients.map((x) => x.channel);
+	const channels = recipients.map((x) => {
+		// @ts-ignore
+		x.channel.recipients = x.channel.recipients?.map((x) => x.user);
+		// @ts-ignore
+		users = users.concat(x.channel.recipients);
+		if (x.channel.type === ChannelType.DM) {
+			x.channel.recipients = [
+				// @ts-ignore
+				x.channel.recipients.find((x) => x.id !== this.user_id),
+			];
+		}
+		return x.channel;
+	});
 	const user = await User.findOneOrFail({ id: this.user_id });
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
+
+	const public_user = {
+		username: user.username,
+		discriminator: user.discriminator,
+		id: user.id,
+		public_flags: user.public_flags,
+		avatar: user.avatar,
+		bot: user.bot,
+		bio: user.bio,
+	};
+	users.push(public_user);
 
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
@@ -107,16 +134,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	//We save the session and we delete it when the websocket is closed
 	await session.save();
-
-	const public_user = {
-		username: user.username,
-		discriminator: user.discriminator,
-		id: user.id,
-		public_flags: user.public_flags,
-		avatar: user.avatar,
-		bot: user.bot,
-		bio: user.bio,
-	};
 
 	const privateUser = {
 		avatar: user.avatar,
@@ -180,7 +197,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
-		users: [public_user].unique(), // TODO
+		users: users.unique(), // TODO
 		merged_members: merged_members,
 		// shard // TODO: only for bots sharding
 		// application // TODO for applications
