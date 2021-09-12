@@ -242,7 +242,7 @@ export async function getPermission(
 		});
 	}
 
-	let recipient_ids: any = channel?.recipients?.map((x) => x.id);
+	let recipient_ids: any = channel?.recipients?.map((x) => x.user_id);
 	if (!recipient_ids?.length) recipient_ids = null;
 
 	// TODO: remove guild.roles and convert recipient_ids to recipients

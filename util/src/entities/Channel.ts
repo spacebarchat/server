@@ -28,8 +28,8 @@ export class Channel extends BaseClass {
 	@Column()
 	created_at: Date;
 
-	@Column()
-	name: string;
+	@Column({ nullable: true })
+	name?: string;
 
 	@Column({ type: "simple-enum", enum: ChannelType })
 	type: ChannelType;
@@ -76,11 +76,11 @@ export class Channel extends BaseClass {
 	@Column({ nullable: true })
 	default_auto_archive_duration?: number;
 
-	@Column()
-	position: number;
+	@Column({ nullable: true })
+	position?: number;
 
-	@Column({ type: "simple-json" })
-	permission_overwrites: ChannelPermissionOverwrite[];
+	@Column({ type: "simple-json", nullable: true })
+	permission_overwrites?: ChannelPermissionOverwrite[];
 
 	@Column({ nullable: true })
 	video_quality_mode?: number;
