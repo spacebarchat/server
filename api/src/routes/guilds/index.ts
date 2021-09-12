@@ -1,15 +1,28 @@
 import { Router, Request, Response } from "express";
 import { Role, Guild, Snowflake, Config, User, Member, Channel } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { check } from "./../../util/instanceOf";
-import { GuildCreateSchema } from "../../schema/Guild";
+import { check, route } from "@fosscord/api";
 import { DiscordApiErrors } from "@fosscord/util";
+import { ChannelModifySchema } from "../channels/#channel_id";
 
 const router: Router = Router();
 
+export interface GuildCreateSchema {
+	/**
+	 * @maxLength 100
+	 */
+	name: string;
+	region?: string;
+	icon?: string;
+	channels?: ChannelModifySchema[];
+	guild_template_code?: string;
+	system_channel_id?: string;
+	rules_channel_id?: string;
+}
+
 //TODO: create default channel
 
-router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) => {
+router.post("/", route({ body: "GuildCreateSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as GuildCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;

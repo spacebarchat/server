@@ -1,23 +1,15 @@
 import { Request, Response, Router } from "express";
-import {
-	Guild,
-	Member,
-	User,
-	GuildMemberAddEvent,
-	getPermission,
-	PermissionResolvable,
-	Role,
-	GuildMemberUpdateEvent,
-	emitEvent
-} from "@fosscord/util";
+import { Member, getPermission, Role, GuildMemberUpdateEvent, emitEvent } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { check } from "../../../../../util/instanceOf";
-import { MemberChangeSchema } from "../../../../../schema/Member";
-import { In } from "typeorm";
+import { check, route } from "@fosscord/api";
 
 const router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+export interface MemberChangeSchema {
+	roles?: string[];
+}
+
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
 	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
@@ -26,8 +18,9 @@ router.get("/", async (req: Request, res: Response) => {
 	return res.json(member);
 });
 
-router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response) => {
-	const { guild_id, member_id } = req.params;
+router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, res: Response) => {
+	let { guild_id, member_id } = req.params;
+	if (member_id === "@me") member_id = req.user_id;
 	const body = req.body as MemberChangeSchema;
 
 	const member = await Member.findOneOrFail({ where: { id: member_id, guild_id }, relations: ["roles", "user"] });
@@ -39,7 +32,7 @@ router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response)
 	}
 
 	await member.save();
-	// do not use promise.all as we have to first write to db before emitting the event
+	// do not use promise.all as we have to first write to db before emitting the event to catch errors
 	await emitEvent({
 		event: "GUILD_MEMBER_UPDATE",
 		guild_id,
@@ -49,7 +42,7 @@ router.patch("/", check(MemberChangeSchema), async (req: Request, res: Response)
 	res.json(member);
 });
 
-router.put("/", async (req: Request, res: Response) => {
+router.put("/", route({}), async (req: Request, res: Response) => {
 	let { guild_id, member_id } = req.params;
 	if (member_id === "@me") member_id = req.user_id;
 
@@ -59,11 +52,8 @@ router.put("/", async (req: Request, res: Response) => {
 	res.sendStatus(204);
 });
 
-router.delete("/", async (req: Request, res: Response) => {
+router.delete("/", route({ permission: "KICK_MEMBERS" }), async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;
-
-	const perms = await getPermission(req.user_id, guild_id);
-	perms.hasThrow("KICK_MEMBERS");
 
 	await Member.removeFromGuild(member_id, guild_id);
 	res.sendStatus(204);

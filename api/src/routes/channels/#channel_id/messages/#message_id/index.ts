@@ -1,12 +1,13 @@
 import { Channel, emitEvent, getPermission, MessageDeleteEvent, Message, MessageUpdateEvent } from "@fosscord/util";
 import { Router, Response, Request } from "express";
-import { MessageCreateSchema } from "../../../../../schema/Message";
-import { check } from "../../../../../util/instanceOf";
-import { handleMessage, postHandleMessage } from "../../../../../util/Message";
+import { route } from "@fosscord/api";
+import { handleMessage, postHandleMessage } from "@fosscord/api";
+import { MessageCreateSchema } from "../index";
 
 const router = Router();
+// TODO: message content/embed string length limit
 
-router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response) => {
+router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES" }), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 	var body = req.body as MessageCreateSchema;
 
@@ -47,14 +48,17 @@ router.patch("/", check(MessageCreateSchema), async (req: Request, res: Response
 
 // TODO: delete attachments in message
 
-router.delete("/", async (req: Request, res: Response) => {
+// permission check only if deletes messagr from other user
+router.delete("/", route({}), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 
 	const channel = await Channel.findOneOrFail({ id: channel_id });
 	const message = await Message.findOneOrFail({ id: message_id });
 
-	const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
-	if (message.author_id !== req.user_id) permission.hasThrow("MANAGE_MESSAGES");
+	if (message.author_id !== req.user_id) {
+		const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
+		permission.hasThrow("MANAGE_MESSAGES");
+	}
 
 	await Message.delete({ id: message_id });
 

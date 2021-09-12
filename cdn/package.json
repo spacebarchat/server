@@ -7,7 +7,7 @@
 	"scripts": {
 		"test": "npm run build && jest --coverage ./tests",
 		"build": "npx tsc -b .",
-		"start": "npm run build && node dist/start.js"
+		"start": "npm run build && node -r ./scripts/tsconfig-paths-bootstrap.js dist/start.js"
 	},
 	"repository": {
 		"type": "git",

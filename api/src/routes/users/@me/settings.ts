@@ -1,11 +1,12 @@
 import { Router, Response, Request } from "express";
 import { User, UserSettings } from "@fosscord/util";
-import { check } from "../../../util/instanceOf";
-import { UserSettingsSchema } from "../../../schema/User";
+import { route } from "@fosscord/api";
 
 const router = Router();
 
-router.patch("/", check(UserSettingsSchema), async (req: Request, res: Response) => {
+export interface UserSettingsSchema extends UserSettings {}
+
+router.patch("/", route({ body: "UserSettingsSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as UserSettings;
 
 	// only users can update user settings

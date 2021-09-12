@@ -7,12 +7,14 @@
 	"scripts": {
 		"test": "npm run build && jest --coverage --verbose --forceExit ./tests",
 		"test:watch": "jest --watch",
-		"start": "npm run build && node dist/start",
+		"start": "npm run build && node -r ./scripts/tsconfig-paths-bootstrap.js dist/start",
 		"build": "npx tsc -b .",
 		"build-docker": "tsc -p tsconfig-docker.json",
 		"dev": "tsnd --respawn src/start.ts",
 		"patch": "npx patch-package",
-		"postinstall": "npm run patch"
+		"postinstall": "npm run patch",
+		"generate:docs": "ts-node scripts/generate_openapi_schema.ts",
+		"generate:schema": "ts-node scripts/generate_body_schema.ts"
 	},
 	"repository": {
 		"type": "git",
@@ -60,7 +62,7 @@
 	"dependencies": {
 		"@fosscord/util": "file:../util",
 		"ajv": "^8.4.0",
-		"ajv-formats": "^2.1.0",
+		"ajv-formats": "^2.1.1",
 		"amqplib": "^0.8.0",
 		"assert": "^1.5.0",
 		"atomically": "^1.7.0",
@@ -86,6 +88,7 @@
 		"node-fetch": "^2.6.1",
 		"patch-package": "^6.4.7",
 		"supertest": "^6.1.6",
+		"tsconfig-paths": "^3.11.0",
 		"typeorm": "^0.2.37"
 	},
 	"jest": {

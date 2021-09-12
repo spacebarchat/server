@@ -1,12 +1,12 @@
-import { check } from "./../util/passwordStrength";
+import { checkPassword } from "@fosscord/api";
 
-console.log(check("123456789012345"));
+console.log(checkPassword("123456789012345"));
 // -> 0.25
-console.log(check("ABCDEFGHIJKLMOPQ"));
+console.log(checkPassword("ABCDEFGHIJKLMOPQ"));
 // -> 0.25
-console.log(check("ABC123___...123"));
+console.log(checkPassword("ABC123___...123"));
 // ->
-console.log(check(""));
+console.log(checkPassword(""));
 // ->
-// console.log(check(""));
+// console.log(checkPassword(""));
 // // ->
