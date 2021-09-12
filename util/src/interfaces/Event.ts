@@ -423,6 +423,51 @@ export interface RelationshipRemoveEvent extends Event {
 	data: Omit<Relationship, "nickname">;
 }
 
+export type EventData =
+	| InvalidatedEvent
+	| ReadyEvent
+	| ChannelCreateEvent
+	| ChannelUpdateEvent
+	| ChannelDeleteEvent
+	| ChannelPinsUpdateEvent
+	| GuildCreateEvent
+	| GuildUpdateEvent
+	| GuildDeleteEvent
+	| GuildBanAddEvent
+	| GuildBanRemoveEvent
+	| GuildEmojiUpdateEvent
+	| GuildIntegrationUpdateEvent
+	| GuildMemberAddEvent
+	| GuildMemberRemoveEvent
+	| GuildMemberUpdateEvent
+	| GuildMembersChunkEvent
+	| GuildRoleCreateEvent
+	| GuildRoleUpdateEvent
+	| GuildRoleDeleteEvent
+	| InviteCreateEvent
+	| InviteDeleteEvent
+	| MessageCreateEvent
+	| MessageUpdateEvent
+	| MessageDeleteEvent
+	| MessageDeleteBulkEvent
+	| MessageReactionAddEvent
+	| MessageReactionRemoveEvent
+	| MessageReactionRemoveAllEvent
+	| MessageReactionRemoveEmojiEvent
+	| PresenceUpdateEvent
+	| TypingStartEvent
+	| UserUpdateEvent
+	| VoiceStateUpdateEvent
+	| VoiceServerUpdateEvent
+	| WebhooksUpdateEvent
+	| ApplicationCommandCreateEvent
+	| ApplicationCommandUpdateEvent
+	| ApplicationCommandDeleteEvent
+	| InteractionCreateEvent
+	| MessageAckEvent
+	| RelationshipAddEvent
+	| RelationshipRemoveEvent;
+
 // located in collection events
 
 export enum EVENTEnum {

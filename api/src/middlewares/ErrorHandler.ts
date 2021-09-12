@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { EntityNotFoundError } from "typeorm";
-import { FieldError } from "../util/instanceOf";
+import { FieldError } from "@fosscord/api";
 import { ApiError } from "@fosscord/util";
 
 export function ErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {

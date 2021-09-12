@@ -1,5 +1,5 @@
-import { CLOSECODES, Payload, OPCODES } from "../util/Constants";
-import WebSocket from "../util/WebSocket";
+import { CLOSECODES, Payload, OPCODES } from "@fosscord/gateway/util/Constants";
+import WebSocket from "@fosscord/gateway/util/WebSocket";
 import {
 	Channel,
 	checkToken,
@@ -17,12 +17,12 @@ import {
 } from "@fosscord/util";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
-import { Send } from "../util/Send";
+import { Send } from "@fosscord/gateway/util/Send";
 // import experiments from "./experiments.json";
 const experiments: any = [];
 import { check } from "./instanceOf";
-import { Recipient } from "../../../util/dist/entities/Recipient";
-import { genSessionId } from "../util/SessionUtils";
+import { Recipient } from "@fosscord/util";
+import { genSessionId } from "@fosscord/gateway/util/SessionUtils";
 
 // TODO: bot sharding
 // TODO: check priviliged intents

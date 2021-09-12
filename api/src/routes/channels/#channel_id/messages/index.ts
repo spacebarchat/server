@@ -2,11 +2,11 @@ import { Router, Response, Request } from "express";
 import { Attachment, Channel, ChannelType, getPermission, Message } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { MessageCreateSchema } from "../../../../schema/Message";
-import { check, instanceOf, Length } from "../../../../util/instanceOf";
+import { check, instanceOf, Length } from "@fosscord/api";
 import multer from "multer";
 import { Query } from "mongoose";
-import { sendMessage } from "../../../../util/Message";
-import { uploadFile } from "../../../../util/cdn";
+import { sendMessage } from "@fosscord/api";
+import { uploadFile } from "@fosscord/api";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 
 const router: Router = Router();

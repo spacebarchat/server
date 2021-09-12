@@ -12,7 +12,7 @@ import {
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 
-import { check } from "../../../util/instanceOf";
+import { check } from "@fosscord/api";
 import { RoleModifySchema, RolePositionUpdateSchema } from "../../../schema/Roles";
 import { DiscordApiErrors } from "@fosscord/util";
 import { In } from "typeorm";

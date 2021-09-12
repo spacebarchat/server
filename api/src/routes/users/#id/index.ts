@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { User } from "../../../../../util/dist";
+import { User } from "@fosscord/util";
 
 const router: Router = Router();
 

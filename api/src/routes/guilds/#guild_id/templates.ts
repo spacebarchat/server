@@ -2,8 +2,8 @@ import { Request, Response, Router } from "express";
 import { Guild, getPermission, Template } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { TemplateCreateSchema, TemplateModifySchema } from "../../../schema/Template";
-import { check } from "../../../util/instanceOf";
-import { generateCode } from "../../../util/String";
+import { check } from "@fosscord/api";
+import { generateCode } from "@fosscord/api";
 
 const router: Router = Router();
 

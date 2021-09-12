@@ -3,8 +3,8 @@ import { emitEvent, getPermission, Guild, GuildUpdateEvent, Member } from "@foss
 import { HTTPError } from "lambert-server";
 import { GuildUpdateSchema } from "../../../schema/Guild";
 
-import { check } from "../../../util/instanceOf";
-import { handleFile } from "../../../util/cdn";
+import { check } from "@fosscord/api";
+import { handleFile } from "@fosscord/api";
 import "missing-native-js-functions";
 
 const router = Router();

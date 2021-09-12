@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { check } from "../../../util/instanceOf";
-import { random } from "../../../util/RandomInviteID";
+import { check } from "@fosscord/api";
+import { random } from "@fosscord/api";
 import { InviteCreateSchema } from "../../../schema/Invite";
 import { getPermission, Channel, Invite, InviteCreateEvent, emitEvent, User, Guild, PublicInviteRelation } from "@fosscord/util";
 import { isTextChannel } from "./messages";

@@ -1,8 +1,8 @@
 import { Channel, emitEvent, getPermission, MessageDeleteEvent, Message, MessageUpdateEvent } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { MessageCreateSchema } from "../../../../../schema/Message";
-import { check } from "../../../../../util/instanceOf";
-import { handleMessage, postHandleMessage } from "../../../../../util/Message";
+import { check } from "@fosscord/api";
+import { handleMessage, postHandleMessage } from "@fosscord/api";
 
 const router = Router();
 

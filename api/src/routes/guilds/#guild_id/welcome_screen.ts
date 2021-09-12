@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { Guild, getPermission, Snowflake, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 
-import { check } from "../../../util/instanceOf";
+import { check } from "@fosscord/api";
 import { GuildUpdateWelcomeScreenSchema } from "../../../schema/Guild";
 
 const router: Router = Router();

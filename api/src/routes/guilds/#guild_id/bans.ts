@@ -1,9 +1,8 @@
 import { Request, Response, Router } from "express";
 import { emitEvent, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, Guild, Ban, User, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { getIpAdress } from "../../../util/ipAddress";
-import { BanCreateSchema } from "../../../schema/Ban";
-import { check } from "../../../util/instanceOf";
+import { getIpAdress, check } from "@fosscord/api";
+import { BanCreateSchema } from "@fosscord/api/schema/Ban";
 
 const router: Router = Router();
 

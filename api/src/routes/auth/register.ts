@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
 import { trimSpecial, User, Snowflake, Config, defaultSettings } from "@fosscord/util";
 import bcrypt from "bcrypt";
-import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "../../util/instanceOf";
+import { check, Email, EMAIL_REGEX, FieldErrors, Length } from "@fosscord/api";
 import "missing-native-js-functions";
 import { generateToken } from "./login";
-import { getIpAdress, IPAnalysis, isProxy } from "../../util/ipAddress";
+import { getIpAdress, IPAnalysis, isProxy } from "@fosscord/api";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
 

@@ -3,7 +3,7 @@ import { Channel, ChannelUpdateEvent, getPermission, emitEvent } from "@fosscord
 import { HTTPError } from "lambert-server";
 import { ChannelModifySchema } from "../../../schema/Channel";
 
-import { check } from "../../../util/instanceOf";
+import { check } from "@fosscord/api";
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {

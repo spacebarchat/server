@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Guild, Member, PublicMemberProjection } from "@fosscord/util";
-import { instanceOf, Length } from "../../../../util/instanceOf";
+import { instanceOf, Length } from "@fosscord/api";
 import { MoreThan } from "typeorm";
 
 const router = Router();

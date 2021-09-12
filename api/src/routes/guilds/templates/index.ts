@@ -3,7 +3,7 @@ const router: Router = Router();
 import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { GuildTemplateCreateSchema } from "../../../schema/Guild";
-import { check } from "../../../util/instanceOf";
+import { check } from "@fosscord/api";
 import { DiscordApiErrors } from "@fosscord/util";
 
 router.get("/:code", async (req: Request, res: Response) => {

@@ -6,9 +6,9 @@ import {
 	Role,
 } from "@fosscord/util";
 import { LazyRequest } from "../schema/LazyRequest";
-import { OPCODES, Payload } from "../util/Constants";
-import { Send } from "../util/Send";
-import WebSocket from "../util/WebSocket";
+import { OPCODES, Payload } from "@fosscord/gateway/util/Constants";
+import { Send } from "@fosscord/gateway/util/Send";
+import WebSocket from "@fosscord/gateway/util/WebSocket";
 import { check } from "./instanceOf";
 import "missing-native-js-functions";
 

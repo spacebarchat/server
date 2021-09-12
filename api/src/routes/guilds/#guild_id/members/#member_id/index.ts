@@ -11,8 +11,8 @@ import {
 	emitEvent
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { check } from "../../../../../util/instanceOf";
-import { MemberChangeSchema } from "../../../../../schema/Member";
+import { check } from "@fosscord/api";
+import { MemberChangeSchema } from "@fosscord/api/schema/Member";
 import { In } from "typeorm";
 
 const router = Router();

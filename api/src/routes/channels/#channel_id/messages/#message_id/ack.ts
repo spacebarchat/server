@@ -1,7 +1,7 @@
 import { emitEvent, getPermission, MessageAckEvent, ReadState } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 
-import { check } from "../../../../../util/instanceOf";
+import { check } from "@fosscord/api";
 
 const router = Router();
 

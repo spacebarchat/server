@@ -63,6 +63,11 @@
 
 		/* Advanced Options */
 		"skipLibCheck": true /* Skip type checking of declaration files. */,
-		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
+		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
+		"baseUrl": ".",
+		"paths": {
+			"@fosscord/api": ["src/index.ts"],
+			"@fosscord/api/*": ["src/*"]
+		}
 	}
 }

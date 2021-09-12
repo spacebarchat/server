@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { Role, Guild, Snowflake, Config, User, Member, Channel } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { check } from "./../../util/instanceOf";
+import { check } from "@fosscord/api";
 import { GuildCreateSchema } from "../../schema/Guild";
 import { DiscordApiErrors } from "@fosscord/util";
 

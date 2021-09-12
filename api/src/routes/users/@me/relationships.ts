@@ -12,7 +12,7 @@ import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { DiscordApiErrors } from "@fosscord/util";
 
-import { check, Length } from "../../../util/instanceOf";
+import { check, Length } from "@fosscord/api";
 
 const router = Router();
 
