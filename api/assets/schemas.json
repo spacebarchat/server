@@ -177,7 +177,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -273,17 +281,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -499,7 +496,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -595,17 +600,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -718,10 +712,16 @@
                 "type": "string"
             },
             "target_type": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "validate": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "max_age": {
                 "type": "integer"
@@ -774,7 +774,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -870,17 +878,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -1028,7 +1025,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -1124,17 +1129,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -1285,7 +1279,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -1381,17 +1383,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -1551,7 +1542,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -1647,17 +1646,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -1810,7 +1798,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -1906,17 +1902,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -2064,7 +2049,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -2160,17 +2153,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -2330,7 +2312,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -2426,17 +2416,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -2606,7 +2585,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -2702,17 +2689,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -2915,7 +2891,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -3011,17 +2995,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -3169,7 +3142,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -3265,17 +3246,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -3423,7 +3393,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -3519,17 +3497,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -3689,7 +3656,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -3785,17 +3760,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -3950,7 +3914,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -4046,17 +4018,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -4207,7 +4168,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -4303,17 +4272,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -4464,7 +4422,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -4560,17 +4526,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -4717,7 +4672,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -4813,17 +4776,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -4990,7 +4942,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -5086,17 +5046,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -5270,7 +5219,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -5366,17 +5323,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -5528,7 +5474,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -5624,17 +5578,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -5785,7 +5728,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -5881,17 +5832,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -6045,7 +5985,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -6141,17 +6089,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -6266,17 +6203,26 @@
                 "type": "string"
             },
             "avatar": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "bio": {
                 "maxLength": 1024,
                 "type": "string"
             },
             "accent_color": {
-                "type": "integer"
+                "type": [
+                    "null",
+                    "integer"
+                ]
             },
             "banner": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "password": {
                 "type": "string"
@@ -6320,7 +6266,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -6416,17 +6370,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -6574,7 +6517,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -6670,17 +6621,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -6832,7 +6772,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -6928,17 +6876,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",
@@ -7273,7 +7210,15 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/EmbedType"
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
                     },
                     "description": {
                         "type": "string"
@@ -7369,17 +7314,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "EmbedType": {
-                "enum": [
-                    "article",
-                    "gifv",
-                    "image",
-                    "link",
-                    "rich",
-                    "video"
-                ],
-                "type": "string"
             },
             "EmbedImage": {
                 "type": "object",

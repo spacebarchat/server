@@ -55,7 +55,6 @@ export function route(opts: RouteOptions) {
 		if (opts.permission) {
 			const required = new Permissions(opts.permission);
 			const permission = await getPermission(req.user_id, req.params.guild_id, req.params.channel_id);
-			console.log(required.bitfield, permission.bitfield, permission.bitfield & required.bitfield);
 
 			// bitfield comparison: check if user lacks certain permission
 			if (!permission.has(required)) {
