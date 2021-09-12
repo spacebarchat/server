@@ -1,5 +1,5 @@
 import { Intents, Permissions } from "@fosscord/util";
-import WS, { Server, Data } from "ws";
+import WS from "ws";
 import { Deflate } from "zlib";
 import { Channel } from "amqplib";
 
@@ -21,4 +21,3 @@ interface WebSocket extends WS {
 }
 
 export default WebSocket;
-export { Server, Data };

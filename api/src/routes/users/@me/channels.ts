@@ -1,21 +1,23 @@
 import { Router, Request, Response } from "express";
-import { Channel, ChannelCreateEvent, ChannelType, Snowflake, trimSpecial, User, emitEvent } from "@fosscord/util";
+import { Channel, ChannelCreateEvent, ChannelType, Snowflake, trimSpecial, User, emitEvent, Recipient } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-
-import { DmChannelCreateSchema } from "../../../schema/Channel";
-import { check } from "../../../util/instanceOf";
+import { route } from "@fosscord/api";
 import { In } from "typeorm";
-import { Recipient } from "../../../../../util/dist/entities/Recipient";
+
+export interface DmChannelCreateSchema {
+	name?: string;
+	recipients: string[];
+}
 
 const router: Router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const recipients = await Recipient.find({ where: { user_id: req.user_id }, relations: ["channel"] });
 
 	res.json(recipients.map((x) => x.channel));
 });
 
-router.post("/", check(DmChannelCreateSchema), async (req: Request, res: Response) => {
+router.post("/", route({ body: "DmChannelCreateSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as DmChannelCreateSchema;
 
 	body.recipients = body.recipients.filter((x) => x !== req.user_id).unique();

@@ -2,11 +2,15 @@ import { Request, Response, Router } from "express";
 const router: Router = Router();
 import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { GuildTemplateCreateSchema } from "../../../schema/Guild";
-import { check } from "../../../util/instanceOf";
+import { check, route } from "@fosscord/api";
 import { DiscordApiErrors } from "@fosscord/util";
 
-router.get("/:code", async (req: Request, res: Response) => {
+export interface GuildTemplateCreateSchema {
+	name: string;
+	avatar?: string;
+}
+
+router.get("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
 
 	const template = await Template.findOneOrFail({ code: code });
@@ -14,7 +18,7 @@ router.get("/:code", async (req: Request, res: Response) => {
 	res.json(template);
 });
 
-router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res: Response) => {
+router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: Request, res: Response) => {
 	const { code } = req.params;
 	const body = req.body as GuildTemplateCreateSchema;
 

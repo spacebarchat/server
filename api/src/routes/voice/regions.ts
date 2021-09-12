@@ -1,11 +1,11 @@
 import { Router, Request, Response } from "express";
-import {getIpAdress} from "../../util/ipAddress";
-import {getVoiceRegions} from "../../util/Voice";
+import { getIpAdress, route } from "@fosscord/api";
+import { getVoiceRegions } from "@fosscord/api";
 
 const router: Router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
-    res.json(await getVoiceRegions(getIpAdress(req), true))//vip true?
+router.get("/", route({}), async (req: Request, res: Response) => {
+	res.json(await getVoiceRegions(getIpAdress(req), true)); //vip true?
 });
 
 export default router;

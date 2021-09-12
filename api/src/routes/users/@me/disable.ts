@@ -1,10 +1,11 @@
 import { User } from "@fosscord/util";
 import { Router, Response, Request } from "express";
+import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
 
 const router = Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", route({}), async (req: Request, res: Response) => {
 	const user = await User.findOneOrFail({ id: req.user_id }); //User object
 	let correctpass = true;
 

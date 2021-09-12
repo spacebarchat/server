@@ -2,7 +2,7 @@ var erlpack: any;
 try {
 	erlpack = require("erlpack");
 } catch (error) {}
-import { Payload } from "../util/Constants";
+import { Payload } from "@fosscord/gateway/util/Constants";
 
 import WebSocket from "./WebSocket";
 

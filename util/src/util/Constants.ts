@@ -632,7 +632,7 @@ export const DiscordApiErrors = {
 	OAUTH2_APPLICATION_BOT_ABSENT: new ApiError("OAuth2 application does not have a bot", 50010),
 	MAXIMUM_OAUTH2_APPLICATIONS: new ApiError("OAuth2 application limit reached", 50011),
 	INVALID_OAUTH_STATE: new ApiError("Invalid OAuth2 state", 50012),
-	MISSING_PERMISSIONS: new ApiError("You lack permissions to perform that action", 50013),
+	MISSING_PERMISSIONS: new ApiError("You lack permissions to perform that action ({})", 50013, undefined, [""]),
 	INVALID_AUTHENTICATION_TOKEN: new ApiError("Invalid authentication token provided", 50014),
 	NOTE_TOO_LONG: new ApiError("Note was too long", 50015),
 	INVALID_BULK_DELETE_QUANTITY: new ApiError(

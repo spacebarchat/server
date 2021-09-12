@@ -1,11 +1,10 @@
 import { Channel, emitEvent, Member, TypingStartEvent } from "@fosscord/util";
+import { route } from "@fosscord/api";
 import { Router, Request, Response } from "express";
-
-import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", route({ permission: "SEND_MESSAGES" }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 	const user_id = req.user_id;
 	const timestamp = Date.now();
@@ -24,6 +23,7 @@ router.post("/", async (req: Request, res: Response) => {
 			guild_id: channel.guild_id
 		}
 	} as TypingStartEvent);
+
 	res.sendStatus(204);
 });
 
