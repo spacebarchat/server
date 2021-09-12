@@ -1,10 +1,8 @@
 import { Router, Response, Request } from "express";
-import { Attachment, Channel, ChannelType, getPermission, Message } from "@fosscord/util";
+import { Attachment, Channel, ChannelType, Embed, getPermission, Message } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { MessageCreateSchema } from "../../../../schema/Message";
-import { check, instanceOf, Length } from "@fosscord/api";
+import { instanceOf, Length, route } from "@fosscord/api";
 import multer from "multer";
-import { Query } from "mongoose";
 import { sendMessage } from "@fosscord/api";
 import { uploadFile } from "@fosscord/api";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
@@ -29,6 +27,30 @@ export function isTextChannel(type: ChannelType): boolean {
 		case ChannelType.GUILD_TEXT:
 			return true;
 	}
+}
+
+export interface MessageCreateSchema {
+	content?: string;
+	nonce?: string;
+	tts?: boolean;
+	flags?: string;
+	embeds?: Embed[];
+	embed?: Embed;
+	// TODO: ^ embed is deprecated in favor of embeds (https://discord.com/developers/docs/resources/channel#message-object)
+	allowed_mentions?: {
+		parse?: string[];
+		roles?: string[];
+		users?: string[];
+		replied_user?: boolean;
+	};
+	message_reference?: {
+		message_id: string;
+		channel_id: string;
+		guild_id?: string;
+		fail_if_not_exists?: boolean;
+	};
+	payload_json?: string;
+	file?: any;
 }
 
 // https://discord.com/developers/docs/resources/channel#create-message
@@ -109,39 +131,44 @@ const messageUpload = multer({
 // TODO: check allowed_mentions
 
 // Send message
-router.post("/", messageUpload.single("file"), async (req: Request, res: Response) => {
-	const { channel_id } = req.params;
-	var body = req.body as MessageCreateSchema;
-	const attachments: Attachment[] = [];
-
-	if (req.file) {
-		try {
-			const file = await uploadFile(`/attachments/${channel_id}`, req.file);
-			attachments.push({ ...file, proxy_url: file.url });
-		} catch (error) {
-			return res.status(400).json(error);
+router.post(
+	"/",
+	messageUpload.single("file"),
+	async (req, res, next) => {
+		if (req.body.payload_json) {
+			req.body = JSON.parse(req.body.payload_json);
 		}
+
+		next();
+	},
+	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES" }),
+	async (req: Request, res: Response) => {
+		const { channel_id } = req.params;
+		var body = req.body as MessageCreateSchema;
+		const attachments: Attachment[] = [];
+
+		if (req.file) {
+			try {
+				const file = await uploadFile(`/attachments/${req.params.channel_id}`, req.file);
+				attachments.push({ ...file, proxy_url: file.url });
+			} catch (error) {
+				return res.status(400).json(error);
+			}
+		}
+
+		const embeds = [];
+		if (body.embed) embeds.push(body.embed);
+		const data = await sendMessage({
+			...body,
+			type: 0,
+			pinned: false,
+			author_id: req.user_id,
+			embeds,
+			channel_id,
+			attachments,
+			edited_timestamp: undefined
+		});
+
+		return res.json(data);
 	}
-
-	if (body.payload_json) {
-		body = JSON.parse(body.payload_json);
-	}
-
-	const errors = instanceOf(MessageCreateSchema, body, { req });
-	if (errors !== true) throw errors;
-
-	const embeds = [];
-	if (body.embed) embeds.push(body.embed);
-	const data = await sendMessage({
-		...body,
-		type: 0,
-		pinned: false,
-		author_id: req.user_id,
-		embeds,
-		channel_id,
-		attachments,
-		edited_timestamp: undefined
-	});
-
-	return res.json(data);
-});
+);

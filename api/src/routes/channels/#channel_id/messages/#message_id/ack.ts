@@ -1,14 +1,18 @@
 import { emitEvent, getPermission, MessageAckEvent, ReadState } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-
-import { check } from "@fosscord/api";
+import { route } from "@fosscord/api";
 
 const router = Router();
 
 // TODO: check if message exists
 // TODO: send read state event to all channel members
 
-router.post("/", check({ $manual: Boolean, $mention_count: Number }), async (req: Request, res: Response) => {
+export interface MessageAcknowledgeSchema {
+	manual?: boolean;
+	mention_count?: number;
+}
+
+router.post("/", route({ body: "MessageAcknowledgeSchema" }), async (req: Request, res: Response) => {
 	const { channel_id, message_id } = req.params;
 
 	const permission = await getPermission(req.user_id, undefined, channel_id);

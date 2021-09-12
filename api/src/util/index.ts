@@ -8,4 +8,3 @@ export * from "./RandomInviteID";
 export * from "./route";
 export * from "./String";
 export * from "./Voice";
-export * from "./VoiceState";

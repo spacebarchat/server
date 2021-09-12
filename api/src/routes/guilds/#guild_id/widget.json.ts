@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { Config, Permissions, Guild, Invite, Channel, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { random } from "@fosscord/api";
+import { random, route } from "@fosscord/api";
 
 const router: Router = Router();
 
@@ -14,7 +14,7 @@ const router: Router = Router();
 
 // https://discord.com/developers/docs/resources/guild#get-guild-widget
 // TODO: Cache the response for a guild for 5 minutes regardless of response
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
 	const guild = await Guild.findOneOrFail({ id: guild_id });

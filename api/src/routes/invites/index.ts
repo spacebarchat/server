@@ -1,9 +1,10 @@
 import { Router, Request, Response } from "express";
 import { getPermission, Guild, Invite, Member, PublicInviteRelation } from "@fosscord/util";
+import { route } from "@fosscord/api";
 import { HTTPError } from "lambert-server";
 const router: Router = Router();
 
-router.get("/:code", async (req: Request, res: Response) => {
+router.get("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
 
 	const invite = await Invite.findOneOrFail({ where: { code }, relations: PublicInviteRelation });
@@ -11,7 +12,7 @@ router.get("/:code", async (req: Request, res: Response) => {
 	res.status(200).send(invite);
 });
 
-router.post("/:code", async (req: Request, res: Response) => {
+router.post("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
 
 	const invite = await Invite.findOneOrFail({ code });
@@ -23,7 +24,8 @@ router.post("/:code", async (req: Request, res: Response) => {
 	res.status(200).send(invite);
 });
 
-router.delete("/:code", async (req: Request, res: Response) => {
+// * cant use permission of route() function because path doesn't have guild_id/channel_id
+router.delete("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
 	const invite = await Invite.findOneOrFail({ code });
 	const { guild_id, channel_id } = invite;

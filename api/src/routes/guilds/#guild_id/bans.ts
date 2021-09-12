@@ -2,7 +2,11 @@ import { Request, Response, Router } from "express";
 import { emitEvent, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, Guild, Ban, User, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { getIpAdress, check, route } from "@fosscord/api";
-import { BanCreateSchema } from "@fosscord/api/schema/Ban";
+
+export interface BanCreateSchema {
+	delete_message_days?: string;
+	reason?: string;
+}
 
 const router: Router = Router();
 router.get("/", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: Response) => {
@@ -27,7 +31,7 @@ router.put("/:user_id", route({ body: "BanCreateSchema", permission: "BAN_MEMBER
 	const banned_user = await User.getPublicUser(banned_user_id);
 
 	if (req.user_id === banned_user_id) throw new HTTPError("You can't ban yourself", 400);
-	if (req.permission?.cache.guild?.owner_id === banned_user_id) throw new HTTPError("You can't ban the owner", 400);
+	if (req.permission!.cache.guild?.owner_id === banned_user_id) throw new HTTPError("You can't ban the owner", 400);
 
 	const ban = new Ban({
 		user_id: banned_user_id,

@@ -1,9 +1,17 @@
 import { Router, Request, Response } from "express";
 import { PublicConnectedAccount, PublicUser, User, UserPublic } from "@fosscord/util";
+import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+export interface UserProfileResponse {
+	user: UserPublic;
+	connected_accounts: PublicConnectedAccount;
+	premium_guild_since?: Date;
+	premium_since?: Date;
+}
+
+router.get("/", route({ response: { body: "UserProfileResponse" } }), async (req: Request, res: Response) => {
 	if (req.params.id === "@me") req.params.id = req.user_id;
 	const user = await User.getPublicUser(req.params.id, { relations: ["connected_accounts"] });
 
@@ -24,12 +32,5 @@ router.get("/", async (req: Request, res: Response) => {
 		}
 	});
 });
-
-export interface UserProfileResponse {
-	user: UserPublic;
-	connected_accounts: PublicConnectedAccount;
-	premium_guild_since?: Date;
-	premium_since?: Date;
-}
 
 export default router;

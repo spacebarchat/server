@@ -1,10 +1,10 @@
 import { Guild } from "@fosscord/util";
 import { Router, Request, Response } from "express";
-import { In } from "typeorm";
+import { route } from "@fosscord/api";
 
 const router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const { limit } = req.params;
 
 	// ! this only works using SQL querys

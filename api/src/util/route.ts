@@ -5,10 +5,20 @@ import path from "path";
 import Ajv from "ajv";
 import { AnyValidateFunction } from "ajv/dist/core";
 import { FieldErrors } from "..";
+import addFormats from "ajv-formats";
 
 const SchemaPath = path.join(__dirname, "..", "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
-export const ajv = new Ajv({ allErrors: true, parseDate: true, allowDate: true, schemas, messages: true });
+export const ajv = new Ajv({
+	allErrors: true,
+	parseDate: true,
+	allowDate: true,
+	schemas,
+	messages: true,
+	strict: true,
+	strictRequired: true
+});
+addFormats(ajv);
 
 declare global {
 	namespace Express {
@@ -19,7 +29,7 @@ declare global {
 }
 
 export type RouteSchema = string; // typescript interface name
-export type RouteResponse = { status: number; body?: RouteSchema; headers?: Record<string, string> };
+export type RouteResponse = { status?: number; body?: RouteSchema; headers?: Record<string, string> };
 
 export interface RouteOptions {
 	permission?: PermissionResolvable;

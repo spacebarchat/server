@@ -1,13 +1,15 @@
 import { Request, Response, Router } from "express";
 import { Guild, Member, PublicMemberProjection } from "@fosscord/util";
-import { instanceOf, Length } from "@fosscord/api";
+import { instanceOf, Length, route } from "@fosscord/api";
 import { MoreThan } from "typeorm";
 
 const router = Router();
 
 // TODO: not allowed for user -> only allowed for bots with privileged intents
 // TODO: send over websocket
-router.get("/", async (req: Request, res: Response) => {
+// TODO: check for GUILD_MEMBERS intent
+
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	const guild = await Guild.findOneOrFail({ id: guild_id });
 	await Member.IsInGuildOrFail(req.user_id, guild_id);

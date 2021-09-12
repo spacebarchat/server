@@ -12,7 +12,9 @@
 		"build-docker": "tsc -p tsconfig-docker.json",
 		"dev": "tsnd --respawn src/start.ts",
 		"patch": "npx patch-package",
-		"postinstall": "npm run patch"
+		"postinstall": "npm run patch",
+		"generate:docs": "ts-node scripts/generate_openapi_schema.ts",
+		"generate:schema": "ts-node scripts/generate_body_schema.ts"
 	},
 	"repository": {
 		"type": "git",
@@ -60,7 +62,7 @@
 	"dependencies": {
 		"@fosscord/util": "file:../util",
 		"ajv": "^8.4.0",
-		"ajv-formats": "^2.1.0",
+		"ajv-formats": "^2.1.1",
 		"amqplib": "^0.8.0",
 		"assert": "^1.5.0",
 		"atomically": "^1.7.0",

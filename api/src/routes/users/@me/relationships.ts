@@ -11,18 +11,94 @@ import {
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { DiscordApiErrors } from "@fosscord/util";
-
-import { check, Length } from "@fosscord/api";
+import { route } from "@fosscord/api";
 
 const router = Router();
 
 const userProjection: (keyof User)[] = ["relationships", ...PublicUserProjection];
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const user = await User.findOneOrFail({ where: { id: req.user_id }, relations: ["relationships"] });
 
 	return res.json(user.relationships);
 });
+
+export interface RelationshipPutSchema {
+	type: RelationshipType;
+}
+
+router.put("/:id", route({ body: "RelationshipPutSchema" }), async (req: Request, res: Response) => {
+	return await updateRelationship(
+		req,
+		res,
+		await User.findOneOrFail({ id: req.params.id }, { relations: ["relationships"], select: userProjection }),
+		req.body.type
+	);
+});
+
+export interface RelationshipPostSchema {
+	discriminator: string;
+	username: string;
+}
+
+router.post("/", route({ body: "RelationshipPostSchema" }), async (req: Request, res: Response) => {
+	return await updateRelationship(
+		req,
+		res,
+		await User.findOneOrFail({
+			relations: ["relationships"],
+			select: userProjection,
+			where: req.body as { discriminator: string; username: string }
+		}),
+		req.body.type
+	);
+});
+
+router.delete("/:id", route({}), async (req: Request, res: Response) => {
+	const { id } = req.params;
+	if (id === req.user_id) throw new HTTPError("You can't remove yourself as a friend");
+
+	const user = await User.findOneOrFail({ id: req.user_id }, { select: userProjection, relations: ["relationships"] });
+	const friend = await User.findOneOrFail({ id: id }, { select: userProjection, relations: ["relationships"] });
+
+	const relationship = user.relationships.find((x) => x.id === id);
+	const friendRequest = friend.relationships.find((x) => x.id === req.user_id);
+
+	if (relationship?.type === RelationshipType.blocked) {
+		// unblock user
+		user.relationships.remove(relationship);
+
+		await Promise.all([
+			user.save(),
+			emitEvent({ event: "RELATIONSHIP_REMOVE", user_id: req.user_id, data: relationship } as RelationshipRemoveEvent)
+		]);
+		return res.sendStatus(204);
+	}
+	if (!relationship || !friendRequest) throw new HTTPError("You are not friends with the user", 404);
+	if (friendRequest.type === RelationshipType.blocked) throw new HTTPError("The user blocked you");
+
+	user.relationships.remove(relationship);
+	friend.relationships.remove(friendRequest);
+
+	await Promise.all([
+		user.save(),
+		friend.save(),
+		emitEvent({
+			event: "RELATIONSHIP_REMOVE",
+			data: relationship,
+			user_id: req.user_id
+		} as RelationshipRemoveEvent),
+		emitEvent({
+			event: "RELATIONSHIP_REMOVE",
+			data: friendRequest,
+			user_id: id
+		} as RelationshipRemoveEvent)
+	]);
+
+	return res.sendStatus(204);
+});
+
+export default router;
 
 async function updateRelationship(req: Request, res: Response, friend: User, type: RelationshipType) {
 	const id = friend.id;
@@ -114,71 +190,3 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 
 	return res.sendStatus(204);
 }
-
-router.put("/:id", check({ $type: new Length(Number, 1, 4) }), async (req: Request, res: Response) => {
-	return await updateRelationship(
-		req,
-		res,
-		await User.findOneOrFail({ id: req.params.id }, { relations: ["relationships"], select: userProjection }),
-		req.body.type
-	);
-});
-
-router.post("/", check({ discriminator: String, username: String }), async (req: Request, res: Response) => {
-	return await updateRelationship(
-		req,
-		res,
-		await User.findOneOrFail({
-			relations: ["relationships"],
-			select: userProjection,
-			where: req.body as { discriminator: string; username: string }
-		}),
-		req.body.type
-	);
-});
-
-router.delete("/:id", async (req: Request, res: Response) => {
-	const { id } = req.params;
-	if (id === req.user_id) throw new HTTPError("You can't remove yourself as a friend");
-
-	const user = await User.findOneOrFail({ id: req.user_id }, { select: userProjection, relations: ["relationships"] });
-	const friend = await User.findOneOrFail({ id: id }, { select: userProjection, relations: ["relationships"] });
-
-	const relationship = user.relationships.find((x) => x.id === id);
-	const friendRequest = friend.relationships.find((x) => x.id === req.user_id);
-
-	if (relationship?.type === RelationshipType.blocked) {
-		// unblock user
-		user.relationships.remove(relationship);
-
-		await Promise.all([
-			user.save(),
-			emitEvent({ event: "RELATIONSHIP_REMOVE", user_id: req.user_id, data: relationship } as RelationshipRemoveEvent)
-		]);
-		return res.sendStatus(204);
-	}
-	if (!relationship || !friendRequest) throw new HTTPError("You are not friends with the user", 404);
-	if (friendRequest.type === RelationshipType.blocked) throw new HTTPError("The user blocked you");
-
-	user.relationships.remove(relationship);
-	friend.relationships.remove(friendRequest);
-
-	await Promise.all([
-		user.save(),
-		friend.save(),
-		emitEvent({
-			event: "RELATIONSHIP_REMOVE",
-			data: relationship,
-			user_id: req.user_id
-		} as RelationshipRemoveEvent),
-		emitEvent({
-			event: "RELATIONSHIP_REMOVE",
-			data: friendRequest,
-			user_id: id
-		} as RelationshipRemoveEvent)
-	]);
-
-	return res.sendStatus(204);
-});
-
-export default router;
