@@ -132,7 +132,7 @@ router.patch("/", route({ body: "RolePositionUpdateSchema" }), async (req: Reque
 
 	await Promise.all(body.map(async (x) => Role.update({ guild_id, id: x.id }, { position: x.position })));
 
-	const roles = await Role.find({ guild_id, id: In(body.map((x) => x.id)) });
+	const roles = await Role.find({ where: body.map((x) => ({ id: x.id, guild_id })) });
 
 	await Promise.all(
 		roles.map((x) =>
