@@ -7,7 +7,7 @@
 	"scripts": {
 		"test": "npm run build && jest --coverage ./tests",
 		"build": "npx tsc -b .",
-		"start": "npm run build && node dist/start.js"
+		"start": "npm run build && node -r ./scripts/tsconfig-paths-bootstrap.js dist/start.js"
 	},
 	"repository": {
 		"type": "git",
@@ -51,7 +51,7 @@
 		"jest": "^27.0.6",
 		"lambert-db": "^1.2.3",
 		"lambert-server": "^1.2.8",
-		"missing-native-js-functions": "^1.2.10",
+		"missing-native-js-functions": "^1.2.15",
 		"multer": "^1.4.2",
 		"node-fetch": "^2.6.1",
 		"supertest": "^6.1.6",
@@ -61,6 +61,7 @@
 	"jest": {
 		"setupFilesAfterEnv": [
 			"<rootDir>/jest/setup.js"
-		]
+		],
+		"verbose": true
 	}
 }

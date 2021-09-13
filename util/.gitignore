@@ -105,3 +105,4 @@ typings/
 
 # Compiled TypeScript code
 dist/
+database.db

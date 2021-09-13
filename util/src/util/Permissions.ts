@@ -1,11 +1,8 @@
 // https://github.com/discordjs/discord.js/blob/master/src/util/Permissions.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
-import { MemberDocument, MemberModel } from "../models/Member";
-import { ChannelDocument, ChannelModel } from "../models/Channel";
-import { ChannelPermissionOverwrite } from "../models/Channel";
-import { Role, RoleDocument, RoleModel } from "../models/Role";
+import { Channel, ChannelPermissionOverwrite, Guild, Member, Role } from "../entities";
 import { BitField } from "./BitField";
-import { GuildDocument, GuildModel } from "../models/Guild";
+import "missing-native-js-functions";
 // TODO: check role hierarchy permission
 
 var HTTPError: any;
@@ -18,40 +15,9 @@ try {
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
-type PermissionString =
-	| "CREATE_INSTANT_INVITE"
-	| "KICK_MEMBERS"
-	| "BAN_MEMBERS"
-	| "ADMINISTRATOR"
-	| "MANAGE_CHANNELS"
-	| "MANAGE_GUILD"
-	| "ADD_REACTIONS"
-	| "VIEW_AUDIT_LOG"
-	| "PRIORITY_SPEAKER"
-	| "STREAM"
-	| "VIEW_CHANNEL"
-	| "SEND_MESSAGES"
-	| "SEND_TTS_MESSAGES"
-	| "MANAGE_MESSAGES"
-	| "EMBED_LINKS"
-	| "ATTACH_FILES"
-	| "READ_MESSAGE_HISTORY"
-	| "MENTION_EVERYONE"
-	| "USE_EXTERNAL_EMOJIS"
-	| "VIEW_GUILD_INSIGHTS"
-	| "CONNECT"
-	| "SPEAK"
-	| "MUTE_MEMBERS"
-	| "DEAFEN_MEMBERS"
-	| "MOVE_MEMBERS"
-	| "USE_VAD"
-	| "CHANGE_NICKNAME"
-	| "MANAGE_NICKNAMES"
-	| "MANAGE_ROLES"
-	| "MANAGE_WEBHOOKS"
-	| "MANAGE_EMOJIS_AND_STICKERS";
+type PermissionString = keyof typeof Permissions.FLAGS;
 
-const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(48); // 16 free custom permission bits, and 16 for discord to add new ones
+const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(48); // 16 free custom permission bits, and 11 for discord to add new ones
 
 export class Permissions extends BitField {
 	cache: PermissionCache = {};
@@ -88,6 +54,14 @@ export class Permissions extends BitField {
 		MANAGE_ROLES: BigInt(1) << BigInt(28),
 		MANAGE_WEBHOOKS: BigInt(1) << BigInt(29),
 		MANAGE_EMOJIS_AND_STICKERS: BigInt(1) << BigInt(30),
+		USE_APPLICATION_COMMANDS: BigInt(1) << BigInt(31),
+		REQUEST_TO_SPEAK: BigInt(1) << BigInt(32),
+		// TODO: what is permission 33?
+		MANAGE_THREADS: BigInt(1) << BigInt(34),
+		USE_PUBLIC_THREADS: BigInt(1) << BigInt(35),
+		USE_PRIVATE_THREADS: BigInt(1) << BigInt(36),
+		USE_EXTERNAL_STICKERS: BigInt(1) << BigInt(37),
+
 		/**
 		 * CUSTOM PERMISSIONS ideas:
 		 * - allow user to dm members
@@ -138,12 +112,12 @@ export class Permissions extends BitField {
 			// ~ operator inverts deny (e.g. 011 -> 100)
 			// & operator only allows 1 for both ~deny and permission (e.g. 010 & 100 -> 000)
 			// | operators adds both together (e.g. 000 + 100 -> 100)
-		}, init || 0n);
+		}, init || BigInt(0));
 	}
 
 	static rolePermission(roles: Role[]) {
 		// adds all permissions of all roles together (Bit OR)
-		return roles.reduce((permission, role) => permission | BigInt(role.permissions), 0n);
+		return roles.reduce((permission, role) => permission | BigInt(role.permissions), BigInt(0));
 	}
 
 	static finalPermission({
@@ -201,10 +175,10 @@ export class Permissions extends BitField {
 }
 
 export type PermissionCache = {
-	channel?: ChannelDocument | null;
-	member?: MemberDocument | null;
-	guild?: GuildDocument | null;
-	roles?: RoleDocument[] | null;
+	channel?: Channel | undefined;
+	member?: Member | undefined;
+	guild?: Guild | undefined;
+	roles?: Role[] | undefined;
 	user_id?: string;
 };
 
@@ -212,51 +186,85 @@ export async function getPermission(
 	user_id?: string,
 	guild_id?: string,
 	channel_id?: string,
-	cache: PermissionCache = {}
+	opts: {
+		guild_select?: (keyof Guild)[];
+		guild_relations?: string[];
+		channel_select?: (keyof Channel)[];
+		channel_relations?: string[];
+		member_select?: (keyof Member)[];
+		member_relations?: string[];
+	} = {}
 ) {
-	var { channel, member, guild, roles } = cache;
-
 	if (!user_id) throw new HTTPError("User not found");
+	var channel: Channel | undefined;
+	var member: Member | undefined;
+	var guild: Guild | undefined;
 
-	if (channel_id && !channel) {
-		channel = await ChannelModel.findOne(
-			{ id: channel_id },
-			{ permission_overwrites: true, recipient_ids: true, owner_id: true, guild_id: true }
-		).exec();
-		if (!channel) throw new HTTPError("Channel not found", 404);
-		if (channel.guild_id) guild_id = channel.guild_id;
+	if (channel_id) {
+		channel = await Channel.findOneOrFail({
+			where: { id: channel_id },
+			relations: ["recipients", ...(opts.channel_relations || [])],
+			select: [
+				"id",
+				"recipients",
+				"permission_overwrites",
+				"owner_id",
+				"guild_id",
+				// @ts-ignore
+				...(opts.channel_select || []),
+			],
+		});
+		if (channel.guild_id) guild_id = channel.guild_id; // derive guild_id from the channel
 	}
 
 	if (guild_id) {
-		if (!guild) guild = await GuildModel.findOne({ id: guild_id }, { owner_id: true }).exec();
-		if (!guild) throw new HTTPError("Guild not found");
+		guild = await Guild.findOneOrFail({
+			where: { id: guild_id },
+			select: [
+				"id",
+				"owner_id",
+				// @ts-ignore
+				...(opts.guild_select || []),
+			],
+			relations: opts.guild_relations,
+		});
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
-		if (!member) member = await MemberModel.findOne({ guild_id, id: user_id }, "roles").exec();
-		if (!member) throw new HTTPError("Member not found");
-
-		if (!roles) roles = await RoleModel.find({ guild_id, id: { $in: member.roles } }).exec();
+		member = await Member.findOneOrFail({
+			where: { guild_id, id: user_id },
+			relations: ["roles", ...(opts.member_relations || [])],
+			select: [
+				"id",
+				"roles",
+				// @ts-ignore
+				...(opts.member_select || []),
+			],
+		});
 	}
 
+	let recipient_ids: any = channel?.recipients?.map((x) => x.user_id);
+	if (!recipient_ids?.length) recipient_ids = null;
+
+	// TODO: remove guild.roles and convert recipient_ids to recipients
 	var permission = Permissions.finalPermission({
 		user: {
 			id: user_id,
-			roles: member?.roles || [],
+			roles: member?.roles.map((x) => x.id) || [],
 		},
 		guild: {
-			roles: roles || [],
+			roles: member?.roles || [],
 		},
 		channel: {
 			overwrites: channel?.permission_overwrites,
 			owner_id: channel?.owner_id,
-			recipient_ids: channel?.recipient_ids,
+			recipient_ids,
 		},
 	});
 
 	const obj = new Permissions(permission);
 
 	// pass cache to permission for possible future getPermission calls
-	obj.cache = { guild, member, channel, roles, user_id };
+	obj.cache = { guild, member, channel, roles: member?.roles, user_id };
 
 	return obj;
 }

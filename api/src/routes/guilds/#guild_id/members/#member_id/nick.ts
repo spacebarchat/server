@@ -1,12 +1,14 @@
-import { getPermission, PermissionResolvable } from "@fosscord/util";
+import { getPermission, Member, PermissionResolvable } from "@fosscord/util";
+import { route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
-import { check } from "lambert-server";
-import { MemberNickChangeSchema } from "../../../../../schema/Member";
-import { changeNickname } from "../../../../../util/Member";
 
 const router = Router();
 
-router.patch("/", check(MemberNickChangeSchema), async (req: Request, res: Response) => {
+export interface MemberNickChangeSchema {
+	nick: string;
+}
+
+router.patch("/", route({ body: "MemberNickChangeSchema" }), async (req: Request, res: Response) => {
 	var { guild_id, member_id } = req.params;
 	var permissionString: PermissionResolvable = "MANAGE_NICKNAMES";
 	if (member_id === "@me") {
@@ -17,7 +19,7 @@ router.patch("/", check(MemberNickChangeSchema), async (req: Request, res: Respo
 	const perms = await getPermission(req.user_id, guild_id);
 	perms.hasThrow(permissionString);
 
-	await changeNickname(member_id, guild_id, req.body.nick);
+	await Member.changeNickname(member_id, guild_id, req.body.nick);
 	res.status(200).send();
 });
 

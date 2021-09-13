@@ -110,3 +110,6 @@ src/ready.json
 # Docker
 .docker/config/*
 !.docker/config/.keep
+
+# fosscord
+*.db

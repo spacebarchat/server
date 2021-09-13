@@ -1,45 +1,45 @@
 import { Request, Response, Router } from "express";
 const router: Router = Router();
-import { TemplateModel, GuildModel, toObject, UserModel, RoleModel, Snowflake, Guild, Config } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
-import { GuildTemplateCreateSchema } from "../../../schema/Guild";
-import { getPublicUser } from "../../../util/User";
-import { check } from "../../../util/instanceOf";
-import { addMember } from "../../../util/Member";
+import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscord/util";
+import { route } from "@fosscord/api";
+import { DiscordApiErrors } from "@fosscord/util";
 
-router.get("/:code", async (req: Request, res: Response) => {
+export interface GuildTemplateCreateSchema {
+	name: string;
+	avatar?: string;
+}
+
+router.get("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
 
-	const template = await TemplateModel.findOne({ code: code }).exec();
+	const template = await Template.findOneOrFail({ code: code });
 
-	res.json(toObject(template)).send();
+	res.json(template);
 });
 
-router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res: Response) => {
+router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: Request, res: Response) => {
 	const { code } = req.params;
 	const body = req.body as GuildTemplateCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
-	const user = await getPublicUser(req.user_id, { guilds: true });
 
-	if (user.guilds.length >= maxGuilds) {
-		throw new HTTPError(`Maximum number of guilds reached ${maxGuilds}`, 403);
+	const guild_count = await Member.count({ id: req.user_id });
+	if (guild_count >= maxGuilds) {
+		throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
 	}
 
-	const template = await TemplateModel.findOne({ code: code }).exec();
+	const template = await Template.findOneOrFail({ code: code });
 
 	const guild_id = Snowflake.generate();
 
-	const guild: Guild = {
-		...body,
-		...template.serialized_source_guild,
-		id: guild_id,
-		owner_id: req.user_id
-	};
-
-	const [guild_doc, role] = await Promise.all([
-		new GuildModel(guild).save(),
-		new RoleModel({
+	const [guild, role] = await Promise.all([
+		new Guild({
+			...body,
+			...template.serialized_source_guild,
+			id: guild_id,
+			owner_id: req.user_id
+		}).save(),
+		new Role({
 			id: guild_id,
 			guild_id: guild_id,
 			color: 0,
@@ -53,7 +53,7 @@ router.post("/:code", check(GuildTemplateCreateSchema), async (req: Request, res
 		}).save()
 	]);
 
-	await addMember(req.user_id, guild_id, { guild: guild_doc });
+	await Member.addToGuild(req.user_id, guild_id);
 
 	res.status(201).json({ id: guild.id });
 });
