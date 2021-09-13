@@ -3,6 +3,7 @@ import { Router, Response, Request } from "express";
 import { route } from "@fosscord/api";
 import { handleMessage, postHandleMessage } from "@fosscord/api";
 import { MessageCreateSchema } from "../index";
+import { deleteMessageAttachments } from "@fosscord/api/util/Attachments";
 
 const router = Router();
 // TODO: message content/embed string length limit
@@ -11,7 +12,7 @@ router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGE
 	const { message_id, channel_id } = req.params;
 	var body = req.body as MessageCreateSchema;
 
-	const message = await Message.findOneOrFail({ id: message_id, channel_id });
+	const message = await Message.findOneOrFail({ where: { id: message_id, channel_id }, relations: ["attachments"] });
 
 	const permissions = await getPermission(req.user_id, undefined, channel_id);
 
@@ -33,6 +34,7 @@ router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGE
 	});
 
 	await Promise.all([
+		await deleteMessageAttachments(message_id, new_message.attachments), //This delete all the attachments not in the array
 		new_message!.save(),
 		await emitEvent({
 			event: "MESSAGE_UPDATE",
@@ -46,8 +48,6 @@ router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGE
 	return res.json(message);
 });
 
-// TODO: delete attachments in message
-
 // permission check only if deletes messagr from other user
 router.delete("/", route({}), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
@@ -60,6 +60,7 @@ router.delete("/", route({}), async (req: Request, res: Response) => {
 		permission.hasThrow("MANAGE_MESSAGES");
 	}
 
+	await deleteMessageAttachments(message_id);
 	await Message.delete({ id: message_id });
 
 	await emitEvent({
