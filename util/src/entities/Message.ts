@@ -128,7 +128,7 @@ export class Message extends BaseClass {
 	sticker_items?: Sticker[];
 
 	@JoinColumn({ name: "attachment_ids" })
-	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message)
+	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, { cascade: true })
 	attachments?: Attachment[];
 
 	@Column({ type: "simple-json" })
