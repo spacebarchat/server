@@ -16,7 +16,7 @@ export interface GuildCreateSchema {
 	icon?: string;
 	channels?: ChannelModifySchema[];
 	guild_template_code?: string;
-	system_channel_id?: string;
+	system_channel_id?: string | null;
 	rules_channel_id?: string;
 }
 
