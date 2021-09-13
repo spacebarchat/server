@@ -9,17 +9,17 @@ import { GuildCreateSchema } from "../index";
 const router = Router();
 
 export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels"> {
-	banner?: string;
-	splash?: string;
-	description?: string;
+	banner?: string | null;
+	splash?: string | null;
+	description?: string | null;
 	features?: string[];
 	verification_level?: number;
 	default_message_notifications?: number;
 	system_channel_flags?: number;
 	explicit_content_filter?: number;
-	public_updates_channel_id?: string;
+	public_updates_channel_id?: string | null;
 	afk_timeout?: number;
-	afk_channel_id?: string;
+	afk_channel_id?: string | null;
 	preferred_locale?: string;
 }
 
