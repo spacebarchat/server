@@ -37,7 +37,7 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 
 	//Need to reload user from db due to https://github.com/typeorm/typeorm/issues/3490
 	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: PrivateUserProjection });
-
+	// TODO: send update member list event in gateway
 	await emitEvent({
 		event: "USER_UPDATE",
 		user_id: req.user_id,
