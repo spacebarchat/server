@@ -10,7 +10,7 @@ import { VoiceState } from "../entities/VoiceState";
 import { ApplicationCommand } from "../entities/Application";
 import { Interaction } from "./Interaction";
 import { ConnectedAccount } from "../entities/ConnectedAccount";
-import { Relationship } from "../entities/Relationship";
+import { Relationship, RelationshipType } from "../entities/Relationship";
 import { Presence } from "./Presence";
 
 export interface Event {
@@ -26,6 +26,12 @@ export interface Event {
 
 export interface InvalidatedEvent extends Event {
 	event: "INVALIDATED";
+}
+
+export interface PublicRelationship {
+	id: string;
+	user: PublicUser;
+	type: RelationshipType;
 }
 
 // ! END Custom Events that shouldn't get sent to the client but processed by the server
@@ -72,7 +78,7 @@ export interface ReadyEventData {
 	guild_join_requests?: any[]; // ? what is this? this is new
 	shard?: [number, number];
 	user_settings?: UserSettings;
-	relationships?: Relationship[]; // TODO
+	relationships?: PublicRelationship[]; // TODO
 	read_state: {
 		entries: any[]; // TODO
 		partial: boolean;
@@ -412,7 +418,7 @@ export interface MessageAckEvent extends Event {
 
 export interface RelationshipAddEvent extends Event {
 	event: "RELATIONSHIP_ADD";
-	data: Relationship & {
+	data: PublicRelationship & {
 		should_notify?: boolean;
 		user: PublicUser;
 	};
@@ -420,7 +426,7 @@ export interface RelationshipAddEvent extends Event {
 
 export interface RelationshipRemoveEvent extends Event {
 	event: "RELATIONSHIP_REMOVE";
-	data: Omit<Relationship, "nickname">;
+	data: Omit<PublicRelationship, "nickname">;
 }
 
 export type EventData =
