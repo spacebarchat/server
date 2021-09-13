@@ -37,6 +37,7 @@ export class FileStorage implements Storage {
 	}
 
 	async delete(path: string) {
+		//TODO we should delete the parent directory if empty
 		fs.unlinkSync(getPath(path));
 	}
 }
