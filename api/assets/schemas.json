@@ -462,7 +462,11 @@
             "payload_json": {
                 "type": "string"
             },
-            "file": {}
+            "file": {},
+            "attachments": {
+                "type": "array",
+                "items": {}
+            }
         },
         "additionalProperties": false,
         "definitions": {
