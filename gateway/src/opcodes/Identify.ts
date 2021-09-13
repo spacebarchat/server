@@ -104,7 +104,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}
 		return x.channel;
 	});
-	const user = await User.findOneOrFail({ id: this.user_id });
+	const user = await User.findOneOrFail({
+		where: { id: this.user_id },
+		relations: ["relationships", "relationships.to"],
+	});
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
 	const public_user = {
@@ -171,7 +174,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}),
 		guild_experiments: [], // TODO
 		geo_ordered_rtc_regions: [], // TODO
-		relationships: user.relationships,
+		relationships: user.relationships.map((x) => x.toPublicRelationship()),
 		read_state: {
 			// TODO
 			entries: [],
