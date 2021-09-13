@@ -106,7 +106,7 @@ export class User extends BaseClass {
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 
 	@Column()
-	created_at: Date = new Date(); // registration date
+	created_at: Date; // registration date
 
 	@Column()
 	verified: boolean; // if the user is offically verified
@@ -127,7 +127,7 @@ export class User extends BaseClass {
 	public_flags: string;
 
 	@JoinColumn({ name: "relationship_ids" })
-	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.user, { cascade: true })
+	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from)
 	relationships: Relationship[];
 
 	@JoinColumn({ name: "connected_account_ids" })
@@ -145,6 +145,14 @@ export class User extends BaseClass {
 
 	@Column({ type: "simple-json" })
 	settings: UserSettings;
+
+	toPublicUser() {
+		const user: any = {};
+		PublicUserProjection.forEach((x) => {
+			user[x] = this[x];
+		});
+		return user as PublicUser;
+	}
 
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {
 		const user = await User.findOne(
@@ -261,7 +269,7 @@ export class UserFlags extends BitField {
 		SYSTEM: BigInt(1) << BigInt(12),
 		HAS_UNREAD_URGENT_MESSAGES: BigInt(1) << BigInt(13),
 		BUGHUNTER_LEVEL_2: BigInt(1) << BigInt(14),
-	        UNDERAGE_DELETED: BigInt(1) << BigInt(15),
+		UNDERAGE_DELETED: BigInt(1) << BigInt(15),
 		VERIFIED_BOT: BigInt(1) << BigInt(16),
 		EARLY_VERIFIED_BOT_DEVELOPER: BigInt(1) << BigInt(17),
 	};

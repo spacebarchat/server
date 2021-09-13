@@ -137,7 +137,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 
 	if (!register.allowMultipleAccounts) {
 		// TODO: check if fingerprint was eligible generated
-		const exists = await User.findOne({ where: { fingerprints: In(fingerprint) } });
+		const exists = await User.findOne({ where: { fingerprints: fingerprint } });
 
 		if (exists) {
 			throw FieldErrors({
