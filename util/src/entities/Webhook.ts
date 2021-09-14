@@ -18,13 +18,13 @@ export class Webhook extends BaseClass {
 	@Column({ type: "simple-enum", enum: WebhookType })
 	type: WebhookType;
 
-	@Column({ nullable: true })
-	name?: string;
+	@Column()
+	name: string;
 
 	@Column({ nullable: true })
 	avatar?: string;
 
-	@Column({ nullable: true })
+	@Column({ nullable: true, select: false })
 	token?: string;
 
 	@Column({ nullable: true })

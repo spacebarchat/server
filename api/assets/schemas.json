@@ -1770,10 +1770,6 @@
             }
         },
         "additionalProperties": false,
-        "required": [
-            "avatar",
-            "name"
-        ],
         "definitions": {
             "ChannelType": {
                 "enum": [
@@ -7207,6 +7203,257 @@
             "theme",
             "timezone_offset"
         ],
+        "definitions": {
+            "ChannelType": {
+                "enum": [
+                    0,
+                    1,
+                    10,
+                    11,
+                    12,
+                    13,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "type": "number"
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1
+                ],
+                "type": "number"
+            },
+            "Embed": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "color": {
+                        "type": "integer"
+                    },
+                    "footer": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string"
+                            },
+                            "icon_url": {
+                                "type": "string"
+                            },
+                            "proxy_icon_url": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "text"
+                        ]
+                    },
+                    "image": {
+                        "$ref": "#/definitions/EmbedImage"
+                    },
+                    "thumbnail": {
+                        "$ref": "#/definitions/EmbedImage"
+                    },
+                    "video": {
+                        "$ref": "#/definitions/EmbedImage"
+                    },
+                    "provider": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "author": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string"
+                            },
+                            "icon_url": {
+                                "type": "string"
+                            },
+                            "proxy_icon_url": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                },
+                                "inline": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "name",
+                                "value"
+                            ]
+                        }
+                    }
+                },
+                "additionalProperties": false
+            },
+            "EmbedImage": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "proxy_url": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "width": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ChannelModifySchema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "maxLength": 100,
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/definitions/ChannelType"
+                    },
+                    "topic": {
+                        "type": "string"
+                    },
+                    "bitrate": {
+                        "type": "integer"
+                    },
+                    "user_limit": {
+                        "type": "integer"
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "permission_overwrites": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/ChannelPermissionOverwriteType"
+                                },
+                                "allow": {
+                                    "type": "bigint"
+                                },
+                                "deny": {
+                                    "type": "bigint"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "allow",
+                                "deny",
+                                "id",
+                                "type"
+                            ]
+                        }
+                    },
+                    "parent_id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "nsfw": {
+                        "type": "boolean"
+                    },
+                    "rtc_region": {
+                        "type": "string"
+                    },
+                    "default_auto_archive_duration": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "type"
+                ]
+            },
+            "RelationshipType": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "type": "number"
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "WebhookModifySchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "avatar": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
         "definitions": {
             "ChannelType": {
                 "enum": [
