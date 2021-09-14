@@ -713,7 +713,10 @@
         "type": "object",
         "properties": {
             "target_user_id": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "target_type": {
                 "type": [
