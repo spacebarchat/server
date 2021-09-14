@@ -462,7 +462,11 @@
             "payload_json": {
                 "type": "string"
             },
-            "file": {}
+            "file": {},
+            "attachments": {
+                "type": "array",
+                "items": {}
+            }
         },
         "additionalProperties": false,
         "definitions": {
@@ -709,7 +713,10 @@
         "type": "object",
         "properties": {
             "target_user_id": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "target_type": {
                 "type": [
@@ -2544,7 +2551,10 @@
                 "type": "string"
             },
             "system_channel_id": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "rules_channel_id": {
                 "type": "string"
@@ -2798,13 +2808,22 @@
         "type": "object",
         "properties": {
             "banner": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "splash": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "description": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "features": {
                 "type": "array",
@@ -2825,13 +2844,19 @@
                 "type": "integer"
             },
             "public_updates_channel_id": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "afk_timeout": {
                 "type": "integer"
             },
             "afk_channel_id": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "preferred_locale": {
                 "type": "string"
@@ -2850,7 +2875,10 @@
                 "type": "string"
             },
             "system_channel_id": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "rules_channel_id": {
                 "type": "string"
