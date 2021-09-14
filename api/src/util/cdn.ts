@@ -38,3 +38,16 @@ export async function handleFile(path: string, body?: string): Promise<string | 
 		throw new HTTPError("Invalid " + path);
 	}
 }
+
+export async function deleteFile(path: string) {
+	const response = await fetch(`${Config.get().cdn.endpoint || "http://localhost:3003"}${path}`, {
+		headers: {
+			signature: Config.get().security.requestSignature,
+		},
+		method: "DELETE",
+	});
+	const result = await response.json();
+
+	if (response.status !== 200) throw result;
+	return result;
+}
