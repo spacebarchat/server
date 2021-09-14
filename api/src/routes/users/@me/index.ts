@@ -1,7 +1,8 @@
 import { Router, Request, Response } from "express";
-import { User, PrivateUserProjection } from "@fosscord/util";
+import { User, PrivateUserProjection, Config } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { handleFile } from "@fosscord/api";
+import jwt from "jsonwebtoken";
 
 const router: Router = Router();
 

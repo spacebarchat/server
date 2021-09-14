@@ -165,6 +165,46 @@ export class User extends BaseClass {
 		if (!user) throw new HTTPError("User not found", 404);
 		return user;
 	}
+
+	static async register(opts: { username: string } & any) {
+		let discriminator: string = "";
+		let exists;
+
+		// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
+		// if it all five times already exists, abort with USERNAME_TOO_MANY_USERS error
+		// else just continue
+		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the mongodb database?
+		for (let tries = 0; tries < 5; tries++) {
+			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
+			exists = await User.findOne({ where: { discriminator, username: opts.username }, select: ["id"] });
+			if (!exists) break;
+		}
+
+		if (exists) throw new HTTPError("USERNAME_TOO_MANY_USERS");
+
+		return await new User({
+			created_at: new Date(),
+			username: opts.username,
+			discriminator,
+			bot: false,
+			system: false,
+			desktop: false,
+			mobile: false,
+			premium: true,
+			premium_type: 2,
+			bio: "",
+			mfa_enabled: false,
+			verified: false,
+			disabled: false,
+			deleted: false,
+			nsfw_allowed: true, // TODO: depending on age
+			public_flags: "0",
+			flags: "0", // TODO: generate
+			fingerprints: [],
+			settings: {},
+			...opts,
+		}).save();
+	}
 }
 
 export const defaultSettings: UserSettings = {

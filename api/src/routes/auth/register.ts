@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
-import { trimSpecial, User, Snowflake, Config, defaultSettings } from "@fosscord/util";
+import { trimSpecial, User, Config, defaultSettings } from "@fosscord/util";
 import bcrypt from "bcrypt";
-import { EMAIL_REGEX, FieldErrors, route } from "@fosscord/api";
+import { FieldErrors, route } from "@fosscord/api";
 import "missing-native-js-functions";
 import { generateToken } from "./login";
-import { getIpAdress, IPAnalysis, isProxy } from "@fosscord/api";
+import { getIpAdress, IPAnalysis, isProxy, EMAIL_REGEX } from "@fosscord/api";
 import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
@@ -69,9 +69,6 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 
 	// trim special uf8 control characters -> Backspace, Newline, ...
 	let adjusted_username = trimSpecial(username);
-
-	// discriminator will be randomly generated
-	let discriminator = "";
 
 	// check if registration is allowed
 	if (!register.allowNewRegistration) {
@@ -164,18 +161,20 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	// the salt is saved in the password refer to bcrypt docs
 	adjusted_password = await bcrypt.hash(password, 12);
 
-	let exists;
-	// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
-	// if it all five times already exists, abort with USERNAME_TOO_MANY_USERS error
-	// else just continue
-	// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the mongodb database?
-	for (let tries = 0; tries < 5; tries++) {
-		discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
-		exists = await User.findOne({ where: { discriminator, username: adjusted_username }, select: ["id"] });
-		if (!exists) break;
-	}
+	// TODO: save date_of_birth
+	// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
+	// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 
-	if (exists) {
+	try {
+		var user = await User.register({
+			username: adjusted_username,
+			data: {
+				hash: adjusted_password,
+				valid_tokens_since: new Date()
+			},
+			settings: { ...defaultSettings, locale: req.language || "en-US" }
+		});
+	} catch (error) {
 		throw FieldErrors({
 			username: {
 				code: "USERNAME_TOO_MANY_USERS",
@@ -183,38 +182,6 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 			}
 		});
 	}
-
-	// TODO: save date_of_birth
-	// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
-	// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
-
-	const user = await new User({
-		created_at: new Date(),
-		username: adjusted_username,
-		discriminator,
-		id: Snowflake.generate(),
-		bot: false,
-		system: false,
-		desktop: false,
-		mobile: false,
-		premium: true,
-		premium_type: 2,
-		bio: "",
-		mfa_enabled: false,
-		verified: false,
-		disabled: false,
-		deleted: false,
-		email: adjusted_email,
-		nsfw_allowed: true, // TODO: depending on age
-		public_flags: "0",
-		flags: "0", // TODO: generate
-		data: {
-			hash: adjusted_password,
-			valid_tokens_since: new Date()
-		},
-		settings: { ...defaultSettings, locale: req.language || "en-US" },
-		fingerprints: []
-	}).save();
 
 	return res.json({ token: await generateToken(user.id) });
 });

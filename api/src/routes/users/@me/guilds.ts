@@ -1,12 +1,28 @@
 import { Router, Request, Response } from "express";
-import { Guild, Member, User, GuildDeleteEvent, GuildMemberRemoveEvent, emitEvent } from "@fosscord/util";
+import { Guild, Member, User, GuildDeleteEvent, GuildMemberRemoveEvent, emitEvent, getPermission, Permissions } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const members = await Member.find({ relations: ["guild"], where: { id: req.user_id } });
+	const members = await Member.find({ relations: ["guild", "roles"], where: { id: req.user_id } });
+	members.forEach((x, i) => {
+		x.guild = x.guild.toJSON();
+		// @ts-ignore
+		x.guild.permissions = Permissions.finalPermission({
+			user: {
+				id: req.user_id,
+				roles: x?.roles.map((x) => x.id) || []
+			},
+			guild: {
+				roles: x?.roles || []
+			},
+			channel: {
+				overwrites: []
+			}
+		}).bitfield.toString();
+	});
 
 	res.json(members.map((x) => x.guild));
 });

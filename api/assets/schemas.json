@@ -1,4 +1,54 @@
 {
+    "ApplicationCreateSchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "minLength": 2,
+                "maxLength": 32,
+                "type": "string"
+            },
+            "team_id": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name",
+            "team_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ApplicationModifySchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "minLength": 2,
+                "maxLength": 32,
+                "type": "string"
+            },
+            "icon": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "interactions_endpoint_url": {
+                "type": "string"
+            },
+            "terms_of_service_url": {
+                "type": "string"
+            },
+            "privacy_policy_url": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "description",
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "RegisterSchema": {
         "type": "object",
         "properties": {

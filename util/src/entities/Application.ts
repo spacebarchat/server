@@ -18,6 +18,14 @@ export class Application extends BaseClass {
 	@Column({ type: "simple-array", nullable: true })
 	rpc_origins?: string[];
 
+	@Column({ nullable: true })
+	@RelationId((application: Application) => application.bot)
+	bot_id?: string;
+
+	@JoinColumn({ name: "bot_id" })
+	@ManyToOne(() => User)
+	bot?: User;
+
 	@Column()
 	bot_public: boolean;
 
@@ -30,6 +38,10 @@ export class Application extends BaseClass {
 	@Column({ nullable: true })
 	privacy_policy_url?: string;
 
+	@Column({ nullable: true })
+	@RelationId((application: Application) => application.owner)
+	owner_id?: string;
+
 	@JoinColumn({ name: "owner_id" })
 	@ManyToOne(() => User)
 	owner?: User;
@@ -40,9 +52,17 @@ export class Application extends BaseClass {
 	@Column()
 	verify_key: string;
 
+	@Column({ nullable: true })
+	@RelationId((application: Application) => application.team)
+	team_id?: string;
+
 	@JoinColumn({ name: "team_id" })
 	@ManyToOne(() => Team)
 	team?: Team;
+
+	@Column({ nullable: true })
+	@RelationId((application: Application) => application.guild)
+	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild)
@@ -59,6 +79,9 @@ export class Application extends BaseClass {
 
 	@Column()
 	flags: string; // the application's public flags
+
+	@Column({ nullable: true })
+	interactions_endpoint_url?: string;
 }
 
 export interface ApplicationCommand {
