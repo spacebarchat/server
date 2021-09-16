@@ -1,4 +1,4 @@
-import { DiscordApiErrors, Event, EventData, getPermission, PermissionResolvable, Permissions, Webhook } from "@fosscord/util";
+import { DiscordApiErrors, Event, EventData, getPermission, PermissionResolvable, Permissions } from "@fosscord/util";
 import { NextFunction, Request, Response } from "express";
 import fs from "fs";
 import path from "path";
@@ -54,13 +54,9 @@ export function route(opts: RouteOptions) {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		if (opts.permission) {
 			const required = new Permissions(opts.permission);
-			if (req.params.webhook_id) {
-				const webhook = await Webhook.findOneOrFail({ id: req.params.webhook_id });
-				req.params.channel_id = webhook.channel_id;
-				req.params.guild_id = webhook.guild_id;
-			}
 			const permission = await getPermission(req.user_id, req.params.guild_id, req.params.channel_id);
 
+			// bitfield comparison: check if user lacks certain permission
 			if (!permission.has(required)) {
 				throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(opts.permission as string);
 			}
