@@ -5,11 +5,11 @@ import { checkToken, Config } from "@fosscord/util";
 export const NO_AUTHORIZATION_ROUTES = [
 	"/auth/login",
 	"/auth/register",
+	"/webhooks/",
 	"/ping",
 	"/gateway",
 	"/experiments",
-	/\/guilds\/\d+\/widget\.(json|png)/,
-	/\/webhooks\/\d+\/\w+/ // only exclude webhook calls with webhook token
+	/\/guilds\/\d+\/widget\.(json|png)/
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;

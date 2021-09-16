@@ -11,7 +11,7 @@
 			window.__OVERLAY__ = /overlay/.test(location.pathname);
 			window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
 			window.GLOBAL_ENV = {
-				API_ENDPOINT: `//${location.host}/api`,
+				API_ENDPOINT: "/api",
 				API_VERSION: 9,
 				GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}${location.hostname}:3002`,
 				WEBAPP_ENDPOINT: "",
