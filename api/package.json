@@ -57,11 +57,11 @@
 		"ts-node": "^9.1.1",
 		"ts-node-dev": "^1.1.6",
 		"typescript": "^4.4.2",
-		"typescript-json-schema": "^0.50.1"
+		"typescript-json-schema": "0.50.1"
 	},
 	"dependencies": {
 		"@fosscord/util": "file:../util",
-		"ajv": "^8.4.0",
+		"ajv": "8.6.2",
 		"ajv-formats": "^2.1.1",
 		"amqplib": "^0.8.0",
 		"assert": "^1.5.0",
