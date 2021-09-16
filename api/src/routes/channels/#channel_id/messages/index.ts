@@ -1,9 +1,8 @@
 import { Router, Response, Request } from "express";
-import { Attachment, Channel, ChannelType, Embed, getPermission, Message } from "@fosscord/util";
+import { Attachment, Channel, ChannelType, DmChannelDTO, Embed, emitEvent, getPermission, Message, MessageCreateEvent } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
+import { handleMessage, postHandleMessage, route } from "@fosscord/api";
 import multer from "multer";
-import { sendMessage } from "@fosscord/api";
 import { uploadFile } from "@fosscord/api";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 
@@ -62,9 +61,9 @@ router.get("/", async (req: Request, res: Response) => {
 	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	isTextChannel(channel.type);
-	const around = `${req.query.around}`;
-	const before = `${req.query.before}`;
-	const after = `${req.query.after}`;
+	const around = req.query.around ? `${req.query.around}` : undefined;
+	const before = req.query.before ? `${req.query.before}` : undefined;
+	const after = req.query.after ? `${req.query.after}` : undefined;
 	const limit = Number(req.query.limit) || 50;
 	if (limit < 1 || limit > 100) throw new HTTPError("limit must be between 1 and 100");
 
@@ -151,10 +150,12 @@ router.post(
 				return res.status(400).json(error);
 			}
 		}
+		//TODO querying the DB at every message post should be avoided, caching maybe?
+		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] })
 
 		const embeds = [];
 		if (body.embed) embeds.push(body.embed);
-		const data = await sendMessage({
+		let message = await handleMessage({
 			...body,
 			type: 0,
 			pinned: false,
@@ -162,9 +163,36 @@ router.post(
 			embeds,
 			channel_id,
 			attachments,
-			edited_timestamp: undefined
+			edited_timestamp: undefined,
+			timestamp: new Date()
 		});
 
-		return res.json(data);
+		message = await message.save()
+
+		await channel.assign({ last_message_id: message.id }).save()
+
+		if (channel.isDm()) {
+			const channel_dto = await DmChannelDTO.from(channel)
+
+			for (let recipient of channel.recipients!) {
+				if (recipient.closed) {
+					await emitEvent({
+						event: "CHANNEL_CREATE",
+						data: channel_dto.excludedRecipients([recipient.user_id]),
+						user_id: recipient.user_id
+					})
+				}
+			}
+
+			await Promise.all(channel.recipients!.map(async r => {
+				r.closed = false;
+				return await r.save()
+			}));
+		}
+
+		await emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent)
+		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
+
+		return res.json(message);
 	}
 );

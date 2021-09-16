@@ -26,7 +26,7 @@ router.post("/", route({ body: "MessageAcknowledgeSchema" }), async (req: Reques
 		data: {
 			channel_id,
 			message_id,
-			version: 496
+			version: 3763
 		}
 	} as MessageAckEvent);
 

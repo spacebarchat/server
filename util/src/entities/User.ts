@@ -124,7 +124,7 @@ export class User extends BaseClass {
 	flags: string; // UserFlags
 
 	@Column()
-	public_flags: string;
+	public_flags: number;
 
 	@JoinColumn({ name: "relationship_ids" })
 	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from)

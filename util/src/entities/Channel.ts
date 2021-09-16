@@ -1,7 +1,6 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
-import { Message } from "./Message";
 import { User } from "./User";
 import { HTTPError } from "lambert-server";
 import { emitEvent, getPermission, Snowflake } from "../util";
@@ -31,6 +30,9 @@ export class Channel extends BaseClass {
 	@Column({ nullable: true })
 	name?: string;
 
+	@Column({ nullable: true })
+	icon?: string;
+
 	@Column({ type: "simple-enum", enum: ChannelType })
 	type: ChannelType;
 
@@ -38,12 +40,7 @@ export class Channel extends BaseClass {
 	recipients?: Recipient[];
 
 	@Column({ nullable: true })
-	@RelationId((channel: Channel) => channel.last_message)
 	last_message_id: string;
-
-	@JoinColumn({ name: "last_message_id" })
-	@ManyToOne(() => Message)
-	last_message?: Message;
 
 	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.guild)
@@ -161,6 +158,10 @@ export class Channel extends BaseClass {
 		]);
 
 		return channel;
+	}
+
+	isDm() {
+		return this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM
 	}
 }
 

@@ -21,5 +21,6 @@ export default {
 	8: onRequestGuildMembers,
 	// 9: Invalid Session
 	// 10: Hello
+	// 13: Dm_update
 	14: onLazyRequest,
 };
