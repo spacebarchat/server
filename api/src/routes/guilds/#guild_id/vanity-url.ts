@@ -1,6 +1,7 @@
 import { Channel, ChannelType, getPermission, Guild, Invite, trimSpecial } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
+import { HTTPError } from "lambert-server";
 
 const router = Router();
 
@@ -29,14 +30,14 @@ router.patch("/", route({ body: "VanityUrlSchema", permission: "MANAGE_GUILD" })
 	const body = req.body as VanityUrlSchema;
 	const code = body.code?.replace(InviteRegex, "");
 
-	await Invite.findOneOrFail({ code });
+	const invite = await Invite.findOne({ code });
+	if (invite) throw new HTTPError("Invite already exists");
 
 	const guild = await Guild.findOneOrFail({ id: guild_id });
 	const { id } = await Channel.findOneOrFail({ guild_id, type: ChannelType.GUILD_TEXT });
-	guild.vanity_url_code = code;
 
 	Promise.all([
-		guild.save(),
+		Guild.update({ id: guild_id }, { vanity_url_code: code }),
 		Invite.delete({ code: guild.vanity_url_code }),
 		new Invite({
 			code: code,
