@@ -1,4 +1,4 @@
-import { Channel, ChannelType, PublicUserProjection, Recipient, User } from "../entities";
+import { Channel, ChannelType, Message, PublicUserProjection, Recipient, User } from "../entities";
 import { HTTPError } from "lambert-server";
 import { emitEvent, trimSpecial } from "../util";
 import { DmChannelDTO } from "../dtos";
@@ -72,10 +72,36 @@ export class ChannelService {
 
 	public static async removeRecipientFromChannel(channel: Channel, user_id: string) {
 		await Recipient.delete({ channel_id: channel.id, user_id: user_id })
+		channel.recipients = channel.recipients?.filter(r => r.user_id !== user_id)
+
+		if (channel.recipients?.length === 0) {
+			await ChannelService.deleteChannel(channel);
+			await emitEvent({
+				event: "CHANNEL_DELETE",
+				data: await DmChannelDTO.from(channel, [user_id]),
+				user_id: user_id
+			});
+			return
+		}
+
+		let channel_dto = null;
+
+		//If the owner leave we make the first recipient in the list the new owner
+		if (channel.owner_id === user_id) {
+			channel.owner_id = channel.recipients!.find(r => r.user_id !== user_id)!.user_id //Is there a criteria to choose the new owner?
+			channel_dto = await DmChannelDTO.from(channel, [user_id])
+			await emitEvent({
+				event: "CHANNEL_UPDATE",
+				data: channel_dto,
+				channel_id: channel.id
+			});
+		}
+
+		await channel.save()
 
 		await emitEvent({
 			event: "CHANNEL_DELETE",
-			data: await DmChannelDTO.from(channel, [user_id]),
+			data: channel_dto !== null ? channel_dto : await DmChannelDTO.from(channel, [user_id]),
 			user_id: user_id
 		});
 
@@ -85,5 +111,11 @@ export class ChannelService {
 				user: await User.findOneOrFail({ where: { id: user_id }, select: PublicUserProjection })
 			}, channel_id: channel.id
 		} as ChannelRecipientRemoveEvent);
+	}
+
+	public static async deleteChannel(channel: Channel) {
+		await Message.delete({ channel_id: channel.id }) //TODO we should also delete the attachments from the cdn but to do that we need to move cdn.ts in util
+		//TODO before deleting the channel we should check and delete other relations
+		await Channel.delete({ id: channel.id })
 	}
 }
