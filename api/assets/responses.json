@@ -1,0 +1,90 @@
+{
+    "UserProfileResponse": {
+        "type": "object",
+        "properties": {
+            "user": {
+                "$ref": "#/definitions/UserPublic"
+            },
+            "connected_accounts": {
+                "$ref": "#/definitions/PublicConnectedAccount"
+            },
+            "premium_guild_since": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "premium_since": {
+                "type": "string",
+                "format": "date-time"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "connected_accounts",
+            "user"
+        ],
+        "definitions": {
+            "UserPublic": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "PublicConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "verifie": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "type",
+                    "verifie"
+                ]
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    }
+}
