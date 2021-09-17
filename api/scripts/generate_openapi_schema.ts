@@ -48,34 +48,27 @@ function combineSchemas(opts: { program: TJS.Program; generator: TJS.JsonSchemaG
 	return definitions;
 }
 
+const ExcludedSchemas = [
+	"DefaultSchema",
+	"Schema",
+	"EntitySchema",
+	"ServerResponse",
+	"Http2ServerResponse",
+	"global.Express.Response",
+	"Response",
+	"e.Response",
+	"request.Response",
+	"supertest.Response"
+];
+
 function apiSchemas() {
 	const program = TJS.getProgramFromFiles([path.join(__dirname, "..", "src", "schema", "index.ts")], compilerOptions);
 	const generator = TJS.buildGenerator(program, settings);
 
-	const schemas = [
-		"BanCreateSchema",
-		"DmChannelCreateSchema",
-		"ChannelModifySchema",
-		"ChannelGuildPositionUpdateSchema",
-		"ChannelGuildPositionUpdateSchema",
-		"EmojiCreateSchema",
-		"GuildCreateSchema",
-		"GuildUpdateSchema",
-		"GuildTemplateCreateSchema",
-		"GuildUpdateWelcomeScreenSchema",
-		"InviteCreateSchema",
-		"MemberCreateSchema",
-		"MemberNickChangeSchema",
-		"MemberChangeSchema",
-		"MessageCreateSchema",
-		"RoleModifySchema",
-		"TemplateCreateSchema",
-		"TemplateModifySchema",
-		"UserModifySchema",
-		"UserSettingsSchema",
-		"WidgetModifySchema",
-		""
-	];
+	const schemas = generator
+		.getUserSymbols()
+		.filter((x) => x.endsWith("Response") && !ExcludedSchemas.includes(x))
+		.concat(generator.getUserSymbols().filter((x) => x.endsWith("Schema") && !ExcludedSchemas.includes(x)));
 
 	// @ts-ignore
 	combineSchemas({ schemas, generator, program });
