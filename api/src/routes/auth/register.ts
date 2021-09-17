@@ -27,13 +27,16 @@ export interface RegisterSchema {
 	email?: string;
 	fingerprint?: string;
 	invite?: string;
+	/**
+	 * @TJS-type string
+	 */
 	date_of_birth?: Date; // "2000-04-03"
 	gift_code_sku_id?: string;
 	captcha_key?: string;
 }
 
 router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Response) => {
-	const {
+	let {
 		email,
 		username,
 		password,
@@ -61,14 +64,11 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	// TODO: gift_code_sku_id?
 	// TODO: check password strength
 
-	// adjusted_email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
-	let adjusted_email = adjustEmail(email);
-
-	// adjusted_password will be the hash of the password
-	let adjusted_password = "";
+	// email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
+	email = adjustEmail(email);
 
 	// trim special uf8 control characters -> Backspace, Newline, ...
-	let adjusted_username = trimSpecial(username);
+	username = trimSpecial(username);
 
 	// discriminator will be randomly generated
 	let discriminator = "";
@@ -96,10 +96,10 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 
 	if (email) {
 		// replace all dots and chars after +, if its a gmail.com email
-		if (!adjusted_email) throw FieldErrors({ email: { code: "INVALID_EMAIL", message: req.t("auth:register.INVALID_EMAIL") } });
+		if (!email) throw FieldErrors({ email: { code: "INVALID_EMAIL", message: req.t("auth:register.INVALID_EMAIL") } });
 
 		// check if there is already an account with this email
-		const exists = await User.findOneOrFail({ email: adjusted_email }).catch((e) => {});
+		const exists = await User.findOneOrFail({ email: email }).catch((e) => {});
 
 		if (exists) {
 			throw FieldErrors({
@@ -122,6 +122,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	} else if (register.dateOfBirth.minimum) {
 		const minimum = new Date();
 		minimum.setFullYear(minimum.getFullYear() - register.dateOfBirth.minimum);
+		date_of_birth = new Date(date_of_birth);
 
 		// higher is younger
 		if (date_of_birth > minimum) {
@@ -162,7 +163,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	}
 
 	// the salt is saved in the password refer to bcrypt docs
-	adjusted_password = await bcrypt.hash(password, 12);
+	password = await bcrypt.hash(password, 12);
 
 	let exists;
 	// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
@@ -171,7 +172,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the mongodb database?
 	for (let tries = 0; tries < 5; tries++) {
 		discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
-		exists = await User.findOne({ where: { discriminator, username: adjusted_username }, select: ["id"] });
+		exists = await User.findOne({ where: { discriminator, username: username }, select: ["id"] });
 		if (!exists) break;
 	}
 
@@ -190,7 +191,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 
 	const user = await new User({
 		created_at: new Date(),
-		username: adjusted_username,
+		username: username,
 		discriminator,
 		id: Snowflake.generate(),
 		bot: false,
@@ -204,12 +205,12 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		verified: false,
 		disabled: false,
 		deleted: false,
-		email: adjusted_email,
+		email: email,
 		nsfw_allowed: true, // TODO: depending on age
 		public_flags: "0",
 		flags: "0", // TODO: generate
 		data: {
-			hash: adjusted_password,
+			hash: password,
 			valid_tokens_since: new Date()
 		},
 		settings: { ...defaultSettings, locale: req.language || "en-US" },
@@ -220,6 +221,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 });
 
 export function adjustEmail(email: string): string | undefined {
+	if (!email) return email;
 	// body parser already checked if it is a valid email
 	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);
 	// @ts-ignore
