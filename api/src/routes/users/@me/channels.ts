@@ -1,21 +1,12 @@
 import { Request, Response, Router } from "express";
-import { PublicUserProjection, Recipient, User, ChannelService } from "@fosscord/util";
+import { Recipient, ChannelService, DmChannelDTO } from "@fosscord/util";
 import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const recipients = await Recipient.find({ where: { user_id: req.user_id }, relations: ["channel", "user"] });
-
-	//TODO check if this is right
-	const aa = await Promise.all(recipients.map(async (x) => {
-		return {
-			...(x.channel),
-			recipients: await User.findOneOrFail({ where: { id: x.user_id }, select: PublicUserProjection }),
-		}
-	}))
-
-	res.json(aa);
+	const recipients = await Recipient.find({ where: { user_id: req.user_id, closed: false }, relations: ["channel", "channel.recipients"] });
+	res.json(await Promise.all(recipients.map(r => DmChannelDTO.from(r.channel, [req.user_id]))));
 });
 
 export interface DmChannelCreateSchema {
