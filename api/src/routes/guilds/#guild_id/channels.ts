@@ -5,7 +5,7 @@ import { route } from "@fosscord/api";
 import { ChannelModifySchema } from "../../channels/#channel_id";
 const router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	const channels = await Channel.find({ guild_id });
 

@@ -1,10 +1,11 @@
 import { Request, Response, Router } from "express";
+import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
-router.get("/skus/:id", async (req: Request, res: Response) => {
+router.get("/skus/:id", route({}), async (req: Request, res: Response) => {
 	//TODO
-    const { id } = req.params;
+	const { id } = req.params;
 	res.json([]).status(200);
 });
 

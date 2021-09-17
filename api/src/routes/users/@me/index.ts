@@ -23,7 +23,7 @@ export interface UserModifySchema {
 	code?: string;
 }
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	res.json(await User.findOne({ select: PrivateUserProjection, where: { id: req.user_id } }));
 });
 
