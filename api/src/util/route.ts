@@ -28,12 +28,11 @@ declare global {
 	}
 }
 
-export type RouteSchema = string; // typescript interface name
-export type RouteResponse = { status?: number; body?: RouteSchema; headers?: Record<string, string> };
+export type RouteResponse = { status?: number; body?: `${string}Response`; headers?: Record<string, string> };
 
 export interface RouteOptions {
 	permission?: PermissionResolvable;
-	body?: RouteSchema;
+	body?: `${string}Schema`; // typescript interface name
 	response?: RouteResponse;
 	example?: {
 		body?: any;
