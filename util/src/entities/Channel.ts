@@ -30,8 +30,8 @@ export class Channel extends BaseClass {
 	@Column({ nullable: true })
 	name?: string;
 
-	@Column({ nullable: true })
-	icon?: string;
+	@Column({ type: 'text', nullable: true })
+	icon?: string | null;
 
 	@Column({ type: "simple-enum", enum: ChannelType })
 	type: ChannelType;

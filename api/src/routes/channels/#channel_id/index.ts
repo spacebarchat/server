@@ -1,6 +1,6 @@
 import { Channel, ChannelDeleteEvent, ChannelPermissionOverwriteType, ChannelService, ChannelType, ChannelUpdateEvent, emitEvent, Recipient } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
+import { handleFile, route } from "@fosscord/api";
 
 const router: Router = Router();
 // TODO: delete channel
@@ -44,9 +44,10 @@ export interface ChannelModifySchema {
 	/**
 	 * @maxLength 100
 	 */
-	name: string;
-	type: ChannelType;
+	name?: string;
+	type?: ChannelType;
 	topic?: string;
+	icon?: string | null;
 	bitrate?: number;
 	user_limit?: number;
 	rate_limit_per_user?: number;
@@ -67,6 +68,7 @@ export interface ChannelModifySchema {
 router.patch("/", route({ body: "ChannelModifySchema", permission: "MANAGE_CHANNELS" }), async (req: Request, res: Response) => {
 	var payload = req.body as ChannelModifySchema;
 	const { channel_id } = req.params;
+	if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
 
 	const channel = await Channel.findOneOrFail({ id: channel_id });
 	channel.assign(payload);
