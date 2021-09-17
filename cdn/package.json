@@ -5,9 +5,10 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
+		"prepare": "ts-patch install -s",
 		"test": "npm run build && jest --coverage ./tests",
 		"build": "npx tsc -b .",
-		"start": "npm run build && node -r ./scripts/tsconfig-paths-bootstrap.js dist/start.js"
+		"start": "npm run build && node dist/start.js"
 	},
 	"repository": {
 		"type": "git",
@@ -34,7 +35,8 @@
 		"@types/multer": "^1.4.7",
 		"@types/node": "^14.17.0",
 		"@types/node-fetch": "^2.5.7",
-		"@types/uuid": "^8.3.0"
+		"@types/uuid": "^8.3.0",
+		"ts-patch": "^1.4.4"
 	},
 	"dependencies": {
 		"@fosscord/util": "file:../util",

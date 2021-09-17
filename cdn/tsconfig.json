@@ -70,6 +70,7 @@
 		"paths": {
 			"@fosscord/cdn/": ["src/index.ts"],
 			"@fosscord/cdn/*": ["src/*"]
-		}
+		},
+		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
 	}
 }

@@ -72,6 +72,7 @@
 		"paths": {
 			"@fosscord/gateway/*": ["src/*"],
 			"@fosscord/util/*": ["../util/src/*"]
-		}
+		},
+		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
 	}
 }
