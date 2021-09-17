@@ -13,6 +13,7 @@ export class ChannelService {
 		recipients = recipients.unique().filter((x) => x !== creator_user_id);
 		const otherRecipientsUsers = await User.find({ where: recipients.map((x) => ({ id: x })) });
 
+		// TODO: check config for max number of recipients
 		if (otherRecipientsUsers.length !== recipients.length) {
 			throw new HTTPError("Recipient/s not found");
 		}
