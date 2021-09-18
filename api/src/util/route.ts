@@ -43,10 +43,37 @@ export interface RouteOptions {
 	};
 }
 
+// Normalizer is introduced to workaround https://github.com/ajv-validator/ajv/issues/1287
+// this removes null values as ajv doesn't treat them as undefined
+// normalizeBody allows to handle circular structures without issues
+// taken from https://github.com/serverless/serverless/blob/master/lib/classes/ConfigSchemaHandler/index.js#L30 (MIT license)
+const normalizeBody = (body: any = {}) => {
+	const normalizedObjectsSet = new WeakSet();
+	const normalizeObject = (object: any) => {
+		if (normalizedObjectsSet.has(object)) return;
+		normalizedObjectsSet.add(object);
+		if (Array.isArray(object)) {
+			for (const [index, value] of object.entries()) {
+				if (typeof value === "object") normalizeObject(value);
+			}
+		} else {
+			for (const [key, value] of Object.entries(object)) {
+				if (value == null) {
+					if (key === "icon" || key === "avatar" || key === "banner" || key === "splash") continue;
+					delete object[key];
+				} else if (typeof value === "object") {
+					normalizeObject(value);
+				}
+			}
+		}
+	};
+	normalizeObject(body);
+	return body;
+};
+
 export function route(opts: RouteOptions) {
-	var validate: AnyValidateFunction<any>;
+	var validate: AnyValidateFunction<any> | undefined;
 	if (opts.body) {
-		// @ts-ignore
 		validate = ajv.getSchema(opts.body);
 		if (!validate) throw new Error(`Body schema ${opts.body} not found`);
 	}
@@ -60,14 +87,14 @@ export function route(opts: RouteOptions) {
 			if (!permission.has(required)) {
 				throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(opts.permission as string);
 			}
+		}
 
-			if (validate) {
-				const valid = validate(req.body);
-				if (!valid) {
-					const fields: Record<string, { code?: string; message: string }> = {};
-					validate.errors?.forEach((x) => (fields[x.instancePath] = { code: x.keyword, message: x.message || "" }));
-					throw FieldErrors(fields);
-				}
+		if (validate) {
+			const valid = validate(normalizeBody(req.body));
+			if (!valid) {
+				const fields: Record<string, { code?: string; message: string }> = {};
+				validate.errors?.forEach((x) => (fields[x.instancePath.slice(1)] = { code: x.keyword, message: x.message || "" }));
+				throw FieldErrors(fields);
 			}
 		}
 		next();
