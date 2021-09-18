@@ -116,7 +116,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 					.has("VIEW_CHANNEL")
 			)
 				return;
-			break;
+			//No break needed here, we need to call the listenEvent function below
 		case "GUILD_CREATE":
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
 			break;
@@ -193,16 +193,11 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			break;
 	}
 
-	let aa = {
+	Send(this, {
 		op: OPCODES.Dispatch,
 		t: event,
 		d: data,
 		s: this.sequence++,
-	}
-
-	//TODO remove before PR merge
-	console.log(aa)
-
-	Send(this, aa);
+	});
 	opts.acknowledge?.();
 }

@@ -5,7 +5,6 @@ import { EVENT, Event } from "../interfaces";
 const events = new EventEmitter();
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
-	console.log(payload) //TODO remove before merge
 	const id = (payload.channel_id || payload.user_id || payload.guild_id) as string;
 	if (!id) return console.error("event doesn't contain any id", payload);
 

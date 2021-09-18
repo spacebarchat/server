@@ -84,26 +84,23 @@ export class ChannelService {
 			return
 		}
 
-		let channel_dto = null;
+		await emitEvent({
+			event: "CHANNEL_DELETE",
+			data: await DmChannelDTO.from(channel, [user_id]),
+			user_id: user_id
+		});
 
 		//If the owner leave we make the first recipient in the list the new owner
 		if (channel.owner_id === user_id) {
 			channel.owner_id = channel.recipients!.find(r => r.user_id !== user_id)!.user_id //Is there a criteria to choose the new owner?
-			channel_dto = await DmChannelDTO.from(channel, [user_id])
 			await emitEvent({
 				event: "CHANNEL_UPDATE",
-				data: channel_dto,
+				data: await DmChannelDTO.from(channel, [user_id]),
 				channel_id: channel.id
 			});
 		}
 
 		await channel.save()
-
-		await emitEvent({
-			event: "CHANNEL_DELETE",
-			data: channel_dto !== null ? channel_dto : await DmChannelDTO.from(channel, [user_id]),
-			user_id: user_id
-		});
 
 		await emitEvent({
 			event: "CHANNEL_RECIPIENT_REMOVE", data: {
