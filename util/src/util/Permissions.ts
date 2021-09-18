@@ -92,6 +92,7 @@ export class Permissions extends BitField {
 	}
 
 	overwriteChannel(overwrites: ChannelPermissionOverwrite[]) {
+		if (!overwrites) return this
 		if (!this.cache) throw new Error("permission chache not available");
 		overwrites = overwrites.filter((x) => {
 			if (x.type === 0 && this.cache.roles?.some((r) => r.id === x.id)) return true;

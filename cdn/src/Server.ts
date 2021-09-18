@@ -58,6 +58,9 @@ export class CDNServer extends Server {
 		this.app.use("/team-icons/", avatarsRoute);
 		this.log("verbose", "[Server] Route /team-icons registered");
 
+		this.app.use("/channel-icons/", avatarsRoute);
+		this.log("verbose", "[Server] Route /channel-icons registered");
+
 		return super.start();
 	}
 
