@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { Recipient, ChannelService, DmChannelDTO } from "@fosscord/util";
+import { Recipient, DmChannelDTO, Channel } from "@fosscord/util";
 import { route } from "@fosscord/api";
 
 const router: Router = Router();
@@ -16,7 +16,7 @@ export interface DmChannelCreateSchema {
 
 router.post("/", route({ body: "DmChannelCreateSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as DmChannelCreateSchema;
-	res.json(await ChannelService.createDMChannel(body.recipients, req.user_id, body.name));
+	res.json(await Channel.createDMChannel(body.recipients, req.user_id, body.name));
 });
 
 export default router;
