@@ -40,22 +40,22 @@ export class FosscordServer extends Server {
 
 
 		/* 
-		DOCUMENTATION: uses log-requests environment variable
+		DOCUMENTATION: uses LOG_REQUESTS environment variable
 		
 		# only log 200 and 204
-		log-requests=200 204
+		LOG_REQUESTS=200 204
 		# log everything except 200 and 204
-		log-requests=-200 204
+		LOG_REQUESTS=-200 204
 		# log all requests
-		log-requests=-
+		LOG_REQUESTS=-
 		*/
-		
-		let logRequests = process.env["log-requests"] != undefined;
+
+		let logRequests = process.env["LOG_REQUESTS"] != undefined;
 		if(logRequests) {
 			this.app.use(morgan("combined", {
 				skip: (req, res) => {
-					var skip = !(process.env["log-requests"]?.includes(res.statusCode.toString()) ?? false);
-					if(process.env["log-requests"]?.charAt(0) == '-') skip = !skip;
+					var skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
+					if(process.env["LOG_REQUESTS"]?.charAt(0) == '-') skip = !skip;
 					return skip;
 				}
 			}));
@@ -91,7 +91,7 @@ export class FosscordServer extends Server {
 		TestClient(this.app);
 
 		if(logRequests){
-			console.log("Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'log-requests' environment variable!");
+			console.log("Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!");
 		}
 		return super.start();
 	}
