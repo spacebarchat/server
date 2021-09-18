@@ -3,13 +3,13 @@
 
 import getRouteDescriptions from "../jest/getRouteDescriptions";
 import supertest, { Response } from "supertest";
-import path from "path";
+import { join } from "path";
 import fs from "fs";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 const request = supertest("http://localhost:3001/api");
 
-const SchemaPath = path.join(__dirname, "..", "assets", "responses.json");
+const SchemaPath = join(__dirname, "..", "assets", "responses.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 export const ajv = new Ajv({
 	allErrors: true,
@@ -27,13 +27,10 @@ describe("Automatic unit tests with route description middleware", () => {
 
 	routes.forEach((route, pathAndMethod) => {
 		const [path, method] = pathAndMethod.split("|");
+
 		test(path, (done) => {
 			if (!route.example) {
-				console.log(`Route ${path} is missing the example property`);
-				return done();
-			}
-			if (!route.response) {
-				console.log(`Route ${path} is missing the response property`);
+				console.log(`${(route as any).file}\nrouter.${method} is missing the test property`);
 				return done();
 			}
 			const urlPath = path || route.example?.path;

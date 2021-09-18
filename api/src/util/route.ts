@@ -33,11 +33,11 @@ export type RouteResponse = { status?: number; body?: `${string}Response`; heade
 export interface RouteOptions {
 	permission?: PermissionResolvable;
 	body?: `${string}Schema`; // typescript interface name
-	response?: RouteResponse;
-	example?: {
+	test?: {
+		response?: RouteResponse;
 		body?: any;
 		path?: string;
-		event?: EventData;
+		event?: EventData | EventData[];
 		headers?: Record<string, string>;
 	};
 }

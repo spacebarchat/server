@@ -2,6 +2,7 @@ import { traverseDirectory } from "lambert-server";
 import path from "path";
 import express from "express";
 import * as RouteUtility from "../dist/util/route";
+import { RouteOptions } from "../dist/util/route";
 const Router = express.Router;
 
 const routes = new Map<string, RouteUtility.RouteOptions>();
@@ -12,9 +13,10 @@ const methods = ["get", "post", "put", "delete", "patch"];
 function registerPath(file, method, prefix, path, ...args) {
 	const urlPath = prefix + path;
 	const sourceFile = file.replace("/dist/", "/src/").replace(".js", ".ts");
-	const opts = args.find((x) => typeof x === "object");
+	const opts: RouteOptions = args.find((x) => typeof x === "object");
 	if (opts) {
-		routes.set(urlPath + "|" + method, opts);
+		routes.set(urlPath + "|" + method, opts); // @ts-ignore
+		opts.file = sourceFile;
 		// console.log(method, urlPath, opts);
 	} else {
 		console.log(`${sourceFile}\nrouter.${method}("${path}") is missing the "route()" description middleware\n`, args);
