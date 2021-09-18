@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { Channel, ChannelRecipientAddEvent, ChannelService, ChannelType, DiscordApiErrors, DmChannelDTO, emitEvent, PublicUserProjection, Recipient, User } from "@fosscord/util";
+import { Channel, ChannelRecipientAddEvent, ChannelType, DiscordApiErrors, DmChannelDTO, emitEvent, PublicUserProjection, Recipient, User } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -13,7 +13,7 @@ router.put("/:user_id", async (req: Request, res: Response) => {
 			user_id
 		].unique()
 
-		const new_channel = await ChannelService.createDMChannel(recipients, req.user_id)
+		const new_channel = await Channel.createDMChannel(recipients, req.user_id)
 		return res.status(201).json(new_channel);
 	} else {
 		if (channel.recipients!.map(r => r.user_id).includes(user_id)) {
@@ -49,7 +49,7 @@ router.delete("/:user_id", async (req: Request, res: Response) => {
 		throw DiscordApiErrors.INVALID_RECIPIENT //TODO is this the right error?
 	}
 
-	await ChannelService.removeRecipientFromChannel(channel, user_id)
+	await Channel.removeRecipientFromChannel(channel, user_id)
 
 	return res.sendStatus(204);
 });

@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import { Attachment, Channel, ChannelType, DmChannelDTO, Embed, emitEvent, getPermission, Message, MessageCreateEvent } from "@fosscord/util";
+import { Attachment, Channel, ChannelType, DmChannelDTO, Embed, emitEvent, getPermission, Message, MessageCreateEvent, Recipient } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { handleMessage, postHandleMessage, route } from "@fosscord/api";
 import multer from "multer";
@@ -150,7 +150,6 @@ router.post(
 				return res.status(400).json(error);
 			}
 		}
-		//TODO querying the DB at every message post should be avoided, caching maybe?
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] })
 
 		const embeds = [];
@@ -184,7 +183,8 @@ router.post(
 				}
 			}
 
-			await Promise.all(channel.recipients!.map(async r => {
+			//Only one recipients should be closed here, since in group DMs the recipient is deleted not closed
+			await Promise.all(channel.recipients!.filter(r => r.closed).map(async r => {
 				r.closed = false;
 				return await r.save()
 			}));

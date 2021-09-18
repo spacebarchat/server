@@ -12,3 +12,4 @@ export * from "./RabbitMQ";
 export * from "./Regex";
 export * from "./Snowflake";
 export * from "./String";
+export * from "./Array";

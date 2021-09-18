@@ -32,7 +32,7 @@ export async function setupListener(this: WebSocket) {
 	});
 	const guilds = members.map((x) => x.guild);
 	const recipients = await Recipient.find({
-		where: { user_id: this.user_id },
+		where: { user_id: this.user_id, closed: false },
 		relations: ["channel"],
 	});
 	const dm_channels = recipients.map((x) => x.channel);
