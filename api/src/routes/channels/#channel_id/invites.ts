@@ -8,9 +8,9 @@ import { isTextChannel } from "./messages";
 const router: Router = Router();
 
 export interface InviteCreateSchema {
-	target_user_id?: string | null;
-	target_type?: string | null;
-	validate?: string | null; // ? what is this
+	target_user_id?: string;
+	target_type?: string;
+	validate?: string; // ? what is this
 	max_age?: number;
 	max_uses?: number;
 	temporary?: boolean;

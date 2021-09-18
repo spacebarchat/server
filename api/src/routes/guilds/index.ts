@@ -12,10 +12,10 @@ export interface GuildCreateSchema {
 	 */
 	name: string;
 	region?: string;
-	icon?: string;
+	icon?: string | null;
 	channels?: ChannelModifySchema[];
 	guild_template_code?: string;
-	system_channel_id?: string | null;
+	system_channel_id?: string;
 	rules_channel_id?: string;
 }
 

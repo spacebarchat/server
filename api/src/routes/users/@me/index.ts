@@ -16,7 +16,7 @@ export interface UserModifySchema {
 	 * @maxLength 1024
 	 */
 	bio?: string;
-	accent_color?: number | null;
+	accent_color?: number;
 	banner?: string | null;
 	password?: string;
 	new_password?: string;

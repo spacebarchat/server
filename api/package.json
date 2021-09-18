@@ -5,7 +5,8 @@
 	"main": "dist/Server.js",
 	"types": "dist/Server.d.ts",
 	"scripts": {
-		"test": "npm run build && jest --coverage --verbose --forceExit ./tests",
+		"test:only": "node -r ./scripts/tsconfig-paths-bootstrap.js node_modules/.bin/jest --coverage --verbose --forceExit ./tests",
+		"test": "npm run build && npm run test:only",
 		"test:watch": "jest --watch",
 		"start": "npm run build && node -r ./scripts/tsconfig-paths-bootstrap.js dist/start",
 		"build": "npx tsc -b .",

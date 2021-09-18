@@ -26,8 +26,7 @@
                 "type": "string"
             },
             "date_of_birth": {
-                "type": "string",
-                "format": "date-time"
+                "type": "string"
             },
             "gift_code_sku_id": {
                 "type": "string"
@@ -726,22 +725,13 @@
         "type": "object",
         "properties": {
             "target_user_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
+                "type": "string"
             },
             "target_type": {
-                "type": [
-                    "null",
-                    "string"
-                ]
+                "type": "string"
             },
             "validate": {
-                "type": [
-                    "null",
-                    "string"
-                ]
+                "type": "string"
             },
             "max_age": {
                 "type": "integer"
@@ -2545,7 +2535,10 @@
                 "type": "string"
             },
             "icon": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "channels": {
                 "type": "array",
@@ -2557,10 +2550,7 @@
                 "type": "string"
             },
             "system_channel_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
+                "type": "string"
             },
             "rules_channel_id": {
                 "type": "string"
@@ -2825,10 +2815,7 @@
                 ]
             },
             "description": {
-                "type": [
-                    "null",
-                    "string"
-                ]
+                "type": "string"
             },
             "features": {
                 "type": "array",
@@ -2849,19 +2836,13 @@
                 "type": "integer"
             },
             "public_updates_channel_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
+                "type": "string"
             },
             "afk_timeout": {
                 "type": "integer"
             },
             "afk_channel_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
+                "type": "string"
             },
             "preferred_locale": {
                 "type": "string"
@@ -2874,16 +2855,16 @@
                 "type": "string"
             },
             "icon": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "guild_template_code": {
                 "type": "string"
             },
             "system_channel_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
+                "type": "string"
             },
             "rules_channel_id": {
                 "type": "string"
@@ -5712,7 +5693,10 @@
                 "type": "string"
             },
             "avatar": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             }
         },
         "additionalProperties": false,
@@ -6233,10 +6217,7 @@
                 "type": "string"
             },
             "accent_color": {
-                "type": [
-                    "null",
-                    "integer"
-                ]
+                "type": "integer"
             },
             "banner": {
                 "type": [

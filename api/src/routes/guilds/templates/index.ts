@@ -6,7 +6,7 @@ import { DiscordApiErrors } from "@fosscord/util";
 
 export interface GuildTemplateCreateSchema {
 	name: string;
-	avatar?: string;
+	avatar?: string | null;
 }
 
 router.get("/:code", route({}), async (req: Request, res: Response) => {
