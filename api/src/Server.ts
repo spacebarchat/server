@@ -1,3 +1,4 @@
+import { OptionsJson } from 'body-parser';
 import "missing-native-js-functions";
 import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
@@ -37,9 +38,27 @@ export class FosscordServer extends Server {
 		await Config.init();
 		await initEvent();
 
+
+		/* 
+		DOCUMENTATION: uses log-requests environment variable
+		
+		# only log 200 and 204
+		log-requests=200 204
+		# log everything except 200 and 204
+		log-requests=-200 204
+		# log all requests
+		log-requests=-
+		*/
+		
 		let logRequests = process.env["log-requests"] != undefined;
 		if(logRequests) {
-			this.app.use(morgan("combined"));
+			this.app.use(morgan("combined", {
+				skip: (req, res) => {
+					var skip = !(process.env["log-requests"]?.includes(res.statusCode.toString()) ?? false);
+					if(process.env["log-requests"]?.charAt(0) == '-') skip = !skip;
+					return skip;
+				}
+			}));
 		}
 
 		this.app.use(CORS);
