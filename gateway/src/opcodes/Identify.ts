@@ -88,20 +88,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
 	const recipients = await Recipient.find({
-		where: { user_id: this.user_id },
+		where: { user_id: this.user_id, closed: false },
 		relations: ["channel", "channel.recipients", "channel.recipients.user"],
 		// TODO: public user selection
 	});
 	const channels = recipients.map((x) => {
 		// @ts-ignore
 		x.channel.recipients = x.channel.recipients?.map((x) => x.user);
-		// @ts-ignore
-		users = users.concat(x.channel.recipients);
-		if (x.channel.type === ChannelType.DM) {
-			x.channel.recipients = [
-				// @ts-ignore
-				x.channel.recipients.find((x) => x.id !== this.user_id),
-			];
+		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
+		//users = users.concat(x.channel.recipients);
+		if (x.channel.isDm()) {
+			x.channel.recipients = x.channel.recipients!.filter((x) => x.id !== this.user_id);
 		}
 		return x.channel;
 	});
@@ -111,16 +108,19 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	});
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
-	const public_user = {
-		username: user.username,
-		discriminator: user.discriminator,
-		id: user.id,
-		public_flags: user.public_flags,
-		avatar: user.avatar,
-		bot: user.bot,
-		bio: user.bio,
-	};
-	users.push(public_user);
+	for (let relation of user.relationships) {
+		const related_user = relation.to
+		const public_related_user = {
+			username: related_user.username,
+			discriminator: related_user.discriminator,
+			id: related_user.id,
+			public_flags: related_user.public_flags,
+			avatar: related_user.avatar,
+			bot: related_user.bot,
+			bio: related_user.bio,
+		};
+		users.push(public_related_user);
+	}
 
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
@@ -201,7 +201,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
-		users: users.unique(), // TODO
+		users: users.unique(),
 		merged_members: merged_members,
 		// shard // TODO: only for bots sharding
 		// application // TODO for applications
