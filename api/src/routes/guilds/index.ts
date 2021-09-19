@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
-import { Role, Guild, Snowflake, Config, User, Member, Channel } from "@fosscord/util";
-import { handleFile, route } from "@fosscord/api";
-import { DiscordApiErrors } from "@fosscord/util";
+import { Role, Guild, Snowflake, Config, Member, Channel, DiscordApiErrors, handleFile } from "@fosscord/util";
+import { route } from "@fosscord/api";
 import { ChannelModifySchema } from "../channels/#channel_id";
 
 const router: Router = Router();

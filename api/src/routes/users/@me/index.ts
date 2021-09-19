@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
-import { User, PrivateUserProjection, emitEvent, UserUpdateEvent } from "@fosscord/util";
+import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import { handleFile } from "@fosscord/api";
 
 const router: Router = Router();
 
