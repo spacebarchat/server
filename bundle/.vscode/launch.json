@@ -10,9 +10,11 @@
 			"request": "launch",
 			"name": "Launch server bundle",
 			"program": "${workspaceFolder}/dist/start.js",
+			"runtimeArgs": ["-r", "./tsconfig-paths-bootstrap.js"],
 			"preLaunchTask": "tsc: build - tsconfig.json",
-			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
-			"envFile": "${workspaceFolder}/.env"
+			"outFiles": ["${workspaceFolder}/dist/**/*.js", "${workspaceFolder}/node_modules/@fosscord/**/*.js"],
+			"envFile": "${workspaceFolder}/.env",
+			"outDir": "${workspaceFolder}/dist"
 		}
 	]
 }
