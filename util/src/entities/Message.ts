@@ -8,12 +8,14 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	FindConditions,
 	JoinColumn,
 	JoinTable,
 	ManyToMany,
 	ManyToOne,
 	OneToMany,
 	RelationId,
+	RemoveOptions,
 	UpdateDateColumn,
 } from "typeorm";
 import { BaseClass } from "./BaseClass";
@@ -112,7 +114,7 @@ export class Message extends BaseClass {
 	mention_everyone?: boolean;
 
 	@JoinTable({ name: "message_user_mentions" })
-	@ManyToMany(() => User)
+	@ManyToMany(() => User, { orphanedRowAction: "delete", onDelete: "CASCADE", cascade: true })
 	mentions: User[];
 
 	@JoinTable({ name: "message_role_mentions" })
@@ -127,8 +129,11 @@ export class Message extends BaseClass {
 	@ManyToMany(() => Sticker)
 	sticker_items?: Sticker[];
 
-	@JoinColumn({ name: "attachment_ids" })
-	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, { cascade: true })
+	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
 	attachments?: Attachment[];
 
 	@Column({ type: "simple-json" })

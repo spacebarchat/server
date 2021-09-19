@@ -1,12 +1,26 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
+import {
+	Column,
+	Entity,
+	FindConditions,
+	JoinColumn,
+	ManyToOne,
+	ObjectID,
+	OneToMany,
+	RelationId,
+	RemoveOptions,
+} from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
-import { Message } from "./Message";
 import { User } from "./User";
 import { HTTPError } from "lambert-server";
 import { emitEvent, getPermission, Snowflake } from "../util";
 import { ChannelCreateEvent } from "../interfaces";
 import { Recipient } from "./Recipient";
+import { Message } from "./Message";
+import { ReadState } from "./ReadState";
+import { Invite } from "./Invite";
+import { VoiceState } from "./VoiceState";
+import { Webhook } from "./Webhook";
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a server
@@ -31,19 +45,21 @@ export class Channel extends BaseClass {
 	@Column({ nullable: true })
 	name?: string;
 
+	@Column({ type: "text", nullable: true })
+	icon?: string | null;
+
 	@Column({ type: "simple-enum", enum: ChannelType })
 	type: ChannelType;
 
-	@OneToMany(() => Recipient, (recipient: Recipient) => recipient.channel, { cascade: true })
+	@OneToMany(() => Recipient, (recipient: Recipient) => recipient.channel, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
 	recipients?: Recipient[];
 
 	@Column({ nullable: true })
-	@RelationId((channel: Channel) => channel.last_message)
 	last_message_id: string;
-
-	@JoinColumn({ name: "last_message_id" })
-	@ManyToOne(() => Message)
-	last_message?: Message;
 
 	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.guild)
@@ -99,6 +115,41 @@ export class Channel extends BaseClass {
 
 	@Column({ nullable: true })
 	topic?: string;
+
+	@OneToMany(() => Invite, (invite: Invite) => invite.channel, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
+	invites?: Invite[];
+
+	@OneToMany(() => Message, (message: Message) => message.channel, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
+	messages?: Message[];
+
+	@OneToMany(() => VoiceState, (voice_state: VoiceState) => voice_state.channel, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
+	voice_states?: VoiceState[];
+
+	@OneToMany(() => ReadState, (read_state: ReadState) => read_state.channel, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
+	read_states?: ReadState[];
+
+	@OneToMany(() => Webhook, (webhook: Webhook) => webhook.channel, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
+	webhooks?: Webhook[];
 
 	// TODO: DM channel
 	static async createChannel(
@@ -161,6 +212,10 @@ export class Channel extends BaseClass {
 		]);
 
 		return channel;
+	}
+
+	isDm() {
+		return this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM;
 	}
 }
 
