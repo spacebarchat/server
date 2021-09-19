@@ -1,4 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { BeforeRemove, Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { URL } from "url";
+import { deleteFile } from "../util/cdn";
 import { BaseClass } from "./BaseClass";
 
 @Entity("attachments")
@@ -31,4 +33,9 @@ export class Attachment extends BaseClass {
 	@JoinColumn({ name: "message_id" })
 	@ManyToOne(() => require("./Message").Message, (message: import("./Message").Message) => message.attachments)
 	message: import("./Message").Message;
+
+	@BeforeRemove()
+	onDelete() {
+		return deleteFile(new URL(this.url).pathname);
+	}
 }
