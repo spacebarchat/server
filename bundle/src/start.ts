@@ -13,7 +13,7 @@ if (cluster.isMaster && !process.env.masterStarted) {
 		initStats();
 
 		if (cores === 1) {
-			require("./Server.js");
+			require("./Server");
 			return;
 		}
 
@@ -23,10 +23,12 @@ if (cluster.isMaster && !process.env.masterStarted) {
 		}
 
 		cluster.on("exit", (worker: any, code: any, signal: any) => {
-			console.log(`[Worker] died with pid: ${worker.process.pid} , restarting ...`);
+			console.log(
+				`[Worker] died with pid: ${worker.process.pid} , restarting ...`
+			);
 			cluster.fork();
 		});
 	})();
 } else {
-	require("./Server.js");
+	require("./Server");
 }
