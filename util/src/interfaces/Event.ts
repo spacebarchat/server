@@ -127,6 +127,22 @@ export interface ChannelPinsUpdateEvent extends Event {
 	};
 }
 
+export interface ChannelRecipientAddEvent extends Event {
+	event: "CHANNEL_RECIPIENT_ADD";
+	data: {
+		channel_id: string;
+		user: User;
+	};
+}
+
+export interface ChannelRecipientRemoveEvent extends Event {
+	event: "CHANNEL_RECIPIENT_REMOVE";
+	data: {
+		channel_id: string;
+		user: User;
+	};
+}
+
 export interface GuildCreateEvent extends Event {
 	event: "GUILD_CREATE";
 	data: Guild & {
@@ -436,6 +452,8 @@ export type EventData =
 	| ChannelUpdateEvent
 	| ChannelDeleteEvent
 	| ChannelPinsUpdateEvent
+	| ChannelRecipientAddEvent
+	| ChannelRecipientRemoveEvent
 	| GuildCreateEvent
 	| GuildUpdateEvent
 	| GuildDeleteEvent
@@ -482,6 +500,8 @@ export enum EVENTEnum {
 	ChannelUpdate = "CHANNEL_UPDATE",
 	ChannelDelete = "CHANNEL_DELETE",
 	ChannelPinsUpdate = "CHANNEL_PINS_UPDATE",
+	ChannelRecipientAdd = "CHANNEL_RECIPIENT_ADD",
+	ChannelRecipientRemove = "CHANNEL_RECIPIENT_REMOVE",
 	GuildCreate = "GUILD_CREATE",
 	GuildUpdate = "GUILD_UPDATE",
 	GuildDelete = "GUILD_DELETE",
@@ -525,6 +545,8 @@ export type EVENT =
 	| "CHANNEL_UPDATE"
 	| "CHANNEL_DELETE"
 	| "CHANNEL_PINS_UPDATE"
+	| "CHANNEL_RECIPIENT_ADD"
+	| "CHANNEL_RECIPIENT_REMOVE"
 	| "GUILD_CREATE"
 	| "GUILD_UPDATE"
 	| "GUILD_DELETE"

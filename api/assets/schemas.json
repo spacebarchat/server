@@ -80,10 +80,29 @@
                 "type": "string"
             },
             "type": {
-                "$ref": "#/definitions/ChannelType"
+                "enum": [
+                    0,
+                    1,
+                    10,
+                    11,
+                    12,
+                    13,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "type": "number"
             },
             "topic": {
                 "type": "string"
+            },
+            "icon": {
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "bitrate": {
                 "type": "integer"
@@ -141,27 +160,7 @@
             }
         },
         "additionalProperties": false,
-        "required": [
-            "name",
-            "type"
-        ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -307,10 +306,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -367,11 +385,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -469,22 +483,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -630,10 +628,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -690,11 +707,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -741,22 +754,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -902,10 +899,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -962,11 +978,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -992,22 +1004,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -1153,10 +1149,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -1213,11 +1228,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -1246,22 +1257,6 @@
             "messages"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -1407,10 +1402,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -1467,11 +1481,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -1509,22 +1519,6 @@
             "type"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -1670,10 +1664,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -1730,11 +1743,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -1765,22 +1774,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -1926,10 +1919,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -1986,11 +1998,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -2016,22 +2024,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -2177,10 +2169,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -2237,11 +2248,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -2279,22 +2286,6 @@
             ]
         },
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -2440,10 +2431,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -2500,11 +2510,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -2555,22 +2561,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -2716,10 +2706,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -2776,11 +2785,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -2870,22 +2875,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -3031,10 +3020,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -3091,11 +3099,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -3121,22 +3125,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -3282,10 +3270,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -3342,11 +3349,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -3372,22 +3375,6 @@
             "nick"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -3533,10 +3520,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -3593,11 +3599,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -3635,22 +3637,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -3796,10 +3782,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -3856,11 +3861,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -3893,22 +3894,6 @@
             ]
         },
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -4054,10 +4039,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -4114,11 +4118,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -4147,22 +4147,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -4308,10 +4292,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -4368,11 +4371,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -4401,22 +4400,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -4562,10 +4545,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -4622,11 +4624,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -4651,22 +4649,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -4812,10 +4794,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -4872,11 +4873,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -4921,22 +4918,6 @@
             "channel_id"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -5082,10 +5063,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -5142,11 +5142,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -5198,22 +5194,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -5359,10 +5339,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -5419,11 +5418,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -5453,22 +5448,6 @@
             "enabled"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -5614,10 +5593,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -5674,11 +5672,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -5710,22 +5704,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -5871,10 +5849,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -5931,11 +5928,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -5967,22 +5960,6 @@
             "recipients"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -6128,10 +6105,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -6188,11 +6184,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -6245,22 +6237,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -6406,10 +6382,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -6466,11 +6461,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -6496,22 +6487,6 @@
             "type"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -6657,10 +6632,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -6717,11 +6711,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -6751,22 +6741,6 @@
             "username"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -6912,10 +6886,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -6972,11 +6965,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
@@ -7189,22 +7178,6 @@
             "timezone_offset"
         ],
         "definitions": {
-            "ChannelType": {
-                "enum": [
-                    0,
-                    1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "type": "number"
-            },
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -7350,10 +7323,29 @@
                         "type": "string"
                     },
                     "type": {
-                        "$ref": "#/definitions/ChannelType"
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
                     },
                     "topic": {
                         "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "bitrate": {
                         "type": "integer"
@@ -7410,11 +7402,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type"
-                ]
+                "additionalProperties": false
             },
             "RelationshipType": {
                 "enum": [
