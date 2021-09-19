@@ -202,7 +202,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		premium_type: 2,
 		bio: "",
 		mfa_enabled: false,
-		verified: false,
+		verified: true,
 		disabled: false,
 		deleted: false,
 		email: email,
