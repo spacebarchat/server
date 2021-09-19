@@ -19,5 +19,8 @@ export class Recipient extends BaseClass {
 	@ManyToOne(() => require("./User").User)
 	user: import("./User").User;
 
+	@Column({ default: false })
+	closed: boolean;
+
 	// TODO: settings/mute/nick/added at/encryption keys/read_state
 }
