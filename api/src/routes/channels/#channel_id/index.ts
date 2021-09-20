@@ -1,4 +1,4 @@
-import { Channel, Message, Invite, ReadState, ChannelDeleteEvent, ChannelPermissionOverwriteType, ChannelType, ChannelUpdateEvent, emitEvent, Recipient } from "@fosscord/util";
+import { Channel, ChannelDeleteEvent, ChannelPermissionOverwriteType, ChannelType, ChannelUpdateEvent, emitEvent, Recipient } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { handleFile, route } from "@fosscord/api";
 
@@ -31,10 +31,6 @@ router.delete("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request
 		await Channel.removeRecipientFromChannel(channel, req.user_id)
 	} else {
 		await Promise.all([
-			Invite.delete({ channel_id: channel_id }),
-			ReadState.delete({ channel_id: channel_id }),
-			Message.delete({ channel_id: channel_id }),
-			Recipient.delete({ channel_id: channel_id }),
 			Channel.delete({ id: channel_id }),
 			emitEvent({ event: "CHANNEL_DELETE", data: channel, channel_id } as ChannelDeleteEvent)
 		]);
