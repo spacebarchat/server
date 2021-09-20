@@ -1,11 +1,14 @@
 import WS from "ws";
-import WebSocket from "@fosscord/gateway/util/WebSocket";
+import {
+	setHeartbeat,
+	Send,
+	CLOSECODES,
+	OPCODES,
+	WebSocket,
+} from "@fosscord/gateway";
 import { IncomingMessage } from "http";
 import { Close } from "./Close";
 import { Message } from "./Message";
-import { setHeartbeat } from "@fosscord/gateway/util/setHeartbeat";
-import { Send } from "@fosscord/gateway/util/Send";
-import { CLOSECODES, OPCODES } from "@fosscord/gateway/util/Constants";
 import { createDeflate } from "zlib";
 import { URL } from "url";
 import { Session } from "@fosscord/util";
