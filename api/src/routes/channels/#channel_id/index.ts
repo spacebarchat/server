@@ -30,7 +30,6 @@ router.delete("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request
 	} else if (channel.type === ChannelType.GROUP_DM) {
 		await Channel.removeRecipientFromChannel(channel, req.user_id)
 	} else {
-		//TODO messages in this channel should be deleted before deleting the channel
 		await Promise.all([
 			Channel.delete({ id: channel_id }),
 			emitEvent({ event: "CHANNEL_DELETE", data: channel, channel_id } as ChannelDeleteEvent)
