@@ -83,7 +83,7 @@ export class BaseClassWithoutId extends BaseEntity {
 		if (!criteria) throw new Error("You need to specify delete criteria");
 
 		const repository = this.getRepository();
-		const promises = repository.metadata.relations.map((x) => {
+		const promises = repository.metadata.relations.map(async (x) => {
 			if (x.orphanedRowAction !== "delete") return;
 			if (typeof x.type === "string") return;
 
@@ -95,22 +95,23 @@ export class BaseClassWithoutId extends BaseEntity {
 					`Foreign key not found for entity ${repository.metadata.name} in relation ${x.propertyName}`
 				);
 			}
-			console.log(foreignKey);
 			const id = (criteria as any)[foreignKey.referencedColumnNames[0]];
 			if (!id) throw new Error("id missing in criteria options");
 
-			if (x.relationType === "many-to-many" || x.relationType === "one-to-many") {
+			if (x.relationType === "many-to-many") {
 				return getConnection()
 					.createQueryBuilder()
 					.relation(this, x.propertyName)
 					.of(id)
 					.remove({ [foreignKey.columnNames[0]]: id });
-			} else if (x.relationType === "one-to-one" || x.relationType === "many-to-one") {
+			} else if (
+				x.relationType === "one-to-one" ||
+				x.relationType === "many-to-one" ||
+				x.relationType === "one-to-many"
+			) {
 				return getConnection()
-					.createQueryBuilder()
-					.from(x.inverseEntityMetadata, "user")
-					.of(id)
-					.remove({ [foreignKey.name]: id });
+					.getRepository(x.inverseEntityMetadata.target)
+					.delete({ [foreignKey.columnNames[0]]: id });
 			}
 		});
 		await Promise.all(promises);
