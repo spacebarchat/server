@@ -34,7 +34,9 @@ export class Invite extends BaseClass {
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild)
+	@ManyToOne(() => Guild, {
+		onDelete: "CASCADE",
+	})
 	guild: Guild;
 
 	@Column({ nullable: true })
@@ -42,7 +44,9 @@ export class Invite extends BaseClass {
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => Channel)
+	@ManyToOne(() => Channel, {
+		onDelete: "CASCADE",
+	})
 	channel: Channel;
 
 	@Column({ nullable: true })
@@ -58,7 +62,9 @@ export class Invite extends BaseClass {
 	target_user_id: string;
 
 	@JoinColumn({ name: "target_user_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	target_user?: string; // could be used for "User specific invites" https://github.com/fosscord/fosscord/issues/62
 
 	@Column({ nullable: true })

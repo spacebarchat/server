@@ -54,7 +54,9 @@ export class Message extends BaseClass {
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => Channel)
+	@ManyToOne(() => Channel, {
+		onDelete: "CASCADE",
+	})
 	channel: Channel;
 
 	@Column({ nullable: true })
@@ -62,7 +64,9 @@ export class Message extends BaseClass {
 	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild)
+	@ManyToOne(() => Guild, {
+		onDelete: "CASCADE",
+	})
 	guild?: Guild;
 
 	@Column({ nullable: true })
@@ -70,7 +74,9 @@ export class Message extends BaseClass {
 	author_id: string;
 
 	@JoinColumn({ name: "author_id", referencedColumnName: "id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	author?: User;
 
 	@Column({ nullable: true })
@@ -132,7 +138,6 @@ export class Message extends BaseClass {
 	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
 	})
 	attachments?: Attachment[];
 

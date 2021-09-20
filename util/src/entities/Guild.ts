@@ -84,7 +84,6 @@ export class Guild extends BaseClass {
 	@OneToMany(() => Ban, (ban: Ban) => ban.guild, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
 	})
 	bans: Ban[];
 
@@ -147,7 +146,6 @@ export class Guild extends BaseClass {
 	@OneToMany(() => Channel, (channel: Channel) => channel.guild, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
 	})
 	channels: Channel[];
 

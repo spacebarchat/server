@@ -6,6 +6,7 @@ import {
 	EntityMetadata,
 	FindConditions,
 	getConnection,
+	getManager,
 	PrimaryColumn,
 	RemoveOptions,
 } from "typeorm";
@@ -79,44 +80,41 @@ export class BaseClassWithoutId extends BaseEntity {
 		return repository.decrement(conditions, propertyPath, value);
 	}
 
-	static async delete<T>(criteria: FindConditions<T>, options?: RemoveOptions) {
-		if (!criteria) throw new Error("You need to specify delete criteria");
+	// static async delete<T>(criteria: FindConditions<T>, options?: RemoveOptions) {
+	// 	if (!criteria) throw new Error("You need to specify delete criteria");
 
-		const repository = this.getRepository();
-		const promises = repository.metadata.relations.map(async (x) => {
-			if (x.orphanedRowAction !== "delete") return;
-			if (typeof x.type === "string") return;
+	// 	const repository = this.getRepository();
+	// 	const promises = repository.metadata.relations.map(async (x) => {
+	// 		if (x.orphanedRowAction !== "delete") return;
 
-			const foreignKey =
-				x.foreignKeys.find((key) => key.entityMetadata === repository.metadata) ||
-				x.inverseRelation?.foreignKeys[0]; // find foreign key for this entity
-			if (!foreignKey) {
-				throw new Error(
-					`Foreign key not found for entity ${repository.metadata.name} in relation ${x.propertyName}`
-				);
-			}
-			const id = (criteria as any)[foreignKey.referencedColumnNames[0]];
-			if (!id) throw new Error("id missing in criteria options");
+	// 		const foreignKey =
+	// 			x.foreignKeys.find((key) => key.entityMetadata === repository.metadata) ||
+	// 			x.inverseRelation?.foreignKeys[0]; // find foreign key for this entity
+	// 		if (!foreignKey) {
+	// 			throw new Error(
+	// 				`Foreign key not found for entity ${repository.metadata.name} in relation ${x.propertyName}`
+	// 			);
+	// 		}
+	// 		const id = (criteria as any)[foreignKey.referencedColumnNames[0]];
+	// 		if (!id) throw new Error("id missing in criteria options " + foreignKey.referencedColumnNames);
 
-			if (x.relationType === "many-to-many") {
-				return getConnection()
-					.createQueryBuilder()
-					.relation(this, x.propertyName)
-					.of(id)
-					.remove({ [foreignKey.columnNames[0]]: id });
-			} else if (
-				x.relationType === "one-to-one" ||
-				x.relationType === "many-to-one" ||
-				x.relationType === "one-to-many"
-			) {
-				return getConnection()
-					.getRepository(x.inverseEntityMetadata.target)
-					.delete({ [foreignKey.columnNames[0]]: id });
-			}
-		});
-		await Promise.all(promises);
-		return super.delete(criteria, options);
-	}
+	// 		if (x.relationType === "many-to-many") {
+	// 			return getConnection()
+	// 				.createQueryBuilder()
+	// 				.relation(this, x.propertyName)
+	// 				.of(id)
+	// 				.remove({ [foreignKey.columnNames[0]]: id });
+	// 		} else if (
+	// 			x.relationType === "one-to-one" ||
+	// 			x.relationType === "many-to-one" ||
+	// 			x.relationType === "one-to-many"
+	// 		) {
+	// 			return (x.inverseEntityMetadata.target as any).delete({ [foreignKey.columnNames[0]]: id });
+	// 		}
+	// 	});
+	// 	await Promise.all(promises);
+	// 	return super.delete(criteria, options);
+	// }
 }
 
 export class BaseClass extends BaseClassWithoutId {
