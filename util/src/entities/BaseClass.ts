@@ -1,5 +1,14 @@
 import "reflect-metadata";
-import { BaseEntity, BeforeInsert, BeforeUpdate, EntityMetadata, FindConditions, PrimaryColumn } from "typeorm";
+import {
+	BaseEntity,
+	BeforeInsert,
+	BeforeUpdate,
+	EntityMetadata,
+	FindConditions,
+	getConnection,
+	PrimaryColumn,
+	RemoveOptions,
+} from "typeorm";
 import { Snowflake } from "../util/Snowflake";
 import "missing-native-js-functions";
 
@@ -68,6 +77,44 @@ export class BaseClassWithoutId extends BaseEntity {
 	static decrement<T extends BaseClass>(conditions: FindConditions<T>, propertyPath: string, value: number | string) {
 		const repository = this.getRepository();
 		return repository.decrement(conditions, propertyPath, value);
+	}
+
+	static async delete<T>(criteria: FindConditions<T>, options?: RemoveOptions) {
+		if (!criteria) throw new Error("You need to specify delete criteria");
+
+		const repository = this.getRepository();
+		const promises = repository.metadata.relations.map((x) => {
+			if (x.orphanedRowAction !== "delete") return;
+			if (typeof x.type === "string") return;
+
+			const foreignKey =
+				x.foreignKeys.find((key) => key.entityMetadata === repository.metadata) ||
+				x.inverseRelation?.foreignKeys[0]; // find foreign key for this entity
+			if (!foreignKey) {
+				throw new Error(
+					`Foreign key not found for entity ${repository.metadata.name} in relation ${x.propertyName}`
+				);
+			}
+			console.log(foreignKey);
+			const id = (criteria as any)[foreignKey.referencedColumnNames[0]];
+			if (!id) throw new Error("id missing in criteria options");
+
+			if (x.relationType === "many-to-many" || x.relationType === "one-to-many") {
+				return getConnection()
+					.createQueryBuilder()
+					.relation(this, x.propertyName)
+					.of(id)
+					.remove({ [foreignKey.columnNames[0]]: id });
+			} else if (x.relationType === "one-to-one" || x.relationType === "many-to-one") {
+				return getConnection()
+					.createQueryBuilder()
+					.from(x.inverseEntityMetadata, "user")
+					.of(id)
+					.remove({ [foreignKey.name]: id });
+			}
+		});
+		await Promise.all(promises);
+		return super.delete(criteria, options);
 	}
 }
 
