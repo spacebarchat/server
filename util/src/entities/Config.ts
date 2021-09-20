@@ -77,6 +77,7 @@ export interface ConfigValue {
 			maxWebhooks: number;
 		};
 		rate: {
+			disabled: boolean;
 			ip: Omit<RateLimitOptions, "bot_count">;
 			global: RateLimitOptions;
 			error: RateLimitOptions;
@@ -188,6 +189,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			maxWebhooks: 10,
 		},
 		rate: {
+			disabled: true,
 			ip: {
 				count: 500,
 				window: 5,
