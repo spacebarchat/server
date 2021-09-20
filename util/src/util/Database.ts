@@ -21,7 +21,7 @@ export function initDatabase() {
 		//
 		entities: Object.values(Models).filter((x) => x.constructor.name !== "Object"),
 		synchronize: true,
-		logging: false,
+		logging: true,
 		cache: {
 			duration: 1000 * 3, // cache all find queries for 3 seconds
 		},

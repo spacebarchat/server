@@ -13,7 +13,9 @@ export class VoiceState extends BaseClass {
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild)
+	@ManyToOne(() => Guild, {
+		onDelete: "CASCADE",
+	})
 	guild?: Guild;
 
 	@Column({ nullable: true })
@@ -21,7 +23,9 @@ export class VoiceState extends BaseClass {
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => Channel)
+	@ManyToOne(() => Channel, {
+		onDelete: "CASCADE",
+	})
 	channel: Channel;
 
 	@Column({ nullable: true })
@@ -29,11 +33,15 @@ export class VoiceState extends BaseClass {
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	user: User;
 
 	// @JoinColumn([{ name: "user_id", referencedColumnName: "id" },{ name: "guild_id", referencedColumnName: "guild_id" }])
-	// @ManyToOne(() => Member)
+	// @ManyToOne(() => Member, {
+	// 	onDelete: "CASCADE",
+	// })
 	//TODO find a way to make it work without breaking Guild.voice_states
 	member: Member;
 

@@ -1,6 +1,16 @@
-import { ChannelDeleteEvent, Channel, ChannelUpdateEvent, emitEvent, ChannelType, ChannelPermissionOverwriteType } from "@fosscord/util";
-import { Router, Response, Request } from "express";
+import {
+	Channel,
+	ChannelDeleteEvent,
+	ChannelPermissionOverwriteType,
+	ChannelType,
+	ChannelUpdateEvent,
+	emitEvent,
+	Recipient,
+	handleFile
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
+
 const router: Router = Router();
 // TODO: delete channel
 // TODO: Get channel
@@ -16,23 +26,35 @@ router.get("/", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res:
 router.delete("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 
-	const channel = await Channel.findOneOrFail({ id: channel_id });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients"] });
 
-	// TODO: Dm channel "close" not delete
-	const data = channel;
+	if (channel.type === ChannelType.DM) {
+		const recipient = await Recipient.findOneOrFail({ where: { channel_id: channel_id, user_id: req.user_id } });
+		recipient.closed = true;
+		await Promise.all([
+			recipient.save(),
+			emitEvent({ event: "CHANNEL_DELETE", data: channel, user_id: req.user_id } as ChannelDeleteEvent)
+		]);
+	} else if (channel.type === ChannelType.GROUP_DM) {
+		await Channel.removeRecipientFromChannel(channel, req.user_id);
+	} else {
+		await Promise.all([
+			Channel.delete({ id: channel_id }),
+			emitEvent({ event: "CHANNEL_DELETE", data: channel, channel_id } as ChannelDeleteEvent)
+		]);
+	}
 
-	await Promise.all([emitEvent({ event: "CHANNEL_DELETE", data, channel_id } as ChannelDeleteEvent), Channel.delete({ id: channel_id })]);
-
-	res.send(data);
+	res.send(channel);
 });
 
 export interface ChannelModifySchema {
 	/**
 	 * @maxLength 100
 	 */
-	name: string;
-	type: ChannelType;
+	name?: string;
+	type?: ChannelType;
 	topic?: string;
+	icon?: string | null;
 	bitrate?: number;
 	user_limit?: number;
 	rate_limit_per_user?: number;
@@ -53,6 +75,7 @@ export interface ChannelModifySchema {
 router.patch("/", route({ body: "ChannelModifySchema", permission: "MANAGE_CHANNELS" }), async (req: Request, res: Response) => {
 	var payload = req.body as ChannelModifySchema;
 	const { channel_id } = req.params;
+	if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
 
 	const channel = await Channel.findOneOrFail({ id: channel_id });
 	channel.assign(payload);

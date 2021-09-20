@@ -124,14 +124,20 @@ export class User extends BaseClass {
 	flags: string; // UserFlags
 
 	@Column()
-	public_flags: string;
+	public_flags: number;
 
 	@JoinColumn({ name: "relationship_ids" })
-	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from)
+	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	relationships: Relationship[];
 
 	@JoinColumn({ name: "connected_account_ids" })
-	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user)
+	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	connected_accounts: ConnectedAccount[];
 
 	@Column({ type: "simple-json", select: false })

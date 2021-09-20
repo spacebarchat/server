@@ -11,7 +11,9 @@ export class Session extends BaseClass {
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	user: User;
 
 	//TODO check, should be 32 char long hex string

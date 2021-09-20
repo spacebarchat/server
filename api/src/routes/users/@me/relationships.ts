@@ -18,13 +18,23 @@ const router = Router();
 const userProjection: (keyof User)[] = ["relationships", ...PublicUserProjection];
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({ where: { id: req.user_id }, relations: ["relationships"] });
+	const user = await User.findOneOrFail({ where: { id: req.user_id }, relations: ["relationships", "relationships.to"] });
 
-	return res.json(user.relationships);
+	//TODO DTO
+	const related_users = user.relationships.map((r) => {
+		return {
+			id: r.to.id,
+			type: r.type,
+			nickname: null,
+			user: r.to.toPublicUser()
+		};
+	});
+
+	return res.json(related_users);
 });
 
 export interface RelationshipPutSchema {
-	type: RelationshipType;
+	type?: RelationshipType;
 }
 
 router.put("/:id", route({ body: "RelationshipPutSchema" }), async (req: Request, res: Response) => {
@@ -32,7 +42,7 @@ router.put("/:id", route({ body: "RelationshipPutSchema" }), async (req: Request
 		req,
 		res,
 		await User.findOneOrFail({ id: req.params.id }, { relations: ["relationships", "relationships.to"], select: userProjection }),
-		req.body.type
+		req.body.type ?? RelationshipType.friends
 	);
 });
 
@@ -48,7 +58,10 @@ router.post("/", route({ body: "RelationshipPostSchema" }), async (req: Request,
 		await User.findOneOrFail({
 			relations: ["relationships", "relationships.to"],
 			select: userProjection,
-			where: req.body as { discriminator: string; username: string }
+			where: {
+				discriminator: String(req.body.discriminator).padStart(4, "0"), //Discord send the discriminator as integer, we need to add leading zeroes
+				username: req.body.username
+			}
 		}),
 		req.body.type
 	);

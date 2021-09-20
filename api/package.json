@@ -70,6 +70,7 @@
 	},
 	"dependencies": {
 		"@fosscord/util": "file:../util",
+		"@types/morgan": "^1.9.3",
 		"ajv": "8.6.2",
 		"ajv-formats": "^2.1.1",
 		"amqplib": "^0.8.0",
@@ -93,6 +94,7 @@
 		"mongoose": "^5.12.3",
 		"mongoose-autopopulate": "^0.12.3",
 		"mongoose-long": "^0.3.2",
+		"morgan": "^1.10.0",
 		"multer": "^1.4.2",
 		"node-fetch": "^2.6.1",
 		"patch-package": "^6.4.7",
