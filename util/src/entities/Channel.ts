@@ -1,14 +1,4 @@
-import {
-	Column,
-	Entity,
-	FindConditions,
-	JoinColumn,
-	ManyToOne,
-	ObjectID,
-	OneToMany,
-	RelationId,
-	RemoveOptions,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { PublicUserProjection, User } from "./User";
