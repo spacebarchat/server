@@ -1,6 +1,15 @@
-import { Channel, ChannelDeleteEvent, ChannelPermissionOverwriteType, ChannelType, ChannelUpdateEvent, emitEvent, Recipient } from "@fosscord/util";
+import {
+	Channel,
+	ChannelDeleteEvent,
+	ChannelPermissionOverwriteType,
+	ChannelType,
+	ChannelUpdateEvent,
+	emitEvent,
+	Recipient,
+	handleFile
+} from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { handleFile, route } from "@fosscord/api";
+import { route } from "@fosscord/api";
 
 const router: Router = Router();
 // TODO: delete channel
@@ -20,15 +29,14 @@ router.delete("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients"] });
 
 	if (channel.type === ChannelType.DM) {
-		const recipient = await Recipient.findOneOrFail({ where: { channel_id: channel_id, user_id: req.user_id } })
-		recipient.closed = true
+		const recipient = await Recipient.findOneOrFail({ where: { channel_id: channel_id, user_id: req.user_id } });
+		recipient.closed = true;
 		await Promise.all([
 			recipient.save(),
 			emitEvent({ event: "CHANNEL_DELETE", data: channel, user_id: req.user_id } as ChannelDeleteEvent)
 		]);
-
 	} else if (channel.type === ChannelType.GROUP_DM) {
-		await Channel.removeRecipientFromChannel(channel, req.user_id)
+		await Channel.removeRecipientFromChannel(channel, req.user_id);
 	} else {
 		await Promise.all([
 			Channel.delete({ id: channel_id }),

@@ -11,7 +11,9 @@ export class ConnectedAccount extends BaseClass {
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	user: User;
 
 	@Column({ select: false })
