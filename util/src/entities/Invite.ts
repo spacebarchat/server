@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
+import { Member } from ".";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
@@ -63,4 +64,13 @@ export class Invite extends BaseClass {
 
 	@Column({ nullable: true })
 	target_user_type?: number;
+
+	static async joinGuild(user_id: string, code: string) {
+		const invite = await Invite.findOneOrFail({ code });
+		if (invite.uses++ >= invite.max_uses && invite.max_uses !== 0) await Invite.delete({ code });
+		else await invite.save();
+
+		await Member.addToGuild(user_id, invite.guild_id);
+		return invite;
+	}
 }
