@@ -1,5 +1,5 @@
 import { CLOSECODES } from "./Constants";
-import WebSocket from "./WebSocket";
+import { WebSocket } from "./WebSocket";
 
 // TODO: make heartbeat timeout configurable
 export function setHeartbeat(socket: WebSocket) {
