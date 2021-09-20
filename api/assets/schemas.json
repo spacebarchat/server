@@ -385,15 +385,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -707,15 +698,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -978,15 +960,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -1228,15 +1201,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -1481,15 +1445,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -1743,15 +1698,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -1998,15 +1944,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -2248,15 +2185,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -2510,15 +2438,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -2785,15 +2704,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -3099,15 +3009,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -3349,15 +3250,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -3599,15 +3491,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -3861,15 +3744,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -4118,15 +3992,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -4371,15 +4236,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -4624,15 +4480,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -4873,15 +4720,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -5142,15 +4980,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -5418,15 +5247,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -5672,15 +5492,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -5928,15 +5739,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -6184,15 +5986,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -6461,8 +6254,14 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RelationshipPutSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
                 "enum": [
                     1,
                     2,
@@ -6472,19 +6271,7 @@
                 "type": "number"
             }
         },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RelationshipPutSchema": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "$ref": "#/definitions/RelationshipType"
-            }
-        },
         "additionalProperties": false,
-        "required": [
-            "type"
-        ],
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -6711,15 +6498,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -6965,15 +6743,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -7402,15 +7171,6 @@
                     }
                 },
                 "additionalProperties": false
-            },
-            "RelationshipType": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
