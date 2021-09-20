@@ -31,10 +31,10 @@ router.delete("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request
 		await Channel.removeRecipientFromChannel(channel, req.user_id)
 	} else {
 		await Promise.all([
-			Message.delete({ channel_id: channel_id }),
 			Invite.delete({ channel_id: channel_id }),
-			Recipient.delete({ channel_id: channel_id }),
 			ReadState.delete({ channel_id: channel_id }),
+			Message.delete({ channel_id: channel_id }),
+			Recipient.delete({ channel_id: channel_id }),
 			Channel.delete({ id: channel_id }),
 			emitEvent({ event: "CHANNEL_DELETE", data: channel, channel_id } as ChannelDeleteEvent)
 		]);
