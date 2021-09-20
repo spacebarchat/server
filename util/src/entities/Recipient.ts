@@ -8,7 +8,9 @@ export class Recipient extends BaseClass {
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => require("./Channel").Channel)
+	@ManyToOne(() => require("./Channel").Channel, {
+		onDelete: "CASCADE",
+	})
 	channel: import("./Channel").Channel;
 
 	@Column()
@@ -16,7 +18,9 @@ export class Recipient extends BaseClass {
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => require("./User").User)
+	@ManyToOne(() => require("./User").User, {
+		onDelete: "CASCADE",
+	})
 	user: import("./User").User;
 
 	@Column({ default: false })

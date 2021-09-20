@@ -13,15 +13,8 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 	const guild = await Guild.findOneOrFail({ where: { id: guild_id }, select: ["owner_id"] });
 	if (guild.owner_id !== req.user_id) throw new HTTPError("You are not the owner of this guild", 401);
 
-	// do not put everything into promise all, because of "QueryFailedError: SQLITE_CONSTRAINT: FOREIGN KEY constraint failed"
-
-	await Message.delete({ guild_id }); // messages must be deleted before channel
-
 	await Promise.all([
-		Role.delete({ guild_id }),
-		Channel.delete({ guild_id }),
-		Emoji.delete({ guild_id }),
-		Member.delete({ guild_id }),
+		Guild.delete({ id: guild_id }), // this will also delete all guild related data
 		emitEvent({
 			event: "GUILD_DELETE",
 			data: {
@@ -30,9 +23,6 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 			guild_id: guild_id
 		} as GuildDeleteEvent)
 	]);
-
-	await Invite.delete({ guild_id }); // invite must be deleted after channel
-	await Guild.delete({ id: guild_id }); // guild must be deleted after everything else
 
 	return res.sendStatus(204);
 });

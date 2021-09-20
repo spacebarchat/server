@@ -10,7 +10,9 @@ export class Ban extends BaseClass {
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	user: User;
 
 	@Column({ nullable: true })
@@ -18,7 +20,9 @@ export class Ban extends BaseClass {
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild)
+	@ManyToOne(() => Guild, {
+		onDelete: "CASCADE",
+	})
 	guild: Guild;
 
 	@Column({ nullable: true })

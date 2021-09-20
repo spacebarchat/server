@@ -3,7 +3,6 @@ import { Router, Response, Request } from "express";
 import { route } from "@fosscord/api";
 import { handleMessage, postHandleMessage } from "@fosscord/api";
 import { MessageCreateSchema } from "../index";
-import { deleteMessageAttachments } from "@fosscord/api/util/Attachments";
 
 const router = Router();
 // TODO: message content/embed string length limit
@@ -34,7 +33,6 @@ router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGE
 	});
 
 	await Promise.all([
-		await deleteMessageAttachments(message_id, new_message.attachments), //This delete all the attachments not in the array
 		new_message!.save(),
 		await emitEvent({
 			event: "MESSAGE_UPDATE",
@@ -60,7 +58,6 @@ router.delete("/", route({}), async (req: Request, res: Response) => {
 		permission.hasThrow("MANAGE_MESSAGES");
 	}
 
-	await deleteMessageAttachments(message_id);
 	await Message.delete({ id: message_id });
 
 	await emitEvent({
