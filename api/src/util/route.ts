@@ -14,6 +14,7 @@ export const ajv = new Ajv({
 	parseDate: true,
 	allowDate: true,
 	schemas,
+	coerceTypes: true,
 	messages: true,
 	strict: true,
 	strictRequired: true

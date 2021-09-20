@@ -17,7 +17,9 @@ export class Relationship extends BaseClass {
 	from_id: string;
 
 	@JoinColumn({ name: "from_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	from: User;
 
 	@Column({})
@@ -25,7 +27,9 @@ export class Relationship extends BaseClass {
 	to_id: string;
 
 	@JoinColumn({ name: "to_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	to: User;
 
 	@Column({ nullable: true })

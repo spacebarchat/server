@@ -15,14 +15,9 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 
 router.post("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
+	const invite = await Invite.joinGuild(req.user_id, code);
 
-	const invite = await Invite.findOneOrFail({ code });
-	if (invite.uses++ >= invite.max_uses) await Invite.delete({ code });
-	else await invite.save();
-
-	await Member.addToGuild(req.user_id, invite.guild_id);
-
-	res.status(200).send(invite);
+	res.json(invite);
 });
 
 // * cant use permission of route() function because path doesn't have guild_id/channel_id

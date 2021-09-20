@@ -81,7 +81,10 @@ export class Guild extends BaseClass {
 	// application?: string;
 
 	@JoinColumn({ name: "ban_ids" })
-	@OneToMany(() => Ban, (ban: Ban) => ban.guild)
+	@OneToMany(() => Ban, (ban: Ban) => ban.guild, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	bans: Ban[];
 
 	@Column({ nullable: true })
@@ -124,15 +127,26 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	presence_count?: number; // users online
 
-	@OneToMany(() => Member, (member: Member) => member.guild)
+	@OneToMany(() => Member, (member: Member) => member.guild, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
 	members: Member[];
 
 	@JoinColumn({ name: "role_ids" })
-	@OneToMany(() => Role, (role: Role) => role.guild)
+	@OneToMany(() => Role, (role: Role) => role.guild, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
 	roles: Role[];
 
 	@JoinColumn({ name: "channel_ids" })
-	@OneToMany(() => Channel, (channel: Channel) => channel.guild)
+	@OneToMany(() => Channel, (channel: Channel) => channel.guild, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	channels: Channel[];
 
 	@Column({ nullable: true })
@@ -144,23 +158,43 @@ export class Guild extends BaseClass {
 	template: Template;
 
 	@JoinColumn({ name: "emoji_ids" })
-	@OneToMany(() => Emoji, (emoji: Emoji) => emoji.guild)
+	@OneToMany(() => Emoji, (emoji: Emoji) => emoji.guild, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
 	emojis: Emoji[];
 
 	@JoinColumn({ name: "sticker_ids" })
-	@OneToMany(() => Sticker, (sticker: Sticker) => sticker.guild)
+	@OneToMany(() => Sticker, (sticker: Sticker) => sticker.guild, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
 	stickers: Sticker[];
 
 	@JoinColumn({ name: "invite_ids" })
-	@OneToMany(() => Invite, (invite: Invite) => invite.guild)
+	@OneToMany(() => Invite, (invite: Invite) => invite.guild, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
 	invites: Invite[];
 
 	@JoinColumn({ name: "voice_state_ids" })
-	@OneToMany(() => VoiceState, (voicestate: VoiceState) => voicestate.guild)
+	@OneToMany(() => VoiceState, (voicestate: VoiceState) => voicestate.guild, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
 	voice_states: VoiceState[];
 
 	@JoinColumn({ name: "webhook_ids" })
-	@OneToMany(() => Webhook, (webhook: Webhook) => webhook.guild)
+	@OneToMany(() => Webhook, (webhook: Webhook) => webhook.guild, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		onDelete: "CASCADE",
+	})
 	webhooks: Webhook[];
 
 	@Column({ nullable: true })

@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { trimSpecial, User, Snowflake, Config, defaultSettings } from "@fosscord/util";
+import { trimSpecial, User, Snowflake, Config, defaultSettings, Member, Invite } from "@fosscord/util";
 import bcrypt from "bcrypt";
 import { EMAIL_REGEX, FieldErrors, route } from "@fosscord/api";
 import "missing-native-js-functions";
@@ -19,7 +19,7 @@ export interface RegisterSchema {
 	 * @minLength 1
 	 * @maxLength 72
 	 */
-	password: string; // TODO: use password strength of config
+	password?: string;
 	consent: boolean;
 	/**
 	 * @TJS-format email
@@ -60,7 +60,6 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	}
 
 	console.log("register", req.body.email, req.body.username, ip);
-	// TODO: automatically join invite
 	// TODO: gift_code_sku_id?
 	// TODO: check password strength
 
@@ -87,13 +86,6 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		});
 	}
 
-	// require invite to register -> e.g. for organizations to send invites to their employees
-	if (register.requireInvite && !invite) {
-		throw FieldErrors({
-			email: { code: "INVITE_ONLY", message: req.t("auth:register.INVITE_ONLY") }
-		});
-	}
-
 	if (email) {
 		// replace all dots and chars after +, if its a gmail.com email
 		if (!email) throw FieldErrors({ email: { code: "INVALID_EMAIL", message: req.t("auth:register.INVALID_EMAIL") } });
@@ -109,13 +101,13 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 				}
 			});
 		}
-	} else if (register.email.necessary) {
+	} else if (register.email.required) {
 		throw FieldErrors({
 			email: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
 		});
 	}
 
-	if (register.dateOfBirth.necessary && !date_of_birth) {
+	if (register.dateOfBirth.required && !date_of_birth) {
 		throw FieldErrors({
 			date_of_birth: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
 		});
@@ -162,8 +154,14 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		// TODO: check captcha
 	}
 
-	// the salt is saved in the password refer to bcrypt docs
-	password = await bcrypt.hash(password, 12);
+	if (password) {
+		// the salt is saved in the password refer to bcrypt docs
+		password = await bcrypt.hash(password, 12);
+	} else if (register.password.required) {
+		throw FieldErrors({
+			password: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
+		});
+	}
 
 	let exists;
 	// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
@@ -202,7 +200,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		premium_type: 2,
 		bio: "",
 		mfa_enabled: false,
-		verified: false,
+		verified: true,
 		disabled: false,
 		deleted: false,
 		email: email,
@@ -216,6 +214,16 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		settings: { ...defaultSettings, locale: req.language || "en-US" },
 		fingerprints: []
 	}).save();
+
+	if (invite) {
+		// await to fail if the invite doesn't exist (necessary for requireInvite to work properly) (username only signups are possible)
+		await Invite.joinGuild(user.id, invite);
+	} else if (register.requireInvite) {
+		// require invite to register -> e.g. for organizations to send invites to their employees
+		throw FieldErrors({
+			email: { code: "INVITE_ONLY", message: req.t("auth:register.INVITE_ONLY") }
+		});
+	}
 
 	return res.json({ token: await generateToken(user.id) });
 });

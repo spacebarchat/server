@@ -1,22 +1,23 @@
-import { Config } from "@fosscord/util";
 import FormData from "form-data";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
+import { Config } from "./Config";
+import multer from "multer";
 
 export async function uploadFile(path: string, file: Express.Multer.File) {
 	const form = new FormData();
 	form.append("file", file.buffer, {
 		contentType: file.mimetype,
-		filename: file.originalname
+		filename: file.originalname,
 	});
 
 	const response = await fetch(`${Config.get().cdn.endpoint || "http://localhost:3003"}${path}`, {
 		headers: {
 			signature: Config.get().security.requestSignature,
-			...form.getHeaders()
+			...form.getHeaders(),
 		},
 		method: "POST",
-		body: form
+		body: form,
 	});
 	const result = await response.json();
 
@@ -42,9 +43,9 @@ export async function handleFile(path: string, body?: string): Promise<string | 
 export async function deleteFile(path: string) {
 	const response = await fetch(`${Config.get().cdn.endpoint || "http://localhost:3003"}${path}`, {
 		headers: {
-			signature: Config.get().security.requestSignature
+			signature: Config.get().security.requestSignature,
 		},
-		method: "DELETE"
+		method: "DELETE",
 	});
 	const result = await response.json();
 

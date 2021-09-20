@@ -19,6 +19,7 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 		connected_accounts: user.connected_accounts,
 		premium_guild_since: null, // TODO
 		premium_since: null, // TODO
+		mutual_guilds: [], // TODO {id: "", nick: null} when ?with_mutual_guilds=true
 		user: {
 			username: user.username,
 			discriminator: user.discriminator,

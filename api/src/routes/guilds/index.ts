@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
-import { Role, Guild, Snowflake, Config, User, Member, Channel } from "@fosscord/util";
+import { Role, Guild, Snowflake, Config, Member, Channel, DiscordApiErrors, handleFile } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import { DiscordApiErrors } from "@fosscord/util";
 import { ChannelModifySchema } from "../channels/#channel_id";
 
 const router: Router = Router();
@@ -34,6 +33,7 @@ router.post("/", route({ body: "GuildCreateSchema" }), async (req: Request, res:
 
 	await Guild.insert({
 		name: body.name,
+		icon: await handleFile(`/icons/${guild_id}`, body.icon as string),
 		region: Config.get().regions.default,
 		owner_id: req.user_id,
 		afk_timeout: 300,
