@@ -9,7 +9,9 @@ export class Team extends BaseClass {
 	icon?: string;
 
 	@JoinColumn({ name: "member_ids" })
-	@OneToMany(() => TeamMember, (member: TeamMember) => member.team)
+	@OneToMany(() => TeamMember, (member: TeamMember) => member.team, {
+		orphanedRowAction: "delete",
+	})
 	members: TeamMember[];
 
 	@Column()

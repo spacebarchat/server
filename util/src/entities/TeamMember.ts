@@ -20,7 +20,9 @@ export class TeamMember extends BaseClass {
 	team_id: string;
 
 	@JoinColumn({ name: "team_id" })
-	@ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.members)
+	@ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.members, {
+		onDelete: "CASCADE",
+	})
 	team: import("./Team").Team;
 
 	@Column({ nullable: true })
@@ -28,6 +30,8 @@ export class TeamMember extends BaseClass {
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	user: User;
 }

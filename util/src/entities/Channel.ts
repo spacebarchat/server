@@ -45,7 +45,6 @@ export class Channel extends BaseClass {
 	@OneToMany(() => Recipient, (recipient: Recipient) => recipient.channel, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
 	})
 	recipients?: Recipient[];
 
@@ -57,7 +56,9 @@ export class Channel extends BaseClass {
 	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild)
+	@ManyToOne(() => Guild, {
+		onDelete: "CASCADE",
+	})
 	guild: Guild;
 
 	@Column({ nullable: true })
@@ -110,35 +111,30 @@ export class Channel extends BaseClass {
 	@OneToMany(() => Invite, (invite: Invite) => invite.channel, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
 	})
 	invites?: Invite[];
 
 	@OneToMany(() => Message, (message: Message) => message.channel, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
 	})
 	messages?: Message[];
 
 	@OneToMany(() => VoiceState, (voice_state: VoiceState) => voice_state.channel, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
 	})
 	voice_states?: VoiceState[];
 
 	@OneToMany(() => ReadState, (read_state: ReadState) => read_state.channel, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
 	})
 	read_states?: ReadState[];
 
 	@OneToMany(() => Webhook, (webhook: Webhook) => webhook.channel, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
 	})
 	webhooks?: Webhook[];
 
