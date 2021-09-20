@@ -1,4 +1,4 @@
-import { DiscordApiErrors, Event, EventData, getPermission, PermissionResolvable, Permissions } from "@fosscord/util";
+import { DiscordApiErrors, EVENT, Event, EventData, getPermission, PermissionResolvable, Permissions } from "@fosscord/util";
 import { NextFunction, Request, Response } from "express";
 import fs from "fs";
 import path from "path";
@@ -38,7 +38,7 @@ export interface RouteOptions {
 		response?: RouteResponse;
 		body?: any;
 		path?: string;
-		event?: EventData | EventData[];
+		event?: EVENT | EVENT[];
 		headers?: Record<string, string>;
 	};
 }
