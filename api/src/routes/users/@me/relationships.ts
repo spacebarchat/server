@@ -59,7 +59,7 @@ router.post("/", route({ body: "RelationshipPostSchema" }), async (req: Request,
 			relations: ["relationships", "relationships.to"],
 			select: userProjection,
 			where: {
-				discriminator: String(req.body.discriminator,).padStart(4, '0'), //Discord send the discriminator as integer, we need to add leading zeroes
+				discriminator: String(req.body.discriminator).padStart(4, '0'), //Discord send the discriminator as integer, we need to add leading zeroes
 				username: req.body.username
 			}
 		}),
