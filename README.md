@@ -28,7 +28,7 @@ This repository contains:
 
 ## [Ressources](https://docs.fosscord.com/resources/)
 
--   [Contributing](https://docs.fosscord.com/contributing/)
+-   [Contributing](https://docs.fosscord.com/contributing/server/)
 
 ## [Download](https://github.com/fosscord/fosscord-server/releases)
 
