@@ -1,4 +1,4 @@
-import { Channel, ChannelDeleteEvent, ChannelPermissionOverwriteType, ChannelType, ChannelUpdateEvent, emitEvent, Recipient } from "@fosscord/util";
+import { Channel, Message, ChannelDeleteEvent, ChannelPermissionOverwriteType, ChannelType, ChannelUpdateEvent, emitEvent, Recipient } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { handleFile, route } from "@fosscord/api";
 
@@ -30,8 +30,8 @@ router.delete("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request
 	} else if (channel.type === ChannelType.GROUP_DM) {
 		await Channel.removeRecipientFromChannel(channel, req.user_id)
 	} else {
-		//TODO messages in this channel should be deleted before deleting the channel
 		await Promise.all([
+			Message.delete({ channel_id: channel_id }),
 			Channel.delete({ id: channel_id }),
 			emitEvent({ event: "CHANNEL_DELETE", data: channel, channel_id } as ChannelDeleteEvent)
 		]);
