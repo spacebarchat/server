@@ -9,7 +9,7 @@ import addFormats from "ajv-formats";
 import fetch from "node-fetch";
 import { User } from "@fosscord/util";
 
-const SchemaPath = join(__dirname, "..", "assets", "responses.json");
+const SchemaPath = join(__dirname, "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 export const ajv = new Ajv({
 	allErrors: true,
@@ -64,7 +64,7 @@ describe("Automatic unit tests with route description middleware", () => {
 	routes.forEach((route, pathAndMethod) => {
 		const [path, method] = pathAndMethod.split("|");
 
-		test(path, async (done) => {
+		test(`${method.toUpperCase()} ${path}`, async (done) => {
 			if (!route.test) {
 				console.log(`${(route as any).file}\nrouter.${method} is missing the test property`);
 				return done();
