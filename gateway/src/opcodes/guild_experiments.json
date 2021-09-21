@@ -1,6 +1,12 @@
 [
     {
-        "hashKey": 3563379711,
+        "id":"2021-06_stage_events",
+        "title": "Stage Events",
+        "description": [
+            "Control",
+            "Treatment 1: Guild can use Stage Events"
+        ],
+        "hashKey": 4150241132,
         "revision": 0,
         "populations": [
           {
@@ -9,14 +15,6 @@
                 "rollout": [
                   {
                     "min": 0,
-                    "max": 1000
-                  }
-                ]
-              },
-              "2": {
-                "rollout": [
-                  {
-                    "min": 1000,
                     "max": 10000
                   }
                 ]
@@ -24,20 +22,14 @@
             },
             "filters": [
               {
-                "type": "guild_ids",
-                "ids": [
-                  1234,
-                  5678
+                "type": "guild_has_feature",
+                "guild_features": [
+                    "PARTNERED"
                 ]
               }
             ]
           }
         ],
-        "overrides": {
-          "2": [
-            "203290518795452416"
-          ]
-        }
+        "overrides": {}
       }
-      
 ]
