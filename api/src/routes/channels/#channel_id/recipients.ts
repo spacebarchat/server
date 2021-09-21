@@ -1,9 +1,10 @@
 import { Request, Response, Router } from "express";
 import { Channel, ChannelRecipientAddEvent, ChannelType, DiscordApiErrors, DmChannelDTO, emitEvent, PublicUserProjection, Recipient, User } from "@fosscord/util";
+import { route } from "@fosscord/api"
 
 const router: Router = Router();
 
-router.put("/:user_id", async (req: Request, res: Response) => {
+router.put("/:user_id", route({}), async (req: Request, res: Response) => {
 	const { channel_id, user_id } = req.params;
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients"] });
 
@@ -39,7 +40,7 @@ router.put("/:user_id", async (req: Request, res: Response) => {
 	}
 });
 
-router.delete("/:user_id", async (req: Request, res: Response) => {
+router.delete("/:user_id", route({}), async (req: Request, res: Response) => {
 	const { channel_id, user_id } = req.params;
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients"] });
 	if (!(channel.type === ChannelType.GROUP_DM && (channel.owner_id === req.user_id || user_id === req.user_id)))

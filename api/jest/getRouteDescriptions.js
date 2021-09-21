@@ -1,11 +1,15 @@
-import { traverseDirectory } from "lambert-server";
-import path from "path";
-import express from "express";
-import * as RouteUtility from "../dist/util/route";
-import { RouteOptions } from "../dist/util/route";
+const { traverseDirectory } = require("lambert-server");
+const path = require("path");
+const express = require("express");
+const RouteUtility = require("../dist/util/route");
 const Router = express.Router;
 
-const routes = new Map<string, RouteUtility.RouteOptions>();
+/**
+ * Some documentation.
+ *
+ * @type {Map<string, RouteUtility.RouteOptions>}
+ */
+const routes = new Map();
 let currentPath = "";
 let currentFile = "";
 const methods = ["get", "post", "put", "delete", "patch"];
@@ -13,13 +17,13 @@ const methods = ["get", "post", "put", "delete", "patch"];
 function registerPath(file, method, prefix, path, ...args) {
 	const urlPath = prefix + path;
 	const sourceFile = file.replace("/dist/", "/src/").replace(".js", ".ts");
-	const opts: RouteOptions = args.find((x) => typeof x === "object");
+	const opts = args.find((x) => typeof x === "object");
 	if (opts) {
 		routes.set(urlPath + "|" + method, opts); // @ts-ignore
 		opts.file = sourceFile;
 		// console.log(method, urlPath, opts);
 	} else {
-		console.log(`${sourceFile}\nrouter.${method}("${path}") is missing the "route()" description middleware\n`, args);
+		console.log(`${sourceFile}\nrouter.${method}("${path}") is missing the "route()" description middleware\n`);
 	}
 }
 
@@ -42,7 +46,7 @@ express.Router = (opts) => {
 	return router;
 };
 
-export default function getRouteDescriptions() {
+module.exports = function getRouteDescriptions() {
 	const root = path.join(__dirname, "..", "dist", "routes", "/");
 	traverseDirectory({ dirname: root, recursive: true }, (file) => {
 		currentFile = file;
@@ -52,7 +56,11 @@ export default function getRouteDescriptions() {
 		if (path.endsWith("/index")) path = path.slice(0, "/index".length * -1); // delete index from path
 		currentPath = path;
 
-		require(file);
+		try {
+			require(file);
+		} catch (error) {
+			console.error("error loading file " + file, error);
+		}
 	});
 	return routes;
-}
+};
