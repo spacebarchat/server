@@ -7,7 +7,7 @@ import fs from "fs";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import fetch from "node-fetch";
-import { User } from "@fosscord/util";
+import { Event, User, events } from "@fosscord/util";
 
 const SchemaPath = join(__dirname, "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
@@ -58,6 +58,12 @@ beforeAll(async (done) => {
 	}
 });
 
+const emit = events.emit;
+events.emit = (event: string | symbol, ...args: any[]) => {
+	events.emit("event", args[0]);
+	return emit(event, ...args);
+};
+
 describe("Automatic unit tests with route description middleware", () => {
 	const routes = getRouteDescriptions();
 
@@ -77,6 +83,23 @@ describe("Automatic unit tests with route description middleware", () => {
 			}
 
 			var body = "";
+			let eventEmitted = Promise.resolve();
+
+			if (route.test.event) {
+				if (!Array.isArray(route.test.event)) route.test.event = [route.test.event];
+
+				eventEmitted = new Promise((resolve, reject) => {
+					const timeout = setTimeout(() => reject, 1000);
+					const received = [];
+
+					events.on("event", (event: Event) => {
+						if (!route.test.event.includes(event.event)) return;
+
+						received.push(event.event);
+						if (received.length === route.test.event.length) resolve();
+					});
+				});
+			}
 
 			try {
 				const response = await fetch(`http://localhost:3001/api${urlPath}`, {
@@ -99,6 +122,12 @@ describe("Automatic unit tests with route description middleware", () => {
 				}
 			} catch (error) {
 				return done(error);
+			}
+
+			try {
+				await eventEmitted;
+			} catch (error) {
+				return done(new Error(`Event ${route.test.event} was not emitted`));
 			}
 
 			return done();
