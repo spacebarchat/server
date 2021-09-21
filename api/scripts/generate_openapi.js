@@ -81,6 +81,18 @@ function apiRoutes() {
 		}
 		if (route.test?.response) {
 			const status = route.test.response.status || 200;
+			let schema = {
+				allOf: [
+					{
+						$ref: `#/components/schemas/${route.test.response.body}`
+					},
+					{
+						example: route.test.body
+					}
+				]
+			};
+			if (!route.test.body) schema = schema.allOf[0];
+
 			obj.responses = {
 				[status]: {
 					...(route.test.response.body
@@ -88,9 +100,7 @@ function apiRoutes() {
 								description: obj.responses[status].description || "",
 								content: {
 									"application/json": {
-										schema: {
-											$ref: `#/components/schemas/${route.test.response.body}`
-										}
+										schema: schema
 									}
 								}
 						  }
