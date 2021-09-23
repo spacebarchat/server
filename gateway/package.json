@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "dist/index.js",
 	"scripts": {
-		"prepare": "ts-patch install -s",
+		"postinstall": "ts-patch install -s",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "npm run build && node dist/start.js",
 		"build": "npx tsc -b .",
