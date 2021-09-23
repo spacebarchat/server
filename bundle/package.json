@@ -4,9 +4,9 @@
 	"description": "",
 	"main": "src/start.js",
 	"scripts": {
-		"prepare": "ts-patch install -s",
-		"preinstall": "cd ../util && npm --production=false i && cd ../api && npm --production=false i && cd ../cdn && npm --production=false i && cd ../gateway && npm --production=false i",
+		"prepare": "cd ../util && npm --production=false i && cd ../api && npm --production=false i && cd ../cdn && npm --production=false i && cd ../gateway && npm --production=false i",
 		"build": "npm run build:util && npm run build:api && npm run build:cdn && npm run build:gateway && npm run build:bundle",
+		"postinstall": "ts-patch install -s",
 		"build:bundle": "npx tsc -b .",
 		"build:util": "cd ../util/ && npm run build",
 		"build:api": "cd ../api/ && npm run build",

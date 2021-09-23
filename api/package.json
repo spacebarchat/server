@@ -5,7 +5,6 @@
 	"main": "dist/Server.js",
 	"types": "dist/Server.d.ts",
 	"scripts": {
-		"prepare": "",
 		"test:only": "jest --coverage --verbose --forceExit ./tests",
 		"test": "npm run build && npm run test:only",
 		"test:watch": "jest --watch",
