@@ -1,10 +1,8 @@
 import { Request, Response, Router } from "express";
-import { trimSpecial, User, Snowflake, Config, defaultSettings, Member, Invite } from "@fosscord/util";
+import { trimSpecial, User, Snowflake, Config, defaultSettings, generateToken, Invite, adjustEmail } from "@fosscord/util";
 import bcrypt from "bcrypt";
-import { EMAIL_REGEX, FieldErrors, route } from "@fosscord/api";
+import { FieldErrors, route, getIpAdress, IPAnalysis, isProxy } from "@fosscord/api";
 import "missing-native-js-functions";
-import { generateToken } from "./login";
-import { getIpAdress, IPAnalysis, isProxy } from "@fosscord/api";
 import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
@@ -227,24 +225,6 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 
 	return res.json({ token: await generateToken(user.id) });
 });
-
-export function adjustEmail(email: string): string | undefined {
-	if (!email) return email;
-	// body parser already checked if it is a valid email
-	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);
-	// @ts-ignore
-	if (!parts || parts.length < 5) return undefined;
-	const domain = parts[5];
-	const user = parts[1];
-
-	// TODO: check accounts with uncommon email domains
-	if (domain === "gmail.com" || domain === "googlemail.com") {
-		// replace .dots and +alternatives -> Gmail Dot Trick https://support.google.com/mail/answer/7436150 and https://generator.email/blog/gmail-generator
-		return user.replace(/[.]|(\+.*)/g, "") + "@gmail.com";
-	}
-
-	return email;
-}
 
 export default router;
 

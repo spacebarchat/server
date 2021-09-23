@@ -1,5 +1,4 @@
-import { Payload } from "@fosscord/gateway/util/Constants";
-import WebSocket from "@fosscord/gateway/util/WebSocket";
+import { WebSocket, Payload } from "@fosscord/gateway";
 import { onHeartbeat } from "./Heartbeat";
 import { onIdentify } from "./Identify";
 import { onLazyRequest } from "./LazyRequest";

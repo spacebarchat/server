@@ -1,9 +1,7 @@
 import { Request, Response, Router } from "express";
 import { FieldErrors, route } from "@fosscord/api";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { Config, User } from "@fosscord/util";
-import { adjustEmail } from "./register";
+import { Config, User, generateToken, adjustEmail } from "@fosscord/util";
 
 const router: Router = Router();
 export default router;
@@ -67,25 +65,6 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 
 	res.json({ token, settings: user.settings });
 });
-
-export async function generateToken(id: string) {
-	const iat = Math.floor(Date.now() / 1000);
-	const algorithm = "HS256";
-
-	return new Promise((res, rej) => {
-		jwt.sign(
-			{ id: id, iat },
-			Config.get().security.jwtSecret,
-			{
-				algorithm
-			},
-			(err, token) => {
-				if (err) return rej(err);
-				return res(token);
-			}
-		);
-	});
-}
 
 /**
  * POST /auth/login
