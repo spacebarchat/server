@@ -11,7 +11,7 @@ import { URL } from "url";
 import { Session } from "@fosscord/util";
 var erlpack: any;
 try {
-	erlpack = require("erlpack");
+	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 
 // TODO: check rate limit
