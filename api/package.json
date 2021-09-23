@@ -5,7 +5,7 @@
 	"main": "dist/Server.js",
 	"types": "dist/Server.d.ts",
 	"scripts": {
-		"prepare": "ts-patch install -s",
+		"prepare": "",
 		"test:only": "jest --coverage --verbose --forceExit ./tests",
 		"test": "npm run build && npm run test:only",
 		"test:watch": "jest --watch",
@@ -13,7 +13,7 @@
 		"build": "npx tsc -b .",
 		"build-docker": "tsc -p tsconfig-docker.json",
 		"dev": "tsnd --respawn src/start.ts",
-		"patch": "npx patch-package",
+		"patch": "ts-patch install -s && npx patch-package",
 		"postinstall": "npm run patch",
 		"generate:docs": "node scripts/generate_openapi.ts",
 		"generate:schema": "node scripts/generate_schema.ts"

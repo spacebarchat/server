@@ -1,26 +1,26 @@
 {
 	"name": "@fosscord/cdn",
 	"version": "1.0.0",
-	"description": "cdn for discord clone",
+	"description": "cdn for fosscord",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"prepare": "ts-patch install -s",
+		"postinstall": "ts-patch install -s",
 		"test": "npm run build && jest --coverage ./tests",
 		"build": "npx tsc -b .",
 		"start": "npm run build && node dist/start.js"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discord-open-source/discord-cdn.git"
+		"url": "git+https://github.com/fosscord/fosscord-server.git"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/discord-open-source/discord-cdn/issues"
+		"url": "https://github.com/fosscord/fosscord-server/issues"
 	},
-	"homepage": "https://github.com/discord-open-source/discord-cdn#readme",
+	"homepage": "https://github.com/fosscord/fosscord-server#readme",
 	"devDependencies": {
 		"@types/amqplib": "^0.8.1",
 		"@types/body-parser": "^1.19.0",
