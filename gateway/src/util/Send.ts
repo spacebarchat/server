@@ -1,6 +1,6 @@
 var erlpack: any;
 try {
-	erlpack = require("erlpack");
+	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 import { Payload } from "@fosscord/gateway/util/Constants";
 

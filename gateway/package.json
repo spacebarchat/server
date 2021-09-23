@@ -38,5 +38,8 @@
 		"typeorm": "^0.2.37",
 		"uuid": "^8.3.2",
 		"ws": "^7.4.2"
+	},
+	"optionalDependencies": {
+		"@yukikaze-bot/erlpack": "^1.0.1"
 	}
 }
