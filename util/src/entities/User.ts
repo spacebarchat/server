@@ -161,15 +161,13 @@ export class User extends BaseClass {
 	}
 
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {
-		const user = await User.findOne(
+		return await User.findOneOrFail(
 			{ id: user_id },
 			{
 				...opts,
 				select: [...PublicUserProjection, ...(opts?.select || [])],
 			}
 		);
-		if (!user) throw new HTTPError("User not found", 404);
-		return user;
 	}
 }
 

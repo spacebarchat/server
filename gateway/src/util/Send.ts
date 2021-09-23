@@ -2,9 +2,7 @@ var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
-import { Payload } from "@fosscord/gateway/util/Constants";
-
-import WebSocket from "./WebSocket";
+import { Payload, WebSocket } from "@fosscord/gateway";
 
 export async function Send(socket: WebSocket, data: Payload) {
 	let buffer: Buffer | string;
@@ -20,7 +18,7 @@ export async function Send(socket: WebSocket, data: Payload) {
 	}
 
 	return new Promise((res, rej) => {
-		socket.send(buffer, (err) => {
+		socket.send(buffer, (err: any) => {
 			if (err) return rej(err);
 			return res(null);
 		});

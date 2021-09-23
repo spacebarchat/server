@@ -68,12 +68,6 @@
 		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
-		"resolveJsonModule": true,
-		"plugins": [
-			{
-				"transform": "ts-transform-json-schema",
-				"type": "program"
-			}
-		]
+		"resolveJsonModule": true
 	}
 }

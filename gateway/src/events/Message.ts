@@ -1,10 +1,9 @@
-import WebSocket from "@fosscord/gateway/util/WebSocket";
+import { WebSocket, Payload, CLOSECODES, OPCODES } from "@fosscord/gateway";
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 import OPCodeHandlers from "../opcodes";
-import { Payload, CLOSECODES, OPCODES } from "@fosscord/gateway/util/Constants";
 import { instanceOf, Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";

@@ -29,7 +29,7 @@ export type RolePositionUpdateSchema = {
 	position: number;
 }[];
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;
 
 	await Member.IsInGuildOrFail(req.user_id, guild_id);

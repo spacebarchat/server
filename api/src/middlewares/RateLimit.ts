@@ -107,7 +107,8 @@ export default function rateLimit(opts: {
 }
 
 export async function initRateLimits(app: Router) {
-	const { routes, global, ip, error } = Config.get().limits.rate;
+	const { routes, global, ip, error, disabled } = Config.get().limits.rate;
+	if (disabled) return;
 	await listenEvent(EventRateLimit, (event) => {
 		Cache.set(event.channel_id as string, event.data);
 		event.acknowledge?.();

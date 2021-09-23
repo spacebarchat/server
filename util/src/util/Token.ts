@@ -1,4 +1,5 @@
 import jwt, { VerifyOptions } from "jsonwebtoken";
+import { Config } from "./Config";
 import { User } from "../entities";
 
 export const JWTOptions: VerifyOptions = { algorithms: ["HS256"] };
@@ -19,5 +20,24 @@ export function checkToken(token: string, jwtSecret: string): Promise<any> {
 
 			return res({ decoded, user });
 		});
+	});
+}
+
+export async function generateToken(id: string) {
+	const iat = Math.floor(Date.now() / 1000);
+	const algorithm = "HS256";
+
+	return new Promise((res, rej) => {
+		jwt.sign(
+			{ id: id, iat },
+			Config.get().security.jwtSecret,
+			{
+				algorithm,
+			},
+			(err, token) => {
+				if (err) return rej(err);
+				return res(token);
+			}
+		);
 	});
 }

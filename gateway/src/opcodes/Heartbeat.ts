@@ -1,7 +1,4 @@
-import { CLOSECODES, Payload } from "@fosscord/gateway/util/Constants";
-import { Send } from "@fosscord/gateway/util/Send";
-import { setHeartbeat } from "@fosscord/gateway/util/setHeartbeat";
-import WebSocket from "@fosscord/gateway/util/WebSocket";
+import { Payload, Send, setHeartbeat, WebSocket } from "@fosscord/gateway";
 
 export async function onHeartbeat(this: WebSocket, data: Payload) {
 	// TODO: validate payload

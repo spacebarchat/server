@@ -1,4 +1,4 @@
-import WebSocket from "@fosscord/gateway/util/WebSocket";
+import { WebSocket } from "@fosscord/gateway";
 import { Message } from "./Message";
 import { Session } from "@fosscord/util";
 

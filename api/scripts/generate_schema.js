@@ -6,7 +6,7 @@ import * as TJS from "typescript-json-schema";
 import "missing-native-js-functions";
 const schemaPath = path.join(__dirname, "..", "assets", "schemas.json");
 
-const settings: TJS.PartialArgs = {
+const settings = {
 	required: true,
 	ignoreErrors: true,
 	excludePrivate: true,
@@ -14,23 +14,34 @@ const settings: TJS.PartialArgs = {
 	noExtraProps: true,
 	defaultProps: false
 };
-const compilerOptions: TJS.CompilerOptions = {
+const compilerOptions = {
 	strictNullChecks: true
 };
-const ExcludedSchemas = ["DefaultSchema", "Schema", "EntitySchema"];
+const Excluded = [
+	"DefaultSchema",
+	"Schema",
+	"EntitySchema",
+	"ServerResponse",
+	"Http2ServerResponse",
+	"global.Express.Response",
+	"Response",
+	"e.Response",
+	"request.Response",
+	"supertest.Response"
+];
 
 function main() {
 	const program = TJS.getProgramFromFiles(walk(path.join(__dirname, "..", "src", "routes")), compilerOptions);
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 
-	const schemas = generator.getUserSymbols().filter((x) => x.endsWith("Schema") && !ExcludedSchemas.includes(x));
+	const schemas = generator.getUserSymbols().filter((x) => (x.endsWith("Schema") || x.endsWith("Response")) && !Excluded.includes(x));
 	console.log(schemas);
 
-	var definitions: any = {};
+	var definitions = {};
 
 	for (const name of schemas) {
-		const part = TJS.generateSchema(program, name, settings, [], generator as TJS.JsonSchemaGenerator);
+		const part = TJS.generateSchema(program, name, settings, [], generator);
 		if (!part) continue;
 
 		definitions = { ...definitions, [name]: { ...part } };
@@ -39,11 +50,10 @@ function main() {
 	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
 }
 
-// #/definitions/
 main();
 
-function walk(dir: string) {
-	var results = [] as string[];
+function walk(dir) {
+	var results = [];
 	var list = fs.readdirSync(dir);
 	list.forEach(function (file) {
 		file = dir + "/" + file;
