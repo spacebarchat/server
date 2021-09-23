@@ -1,7 +1,7 @@
 import WebSocket from "@fosscord/gateway/util/WebSocket";
 var erlpack: any;
 try {
-	erlpack = require("erlpack");
+	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 import OPCodeHandlers from "../opcodes";
 import { Payload, CLOSECODES, OPCODES } from "@fosscord/gateway/util/Constants";
