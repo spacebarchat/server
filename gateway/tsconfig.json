@@ -67,6 +67,13 @@
 		/* Advanced Options */
 		"skipLibCheck": true /* Skip type checking of declaration files. */,
 		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
+		"baseUrl": ".",
+		"paths": {
+			"@fosscord/gateway": ["src/index"],
+			"@fosscord/gateway/*": ["src/*"],
+			"@fosscord/util/*": ["../util/src/*"]
+		},
+		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
 	}
 }

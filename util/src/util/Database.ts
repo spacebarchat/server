@@ -1,3 +1,4 @@
+import path from "path";
 import "reflect-metadata";
 import { Connection, createConnection, ValueTransformer } from "typeorm";
 import * as Models from "../entities";
@@ -15,13 +16,13 @@ export function initDatabase() {
 	// @ts-ignore
 	promise = createConnection({
 		type: "sqlite",
-		database: "database.db",
+		database: path.join(process.cwd(), "database.db"),
 		// type: "postgres",
 		// url: "postgres://fosscord:wb94SmuURM2Syv&@localhost/fosscord",
 		//
 		entities: Object.values(Models).filter((x) => x.constructor.name !== "Object"),
 		synchronize: true,
-		logging: false,
+		logging: true,
 		cache: {
 			duration: 1000 * 3, // cache all find queries for 3 seconds
 		},

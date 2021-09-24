@@ -9,13 +9,10 @@ import {
 	ListenEventOpts,
 	Member,
 } from "@fosscord/util";
-import { OPCODES } from "../util/Constants";
-import { Send } from "../util/Send";
-import WebSocket from "../util/WebSocket";
+import { OPCODES, WebSocket, Send } from "@fosscord/gateway";
 import "missing-native-js-functions";
 import { Channel as AMQChannel } from "amqplib";
-import { In, Like } from "../../../util/node_modules/typeorm";
-import { Recipient } from "../../../util/dist/entities/Recipient";
+import { Recipient } from "@fosscord/util";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent
@@ -26,16 +23,16 @@ import { Recipient } from "../../../util/dist/entities/Recipient";
 
 // TODO: use already queried guilds/channels of Identify and don't fetch them again
 export async function setupListener(this: WebSocket) {
-	const members = await Member.find({ id: this.user_id });
-	const guild_ids = members.map((x) => x.guild_id);
-	const user = await User.findOneOrFail({ id: this.user_id });
+	const members = await Member.find({
+		where: { id: this.user_id },
+		relations: ["guild", "guild.channels"],
+	});
+	const guilds = members.map((x) => x.guild);
 	const recipients = await Recipient.find({
-		where: { user_id: this.user_id },
+		where: { user_id: this.user_id, closed: false },
 		relations: ["channel"],
 	});
-	const channels = await Channel.find({ guild_id: In(guild_ids) });
 	const dm_channels = recipients.map((x) => x.channel);
-	const guild_channels = channels.filter((x) => x.guild_id);
 
 	const opts: { acknowledge: boolean; channel?: AMQChannel } = {
 		acknowledge: true,
@@ -54,21 +51,23 @@ export async function setupListener(this: WebSocket) {
 		this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
 	}
 
-	for (const guild of guild_ids) {
+	for (const guild of guilds) {
 		// contains guild and dm channels
 
-		getPermission(this.user_id, guild)
+		getPermission(this.user_id, guild.id)
 			.then(async (x) => {
-				this.permissions[guild] = x;
+				this.permissions[guild.id] = x;
 				this.listeners;
-				this.events[guild] = await listenEvent(guild, consumer, opts);
+				this.events[guild.id] = await listenEvent(
+					guild.id,
+					consumer,
+					opts
+				);
 
-				for (const channel of guild_channels.filter(
-					(c) => c.guild_id === guild
-				)) {
+				for (const channel of guild.channels) {
 					if (
 						x
-							.overwriteChannel(channel.permission_overwrites)
+							.overwriteChannel(channel.permission_overwrites!)
 							.has("VIEW_CHANNEL")
 					) {
 						this.events[channel.id] = await listenEvent(
@@ -114,7 +113,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 					.has("VIEW_CHANNEL")
 			)
 				return;
-		// TODO: check if user has permission to channel
+		//No break needed here, we need to call the listenEvent function below
 		case "GUILD_CREATE":
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
 			break;

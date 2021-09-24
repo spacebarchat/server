@@ -1,3 +1,4 @@
+import { OptionsJson } from 'body-parser';
 import "missing-native-js-functions";
 import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
@@ -11,6 +12,7 @@ import path from "path";
 import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
+import morgan from "morgan";
 
 export interface FosscordServerOptions extends ServerOptions {}
 
@@ -36,8 +38,31 @@ export class FosscordServer extends Server {
 		await Config.init();
 		await initEvent();
 
+
+		/* 
+		DOCUMENTATION: uses LOG_REQUESTS environment variable
+		
+		# only log 200 and 204
+		LOG_REQUESTS=200 204
+		# log everything except 200 and 204
+		LOG_REQUESTS=-200 204
+		# log all requests
+		LOG_REQUESTS=-
+		*/
+
+		let logRequests = process.env["LOG_REQUESTS"] != undefined;
+		if(logRequests) {
+			this.app.use(morgan("combined", {
+				skip: (req, res) => {
+					var skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
+					if(process.env["LOG_REQUESTS"]?.charAt(0) == '-') skip = !skip;
+					return skip;
+				}
+			}));
+		}
+
 		this.app.use(CORS);
-		this.app.use(BodyParser({ inflate: true, limit: 1024 * 1024 * 10 })); // 10MB
+		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
 
 		const app = this.app;
 		const api = Router(); // @ts-ignore
@@ -65,6 +90,9 @@ export class FosscordServer extends Server {
 		this.app.use(ErrorHandler);
 		TestClient(this.app);
 
+		if(logRequests){
+			console.log("Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!");
+		}
 		return super.start();
 	}
 }

@@ -1,5 +1,10 @@
-import { CLOSECODES, Payload, OPCODES } from "../util/Constants";
-import WebSocket from "../util/WebSocket";
+import {
+	WebSocket,
+	CLOSECODES,
+	Payload,
+	OPCODES,
+	genSessionId,
+} from "@fosscord/gateway";
 import {
 	Channel,
 	checkToken,
@@ -14,15 +19,16 @@ import {
 	dbConnection,
 	PublicMemberProjection,
 	PublicMember,
+	ChannelType,
+	PublicUser,
 } from "@fosscord/util";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
-import { Send } from "../util/Send";
+import { Send } from "@fosscord/gateway/util/Send";
 // import experiments from "./experiments.json";
 const experiments: any = [];
 import { check } from "./instanceOf";
-import { Recipient } from "../../../util/dist/entities/Recipient";
-import { genSessionId } from "../util/SessionUtils";
+import { Recipient } from "@fosscord/util";
 
 // TODO: bot sharding
 // TODO: check priviliged intents
@@ -48,15 +54,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		this.shard_id = identify.shard[0];
 		this.shard_count = identify.shard[1];
 		if (
-			!this.shard_count ||
-			!this.shard_id ||
+			this.shard_count == null ||
+			this.shard_id == null ||
 			this.shard_id >= this.shard_count ||
 			this.shard_id < 0 ||
 			this.shard_count <= 0
 		) {
+			console.log(identify.shard);
 			return this.close(CLOSECODES.Invalid_shard);
 		}
 	}
+	var users: PublicUser[] = [];
 
 	const members = await Member.find({
 		where: { id: this.user_id },
@@ -84,12 +92,41 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
 	const recipients = await Recipient.find({
-		where: { user_id: this.user_id },
-		relations: ["channel", "channel.recipients"],
+		where: { user_id: this.user_id, closed: false },
+		relations: ["channel", "channel.recipients", "channel.recipients.user"],
+		// TODO: public user selection
 	});
-	const channels = recipients.map((x) => x.channel);
-	const user = await User.findOneOrFail({ id: this.user_id });
+	const channels = recipients.map((x) => {
+		// @ts-ignore
+		x.channel.recipients = x.channel.recipients?.map((x) => x.user);
+		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
+		//users = users.concat(x.channel.recipients);
+		if (x.channel.isDm()) {
+			x.channel.recipients = x.channel.recipients!.filter(
+				(x) => x.id !== this.user_id
+			);
+		}
+		return x.channel;
+	});
+	const user = await User.findOneOrFail({
+		where: { id: this.user_id },
+		relations: ["relationships", "relationships.to"],
+	});
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
+
+	for (let relation of user.relationships) {
+		const related_user = relation.to;
+		const public_related_user = {
+			username: related_user.username,
+			discriminator: related_user.discriminator,
+			id: related_user.id,
+			public_flags: related_user.public_flags,
+			avatar: related_user.avatar,
+			bot: related_user.bot,
+			bio: related_user.bio,
+		};
+		users.push(public_related_user);
+	}
 
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
@@ -107,16 +144,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	//We save the session and we delete it when the websocket is closed
 	await session.save();
-
-	const public_user = {
-		username: user.username,
-		discriminator: user.discriminator,
-		id: user.id,
-		public_flags: user.public_flags,
-		avatar: user.avatar,
-		bot: user.bot,
-		bio: user.bio,
-	};
 
 	const privateUser = {
 		avatar: user.avatar,
@@ -154,7 +181,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}),
 		guild_experiments: [], // TODO
 		geo_ordered_rtc_regions: [], // TODO
-		relationships: user.relationships,
+		relationships: user.relationships.map((x) => x.toPublicRelationship()),
 		read_state: {
 			// TODO
 			entries: [],
@@ -180,7 +207,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
-		users: [public_user].unique(), // TODO
+		users: users.unique(),
 		merged_members: merged_members,
 		// shard // TODO: only for bots sharding
 		// application // TODO for applications

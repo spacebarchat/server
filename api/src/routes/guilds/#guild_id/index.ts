@@ -1,23 +1,35 @@
 import { Request, Response, Router } from "express";
-import { emitEvent, getPermission, Guild, GuildUpdateEvent, Member } from "@fosscord/util";
+import { emitEvent, getPermission, Guild, GuildUpdateEvent, handleFile, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { GuildUpdateSchema } from "../../../schema/Guild";
-
-import { check } from "../../../util/instanceOf";
-import { handleFile } from "../../../util/cdn";
+import { route } from "@fosscord/api";
 import "missing-native-js-functions";
+import { GuildCreateSchema } from "../index";
 
 const router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels"> {
+	banner?: string | null;
+	splash?: string | null;
+	description?: string;
+	features?: string[];
+	verification_level?: number;
+	default_message_notifications?: number;
+	system_channel_flags?: number;
+	explicit_content_filter?: number;
+	public_updates_channel_id?: string;
+	afk_timeout?: number;
+	afk_channel_id?: string;
+	preferred_locale?: string;
+}
+
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	const [guild, member_count, member] = await Promise.all([
+	const [guild, member] = await Promise.all([
 		Guild.findOneOrFail({ id: guild_id }),
-		Member.count({ guild_id: guild_id, id: req.user_id }),
-		Member.findOneOrFail({ id: req.user_id })
+		Member.findOne({ guild_id: guild_id, id: req.user_id })
 	]);
-	if (!member_count) throw new HTTPError("You are not a member of the guild you are trying to access", 401);
+	if (!member) throw new HTTPError("You are not a member of the guild you are trying to access", 401);
 
 	// @ts-ignore
 	guild.joined_at = member?.joined_at;
@@ -25,13 +37,10 @@ router.get("/", async (req: Request, res: Response) => {
 	return res.json(guild);
 });
 
-router.patch("/", check(GuildUpdateSchema), async (req: Request, res: Response) => {
+router.patch("/", route({ body: "GuildUpdateSchema", permission: "MANAGE_GUILD" }), async (req: Request, res: Response) => {
 	const body = req.body as GuildUpdateSchema;
 	const { guild_id } = req.params;
 	// TODO: guild update check image
-
-	const perms = await getPermission(req.user_id, guild_id);
-	perms.hasThrow("MANAGE_GUILD");
 
 	if (body.icon) body.icon = await handleFile(`/icons/${guild_id}`, body.icon);
 	if (body.banner) body.banner = await handleFile(`/banners/${guild_id}`, body.banner);

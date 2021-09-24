@@ -1,10 +1,9 @@
-import WebSocket, { Data } from "../util/WebSocket";
+import { WebSocket, Payload, CLOSECODES, OPCODES } from "@fosscord/gateway";
 var erlpack: any;
 try {
-	erlpack = require("erlpack");
+	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 import OPCodeHandlers from "../opcodes";
-import { Payload, CLOSECODES, OPCODES } from "../util/Constants";
 import { instanceOf, Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";
@@ -20,8 +19,10 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
 	var data: Payload;
 
-	if (this.encoding === "etf" && buffer instanceof Buffer) data = erlpack.unpack(buffer);
-	else if (this.encoding === "json" && typeof buffer === "string") data = JSON.parse(buffer);
+	if (this.encoding === "etf" && buffer instanceof Buffer)
+		data = erlpack.unpack(buffer);
+	else if (this.encoding === "json" && typeof buffer === "string")
+		data = JSON.parse(buffer);
 	else return;
 
 	check.call(this, PayloadSchema, data);
@@ -41,6 +42,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		return await OPCodeHandler.call(this, data);
 	} catch (error) {
 		console.error(error);
-		if (!this.CLOSED && this.CLOSING) return this.close(CLOSECODES.Unknown_error);
+		if (!this.CLOSED && this.CLOSING)
+			return this.close(CLOSECODES.Unknown_error);
 	}
 }

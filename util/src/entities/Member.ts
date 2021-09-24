@@ -39,7 +39,9 @@ export class Member extends BaseClassWithoutId {
 	id: string;
 
 	@JoinColumn({ name: "id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	user: User;
 
 	@Column()
@@ -47,7 +49,9 @@ export class Member extends BaseClassWithoutId {
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild)
+	@ManyToOne(() => Guild, {
+		onDelete: "CASCADE",
+	})
 	guild: Guild;
 
 	@Column({ nullable: true })
@@ -55,7 +59,6 @@ export class Member extends BaseClassWithoutId {
 
 	@JoinTable({
 		name: "member_roles",
-
 		joinColumn: { name: "index", referencedColumnName: "index" },
 		inverseJoinColumn: {
 			name: "role_id",

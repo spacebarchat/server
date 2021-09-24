@@ -106,7 +106,7 @@ export class User extends BaseClass {
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 
 	@Column()
-	created_at: Date = new Date(); // registration date
+	created_at: Date; // registration date
 
 	@Column()
 	verified: boolean; // if the user is offically verified
@@ -124,14 +124,20 @@ export class User extends BaseClass {
 	flags: string; // UserFlags
 
 	@Column()
-	public_flags: string;
+	public_flags: number;
 
 	@JoinColumn({ name: "relationship_ids" })
-	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.user, { cascade: true })
+	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	relationships: Relationship[];
 
 	@JoinColumn({ name: "connected_account_ids" })
-	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user)
+	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	connected_accounts: ConnectedAccount[];
 
 	@Column({ type: "simple-json", select: false })
@@ -146,16 +152,22 @@ export class User extends BaseClass {
 	@Column({ type: "simple-json" })
 	settings: UserSettings;
 
+	toPublicUser() {
+		const user: any = {};
+		PublicUserProjection.forEach((x) => {
+			user[x] = this[x];
+		});
+		return user as PublicUser;
+	}
+
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {
-		const user = await User.findOne(
+		return await User.findOneOrFail(
 			{ id: user_id },
 			{
 				...opts,
 				select: [...PublicUserProjection, ...(opts?.select || [])],
 			}
 		);
-		if (!user) throw new HTTPError("User not found", 404);
-		return user;
 	}
 }
 
@@ -250,6 +262,8 @@ export class UserFlags extends BitField {
 		PARTNERED_SERVER_OWNER: BigInt(1) << BigInt(1),
 		HYPESQUAD_EVENTS: BigInt(1) << BigInt(2),
 		BUGHUNTER_LEVEL_1: BigInt(1) << BigInt(3),
+		MFA_SMS: BigInt(1) << BigInt(4),
+		PREMIUM_PROMO_DISMISSED: BigInt(1) << BigInt(5),
 		HOUSE_BRAVERY: BigInt(1) << BigInt(6),
 		HOUSE_BRILLIANCE: BigInt(1) << BigInt(7),
 		HOUSE_BALANCE: BigInt(1) << BigInt(8),
@@ -257,8 +271,9 @@ export class UserFlags extends BitField {
 		TEAM_USER: BigInt(1) << BigInt(10),
 		TRUST_AND_SAFETY: BigInt(1) << BigInt(11),
 		SYSTEM: BigInt(1) << BigInt(12),
-		LARGE_BOT: BigInt(1) << BigInt(13),
+		HAS_UNREAD_URGENT_MESSAGES: BigInt(1) << BigInt(13),
 		BUGHUNTER_LEVEL_2: BigInt(1) << BigInt(14),
+		UNDERAGE_DELETED: BigInt(1) << BigInt(15),
 		VERIFIED_BOT: BigInt(1) << BigInt(16),
 		EARLY_VERIFIED_BOT_DEVELOPER: BigInt(1) << BigInt(17),
 	};

@@ -26,10 +26,10 @@ This repository contains:
 -   [WebRTC Server](https://github.com/fosscord/fosscord-server/tree/master/webrtc)
 -   [Admin Dashboard](https://github.com/fosscord/fosscord-server/tree/master/dashboard)
 
-## [Ressources](https://docs.fosscord.com/resources/)
+## [Resources](https://docs.fosscord.com/resources/)
 
--   [Contributing](https://docs.fosscord.com/contributing/)
+-   [Contributing](https://docs.fosscord.com/contributing/server/)
 
 ## [Download](https://github.com/fosscord/fosscord-server/releases)
 
--   _is not done yet_
+-   _Work in progress_

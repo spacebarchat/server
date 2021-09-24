@@ -1,15 +1,26 @@
 import { Router, Request, Response } from "express";
-import { Role, Guild, Snowflake, Config, User, Member, Channel } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
-import { check } from "./../../util/instanceOf";
-import { GuildCreateSchema } from "../../schema/Guild";
-import { DiscordApiErrors } from "@fosscord/util";
+import { Role, Guild, Snowflake, Config, Member, Channel, DiscordApiErrors, handleFile } from "@fosscord/util";
+import { route } from "@fosscord/api";
+import { ChannelModifySchema } from "../channels/#channel_id";
 
 const router: Router = Router();
 
+export interface GuildCreateSchema {
+	/**
+	 * @maxLength 100
+	 */
+	name: string;
+	region?: string;
+	icon?: string | null;
+	channels?: ChannelModifySchema[];
+	guild_template_code?: string;
+	system_channel_id?: string;
+	rules_channel_id?: string;
+}
+
 //TODO: create default channel
 
-router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) => {
+router.post("/", route({ body: "GuildCreateSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as GuildCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
@@ -22,6 +33,7 @@ router.post("/", check(GuildCreateSchema), async (req: Request, res: Response) =
 
 	await Guild.insert({
 		name: body.name,
+		icon: await handleFile(`/icons/${guild_id}`, body.icon as string),
 		region: Config.get().regions.default,
 		owner_id: req.user_id,
 		afk_timeout: 300,

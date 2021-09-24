@@ -1,7 +1,4 @@
-import { CLOSECODES, Payload } from "../util/Constants";
-import { Send } from "../util/Send";
-
-import WebSocket from "../util/WebSocket";
+import { WebSocket, Payload, Send } from "@fosscord/gateway";
 
 export async function onResume(this: WebSocket, data: Payload) {
 	console.log("Got Resume -> cancel not implemented");

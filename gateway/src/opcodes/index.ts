@@ -1,5 +1,4 @@
-import { Payload } from "../util/Constants";
-import WebSocket from "../util/WebSocket";
+import { WebSocket, Payload } from "@fosscord/gateway";
 import { onHeartbeat } from "./Heartbeat";
 import { onIdentify } from "./Identify";
 import { onLazyRequest } from "./LazyRequest";
@@ -21,5 +20,6 @@ export default {
 	8: onRequestGuildMembers,
 	// 9: Invalid Session
 	// 10: Hello
+	// 13: Dm_update
 	14: onLazyRequest,
 };
