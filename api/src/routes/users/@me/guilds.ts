@@ -1,18 +1,18 @@
 import { Router, Request, Response } from "express";
 import { Guild, Member, User, GuildDeleteEvent, GuildMemberRemoveEvent, emitEvent } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { In } from "typeorm";
+import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const members = await Member.find({ relations: ["guild"], where: { id: req.user_id } });
 
 	res.json(members.map((x) => x.guild));
 });
 
 // user send to leave a certain guild
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", route({}), async (req: Request, res: Response) => {
 	const guild_id = req.params.id;
 	const guild = await Guild.findOneOrFail({ where: { id: guild_id }, select: ["owner_id"] });
 

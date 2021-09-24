@@ -13,6 +13,7 @@ import {
 	PublicUserProjection,
 	User
 } from "@fosscord/util";
+import { route } from "@fosscord/api";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
@@ -35,13 +36,10 @@ function getEmoji(emoji: string): PartialEmoji {
 	};
 }
 
-router.delete("/", async (req: Request, res: Response) => {
+router.delete("/", route({ permission: "MANAGE_MESSAGES" }), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 
 	const channel = await Channel.findOneOrFail({ id: channel_id });
-
-	const permissions = await getPermission(req.user_id, undefined, channel_id);
-	permissions.hasThrow("MANAGE_MESSAGES");
 
 	await Message.update({ id: message_id, channel_id }, { reactions: [] });
 
@@ -58,12 +56,9 @@ router.delete("/", async (req: Request, res: Response) => {
 	res.sendStatus(204);
 });
 
-router.delete("/:emoji", async (req: Request, res: Response) => {
+router.delete("/:emoji", route({ permission: "MANAGE_MESSAGES" }), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 	const emoji = getEmoji(req.params.emoji);
-
-	const permissions = await getPermission(req.user_id, undefined, channel_id);
-	permissions.hasThrow("MANAGE_MESSAGES");
 
 	const message = await Message.findOneOrFail({ id: message_id, channel_id });
 
@@ -88,16 +83,13 @@ router.delete("/:emoji", async (req: Request, res: Response) => {
 	res.sendStatus(204);
 });
 
-router.get("/:emoji", async (req: Request, res: Response) => {
+router.get("/:emoji", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 	const emoji = getEmoji(req.params.emoji);
 
 	const message = await Message.findOneOrFail({ id: message_id, channel_id });
 	const reaction = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
 	if (!reaction) throw new HTTPError("Reaction not found", 404);
-
-	const permissions = await getPermission(req.user_id, undefined, channel_id);
-	permissions.hasThrow("VIEW_CHANNEL");
 
 	const users = await User.find({
 		where: {
@@ -109,7 +101,7 @@ router.get("/:emoji", async (req: Request, res: Response) => {
 	res.json(users);
 });
 
-router.put("/:emoji/:user_id", async (req: Request, res: Response) => {
+router.put("/:emoji/:user_id", route({ permission: "READ_MESSAGE_HISTORY" }), async (req: Request, res: Response) => {
 	const { message_id, channel_id, user_id } = req.params;
 	if (user_id !== "@me") throw new HTTPError("Invalid user");
 	const emoji = getEmoji(req.params.emoji);
@@ -118,13 +110,11 @@ router.put("/:emoji/:user_id", async (req: Request, res: Response) => {
 	const message = await Message.findOneOrFail({ id: message_id, channel_id });
 	const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
 
-	const permissions = await getPermission(req.user_id, undefined, channel_id);
-	permissions.hasThrow("READ_MESSAGE_HISTORY");
-	if (!already_added) permissions.hasThrow("ADD_REACTIONS");
+	if (!already_added) req.permission!.hasThrow("ADD_REACTIONS");
 
 	if (emoji.id) {
 		const external_emoji = await Emoji.findOneOrFail({ id: emoji.id });
-		if (!already_added) permissions.hasThrow("USE_EXTERNAL_EMOJIS");
+		if (!already_added) req.permission!.hasThrow("USE_EXTERNAL_EMOJIS");
 		emoji.animated = external_emoji.animated;
 		emoji.name = external_emoji.name;
 	}
@@ -154,7 +144,7 @@ router.put("/:emoji/:user_id", async (req: Request, res: Response) => {
 	res.sendStatus(204);
 });
 
-router.delete("/:emoji/:user_id", async (req: Request, res: Response) => {
+router.delete("/:emoji/:user_id", route({}), async (req: Request, res: Response) => {
 	var { message_id, channel_id, user_id } = req.params;
 
 	const emoji = getEmoji(req.params.emoji);
@@ -162,10 +152,11 @@ router.delete("/:emoji/:user_id", async (req: Request, res: Response) => {
 	const channel = await Channel.findOneOrFail({ id: channel_id });
 	const message = await Message.findOneOrFail({ id: message_id, channel_id });
 
-	const permissions = await getPermission(req.user_id, undefined, channel_id);
-
 	if (user_id === "@me") user_id = req.user_id;
-	else permissions.hasThrow("MANAGE_MESSAGES");
+	else {
+		const permissions = await getPermission(req.user_id, undefined, channel_id);
+		permissions.hasThrow("MANAGE_MESSAGES");
+	}
 
 	const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
 	if (!already_added || !already_added.user_ids.includes(user_id)) throw new HTTPError("Reaction not found", 404);

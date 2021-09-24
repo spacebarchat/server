@@ -14,7 +14,7 @@ export const Config = {
 	get: function get() {
 		return config.value as ConfigValue;
 	},
-	set: function set(val: any) {
+	set: function set(val: Partial<ConfigValue>) {
 		if (!config) return;
 		config.value = val.merge(config?.value || {});
 		return config.save();

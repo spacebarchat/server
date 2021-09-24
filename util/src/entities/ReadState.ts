@@ -15,7 +15,9 @@ export class ReadState extends BaseClass {
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => Channel)
+	@ManyToOne(() => Channel, {
+		onDelete: "CASCADE",
+	})
 	channel: Channel;
 
 	@Column({ nullable: true })
@@ -23,7 +25,9 @@ export class ReadState extends BaseClass {
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	user: User;
 
 	@Column({ nullable: true })

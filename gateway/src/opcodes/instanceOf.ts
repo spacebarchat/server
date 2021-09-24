@@ -1,6 +1,5 @@
 import { instanceOf } from "lambert-server";
-import { CLOSECODES } from "../util/Constants";
-import WebSocket from "../util/WebSocket";
+import { WebSocket, CLOSECODES } from "@fosscord/gateway";
 
 export function check(this: WebSocket, schema: any, data: any) {
 	try {

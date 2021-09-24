@@ -1,9 +1,17 @@
 import { Router, Request, Response } from "express";
-import { PublicConnectedAccount, PublicUser, User, UserPublic } from "../../../../../util/dist";
+import { PublicConnectedAccount, PublicUser, User, UserPublic } from "@fosscord/util";
+import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+export interface UserProfileResponse {
+	user: UserPublic;
+	connected_accounts: PublicConnectedAccount;
+	premium_guild_since?: Date;
+	premium_since?: Date;
+}
+
+router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), async (req: Request, res: Response) => {
 	if (req.params.id === "@me") req.params.id = req.user_id;
 	const user = await User.getPublicUser(req.params.id, { relations: ["connected_accounts"] });
 
@@ -11,6 +19,7 @@ router.get("/", async (req: Request, res: Response) => {
 		connected_accounts: user.connected_accounts,
 		premium_guild_since: null, // TODO
 		premium_since: null, // TODO
+		mutual_guilds: [], // TODO {id: "", nick: null} when ?with_mutual_guilds=true
 		user: {
 			username: user.username,
 			discriminator: user.discriminator,
@@ -24,12 +33,5 @@ router.get("/", async (req: Request, res: Response) => {
 		}
 	});
 });
-
-export interface UserProfileResponse {
-	user: UserPublic;
-	connected_accounts: PublicConnectedAccount;
-	premium_guild_since?: Date;
-	premium_since?: Date;
-}
 
 export default router;

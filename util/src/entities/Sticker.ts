@@ -31,7 +31,9 @@ export class Sticker extends BaseClass {
 	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild)
+	@ManyToOne(() => Guild, {
+		onDelete: "CASCADE",
+	})
 	guild?: Guild;
 
 	@Column({ type: "simple-enum", enum: StickerType })

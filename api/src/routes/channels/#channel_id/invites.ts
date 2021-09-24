@@ -1,14 +1,25 @@
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { check } from "../../../util/instanceOf";
-import { random } from "../../../util/RandomInviteID";
-import { InviteCreateSchema } from "../../../schema/Invite";
+import { route } from "@fosscord/api";
+import { random } from "@fosscord/api";
 import { getPermission, Channel, Invite, InviteCreateEvent, emitEvent, User, Guild, PublicInviteRelation } from "@fosscord/util";
 import { isTextChannel } from "./messages";
 
 const router: Router = Router();
 
-router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) => {
+export interface InviteCreateSchema {
+	target_user_id?: string;
+	target_type?: string;
+	validate?: string; // ? what is this
+	max_age?: number;
+	max_uses?: number;
+	temporary?: boolean;
+	unique?: boolean;
+	target_user?: string;
+	target_user_type?: number;
+}
+
+router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT_INVITE" }), async (req: Request, res: Response) => {
 	const { user_id } = req;
 	const { channel_id } = req.params;
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id }, select: ["id", "name", "type", "guild_id"] });
@@ -18,23 +29,6 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 		throw new HTTPError("This channel doesn't exist", 404);
 	}
 	const { guild_id } = channel;
-
-	const permission = await getPermission(user_id, guild_id, undefined, {
-		guild_select: [
-			"banner",
-			"description",
-			"features",
-			"icon",
-			"id",
-			"name",
-			"nsfw",
-			"nsfw_level",
-			"splash",
-			"vanity_url_code",
-			"verification_level"
-		] as (keyof Guild)[]
-	});
-	permission.hasThrow("CREATE_INSTANT_INVITE");
 
 	const expires_at = new Date(req.body.max_age * 1000 + Date.now());
 
@@ -52,14 +46,14 @@ router.post("/", check(InviteCreateSchema), async (req: Request, res: Response) 
 	}).save();
 	const data = invite.toJSON();
 	data.inviter = await User.getPublicUser(req.user_id);
-	data.guild = permission.cache.guild;
+	data.guild = await Guild.findOne({ id: guild_id });
 	data.channel = channel;
 
 	await emitEvent({ event: "INVITE_CREATE", data, guild_id } as InviteCreateEvent);
 	res.status(201).send(data);
 });
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request, res: Response) => {
 	const { user_id } = req;
 	const { channel_id } = req.params;
 	const channel = await Channel.findOneOrFail({ id: channel_id });
@@ -68,8 +62,6 @@ router.get("/", async (req: Request, res: Response) => {
 		throw new HTTPError("This channel doesn't exist", 404);
 	}
 	const { guild_id } = channel;
-	const permission = await getPermission(user_id, guild_id);
-	permission.hasThrow("MANAGE_CHANNELS");
 
 	const invites = await Invite.find({ where: { guild_id }, relations: PublicInviteRelation });
 

@@ -77,6 +77,7 @@ export interface ConfigValue {
 			maxWebhooks: number;
 		};
 		rate: {
+			disabled: boolean;
 			ip: Omit<RateLimitOptions, "bot_count">;
 			global: RateLimitOptions;
 			error: RateLimitOptions;
@@ -110,13 +111,13 @@ export interface ConfigValue {
 	};
 	register: {
 		email: {
-			necessary: boolean; // we have to use necessary instead of required as the cli tool uses json schema and can't use required
+			required: boolean;
 			allowlist: boolean;
 			blocklist: boolean;
 			domains: string[];
 		};
 		dateOfBirth: {
-			necessary: boolean;
+			required: boolean;
 			minimum: number; // in years
 		};
 		requireCaptcha: boolean;
@@ -125,6 +126,7 @@ export interface ConfigValue {
 		allowMultipleAccounts: boolean;
 		blockProxies: boolean;
 		password: {
+			required: boolean;
 			minLength: number;
 			minNumbers: number;
 			minUpperCase: number;
@@ -187,6 +189,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			maxWebhooks: 10,
 		},
 		rate: {
+			disabled: true,
 			ip: {
 				count: 500,
 				window: 5,
@@ -246,14 +249,14 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	register: {
 		email: {
-			necessary: true,
+			required: false,
 			allowlist: false,
 			blocklist: true,
 			domains: [], // TODO: efficiently save domain blocklist in database
 			// domains: fs.readFileSync(__dirname + "/blockedEmailDomains.txt", { encoding: "utf8" }).split("\n"),
 		},
 		dateOfBirth: {
-			necessary: true,
+			required: false,
 			minimum: 13,
 		},
 		requireInvite: false,
@@ -262,6 +265,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		allowMultipleAccounts: true,
 		blockProxies: true,
 		password: {
+			required: false,
 			minLength: 8,
 			minNumbers: 2,
 			minUpperCase: 2,

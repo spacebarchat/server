@@ -41,7 +41,9 @@ export class Application extends BaseClass {
 	verify_key: string;
 
 	@JoinColumn({ name: "team_id" })
-	@ManyToOne(() => Team)
+	@ManyToOne(() => Team, {
+		onDelete: "CASCADE",
+	})
 	team?: Team;
 
 	@JoinColumn({ name: "guild_id" })

@@ -1,9 +1,11 @@
 import { Router, Request, Response } from "express";
-import { getPermission, Guild, Invite, Member, PublicInviteRelation } from "@fosscord/util";
+import { emitEvent, getPermission, Guild, Invite, InviteDeleteEvent, Member, PublicInviteRelation } from "@fosscord/util";
+import { route } from "@fosscord/api";
 import { HTTPError } from "lambert-server";
+
 const router: Router = Router();
 
-router.get("/:code", async (req: Request, res: Response) => {
+router.get("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
 
 	const invite = await Invite.findOneOrFail({ where: { code }, relations: PublicInviteRelation });
@@ -11,19 +13,15 @@ router.get("/:code", async (req: Request, res: Response) => {
 	res.status(200).send(invite);
 });
 
-router.post("/:code", async (req: Request, res: Response) => {
+router.post("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
+	const invite = await Invite.joinGuild(req.user_id, code);
 
-	const invite = await Invite.findOneOrFail({ code });
-	if (invite.uses++ >= invite.max_uses) await Invite.delete({ code });
-	else await invite.save();
-
-	await Member.addToGuild(req.user_id, invite.guild_id);
-
-	res.status(200).send(invite);
+	res.json(invite);
 });
 
-router.delete("/:code", async (req: Request, res: Response) => {
+// * cant use permission of route() function because path doesn't have guild_id/channel_id
+router.delete("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
 	const invite = await Invite.findOneOrFail({ code });
 	const { guild_id, channel_id } = invite;
@@ -33,7 +31,19 @@ router.delete("/:code", async (req: Request, res: Response) => {
 	if (!permission.has("MANAGE_GUILD") && !permission.has("MANAGE_CHANNELS"))
 		throw new HTTPError("You missing the MANAGE_GUILD or MANAGE_CHANNELS permission", 401);
 
-	await Promise.all([Invite.delete({ code }), Guild.update({ vanity_url_code: code }, { vanity_url_code: undefined })]);
+	await Promise.all([
+		Invite.delete({ code }),
+		Guild.update({ vanity_url_code: code }, { vanity_url_code: undefined }),
+		emitEvent({
+			event: "INVITE_DELETE",
+			guild_id: guild_id,
+			data: {
+				channel_id: channel_id,
+				guild_id: guild_id,
+				code: code
+			}
+		} as InviteDeleteEvent)
+	]);
 
 	res.json({ invite: invite });
 });
