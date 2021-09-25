@@ -3,6 +3,7 @@ import {
 	Attachment,
 	Channel,
 	ChannelType,
+	Config,
 	DmChannelDTO,
 	Embed,
 	emitEvent,
@@ -15,6 +16,7 @@ import { HTTPError } from "lambert-server";
 import { handleMessage, postHandleMessage, route } from "@fosscord/api";
 import multer from "multer";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
+import { URL } from "url";
 
 const router: Router = Router();
 
@@ -111,6 +113,9 @@ router.get("/", async (req: Request, res: Response) => {
 			});
 			// @ts-ignore
 			if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: "0", avatar: null };
+			x.attachments?.forEach((x) => {
+				x.proxy_url = `${Config.get().cdn.endpointPublic || "http://localhost:3003"}${new URL(x.proxy_url).pathname}`;
+			});
 
 			return x;
 		})
