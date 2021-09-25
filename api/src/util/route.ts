@@ -81,10 +81,10 @@ export function route(opts: RouteOptions) {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		if (opts.permission) {
 			const required = new Permissions(opts.permission);
-			const permission = await getPermission(req.user_id, req.params.guild_id, req.params.channel_id);
+			req.permission = await getPermission(req.user_id, req.params.guild_id, req.params.channel_id);
 
 			// bitfield comparison: check if user lacks certain permission
-			if (!permission.has(required)) {
+			if (!req.permission.has(required)) {
 				throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(opts.permission as string);
 			}
 		}
