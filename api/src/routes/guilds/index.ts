@@ -87,19 +87,21 @@ router.post("/", route({ body: "GuildCreateSchema" }), async (req: Request, res:
 	});
 
 	await Promise.all(
-		body.channels?.map((x) => {
-			var id = ids.get(x.id) || Snowflake.generate();
+		body.channels
+			?.sort((a, b) => (a.parent_id ? -1 : 1))
+			.map((x) => {
+				var id = ids.get(x.id) || Snowflake.generate();
 
-			// TODO: should we abort if parent_id is a category? (to disallow sub category channels)
-			var parent_id = ids.get(x.parent_id);
+				// TODO: should we abort if parent_id is a category? (to disallow sub category channels)
+				var parent_id = ids.get(x.parent_id);
 
-			return Channel.createChannel({ ...x, guild_id, id, parent_id }, req.user_id, {
-				keepId: true,
-				skipExistsCheck: true,
-				skipPermissionCheck: true,
-				skipEventEmit: true
-			});
-		})
+				return Channel.createChannel({ ...x, guild_id, id, parent_id }, req.user_id, {
+					keepId: true,
+					skipExistsCheck: true,
+					skipPermissionCheck: true,
+					skipEventEmit: true
+				});
+			})
 	);
 
 	await Member.addToGuild(req.user_id, guild_id);
