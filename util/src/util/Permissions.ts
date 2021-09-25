@@ -3,6 +3,7 @@
 import { Channel, ChannelPermissionOverwrite, Guild, Member, Role } from "../entities";
 import { BitField } from "./BitField";
 import "missing-native-js-functions";
+import { BitFieldResolvable } from ".";
 // TODO: check role hierarchy permission
 
 var HTTPError: any;
@@ -17,10 +18,18 @@ export type PermissionResolvable = bigint | number | Permissions | PermissionRes
 
 type PermissionString = keyof typeof Permissions.FLAGS;
 
-const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(48); // 16 free custom permission bits, and 11 for discord to add new ones
+// BigInt doesn't have a bit limit (https://stackoverflow.com/questions/53335545/whats-the-biggest-bigint-value-in-js-as-per-spec)
+const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(64); // 27 permission bits left for discord to add new ones
 
 export class Permissions extends BitField {
 	cache: PermissionCache = {};
+
+	constructor(bits: BitFieldResolvable = 0) {
+		super(bits);
+		if (this.bitfield & Permissions.FLAGS.ADMINISTRATOR) {
+			this.bitfield = ALL_PERMISSIONS;
+		}
+	}
 
 	static FLAGS = {
 		CREATE_INSTANT_INVITE: BigInt(1) << BigInt(0),
@@ -92,7 +101,7 @@ export class Permissions extends BitField {
 	}
 
 	overwriteChannel(overwrites: ChannelPermissionOverwrite[]) {
-		if (!overwrites) return this
+		if (!overwrites) return this;
 		if (!this.cache) throw new Error("permission chache not available");
 		overwrites = overwrites.filter((x) => {
 			if (x.type === 0 && this.cache.roles?.some((r) => r.id === x.id)) return true;
@@ -174,6 +183,8 @@ export class Permissions extends BitField {
 		return new Permissions(permission);
 	}
 }
+
+const ALL_PERMISSIONS = Object.values(Permissions.FLAGS).reduce((total, val) => total | val, BigInt(0));
 
 export type PermissionCache = {
 	channel?: Channel | undefined;
