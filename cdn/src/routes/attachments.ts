@@ -8,6 +8,13 @@ import imageSize from "image-size";
 
 const router = Router();
 
+const SANITIZED_CONTENT_TYPE = [
+	"text/html",
+	"text/mhtml",
+	"multipart/related",
+	"application/xhtml+xml",
+];
+
 router.post(
 	"/:channel_id",
 	multer.single("file"),
@@ -24,7 +31,8 @@ router.post(
 		const id = Snowflake.generate();
 		const path = `attachments/${channel_id}/${id}/${filename}`;
 
-		const endpoint = Config.get()?.cdn.endpoint || "http://localhost:3003";
+		const endpoint =
+			Config.get()?.cdn.endpointPublic || "http://localhost:3003";
 
 		await storage.set(path, buffer);
 		var width;
@@ -61,8 +69,13 @@ router.get(
 		);
 		if (!file) throw new HTTPError("File not found");
 		const type = await FileType.fromBuffer(file);
+		let content_type = type?.mime || "application/octet-stream";
 
-		res.set("Content-Type", type?.mime);
+		if (SANITIZED_CONTENT_TYPE.includes(content_type)) {
+			content_type = "application/octet-stream";
+		}
+
+		res.set("Content-Type", content_type);
 		res.set("Cache-Control", "public, max-age=31536000");
 
 		return res.send(file);
