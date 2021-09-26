@@ -1,9 +1,9 @@
 // https://mermade.github.io/openapi-gui/#
 // https://editor.swagger.io/
-import path from "path";
-import fs from "fs";
-import * as TJS from "typescript-json-schema";
-import "missing-native-js-functions";
+const path = require("path");
+const fs = require("fs");
+const TJS = require("typescript-json-schema");
+require("missing-native-js-functions");
 const schemaPath = path.join(__dirname, "..", "assets", "schemas.json");
 
 const settings = {

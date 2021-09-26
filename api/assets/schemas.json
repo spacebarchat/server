@@ -1,4 +1,33 @@
 {
+    "LoginSchema": {
+        "type": "object",
+        "properties": {
+            "login": {
+                "type": "string"
+            },
+            "password": {
+                "type": "string"
+            },
+            "undelete": {
+                "type": "boolean"
+            },
+            "captcha_key": {
+                "type": "string"
+            },
+            "login_source": {
+                "type": "string"
+            },
+            "gift_code_sku_id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "login",
+            "password"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "RegisterSchema": {
         "type": "object",
         "properties": {
@@ -39,35 +68,6 @@
         "required": [
             "consent",
             "username"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "LoginSchema": {
-        "type": "object",
-        "properties": {
-            "login": {
-                "type": "string"
-            },
-            "password": {
-                "type": "string"
-            },
-            "undelete": {
-                "type": "boolean"
-            },
-            "captcha_key": {
-                "type": "string"
-            },
-            "login_source": {
-                "type": "string"
-            },
-            "gift_code_sku_id": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "login",
-            "password"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -127,10 +127,10 @@
                             "$ref": "#/definitions/ChannelPermissionOverwriteType"
                         },
                         "allow": {
-                            "type": "bigint"
+                            "type": "string"
                         },
                         "deny": {
-                            "type": "bigint"
+                            "type": "string"
                         }
                     },
                     "additionalProperties": false,
@@ -353,10 +353,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -727,10 +727,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -1050,10 +1050,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -1352,10 +1352,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -1657,10 +1657,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -1758,10 +1758,10 @@
         "type": "object",
         "properties": {
             "allow": {
-                "type": "bigint"
+                "type": "string"
             },
             "deny": {
-                "type": "bigint"
+                "type": "string"
             },
             "id": {
                 "type": "string"
@@ -1971,10 +1971,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -2278,10 +2278,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -2580,10 +2580,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -2894,10 +2894,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -3221,10 +3221,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -3587,10 +3587,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -3889,10 +3889,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -4191,10 +4191,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -4505,10 +4505,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -4814,10 +4814,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -5119,10 +5119,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -5424,10 +5424,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -5725,10 +5725,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -6046,10 +6046,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -6374,10 +6374,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -6680,10 +6680,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -6988,10 +6988,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -7302,10 +7302,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -7610,10 +7610,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -7939,10 +7939,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -8244,10 +8244,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -8550,10 +8550,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
@@ -9039,10 +9039,10 @@
                                     "$ref": "#/definitions/ChannelPermissionOverwriteType"
                                 },
                                 "allow": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 },
                                 "deny": {
-                                    "type": "bigint"
+                                    "type": "string"
                                 }
                             },
                             "additionalProperties": false,
