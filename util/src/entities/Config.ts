@@ -1,12 +1,15 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { BaseClass, BaseClassWithoutId } from "./BaseClass";
 import crypto from "crypto";
 import { Snowflake } from "../util/Snowflake";
 
 @Entity("config")
-export class ConfigEntity extends BaseClass {
-	@Column({ type: "simple-json" })
-	value: ConfigValue;
+export class ConfigEntity extends BaseClassWithoutId {
+	@PrimaryColumn()
+	key: string;
+
+	@Column({ type: "simple-json", nullable: true })
+	value: number | boolean | null | string | undefined;
 }
 
 export interface RateLimitOptions {
@@ -37,14 +40,16 @@ export interface KafkaBroker {
 export interface ConfigValue {
 	gateway: {
 		endpointClient: string | null;
-		endpoint: string | null;
+		endpointPrivate: string | null;
+		endpointPublic: string | null;
 	};
 	cdn: {
 		endpointClient: string | null;
-		endpoint: string | null;
+		endpointPublic: string | null;
+		endpointPrivate: string | null;
 	};
 	general: {
-		instance_id: string;
+		instanceId: string;
 	};
 	permissions: {
 		user: {
@@ -149,14 +154,16 @@ export interface ConfigValue {
 export const DefaultConfigOptions: ConfigValue = {
 	gateway: {
 		endpointClient: null,
-		endpoint: null,
+		endpointPrivate: null,
+		endpointPublic: null,
 	},
 	cdn: {
 		endpointClient: null,
-		endpoint: null,
+		endpointPrivate: null,
+		endpointPublic: null,
 	},
 	general: {
-		instance_id: Snowflake.generate(),
+		instanceId: Snowflake.generate(),
 	},
 	permissions: {
 		user: {

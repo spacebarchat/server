@@ -5,14 +5,14 @@ import { route } from "@fosscord/api";
 const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	const { endpoint } = Config.get().gateway;
-	res.json({ url: endpoint || process.env.GATEWAY || "ws://localhost:3002" });
+	const { endpointPublic } = Config.get().gateway;
+	res.json({ url: endpointPublic || process.env.GATEWAY || "ws://localhost:3002" });
 });
 
 router.get("/bot", route({}), (req: Request, res: Response) => {
-	const { endpoint } = Config.get().gateway;
+	const { endpointPublic } = Config.get().gateway;
 	res.json({
-		url: endpoint || process.env.GATEWAY || "ws://localhost:3002",
+		url: endpointPublic || process.env.GATEWAY || "ws://localhost:3002",
 		shards: 1,
 		session_start_limit: {
 			total: 1000,

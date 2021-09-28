@@ -11,7 +11,7 @@ export async function uploadFile(path: string, file: Express.Multer.File) {
 		filename: file.originalname,
 	});
 
-	const response = await fetch(`${Config.get().cdn.endpoint || "http://localhost:3003"}${path}`, {
+	const response = await fetch(`${Config.get().cdn.endpointPrivate || "http://localhost:3003"}${path}`, {
 		headers: {
 			signature: Config.get().security.requestSignature,
 			...form.getHeaders(),
@@ -41,7 +41,7 @@ export async function handleFile(path: string, body?: string): Promise<string | 
 }
 
 export async function deleteFile(path: string) {
-	const response = await fetch(`${Config.get().cdn.endpoint || "http://localhost:3003"}${path}`, {
+	const response = await fetch(`${Config.get().cdn.endpointPrivate || "http://localhost:3003"}${path}`, {
 		headers: {
 			signature: Config.get().security.requestSignature,
 		},

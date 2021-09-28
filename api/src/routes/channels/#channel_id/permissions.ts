@@ -1,4 +1,13 @@
-import { Channel, ChannelPermissionOverwrite, ChannelUpdateEvent, emitEvent, getPermission, Member, Role } from "@fosscord/util";
+import {
+	Channel,
+	ChannelPermissionOverwrite,
+	ChannelPermissionOverwriteType,
+	ChannelUpdateEvent,
+	emitEvent,
+	getPermission,
+	Member,
+	Role
+} from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -14,7 +23,7 @@ router.put(
 	route({ body: "ChannelPermissionOverwriteSchema", permission: "MANAGE_ROLES" }),
 	async (req: Request, res: Response) => {
 		const { channel_id, overwrite_id } = req.params;
-		const body = req.body as { allow: bigint; deny: bigint; type: number; id: string };
+		const body = req.body as ChannelPermissionOverwriteSchema;
 
 		var channel = await Channel.findOneOrFail({ id: channel_id });
 		if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
@@ -31,14 +40,12 @@ router.put(
 			// @ts-ignore
 			overwrite = {
 				id: overwrite_id,
-				type: body.type,
-				allow: body.allow,
-				deny: body.deny
+				type: body.type
 			};
 			channel.permission_overwrites!.push(overwrite);
 		}
-		overwrite.allow = body.allow;
-		overwrite.deny = body.deny;
+		overwrite.allow = String(req.permission!.bitfield & (BigInt(body.allow) || 0n));
+		overwrite.deny = String(req.permission!.bitfield & (BigInt(body.deny) || 0n));
 
 		await Promise.all([
 			channel.save(),
