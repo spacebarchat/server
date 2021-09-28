@@ -9,12 +9,9 @@ import {
 	ListenEventOpts,
 	Member,
 } from "@fosscord/util";
-import { OPCODES } from "@fosscord/gateway/util/Constants";
-import { Send } from "@fosscord/gateway/util/Send";
-import WebSocket from "@fosscord/gateway/util/WebSocket";
+import { OPCODES, WebSocket, Send } from "@fosscord/gateway";
 import "missing-native-js-functions";
 import { Channel as AMQChannel } from "amqplib";
-import { In, Like } from "typeorm";
 import { Recipient } from "@fosscord/util";
 
 // TODO: close connection on Invalidated Token
@@ -116,7 +113,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 					.has("VIEW_CHANNEL")
 			)
 				return;
-			//No break needed here, we need to call the listenEvent function below
+		//No break needed here, we need to call the listenEvent function below
 		case "GUILD_CREATE":
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
 			break;

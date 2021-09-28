@@ -1,5 +1,10 @@
-import { CLOSECODES, Payload, OPCODES } from "@fosscord/gateway/util/Constants";
-import WebSocket from "@fosscord/gateway/util/WebSocket";
+import {
+	WebSocket,
+	CLOSECODES,
+	Payload,
+	OPCODES,
+	genSessionId,
+} from "@fosscord/gateway";
 import {
 	Channel,
 	checkToken,
@@ -25,7 +30,6 @@ import guildExperiments from "./guild_experiments.json";
 import { check } from "./instanceOf";
 import { encodeGuildExperiment } from "../util/Experiments";
 import { Recipient } from "@fosscord/util";
-import { genSessionId } from "@fosscord/gateway/util/SessionUtils";
 
 let guild_experiments: any = [];
 if (guildExperiments.length) guildExperiments.forEach((experiment, index) => {
@@ -104,7 +108,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
 		//users = users.concat(x.channel.recipients);
 		if (x.channel.isDm()) {
-			x.channel.recipients = x.channel.recipients!.filter((x) => x.id !== this.user_id);
+			x.channel.recipients = x.channel.recipients!.filter(
+				(x) => x.id !== this.user_id
+			);
 		}
 		return x.channel;
 	});
@@ -115,7 +121,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
 	for (let relation of user.relationships) {
-		const related_user = relation.to
+		const related_user = relation.to;
 		const public_related_user = {
 			username: related_user.username,
 			discriminator: related_user.discriminator,

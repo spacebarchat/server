@@ -3,7 +3,7 @@ import WS from "ws";
 import { Deflate } from "zlib";
 import { Channel } from "amqplib";
 
-interface WebSocket extends WS {
+export interface WebSocket extends WS {
 	version: number;
 	user_id: string;
 	session_id: string;
@@ -19,5 +19,3 @@ interface WebSocket extends WS {
 	permissions: Record<string, Permissions>;
 	events: Record<string, Function>;
 }
-
-export default WebSocket;

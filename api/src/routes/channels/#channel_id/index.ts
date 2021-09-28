@@ -62,8 +62,8 @@ export interface ChannelModifySchema {
 	permission_overwrites?: {
 		id: string;
 		type: ChannelPermissionOverwriteType;
-		allow: bigint;
-		deny: bigint;
+		allow: string;
+		deny: string;
 	}[];
 	parent_id?: string;
 	id?: string; // is not used (only for guild create)

@@ -12,19 +12,19 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/fosscord/fosscord-server-util.git"
+		"url": "git+https://github.com/fosscord/fosscord-server.git"
 	},
 	"keywords": [
 		"discord",
 		"fosscord",
-		"fosscord-server-util",
+		"fosscord-server",
 		"discord open source",
 		"discord-open-source"
 	],
 	"author": "Fosscord",
 	"license": "GPLV3",
 	"bugs": {
-		"url": "https://github.com/fosscord/fosscord-server-util/issues"
+		"url": "https://github.com/fosscord/fosscord-server/issues"
 	},
 	"homepage": "https://docs.fosscord.com/",
 	"devDependencies": {

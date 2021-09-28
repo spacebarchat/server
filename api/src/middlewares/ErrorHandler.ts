@@ -3,6 +3,7 @@ import { HTTPError } from "lambert-server";
 import { EntityNotFoundError } from "typeorm";
 import { FieldError } from "@fosscord/api";
 import { ApiError } from "@fosscord/util";
+const EntityNotFoundErrorRegex = /"(\w+)"/;
 
 export function ErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
 	if (!error) return next();
@@ -18,9 +19,9 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 			code = error.code;
 			message = error.message;
 			httpcode = error.httpStatus;
-		} else if (error instanceof EntityNotFoundError) {
-			message = `${(error as any).stringifyTarget || "Item"} could not be found`;
-			code = 404;
+		} else if (error.name === "EntityNotFoundError") {
+			message = `${error.message.match(EntityNotFoundErrorRegex)?.[1] || "Item"} could not be found`;
+			code = httpcode = 404;
 		} else if (error instanceof FieldError) {
 			code = Number(error.code);
 			message = error.message;

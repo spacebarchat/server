@@ -4,8 +4,9 @@
 	"description": "",
 	"main": "dist/index.js",
 	"scripts": {
+		"postinstall": "ts-patch install -s",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "npm run build && node -r ./scripts/tsconfig-paths-bootstrap.js dist/start.js",
+		"start": "npm run build && node dist/start.js",
 		"build": "npx tsc -b .",
 		"dev": "tsnd --respawn src/start.ts"
 	},
@@ -22,7 +23,9 @@
 		"@types/node-fetch": "^2.5.12",
 		"@types/uuid": "^8.3.0",
 		"@types/ws": "^7.4.0",
+		"@zerollup/ts-transform-paths": "^1.7.18",
 		"ts-node-dev": "^1.1.6",
+		"ts-patch": "^1.4.4",
 		"typescript": "^4.2.3"
 	},
 	"dependencies": {
@@ -39,5 +42,8 @@
 		"typeorm": "^0.2.37",
 		"uuid": "^8.3.2",
 		"ws": "^7.4.2"
+	},
+	"optionalDependencies": {
+		"@yukikaze-bot/erlpack": "^1.0.1"
 	}
 }

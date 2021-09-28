@@ -4,15 +4,16 @@
 	"description": "",
 	"main": "src/start.js",
 	"scripts": {
-		"preinstall": "cd ../util && npm i && cd ../api && npm i && cd ../cdn && npm i && cd ../gateway && npm i",
+		"setup": "cd ../util && npm --production=false i && cd ../api && npm --production=false i && cd ../cdn && npm --production=false i && cd ../gateway && npm --production=false i && npm install",
 		"build": "npm run build:util && npm run build:api && npm run build:cdn && npm run build:gateway && npm run build:bundle",
+		"postinstall": "ts-patch install -s",
 		"build:bundle": "npx tsc -b .",
 		"build:util": "cd ../util/ && npm run build",
 		"build:api": "cd ../api/ && npm run build",
 		"build:cdn": "cd ../cdn/ && npm run build",
 		"build:gateway": "cd ../gateway/ && npm run build",
 		"start": "npm run build && npm run start:bundle",
-		"start:bundle": "node -r ./tsconfig-paths-bootstrap.js dist/start.js",
+		"start:bundle": "node dist/start.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
@@ -44,6 +45,7 @@
 		"@types/ws": "^7.4.0",
 		"@zerollup/ts-transform-paths": "^1.7.18",
 		"ts-node": "^10.2.1",
+		"ts-patch": "^1.4.4",
 		"typescript": "^4.3.5"
 	},
 	"dependencies": {

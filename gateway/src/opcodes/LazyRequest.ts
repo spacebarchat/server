@@ -2,13 +2,10 @@ import {
 	getPermission,
 	Member,
 	PublicMemberProjection,
-	PublicUserProjection,
 	Role,
 } from "@fosscord/util";
 import { LazyRequest } from "../schema/LazyRequest";
-import { OPCODES, Payload } from "@fosscord/gateway/util/Constants";
-import { Send } from "@fosscord/gateway/util/Send";
-import WebSocket from "@fosscord/gateway/util/WebSocket";
+import { WebSocket, Send, OPCODES, Payload } from "@fosscord/gateway";
 import { check } from "./instanceOf";
 import "missing-native-js-functions";
 

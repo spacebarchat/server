@@ -1,4 +1,4 @@
-import { DiscordApiErrors, Event, EventData, getPermission, PermissionResolvable, Permissions } from "@fosscord/util";
+import { DiscordApiErrors, EVENT, Event, EventData, getPermission, PermissionResolvable, Permissions } from "@fosscord/util";
 import { NextFunction, Request, Response } from "express";
 import fs from "fs";
 import path from "path";
@@ -29,17 +29,16 @@ declare global {
 	}
 }
 
-export type RouteSchema = string; // typescript interface name
-export type RouteResponse = { status?: number; body?: RouteSchema; headers?: Record<string, string> };
+export type RouteResponse = { status?: number; body?: `${string}Response`; headers?: Record<string, string> };
 
 export interface RouteOptions {
 	permission?: PermissionResolvable;
-	body?: RouteSchema;
-	response?: RouteResponse;
-	example?: {
+	body?: `${string}Schema`; // typescript interface name
+	test?: {
+		response?: RouteResponse;
 		body?: any;
 		path?: string;
-		event?: EventData;
+		event?: EVENT | EVENT[];
 		headers?: Record<string, string>;
 	};
 }
@@ -82,10 +81,10 @@ export function route(opts: RouteOptions) {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		if (opts.permission) {
 			const required = new Permissions(opts.permission);
-			const permission = await getPermission(req.user_id, req.params.guild_id, req.params.channel_id);
+			req.permission = await getPermission(req.user_id, req.params.guild_id, req.params.channel_id);
 
 			// bitfield comparison: check if user lacks certain permission
-			if (!permission.has(required)) {
+			if (!req.permission.has(required)) {
 				throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(opts.permission as string);
 			}
 		}

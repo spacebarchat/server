@@ -9,16 +9,20 @@ export function initStats() {
 	console.log(`[Process] running with pid: ${process.pid}`);
 
 	setInterval(async () => {
-		const [cpuUsed, memory, network] = await Promise.all([osu.cpu.usage(), osu.mem.info(), osu.netstat.inOut()]);
+		const [cpuUsed, memory, network] = await Promise.all([
+			osu.cpu.usage(),
+			osu.mem.info(),
+			osu.netstat.inOut(),
+		]);
 		var networkUsage = "";
 		if (typeof network === "object") {
 			networkUsage = `| [Network]: in ${network.total.inputMb}mb | out ${network.total.outputMb}mb`;
 		}
 
 		console.log(
-			`[CPU] ${cpuUsed.toFixed(2)}% | [Memory] ${Math.round(
+			`[CPU] ${cpuUsed.toPrecision(3)}% | [Memory] ${Math.round(
 				process.memoryUsage().rss / 1024 / 1024
 			)}mb/${memory.totalMemMb.toFixed(0)}mb ${networkUsage}`
 		);
-	}, 1000 * 30);
+	}, 1000 * 5);
 }

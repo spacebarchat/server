@@ -11,7 +11,7 @@ export interface UserProfileResponse {
 	premium_since?: Date;
 }
 
-router.get("/", route({ response: { body: "UserProfileResponse" } }), async (req: Request, res: Response) => {
+router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), async (req: Request, res: Response) => {
 	if (req.params.id === "@me") req.params.id = req.user_id;
 	const user = await User.getPublicUser(req.params.id, { relations: ["connected_accounts"] });
 
