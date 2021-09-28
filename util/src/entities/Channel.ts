@@ -320,8 +320,8 @@ export class Channel extends BaseClass {
 }
 
 export interface ChannelPermissionOverwrite {
-	allow: bigint; // for bitfields we use bigints
-	deny: bigint; // for bitfields we use bigints
+	allow: string;
+	deny: string;
 	id: string;
 	type: ChannelPermissionOverwriteType;
 }

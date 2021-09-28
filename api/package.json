@@ -14,8 +14,8 @@
 		"dev": "tsnd --respawn src/start.ts",
 		"patch": "ts-patch install -s && npx patch-package",
 		"postinstall": "npm run patch",
-		"generate:docs": "node scripts/generate_openapi.ts",
-		"generate:schema": "node scripts/generate_schema.ts"
+		"generate:docs": "node scripts/generate_openapi",
+		"generate:schema": "node scripts/generate_schema"
 	},
 	"repository": {
 		"type": "git",

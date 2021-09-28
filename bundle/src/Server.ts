@@ -24,16 +24,24 @@ const gateway = new GatewayServer({ server, port, production });
 async function main() {
 	await initDatabase();
 	await Config.init();
+	// only set endpointPublic, if not already set
 	await Config.set({
 		cdn: {
 			endpointClient: "${location.host}",
-			endpoint: `http://localhost:${port}`,
+			endpointPrivate: `http://localhost:${port}`,
+			...(!Config.get().cdn.endpointPublic && {
+				endpointPublic: `http://localhost:${port}`,
+			}),
 		},
 		gateway: {
-			endpointClient: '${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}',
-			endpoint: `ws://localhost:${port}`,
+			endpointClient:
+				'${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}',
+			endpointPrivate: `ws://localhost:${port}`,
+			...(!Config.get().gateway.endpointPublic && {
+				endpointPublic: `http://localhost:${port}`,
+			}),
 		},
-	});
+	} as any);
 
 	await Promise.all([api.start(), cdn.start(), gateway.start()]);
 	console.log(`[Server] listening on port ${port}`);
