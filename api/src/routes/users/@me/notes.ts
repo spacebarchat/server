@@ -3,9 +3,12 @@ import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
-router.put("/", route({}), async (req: Request, res: Response) => {
+router.put("/:id", route({}), async (req: Request, res: Response) => {
 	//TODO
-	res.json({code: 0}).status(400);
+	res.json({
+		message: "400: Bad Request",
+		code: 0
+	}).status(400);
 });
 
 export default router;
