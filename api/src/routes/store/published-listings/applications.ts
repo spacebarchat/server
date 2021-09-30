@@ -3,8 +3,9 @@ import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
+router.get("/:id", route({}), async (req: Request, res: Response) => {
 	//TODO
+	const id = req.params.id;
 	res.json({
 		id: "",
 		summary: "",
