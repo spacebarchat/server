@@ -5,7 +5,6 @@ const router = Router();
 
 router.post("/", route({ permission: "MANAGE_MESSAGES" }), (req: Request, res: Response) => {
 	// TODO:
-    //const { locale, primary_only } = req.query;
 	res.json({
         id: "", 
         type: 0, 
