@@ -30,6 +30,15 @@ const Excluded = [
 	"supertest.Response"
 ];
 
+function modify(obj) {
+	delete obj.additionalProperties;
+	for (var k in obj) {
+		if (typeof obj[k] === "object" && obj[k] !== null) {
+			modify(obj[k]);
+		}
+	}
+}
+
 function main() {
 	const program = TJS.getProgramFromFiles(walk(path.join(__dirname, "..", "src", "routes")), compilerOptions);
 	const generator = TJS.buildGenerator(program, settings);
@@ -47,7 +56,9 @@ function main() {
 		definitions = { ...definitions, [name]: { ...part } };
 	}
 
-	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
+	modify(definitions);
+
+	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4).replace(/ "additionalProperties": ?false,?/g, ""));
 }
 
 main();
