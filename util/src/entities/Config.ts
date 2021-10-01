@@ -144,6 +144,10 @@ export interface ConfigValue {
 		useDefaultAsOptimal: boolean;
 		available: Region[];
 	};
+	
+	guild: {
+		showAllGuildsInDiscovery: boolean;
+	};
 	rabbitmq: {
 		host: string | null;
 	};
@@ -294,6 +298,10 @@ export const DefaultConfigOptions: ConfigValue = {
 				deprecated: false,
 			},
 		],
+	},
+	
+	guild: {
+		showAllGuildsInDiscovery: false,
 	},
 	rabbitmq: {
 		host: null,
