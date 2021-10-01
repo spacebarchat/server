@@ -267,7 +267,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			required: false,
 			minimum: 13,
 		},
-		disabled: true,
+		disabled: false,
 		requireInvite: false,
 		requireCaptcha: true,
 		allowNewRegistration: true,
