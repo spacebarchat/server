@@ -125,6 +125,7 @@ export interface ConfigValue {
 			required: boolean;
 			minimum: number; // in years
 		};
+		disabled: boolean;
 		requireCaptcha: boolean;
 		requireInvite: boolean;
 		allowNewRegistration: boolean;
@@ -266,6 +267,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			required: false,
 			minimum: 13,
 		},
+		disabled: true,
 		requireInvite: false,
 		requireCaptcha: true,
 		allowNewRegistration: true,
