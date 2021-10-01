@@ -276,5 +276,7 @@ export class UserFlags extends BitField {
 		UNDERAGE_DELETED: BigInt(1) << BigInt(15),
 		VERIFIED_BOT: BigInt(1) << BigInt(16),
 		EARLY_VERIFIED_BOT_DEVELOPER: BigInt(1) << BigInt(17),
+		CERTIFIED_MODERATOR: BigInt(1) << BigInt(18),
+		BOT_HTTP_INTERACTIONS: BigInt(1) << BigInt(19),
 	};
 }
