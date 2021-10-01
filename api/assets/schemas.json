@@ -21,7 +21,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "required": [
             "login",
             "password"
@@ -64,7 +63,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "required": [
             "consent",
             "username"
@@ -133,7 +131,6 @@
                             "type": "string"
                         }
                     },
-                    "additionalProperties": false,
                     "required": [
                         "allow",
                         "deny",
@@ -158,7 +155,6 @@
                 "type": "integer"
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -210,7 +206,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -233,8 +228,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -251,8 +245,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -269,15 +262,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -294,8 +285,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -359,7 +349,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -383,8 +372,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -417,7 +405,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -440,7 +427,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -498,8 +484,7 @@
                     "replied_user": {
                         "type": "boolean"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "message_reference": {
                 "type": "object",
@@ -517,7 +502,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "channel_id",
                     "message_id"
@@ -532,7 +516,6 @@
                 "items": {}
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -584,7 +567,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -607,8 +589,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -625,8 +606,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -643,15 +623,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -668,8 +646,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -733,7 +710,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -757,8 +733,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -791,7 +766,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -814,7 +788,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -855,7 +828,6 @@
                 "type": "integer"
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -907,7 +879,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -930,8 +901,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -948,8 +918,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -966,15 +935,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -991,8 +958,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -1056,7 +1022,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -1080,8 +1045,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -1114,7 +1078,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -1137,7 +1100,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -1157,7 +1119,6 @@
                 "type": "integer"
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -1209,7 +1170,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -1232,8 +1192,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -1250,8 +1209,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -1268,15 +1226,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -1293,8 +1249,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -1358,7 +1313,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -1382,8 +1336,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -1416,7 +1369,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -1439,7 +1391,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -1459,7 +1410,6 @@
                 }
             }
         },
-        "additionalProperties": false,
         "required": [
             "messages"
         ],
@@ -1514,7 +1464,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -1537,8 +1486,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -1555,8 +1503,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -1573,15 +1520,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -1598,8 +1543,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -1663,7 +1607,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -1687,8 +1630,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -1721,7 +1663,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -1744,7 +1685,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -1770,7 +1710,6 @@
                 "$ref": "#/definitions/ChannelPermissionOverwriteType"
             }
         },
-        "additionalProperties": false,
         "required": [
             "allow",
             "deny",
@@ -1828,7 +1767,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -1851,8 +1789,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -1869,8 +1806,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -1887,15 +1823,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -1912,8 +1846,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -1977,7 +1910,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -2001,8 +1933,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -2035,7 +1966,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -2058,7 +1988,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -2079,7 +2008,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "required": [
             "avatar",
             "name"
@@ -2135,7 +2063,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -2158,8 +2085,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -2176,8 +2102,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -2194,15 +2119,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -2219,8 +2142,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -2284,7 +2206,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -2308,8 +2229,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -2342,7 +2262,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -2365,7 +2284,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -2385,7 +2303,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -2437,7 +2354,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -2460,8 +2376,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -2478,8 +2393,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -2496,15 +2410,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -2521,8 +2433,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -2586,7 +2497,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -2610,8 +2520,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -2644,7 +2553,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -2667,7 +2575,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -2695,7 +2602,6 @@
                     "type": "string"
                 }
             },
-            "additionalProperties": false,
             "required": [
                 "id"
             ]
@@ -2751,7 +2657,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -2774,8 +2679,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -2792,8 +2696,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -2810,15 +2713,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -2835,8 +2736,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -2900,7 +2800,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -2924,8 +2823,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -2958,7 +2856,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -2981,7 +2878,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -3023,7 +2919,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "required": [
             "name"
         ],
@@ -3078,7 +2973,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -3101,8 +2995,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -3119,8 +3012,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -3137,15 +3029,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -3162,8 +3052,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -3227,7 +3116,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -3251,8 +3139,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -3285,7 +3172,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -3308,7 +3194,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -3389,7 +3274,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "required": [
             "name"
         ],
@@ -3444,7 +3328,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -3467,8 +3350,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -3485,8 +3367,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -3503,15 +3384,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -3528,8 +3407,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -3593,7 +3471,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -3617,8 +3494,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -3651,7 +3527,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -3674,7 +3549,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -3694,7 +3568,6 @@
                 }
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -3746,7 +3619,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -3769,8 +3641,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -3787,8 +3658,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -3805,15 +3675,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -3830,8 +3698,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -3895,7 +3762,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -3919,8 +3785,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -3953,7 +3818,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -3976,7 +3840,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -3993,7 +3856,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "required": [
             "nick"
         ],
@@ -4048,7 +3910,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -4071,8 +3932,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -4089,8 +3949,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -4107,15 +3966,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -4132,8 +3989,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -4197,7 +4053,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -4221,8 +4076,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -4255,7 +4109,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -4278,7 +4131,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -4310,7 +4162,6 @@
                 "type": "integer"
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -4362,7 +4213,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -4385,8 +4235,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -4403,8 +4252,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -4421,15 +4269,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -4446,8 +4292,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -4511,7 +4356,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -4535,8 +4379,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -4569,7 +4412,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -4592,7 +4434,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -4614,7 +4455,6 @@
                     "type": "integer"
                 }
             },
-            "additionalProperties": false,
             "required": [
                 "id",
                 "position"
@@ -4671,7 +4511,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -4694,8 +4533,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -4712,8 +4550,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -4730,15 +4567,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -4755,8 +4590,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -4820,7 +4654,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -4844,8 +4677,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -4878,7 +4710,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -4901,7 +4732,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -4921,7 +4751,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "required": [
             "name"
         ],
@@ -4976,7 +4805,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -4999,8 +4827,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -5017,8 +4844,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -5035,15 +4861,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -5060,8 +4884,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -5125,7 +4948,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -5149,8 +4971,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -5183,7 +5004,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -5206,7 +5026,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -5226,7 +5045,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "required": [
             "name"
         ],
@@ -5281,7 +5099,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -5304,8 +5121,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -5322,8 +5138,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -5340,15 +5155,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -5365,8 +5178,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -5430,7 +5242,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -5454,8 +5265,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -5488,7 +5298,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -5511,7 +5320,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -5530,7 +5338,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -5582,7 +5389,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -5605,8 +5411,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -5623,8 +5428,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -5641,15 +5445,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -5666,8 +5468,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -5731,7 +5532,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -5755,8 +5555,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -5789,7 +5588,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -5812,7 +5610,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -5848,7 +5645,6 @@
                 "type": "boolean"
             }
         },
-        "additionalProperties": false,
         "required": [
             "channel_id"
         ],
@@ -5903,7 +5699,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -5926,8 +5721,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -5944,8 +5738,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -5962,15 +5755,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -5987,8 +5778,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -6052,7 +5842,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -6076,8 +5865,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -6110,7 +5898,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -6133,7 +5920,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -6164,7 +5950,6 @@
                             "type": "string"
                         }
                     },
-                    "additionalProperties": false,
                     "required": [
                         "channel_id",
                         "description",
@@ -6179,7 +5964,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -6231,7 +6015,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -6254,8 +6037,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -6272,8 +6054,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -6290,15 +6071,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -6315,8 +6094,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -6380,7 +6158,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -6404,8 +6181,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -6438,7 +6214,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -6461,7 +6236,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -6481,7 +6255,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "required": [
             "channel_id",
             "enabled"
@@ -6537,7 +6310,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -6560,8 +6332,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -6578,8 +6349,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -6596,15 +6366,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -6621,8 +6389,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -6686,7 +6453,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -6710,8 +6476,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -6744,7 +6509,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -6767,7 +6531,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -6790,7 +6553,6 @@
                 ]
             }
         },
-        "additionalProperties": false,
         "required": [
             "name"
         ],
@@ -6845,7 +6607,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -6868,8 +6629,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -6886,8 +6646,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -6904,15 +6663,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -6929,8 +6686,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -6994,7 +6750,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -7018,8 +6773,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -7052,7 +6806,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -7075,7 +6828,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -7103,7 +6855,6 @@
                 "format": "date-time"
             }
         },
-        "additionalProperties": false,
         "required": [
             "connected_accounts",
             "user"
@@ -7159,7 +6910,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -7182,8 +6932,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -7200,8 +6949,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -7218,15 +6966,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -7243,8 +6989,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -7308,7 +7053,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -7332,8 +7076,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -7366,7 +7109,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -7389,7 +7131,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -7412,7 +7153,6 @@
                 }
             }
         },
-        "additionalProperties": false,
         "required": [
             "recipients"
         ],
@@ -7467,7 +7207,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -7490,8 +7229,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -7508,8 +7246,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -7526,15 +7263,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -7551,8 +7286,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -7616,7 +7350,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -7640,8 +7373,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -7674,7 +7406,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -7697,7 +7428,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -7744,7 +7474,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -7796,7 +7525,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -7819,8 +7547,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -7837,8 +7564,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -7855,15 +7581,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -7880,8 +7604,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -7945,7 +7668,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -7969,8 +7691,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -8003,7 +7724,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -8026,7 +7746,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -8049,7 +7768,6 @@
                 "type": "number"
             }
         },
-        "additionalProperties": false,
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -8101,7 +7819,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -8124,8 +7841,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -8142,8 +7858,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -8160,15 +7875,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -8185,8 +7898,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -8250,7 +7962,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -8274,8 +7985,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -8308,7 +8018,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -8331,7 +8040,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -8351,7 +8059,6 @@
                 "type": "string"
             }
         },
-        "additionalProperties": false,
         "required": [
             "discriminator",
             "username"
@@ -8407,7 +8114,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -8430,8 +8136,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -8448,8 +8153,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -8466,15 +8170,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -8491,8 +8193,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -8556,7 +8257,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -8580,8 +8280,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -8614,7 +8313,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -8637,7 +8335,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
@@ -8683,8 +8380,7 @@
                     "text": {
                         "type": "string"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "default_guilds_restricted": {
                 "type": "boolean"
@@ -8711,7 +8407,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "all"
                 ]
@@ -8743,7 +8438,6 @@
                             "type": "string"
                         }
                     },
-                    "additionalProperties": false,
                     "required": [
                         "color",
                         "guild_ids",
@@ -8811,7 +8505,6 @@
                 "type": "integer"
             }
         },
-        "additionalProperties": false,
         "required": [
             "afk_timeout",
             "allow_accessibility_detection",
@@ -8896,7 +8589,6 @@
                                 "type": "string"
                             }
                         },
-                        "additionalProperties": false,
                         "required": [
                             "text"
                         ]
@@ -8919,8 +8611,7 @@
                             "url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "author": {
                         "type": "object",
@@ -8937,8 +8628,7 @@
                             "proxy_icon_url": {
                                 "type": "string"
                             }
-                        },
-                        "additionalProperties": false
+                        }
                     },
                     "fields": {
                         "type": "array",
@@ -8955,15 +8645,13 @@
                                     "type": "boolean"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "name",
                                 "value"
                             ]
                         }
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "EmbedImage": {
                 "type": "object",
@@ -8980,8 +8668,7 @@
                     "width": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -9045,7 +8732,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "allow",
                                 "deny",
@@ -9069,8 +8755,7 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     }
-                },
-                "additionalProperties": false
+                }
             },
             "UserPublic": {
                 "type": "object",
@@ -9103,7 +8788,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "bio",
                     "bot",
@@ -9126,7 +8810,6 @@
                         "type": "boolean"
                     }
                 },
-                "additionalProperties": false,
                 "required": [
                     "name",
                     "type",
