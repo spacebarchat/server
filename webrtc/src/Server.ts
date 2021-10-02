@@ -1,42 +1,63 @@
+import "missing-native-js-functions";
+import dotenv from "dotenv";
+dotenv.config();
+import { closeDatabase, Config, initDatabase, initEvent } from "@fosscord/util";
 import { Server as WebSocketServer } from "ws";
-import { Config, db } from "@fosscord/util";
-import mediasoup from "mediasoup";
-
-var port = Number(process.env.PORT);
-if (isNaN(port)) port = 3004;
+import http from "http";
 
 export class Server {
 	public ws: WebSocketServer;
-	public turn: any;
+	public port: number;
+	public server: http.Server;
+	public production: boolean;
 
-	constructor() {
-		this.ws = new WebSocketServer({
-			port,
-			maxPayload: 4096,
-		});
-		this.ws.on("connection", (socket) => {
-			socket.on("message", (message) => {
-				socket.emit(
-					JSON.stringify({
-						op: 2,
-						d: {
-							ssrc: 1,
-							ip: "127.0.0.1",
-							port: 3004,
-							modes: ["xsalsa20_poly1305", "xsalsa20_poly1305_suffix", "xsalsa20_poly1305_lite"],
-							heartbeat_interval: 1,
-						},
-					})
-				);
+	constructor({
+		port,
+		server,
+		production,
+	}: {
+		port: number;
+		server?: http.Server;
+		production?: boolean;
+	}) {
+		this.port = port;
+		this.production = production || false;
+
+		if (server) this.server = server;
+		else {
+			this.server = http.createServer(function (req, res) {
+				res.writeHead(200).end("Online");
+			});
+		}
+
+		this.server.on("upgrade", (request, socket, head) => {
+			console.log("socket requests upgrade", request.url);
+			// @ts-ignore
+			this.ws.handleUpgrade(request, socket, head, (socket) => {
+				this.ws.emit("connection", socket, request);
 			});
 		});
+
+		this.ws = new WebSocketServer({
+			maxPayload: 4096,
+			noServer: true,
+		});
+		// this.ws.on("connection", Connection);
+		this.ws.on("error", console.error);
 	}
 
-	async listen(): Promise<void> {
-		// @ts-ignore
-		await (db as Promise<Connection>);
+	async start(): Promise<void> {
+		await initDatabase();
 		await Config.init();
-		console.log("[DB] connected");
-		console.log(`[WebRTC] online on 0.0.0.0:${port}`);
+		await initEvent();
+		if (!this.server.listening) {
+			this.server.listen(this.port);
+			console.log(`[WebRTC] online on 0.0.0.0:${this.port}`);
+		}
+	}
+
+	async stop() {
+		closeDatabase();
+		this.server.close();
 	}
 }
