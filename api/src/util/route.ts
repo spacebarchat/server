@@ -1,4 +1,15 @@
-import { DiscordApiErrors, EVENT, Event, EventData, getPermission, PermissionResolvable, Permissions } from "@fosscord/util";
+import {
+	DiscordApiErrors,
+	EVENT,
+	Event,
+	EventData,
+	FosscordApiErrors,
+	getPermission,
+	PermissionResolvable,
+	Permissions,
+	RightResolvable,
+	Rights
+} from "@fosscord/util";
 import { NextFunction, Request, Response } from "express";
 import fs from "fs";
 import path from "path";
@@ -33,6 +44,7 @@ export type RouteResponse = { status?: number; body?: `${string}Response`; heade
 
 export interface RouteOptions {
 	permission?: PermissionResolvable;
+	right?: RightResolvable;
 	body?: `${string}Schema`; // typescript interface name
 	test?: {
 		response?: RouteResponse;
@@ -86,6 +98,13 @@ export function route(opts: RouteOptions) {
 			// bitfield comparison: check if user lacks certain permission
 			if (!req.permission.has(required)) {
 				throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(opts.permission as string);
+			}
+		}
+
+		if (opts.right) {
+			const required = new Rights(opts.right);
+			if (!req.rights || !req.rights.has(required)) {
+				throw FosscordApiErrors.MISSING_RIGHTS.withParams(opts.right as string);
 			}
 		}
 
