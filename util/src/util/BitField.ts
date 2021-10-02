@@ -143,6 +143,5 @@ export class BitField {
 }
 
 export function BitFlag(x: bigint | number) {
-	if (!x) throw new Error("You need to pass a bitflag");
 	return BigInt(1) << BigInt(x);
 }
