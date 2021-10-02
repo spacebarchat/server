@@ -58,7 +58,7 @@ function main() {
 
 	modify(definitions);
 
-	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4).replace(/ "additionalProperties": ?false,?/g, ""));
+	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
 }
 
 main();

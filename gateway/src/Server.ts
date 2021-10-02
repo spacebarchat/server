@@ -1,7 +1,7 @@
 import "missing-native-js-functions";
 import dotenv from "dotenv";
 dotenv.config();
-import { closeDatabase, Config, initDatabase, initEvent, RabbitMQ } from "@fosscord/util";
+import { closeDatabase, Config, initDatabase, initEvent } from "@fosscord/util";
 import { Server as WebSocketServer } from "ws";
 import { Connection } from "./events/Connection";
 import http from "http";
@@ -12,15 +12,24 @@ export class Server {
 	public server: http.Server;
 	public production: boolean;
 
-	constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
+	constructor({
+		port,
+		server,
+		production,
+	}: {
+		port: number;
+		server?: http.Server;
+		production?: boolean;
+	}) {
 		this.port = port;
 		this.production = production || false;
 
 		if (server) this.server = server;
-		else
+		else {
 			this.server = http.createServer(function (req, res) {
 				res.writeHead(200).end("Online");
 			});
+		}
 
 		this.server.on("upgrade", (request, socket, head) => {
 			console.log("socket requests upgrade", request.url);
