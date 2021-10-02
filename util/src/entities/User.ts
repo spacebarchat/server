@@ -3,7 +3,6 @@ import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
-import { HTTPError } from "lambert-server";
 
 export enum PublicUserEnum {
 	username,
@@ -125,6 +124,9 @@ export class User extends BaseClass {
 
 	@Column()
 	public_flags: number;
+
+	@Column()
+	rights: string; // Rights
 
 	@JoinColumn({ name: "relationship_ids" })
 	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
