@@ -38,9 +38,23 @@ async function main() {
 				'${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}',
 			endpointPrivate: `ws://localhost:${port}`,
 			...(!Config.get().gateway.endpointPublic && {
-				endpointPublic: `http://localhost:${port}`,
+				endpointPublic: `ws://localhost:${port}`,
 			}),
 		},
+		// regions: {
+		// 	default: "fosscord",
+		// 	useDefaultAsOptimal: true,
+		// 	available: [
+		// 		{
+		// 			id: "fosscord",
+		// 			name: "Fosscord",
+		// 			endpoint: "127.0.0.1:3001",
+		// 			vip: false,
+		// 			custom: false,
+		// 			deprecated: false,
+		// 		},
+		// 	],
+		// },
 	} as any);
 
 	await Promise.all([api.start(), cdn.start(), gateway.start()]);
