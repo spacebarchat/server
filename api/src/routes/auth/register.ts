@@ -211,6 +211,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		disabled: false,
 		deleted: false,
 		email: email,
+		rights: "0",
 		nsfw_allowed: true, // TODO: depending on age
 		public_flags: "0",
 		flags: "0", // TODO: generate
