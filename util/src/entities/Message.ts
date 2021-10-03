@@ -74,9 +74,7 @@ export class Message extends BaseClass {
 	author_id: string;
 
 	@JoinColumn({ name: "author_id", referencedColumnName: "id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
+	@ManyToOne(() => User)
 	author?: User;
 
 	@Column({ nullable: true })
@@ -120,7 +118,7 @@ export class Message extends BaseClass {
 	mention_everyone?: boolean;
 
 	@JoinTable({ name: "message_user_mentions" })
-	@ManyToMany(() => User, { orphanedRowAction: "delete", onDelete: "CASCADE", cascade: true })
+	@ManyToMany(() => User)
 	mentions: User[];
 
 	@JoinTable({ name: "message_role_mentions" })
