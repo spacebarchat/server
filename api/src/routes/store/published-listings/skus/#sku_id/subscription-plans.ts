@@ -11,31 +11,15 @@ const skus = new Map([
 ]);
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	//TODO
-	const { id } = req.params;
+	// TODO: add the ability to add custom
+	const { sku_id } = req.params;
 	
-	if(!skus.has(id.toString())) {
-		console.log(`Request for invalid SKU ${id}! Please report this!`);
+	if(!skus.has(sku_id)) {
+		console.log(`Request for invalid SKU ${sku_id}! Please report this!`);
 		res.sendStatus(404);
+	} else {
+		res.json(skus.get(sku_id)).status(200);
 	}
-	else {
-		
-		res.json(skus.get(id.toString())).status(200);
-	}
-	// res.json([
-    //     {
-    //         id: "",
-    //         name: "",
-    //         interval: 1,
-    //         interval_count: 1,
-    //         tax_inclusive: true,
-    //         sku_id: "",
-    //         fallback_price: 499,
-    //         fallback_currency: "eur",
-    //         currency: "eur",
-    //         price: 4199,
-    //         price_tier: null
-    //     }]).status(200);
 });
 
 export default router;
