@@ -47,7 +47,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 		req.token = decoded;
 		req.user_id = decoded.id;
 		req.user_bot = user.bot;
-		req.rights = new Rights(user.rights);
+		req.rights = new Rights(Number(user.rights));
 		return next();
 	} catch (error: any) {
 		return next(new HTTPError(error?.toString(), 400));
