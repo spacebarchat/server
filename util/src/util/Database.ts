@@ -11,7 +11,7 @@ var promise: Promise<any>;
 var dbConnection: Connection | undefined;
 let dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
 
-export function initDatabase() {
+export function initDatabase(): Promise<Connection> {
 	if (promise) return promise; // prevent initalizing multiple times
 
 	const type = dbConnectionString.includes(":") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
@@ -23,7 +23,8 @@ export function initDatabase() {
 		type,
 		url: isSqlite ? undefined : dbConnectionString,
 		database: isSqlite ? dbConnectionString : undefined,
-		entities: Object.values(Models).filter((x) => x.constructor.name !== "Object"),
+		// @ts-ignore
+		entities: Object.values(Models).filter((x) => x.constructor.name !== "Object" && x.name),
 		synchronize: type !== "mongodb",
 		logging: false,
 		cache: {
@@ -31,6 +32,7 @@ export function initDatabase() {
 		},
 		bigNumberStrings: false,
 		supportBigNumbers: true,
+		name: "default",
 	});
 
 	promise.then((connection) => {
