@@ -3,10 +3,20 @@ import cluster from "cluster";
 import os from "os";
 import { red, bold, yellow, cyan } from "chalk";
 import { initStats } from "./stats";
+import { execSync } from "child_process";
 
 // TODO: add tcp socket event transmission
 const cores = 1 || Number(process.env.threads) || os.cpus().length;
-const commit = require('child_process').execSync('git rev-parse HEAD').toString().trim();
+
+export function getCommitOrFail() {
+	try {
+		return execSync('git rev-parse HEAD').toString().trim();
+	} catch(e) {
+		return null
+	}
+}
+const commit = getCommitOrFail()
+
 
 console.log(bold(`
 ███████  ██████  ███████ ███████  ██████  ██████  ██████  ██████  
@@ -16,13 +26,12 @@ console.log(bold(`
 ██       ██████  ███████ ███████  ██████  ██████  ██   ██ ██████  
            
 
-		fosscord-server | ${yellow(`Pre-relase (${commit.slice(0, 7)})`)}
+		fosscord-server | ${yellow(`Pre-relase (${commit !== null ? commit.slice(0, 7) : "Unknown (Git cannot be found)"})`)}
 
-Current commit: ${cyan(commit)} (${yellow(commit.slice(0, 7))})
+Current commit: ${commit !== null ? `${cyan(commit)} (${yellow(commit.slice(0, 7))})` : "Unknown (Git cannot be found)" }
 `))
 
-
-
+if(commit == null) console.log(yellow(`Warning: Git is not installed or not in PATH.`))
 
 if (cluster.isMaster && !process.env.masterStarted) {
 	process.env.masterStarted = "true";

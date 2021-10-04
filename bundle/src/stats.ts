@@ -1,6 +1,5 @@
 import os from "os";
 import osu from "node-os-utils";
-import {} from "chalk";
 
 export function initStats() {
 	console.log(`[Path] running in ${__dirname}`);
