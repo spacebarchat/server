@@ -54,7 +54,7 @@
 		"jest": "^27.0.6",
 		"lambert-db": "^1.2.3",
 		"lambert-server": "^1.2.8",
-		"missing-native-js-functions": "^1.2.15",
+		"missing-native-js-functions": "^1.2.16",
 		"multer": "^1.4.2",
 		"nanocolors": "^0.2.12",
 		"node-fetch": "^2.6.1",

@@ -5,10 +5,8 @@ import {
 	BeforeUpdate,
 	EntityMetadata,
 	FindConditions,
-	getConnection,
-	getManager,
+	ObjectIdColumn,
 	PrimaryColumn,
-	RemoveOptions,
 } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
 import "missing-native-js-functions";
@@ -117,8 +115,10 @@ export class BaseClassWithoutId extends BaseEntity {
 	// }
 }
 
+export const PrimaryIdColumn = process.env.DATABASE?.startsWith("mongodb") ? ObjectIdColumn : PrimaryColumn;
+
 export class BaseClass extends BaseClassWithoutId {
-	@PrimaryColumn()
+	@PrimaryIdColumn()
 	id: string;
 
 	assign(props: any = {}) {

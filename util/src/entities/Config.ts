@@ -1,11 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { BaseClass, BaseClassWithoutId } from "./BaseClass";
+import { Column, Entity } from "typeorm";
+import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import crypto from "crypto";
 import { Snowflake } from "../util/Snowflake";
 
 @Entity("config")
 export class ConfigEntity extends BaseClassWithoutId {
-	@PrimaryColumn()
+	@PrimaryIdColumn()
 	key: string;
 
 	@Column({ type: "simple-json", nullable: true })
@@ -144,7 +144,7 @@ export interface ConfigValue {
 		useDefaultAsOptimal: boolean;
 		available: Region[];
 	};
-	
+
 	guild: {
 		showAllGuildsInDiscovery: boolean;
 	};
@@ -299,7 +299,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			},
 		],
 	},
-	
+
 	guild: {
 		showAllGuildsInDiscovery: false,
 	},

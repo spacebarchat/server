@@ -1,6 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
-import { Member } from ".";
-import { BaseClass } from "./BaseClass";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Member } from "./Member";
+import { BaseClass, PrimaryIdColumn } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { User } from "./User";
@@ -9,7 +9,7 @@ export const PublicInviteRelation = ["inviter", "guild", "channel"];
 
 @Entity("invites")
 export class Invite extends BaseClass {
-	@PrimaryColumn()
+	@PrimaryIdColumn()
 	code: string;
 
 	@Column()

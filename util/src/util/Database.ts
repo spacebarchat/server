@@ -24,7 +24,7 @@ export function initDatabase() {
 		url: isSqlite ? undefined : dbConnectionString,
 		database: isSqlite ? dbConnectionString : undefined,
 		entities: Object.values(Models).filter((x) => x.constructor.name !== "Object"),
-		synchronize: true,
+		synchronize: type !== "mongodb",
 		logging: false,
 		cache: {
 			duration: 1000 * 3, // cache all find queries for 3 seconds
