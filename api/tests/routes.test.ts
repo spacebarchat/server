@@ -7,7 +7,7 @@ import fs from "fs";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import fetch from "node-fetch";
-import { Event, User, events } from "@fosscord/util";
+import { Event, User, events, Guild, Channel } from "@fosscord/util";
 
 const SchemaPath = join(__dirname, "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
@@ -25,11 +25,36 @@ addFormats(ajv);
 
 var token: string;
 var user: User;
+var guild: Guild;
+var channel: Channel;
+
+const request = async (path: string, opts: any = {}): Promise<any> => {
+	const response = await fetch(`http://localhost:3001/api${path}`, {
+		...opts,
+		method: opts.method || opts.body ? "POST" : "GET",
+		body: opts.body && JSON.stringify(opts.body),
+		headers: {
+			authorization: token,
+			...(opts.body ? { "content-type": "application/json" } : {}),
+			...(opts.header || {})
+		}
+	});
+	if (response.status === 204) return;
+
+	var data = await response.text();
+	try {
+		data = JSON.stringify(data);
+		if (response.status >= 400) throw data;
+		return data;
+	} catch (error) {
+		throw data;
+	}
+};
+
 beforeAll(async (done) => {
 	try {
-		const response = await fetch("http://localhost:3001/api/auth/register", {
-			method: "POST",
-			body: JSON.stringify({
+		const response = await request("/auth/register", {
+			body: {
 				fingerprint: "805826570869932034.wR8vi8lGlFBJerErO9LG5NViJFw",
 				email: "test@example.com",
 				username: "tester",
@@ -39,18 +64,13 @@ beforeAll(async (done) => {
 				date_of_birth: "2000-01-01",
 				gift_code_sku_id: null,
 				captcha_key: null
-			}),
-			headers: {
-				"content-type": "application/json"
 			}
 		});
-		const json = await response.json();
-		token = json.token;
-		user = await (
-			await fetch(`http://localhost:3001/api/users/@me`, {
-				headers: { authorization: token }
-			})
-		).json();
+		token = response.token;
+		user = await request(`/users/@me`);
+		const { id: guild_id } = await request("/guilds", { body: { name: "test server" } });
+		guild = await request(`/guilds/${guild_id}`);
+		channel = (await request(`/guilds/${guild_id}/channels`))[0];
 
 		done();
 	} catch (error) {
@@ -75,7 +95,8 @@ describe("Automatic unit tests with route description middleware", () => {
 				console.log(`${(route as any).file}\nrouter.${method} is missing the test property`);
 				return done();
 			}
-			const urlPath = path.replace(":id", user.id) || route.test?.path;
+			const urlPath =
+				path.replace(":id", user.id).replace(":guild_id", guild.id).replace(":channel_id", channel.id) || route.test?.path;
 			var validate: any;
 			if (route.test.body) {
 				validate = ajv.getSchema(route.test.body);

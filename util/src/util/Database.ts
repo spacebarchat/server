@@ -1,6 +1,6 @@
 import path from "path";
 import "reflect-metadata";
-import { Connection, createConnection, ValueTransformer } from "typeorm";
+import { Connection, createConnection } from "typeorm";
 import * as Models from "../entities";
 
 // UUID extension option is only supported with postgres
@@ -8,18 +8,20 @@ import * as Models from "../entities";
 
 var promise: Promise<any>;
 var dbConnection: Connection | undefined;
+let dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
 
 export function initDatabase() {
 	if (promise) return promise; // prevent initalizing multiple times
 
-	console.log("[Database] connecting ...");
+	const type = dbConnectionString.includes(":") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
+	const isSqlite = type.includes("sqlite");
+
+	console.log(`[Database] connecting to ${type} db`);
 	// @ts-ignore
 	promise = createConnection({
-		type: "sqlite",
-		database: path.join(process.cwd(), "database.db"),
-		// type: "postgres",
-		// url: "postgres://fosscord:wb94SmuURM2Syv&@localhost/fosscord",
-		//
+		type,
+		url: isSqlite ? undefined : dbConnectionString,
+		database: isSqlite ? dbConnectionString : undefined,
 		entities: Object.values(Models).filter((x) => x.constructor.name !== "Object"),
 		synchronize: true,
 		logging: false,
