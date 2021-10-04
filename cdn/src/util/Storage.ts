@@ -1,6 +1,7 @@
 import { FileStorage } from "./FileStorage";
 import path from "path";
 import fse from "fs-extra";
+import { bgCyan, black } from "nanocolors";
 process.cwd();
 
 export interface Storage {
@@ -18,7 +19,7 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
 	} else {
 		location = path.join(process.cwd(), "files");
 	}
-	console.log(`[CDN] storage location: ${location}`);
+	console.log(`[CDN] storage location: ${bgCyan(`${black(location)}`)}`);
 	fse.ensureDirSync(location);
 	process.env.STORAGE_LOCATION = location;
 

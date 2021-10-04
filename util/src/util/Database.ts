@@ -2,6 +2,7 @@ import path from "path";
 import "reflect-metadata";
 import { Connection, createConnection, ValueTransformer } from "typeorm";
 import * as Models from "../entities";
+import { yellow, green} from "nanocolors";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -12,7 +13,7 @@ var dbConnection: Connection | undefined;
 export function initDatabase() {
 	if (promise) return promise; // prevent initalizing multiple times
 
-	console.log("[Database] connecting ...");
+	console.log(`[Database] ${yellow("connecting ...")}`);
 	// @ts-ignore
 	promise = createConnection({
 		type: "sqlite",
@@ -32,7 +33,7 @@ export function initDatabase() {
 
 	promise.then((connection) => {
 		dbConnection = connection;
-		console.log("[Database] connected");
+		console.log(`[Database] ${green("connected")}`);
 	});
 
 	return promise;
