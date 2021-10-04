@@ -50,6 +50,15 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	const { register, security } = Config.get();
 	const ip = getIpAdress(req);
 
+	if (register.disabled) {
+		throw FieldErrors({
+			email: {
+				code: "DISABLED",
+				message: "registration is disabled on this instance"
+			}
+		});
+	}
+
 	if (register.blockProxies) {
 		if (isProxy(await IPAnalysis(ip))) {
 			console.log(`proxy ${ip} blocked from registration`);
@@ -202,6 +211,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		disabled: false,
 		deleted: false,
 		email: email,
+		rights: "0",
 		nsfw_allowed: true, // TODO: depending on age
 		public_flags: "0",
 		flags: "0", // TODO: generate

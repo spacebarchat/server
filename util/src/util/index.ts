@@ -12,6 +12,7 @@ export * from "./MessageFlags";
 export * from "./Permissions";
 export * from "./RabbitMQ";
 export * from "./Regex";
+export * from "./Rights";
 export * from "./Snowflake";
 export * from "./String";
 export * from "./Array";

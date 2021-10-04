@@ -726,7 +726,9 @@ export const DiscordApiErrors = {
 /**
  * An error encountered while performing an API request (Fosscord only). Here are the potential errors:
  */
-export const FosscordApiErrors = {};
+export const FosscordApiErrors = {
+	MISSING_RIGHTS: new ApiError("You lack rights to perform that action ({})", 50013, undefined, [""]),
+};
 
 /**
  * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
