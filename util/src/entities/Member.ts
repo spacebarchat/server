@@ -8,8 +8,6 @@ import {
 	JoinTable,
 	ManyToMany,
 	ManyToOne,
-	OneToMany,
-	PrimaryColumn,
 	PrimaryGeneratedColumn,
 	RelationId,
 } from "typeorm";

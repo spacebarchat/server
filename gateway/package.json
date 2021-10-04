@@ -35,7 +35,7 @@
 		"dotenv": "^8.2.0",
 		"jsonwebtoken": "^8.5.1",
 		"lambert-server": "^1.2.8",
-		"missing-native-js-functions": "^1.2.15",
+		"missing-native-js-functions": "^1.2.16",
 		"mongoose-autopopulate": "^0.12.3",
 		"node-fetch": "^2.6.1",
 		"typeorm": "^0.2.37",
