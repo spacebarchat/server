@@ -15,7 +15,7 @@ import "missing-native-js-functions";
 // btw. we don't use class-validator for everything, because we need to explicitly set the type instead of deriving it from typescript also it doesn't easily support nested objects
 
 export class BaseClassWithoutId extends BaseEntity {
-	constructor(private props?: any) {
+	constructor(props?: any) {
 		super();
 		this.assign(props);
 	}
@@ -56,7 +56,6 @@ export class BaseClassWithoutId extends BaseEntity {
 	@BeforeUpdate()
 	@BeforeInsert()
 	validate() {
-		this.assign(this.props);
 		return this;
 	}
 
