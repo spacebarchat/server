@@ -5,7 +5,6 @@ export function initStats() {
 	console.log(`[Path] running in ${__dirname}`);
 	console.log(`[CPU] ${osu.cpu.model()} Cores x${osu.cpu.count()}`);
 	console.log(`[System] ${os.platform()} ${os.arch()}`);
-	console.log(`[Database] started`);
 	console.log(`[Process] running with pid: ${process.pid}`);
 
 	setInterval(async () => {

@@ -2,6 +2,8 @@
 import cluster from "cluster";
 import os from "os";
 import { initStats } from "./stats";
+import { config } from "dotenv";
+config();
 
 // TODO: add tcp socket event transmission
 const cores = 1 || Number(process.env.threads) || os.cpus().length;

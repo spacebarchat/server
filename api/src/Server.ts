@@ -1,4 +1,4 @@
-import { OptionsJson } from 'body-parser';
+import { OptionsJson } from "body-parser";
 import "missing-native-js-functions";
 import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
@@ -38,7 +38,6 @@ export class FosscordServer extends Server {
 		await Config.init();
 		await initEvent();
 
-
 		/* 
 		DOCUMENTATION: uses LOG_REQUESTS environment variable
 		
@@ -51,14 +50,16 @@ export class FosscordServer extends Server {
 		*/
 
 		let logRequests = process.env["LOG_REQUESTS"] != undefined;
-		if(logRequests) {
-			this.app.use(morgan("combined", {
-				skip: (req, res) => {
-					var skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
-					if(process.env["LOG_REQUESTS"]?.charAt(0) == '-') skip = !skip;
-					return skip;
-				}
-			}));
+		if (logRequests) {
+			this.app.use(
+				morgan("combined", {
+					skip: (req, res) => {
+						var skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
+						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
+						return skip;
+					}
+				})
+			);
 		}
 
 		this.app.use(CORS);
@@ -90,8 +91,10 @@ export class FosscordServer extends Server {
 		this.app.use(ErrorHandler);
 		TestClient(this.app);
 
-		if(logRequests){
-			console.log("Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!");
+		if (logRequests) {
+			console.log(
+				"Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!"
+			);
 		}
 		return super.start();
 	}
