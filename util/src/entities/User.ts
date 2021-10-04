@@ -256,6 +256,8 @@ export interface UserSettings {
 	timezone_offset: number; // e.g -60
 }
 
+export const CUSTOM_USER_FLAG_OFFSET = BigInt(1) << BigInt(32);
+
 export class UserFlags extends BitField {
 	static FLAGS = {
 		DISCORD_EMPLOYEE: BigInt(1) << BigInt(0),
