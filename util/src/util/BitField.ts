@@ -141,3 +141,7 @@ export class BitField {
 		throw new RangeError("BITFIELD_INVALID: " + bit);
 	}
 }
+
+export function BitFlag(x: bigint | number) {
+	return BigInt(1) << BigInt(x);
+}

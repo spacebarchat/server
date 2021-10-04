@@ -125,6 +125,7 @@ export interface ConfigValue {
 			required: boolean;
 			minimum: number; // in years
 		};
+		disabled: boolean;
 		requireCaptcha: boolean;
 		requireInvite: boolean;
 		allowNewRegistration: boolean;
@@ -142,6 +143,10 @@ export interface ConfigValue {
 		default: string;
 		useDefaultAsOptimal: boolean;
 		available: Region[];
+	};
+	
+	guild: {
+		showAllGuildsInDiscovery: boolean;
 	};
 	rabbitmq: {
 		host: string | null;
@@ -266,6 +271,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			required: false,
 			minimum: 13,
 		},
+		disabled: false,
 		requireInvite: false,
 		requireCaptcha: true,
 		allowNewRegistration: true,
@@ -292,6 +298,10 @@ export const DefaultConfigOptions: ConfigValue = {
 				deprecated: false,
 			},
 		],
+	},
+	
+	guild: {
+		showAllGuildsInDiscovery: false,
 	},
 	rabbitmq: {
 		host: null,

@@ -21,7 +21,6 @@ export const Config = {
 	set: function set(val: Partial<ConfigValue>) {
 		if (!config || !val) return;
 		config = val.merge(config);
-		console.log(config);
 
 		return applyConfig(config);
 	},

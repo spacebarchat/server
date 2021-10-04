@@ -35,8 +35,11 @@ export async function Connection(
 		// @ts-ignore
 		socket.encoding = searchParams.get("encoding") || "json";
 		if (!["json", "etf"].includes(socket.encoding)) {
-			if (socket.encoding === "etf" && erlpack)
-				throw new Error("Erlpack is not installed: 'npm i -D erlpack'");
+			if (socket.encoding === "etf" && erlpack) {
+				throw new Error(
+					"Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'"
+				);
+			}
 			return socket.close(CLOSECODES.Decode_error);
 		}
 
