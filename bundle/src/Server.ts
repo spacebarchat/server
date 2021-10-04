@@ -6,6 +6,7 @@ import { FosscordServer as APIServer } from "@fosscord/api";
 import { Server as GatewayServer } from "@fosscord/gateway";
 import { CDNServer } from "@fosscord/cdn/";
 import express from "express";
+import { red, green, bold } from "nanocolors";
 import { Config, initDatabase } from "@fosscord/util";
 
 const app = express();
@@ -58,7 +59,7 @@ async function main() {
 	} as any);
 
 	await Promise.all([api.start(), cdn.start(), gateway.start()]);
-	console.log(`[Server] listening on port ${port}`);
+	console.log(`[Server] ${green(`listening on port ${bold(port)}`)}`);
 }
 
 main().catch(console.error);
