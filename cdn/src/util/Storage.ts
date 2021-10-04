@@ -1,7 +1,7 @@
 import { FileStorage } from "./FileStorage";
 import path from "path";
 import fse from "fs-extra";
-import { bgCyan, black } from "chalk";
+import { bgCyan, black } from "nanocolors";
 process.cwd();
 
 export interface Storage {

@@ -2,7 +2,7 @@ import path from "path";
 import "reflect-metadata";
 import { Connection, createConnection, ValueTransformer } from "typeorm";
 import * as Models from "../entities";
-import { yellow, green} from "chalk";
+import { yellow, green} from "nanocolors";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class

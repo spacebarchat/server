@@ -1,7 +1,7 @@
 // process.env.MONGOMS_DEBUG = "true";
 import cluster from "cluster";
 import os from "os";
-import { red, bold, yellow, cyan } from "chalk";
+import { red, bold, yellow, cyan } from "nanocolors";
 import { initStats } from "./stats";
 import { execSync } from "child_process";
 
