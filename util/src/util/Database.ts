@@ -14,7 +14,7 @@ let dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "datab
 export function initDatabase(): Promise<Connection> {
 	if (promise) return promise; // prevent initalizing multiple times
 
-	const type = dbConnectionString.includes(":") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
+	const type = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
 	const isSqlite = type.includes("sqlite");
 
 	console.log(`[Database] ${yellow(`connecting to ${type} db`)}`);
