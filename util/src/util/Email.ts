@@ -1,7 +1,7 @@
 export const EMAIL_REGEX =
 	/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-export function adjustEmail(email: string): string | undefined {
+export function adjustEmail(email?: string): string | undefined {
 	if (!email) return email;
 	// body parser already checked if it is a valid email
 	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);

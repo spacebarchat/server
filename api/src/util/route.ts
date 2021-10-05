@@ -3,6 +3,7 @@ import {
 	EVENT,
 	Event,
 	EventData,
+	FieldErrors,
 	FosscordApiErrors,
 	getPermission,
 	PermissionResolvable,
@@ -15,7 +16,6 @@ import fs from "fs";
 import path from "path";
 import Ajv from "ajv";
 import { AnyValidateFunction } from "ajv/dist/core";
-import { FieldErrors } from "..";
 import addFormats from "ajv-formats";
 
 const SchemaPath = path.join(__dirname, "..", "..", "assets", "schemas.json");
