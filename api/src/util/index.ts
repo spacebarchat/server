@@ -1,5 +1,4 @@
 export * from "./Base64";
-export * from "./FieldError";
 export * from "./ipAddress";
 export * from "./Message";
 export * from "./passwordStrength";
