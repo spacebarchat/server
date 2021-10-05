@@ -21,6 +21,7 @@ import {
 	PublicMember,
 	ChannelType,
 	PublicUser,
+	PrivateUserProjection,
 } from "@fosscord/util";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
@@ -111,6 +112,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const user = await User.findOneOrFail({
 		where: { id: this.user_id },
 		relations: ["relationships", "relationships.to"],
+		select: [...PrivateUserProjection, "relationships"],
 	});
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
