@@ -13,6 +13,7 @@ import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
 import morgan from "morgan";
+import { initInstance } from "./util/Instance";
 
 export interface FosscordServerOptions extends ServerOptions {}
 
@@ -37,6 +38,7 @@ export class FosscordServer extends Server {
 		await initDatabase();
 		await Config.init();
 		await initEvent();
+		await initInstance();
 
 		/* 
 		DOCUMENTATION: uses LOG_REQUESTS environment variable

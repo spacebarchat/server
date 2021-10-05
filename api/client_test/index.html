@@ -36,9 +36,16 @@
 				HTML_TIMESTAMP: Date.now(),
 				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
 			};
+			const localStorage = window.localStorage;
 			// TODO: remote auth
 			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
-			localStorage.removeItem("gatewayURL");
+			localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
+			localStorage.setItem(
+				"DeveloperOptionsStore",
+				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
+			);
+
+			// Auto register guest account:
 			const token = JSON.parse(localStorage.getItem("token"));
 			if (!token) {
 				fetch(`${window.GLOBAL_ENV.API_ENDPOINT}/auth/register`, {
@@ -47,13 +54,14 @@
 					body: JSON.stringify({ username: "Anonymous", consent: true })
 				})
 					.then((x) => x.json())
-					.then((x) => localStorage.setItem("token", `"${x.token}"`));
+					.then((x) => {
+						localStorage.setItem("token", `"${x.token}"`);
+						if (!window.localStorage) {
+							// client already loaded -> need to reload to apply the newly registered user token
+							location.reload();
+						}
+					});
 			}
-
-			localStorage.setItem(
-				"DeveloperOptionsStore",
-				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
-			);
 		</script>
 		<script src="/assets/479a2f1e7d625dc134b9.js"></script>
 		<script src="/assets/a15fd133a1d2d77a2424.js"></script>
