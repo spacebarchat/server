@@ -18,7 +18,11 @@ const router = Router();
 const userProjection: (keyof User)[] = ["relationships", ...PublicUserProjection];
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({ where: { id: req.user_id }, relations: ["relationships", "relationships.to"] });
+	const user = await User.findOneOrFail({
+		where: { id: req.user_id },
+		relations: ["relationships", "relationships.to"],
+		select: ["relationships"]
+	});
 
 	//TODO DTO
 	const related_users = user.relationships.map((r) => {

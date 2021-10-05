@@ -29,6 +29,7 @@ export enum PrivateUserEnum {
 	premium,
 	premium_type,
 	disabled,
+	settings,
 	// locale
 }
 export type PrivateUserKeys = keyof typeof PrivateUserEnum | PublicUserKeys;

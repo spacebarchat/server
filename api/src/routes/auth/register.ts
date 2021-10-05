@@ -79,7 +79,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 
 	if (!register.allowMultipleAccounts) {
 		// TODO: check if fingerprint was eligible generated
-		const exists = await User.findOne({ where: { fingerprints: body.fingerprint } });
+		const exists = await User.findOne({ where: { fingerprints: body.fingerprint }, select: ["id"] });
 
 		if (exists) {
 			throw FieldErrors({
@@ -109,7 +109,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		}
 
 		// check if there is already an account with this email
-		const exists = await User.findOneOrFail({ email: email }).catch((e) => {});
+		const exists = await User.findOne({ email: email });
 
 		if (exists) {
 			throw FieldErrors({
