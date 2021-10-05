@@ -8828,39 +8828,6 @@
                 "type": "integer"
             }
         },
-        "required": [
-            "afk_timeout",
-            "allow_accessibility_detection",
-            "animate_emoji",
-            "animate_stickers",
-            "contact_sync_enabled",
-            "convert_emoticons",
-            "custom_status",
-            "default_guilds_restricted",
-            "detect_platform_accounts",
-            "developer_mode",
-            "disable_games_tab",
-            "enable_tts_command",
-            "explicit_content_filter",
-            "friend_source_flags",
-            "gateway_connected",
-            "gif_auto_play",
-            "guild_folders",
-            "guild_positions",
-            "inline_attachment_media",
-            "inline_embed_media",
-            "locale",
-            "message_display_compact",
-            "native_phone_integration_enabled",
-            "render_embeds",
-            "render_reactions",
-            "restricted_guilds",
-            "show_current_game",
-            "status",
-            "stream_notifications_enabled",
-            "theme",
-            "timezone_offset"
-        ],
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
