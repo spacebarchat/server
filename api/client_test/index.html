@@ -39,6 +39,16 @@
 			// TODO: remote auth
 			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
 			localStorage.removeItem("gatewayURL");
+			const token = JSON.parse(localStorage.getItem("token"));
+			if (!token) {
+				fetch(`${window.GLOBAL_ENV.API_ENDPOINT}/auth/register`, {
+					method: "POST",
+					headers: { "content-type": "application/json" },
+					body: JSON.stringify({ username: "Anonymous", consent: true })
+				})
+					.then((x) => x.json())
+					.then((x) => localStorage.setItem("token", `"${x.token}"`));
+			}
 
 			localStorage.setItem(
 				"DeveloperOptionsStore",
