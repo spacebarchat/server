@@ -144,9 +144,13 @@ export interface ConfigValue {
 		useDefaultAsOptimal: boolean;
 		available: Region[];
 	};
-
 	guild: {
 		showAllGuildsInDiscovery: boolean;
+		autoJoin: {
+			enabled: boolean;
+			guilds: string[];
+			canLeave: boolean;
+		};
 	};
 	rabbitmq: {
 		host: string | null;
@@ -302,6 +306,11 @@ export const DefaultConfigOptions: ConfigValue = {
 
 	guild: {
 		showAllGuildsInDiscovery: false,
+		autoJoin: {
+			enabled: true,
+			canLeave: true,
+			guilds: [],
+		},
 	},
 	rabbitmq: {
 		host: null,
