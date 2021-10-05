@@ -39,7 +39,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const items = [];
 
 	for (const role of roles) {
-		const [role_members, other_members] = members.partition((m) =>
+		const [role_members, other_members] = partition(members, (m: Member) =>
 			m.roles.find((r) => r.id === role.id)
 		);
 		const group = {
@@ -79,4 +79,15 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 			groups,
 		},
 	});
+}
+
+function partition<T>(array: T[], isValid: Function) {
+	return array.reduce(
+		([pass, fail], elem) => {
+			return isValid(elem)
+				? [[...pass, elem], fail]
+				: [pass, [...fail, elem]];
+		},
+		[[], []]
+	);
 }
