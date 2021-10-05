@@ -31,7 +31,7 @@ router.post("/", route({ body: "GuildCreateSchema" }), async (req: Request, res:
 
 	const guild_id = Snowflake.generate();
 
-	await Guild.insert({
+	await new Guild({
 		name: body.name,
 		icon: await handleFile(`/icons/${guild_id}`, body.icon as string),
 		region: Config.get().regions.default,
@@ -61,10 +61,10 @@ router.post("/", route({ body: "GuildCreateSchema" }), async (req: Request, res:
 			welcome_channels: []
 		},
 		widget_enabled: false
-	});
+	}).save();
 
 	// we have to create the role _after_ the guild because else we would get a "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" error
-	await Role.insert({
+	await new Role({
 		id: guild_id,
 		guild_id: guild_id,
 		color: 0,
@@ -74,7 +74,7 @@ router.post("/", route({ body: "GuildCreateSchema" }), async (req: Request, res:
 		name: "@everyone",
 		permissions: String("2251804225"),
 		position: 0
-	});
+	}).save();
 
 	if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
 
@@ -86,23 +86,19 @@ router.post("/", route({ body: "GuildCreateSchema" }), async (req: Request, res:
 		}
 	});
 
-	await Promise.all(
-		body.channels
-			?.sort((a, b) => (a.parent_id ? -1 : 1))
-			.map((x) => {
-				var id = ids.get(x.id) || Snowflake.generate();
+	for (const channel of body.channels?.sort((a, b) => (a.parent_id ? 1 : -1))) {
+		var id = ids.get(channel.id) || Snowflake.generate();
 
-				// TODO: should we abort if parent_id is a category? (to disallow sub category channels)
-				var parent_id = ids.get(x.parent_id);
+		// TODO: should we abort if parent_id is a category? (to disallow sub category channels)
+		var parent_id = ids.get(channel.parent_id);
 
-				return Channel.createChannel({ ...x, guild_id, id, parent_id }, req.user_id, {
-					keepId: true,
-					skipExistsCheck: true,
-					skipPermissionCheck: true,
-					skipEventEmit: true
-				});
-			})
-	);
+		await Channel.createChannel({ ...channel, guild_id, id, parent_id }, req.user_id, {
+			keepId: true,
+			skipExistsCheck: true,
+			skipPermissionCheck: true,
+			skipEventEmit: true
+		});
+	}
 
 	await Member.addToGuild(req.user_id, guild_id);
 
