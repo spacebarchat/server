@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "src/start.js",
 	"scripts": {
-		"setup": "npm install && cd ../util && npm --production=false i && cd ../api && npm --production=false i && cd ../cdn && npm --production=false i && cd ../gateway && npm --production=false i",
+		"setup": "cd ../util && npm --production=false i && cd ../api && npm --production=false i && cd ../cdn && npm --production=false i && cd ../gateway && npm --production=false i || npm install",
 		"build": "npm run build:util && npm run build:api && npm run build:cdn && npm run build:gateway && npm run build:bundle",
 		"postinstall": "ts-patch install -s",
 		"build:bundle": "npx tsc -b .",
