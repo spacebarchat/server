@@ -34,7 +34,7 @@
 		"amqplib": "^0.8.0",
 		"dotenv": "^8.2.0",
 		"jsonwebtoken": "^8.5.1",
-		"lambert-server": "^1.2.8",
+		"lambert-server": "^1.2.11",
 		"missing-native-js-functions": "^1.2.17",
 		"mongoose-autopopulate": "^0.12.3",
 		"node-fetch": "^2.6.1",
