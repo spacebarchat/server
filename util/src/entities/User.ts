@@ -3,6 +3,8 @@ import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
+import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
+import { Member } from ".";
 
 export enum PublicUserEnum {
 	username,
@@ -74,13 +76,13 @@ export class User extends BaseClass {
 	@Column({ nullable: true })
 	banner?: string; // hash of the user banner
 
-	@Column({ nullable: true })
+	@Column({ nullable: true, select: false })
 	phone?: string; // phone number of the user
 
-	@Column()
+	@Column({ select: false })
 	desktop: boolean; // if the user has desktop app installed
 
-	@Column()
+	@Column({ select: false })
 	mobile: boolean; // if the user has mobile app installed
 
 	@Column()
@@ -98,16 +100,16 @@ export class User extends BaseClass {
 	@Column()
 	system: boolean; // shouldn't be used, the api sents this field type true, if the generated message comes from a system generated author
 
-	@Column()
+	@Column({ select: false })
 	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
 
-	@Column()
+	@Column({ select: false })
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 
 	@Column()
 	created_at: Date; // registration date
 
-	@Column()
+	@Column({ select: false })
 	verified: boolean; // if the user is offically verified
 
 	@Column()
@@ -116,7 +118,7 @@ export class User extends BaseClass {
 	@Column()
 	deleted: boolean; // if the user was deleted
 
-	@Column({ nullable: true })
+	@Column({ nullable: true, select: false })
 	email?: string; // email of the user
 
 	@Column()
@@ -148,10 +150,10 @@ export class User extends BaseClass {
 		hash?: string; // hash of the password, salt is saved in password (bcrypt)
 	};
 
-	@Column({ type: "simple-array" })
+	@Column({ type: "simple-array", select: false })
 	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
 
-	@Column({ type: "simple-json" })
+	@Column({ type: "simple-json", select: false })
 	settings: UserSettings;
 
 	toPublicUser() {
@@ -170,6 +172,88 @@ export class User extends BaseClass {
 				select: [...PublicUserProjection, ...(opts?.select || [])],
 			}
 		);
+	}
+
+	static async register({
+		email,
+		username,
+		password,
+		date_of_birth,
+		req,
+	}: {
+		username: string;
+		password?: string;
+		email?: string;
+		date_of_birth?: Date; // "2000-04-03"
+		req?: any;
+	}) {
+		// trim special uf8 control characters -> Backspace, Newline, ...
+		username = trimSpecial(username);
+
+		// discriminator will be randomly generated
+		let discriminator = "";
+
+		let exists;
+		// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
+		// if it all five times already exists, abort with USERNAME_TOO_MANY_USERS error
+		// else just continue
+		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the mongodb database?
+		for (let tries = 0; tries < 5; tries++) {
+			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
+			exists = await User.findOne({ where: { discriminator, username: username }, select: ["id"] });
+			if (!exists) break;
+		}
+
+		if (exists) {
+			throw FieldErrors({
+				username: {
+					code: "USERNAME_TOO_MANY_USERS",
+					message: req.t("auth:register.USERNAME_TOO_MANY_USERS"),
+				},
+			});
+		}
+
+		// TODO: save date_of_birth
+		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
+		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
+		const language = req.language === "en" ? "en-US" : req.language || "en-US";
+
+		const user = await new User({
+			created_at: new Date(),
+			username: username,
+			discriminator,
+			id: Snowflake.generate(),
+			bot: false,
+			system: false,
+			desktop: false,
+			mobile: false,
+			premium: true,
+			premium_type: 2,
+			bio: "",
+			mfa_enabled: false,
+			verified: true,
+			disabled: false,
+			deleted: false,
+			email: email,
+			rights: "0",
+			nsfw_allowed: true, // TODO: depending on age
+			public_flags: "0",
+			flags: "0", // TODO: generate
+			data: {
+				hash: password,
+				valid_tokens_since: new Date(),
+			},
+			settings: { ...defaultSettings, locale: language },
+			fingerprints: [],
+		}).save();
+
+		if (Config.get().guild.autoJoin.enabled) {
+			for (const guild of Config.get().guild.autoJoin.guilds || []) {
+				await Member.addToGuild(user.id, guild);
+			}
+		}
+
+		return user;
 	}
 }
 
