@@ -7,13 +7,15 @@
 		"postinstall": "npx ts-patch install -s",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "npm run build && node dist/start.js",
-		"build": "npx tsc -b .",
+		"build": "swc src --out-dir dist",
 		"dev": "tsnd --respawn src/start.ts"
 	},
 	"keywords": [],
 	"author": "Fosscord",
 	"license": "ISC",
 	"devDependencies": {
+		"@swc/cli": "^0.1.51",
+		"@swc/core": "^1.2.93",
 		"@types/amqplib": "^0.8.1",
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/mongodb": "^3.6.9",
@@ -38,6 +40,7 @@
 		"missing-native-js-functions": "^1.2.17",
 		"mongoose-autopopulate": "^0.12.3",
 		"node-fetch": "^2.6.1",
+		"swc": "^1.0.11",
 		"typeorm": "^0.2.37",
 		"uuid": "^8.3.2",
 		"ws": "^7.4.2"
