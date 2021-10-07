@@ -5,13 +5,8 @@
 	"main": "src/start.js",
 	"scripts": {
 		"setup": "cd ../util && npm --production=false i && cd ../api && npm --production=false i && cd ../cdn && npm --production=false i && cd ../gateway && npm --production=false i && cd ../bundle/ && npm --production=false i && npm run build",
-		"build": "npm run build:util && npm run build:api && npm run build:cdn && npm run build:gateway && npm run build:bundle",
-		"postinstall": "ts-patch install -s",
-		"build:bundle": "swc src --out-dir dist",
-		"build:util": "cd ../util/ && npm run build",
-		"build:api": "cd ../api/ && npm run build",
-		"build:cdn": "cd ../cdn/ && npm run build",
-		"build:gateway": "cd ../gateway/ && npm run build",
+		"build": "node scripts/build.js",
+		"build:bundle": "npx swc src --out-dir dist",
 		"start": "npm run build && npm run start:bundle",
 		"start:bundle": "node dist/start.js",
 		"test": "echo \"Error: no test specified\" && exit 1"

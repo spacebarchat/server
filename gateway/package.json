@@ -3,11 +3,12 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "dist/index.js",
+	"types": "src/index.ts",
 	"scripts": {
 		"postinstall": "npx ts-patch install -s",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "npm run build && node dist/start.js",
-		"build": "swc src --out-dir dist",
+		"build": "npx swc src --out-dir dist",
 		"dev": "tsnd --respawn src/start.ts"
 	},
 	"keywords": [],

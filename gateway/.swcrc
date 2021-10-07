@@ -1,9 +1,14 @@
 {
-    "jsc": {
-        "parser": {
-            "syntax": "typescript",
-            "decorators": true
-        },
-        "target": "es2021"
-    }
+	"jsc": {
+		"parser": {
+			"syntax": "typescript",
+			"decorators": true
+		},
+		"target": "es2021",
+		"baseUrl": ".",
+		"paths": {
+			"@fosscord/gateway": ["src/index"],
+			"@fosscord/gateway/*": ["src/*"]
+		}
+	}
 }
