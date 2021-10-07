@@ -33,7 +33,8 @@ router.delete("/:code", route({}), async (req: Request, res: Response) => {
 
 	await Promise.all([
 		Invite.delete({ code }),
-		Guild.update({ vanity_url_code: code }, { vanity_url_code: undefined }),
+		//TODO: fix vanity url deleting
+		// Guild.update({ vanity_url_code: code }, { vanity_url_code: undefined }),
 		emitEvent({
 			event: "INVITE_DELETE",
 			guild_id: guild_id,
