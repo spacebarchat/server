@@ -10,7 +10,7 @@
 		"test": "npm run build && npm run test:only",
 		"test:watch": "jest --watch",
 		"start": "npm run build && node dist/start",
-		"build": "npx tsc -b .",
+		"build": "swc src --out-dir dist",
 		"build-docker": "tsc -p tsconfig-docker.json",
 		"dev": "tsnd --respawn src/start.ts",
 		"patch": "ts-patch install -s && npx patch-package",
