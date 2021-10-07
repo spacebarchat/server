@@ -1,13 +1,16 @@
 {
+	"module": {
+		"type": "commonjs"
+	},
 	"jsc": {
 		"parser": {
 			"syntax": "typescript",
 			"decorators": true
 		},
 		"target": "es2021",
-		"baseUrl": ".",
+		"baseUrl": "./",
 		"paths": {
-			"@fosscord/api": ["src/index"],
+			"@fosscord/api": ["src/index.ts"],
 			"@fosscord/api/*": ["src/*"]
 		}
 	}
