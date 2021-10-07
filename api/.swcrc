@@ -7,6 +7,11 @@
 			"syntax": "typescript",
 			"decorators": true
 		},
-		"target": "es2021"
+		"target": "es2021",
+		"baseUrl": "./",
+		"paths": {
+			"@fosscord/api": ["src/index.ts"],
+			"@fosscord/api/*": ["src/*"]
+		}
 	}
 }

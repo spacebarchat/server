@@ -2,8 +2,8 @@
 	"name": "@fosscord/api",
 	"version": "1.0.0",
 	"description": "This repository contains the HTTP API Server",
-	"main": "dist/Server.js",
-	"types": "dist/Server.d.ts",
+	"main": "dist/index.js",
+	"types": "src/index.ts",
 	"scripts": {
 		"test:only": "jest --coverage --verbose --forceExit ./tests",
 		"test:routes": "jest --coverage --verbose --forceExit ./routes.test.ts",
