@@ -1,9 +1,12 @@
 {
-    "jsc": {
-        "parser": {
-            "syntax": "typescript",
-            "decorators": true
-        },
-        "target": "es2021"
-    }
+	"module": {
+		"type": "commonjs"
+	},
+	"jsc": {
+		"parser": {
+			"syntax": "typescript",
+			"decorators": true
+		},
+		"target": "es2021"
+	}
 }
