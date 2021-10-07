@@ -3,12 +3,12 @@
 	"version": "1.0.0",
 	"description": "Utility functions for the all server repositories",
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"types": "src/index.ts",
 	"scripts": {
 		"start": "npm run build && node dist/",
 		"test": "npm run build && jest",
 		"postinstall": "npm run build",
-		"build": "swc src --out-dir dist"
+		"build": "npx swc src --out-dir dist"
 	},
 	"repository": {
 		"type": "git",

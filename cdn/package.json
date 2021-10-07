@@ -3,11 +3,11 @@
 	"version": "1.0.0",
 	"description": "cdn for fosscord",
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"types": "src/index.ts",
 	"scripts": {
 		"postinstall": "ts-patch install -s",
 		"test": "npm run build && jest --coverage ./tests",
-		"build": "swc src --out-dir dist",
+		"build": "npx swc src --out-dir dist",
 		"start": "npm run build && node dist/start.js"
 	},
 	"repository": {
