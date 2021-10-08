@@ -8,7 +8,7 @@
 		"start": "npm run build && node dist/",
 		"test": "npm run build && jest",
 		"postinstall": "npm run build",
-		"build": "npx swc src --out-dir dist"
+		"build": "npx tsc -b ."
 	},
 	"repository": {
 		"type": "git",
@@ -54,7 +54,6 @@
 		"pg": "^8.7.1",
 		"reflect-metadata": "^0.1.13",
 		"sqlite3": "^5.0.2",
-		"swc": "^1.0.11",
 		"tsconfig-paths": "^3.11.0",
 		"typeorm": "^0.2.37",
 		"typescript": "^4.4.2",
