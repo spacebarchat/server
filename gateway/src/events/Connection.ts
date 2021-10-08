@@ -1,11 +1,8 @@
 import WS from "ws";
-import {
-	setHeartbeat,
-	Send,
-	CLOSECODES,
-	OPCODES,
-	WebSocket,
-} from "@fosscord/gateway";
+import { WebSocket } from "@fosscord/gateway";
+import { Send } from "../util/Send";
+import { CLOSECODES, OPCODES } from "../util/Constants";
+import { setHeartbeat } from "../util/Heartbeat";
 import { IncomingMessage } from "http";
 import { Close } from "./Close";
 import { Message } from "./Message";

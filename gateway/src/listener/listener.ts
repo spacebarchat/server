@@ -1,15 +1,15 @@
 import {
-	User,
 	getPermission,
 	Permissions,
-	Channel,
 	RabbitMQ,
 	listenEvent,
 	EventOpts,
 	ListenEventOpts,
 	Member,
 } from "@fosscord/util";
-import { OPCODES, WebSocket, Send } from "@fosscord/gateway";
+import { OPCODES } from "../util/Constants";
+import { Send } from "../util/Send";
+import { WebSocket } from "@fosscord/gateway";
 import "missing-native-js-functions";
 import { Channel as AMQChannel } from "amqplib";
 import { Recipient } from "@fosscord/util";

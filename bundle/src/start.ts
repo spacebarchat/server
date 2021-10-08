@@ -1,7 +1,7 @@
 // process.env.MONGOMS_DEBUG = "true";
 const tsConfigPaths = require("tsconfig-paths");
 const path = require("path");
-const baseUrl = path.join(__dirname, ".."); // Either absolute or relative path. If relative it's resolved to current working directory.
+const baseUrl = path.join(__dirname, "..");
 const cleanup = tsConfigPaths.register({
 	baseUrl,
 	paths: {
@@ -13,6 +13,7 @@ const cleanup = tsConfigPaths.register({
 		"@fosscord/cdn/*": ["../cdn/dist/*"],
 	},
 });
+console.log(require("@fosscord/gateway"));
 
 import "reflect-metadata";
 import cluster from "cluster";
@@ -26,7 +27,7 @@ import { execSync } from "child_process";
 // TODO: add tcp socket event transmission
 const cores = 1 || Number(process.env.threads) || os.cpus().length;
 
-export function getCommitOrFail() {
+function getCommitOrFail() {
 	try {
 		return execSync("git rev-parse HEAD").toString().trim();
 	} catch (e) {

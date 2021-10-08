@@ -1,4 +1,5 @@
-import { WebSocket, Payload, CLOSECODES, OPCODES } from "@fosscord/gateway";
+import { CLOSECODES, OPCODES } from "../util/Constants";
+import { WebSocket, Payload } from "@fosscord/gateway";
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");

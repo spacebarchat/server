@@ -1,14 +1,6 @@
+import { WebSocket, Payload } from "@fosscord/gateway";
 import {
-	WebSocket,
-	CLOSECODES,
-	Payload,
-	OPCODES,
-	genSessionId,
-} from "@fosscord/gateway";
-import {
-	Channel,
 	checkToken,
-	Guild,
 	Intents,
 	Member,
 	ReadyEventData,
@@ -16,16 +8,15 @@ import {
 	Session,
 	EVENTEnum,
 	Config,
-	dbConnection,
-	PublicMemberProjection,
 	PublicMember,
-	ChannelType,
 	PublicUser,
 	PrivateUserProjection,
 } from "@fosscord/util";
+import { Send } from "../util/Send";
+import { CLOSECODES, OPCODES } from "../util/Constants";
+import { genSessionId } from "../util/SessionUtils";
 import { setupListener } from "../listener/listener";
 import { IdentifySchema } from "../schema/Identify";
-import { Send } from "@fosscord/gateway/util/Send";
 // import experiments from "./experiments.json";
 const experiments: any = [];
 import { check } from "./instanceOf";

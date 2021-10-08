@@ -1,10 +1,10 @@
 import { Router, Response, Request } from "express";
 import { Config, Snowflake } from "@fosscord/util";
-import { storage } from "@fosscord/cdn/util/Storage";
+import { storage } from "@fosscord/cdn";
 import FileType from "file-type";
 import { HTTPError } from "lambert-server";
-import { multer } from "@fosscord/cdn/util/multer";
 import crypto from "crypto";
+import { multer } from "../util/multer";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
