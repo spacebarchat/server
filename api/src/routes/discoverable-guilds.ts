@@ -13,7 +13,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	// TODO: implement this with default typeorm query
 	// const guilds = await Guild.find({ where: { features: "DISCOVERABLE" } }); //, take: Math.abs(Number(limit)) });
 	const guilds = showAllGuilds ? await Guild.find({take: Math.abs(Number(limit || 20))}) : await Guild.find({ where: `"features" LIKE '%COMMUNITY%'`, take: Math.abs(Number(limit || 20)) });
-	res.send({ guilds: guilds });
+	res.json({ guilds: guilds }).status(200);
 });
 
 export default router;
