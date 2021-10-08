@@ -22,7 +22,7 @@ const router: Router = Router();
 
 export default router;
 
-export function isTextChannel(type: ChannelType): boolean {
+function isTextChannel(type: ChannelType): boolean {
 	switch (type) {
 		case ChannelType.GUILD_STORE:
 		case ChannelType.GUILD_VOICE:
@@ -39,6 +39,7 @@ export function isTextChannel(type: ChannelType): boolean {
 			return true;
 	}
 }
+module.exports.isTextChannel = isTextChannel;
 
 export interface MessageCreateSchema {
 	content?: string;

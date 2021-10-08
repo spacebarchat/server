@@ -2,11 +2,11 @@ process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
 import http from "http";
-import { FosscordServer as APIServer } from "@fosscord/api";
-import { Server as GatewayServer } from "@fosscord/gateway";
+import * as Api from "@fosscord/api";
+import * as Gateway from "@fosscord/gateway";
 import { CDNServer } from "@fosscord/cdn/";
 import express from "express";
-import { red, green, bold } from "nanocolors";
+import { green, bold } from "nanocolors";
 import { Config, initDatabase } from "@fosscord/util";
 
 const app = express();
@@ -16,11 +16,11 @@ const production = false;
 server.on("request", app);
 
 // @ts-ignore
-const api = new APIServer({ server, port, production, app });
+const api = new Api.FosscordServer({ server, port, production, app });
 // @ts-ignore
 const cdn = new CDNServer({ server, port, production, app });
 // @ts-ignore
-const gateway = new GatewayServer({ server, port, production });
+const gateway = new Gateway.Server({ server, port, production });
 
 async function main() {
 	await initDatabase();

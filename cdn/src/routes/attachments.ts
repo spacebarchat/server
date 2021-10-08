@@ -1,9 +1,9 @@
 import { Router, Response, Request } from "express";
 import { Config, Snowflake } from "@fosscord/util";
-import { storage } from "@fosscord/cdn/util/Storage";
+import { storage } from "@fosscord/cdn";
 import FileType from "file-type";
 import { HTTPError } from "lambert-server";
-import { multer } from "@fosscord/cdn/util/multer";
+import { multer } from "@fosscord/cdn";
 import imageSize from "image-size";
 
 const router = Router();
