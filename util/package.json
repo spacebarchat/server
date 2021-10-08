@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "Utility functions for the all server repositories",
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"types": "src/index.ts",
 	"scripts": {
 		"start": "npm run build && node dist/",
 		"test": "npm run build && jest",
@@ -28,6 +28,8 @@
 	},
 	"homepage": "https://docs.fosscord.com/",
 	"devDependencies": {
+		"@swc/cli": "^0.1.51",
+		"@swc/core": "^1.2.93",
 		"@types/amqplib": "^0.8.1",
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/mongoose-autopopulate": "^0.10.1",
