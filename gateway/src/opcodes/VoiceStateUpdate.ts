@@ -1,5 +1,6 @@
 import { VoiceStateUpdateSchema } from "../schema/VoiceStateUpdateSchema";
-import { Payload, WebSocket, genVoiceToken } from "@fosscord/gateway";
+import { Payload, WebSocket } from "@fosscord/gateway";
+import { genVoiceToken } from "../util/SessionUtils";
 import { check } from "./instanceOf";
 import {
 	Config,
