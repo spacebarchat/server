@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "dist/index.js",
+	"types": "src/index.ts",
 	"scripts": {
 		"postinstall": "npx ts-patch install -s",
 		"test": "echo \"Error: no test specified\" && exit 1",
@@ -14,6 +15,8 @@
 	"author": "Fosscord",
 	"license": "ISC",
 	"devDependencies": {
+		"@swc/cli": "^0.1.51",
+		"@swc/core": "^1.2.93",
 		"@types/amqplib": "^0.8.1",
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/mongodb": "^3.6.9",

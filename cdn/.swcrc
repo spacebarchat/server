@@ -1,0 +1,17 @@
+{
+	"module": {
+		"type": "commonjs"
+	},
+	"jsc": {
+		"parser": {
+			"syntax": "typescript",
+			"decorators": true
+		},
+		"target": "es2021",
+		"baseUrl": ".",
+		"paths": {
+			"@fosscord/cdn/": ["src/index"],
+			"@fosscord/cdn/*": ["src/*"]
+		}
+	}
+}

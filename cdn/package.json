@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "cdn for fosscord",
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"types": "src/index.ts",
 	"scripts": {
 		"postinstall": "ts-patch install -s",
 		"test": "npm run build && jest --coverage ./tests",
@@ -22,6 +22,8 @@
 	},
 	"homepage": "https://github.com/fosscord/fosscord-server#readme",
 	"devDependencies": {
+		"@swc/cli": "^0.1.51",
+		"@swc/core": "^1.2.93",
 		"@types/amqplib": "^0.8.1",
 		"@types/body-parser": "^1.19.0",
 		"@types/btoa": "^1.2.3",
