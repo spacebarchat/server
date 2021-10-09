@@ -18,6 +18,11 @@ export interface EmojiCreateSchema {
     roles?: string[];
 }
 
+export interface EmojiModifySchema {
+    name?: string;
+    roles?: string[];
+}
+
 router.get("/", route({}), async (req: Request, res: Response) => {
     const guild_id = req.params.guild_id;
 
@@ -52,6 +57,27 @@ router.post("/", route({ body: "EmojiCreateSchema", permission: "MANAGE_EMOJIS_A
     }
 });
 */
+
+router.patch("/:emoji_id", route({ body: "EmojiModifySchema", permission: "MANAGE_EMOJIS_AND_STICKERS" }), async (req: Request, res: Response) => {
+    const { emoji_id, guild_id } = req.params;
+    const body = req.body as EmojiModifySchema;
+
+    const emoji = new Emoji({ ...body, id: emoji_id, guild_id: guild_id });
+
+    await Promise.all([
+        emoji.save(),
+        emitEvent({
+            event: "GUILD_EMOJI_UPDATE",
+            guild_id: guild_id,
+            data: {
+                guild_id: guild_id,
+                emojis: await Emoji.find({ guild_id: guild_id })
+            }
+        } as GuildEmojiUpdateEvent)
+    ])
+
+    return res.json(emoji);
+});
 
 router.delete("/:emoji_id", route({ permission: "MANAGE_EMOJIS_AND_STICKERS" }), async (req: Request, res: Response) => {
     const guild_id = req.params.guild_id;
