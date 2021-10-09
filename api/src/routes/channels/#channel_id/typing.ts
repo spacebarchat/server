@@ -9,7 +9,7 @@ router.post("/", route({ permission: "SEND_MESSAGES" }), async (req: Request, re
 	const user_id = req.user_id;
 	const timestamp = Date.now();
 	const channel = await Channel.findOneOrFail({ id: channel_id });
-	const member = await Member.findOneOrFail({ where: { id: user_id }, relations: ["roles"] });
+	const member = await Member.findOneOrFail({ where: { id: user_id }, relations: ["roles", "user"] });
 
 	await emitEvent({
 		event: "TYPING_START",
