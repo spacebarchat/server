@@ -47,7 +47,7 @@
 
 			// Auto register guest account:
 			const token = JSON.parse(localStorage.getItem("token"));
-			if (!token) {
+			if (!token && location.pathname !== "/login" && location.pathname !== "/register") {
 				fetch(`${window.GLOBAL_ENV.API_ENDPOINT}/auth/register`, {
 					method: "POST",
 					headers: { "content-type": "application/json" },
