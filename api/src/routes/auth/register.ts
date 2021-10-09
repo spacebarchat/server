@@ -98,7 +98,6 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		}
 	}
 
-	console.log("register", body.email, body.username, ip);
 	// TODO: gift_code_sku_id?
 	// TODO: check password strength
 
@@ -167,6 +166,8 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		// await to fail if the invite doesn't exist (necessary for requireInvite to work properly) (username only signups are possible)
 		await Invite.joinGuild(user.id, body.invite);
 	}
+
+	console.log("register", body.email, body.username, ip);
 
 	return res.json({ token: await generateToken(user.id) });
 });
