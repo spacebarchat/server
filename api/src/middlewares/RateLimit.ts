@@ -1,4 +1,4 @@
-import { Config, listenEvent } from "@fosscord/util";
+import { Config, listenEvent, Rights } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { getIpAdress } from "@fosscord/api";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
@@ -166,7 +166,7 @@ async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits
 	}
 
 	limit.hits++;
-	if (limit.hits >= opts.max_hits) {
+	if (!Rights.has(Rights.BYPASS_RATE_LIMITS) && limit.hits >= opts.max_hits) {
 		limit.blocked = true;
 	}
 
