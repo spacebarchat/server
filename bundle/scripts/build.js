@@ -37,7 +37,6 @@ function transpileFiles() {
 		const files = walk(path.join(__dirname, "..", "..", part, "dist"));
 		for (const file of files) {
 			let content = fs.readFileSync(file, { encoding: "utf8" });
-			console.log(file);
 			content = content
 				.replace(
 					new RegExp(`@fosscord/${part}`),

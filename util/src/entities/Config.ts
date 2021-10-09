@@ -129,6 +129,7 @@ export interface ConfigValue {
 		disabled: boolean;
 		requireCaptcha: boolean;
 		requireInvite: boolean;
+		guestsRequireInvite: boolean;
 		allowNewRegistration: boolean;
 		allowMultipleAccounts: boolean;
 		blockProxies: boolean;
@@ -279,6 +280,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		},
 		disabled: false,
 		requireInvite: false,
+		guestsRequireInvite: true,
 		requireCaptcha: true,
 		allowNewRegistration: true,
 		allowMultipleAccounts: true,
