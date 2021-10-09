@@ -98,7 +98,6 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		}
 	}
 
-	console.log("register", body.email, body.username, ip);
 	// TODO: gift_code_sku_id?
 	// TODO: check password strength
 
@@ -154,17 +153,21 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		});
 	}
 
-	const user = await User.register({ ...body, req });
-
-	if (body.invite) {
-		// await to fail if the invite doesn't exist (necessary for requireInvite to work properly) (username only signups are possible)
-		await Invite.joinGuild(user.id, body.invite);
-	} else if (register.requireInvite) {
+	if (!body.invite && (register.requireInvite || (register.guestsRequireInvite && !register.email))) {
 		// require invite to register -> e.g. for organizations to send invites to their employees
 		throw FieldErrors({
 			email: { code: "INVITE_ONLY", message: req.t("auth:register.INVITE_ONLY") }
 		});
 	}
+
+	const user = await User.register({ ...body, req });
+
+	if (body.invite) {
+		// await to fail if the invite doesn't exist (necessary for requireInvite to work properly) (username only signups are possible)
+		await Invite.joinGuild(user.id, body.invite);
+	}
+
+	console.log("register", body.email, body.username, ip);
 
 	return res.json({ token: await generateToken(user.id) });
 });
