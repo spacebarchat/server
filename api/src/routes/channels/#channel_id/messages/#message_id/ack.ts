@@ -1,4 +1,4 @@
-import { emitEvent, getPermission, MessageAckEvent, ReadState } from "@fosscord/util";
+import { emitEvent, getPermission, MessageAckEvent, ReadState, Snowflake } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
 
@@ -18,7 +18,11 @@ router.post("/", route({ body: "MessageAcknowledgeSchema" }), async (req: Reques
 	const permission = await getPermission(req.user_id, undefined, channel_id);
 	permission.hasThrow("VIEW_CHANNEL");
 
-	await ReadState.update({ user_id: req.user_id, channel_id }, { user_id: req.user_id, channel_id, last_message_id: message_id });
+	let read_state = await ReadState.findOne({ user_id: req.user_id, channel_id });
+	if (!read_state) read_state = new ReadState({ user_id: req.user_id, channel_id });
+	read_state.last_message_id = message_id;
+
+	await read_state.save();
 
 	await emitEvent({
 		event: "MESSAGE_ACK",

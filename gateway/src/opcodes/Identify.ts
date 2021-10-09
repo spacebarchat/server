@@ -11,6 +11,7 @@ import {
 	PublicMember,
 	PublicUser,
 	PrivateUserProjection,
+	ReadState,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
@@ -138,6 +139,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	//We save the session and we delete it when the websocket is closed
 	await session.save();
 
+	const read_states = await ReadState.find({ user_id: this.user_id });
+	read_states.forEach((s: any) => {
+		s.id = s.channel_id;
+		delete s.user_id;
+		delete s.channel_id;
+	});
+
 	const privateUser = {
 		avatar: user.avatar,
 		mobile: user.mobile,
@@ -176,8 +184,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		geo_ordered_rtc_regions: [], // TODO
 		relationships: user.relationships.map((x) => x.toPublicRelationship()),
 		read_state: {
-			// TODO
-			entries: [],
+			entries: read_states,
 			partial: false,
 			version: 304128,
 		},
