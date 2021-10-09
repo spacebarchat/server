@@ -12,6 +12,7 @@ export const Config = {
 		if (config) return config;
 		pairs = await ConfigEntity.find();
 		config = pairsToConfig(pairs);
+		console.log(config.guild.autoJoin);
 
 		return this.set((config || {}).merge(DefaultConfigOptions));
 	},
@@ -47,16 +48,18 @@ function pairsToConfig(pairs: ConfigEntity[]) {
 
 	pairs.forEach((p) => {
 		const keys = p.key.split("_");
-		let prev = "";
 		let obj = value;
+		let prev = "";
+		let prevObj = obj;
 		let i = 0;
 
 		for (const key of keys) {
-			if (Number(key) && !obj[prev]) obj = obj[prev] = [];
+			if (!isNaN(Number(key)) && !prevObj[prev]?.length) prevObj[prev] = obj = [];
 			if (i++ === keys.length - 1) obj[key] = p.value;
 			else if (!obj[key]) obj[key] = {};
 
 			prev = key;
+			prevObj = obj;
 			obj = obj[key];
 		}
 	});
