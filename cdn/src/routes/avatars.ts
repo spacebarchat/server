@@ -1,6 +1,6 @@
 import { Router, Response, Request } from "express";
 import { Config, Snowflake } from "@fosscord/util";
-import { storage } from "@fosscord/cdn";
+import { storage } from "../util/Storage";
 import FileType from "file-type";
 import { HTTPError } from "lambert-server";
 import crypto from "crypto";

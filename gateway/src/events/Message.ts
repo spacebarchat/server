@@ -5,7 +5,7 @@ try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 import OPCodeHandlers from "../opcodes";
-import { instanceOf, Tuple } from "lambert-server";
+import { Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";
 
