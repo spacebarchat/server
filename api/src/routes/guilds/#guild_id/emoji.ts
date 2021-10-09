@@ -10,7 +10,6 @@ import {
 	Snowflake,
 	User
 } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 
 const router = Router();
@@ -75,7 +74,7 @@ router.post("/", route({ body: "EmojiCreateSchema", permission: "MANAGE_EMOJIS_A
         ...body,
         user: user,
         managed: false,
-        animated: false, // TODO: Add support  animated emojis
+        animated: false, // TODO: Add support animated emojis
         available: true
     });
 
@@ -108,7 +107,7 @@ router.patch("/:emoji_id", route({ body: "EmojiModifySchema", permission: "MANAG
                 emojis: await Emoji.find({ guild_id: guild_id })
             }
         } as GuildEmojiUpdateEvent)
-    ])
+    ]);
 
     return res.json(emoji);
 });
