@@ -2,7 +2,7 @@ import { Router, Response, Request } from "express";
 import fetch from "node-fetch";
 import { HTTPError } from "lambert-server";
 import { Snowflake } from "@fosscord/util";
-import { storage } from "@fosscord/cdn";
+import { storage } from "../util/Storage";
 import FileType from "file-type";
 import { Config } from "@fosscord/util";
 
