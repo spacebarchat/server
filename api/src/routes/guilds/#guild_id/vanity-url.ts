@@ -37,8 +37,6 @@ router.patch("/", route({ body: "VanityUrlSchema", permission: "MANAGE_GUILD" })
 	const { id } = await Channel.findOneOrFail({ guild_id, type: ChannelType.GUILD_TEXT });
 
 	Promise.all([
-		//TODO: fix 
-		//Guild.update({ id: guild_id }, { vanity_url.code: code }),
 		Invite.delete({ code: guild.vanity_url?.code }),
 		new Invite({
 			code: code,
