@@ -62,6 +62,12 @@
 						}
 					});
 			}
+
+			const settings = JSON.parse(localStorage.getItem("UserSettingsStore"));
+			if (settings && settings.locale === "en") {
+				settings.locale = "en-US";
+				localStorage.setItem("UserSettingsStore", JSON.stringify(settings));
+			}
 		</script>
 		<script src="/assets/479a2f1e7d625dc134b9.js"></script>
 		<script src="/assets/a15fd133a1d2d77a2424.js"></script>
