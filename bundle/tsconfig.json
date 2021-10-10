@@ -1,16 +1,11 @@
 {
-	"include": [
-		"../api/src/**/*.ts",
-		"../gateway/src/**/*.ts",
-		"../cdn/src/**/*.ts",
-		"../util/src/**/*.ts",
-		"src/**/*.ts"
-	],
+	"include": ["dist/**/*.ts"],
+	"exclude": [],
 	"compilerOptions": {
 		/* Visit https://aka.ms/tsconfig.json to read more about this file */
 
 		/* Basic Options */
-		"incremental": true /* Enable incremental compilation */,
+		"incremental": false /* Enable incremental compilation */,
 		"target": "ES6" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */,
 		"module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
 		"lib": ["ES2021"] /* Specify library files to be included in the compilation. */,
@@ -22,7 +17,7 @@
 		"sourceMap": false /* Generates corresponding '.map' file. */,
 		// "outFile": "./",                       /* Concatenate and emit output to single file. */
 		"outDir": "./dist/" /* Redirect output structure to the directory. */,
-		"rootDir": "../" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
+		"rootDir": "./dist/" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
 		// "composite": true,                     /* Enable project compilation */
 		// "tsBuildInfoFile": "./",               /* Specify file to store incremental compilation information */
 		// "removeComments": true,                /* Do not emit comments to output. */
@@ -73,16 +68,12 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
-		"baseUrl": "..",
+		"baseUrl": "./dist/",
 		"paths": {
 			"@fosscord/api": ["api/src/index"],
-			"@fosscord/api/*": ["api/src/*"],
 			"@fosscord/gateway": ["gateway/src/index"],
-			"@fosscord/gateway/*": ["gateway/src/*"],
 			"@fosscord/cdn": ["cdn/src/index"],
-			"@fosscord/cdn/*": ["cdn/src/*"],
-			"@fosscord/util": ["util/src/index"],
-			"@fosscord/util/*": ["util/src/*"]
+			"@fosscord/util": ["util/src/index"]
 		},
 		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
 	}
