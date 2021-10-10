@@ -248,7 +248,6 @@ export class User extends BaseClass {
 			fingerprints: [],
 		});
 
-		console.log(user);
 		await user.save();
 
 		if (Config.get().guild.autoJoin.enabled) {
