@@ -15,7 +15,6 @@ import {
 	Invite,
 	Member,
 	Message,
-	RateLimit,
 	ReadState,
 	Recipient,
 	Relationship,
@@ -30,7 +29,7 @@ import {
 } from "..";
 
 async function main() {
-	if (!process.env.FROM) throw new Error("FROM database env connection string not set");
+	if (!process.env.TO) throw new Error("TO database env connection string not set");
 
 	// manually arrange them because of foreign key
 	const entities = [
@@ -59,10 +58,14 @@ async function main() {
 
 	const newDB = await initDatabase();
 
+	const type = process.env.TO.includes("://") ? process.env.TO.split(":")[0]?.replace("+srv", "") : "sqlite";
+	const isSqlite = type.includes("sqlite");
+
 	// @ts-ignore
 	const oldDB = await createConnection({
-		type: process.env.FROM.split(":")[0]?.replace("+srv", ""),
-		url: process.env.FROM,
+		type,
+		url: isSqlite ? undefined : process.env.TO,
+		database: isSqlite ? process.env.TO : undefined,
 		entities,
 		name: "old",
 	});
@@ -72,14 +75,13 @@ async function main() {
 		for (const e of entities) {
 			const entity = e as EntityTarget<any>;
 			const entries = await oldDB.manager.find(entity);
-			//@ts-ignore
-			console.log("migrated " + entries.length + " " + entity.name);
+			// @ts-ignore
+			console.log("migrating " + entries.length + " " + entity.name + " ...");
 
 			for (const entry of entries) {
 				console.log(i++);
 
 				if (entry instanceof User) {
-					console.log("instance of User");
 					if (entry.bio == null) entry.bio = "";
 					if (entry.rights == null) entry.rights = "0";
 					if (entry.disabled == null) entry.disabled = false;
@@ -116,7 +118,7 @@ async function main() {
 				// }
 			}
 			// @ts-ignore
-			console.log("migrated all " + entity.name);
+			console.log("migrated " + entries.length + " " + entity.name);
 		}
 	} catch (error) {
 		console.error((error as any).message);
