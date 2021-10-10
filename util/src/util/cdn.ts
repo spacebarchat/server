@@ -25,30 +25,15 @@ export async function uploadFile(path: string, file: Express.Multer.File) {
 	return result;
 }
 
-export async function handleFile(
-	path: string,
-	body?: string
-): Promise<
-	| (string & {
-			id: string;
-			content_type: string;
-			size: number;
-			url: string;
-	  })
-	| undefined
-> {
+export async function handleFile(path: string, body?: string): Promise<string | undefined> {
 	if (!body || !body.startsWith("data:")) return undefined;
 	try {
 		const mimetype = body.split(":")[1].split(";")[0];
 		const buffer = Buffer.from(body.split(",")[1], "base64");
 
 		// @ts-ignore
-		const file = await uploadFile(path, { buffer, mimetype, originalname: "banner" });
-		const obj = file.id;
-		for (const key in file) {
-			obj[key] = file[key];
-		}
-		return obj;
+		const { id } = await uploadFile(path, { buffer, mimetype, originalname: "banner" });
+		return id;
 	} catch (error) {
 		console.error(error);
 		throw new HTTPError("Invalid " + path);
