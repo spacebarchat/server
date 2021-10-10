@@ -12,7 +12,6 @@ export const Config = {
 		if (config) return config;
 		pairs = await ConfigEntity.find();
 		config = pairsToConfig(pairs);
-		console.log(config.guild.autoJoin);
 
 		return this.set((config || {}).merge(DefaultConfigOptions));
 	},
