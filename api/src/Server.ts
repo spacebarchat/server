@@ -11,6 +11,7 @@ import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
 import morgan from "morgan";
 import { initInstance } from "./util/Instance";
+import { registerRoutes } from "@fosscord/util";
 
 export interface FosscordServerOptions extends ServerOptions {}
 
@@ -72,7 +73,7 @@ export class FosscordServer extends Server {
 		await initRateLimits(api);
 		await initTranslation(api);
 
-		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
+		this.routes = await registerRoutes(this, path.join(__dirname, "routes", "/"));
 
 		api.use("*", (error: any, req: Request, res: Response, next: NextFunction) => {
 			if (error) return next(error);
