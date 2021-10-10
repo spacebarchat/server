@@ -13,16 +13,24 @@ function getPath(path: string) {
 	const root = process.env.STORAGE_LOCATION || "../";
 	var filename = join(root, path);
 
-	if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
+	if (path.indexOf("\0") !== -1 || !filename.startsWith(root))
+		throw new Error("invalid path");
 	return filename;
 }
 
 export class FileStorage implements Storage {
 	async get(path: string): Promise<Buffer | null> {
+		path = getPath(path);
 		try {
-			return fs.readFileSync(getPath(path));
+			return fs.readFileSync(path);
 		} catch (error) {
-			return null;
+			try {
+				const files = fs.readdirSync(path);
+				if (!files.length) return null;
+				return fs.readFileSync(join(path, files[0]));
+			} catch (error) {
+				return null;
+			}
 		}
 	}
 
