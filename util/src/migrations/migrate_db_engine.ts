@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 config();
-import { BaseEntity, createConnection, EntityTarget } from "typeorm";
+import { createConnection, EntityTarget } from "typeorm";
 import { initDatabase } from "../util/Database";
 import "missing-native-js-functions";
 import {
@@ -15,7 +15,6 @@ import {
 	Invite,
 	Member,
 	Message,
-	RateLimit,
 	ReadState,
 	Recipient,
 	Relationship,
@@ -30,9 +29,9 @@ import {
 } from "..";
 
 async function main() {
-	if (!process.env.FROM) throw new Error("FROM database env connection string not set");
+	if (!process.env.TO) throw new Error("TO database env connection string not set");
 
-	// manually arrange them because of foreign key
+	// manually arrange them because of foreign keys
 	const entities = [
 		User,
 		Guild,
@@ -57,12 +56,12 @@ async function main() {
 		Attachment,
 	];
 
-	const newDB = await initDatabase();
+	const oldDB = await initDatabase();
 
 	// @ts-ignore
-	const oldDB = await createConnection({
-		type: process.env.FROM.split(":")[0]?.replace("+srv", ""),
-		url: process.env.FROM,
+	const newDB = await createConnection({
+		type: process.env.TO.split(":")[0]?.replace("+srv", ""),
+		url: process.env.TO,
 		entities,
 		name: "old",
 	});
@@ -73,13 +72,12 @@ async function main() {
 			const entity = e as EntityTarget<any>;
 			const entries = await oldDB.manager.find(entity);
 			//@ts-ignore
-			console.log("migrated " + entries.length + " " + entity.name);
+			console.log("migrating " + entries.length + " " + entity.name + " ...");
 
 			for (const entry of entries) {
 				console.log(i++);
 
 				if (entry instanceof User) {
-					console.log("instance of User");
 					if (entry.bio == null) entry.bio = "";
 					if (entry.rights == null) entry.rights = "0";
 					if (entry.disabled == null) entry.disabled = false;
@@ -115,8 +113,9 @@ async function main() {
 				// 	await newDB.manager.update(entity, { id: entry.id }, entry);
 				// }
 			}
+
 			// @ts-ignore
-			console.log("migrated all " + entity.name);
+			console.log("migrating " + entries.length + " " + entity.name + " ...");
 		}
 	} catch (error) {
 		console.error((error as any).message);
