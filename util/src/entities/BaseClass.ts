@@ -27,7 +27,6 @@ export class BaseClassWithoutId extends BaseEntity {
 				.concat(this.metadata.relations.map((x) => x.propertyName))
 		);
 		// will not include relational properties
-		console.log(properties);
 
 		for (const key in props) {
 			if (!properties.has(key)) continue;
