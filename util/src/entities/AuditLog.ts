@@ -55,8 +55,8 @@ export class AuditLog extends BaseClass {
 	@ManyToOne(() => User, (user: User) => user.id)
 	user: User;
 
-	@Column()
-	action_type: number;
+	@Column({ type: "int" })
+	action_type: AuditLogEvents;
 
 	@Column({ type: "simple-json", nullable: true })
 	options?: {

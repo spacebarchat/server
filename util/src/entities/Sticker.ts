@@ -36,9 +36,9 @@ export class Sticker extends BaseClass {
 	})
 	guild?: Guild;
 
-	@Column()
-	type: number;
+	@Column({ type: "int" })
+	type: StickerType;
 
-	@Column()
-	format_type: number;
+	@Column({ type: "int" })
+	format_type: StickerFormatType;
 }

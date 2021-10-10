@@ -39,8 +39,8 @@ export class Channel extends BaseClass {
 	@Column({ type: "text", nullable: true })
 	icon?: string | null;
 
-	@Column()
-	type: number;
+	@Column({ type: "int" })
+	type: ChannelType;
 
 	@OneToMany(() => Recipient, (recipient: Recipient) => recipient.channel, {
 		cascade: true,
