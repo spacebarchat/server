@@ -35,8 +35,8 @@ export class Relationship extends BaseClass {
 	@Column({ nullable: true })
 	nickname?: string;
 
-	@Column()
-	type: number;
+	@Column({ type: "int" })
+	type: RelationshipType;
 
 	toPublicRelationship() {
 		return {
