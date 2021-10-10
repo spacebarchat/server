@@ -58,6 +58,21 @@ router.post(
 	}
 );
 
+router.get("/:user_id", async (req: Request, res: Response) => {
+	var { user_id } = req.params;
+	user_id = user_id.split(".")[0]; // remove .file extension
+	const path = `avatars/${user_id}`;
+
+	const file = await storage.get(path);
+	if (!file) throw new HTTPError("not found", 404);
+	const type = await FileType.fromBuffer(file);
+
+	res.set("Content-Type", type?.mime);
+	res.set("Cache-Control", "public, max-age=31536000");
+
+	return res.send(file);
+});
+
 router.get("/:user_id/:hash", async (req: Request, res: Response) => {
 	var { user_id, hash } = req.params;
 	hash = hash.split(".")[0]; // remove .file extension

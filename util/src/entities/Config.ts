@@ -64,6 +64,7 @@ export interface ConfigValue {
 		};
 		guild: {
 			maxRoles: number;
+			maxEmojis: number;
 			maxMembers: number;
 			maxChannels: number;
 			maxChannelsInCategory: number;
@@ -188,6 +189,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		},
 		guild: {
 			maxRoles: 250,
+			maxEmojis: 50, // TODO: max emojis per guild per nitro level
 			maxMembers: 250000,
 			maxChannels: 500,
 			maxChannelsInCategory: 50,
