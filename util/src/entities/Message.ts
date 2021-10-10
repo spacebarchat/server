@@ -46,9 +46,6 @@ export enum MessageType {
 
 @Entity("messages")
 export class Message extends BaseClass {
-	@Column()
-	id: string;
-
 	@Column({ nullable: true })
 	@RelationId((message: Message) => message.channel)
 	channel_id: string;
