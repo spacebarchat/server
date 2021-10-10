@@ -1,6 +1,22 @@
 const { execSync } = require("child_process");
 const path = require("path");
 const fse = require("fs-extra");
+const { getSystemErrorMap } = require("util");
+const { argv } = require("process");
+
+const dirs = ["api", "util", "cdn", "gateway", "bundle"];
+
+const verbose = argv.includes("verbose") || argv.includes("v");
+
+if(argv.includes("clean")){
+	dirs.forEach(a=>{
+		var d = "../"+a+"/dist";
+		if(fse.existsSync(d)) {
+			fse.rmSync(d,{recursive: true});
+			if(verbose) console.log(`Deleted ${d}!`);
+		}
+	});
+}
 
 fse.copySync(path.join(__dirname, "..", "..", "api", "assets"), path.join(__dirname, "..", "dist", "api", "assets"));
 fse.copySync(
@@ -8,13 +24,12 @@ fse.copySync(
 	path.join(__dirname, "..", "dist", "api", "client_test")
 );
 fse.copySync(path.join(__dirname, "..", "..", "api", "locales"), path.join(__dirname, "..", "dist", "api", "locales"));
-fse.copySync(path.join(__dirname, "..", "..", "api", "src"), path.join(__dirname, "..", "dist", "api", "src"));
-fse.copySync(path.join(__dirname, "..", "..", "util", "src"), path.join(__dirname, "..", "dist", "util", "src"));
-fse.copySync(path.join(__dirname, "..", "..", "cdn", "src"), path.join(__dirname, "..", "dist", "cdn", "src"));
-fse.copySync(path.join(__dirname, "..", "..", "gateway", "src"), path.join(__dirname, "..", "dist", "gateway", "src"));
-fse.copySync(path.join(__dirname, "..", "..", "bundle", "src"), path.join(__dirname, "..", "dist", "bundle", "src"));
+dirs.forEach(a=>{
+	fse.copySync("../"+a+"/src", "dist/"+a+"/src");
+	if(verbose) console.log(`Copied ${"../"+a+"/dist"} -> ${"dist/"+a+"/src"}!`);
+});
 
-console.log("Copying   src files done");
+console.log("Copying src files done");
 console.log("Compiling src files ...");
 
 console.log(

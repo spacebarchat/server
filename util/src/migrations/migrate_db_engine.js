@@ -30,7 +30,7 @@ const {
 async function main() {
 	if (!process.env.TO) throw new Error("TO database env connection string not set");
 
-	// manually arrange them because of foreign key
+	// manually arrange them because of foreign keys
 	const entities = [
 		User,
 		Guild,
@@ -55,7 +55,7 @@ async function main() {
 		Attachment,
 	];
 
-	const newDB = await initDatabase();
+	const oldDB = await initDatabase();
 
 	const type = process.env.TO.includes("://") ? process.env.TO.split(":")[0]?.replace("+srv", "") : "sqlite";
 	const isSqlite = type.includes("sqlite");
@@ -73,6 +73,7 @@ async function main() {
 	try {
 		for (const entity of entities) {
 			const entries = await oldDB.manager.find(entity);
+
 			// @ts-ignore
 			console.log("migrating " + entries.length + " " + entity.name + " ...");
 
@@ -90,6 +91,7 @@ async function main() {
 					}
 				}
 			}
+
 			// @ts-ignore
 			console.log("migrated " + entries.length + " " + entity.name);
 		}
