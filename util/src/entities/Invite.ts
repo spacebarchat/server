@@ -71,6 +71,9 @@ export class Invite extends BaseClass {
 	@Column({ nullable: true })
 	target_user_type?: number;
 
+	@Column({ nullable: true})
+	vanity_url?: boolean;
+
 	static async joinGuild(user_id: string, code: string) {
 		const invite = await Invite.findOneOrFail({ code });
 		if (invite.uses++ >= invite.max_uses && invite.max_uses !== 0) await Invite.delete({ code });

@@ -4744,7 +4744,7 @@
                 "type": "string"
             },
             "permissions": {
-                "type": "bigint"
+                "type": "array"
             },
             "color": {
                 "type": "integer"
