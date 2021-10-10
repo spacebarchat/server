@@ -58,10 +58,14 @@ async function main() {
 
 	const oldDB = await initDatabase();
 
+	const type = process.env.TO.includes("://") ? process.env.TO.split(":")[0]?.replace("+srv", "") : "sqlite";
+	const isSqlite = type.includes("sqlite");
+
 	// @ts-ignore
-	const newDB = await createConnection({
-		type: process.env.TO.split(":")[0]?.replace("+srv", ""),
-		url: process.env.TO,
+	const oldDB = await createConnection({
+		type,
+		url: isSqlite ? undefined : process.env.TO,
+		database: isSqlite ? process.env.TO : undefined,
 		entities,
 		name: "old",
 	});
@@ -71,7 +75,8 @@ async function main() {
 		for (const e of entities) {
 			const entity = e as EntityTarget<any>;
 			const entries = await oldDB.manager.find(entity);
-			//@ts-ignore
+
+			// @ts-ignore
 			console.log("migrating " + entries.length + " " + entity.name + " ...");
 
 			for (const entry of entries) {
@@ -115,7 +120,7 @@ async function main() {
 			}
 
 			// @ts-ignore
-			console.log("migrating " + entries.length + " " + entity.name + " ...");
+			console.log("migrated " + entries.length + " " + entity.name);
 		}
 	} catch (error) {
 		console.error((error as any).message);

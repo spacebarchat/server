@@ -94,9 +94,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		x.channel.recipients = x.channel.recipients?.map((x) => x.user);
 		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
-		users = users.concat(
-			x.channel.recipients?.map((x) => x.user) as User[]
-		);
+		users = users.concat(x.channel.recipients as unknown as User[]);
 		if (x.channel.isDm()) {
 			x.channel.recipients = x.channel.recipients!.filter(
 				(x) => x.id !== this.user_id
