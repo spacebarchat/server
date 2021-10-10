@@ -30,9 +30,6 @@ async function main() {
 		cdn: {
 			endpointClient: "${location.host}",
 			endpointPrivate: `http://localhost:${port}`,
-			...(!Config.get().cdn.endpointPublic && {
-				endpointPublic: `http://localhost:${port}`,
-			}),
 		},
 		gateway: {
 			endpointClient:
