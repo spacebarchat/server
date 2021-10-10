@@ -41,7 +41,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = decoded.id;
-	if (!identify.intents) identify.intents = 0b11111111111111n;
+	if (!identify.intents) identify.intents = BigInt("0b11111111111111");
 	this.intents = new Intents(identify.intents);
 	if (identify.shard) {
 		this.shard_id = identify.shard[0];
