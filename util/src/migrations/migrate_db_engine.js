@@ -1,15 +1,14 @@
-import { config } from "dotenv";
+const { config } = require("dotenv");
 config();
-import { BaseEntity, createConnection, EntityTarget } from "typeorm";
-import { initDatabase } from "../util/Database";
-import "missing-native-js-functions";
-import {
+const { createConnection } = require("typeorm");
+const { initDatabase } = require("../../dist/util/Database");
+require("missing-native-js-functions");
+const {
 	Application,
 	Attachment,
 	Ban,
 	Channel,
 	ConnectedAccount,
-	defaultSettings,
 	Emoji,
 	Guild,
 	Invite,
@@ -26,7 +25,7 @@ import {
 	User,
 	VoiceState,
 	Webhook,
-} from "..";
+} = require("../../dist/entities/index");
 
 async function main() {
 	if (!process.env.TO) throw new Error("TO database env connection string not set");
@@ -72,8 +71,7 @@ async function main() {
 	let i = 0;
 
 	try {
-		for (const e of entities) {
-			const entity = e as EntityTarget<any>;
+		for (const entity of entities) {
 			const entries = await oldDB.manager.find(entity);
 			// @ts-ignore
 			console.log("migrating " + entries.length + " " + entity.name + " ...");
@@ -81,47 +79,22 @@ async function main() {
 			for (const entry of entries) {
 				console.log(i++);
 
-				if (entry instanceof User) {
-					if (entry.bio == null) entry.bio = "";
-					if (entry.rights == null) entry.rights = "0";
-					if (entry.disabled == null) entry.disabled = false;
-					if (entry.fingerprints == null) entry.fingerprints = [];
-					if (entry.deleted == null) entry.deleted = false;
-					if (entry.data == null) {
-						entry.data = {
-							valid_tokens_since: new Date(0),
-							hash: undefined,
-						};
-						// @ts-ignore
-						if (entry.user_data) {
-							// TODO: relationships
-							entry.data = {
-								// @ts-ignore
-								valid_tokens_since: entry.user_data.valid_tokens_since, // @ts-ignore
-								hash: entry.user_data.hash,
-							};
-						}
-					}
-					// @ts-ignore
-					if (entry.settings == null) {
-						entry.settings = defaultSettings;
-						// @ts-ignore
-						if (entry.user_data) entry.settings = entry.user_settings;
+				try {
+					await newDB.manager.insert(entity, entry);
+				} catch (error) {
+					try {
+						if (!entry.id) throw new Error("object doesn't have a unique id: " + entry);
+						await newDB.manager.update(entity, { id: entry.id }, entry);
+					} catch (error) {
+						console.error("couldn't migrate " + i + " " + entity.name, error);
 					}
 				}
-
-				// try {
-				await newDB.manager.insert(entity, entry);
-				// } catch (error) {
-				// 	if (!entry.id) throw new Error("object doesn't have a unique id: " + entry);
-				// 	await newDB.manager.update(entity, { id: entry.id }, entry);
-				// }
 			}
 			// @ts-ignore
 			console.log("migrated " + entries.length + " " + entity.name);
 		}
 	} catch (error) {
-		console.error((error as any).message);
+		console.error(error.message);
 	}
 
 	console.log("SUCCESS migrated all data");
