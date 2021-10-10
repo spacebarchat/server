@@ -35,8 +35,8 @@ export class Relationship extends BaseClass {
 	@Column({ nullable: true })
 	nickname?: string;
 
-	@Column({ type: "simple-enum", enum: RelationshipType })
-	type: RelationshipType;
+	@Column()
+	type: number;
 
 	toPublicRelationship() {
 		return {
