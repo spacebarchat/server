@@ -2909,6 +2909,9 @@
                 }
             }
         },
+        "required": [
+            "image"
+        ],
         "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -4744,7 +4747,7 @@
                 "type": "string"
             },
             "permissions": {
-                "type": "array"
+                "type": "string"
             },
             "color": {
                 "type": "integer"
