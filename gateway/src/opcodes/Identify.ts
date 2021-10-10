@@ -210,7 +210,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
-		users: users.unique(),
+		users: users.filter((x) => x).unique(),
 		merged_members: merged_members,
 		// shard // TODO: only for bots sharding
 		// application // TODO for applications
