@@ -50,7 +50,7 @@ export class Rights extends BitField {
 		SELF_EDIT_MESSAGES: BitFlag(23),
 		SELF_EDIT_NAME: BitFlag(24),
 		SEND_MESSAGES: BitFlag(25),
-		USE_ACTIVITIES: BitFlag(26),
+		USE_ACTIVITIES: BitFlag(26), // use (game) activities in voice channels (e.g. Watch together)
 		USE_VIDEO: BitFlag(27),
 		USE_VOICE: BitFlag(28),
 		INVITE_USERS: BitFlag(29), // can create user-specific invites in the guilds that they have INVITE_USERS
