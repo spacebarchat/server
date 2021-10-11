@@ -30,7 +30,7 @@ export class Rights extends BitField {
 		MANAGE_MESSAGES: BitFlag(3), // Can't see other messages but delete/edit them in channels that they can see
 		MANAGE_RATE_LIMITS: BitFlag(4),
 		MANAGE_ROUTING: BitFlag(5), // can create custom message routes to any channel/guild
-		MANAGE_TICKETS: BitFlag(6),
+		MANAGE_TICKETS: BitFlag(6), // can respond to and resolve support tickets
 		MANAGE_USERS: BitFlag(7),
 		ADD_MEMBERS: BitFlag(8), // can manually add any members in their guilds
 		BYPASS_RATE_LIMITS: BitFlag(9),
@@ -39,7 +39,7 @@ export class Rights extends BitField {
 		CREATE_DMS: BitFlag(12),
 		CREATE_DM_GROUPS: BitFlag(13),
 		CREATE_GUILDS: BitFlag(14),
-		CREATE_INVITES: BitFlag(15),
+		CREATE_INVITES: BitFlag(15), // can create mass invites in the guilds that they have CREATE_INSTANT_INVITE
 		CREATE_ROLES: BitFlag(16),
 		CREATE_TEMPLATES: BitFlag(17),
 		CREATE_WEBHOOKS: BitFlag(18),
@@ -50,9 +50,13 @@ export class Rights extends BitField {
 		SELF_EDIT_MESSAGES: BitFlag(23),
 		SELF_EDIT_NAME: BitFlag(24),
 		SEND_MESSAGES: BitFlag(25),
-		USE_SCREEN: BitFlag(26),
+		USE_ACTIVITIES: BitFlag(26), // use (game) activities in voice channels (e.g. Watch together)
 		USE_VIDEO: BitFlag(27),
 		USE_VOICE: BitFlag(28),
+		INVITE_USERS: BitFlag(29), // can create user-specific invites in the guilds that they have INVITE_USERS
+		SELF_DELETE_DISABLE: BitFlag(30), // can disable/delete own account
+		DEBTABLE: BitFlag(31), // can use pay-to-use features
+		CREDITABLE: BitFlag(32) // can receive money from monetisation related features
 	};
 
 	any(permission: RightResolvable, checkOperator = true) {
