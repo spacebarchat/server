@@ -25,6 +25,7 @@ import cheerio from "cheerio";
 import { MessageCreateSchema } from "../routes/channels/#channel_id/messages";
 
 // TODO: check webhook, application, system author
+// TODO: embed gifs/videos/images
 
 const LINK_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
 
