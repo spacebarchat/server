@@ -56,7 +56,7 @@ function transpileFiles() {
 
 function util() {
 	// const child = spawn("node", `${swcBin}  src --out-dir dist --sync`.split(" "), {
-	const child = spawn("node", `${tscBin} -b .`.split(" "), {
+	const child = spawn("node", `\"${tscBin}\" -b .`.split(" "), {
 		cwd: path.join(__dirname, "..", "..", "util"),
 		env: process.env,
 		shell: true,
