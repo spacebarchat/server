@@ -9,7 +9,7 @@ export enum TeamMemberState {
 
 @Entity("team_members")
 export class TeamMember extends BaseClass {
-	@Column({ type: "simple-enum", enum: TeamMemberState })
+	@Column({ type: "int" })
 	membership_state: TeamMemberState;
 
 	@Column({ type: "simple-array" })

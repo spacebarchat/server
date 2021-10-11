@@ -12,7 +12,7 @@ export enum WebhookType {
 
 @Entity("webhooks")
 export class Webhook extends BaseClass {
-	@Column({ type: "simple-enum", enum: WebhookType })
+	@Column({ type: "int" })
 	type: WebhookType;
 
 	@Column({ nullable: true })
