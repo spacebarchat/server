@@ -1,18 +1,7 @@
 import "reflect-metadata";
-import {
-	BaseEntity,
-	BeforeInsert,
-	BeforeUpdate,
-	EntityMetadata,
-	FindConditions,
-	ObjectIdColumn,
-	PrimaryColumn,
-} from "typeorm";
+import { BaseEntity, EntityMetadata, FindConditions, ObjectIdColumn, PrimaryColumn } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
 import "missing-native-js-functions";
-
-// TODO use class-validator https://typeorm.io/#/validation with class annotators (isPhone/isEmail) combined with types from typescript-json-schema
-// btw. we don't use class-validator for everything, because we need to explicitly set the type instead of deriving it from typescript also it doesn't easily support nested objects
 
 export class BaseClassWithoutId extends BaseEntity {
 	constructor(props?: any) {
@@ -42,7 +31,7 @@ export class BaseClassWithoutId extends BaseEntity {
 		for (const key in props) {
 			if (!properties.has(key)) continue;
 			// @ts-ignore
-			const setter = this[`set${key.capitalize()}`];
+			const setter = this[`set${key.capitalize()}`]; // use setter function if it exists
 
 			if (setter) {
 				setter.call(this, props[key]);
@@ -51,12 +40,6 @@ export class BaseClassWithoutId extends BaseEntity {
 				this[key] = props[key];
 			}
 		}
-	}
-
-	@BeforeUpdate()
-	@BeforeInsert()
-	validate() {
-		return this;
 	}
 
 	toJSON(): any {
@@ -76,42 +59,6 @@ export class BaseClassWithoutId extends BaseEntity {
 		const repository = this.getRepository();
 		return repository.decrement(conditions, propertyPath, value);
 	}
-
-	// static async delete<T>(criteria: FindConditions<T>, options?: RemoveOptions) {
-	// 	if (!criteria) throw new Error("You need to specify delete criteria");
-
-	// 	const repository = this.getRepository();
-	// 	const promises = repository.metadata.relations.map(async (x) => {
-	// 		if (x.orphanedRowAction !== "delete") return;
-
-	// 		const foreignKey =
-	// 			x.foreignKeys.find((key) => key.entityMetadata === repository.metadata) ||
-	// 			x.inverseRelation?.foreignKeys[0]; // find foreign key for this entity
-	// 		if (!foreignKey) {
-	// 			throw new Error(
-	// 				`Foreign key not found for entity ${repository.metadata.name} in relation ${x.propertyName}`
-	// 			);
-	// 		}
-	// 		const id = (criteria as any)[foreignKey.referencedColumnNames[0]];
-	// 		if (!id) throw new Error("id missing in criteria options " + foreignKey.referencedColumnNames);
-
-	// 		if (x.relationType === "many-to-many") {
-	// 			return getConnection()
-	// 				.createQueryBuilder()
-	// 				.relation(this, x.propertyName)
-	// 				.of(id)
-	// 				.remove({ [foreignKey.columnNames[0]]: id });
-	// 		} else if (
-	// 			x.relationType === "one-to-one" ||
-	// 			x.relationType === "many-to-one" ||
-	// 			x.relationType === "one-to-many"
-	// 		) {
-	// 			return (x.inverseEntityMetadata.target as any).delete({ [foreignKey.columnNames[0]]: id });
-	// 		}
-	// 	});
-	// 	await Promise.all(promises);
-	// 	return super.delete(criteria, options);
-	// }
 }
 
 export const PrimaryIdColumn = process.env.DATABASE?.startsWith("mongodb") ? ObjectIdColumn : PrimaryColumn;

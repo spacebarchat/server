@@ -26,7 +26,7 @@ export async function uploadFile(path: string, file: Express.Multer.File) {
 }
 
 export async function handleFile(path: string, body?: string): Promise<string | undefined> {
-	if (!body || !body.startsWith("data:")) return body;
+	if (!body || !body.startsWith("data:")) return undefined;
 	try {
 		const mimetype = body.split(":")[1].split(";")[0];
 		const buffer = Buffer.from(body.split(",")[1], "base64");

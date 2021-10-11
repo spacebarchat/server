@@ -24,6 +24,7 @@ export async function Connection(
 	request: IncomingMessage
 ) {
 	try {
+		// @ts-ignore
 		socket.on("close", Close);
 		// @ts-ignore
 		socket.on("message", Message);
@@ -68,12 +69,10 @@ export async function Connection(
 		});
 
 		socket.readyTimeout = setTimeout(() => {
-			Session.delete({ session_id: socket.session_id }); //should we await?
 			return socket.close(CLOSECODES.Session_timed_out);
 		}, 1000 * 30);
 	} catch (error) {
 		console.error(error);
-		Session.delete({ session_id: socket.session_id }); //should we await?
 		return socket.close(CLOSECODES.Unknown_error);
 	}
 }
