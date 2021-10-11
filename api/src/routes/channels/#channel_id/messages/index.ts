@@ -22,7 +22,7 @@ const router: Router = Router();
 
 export default router;
 
-function isTextChannel(type: ChannelType): boolean {
+export function isTextChannel(type: ChannelType): boolean {
 	switch (type) {
 		case ChannelType.GUILD_STORE:
 		case ChannelType.GUILD_VOICE:
@@ -39,7 +39,6 @@ function isTextChannel(type: ChannelType): boolean {
 			return true;
 	}
 }
-module.exports.isTextChannel = isTextChannel;
 
 export interface MessageCreateSchema {
 	content?: string;
@@ -103,6 +102,7 @@ router.get("/", async (req: Request, res: Response) => {
 	}
 
 	const messages = await Message.find(query);
+	const endpoint = Config.get().cdn.endpointPublic;
 
 	return res.json(
 		messages.map((x) => {
@@ -115,7 +115,9 @@ router.get("/", async (req: Request, res: Response) => {
 			// @ts-ignore
 			if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: "0", avatar: null };
 			x.attachments?.forEach((x) => {
-				x.proxy_url = `${Config.get().cdn.endpointPublic || "http://localhost:3003"}${new URL(x.proxy_url).pathname}`;
+				// dynamically set attachment proxy_url in case the endpoint changed
+				const uri = x.proxy_url.startsWith("http") ? x.proxy_url : `https://example.org${x.proxy_url}`;
+				x.proxy_url = `${endpoint == null ? "http://localhost:3003" : endpoint}${new URL(uri).pathname}`;
 			});
 
 			return x;
