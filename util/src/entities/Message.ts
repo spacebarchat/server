@@ -148,7 +148,7 @@ export class Message extends BaseClass {
 	@Column({ nullable: true })
 	pinned?: boolean;
 
-	@Column({ type: "simple-enum", enum: MessageType })
+	@Column({ type: "int" })
 	type: MessageType;
 
 	@Column({ type: "simple-json", nullable: true })
