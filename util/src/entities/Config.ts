@@ -51,11 +51,6 @@ export interface ConfigValue {
 	general: {
 		instanceId: string;
 	};
-	permissions: {
-		user: {
-			createGuilds: boolean;
-		};
-	};
 	limits: {
 		user: {
 			maxGuilds: number;
@@ -154,6 +149,11 @@ export interface ConfigValue {
 			canLeave: boolean;
 		};
 	};
+	gif: {
+		enabled: boolean;
+		provider: "tenor"; // more coming soon
+		apiKey?: string;
+	};
 	rabbitmq: {
 		host: string | null;
 	};
@@ -175,11 +175,6 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	general: {
 		instanceId: Snowflake.generate(),
-	},
-	permissions: {
-		user: {
-			createGuilds: true,
-		},
 	},
 	limits: {
 		user: {
@@ -307,7 +302,6 @@ export const DefaultConfigOptions: ConfigValue = {
 			},
 		],
 	},
-
 	guild: {
 		showAllGuildsInDiscovery: false,
 		autoJoin: {
@@ -315,6 +309,11 @@ export const DefaultConfigOptions: ConfigValue = {
 			canLeave: true,
 			guilds: [],
 		},
+	},
+	gif: {
+		enabled: true,
+		provider: "tenor",
+		apiKey: "LIVDSRZULELA",
 	},
 	rabbitmq: {
 		host: null,
