@@ -214,8 +214,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// application // TODO for applications
 	};
 
-	console.log("Send ready");
-
 	// TODO: send real proper data structure
 	await Send(this, {
 		op: OPCODES.Dispatch,
