@@ -34,9 +34,9 @@ console.log("Compiling src files ...");
 
 console.log(
 	execSync(
-		"node " +
+		"node \"" +
 			path.join(__dirname, "..", "node_modules", "typescript", "lib", "tsc.js") +
-			" -p " +
+			"\" -p " +
 			path.join(__dirname, ".."),
 		{
 			cwd: path.join(__dirname, ".."),
