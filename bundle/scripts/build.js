@@ -36,8 +36,8 @@ console.log(
 	execSync(
 		"node \"" +
 			path.join(__dirname, "..", "node_modules", "typescript", "lib", "tsc.js") +
-			"\" -p " +
-			path.join(__dirname, ".."),
+			"\" -p \"" +
+			path.join(__dirname, "..") + "\"",
 		{
 			cwd: path.join(__dirname, ".."),
 			shell: true,
