@@ -10,7 +10,8 @@ import {
 	getPermission,
 	Message,
 	MessageCreateEvent,
-	uploadFile
+	uploadFile,
+	Member,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { handleMessage, postHandleMessage, route } from "@fosscord/api";
@@ -187,6 +188,13 @@ router.post(
 		message = await message.save();
 
 		await channel.assign({ last_message_id: message.id }).save();
+
+		//gosh
+		var member = await Member.findOneOrFail({
+			where: { id: req.user_id },
+		});
+		await member.assign({ last_message_id: message.id })
+		await member.save();	//why does member.assign here return void?
 
 		if (channel.isDm()) {
 			const channel_dto = await DmChannelDTO.from(channel);
