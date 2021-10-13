@@ -84,6 +84,9 @@ export class Member extends BaseClassWithoutId {
 	@Column({ type: "simple-json" })
 	settings: UserGuildSettings;
 
+	@Column()
+	last_message_id: string;
+
 	// TODO: update
 	// @Column({ type: "simple-json" })
 	// read_state: ReadState;
@@ -230,6 +233,7 @@ export class Member extends BaseClassWithoutId {
 			deaf: false,
 			mute: false,
 			pending: false,
+			last_message_id: "",
 		};
 
 		await Promise.all([
