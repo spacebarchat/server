@@ -37,6 +37,7 @@
 		"@types/jest": "^27.0.1",
 		"@types/jest-expect-message": "^1.0.3",
 		"@types/jsonwebtoken": "^8.5.0",
+		"@types/morgan": "^1.9.3",
 		"@types/multer": "^1.4.7",
 		"@types/node": "^14.17.9",
 		"@types/node-fetch": "^2.5.12",
@@ -51,10 +52,10 @@
 		"ts-node-dev": "^1.1.6",
 		"ts-patch": "^1.4.4",
 		"typescript": "^4.2.3",
-		"typescript-json-schema": "0.50.1",
-		"@types/morgan": "^1.9.3"
+		"typescript-json-schema": "0.50.1"
 	},
 	"dependencies": {
+		"@yukikaze-bot/erlpack": "^1.0.1",
 		"ajv": "8.6.2",
 		"ajv-formats": "^2.1.1",
 		"amqplib": "^0.8.0",
@@ -63,6 +64,7 @@
 		"bcrypt": "^5.0.1",
 		"body-parser": "^1.19.0",
 		"btoa": "^1.2.1",
+		"cheerio": "^1.0.0-rc.10",
 		"dotenv": "^8.2.0",
 		"exif-be-gone": "^1.2.0",
 		"express": "^4.17.1",
@@ -92,7 +94,6 @@
 		"typeorm": "^0.2.37",
 		"typescript": "^4.1.2",
 		"typescript-json-schema": "^0.50.1",
-		"ws": "^7.4.2",
-		"cheerio": "^1.0.0-rc.10"
+		"ws": "^7.4.2"
 	}
 }
