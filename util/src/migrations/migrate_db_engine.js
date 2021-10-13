@@ -8,6 +8,7 @@ const {
 	Attachment,
 	Ban,
 	Channel,
+	ConfigEntity,
 	ConnectedAccount,
 	Emoji,
 	Guild,
@@ -32,6 +33,7 @@ async function main() {
 
 	// manually arrange them because of foreign keys
 	const entities = [
+		ConfigEntity,
 		User,
 		Guild,
 		Channel,
@@ -61,12 +63,13 @@ async function main() {
 	const isSqlite = type.includes("sqlite");
 
 	// @ts-ignore
-	const oldDB = await createConnection({
+	const newDB = await createConnection({
 		type,
 		url: isSqlite ? undefined : process.env.TO,
 		database: isSqlite ? process.env.TO : undefined,
 		entities,
-		name: "old",
+		name: "new",
+		synchronize: true,
 	});
 	let i = 0;
 
