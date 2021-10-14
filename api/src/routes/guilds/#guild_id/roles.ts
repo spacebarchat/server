@@ -17,7 +17,7 @@ const router: Router = Router();
 
 export interface RoleModifySchema {
 	name?: string;
-	permissions?: bigint;
+	permissions?: string;
 	color?: number;
 	hoist?: boolean; // whether the role should be displayed separately in the sidebar
 	mentionable?: boolean; // whether the role should be mentionable
@@ -57,7 +57,7 @@ router.post("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" })
 		...body,
 		guild_id: guild_id,
 		managed: false,
-		permissions: String(req.permission!.bitfield & (body.permissions || 0n)),
+		permissions: String(req.permission!.bitfield & BigInt(body.permissions || "0")),
 		tags: undefined
 	});
 
@@ -105,7 +105,12 @@ router.patch("/:role_id", route({ body: "RoleModifySchema", permission: "MANAGE_
 	const { role_id, guild_id } = req.params;
 	const body = req.body as RoleModifySchema;
 
-	const role = new Role({ ...body, id: role_id, guild_id, permissions: String(req.permission!.bitfield & (body.permissions || 0n)) });
+	const role = new Role({
+		...body,
+		id: role_id,
+		guild_id,
+		permissions: String(req.permission!.bitfield & BigInt(body.permissions || "0"))
+	});
 
 	await Promise.all([
 		role.save(),

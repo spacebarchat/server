@@ -41,6 +41,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const items = [];
 
 	for (const role of roles) {
+		// @ts-ignore
 		const [role_members, other_members] = partition(members, (m: Member) =>
 			m.roles.find((r) => r.id === role.id)
 		);
@@ -53,9 +54,12 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 		groups.push(group);
 
 		for (const member of role_members) {
-			member.roles = member.roles.filter((x) => x.id !== guild_id);
+			member.roles = member.roles.filter((x: Role) => x.id !== guild_id);
 			items.push({
-				member: { ...member, roles: member.roles.map((x) => x.id) },
+				member: {
+					...member,
+					roles: member.roles.map((x: Role) => x.id),
+				},
 			});
 		}
 		members = other_members;
@@ -84,7 +88,9 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 }
 
 function partition<T>(array: T[], isValid: Function) {
+	// @ts-ignore
 	return array.reduce(
+		// @ts-ignore
 		([pass, fail], elem) => {
 			return isValid(elem)
 				? [[...pass, elem], fail]

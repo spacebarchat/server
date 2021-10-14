@@ -185,8 +185,8 @@ export interface GuildBanRemoveEvent extends Event {
 	};
 }
 
-export interface GuildEmojiUpdateEvent extends Event {
-	event: "GUILD_EMOJI_UPDATE";
+export interface GuildEmojisUpdateEvent extends Event {
+	event: "GUILD_EMOJIS_UPDATE";
 	data: {
 		guild_id: string;
 		emojis: Emoji[];
@@ -459,7 +459,7 @@ export type EventData =
 	| GuildDeleteEvent
 	| GuildBanAddEvent
 	| GuildBanRemoveEvent
-	| GuildEmojiUpdateEvent
+	| GuildEmojisUpdateEvent
 	| GuildIntegrationUpdateEvent
 	| GuildMemberAddEvent
 	| GuildMemberRemoveEvent
@@ -552,7 +552,7 @@ export type EVENT =
 	| "GUILD_DELETE"
 	| "GUILD_BAN_ADD"
 	| "GUILD_BAN_REMOVE"
-	| "GUILD_EMOJI_UPDATE"
+	| "GUILD_EMOJIS_UPDATE"
 	| "GUILD_INTEGRATIONS_UPDATE"
 	| "GUILD_MEMBER_ADD"
 	| "GUILD_MEMBER_REMOVE"
