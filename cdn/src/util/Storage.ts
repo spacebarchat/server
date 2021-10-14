@@ -45,13 +45,13 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
 	let location = process.env.STORAGE_LOCATION;
 
 	if (!location) {
-		console.warn(`[CDN] STORAGE_LOCATION unconfigured for S3 provider, defaulting to '/'...`);
-		location = "/";
+		console.warn(`[CDN] STORAGE_LOCATION unconfigured for S3 provider, defaulting to the bucket root...`);
+  		location = undefined;
 	}
 
 	const client = new S3({ region });
 
-	storage = new S3Storage(client, location, bucket);
+	storage = new S3Storage(client, bucket, location);
 }
 
 export { storage };
