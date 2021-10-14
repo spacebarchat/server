@@ -9,6 +9,7 @@ export enum StickerType {
 }
 
 export enum StickerFormatType {
+	GIF = 0, // gif is a custom format type and not in discord spec
 	PNG = 1,
 	APNG = 2,
 	LOTTIE = 3,
@@ -22,16 +23,20 @@ export class Sticker extends BaseClass {
 	@Column({ nullable: true })
 	description?: string;
 
-	@Column()
-	tags: string;
+	@Column({ nullable: true })
+	available?: boolean;
 
-	@Column()
+	@Column({ nullable: true })
+	tags?: string;
+
+	@Column({ nullable: true })
 	@RelationId((sticker: Sticker) => sticker.pack)
-	pack_id: string;
+	pack_id?: string;
 
 	@JoinColumn({ name: "pack_id" })
 	@ManyToOne(() => require("./StickerPack").StickerPack, {
 		onDelete: "CASCADE",
+		nullable: true,
 	})
 	pack: import("./StickerPack").StickerPack;
 
