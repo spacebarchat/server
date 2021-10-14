@@ -18,6 +18,7 @@ export * from "./Relationship";
 export * from "./Role";
 export * from "./Session";
 export * from "./Sticker";
+export * from "./StickerPack";
 export * from "./Team";
 export * from "./TeamMember";
 export * from "./Template";

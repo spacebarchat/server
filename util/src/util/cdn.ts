@@ -4,7 +4,9 @@ import fetch from "node-fetch";
 import { Config } from "./Config";
 import multer from "multer";
 
-export async function uploadFile(path: string, file: Express.Multer.File) {
+export async function uploadFile(path: string, file?: Express.Multer.File) {
+	if (!file?.buffer) throw new HTTPError("Missing file in body");
+
 	const form = new FormData();
 	form.append("file", file.buffer, {
 		contentType: file.mimetype,

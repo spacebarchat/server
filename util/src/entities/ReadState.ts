@@ -32,12 +32,7 @@ export class ReadState extends BaseClass {
 	user: User;
 
 	@Column({ nullable: true })
-	@RelationId((read_state: ReadState) => read_state.last_message)
 	last_message_id: string;
-
-	@JoinColumn({ name: "last_message_id" })
-	@ManyToOne(() => Message, { nullable: true })
-	last_message?: Message;
 
 	@Column({ nullable: true })
 	last_pin_timestamp?: Date;
