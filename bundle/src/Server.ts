@@ -4,7 +4,7 @@ process.on("uncaughtException", console.error);
 import http from "http";
 import * as Api from "@fosscord/api";
 import * as Gateway from "@fosscord/gateway";
-import { CDNServer } from "@fosscord/cdn/";
+import { CDNServer } from "@fosscord/cdn";
 import express from "express";
 import { green, bold } from "nanocolors";
 import { Config, initDatabase } from "@fosscord/util";
@@ -30,9 +30,6 @@ async function main() {
 		cdn: {
 			endpointClient: "${location.host}",
 			endpointPrivate: `http://localhost:${port}`,
-			...(!Config.get().cdn.endpointPublic && {
-				endpointPublic: `http://localhost:${port}`,
-			}),
 		},
 		gateway: {
 			endpointClient:

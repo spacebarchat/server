@@ -8,11 +8,11 @@ export async function initInstance() {
 	// TODO: check if any current user is not part of autoJoinGuilds
 	const { autoJoin } = Config.get().guild;
 
-	if (autoJoin.enabled && autoJoin.guilds?.length) {
+	if (autoJoin.enabled && !autoJoin.guilds?.length) {
 		let guild = await Guild.findOne({});
-		if (!guild) guild = await Guild.createGuild({});
-
-		// @ts-ignore
-		await Config.set({ guild: { autoJoin: { guilds: [guild.id] } } });
+		if (guild) {
+			// @ts-ignore
+			await Config.set({ guild: { autoJoin: { guilds: [guild.id] } } });
+		}
 	}
 }
