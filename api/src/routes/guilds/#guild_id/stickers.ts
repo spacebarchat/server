@@ -1,7 +1,8 @@
-import { Member, Sticker } from "@fosscord/util";
+import { handleFile, Member, Snowflake, Sticker, StickerFormatType, StickerType, uploadFile } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import multer from "multer";
+import { HTTPError } from "lambert-server";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
@@ -20,12 +21,47 @@ const bodyParser = multer({
 	storage: multer.memoryStorage()
 }).single("file");
 
-router.post("/", bodyParser, route({ permission: "MANAGE_EMOJIS_AND_STICKERS" }), async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
-	await Member.IsInGuildOrFail(req.user_id, guild_id);
+router.post(
+	"/",
+	bodyParser,
+	route({ permission: "MANAGE_EMOJIS_AND_STICKERS", body: "ModifyGuildStickerSchema" }),
+	async (req: Request, res: Response) => {
+		if (!req.file) throw new HTTPError("missing file");
 
-	res.json(await Sticker.find({ guild_id }));
-});
+		const { guild_id } = req.params;
+		const body = req.body as ModifyGuildStickerSchema;
+		const id = Snowflake.generate();
+
+		const [sticker] = await Promise.all([
+			new Sticker({
+				...body,
+				guild_id,
+				id,
+				type: StickerType.GUILD,
+				format_type: getStickerFormat(req.file.mimetype),
+				available: true
+			}).save(),
+			uploadFile(`/stickers/${id}`, req.file)
+		]);
+
+		res.json(sticker);
+	}
+);
+
+export function getStickerFormat(mime_type: string) {
+	switch (mime_type) {
+		case "image/apng":
+			return StickerFormatType.APNG;
+		case "application/json":
+			return StickerFormatType.LOTTIE;
+		case "image/png":
+			return StickerFormatType.PNG;
+		case "image/gif":
+			return StickerFormatType.GIF;
+		default:
+			throw new HTTPError("invalid sticker format: must be png, apng or lottie");
+	}
+}
 
 router.get("/:sticker_id", route({}), async (req: Request, res: Response) => {
 	const { guild_id, sticker_id } = req.params;
@@ -41,7 +77,6 @@ export interface ModifyGuildStickerSchema {
 	 */
 	name: string;
 	/**
-	 * @minLength 2
 	 * @maxLength 100
 	 */
 	description?: string;
