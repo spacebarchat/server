@@ -10,7 +10,8 @@ import {
 	getPermission,
 	Message,
 	MessageCreateEvent,
-	uploadFile
+	uploadFile,
+	Member
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { handleMessage, postHandleMessage, route } from "@fosscord/api";
@@ -186,33 +187,34 @@ router.post(
 
 		message = await message.save();
 
-		await channel.assign({ last_message_id: message.id }).save();
-
 		if (channel.isDm()) {
 			const channel_dto = await DmChannelDTO.from(channel);
 
-			for (let recipient of channel.recipients!) {
-				if (recipient.closed) {
-					await emitEvent({
-						event: "CHANNEL_CREATE",
-						data: channel_dto.excludedRecipients([recipient.user_id]),
-						user_id: recipient.user_id
-					});
-				}
-			}
-
 			//Only one recipients should be closed here, since in group DMs the recipient is deleted not closed
+
 			await Promise.all(
-				channel
-					.recipients!.filter((r) => r.closed)
-					.map(async (r) => {
-						r.closed = false;
-						return await r.save();
-					})
+				channel.recipients!.map((recipient) => {
+					if (recipient.closed) {
+						recipient.closed = false;
+						return Promise.all([
+							recipient.save(),
+							emitEvent({
+								event: "CHANNEL_CREATE",
+								data: channel_dto.excludedRecipients([recipient.user_id]),
+								user_id: recipient.user_id
+							})
+						]);
+					}
+				})
 			);
 		}
 
-		await emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent);
+		await Promise.all([
+			channel.assign({ last_message_id: message.id }).save(),
+			new Member({ id: req.user_id, last_message_id: message.id }).save(),
+			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent)
+		]);
+
 		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
 
 		return res.json(message);
