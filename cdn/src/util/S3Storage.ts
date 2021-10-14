@@ -1,5 +1,5 @@
 import { S3 } from "@aws-sdk/client-s3";
-import { Readable, Stream } from "stream";
+import { Readable } from "stream";
 import { Storage } from "./Storage";
 
 const readableToBuffer = (readable: Readable): Promise<Buffer> =>
