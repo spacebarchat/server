@@ -14,6 +14,7 @@ export enum PublicUserEnum {
 	avatar,
 	accent_color,
 	banner,
+	rights,
 	bio,
 	bot,
 }
@@ -198,7 +199,8 @@ export class User extends BaseClass {
 		// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
 		// if it all five times already exists, abort with USERNAME_TOO_MANY_USERS error
 		// else just continue
-		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
+		// Q: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
+		// A: no there isn't. 
 		for (let tries = 0; tries < 5; tries++) {
 			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
 			exists = await User.findOne({ where: { discriminator, username: username }, select: ["id"] });
@@ -215,7 +217,7 @@ export class User extends BaseClass {
 		}
 
 		// TODO: save date_of_birth
-		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
+		// appearently discord.com doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 		const language = req.language === "en" ? "en-US" : req.language || "en-US";
 
@@ -236,8 +238,8 @@ export class User extends BaseClass {
 			disabled: false,
 			deleted: false,
 			email: email,
-			rights: "0",
-			nsfw_allowed: true, // TODO: depending on age
+			rights: "2147483392", // TODO: implement proper right checking
+			nsfw_allowed: true, // TODO: allow custom NSFW policies
 			public_flags: "0",
 			flags: "0", // TODO: generate
 			data: {
@@ -263,7 +265,7 @@ export class User extends BaseClass {
 export const defaultSettings: UserSettings = {
 	afk_timeout: 300,
 	allow_accessibility_detection: true,
-	animate_emoji: true,
+	animate_emoji: false,
 	animate_stickers: 0,
 	contact_sync_enabled: false,
 	convert_emoticons: false,
@@ -274,19 +276,19 @@ export const defaultSettings: UserSettings = {
 		text: undefined,
 	},
 	default_guilds_restricted: false,
-	detect_platform_accounts: true,
-	developer_mode: false,
+	detect_platform_accounts: false,
+	developer_mode: true,
 	disable_games_tab: false,
 	enable_tts_command: true,
 	explicit_content_filter: 0,
 	friend_source_flags: { all: true },
 	gateway_connected: false,
-	gif_auto_play: true,
+	gif_auto_play: false,
 	guild_folders: [],
 	guild_positions: [],
 	inline_attachment_media: true,
 	inline_embed_media: true,
-	locale: "en-US",
+	locale: "en-GB",
 	message_display_compact: false,
 	native_phone_integration_enabled: true,
 	render_embeds: true,
@@ -296,7 +298,7 @@ export const defaultSettings: UserSettings = {
 	status: "offline",
 	stream_notifications_enabled: true,
 	theme: "dark",
-	timezone_offset: 0,
+	timezone_offset: 120, // default to CET
 	// timezone_offset: // TODO: timezone from request
 };
 
@@ -369,5 +371,6 @@ export class UserFlags extends BitField {
 		EARLY_VERIFIED_BOT_DEVELOPER: BigInt(1) << BigInt(17),
 		CERTIFIED_MODERATOR: BigInt(1) << BigInt(18),
 		BOT_HTTP_INTERACTIONS: BigInt(1) << BigInt(19),
+		SERVER_OPERATOR: BigInt(1) << BigInt(48);
 	};
 }
