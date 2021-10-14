@@ -10,9 +10,9 @@ export async function initInstance() {
 
 	if (autoJoin.enabled && !autoJoin.guilds?.length) {
 		let guild = await Guild.findOne({});
-		if (!guild) guild = await Guild.createGuild({});
-
-		// @ts-ignore
-		await Config.set({ guild: { autoJoin: { guilds: [guild.id] } } });
+		if (guild) {
+			// @ts-ignore
+			await Config.set({ guild: { autoJoin: { guilds: [guild.id] } } });
+		}
 	}
 }
