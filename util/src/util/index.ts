@@ -17,3 +17,4 @@ export * from "./Rights";
 export * from "./Snowflake";
 export * from "./String";
 export * from "./Array";
+export * from "./TraverseDirectory";

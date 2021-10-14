@@ -18,6 +18,9 @@ export async function Send(socket: WebSocket, data: Payload) {
 	}
 
 	return new Promise((res, rej) => {
+		if (socket.readyState !== 1) {
+			return rej("socket not open");
+		}
 		socket.send(buffer, (err: any) => {
 			if (err) return rej(err);
 			return res(null);

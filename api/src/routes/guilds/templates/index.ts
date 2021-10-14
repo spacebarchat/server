@@ -47,7 +47,7 @@ router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: 
 			managed: true,
 			mentionable: true,
 			name: "@everyone",
-			permissions: 2251804225n,
+			permissions: BigInt("2251804225"),
 			position: 0,
 			tags: null
 		}).save()

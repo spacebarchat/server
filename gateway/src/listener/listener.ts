@@ -178,7 +178,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		case "CHANNEL_CREATE":
 		case "CHANNEL_DELETE":
 		case "CHANNEL_UPDATE":
-		case "GUILD_EMOJI_UPDATE":
+		case "GUILD_EMOJIS_UPDATE":
 		case "READY": // will be sent by the gateway
 		case "USER_UPDATE":
 		case "APPLICATION_COMMAND_CREATE":
