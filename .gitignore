@@ -6,3 +6,5 @@ api/assets/*.js
 api/assets/*.css
 database.db
 tsconfig.tsbuildinfo
+files/
+.env

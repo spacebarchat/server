@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Message } from "./Message";
@@ -9,8 +9,9 @@ import { User } from "./User";
 // public read receipt ≥ notification cursor ≥ private fully read marker
 
 @Entity("read_states")
+@Index(["channel_id", "user_id"], { unique: true })
 export class ReadState extends BaseClass {
-	@Column({ nullable: true })
+	@Column()
 	@RelationId((read_state: ReadState) => read_state.channel)
 	channel_id: string;
 
@@ -20,7 +21,7 @@ export class ReadState extends BaseClass {
 	})
 	channel: Channel;
 
-	@Column({ nullable: true })
+	@Column()
 	@RelationId((read_state: ReadState) => read_state.user)
 	user_id: string;
 
@@ -35,15 +36,15 @@ export class ReadState extends BaseClass {
 	last_message_id: string;
 
 	@JoinColumn({ name: "last_message_id" })
-	@ManyToOne(() => Message)
+	@ManyToOne(() => Message, { nullable: true })
 	last_message?: Message;
 
 	@Column({ nullable: true })
 	last_pin_timestamp?: Date;
 
-	@Column()
+	@Column({ nullable: true })
 	mention_count: number;
 
-	@Column()
+	@Column({ nullable: true })
 	manual: boolean;
 }

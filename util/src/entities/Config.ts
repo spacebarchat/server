@@ -51,11 +51,6 @@ export interface ConfigValue {
 	general: {
 		instanceId: string;
 	};
-	permissions: {
-		user: {
-			createGuilds: boolean;
-		};
-	};
 	limits: {
 		user: {
 			maxGuilds: number;
@@ -64,6 +59,7 @@ export interface ConfigValue {
 		};
 		guild: {
 			maxRoles: number;
+			maxEmojis: number;
 			maxMembers: number;
 			maxChannels: number;
 			maxChannelsInCategory: number;
@@ -153,6 +149,11 @@ export interface ConfigValue {
 			canLeave: boolean;
 		};
 	};
+	gif: {
+		enabled: boolean;
+		provider: "tenor"; // more coming soon
+		apiKey?: string;
+	};
 	rabbitmq: {
 		host: string | null;
 	};
@@ -175,11 +176,6 @@ export const DefaultConfigOptions: ConfigValue = {
 	general: {
 		instanceId: Snowflake.generate(),
 	},
-	permissions: {
-		user: {
-			createGuilds: true,
-		},
-	},
 	limits: {
 		user: {
 			maxGuilds: 100,
@@ -188,6 +184,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		},
 		guild: {
 			maxRoles: 250,
+			maxEmojis: 50, // TODO: max emojis per guild per nitro level
 			maxMembers: 250000,
 			maxChannels: 500,
 			maxChannelsInCategory: 50,
@@ -305,7 +302,6 @@ export const DefaultConfigOptions: ConfigValue = {
 			},
 		],
 	},
-
 	guild: {
 		showAllGuildsInDiscovery: false,
 		autoJoin: {
@@ -313,6 +309,11 @@ export const DefaultConfigOptions: ConfigValue = {
 			canLeave: true,
 			guilds: [],
 		},
+	},
+	gif: {
+		enabled: true,
+		provider: "tenor",
+		apiKey: "LIVDSRZULELA",
 	},
 	rabbitmq: {
 		host: null,

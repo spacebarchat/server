@@ -37,8 +37,6 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		return;
 	}
 
-	console.log("[Gateway] Opcode " + OPCODES[data.op]);
-
 	try {
 		return await OPCodeHandler.call(this, data);
 	} catch (error) {

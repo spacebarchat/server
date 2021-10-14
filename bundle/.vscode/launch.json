@@ -8,13 +8,11 @@
 			"sourceMaps": true,
 			"type": "node",
 			"request": "launch",
-			"name": "Launch server bundle",
-			"program": "${workspaceFolder}/dist/start.js",
-			"runtimeArgs": ["-r", "./tsconfig-paths-bootstrap.js"],
+			"name": "Launch Server",
+			"program": "${workspaceFolder}/dist/bundle/src/start.js",
 			"preLaunchTask": "tsc: build - tsconfig.json",
-			"outFiles": ["${workspaceFolder}/dist/**/*.js", "${workspaceFolder}/node_modules/@fosscord/**/*.js"],
-			"envFile": "${workspaceFolder}/.env",
-			"outDir": "${workspaceFolder}/dist"
+			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+			"envFile": "${workspaceFolder}/.env"
 		}
 	]
 }

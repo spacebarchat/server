@@ -258,14 +258,6 @@ export class Guild extends BaseClass {
 	unavailable?: boolean;
 
 	@Column({ nullable: true })
-	@RelationId((guild: Guild) => guild.vanity_url)
-	vanity_url_code?: string;
-
-	@JoinColumn({ name: "vanity_url_code" })
-	@ManyToOne(() => Invite)
-	vanity_url?: Invite;
-
-	@Column({ nullable: true })
 	verification_level?: number;
 
 	@Column({ type: "simple-json" })
