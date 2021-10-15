@@ -212,7 +212,7 @@ router.post(
 
 		await Promise.all([
 			channel.assign({ last_message_id: message.id }).save(),
-			new Member({ id: req.user_id, last_message_id: message.id }).save(),
+			message.guild_id ? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id }) : null,
 			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent)
 		]);
 
