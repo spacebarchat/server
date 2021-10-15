@@ -1,4 +1,14 @@
-import { handleFile, Member, Snowflake, Sticker, StickerFormatType, StickerType, uploadFile } from "@fosscord/util";
+import {
+	emitEvent,
+	GuildStickersUpdateEvent,
+	handleFile,
+	Member,
+	Snowflake,
+	Sticker,
+	StickerFormatType,
+	StickerType,
+	uploadFile
+} from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import multer from "multer";
@@ -43,6 +53,8 @@ router.post(
 			}).save(),
 			uploadFile(`/stickers/${id}`, req.file)
 		]);
+
+		await sendStickerUpdateEvent(guild_id);
 
 		res.json(sticker);
 	}
@@ -94,14 +106,28 @@ router.patch(
 		const body = req.body as ModifyGuildStickerSchema;
 
 		const sticker = await new Sticker({ ...body, guild_id, id: sticker_id }).save();
+		await sendStickerUpdateEvent(guild_id);
+
 		return res.json(sticker);
 	}
 );
+
+async function sendStickerUpdateEvent(guild_id: string) {
+	return emitEvent({
+		event: "GUILD_STICKERS_UPDATE",
+		guild_id: guild_id,
+		data: {
+			guild_id: guild_id,
+			stickers: await Sticker.find({ guild_id: guild_id })
+		}
+	} as GuildStickersUpdateEvent);
+}
 
 router.delete("/:sticker_id", route({ permission: "MANAGE_EMOJIS_AND_STICKERS" }), async (req: Request, res: Response) => {
 	const { guild_id, sticker_id } = req.params;
 
 	await Sticker.delete({ guild_id, id: sticker_id });
+	await sendStickerUpdateEvent(guild_id);
 
 	return res.sendStatus(204);
 });
