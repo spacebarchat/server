@@ -84,6 +84,9 @@ export class Member extends BaseClassWithoutId {
 	@Column({ type: "simple-json" })
 	settings: UserGuildSettings;
 
+	@Column({ nullable: true })
+	last_message_id?: string;
+
 	// TODO: update
 	// @Column({ type: "simple-json" })
 	// read_state: ReadState;

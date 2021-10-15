@@ -84,7 +84,7 @@ export class Snowflake {
 	}
 
 	static generate() {
-		var time = BigInt(Date.now() - Snowflake.EPOCH) << 22n;
+		var time = BigInt(Date.now() - Snowflake.EPOCH) << BigInt(22);
 		var worker = Snowflake.workerId << 17n;
 		var process = Snowflake.processId << 12n;
 		var increment = Snowflake.INCREMENT++;
