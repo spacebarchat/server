@@ -53,7 +53,7 @@
 		"@types/node-fetch": "^2.5.7",
 		"@types/supertest": "^2.0.11",
 		"@zerollup/ts-transform-paths": "^1.7.18",
-		"jest": "^26.6.3",
+		"jest": "^27.2.5",
 		"jest-expect-message": "^1.0.2",
 		"jest-runtime": "^27.2.1",
 		"ts-node": "^9.1.1",
