@@ -36,9 +36,9 @@ export class Sticker extends BaseClass {
 	})
 	guild?: Guild;
 
-	@Column({ type: "simple-enum", enum: StickerType })
+	@Column({ type: "int" })
 	type: StickerType;
 
-	@Column({ type: "simple-enum", enum: StickerFormatType })
+	@Column({ type: "int" })
 	format_type: StickerFormatType;
 }

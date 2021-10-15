@@ -11,6 +11,7 @@ import {
 	PublicMember,
 	PublicUser,
 	PrivateUserProjection,
+	ReadState,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
@@ -40,7 +41,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = decoded.id;
-	if (!identify.intents) identify.intents = 0b11111111111111n;
+	if (!identify.intents) identify.intents = BigInt("0b11111111111111");
 	this.intents = new Intents(identify.intents);
 	if (identify.shard) {
 		this.shard_id = identify.shard[0];
@@ -64,6 +65,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			"guild",
 			"guild.channels",
 			"guild.emojis",
+			"guild.emojis.user",
 			"guild.roles",
 			"guild.stickers",
 			"user",
@@ -92,7 +94,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		x.channel.recipients = x.channel.recipients?.map((x) => x.user);
 		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
-		//users = users.concat(x.channel.recipients);
+		users = users.concat(x.channel.recipients as unknown as User[]);
 		if (x.channel.isDm()) {
 			x.channel.recipients = x.channel.recipients!.filter(
 				(x) => x.id !== this.user_id
@@ -138,6 +140,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	//We save the session and we delete it when the websocket is closed
 	await session.save();
 
+	const read_states = await ReadState.find({ user_id: this.user_id });
+	read_states.forEach((s: any) => {
+		s.id = s.channel_id;
+		delete s.user_id;
+		delete s.channel_id;
+	});
+
 	const privateUser = {
 		avatar: user.avatar,
 		mobile: user.mobile,
@@ -176,8 +185,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		geo_ordered_rtc_regions: [], // TODO
 		relationships: user.relationships.map((x) => x.toPublicRelationship()),
 		read_state: {
-			// TODO
-			entries: [],
+			entries: read_states,
 			partial: false,
 			version: 304128,
 		},
@@ -200,13 +208,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
-		users: users.unique(),
+		users: users.filter((x) => x).unique(),
 		merged_members: merged_members,
 		// shard // TODO: only for bots sharding
 		// application // TODO for applications
 	};
-
-	console.log("Send ready");
 
 	// TODO: send real proper data structure
 	await Send(this, {
