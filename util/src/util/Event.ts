@@ -46,7 +46,9 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 	} else {
 		const cancel = () => {
 			events.removeListener(event, callback);
+			events.setMaxListeners(events.getMaxListeners() - 1);
 		};
+		events.setMaxListeners(events.getMaxListeners() + 1);
 		events.addListener(event, (opts) => callback({ ...opts, cancel }));
 
 		return cancel;
