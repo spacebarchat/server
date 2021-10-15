@@ -12,6 +12,7 @@ import { Interaction } from "./Interaction";
 import { ConnectedAccount } from "../entities/ConnectedAccount";
 import { Relationship, RelationshipType } from "../entities/Relationship";
 import { Presence } from "./Presence";
+import { Sticker } from "..";
 
 export interface Event {
 	guild_id?: string;
@@ -190,6 +191,14 @@ export interface GuildEmojisUpdateEvent extends Event {
 	data: {
 		guild_id: string;
 		emojis: Emoji[];
+	};
+}
+
+export interface GuildStickersUpdateEvent extends Event {
+	event: "GUILD_STICKERS_UPDATE";
+	data: {
+		guild_id: string;
+		stickers: Sticker[];
 	};
 }
 
@@ -553,6 +562,7 @@ export type EVENT =
 	| "GUILD_BAN_ADD"
 	| "GUILD_BAN_REMOVE"
 	| "GUILD_EMOJIS_UPDATE"
+	| "GUILD_STICKERS_UPDATE"
 	| "GUILD_INTEGRATIONS_UPDATE"
 	| "GUILD_MEMBER_ADD"
 	| "GUILD_MEMBER_REMOVE"

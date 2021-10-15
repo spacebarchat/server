@@ -40,17 +40,14 @@ router.post("/", route({ body: "EmojiCreateSchema", permission: "MANAGE_EMOJIS_A
 	const { guild_id } = req.params;
 	const body = req.body as EmojiCreateSchema;
 
+	const id = Snowflake.generate();
 	const emoji_count = await Emoji.count({ guild_id: guild_id });
 	const { maxEmojis } = Config.get().limits.guild;
 
 	if (emoji_count >= maxEmojis) throw DiscordApiErrors.MAXIMUM_NUMBER_OF_EMOJIS_REACHED.withParams(maxEmojis);
-
-	const id = Snowflake.generate();
-
 	if (body.require_colons == null) body.require_colons = true;
 
 	const user = await User.findOneOrFail({ id: req.user_id });
-
 	body.image = (await handleFile(`/emojis/${id}`, body.image)) as string;
 
 	const emoji = await new Emoji({

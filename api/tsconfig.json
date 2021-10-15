@@ -67,8 +67,7 @@
 		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
 		"baseUrl": ".",
 		"paths": {
-			"@fosscord/api": ["src/index"],
-			"@fosscord/api/*": ["src/*"]
+			"@fosscord/api": ["src/index"]
 		},
 		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }],
 		"experimentalDecorators": true
