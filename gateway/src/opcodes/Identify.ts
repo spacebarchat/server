@@ -42,6 +42,14 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = decoded.id;
+
+	const user = await User.findOneOrFail({
+		where: { id: this.user_id },
+		relations: ["relationships", "relationships.to"],
+		select: [...PrivateUserProjection, "relationships"],
+	});
+	if (!user) return this.close(CLOSECODES.Authentication_failed);
+
 	if (!identify.intents) identify.intents = BigInt("0b11111111111111");
 	this.intents = new Intents(identify.intents);
 	if (identify.shard) {
@@ -83,7 +91,25 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			},
 		];
 	}) as PublicMember[][];
-	const guilds = members.map((x) => ({ ...x.guild, joined_at: x.joined_at }));
+	let guilds = members.map((x) => ({ ...x.guild, joined_at: x.joined_at }));
+
+	// @ts-ignore
+	guilds = guilds.map((guild) => {
+		if (user.bot) {
+			setTimeout(() => {
+				Send(this, {
+					op: OPCODES.Dispatch,
+					t: EVENTEnum.GuildCreate,
+					s: this.sequence++,
+					d: guild,
+				});
+			}, 500);
+			return { id: guild.id, unavailable: true };
+		}
+
+		return guild;
+	});
+
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
 	const recipients = await Recipient.find({
@@ -103,12 +129,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}
 		return x.channel;
 	});
-	const user = await User.findOneOrFail({
-		where: { id: this.user_id },
-		relations: ["relationships", "relationships.to"],
-		select: [...PrivateUserProjection, "relationships"],
-	});
-	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
 	for (let relation of user.relationships) {
 		const related_user = relation.to;
