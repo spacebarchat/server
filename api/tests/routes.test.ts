@@ -43,7 +43,7 @@ const request = async (path: string, opts: any = {}): Promise<any> => {
 
 	var data = await response.text();
 	try {
-		data = JSON.stringify(data);
+		data = JSON.parse(data);
 		if (response.status >= 400) throw data;
 		return data;
 	} catch (error) {
