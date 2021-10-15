@@ -48,8 +48,8 @@
 		"patch-package": "^6.4.7",
 		"pg": "^8.7.1",
 		"reflect-metadata": "^0.1.13",
-		"sqlite3": "^5.0.2",
-		"typeorm": "^0.2.37",
+		"sqlite3": "^4.2.0",
+		"typeorm": "^0.2.38",
 		"typescript": "^4.4.2",
 		"typescript-json-schema": "^0.50.1"
 	},
