@@ -11,6 +11,7 @@ export * from "./Guild";
 export * from "./Invite";
 export * from "./Member";
 export * from "./Message";
+export * from "./Migration";
 export * from "./RateLimit";
 export * from "./ReadState";
 export * from "./Recipient";
