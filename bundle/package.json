@@ -47,7 +47,7 @@
 		"jest": "^27.0.6",
 		"jest-expect-message": "^1.0.2",
 		"jest-runtime": "^27.2.1",
-		"ts-node": "^9.1.1",
+		"ts-node": "^10.2.1",
 		"ts-node-dev": "^1.1.6",
 		"ts-patch": "^1.4.4",
 		"typescript": "^4.2.3",
@@ -93,6 +93,8 @@
 		"typescript": "^4.1.2",
 		"typescript-json-schema": "^0.50.1",
 		"ws": "^7.4.2",
-		"cheerio": "^1.0.0-rc.10"
+		"cheerio": "^1.0.0-rc.10",
+		"@aws-sdk/client-s3": "^3.36.1",
+		"@aws-sdk/node-http-handler": "^3.36.0"
 	}
 }
