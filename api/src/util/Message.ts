@@ -24,7 +24,7 @@ import fetch from "node-fetch";
 import cheerio from "cheerio";
 import { MessageCreateSchema } from "../routes/channels/#channel_id/messages";
 
-// TODO: check webhook, application, system author
+// TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
 
 const LINK_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
@@ -46,6 +46,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 	const message = new Message({
 		...opts,
+		sticker_items: opts.sticker_ids?.map((x) => ({ id: x })),
 		guild_id: channel.guild_id,
 		channel_id: opts.channel_id,
 		attachments: opts.attachments || [],
@@ -82,7 +83,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	}
 
 	// TODO: stickers/activity
-	if (!opts.content && !opts.embeds?.length && !opts.attachments?.length) {
+	if (!opts.content && !opts.embeds?.length && !opts.attachments?.length && !opts.sticker_ids?.length) {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 

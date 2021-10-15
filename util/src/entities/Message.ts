@@ -127,7 +127,7 @@ export class Message extends BaseClass {
 	mention_channels: Channel[];
 
 	@JoinTable({ name: "message_stickers" })
-	@ManyToMany(() => Sticker)
+	@ManyToMany(() => Sticker, { cascade: true, onDelete: "CASCADE" })
 	sticker_items?: Sticker[];
 
 	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {

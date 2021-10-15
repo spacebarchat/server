@@ -1,6 +1,8 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class VanityInvite1633881705509 implements MigrationInterface {
+	name = "VanityInvite1633881705509";
+
 	public async up(queryRunner: QueryRunner): Promise<void> {
 		try {
 			await queryRunner.query(`ALTER TABLE "emojis" DROP COLUMN vanity_url_code`);

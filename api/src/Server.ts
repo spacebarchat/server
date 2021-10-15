@@ -78,7 +78,7 @@ export class FosscordServer extends Server {
 		api.use("*", (error: any, req: Request, res: Response, next: NextFunction) => {
 			if (error) return next(error);
 			res.status(404).json({
-				message: "404: Not Found",
+				message: "404 endpoint not found",
 				code: 0
 			});
 			next();

@@ -64,6 +64,7 @@ export interface MessageCreateSchema {
 	payload_json?: string;
 	file?: any;
 	attachments?: any[]; //TODO we should create an interface for attachments
+	sticker_ids?: string[];
 }
 
 // https://discord.com/developers/docs/resources/channel#create-message
