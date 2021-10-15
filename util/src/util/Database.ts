@@ -49,7 +49,7 @@ export function initDatabase(): Promise<Connection> {
 					connection.migrations.map((x) => ({
 						id: i++,
 						name: x.name,
-						timestamp: Date.now(),
+						timestamp: Math.floor(Date.now() / 1000),
 					}))
 				);
 			}
