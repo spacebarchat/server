@@ -12,6 +12,7 @@ import {
 	PublicUser,
 	PrivateUserProjection,
 	ReadState,
+	Application,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
@@ -171,6 +172,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const d: ReadyEventData = {
 		v: 8,
+		application: await Application.findOne({ id: this.user_id }),
 		user: privateUser,
 		user_settings: user.settings,
 		// @ts-ignore
@@ -213,7 +215,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		users: users.filter((x) => x).unique(),
 		merged_members: merged_members,
 		// shard // TODO: only for bots sharding
-		// application // TODO for applications
 	};
 
 	// TODO: send real proper data structure
