@@ -1,24 +1,52 @@
+---
 version: "3"
+
 services:
     db:
         hostname: fosscord_db
-        image: mongo:latest
+        image: postgres:latest
         volumes:
-            - ./db:/data/db
+            - db_data:/var/lib/postgres
         restart: unless-stopped
+        ports:
+            - 5432:5432
+        environment:
+            POSTGRES_USER: fosscord
+            POSTGRES_DATABASE: fosscord
+            POSTGRES_PASSWORD: fosscord
+
     api:
-        hostname: fosscord_api
-        image: fosscord/api
+        build:
+            context: .
+            dockerfile: api/Dockerfile
         depends_on:
             - db
         ports:
             - 3001:3001
-        env_file: ./.docker/env
+        env_file: .env
+
     gateway:
-        hostname: fosscord_gateway
-        image: fosscord/gateway
+        build:
+            context: .
+            dockerfile: gateway/Dockerfile
         depends_on:
             - db
         ports:
             - 3002:3002
-        env_file: ./.docker/env
+        env_file: .env
+
+    cdn:
+        build:
+            context: .
+            dockerfile: cdn/Dockerfile
+        depends_on:
+            - db
+        ports:
+            - 3003:3003
+        volumes:
+            - cdn_data:/data
+        env_file: .env
+
+volumes:
+    db_data: {}
+    cdn_data: {}
