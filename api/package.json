@@ -63,6 +63,8 @@
 		"typescript-json-schema": "0.50.1"
 	},
 	"dependencies": {
+		"@babel/preset-env": "^7.15.8",
+		"@babel/preset-typescript": "^7.15.0",
 		"@fosscord/util": "file:../util",
 		"ajv": "8.6.2",
 		"ajv-formats": "^2.1.1",
