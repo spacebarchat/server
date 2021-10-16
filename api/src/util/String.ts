@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { ntob } from "./Base64";
-import { FieldErrors } from "./FieldError";
+import { FieldErrors } from "@fosscord/util";
 
 export function checkLength(str: string, min: number, max: number, key: string, req: Request) {
 	if (str.length < min || str.length > max) {

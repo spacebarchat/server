@@ -3,12 +3,13 @@
 	"version": "1.0.0",
 	"description": "Utility functions for the all server repositories",
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"types": "src/index.ts",
 	"scripts": {
 		"start": "npm run build && node dist/",
 		"test": "npm run build && jest",
 		"postinstall": "npm run build",
-		"build": "npx tsc -b ."
+		"build": "npx tsc -p .",
+		"typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
 	},
 	"repository": {
 		"type": "git",
@@ -30,29 +31,25 @@
 	"devDependencies": {
 		"@types/amqplib": "^0.8.1",
 		"@types/jsonwebtoken": "^8.5.0",
-		"@types/mongoose-autopopulate": "^0.10.1",
 		"@types/multer": "^1.4.7",
 		"@types/node": "^14.17.9",
 		"@types/node-fetch": "^2.5.12",
-		"jest": "^27.0.6"
+		"jest": "^27.0.6",
+		"ts-node": "^10.2.1"
 	},
 	"dependencies": {
-		"ajv": "^8.6.2",
 		"amqplib": "^0.8.0",
-		"class-validator": "^0.13.1",
-		"dot-prop": "^6.0.1",
-		"env-paths": "^2.2.1",
 		"jsonwebtoken": "^8.5.1",
-		"lambert-server": "^1.2.10",
-		"missing-native-js-functions": "^1.2.15",
+		"lambert-server": "^1.2.12",
+		"missing-native-js-functions": "^1.2.18",
 		"multer": "^1.4.3",
+		"nanocolors": "^0.2.12",
 		"node-fetch": "^2.6.1",
 		"patch-package": "^6.4.7",
 		"pg": "^8.7.1",
 		"reflect-metadata": "^0.1.13",
 		"sqlite3": "^5.0.2",
-		"tsconfig-paths": "^3.11.0",
-		"typeorm": "^0.2.37",
+		"typeorm": "^0.2.38",
 		"typescript": "^4.4.2",
 		"typescript-json-schema": "^0.50.1"
 	},

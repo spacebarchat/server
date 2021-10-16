@@ -1,5 +1,5 @@
 // @ts-nocheck
-import cluster from "cluster";
+import * as cluster from "cluster";
 
 // https://github.com/discordjs/discord.js/blob/master/src/util/Snowflake.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
@@ -84,7 +84,7 @@ export class Snowflake {
 	}
 
 	static generate() {
-		var time = BigInt(Date.now() - Snowflake.EPOCH) << 22n;
+		var time = BigInt(Date.now() - Snowflake.EPOCH) << BigInt(22);
 		var worker = Snowflake.workerId << 17n;
 		var process = Snowflake.processId << 12n;
 		var increment = Snowflake.INCREMENT++;

@@ -46,9 +46,6 @@ export enum MessageType {
 
 @Entity("messages")
 export class Message extends BaseClass {
-	@Column()
-	id: string;
-
 	@Column({ nullable: true })
 	@RelationId((message: Message) => message.channel)
 	channel_id: string;
@@ -74,9 +71,7 @@ export class Message extends BaseClass {
 	author_id: string;
 
 	@JoinColumn({ name: "author_id", referencedColumnName: "id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
+	@ManyToOne(() => User)
 	author?: User;
 
 	@Column({ nullable: true })
@@ -120,7 +115,7 @@ export class Message extends BaseClass {
 	mention_everyone?: boolean;
 
 	@JoinTable({ name: "message_user_mentions" })
-	@ManyToMany(() => User, { orphanedRowAction: "delete", onDelete: "CASCADE", cascade: true })
+	@ManyToMany(() => User)
 	mentions: User[];
 
 	@JoinTable({ name: "message_role_mentions" })
@@ -132,7 +127,7 @@ export class Message extends BaseClass {
 	mention_channels: Channel[];
 
 	@JoinTable({ name: "message_stickers" })
-	@ManyToMany(() => Sticker)
+	@ManyToMany(() => Sticker, { cascade: true, onDelete: "CASCADE" })
 	sticker_items?: Sticker[];
 
 	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
@@ -153,7 +148,7 @@ export class Message extends BaseClass {
 	@Column({ nullable: true })
 	pinned?: boolean;
 
-	@Column({ type: "simple-enum", enum: MessageType })
+	@Column({ type: "int" })
 	type: MessageType;
 
 	@Column({ type: "simple-json", nullable: true })

@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 const router = Router();
 
 router.post("/", route({}), async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({ id: req.user_id }); //User object
+	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["data"] }); //User object
 	let correctpass = true;
 
 	if (user.data.hash) {

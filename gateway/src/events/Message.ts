@@ -1,10 +1,11 @@
-import { WebSocket, Payload, CLOSECODES, OPCODES } from "@fosscord/gateway";
+import { CLOSECODES, OPCODES } from "../util/Constants";
+import { WebSocket, Payload } from "@fosscord/gateway";
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 import OPCodeHandlers from "../opcodes";
-import { instanceOf, Tuple } from "lambert-server";
+import { Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";
 
@@ -35,8 +36,6 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		// this.close(CLOSECODES.Unknown_opcode);
 		return;
 	}
-
-	console.log("[Gateway] Opcode " + OPCODES[data.op]);
 
 	try {
 		return await OPCodeHandler.call(this, data);

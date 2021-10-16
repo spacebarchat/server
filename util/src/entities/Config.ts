@@ -1,11 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { BaseClass, BaseClassWithoutId } from "./BaseClass";
+import { Column, Entity } from "typeorm";
+import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import crypto from "crypto";
 import { Snowflake } from "../util/Snowflake";
 
 @Entity("config")
 export class ConfigEntity extends BaseClassWithoutId {
-	@PrimaryColumn()
+	@PrimaryIdColumn()
 	key: string;
 
 	@Column({ type: "simple-json", nullable: true })
@@ -51,11 +51,6 @@ export interface ConfigValue {
 	general: {
 		instanceId: string;
 	};
-	permissions: {
-		user: {
-			createGuilds: boolean;
-		};
-	};
 	limits: {
 		user: {
 			maxGuilds: number;
@@ -64,6 +59,7 @@ export interface ConfigValue {
 		};
 		guild: {
 			maxRoles: number;
+			maxEmojis: number;
 			maxMembers: number;
 			maxChannels: number;
 			maxChannelsInCategory: number;
@@ -128,6 +124,7 @@ export interface ConfigValue {
 		disabled: boolean;
 		requireCaptcha: boolean;
 		requireInvite: boolean;
+		guestsRequireInvite: boolean;
 		allowNewRegistration: boolean;
 		allowMultipleAccounts: boolean;
 		blockProxies: boolean;
@@ -144,9 +141,18 @@ export interface ConfigValue {
 		useDefaultAsOptimal: boolean;
 		available: Region[];
 	};
-	
 	guild: {
 		showAllGuildsInDiscovery: boolean;
+		autoJoin: {
+			enabled: boolean;
+			guilds: string[];
+			canLeave: boolean;
+		};
+	};
+	gif: {
+		enabled: boolean;
+		provider: "tenor"; // more coming soon
+		apiKey?: string;
 	};
 	rabbitmq: {
 		host: string | null;
@@ -170,11 +176,6 @@ export const DefaultConfigOptions: ConfigValue = {
 	general: {
 		instanceId: Snowflake.generate(),
 	},
-	permissions: {
-		user: {
-			createGuilds: true,
-		},
-	},
 	limits: {
 		user: {
 			maxGuilds: 100,
@@ -183,6 +184,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		},
 		guild: {
 			maxRoles: 250,
+			maxEmojis: 50, // TODO: max emojis per guild per nitro level
 			maxMembers: 250000,
 			maxChannels: 500,
 			maxChannelsInCategory: 50,
@@ -273,6 +275,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		},
 		disabled: false,
 		requireInvite: false,
+		guestsRequireInvite: true,
 		requireCaptcha: true,
 		allowNewRegistration: true,
 		allowMultipleAccounts: true,
@@ -299,9 +302,18 @@ export const DefaultConfigOptions: ConfigValue = {
 			},
 		],
 	},
-	
 	guild: {
 		showAllGuildsInDiscovery: false,
+		autoJoin: {
+			enabled: true,
+			canLeave: true,
+			guilds: [],
+		},
+	},
+	gif: {
+		enabled: true,
+		provider: "tenor",
+		apiKey: "LIVDSRZULELA",
 	},
 	rabbitmq: {
 		host: null,

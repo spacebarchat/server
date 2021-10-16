@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
-import { FieldErrors, route } from "@fosscord/api";
+import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
-import { Config, User, generateToken, adjustEmail } from "@fosscord/util";
+import { Config, User, generateToken, adjustEmail, FieldErrors } from "@fosscord/util";
 
 const router: Router = Router();
 export default router;

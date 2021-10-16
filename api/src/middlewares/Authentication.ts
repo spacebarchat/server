@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { checkToken, Config } from "@fosscord/util";
+import { checkToken, Config, Rights } from "@fosscord/util";
 
 export const NO_AUTHORIZATION_ROUTES = [
 	"/auth/login",
@@ -9,6 +9,8 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/ping",
 	"/gateway",
 	"/experiments",
+	"/-/readyz",
+	"/-/healthz",
 	/\/guilds\/\d+\/widget\.(json|png)/
 ];
 
@@ -21,6 +23,7 @@ declare global {
 			user_id: string;
 			user_bot: boolean;
 			token: string;
+			rights: Rights;
 		}
 	}
 }
@@ -46,6 +49,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 		req.token = decoded;
 		req.user_id = decoded.id;
 		req.user_bot = user.bot;
+		req.rights = new Rights(Number(user.rights));
 		return next();
 	} catch (error: any) {
 		return next(new HTTPError(error?.toString(), 400));

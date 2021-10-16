@@ -8,8 +8,6 @@ import {
 	JoinTable,
 	ManyToMany,
 	ManyToOne,
-	OneToMany,
-	PrimaryColumn,
 	PrimaryGeneratedColumn,
 	RelationId,
 } from "typeorm";
@@ -27,6 +25,22 @@ import { Role } from "./Role";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Ban, PublicGuildRelations } from ".";
 import { DiscordApiErrors } from "../util/Constants";
+
+export const MemberPrivateProjection: (keyof Member)[] = [
+	"id",
+	"guild",
+	"guild_id",
+	"deaf",
+	"joined_at",
+	"last_message_id",
+	"mute",
+	"nick",
+	"pending",
+	"premium_since",
+	"roles",
+	"settings",
+	"user",
+];
 
 @Entity("members")
 @Index(["id", "guild_id"], { unique: true })
@@ -83,8 +97,11 @@ export class Member extends BaseClassWithoutId {
 	@Column()
 	pending: boolean;
 
-	@Column({ type: "simple-json" })
+	@Column({ type: "simple-json", select: false })
 	settings: UserGuildSettings;
+
+	@Column({ nullable: true })
+	last_message_id?: string;
 
 	// TODO: update
 	// @Column({ type: "simple-json" })

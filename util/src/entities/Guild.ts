@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
+import { Config, handleFile, Snowflake } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -257,14 +258,6 @@ export class Guild extends BaseClass {
 	unavailable?: boolean;
 
 	@Column({ nullable: true })
-	@RelationId((guild: Guild) => guild.vanity_url)
-	vanity_url_code?: string;
-
-	@JoinColumn({ name: "vanity_url_code" })
-	@ManyToOne(() => Invite)
-	vanity_url?: Invite;
-
-	@Column({ nullable: true })
 	verification_level?: number;
 
 	@Column({ type: "simple-json" })
@@ -295,4 +288,84 @@ export class Guild extends BaseClass {
 
 	@Column({ nullable: true })
 	nsfw?: boolean;
+
+	static async createGuild(body: {
+		name?: string;
+		icon?: string | null;
+		owner_id?: string;
+		channels?: Partial<Channel>[];
+	}) {
+		const guild_id = Snowflake.generate();
+
+		const guild = await new Guild({
+			name: body.name || "Fosscord",
+			icon: await handleFile(`/icons/${guild_id}`, body.icon as string),
+			region: Config.get().regions.default,
+			owner_id: body.owner_id,
+			afk_timeout: 300,
+			default_message_notifications: 0,
+			explicit_content_filter: 0,
+			features: [],
+			id: guild_id,
+			max_members: 250000,
+			max_presences: 250000,
+			max_video_channel_users: 25,
+			presence_count: 0,
+			member_count: 0, // will automatically be increased by addMember()
+			mfa_level: 0,
+			preferred_locale: "en-US",
+			premium_subscription_count: 0,
+			premium_tier: 0,
+			system_channel_flags: 0,
+			unavailable: false,
+			nsfw: false,
+			nsfw_level: 0,
+			verification_level: 0,
+			welcome_screen: {
+				enabled: false,
+				description: "No description",
+				welcome_channels: [],
+			},
+			widget_enabled: false,
+		}).save();
+
+		// we have to create the role _after_ the guild because else we would get a "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" error
+		await new Role({
+			id: guild_id,
+			guild_id: guild_id,
+			color: 0,
+			hoist: false,
+			managed: false,
+			mentionable: false,
+			name: "@everyone",
+			permissions: String("2251804225"),
+			position: 0,
+		}).save();
+
+		if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
+
+		const ids = new Map();
+
+		body.channels.forEach((x) => {
+			if (x.id) {
+				ids.set(x.id, Snowflake.generate());
+			}
+		});
+
+		for (const channel of body.channels?.sort((a, b) => (a.parent_id ? 1 : -1))) {
+			var id = ids.get(channel.id) || Snowflake.generate();
+
+			// TODO: should we abort if parent_id is a category? (to disallow sub category channels)
+			var parent_id = ids.get(channel.parent_id);
+
+			await Channel.createChannel({ ...channel, guild_id, id, parent_id }, body.owner_id, {
+				keepId: true,
+				skipExistsCheck: true,
+				skipPermissionCheck: true,
+				skipEventEmit: true,
+			});
+		}
+
+		return guild;
+	}
 }

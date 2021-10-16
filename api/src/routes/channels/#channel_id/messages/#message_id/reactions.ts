@@ -124,7 +124,7 @@ router.put("/:emoji/:user_id", route({ permission: "READ_MESSAGE_HISTORY" }), as
 		already_added.count++;
 	} else message.reactions.push({ count: 1, emoji, user_ids: [req.user_id] });
 
-	await Message.update({ id: message_id, channel_id }, message);
+	await message.save();
 
 	const member = channel.guild_id && (await Member.findOneOrFail({ id: req.user_id }));
 
@@ -165,7 +165,7 @@ router.delete("/:emoji/:user_id", route({}), async (req: Request, res: Response)
 
 	if (already_added.count <= 0) message.reactions.remove(already_added);
 
-	await Message.update({ id: message_id, channel_id }, message);
+	await message.save();
 
 	await emitEvent({
 		event: "MESSAGE_REACTION_REMOVE",

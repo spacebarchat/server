@@ -1,6 +1,6 @@
 export interface LazyRequest {
 	guild_id: string;
-	channels?: Record<string, [number, number]>;
+	channels?: Record<string, [number, number][]>;
 	activities?: boolean;
 	threads?: boolean;
 	typing?: true;

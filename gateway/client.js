@@ -3,7 +3,7 @@ const WebSocket = require("ws");
 const Constants = require("./dist/util/Constants");
 
 // const ws = new WebSocket("ws://127.0.0.1:8080");
-const ws = new WebSocket("wss://gateway.discord.gg");
+const ws = new WebSocket("wss://dev.fosscord.com");
 
 ws.on("open", () => {
 	// ws.send(JSON.stringify({ req_type: "new_auth" }));

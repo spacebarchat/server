@@ -1,6 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
-import { Member } from ".";
-import { BaseClass } from "./BaseClass";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId, PrimaryColumn } from "typeorm";
+import { Member } from "./Member";
+import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { User } from "./User";
@@ -8,7 +8,7 @@ import { User } from "./User";
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 
 @Entity("invites")
-export class Invite extends BaseClass {
+export class Invite extends BaseClassWithoutId {
 	@PrimaryColumn()
 	code: string;
 
@@ -70,6 +70,9 @@ export class Invite extends BaseClass {
 
 	@Column({ nullable: true })
 	target_user_type?: number;
+
+	@Column({ nullable: true})
+	vanity_url?: boolean;
 
 	static async joinGuild(user_id: string, code: string) {
 		const invite = await Invite.findOneOrFail({ code });

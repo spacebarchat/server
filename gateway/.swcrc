@@ -1,0 +1,16 @@
+{
+	"module": {
+		"type": "commonjs"
+	},
+	"jsc": {
+		"parser": {
+			"syntax": "typescript",
+			"decorators": true
+		},
+		"target": "es5",
+		"baseUrl": ".",
+		"paths": {
+			"@fosscord/gateway": ["src/index"]
+		}
+	}
+}
