@@ -21,7 +21,7 @@ export const ActivitySchema = {
 			$emoji: {
 				$name: String,
 				$id: String,
-				$amimated: Boolean,
+				$animated: Boolean,
 			},
 			$party: {
 				$id: String,
