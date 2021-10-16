@@ -56,9 +56,7 @@ beforeAll(async (done) => {
 		const response = await request("/auth/register", {
 			body: {
 				fingerprint: "805826570869932034.wR8vi8lGlFBJerErO9LG5NViJFw",
-				email: "test@example.com",
 				username: "tester",
-				password: "wtp9gep9gw",
 				invite: null,
 				consent: true,
 				date_of_birth: "2000-01-01",
