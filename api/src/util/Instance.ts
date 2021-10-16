@@ -1,4 +1,4 @@
-import { Config, Guild } from "@fosscord/util";
+import { Config, Guild, Session } from "@fosscord/util";
 
 export async function initInstance() {
 	// TODO: clean up database and delete tombstone data
@@ -15,4 +15,7 @@ export async function initInstance() {
 			await Config.set({ guild: { autoJoin: { guilds: [guild.id] } } });
 		}
 	}
+
+	// TODO: do no clear sessions for instance cluster
+	await Session.delete({});
 }
