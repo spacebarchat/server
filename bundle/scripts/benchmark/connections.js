@@ -1,3 +1,4 @@
+require("dotenv").config();
 const cluster = require("cluster");
 const WebSocket = require("ws");
 const endpoint = process.env.GATEWAY || "ws://localhost:3001";
