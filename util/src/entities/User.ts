@@ -4,7 +4,7 @@ import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
-import { Member } from ".";
+import { Member, Session } from ".";
 
 export enum PublicUserEnum {
 	username,
@@ -131,6 +131,9 @@ export class User extends BaseClass {
 	@Column()
 	rights: string; // Rights
 
+	@OneToMany(() => Session, (session: Session) => session.user)
+	sessions: Session[];
+
 	@JoinColumn({ name: "relationship_ids" })
 	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
 		cascade: true,
@@ -250,11 +253,13 @@ export class User extends BaseClass {
 
 		await user.save();
 
-		if (Config.get().guild.autoJoin.enabled) {
-			for (const guild of Config.get().guild.autoJoin.guilds || []) {
-				await Member.addToGuild(user.id, guild);
+		setImmediate(async () => {
+			if (Config.get().guild.autoJoin.enabled) {
+				for (const guild of Config.get().guild.autoJoin.guilds || []) {
+					await Member.addToGuild(user.id, guild).catch((e) => {});
+				}
 			}
-		}
+		});
 
 		return user;
 	}
@@ -293,7 +298,7 @@ export const defaultSettings: UserSettings = {
 	render_reactions: true,
 	restricted_guilds: [],
 	show_current_game: true,
-	status: "offline",
+	status: "online",
 	stream_notifications_enabled: true,
 	theme: "dark",
 	timezone_offset: 0,
