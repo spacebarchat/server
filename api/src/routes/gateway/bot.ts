@@ -23,7 +23,7 @@ const options: RouteOptions = {
 	}
 };
 
-router.get("/bot", route(options), (req: Request, res: Response) => {
+router.get("/", route(options), (req: Request, res: Response) => {
 	const { endpointPublic } = Config.get().gateway;
 	res.json({
 		url: endpointPublic || process.env.GATEWAY || "ws://localhost:3002",
