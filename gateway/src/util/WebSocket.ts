@@ -17,4 +17,6 @@ export interface WebSocket extends WS {
 	sequence: number;
 	permissions: Record<string, Permissions>;
 	events: Record<string, Function>;
+	member_events: Record<string, Function>;
+	listen_options: any;
 }
