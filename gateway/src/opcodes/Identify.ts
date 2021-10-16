@@ -13,6 +13,11 @@ import {
 	PrivateUserProjection,
 	ReadState,
 	Application,
+	emitEvent,
+	SessionsReplace,
+	PrivateSessionProjection,
+	MemberPrivateProjection,
+	PresenceUpdateEvent,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
@@ -43,11 +48,56 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	}
 	this.user_id = decoded.id;
 
-	const user = await User.findOneOrFail({
-		where: { id: this.user_id },
-		relations: ["relationships", "relationships.to"],
-		select: [...PrivateUserProjection, "relationships"],
-	});
+	const session_id = genSessionId();
+	this.session_id = session_id; //Set the session of the WebSocket object
+
+	const [user, read_states, members, recipients, session, application] =
+		await Promise.all([
+			User.findOneOrFail({
+				where: { id: this.user_id },
+				relations: ["relationships", "relationships.to"],
+				select: [...PrivateUserProjection, "relationships"],
+			}),
+			ReadState.find({ user_id: this.user_id }),
+			Member.find({
+				where: { id: this.user_id },
+				select: MemberPrivateProjection,
+				relations: [
+					"guild",
+					"guild.channels",
+					"guild.emojis",
+					"guild.emojis.user",
+					"guild.roles",
+					"guild.stickers",
+					"user",
+					"roles",
+				],
+			}),
+			Recipient.find({
+				where: { user_id: this.user_id, closed: false },
+				relations: [
+					"channel",
+					"channel.recipients",
+					"channel.recipients.user",
+				],
+				// TODO: public user selection
+			}),
+			// save the session and delete it when the websocket is closed
+			new Session({
+				user_id: this.user_id,
+				session_id: session_id,
+				// TODO: check if status is only one of: online, dnd, offline, idle
+				status: identify.presence?.status || "online", //does the session always start as online?
+				client_info: {
+					//TODO read from identity
+					client: "desktop",
+					os: identify.properties?.os,
+					version: 0,
+				},
+			}).save(),
+			Application.findOne({ id: this.user_id }),
+		]);
+
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
 	if (!identify.intents) identify.intents = BigInt("0b11111111111111");
@@ -68,19 +118,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	}
 	var users: PublicUser[] = [];
 
-	const members = await Member.find({
-		where: { id: this.user_id },
-		relations: [
-			"guild",
-			"guild.channels",
-			"guild.emojis",
-			"guild.emojis.user",
-			"guild.roles",
-			"guild.stickers",
-			"user",
-			"roles",
-		],
-	});
 	const merged_members = members.map((x: Member) => {
 		return [
 			{
@@ -112,11 +149,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const user_guild_settings_entries = members.map((x) => x.settings);
 
-	const recipients = await Recipient.find({
-		where: { user_id: this.user_id, closed: false },
-		relations: ["channel", "channel.recipients", "channel.recipients.user"],
-		// TODO: public user selection
-	});
 	const channels = recipients.map((x) => {
 		// @ts-ignore
 		x.channel.recipients = x.channel.recipients?.map((x) => x.user);
@@ -144,24 +176,28 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		users.push(public_related_user);
 	}
 
-	const session_id = genSessionId();
-	this.session_id = session_id; //Set the session of the WebSocket object
-	const session = new Session({
-		user_id: this.user_id,
-		session_id: session_id,
-		status: "online", //does the session always start as online?
-		client_info: {
-			//TODO read from identity
-			client: "desktop",
-			os: "linux",
-			version: 0,
-		},
+	setImmediate(async () => {
+		// run in seperate "promise context" because ready payload is not dependent on those events
+		emitEvent({
+			event: "SESSIONS_REPLACE",
+			user_id: this.user_id,
+			data: await Session.find({
+				where: { user_id: this.user_id },
+				select: PrivateSessionProjection,
+			}),
+		} as SessionsReplace);
+		emitEvent({
+			event: "PRESENCE_UPDATE",
+			user_id: this.user_id,
+			data: {
+				user: await User.getPublicUser(this.user_id),
+				activities: session.activities,
+				client_status: session?.client_info,
+				status: session.status,
+			},
+		} as PresenceUpdateEvent);
 	});
 
-	//We save the session and we delete it when the websocket is closed
-	await session.save();
-
-	const read_states = await ReadState.find({ user_id: this.user_id });
 	read_states.forEach((s: any) => {
 		s.id = s.channel_id;
 		delete s.user_id;
@@ -192,7 +228,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const d: ReadyEventData = {
 		v: 8,
-		application: await Application.findOne({ id: this.user_id }),
+		application,
 		user: privateUser,
 		user_settings: user.settings,
 		// @ts-ignore
