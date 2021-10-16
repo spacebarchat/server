@@ -8,7 +8,6 @@ import { Close } from "./Close";
 import { Message } from "./Message";
 import { createDeflate } from "zlib";
 import { URL } from "url";
-import { Session } from "@fosscord/util";
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
@@ -57,6 +56,7 @@ export async function Connection(
 		}
 
 		socket.events = {};
+		socket.member_events = {};
 		socket.permissions = {};
 		socket.sequence = 0;
 
