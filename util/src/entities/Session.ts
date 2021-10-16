@@ -23,7 +23,7 @@ export class Session extends BaseClass {
 	session_id: string;
 
 	@Column({ type: "simple-json", nullable: true })
-	activities: Activity[] = [];
+	activities: Activity[];
 
 	// TODO client_status
 	@Column({ type: "simple-json", select: false })

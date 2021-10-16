@@ -94,6 +94,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					os: identify.properties?.os,
 					version: 0,
 				},
+				activities: [],
 			}).save(),
 			Application.findOne({ id: this.user_id }),
 		]);
