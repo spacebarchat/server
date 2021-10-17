@@ -32,3 +32,4 @@ This repository contains:
 
 ## [Setup](https://docs.fosscord.com/setup/server/)
 
+- [Download](https://github.com/fosscord/fosscord-server/releases)
