@@ -4,7 +4,6 @@ import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscor
 import { route } from "@fosscord/api";
 import { DiscordApiErrors } from "@fosscord/util";
 import fetch from "node-fetch";
-import { HTTPError } from "lambert-server";
 export interface GuildTemplateCreateSchema {
 	name: string;
 	avatar?: string | null;
