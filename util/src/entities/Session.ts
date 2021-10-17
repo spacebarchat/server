@@ -1,6 +1,8 @@
 import { User } from "./User";
 import { BaseClass } from "./BaseClass";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Status } from "../interfaces/Status";
+import { Activity } from "../interfaces/Activity";
 
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 
@@ -17,11 +19,13 @@ export class Session extends BaseClass {
 	user: User;
 
 	//TODO check, should be 32 char long hex string
-	@Column({ nullable: false })
+	@Column({ nullable: false, select: false })
 	session_id: string;
 
-	activities: []; //TODO
+	@Column({ type: "simple-json", nullable: true })
+	activities: Activity[];
 
+	// TODO client_status
 	@Column({ type: "simple-json", select: false })
 	client_info: {
 		client: string;
@@ -29,6 +33,14 @@ export class Session extends BaseClass {
 		version: number;
 	};
 
-	@Column({ nullable: false })
-	status: string; //TODO enum
+	@Column({ nullable: false, type: "varchar" })
+	status: Status; //TODO enum
 }
+
+export const PrivateSessionProjection: (keyof Session)[] = [
+	"user_id",
+	"session_id",
+	"activities",
+	"client_info",
+	"status",
+];

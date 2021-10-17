@@ -31,10 +31,10 @@ router.patch("/", route({ body: "ChannelReorderSchema", permission: "MANAGE_CHAN
 
 	await Promise.all([
 		body.map(async (x) => {
-			if (!x.position && !x.parent_id) throw new HTTPError(`You need to at least specify position or parent_id`, 400);
+			if (x.position == null && !x.parent_id) throw new HTTPError(`You need to at least specify position or parent_id`, 400);
 
 			const opts: any = {};
-			if (x.position) opts.position = x.position;
+			if (x.position != null) opts.position = x.position;
 
 			if (x.parent_id) {
 				opts.parent_id = x.parent_id;

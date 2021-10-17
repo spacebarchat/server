@@ -4,7 +4,7 @@ import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
-import { Member } from ".";
+import { Member, Session } from ".";
 
 export enum PublicUserEnum {
 	username,
@@ -131,6 +131,9 @@ export class User extends BaseClass {
 	@Column()
 	rights: string; // Rights
 
+	@OneToMany(() => Session, (session: Session) => session.user)
+	sessions: Session[];
+
 	@JoinColumn({ name: "relationship_ids" })
 	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
 		cascade: true,
@@ -198,7 +201,7 @@ export class User extends BaseClass {
 		// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
 		// if it all five times already exists, abort with USERNAME_TOO_MANY_USERS error
 		// else just continue
-		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the mongodb database?
+		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
 		for (let tries = 0; tries < 5; tries++) {
 			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
 			exists = await User.findOne({ where: { discriminator, username: username }, select: ["id"] });
@@ -219,7 +222,7 @@ export class User extends BaseClass {
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 		const language = req.language === "en" ? "en-US" : req.language || "en-US";
 
-		const user = await new User({
+		const user = new User({
 			created_at: new Date(),
 			username: username,
 			discriminator,
@@ -246,13 +249,17 @@ export class User extends BaseClass {
 			},
 			settings: { ...defaultSettings, locale: language },
 			fingerprints: [],
-		}).save();
+		});
 
-		if (Config.get().guild.autoJoin.enabled) {
-			for (const guild of Config.get().guild.autoJoin.guilds || []) {
-				await Member.addToGuild(user.id, guild);
+		await user.save();
+
+		setImmediate(async () => {
+			if (Config.get().guild.autoJoin.enabled) {
+				for (const guild of Config.get().guild.autoJoin.guilds || []) {
+					await Member.addToGuild(user.id, guild).catch((e) => {});
+				}
 			}
-		}
+		});
 
 		return user;
 	}
@@ -291,7 +298,7 @@ export const defaultSettings: UserSettings = {
 	render_reactions: true,
 	restricted_guilds: [],
 	show_current_game: true,
-	status: "offline",
+	status: "online",
 	stream_notifications_enabled: true,
 	theme: "dark",
 	timezone_offset: 0,

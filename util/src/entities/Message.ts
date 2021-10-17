@@ -46,9 +46,6 @@ export enum MessageType {
 
 @Entity("messages")
 export class Message extends BaseClass {
-	@Column()
-	id: string;
-
 	@Column({ nullable: true })
 	@RelationId((message: Message) => message.channel)
 	channel_id: string;
@@ -130,7 +127,7 @@ export class Message extends BaseClass {
 	mention_channels: Channel[];
 
 	@JoinTable({ name: "message_stickers" })
-	@ManyToMany(() => Sticker)
+	@ManyToMany(() => Sticker, { cascade: true, onDelete: "CASCADE" })
 	sticker_items?: Sticker[];
 
 	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
@@ -151,7 +148,7 @@ export class Message extends BaseClass {
 	@Column({ nullable: true })
 	pinned?: boolean;
 
-	@Column({ type: "simple-enum", enum: MessageType })
+	@Column({ type: "int" })
 	type: MessageType;
 
 	@Column({ type: "simple-json", nullable: true })

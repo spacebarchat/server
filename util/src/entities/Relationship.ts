@@ -35,7 +35,7 @@ export class Relationship extends BaseClass {
 	@Column({ nullable: true })
 	nickname?: string;
 
-	@Column({ type: "simple-enum", enum: RelationshipType })
+	@Column({ type: "int" })
 	type: RelationshipType;
 
 	toPublicRelationship() {
