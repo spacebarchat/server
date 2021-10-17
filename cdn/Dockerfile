@@ -4,4 +4,5 @@ COPY package.json .
 RUN npm install
 COPY . .
 EXPOSE 3003
-CMD ["node", "dist/"]
+RUN npm run build
+CMD ["node", "dist/start.js"]
