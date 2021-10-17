@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Discord Test Client</title>
 	</head>
+
 	<body>
 		<div id="app-mount"></div>
 		<script>
@@ -36,6 +37,7 @@
 				HTML_TIMESTAMP: Date.now(),
 				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
 			};
+			GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
 			const localStorage = window.localStorage;
 			// TODO: remote auth
 			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
@@ -46,12 +48,52 @@
 			);
 
 			// Auto register guest account:
+			const prefix = [
+				"mysterious",
+				"adventurous",
+				"courageous",
+				"precious",
+				"cynical",
+				"despicable",
+				"suspicious",
+				"gorgeous",
+				"lovely",
+				"stunning",
+				"based",
+				"keyed",
+				"ratioed",
+				"twink",
+				"phoned"
+			];
+			const suffix = [
+				"Anonymous",
+				"Lurker",
+				"User",
+				"Enjoyer",
+				"Hunk",
+				"Top",
+				"Bottom",
+				"Sub",
+				"Coolstar",
+				"Wrestling",
+				"TylerTheCreator",
+				"Ad"
+			];
+
+			Array.prototype.random = function () {
+				return this[Math.floor(Math.random() * this.length)];
+			};
+
+			function _generateName() {
+				return `${prefix.random()}${suffix.random()}`;
+			}
+
 			const token = JSON.parse(localStorage.getItem("token"));
 			if (!token && location.pathname !== "/login" && location.pathname !== "/register") {
 				fetch(`${window.GLOBAL_ENV.API_ENDPOINT}/auth/register`, {
 					method: "POST",
 					headers: { "content-type": "application/json" },
-					body: JSON.stringify({ username: "Anonymous", consent: true })
+					body: JSON.stringify({ username: `${_generateName()}`, consent: true }) //${Date.now().toString().slice(-4)}
 				})
 					.then((x) => x.json())
 					.then((x) => {
@@ -64,7 +106,8 @@
 			}
 
 			const settings = JSON.parse(localStorage.getItem("UserSettingsStore"));
-			if (settings && settings.locale === "en") {
+			if (settings && settings.locale.length <= 2) {
+				// fix client locale wrong and client not loading at all
 				settings.locale = "en-US";
 				localStorage.setItem("UserSettingsStore", JSON.stringify(settings));
 			}

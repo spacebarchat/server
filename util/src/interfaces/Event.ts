@@ -12,6 +12,8 @@ import { Interaction } from "./Interaction";
 import { ConnectedAccount } from "../entities/ConnectedAccount";
 import { Relationship, RelationshipType } from "../entities/Relationship";
 import { Presence } from "./Presence";
+import { Sticker } from "..";
+import { Activity, Status } from ".";
 
 export interface Event {
 	guild_id?: string;
@@ -185,11 +187,19 @@ export interface GuildBanRemoveEvent extends Event {
 	};
 }
 
-export interface GuildEmojiUpdateEvent extends Event {
-	event: "GUILD_EMOJI_UPDATE";
+export interface GuildEmojisUpdateEvent extends Event {
+	event: "GUILD_EMOJIS_UPDATE";
 	data: {
 		guild_id: string;
 		emojis: Emoji[];
+	};
+}
+
+export interface GuildStickersUpdateEvent extends Event {
+	event: "GUILD_STICKERS_UPDATE";
+	data: {
+		guild_id: string;
+		stickers: Sticker[];
 	};
 }
 
@@ -445,6 +455,37 @@ export interface RelationshipRemoveEvent extends Event {
 	data: Omit<PublicRelationship, "nickname">;
 }
 
+export interface SessionsReplace extends Event {
+	event: "SESSIONS_REPLACE";
+	data: {
+		activities: Activity[];
+		client_info: {
+			version: number;
+			os: string;
+			client: string;
+		};
+		status: Status;
+	}[];
+}
+
+export interface GuildMemberListUpdate extends Event {
+	event: "GUILD_MEMBER_LIST_UPDATE";
+	data: {
+		groups: { id: string; count: number }[];
+		guild_id: string;
+		id: string;
+		member_count: number;
+		online_count: number;
+		ops: {
+			index: number;
+			item: {
+				member?: PublicMember & { presence: Presence };
+				group?: { id: string; count: number }[];
+			};
+		}[];
+	};
+}
+
 export type EventData =
 	| InvalidatedEvent
 	| ReadyEvent
@@ -459,12 +500,13 @@ export type EventData =
 	| GuildDeleteEvent
 	| GuildBanAddEvent
 	| GuildBanRemoveEvent
-	| GuildEmojiUpdateEvent
+	| GuildEmojisUpdateEvent
 	| GuildIntegrationUpdateEvent
 	| GuildMemberAddEvent
 	| GuildMemberRemoveEvent
 	| GuildMemberUpdateEvent
 	| GuildMembersChunkEvent
+	| GuildMemberListUpdate
 	| GuildRoleCreateEvent
 	| GuildRoleUpdateEvent
 	| GuildRoleDeleteEvent
@@ -514,6 +556,7 @@ export enum EVENTEnum {
 	GuildMemberUpdate = "GUILD_MEMBER_UPDATE",
 	GuildMemberSpeaking = "GUILD_MEMBER_SPEAKING",
 	GuildMembersChunk = "GUILD_MEMBERS_CHUNK",
+	GuildMemberListUpdate = "GUILD_MEMBER_LIST_UPDATE",
 	GuildRoleCreate = "GUILD_ROLE_CREATE",
 	GuildRoleDelete = "GUILD_ROLE_DELETE",
 	GuildRoleUpdate = "GUILD_ROLE_UPDATE",
@@ -537,6 +580,7 @@ export enum EVENTEnum {
 	ApplicationCommandCreate = "APPLICATION_COMMAND_CREATE",
 	ApplicationCommandUpdate = "APPLICATION_COMMAND_UPDATE",
 	ApplicationCommandDelete = "APPLICATION_COMMAND_DELETE",
+	SessionsReplace = "SESSIONS_REPLACE",
 }
 
 export type EVENT =
@@ -552,13 +596,15 @@ export type EVENT =
 	| "GUILD_DELETE"
 	| "GUILD_BAN_ADD"
 	| "GUILD_BAN_REMOVE"
-	| "GUILD_EMOJI_UPDATE"
+	| "GUILD_EMOJIS_UPDATE"
+	| "GUILD_STICKERS_UPDATE"
 	| "GUILD_INTEGRATIONS_UPDATE"
 	| "GUILD_MEMBER_ADD"
 	| "GUILD_MEMBER_REMOVE"
 	| "GUILD_MEMBER_UPDATE"
 	| "GUILD_MEMBER_SPEAKING"
 	| "GUILD_MEMBERS_CHUNK"
+	| "GUILD_MEMBER_LIST_UPDATE"
 	| "GUILD_ROLE_CREATE"
 	| "GUILD_ROLE_DELETE"
 	| "GUILD_ROLE_UPDATE"
@@ -587,6 +633,7 @@ export type EVENT =
 	| "MESSAGE_ACK"
 	| "RELATIONSHIP_ADD"
 	| "RELATIONSHIP_REMOVE"
+	| "SESSIONS_REPLACE"
 	| CUSTOMEVENTS;
 
 export type CUSTOMEVENTS = "INVALIDATED" | "RATELIMIT";

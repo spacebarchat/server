@@ -30,6 +30,6 @@ This repository contains:
 
 -   [Contributing](https://docs.fosscord.com/contributing/server/)
 
-## [Download](https://github.com/fosscord/fosscord-server/releases)
+## [Setup](https://docs.fosscord.com/setup/server/)
 
--   _Work in progress_
+- [Download](https://github.com/fosscord/fosscord-server/releases)

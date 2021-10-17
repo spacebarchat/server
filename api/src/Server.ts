@@ -1,19 +1,17 @@
-import { OptionsJson } from "body-parser";
 import "missing-native-js-functions";
-import { Connection } from "mongoose";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
 import { Config, initDatabase, initEvent } from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import { Router, Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
 import path from "path";
 import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
 import morgan from "morgan";
 import { initInstance } from "./util/Instance";
+import { registerRoutes } from "@fosscord/util";
 
 export interface FosscordServerOptions extends ServerOptions {}
 
@@ -75,12 +73,12 @@ export class FosscordServer extends Server {
 		await initRateLimits(api);
 		await initTranslation(api);
 
-		this.routes = await this.registerRoutes(path.join(__dirname, "routes", "/"));
+		this.routes = await registerRoutes(this, path.join(__dirname, "routes", "/"));
 
 		api.use("*", (error: any, req: Request, res: Response, next: NextFunction) => {
 			if (error) return next(error);
 			res.status(404).json({
-				message: "404: Not Found",
+				message: "404 endpoint not found",
 				code: 0
 			});
 			next();

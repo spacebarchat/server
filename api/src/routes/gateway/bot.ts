@@ -1,15 +1,29 @@
 import { Config } from "@fosscord/util";
 import { Router, Response, Request } from "express";
-import { route } from "@fosscord/api";
+import { route, RouteOptions } from "@fosscord/api";
 
 const router = Router();
 
-router.get("/", route({}), (req: Request, res: Response) => {
-	const { endpointPublic } = Config.get().gateway;
-	res.json({ url: endpointPublic || process.env.GATEWAY || "ws://localhost:3002" });
-});
+export interface GatewayBotResponse {
+	url: string;
+	shards: number;
+	session_start_limit: {
+		total: number;
+		remaining: number;
+		reset_after: number;
+		max_concurrency: number;
+	}
+}
 
-router.get("/bot", route({}), (req: Request, res: Response) => {
+const options: RouteOptions = {
+	test: {
+		response: {
+			body: "GatewayBotResponse"
+		}
+	}
+};
+
+router.get("/", route(options), (req: Request, res: Response) => {
 	const { endpointPublic } = Config.get().gateway;
 	res.json({
 		url: endpointPublic || process.env.GATEWAY || "ws://localhost:3002",

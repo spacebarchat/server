@@ -43,7 +43,7 @@ const request = async (path: string, opts: any = {}): Promise<any> => {
 
 	var data = await response.text();
 	try {
-		data = JSON.stringify(data);
+		data = JSON.parse(data);
 		if (response.status >= 400) throw data;
 		return data;
 	} catch (error) {
@@ -56,9 +56,7 @@ beforeAll(async (done) => {
 		const response = await request("/auth/register", {
 			body: {
 				fingerprint: "805826570869932034.wR8vi8lGlFBJerErO9LG5NViJFw",
-				email: "test@example.com",
 				username: "tester",
-				password: "wtp9gep9gw",
 				invite: null,
 				consent: true,
 				date_of_birth: "2000-01-01",

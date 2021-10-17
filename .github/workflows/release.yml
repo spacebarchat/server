@@ -34,27 +34,9 @@ jobs:
         with:
           node-version: 14
       - run: |
-          npm config set ignore-scripts true
-          cd util
-          npm i
-          npm run build
-          npm pack
-          cd ../api
-          npm i ../util/
-          npm run build
-          npm pack
-          cd ../cdn
-          npm i ../util/
-          npm run build
-          npm pack
-          cd ../gateway
-          npm i ../util/
-          npm run build
-          npm pack
-          cd ../bundle
-          npm i ../cdn/fosscord-cdn-1.0.0.tgz ../gateway/fosscord-gateway-1.0.0.tgz ../api/fosscord-api-1.0.0.tgz ../util/fosscord-util-1.0.0.tgz caxa
-          npm run build:bundle
-          npx caxa -i . -m 'This_may_take_a_while_to_run_the_first_time_please_wait...' --output '${{matrix.file}}' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/dist/start.js'
+          cd bundle
+          npm run setup
+          npx caxa -i . -m 'This_may_take_a_while_to_run_the_first_time_please_wait...' --output '${{matrix.file}}' -- '{{caxa}}/node_modules/.bin/node' '{{caxa}}/dist/bundle/src/start.js'
           ${{ matrix.package }}
       - uses: actions/upload-artifact@v2
         with:

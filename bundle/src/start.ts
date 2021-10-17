@@ -1,20 +1,4 @@
 // process.env.MONGOMS_DEBUG = "true";
-const tsConfigPaths = require("tsconfig-paths");
-const path = require("path");
-const baseUrl = path.join(__dirname, "..");
-const cleanup = tsConfigPaths.register({
-	baseUrl,
-	paths: {
-		"@fosscord/api": ["../api/dist/index.js"],
-		"@fosscord/api/*": ["../api/dist/*"],
-		"@fosscord/gateway": ["../gateway/dist/index.js"],
-		"@fosscord/gateway/*": ["../gateway/dist/*"],
-		"@fosscord/cdn": ["../cdn/dist/index.js"],
-		"@fosscord/cdn/*": ["../cdn/dist/*"],
-	},
-});
-console.log(require("@fosscord/gateway"));
-
 import "reflect-metadata";
 import cluster from "cluster";
 import os from "os";
