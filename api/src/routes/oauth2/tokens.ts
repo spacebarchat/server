@@ -1,5 +1,3 @@
-//TODO: this is a template for a generic route
-
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 const router = Router();
