@@ -160,6 +160,9 @@ export interface ConfigValue {
 	kafka: {
 		brokers: KafkaBroker[] | null;
 	};
+	templates: {
+		allowDiscordTemplates: Boolean
+	}
 }
 
 export const DefaultConfigOptions: ConfigValue = {
@@ -321,4 +324,7 @@ export const DefaultConfigOptions: ConfigValue = {
 	kafka: {
 		brokers: null,
 	},
+	templates: {
+		allowDiscordTemplates: true
+	}
 };

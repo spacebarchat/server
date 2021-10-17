@@ -3,7 +3,8 @@ const router: Router = Router();
 import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { DiscordApiErrors } from "@fosscord/util";
-
+import fetch from "node-fetch";
+import { HTTPError } from "lambert-server";
 export interface GuildTemplateCreateSchema {
 	name: string;
 	avatar?: string | null;
@@ -11,6 +12,18 @@ export interface GuildTemplateCreateSchema {
 
 router.get("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
+
+	if (code.startsWith("discord:")) {
+		const discordTemplateID = code.split("discord:", 2)[1];
+		if (Config.get().templates.allowDiscordTemplates == false) return res.json({ code: 403, message: "Discord templates are disabled on this instance."}).sendStatus(403)
+
+		const discordTemplateData = await fetch(`https://discord.com/api/v9/guilds/templates/${discordTemplateID}`, {
+			method: "get",
+			headers: { "Content-Type": "application/json" }
+		});
+
+		return res.json(await discordTemplateData.json());
+	}
 
 	const template = await Template.findOneOrFail({ code: code });
 
