@@ -117,7 +117,7 @@ export async function setupListener(this: WebSocket) {
 // TODO: only subscribe for events that are in the connection intents
 async function consume(this: WebSocket, opts: EventOpts) {
 	const { data, event } = opts;
-	const id = data.id as string;
+	let id = data.id as string;
 	const permission = this.permissions[id] || new Permissions("ADMINISTRATOR"); // default permission for dm
 
 	const consumer = consume.bind(this);
@@ -138,6 +138,10 @@ async function consume(this: WebSocket, opts: EventOpts) {
 				this.listen_options
 			);
 			break;
+		case "GUILD_MEMBER_REMOVE":
+			if (!this.member_events[data.user.id]) break;
+			this.member_events[data.user.id]();
+			break;
 		case "RELATIONSHIP_REMOVE":
 		case "CHANNEL_DELETE":
 		case "GUILD_DELETE":
@@ -151,7 +155,14 @@ async function consume(this: WebSocket, opts: EventOpts) {
 					.has("VIEW_CHANNEL")
 			)
 				return;
-		//No break needed here, we need to call the listenEvent function below
+		// No break needed here, we need to call the listenEvent function below
+		case "RELATIONSHIP_ADD":
+			this.events[data.user.id] = await listenEvent(
+				data.user.id,
+				handlePresenceUpdate.bind(this),
+				this.listen_options
+			);
+			break;
 		case "GUILD_CREATE":
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
 			break;
