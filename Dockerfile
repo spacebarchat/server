@@ -1,5 +1,4 @@
-FROM alpine
-RUN apk add --update nodejs npm
+FROM nikolaik/python-nodejs:latest
 WORKDIR /usr/src/fosscord-server/
 COPY . .
 WORKDIR /usr/src/fosscord-server/bundle
