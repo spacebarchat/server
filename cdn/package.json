@@ -5,10 +5,9 @@
 	"main": "dist/index.js",
 	"types": "src/index.ts",
 	"scripts": {
-		"postinstall": "ts-patch install -s",
 		"test": "npm run build && jest --coverage ./tests",
 		"build": "npx tsc -p .",
-		"start": "npm run build && node dist/start.js"
+		"start": "node dist/start.js"
 	},
 	"repository": {
 		"type": "git",
@@ -46,11 +45,12 @@
 		"express": "^4.17.1",
 		"express-async-errors": "^3.1.1",
 		"file-type": "^16.5.0",
+		"form-data": "^4.0.0",
 		"fs-extra": "^10.0.0",
 		"image-size": "^1.0.0",
 		"jest": "^27.0.6",
 		"lambert-db": "^1.2.3",
-		"lambert-server": "^1.2.11",
+		"lambert-server": "^1.2.12",
 		"missing-native-js-functions": "^1.2.17",
 		"multer": "^1.4.2",
 		"nanocolors": "^0.2.12",
