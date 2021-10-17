@@ -1,2 +1,5 @@
 node_modules/
 db/
+dist/
+coverage/
+*.db
