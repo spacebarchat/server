@@ -12,11 +12,12 @@ export interface GuildTemplateCreateSchema {
 }
 
 router.get("/:code", route({}), async (req: Request, res: Response) => {
-	if(enabled == false) return res.json({ code: 403, message: "Templates are disabled on this instance."}).sendStatus(403);
+	if (enabled == false) return res.json({ code: 403, message: "Templates are disabled on this instance." }).sendStatus(403);
 	const { code } = req.params;
 
 	if (code.startsWith("discord:")) {
-		if (allowDiscordTemplates == false) return res.json({ code: 403, message: "Discord templates are disabled on this instance."}).sendStatus(403);
+		if (allowDiscordTemplates == false)
+			return res.json({ code: 403, message: "Discord templates are disabled on this instance." }).sendStatus(403);
 		const discordTemplateID = code.split("discord:", 2)[1];
 
 		const discordTemplateData = await fetch(`https://discord.com/api/v9/guilds/templates/${discordTemplateID}`, {
@@ -25,27 +26,33 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 		});
 
 		res.json(await discordTemplateData.json());
-	}
-
-
-	if (code.startsWith("fosscord:")) {
-		if (allowOtherInstancesTemplates == false) return res.json({ code: 403, message: "Other instance templates are disabled on this instance."}).sendStatus(403);
-			//TODO: TBD when federation came out
-			res.json({}).sendStatus(200)
 	};
 
-		//TODO: Validation
-		if (code.startsWith("external:")) {
-			if (allowExternalRaws == false) return res.json({ code: 403, message: "Importing templates from raws is disabled on this instance."}).sendStatus(403);
-			const url = code.split("external:", 2)[1]
-	
-			const rawTemplateData = await fetch(`${url}`, {
+	if (code.startsWith("fosscord:")) {
+		if (allowOtherInstancesTemplates == false)
+			return res.json({ code: 403, message: "Other instance templates are disabled on this instance." }).sendStatus(403);
+		//TODO: TBD when federation came out
+		res.json({}).sendStatus(200);
+	};
+
+	//TODO: Validation
+	if (code.startsWith("external:")) {
+		if (allowExternalRaws == false)
+			return res.json({ code: 403, message: "Importing templates from raws is disabled on this instance." }).sendStatus(403);
+		const url = code.split("external:", 2)[1];
+
+		const rawTemplateData =
+			(await fetch(`${url}`, {
 				method: "get",
 				headers: { "Content-Type": "application/json" }
-			}) || null;
-	
-			res.json(rawTemplateData !== null ? await rawTemplateData.json(): { code: 500, message: "An error occurred while trying to fetch the raw."});
-		}
+			})) || null;
+
+		res.json(
+			rawTemplateData !== null
+				? await rawTemplateData.json()
+				: { code: 500, message: "An error occurred while trying to fetch the raw." }
+		);
+	};
 
 	const template = await Template.findOneOrFail({ code: code });
 
@@ -53,8 +60,9 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 });
 
 router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: Request, res: Response) => {
-	if(enabled == false) return res.json({ code: 403, message: "Templates are disabled on this instance."}).sendStatus(403);
-	if(allowTemplateCreation == false) return res.json({ code: 403, message: "Template creation is disabled on this instance."}).sendStatus(403);
+	if (enabled == false) return res.json({ code: 403, message: "Templates are disabled on this instance." }).sendStatus(403);
+	if (allowTemplateCreation == false)
+		return res.json({ code: 403, message: "Template creation is disabled on this instance." }).sendStatus(403);
 
 	const { code } = req.params;
 	const body = req.body as GuildTemplateCreateSchema;
