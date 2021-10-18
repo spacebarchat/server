@@ -119,7 +119,7 @@ router.get("/", async (req: Request, res: Response) => {
 			x.attachments?.forEach((x) => {
 				// dynamically set attachment proxy_url in case the endpoint changed
 				const uri = x.proxy_url.startsWith("http") ? x.proxy_url : `https://example.org${x.proxy_url}`;
-				x.proxy_url = `${endpoint == null ? "http://localhost:3003" : endpoint}${new URL(uri).pathname}`;
+				x.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
 			});
 
 			return x;
