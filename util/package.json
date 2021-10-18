@@ -7,6 +7,7 @@
 	"scripts": {
 		"start": "npm run build && node dist/",
 		"test": "npm run build && jest",
+		"postinstall": "npm run build",
 		"build": "npx tsc -p .",
 		"typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
 	},
@@ -38,7 +39,6 @@
 	},
 	"dependencies": {
 		"amqplib": "^0.8.0",
-		"form-data": "^4.0.0",
 		"jsonwebtoken": "^8.5.1",
 		"lambert-server": "^1.2.12",
 		"missing-native-js-functions": "^1.2.18",
