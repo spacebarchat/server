@@ -1,18 +1,18 @@
 {
-  "field": {
-    "BASE_TYPE_REQUIRED": "このフィールドは必須項目です",
-    "BASE_TYPE_STRING": "このフィールドは文字列でなければなりません",
-    "BASE_TYPE_NUMBER": "このフィールドは数値でなければなりません",
-    "BASE_TYPE_BIGINT": "このフィールドはbigintでなければなりません",
-    "BASE_TYPE_BOOLEAN": "このフィールドはブール値でなければなりません",
-    "BASE_TYPE_CHOICES": "このフィールドは ({{types}} ) のいずれかでなければなりません",
-    "BASE_TYPE_CLASS": "このフィールドは {{type}} のインスタンスでなければなりません",
-    "BASE_TYPE_OBJECT": "このフィールドはオブジェクトでなければなりません",
-    "BASE_TYPE_ARRAY": "このフィールドは配列でなければなりません",
-    "UNKOWN_FIELD": "不明なキー： {{key}}",
-    "BASE_TYPE_CONSTANT": "このフィールドは {{value}} でなければなりません",
-    "EMAIL_TYPE_INVALID_EMAIL": "メールアドレスが正しくありません",
-    "DATE_TYPE_PARSE": "{{date}}を解析できませんでした。ISO8601である必要があります",
-    "BASE_TYPE_BAD_LENGTH": "{{length}} 以内でなければなりません"
-  }
+	"field": {
+		"BASE_TYPE_REQUIRED": "このフィールドは必須項目です",
+		"BASE_TYPE_STRING": "このフィールドは文字列でなければなりません",
+		"BASE_TYPE_NUMBER": "このフィールドは数値でなければなりません",
+		"BASE_TYPE_BIGINT": "このフィールドはbigintでなければなりません",
+		"BASE_TYPE_BOOLEAN": "このフィールドはブール値でなければなりません",
+		"BASE_TYPE_CHOICES": "このフィールドは ({{types}} ) のいずれかでなければなりません",
+		"BASE_TYPE_CLASS": "このフィールドは {{type}} のインスタンスでなければなりません",
+		"BASE_TYPE_OBJECT": "このフィールドはオブジェクトでなければなりません",
+		"BASE_TYPE_ARRAY": "このフィールドは配列でなければなりません",
+		"UNKOWN_FIELD": "不明なキー： {{key}}",
+		"BASE_TYPE_CONSTANT": "このフィールドは {{value}} でなければなりません",
+		"EMAIL_TYPE_INVALID_EMAIL": "メールアドレスが正しくありません",
+		"DATE_TYPE_PARSE": "{{date}}を解析できませんでした。ISO8601である必要があります",
+		"BASE_TYPE_BAD_LENGTH": "{{length}} 以内でなければなりません"
+	}
 }

@@ -9,7 +9,7 @@ router.get("/", route({}), (req: Request, res: Response) => {
 		// test that the database is alive & responding
 		getConnection();
 		return res.sendStatus(200);
-	} catch(e) {
+	} catch (e) {
 		res.sendStatus(503);
 	}
 });
