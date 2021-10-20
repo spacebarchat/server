@@ -1,18 +1,18 @@
 {
-  "field": {
-    "BASE_TYPE_REQUIRED": "هذا الحقل مطلوب",
-    "BASE_TYPE_STRING": "يجب أن يكون هذا الحقل سلسلة من الأحرف",
-    "BASE_TYPE_NUMBER": "يجب أن يكون هذا الحقل رقم",
-    "BASE_TYPE_BIGINT": "يجب أن يكون هذا الحقل أكبر",
-    "BASE_TYPE_BOOLEAN": "يجب أن يكون هذا الحقل منطقيا",
-    "BASE_TYPE_CHOICES": "يجب أن يكون هذا الحقل واحدا من ({{types}})",
-    "BASE_TYPE_CLASS": "يجب أن يكون هذا الحقل مثيل {{type}}",
-    "BASE_TYPE_OBJECT": "يجب أن يكون هذا الحقل كائناً",
-    "BASE_TYPE_ARRAY": "يجب أن يكون هذا الحقل مصفوفة",
-    "UNKOWN_FIELD": "مفتاح غير معروف: {{key}}",
-    "BASE_TYPE_CONSTANT": "يجب أن يكون هذا الحقل {{value}}",
-    "EMAIL_TYPE_INVALID_EMAIL": "عنوان البريد الإلكتروني ليس مشكّل جيدا",
-    "DATE_TYPE_PARSE": "لا يمكن تحليل {{date}}. يجب أن يكون ISO8601",
-    "BASE_TYPE_BAD_LENGTH": "يجب أن يكون بين {{length}} في الطول"
-  }
+	"field": {
+		"BASE_TYPE_REQUIRED": "هذا الحقل مطلوب",
+		"BASE_TYPE_STRING": "يجب أن يكون هذا الحقل سلسلة من الأحرف",
+		"BASE_TYPE_NUMBER": "يجب أن يكون هذا الحقل رقم",
+		"BASE_TYPE_BIGINT": "يجب أن يكون هذا الحقل أكبر",
+		"BASE_TYPE_BOOLEAN": "يجب أن يكون هذا الحقل منطقيا",
+		"BASE_TYPE_CHOICES": "يجب أن يكون هذا الحقل واحدا من ({{types}})",
+		"BASE_TYPE_CLASS": "يجب أن يكون هذا الحقل مثيل {{type}}",
+		"BASE_TYPE_OBJECT": "يجب أن يكون هذا الحقل كائناً",
+		"BASE_TYPE_ARRAY": "يجب أن يكون هذا الحقل مصفوفة",
+		"UNKOWN_FIELD": "مفتاح غير معروف: {{key}}",
+		"BASE_TYPE_CONSTANT": "يجب أن يكون هذا الحقل {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "عنوان البريد الإلكتروني ليس مشكّل جيدا",
+		"DATE_TYPE_PARSE": "لا يمكن تحليل {{date}}. يجب أن يكون ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "يجب أن يكون بين {{length}} في الطول"
+	}
 }

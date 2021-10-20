@@ -11,7 +11,12 @@ if (!process.env.STORAGE_PROVIDER) process.env.STORAGE_PROVIDER = "file";
 if (process.env.STORAGE_PROVIDER === "file") {
 	if (process.env.STORAGE_LOCATION) {
 		if (!process.env.STORAGE_LOCATION.startsWith("/")) {
-			process.env.STORAGE_LOCATION = path.join(__dirname, "..", process.env.STORAGE_LOCATION, "/");
+			process.env.STORAGE_LOCATION = path.join(
+				__dirname,
+				"..",
+				process.env.STORAGE_LOCATION,
+				"/"
+			);
 		}
 	} else {
 		process.env.STORAGE_LOCATION = path.join(__dirname, "..", "files", "/");
@@ -67,7 +72,9 @@ describe("/attachments", () => {
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
 				expect(response.statusCode).toBe(200);
-				expect(response.headers["content-type"]).toEqual(expect.stringContaining("json"));
+				expect(response.headers["content-type"]).toEqual(
+					expect.stringContaining("json")
+				);
 				expect(response.body.url).toBeDefined();
 			});
 		});
@@ -79,9 +86,11 @@ describe("/attachments", () => {
 					.post("/attachments/123456789")
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
-				request.get(response.body.url.replace("http://localhost:3003", "")).then((x) => {
-					expect(x.statusCode).toBe(200);
-				});
+				request
+					.get(response.body.url.replace("http://localhost:3003", ""))
+					.then((x) => {
+						expect(x.statusCode).toBe(200);
+					});
 			});
 		});
 	});
@@ -92,9 +101,13 @@ describe("/attachments", () => {
 					.post("/attachments/123456789")
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
-				request.delete(response.body.url.replace("http://localhost:3003", "")).then((x) => {
-					expect(x.body.success).toBeDefined();
-				});
+				request
+					.delete(
+						response.body.url.replace("http://localhost:3003", "")
+					)
+					.then((x) => {
+						expect(x.body.success).toBeDefined();
+					});
 			});
 		});
 	});
@@ -123,7 +136,9 @@ describe("/avatars", () => {
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
 				expect(response.statusCode).toBe(200);
-				expect(response.headers["content-type"]).toEqual(expect.stringContaining("json"));
+				expect(response.headers["content-type"]).toEqual(
+					expect.stringContaining("json")
+				);
 				expect(response.body.url).toBeDefined();
 			});
 		});
@@ -135,9 +150,11 @@ describe("/avatars", () => {
 					.post("/avatars/123456789")
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
-				request.get(response.body.url.replace("http://localhost:3003", "")).then((x) => {
-					expect(x.statusCode).toBe(200);
-				});
+				request
+					.get(response.body.url.replace("http://localhost:3003", ""))
+					.then((x) => {
+						expect(x.statusCode).toBe(200);
+					});
 			});
 		});
 	});
@@ -148,9 +165,13 @@ describe("/avatars", () => {
 					.post("/avatars/123456789")
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
-				request.delete(response.body.url.replace("http://localhost:3003", "")).then((x) => {
-					expect(x.body.success).toBeDefined();
-				});
+				request
+					.delete(
+						response.body.url.replace("http://localhost:3003", "")
+					)
+					.then((x) => {
+						expect(x.body.success).toBeDefined();
+					});
 			});
 		});
 	});
@@ -177,9 +198,13 @@ describe("/external", () => {
 				const response = await request
 					.post("/external")
 					.set({ signature: Config.get().security.requestSignature })
-					.send({ url: "https://i.ytimg.com/vi_webp/TiXzhQr5AUc/mqdefault.webp" });
+					.send({
+						url: "https://i.ytimg.com/vi_webp/TiXzhQr5AUc/mqdefault.webp",
+					});
 				expect(response.statusCode).toBe(200);
-				expect(response.headers["content-type"]).toEqual(expect.stringContaining("json"));
+				expect(response.headers["content-type"]).toEqual(
+					expect.stringContaining("json")
+				);
 				expect(response.body.id).toBeDefined();
 			});
 		});
@@ -201,7 +226,9 @@ describe("/external", () => {
 				let response = await request
 					.post("/external")
 					.set({ signature: Config.get().security.requestSignature })
-					.send({ url: "https://i.ytimg.com/vi_webp/TiXzhQr5AUc/mqdefault.webp" });
+					.send({
+						url: "https://i.ytimg.com/vi_webp/TiXzhQr5AUc/mqdefault.webp",
+					});
 				request.get(`external/${response.body.id}`).then((x) => {
 					expect(x.statusCode).toBe(200);
 				});
