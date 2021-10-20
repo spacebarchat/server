@@ -24,8 +24,20 @@ export default function TestClient(app: Application) {
 		html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${GATEWAY_ENDPOINT}\`,`);
 	}
 
-	app.use("/assets", express.static(path.join(__dirname, "..", "..", "assets")));
+	//plugins
+	var files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "plugins"));
+	var plugins = "";
+	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script src='/assets/plugins/${x}'></script>\n`; });
+	html = html.replaceAll("<!-- plugin marker -->", plugins);
+	//preload plugins
+	files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "preload-plugins"));
+	plugins = "";
+	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(__dirname, "..", "..", "assets", "preload-plugins", x))}</script>\n`; });
+	html = html.replaceAll("<!-- preload plugin marker -->", plugins);
 
+
+	app.use("/assets", express.static(path.join(__dirname, "..", "..", "assets")));
+	
 	app.get("/assets/:file", async (req: Request, res: Response) => {
 		delete req.headers.host;
 		var response: FetchResponse;
