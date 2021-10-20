@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
 	// TODO:
-    //const { exclude_consumed } = req.query;
+	//const { exclude_consumed } = req.query;
 	res.status(200).send([]);
 });
 
