@@ -1,18 +1,18 @@
 {
 	"field": {
-		"BASE_TYPE_REQUIRED": "此字段是必填项",
-		"BASE_TYPE_STRING": "此字段必须是字符串",
-		"BASE_TYPE_NUMBER": "此字段必须是一个数字",
-		"BASE_TYPE_BIGINT": "此字段必须是很大的",
-		"BASE_TYPE_BOOLEAN": "此字段必须是布尔值",
-		"BASE_TYPE_CHOICES": "此字段必须是 ({{types}})",
-		"BASE_TYPE_CLASS": "此字段必须是 {{type}} 的实例",
-		"BASE_TYPE_OBJECT": "此字段必须是对象",
-		"BASE_TYPE_ARRAY": "此字段必须是一个数组",
-		"UNKOWN_FIELD": "未知密钥: {{key}}",
-		"BASE_TYPE_CONSTANT": "此字段必须是 {{value}}",
-		"EMAIL_TYPE_INVALID_EMAIL": "格式不正确的电子邮件地址",
-		"DATE_TYPE_PARSE": "无法解析 {{date}}。应该为 ISO8601",
-		"BASE_TYPE_BAD_LENGTH": "长度必须介于 {{length}} 之间"
+		"BASE_TYPE_REQUIRED": "This field is required",
+		"BASE_TYPE_STRING": "This field must be a string",
+		"BASE_TYPE_NUMBER": "This field must be a number",
+		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
+		"BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+		"BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
+		"BASE_TYPE_OBJECT": "This field must be an object",
+		"BASE_TYPE_ARRAY": "This field must be an array",
+		"UNKOWN_FIELD": "Unknown key: {{key}}",
+		"BASE_TYPE_CONSTANT": "This field must be {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
+		"DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
 	}
 }
