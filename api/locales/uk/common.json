@@ -1,18 +1,18 @@
 {
-  "field": {
-    "BASE_TYPE_REQUIRED": "Це поле обов'язкове для заповнення",
-    "BASE_TYPE_STRING": "Це поле має бути рядком",
-    "BASE_TYPE_NUMBER": "Це поле має бути числом",
-    "BASE_TYPE_BIGINT": "Це поле має бути великим",
-    "BASE_TYPE_BOOLEAN": "Це поле має бути логічним",
-    "BASE_TYPE_CHOICES": "Це поле має бути одним з ({{types}})",
-    "BASE_TYPE_CLASS": "Це поле повинно бути екземпляром {{type}}",
-    "BASE_TYPE_OBJECT": "Це поле має бути об'єктом",
-    "BASE_TYPE_ARRAY": "Це поле має бути масивом",
-    "UNKOWN_FIELD": "Невідомий ключ: {{key}}",
-    "BASE_TYPE_CONSTANT": "Це поле має бути {{value}}",
-    "EMAIL_TYPE_INVALID_EMAIL": "Неправильно сформована електронна адреса",
-    "DATE_TYPE_PARSE": "Не вдається розібрати {{date}}. має бути ISO8601",
-    "BASE_TYPE_BAD_LENGTH": "Повинно бути між {{length}} в довжині"
-  }
+	"field": {
+		"BASE_TYPE_REQUIRED": "Це поле обов'язкове для заповнення",
+		"BASE_TYPE_STRING": "Це поле має бути рядком",
+		"BASE_TYPE_NUMBER": "Це поле має бути числом",
+		"BASE_TYPE_BIGINT": "Це поле має бути великим",
+		"BASE_TYPE_BOOLEAN": "Це поле має бути логічним",
+		"BASE_TYPE_CHOICES": "Це поле має бути одним з ({{types}})",
+		"BASE_TYPE_CLASS": "Це поле повинно бути екземпляром {{type}}",
+		"BASE_TYPE_OBJECT": "Це поле має бути об'єктом",
+		"BASE_TYPE_ARRAY": "Це поле має бути масивом",
+		"UNKOWN_FIELD": "Невідомий ключ: {{key}}",
+		"BASE_TYPE_CONSTANT": "Це поле має бути {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "Неправильно сформована електронна адреса",
+		"DATE_TYPE_PARSE": "Не вдається розібрати {{date}}. має бути ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "Повинно бути між {{length}} в довжині"
+	}
 }
