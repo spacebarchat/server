@@ -1,18 +1,18 @@
 {
-  "field": {
-    "BASE_TYPE_REQUIRED": "Bu alan gereklidir",
-    "BASE_TYPE_STRING": "Bu alan bir metin (string) olmalı",
-    "BASE_TYPE_NUMBER": "Bu alan bir sayı olmalı",
-    "BASE_TYPE_BIGINT": "Bu alan büyük integer (bkz. bigint) değeri olmalıdır",
-    "BASE_TYPE_BOOLEAN": "Bu alan mantıksal değer (boolean) olmalıdır",
-    "BASE_TYPE_CHOICES": "Bu alan ({{types}}) lardan biri olmak zorunda",
-    "BASE_TYPE_CLASS": "Bu alan {{type}} türünden olmalı",
-    "BASE_TYPE_OBJECT": "Bu alan bir obje olmalı",
-    "BASE_TYPE_ARRAY": "Bu alan bir dizi (array) olmalı",
-    "UNKOWN_FIELD": "Bilinmeyen anahtar: {{key}}",
-    "BASE_TYPE_CONSTANT": "Bu alan {{value}} olmalı",
-    "EMAIL_TYPE_INVALID_EMAIL": "Geçerli bir e-posta adresi değil",
-    "DATE_TYPE_PARSE": "{{date}} işlenemiyor. ISO8601 standartlarında olmalı",
-    "BASE_TYPE_BAD_LENGTH": "Uzunluğu {{length}} olmalı"
-  }
+	"field": {
+		"BASE_TYPE_REQUIRED": "Bu alan gereklidir",
+		"BASE_TYPE_STRING": "Bu alan bir metin (string) olmalı",
+		"BASE_TYPE_NUMBER": "Bu alan bir sayı olmalı",
+		"BASE_TYPE_BIGINT": "Bu alan büyük integer (bkz. bigint) değeri olmalıdır",
+		"BASE_TYPE_BOOLEAN": "Bu alan mantıksal değer (boolean) olmalıdır",
+		"BASE_TYPE_CHOICES": "Bu alan ({{types}}) lardan biri olmak zorunda",
+		"BASE_TYPE_CLASS": "Bu alan {{type}} türünden olmalı",
+		"BASE_TYPE_OBJECT": "Bu alan bir obje olmalı",
+		"BASE_TYPE_ARRAY": "Bu alan bir dizi (array) olmalı",
+		"UNKOWN_FIELD": "Bilinmeyen anahtar: {{key}}",
+		"BASE_TYPE_CONSTANT": "Bu alan {{value}} olmalı",
+		"EMAIL_TYPE_INVALID_EMAIL": "Geçerli bir e-posta adresi değil",
+		"DATE_TYPE_PARSE": "{{date}} işlenemiyor. ISO8601 standartlarında olmalı",
+		"BASE_TYPE_BAD_LENGTH": "Uzunluğu {{length}} olmalı"
+	}
 }
