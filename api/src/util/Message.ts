@@ -33,7 +33,7 @@ const DEFAULT_FETCH_OPTIONS: any = {
 	redirect: "follow",
 	follow: 1,
 	headers: {
-		"user-agent": "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)"
+		"user-agent": "Mozilla/5.0 (compatible; Fosscord/1.0; +https://github.com/fosscord/fosscord)"
 	},
 	size: 1024 * 1024 * 1,
 	compress: true,
