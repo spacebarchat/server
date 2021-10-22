@@ -51,11 +51,12 @@
 				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
 			);
 
-			
-			const token = JSON.parse(localStorage.getItem("token"));
-			if(token) {
-				document.querySelector("#logincss").remove();
-			}			
+			setInterval(() => {
+				var token = JSON.parse(localStorage.getItem("token"));
+				if (token) {
+					document.querySelector("#logincss").remove();
+				}
+			}, 1000);
 
 			const settings = JSON.parse(localStorage.getItem("UserSettingsStore"));
 			if (settings && settings.locale.length <= 2) {
