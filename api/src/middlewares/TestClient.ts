@@ -2,9 +2,11 @@ import express, { Request, Response, Application } from "express";
 import fs from "fs";
 import path from "path";
 import fetch, { Response as FetchResponse } from "node-fetch";
+import ProxyAgent from 'proxy-agent';
 import { Config } from "@fosscord/util";
 
 export default function TestClient(app: Application) {
+	const agent = new ProxyAgent();
 	const assetCache = new Map<string, { response: FetchResponse; buffer: Buffer }>();
 	const indexHTML = fs.readFileSync(path.join(__dirname, "..", "..", "client_test", "index.html"), { encoding: "utf8" });
 
@@ -31,6 +33,7 @@ export default function TestClient(app: Application) {
 		const cache = assetCache.get(req.params.file);
 		if (!cache) {
 			response = await fetch(`https://discord.com/assets/${req.params.file}`, {
+				agent,
 				// @ts-ignore
 				headers: {
 					...req.headers
