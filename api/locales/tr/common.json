@@ -13,6 +13,6 @@
 		"BASE_TYPE_CONSTANT": "Bu alan {{value}} olmalı",
 		"EMAIL_TYPE_INVALID_EMAIL": "Geçerli bir e-posta adresi değil",
 		"DATE_TYPE_PARSE": "{{date}} işlenemiyor. ISO8601 standartlarında olmalı",
-		"BASE_TYPE_BAD_LENGTH": "Uzunluğu {{length}} olmalı"
+		"BASE_TYPE_BAD_LENGTH": "{{length}} arası uzunlukta olmalı"
 	}
 }
