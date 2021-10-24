@@ -164,8 +164,7 @@ export interface ConfigValue {
 		enabled: Boolean;
 		allowTemplateCreation: Boolean;
 		allowDiscordTemplates: Boolean;
-		allowOtherInstancesTemplates: Boolean;
-		allowExternalRaws: Boolean
+		allowRaws: Boolean;
 	}
 }
 
@@ -332,7 +331,6 @@ export const DefaultConfigOptions: ConfigValue = {
 		enabled: true,
 		allowTemplateCreation: true,
 		allowDiscordTemplates: true,
-		allowOtherInstancesTemplates: false, //Incomple
-		allowExternalRaws: false
+		allowRaws: false
 	}
 };
