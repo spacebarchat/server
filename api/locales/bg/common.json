@@ -1,18 +1,18 @@
 {
 	"field": {
-		"BASE_TYPE_REQUIRED": "Това поле е задължително",
-		"BASE_TYPE_STRING": "Това поле трябва да е низ",
-		"BASE_TYPE_NUMBER": "Това поле трябва да е число",
-		"BASE_TYPE_BIGINT": "Това поле трябва да е голямо",
-		"BASE_TYPE_BOOLEAN": "Това поле трябва да бъде булево",
-		"BASE_TYPE_CHOICES": "Това поле трябва да бъде едно от ({{types}})",
-		"BASE_TYPE_CLASS": "Това поле трябва да бъде екземпляр на {{type}}",
-		"BASE_TYPE_OBJECT": "Това поле трябва да бъде обект",
-		"BASE_TYPE_ARRAY": "Това поле трябва да бъде масив",
-		"UNKOWN_FIELD": "Непознат ключ: {{key}}",
-		"BASE_TYPE_CONSTANT": "Това поле трябва да е {{value}}",
-		"EMAIL_TYPE_INVALID_EMAIL": "Невалиден имейл адрес",
-		"DATE_TYPE_PARSE": "Не може да се анализира {{date}}. Трябва да е ISO8601",
-		"BASE_TYPE_BAD_LENGTH": "Трябва да е с дължина между {{length}}"
+		"BASE_TYPE_REQUIRED": "This field is required",
+		"BASE_TYPE_STRING": "This field must be a string",
+		"BASE_TYPE_NUMBER": "This field must be a number",
+		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
+		"BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+		"BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
+		"BASE_TYPE_OBJECT": "This field must be an object",
+		"BASE_TYPE_ARRAY": "This field must be an array",
+		"UNKOWN_FIELD": "Unknown key: {{key}}",
+		"BASE_TYPE_CONSTANT": "This field must be {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
+		"DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
 	}
 }
