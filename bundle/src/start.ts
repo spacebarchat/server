@@ -61,8 +61,12 @@ Current commit: ${
 
 		// Fork workers.
 		for (let i = 0; i < cores; i++) {
-			cluster.fork();
-			console.log(`[Process] worker ${i} started.`);
+			// Delay each worker start if using sqlite database to prevent locking it
+			let delay = process.env.DATABASE?.includes("://") ? 0 : i * 1000;
+			setTimeout(() => {
+				cluster.fork();
+				console.log(`[Process] worker ${i} started.`);
+			}, delay);
 		}
 
 		cluster.on("message", (sender: Worker, message: any) => {

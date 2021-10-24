@@ -9,6 +9,7 @@ import {
 	CreateDateColumn,
 	Entity,
 	FindConditions,
+	Index,
 	JoinColumn,
 	JoinTable,
 	ManyToMany,
@@ -45,9 +46,11 @@ export enum MessageType {
 }
 
 @Entity("messages")
+@Index(["channel_id", "id"], { unique: true })
 export class Message extends BaseClass {
 	@Column({ nullable: true })
 	@RelationId((message: Message) => message.channel)
+	@Index()
 	channel_id: string;
 
 	@JoinColumn({ name: "channel_id" })
@@ -68,10 +71,13 @@ export class Message extends BaseClass {
 
 	@Column({ nullable: true })
 	@RelationId((message: Message) => message.author)
+	@Index()
 	author_id: string;
 
 	@JoinColumn({ name: "author_id", referencedColumnName: "id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	author?: User;
 
 	@Column({ nullable: true })
