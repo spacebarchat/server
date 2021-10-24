@@ -1,18 +1,18 @@
 {
 	"field": {
-		"BASE_TYPE_REQUIRED": "Toto pole je povinné",
-		"BASE_TYPE_STRING": "Toto pole musí být řetězec",
-		"BASE_TYPE_NUMBER": "Toto pole musí být číslo",
-		"BASE_TYPE_BIGINT": "Toto pole musí být velké",
-		"BASE_TYPE_BOOLEAN": "Toto pole musí být logická hodnota",
-		"BASE_TYPE_CHOICES": "Toto pole musí být jedno z ({{types}})",
-		"BASE_TYPE_CLASS": "Toto pole musí být instancí {{type}}",
-		"BASE_TYPE_OBJECT": "Toto pole musí být objekt",
-		"BASE_TYPE_ARRAY": "Toto pole musí být pole",
-		"UNKOWN_FIELD": "Neznámý klíč: {{key}}",
-		"BASE_TYPE_CONSTANT": "Toto pole musí být {{value}}",
-		"EMAIL_TYPE_INVALID_EMAIL": "Není dobře vytvořená e-mailová adresa",
-		"DATE_TYPE_PARSE": "Nelze naparsovat {{date}}. Mělo by být ISO8601",
-		"BASE_TYPE_BAD_LENGTH": "Musí být mezi {{length}} délkou"
+		"BASE_TYPE_REQUIRED": "This field is required",
+		"BASE_TYPE_STRING": "This field must be a string",
+		"BASE_TYPE_NUMBER": "This field must be a number",
+		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
+		"BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+		"BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
+		"BASE_TYPE_OBJECT": "This field must be an object",
+		"BASE_TYPE_ARRAY": "This field must be an array",
+		"UNKOWN_FIELD": "Unknown key: {{key}}",
+		"BASE_TYPE_CONSTANT": "This field must be {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
+		"DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
 	}
 }
