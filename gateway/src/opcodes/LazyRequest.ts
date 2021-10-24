@@ -1,11 +1,4 @@
-import {
-	EVENTEnum,
-	EventOpts,
-	getPermission,
-	listenEvent,
-	Member,
-	Role,
-} from "@fosscord/util";
+import { getPermission, listenEvent, Member, Role } from "@fosscord/util";
 import { LazyRequest } from "../schema/LazyRequest";
 import { Send } from "../util/Send";
 import { OPCODES } from "../util/Constants";
@@ -47,7 +40,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	const member_roles = members
 		.map((m) => m.roles)
 		.flat()
-		.unique((r) => r.id);
+		.unique((r: Role) => r.id);
 
 	for (const role of member_roles) {
 		// @ts-ignore

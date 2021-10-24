@@ -1,18 +1,18 @@
 {
-  "field": {
-    "BASE_TYPE_REQUIRED": "Tio kampo estas bezona",
-    "BASE_TYPE_STRING": "Tio kampo devas string",
-    "BASE_TYPE_NUMBER": "Tio kampo devas numbero",
-    "BASE_TYPE_BIGINT": "Tio kampo devas bigint",
-    "BASE_TYPE_BOOLEAN": "Tio kampo devas bulea",
-    "BASE_TYPE_CHOICES": "Tio kampo devas unu de ({{types}})",
-    "BASE_TYPE_CLASS": "Tio kampo devas kazo de {{type}}",
-    "BASE_TYPE_OBJECT": "Tio kampo devas objekto",
-    "BASE_TYPE_ARRAY": "Tio kampo devas tabelo",
-    "UNKOWN_FIELD": "Nekonata ŝlosilo: {{key}}",
-    "BASE_TYPE_CONSTANT": "Tio kampo devas {{value}}",
-    "EMAIL_TYPE_INVALID_EMAIL": "Formado de retpoŝto estas nevalida",
-    "DATE_TYPE_PARSE": "Nevalida dato {{date}}. Devas ISO8601",
-    "BASE_TYPE_BAD_LENGTH": "Devas sub {{length}} en longo"
-  }
+	"field": {
+		"BASE_TYPE_REQUIRED": "Tio kampo estas bezona",
+		"BASE_TYPE_STRING": "Tio kampo devas string",
+		"BASE_TYPE_NUMBER": "Tio kampo devas numbero",
+		"BASE_TYPE_BIGINT": "Tio kampo devas bigint",
+		"BASE_TYPE_BOOLEAN": "Tio kampo devas bulea",
+		"BASE_TYPE_CHOICES": "Tio kampo devas unu de ({{types}})",
+		"BASE_TYPE_CLASS": "Tio kampo devas kazo de {{type}}",
+		"BASE_TYPE_OBJECT": "Tio kampo devas objekto",
+		"BASE_TYPE_ARRAY": "Tio kampo devas tabelo",
+		"UNKOWN_FIELD": "Nekonata ŝlosilo: {{key}}",
+		"BASE_TYPE_CONSTANT": "Tio kampo devas {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "Formado de retpoŝto estas nevalida",
+		"DATE_TYPE_PARSE": "Nevalida dato {{date}}. Devas ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "Devas sub {{length}} en longo"
+	}
 }

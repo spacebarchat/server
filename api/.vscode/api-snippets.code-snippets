@@ -19,11 +19,7 @@
 	"Route": {
 		"scope": "typescript",
 		"prefix": "route",
-		"body": [
-			"router.get(\"$1\", route({}), (req: Request, res: Response) => {",
-			"\t$2",
-			"});"
-		],
+		"body": ["router.get(\"$1\", route({}), (req: Request, res: Response) => {", "\t$2", "});"],
 		"description": "An API endpoint"
-	},
+	}
 }

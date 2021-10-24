@@ -1,4 +1,4 @@
-FROM nikolaik/python-nodejs:latest
+FROM node:14
 WORKDIR /usr/src/fosscord-server/
 COPY . .
 WORKDIR /usr/src/fosscord-server/bundle

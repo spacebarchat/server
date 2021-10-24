@@ -12,7 +12,7 @@ export interface GatewayBotResponse {
 		remaining: number;
 		reset_after: number;
 		max_concurrency: number;
-	}
+	};
 }
 
 const options: RouteOptions = {

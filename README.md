@@ -18,13 +18,13 @@
 
 This repository contains:
 
--   [Fosscord HTTP API Server](https://github.com/fosscord/fosscord-server/tree/master/api)
--   [WebSocket Gateway Server](https://github.com/fosscord/fosscord-server/tree/master/gateway)
--   [HTTP CDN Server](https://github.com/fosscord/fosscord-server/tree/master/cdn)
--   [Utility and Database Models](https://github.com/fosscord/fosscord-server/tree/master/util)
--   [RTC Server](https://github.com/fosscord/fosscord-server/tree/master/rtc)
--   [WebRTC Server](https://github.com/fosscord/fosscord-server/tree/master/webrtc)
--   [Admin Dashboard](https://github.com/fosscord/fosscord-server/tree/master/dashboard)
+-   [Fosscord HTTP API Server](/api)
+-   [WebSocket Gateway Server](/gateway)
+-   [HTTP CDN Server](/cdn)
+-   [Utility and Database Models](/util)
+-   [RTC Server](/rtc)
+-   [WebRTC Server](/webrtc)
+-   [Admin Dashboard](/dashboard)
 
 ## [Resources](https://docs.fosscord.com/resources/)
 
@@ -32,4 +32,4 @@ This repository contains:
 
 ## [Setup](https://docs.fosscord.com/setup/server/)
 
-- [Download](https://github.com/fosscord/fosscord-server/releases)
+-   [Download](https://github.com/fosscord/fosscord-server/releases)
