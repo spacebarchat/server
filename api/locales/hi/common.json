@@ -1,18 +1,18 @@
 {
 	"field": {
-		"BASE_TYPE_REQUIRED": "यह फ़ील्ड आवश्यक है",
-		"BASE_TYPE_STRING": "यह फ़ील्ड एक स्ट्रिंग होनी चाहिए",
-		"BASE_TYPE_NUMBER": "यह फ़ील्ड एक संख्या होनी चाहिए",
-		"BASE_TYPE_BIGINT": "यह फ़ील्ड एक बिगिन्ट होनी चाहिए",
-		"BASE_TYPE_BOOLEAN": "यह फ़ील्ड एक बूलियन होनी चाहिए",
-		"BASE_TYPE_CHOICES": "यह फ़ील्ड एक प्रकार का [[[types]]] होना चाहिए",
-		"BASE_TYPE_CLASS": "यह फ़ील्ड एक प्रकार का [[[types]]] होना चाहिए",
-		"BASE_TYPE_OBJECT": "यह फ़ील्ड एक ऑब्जेक्ट होनी चाहिए",
-		"BASE_TYPE_ARRAY": "यह फ़ील्ड एक ऐरे होनी चाहिए",
-		"UNKOWN_FIELD": "अज्ञात कुंजी: [[key]]",
-		"BASE_TYPE_CONSTANT": "यह क्षेत्र {{value}} होना चाहिए",
-		"EMAIL_TYPE_INVALID_EMAIL": "खराब ईमेल एड्रेस",
-		"DATE_TYPE_PARSE": "{{date}} की पदव्‍याख्‍या नहीं हो पाई है। ISO8601 होना चाहिए",
-		"BASE_TYPE_BAD_LENGTH": "लंबाई {{length}} के बीच में होनी चाहिए"
+		"BASE_TYPE_REQUIRED": "This field is required",
+		"BASE_TYPE_STRING": "This field must be a string",
+		"BASE_TYPE_NUMBER": "This field must be a number",
+		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
+		"BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+		"BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
+		"BASE_TYPE_OBJECT": "This field must be an object",
+		"BASE_TYPE_ARRAY": "This field must be an array",
+		"UNKOWN_FIELD": "Unknown key: {{key}}",
+		"BASE_TYPE_CONSTANT": "This field must be {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
+		"DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
 	}
 }
