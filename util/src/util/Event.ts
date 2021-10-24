@@ -15,6 +15,8 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 		// assertQueue isn't needed, because a queue will automatically created if it doesn't exist
 		const successful = RabbitMQ.channel?.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
 		if (!successful) throw new Error("failed to send event");
+	} else if (process.env.EVENT_TRANSMISSION === "process") {
+		process.send?.({ type: "event", event: payload, id } as ProcessEvent);
 	} else {
 		events.emit(id, payload);
 	}
@@ -25,6 +27,7 @@ export async function initEvent() {
 	if (RabbitMQ.connection) {
 	} else {
 		// use event emitter
+		// use process messages
 	}
 }
 
@@ -39,17 +42,38 @@ export interface ListenEventOpts {
 	acknowledge?: boolean;
 }
 
+export interface ProcessEvent {
+	type: "event";
+	event: Event;
+	id: string;
+}
+
 export async function listenEvent(event: string, callback: (event: EventOpts) => any, opts?: ListenEventOpts) {
 	if (RabbitMQ.connection) {
 		// @ts-ignore
 		return rabbitListen(opts?.channel || RabbitMQ.channel, event, callback, { acknowledge: opts?.acknowledge });
-	} else {
+	} else if (process.env.EVENT_TRANSMISSION === "process") {
 		const cancel = () => {
-			events.removeListener(event, callback);
+			process.removeListener("message", listener);
+			process.setMaxListeners(process.getMaxListeners() - 1);
+		};
+
+		const listener = (msg: ProcessEvent) => {
+			msg.type === "event" && msg.id === event && callback({ ...msg.event, cancel });
+		};
+
+		process.addListener("message", listener);
+		process.setMaxListeners(process.getMaxListeners() + 1);
+
+		return cancel;
+	} else {
+		const listener = (opts: any) => callback({ ...opts, cancel });
+		const cancel = () => {
+			events.removeListener(event, listener);
 			events.setMaxListeners(events.getMaxListeners() - 1);
 		};
 		events.setMaxListeners(events.getMaxListeners() + 1);
-		events.addListener(event, (opts) => callback({ ...opts, cancel }));
+		events.addListener(event, listener);
 
 		return cancel;
 	}

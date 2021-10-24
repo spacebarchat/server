@@ -1,18 +1,18 @@
 {
-  "field": {
-    "BASE_TYPE_REQUIRED": "Este campo é obrigatório.",
-    "BASE_TYPE_STRING": "Este campo deve ser uma string",
-    "BASE_TYPE_NUMBER": "Este campo deve ser um número",
-    "BASE_TYPE_BIGINT": "Este campo deve ser um grande",
-    "BASE_TYPE_BOOLEAN": "Este campo deve ser booleano",
-    "BASE_TYPE_CHOICES": "Este campo deve ser um dos ({{types}})",
-    "BASE_TYPE_CLASS": "Este campo deve ser uma instância de {{type}}",
-    "BASE_TYPE_OBJECT": "Este campo deve ser um objeto",
-    "BASE_TYPE_ARRAY": "Este campo deve ser um array",
-    "UNKOWN_FIELD": "Chave desconhecida: {{key}}",
-    "BASE_TYPE_CONSTANT": "Este campo deve ser {{value}}",
-    "EMAIL_TYPE_INVALID_EMAIL": "Endereço de e-mail formado incorretamente",
-    "DATE_TYPE_PARSE": "Não foi possível analisar {{date}}. Deve ser ISO8601",
-    "BASE_TYPE_BAD_LENGTH": "Deve estar entre {{length}} de comprimento"
-  }
+	"field": {
+		"BASE_TYPE_REQUIRED": "This field is required",
+		"BASE_TYPE_STRING": "This field must be a string",
+		"BASE_TYPE_NUMBER": "This field must be a number",
+		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
+		"BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+		"BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
+		"BASE_TYPE_OBJECT": "This field must be an object",
+		"BASE_TYPE_ARRAY": "This field must be an array",
+		"UNKOWN_FIELD": "Unknown key: {{key}}",
+		"BASE_TYPE_CONSTANT": "This field must be {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
+		"DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
+	}
 }

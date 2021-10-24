@@ -56,7 +56,7 @@ export class Rights extends BitField {
 		INVITE_USERS: BitFlag(29), // can create user-specific invites in the guilds that they have INVITE_USERS
 		SELF_DELETE_DISABLE: BitFlag(30), // can disable/delete own account
 		DEBTABLE: BitFlag(31), // can use pay-to-use features
-		CREDITABLE: BitFlag(32) // can receive money from monetisation related features
+		CREDITABLE: BitFlag(32), // can receive money from monetisation related features
 	};
 
 	any(permission: RightResolvable, checkOperator = true) {

@@ -1,18 +1,18 @@
 {
-  "field": {
-    "BASE_TYPE_REQUIRED": "Ez a mező kötelező",
-    "BASE_TYPE_STRING": "Ennek a mezőnek string-nek kell lennie",
-    "BASE_TYPE_NUMBER": "Ennek a mezőnek számnak kell lennie",
-    "BASE_TYPE_BIGINT": "Ennek a mezőnek bigint-nek kell lennie",
-    "BASE_TYPE_BOOLEAN": "Ennek a mezőnek boolean-nek kell lennie",
-    "BASE_TYPE_CHOICES": "Ennek a mezőnek {{types}} típusúnak kell lennie",
-    "BASE_TYPE_CLASS": "Ennek a mezőnek {{type}} típusúnak kell lennie",
-    "BASE_TYPE_OBJECT": "Ennek a mezőnek object-nek kell lennie",
-    "BASE_TYPE_ARRAY": "Ennek a mezőnek array-nek kell lennie",
-    "UNKOWN_FIELD": "Ismeretlen kulcs: {{key}}",
-    "BASE_TYPE_CONSTANT": "A mezőnek {{value}} kell lennie",
-    "EMAIL_TYPE_INVALID_EMAIL": "Nem jól megformázott email cím",
-    "DATE_TYPE_PARSE": "Nem sikerült elemezni {{date}}. ISO8901-nak kéne lennie",
-    "BASE_TYPE_BAD_LENGTH": "{{length}} között kell lennie hosszban"
-  }
+	"field": {
+		"BASE_TYPE_REQUIRED": "Ez a mező kötelező",
+		"BASE_TYPE_STRING": "Ennek a mezőnek string-nek kell lennie",
+		"BASE_TYPE_NUMBER": "Ennek a mezőnek számnak kell lennie",
+		"BASE_TYPE_BIGINT": "Ennek a mezőnek bigint-nek kell lennie",
+		"BASE_TYPE_BOOLEAN": "Ennek a mezőnek boolean-nek kell lennie",
+		"BASE_TYPE_CHOICES": "Ennek a mezőnek {{types}} típusúnak kell lennie",
+		"BASE_TYPE_CLASS": "Ennek a mezőnek {{type}} típusúnak kell lennie",
+		"BASE_TYPE_OBJECT": "Ennek a mezőnek object-nek kell lennie",
+		"BASE_TYPE_ARRAY": "Ennek a mezőnek array-nek kell lennie",
+		"UNKOWN_FIELD": "Ismeretlen kulcs: {{key}}",
+		"BASE_TYPE_CONSTANT": "A mezőnek {{value}} kell lennie",
+		"EMAIL_TYPE_INVALID_EMAIL": "Nem jól megformázott email cím",
+		"DATE_TYPE_PARSE": "Nem sikerült elemezni {{date}}. ISO8901-nak kéne lennie",
+		"BASE_TYPE_BAD_LENGTH": "{{length}} között kell lennie hosszban"
+	}
 }

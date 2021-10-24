@@ -29,7 +29,7 @@ router.post("/", route({ body: "BulkDeleteSchema" }), async (req: Request, res: 
 	if (messages.length < 2) throw new HTTPError("You must at least specify 2 messages to bulk delete");
 	if (messages.length > maxBulkDelete) throw new HTTPError(`You cannot delete more than ${maxBulkDelete} messages`);
 
-	await Message.delete({ id: In(messages) });
+	await Message.delete(messages.map((x) => ({ id: x })));
 
 	await emitEvent({
 		event: "MESSAGE_DELETE_BULK",

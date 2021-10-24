@@ -12,7 +12,7 @@ import { Config, initDatabase } from "@fosscord/util";
 const app = express();
 const server = http.createServer();
 const port = Number(process.env.PORT) || 3001;
-const production = false;
+const production = process.env.NODE_ENV == "development" ? false : true;
 server.on("request", app);
 
 // @ts-ignore
@@ -23,6 +23,7 @@ const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
 
 async function main() {
+	server.listen(port);
 	await initDatabase();
 	await Config.init();
 	// only set endpointPublic, if not already set

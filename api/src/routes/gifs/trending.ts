@@ -1,5 +1,6 @@
 import { Router, Response, Request } from "express";
 import fetch from "node-fetch";
+import ProxyAgent from 'proxy-agent';
 import { route } from "@fosscord/api";
 import { Config } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
@@ -33,13 +34,17 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const { media_format, locale } = req.query;
 
 	const apiKey = getGifApiKey();
+	
+	const agent = new ProxyAgent();
 
 	const [responseSource, trendGifSource] = await Promise.all([
 		fetch(`https://g.tenor.com/v1/categories?locale=${locale}&key=${apiKey}`, {
+			agent,
 			method: "get",
 			headers: { "Content-Type": "application/json" }
 		}),
 		fetch(`https://g.tenor.com/v1/trending?locale=${locale}&key=${apiKey}`, {
+			agent,
 			method: "get",
 			headers: { "Content-Type": "application/json" }
 		})

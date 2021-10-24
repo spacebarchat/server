@@ -7,7 +7,7 @@ config();
 import { FosscordServer } from "./Server";
 import cluster from "cluster";
 import os from "os";
-const cores = Number(process.env.threads) || os.cpus().length;
+const cores = Number(process.env.THREADS) || os.cpus().length;
 
 if (cluster.isMaster && process.env.NODE_ENV == "production") {
 	console.log(`Primary ${process.pid} is running`);

@@ -119,7 +119,7 @@ router.get("/", async (req: Request, res: Response) => {
 			x.attachments?.forEach((x) => {
 				// dynamically set attachment proxy_url in case the endpoint changed
 				const uri = x.proxy_url.startsWith("http") ? x.proxy_url : `https://example.org${x.proxy_url}`;
-				x.proxy_url = `${endpoint == null ? "http://localhost:3003" : endpoint}${new URL(uri).pathname}`;
+				x.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
 			});
 
 			return x;
@@ -186,14 +186,13 @@ router.post(
 			timestamp: new Date()
 		});
 
-		message = await message.save();
+		channel.last_message_id = message.id;
 
 		if (channel.isDm()) {
 			const channel_dto = await DmChannelDTO.from(channel);
 
-			//Only one recipients should be closed here, since in group DMs the recipient is deleted not closed
-
-			await Promise.all(
+			// Only one recipients should be closed here, since in group DMs the recipient is deleted not closed
+			Promise.all(
 				channel.recipients!.map((recipient) => {
 					if (recipient.closed) {
 						recipient.closed = false;
@@ -211,9 +210,10 @@ router.post(
 		}
 
 		await Promise.all([
-			channel.assign({ last_message_id: message.id }).save(),
+			message.save(),
+			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent),
 			message.guild_id ? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id }) : null,
-			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent)
+			channel.save()
 		]);
 
 		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error

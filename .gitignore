@@ -8,3 +8,4 @@ database.db
 tsconfig.tsbuildinfo
 files/
 .env
+config.json

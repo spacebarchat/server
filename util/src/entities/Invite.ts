@@ -71,7 +71,7 @@ export class Invite extends BaseClassWithoutId {
 	@Column({ nullable: true })
 	target_user_type?: number;
 
-	@Column({ nullable: true})
+	@Column({ nullable: true })
 	vanity_url?: boolean;
 
 	static async joinGuild(user_id: string, code: string) {

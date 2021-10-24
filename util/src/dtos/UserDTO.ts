@@ -8,10 +8,10 @@ export class MinimalPublicUserDTO {
 	username: string;
 
 	constructor(user: User) {
-		this.avatar = user.avatar
-		this.discriminator = user.discriminator
-		this.id = user.id
-		this.public_flags = user.public_flags
-		this.username = user.username
+		this.avatar = user.avatar;
+		this.discriminator = user.discriminator;
+		this.id = user.id;
+		this.public_flags = user.public_flags;
+		this.username = user.username;
 	}
 }
