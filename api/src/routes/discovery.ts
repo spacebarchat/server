@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/categories", route({}), (req: Request, res: Response) => {
 	// TODO:
-    //const { locale, primary_only } = req.query;
+	//const { locale, primary_only } = req.query;
 	res.json([]).status(200);
 });
 

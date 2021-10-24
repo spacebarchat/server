@@ -23,7 +23,11 @@ export class Server {
 							ssrc: 1,
 							ip: "127.0.0.1",
 							port: 3004,
-							modes: ["xsalsa20_poly1305", "xsalsa20_poly1305_suffix", "xsalsa20_poly1305_lite"],
+							modes: [
+								"xsalsa20_poly1305",
+								"xsalsa20_poly1305_suffix",
+								"xsalsa20_poly1305_lite",
+							],
 							heartbeat_interval: 1,
 						},
 					})
