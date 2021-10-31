@@ -1,8 +1,11 @@
 import { Request, Response, Router } from "express";
 const router: Router = Router();
 import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscord/util";
+const { enabled, allowTemplateCreation, allowDiscordTemplates, allowRaws } = Config.get().templates;
 import { route } from "@fosscord/api";
 import { DiscordApiErrors } from "@fosscord/util";
+import fetch from "node-fetch";
+
 
 export interface GuildTemplateCreateSchema {
 	name: string;
@@ -10,14 +13,35 @@ export interface GuildTemplateCreateSchema {
 }
 
 router.get("/:code", route({}), async (req: Request, res: Response) => {
+	if (!enabled) res.json({ code: 403, message: "Template creation & usage is disabled on this instance." }).sendStatus(403);
+
 	const { code } = req.params;
 
-	const template = await Template.findOneOrFail({ code: code });
+	if (code.startsWith("discord:")) {
+		if (!allowDiscordTemplates)	return res.json({ code: 403, message: "Discord templates cannot be used on this instance." }).sendStatus(403);
+		const discordTemplateID = code.split("discord:", 2)[1];
 
+		const discordTemplateData = await fetch(`https://discord.com/api/v9/guilds/templates/${discordTemplateID}`, {
+			method: "get",
+			headers: { "Content-Type": "application/json" }
+		});
+		return res.json(await discordTemplateData.json());
+	}
+
+	if (code.startsWith("external:")) {
+		if (!allowRaws)	return res.json({ code: 403, message: "Importing raws is disabled on this instance." }).sendStatus(403);
+
+		return res.json(code.split("external:", 2)[1]);
+	}
+
+	const template = await Template.findOneOrFail({ code: code });
 	res.json(template);
 });
 
 router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: Request, res: Response) => {
+	if (!enabled) return res.json({ code: 403, message: "Template creation & usage is disabled on this instance." }).sendStatus(403);
+	if (!allowTemplateCreation) return res.json({ code: 403, message: "Template creation is disabled on this instance." }).sendStatus(403);
+
 	const { code } = req.params;
 	const body = req.body as GuildTemplateCreateSchema;
 
