@@ -38,8 +38,8 @@ dirs.forEach((a) => {
 		);
 });
 
-console.log("Copying src files done");
-console.log("Compiling src files ...");
+console.log("[1/2] Copying src files done");
+console.log("[2/2] Compiling src files ...");
 
 console.log(
 	execSync(
