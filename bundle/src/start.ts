@@ -81,7 +81,7 @@ Cores: ${cyan(cores)}
 		cluster.on("exit", (worker: any, code: any, signal: any) => {
 			console.log(
 				`[Worker] ${red(
-					`died with pid: ${worker.process.pid} , restarting ...`
+					`died with PID: ${worker.process.pid} , restarting ...`
 				)}`
 			);
 			cluster.fork();
