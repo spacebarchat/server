@@ -1,18 +1,18 @@
 {
 	"field": {
-		"BASE_TYPE_REQUIRED": "このフィールドは必須項目です",
-		"BASE_TYPE_STRING": "このフィールドは文字列でなければなりません",
-		"BASE_TYPE_NUMBER": "このフィールドは数値でなければなりません",
-		"BASE_TYPE_BIGINT": "このフィールドはbigintでなければなりません",
-		"BASE_TYPE_BOOLEAN": "このフィールドはブール値でなければなりません",
-		"BASE_TYPE_CHOICES": "このフィールドは ({{types}} ) のいずれかでなければなりません",
-		"BASE_TYPE_CLASS": "このフィールドは {{type}} のインスタンスでなければなりません",
-		"BASE_TYPE_OBJECT": "このフィールドはオブジェクトでなければなりません",
-		"BASE_TYPE_ARRAY": "このフィールドは配列でなければなりません",
-		"UNKOWN_FIELD": "不明なキー： {{key}}",
-		"BASE_TYPE_CONSTANT": "このフィールドは {{value}} でなければなりません",
-		"EMAIL_TYPE_INVALID_EMAIL": "メールアドレスが正しくありません",
-		"DATE_TYPE_PARSE": "{{date}}を解析できませんでした。ISO8601である必要があります",
-		"BASE_TYPE_BAD_LENGTH": "{{length}} 以内でなければなりません"
+		"BASE_TYPE_REQUIRED": "This field is required",
+		"BASE_TYPE_STRING": "This field must be a string",
+		"BASE_TYPE_NUMBER": "This field must be a number",
+		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
+		"BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+		"BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
+		"BASE_TYPE_OBJECT": "This field must be an object",
+		"BASE_TYPE_ARRAY": "This field must be an array",
+		"UNKOWN_FIELD": "Unknown key: {{key}}",
+		"BASE_TYPE_CONSTANT": "This field must be {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
+		"DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
 	}
 }
