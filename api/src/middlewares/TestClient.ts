@@ -23,10 +23,15 @@ export default function TestClient(app: Application) {
 	if (GATEWAY_ENDPOINT) {
 		html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${GATEWAY_ENDPOINT}\`,`);
 	}
-
-	//plugins
-	var files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "plugins"));
+	// inline plugins
+	var files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "preload-plugins"));
 	var plugins = "";
+	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(__dirname, "..", "..", "assets", "preload-plugins", x))}</script>\n`; });
+	html = html.replaceAll("<!-- preload plugin marker -->", plugins);
+
+	// plugins
+	files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "plugins"));
+	plugins = "";
 	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script src='/assets/plugins/${x}'></script>\n`; });
 	html = html.replaceAll("<!-- plugin marker -->", plugins);
 	//preload plugins
