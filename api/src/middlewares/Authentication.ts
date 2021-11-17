@@ -11,6 +11,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/experiments",
 	"/-/readyz",
 	"/-/healthz",
+	"/policies/instance/",
 	/\/guilds\/\d+\/widget\.(json|png)/
 ];
 
