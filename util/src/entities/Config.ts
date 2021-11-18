@@ -52,6 +52,7 @@ export interface ConfigValue {
 		instanceName: string;
 		instanceDescription: string | null;
 		frontPage: string | null;
+		tosPage: string | null;
 		image: string | null;
 		instanceId: string;
 	};
@@ -187,6 +188,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		instanceName: "Fosscord Instance",
 		instanceDescription: "This is a Fosscord instance made in pre-relase days",
 		frontPage: null,
+		tosPage: null,
 		image: null,
 		instanceId: Snowflake.generate(),
 	},
