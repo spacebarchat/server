@@ -9,3 +9,5 @@ tsconfig.tsbuildinfo
 files/
 .env
 config.json
+
+.vscode/settings.json

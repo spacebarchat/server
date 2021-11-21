@@ -4,6 +4,10 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Discord Test Client</title>
+		<link rel="stylesheet" href="/assets/fosscord.css" />
+		<link id="logincss" rel="stylesheet" href="/assets/fosscord-login.css" />
+		<link id="customcss" rel="stylesheet" href="/assets/user.css" />
+		<!-- preload plugin marker -->
 	</head>
 
 	<body>
@@ -38,12 +42,34 @@
 				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
 			};
 			GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
+			const localStorage = window.localStorage;
+			// TODO: remote auth
+			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
+			localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
+			localStorage.setItem(
+				"DeveloperOptionsStore",
+				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
+			);
+
+			setInterval(() => {
+				var token = JSON.parse(localStorage.getItem("token"));
+				if (token) {
+					document.querySelector("#logincss").remove();
+				}
+			}, 1000);
+
+			const settings = JSON.parse(localStorage.getItem("UserSettingsStore"));
+			if (settings && settings.locale.length <= 2) {
+				// fix client locale wrong and client not loading at all
+				settings.locale = "en-US";
+				localStorage.setItem("UserSettingsStore", JSON.stringify(settings));
+			}
 		</script>
-		<script src="/assets/autoRegister.js"></script>
 		<script src="/assets/checkLocale.js"></script>
 		<script src="/assets/479a2f1e7d625dc134b9.js"></script>
 		<script src="/assets/a15fd133a1d2d77a2424.js"></script>
 		<script src="/assets/97e6fa22aa08ee4daa5e.js"></script>
 		<script src="/assets/9b2b7f0632acd0c5e781.js"></script>
+		<!-- plugin marker -->
 	</body>
 </html>
