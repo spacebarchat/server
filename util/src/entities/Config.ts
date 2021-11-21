@@ -191,6 +191,8 @@ export const DefaultConfigOptions: ConfigValue = {
 		instanceDescription: "This is a Fosscord instance made in pre-relase days",
 		frontPage: null,
 		tosPage: null,
+		correspondenceEmail: "noreply@localhost.local",
+		correspondenceUserID: null,
 		image: null,
 		instanceId: Snowflake.generate(),
 	},
