@@ -53,6 +53,8 @@ export interface ConfigValue {
 		instanceDescription: string | null;
 		frontPage: string | null;
 		tosPage: string | null;
+		correspondenceEmail: string | null;
+		correspondenceUserID: string | null;
 		image: string | null;
 		instanceId: string;
 	};
