@@ -18,48 +18,31 @@ if (argv.includes("clean")) {
 	});
 }
 
-fse.copySync(
-	path.join(__dirname, "..", "..", "api", "assets"),
-	path.join(__dirname, "..", "dist", "api", "assets")
-);
-fse.copySync(
-	path.join(__dirname, "..", "..", "api", "client_test"),
-	path.join(__dirname, "..", "dist", "api", "client_test")
-);
-fse.copySync(
-	path.join(__dirname, "..", "..", "api", "locales"),
-	path.join(__dirname, "..", "dist", "api", "locales")
-);
+fse.copySync(path.join(__dirname, "..", "..", "api", "assets"), path.join(__dirname, "..", "dist", "api", "assets"));
+fse.copySync(path.join(__dirname, "..", "..", "api", "client_test"), path.join(__dirname, "..", "dist", "api", "client_test"));
+fse.copySync(path.join(__dirname, "..", "..", "api", "locales"), path.join(__dirname, "..", "dist", "api", "locales"));
 dirs.forEach((a) => {
 	fse.copySync("../" + a + "/src", "dist/" + a + "/src");
-	if (verbose)
-		console.log(
-			`Copied ${"../" + a + "/dist"} -> ${"dist/" + a + "/src"}!`
-		);
+	if (verbose) console.log(`Copied ${"../" + a + "/dist"} -> ${"dist/" + a + "/src"}!`);
 });
 
-console.log("[1/2] Copying src files done");
-console.log("[2/2] Compiling src files ...");
+console.log("Copying src files done");
+if (!argv.includes("copyonly")) {
+	console.log("Compiling src files ...");
 
-console.log(
-	execSync(
-		'node "' +
-			path.join(
-				__dirname,
-				"..",
-				"node_modules",
-				"typescript",
-				"lib",
-				"tsc.js"
-			) +
-			'" -p "' +
-			path.join(__dirname, "..") +
-			'"',
-		{
-			cwd: path.join(__dirname, ".."),
-			shell: true,
-			env: process.env,
-			encoding: "utf8",
-		}
-	)
-);
+	console.log(
+		execSync(
+			'node "' +
+				path.join(__dirname, "..", "node_modules", "typescript", "lib", "tsc.js") +
+				'" -p "' +
+				path.join(__dirname, "..") +
+				'"',
+			{
+				cwd: path.join(__dirname, ".."),
+				shell: true,
+				env: process.env,
+				encoding: "utf8"
+			}
+		)
+	);
+}
