@@ -1,11 +1,9 @@
 import { Request, Response, Router } from "express";
-const router: Router = Router();
 import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscord/util";
-const { enabled, allowTemplateCreation, allowDiscordTemplates, allowRaws } = Config.get().templates;
 import { route } from "@fosscord/api";
 import { DiscordApiErrors } from "@fosscord/util";
 import fetch from "node-fetch";
-
+const router: Router = Router();
 
 export interface GuildTemplateCreateSchema {
 	name: string;
@@ -13,10 +11,11 @@ export interface GuildTemplateCreateSchema {
 }
 
 router.get("/:code", route({}), async (req: Request, res: Response) => {
+	const { allowDiscordTemplates, allowRaws, enabled } = Config.get().templates;
 	if (!enabled) res.json({ code: 403, message: "Template creation & usage is disabled on this instance." }).sendStatus(403);
 
 	const { code } = req.params;
-
+	
 	if (code.startsWith("discord:")) {
 		if (!allowDiscordTemplates)	return res.json({ code: 403, message: "Discord templates cannot be used on this instance." }).sendStatus(403);
 		const discordTemplateID = code.split("discord:", 2)[1];
@@ -39,6 +38,7 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 });
 
 router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: Request, res: Response) => {
+	const { enabled, allowTemplateCreation, allowDiscordTemplates, allowRaws } = Config.get().templates;
 	if (!enabled) return res.json({ code: 403, message: "Template creation & usage is disabled on this instance." }).sendStatus(403);
 	if (!allowTemplateCreation) return res.json({ code: 403, message: "Template creation is disabled on this instance." }).sendStatus(403);
 

@@ -6,7 +6,7 @@ export function initStats() {
 	console.log(`[Path] running in ${__dirname}`);
 	console.log(`[CPU] ${osu.cpu.model()} Cores x${osu.cpu.count()}`);
 	console.log(`[System] ${os.platform()} ${os.arch()}`);
-	console.log(`[Process] running with pid: ${process.pid}`);
+	console.log(`[Process] running with PID: ${process.pid}`);
 	if (process.getuid && process.getuid() === 0) {
 		console.warn(
 			red(

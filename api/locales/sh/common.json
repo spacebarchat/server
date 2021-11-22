@@ -1,18 +1,18 @@
 {
 	"field": {
-		"BASE_TYPE_REQUIRED": "Ovo polje je obavezno",
-		"BASE_TYPE_STRING": "Ovo polje mora biti niz",
-		"BASE_TYPE_NUMBER": "Ovo polje mora biti broj",
-		"BASE_TYPE_BIGINT": "Ovo polje mora biti bigint",
-		"BASE_TYPE_BOOLEAN": "Ovo polje mora biti boolean",
-		"BASE_TYPE_CHOICES": "Ovo polje mora biti jedno od ({{types}})",
-		"BASE_TYPE_CLASS": "Ovo polje mora biti primjer od {{type}}",
-		"BASE_TYPE_OBJECT": "Ovo polje mora biti objekt",
-		"BASE_TYPE_ARRAY": "Ovo polje mora biti niz",
-		"UNKOWN_FIELD": "Nepoznati ključ: {{key}}",
-		"BASE_TYPE_CONSTANT": "Ovo polje mora biti {{value}}",
-		"EMAIL_TYPE_INVALID_EMAIL": "Nije dobro oblikovana Email adresa",
-		"DATE_TYPE_PARSE": "Nije moguće raščlaniti {{date}}. Treba biti ISO8601",
-		"BASE_TYPE_BAD_LENGTH": "Mora biti između {{length}} u duljini"
+		"BASE_TYPE_REQUIRED": "This field is required",
+		"BASE_TYPE_STRING": "This field must be a string",
+		"BASE_TYPE_NUMBER": "This field must be a number",
+		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
+		"BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+		"BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
+		"BASE_TYPE_OBJECT": "This field must be an object",
+		"BASE_TYPE_ARRAY": "This field must be an array",
+		"UNKOWN_FIELD": "Unknown key: {{key}}",
+		"BASE_TYPE_CONSTANT": "This field must be {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
+		"DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
 	}
 }

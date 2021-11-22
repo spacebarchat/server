@@ -1,18 +1,18 @@
 {
 	"field": {
-		"BASE_TYPE_REQUIRED": "Αυτό το πεδίο είναι υποχρεωτικό",
-		"BASE_TYPE_STRING": "Αυτό το πεδίο πρέπει να είναι μια συμβολοσειρά",
-		"BASE_TYPE_NUMBER": "Αυτό το πεδίο πρέπει να είναι αριθμός",
-		"BASE_TYPE_BIGINT": "Αυτό το πεδίο πρέπει να είναι μεγαλοπρεπής",
-		"BASE_TYPE_BOOLEAN": "Αυτό το πεδίο πρέπει να είναι boolean",
-		"BASE_TYPE_CHOICES": "Αυτό το πεδίο πρέπει να είναι ένα από{{types}})",
-		"BASE_TYPE_CLASS": "Αυτό το πεδίο πρέπει να είναι ένα παράδειγμα {{type}}",
-		"BASE_TYPE_OBJECT": "Αυτό το πεδίο πρέπει να είναι αντικείμενο",
-		"BASE_TYPE_ARRAY": "Αυτό το πεδίο πρέπει να είναι ένας πίνακας",
-		"UNKOWN_FIELD": "Άγνωστο κλειδί: {{key}}",
-		"BASE_TYPE_CONSTANT": "Αυτό το πεδίο πρέπει να είναι {{value}}",
-		"EMAIL_TYPE_INVALID_EMAIL": "Δεν είναι καλά σχηματισμένη διεύθυνση ηλεκτρονικού ταχυδρομείου",
-		"DATE_TYPE_PARSE": "Αδυναμία ανάλυσης του {{date}}. Πρέπει να είναι ISO8601",
-		"BASE_TYPE_BAD_LENGTH": "Πρέπει να είναι μεταξύ {{length}} σε μήκος"
+		"BASE_TYPE_REQUIRED": "This field is required",
+		"BASE_TYPE_STRING": "This field must be a string",
+		"BASE_TYPE_NUMBER": "This field must be a number",
+		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
+		"BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+		"BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
+		"BASE_TYPE_OBJECT": "This field must be an object",
+		"BASE_TYPE_ARRAY": "This field must be an array",
+		"UNKOWN_FIELD": "Unknown key: {{key}}",
+		"BASE_TYPE_CONSTANT": "This field must be {{value}}",
+		"EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
+		"DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
 	}
 }
