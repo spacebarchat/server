@@ -65,7 +65,6 @@
 		"assert": "^1.5.0",
 		"async-exit-hook": "^2.0.1",
 		"bcrypt": "^5.0.1",
-		"better-sqlite3": "^7.4.3",
 		"body-parser": "^1.19.0",
 		"btoa": "^1.2.1",
 		"cheerio": "^1.0.0-rc.10",
