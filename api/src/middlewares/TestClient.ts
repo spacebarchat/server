@@ -87,7 +87,7 @@ export default function TestClient(app: Application) {
 		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
 		res.set("content-type", "text/html");
 
-		if (req.url.startsWith("/invite")) return res.send(html.replace("9b2b7f0632acd0c5e781", "9f24f709a3de09b67c49"));
+		if (req.url.startsWith("/invite")) return res.send(html.replace("9b41ff7861c7878b14bb", "254befaa6a40a64393db"));
 
 		res.send(html);
 	});
