@@ -24,7 +24,7 @@ export function snowflakeBasedInvite() {
 	let str = "";
 	for (let i=0; i < 10; i++) {
 		
-		str += chars.charAt(snowflake % base);
+		str += chars.charAt(BigInt.asUintN(snowflake % base));
 		snowflake = snowflake / base;
 	}
 	
