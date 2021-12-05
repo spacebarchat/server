@@ -26,9 +26,9 @@ dirs.forEach((a) => {
 	if (verbose) console.log(`Copied ${"../" + a + "/dist"} -> ${"dist/" + a + "/src"}!`);
 });
 
-console.log("Copying src files done");
+console.log("[1/2] Copying src files done");
 if (!argv.includes("copyonly")) {
-	console.log("Compiling src files ...");
+	console.log("[2/2] Compiling src files ...");
 
 	console.log(
 		execSync(
