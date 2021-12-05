@@ -43,7 +43,7 @@ Commit Hash: ${
 				? `${cyan(commit)} (${yellow(commit.slice(0, 7))})`
 				: "Unknown (Git cannot be found)"
 		}
-Cores: ${cyan(cores)}
+Cores: ${cyan(cores)} 
 `)
 	);
 

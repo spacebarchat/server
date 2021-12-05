@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { emitEvent, getPermission, Guild, Invite, InviteDeleteEvent, Member, PublicInviteRelation } from "@fosscord/util";
+import { emitEvent, getPermission, Guild, Invite, InviteDeleteEvent, User, PublicInviteRelation } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { HTTPError } from "lambert-server";
 
@@ -15,6 +15,13 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 
 router.post("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
+	const { features } = await Guild.findOneOrFail({where: { code }});
+	
+	if(features.includes("INTERNAL_EMPLOYEE_ONLY")) {
+		const { public_flags } = await User.findOneOrFail({ id: req.user_id });
+		if((public_flags & 1) !== 1) throw new HTTPError("You are not allowed to join this guild.", 401)
+	};
+
 	const invite = await Invite.joinGuild(req.user_id, code);
 
 	res.json(invite);
