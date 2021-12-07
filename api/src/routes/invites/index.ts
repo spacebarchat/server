@@ -15,7 +15,8 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 
 router.post("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
-	const { features } = await Guild.findOneOrFail({ id: (await Invite.findOneOrFail({ code })).guild_id});
+        const { guild_id } = await Invite.findOneOrFail({ code })
+	const { features } = await Guild.findOneOrFail({ id: guild_id});
 	const { public_flags } = await User.findOneOrFail({ id: req.user_id });
 	
 	if(features.includes("INTERNAL_EMPLOYEE_ONLY") && (public_flags & 1) !== 1) throw new HTTPError("You are not allowed to join this guild.", 401)
