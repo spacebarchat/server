@@ -15,7 +15,7 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 
 router.post("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
-        const { guild_id } = await Invite.findOneOrFail({ code })
+    const { guild_id } = await Invite.findOneOrFail({ code })
 	const { features } = await Guild.findOneOrFail({ id: guild_id});
 	const { public_flags } = await User.findOneOrFail({ id: req.user_id });
 	
