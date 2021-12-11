@@ -35,9 +35,9 @@ export class Rights extends BitField {
 		ADD_MEMBERS: BitFlag(8), // can manually add any members in their guilds
 		BYPASS_RATE_LIMITS: BitFlag(9),
 		CREATE_APPLICATIONS: BitFlag(10),
-		CREATE_CHANNELS: BitFlag(11),
+		CREATE_CHANNELS: BitFlag(11), // can create guild channels or threads in the guilds that they have permission
 		CREATE_DMS: BitFlag(12),
-		CREATE_DM_GROUPS: BitFlag(13),
+		CREATE_DM_GROUPS: BitFlag(13), // can create group DMs or custom orphan channels
 		CREATE_GUILDS: BitFlag(14),
 		CREATE_INVITES: BitFlag(15), // can create mass invites in the guilds that they have CREATE_INSTANT_INVITE
 		CREATE_ROLES: BitFlag(16),
@@ -57,6 +57,11 @@ export class Rights extends BitField {
 		SELF_DELETE_DISABLE: BitFlag(30), // can disable/delete own account
 		DEBTABLE: BitFlag(31), // can use pay-to-use features
 		CREDITABLE: BitFlag(32), // can receive money from monetisation related features
+		KICK_BAN_MEMBERS: BitFlag(33),
+		// can kick or ban guild or group DM members in the guilds/groups that they have KICK_MEMBERS, or BAN_MEMBERS
+		SELF_LEAVE_GROUPS: BitFlag(34), 
+		// can leave the guilds or group DMs that they joined on their own (one can always leave a guild or group DMs they have been force-added)
+		SEND_BACKDATED_EVENTS: BitFlag(42) // can send backdated events
 	};
 
 	any(permission: RightResolvable, checkOperator = true) {
