@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Developer Documentation
+    url: https://docs.fosscord.com/
+    about: Need documentation and examples for the Fosscord? Head over to Fosscord's official documentation.
+  - name: Fosscord' Official Discord server
+    url: https://discord.com/invite/Ms5Ev7S6bF
+    about: Need help with the server? Talk with us in our official server.
