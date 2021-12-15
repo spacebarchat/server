@@ -172,6 +172,9 @@ export interface ConfigValue {
 		allowTemplateCreation: Boolean;
 		allowDiscordTemplates: Boolean;
 		allowRaws: Boolean;
+	},
+	client: {
+		useTestClient: Boolean;
 	}
 }
 
@@ -346,5 +349,8 @@ export const DefaultConfigOptions: ConfigValue = {
 		allowTemplateCreation: true,
 		allowDiscordTemplates: true,
 		allowRaws: false
+	},
+	client: {
+		useTestClient: true
 	}
 };
