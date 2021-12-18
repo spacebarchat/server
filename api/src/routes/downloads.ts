@@ -8,6 +8,7 @@ router.get("/:branch", route({}), async (req: Request, res: Response) => {
 	const { client } = Config.get();
 	const { branch } = req.params;
 	const { platform } = req.query;
+	//TODO
 
 	if(!platform || !["linux", "osx", "win"].includes(platform.toString())) return res.status(404)
 
