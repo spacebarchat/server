@@ -3,25 +3,27 @@ import { HTTPError } from "lambert-server";
 import { checkToken, Config, Rights } from "@fosscord/util";
 
 export const NO_AUTHORIZATION_ROUTES = [
-	//Authentication routes
+	// Authentication routes
 	"/auth/login",
 	"/auth/register",
 	"/auth/location-metadata",
-	//Routes with a seperate auth system
+	// Routes with a seperate auth system
 	"/webhooks/",
-	//Public information endpoints 
+	// Public information endpoints 
 	"/ping",
 	"/gateway",
 	"/experiments",
-	//Public kubernetes integration
+	"/updates",
+	"/downloads/",
+	// Public kubernetes integration
 	"/-/readyz",
 	"/-/healthz",
-	//Client nalytics
+	// Client analytics
 	"/science",
 	"/track",
-	//Public policy pages
+	// Public policy pages
 	"/policies/instance",
-	//Asset delivery
+	// Asset delivery
 	/\/guilds\/\d+\/widget\.(json|png)/
 ];
 
