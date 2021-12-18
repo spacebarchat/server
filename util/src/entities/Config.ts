@@ -181,6 +181,10 @@ export interface ConfigValue {
 	},
 	client: {
 		useTestClient: Boolean;
+		relases: {
+			useLocalRelases: Boolean; //TODO
+			upstreamVersion: string;
+		}
 	},
 	metrics: {
 		timeout: number;
@@ -365,7 +369,11 @@ export const DefaultConfigOptions: ConfigValue = {
 		allowRaws: false
 	},
 	client: {
-		useTestClient: true
+		useTestClient: true,
+		relases: {
+			useLocalRelases: true,
+			upstreamVersion: "0.0.264"
+		}
 	},
 	metrics: {
 		timeout: 30000
