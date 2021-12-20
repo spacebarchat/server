@@ -12,6 +12,7 @@ import { initTranslation } from "./middlewares/Translation";
 import morgan from "morgan";
 import { initInstance } from "./util/Instance";
 import { registerRoutes } from "@fosscord/util";
+import { red } from "nanocolors"
 
 export interface FosscordServerOptions extends ServerOptions {}
 
@@ -38,17 +39,6 @@ export class FosscordServer extends Server {
 		await initEvent();
 		await initInstance();
 
-		/* 
-		DOCUMENTATION: uses LOG_REQUESTS environment variable
-		
-		# only log 200 and 204
-		LOG_REQUESTS=200 204
-		# log everything except 200 and 204
-		LOG_REQUESTS=-200 204
-		# log all requests
-		LOG_REQUESTS=-
-		*/
-
 		let logRequests = process.env["LOG_REQUESTS"] != undefined;
 		if (logRequests) {
 			this.app.use(
@@ -60,7 +50,7 @@ export class FosscordServer extends Server {
 					}
 				})
 			);
-		}
+		};
 
 		this.app.use(CORS);
 		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
@@ -85,19 +75,20 @@ export class FosscordServer extends Server {
 		});
 
 		this.app = app;
+
+		//app.use("/__development", )
+		//app.use("/__internals", )
 		app.use("/api/v6", api);
 		app.use("/api/v7", api);
 		app.use("/api/v8", api);
 		app.use("/api/v9", api);
 		app.use("/api", api); // allow unversioned requests
+
 		this.app.use(ErrorHandler);
 		TestClient(this.app);
 
-		if (logRequests) {
-			console.log(
-				"Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!"
-			);
-		}
+		if (logRequests) console.log(red(`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`));
+		
 		return super.start();
 	}
-}
+};
