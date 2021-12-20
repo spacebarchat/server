@@ -2,6 +2,7 @@ import { Column, Entity } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import crypto from "crypto";
 import { Snowflake } from "../util/Snowflake";
+import { SessionsReplace } from "..";
 
 @Entity("config")
 export class ConfigEntity extends BaseClassWithoutId {
@@ -47,6 +48,11 @@ export interface ConfigValue {
 		endpointClient: string | null;
 		endpointPublic: string | null;
 		endpointPrivate: string | null;
+	};
+	api: {
+		defaultVersion: string;
+		activeVersions: string[];
+		useFosscordEnhancements: boolean;
 	};
 	general: {
 		instanceName: string;
@@ -172,6 +178,16 @@ export interface ConfigValue {
 		allowTemplateCreation: Boolean;
 		allowDiscordTemplates: Boolean;
 		allowRaws: Boolean;
+	},
+	client: {
+		useTestClient: Boolean;
+		relases: {
+			useLocalRelases: Boolean; //TODO
+			upstreamVersion: string;
+		}
+	},
+	metrics: {
+		timeout: number;
 	}
 }
 
@@ -185,6 +201,11 @@ export const DefaultConfigOptions: ConfigValue = {
 		endpointClient: null,
 		endpointPrivate: null,
 		endpointPublic: null,
+	},
+	api: {
+		defaultVersion: "9",
+		activeVersions: ["6", "7", "8", "9"],
+		useFosscordEnhancements: true,
 	},
 	general: {
 		instanceName: "Fosscord Instance",
@@ -346,5 +367,15 @@ export const DefaultConfigOptions: ConfigValue = {
 		allowTemplateCreation: true,
 		allowDiscordTemplates: true,
 		allowRaws: false
+	},
+	client: {
+		useTestClient: true,
+		relases: {
+			useLocalRelases: true,
+			upstreamVersion: "0.0.264"
+		}
+	},
+	metrics: {
+		timeout: 30000
 	}
 };

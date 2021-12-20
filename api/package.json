@@ -84,6 +84,7 @@
 		"missing-native-js-functions": "^1.2.18",
 		"morgan": "^1.10.0",
 		"multer": "^1.4.2",
+		"nanocolors": "^0.2.13",
 		"node-fetch": "^2.6.1",
 		"patch-package": "^6.4.7",
 		"proxy-agent": "^5.0.0",
