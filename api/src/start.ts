@@ -10,23 +10,23 @@ import os from "os";
 const cores = Number(process.env.THREADS) || os.cpus().length;
 
 if (cluster.isMaster && process.env.NODE_ENV == "production") {
-	console.log(`Primary ${process.pid} is running`);
+  console.log(`Primary ${process.pid} is running`);
 
-	// Fork workers.
-	for (let i = 0; i < cores; i++) {
-		cluster.fork();
-	}
+  // Fork workers.
+  for (let i = 0; i < cores; i++) {
+    cluster.fork();
+  }
 
-	cluster.on("exit", (worker, code, signal) => {
-		console.log(`worker ${worker.process.pid} died, restart worker`);
-		cluster.fork();
-	});
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died, restart worker`);
+    cluster.fork();
+  });
 } else {
-	var port = Number(process.env.PORT) || 3001;
+  var port = Number(process.env.PORT) || 3001;
 
-	const server = new FosscordServer({ port });
-	server.start().catch(console.error);
+  const server = new FosscordServer({ port });
+  server.start().catch(console.error);
 
-	// @ts-ignore
-	global.server = server;
+  // @ts-ignore
+  global.server = server;
 }

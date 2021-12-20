@@ -4,7 +4,7 @@ import { route } from "@fosscord/api";
 const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	res.send("pong");
+  res.send("pong");
 });
 
 export default router;

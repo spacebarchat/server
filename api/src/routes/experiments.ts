@@ -4,8 +4,8 @@ import { route } from "@fosscord/api";
 const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	// TODO:
-	res.send({ fingerprint: "", assignments: [] });
+  // TODO:
+  res.send({ fingerprint: "", assignments: [] });
 });
 
 export default router;

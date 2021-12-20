@@ -4,8 +4,8 @@ import { route } from "@fosscord/api";
 const router: Router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	//TODO
-	res.json([]).status(200);
+  //TODO
+  res.json([]).status(200);
 });
 
 export default router;
