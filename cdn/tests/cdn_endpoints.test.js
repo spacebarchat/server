@@ -1,6 +1,6 @@
 const dotenv = require("dotenv");
 const path = require("path");
-const fse = require("fs-extra");
+const fs = require("fs");
 dotenv.config();
 
 // TODO: write unittest to check if FileStorage.ts is working
@@ -21,7 +21,7 @@ if (process.env.STORAGE_PROVIDER === "file") {
 	} else {
 		process.env.STORAGE_LOCATION = path.join(__dirname, "..", "files", "/");
 	}
-	fse.ensureDirSync(process.env.STORAGE_LOCATION);
+	if(!fs.existsSync(process.env.STORAGE_LOCATION)) fs.mkdirSync(process.env.STORAGE_LOCATION, {recursive:true});
 }
 const { CDNServer } = require("../dist/Server");
 const { Config } = require("@fosscord/util");
