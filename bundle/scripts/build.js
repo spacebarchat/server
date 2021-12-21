@@ -1,10 +1,12 @@
 const { execSync } = require("child_process");
 const path = require("path");
-const fse = require("fs-extra");
 const fs = require("fs");
 const { getSystemErrorMap } = require("util");
 const { argv } = require("process");
 
+var steps = 2, i = 0;
+if (argv.includes("clean")) steps++;
+if (argv.includes("copyonly")) steps--;
 const dirs = ["api", "util", "cdn", "gateway", "bundle"];
 
 const verbose = argv.includes("verbose") || argv.includes("v");
@@ -30,6 +32,7 @@ var copyRecursiveSync = function(src, dest) {
   };
 
 if (argv.includes("clean")) {
+	console.log(`[${++i}/${steps}] Cleaning...`);
 	dirs.forEach((a) => {
 		var d = "../" + a + "/dist";
 		if (fs.existsSync(d)) {
@@ -39,6 +42,7 @@ if (argv.includes("clean")) {
 	});
 }
 
+console.log(`[${++i}/${steps}] Copying src files...`);
 copyRecursiveSync(path.join(__dirname, "..", "..", "api", "assets"), path.join(__dirname, "..", "dist", "api", "assets"));
 copyRecursiveSync(path.join(__dirname, "..", "..", "api", "client_test"), path.join(__dirname, "..", "dist", "api", "client_test"));
 copyRecursiveSync(path.join(__dirname, "..", "..", "api", "locales"), path.join(__dirname, "..", "dist", "api", "locales"));
@@ -47,9 +51,8 @@ dirs.forEach((a) => {
 	if (verbose) console.log(`Copied ${"../" + a + "/dist"} -> ${"dist/" + a + "/src"}!`);
 });
 
-console.log("[1/2] Copying src files done");
 if (!argv.includes("copyonly")) {
-	console.log("[2/2] Compiling src files ...");
+	console.log(`[${++i}/${steps}] Compiling src files ...`);
 
 	console.log(
 		execSync(
