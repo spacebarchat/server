@@ -2,8 +2,6 @@
 db/
 dist/
 node_modules
-api/assets/*.js
-api/assets/*.css
 database.db
 tsconfig.tsbuildinfo
 files/
@@ -11,3 +9,5 @@ files/
 config.json
 
 .vscode/settings.json
+api/assets/plugins/*.js
+package-lock.json

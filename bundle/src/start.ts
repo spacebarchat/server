@@ -31,7 +31,7 @@ if (cluster.isMaster) {
 ╚═╝      ╚═════╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝
 
 		fosscord-server | ${yellow(
-			`Pre-relase (${
+			`Pre-release (${
 				commit !== null
 					? commit.slice(0, 7)
 					: "Unknown (Git cannot be found)"
