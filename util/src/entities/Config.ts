@@ -188,6 +188,11 @@ export interface ConfigValue {
 	},
 	metrics: {
 		timeout: number;
+	},
+	sentry: {
+		enabled: boolean;
+		endpoint: string;
+		traceSampleRate: number;
 	}
 }
 
@@ -377,5 +382,10 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	metrics: {
 		timeout: 30000
+	},
+	sentry: {
+		enabled: false,
+		endpoint: "",
+		traceSampleRate: 1.0
 	}
 };

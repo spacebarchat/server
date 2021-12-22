@@ -8,6 +8,8 @@ import { CDNServer } from "@fosscord/cdn";
 import express from "express";
 import { green, bold } from "nanocolors";
 import { Config, initDatabase } from "@fosscord/util";
+import * as Sentry from "@sentry/node";
+import * as Tracing from "@sentry/tracing";
 
 const app = express();
 const server = http.createServer();
@@ -56,7 +58,31 @@ async function main() {
 		// },
 	} as any);
 
+	//Sentry
+	if (Config.get().sentry.enabled) {
+		console.log(
+			"[Bundle] You are using Sentry! This may slightly impact performance on large loads!"
+		);
+		Sentry.init({
+			dsn: Config.get().sentry.endpoint,
+			integrations: [
+				new Sentry.Integrations.Http({ tracing: true }),
+				new Tracing.Integrations.Express({ app }),
+			],
+			tracesSampleRate: Config.get().sentry.traceSampleRate,
+		});
+
+		app.use(Sentry.Handlers.requestHandler());
+		app.use(Sentry.Handlers.tracingHandler());
+	}
 	await Promise.all([api.start(), cdn.start(), gateway.start()]);
+	if (Config.get().sentry.enabled) {
+		app.use(Sentry.Handlers.errorHandler());
+		app.use(function onError(err: any, req: any, res: any, next: any) {
+			res.statusCode = 500;
+			res.end(res.sentry + "\n");
+		});
+	}
 	console.log(`[Server] ${green(`listening on port ${bold(port)}`)}`);
 }
 

@@ -65,6 +65,8 @@
 		"@babel/preset-env": "^7.15.8",
 		"@babel/preset-typescript": "^7.15.0",
 		"@fosscord/util": "file:../util",
+		"@sentry/node": "^6.16.1",
+		"@sentry/tracing": "^6.16.1",
 		"ajv": "8.6.2",
 		"ajv-formats": "^2.1.1",
 		"amqplib": "^0.8.0",
