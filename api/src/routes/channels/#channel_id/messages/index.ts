@@ -107,7 +107,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const endpoint = Config.get().cdn.endpointPublic;
 
 	return res.json(
-		messages.map((x) => {
+		messages.map((x: any) => {
 			(x.reactions || []).forEach((x: any) => {
 				// @ts-ignore
 				if ((x.user_ids || []).includes(req.user_id)) x.me = true;
@@ -116,10 +116,10 @@ router.get("/", async (req: Request, res: Response) => {
 			});
 			// @ts-ignore
 			if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: "0", avatar: null };
-			x.attachments?.forEach((x) => {
+			x.attachments?.forEach((y: any) => {
 				// dynamically set attachment proxy_url in case the endpoint changed
-				const uri = x.proxy_url.startsWith("http") ? x.proxy_url : `https://example.org${x.proxy_url}`;
-				x.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
+				const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
+				y.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
 			});
 
 			return x;
