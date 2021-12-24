@@ -17,7 +17,7 @@ router.get("/", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: 
 	/* Filter secret from database registry.*/
 	
 	bans.forEach((registry) => {
-	delete regitry.ip;
+	delete registry.ip;
 	});
 
 	return res.json(bans);
