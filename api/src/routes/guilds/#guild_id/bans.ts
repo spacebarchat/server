@@ -19,6 +19,8 @@ export interface BanRegistrySchema {
 
 const router: Router = Router();
 
+/* TODO: Deleting the secrets is just a temporary go-around. Views should be implemented for both safety and better handling. */
+
 router.get("/", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
