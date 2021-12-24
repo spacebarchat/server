@@ -6,9 +6,19 @@ import { getIpAdress, route } from "@fosscord/api";
 export interface BanCreateSchema {
 	delete_message_days?: string;
 	reason?: string;
-}
+};
+
+export interface BanRegistrySchema {
+	id: string;
+	user_id: string;
+	guild_id: string;
+	executor_id: string;
+	ip?: string;
+	reason?: string | undefined;
+};
 
 const router: Router = Router();
+
 router.get("/", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
@@ -16,7 +26,7 @@ router.get("/", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: 
 
 	/* Filter secret from database registry.*/
 	
-	bans.forEach((registry) => {
+	bans.forEach((registry: BanRegistrySchema) => {
 	delete registry.ip;
 	});
 
@@ -27,7 +37,7 @@ router.get("/:user", route({ permission: "BAN_MEMBERS" }), async (req: Request, 
 	const { guild_id } = req.params;
 	const user_id = req.params.ban;
 
-	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id });
+	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id }) as BanRegistrySchema;
 	
 	/* Filter secret from registry. */
 
