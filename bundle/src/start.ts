@@ -2,7 +2,7 @@
 import "reflect-metadata";
 import cluster, { Worker } from "cluster";
 import os from "os";
-import { red, bold, yellow, cyan } from "nanocolors";
+import { red, bold, yellow, cyan } from "picocolors";
 import { initStats } from "./stats";
 import { config } from "dotenv";
 config();

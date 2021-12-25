@@ -1,6 +1,6 @@
 import os from "os";
 import osu from "node-os-utils";
-import { red } from "nanocolors";
+import { red } from "picocolors";
 
 export function initStats() {
 	console.log(`[Path] running in ${__dirname}`);

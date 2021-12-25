@@ -6,7 +6,7 @@ import * as Api from "@fosscord/api";
 import * as Gateway from "@fosscord/gateway";
 import { CDNServer } from "@fosscord/cdn";
 import express from "express";
-import { green, bold } from "nanocolors";
+import { green, bold, yellow } from "picocolors";
 import { Config, initDatabase } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
@@ -61,7 +61,7 @@ async function main() {
 	//Sentry
 	if (Config.get().sentry.enabled) {
 		console.log(
-			"[Bundle] You are using Sentry! This may slightly impact performance on large loads!"
+			`[Bundle] ${yellow("You are using Sentry! This may slightly impact performance on large loads!")}`
 		);
 		Sentry.init({
 			dsn: Config.get().sentry.endpoint,

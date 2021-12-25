@@ -1,7 +1,7 @@
 import { FileStorage } from "./FileStorage";
 import path from "path";
 import fse from "fs-extra";
-import { bgCyan, black } from "nanocolors";
+import { bgCyan, black } from "picocolors";
 import { S3 } from "@aws-sdk/client-s3";
 import { S3Storage } from "./S3Storage";
 process.cwd();
