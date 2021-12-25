@@ -13,13 +13,8 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		res.sendStatus(200)
 		process.kill(process.pid, 'SIGTERM')
 	}
-	if(user.flags <= '4095') {
-		console.log("user that POSTed to the /stop API was DENIED");
-		console.log(user.flags);
-		res.sendStatus(403)
-	}
-	if(user.flags >= '4097'){
-		console.log("user that POSTed to the /stop API was DENIED");
+	else {
+		console.log("operation failed");
 		console.log(user.flags);
 		res.sendStatus(403)
 	}
