@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { Connection, createConnection } from "typeorm";
 import * as Models from "../entities";
 import { Migration } from "../entities/Migration";
-import { yellow, green } from "nanocolors";
+import { yellow, green, red } from "picocolors";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -19,6 +19,9 @@ export function initDatabase(): Promise<Connection> {
 	const isSqlite = type.includes("sqlite");
 
 	console.log(`[Database] ${yellow(`connecting to ${type} db`)}`);
+	if(isSqlite) {
+		console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
+	}
 	// @ts-ignore
 	promise = createConnection({
 		type,

@@ -52,12 +52,12 @@ export class BaseClassWithoutId extends BaseEntity {
 
 	static increment<T extends BaseClass>(conditions: FindConditions<T>, propertyPath: string, value: number | string) {
 		const repository = this.getRepository();
-		return repository.increment(conditions, propertyPath, value);
+		return repository.increment(conditions as T, propertyPath, value);
 	}
 
 	static decrement<T extends BaseClass>(conditions: FindConditions<T>, propertyPath: string, value: number | string) {
 		const repository = this.getRepository();
-		return repository.decrement(conditions, propertyPath, value);
+		return repository.decrement(conditions as T, propertyPath, value);
 	}
 }
 

@@ -12,7 +12,7 @@ import { initTranslation } from "./middlewares/Translation";
 import morgan from "morgan";
 import { initInstance } from "./util/Instance";
 import { registerRoutes } from "@fosscord/util";
-import { red } from "nanocolors"
+import { red } from "picocolors"
 
 export interface FosscordServerOptions extends ServerOptions {}
 
