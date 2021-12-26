@@ -45,7 +45,7 @@
 		// "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
 
 		/* Module Resolution Options */
-		// "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+		"moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
 		// "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
 		// "typeRoots": [],                       /* List of folders to include type definitions from. */
 		"types": [
@@ -79,6 +79,8 @@
 			"@fosscord/cdn": ["cdn/src/index"],
 			"@fosscord/util": ["util/src/index"]
 		},
-		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
+		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }],
+		"noEmitHelpers": true,
+		"importHelpers": true
 	}
 }

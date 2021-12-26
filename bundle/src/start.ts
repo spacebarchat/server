@@ -2,7 +2,7 @@
 import "reflect-metadata";
 import cluster, { Worker } from "cluster";
 import os from "os";
-import { red, bold, yellow, cyan } from "nanocolors";
+import { red, bold, yellow, cyan } from "picocolors";
 import { initStats } from "./stats";
 import { config } from "dotenv";
 config();
@@ -43,7 +43,7 @@ Commit Hash: ${
 				? `${cyan(commit)} (${yellow(commit.slice(0, 7))})`
 				: "Unknown (Git cannot be found)"
 		}
-Cores: ${cyan(cores)}
+Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 `)
 	);
 
