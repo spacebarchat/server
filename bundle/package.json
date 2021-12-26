@@ -62,7 +62,6 @@
 		"@fosscord/api": "file:../api",
 		"@fosscord/cdn": "file:../cdn",
 		"@fosscord/gateway": "file:../gateway",
-		"@fosscord/util": "file:../util",
 		"@sentry/node": "^6.16.1",
 		"@sentry/tracing": "^6.16.1",
 		"ajv": "8.6.2",
@@ -105,6 +104,7 @@
 		"typeorm": "^0.2.37",
 		"typescript": "^4.1.2",
 		"typescript-json-schema": "^0.50.1",
-		"ws": "^7.4.2"
+		"ws": "^7.4.2",
+		"nanocolors": "^0.2.12"
 	}
 }

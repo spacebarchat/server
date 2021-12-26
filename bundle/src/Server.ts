@@ -70,6 +70,7 @@ async function main() {
 				new Tracing.Integrations.Express({ app }),
 			],
 			tracesSampleRate: Config.get().sentry.traceSampleRate,
+			environment: Config.get().sentry.environment
 		});
 
 		app.use(Sentry.Handlers.requestHandler());

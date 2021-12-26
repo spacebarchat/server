@@ -3,6 +3,7 @@ import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import crypto from "crypto";
 import { Snowflake } from "../util/Snowflake";
 import { SessionsReplace } from "..";
+import { hostname } from "os";
 
 @Entity("config")
 export class ConfigEntity extends BaseClassWithoutId {
@@ -193,6 +194,7 @@ export interface ConfigValue {
 		enabled: boolean;
 		endpoint: string;
 		traceSampleRate: number;
+		environment: string;
 	}
 }
 
@@ -385,7 +387,8 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	sentry: {
 		enabled: false,
-		endpoint: "",
-		traceSampleRate: 1.0
+		endpoint: "https://05e8e3d005f34b7d97e920ae5870a5e5@sentry.thearcanebrony.net/6",
+		traceSampleRate: 1.0,
+		environment: hostname()
 	}
 };
