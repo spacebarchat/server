@@ -22,6 +22,14 @@ const cdn = new CDNServer({ server, port, production, app });
 // @ts-ignore
 const gateway = new Gateway.Server({ server, port, production });
 
+//this is what has been added for the /stop API route
+process.on('SIGTERM', () => {
+	server.close(() => {
+		console.log("Stop API has been successfully POSTed, SIGTERM sent")
+	})
+})
+//this is what has been added for the /stop API route
+
 async function main() {
 	server.listen(port);
 	await initDatabase();
