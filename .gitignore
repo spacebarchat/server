@@ -10,4 +10,3 @@ config.json
 
 .vscode/settings.json
 api/assets/plugins/*.js
-package-lock.json
