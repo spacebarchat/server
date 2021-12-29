@@ -7,7 +7,7 @@ const router: Router = Router();
 router.post("/", route({}), async (req: Request, res: Response) => {
 	//EXPERIMENTAL: have an "OPERATOR" platform permission implemented for this API route
 	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["rights"] });
-	if(user.rights == '1') {
+	if((Number(user.rights) << Number(0))%Number(2)==Number(1)) {
 		console.log("user that POSTed to the API was ALLOWED");
 		console.log(user.rights);
 		res.sendStatus(200)
