@@ -5,21 +5,22 @@ import { User } from "@fosscord/util";
 const router: Router = Router();
 
 router.post("/", route({}), async (req: Request, res: Response) => {
-	//TODO: have an "OPERATOR" platform permission implemented for this API route
-	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["flags"] });
-	if(user.flags == '4096') {
+	//EXPERIMENTAL: have an "OPERATOR" platform permission implemented for this API route
+	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["rights"] });
+	if((Number(user.rights) << Number(0))%Number(2)==Number(1)) {
 		console.log("user that POSTed to the API was ALLOWED");
-		console.log(user.flags);
+		console.log(user.rights);
 		res.sendStatus(200)
 		process.kill(process.pid, 'SIGTERM')
 	}
 	else {
 		console.log("operation failed");
-		console.log(user.flags);
+		console.log(user.rights);
 		res.sendStatus(403)
 	}
 });
 
 export default router;
 
-//THIS API CAN ONLY BE USED BY USERS WITH THE 'SYSTEM' FLAG ONLY IF ANY OTHER FLAGS ARE ADDED THE REQUEST WILL RETURN 403 'FORBIDDEN'
+//THIS API CAN ONLY BE USED BY USERS WITH THE 'OPERATOR' RIGHT (which is the value of 1) ONLY IF ANY OTHER RIGHTS ARE ADDED OR IF THE USER DOESNT HAVE PERMISSION,
+//THE REQUEST WILL RETURN 403 'FORBIDDEN'
