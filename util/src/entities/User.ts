@@ -60,6 +60,9 @@ export class User extends BaseClass {
 
 	@Column()
 	discriminator: string; // #0001 4 digit long string from #0001 - #9999
+	
+	@Column()
+	isbanned: number; //is the user banned from using this instance?
 
 	setDiscriminator(val: string) {
 		const number = Number(val);
