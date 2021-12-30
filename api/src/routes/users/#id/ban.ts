@@ -4,6 +4,8 @@ import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
+//!WARNING!: THIS IS AN ACTIVE WORK-IN-PROGRESS THIS IS JUST THE BASE OF WHAT IS TO BE IN THE FUTURE
+
 router.post("/", route({}), async (req: Request, res: Response) => {
 	//if (req.params.id === "@me") req.params.id = req.user_id;
 	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["rights"] });
