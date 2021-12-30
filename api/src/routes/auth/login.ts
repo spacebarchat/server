@@ -41,6 +41,10 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 	}).catch((e) => {
 		throw FieldErrors({ login: { message: req.t("auth:login.INVALID_LOGIN"), code: "INVALID_LOGIN" } });
 	});
+	
+	if (Number(user.isbanned) == Number(1)){
+		throw FieldErrors({ login: { message: "This account has been disabled.", code: "ACCOUNT_BANNED" } })
+	}
 
 	if (undelete) {
 		// undelete refers to un'disable' here
