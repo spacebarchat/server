@@ -49,7 +49,7 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 	if (undelete) {
 		// undelete refers to un'disable' here
 		if (user.disabled) await User.update({ id: user.id }, { disabled: false });
-		if (user.deleted) await User.update({ id: user.id }, { deleted: false });
+		//if (user.deleted) await User.update({ id: user.id }, { deleted: false }); NOTE: since the deleted column isnt used this will be utilized in the "/users/:id/ban" route
 	} else {
 		if (user.deleted) return res.status(400).json({ message: "This account is scheduled for deletion.", code: 20011 });
 		if (user.disabled) return res.status(400).json({ message: req.t("auth:login.ACCOUNT_DISABLED"), code: 20013 });
