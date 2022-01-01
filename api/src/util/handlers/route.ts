@@ -20,6 +20,7 @@ import addFormats from "ajv-formats";
 
 const SchemaPath = path.join(__dirname, "..", "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
+
 export const ajv = new Ajv({
 	allErrors: true,
 	parseDate: true,
@@ -30,6 +31,7 @@ export const ajv = new Ajv({
 	strict: true,
 	strictRequired: true
 });
+
 addFormats(ajv);
 
 declare global {
