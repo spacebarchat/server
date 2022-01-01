@@ -18,7 +18,7 @@ import Ajv from "ajv";
 import { AnyValidateFunction } from "ajv/dist/core";
 import addFormats from "ajv-formats";
 
-const SchemaPath = path.join(__dirname, "..", "..", "assets", "schemas.json");
+const SchemaPath = path.join(__dirname, "..", "..", "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 
 export const ajv = new Ajv({
