@@ -22,7 +22,7 @@ import {
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
-import { MessageCreateSchema } from "../routes/channels/#channel_id/messages";
+import { MessageCreateSchema } from "../../routes/channels/#channel_id/messages";
 
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
