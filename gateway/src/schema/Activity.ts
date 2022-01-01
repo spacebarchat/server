@@ -9,12 +9,10 @@ export const ActivitySchema = {
 			type: Number,
 			$url: String,
 			$created_at: Date,
-			$timestamps: [
-				{
-					$start: Number,
-					$end: Number,
-				},
-			],
+			$timestamps: {
+				$start: Number,
+				$end: Number,
+			},
 			$application_id: String,
 			$details: String,
 			$state: String,
