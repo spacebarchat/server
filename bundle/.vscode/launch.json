@@ -5,6 +5,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"sourceMaps": true,
 			"name": "ts-node",
 			"type": "node",
 			"request": "launch",
@@ -15,9 +16,12 @@
 				"-r",
 				"ts-node/register"
 			],
-			"cwd": "${workspaceRoot}",
 			"protocol": "inspector",
-			"internalConsoleOptions": "openOnSessionStart"
+			"internalConsoleOptions": "openOnSessionStart",
+			"env": {
+				"TS_NODE_PROJECT": "${workspaceFolder}/tsnode.tsconfig.json",
+			},
+			"resolveSourceMapLocations": null, /* allow breakpoints in modules other than bundle */
 		},
 		{
 			"sourceMaps": true,
@@ -27,7 +31,7 @@
 			"program": "${workspaceFolder}/dist/bundle/src/start.js",
 			"preLaunchTask": "tsc: build - tsconfig.json",
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
-			"envFile": "${workspaceFolder}/.env"
+			"envFile": "${workspaceFolder}/.env",
 		}
 	]
 }

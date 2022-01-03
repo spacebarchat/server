@@ -62,7 +62,6 @@
 		"@babel/preset-typescript": "^7.15.0",
 		"@fosscord/api": "file:../api",
 		"@fosscord/cdn": "file:../cdn",
-		"@fosscord/util": "file:../util",
 		"@fosscord/gateway": "file:../gateway",
 		"@sentry/node": "^6.16.1",
 		"@sentry/tracing": "^6.16.1",

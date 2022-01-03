@@ -1,15 +1,6 @@
 {
 	"include": ["dist/**/*.ts"],
 	"exclude": [],
-	"ts-node": {
-		"transpileOnly": true,
-		"preferTsExts": true,
-		"compilerOptions": {
-			"rootDir": "../",
-			"baseUrl": ".",
-		},
-		"require": ["tsconfig-paths/register"]
-	},
 	"compilerOptions": {
 		/* Visit https://aka.ms/tsconfig.json to read more about this file */
 
@@ -83,10 +74,10 @@
 		"resolveJsonModule": true,
 		"baseUrl": "./dist/",
 		"paths": {
-			"@fosscord/api": ["api/src/index", "../../api/src/index"],
-			"@fosscord/gateway": ["gateway/src/index", "../../gateway/src/index"],
-			"@fosscord/cdn": ["cdn/src/index", "../../cdn/src/index"],
-			"@fosscord/util": ["util/src/index", "../../util/src/index"]
+			"@fosscord/api": ["api/src/index"],
+			"@fosscord/gateway": ["gateway/src/index"],
+			"@fosscord/cdn": ["cdn/src/index"],
+			"@fosscord/util": ["util/src/index"]
 		},
 		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }],
 		"noEmitHelpers": true,
