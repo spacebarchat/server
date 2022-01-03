@@ -64,7 +64,7 @@ export class User extends BaseClass {
 	setDiscriminator(val: string) {
 		const number = Number(val);
 		if (isNaN(number)) throw new Error("invalid discriminator");
-		if (number <= 0 || number > 10000) throw new Error("discriminator must be between 1 and 9999");
+		if (number <= 0 || number >= 10000) throw new Error("discriminator must be between 1 and 9999");
 		this.discriminator = val.toString().padStart(4, "0");
 	}
 
@@ -178,6 +178,35 @@ export class User extends BaseClass {
 		);
 	}
 
+	private static async generateDiscriminator(username: string): Promise<string | undefined> {
+		if (Config.get().register.incrementingDiscriminators) {
+			// discriminator will be incrementally generated
+			
+			// First we need to figure out the currently highest discrimnator for the given username and then increment it
+			const users = await User.find({ where: { username }, select: ["discriminator"] });
+			const highestDiscriminator = Math.max(0, ...users.map((u) => Number(u.discriminator)));
+
+			const discriminator = highestDiscriminator + 1;
+			if (discriminator >= 10000) {
+				return undefined;
+			}
+
+			return discriminator.toString().padStart(4, "0");
+		} else {
+			// discriminator will be randomly generated
+
+			// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
+			// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
+			for (let tries = 0; tries < 5; tries++) {
+				const discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
+				const exists = await User.findOne({ where: { discriminator, username: username }, select: ["id"] });
+				if (!exists) return discriminator;
+			}
+
+			return undefined;
+		}
+	}
+
 	static async register({
 		email,
 		username,
@@ -194,21 +223,9 @@ export class User extends BaseClass {
 		// trim special uf8 control characters -> Backspace, Newline, ...
 		username = trimSpecial(username);
 
-		// discriminator will be randomly generated
-		let discriminator = "";
-
-		let exists;
-		// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
-		// if it all five times already exists, abort with USERNAME_TOO_MANY_USERS error
-		// else just continue
-		// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
-		for (let tries = 0; tries < 5; tries++) {
-			discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
-			exists = await User.findOne({ where: { discriminator, username: username }, select: ["id"] });
-			if (!exists) break;
-		}
-
-		if (exists) {
+		const discriminator = await User.generateDiscriminator(username);
+		if (!discriminator) {
+			// We've failed to generate a valid and unused discriminator
 			throw FieldErrors({
 				username: {
 					code: "USERNAME_TOO_MANY_USERS",
