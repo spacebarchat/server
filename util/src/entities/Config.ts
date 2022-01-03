@@ -149,6 +149,7 @@ export interface ConfigValue {
 			minUpperCase: number;
 			minSymbols: number;
 		};
+		incrementingDiscriminators: boolean; // random otherwise
 	};
 	regions: {
 		default: string;
@@ -335,6 +336,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			minUpperCase: 2,
 			minSymbols: 0,
 		},
+		incrementingDiscriminators: false,
 	},
 	regions: {
 		default: "fosscord",
