@@ -36,6 +36,12 @@ export class Role extends BaseClass {
 	@Column()
 	position: number;
 
+	@Column({ nullable: true })
+	icon: string;
+
+	@Column({ nullable: true })
+	unicode_emoji: string;
+
 	@Column({ type: "simple-json", nullable: true })
 	tags?: {
 		bot_id?: string;

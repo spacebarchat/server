@@ -8,7 +8,8 @@ import {
 	GuildRoleDeleteEvent,
 	emitEvent,
 	Config,
-	DiscordApiErrors
+	DiscordApiErrors,
+	handleFile
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
@@ -22,6 +23,8 @@ export interface RoleModifySchema {
 	hoist?: boolean; // whether the role should be displayed separately in the sidebar
 	mentionable?: boolean; // whether the role should be mentionable
 	position?: number;
+	icon?: string;
+	unicode_emoji?: string;
 }
 
 export type RolePositionUpdateSchema = {
@@ -58,7 +61,9 @@ router.post("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" })
 		guild_id: guild_id,
 		managed: false,
 		permissions: String(req.permission!.bitfield & BigInt(body.permissions || "0")),
-		tags: undefined
+		tags: undefined,
+		icon: null,
+		unicode_emoji: null
 	});
 
 	await Promise.all([
@@ -104,6 +109,8 @@ router.delete("/:role_id", route({ permission: "MANAGE_ROLES" }), async (req: Re
 router.patch("/:role_id", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" }), async (req: Request, res: Response) => {
 	const { role_id, guild_id } = req.params;
 	const body = req.body as RoleModifySchema;
+
+	if (body.icon) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string); 
 
 	const role = new Role({
 		...body,
