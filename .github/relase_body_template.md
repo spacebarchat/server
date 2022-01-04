@@ -1,9 +1,10 @@
 ## Notes
 
 ## Additions
+- 
 
 ## Fixes
-
+-
 ## Download
 - [Windows]()
 - [MacOS]()
