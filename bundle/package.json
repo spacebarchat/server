@@ -9,7 +9,8 @@
 		"start": "node scripts/build.js && node dist/bundle/src/start.js",
 		"start:bundle": "node dist/bundle/src/start.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"migrate": "cd ../util/ && npm i && node --require ts-node/register node_modules/typeorm/cli.js -f ../util/ormconfig.json migration:run"
+		"migrate": "cd ../util/ && npm i && node --require ts-node/register node_modules/typeorm/cli.js -f ../util/ormconfig.json migration:run",
+		"tsnode": "npx ts-node --transpile-only -P tsnode.tsconfig.json src/start.ts"
 	},
 	"repository": {
 		"type": "git",
