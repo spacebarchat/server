@@ -68,7 +68,7 @@ router.get("/:role_id", async (req: Request, res: Response) => {
 	const type = await FileType.fromBuffer(file);
 
 	res.set("Content-Type", type?.mime);
-	res.set("Cache-Control", "public, max-age=31536000");
+	res.set("Cache-Control", "public, max-age=31536000, must-revalidate");
 
 	return res.send(file);
 });
