@@ -3,7 +3,8 @@
 	"ts-node": {
 		"transpileOnly": true,
 		"preferTsExts": true,
-		"require": ["tsconfig-paths/register"]
+		"require": ["tsconfig-paths/register"],
+		"compiler": "typescript-cached-transpile",
 	},
 	"compilerOptions": {
 		"rootDir": "../",
