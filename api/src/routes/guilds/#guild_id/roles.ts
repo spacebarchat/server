@@ -60,7 +60,7 @@ router.post("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" })
 		...body,
 		guild_id: guild_id,
 		managed: false,
-		permissions: String(req.permission!.bitfield & BigInt(body.permissions || "0")),
+		permissions: "242769972801",
 		tags: undefined,
 		icon: null,
 		unicode_emoji: null
