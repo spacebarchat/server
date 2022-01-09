@@ -570,7 +570,7 @@ export const DiscordApiErrors = {
 	ANNOUNCEMENT_RATE_LIMITS: new ApiError("This message cannot be edited due to announcement rate limits", 20022),
 	CHANNEL_WRITE_RATELIMIT: new ApiError("The channel you are writing has hit the write rate limit", 20028),
 	WORDS_NOT_ALLOWED: new ApiError(
-		"Your Stage topic, server name, server description, or channel names violate the allowed grammar",
+		"Your Stage topic, guild name/description, user group, role, thread or channel names violate the allowed grammar",
 		20031
 	),
 	GUILD_PREMIUM_LEVEL_TOO_LOW: new ApiError("Guild premium subscription level too low", 20035),
