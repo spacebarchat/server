@@ -514,6 +514,7 @@ export const VerificationLevels = ["NONE", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
 export const DiscordApiErrors = {
 	//https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
 	GENERAL_ERROR: new ApiError("General error (such as a malformed request body, amongst other things)", 0),
+	MANUALLY_TRIGGERED_ERROR: new ApiError("This is an artificial error", 1),
 	UNKNOWN_ACCOUNT: new ApiError("Unknown account", 10001),
 	UNKNOWN_APPLICATION: new ApiError("Unknown application", 10002),
 	UNKNOWN_CHANNEL: new ApiError("Unknown channel", 10003),
@@ -569,39 +570,40 @@ export const DiscordApiErrors = {
 	ANNOUNCEMENT_RATE_LIMITS: new ApiError("This message cannot be edited due to announcement rate limits", 20022),
 	CHANNEL_WRITE_RATELIMIT: new ApiError("The channel you are writing has hit the write rate limit", 20028),
 	WORDS_NOT_ALLOWED: new ApiError(
-		"Your Stage topic, server name, server description, or channel names contain words that are not allowed",
+		"Your Stage topic, server name, server description, or channel names violate the allowed grammar",
 		20031
 	),
 	GUILD_PREMIUM_LEVEL_TOO_LOW: new ApiError("Guild premium subscription level too low", 20035),
-	MAXIMUM_GUILDS: new ApiError("Maximum number of guilds reached ({})", 30001, undefined, ["100"]),
-	MAXIMUM_FRIENDS: new ApiError("Maximum number of friends reached ({})", 30002, undefined, ["1000"]),
-	MAXIMUM_PINS: new ApiError("Maximum number of pins reached for the channel ({})", 30003, undefined, ["50"]),
+	MAXIMUM_GUILDS: new ApiError("Maximum number of guilds reached ({})", 30001, undefined, ["65535"]),
+	MAXIMUM_FRIENDS: new ApiError("Maximum number of friends reached ({})", 30002, undefined, ["5000"]),
+	MAXIMUM_PINS: new ApiError("Maximum number of pins reached for the channel ({})", 30003, undefined, ["1000"]),
 	MAXIMUM_NUMBER_OF_RECIPIENTS_REACHED: new ApiError("Maximum number of recipients reached ({})", 30004, undefined, [
-		"10",
+		"100",
 	]),
-	MAXIMUM_ROLES: new ApiError("Maximum number of guild roles reached ({})", 30005, undefined, ["250"]),
-	MAXIMUM_WEBHOOKS: new ApiError("Maximum number of webhooks reached ({})", 30007, undefined, ["10"]),
+	MAXIMUM_ROLES: new ApiError("Maximum number of guild roles reached ({})", 30005, undefined, ["1023"]),
+	MAXIMUM_WEBHOOKS: new ApiError("Maximum number of webhooks reached ({})", 30007, undefined, ["255"]),
 	MAXIMUM_NUMBER_OF_EMOJIS_REACHED: new ApiError("Maximum number of emojis reached", 30008),
-	MAXIMUM_REACTIONS: new ApiError("Maximum number of reactions reached ({})", 30010, undefined, ["20"]),
-	MAXIMUM_CHANNELS: new ApiError("Maximum number of guild channels reached ({})", 30013, undefined, ["500"]),
+	MAXIMUM_REACTIONS: new ApiError("Maximum number of reactions reached ({})", 30010, undefined, ["65535"]),
+	MAXIMUM_CHANNELS: new ApiError("Maximum number of guild channels reached ({})", 30013, undefined, ["65535"]),
 	MAXIMUM_ATTACHMENTS: new ApiError("Maximum number of attachments in a message reached ({})", 30015, undefined, [
 		"10",
 	]),
-	MAXIMUM_INVITES: new ApiError("Maximum number of invites reached ({})", 30016, undefined, ["1000"]),
+	MAXIMUM_INVITES: new ApiError("Maximum number of invites reached ({})", 30016, undefined, ["65535"]),
 	MAXIMUM_ANIMATED_EMOJIS: new ApiError("Maximum number of animated emojis reached", 30018),
 	MAXIMUM_SERVER_MEMBERS: new ApiError("Maximum number of server members reached", 30019),
 	MAXIMUM_SERVER_CATEGORIES: new ApiError(
 		"Maximum number of server categories has been reached ({})",
 		30030,
 		undefined,
-		["5"]
+		["32767"]
 	),
 	GUILD_ALREADY_HAS_TEMPLATE: new ApiError("Guild already has a template", 30031),
 	MAXIMUM_THREAD_PARTICIPANTS: new ApiError("Max number of thread participants has been reached", 30033),
-	MAXIMUM_BANS_FOR_NON_GUILD_MEMBERS: new ApiError(
+	/** due to architectural differences, fosscord-server does not need this limit
+	    MAXIMUM_BANS_FOR_NON_GUILD_MEMBERS: new ApiError(
 		"Maximum number of bans for non-guild members have been exceeded",
 		30035
-	),
+	), */
 	MAXIMUM_BANS_FETCHES: new ApiError("Maximum number of bans fetches has been reached", 30037),
 	MAXIMUM_STICKERS: new ApiError("Maximum number of stickers reached", 30039),
 	MAXIMUM_PRUNE_REQUESTS: new ApiError("Maximum number of prune requests has been reached. Try again later", 30040),
@@ -615,16 +617,18 @@ export const DiscordApiErrors = {
 	FEATURE_TEMPORARILY_DISABLED: new ApiError("This feature has been temporarily disabled server-side", 40006),
 	USER_BANNED: new ApiError("The user is banned from this guild", 40007),
 	TARGET_USER_IS_NOT_CONNECTED_TO_VOICE: new ApiError("Target user is not connected to voice", 40032),
+	/** due to architectural differences, does not apply to fosscord-server
 	ALREADY_CROSSPOSTED: new ApiError("This message has already been crossposted", 40033),
+	*/
 	APPLICATION_COMMAND_ALREADY_EXISTS: new ApiError("An application command with that name already exists", 40041),
-	MISSING_ACCESS: new ApiError("Missing access", 50001),
+	MISSING_ACCESS: new ApiError("Missing access", 50001), // also use for missing rights
 	INVALID_ACCOUNT_TYPE: new ApiError("Invalid account type", 50002),
 	CANNOT_EXECUTE_ON_DM: new ApiError("Cannot execute action on a DM channel", 50003),
 	EMBED_DISABLED: new ApiError("Guild widget disabled", 50004),
 	CANNOT_EDIT_MESSAGE_BY_OTHER: new ApiError("Cannot edit a message authored by another user", 50005),
 	CANNOT_SEND_EMPTY_MESSAGE: new ApiError("Cannot send an empty message", 50006),
 	CANNOT_MESSAGE_USER: new ApiError("Cannot send messages to this user", 50007),
-	CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL: new ApiError("Cannot send messages in a voice channel", 50008),
+	CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL: new ApiError("Cannot send messages in this voice channel", 50008),
 	CHANNEL_VERIFICATION_LEVEL_TOO_HIGH: new ApiError(
 		"Channel verification level is too high for you to gain access",
 		50009
@@ -683,7 +687,7 @@ export const DiscordApiErrors = {
 	),
 	SERVER_NOT_AVAILABLE_IN_YOUR_LOCATION: new ApiError("This server is not available in your location", 50095),
 	SERVER_NEEDS_MONETIZATION_ENABLED: new ApiError(
-		"This server needs monetization enabled in order to perform this action",
+		"This guild needs monetization enabled in order to perform this action",
 		50097
 	),
 	TWO_FACTOR_REQUIRED: new ApiError("Two factor is required for this operation", 60003),
@@ -703,7 +707,7 @@ export const DiscordApiErrors = {
 		"Uploaded Lotties cannot contain rasterized images such as PNG or JPEG",
 		170002
 	),
-	STICKER_MAXIMUM_FRAMERATE: new ApiError("Sticker maximum framerate exceeded", 170003),
+	// STICKER_MAXIMUM_FRAMERATE: new ApiError("Sticker maximum framerate exceeded", 170003),
 	STICKER_MAXIMUM_FRAME_COUNT: new ApiError("Sticker frame count exceeds maximum of {} frames", 170004, undefined, [
 		"1000",
 	]),
