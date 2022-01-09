@@ -511,8 +511,8 @@ export const VerificationLevels = ["NONE", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
  * * UNKNOWN_VOICE_STATE
  * @typedef {string} APIError
  */
-export const DiscordApiErrors = {
-	//https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
+export const DiscordApiErrors = { // TODO: have limit errors follow actual instance limit policies
+	// derived from https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
 	GENERAL_ERROR: new ApiError("General error (such as a malformed request body, amongst other things)", 0),
 	MANUALLY_TRIGGERED_ERROR: new ApiError("This is an artificial error", 1),
 	UNKNOWN_ACCOUNT: new ApiError("Unknown account", 10001),
