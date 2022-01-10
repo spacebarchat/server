@@ -626,7 +626,7 @@ export const DiscordApiErrors = { // TODO: have limit errors follow actual insta
 	INVALID_ACCOUNT_TYPE: new ApiError("Invalid account type", 50002),
 	CANNOT_EXECUTE_ON_DM: new ApiError("Cannot execute action on a DM channel", 50003),
 	EMBED_DISABLED: new ApiError("Guild widget disabled", 50004),
-	CANNOT_EDIT_MESSAGE_BY_OTHER: new ApiError("Cannot edit a message authored by another user", 50005),
+	CANNOT_EDIT_MESSAGE_BY_OTHER: new ApiError("Cannot edit this message authored by another user", 50005),
 	CANNOT_SEND_EMPTY_MESSAGE: new ApiError("Cannot send an empty message", 50006),
 	CANNOT_MESSAGE_USER: new ApiError("Cannot send messages to this user", 50007),
 	CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL: new ApiError("Cannot send messages in this voice channel", 50008),
