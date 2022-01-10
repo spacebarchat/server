@@ -574,7 +574,6 @@ export const DiscordApiErrors = { // TODO: have limit errors follow actual insta
 		20031
 	),
 	GUILD_PREMIUM_LEVEL_TOO_LOW: new ApiError("Guild premium subscription level too low", 20035),
-	PREMIUM_DISABLED_FOR_GUILD: new ApiError("This guild cannot be boosted", 25001),
 	MAXIMUM_GUILDS: new ApiError("Maximum number of guilds reached ({})", 30001, undefined, ["65535"]),
 	MAXIMUM_FRIENDS: new ApiError("Maximum number of friends reached ({})", 30002, undefined, ["5000"]),
 	MAXIMUM_PINS: new ApiError("Maximum number of pins reached for the channel ({})", 30003, undefined, ["1000"]),
@@ -622,6 +621,7 @@ export const DiscordApiErrors = { // TODO: have limit errors follow actual insta
 	ALREADY_CROSSPOSTED: new ApiError("This message has already been crossposted", 40033),
 	*/
 	APPLICATION_COMMAND_ALREADY_EXISTS: new ApiError("An application command with that name already exists", 40041),
+	FEATURE_PERMANENTLY_DISABLED: new ApiError("This feature has been disabled server-side", 45006),
 	MISSING_ACCESS: new ApiError("Missing access", 50001), // also use for missing rights
 	INVALID_ACCOUNT_TYPE: new ApiError("Invalid account type", 50002),
 	CANNOT_EXECUTE_ON_DM: new ApiError("Cannot execute action on a DM channel", 50003),
@@ -682,17 +682,19 @@ export const DiscordApiErrors = { // TODO: have limit errors follow actual insta
 		50083
 	),
 	INVALID_THREAD_NOTIFICATION_SETTINGS: new ApiError("Invalid thread notification settings", 50084),
+	/* this condition can better be handled silently without erroring out
 	BEFORE_EARLIER_THAN_THREAD_CREATION_DATE: new ApiError(
 		"before value is earlier than the thread creation date",
 		50085
 	),
+	*/
 	SERVER_NOT_AVAILABLE_IN_YOUR_LOCATION: new ApiError("This server is not available in your location", 50095),
 	SERVER_NEEDS_MONETIZATION_ENABLED: new ApiError(
 		"This guild needs monetization enabled in order to perform this action",
 		50097
 	),
 	TWO_FACTOR_REQUIRED: new ApiError("Two factor is required for this operation", 60003),
-	NO_USERS_WITH_DISCORDTAG_EXIST: new ApiError("No users with DiscordTag exist", 80004),
+	NO_USERS_WITH_DISCORDTAG_EXIST: new ApiError("No users with username+discriminator exist", 80004),
 	REACTION_BLOCKED: new ApiError("Reaction was blocked", 90001),
 	RESOURCE_OVERLOADED: new ApiError("API resource is currently overloaded. Try again a little later", 130000),
 	STAGE_ALREADY_OPEN: new ApiError("The Stage is already open", 150006),
@@ -732,6 +734,11 @@ export const DiscordApiErrors = { // TODO: have limit errors follow actual insta
  * An error encountered while performing an API request (Fosscord only). Here are the potential errors:
  */
 export const FosscordApiErrors = {
+	PREMIUM_DISABLED_FOR_GUILD: new ApiError("This guild cannot be boosted", 25001),
+	NO_FURTHER_PREMIUM: new ApiError("This guild does not receive further boosts", 25002),
+	GUILD_PREMIUM_DISABLED_FOR_YOU: new ApiError("This guild cannot be boosted by you", 25003),
+	CANNOT_FRIEND_SELF: new ApiError("Cannot friend oneself", 25009),
+	USER_SPECIFIC_INVITE_WRONG_RECIPIENT: new ApiError("This invite is not meant for you", 25010),
 	MISSING_RIGHTS: new ApiError("You lack rights to perform that action ({})", 50013, undefined, [""]),
 };
 
