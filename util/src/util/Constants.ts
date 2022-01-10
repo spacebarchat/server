@@ -738,8 +738,16 @@ export const FosscordApiErrors = {
 	GUILD_PREMIUM_DISABLED_FOR_YOU: new ApiError("This guild cannot be boosted by you", 25003),
 	CANNOT_FRIEND_SELF: new ApiError("Cannot friend oneself", 25009),
 	USER_SPECIFIC_INVITE_WRONG_RECIPIENT: new ApiError("This invite is not meant for you", 25010),
+	USER_SPECIFIC_INVITE_FAILED: new ApiError("Failed to invite user", 25011),
+	CANNOT_MODIFY_USER_GROUP: new ApiError("This user cannot manipulate this group", 25050),
+	CANNOT_REMOVE_SELF_FROM_GROUP: new ApiError("This user cannot remove oneself from user group", 25051),
+	CANNOT_BAN_OPERATOR: new ApiError("Non-OPERATOR cannot ban OPERATOR from instance", 25052),
+	CANNOT_LEAVE_GUILD: new ApiError("You are not allowed to leave guilds that you joined by yourself", 25060),
+	EDITS_DISABLED: new ApiError("You are not allowed to edit your own messages", 25060),
+	DELETE_MESSAGE_DISABLED: new ApiError("You are not allowed to edit your own messages", 25061),
 	FEATURE_PERMANENTLY_DISABLED: new ApiError("This feature has been disabled server-side", 45006),
 	MISSING_RIGHTS: new ApiError("You lack rights to perform that action ({})", 50013, undefined, [""]),
+	CANNOT_GRANT_PERMISSIONS_EXCEEDING_RIGHTS: new ApiError("You cannot grant permissions exceeding your own rights", 50050),
 };
 
 /**
