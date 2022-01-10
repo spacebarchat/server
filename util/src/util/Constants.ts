@@ -574,6 +574,7 @@ export const DiscordApiErrors = { // TODO: have limit errors follow actual insta
 		20031
 	),
 	GUILD_PREMIUM_LEVEL_TOO_LOW: new ApiError("Guild premium subscription level too low", 20035),
+	PREMIUM_DISABLED_FOR_GUILD: new ApiError("This guild cannot be boosted", 25001),
 	MAXIMUM_GUILDS: new ApiError("Maximum number of guilds reached ({})", 30001, undefined, ["65535"]),
 	MAXIMUM_FRIENDS: new ApiError("Maximum number of friends reached ({})", 30002, undefined, ["5000"]),
 	MAXIMUM_PINS: new ApiError("Maximum number of pins reached for the channel ({})", 30003, undefined, ["1000"]),
