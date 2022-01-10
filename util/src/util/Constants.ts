@@ -744,7 +744,7 @@ export const FosscordApiErrors = {
 	CANNOT_BAN_OPERATOR: new ApiError("Non-OPERATOR cannot ban OPERATOR from instance", 25052),
 	CANNOT_LEAVE_GUILD: new ApiError("You are not allowed to leave guilds that you joined by yourself", 25060),
 	EDITS_DISABLED: new ApiError("You are not allowed to edit your own messages", 25060),
-	DELETE_MESSAGE_DISABLED: new ApiError("You are not allowed to edit your own messages", 25061),
+	DELETE_MESSAGE_DISABLED: new ApiError("You are not allowed to delete your own messages", 25061),
 	FEATURE_PERMANENTLY_DISABLED: new ApiError("This feature has been disabled server-side", 45006),
 	MISSING_RIGHTS: new ApiError("You lack rights to perform that action ({})", 50013, undefined, [""]),
 	CANNOT_GRANT_PERMISSIONS_EXCEEDING_RIGHTS: new ApiError("You cannot grant permissions exceeding your own rights", 50050),
