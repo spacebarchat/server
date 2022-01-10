@@ -622,7 +622,7 @@ export const DiscordApiErrors = { // TODO: have limit errors follow actual insta
 	*/
 	APPLICATION_COMMAND_ALREADY_EXISTS: new ApiError("An application command with that name already exists", 40041),
 	FEATURE_PERMANENTLY_DISABLED: new ApiError("This feature has been disabled server-side", 45006),
-	MISSING_ACCESS: new ApiError("Missing access", 50001), // also use for missing rights
+	MISSING_ACCESS: new ApiError("Missing access", 50001),
 	INVALID_ACCOUNT_TYPE: new ApiError("Invalid account type", 50002),
 	CANNOT_EXECUTE_ON_DM: new ApiError("Cannot execute action on a DM channel", 50003),
 	EMBED_DISABLED: new ApiError("Guild widget disabled", 50004),
