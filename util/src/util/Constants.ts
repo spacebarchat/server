@@ -514,7 +514,6 @@ export const VerificationLevels = ["NONE", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
 export const DiscordApiErrors = { // TODO: have limit errors follow actual instance limit policies
 	// derived from https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
 	GENERAL_ERROR: new ApiError("General error (such as a malformed request body, amongst other things)", 0),
-	MANUALLY_TRIGGERED_ERROR: new ApiError("This is an artificial error", 1),
 	UNKNOWN_ACCOUNT: new ApiError("Unknown account", 10001),
 	UNKNOWN_APPLICATION: new ApiError("Unknown application", 10002),
 	UNKNOWN_CHANNEL: new ApiError("Unknown channel", 10003),
@@ -621,7 +620,6 @@ export const DiscordApiErrors = { // TODO: have limit errors follow actual insta
 	ALREADY_CROSSPOSTED: new ApiError("This message has already been crossposted", 40033),
 	*/
 	APPLICATION_COMMAND_ALREADY_EXISTS: new ApiError("An application command with that name already exists", 40041),
-	FEATURE_PERMANENTLY_DISABLED: new ApiError("This feature has been disabled server-side", 45006),
 	MISSING_ACCESS: new ApiError("Missing access", 50001),
 	INVALID_ACCOUNT_TYPE: new ApiError("Invalid account type", 50002),
 	CANNOT_EXECUTE_ON_DM: new ApiError("Cannot execute action on a DM channel", 50003),
@@ -734,11 +732,13 @@ export const DiscordApiErrors = { // TODO: have limit errors follow actual insta
  * An error encountered while performing an API request (Fosscord only). Here are the potential errors:
  */
 export const FosscordApiErrors = {
+	MANUALLY_TRIGGERED_ERROR: new ApiError("This is an artificial error", 1),
 	PREMIUM_DISABLED_FOR_GUILD: new ApiError("This guild cannot be boosted", 25001),
 	NO_FURTHER_PREMIUM: new ApiError("This guild does not receive further boosts", 25002),
 	GUILD_PREMIUM_DISABLED_FOR_YOU: new ApiError("This guild cannot be boosted by you", 25003),
 	CANNOT_FRIEND_SELF: new ApiError("Cannot friend oneself", 25009),
 	USER_SPECIFIC_INVITE_WRONG_RECIPIENT: new ApiError("This invite is not meant for you", 25010),
+	FEATURE_PERMANENTLY_DISABLED: new ApiError("This feature has been disabled server-side", 45006),
 	MISSING_RIGHTS: new ApiError("You lack rights to perform that action ({})", 50013, undefined, [""]),
 };
 
