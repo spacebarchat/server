@@ -17,7 +17,8 @@ import {
 	User,
 	Application,
 	Webhook,
-	Attachment
+	Attachment,
+	Config,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
@@ -54,6 +55,10 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		reactions: /*opts.reactions ||*/ [],
 		type: opts.type ?? 0
 	});
+
+	if (message.content && message.content.length > Config.get().limits.message.maxCharacters) {
+		throw new HTTPError("Content length over max character limit")
+	}
 
 	// TODO: are tts messages allowed in dm channels? should permission be checked?
 	if (opts.author_id) {
