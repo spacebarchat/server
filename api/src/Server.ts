@@ -10,7 +10,7 @@ import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
 import morgan from "morgan";
-import { initInstance } from "./util/Instance";
+import { initInstance } from "./util/handlers/Instance";
 import { registerRoutes } from "@fosscord/util";
 import { red } from "picocolors"
 

@@ -13,7 +13,7 @@
 	},
 	"keywords": [],
 	"author": "Fosscord",
-	"license": "ISC",
+	"license": "GPLV3",
 	"devDependencies": {
 		"@types/amqplib": "^0.8.1",
 		"@types/jsonwebtoken": "^8.5.0",

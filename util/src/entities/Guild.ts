@@ -340,6 +340,8 @@ export class Guild extends BaseClass {
 			name: "@everyone",
 			permissions: String("2251804225"),
 			position: 0,
+			icon: null,
+			unicode_emoji: null
 		}).save();
 
 		if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
