@@ -172,7 +172,7 @@ router.post(
 		}
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
 
-		const embeds = [];
+		const embeds = body.embeds || [];
 		if (body.embed) embeds.push(body.embed);
 		let message = await handleMessage({
 			...body,
