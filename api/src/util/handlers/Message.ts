@@ -89,7 +89,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	}
 
 	// TODO: stickers/activity
-	if (!allow_empty || (!opts.content && !opts.embeds?.length && !opts.attachments?.length && !opts.sticker_ids?.length)) {
+	if (!allow_empty && (!opts.content && !opts.embeds?.length && !opts.attachments?.length && !opts.sticker_ids?.length)) {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 
