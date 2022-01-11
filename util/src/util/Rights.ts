@@ -61,6 +61,8 @@ export class Rights extends BitField {
 		// can kick or ban guild or group DM members in the guilds/groups that they have KICK_MEMBERS, or BAN_MEMBERS
 		SELF_LEAVE_GROUPS: BitFlag(34), 
 		// can leave the guilds or group DMs that they joined on their own (one can always leave a guild or group DMs they have been force-added)
+		PRESENCE: BitFlag(35),
+		// inverts the presence confidentiality default (OPERATOR's presence is not routed by default, others' are) for a given user
 		SEND_BACKDATED_EVENTS: BitFlag(42) // can send backdated events
 	};
 
