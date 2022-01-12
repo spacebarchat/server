@@ -10,7 +10,7 @@ export class Emoji extends BaseClass {
 	animated: boolean;
 
 	@Column()
-	available: boolean; // whether this emoji can be used, may be false due to loss of Server Boosts
+	available: boolean; // whether this emoji can be used, may be false due to various reasons
 
 	@Column()
 	guild_id: string;
@@ -40,4 +40,7 @@ export class Emoji extends BaseClass {
 
 	@Column({ type: "simple-array" })
 	roles: string[]; // roles this emoji is whitelisted to (new discord feature?)
+	
+	@Column({ type: "simple-array" })
+	groups: string[]; // user groups this emoji is whitelisted to (Fosscord extension)
 }
