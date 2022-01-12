@@ -330,6 +330,7 @@ export class Guild extends BaseClass {
 		}).save();
 
 		// we have to create the role _after_ the guild because else we would get a "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" error
+		// TODO: make the @everyone a pseudorole that is dynamically generated at runtime so we can save storage
 		await new Role({
 			id: guild_id,
 			guild_id: guild_id,
