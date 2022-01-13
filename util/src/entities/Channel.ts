@@ -3,7 +3,7 @@ import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { PublicUserProjection, User } from "./User";
 import { HTTPError } from "lambert-server";
-import { containsAll, emitEvent, getPermission, Snowflake, trimSpecial } from "../util";
+import { containsAll, emitEvent, getPermission, Snowflake, trimSpecial, InvisibleCharacters } from "../util";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import { Recipient } from "./Recipient";
 import { Message } from "./Message";
@@ -147,12 +147,30 @@ export class Channel extends BaseClass {
 			skipExistsCheck?: boolean;
 			skipPermissionCheck?: boolean;
 			skipEventEmit?: boolean;
+			skipNameChecks?: boolean;
 		}
 	) {
 		if (!opts?.skipPermissionCheck) {
 			// Always check if user has permission first
 			const permissions = await getPermission(user_id, channel.guild_id);
 			permissions.hasThrow("MANAGE_CHANNELS");
+		}
+
+		if (!opts?.skipNameChecks) {
+			const guild = await Guild.findOneOrFail({ id: channel.guild_id });
+			if (!guild.features.includes("ILLEGAL_CHANNEL_NAMES") && channel.name) {
+				for (var character of InvisibleCharacters)
+					channel.name = channel.name.split(character).join("-");
+
+				channel.name = channel.name.split(/\-+/g).join("-");	//replace multiple occurances with just one
+				channel.name = channel.name.split("-").filter(Boolean).join("-");	//trim '-' character
+			}
+
+			if (!guild.features.includes("NULL_CHANNEL_NAMES")) {
+				if (channel.name) channel.name = channel.name.trim();
+
+				if (!channel.name) throw new HTTPError("Channel name cannot be empty.");
+			}
 		}
 
 		switch (channel.type) {
@@ -191,10 +209,10 @@ export class Channel extends BaseClass {
 			new Channel(channel).save(),
 			!opts?.skipEventEmit
 				? emitEvent({
-						event: "CHANNEL_CREATE",
-						data: channel,
-						guild_id: channel.guild_id,
-				  } as ChannelCreateEvent)
+					event: "CHANNEL_CREATE",
+					data: channel,
+					guild_id: channel.guild_id,
+				} as ChannelCreateEvent)
 				: Promise.resolve(),
 		]);
 
