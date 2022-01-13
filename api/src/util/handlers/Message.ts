@@ -82,7 +82,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	if (opts.message_reference) {
 		permission.hasThrow("READ_MESSAGE_HISTORY");
 		// code below has to be redone when we add custom message routing and cross-channel replies
-		const guild = await Guild.findOneOrFail({ id: guild_id });
+		const guild = await Guild.findOneOrFail({ id: channel.guild_id });
 		if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
 			if (opts.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
 			if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
