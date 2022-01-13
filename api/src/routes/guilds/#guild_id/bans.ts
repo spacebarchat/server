@@ -6,13 +6,32 @@ import { getIpAdress, route } from "@fosscord/api";
 export interface BanCreateSchema {
 	delete_message_days?: string;
 	reason?: string;
-}
+};
+
+export interface BanRegistrySchema {
+	id: string;
+	user_id: string;
+	guild_id: string;
+	executor_id: string;
+	ip?: string;
+	reason?: string | undefined;
+};
 
 const router: Router = Router();
+
+/* TODO: Deleting the secrets is just a temporary go-around. Views should be implemented for both safety and better handling. */
+
 router.get("/", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	var bans = await Ban.find({ guild_id: guild_id });
+	let bans = await Ban.find({ guild_id: guild_id });
+
+	/* Filter secret from database registry.*/
+	
+	bans.forEach((registry: BanRegistrySchema) => {
+	delete registry.ip;
+	});
+
 	return res.json(bans);
 });
 
@@ -20,7 +39,12 @@ router.get("/:user", route({ permission: "BAN_MEMBERS" }), async (req: Request, 
 	const { guild_id } = req.params;
 	const user_id = req.params.ban;
 
-	var ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id });
+	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id }) as BanRegistrySchema;
+	
+	/* Filter secret from registry. */
+
+	delete ban.ip
+
 	return res.json(ban);
 });
 

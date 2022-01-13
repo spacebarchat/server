@@ -2,6 +2,7 @@ import {
 	Channel,
 	Embed,
 	emitEvent,
+	Guild,
 	Message,
 	MessageCreateEvent,
 	MessageUpdateEvent,
@@ -17,13 +18,14 @@ import {
 	User,
 	Application,
 	Webhook,
-	Attachment
+	Attachment,
+	Config,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
-import { MessageCreateSchema } from "../routes/channels/#channel_id/messages";
-
+import { MessageCreateSchema } from "../../routes/channels/#channel_id/messages";
+const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
 
@@ -55,6 +57,10 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		type: opts.type ?? 0
 	});
 
+	if (message.content && message.content.length > Config.get().limits.message.maxCharacters) {
+		throw new HTTPError("Content length over max character limit")
+	}
+
 	// TODO: are tts messages allowed in dm channels? should permission be checked?
 	if (opts.author_id) {
 		message.author = await User.getPublicUser(opts.author_id);
@@ -67,7 +73,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	}
 
 	const permission = await getPermission(opts.author_id, channel.guild_id, opts.channel_id);
-	permission.hasThrow("SEND_MESSAGES");
+	permission.hasThrow("SEND_MESSAGES"); // TODO: add the rights check
 	if (permission.cache.member) {
 		message.member = permission.cache.member;
 	}
@@ -75,15 +81,19 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
 	if (opts.message_reference) {
 		permission.hasThrow("READ_MESSAGE_HISTORY");
-		if (opts.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
-		if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
+		// code below has to be redone when we add custom message routing and cross-channel replies
+		const guild = await Guild.findOneOrFail({ id: channel.guild_id });
+		if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
+			if (opts.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
+			if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
+		}
 		// TODO: should be checked if the referenced message exists?
 		// @ts-ignore
 		message.type = MessageType.REPLY;
 	}
 
 	// TODO: stickers/activity
-	if (!opts.content && !opts.embeds?.length && !opts.attachments?.length && !opts.sticker_ids?.length) {
+	if (!allow_empty && (!opts.content && !opts.embeds?.length && !opts.attachments?.length && !opts.sticker_ids?.length)) {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 
@@ -93,7 +103,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	var mention_user_ids = [] as string[];
 	var mention_everyone = false;
 
-	if (content) {
+	if (content) { // TODO: explicit-only mentions
 		message.content = content.trim();
 		for (const [_, mention] of content.matchAll(CHANNEL_MENTION)) {
 			if (!mention_channel_ids.includes(mention)) mention_channel_ids.push(mention);
@@ -135,7 +145,7 @@ export async function postHandleMessage(message: Message) {
 	const data = { ...message };
 	data.embeds = data.embeds.filter((x) => x.type !== "link");
 
-	links = links.slice(0, 5); // embed max 5 links
+	links = links.slice(0, 20); // embed max 20 links — TODO: make this configurable with instance policies
 
 	for (const link of links) {
 		try {
@@ -188,7 +198,7 @@ export async function sendMessage(opts: MessageOptions) {
 		emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data: message.toJSON() } as MessageCreateEvent)
 	]);
 
-	postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
+	postHandleMessage(message).catch((e) => {}); // no await as it should catch error non-blockingly
 
 	return message;
 }

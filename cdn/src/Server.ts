@@ -2,6 +2,7 @@ import { Server, ServerOptions } from "lambert-server";
 import { Config, initDatabase, registerRoutes } from "@fosscord/util";
 import path from "path";
 import avatarsRoute from "./routes/avatars";
+import iconsRoute from "./routes/role-icons";
 import bodyParser from "body-parser";
 
 export interface CDNServerOptions extends ServerOptions {}
@@ -39,6 +40,9 @@ export class CDNServer extends Server {
 
 		this.app.use("/icons/", avatarsRoute);
 		this.log("verbose", "[Server] Route /icons registered");
+
+		this.app.use("/role-icons/", iconsRoute);
+		this.log("verbose", "[Server] Route /role-icons registered");
 
 		this.app.use("/emojis/", avatarsRoute);
 		this.log("verbose", "[Server] Route /emojis registered");
