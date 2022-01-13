@@ -21,11 +21,14 @@ export enum ChannelType {
 	GUILD_CATEGORY = 4, // an organizational category that contains up to 50 channels
 	GUILD_NEWS = 5, // a channel that users can follow and crosspost into their own server
 	GUILD_STORE = 6, // a channel in which game developers can sell their game on Discord
-	// TODO: what are channel types between 7-9?
+	ENCRYPTED = 7, // end-to-end encrypted channel
+	ENCRYPTED_THREAD = 8, // end-to-end encrypted thread channel
 	GUILD_NEWS_THREAD = 10, // a temporary sub-channel within a GUILD_NEWS channel
 	GUILD_PUBLIC_THREAD = 11, // a temporary sub-channel within a GUILD_TEXT channel
 	GUILD_PRIVATE_THREAD = 12, // a temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
 	GUILD_STAGE_VOICE = 13, // a voice channel for hosting events with an audience
+	CUSTOM_START = 64, // start custom channel types from here
+	UNHANDLED = 255 // unhandled unowned pass-through channel type
 }
 
 @Entity("channels")
@@ -257,7 +260,7 @@ export class Channel extends BaseClass {
 			channel = await new Channel({
 				name,
 				type,
-				owner_id: type === ChannelType.DM ? undefined : creator_user_id,
+				owner_id: type === ChannelType.DM ? undefined : null, // 1:1 DMs are ownerless in fosscord-server
 				created_at: new Date(),
 				last_message_id: null,
 				recipients: channelRecipients.map(
@@ -304,9 +307,9 @@ export class Channel extends BaseClass {
 			user_id: user_id,
 		});
 
-		//If the owner leave we make the first recipient in the list the new owner
+		//If the owner leave the server user is the new owner
 		if (channel.owner_id === user_id) {
-			channel.owner_id = channel.recipients!.find((r) => r.user_id !== user_id)!.user_id; //Is there a criteria to choose the new owner?
+			channel.owner_id = 1; // The channel is now owned by the server user
 			await emitEvent({
 				event: "CHANNEL_UPDATE",
 				data: await DmChannelDTO.from(channel, [user_id]),
