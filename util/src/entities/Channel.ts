@@ -161,7 +161,8 @@ export class Channel extends BaseClass {
 
 		if (!opts?.skipNameChecks) {
 			const guild = await Guild.findOneOrFail({ id: channel.guild_id });
-			if (!guild.features.includes("ILLEGAL_CHANNEL_NAMES") && channel.name) {
+			if (!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") && channel.name) {
+
 				for (var character of InvisibleCharacters)
 					channel.name = channel.name.split(character).join("-");
 
@@ -169,7 +170,8 @@ export class Channel extends BaseClass {
 				channel.name = channel.name.split("-").filter(Boolean).join("-");	//trim '-' character
 			}
 
-			if (!guild.features.includes("NULL_CHANNEL_NAMES")) {
+			if (!guild.features.includes("ALLOW_UNNAMED_CHANNELS")) {
+
 				if (channel.name) channel.name = channel.name.trim();
 
 				if (!channel.name) throw new HTTPError("Channel name cannot be empty.");
