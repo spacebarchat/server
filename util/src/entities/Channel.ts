@@ -162,19 +162,21 @@ export class Channel extends BaseClass {
 		if (!opts?.skipNameChecks) {
 			const guild = await Guild.findOneOrFail({ id: channel.guild_id });
 			if (!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") && channel.name) {
-
 				for (var character of InvisibleCharacters)
-					channel.name = channel.name.split(character).join("-");
+					if (channel.name.includes(character))
+						throw new HTTPError("Channel name cannot include invalid characters", 403);
 
-				channel.name = channel.name.split(/\-+/g).join("-");	//replace multiple occurances with just one
-				channel.name = channel.name.split("-").filter(Boolean).join("-");	//trim '-' character
+				if (channel.name.match(/\-\-+/g))
+					throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403)
+
+				if (channel.name.charAt(0) === "-" ||
+					channel.name.charAt(channel.name.length - 1) === "-")
+					throw new HTTPError("Channel name cannot start/end with dash.", 403)
 			}
 
 			if (!guild.features.includes("ALLOW_UNNAMED_CHANNELS")) {
-
-				if (channel.name) channel.name = channel.name.trim();
-
-				if (!channel.name) throw new HTTPError("Channel name cannot be empty.");
+				if (!channel.name)
+					throw new HTTPError("Channel name cannot be empty.", 403);
 			}
 		}
 
