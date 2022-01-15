@@ -311,7 +311,7 @@ export class Channel extends BaseClass {
 
 		//If the owner leave the server user is the new owner
 		if (channel.owner_id === user_id) {
-			channel.owner_id = 1; // The channel is now owned by the server user
+			channel.owner_id = "1"; // The channel is now owned by the server user
 			await emitEvent({
 				event: "CHANNEL_UPDATE",
 				data: await DmChannelDTO.from(channel, [user_id]),
