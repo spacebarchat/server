@@ -54,21 +54,32 @@ export class Server {
 			});
 
 			worker.observer.on("newrouter", async (router: MediasoupTypes.Router) => {
-				console.log("new router");
+				console.log("new router created [id:%s]", router.id);
 
 				this.mediasoupRouters.push(router);
 
-				router.observer.on("newtransport", (transport: MediasoupTypes.Transport) => {
-					console.log("new transport");
+				router.observer.on("newtransport", async (transport: MediasoupTypes.Transport) => {
+					console.log("new transport created [id:%s]", transport.id);
+
+					await transport.enableTraceEvent();
+
+					transport.observer.on("newproducer", (producer: MediasoupTypes.Producer) => {
+						console.log("new producer created [id:%s]", producer.id);
+					});
+
+					transport.observer.on("newconsumer", (consumer: MediasoupTypes.Consumer) => {
+						console.log("new consumer created [id:%s]", consumer.id);
+					});
+
+					transport.observer.on("newdataproducer", (dataProducer) => {
+						console.log("new data producer created [id:%s]", dataProducer.id);
+					});
+
+					transport.on("trace", (trace) => {
+						console.log(trace);
+					});
 
 					this.mediasoupTransports.push(transport);
-				})
-
-				await router.createWebRtcTransport({
-					listenIps: [{ ip: "127.0.0.1" }],
-					enableUdp: true,
-					enableTcp: true,
-					preferUdp: true
 				});
 			});
 
