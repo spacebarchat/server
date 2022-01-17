@@ -14,7 +14,7 @@ const skus = new Map([
 				interval_count: 1,
 				tax_inclusive: true,
 				sku_id: "521842865731534868",
-				currency: "eur",
+				currency: "usd",
 				price: 0,
 				price_tier: null
 			},
@@ -25,7 +25,7 @@ const skus = new Map([
 				interval_count: 1,
 				tax_inclusive: true,
 				sku_id: "521842865731534868",
-				currency: "eur",
+				currency: "usd",
 				price: 0,
 				price_tier: null
 			}
@@ -36,23 +36,23 @@ const skus = new Map([
 		[
 			{
 				id: "511651871736201216",
-				name: "Individual Premium Tier 1 Monthly",
+				name: "Premium Classic Monthly",
 				interval: 1,
 				interval_count: 1,
 				tax_inclusive: true,
 				sku_id: "521846918637420545",
-				currency: "eur",
+				currency: "usd",
 				price: 0,
 				price_tier: null
 			},
 			{
 				id: "511651876987469824",
-				name: "Individual Premium Tier 1 Yearly",
+				name: "Premium Classic Yearly",
 				interval: 2,
 				interval_count: 1,
 				tax_inclusive: true,
 				sku_id: "521846918637420545",
-				currency: "eur",
+				currency: "usd",
 				price: 0,
 				price_tier: null
 			}
@@ -63,34 +63,34 @@ const skus = new Map([
 		[
 			{
 				id: "642251038925127690",
-				name: "Individual Premium Tier 2 Quarterly",
+				name: "Premium Quarterly",
 				interval: 1,
 				interval_count: 3,
 				tax_inclusive: true,
 				sku_id: "521847234246082599",
-				currency: "eur",
+				currency: "usd",
 				price: 0,
 				price_tier: null
 			},
 			{
 				id: "511651880837840896",
-				name: "Individual Premium Tier 2 Monthly",
+				name: "Premium Monthly",
 				interval: 1,
 				interval_count: 1,
 				tax_inclusive: true,
 				sku_id: "521847234246082599",
-				currency: "eur",
+				currency: "usd",
 				price: 0,
 				price_tier: null
 			},
 			{
 				id: "511651885459963904",
-				name: "Individual Premium Tier 2 Yearly",
+				name: "Premium Yearly",
 				interval: 2,
 				interval_count: 1,
 				tax_inclusive: true,
 				sku_id: "521847234246082599",
-				currency: "eur",
+				currency: "usd",
 				price: 0,
 				price_tier: null
 			}
@@ -101,25 +101,25 @@ const skus = new Map([
 		[
 			{
 				id: "590665532894740483",
-				name: "Crowd Premium Monthly",
+				name: "Server Boost Monthly",
 				interval: 1,
 				interval_count: 1,
 				tax_inclusive: true,
 				sku_id: "590663762298667008",
 				discount_price: 0,
-				currency: "eur",
+				currency: "usd",
 				price: 0,
 				price_tier: null
 			},
 			{
 				id: "590665538238152709",
-				name: "Crowd Premium Yearly",
+				name: "Server Boost Yearly",
 				interval: 2,
 				interval_count: 1,
 				tax_inclusive: true,
 				sku_id: "590663762298667008",
 				discount_price: 0,
-				currency: "eur",
+				currency: "usd",
 				price: 0,
 				price_tier: null
 			}
