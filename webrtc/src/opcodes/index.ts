@@ -32,4 +32,6 @@ export default {
 	//op 11?
 	[VoiceOPCodes.CLIENT_CONNECT]: onConnect,			//op 12
 	//op 13?
+	//op 15?
+	//op 16? empty data on client send but server sends {"voice":"0.8.24+bugfix.voice.streams.opt.branch-ffcefaff7","rtc_worker":"0.3.14-crypto-collision-copy"}
 };
