@@ -2,6 +2,9 @@ import { WebSocket } from "@fosscord/gateway";
 import { Payload } from "./index";
 import { VoiceOPCodes } from "@fosscord/util";
 import { Server } from "../Server";
+import * as mediasoup from "mediasoup";
+import { RtpCodecCapability } from "mediasoup/node/lib/RtpParameters";
+import * as sdpTransform from 'sdp-transform';
 
 /*
 	{
@@ -66,6 +69,40 @@ import { Server } from "../Server";
 */
 
 export async function onSelectProtocol(this: Server, socket: WebSocket, data: Payload) {
+	const rtpCapabilities = this.mediasoupRouters[0].rtpCapabilities;
+	const codecs = rtpCapabilities.codecs as RtpCodecCapability[];
+
+	const transport = this.mediasoupTransports[0];	//whatever
+
+	const res = sdpTransform.parse(data.d.sdp);
+
+	/*
+	 res.media.map(x => x.rtp).flat(1).map(x => ({
+				codec: x.codec,
+				payloadType: x.payload,
+				clockRate: x.rate as number,
+				mimeType: `audio/${x.codec}`,
+			})),
+	*/
+
+	const producer = await transport.produce({
+		kind: "audio",
+		rtpParameters: {
+			mid: "audio",
+			codecs: [{
+				clockRate: 48000,
+				payloadType: 111,
+				mimeType: "audio/opus",
+				channels: 2,
+			}],
+			headerExtensions: res.ext?.map(x => ({
+				id: x.value,
+				uri: x.uri,
+			}))
+		},
+		paused: false,
+	});
+
 	socket.send(JSON.stringify({
 		op: VoiceOPCodes.SESSION_DESCRIPTION,
 		d: {
