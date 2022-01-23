@@ -63,7 +63,9 @@ export class Rights extends BitField {
 		// can leave the guilds or group DMs that they joined on their own (one can always leave a guild or group DMs they have been force-added)
 		PRESENCE: BitFlag(35),
 		// inverts the presence confidentiality default (OPERATOR's presence is not routed by default, others' are) for a given user
-		SEND_BACKDATED_EVENTS: BitFlag(42) // can send backdated events
+		SELF_ADD_DISCOVERABLE: BitFlag(36), // can mark discoverable guilds that they have permissions to mark as discoverable
+		MANAGE_GUILD_DIRECTORY: BitFlag(37), // can change anything in the primary guild directory
+		SEND_BACKDATED_EVENTS: BitFlag(42), // can send backdated events
 	};
 
 	any(permission: RightResolvable, checkOperator = true) {
