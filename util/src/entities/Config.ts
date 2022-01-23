@@ -158,6 +158,7 @@ export interface ConfigValue {
 	};
 	guild: {
 		showAllGuildsInDiscovery: boolean;
+		homeDiscoveryUseRecommendation: boolean; // TODO: Recommendation, privacy concern?
 		autoJoin: {
 			enabled: boolean;
 			guilds: string[];
@@ -354,6 +355,7 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	guild: {
 		showAllGuildsInDiscovery: false,
+		homeDiscoveryUseRecommendation: false,
 		autoJoin: {
 			enabled: true,
 			canLeave: true,
