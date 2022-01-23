@@ -13,9 +13,13 @@
 /* home button icon */
 #app-mount > div.app-1q1i1E > div > div.layers-3iHuyZ.layers-3q14ss > div > div > nav > ul > div.scroller-1Bvpku.none-2Eo-qx.scrollerBase-289Jih > div.tutorialContainer-2sGCg9 > div > div.listItemWrapper-KhRmzM > div > svg > foreignObject > div > div
 {
-    background-image: url(https://raw.githubusercontent.com/fosscord/fosscord/9900329e5ef2c17bdeb6893e04c0511f72027f97/assets/logo/temp.svg);
+    background-image: url(https://raw.githubusercontent.com/fosscord/fosscord/master/assets-rebrand/svg/Fosscord-Icon-Rounded-Subtract.svg);
     background-size: contain;
     border-radius: 50%;
+}
+
+#app-mount > div.app-1q1i1E > div > div.layers-3iHuyZ.layers-3q14ss > div > div > nav > ul > div.scroller-1Bvpku.none-2Eo-qx.scrollerBase-289Jih > div.tutorialContainer-2sGCg9 > div > div.listItemWrapper-KhRmzM > div > svg > foreignObject > div > div, #app-mount > div.app-1q1i1E > div > div.layers-3iHuyZ.layers-3q14ss > div > div > nav > ul > div.scroller-1Bvpku.none-2Eo-qx.scrollerBase-289Jih > div.tutorialContainer-2sGCg9 > div > div.listItemWrapper-KhRmzM > div > svg > foreignObject > div > div:hover {
+	background-color: white;
 }
 /* Login QR */
 #app-mount > div.app-1q1i1E > div > div > div > div > form > div > div > div.transitionGroup-aR7y1d.qrLogin-1AOZMt,

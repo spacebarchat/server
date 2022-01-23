@@ -37,7 +37,11 @@ export function isTextChannel(type: ChannelType): boolean {
 		case ChannelType.GUILD_PUBLIC_THREAD:
 		case ChannelType.GUILD_PRIVATE_THREAD:
 		case ChannelType.GUILD_TEXT:
+		case ChannelType.ENCRYPTED:
+		case ChannelType.ENCRYPTED_THREAD:
 			return true;
+		default:
+			throw new HTTPError("unimplemented", 400);
 	}
 }
 
@@ -87,7 +91,7 @@ router.get("/", async (req: Request, res: Response) => {
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	var query: FindManyOptions<Message> & { where: { id?: any } } = {
+	var query: FindManyOptions<Message> & { where: { id?: any; }; } = {
 		order: { id: "DESC" },
 		take: limit,
 		where: { channel_id },
@@ -172,7 +176,7 @@ router.post(
 		}
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
 
-		const embeds = [];
+		const embeds = body.embeds || [];
 		if (body.embed) embeds.push(body.embed);
 		let message = await handleMessage({
 			...body,
@@ -216,7 +220,7 @@ router.post(
 			channel.save()
 		]);
 
-		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) => { }); // no await as it shouldnt block the message send function and silently catch error
 
 		return res.json(message);
 	}
