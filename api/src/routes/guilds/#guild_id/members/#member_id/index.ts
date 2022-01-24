@@ -61,8 +61,8 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 	var stickers = await Sticker.find({
 		where: { guild_id: guild_id }	});
 	
-	res.send({...guild, emojis: emoji, roles: roles, stickers: stickers});
 	await Member.addToGuild(member_id, guild_id);
+	res.send({...guild, emojis: emoji, roles: roles, stickers: stickers});
 });
 
 router.delete("/", route({ permission: "KICK_MEMBERS" }), async (req: Request, res: Response) => {
