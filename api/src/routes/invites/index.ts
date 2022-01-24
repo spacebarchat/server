@@ -19,7 +19,8 @@ router.post("/:code", route({}), async (req: Request, res: Response) => {
 	const { features } = await Guild.findOneOrFail({ id: guild_id});
 	const { public_flags } = await User.findOneOrFail({ id: req.user_id });
 	
-	if(features.includes("INTERNAL_EMPLOYEE_ONLY") && (public_flags & 1) !== 1) throw new HTTPError("The Maze isn't meant for you.", 401)
+	if(features.includes("INTERNAL_EMPLOYEE_ONLY") && (public_flags & 1) !== 1) throw new HTTPError("Only intended for the staff of this server.", 401);
+	if(features.includes("INVITES_CLOSED")) throw new HTTPError("Sorry, this guild has joins closed.", 403);
 	
 	const invite = await Invite.joinGuild(req.user_id, code);
 
