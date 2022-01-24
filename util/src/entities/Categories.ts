@@ -15,7 +15,7 @@ import { BaseClassWithoutId } from "./BaseClass";
 // }]
 
 @Entity("categories")
-export class Categories extends BaseClassWithoutId { // Not using snowflake
+export class CategoryEntity extends BaseClassWithoutId { // Not using snowflake
     
     @PrimaryColumn()
 	id: number;
@@ -28,9 +28,5 @@ export class Categories extends BaseClassWithoutId { // Not using snowflake
 
     @Column()
     is_primary: boolean;
-
-}
-
-export interface DefaultCategoryValue { // TODO: Load Default Discord Categories
 
 }
