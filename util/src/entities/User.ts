@@ -289,12 +289,7 @@ export const defaultSettings: UserSettings = {
 	animate_stickers: 0,
 	contact_sync_enabled: false,
 	convert_emoticons: false,
-	custom_status: {
-		emoji_id: undefined,
-		emoji_name: undefined,
-		expires_at: undefined,
-		text: undefined,
-	},
+	custom_status: null,
 	default_guilds_restricted: false,
 	detect_platform_accounts: true,
 	developer_mode: false,
@@ -334,7 +329,7 @@ export interface UserSettings {
 		emoji_name?: string;
 		expires_at?: number;
 		text?: string;
-	};
+	} | null;
 	default_guilds_restricted: boolean;
 	detect_platform_accounts: boolean;
 	developer_mode: boolean;

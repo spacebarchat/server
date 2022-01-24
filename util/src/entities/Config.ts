@@ -157,8 +157,12 @@ export interface ConfigValue {
 		available: Region[];
 	};
 	guild: {
-		showAllGuildsInDiscovery: boolean;
-		homeDiscoveryUseRecommendation: boolean; // TODO: Recommendation, privacy concern?
+		discovery: {
+			showAllGuilds: boolean;
+			useRecommendation: boolean; // TODO: Recommendation, privacy concern?
+			offset: number;
+			limit: number;
+		};
 		autoJoin: {
 			enabled: boolean;
 			guilds: string[];
@@ -354,8 +358,12 @@ export const DefaultConfigOptions: ConfigValue = {
 		],
 	},
 	guild: {
-		showAllGuildsInDiscovery: false,
-		homeDiscoveryUseRecommendation: false,
+		discovery: {
+			showAllGuilds: false,
+			useRecommendation: false,
+			offset: 0,
+			limit: 24,
+		},
 		autoJoin: {
 			enabled: true,
 			canLeave: true,
