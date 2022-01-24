@@ -9,7 +9,11 @@ router.get("/categories", route({}), (req: Request, res: Response) => {
 
 	const { locale, primary_only } = req.query;
 
+	let categories;
+
 	let out;
+
+	
 
 	switch (locale) {
 		case "en-US":

@@ -17,13 +17,13 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	if (categories == undefined) {
 		guilds = showAllGuilds
 			? await Guild.find({ take: Math.abs(Number(limit || configLimit)) })
-			: await Guild.find({ where: `"features" LIKE '%COMMUNITY%'`, take: Math.abs(Number(limit || configLimit)) });
+			: await Guild.find({ where: `"features" LIKE '%DISCOVERABLE%'`, take: Math.abs(Number(limit || configLimit)) });
 		total = guilds.length;
 	} else {
 		guilds = showAllGuilds
 				? await Guild.find({ where: `"primary_category_id" = ${categories}`, take: Math.abs(Number(limit || configLimit)) })
 				: await Guild.find({
-						where: `"primary_category_id" = ${categories} AND "features" LIKE '%COMMUNITY%'`,
+						where: `"primary_category_id" = ${categories} AND "features" LIKE '%DISCOVERABLE%'`,
 						take: Math.abs(Number(limit || configLimit))
 				  });
 			total = guilds.length;

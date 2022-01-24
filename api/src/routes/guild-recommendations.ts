@@ -13,7 +13,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	// const guilds = await Guild.find({ where: { features: "DISCOVERABLE" } }); //, take: Math.abs(Number(limit)) });
 	const guilds = showAllGuilds
 		? await Guild.find({ take: Math.abs(Number(limit || 24)) })
-		: await Guild.find({ where: `"features" LIKE '%COMMUNITY%'`, take: Math.abs(Number(limit || 24)) });
+		: await Guild.find({ where: `"features" LIKE '%DISCOVERABLE%'`, take: Math.abs(Number(limit || 24)) });
 	res.send({ recommended_guilds: guilds });
 });
 
