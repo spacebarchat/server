@@ -3,7 +3,7 @@ import { route } from "@fosscord/api";
 
 const router = Router();
 
-router.get("/", route({}), (req: Request, res: Response) => {
+router.get("/categories", route({}), (req: Request, res: Response) => {
 	// TODO:
 	// Load categories from db instead
 
@@ -21,7 +21,7 @@ router.get("/", route({}), (req: Request, res: Response) => {
 				}
 	}
 
-	res.json(out).status(200);
+	res.send(out);
 });
 
 export default router;

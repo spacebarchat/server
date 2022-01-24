@@ -287,7 +287,7 @@ export class Guild extends BaseClass {
 			default_message_notifications: 1, // defaults effect: setting the push default at mentions-only will save a lot
 			explicit_content_filter: 0,
 			features: [],
-			primary_category_id: 0,
+			primary_category_id: null,
 			id: guild_id,
 			max_members: 250000,
 			max_presences: 250000,
