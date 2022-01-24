@@ -1,6 +1,7 @@
 export * from "./ApiError";
 export * from "./BitField";
 export * from "./Token";
+//export * from "./Categories";
 export * from "./cdn";
 export * from "./Config";
 export * from "./Constants";

@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/categories", route({}), (req: Request, res: Response) => {
 	// TODO:
-	// Load categories from db instead
+	// Load categories from db instead of hardcoding
 
 	const { locale, primary_only } = req.query;
 
