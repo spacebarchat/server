@@ -14,6 +14,10 @@ export interface WebhookCreateSchema {
 	name: string;
 	avatar: string;
 }
+//TODO: implement webhooks
+router.get("/", route({}), async (req: Request, res: Response) => {
+	res.json([]);
+});
 
 // TODO: use Image Data Type for avatar instead of String
 router.post("/", route({ body: "WebhookCreateSchema", permission: "MANAGE_WEBHOOKS" }), async (req: Request, res: Response) => {
