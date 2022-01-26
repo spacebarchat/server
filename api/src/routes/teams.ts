@@ -5,7 +5,7 @@ const router: Router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	//TODO
-	res.send([]).status(200);
+	res.send([]);
 });
 
 export default router;

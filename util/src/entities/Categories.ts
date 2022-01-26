@@ -15,15 +15,15 @@ import { BaseClassWithoutId } from "./BaseClass";
 // }]
 
 @Entity("categories")
-export class CategoryEntity extends BaseClassWithoutId { // Not using snowflake
+export class Categories extends BaseClassWithoutId { // Not using snowflake
     
     @PrimaryColumn()
 	id: number;
 
     @Column()
-    default: string;
+    name: string;
 
-    @Column({ type: "simple-json", nullable: false })
+    @Column({ type: "simple-json" })
     localizations: string;
 
     @Column()
