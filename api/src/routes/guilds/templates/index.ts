@@ -11,7 +11,7 @@ export interface GuildTemplateCreateSchema {
 }
 
 router.get("/:code", route({}), async (req: Request, res: Response) => {
-	const { allowDiscordTemplates, allowRaws, enabled } = Config.get().templates;
+	const { allowDiscordTemplates, enabled } = Config.get().templates;
 	if (!enabled) res.json({ code: 403, message: "Template creation & usage is disabled on this instance." }).sendStatus(403);
 
 	const { code } = req.params;
@@ -25,13 +25,7 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 			headers: { "Content-Type": "application/json" }
 		});
 		return res.json(await discordTemplateData.json());
-	}
-
-	if (code.startsWith("external:")) {
-		if (!allowRaws)	return res.json({ code: 403, message: "Importing raws is disabled on this instance." }).sendStatus(403);
-
-		return res.json(code.split("external:", 2)[1]);
-	}
+	};
 
 	const template = await Template.findOneOrFail({ code: code });
 	res.json(template);

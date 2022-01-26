@@ -10,31 +10,39 @@ export default function TestClient(app: Application) {
 	const assetCache = new Map<string, { response: FetchResponse; buffer: Buffer }>();
 	const indexHTML = fs.readFileSync(path.join(__dirname, "..", "..", "client_test", "index.html"), { encoding: "utf8" });
 
-	var html = indexHTML;
-	const CDN_ENDPOINT = (Config.get().cdn.endpointClient || Config.get()?.cdn.endpointPublic || process.env.CDN || "").replace(
-		/(https?)?(:\/\/?)/g,
-		""
-	);
+	let html = indexHTML;
+
+	const CDN_ENDPOINT = (Config.get().cdn.endpointClient || Config.get()?.cdn.endpointPublic || process.env.CDN || "").replace(/(https?)?(:\/\/?)/g, "");
 	const GATEWAY_ENDPOINT = Config.get().gateway.endpointClient || Config.get()?.gateway.endpointPublic || process.env.GATEWAY || "";
 
-	if (CDN_ENDPOINT) {
-		html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${CDN_ENDPOINT}\`,`);
-	}
-	if (GATEWAY_ENDPOINT) {
-		html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${GATEWAY_ENDPOINT}\`,`);
-	}
-	// inline plugins
-	var files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "preload-plugins"));
-	var plugins = "";
+	if (CDN_ENDPOINT) html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${CDN_ENDPOINT}\`,`);
+	if (GATEWAY_ENDPOINT) html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${GATEWAY_ENDPOINT}\`,`);
+
+	/* Metadata */
+	const { title, charset, viewport, icon, visual } = Config.get().client.webClientMetadata;
+
+	let metastring : String = Object.entries(visual).forEach(type  => {
+		Object.entries(type[1]).map((key, value) => {
+			return `<meta property="${type[0]}:${key}" content="${value}">`
+		})
+	});
+
+	metastring = `${metastring}\n<title>${title}</title>\n<meta charset="${charset}>\n<meta content="${viewport}" name="viewport">\n<link rel="icon" href="${icon}">`
+	html = html.replaceAll("<!-- configurable metadata marker -->", metastring)
+	
+	/* Inline plugins */
+	let files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "preload-plugins"));
+	let plugins = "";
 	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(__dirname, "..", "..", "assets", "preload-plugins", x))}</script>\n`; });
 	html = html.replaceAll("<!-- preload plugin marker -->", plugins);
 
-	// plugins
+	/* Plugins */
 	files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "plugins"));
 	plugins = "";
 	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script src='/assets/plugins/${x}'></script>\n`; });
 	html = html.replaceAll("<!-- plugin marker -->", plugins);
-	//preload plugins
+	
+	/* Preload plugins */
 	files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "preload-plugins"));
 	plugins = "";
 	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(__dirname, "..", "..", "assets", "preload-plugins", x))}</script>\n`; });
@@ -83,6 +91,7 @@ export default function TestClient(app: Application) {
 
 		return res.send(buffer);
 	});
+
 	app.get("*", (req: Request, res: Response) => {
 		const { useTestClient } = Config.get().client;
 		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
@@ -90,7 +99,7 @@ export default function TestClient(app: Application) {
 
 		if(req.url.startsWith("/api") || req.url.startsWith("/__development")) return;
 
-		if(!useTestClient) return res.send("Test client is disabled on this instance. Use a stand-alone client to connect this instance.")
+		if(!useTestClient) return res.send("Test client is disabled on this instance.")
 		if (req.url.startsWith("/invite")) return res.send(html.replace("9b2b7f0632acd0c5e781", "9f24f709a3de09b67c49"));
 		
 		res.send(html);

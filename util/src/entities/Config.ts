@@ -179,10 +179,29 @@ export interface ConfigValue {
 		enabled: Boolean;
 		allowTemplateCreation: Boolean;
 		allowDiscordTemplates: Boolean;
-		allowRaws: Boolean;
 	},
 	client: {
 		useTestClient: Boolean;
+		webClientMetadata: {
+			title: string;
+			charset: string;
+			viewport: string;
+			icon: string;
+			visual: {
+			og: {
+				type: string;
+				site_name: string;
+				title: string;
+				description: string;
+				image: string;
+			};
+			twitter: {
+				card: string;
+				site: string;
+				creator: string;
+			};
+		};
+		};
 		relases: {
 			useLocalRelases: Boolean; //TODO
 			upstreamVersion: string;
@@ -374,11 +393,30 @@ export const DefaultConfigOptions: ConfigValue = {
 	templates: {
 		enabled: true,
 		allowTemplateCreation: true,
-		allowDiscordTemplates: true,
-		allowRaws: false
+		allowDiscordTemplates: true
 	},
 	client: {
 		useTestClient: true,
+		webClientMetadata: {
+			title: "Discord Test Client",
+			charset: "UTF8",
+			viewport: "width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no",
+			icon: "",
+			visual: {
+			og: {
+				type: "website",
+				site_name: "fosscord",
+				title: "",
+				description: "",
+				image: ""
+			},
+			twitter: {
+				card: "",
+				site: "Fosscord",
+				creator: "Fosscord"
+			}
+		}
+		},
 		relases: {
 			useLocalRelases: true,
 			upstreamVersion: "0.0.264"
