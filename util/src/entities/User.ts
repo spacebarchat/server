@@ -256,7 +256,7 @@ export class User extends BaseClass {
 			disabled: false,
 			deleted: false,
 			email: email,
-			rights: "0",
+			rights: "0", // TODO: grant rights correctly, as 0 actually stands for no rights at all
 			nsfw_allowed: true, // TODO: depending on age
 			public_flags: "0",
 			flags: "0", // TODO: generate
@@ -283,7 +283,7 @@ export class User extends BaseClass {
 }
 
 export const defaultSettings: UserSettings = {
-	afk_timeout: 300,
+	afk_timeout: 3600,
 	allow_accessibility_detection: true,
 	animate_emoji: true,
 	animate_stickers: 0,
@@ -291,10 +291,10 @@ export const defaultSettings: UserSettings = {
 	convert_emoticons: false,
 	custom_status: null,
 	default_guilds_restricted: false,
-	detect_platform_accounts: true,
-	developer_mode: false,
-	disable_games_tab: false,
-	enable_tts_command: true,
+	detect_platform_accounts: false,
+	developer_mode: true,
+	disable_games_tab: true,
+	enable_tts_command: false,
 	explicit_content_filter: 0,
 	friend_source_flags: { all: true },
 	gateway_connected: false,
@@ -304,17 +304,16 @@ export const defaultSettings: UserSettings = {
 	inline_attachment_media: true,
 	inline_embed_media: true,
 	locale: "en-US",
-	message_display_compact: false,
+	message_display_compact: true,
 	native_phone_integration_enabled: true,
 	render_embeds: true,
 	render_reactions: true,
 	restricted_guilds: [],
 	show_current_game: true,
 	status: "online",
-	stream_notifications_enabled: true,
+	stream_notifications_enabled: false,
 	theme: "dark",
-	timezone_offset: 0,
-	// timezone_offset: // TODO: timezone from request
+	timezone_offset: 0, // TODO: timezone from request
 };
 
 export interface UserSettings {
