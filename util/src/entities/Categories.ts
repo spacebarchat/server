@@ -17,7 +17,7 @@ import { BaseClassWithoutId } from "./BaseClass";
 @Entity("categories")
 export class Categories extends BaseClassWithoutId { // Not using snowflake
     
-    @PrimaryColumn({ nullable: true })
+    @PrimaryColumn()
 	id: number;
 
     @Column({ nullable: true })
