@@ -270,6 +270,9 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	nsfw?: boolean;
 
+	// only for developer portal
+	permissions?: number;
+
 	static async createGuild(body: {
 		name?: string;
 		icon?: string | null;

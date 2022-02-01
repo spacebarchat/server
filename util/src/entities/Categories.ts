@@ -13,6 +13,7 @@ import { BaseClassWithoutId } from "./BaseClass";
 // 	},
 // 	"is_primary": false/true
 // }]
+// Also populate discord default categories
 
 @Entity("categories")
 export class Categories extends BaseClassWithoutId { // Not using snowflake
