@@ -17,16 +17,16 @@ import { BaseClassWithoutId } from "./BaseClass";
 @Entity("categories")
 export class Categories extends BaseClassWithoutId { // Not using snowflake
     
-    @PrimaryColumn()
+    @PrimaryColumn({ nullable: true })
 	id: number;
 
-    @Column()
+    @Column({ nullable: true })
     name: string;
 
     @Column({ type: "simple-json" })
     localizations: string;
 
-    @Column()
+    @Column({ nullable: true })
     is_primary: boolean;
 
 }
