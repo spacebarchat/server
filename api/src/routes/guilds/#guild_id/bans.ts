@@ -120,8 +120,9 @@ router.delete("/:user_id", route({ permission: "BAN_MEMBERS" }), async (req: Req
 
 	const banned_user = await User.getPublicUser(user_id);
 	
-	if (banned_user.user_id === banned_user.executor_id) throw new HTTPError("Self-bans are irreversible", 400);
-
+	if (banned_user.user_id === banned_user.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
+	// make self-bans irreversible and hide them from view to avoid victim chasing
+	
 	await Promise.all([
 		Ban.delete({
 			user_id: user_id,
