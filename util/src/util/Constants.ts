@@ -748,6 +748,8 @@ export const FosscordApiErrors = {
 	FEATURE_PERMANENTLY_DISABLED: new ApiError("This feature has been disabled server-side", 45006),
 	MISSING_RIGHTS: new ApiError("You lack rights to perform that action ({})", 50013, undefined, [""]),
 	CANNOT_GRANT_PERMISSIONS_EXCEEDING_RIGHTS: new ApiError("You cannot grant permissions exceeding your own rights", 50050),
+	ROUTES_LOOPING: new ApiError("Loops in the route definition ({})", 50060, undefined, [""]),
+	CANNOT_REMOVE_ROUTE: new ApiError("Cannot remove message route while it is in effect and being used", 50061),
 };
 
 /**
