@@ -54,7 +54,8 @@ router.put("/:user_id", route({ body: "BanCreateSchema", permission: "BAN_MEMBER
 
 	const banned_user = await User.getPublicUser(banned_user_id);
 
-	if (req.user_id === banned_user_id) throw new HTTPError("You can't ban yourself", 400);
+	if ( (req.user_id === banned_user_id) && (banned_user_id === req.permission!.cache.guild?.owner_id))
+		throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
 	if (req.permission!.cache.guild?.owner_id === banned_user_id) throw new HTTPError("You can't ban the owner", 400);
 
 	const ban = new Ban({
@@ -67,6 +68,38 @@ router.put("/:user_id", route({ body: "BanCreateSchema", permission: "BAN_MEMBER
 
 	await Promise.all([
 		Member.removeFromGuild(banned_user_id, guild_id),
+		ban.save(),
+		emitEvent({
+			event: "GUILD_BAN_ADD",
+			data: {
+				guild_id: guild_id,
+				user: banned_user
+			},
+			guild_id: guild_id
+		} as GuildBanAddEvent)
+	]);
+
+	return res.json(ban);
+});
+
+router.put("/@me", route({ body: "BanCreateSchema"}), async (req: Request, res: Response) => {
+	// TODO: make self-bans irreversible
+	const { guild_id } = req.params;
+
+	const banned_user = await User.getPublicUser(req.params.user_id);
+
+	if (req.permission!.cache.guild?.owner_id === req.params.user_id) 
+		throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
+	const ban = new Ban({
+		user_id: req.params.user_id,
+		guild_id: guild_id,
+		ip: getIpAdress(req),
+		executor_id: req.params.user_id,
+		reason: req.body.reason // || otherwise empty
+	});
+
+	await Promise.all([
+		Member.removeFromGuild(req.user_id, guild_id),
 		ban.save(),
 		emitEvent({
 			event: "GUILD_BAN_ADD",
