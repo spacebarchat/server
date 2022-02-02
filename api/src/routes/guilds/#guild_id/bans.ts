@@ -56,6 +56,7 @@ router.put("/:user_id", route({ body: "BanCreateSchema", permission: "BAN_MEMBER
 
 	if ( (req.user_id === banned_user_id) && (banned_user_id === req.permission!.cache.guild?.owner_id))
 		throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
+	
 	if (req.permission!.cache.guild?.owner_id === banned_user_id) throw new HTTPError("You can't ban the owner", 400);
 
 	const ban = new Ban({
@@ -83,13 +84,13 @@ router.put("/:user_id", route({ body: "BanCreateSchema", permission: "BAN_MEMBER
 });
 
 router.put("/@me", route({ body: "BanCreateSchema"}), async (req: Request, res: Response) => {
-	// TODO: make self-bans irreversible
 	const { guild_id } = req.params;
 
 	const banned_user = await User.getPublicUser(req.params.user_id);
 
 	if (req.permission!.cache.guild?.owner_id === req.params.user_id) 
 		throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
+	
 	const ban = new Ban({
 		user_id: req.params.user_id,
 		guild_id: guild_id,
@@ -118,6 +119,8 @@ router.delete("/:user_id", route({ permission: "BAN_MEMBERS" }), async (req: Req
 	const { guild_id, user_id } = req.params;
 
 	const banned_user = await User.getPublicUser(user_id);
+	
+	if (banned_user.user_id === banned_user.executor_id) throw new HTTPError("Self-bans are irreversible", 400);
 
 	await Promise.all([
 		Ban.delete({
