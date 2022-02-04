@@ -1,5 +1,5 @@
 import { Server as WebSocketServer } from "ws";
-import { WebSocket, Payload, } from "@fosscord/gateway";
+import { WebSocket, Payload, CLOSECODES } from "@fosscord/gateway";
 import { Config, initDatabase } from "@fosscord/util";
 import OPCodeHandlers from "./opcodes";
 import { setHeartbeat } from "./util";
@@ -28,8 +28,10 @@ export class Server {
 
 				if (OPCodeHandlers[payload.op])
 					await OPCodeHandlers[payload.op].call(this, socket, payload);
-				else
+				else {
 					console.error(`Unimplemented`, payload);
+					socket.close(CLOSECODES.Unknown_opcode);
+				}
 			});
 		});
 	}
@@ -46,7 +48,7 @@ export class Server {
 	async createWorkers(): Promise<void> {
 		const numWorkers = 1;
 		for (let i = 0; i < numWorkers; i++) {
-			const worker = await mediasoup.createWorker();
+			const worker = await mediasoup.createWorker({ logLevel: "debug" });
 			if (!worker) return;
 
 			worker.on("died", () => {
@@ -91,17 +93,6 @@ export class Server {
 						clockRate: 48000,
 						channels: 2
 					},
-					{
-						kind: "video",
-						mimeType: "video/H264",
-						clockRate: 90000,
-						parameters:
-						{
-							"packetization-mode": 1,
-							"profile-level-id": "42e01f",
-							"level-asymmetry-allowed": 1
-						}
-					}
 				]
 			});
 

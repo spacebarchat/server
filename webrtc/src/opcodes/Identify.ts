@@ -5,7 +5,7 @@ import { Server } from "../Server";
 
 export async function onIdentify(this: Server, socket: WebSocket, data: Payload) {
 	var transport = await this.mediasoupRouters[0].createWebRtcTransport({
-		listenIps: [{ ip: "127.0.0.1" }],
+		listenIps: [{ ip: "0.0.0.0", announcedIp: "127.0.0.1" }],
 		enableUdp: true,
 		enableTcp: true,
 		preferUdp: true,
@@ -40,10 +40,9 @@ export async function onIdentify(this: Server, socket: WebSocket, data: Payload)
 	socket.send(JSON.stringify({
 		op: VoiceOPCodes.READY,
 		d: {
+			streams: [],
 			ssrc: 1,
-			ip: "127.0.0.1",
-
-			//@ts-ignore
+			ip: transport.iceCandidates[0].ip,
 			port: transport.iceCandidates[0].port,
 			modes: [
 				"aead_aes256_gcm_rtpsize",

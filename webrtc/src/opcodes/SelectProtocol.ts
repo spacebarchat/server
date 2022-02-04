@@ -68,6 +68,8 @@ import * as sdpTransform from 'sdp-transform';
 	}
 */
 
+var test_hasMadeProducer = false;
+
 export async function onSelectProtocol(this: Server, socket: WebSocket, data: Payload) {
 	const rtpCapabilities = this.mediasoupRouters[0].rtpCapabilities;
 	const codecs = rtpCapabilities.codecs as RtpCodecCapability[];
@@ -85,23 +87,33 @@ export async function onSelectProtocol(this: Server, socket: WebSocket, data: Pa
 			})),
 	*/
 
-	const producer = await transport.produce({
-		kind: "audio",
-		rtpParameters: {
-			mid: "audio",
-			codecs: [{
-				clockRate: 48000,
-				payloadType: 111,
-				mimeType: "audio/opus",
-				channels: 2,
-			}],
-			headerExtensions: res.ext?.map(x => ({
-				id: x.value,
-				uri: x.uri,
-			}))
-		},
-		paused: false,
-	});
+	if (!test_hasMadeProducer) {
+		const producer = await transport.produce({
+			kind: "audio",
+			rtpParameters: {
+				mid: "audio",
+				codecs: [{
+					clockRate: 48000,
+					payloadType: 111,
+					mimeType: "audio/opus",
+					channels: 2,
+				}],
+				headerExtensions: res.ext?.map(x => ({
+					id: x.value,
+					uri: x.uri,
+				}))
+			},
+			paused: false,
+		});
+		
+		const consumer = await transport.consume({
+			producerId: producer.id,
+			paused: false,
+			rtpCapabilities,
+		})
+
+		test_hasMadeProducer = true;
+	}
 
 	socket.send(JSON.stringify({
 		op: VoiceOPCodes.SESSION_DESCRIPTION,
