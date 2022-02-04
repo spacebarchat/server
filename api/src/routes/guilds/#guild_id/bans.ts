@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { emitEvent, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, Guild, Ban, User, Member } from "@fosscord/util";
+import { DiscordApiErrors, emitEvent, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, Guild, Ban, User, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { getIpAdress, route } from "@fosscord/api";
 
@@ -39,7 +39,10 @@ router.get("/:user", route({ permission: "BAN_MEMBERS" }), async (req: Request, 
 	const { guild_id } = req.params;
 	const user_id = req.params.ban;
 
-	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id }) as BanRegistrySchema;
+	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id }) as BanCreateSchema;
+	
+	if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
+	// pretend self-bans don't exist to prevent victim chasing
 	
 	/* Filter secret from registry. */
 
@@ -118,10 +121,11 @@ router.put("/@me", route({ body: "BanCreateSchema"}), async (req: Request, res: 
 router.delete("/:user_id", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: Response) => {
 	const { guild_id, user_id } = req.params;
 
-	const banned_user = await User.getPublicUser(user_id);
+	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id }) as BanCreateSchema;
 	
-	if (banned_user.user_id === banned_user.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
+	if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
 	// make self-bans irreversible and hide them from view to avoid victim chasing
+	
 	
 	await Promise.all([
 		Ban.delete({
