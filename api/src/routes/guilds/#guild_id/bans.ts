@@ -17,6 +17,14 @@ export interface BanRegistrySchema {
 	reason?: string | undefined;
 };
 
+export interface BanModeratorSchema {
+	id: string;
+	user_id: string;
+	guild_id: string;
+	executor_id: string;
+	reason?: string | undefined;
+};
+
 const router: Router = Router();
 
 /* TODO: Deleting the secrets is just a temporary go-around. Views should be implemented for both safety and better handling. */
@@ -39,12 +47,14 @@ router.get("/:user", route({ permission: "BAN_MEMBERS" }), async (req: Request, 
 	const { guild_id } = req.params;
 	const user_id = req.params.ban;
 
-	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id });
+	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id }) as BanRegistrySchema;
 	
 	if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
 	// pretend self-bans don't exist to prevent victim chasing
 	
 	/* Filter secret from registry. */
+	
+	ban = ban as BanModeratorSchema;
 
 	delete ban.ip
 
@@ -126,7 +136,7 @@ router.delete("/:user_id", route({ permission: "BAN_MEMBERS" }), async (req: Req
 	if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
 	// make self-bans irreversible and hide them from view to avoid victim chasing
 	
-	const banned_user = await User.getPublicUser(banned_user_id);
+	const banned_user = await User.getPublicUser(user_id);
 	
 	await Promise.all([
 		Ban.delete({
