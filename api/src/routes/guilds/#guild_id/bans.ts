@@ -27,8 +27,6 @@ router.get("/", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: 
 	let bans = await Ban.find({ guild_id: guild_id });
 
 	/* Filter secret from database registry.*/
-	if (banned_user.user_id === banned_user.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
-	// hide self-bans from view to prevent victim chasing	
 	
 	bans.forEach((registry: BanRegistrySchema) => {
 	delete registry.ip;
