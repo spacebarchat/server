@@ -39,7 +39,7 @@ router.get("/:user", route({ permission: "BAN_MEMBERS" }), async (req: Request, 
 	const { guild_id } = req.params;
 	const user_id = req.params.ban;
 
-	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id }) as BanCreateSchema;
+	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id });
 	
 	if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
 	// pretend self-bans don't exist to prevent victim chasing
@@ -55,12 +55,12 @@ router.put("/:user_id", route({ body: "BanCreateSchema", permission: "BAN_MEMBER
 	const { guild_id } = req.params;
 	const banned_user_id = req.params.user_id;
 
-	const banned_user = await User.getPublicUser(banned_user_id);
-
 	if ( (req.user_id === banned_user_id) && (banned_user_id === req.permission!.cache.guild?.owner_id))
 		throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
 	
 	if (req.permission!.cache.guild?.owner_id === banned_user_id) throw new HTTPError("You can't ban the owner", 400);
+	
+	const banned_user = await User.getPublicUser(banned_user_id);
 
 	const ban = new Ban({
 		user_id: banned_user_id,
@@ -121,7 +121,7 @@ router.put("/@me", route({ body: "BanCreateSchema"}), async (req: Request, res: 
 router.delete("/:user_id", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: Response) => {
 	const { guild_id, user_id } = req.params;
 
-	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id }) as BanCreateSchema;
+	let ban = await Ban.findOneOrFail({ guild_id: guild_id, user_id: user_id });
 	
 	if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
 	// make self-bans irreversible and hide them from view to avoid victim chasing
