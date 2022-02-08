@@ -41,6 +41,6 @@ export class Emoji extends BaseClass {
 	@Column({ type: "simple-array" })
 	roles: string[]; // roles this emoji is whitelisted to (new discord feature?)
 	
-	@Column({ type: "simple-array" })
+	@Column({ type: "simple-array", nullable: true })
 	groups: string[]; // user groups this emoji is whitelisted to (Fosscord extension)
 }
