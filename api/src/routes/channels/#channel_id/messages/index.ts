@@ -219,7 +219,10 @@ router.post(
 				})
 			);
 		}
-
+	
+		//Fix for the client bug
+		delete message.member
+		
 		await Promise.all([
 			message.save(),
 			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent),
