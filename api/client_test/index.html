@@ -54,9 +54,14 @@
 			setInterval(() => {
 				var token = JSON.parse(localStorage.getItem("token"));
 				if (token) {
+					var logincss = document.querySelector('#logincss'),
+					canRemove = logincss ? logincss: "";
+					if(canRemove !== "") {
 					document.querySelector("#logincss").remove();
+					canRemove = "";
+					}
 				}
-			}, 1000);
+			}, 1000)
 
 			const settings = JSON.parse(localStorage.getItem("UserSettingsStore"));
 			if (settings && settings.locale.length <= 2) {
