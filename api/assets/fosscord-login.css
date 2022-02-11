@@ -14,7 +14,7 @@
 }
 h3.title-jXR8lp.marginBottom8-AtZOdT.base-1x0h_U.size24-RIRrxO::after {
 	margin-top: -32px;
-	content: "Welcome to Fosscord!";
+	content: "Welcome to Slowcord!";
 	visibility: visible;
 	display: block;
 }
@@ -63,7 +63,22 @@ h3.title-jXR8lp.marginBottom8-AtZOdT.base-1x0h_U.size24-RIRrxO::after {
 	margin-top: -16px;
 }
 
-/* shrink login box to same size as register */
-.authBoxExpanded-2jqaBe {
-	width: 480px !important;
+/* funny styling */
+.wrapper-6URcxg {
+	justify-content: flex-start !important;
+
+	background: url("/assets/background.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+.authBoxExpanded-2jqaBe,
+.authBox-hW6HRx {
+	width: max(40vw, 500px) !important;
+	height: 100vh !important;
+	padding: 100px !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 0 !important;
 }
