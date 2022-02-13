@@ -37,7 +37,11 @@ export function isTextChannel(type: ChannelType): boolean {
 		case ChannelType.GUILD_PUBLIC_THREAD:
 		case ChannelType.GUILD_PRIVATE_THREAD:
 		case ChannelType.GUILD_TEXT:
+		case ChannelType.ENCRYPTED:
+		case ChannelType.ENCRYPTED_THREAD:
 			return true;
+		default:
+			throw new HTTPError("unimplemented", 400);
 	}
 }
 
@@ -87,7 +91,7 @@ router.get("/", async (req: Request, res: Response) => {
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	var query: FindManyOptions<Message> & { where: { id?: any } } = {
+	var query: FindManyOptions<Message> & { where: { id?: any; }; } = {
 		order: { id: "DESC" },
 		take: limit,
 		where: { channel_id },
@@ -121,6 +125,13 @@ router.get("/", async (req: Request, res: Response) => {
 				const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
 				y.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
 			});
+
+			//Some clients ( discord.js ) only check if a property exists within the response,
+			//which causes erorrs when, say, the `application` property is `null`.
+			for (var curr in x) {
+				if (x[curr] === null)
+					delete x[curr];
+			}
 
 			return x;
 		})
@@ -208,7 +219,10 @@ router.post(
 				})
 			);
 		}
-
+	
+		//Fix for the client bug
+		delete message.member
+		
 		await Promise.all([
 			message.save(),
 			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent),
@@ -216,7 +230,7 @@ router.post(
 			channel.save()
 		]);
 
-		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) => { }); // no await as it shouldnt block the message send function and silently catch error
 
 		return res.json(message);
 	}

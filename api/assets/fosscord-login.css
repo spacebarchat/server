@@ -22,10 +22,10 @@ h3.title-jXR8lp.marginBottom8-AtZOdT.base-1x0h_U.size24-RIRrxO::after {
 /* Logo in top left when bg removed */
 #app-mount > div.app-1q1i1E > div > a {
 	/* replace me: original dimensions: 130x36 */
-	background: url(https://raw.githubusercontent.com/fosscord/fosscord/9900329e5ef2c17bdeb6893e04c0511f72027f97/assets/logo/temp.svg);
+	background: url(https://raw.githubusercontent.com/fosscord/fosscord/master/assets-rebrand/svg/Fosscord-Wordmark-Gradient.svg);
+	width: 130px;
+	height: 23px;
 	background-size: contain;
-	width: 128px;
-	height: 128px;
 	border-radius: 50%;
 }
 
