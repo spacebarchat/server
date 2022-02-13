@@ -84,8 +84,10 @@ export class Message extends BaseClass {
 	@RelationId((message: Message) => message.member)
 	member_id: string;
 
-	@JoinColumn({ name: "member_id" })
-	@ManyToOne(() => Member)
+	@JoinColumn({ name: "author_id", referencedColumnName: "id" })
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
 	member?: Member;
 
 	@Column({ nullable: true })

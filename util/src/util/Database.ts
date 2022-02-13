@@ -25,6 +25,7 @@ export function initDatabase(): Promise<Connection> {
 	// @ts-ignore
 	promise = createConnection({
 		type,
+        charset: 'utf8mb4',
 		url: isSqlite ? undefined : dbConnectionString,
 		database: isSqlite ? dbConnectionString : undefined,
 		// @ts-ignore
