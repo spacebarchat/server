@@ -22,7 +22,7 @@ router.get("/", route({ test: { response: { body: "UserRelationsResponse" } } })
 		relations: ["relationships"]
 	});
     const self_relations = await User.findOneOrFail({
-		where: { id: req.params.id },
+		where: { id: req.user_id },
 		relations: ["relationships"]
 	});
 	
