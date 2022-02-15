@@ -5,14 +5,14 @@ const { FosscordServer } = require("../dist/Server");
 const Server = new FosscordServer({ port: 3001 });
 global.server = Server;
 module.exports = async () => {
-	try {
-		fs.unlinkSync(path.join(process.cwd(), "database.db"));
-	} catch {}
+  try {
+    fs.unlinkSync(path.join(process.cwd(), "database.db"));
+  } catch {}
 
-	await initDatabase();
-	await Config.init();
-	Config.get().limits.rate.disabled = true;
-	return await Server.start();
+  await initDatabase();
+  await Config.init();
+  Config.get().limits.rate.disabled = true;
+  return await Server.start();
 };
 
 // afterAll(async () => {
