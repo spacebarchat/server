@@ -73,7 +73,7 @@ const normalizeBody = (body: any = {}) => {
 		} else {
 			for (const [key, value] of Object.entries(object)) {
 				if (value == null) {
-					if (key === "icon" || key === "avatar" || key === "banner" || key === "splash") continue;
+					if (key === "icon" || key === "avatar" || key === "banner" || key === "splash" || key === "discovery_splash") continue;
 					delete object[key];
 				} else if (typeof value === "object") {
 					normalizeObject(value);

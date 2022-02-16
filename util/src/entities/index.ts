@@ -3,6 +3,7 @@ export * from "./Attachment";
 export * from "./AuditLog";
 export * from "./Ban";
 export * from "./BaseClass";
+export * from "./Categories";
 export * from "./Channel";
 export * from "./Config";
 export * from "./ConnectedAccount";

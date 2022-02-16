@@ -17,28 +17,6 @@ import { Webhook } from "./Webhook";
 // TODO: guild_scheduled_events
 // TODO: stage_instances
 // TODO: threads
-// TODO: categories:
-// [{
-// 	"id": 16,
-// 	"name": {
-// 		"default": "Anime & Manga",
-// 		"localizations": {
-// 			"de": "Anime & Manga",
-// 			"fr": "Anim\u00e9s et mangas",
-// 			"ru": "\u0410\u043d\u0438\u043c\u0435 \u0438 \u043c\u0430\u043d\u0433\u0430"
-// 		}
-// 	},
-// 	"is_primary": false
-// }]
-// TODO:
-//  primary_category :{
-// 	id: 1,
-// 	name: {
-// 		default: "Gaming",
-// 		localizations: { de: "Gaming", fr: "Gaming", ru: "\u0418\u0433\u0440\u044b" },
-// 		is_primary: true,
-// 	},
-// };
 // TODO:
 // "keywords": [
 // 		"Genshin Impact",
@@ -106,6 +84,9 @@ export class Guild extends BaseClass {
 	@Column({ type: "simple-array" })
 	features: string[]; //TODO use enum
 	//TODO: https://discord.com/developers/docs/resources/guild#guild-object-guild-features
+
+	@Column({ nullable: true })
+	primary_category_id: number;
 
 	@Column({ nullable: true })
 	icon?: string;
@@ -289,6 +270,9 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	nsfw?: boolean;
 
+	// only for developer portal
+	permissions?: number;
+
 	static async createGuild(body: {
 		name?: string;
 		icon?: string | null;
@@ -306,6 +290,7 @@ export class Guild extends BaseClass {
 			default_message_notifications: 1, // defaults effect: setting the push default at mentions-only will save a lot
 			explicit_content_filter: 0,
 			features: [],
+			primary_category_id: null,
 			id: guild_id,
 			max_members: 250000,
 			max_presences: 250000,
