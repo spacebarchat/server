@@ -3800,7 +3800,8 @@
 						"format": "date-time"
 					},
 					"premium_since": {
-						"type": "integer"
+						"type": "string",
+						"format": "date-time"
 					},
 					"deaf": {
 						"type": "boolean"
