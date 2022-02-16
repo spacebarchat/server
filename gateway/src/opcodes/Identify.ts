@@ -173,6 +173,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			avatar: related_user.avatar,
 			bot: related_user.bot,
 			bio: related_user.bio,
+			premium_since: user.premium_since
 		};
 		users.push(public_related_user);
 	}
@@ -225,6 +226,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		accent_color: user.accent_color || 0,
 		banner: user.banner,
 		bio: user.bio,
+		premium_since: user.premium_since
 	};
 
 	const d: ReadyEventData = {
