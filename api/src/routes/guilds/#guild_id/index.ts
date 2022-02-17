@@ -34,7 +34,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	// @ts-ignore
 	guild.joined_at = member?.joined_at;
 
-	return res.json(guild);
+	return res.send(guild);
 });
 
 router.patch("/", route({ body: "GuildUpdateSchema", permission: "MANAGE_GUILD" }), async (req: Request, res: Response) => {
