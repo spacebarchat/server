@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors } from "@fosscord/util";
+import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors, adjustEmail } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
 
@@ -21,6 +21,7 @@ export interface UserModifySchema {
 	password?: string;
 	new_password?: string;
 	code?: string;
+	email?: string;
 }
 
 router.get("/", route({}), async (req: Request, res: Response) => {
@@ -44,6 +45,12 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		} else {
 			user.data.hash = await bcrypt.hash(body.password, 12);
 		}
+	}
+
+	if (body.email) {
+		body.email = adjustEmail(body.email);
+		if (!body.email)
+			throw FieldErrors({ email: { message: req.t("auth:register.EMAIL_INVALID"), code: "EMAIL_INVALID" } });
 	}
 
 	user.assign(body);
