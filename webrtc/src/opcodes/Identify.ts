@@ -1,9 +1,38 @@
-import { WebSocket } from "@fosscord/gateway";
+import { WebSocket, CLOSECODES } from "@fosscord/gateway";
 import { Payload } from "./index";
-import { VoiceOPCodes } from "@fosscord/util";
+import { VoiceOPCodes, Session, User, Guild } from "@fosscord/util";
 import { Server } from "../Server";
 
-export async function onIdentify(this: Server, socket: WebSocket, data: Payload) {
+export interface IdentifyPayload extends Payload {
+	d: {
+		server_id: string,	//guild id
+		session_id: string,	//gateway session
+		streams: Array<{
+			type: string,
+			rid: string,	//number
+			quality: number,
+		}>,
+		token: string,		//voice_states token
+		user_id: string,
+		video: boolean,
+	};
+}
+
+export async function onIdentify(this: Server, socket: WebSocket, data: IdentifyPayload) {
+
+	const session = await Session.findOneOrFail(
+		{ session_id: data.d.session_id, },
+		{
+			where: { user_id: data.d.user_id },
+			relations: ["user"]
+		}
+	);
+	const user = session.user;
+	const guild = await Guild.findOneOrFail({ id: data.d.server_id });
+
+	if (!guild.members.find(x => x.id === user.id))
+		return socket.close(CLOSECODES.Invalid_intent);
+
 	var transport = await this.mediasoupRouters[0].createWebRtcTransport({
 		listenIps: [{ ip: "0.0.0.0", announcedIp: "127.0.0.1" }],
 		enableUdp: true,
@@ -40,15 +69,17 @@ export async function onIdentify(this: Server, socket: WebSocket, data: Payload)
 	socket.send(JSON.stringify({
 		op: VoiceOPCodes.READY,
 		d: {
-			streams: [],
+			streams: [...data.d.streams.map(x => ({ ...x, rtx_ssrc: 1311886, ssrc: 1311885, active: false, }))],
 			ssrc: 1,
 			ip: transport.iceCandidates[0].ip,
 			port: transport.iceCandidates[0].port,
 			modes: [
 				"aead_aes256_gcm_rtpsize",
-				// "xsalsa20_poly1305",
-				// "xsalsa20_poly1305_suffix",
-				// "xsalsa20_poly1305_lite",
+				"aead_aes256_gcm",
+				"xsalsa20_poly1305_lite_rtpsize",
+				"xsalsa20_poly1305_lite",
+				"xsalsa20_poly1305_suffix",
+				"xsalsa20_poly1305"
 			],
 			heartbeat_interval: 1,
 			experiments: [],

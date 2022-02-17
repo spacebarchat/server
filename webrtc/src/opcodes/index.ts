@@ -3,9 +3,9 @@ import { VoiceOPCodes } from "@fosscord/util";
 
 export interface Payload {
 	op: number;
-	d?: any;
-	s?: number;
-	t?: string;
+	d: any;
+	s: number;
+	t: string;
 }
 
 import { onIdentify } from "./Identify";

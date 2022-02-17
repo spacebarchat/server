@@ -1,7 +1,7 @@
 import { Server as WebSocketServer } from "ws";
-import { WebSocket, Payload, CLOSECODES } from "@fosscord/gateway";
+import { WebSocket, CLOSECODES } from "@fosscord/gateway";
 import { Config, initDatabase } from "@fosscord/util";
-import OPCodeHandlers from "./opcodes";
+import OPCodeHandlers, { Payload } from "./opcodes";
 import { setHeartbeat } from "./util";
 import * as mediasoup from "mediasoup";
 import { types as MediasoupTypes } from "mediasoup";
@@ -26,8 +26,16 @@ export class Server {
 			socket.on("message", async (message: string) => {
 				const payload: Payload = JSON.parse(message);
 
+				console.log(payload);
+
 				if (OPCodeHandlers[payload.op])
-					await OPCodeHandlers[payload.op].call(this, socket, payload);
+					try {
+						await OPCodeHandlers[payload.op].call(this, socket, payload);
+					}
+					catch (e) {
+						console.error(e);
+						socket.close(CLOSECODES.Unknown_error);
+					}
 				else {
 					console.error(`Unimplemented`, payload);
 					socket.close(CLOSECODES.Unknown_opcode);

@@ -17,7 +17,9 @@
 			],
 			"cwd": "${workspaceRoot}",
 			"protocol": "inspector",
-			"internalConsoleOptions": "openOnSessionStart"
+			"internalConsoleOptions": "openOnSessionStart",
+			"sourceMaps": true,
+			"resolveSourceMapLocations": null,
 		}
 	]
 }
