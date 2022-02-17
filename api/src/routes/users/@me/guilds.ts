@@ -8,7 +8,13 @@ const router: Router = Router();
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const members = await Member.find({ relations: ["guild"], where: { id: req.user_id } });
 
-	res.json(members.map((x) => x.guild));
+	let guild = members.map((x) => x.guild);
+
+	if ("with_counts" in req.query && req.query.with_counts == "true") {
+		guild = []; // TODO: Load guilds with user role permissions number
+	}
+
+	res.json(guild);
 });
 
 // user send to leave a certain guild

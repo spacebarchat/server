@@ -6,15 +6,29 @@ import { route } from "@fosscord/api";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const { limit } = req.params;
-	var showAllGuilds = Config.get().guild.showAllGuildsInDiscovery;
+	const { offset, limit, categories } = req.query;
+	var showAllGuilds = Config.get().guild.discovery.showAllGuilds;
+	var configLimit = Config.get().guild.discovery.limit;
 	// ! this only works using SQL querys
 	// TODO: implement this with default typeorm query
 	// const guilds = await Guild.find({ where: { features: "DISCOVERABLE" } }); //, take: Math.abs(Number(limit)) });
-	const guilds = showAllGuilds
-		? await Guild.find({ take: Math.abs(Number(limit || 20)) })
-		: await Guild.find({ where: `"features" LIKE '%COMMUNITY%'`, take: Math.abs(Number(limit || 20)) });
-	res.send({ guilds: guilds });
+	let guilds;
+	if (categories == undefined) {
+		guilds = showAllGuilds
+			? await Guild.find({ take: Math.abs(Number(limit || configLimit)) })
+			: await Guild.find({ where: `"features" LIKE '%DISCOVERABLE%'`, take: Math.abs(Number(limit || configLimit)) });
+	} else {
+		guilds = showAllGuilds
+				? await Guild.find({ where: `"primary_category_id" = ${categories}`, take: Math.abs(Number(limit || configLimit)) })
+				: await Guild.find({
+						where: `"primary_category_id" = ${categories} AND "features" LIKE '%DISCOVERABLE%'`,
+						take: Math.abs(Number(limit || configLimit))
+				  });
+	}
+
+	const total = guilds ? guilds.length : undefined;
+
+	res.send({ total: total, guilds: guilds, offset: Number(offset || Config.get().guild.discovery.offset), limit: Number(limit || configLimit) });
 });
 
 export default router;
