@@ -7039,6 +7039,9 @@
 			},
 			"code": {
 				"type": "string"
+			},
+			"email": {
+				"type": "string"
 			}
 		},
 		"definitions": {
