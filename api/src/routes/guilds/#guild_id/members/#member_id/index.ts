@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { Member, getPermission, Role, GuildMemberUpdateEvent, emitEvent } from "@fosscord/util";
+import { Member, getPermission, Role, GuildMemberUpdateEvent, emitEvent, Sticker, Emoji, Guild } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 
@@ -43,13 +43,26 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 });
 
 router.put("/", route({}), async (req: Request, res: Response) => {
+
+	// TODO: Lurker mode
+
 	let { guild_id, member_id } = req.params;
 	if (member_id === "@me") member_id = req.user_id;
 
-	throw new HTTPError("Maintenance: Currently you can't add a member", 403);
-	// TODO: only for oauth2 applications
+	var guild = await Guild.findOneOrFail({
+		where: { id: guild_id }	});
+
+	var emoji = await Emoji.find({
+		where: { guild_id: guild_id }	});
+
+	var roles = await Role.find({
+		where: { guild_id: guild_id }	});
+
+	var stickers = await Sticker.find({
+		where: { guild_id: guild_id }	});
+	
 	await Member.addToGuild(member_id, guild_id);
-	res.sendStatus(204);
+	res.send({...guild, emojis: emoji, roles: roles, stickers: stickers});
 });
 
 router.delete("/", route({ permission: "KICK_MEMBERS" }), async (req: Request, res: Response) => {
