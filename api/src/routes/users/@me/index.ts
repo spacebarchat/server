@@ -58,7 +58,8 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 	}
 
 	var check_username = body?.username?.replace(/\s/g, '');
-	if(!check_username) {
+	//claiming an account does not provide username so check if username in body before throw
+	if (!check_username && body.username) {
 		throw FieldErrors({
 			username: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
 		});
