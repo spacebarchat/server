@@ -14,22 +14,5 @@
   </a>
 </p>
 
-## [About](https://fosscord.com)
-
-This repository contains:
-
--   [Fosscord HTTP API Server](/api)
--   [WebSocket Gateway Server](/gateway)
--   [HTTP CDN Server](/cdn)
--   [Utility and Database Models](/util)
--   [RTC Server](/rtc)
--   [WebRTC Server](/webrtc)
--   [Admin Dashboard](/dashboard)
-
-## [Resources](https://docs.fosscord.com/resources/)
-
--   [Contributing](https://docs.fosscord.com/contributing/server/)
-
-## [Setup](https://docs.fosscord.com/setup/server/)
-
--   [Download](https://github.com/fosscord/fosscord-server/releases)
+Branch that [slowcord.maddy.k.vu](https://slowcord.maddy.k.vu) runs.  
+Generally up to date with master, also contains my fixes/etc that aren't yet merged.
