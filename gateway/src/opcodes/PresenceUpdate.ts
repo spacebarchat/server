@@ -82,7 +82,7 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
             groups: groups,
             ops: [{ 
                 op: "UPDATE",
-                index: 0,
+                index: 1,
                 item: {
                     member: {
                         user: member.user,
