@@ -86,7 +86,7 @@ export class Member extends BaseClassWithoutId {
 	joined_at: Date;
 
 	@Column({ nullable: true })
-	premium_since?: number;
+	premium_since?: Date;
 
 	@Column()
 	deaf: boolean;
@@ -245,7 +245,7 @@ export class Member extends BaseClassWithoutId {
 			nick: undefined,
 			roles: [guild_id], // @everyone role
 			joined_at: new Date(),
-			premium_since: undefined,
+			premium_since: new Date(),
 			deaf: false,
 			mute: false,
 			pending: false,
