@@ -6,6 +6,7 @@ import {
 	ReadyEventData,
 	User,
 	Session,
+    Role,
 	EVENTEnum,
 	Config,
 	PublicMember,
@@ -64,6 +65,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				select: MemberPrivateProjection,
 				relations: [
 					"guild",
+                    "guild.members",
 					"guild.channels",
 					"guild.emojis",
 					"guild.emojis.user",
@@ -93,6 +95,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					client: "desktop",
 					os: identify.properties?.os,
 					version: 0,
+                    status: identify.presence?.status,
+                    desktop: identify.presence?.status,
 				},
 				activities: [],
 			}).save(),
@@ -188,16 +192,82 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				select: PrivateSessionProjection,
 			}),
 		} as SessionsReplace);
-		emitEvent({
-			event: "PRESENCE_UPDATE",
-			user_id: this.user_id,
-			data: {
-				user: await User.getPublicUser(this.user_id),
-				activities: session.activities,
-				client_status: session?.client_info,
-				status: session.status,
-			},
-		} as PresenceUpdateEvent);
+
+        for( const member of members){
+            
+            emitEvent({
+                event: "PRESENCE_UPDATE",
+                guild_id: member.guild_id,
+                data: {
+                    guild_id: member.guild_id,
+                    user: await User.getPublicUser(this.user_id),
+                    activities: session.activities,
+                    client_status: session?.client_info,
+                    status: session.status,
+                },
+            } as PresenceUpdateEvent);
+            
+            const guild_roles = await Role.find({
+                where: { guild_id: member.guild_id },
+                select: ["id"],
+                order: {position: "DESC"},
+            });
+            const guild_members = await Member.find({
+                where: { guild_id: member.guild_id },
+                relations: ["roles"],
+            });
+
+            const groups = [] as any[];
+            
+            for (const gr of guild_roles) {
+                var num = 0;
+                for(const gm of guild_members) {
+                    const gmr = gm.roles.first() || {id: "online"};
+                    if(gmr.id === gr.id){
+                        num++;
+                    }
+                }
+                const group = {
+                    count: num,
+                    id: gr.id === member.guild_id ? "online" : gr.id,
+                };
+                groups.push(group);
+            }
+            
+            await emitEvent({
+                    event: "GUILD_MEMBER_LIST_UPDATE",
+                    guild_id: member.guild_id,
+                    data: {
+                        online_count: member.guild.member_count,
+                        member_count: member.guild.member_count,
+                        guild_id: member.guild_id,
+                        id: "everyone",
+                        groups: groups,
+                        ops: [{ 
+                            op: "UPDATE",
+                            index: 2,
+                            item: {
+                                member: {
+                                    user: member.user,
+                                    roles: [],
+                                    presence: {
+                                        user: {
+                                            id: member.user.id,
+                                        },
+                                        activities: session.activities,
+                                        client_status: {web: session.status}, // TODO:
+                                        status: session.status,
+                                    },
+                                    joined_at: member.joined_at,
+                                    hoisted_role: null,
+                                    deaf: false,
+                                    mute: false,
+                                },
+                            }
+                        }]
+                    },
+                });
+        }
 	});
 
 	read_states.forEach((s: any) => {

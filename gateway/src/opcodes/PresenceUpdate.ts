@@ -1,5 +1,5 @@
 import { WebSocket, Payload } from "@fosscord/gateway";
-import { emitEvent, PresenceUpdateEvent, Session, User, Member, Role } from "@fosscord/util";
+import { emitEvent, PresenceUpdateEvent, Session, User, Member, Role, Guild } from "@fosscord/util";
 import { ActivitySchema } from "../schema/Activity";
 import { check } from "./instanceOf";
 
@@ -10,11 +10,13 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
 		where: { id: this.user_id},
 		relations: ["user", "roles", "guild", "guild.channels", "guild.roles", "guild.members"],
 	});
+    
 	await Session.update(
 		{ session_id: this.session_id },
 		{ status: presence.status, activities: presence.activities }
 	);
     const guild_id = member.guild_id;
+    const guild = await Guild.findOneOrFail({ id: guild_id });
     const role = member.roles.first() || {id: "online"};
     
     const guild_roles = await Role.find({
@@ -59,16 +61,16 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
 	} as PresenceUpdateEvent);
     
     
-// 	await emitEvent ({
-// 		event: "PRESENCE_UPDATE",
-// 		user_id: this.user_id,
-// 		data: {
-// 			user: member.user,//await User.getPublicUser(this.user_id),
-// 			activities: presence.activities,
-// 			client_status: {web: presence.status}, // TODO:
-// 			status: presence.status,
-// 		},
-// 	} as PresenceUpdateEvent);
+	await emitEvent ({
+		event: "PRESENCE_UPDATE",
+		user_id: this.user_id,
+		data: {
+			user: member.user,//await User.getPublicUser(this.user_id),
+			activities: presence.activities,
+			client_status: {web: presence.status}, // TODO:
+			status: presence.status,
+		},
+	} as PresenceUpdateEvent);
     await emitEvent({
 		event: "GUILD_MEMBER_LIST_UPDATE",
         guild_id,
@@ -80,10 +82,11 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
             groups: groups,
             ops: [{ 
                 op: "UPDATE",
+                index: 0,
                 item: {
                     member: {
                         user: member.user,
-                        roles: [],
+                        roles: [member.roles],
                         presence: {
                             user: {
                                 id: member.user.id,
