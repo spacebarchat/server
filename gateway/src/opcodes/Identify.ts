@@ -279,10 +279,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             }
 		}
     }
-    console.log(items);
-    gml_index = items.map(object => object.member.id).indexOf(this.user_id);
-    gml_index++;
-    console.log(gml_index);
+    gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+    const role = member.roles.first() || {id: member.guild_id};
     await emitEvent({
         event: "GUILD_MEMBER_LIST_UPDATE",
         guild_id: member.guild_id,
@@ -298,17 +296,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 item: {
                     member: {
                         user: member.user,
-                        roles: [],
+                        roles: [role.id],
                         presence: {
                             user: {
                                 id: member.user.id,
                             },
                             activities: [],
-                            client_status: {web: "online"}, // TODO:
-                            status: "online",
+                            client_status: {web: identify.presence?.status}, // TODO:
+                            status: identify.presence?.status,
                         },
                         joined_at: member.joined_at,
                         hoisted_role: null,
+                        premium_since: member.premium_since,
                         deaf: false,
                         mute: false,
                     },
