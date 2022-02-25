@@ -50,7 +50,104 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = decoded.id;
+	const member_before = await Member.findOneOrFail({
+        where: { id: this.user_id},
+        relations: ["user", "roles", "guild", "guild.channels", "guild.roles", "guild.members"],
+    });
+    const guild_roles_b = await Role.find({
+        where: { guild_id: member_before.guild_id },
+        select: ["id"],
+        order: {position: "DESC"},
+    });
+    let guild_members_before = await getRepository(Member)
+            .createQueryBuilder("member")
+            .where("member.guild_id = :guild_id", { guild_id: member_before.guild_id })
+            .leftJoinAndSelect("member.roles", "role")
+            .leftJoinAndSelect("member.user", "user")
+            .leftJoinAndSelect("user.sessions", "session")
+            .addSelect(
+                "CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
+                "_status"
+                )
+            .orderBy("role.position", "DESC")
+            .addOrderBy("_status", "DESC")
+            .addOrderBy("user.username", "ASC")
+            .getMany();
+    const items_before = [] as any[];
+    const groups_before = [] as any[];
+    // @ts-ignore
+    let [members_online_before, members_offline_before] = partition(guild_members_before, (m: Member) => 
+        m.user.sessions.length > 0
+        );
+    for (const gr of guild_roles_b) {
+        // @ts-ignore
+        const [role_members, other_members] = partition(members_online_before, (m: Member) =>
+            m.roles.find((r) => r.id === gr.id)
+            );
+        
+        if(role_members.length){     
+            const group = {
+                count: role_members.length,
+                id: gr.id === member_before.guild_id ? "online" : gr.id,
+            };
+            items_before.push({ group });
+            groups_before.push(group);
 
+            for (const rm of role_members) {
+                const gmr = rm.roles.first() || {id: "online"};
+                if(gmr.id === gr.id){
+                    const roles = rm.roles
+                    .filter((x: Role) => x.id !== member_before.guild_id)
+                    .map((x: Role) => x.id);
+
+                    const session = rm.user.sessions.first();
+
+                    // TODO: properly mock/hide offline/invisible status
+                    items_before.push({
+                        member: {
+                            ...rm,
+                            roles,
+                            user: { ...rm.user, sessions: undefined },
+                            presence: {
+                                ...session,
+                                activities: session?.activities || [],
+                                user: { id: rm.user.id },
+                            },
+                        },
+                    });
+                }
+            }
+        }
+        members_online_before = other_members;
+    }
+    const group = {
+        count: members_offline_before.length,
+        id: "offline"
+    }
+    items_before.push({group});
+    groups_before.push(group);
+
+    for (const m_on of members_offline_before) {
+        const roles = m_on.roles
+                    .filter((x: Role) => x.id !== member_before.guild_id)
+                    .map((x: Role) => x.id);
+
+        const session = m_on.user.sessions.first();
+
+        // TODO: properly mock/hide offline/invisible status
+        items_before.push({
+            member: {
+                ...m_on,
+                roles,
+                user: { ...m_on.user, sessions: undefined },
+                presence: {
+                    ...session,
+                    activities: session?.activities || [],
+                    user: { id: m_on.user.id },
+                },
+            },
+        });
+    }
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
 
@@ -234,13 +331,16 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		//         relations: ["roles", "user"],
 		//     });
 		    var gml_index = 0;
-		    
+		    var index_online = 0;
+            var contains_group = 0;
+            var contains_group_new = 0;
 		    // @ts-ignore
 			let [members_online, members_offline] = partition(guild_members, (m: Member) => 
 				m.user.sessions.length > 0
 			);
 			let total_online = members_online.length;
 		    const items = [] as any[];
+		    const items_no_gr = [] as any[];
 		    const groups = [] as any[];
 		    for (const gr of guild_roles) {
 		        var num = 0;
@@ -248,7 +348,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		        const [role_members, other_members] = partition(members_online, (m: Member) =>
 		            m.roles.find((r) => r.id === gr.id)
 		        );
-		        if(role_members.length){
+		        if(role_members.length){     
 		            const group = {
 		                count: role_members.length,
 		                id: gr.id === member.guild_id ? "online" : gr.id,
@@ -267,6 +367,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		                    const session = rm.user.sessions.first();
 
 		                    // TODO: properly mock/hide offline/invisible status
+		                    items_no_gr.push({
+		                        member: {
+		                            ...rm,
+		                            roles,
+		                            user: { ...rm.user, sessions: undefined },
+		                            presence: {
+		                                ...session,
+		                                activities: session?.activities || [],
+		                                user: { id: rm.user.id },
+		                            },
+		                        },
+		                    });
 		                    items.push({
 		                        member: {
 		                            ...rm,
@@ -298,6 +410,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		        const session = m_off.user.sessions.first();
 
 		        // TODO: properly mock/hide offline/invisible status
+		        items_no_gr.push({
+		            member: {
+		                ...m_off,
+		                roles,
+		                user: { ...m_off.user, sessions: undefined },
+		                presence: {
+		                    ...session,
+		                    activities: session?.activities || [],
+		                    user: { id: m_off.user.id },
+		                },
+		            },
+		        });
 		        items.push({
 		            member: {
 		                ...m_off,
@@ -320,15 +444,66 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		//     console.log("member_count");
 		//     console.log(member.guild.member_count);
 		//     console.log(guild_members.length);
-		     console.log("gml_index")
-		     console.log(gml_index)
+		//     console.log("gml_index")
+		//     console.log(gml_index)
 		//     console.log("items")
 		//     console.log(items.length++)
 		//     console.log("member (maybe what it's send from client?)");
 		// 	console.log(member)
 		//     console.log("session")
 		//     console.log(session)
-		    /*await emitEvent({
+			index_online = items_before.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+            console.log(gml_index);
+            console.log(index_online);
+            contains_group = items_before.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
+            contains_group_new = items.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
+            var ops = [];
+            console.log(contains_group);
+             if(contains_group == -1){
+                 console.log("insert group");
+                 ops.push({
+                     op: "INSERT", // INSERT new group, if not existing
+                     item: {
+                         group: {
+                             id: role.id,
+                             count: 1
+                         }
+                     },
+                     index: contains_group_new,
+                 });
+             }
+            ops.push({
+                op: "DELETE",
+                index: index_online//DELETE USER FROM GROUP
+            });
+            ops.push({
+                op: "INSERT", // INSERT USER INTO GROUP, PROBABLY ISSUE WITH INDEX NUM WOULD NEED TO FIGURE THIS OUT.
+                index: gml_index,
+                item:{
+                    member: {
+                        user: member.user,
+                        roles: [role.id],
+                        presence: {
+                            user: {
+                                id: member.user.id,
+                            },
+                            activities: [],
+                            client_status: {web: session?.status}, // TODO:
+                            status: session?.status,
+                        },
+                        joined_at: member.joined_at,
+                        hoisted_role: null,
+                        premium_since: member.premium_since,
+                        deaf: false,
+                        mute: false,
+                    }
+                }
+            });
+
+		            
+            
+            
+		    await emitEvent({
 		        event: "GUILD_MEMBER_LIST_UPDATE",
 		        guild_id: member.guild_id,
 		        data: {
@@ -337,47 +512,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		            guild_id: member.guild_id,
 		            id: "everyone",
 		            groups: groups,
-		            ops: [
-		//             {
-		//                 op: "INSERT", // INSERT new group, if not existing
-		//                 item: {
-		//                     group: {
-		//                         id: role.id,
-		//                         count: 1
-		//                     }
-		//                 },
-		//             },
-		            {
-		            	op: "DELETE",
-		            	index: member.index //DELETE USER FROM GROUP
-		            },
-		            {
-			            op: "INSERT", // INSERT USER INTO GROUP, PROBABLY ISSUE WITH INDEX NUM WOULD NEED TO FIGURE THIS OUT.
-			            index: gml_index+1,
-			            item:{
-			            	member: {
-			            		user: member.user,
-			            		roles: [role.id],
-			            		presence: {
-		                            user: {
-		                                id: member.user.id,
-		                            },
-		                            activities: [],
-		                            client_status: {web: session?.status}, // TODO:
-		                            status: session?.status,
-		                        },
-		                        joined_at: member.joined_at,
-		                        hoisted_role: null,
-		                        premium_since: member.premium_since,
-		                        deaf: false,
-		                        mute: false,
-			            	}
-			            }
-		            },
-
-		            ]
+		            ops: ops
 		        },
-		    });*/
+		    });
             
 
         }

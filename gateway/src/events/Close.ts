@@ -13,6 +13,102 @@ import "missing-native-js-functions";
 import { getRepository } from "typeorm";
 
 export async function Close(this: WebSocket, code: number, reason: string) {
+    const member_before = await Member.findOneOrFail({
+        where: { id: this.user_id},
+        relations: ["user", "roles", "guild", "guild.channels", "guild.roles", "guild.members"],
+    });
+    const guild_roles_b = await Role.find({
+        where: { guild_id: member_before.guild_id },
+        select: ["id"],
+        order: {position: "DESC"},
+    });
+    let guild_members_before = await getRepository(Member)
+            .createQueryBuilder("member")
+            .where("member.guild_id = :guild_id", { guild_id: member_before.guild_id })
+            .leftJoinAndSelect("member.roles", "role")
+            .leftJoinAndSelect("member.user", "user")
+            .leftJoinAndSelect("user.sessions", "session")
+            .addSelect(
+                "CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
+                "_status"
+                )
+            .orderBy("role.position", "DESC")
+            .addOrderBy("_status", "DESC")
+            .addOrderBy("user.username", "ASC")
+            .getMany();
+    const items_before = [] as any[];
+    const groups_before = [] as any[];
+    // @ts-ignore
+    let [members_online_before, members_offline_before] = partition(guild_members_before, (m: Member) => 
+        m.user.sessions.length > 0
+        );
+    for (const gr of guild_roles_b) {
+        // @ts-ignore
+        const [role_members, other_members] = partition(members_online_before, (m: Member) =>
+            m.roles.find((r) => r.id === gr.id)
+            );
+
+        const group = {
+            count: role_members.length,
+            id: gr.id === member_before.guild_id ? "online" : gr.id,
+        };
+        items_before.push({ group });
+        groups_before.push(group);
+
+        for (const rm of role_members) {
+            const gmr = rm.roles.first() || {id: "online"};
+            if(gmr.id === gr.id){
+                const roles = rm.roles
+                .filter((x: Role) => x.id !== member_before.guild_id)
+                .map((x: Role) => x.id);
+
+                const session = rm.user.sessions.first();
+
+                // TODO: properly mock/hide offline/invisible status
+                items_before.push({
+                    member: {
+                        ...rm,
+                        roles,
+                        user: { ...rm.user, sessions: undefined },
+                        presence: {
+                            ...session,
+                            activities: session?.activities || [],
+                            user: { id: rm.user.id },
+                        },
+                    },
+                });
+            }
+        }
+        members_online_before = other_members;
+    }
+    const group = {
+        count: members_offline_before.length,
+        id: "offline"
+    }
+    items_before.push({group});
+    groups_before.push(group);
+
+    for (const m_on of members_offline_before) {
+        const roles = m_on.roles
+                    .filter((x: Role) => x.id !== member_before.guild_id)
+                    .map((x: Role) => x.id);
+
+        const session = m_on.user.sessions.first();
+
+        // TODO: properly mock/hide offline/invisible status
+        items_before.push({
+            member: {
+                ...m_on,
+                roles,
+                user: { ...m_on.user, sessions: undefined },
+                presence: {
+                    ...session,
+                    activities: session?.activities || [],
+                    user: { id: m_on.user.id },
+                },
+            },
+        });
+    }
 	console.log("[WebSocket] closed", code, reason);
 	if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
 	if (this.readyTimeout) clearTimeout(this.readyTimeout);
@@ -90,10 +186,10 @@ export async function Close(this: WebSocket, code: number, reason: string) {
             let [members_online, members_offline] = partition(guild_members, (m: Member) => 
                 m.user.sessions.length > 0
             );
-            console.log("sessions")
-            console.log(guild_members[0].user.sessions)
             const items = [] as any[];
+            const items_no_gr = [] as any[];
             const groups = [] as any[];
+            let original_online = members_online;
             let total_online = members_online.length;
             for (const gr of guild_roles) {
                 // @ts-ignore
@@ -118,6 +214,18 @@ export async function Close(this: WebSocket, code: number, reason: string) {
                         const session = rm.user.sessions.first();
 
                         // TODO: properly mock/hide offline/invisible status
+                        items_no_gr.push({
+                                member: {
+                                    ...rm,
+                                    roles,
+                                    user: { ...rm.user, sessions: undefined },
+                                    presence: {
+                                        ...session,
+                                        activities: session?.activities || [],
+                                        user: { id: rm.user.id },
+                                    },
+                                },
+                            });
                         items.push({
                             member: {
                                 ...rm,
@@ -148,6 +256,18 @@ export async function Close(this: WebSocket, code: number, reason: string) {
                 const session = m_off.user.sessions.first();
 
                 // TODO: properly mock/hide offline/invisible status
+                items_no_gr.push({
+                    member: {
+                        ...m_off,
+                        roles,
+                        user: { ...m_off.user, sessions: undefined },
+                        presence: {
+                            ...session,
+                            activities: session?.activities || [],
+                            user: { id: m_off.user.id },
+                        },
+                    },
+                });
                 items.push({
                     member: {
                         ...m_off,
@@ -163,52 +283,47 @@ export async function Close(this: WebSocket, code: number, reason: string) {
             }
             gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
             const role = member.roles.first() || {id: member.guild_id};
-            console.log("items");
-            console.log(items.length);
-            console.log("members_online");
-            console.log(members_online.length);
-            //index_online = members_online.map(object => object.member? object.member.id : false).indexOf(this.user_id);
-            //console.log("index online: " + index_online)
-            await emitEvent({
-                event: "GUILD_MEMBER_LIST_UPDATE",
-                guild_id: member.guild_id,
-                data: {
-                    online_count: total_online,
-                    member_count: member.guild.member_count,
-                    guild_id: member.guild_id,
-                    id: "everyone",
-                    groups: groups,
-                    ops: [
-                    {
-                        op: "DELETE",
-                        index: member.index
-                    },
-                    {
-                        op: "INSERT",
-                        index: gml_index+1,
-                        item:{
-                            member: {
-                                user: member.user,
-                                roles: [role.id],
-                                presence: {
-                                    user: {
-                                        id: member.user.id,
-                                    },
-                                    activities: [],
-                                    client_status: "offline", // TODO:
-                                    status: "offline",
-                                },
-                                joined_at: member.joined_at,
-                                hoisted_role: null,
-                                premium_since: member.premium_since,
-                                deaf: false,
-                                mute: false,
-                            }
-                        }
-                    }
-                    ]
-                },
-            });
+            index_online = items_before.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+//             await emitEvent({
+//                 event: "GUILD_MEMBER_LIST_UPDATE",
+//                 guild_id: member.guild_id,
+//                 data: {
+//                     online_count: total_online,
+//                     member_count: member.guild.member_count,
+//                     guild_id: member.guild_id,
+//                     id: "everyone",
+//                     groups: groups,
+//                     ops: [
+//                     /*{
+//                         op: "DELETE",
+//                         index: index_online
+//                     },*/
+//                     {
+//                         op: "INSERT",
+//                         index: gml_index,
+//                         item:{
+//                             member: {
+//                                 user: member.user,
+//                                 roles: [role.id],
+//                                 presence: {
+//                                     user: {
+//                                         id: member.user.id,
+//                                     },
+//                                     activities: [],
+//                                     client_status: "offline", // TODO:
+//                                     status: "offline",
+//                                 },
+//                                 joined_at: member.joined_at,
+//                                 hoisted_role: null,
+//                                 premium_since: member.premium_since,
+//                                 deaf: false,
+//                                 mute: false,
+//                             }
+//                         }
+//                     }
+//                     ]
+//                 },
+//             });
         };
 	}
 function partition<T>(array: T[], isValid: Function) {
