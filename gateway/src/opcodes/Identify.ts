@@ -436,31 +436,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		        });
 		    }
 		    var gmluser_group = groups;
-		    console.log(gmluser_group);
 		    gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
 		    const role = member.roles.first() || {id: member.guild_id};
-		//     console.log("total_online");
-		//     console.log(total_online);
-		//     console.log("member_count");
-		//     console.log(member.guild.member_count);
-		//     console.log(guild_members.length);
-		//     console.log("gml_index")
-		//     console.log(gml_index)
-		//     console.log("items")
-		//     console.log(items.length++)
-		//     console.log("member (maybe what it's send from client?)");
-		// 	console.log(member)
-		//     console.log("session")
-		//     console.log(session)
 			index_online = items_before.map(object => object.member? object.member.id : false).indexOf(this.user_id);
-            console.log(gml_index);
-            console.log(index_online);
             contains_group = items_before.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
             contains_group_new = items.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
             var ops = [];
-            console.log(contains_group);
              if(contains_group == -1){
-                 console.log("insert group");
                  ops.push({
                      op: "INSERT", // INSERT new group, if not existing
                      item: {
@@ -472,6 +454,14 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                      index: contains_group_new,
                  });
              }
+             
+             if(contains_group_new == -1){
+                 ops.push({
+                     op: "DELETE", // DELETE group
+                     index: contains_group,
+                 });
+             }
+             
             ops.push({
                 op: "DELETE",
                 index: index_online//DELETE USER FROM GROUP
@@ -500,8 +490,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 }
             });
 
-		            
-            
             
 		    await emitEvent({
 		        event: "GUILD_MEMBER_LIST_UPDATE",
