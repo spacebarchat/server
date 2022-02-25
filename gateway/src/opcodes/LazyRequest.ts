@@ -41,42 +41,75 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		.map((m) => m.roles)
 		.flat()
 		.unique((r: Role) => r.id);
-
+	// @ts-ignore
+	let [members_online, members_offline] = partition(members, (m: Member) => 
+		m.user.sessions.length > 0
+	);
+	//console.log(members_online);
 	for (const role of member_roles) {
 		// @ts-ignore
-		const [role_members, other_members] = partition(members, (m: Member) =>
+		const [role_members, other_members] = partition(members_online, (m: Member) =>
 			m.roles.find((r) => r.id === role.id)
 		);
+        
 		const group = {
 			count: role_members.length,
 			id: role.id === guild_id ? "online" : role.id,
 		};
+		if(role_members.length > 0){
+			items.push({ group });
+			groups.push(group);
 
-		items.push({ group });
-		groups.push(group);
+			for (const member of role_members) {
+				const roles = member.roles
+					.filter((x: Role) => x.id !== guild_id)
+					.map((x: Role) => x.id);
 
-		for (const member of role_members) {
-			const roles = member.roles
-				.filter((x: Role) => x.id !== guild_id)
-				.map((x: Role) => x.id);
+				const session = member.user.sessions.first();
 
-			const session = member.user.sessions.first();
-
-			// TODO: properly mock/hide offline/invisible status
-			items.push({
-				member: {
-					...member,
-					roles,
-					user: { ...member.user, sessions: undefined },
-					presence: {
-						...session,
-						activities: session?.activities || [],
-						user: { id: member.user.id },
+				// TODO: properly mock/hide offline/invisible status
+				items.push({
+					member: {
+						...member,
+						roles,
+						user: { ...member.user, sessions: undefined },
+						presence: {
+							...session,
+							activities: session?.activities || [],
+							user: { id: member.user.id },
+						},
 					},
-				},
-			});
+				});
+			}
 		}
-		members = other_members;
+		members_online = other_members;
+	}
+	const group = {
+		count: members_offline.length,
+		id: "offline"
+	}
+	items.push({group});
+	groups.push(group);
+	for (const member of members_offline) {
+		const roles = member.roles
+			.filter((x: Role) => x.id !== guild_id)
+			.map((x: Role) => x.id);
+
+		const session = member.user.sessions.first();
+
+		// TODO: properly mock/hide offline/invisible status
+		items.push({
+			member: {
+				...member,
+				roles,
+				user: { ...member.user, sessions: undefined },
+				presence: {
+					...session,
+					activities: session?.activities || [],
+					user: { id: member.user.id },
+				},
+			},
+		});
 	}
 
 	return {

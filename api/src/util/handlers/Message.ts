@@ -98,16 +98,16 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	}
 
 	var content = opts.content;
-	var mention_channel_ids = [] as string[];
+// 	var mention_channel_ids = [] as string[];
 	var mention_role_ids = [] as string[];
 	var mention_user_ids = [] as string[];
 	var mention_everyone = false;
 
 	if (content) { // TODO: explicit-only mentions
 		message.content = content.trim();
-		for (const [_, mention] of content.matchAll(CHANNEL_MENTION)) {
-			if (!mention_channel_ids.includes(mention)) mention_channel_ids.push(mention);
-		}
+// 		for (const [_, mention] of content.matchAll(CHANNEL_MENTION)) {
+// 			if (!mention_channel_ids.includes(mention)) mention_channel_ids.push(mention);
+// 		}
 
 		for (const [_, mention] of content.matchAll(USER_MENTION)) {
 			if (!mention_user_ids.includes(mention)) mention_user_ids.push(mention);
@@ -127,7 +127,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		}
 	}
 
-	message.mention_channels = mention_channel_ids.map((x) => new Channel({ id: x }));
+// 	message.mention_channels = mention_channel_ids.map((x) => new Channel({ id: x }));
 	message.mention_roles = mention_role_ids.map((x) => new Role({ id: x }));
 	message.mentions = mention_user_ids.map((x) => new User({ id: x }));
 	message.mention_everyone = mention_everyone;

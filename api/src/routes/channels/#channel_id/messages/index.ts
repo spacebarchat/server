@@ -221,7 +221,7 @@ router.post(
 		}
 	
 		//Fix for the client bug
-		delete message.member
+		delete message.member;
 		
 		await Promise.all([
 			message.save(),

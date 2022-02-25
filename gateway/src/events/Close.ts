@@ -85,27 +85,30 @@ export async function Close(this: WebSocket, code: number, reason: string) {
                 order: {position: "DESC"},
             });
             var gml_index = 0;
-            
-            
+            var index_online = 0;
+            // @ts-ignore
+            let [members_online, members_offline] = partition(guild_members, (m: Member) => 
+                m.user.sessions.length > 0
+            );
+            console.log("sessions")
+            console.log(guild_members[0].user.sessions)
             const items = [] as any[];
             const groups = [] as any[];
-            
+            let total_online = members_online.length;
             for (const gr of guild_roles) {
-                var num = 0;
-                for(const gm of guild_members) {
-                    const gmr = gm.roles.first() || {id: "online"};
-                    if(gmr.id === gr.id){
-                        num++;
-                    }
-                }
+                // @ts-ignore
+                const [role_members, other_members] = partition(members_online, (m: Member) =>
+                    m.roles.find((r) => r.id === gr.id)
+                );
+
                 const group = {
-                    count: num,
+                    count: role_members.length,
                     id: gr.id === member.guild_id ? "online" : gr.id,
                 };
                 items.push({ group });
                 groups.push(group);
 
-                for (const rm of guild_members) {
+                for (const rm of role_members) {
                     const gmr = rm.roles.first() || {id: "online"};
                     if(gmr.id === gr.id){
                         const roles = rm.roles
@@ -129,22 +132,61 @@ export async function Close(this: WebSocket, code: number, reason: string) {
                         });
                     }
                 }
+                members_online = other_members;
+            }
+            const group = {
+                count: members_offline.length,
+                id: "offline"
+            }
+            items.push({group});
+            groups.push(group);
+            for (const m_off of members_offline) {
+                const roles = m_off.roles
+                            .filter((x: Role) => x.id !== member.guild_id)
+                            .map((x: Role) => x.id);
+
+                const session = m_off.user.sessions.first();
+
+                // TODO: properly mock/hide offline/invisible status
+                items.push({
+                    member: {
+                        ...m_off,
+                        roles,
+                        user: { ...m_off.user, sessions: undefined },
+                        presence: {
+                            ...session,
+                            activities: session?.activities || [],
+                            user: { id: m_off.user.id },
+                        },
+                    },
+                });
             }
             gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
             const role = member.roles.first() || {id: member.guild_id};
+            console.log("items");
+            console.log(items.length);
+            console.log("members_online");
+            console.log(members_online.length);
+            //index_online = members_online.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+            //console.log("index online: " + index_online)
             await emitEvent({
                 event: "GUILD_MEMBER_LIST_UPDATE",
                 guild_id: member.guild_id,
                 data: {
-                    online_count: member.guild.member_count,
+                    online_count: total_online,
                     member_count: member.guild.member_count,
                     guild_id: member.guild_id,
                     id: "everyone",
                     groups: groups,
-                    ops: [{ 
-                        op: "UPDATE",
-                        index: gml_index,
-                        item: {
+                    ops: [
+                    {
+                        op: "DELETE",
+                        index: member.index
+                    },
+                    {
+                        op: "INSERT",
+                        index: gml_index+1,
+                        item:{
                             member: {
                                 user: member.user,
                                 roles: [role.id],
@@ -153,18 +195,31 @@ export async function Close(this: WebSocket, code: number, reason: string) {
                                         id: member.user.id,
                                     },
                                     activities: [],
-                                    client_status: {web: session.status}, // TODO:
-                                    status: session.status,
+                                    client_status: "offline", // TODO:
+                                    status: "offline",
                                 },
                                 joined_at: member.joined_at,
                                 hoisted_role: null,
                                 premium_since: member.premium_since,
                                 deaf: false,
                                 mute: false,
-                            },
+                            }
                         }
-                    }]
+                    }
+                    ]
                 },
             });
         };
 	}
+function partition<T>(array: T[], isValid: Function) {
+    // @ts-ignore
+    return array.reduce(
+        // @ts-ignore
+        ([pass, fail], elem) => {
+            return isValid(elem)
+                ? [[...pass, elem], fail]
+                : [pass, [...fail, elem]];
+        },
+        [[], []]
+    );
+}
