@@ -2,7 +2,7 @@
 	"openapi": "3.0.0",
 	"servers": [
 		{
-			"url": "https://api.fosscord.com/v{version}",
+			"url": "https://api.fosscord.com/api/v{version}",
 			"description": "Official fosscord instance",
 			"variables": {
 				"version": {
