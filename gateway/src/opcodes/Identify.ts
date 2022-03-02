@@ -21,6 +21,7 @@ import {
 	PresenceUpdateEvent,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
+import { Sorting } from "../util/Sorting";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { genSessionId } from "../util/SessionUtils";
 import { setupListener } from "../listener/listener";
@@ -73,81 +74,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             .addOrderBy("_status", "DESC")
             .addOrderBy("user.username", "ASC")
             .getMany();
-    const items_before = [] as any[];
-    const groups_before = [] as any[];
-    // @ts-ignore
-    let [members_online_before, members_offline_before] = partition(guild_members_before, (m: Member) => 
-        m.user.sessions.length > 0
-        );
-    for (const gr of guild_roles_b) {
-        // @ts-ignore
-        const [role_members, other_members] = partition(members_online_before, (m: Member) =>
-            m.roles.find((r) => r.id === gr.id)
-            );
-        
-        if(role_members.length){     
-            const group = {
-                count: role_members.length,
-                id: gr.id === member_before.guild_id ? "online" : gr.id,
-            };
-            items_before.push({ group });
-            groups_before.push(group);
-
-            for (const rm of role_members) {
-                const gmr = rm.roles.first() || {id: "online"};
-                if(gmr.id === gr.id){
-                    const roles = rm.roles
-                    .filter((x: Role) => x.id !== member_before.guild_id)
-                    .map((x: Role) => x.id);
-
-                    const session = rm.user.sessions.first();
-
-                    // TODO: properly mock/hide offline/invisible status
-                    items_before.push({
-                        member: {
-                            ...rm,
-                            roles,
-                            user: { ...rm.user, sessions: undefined },
-                            presence: {
-                                ...session,
-                                activities: session?.activities || [],
-                                user: { id: rm.user.id },
-                            },
-                        },
-                    });
-                }
-            }
-        }
-        members_online_before = other_members;
-    }
-    const group = {
-        count: members_offline_before.length,
-        id: "offline"
-    }
-    items_before.push({group});
-    groups_before.push(group);
-
-    for (const m_on of members_offline_before) {
-        const roles = m_on.roles
-                    .filter((x: Role) => x.id !== member_before.guild_id)
-                    .map((x: Role) => x.id);
-
-        const session = m_on.user.sessions.first();
-
-        // TODO: properly mock/hide offline/invisible status
-        items_before.push({
-            member: {
-                ...m_on,
-                roles,
-                user: { ...m_on.user, sessions: undefined },
-                presence: {
-                    ...session,
-                    activities: session?.activities || [],
-                    user: { id: m_on.user.id },
-                },
-            },
-        });
-    }
+    let sorted = await Sorting(member_before, guild_roles_b,guild_members_before);
+    let items_before = [] as any[];
+    let groups_before = [] as any[];
+    items_before = sorted.items;
+    groups_before = sorted.groups;
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
 
@@ -334,107 +265,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		    var index_online = 0;
             var contains_group = 0;
             var contains_group_new = 0;
-		    // @ts-ignore
-			let [members_online, members_offline] = partition(guild_members, (m: Member) => 
-				m.user.sessions.length > 0
-			);
-			let total_online = members_online.length;
-		    const items = [] as any[];
-		    const items_no_gr = [] as any[];
-		    const groups = [] as any[];
-		    for (const gr of guild_roles) {
-		        var num = 0;
-		        // @ts-ignore
-		        const [role_members, other_members] = partition(members_online, (m: Member) =>
-		            m.roles.find((r) => r.id === gr.id)
-		        );
-		        if(role_members.length){     
-		            const group = {
-		                count: role_members.length,
-		                id: gr.id === member.guild_id ? "online" : gr.id,
-		            };
-		            
-		            items.push({ group });
-		            groups.push(group);
+		    let sorted = await Sorting(member, guild_roles,guild_members);
+			let total_online = sorted.total_online;
+		    let items = [] as any[];
+		    let groups = [] as any[];
+		    items = sorted.items;
+    		groups = sorted.groups;
 
-		            for (const rm of role_members) {
-		                const gmr = rm.roles.first() || {id: "online"};
-		                if(gmr.id === gr.id){
-		                    const roles = rm.roles
-		                        .filter((x: Role) => x.id !== member.guild_id)
-		                        .map((x: Role) => x.id);
-
-		                    const session = rm.user.sessions.first();
-
-		                    // TODO: properly mock/hide offline/invisible status
-		                    items_no_gr.push({
-		                        member: {
-		                            ...rm,
-		                            roles,
-		                            user: { ...rm.user, sessions: undefined },
-		                            presence: {
-		                                ...session,
-		                                activities: session?.activities || [],
-		                                user: { id: rm.user.id },
-		                            },
-		                        },
-		                    });
-		                    items.push({
-		                        member: {
-		                            ...rm,
-		                            roles,
-		                            user: { ...rm.user, sessions: undefined },
-		                            presence: {
-		                                ...session,
-		                                activities: session?.activities || [],
-		                                user: { id: rm.user.id },
-		                            },
-		                        },
-		                    });
-		                }
-		            }
-		        }
-		        members_online = other_members;
-		    }
-		    const group = {
-		        count: members_offline.length,
-		        id: "offline"
-		    }
-		    items.push({group});
-		    groups.push(group);
-		    for (const m_off of members_offline) {
-		        const roles = m_off.roles
-		                    .filter((x: Role) => x.id !== member.guild_id)
-		                    .map((x: Role) => x.id);
-
-		        const session = m_off.user.sessions.first();
-
-		        // TODO: properly mock/hide offline/invisible status
-		        items_no_gr.push({
-		            member: {
-		                ...m_off,
-		                roles,
-		                user: { ...m_off.user, sessions: undefined },
-		                presence: {
-		                    ...session,
-		                    activities: session?.activities || [],
-		                    user: { id: m_off.user.id },
-		                },
-		            },
-		        });
-		        items.push({
-		            member: {
-		                ...m_off,
-		                roles,
-		                user: { ...m_off.user, sessions: undefined },
-		                presence: {
-		                    ...session,
-		                    activities: session?.activities || [],
-		                    user: { id: m_off.user.id },
-		                },
-		            },
-		        });
-		    }
 		    var gmluser_group = groups;
 		    gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
 		    const role = member.roles.first() || {id: member.guild_id};
