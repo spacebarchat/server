@@ -33,6 +33,12 @@ export class ReadState extends BaseClass {
 
 	@Column({ nullable: true })
 	last_message_id: string;
+	
+	@Column({ nullable: true })
+	public_ack: string;
+
+	@Column({ nullable: true })
+	notifications_cursor: string;
 
 	@Column({ nullable: true })
 	last_pin_timestamp?: Date;
