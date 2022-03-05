@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import { User, UserSettings } from "@fosscord/util";
+import { User, UserSettings, emitEvent } from "@fosscord/util";
 import { route } from "@fosscord/api";
 
 const router = Router();
@@ -13,6 +13,14 @@ router.patch("/", route({ body: "UserSettingsSchema" }), async (req: Request, re
 	const user = await User.findOneOrFail({ id: req.user_id, bot: false });
 	user.settings = { ...user.settings, ...body };
 	await user.save();
+    
+	await emitEvent ({
+		event: "USER_SETTINGS_UPDATE",
+		user_id: req.user_id,
+		data: {
+			body,
+		},
+	});
 
 	res.sendStatus(204);
 });
