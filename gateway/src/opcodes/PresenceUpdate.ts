@@ -77,7 +77,7 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
 			status: presence.status,
 		},
 	} as PresenceUpdateEvent);
-    /*await emitEvent({
+    await emitEvent({
         event: "GUILD_MEMBER_LIST_UPDATE",
         guild_id: member.guild_id,
         data: {
@@ -87,13 +87,9 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
             id: "everyone",
             groups: groups,
             ops: [
-            {
-                op: "DELETE",
-                index: member.index
-            },
             { 
                 op: "UPDATE",
-                index: member.index+1,
+                index: gml_index,
                 item: {
                     member: {
                         user: member.user,
@@ -103,8 +99,8 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
                                 id: member.user.id,
                             },
                             activities: [],
-                            client_status: "online", // TODO:
-                            status: "online",
+                            client_status: {web: presence.status}, // TODO:
+                            status: presence.status,
                         },
                         joined_at: member.joined_at,
                         hoisted_role: null,
@@ -113,32 +109,9 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
                         mute: false,
                     },
                 }
-            },
-            {
-                op: "INSERT",
-                index: member.index,
-                item:{
-                    member: {
-                        user: member.user,
-                        roles: [role.id],
-                        presence: {
-                            user: {
-                                id: member.user.id,
-                            },
-                            activities: [],
-                            client_status: "online", // TODO:
-                            status: "online",
-                        },
-                        joined_at: member.joined_at,
-                        hoisted_role: null,
-                        premium_since: member.premium_since,
-                        deaf: false,
-                        mute: false,
-                    }
-                }
-            },]
+            }]
         },
-    });*/
+    });
 }
 function partition<T>(array: T[], isValid: Function) {
     // @ts-ignore
