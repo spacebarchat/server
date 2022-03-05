@@ -123,10 +123,7 @@ export async function Close(this: WebSocket, code: number, reason: string) {
             let groups = [] as any[];
             items = sorted.items;
             groups = sorted.groups;
-            
-            console.log("items");
-            console.log(items);
-            console.log("items-end");
+
             let total_online = sorted.total_online;
 		    let gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
 		    const role = member.roles.first() || {id: member.guild_id};
@@ -144,16 +141,14 @@ export async function Close(this: WebSocket, code: number, reason: string) {
                 index: index_online//DELETE USER FROM GROUP
             }); 
             if(contains_group_new == -1){
-                console.log("oldpos")
-                console.log(group_old_pos);
+
                 ops.push({
                     op: "DELETE", // DELETE group
                     index: group_old_pos,
                 });
             }
             if(contains_offline == -1){
-                console.log("offline_position")
-                console.log(offline_position);
+
                 ops.push({
                     op: "INSERT", // INSERT new group, if not existing
                     item: {

@@ -45,7 +45,6 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	let [members_online, members_offline] = partition(members, (m: Member) => 
 		m.user.sessions.length > 0
 	);
-	//console.log(members_online);
 	for (const role of member_roles) {
 		// @ts-ignore
 		const [role_members, other_members] = partition(members_online, (m: Member) =>
