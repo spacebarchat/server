@@ -1,80 +1,147 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>LoliSho.Chat</title>
-		<link rel="stylesheet" href="/assets/fosscord.css" />
-		<link id="logincss" rel="stylesheet" href="/assets/fosscord-login.css" />
-		<link id="customcss" rel="stylesheet" href="/assets/user.css" />
-		<!-- preload plugin marker -->
-	</head>
+<html>
+  <head>    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" name="viewport" />
 
-	<body>
-		<div id="app-mount"></div>
-		<script>
-			window.__OVERLAY__ = /overlay/.test(location.pathname);
-			window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
-			window.GLOBAL_ENV = {
-				API_ENDPOINT: "/api",
-				API_VERSION: 9,
-				GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}${location.hostname}:3002`,
-				WEBAPP_ENDPOINT: "",
-				CDN_HOST: `${location.hostname}:3001`,
-				ASSET_ENDPOINT: "",
-				MEDIA_PROXY_ENDPOINT: "https://media.discordapp.net",
-				WIDGET_ENDPOINT: `//${location.host}/widget`,
-				INVITE_HOST: `${location.host}/invite`,
-				GUILD_TEMPLATE_HOST: "discord.new",
-				GIFT_CODE_HOST: "discord.gift",
-				RELEASE_CHANNEL: "stable",
-				MARKETING_ENDPOINT: "//discord.com",
-				BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
-				STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
-				NETWORKING_ENDPOINT: "//router.discordapp.net",
-				RTC_LATENCY_ENDPOINT: "//latency.discord.media/rtc",
-				PROJECT_ENV: "production",
-				REMOTE_AUTH_ENDPOINT: "//localhost:3020",
-				SENTRY_TAGS: { buildId: "75e36d9", buildType: "normal" },
-				MIGRATION_SOURCE_ORIGIN: "https://discordapp.com",
-				MIGRATION_DESTINATION_ORIGIN: "https://discord.com",
-				HTML_TIMESTAMP: Date.now(),
-				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
-			};
-			GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
-			const localStorage = window.localStorage;
-			// TODO: remote auth
-			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
-			localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
-			localStorage.setItem(
-				"DeveloperOptionsStore",
-				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
-			);
+    <title>LoliSho.Chat</title>
+    <link rel="stylesheet" href="/assets/fosscord.css" />
+    <link id="logincss" rel="stylesheet" href="/assets/fosscord-login.css" />
+    <link id="customcss" rel="stylesheet" href="/assets/user.css" />
+    <!-- section:seometa -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Lolisho.Chat" />
+    <meta property="og:title" content="Lolisho.Chat - A way to chat without the limitations of Discord" />
+    <meta property="og:description" content="LoliSho.Chat, you can chat about anything here, rules are the same as Pomf.TV." />
+    <meta property="og:image" content="//lolisho.chat/assets/favicon.svg" />    
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- endsection --><script nonce="MTc4LDE2MiwyNDMsMTU3LDE3MywxMCwyMjQsMTM1">
+    window.GLOBAL_ENV = {
+        API_ENDPOINT: '/api',
+        API_VERSION: 9,
+        GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}${location.hostname}:3002`,
+        WEBAPP_ENDPOINT: '',
+        CDN_HOST: `${location.hostname}:3001`,
+        ASSET_ENDPOINT: '',
+        MEDIA_PROXY_ENDPOINT: '//media.discordapp.net',
+        WIDGET_ENDPOINT: `//${location.host}/widget`,
+        INVITE_HOST: `${location.host}/invite`,
+        GUILD_TEMPLATE_HOST: 'discord.new',
+        GIFT_CODE_HOST: 'discord.gift',
+        RELEASE_CHANNEL: 'stable',
+        MARKETING_ENDPOINT: '//discord.com',
+        BRAINTREE_KEY: 'production_5st77rrc_49pp2rp4phym7387',
+        STRIPE_KEY: 'pk_live_CUQtlpQUF0vufWpnpUmQvcdi',
+        NETWORKING_ENDPOINT: '//router.discordapp.net',
+        RTC_LATENCY_ENDPOINT: '//latency.discord.media/rtc',
+        ACTIVITY_APPLICATION_HOST: 'discordsays.com',
+        PROJECT_ENV: 'development',
+        REMOTE_AUTH_ENDPOINT: '//remote-auth-gateway.discord.gg',
+        SENTRY_TAGS: {"buildId":"cc0861f9d2d34fef5bf5c8f0b63997e877daee21","buildType":"normal"},
+        MIGRATION_SOURCE_ORIGIN: 'https://discordapp.com',
+        MIGRATION_DESTINATION_ORIGIN: 'https://discord.com',
+        HTML_TIMESTAMP: Date.now(),
+        ALGOLIA_KEY: 'aca0d7082e4e63af5ba5917d5e96bed0',
+      };
+    GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
+    const localStorage = window.localStorage;
+    // TODO: remote auth
+    // window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
+    localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
+    localStorage.setItem("DeveloperOptionsStore",`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`);
+      </script>
+        <script nonce="MTc4LDE2MiwyNDMsMTU3LDE3MywxMCwyMjQsMTM1">
+        !(function () {
+            if (null != window.WebSocket) {
+                if (
+                    (function (n) {
+                        try {
+                            var e = localStorage.getItem(n);
+                            return null == e ? null : JSON.parse(e);
+                        } catch (n) {
+                            return null;
+                        }
+                    })("token") &&
+                    !window.__OVERLAY__
+                ) {
+                    var n = null != window.DiscordNative || null != window.require ? "etf" : "json",
+                        e = window.GLOBAL_ENV.GATEWAY_ENDPOINT + "/?encoding=" + n + "&v=" + window.GLOBAL_ENV.API_VERSION + "&compress=zlib-stream";
+                    console.log("[FAST CONNECT] connecting to: " + e);
+                    var o = new WebSocket(e);
+                    o.binaryType = "arraybuffer";
+                    var t = Date.now(),
+                        i = { open: !1, identify: !1, gateway: e, messages: [] };
+                    (o.onopen = function () {
+                        console.log("[FAST CONNECT] connected in " + (Date.now() - t) + "ms"), (i.open = !0);
+                    }),
+                        (o.onclose = o.onerror = function () {
+                            window._ws = null;
+                        }),
+                        (o.onmessage = function (n) {
+                            i.messages.push(n);
+                        }),
+                        (window._ws = { ws: o, state: i });
+                }
+            }
+        })();
+        </script>
+        <link rel="prefetch" as="script" href="/assets/b2b66e6a00afffbbe637.js"></link>
+        <link rel="prefetch" as="script" href="/assets/b4499d2a6b9046b1b402.js"></link>
+        <link rel="prefetch" as="script" href="/assets/4b58fa778cc38e586a72.js"></link>
+        <link rel="prefetch" as="script" href="/assets/2e45b6b321248222f12a.js"></link>
+        <link rel="prefetch" as="script" href="/assets/2a6b8d1c4c54837fbc1c.js"></link>
+        <link rel="prefetch" as="script" href="/assets/32a385a6252512863141.js"></link>
+        <link rel="prefetch" as="script" href="/assets/66fb582b4c0e8351bd05.js"></link>
+        <link rel="prefetch" as="script" href="/assets/d5b25e619c7d3c54072a.js"></link>
+        <link rel="prefetch" as="script" href="/assets/e03405baa0373b35d236.js"></link>
+        <link rel="prefetch" as="script" href="/assets/f6f1654edf4d0c9424dc.js"></link>
+        <link rel="prefetch" as="script" href="/assets/867d0b65cd7e9d889b13.js"></link>
+        <link rel="prefetch" as="script" href="/assets/46f8b7fcfcafca99414f.js"></link>
+        <link rel="prefetch" as="script" href="/assets/23cdafa6400c6e47ba39.js"></link>
+        <link rel="prefetch" as="script" href="/assets/391409f1c0af740fe1ac.js"></link>
+        <link rel="prefetch" as="script" href="/assets/ee83c686b63d0f40786c.js"></link>
+        <link rel="prefetch" as="script" href="/assets/f45336e99392f801cb4e.js"></link>
+        <link rel="prefetch" as="script" href="/assets/b408c1c79b35346d11c1.js"></link>
+        <link rel="prefetch" as="script" href="/assets/d056b1b6ce3cde0fcdfb.js"></link>
+        <link rel="prefetch" as="script" href="/assets/43bfe95bc6c1082cb844.js"></link>
+        <link rel="prefetch" as="script" href="/assets/56eef32ce2711bbd15e4.js"></link>
+        <link rel="prefetch" as="script" href="/assets/0699a9936f326be56dbd.js"></link>
+        <link rel="prefetch" as="script" href="/assets/b476108e8a005c0022dd.js"></link>
+        <link rel="prefetch" as="script" href="/assets/ecaea1e1377af11bc763.js"></link>
+        <link rel="prefetch" as="script" href="/assets/e91d239d37e497800e4e.js"></link>
+        <link rel="prefetch" as="script" href="/assets/599bc34091885bdc175f.js"></link>
+        <link rel="prefetch" as="script" href="/assets/10cb472d190b462d6002.js"></link>
+        <link rel="prefetch" as="script" href="/assets/3b911d216ff787d3991f.js"></link>
+        <link rel="prefetch" as="script" href="/assets/3fc474ff65454348c968.js"></link>
+        <link rel="prefetch" as="script" href="/assets/8283eef5d879c0b0d54c.js"></link>
+        <link rel="prefetch" as="script" href="/assets/61e1ca812de5bc511fe0.js"></link>
+        <link rel="prefetch" as="script" href="/assets/b8aeaca5bacb2a25c4b0.js"></link>
+        <link rel="prefetch" as="script" href="/assets/c264aeaf65b95070e20e.js"></link>
+        <link rel="prefetch" as="script" href="/assets/36af760c10149d3c66f9.js"></link>
+        <link rel="prefetch" as="script" href="/assets/39eeb080879a12ae93e1.js"></link>
+        <link rel="prefetch" as="script" href="/assets/c965777e06b8eb458161.js"></link>
+        <link rel="prefetch" as="script" href="/assets/d0a71c66576a88d29633.js"></link>
+        <link rel="prefetch" as="script" href="/assets/9c1bc2545650a466a2b6.js"></link>
+        <link rel="prefetch" as="script" href="/assets/72f470935cb33b90646c.js"></link>
+        <link rel="stylesheet" href="/assets/40532.7c50b336edfb7f138953.css" integrity="sha256-2UvZ7wRRm+dW4avzcWpfwc55VQpwlUkSp6hd3hyszeg= sha512-wUD4YaDEjPAibvBTNmji1xBaTLW7JGBAeZGSll+Vtrf3fNxVOxEDG+mnpkILIe6MkllzZ7aBD0oZ/xz8KZ2dnQ==" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+        <link rel="manifest" href="/assets/site.webmanifest">
+        <link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
 
-			setInterval(() => {
-				var token = JSON.parse(localStorage.getItem("token"));
-				if (token) {
-					var logincss = document.querySelector('#logincss'),
-					canRemove = logincss ? logincss: "";
-					if(canRemove !== "") {
-					document.querySelector("#logincss").remove();
-					canRemove = "";
-					}
-				}
-			}, 1000)
 
-			const settings = JSON.parse(localStorage.getItem("UserSettingsStore"));
-			if (settings && settings.locale.length <= 2) {
-				// fix client locale wrong and client not loading at all
-				settings.locale = "en-US";
-				localStorage.setItem("UserSettingsStore", JSON.stringify(settings));
-			}
-		</script>
+        <!-- endsection -->
+    </head>
+    <body>
+        <div id="app-mount"></div>
+        <script nonce="MTc4LDE2MiwyNDMsMTU3LDE3MywxMCwyMjQsMTM1">window.__OVERLAY__ = /overlay/.test(location.pathname)</script>
+        <script nonce="MTc4LDE2MiwyNDMsMTU3LDE3MywxMCwyMjQsMTM1">window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname)</script>
 	 	<script src="/assets/checkLocale.js"></script>
-		<script src="/assets/1e18f2aac02e172db283.js"></script>
-		<script src="/assets/681e53cdfefa5b82249a.js"></script>
-		<script src="/assets/7a036838c0a0e73f59d8.js"></script>
-		<script src="/assets/b6cf2184a7a05e7525ce.js"></script>
-		<!-- plugin marker -->
-	</body>
+        <script src="/assets/b746281a6a716ea53260.js" integrity="sha256-0Xhkd9nwd5Nn81wgxIUmz6weIdbjX6VS6zjzhr3ERDg= sha512-GE0jmEQ4D+LQs8tmGZUHkc93hPH9igNp6ILgNw16fsGkr0bnqEyxid0UDFT5qJgO1sHaQQcT6QBFYDO3RkLvsw=="></script>
+        <script src="/assets/b2b66e6a00afffbbe637.js" integrity="sha256-G39x8OgInQc/gwJG8lmSPXXA0fWrPCChnaJa2HMql3I= sha512-cB5iZ7ImgY3GcoxehSOSrAFPmumAOamYLmovxdaihCZ4l7vOkf395Yv/CkTcAsq0YlyeROvwj7pIQsgM36Uvpg=="></script>
+        <script src="/assets/26a21b6c894d5b7bede1.js" integrity="sha256-aXesH6/6kovld0q3ABK+Gz+HG6sgJ0alF2g6fsEk6o8= sha512-qbxBF9yAr9702SBlGdWkiw5S1VmkdFq+cpNKG2Z9Hu0MspR81H9mJT9uwPRJ16YduMkpVr3g0On4Gh5Isihmdw=="></script>
+        <script src="/assets/06f9494fa8ef8879baa1.js" integrity="sha256-kWx9Cfud7Kd+lhHDOKT5P6+NPzHFQVoqu0nTIEmKKUI= sha512-6okLWV9tswNmRz+XCKFFKb9wEMoavdbXv474VXpgyoBu/SMC4FZcy2ahoNLrnoGb0tBxHcJqacZ+2QVHm+dVJQ=="></script>
+    </body>
 </html>

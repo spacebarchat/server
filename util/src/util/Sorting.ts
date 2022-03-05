@@ -30,13 +30,15 @@ export async function Sorting(member: Member, guild_roles: Role[], guild_members
     }
     members_online = other_members;
   }
-  const group = {
-    count: members_offline.length,
-    id: "offline"
+  if(members_offline.length){     
+    const group = {
+        count: members_offline.length,
+        id: "offline"
+    }
+    items.push({group});
+    groups.push(group);
+    item_loop(members_offline, member).map((x: any) => items.push(x))
   }
-  items.push({group});
-  groups.push(group);
-  item_loop(members_offline, member).map((x: any) => items.push(x))
   return {
     items: items,
     groups: groups,

@@ -42,7 +42,12 @@ export async function Close(this: WebSocket, code: number, reason: string) {
     let groups_before = [] as any[];
     items_before = sorted.items;
     groups_before = sorted.groups;
+    
 	console.log("[WebSocket] closed", code, reason);
+    
+    console.log("items_before");
+    console.log(items_before);
+    console.log("items_before-end");
 	if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
 	if (this.readyTimeout) clearTimeout(this.readyTimeout);
 	this.deflate?.close();
@@ -113,72 +118,84 @@ export async function Close(this: WebSocket, code: number, reason: string) {
                 select: ["id"],
                 order: {position: "DESC"},
             });
-		    let gml_index = 0;
-		    let index_online = 0;
-            let contains_group = 0;
-            let contains_group_new = 0;
             let sorted = await Sorting(member, guild_roles,guild_members);
             let items = [] as any[];
             let groups = [] as any[];
             items = sorted.items;
             groups = sorted.groups;
+            
+            console.log("items");
+            console.log(items);
+            console.log("items-end");
             let total_online = sorted.total_online;
-		    gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+		    let gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
 		    const role = member.roles.first() || {id: member.guild_id};
-			index_online = items_before.map(object => object.member? object.member.id : false).indexOf(this.user_id);
-            contains_group = items_before.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
-            contains_group_new = items.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
+			let index_online = items_before.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+            let contains_offline = items_before.map(object => object.group? object.group.id : false).indexOf("offline");
+            let offline_position = items.map(object => object.group? object.group.id : false).indexOf("offline");
+            let contains_group_new = items.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
+            let group_old_pos = items_before.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
+            if(offline_position == -1){
+                offline_position = items.length-1;
+            }
             let ops = [];
             ops.push({
                 op: "DELETE",
                 index: index_online//DELETE USER FROM GROUP
             }); 
+            if(contains_group_new == -1){
+                console.log("oldpos")
+                console.log(group_old_pos);
+                ops.push({
+                    op: "DELETE", // DELETE group
+                    index: group_old_pos,
+                });
+            }
+            if(contains_offline == -1){
+                console.log("offline_position")
+                console.log(offline_position);
+                ops.push({
+                    op: "INSERT", // INSERT new group, if not existing
+                    item: {
+                        group: {
+                            id: "offline",
+                            count: 1
+                        }
+                    },
+                    index: offline_position,
+                });
+            }
             ops.push({
                 op: "INSERT", // INSERT USER INTO GROUP, PROBABLY ISSUE WITH INDEX NUM WOULD NEED TO FIGURE THIS OUT.
-                index: gml_index,
                 item:{
                     member: {
-                        user: member.user,
+                        user: {
+                            username: member.user.username,
+                            id: member.user.id,
+                            discriminator: member.user.discriminator,
+                            avatar: member.user.avatar,
+                            },
                         roles: [role.id],
                         presence: {
                             user: {
                                 id: member.user.id,
                             },
-                            status: "offline",
-                            client_status: {web: session?.status}, // TODO:
+                            status: session?.status,
+                            game: null,
+                            client_status: {}, // TODO:
                             activities: [],
                         },
-                        premium_since: member.premium_since,
-                        pending: false,
-                        nick: null,
                         mute: false,
                         joined_at: member.joined_at,
                         hoisted_role: null,
                         deaf: false,
-                        communication_disabled_until: null,
-                        avatar: null
-                    }
 
-                }
+                    }
+                },
+                index: contains_offline == -1 && role.id === member.guild_id ? offline_position:gml_index,
             });
-            if(contains_group == -1){
-                ops.push({
-                    op: "INSERT", // INSERT new group, if not existing
-                    item: {
-                        group: {
-                            id: role.id,
-                            count: 1
-                        }
-                    },
-                    index: contains_group_new,
-                });
-            }
-            if(contains_group_new == -1){
-                ops.push({
-                    op: "DELETE", // DELETE group
-                    index: contains_group,
-                });
-            }
+
+
 
 		    await emitEvent({
 		        event: "GUILD_MEMBER_LIST_UPDATE",

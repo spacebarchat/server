@@ -79,9 +79,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     let groups_before = [] as any[];
     items_before = sorted.items;
     groups_before = sorted.groups;
-    console.log("items_before");
-    console.log(items_before);
-    console.log("items_before-end");
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
 
@@ -264,34 +261,54 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		//         where: { guild_id: member.guild_id },
 		//         relations: ["roles", "user"],
 		//     });
-		    let gml_index = 0;
-		    let index_online = 0;
-            let contains_group = 0;
-            let contains_group_new = 0;
 		    let sorted = await Sorting(member, guild_roles,guild_members);
 			let total_online = sorted.total_online;
 		    let items = [] as any[];
 		    let groups = [] as any[];
 		    items = sorted.items;
     		groups = sorted.groups;
-
+            
 		    let gmluser_group = groups;
-		    gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+		    let gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+            
 		    const role = member.roles.first() || {id: member.guild_id};
-			index_online = items_before.map(object => object.member? object.member.id : false).indexOf(this.user_id);
-            contains_group = items_before.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
-            contains_group_new = items.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
+			let index_online = items_before.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+            let contains_group = items_before.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
+            let contains_group_new = items.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
+            
             let ops = [];
             ops.push({
             	op: "DELETE",
 	            index: index_online//DELETE USER FROM GROUP
 	        });
+            if(contains_group_new == -1){
+                ops.push({
+                    op: "DELETE", // DELETE group
+                    index: contains_group,
+                });
+            }
+            if(contains_group == -1){
+                ops.push({
+                    op: "INSERT", // INSERT new group, if not existing
+                    item: {
+                        group: {
+                            id: role.id,
+                            count: 1
+                        }
+                    },
+                    index: contains_group_new,
+                });
+            }
             ops.push({
                 op: "INSERT", // INSERT USER INTO GROUP, PROBABLY ISSUE WITH INDEX NUM WOULD NEED TO FIGURE THIS OUT.
-                index: gml_index,
                 item:{
                     member: {
-                        user: member.user,
+                        user: {
+                            username: member.user.username,
+                            id: member.user.id,
+                            discriminator: member.user.discriminator,
+                            avatar: member.user.avatar,
+                            },
                         roles: [role.id],
                         presence: {
                             user: {
@@ -312,26 +329,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                         avatar: null
 
                     }
-                }
+                },
+                index: contains_group == -1 && role.id === member.guild_id ? contains_group_new:gml_index,
             });
-            if(contains_group == -1){
-                ops.push({
-                    op: "INSERT", // INSERT new group, if not existing
-                    item: {
-                        group: {
-                            id: role.id,
-                            count: 1
-                        }
-                    },
-                    index: contains_group_new,
-                });
-            }
-            if(contains_group_new == -1){
-                ops.push({
-                    op: "DELETE", // DELETE group
-                    index: contains_group,
-                });
-            }
+
+
             
 		    await emitEvent({
 		        event: "GUILD_MEMBER_LIST_UPDATE",
