@@ -19,9 +19,10 @@ import {
 	PrivateSessionProjection,
 	MemberPrivateProjection,
 	PresenceUpdateEvent,
+	Sorting
 } from "@fosscord/util";
 import { Send } from "../util/Send";
-import { Sorting } from "../util/Sorting";
+/*import { Sorting } from "../util/Sorting";*/
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { genSessionId } from "../util/SessionUtils";
 import { setupListener } from "../listener/listener";
@@ -40,7 +41,6 @@ import { getRepository } from "typeorm";
 export async function onIdentify(this: WebSocket, data: Payload) {
 	clearTimeout(this.readyTimeout);
 	check.call(this, IdentifySchema, data.d);
-
 	const identify: IdentifySchema = data.d;
 
 	try {
@@ -79,6 +79,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     let groups_before = [] as any[];
     items_before = sorted.items;
     groups_before = sorted.groups;
+    console.log("items_before");
+    console.log(items_before);
+    console.log("items_before-end");
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
 
@@ -151,7 +154,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			return this.close(CLOSECODES.Invalid_shard);
 		}
 	}
-	var users: PublicUser[] = [];
+	let users: PublicUser[] = [];
 
 	const merged_members = members.map((x: Member) => {
 		return [
@@ -261,10 +264,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		//         where: { guild_id: member.guild_id },
 		//         relations: ["roles", "user"],
 		//     });
-		    var gml_index = 0;
-		    var index_online = 0;
-            var contains_group = 0;
-            var contains_group_new = 0;
+		    let gml_index = 0;
+		    let index_online = 0;
+            let contains_group = 0;
+            let contains_group_new = 0;
 		    let sorted = await Sorting(member, guild_roles,guild_members);
 			let total_online = sorted.total_online;
 		    let items = [] as any[];
@@ -272,37 +275,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		    items = sorted.items;
     		groups = sorted.groups;
 
-		    var gmluser_group = groups;
+		    let gmluser_group = groups;
 		    gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
 		    const role = member.roles.first() || {id: member.guild_id};
 			index_online = items_before.map(object => object.member? object.member.id : false).indexOf(this.user_id);
             contains_group = items_before.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
             contains_group_new = items.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
-            var ops = [];
-             if(contains_group == -1){
-                 ops.push({
-                     op: "INSERT", // INSERT new group, if not existing
-                     item: {
-                         group: {
-                             id: role.id,
-                             count: 1
-                         }
-                     },
-                     index: contains_group_new,
-                 });
-             }
-             
-             if(contains_group_new == -1){
-                 ops.push({
-                     op: "DELETE", // DELETE group
-                     index: contains_group,
-                 });
-             }
-             
+            let ops = [];
             ops.push({
-                op: "DELETE",
-                index: index_online//DELETE USER FROM GROUP
-            });
+            	op: "DELETE",
+	            index: index_online//DELETE USER FROM GROUP
+	        });
             ops.push({
                 op: "INSERT", // INSERT USER INTO GROUP, PROBABLY ISSUE WITH INDEX NUM WOULD NEED TO FIGURE THIS OUT.
                 index: gml_index,
@@ -314,19 +297,41 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                             user: {
                                 id: member.user.id,
                             },
-                            activities: [],
-                            client_status: {web: session?.status}, // TODO:
                             status: session?.status,
+                            client_status: {web: session?.status}, // TODO:
+                            activities: [],
                         },
+                        premium_since: member.premium_since,
+                        pending: false,
+                        nick: null,
+                        mute: false,
                         joined_at: member.joined_at,
                         hoisted_role: null,
-                        premium_since: member.premium_since,
                         deaf: false,
-                        mute: false,
+                        communication_disabled_until: null,
+                        avatar: null
+
                     }
                 }
             });
-
+            if(contains_group == -1){
+                ops.push({
+                    op: "INSERT", // INSERT new group, if not existing
+                    item: {
+                        group: {
+                            id: role.id,
+                            count: 1
+                        }
+                    },
+                    index: contains_group_new,
+                });
+            }
+            if(contains_group_new == -1){
+                ops.push({
+                    op: "DELETE", // DELETE group
+                    index: contains_group,
+                });
+            }
             
 		    await emitEvent({
 		        event: "GUILD_MEMBER_LIST_UPDATE",
