@@ -16,6 +16,7 @@ export enum PublicUserEnum {
 	banner,
 	bio,
 	bot,
+	premium_since,
 }
 export type PublicUserKeys = keyof typeof PublicUserEnum;
 
@@ -109,6 +110,9 @@ export class User extends BaseClass {
 
 	@Column()
 	created_at: Date; // registration date
+
+	@Column({ nullable: true })
+	premium_since: Date; // premium date
 
 	@Column({ select: false })
 	verified: boolean; // if the user is offically verified
@@ -246,6 +250,7 @@ export class User extends BaseClass {
 			id: Snowflake.generate(),
 			bot: false,
 			system: false,
+			premium_since: new Date(),
 			desktop: false,
 			mobile: false,
 			premium: true,
