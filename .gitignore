@@ -7,6 +7,6 @@ tsconfig.tsbuildinfo
 files/
 .env
 config.json
-
+package-lock.json
 .vscode/settings.json
 api/assets/plugins/*.js
