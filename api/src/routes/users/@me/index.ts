@@ -58,7 +58,7 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 	}
 
 	var check_username = body?.username?.replace(/\s/g, '');
-	if(!check_username && !body?.avatar && !body?.banner) {
+	if(!check_username && !body?.avatar && !body?.banner && !body?.bio && !body?.accent_color) {
 		throw FieldErrors({
 			username: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
 		});
