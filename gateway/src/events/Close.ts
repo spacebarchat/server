@@ -14,34 +14,37 @@ import "missing-native-js-functions";
 import { getRepository } from "typeorm";
 
 export async function Close(this: WebSocket, code: number, reason: string) {
-    const member_before = await Member.findOneOrFail({
+	const member_before = await Member.findOne({
         where: { id: this.user_id},
         relations: ["user", "roles", "guild", "guild.channels", "guild.roles", "guild.members"],
     });
-    const guild_roles_b = await Role.find({
-        where: { guild_id: member_before.guild_id },
-        select: ["id"],
-        order: {position: "DESC"},
-    });
-    let guild_members_before = await getRepository(Member)
-            .createQueryBuilder("member")
-            .where("member.guild_id = :guild_id", { guild_id: member_before.guild_id })
-            .leftJoinAndSelect("member.roles", "role")
-            .leftJoinAndSelect("member.user", "user")
-            .leftJoinAndSelect("user.sessions", "session")
-            .addSelect(
-                "CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
-                "_status"
-                )
-            .orderBy("role.position", "DESC")
-            .addOrderBy("_status", "DESC")
-            .addOrderBy("user.username", "ASC")
-            .getMany();
-    let sorted = await Sorting(member_before, guild_roles_b,guild_members_before);
     let items_before = [] as any[];
     let groups_before = [] as any[];
-    items_before = sorted.items;
-    groups_before = sorted.groups;
+    if(typeof member_before !== "undefined"){
+        const guild_roles_b = await Role.find({
+            where: { guild_id: member_before.guild_id },
+            select: ["id"],
+            order: {position: "DESC"},
+        });
+        let guild_members_before = await getRepository(Member)
+                .createQueryBuilder("member")
+                .where("member.guild_id = :guild_id", { guild_id: member_before.guild_id })
+                .leftJoinAndSelect("member.roles", "role")
+                .leftJoinAndSelect("member.user", "user")
+                .leftJoinAndSelect("user.sessions", "session")
+                .addSelect(
+                    "CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
+                    "_status"
+                    )
+                .orderBy("role.position", "DESC")
+                .addOrderBy("_status", "DESC")
+                .addOrderBy("user.username", "ASC")
+                .getMany();
+        let sorted = await Sorting(member_before, guild_roles_b,guild_members_before);
+
+        items_before = sorted.items;
+        groups_before = sorted.groups;
+    }
     
 	console.log("[WebSocket] closed", code, reason);
 	if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
@@ -76,11 +79,12 @@ export async function Close(this: WebSocket, code: number, reason: string) {
 				status: session.status,
 			},
 		} as PresenceUpdateEvent);
-            
-        const member = await Member.findOneOrFail({
-            where: { id: this.user_id},
-            relations: ["user", "roles", "guild", "guild.channels", "guild.roles", "guild.members"],
-        });
+           
+        if(typeof member_before !== "undefined"){ 
+            const member = await Member.findOneOrFail({
+                where: { id: this.user_id},
+                relations: ["user", "roles", "guild", "guild.channels", "guild.roles", "guild.members"],
+            });
         
             emitEvent({
                 event: "PRESENCE_UPDATE",
@@ -199,7 +203,8 @@ export async function Close(this: WebSocket, code: number, reason: string) {
 		        },
 		    });
         };
-	}
+    }
+}
 function partition<T>(array: T[], isValid: Function) {
     // @ts-ignore
     return array.reduce(

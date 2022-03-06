@@ -51,34 +51,37 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = decoded.id;
-	const member_before = await Member.findOneOrFail({
+	const member_before = await Member.findOne({
         where: { id: this.user_id},
         relations: ["user", "roles", "guild", "guild.channels", "guild.roles", "guild.members"],
     });
-    const guild_roles_b = await Role.find({
-        where: { guild_id: member_before.guild_id },
-        select: ["id"],
-        order: {position: "DESC"},
-    });
-    let guild_members_before = await getRepository(Member)
-            .createQueryBuilder("member")
-            .where("member.guild_id = :guild_id", { guild_id: member_before.guild_id })
-            .leftJoinAndSelect("member.roles", "role")
-            .leftJoinAndSelect("member.user", "user")
-            .leftJoinAndSelect("user.sessions", "session")
-            .addSelect(
-                "CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
-                "_status"
-                )
-            .orderBy("role.position", "DESC")
-            .addOrderBy("_status", "DESC")
-            .addOrderBy("user.username", "ASC")
-            .getMany();
-    let sorted = await Sorting(member_before, guild_roles_b,guild_members_before);
     let items_before = [] as any[];
     let groups_before = [] as any[];
-    items_before = sorted.items;
-    groups_before = sorted.groups;
+    if(typeof member_before !== "undefined"){
+        const guild_roles_b = await Role.find({
+            where: { guild_id: member_before.guild_id },
+            select: ["id"],
+            order: {position: "DESC"},
+        });
+        let guild_members_before = await getRepository(Member)
+                .createQueryBuilder("member")
+                .where("member.guild_id = :guild_id", { guild_id: member_before.guild_id })
+                .leftJoinAndSelect("member.roles", "role")
+                .leftJoinAndSelect("member.user", "user")
+                .leftJoinAndSelect("user.sessions", "session")
+                .addSelect(
+                    "CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
+                    "_status"
+                    )
+                .orderBy("role.position", "DESC")
+                .addOrderBy("_status", "DESC")
+                .addOrderBy("user.username", "ASC")
+                .getMany();
+        let sorted = await Sorting(member_before, guild_roles_b,guild_members_before);
+
+        items_before = sorted.items;
+        groups_before = sorted.groups;
+    }
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
 
@@ -236,118 +239,118 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     status: session.status,
                 },
             } as PresenceUpdateEvent);
-
-			let guild_members = await getRepository(Member)
-				.createQueryBuilder("member")
-				.where("member.guild_id = :guild_id", { guild_id: member.guild_id })
-				.leftJoinAndSelect("member.roles", "role")
-				.leftJoinAndSelect("member.user", "user")
-				.leftJoinAndSelect("user.sessions", "session")
-				.addSelect(
-					"CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
-					"_status"
-				)
-				.orderBy("role.position", "DESC")
-				.addOrderBy("_status", "DESC")
-				.addOrderBy("user.username", "ASC")
-				.getMany();
-		            
-		    const guild_roles = await Role.find({
-		        where: { guild_id: member.guild_id },
-		        select: ["id"],
-		        order: {position: "DESC"},
-		    });
-		//     const guild_members = await Member.find({
-		//         where: { guild_id: member.guild_id },
-		//         relations: ["roles", "user"],
-		//     });
-		    let sorted = await Sorting(member, guild_roles,guild_members);
-			let total_online = sorted.total_online;
-		    let items = [] as any[];
-		    let groups = [] as any[];
-		    items = sorted.items;
-    		groups = sorted.groups;
-            
-		    let gmluser_group = groups;
-		    let gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
-            
-		    const role = member.roles.first() || {id: member.guild_id};
-			let index_online = items_before.map(object => object.member? object.member.id : false).indexOf(this.user_id);
-            let contains_group = items_before.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
-            let contains_group_new = items.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
-            
-            let ops = [];
-            ops.push({
-            	op: "DELETE",
-	            index: index_online//DELETE USER FROM GROUP
-	        });
-            if(contains_group_new == -1){
-                ops.push({
-                    op: "DELETE", // DELETE group
-                    index: contains_group,
+            if(typeof member_before !== "undefined"){
+                let guild_members = await getRepository(Member)
+                    .createQueryBuilder("member")
+                    .where("member.guild_id = :guild_id", { guild_id: member.guild_id })
+                    .leftJoinAndSelect("member.roles", "role")
+                    .leftJoinAndSelect("member.user", "user")
+                    .leftJoinAndSelect("user.sessions", "session")
+                    .addSelect(
+                        "CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
+                        "_status"
+                    )
+                    .orderBy("role.position", "DESC")
+                    .addOrderBy("_status", "DESC")
+                    .addOrderBy("user.username", "ASC")
+                    .getMany();
+                        
+                const guild_roles = await Role.find({
+                    where: { guild_id: member.guild_id },
+                    select: ["id"],
+                    order: {position: "DESC"},
                 });
-            }
-            if(contains_group == -1){
+            //     const guild_members = await Member.find({
+            //         where: { guild_id: member.guild_id },
+            //         relations: ["roles", "user"],
+            //     });
+                let sorted = await Sorting(member, guild_roles,guild_members);
+                let total_online = sorted.total_online;
+                let items = [] as any[];
+                let groups = [] as any[];
+                items = sorted.items;
+                groups = sorted.groups;
+                
+                let gmluser_group = groups;
+                let gml_index = items.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+                
+                const role = member.roles.first() || {id: member.guild_id};
+                let index_online = items_before.map(object => object.member? object.member.id : false).indexOf(this.user_id);
+                let contains_group = items_before.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
+                let contains_group_new = items.map(object => object.group? object.group.id : false).indexOf(role.id === member.guild_id ? "online" : role.id);
+                
+                let ops = [];
                 ops.push({
-                    op: "INSERT", // INSERT new group, if not existing
-                    item: {
-                        group: {
-                            id: role.id,
-                            count: 1
+                    op: "DELETE",
+                    index: index_online//DELETE USER FROM GROUP
+                });
+                if(contains_group_new == -1){
+                    ops.push({
+                        op: "DELETE", // DELETE group
+                        index: contains_group,
+                    });
+                }
+                if(contains_group == -1){
+                    ops.push({
+                        op: "INSERT", // INSERT new group, if not existing
+                        item: {
+                            group: {
+                                id: role.id,
+                                count: 1
+                            }
+                        },
+                        index: contains_group_new,
+                    });
+                }
+                ops.push({
+                    op: "INSERT", // INSERT USER INTO GROUP, PROBABLY ISSUE WITH INDEX NUM WOULD NEED TO FIGURE THIS OUT.
+                    item:{
+                        member: {
+                            user: {
+                                username: member.user.username,
+                                id: member.user.id,
+                                discriminator: member.user.discriminator,
+                                avatar: member.user.avatar,
+                                },
+                            roles: [role.id],
+                            presence: {
+                                user: {
+                                    id: member.user.id,
+                                },
+                                status: session?.status,
+                                client_status: {web: session?.status}, // TODO:
+                                activities: [],
+                            },
+                            premium_since: member.premium_since,
+                            pending: false,
+                            nick: null,
+                            mute: false,
+                            joined_at: member.joined_at,
+                            hoisted_role: null,
+                            deaf: false,
+                            communication_disabled_until: null,
+                            avatar: null
+
                         }
                     },
-                    index: contains_group_new,
+                    index: contains_group == -1 && role.id === member.guild_id ? contains_group_new:gml_index,
+                });
+            
+
+            
+                await emitEvent({
+                    event: "GUILD_MEMBER_LIST_UPDATE",
+                    guild_id: member.guild_id,
+                    data: {
+                        online_count: total_online,
+                        member_count: member.guild.member_count,
+                        guild_id: member.guild_id,
+                        id: "everyone",
+                        groups: groups,
+                        ops: ops
+                    },
                 });
             }
-            ops.push({
-                op: "INSERT", // INSERT USER INTO GROUP, PROBABLY ISSUE WITH INDEX NUM WOULD NEED TO FIGURE THIS OUT.
-                item:{
-                    member: {
-                        user: {
-                            username: member.user.username,
-                            id: member.user.id,
-                            discriminator: member.user.discriminator,
-                            avatar: member.user.avatar,
-                            },
-                        roles: [role.id],
-                        presence: {
-                            user: {
-                                id: member.user.id,
-                            },
-                            status: session?.status,
-                            client_status: {web: session?.status}, // TODO:
-                            activities: [],
-                        },
-                        premium_since: member.premium_since,
-                        pending: false,
-                        nick: null,
-                        mute: false,
-                        joined_at: member.joined_at,
-                        hoisted_role: null,
-                        deaf: false,
-                        communication_disabled_until: null,
-                        avatar: null
-
-                    }
-                },
-                index: contains_group == -1 && role.id === member.guild_id ? contains_group_new:gml_index,
-            });
-
-
-            
-		    await emitEvent({
-		        event: "GUILD_MEMBER_LIST_UPDATE",
-		        guild_id: member.guild_id,
-		        data: {
-		            online_count: total_online,
-		            member_count: member.guild.member_count,
-		            guild_id: member.guild_id,
-		            id: "everyone",
-		            groups: groups,
-		            ops: ops
-		        },
-		    });
-            
 
         }
 	});
