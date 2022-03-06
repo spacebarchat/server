@@ -2821,6 +2821,10 @@
 						"type": "string",
 						"format": "date-time"
 					},
+					"premium_since": {
+						"type": "string",
+						"format": "date-time"
+					},
 					"verified": {
 						"type": "boolean"
 					},
@@ -3800,7 +3804,8 @@
 						"format": "date-time"
 					},
 					"premium_since": {
-						"type": "integer"
+						"type": "string",
+						"format": "date-time"
 					},
 					"deaf": {
 						"type": "boolean"
