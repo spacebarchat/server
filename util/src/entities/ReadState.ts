@@ -31,8 +31,17 @@ export class ReadState extends BaseClass {
 	})
 	user: User;
 
+	// fully read marker
 	@Column({ nullable: true })
-	last_message_id: string;
+	last_message_id: string; 
+	
+	// public read receipt
+	@Column({ nullable: true })
+	public_ack: string;
+
+	// notification cursor / private read receipt
+	@Column({ nullable: true })
+	notifications_cursor: string;
 
 	@Column({ nullable: true })
 	last_pin_timestamp?: Date;
