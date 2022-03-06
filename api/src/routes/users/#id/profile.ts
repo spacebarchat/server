@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { PublicConnectedAccount, PublicUser, User, UserPublic } from "@fosscord/util";
+import { PublicConnectedAccount, PublicUser, User, UserPublic, Member } from "@fosscord/util";
 import { route } from "@fosscord/api";
 
 const router: Router = Router();
@@ -15,11 +15,32 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 	if (req.params.id === "@me") req.params.id = req.user_id;
 	const user = await User.getPublicUser(req.params.id, { relations: ["connected_accounts"] });
 
+	var mutual_guilds: object[] = [];
+	var premium_guild_since;
+	const requested_member = await Member.find( { id: req.params.id,  })
+	const self_member = await Member.find( { id: req.user_id,  })
+
+	for(const rmem of requested_member) {
+		if(rmem.premium_since) {
+			if(premium_guild_since){
+				if(premium_guild_since > rmem.premium_since) {
+					premium_guild_since = rmem.premium_since;
+				}
+			} else {
+				premium_guild_since = rmem.premium_since;
+			}
+		}
+		for(const smem of self_member) {
+			if (smem.guild_id === rmem.guild_id) {
+				mutual_guilds.push({id: rmem.guild_id, nick: rmem.nick})
+			}
+		}
+	}
 	res.json({
 		connected_accounts: user.connected_accounts,
-		premium_guild_since: null, // TODO
-		premium_since: null, // TODO
-		mutual_guilds: [], // TODO {id: "", nick: null} when ?with_mutual_guilds=true
+		premium_guild_since: premium_guild_since, // TODO
+		premium_since: user.premium_since, // TODO
+		mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
 		user: {
 			username: user.username,
 			discriminator: user.discriminator,

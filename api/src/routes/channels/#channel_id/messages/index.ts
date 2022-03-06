@@ -126,6 +126,13 @@ router.get("/", async (req: Request, res: Response) => {
 				y.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
 			});
 
+			//Some clients ( discord.js ) only check if a property exists within the response,
+			//which causes erorrs when, say, the `application` property is `null`.
+			for (var curr in x) {
+				if (x[curr] === null)
+					delete x[curr];
+			}
+
 			return x;
 		})
 	);
@@ -212,7 +219,10 @@ router.post(
 				})
 			);
 		}
-
+	
+		//Fix for the client bug
+		delete message.member
+		
 		await Promise.all([
 			message.save(),
 			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent),

@@ -57,6 +57,13 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		user.data.hash = await bcrypt.hash(body.new_password, 12);
 	}
 
+	var check_username = body?.username?.replace(/\s/g, '');
+	if(!check_username && !body?.avatar && !body?.banner) {
+		throw FieldErrors({
+			username: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
+		});
+	}
+
 	await user.save();
 
 	// @ts-ignore

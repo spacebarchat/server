@@ -16,6 +16,7 @@ export enum PublicUserEnum {
 	banner,
 	bio,
 	bot,
+	premium_since,
 }
 export type PublicUserKeys = keyof typeof PublicUserEnum;
 
@@ -109,6 +110,9 @@ export class User extends BaseClass {
 
 	@Column()
 	created_at: Date; // registration date
+
+	@Column({ nullable: true })
+	premium_since: Date; // premium date
 
 	@Column({ select: false })
 	verified: boolean; // if the user is offically verified
@@ -246,6 +250,7 @@ export class User extends BaseClass {
 			id: Snowflake.generate(),
 			bot: false,
 			system: false,
+			premium_since: new Date(),
 			desktop: false,
 			mobile: false,
 			premium: true,
@@ -256,7 +261,7 @@ export class User extends BaseClass {
 			disabled: false,
 			deleted: false,
 			email: email,
-			rights: "0",
+			rights: "0", // TODO: grant rights correctly, as 0 actually stands for no rights at all
 			nsfw_allowed: true, // TODO: depending on age
 			public_flags: "0",
 			flags: "0", // TODO: generate
@@ -283,23 +288,18 @@ export class User extends BaseClass {
 }
 
 export const defaultSettings: UserSettings = {
-	afk_timeout: 300,
+	afk_timeout: 3600,
 	allow_accessibility_detection: true,
 	animate_emoji: true,
 	animate_stickers: 0,
 	contact_sync_enabled: false,
 	convert_emoticons: false,
-	custom_status: {
-		emoji_id: undefined,
-		emoji_name: undefined,
-		expires_at: undefined,
-		text: undefined,
-	},
+	custom_status: null,
 	default_guilds_restricted: false,
-	detect_platform_accounts: true,
-	developer_mode: false,
-	disable_games_tab: false,
-	enable_tts_command: true,
+	detect_platform_accounts: false,
+	developer_mode: true,
+	disable_games_tab: true,
+	enable_tts_command: false,
 	explicit_content_filter: 0,
 	friend_source_flags: { all: true },
 	gateway_connected: false,
@@ -309,17 +309,16 @@ export const defaultSettings: UserSettings = {
 	inline_attachment_media: true,
 	inline_embed_media: true,
 	locale: "en-US",
-	message_display_compact: false,
+	message_display_compact: true,
 	native_phone_integration_enabled: true,
 	render_embeds: true,
 	render_reactions: true,
 	restricted_guilds: [],
 	show_current_game: true,
 	status: "online",
-	stream_notifications_enabled: true,
+	stream_notifications_enabled: false,
 	theme: "dark",
-	timezone_offset: 0,
-	// timezone_offset: // TODO: timezone from request
+	timezone_offset: 0, // TODO: timezone from request
 };
 
 export interface UserSettings {
@@ -334,7 +333,7 @@ export interface UserSettings {
 		emoji_name?: string;
 		expires_at?: number;
 		text?: string;
-	};
+	} | null;
 	default_guilds_restricted: boolean;
 	detect_platform_accounts: boolean;
 	developer_mode: boolean;
