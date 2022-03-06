@@ -2,7 +2,6 @@
 	"include": ["dist/**/*.ts"],
 	"exclude": [],
 	"compilerOptions": {
-		/* Visit https://aka.ms/tsconfig.json to read more about this file */
 
 		/* Basic Options */
 		"incremental": false /* Enable incremental compilation */,
@@ -16,7 +15,7 @@
 		// "jsx": "preserve",                     /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
 		"declaration": false /* Generates corresponding '.d.ts' file. */,
 		"declarationMap": false /* Generates a sourcemap for each corresponding '.d.ts' file. */,
-		"sourceMap": false /* Generates corresponding '.map' file. */,
+		"sourceMap": true /* Generates corresponding '.map' file. */,
 		// "outFile": "./",                       /* Concatenate and emit output to single file. */
 		"outDir": "./dist/" /* Redirect output structure to the directory. */,
 		"rootDir": "./dist/" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,

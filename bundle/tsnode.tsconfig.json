@@ -1,0 +1,15 @@
+{
+	"extends": "./tsconfig.json",
+	"ts-node": {
+		"transpileOnly": true,
+		"preferTsExts": true,
+		"require": ["tsconfig-paths/register"],
+		"compiler": "typescript-cached-transpile",
+	},
+	"compilerOptions": {
+		"rootDir": "../",
+		"baseUrl": "../",
+		"sourceRoot": "../",
+		"sourceMap": true,
+	}
+}
