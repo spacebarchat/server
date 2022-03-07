@@ -24,18 +24,39 @@ export interface VanityUrlSchema {
 	code?: string;
 }
 
-// TODO: check if guild is elgible for vanity url
 router.patch("/", route({ body: "VanityUrlSchema", permission: "MANAGE_GUILD" }), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	const body = req.body as VanityUrlSchema;
 	const code = body.code?.replace(InviteRegex, "");
+
+	const guild = await Guild.findOneOrFail({ id: guild_id });
+	if (!guild.features.includes("VANITY_URL")) throw new HTTPError("Your guild doesn't support vanity urls");
+
+	if (!code || code.length === 0) throw new HTTPError("Code cannot be null or empty");
 
 	const invite = await Invite.findOne({ code });
 	if (invite) throw new HTTPError("Invite already exists");
 
 	const { id } = await Channel.findOneOrFail({ guild_id, type: ChannelType.GUILD_TEXT });
 
-	await Invite.update({ vanity_url: true, guild_id }, { code: code, channel_id: id });
+	const oldInvite = await Invite.findOne({ vanity_url: true, guild_id });
+
+	if (oldInvite) {
+		await Invite.update({ vanity_url: true, guild_id }, { code: code, channel_id: id });
+	} else {
+		await new Invite({
+			vanity_url: true,
+			code: code,
+			temporary: false,
+			uses: 0,
+			max_uses: 0,
+			max_age: 0,
+			created_at: new Date(),
+			expires_at: new Date(),
+			guild_id: guild_id,
+			channel_id: id
+		}).save();
+	}
 
 	return res.json({ code: code });
 });
