@@ -77,8 +77,9 @@ export const VoiceOPCodes = {
 	RESUME: 7,
 	HELLO: 8,
 	RESUMED: 9,
-	CLIENT_CONNECT: 12,
-	CLIENT_DISCONNECT: 13,
+	CLIENT_CONNECT: 12,		// incorrect, op 12 is probably used for video
+	CLIENT_DISCONNECT: 13,	// incorrect
+	VERSION: 16,	//not documented
 };
 
 export const Events = {

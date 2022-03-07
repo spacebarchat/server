@@ -87,42 +87,82 @@ export async function onSelectProtocol(this: Server, socket: WebSocket, data: Pa
 			})),
 	*/
 
+	const videoCodec = this.mediasoupRouters[0].rtpCapabilities.codecs!.find((x: any) => x.kind === "video")?.mimeType
+	const audioCodec = this.mediasoupRouters[0].rtpCapabilities.codecs!.find((x: any) => x.kind === "audio")
+
 	if (!test_hasMadeProducer) {
 		const producer = await transport.produce({
 			kind: "audio",
 			rtpParameters: {
 				mid: "audio",
 				codecs: [{
-					clockRate: 48000,
-					payloadType: 111,
-					mimeType: "audio/opus",
-					channels: 2,
+					clockRate: audioCodec!.clockRate,
+					payloadType: audioCodec!.preferredPayloadType as number,
+					mimeType: audioCodec!.mimeType,
+					channels: audioCodec?.channels,
 				}],
 				headerExtensions: res.ext?.map(x => ({
 					id: x.value,
 					uri: x.uri,
-				}))
+				})),
 			},
 			paused: false,
 		});
-		
+
 		const consumer = await transport.consume({
 			producerId: producer.id,
-			paused: false,
+			paused: true,
 			rtpCapabilities,
-		})
-
+		});
+		
 		test_hasMadeProducer = true;
 	}
+
+	/* server sends sdp:
+
+	m=audio 50021 ICE/SDP		//same port as sent in READY
+	a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87
+	c=IN IP4 109.200.213.132	//same IP as sent in READY
+	a=rtcp:50021				//same port?
+	a=ice-ufrag:rTmX
+	a=ice-pwd:M+ncqWK6SEdHhirOjG2VFA
+	a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87
+	a=candidate:1 1 UDP 4261412862 109.200.213.132 50021 typ host	//same IP and PORT
+
+	*/
+
+
+	var test = {
+		"video_codec": "H264",
+		"sdp": `
+			m=audio 50011 ICE/SDP\n
+			a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87\n
+			c=IN IP4 109.200.214.156\n
+			a=rtcp:50011\n
+			a=ice-ufrag:d0aZ\n
+			a=ice-pwd:51ubWYu7GSkQRqlH/apTSZ\n
+			a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87\n
+			a=candidate:1 1 UDP 4261412862 109.200.214.156 50011 typ host\n`,
+		"media_session_id": "9e18c981687f2de5399edd5cb3f3babf",
+		"audio_codec": "opus"
+	};
+
 
 	socket.send(JSON.stringify({
 		op: VoiceOPCodes.SESSION_DESCRIPTION,
 		d: {
-			video_codec: data.d.codecs.find((x: any) => x.type === "video").name,
-			secret_key: new Array(32).fill(null).map(x => Math.random() * 256),
-			mode: "xsalsa20_poly1305",
-			media_session_id: this.mediasoupTransports[0].id,
-			audio_codec: data.d.codecs.find((x: any) => x.type === "audio").name,
+			video_codec: videoCodec?.substring(6) || undefined,
+			// mode: "xsalsa20_poly1305",
+			media_session_id: transport.id,
+			audio_codec: audioCodec?.mimeType.substring(6),
+			sdp: `m=audio ${transport.iceCandidates[0].port} ICE/SDP\n`
+				+ `a=fingerprint:sha-256 ${transport.dtlsParameters.fingerprints.find(x => x.algorithm === "sha-256")?.value}\n`
+				+ `c=IN IPV4 ${transport.iceCandidates[0].ip}\n`
+				+ `a=rtcp:${transport.iceCandidates[0].port}\n`
+				+ `a=ice-ufrag:${transport.iceParameters.usernameFragment}\n`
+				+ `a=ice-pwd:${transport.iceParameters.password}\n`
+				+ `a=fingerprint:sha-1 ${transport.dtlsParameters.fingerprints[0].value}\n`
+				+ `a=candidate:1 1 ${transport.iceCandidates[0].protocol} ${transport.iceCandidates[0].priority} ${transport.iceCandidates[0].ip} ${transport.iceCandidates[0].port} typ ${transport.iceCandidates[0].type}`
 		}
 	}));
 }
