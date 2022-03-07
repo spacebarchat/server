@@ -6,15 +6,18 @@ import * as mediasoup from "mediasoup";
 import { RtpCodecCapability } from "mediasoup/node/lib/RtpParameters";
 import * as sdpTransform from 'sdp-transform';
 
+
 /*
-	{
-	op: 1,
-	d: {
-		protocol: "webrtc",
-		data: "
+
+	Sent by client:
+{
+	"op": 1,
+	"d": {
+		"protocol": "webrtc",
+		"data": "
 			a=extmap-allow-mixed
-			a=ice-ufrag:ilWh
-			a=ice-pwd:Mx7TDnPKXDnTgYWC+qMaqspQ
+			a=ice-ufrag:vNxb
+			a=ice-pwd:tZvpbVPYEKcnW0gGRPq0OOnh
 			a=ice-options:trickle
 			a=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level
 			a=extmap:2 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time
@@ -32,43 +35,63 @@ import * as sdpTransform from 'sdp-transform';
 			a=rtpmap:96 VP8/90000
 			a=rtpmap:97 rtx/90000
 		",
-		sdp: "same data as in d.data? also not documented by discord",
-		codecs: [
-		{
-			name: "opus",
-			type: "audio",
-			priority: 1000,
-			payload_type: 111,
-			rtx_payload_type: null,
-		},
-		{
-			name: "H264",
-			type: "video",
-			priority: 1000,
-			payload_type: 102,
-			rtx_payload_type: 121,
-		},
-		{
-			name: "VP8",
-			type: "video",
-			priority: 2000,
-			payload_type: 96,
-			rtx_payload_type: 97,
-		},
-		{
-			name: "VP9",
-			type: "video",
-			priority: 3000,
-			payload_type: 98,
-			rtx_payload_type: 99,
-		},
+		"codecs": [
+			{
+				"name": "opus",
+				"type": "audio",
+				"priority": 1000,
+				"payload_type": 111,
+				"rtx_payload_type": null
+			},
+			{
+				"name": "H264",
+				"type": "video",
+				"priority": 1000,
+				"payload_type": 102,
+				"rtx_payload_type": 121
+			},
+			{
+				"name": "VP8",
+				"type": "video",
+				"priority": 2000,
+				"payload_type": 96,
+				"rtx_payload_type": 97
+			},
+			{
+				"name": "VP9",
+				"type": "video",
+				"priority": 3000,
+				"payload_type": 98,
+				"rtx_payload_type": 99
+			}
 		],
-		rtc_connection_id: "b3c8628a-edb5-49ae-b860-ab0d2842b104",
-	},
+		"rtc_connection_id": "3faa0b80-b3e2-4bae-b291-273801fbb7ab"
 	}
+}
+
+Sent by server:
+
+{
+	"op": 4,
+	"d": {
+		"video_codec": "H264",
+		"sdp": "
+			m=audio 50001 ICE/SDP
+			a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87
+			c=IN IP4 109.200.214.158
+			a=rtcp:50001
+			a=ice-ufrag:CLzn
+			a=ice-pwd:qEmIcNwigd07mu46Ok0XCh
+			a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87
+			a=candidate:1 1 UDP 4261412862 109.200.214.158 50001 typ host
+		",
+		"media_session_id": "807955cb953e98c5b90704cf048e81ec",
+		"audio_codec": "opus"
+	}
+}
+
 */
 
-var test_hasMadeProducer = false;
 
 export async function onSelectProtocol(this: Server, socket: WebSocket, data: Payload) {
 	const rtpCapabilities = this.mediasoupRouters[0].rtpCapabilities;
@@ -78,87 +101,46 @@ export async function onSelectProtocol(this: Server, socket: WebSocket, data: Pa
 
 	const res = sdpTransform.parse(data.d.sdp);
 
-	/*
-	 res.media.map(x => x.rtp).flat(1).map(x => ({
-				codec: x.codec,
-				payloadType: x.payload,
-				clockRate: x.rate as number,
-				mimeType: `audio/${x.codec}`,
+	const videoCodec = this.mediasoupRouters[0].rtpCapabilities.codecs!.find((x: any) => x.kind === "video");
+	const audioCodec = this.mediasoupRouters[0].rtpCapabilities.codecs!.find((x: any) => x.kind === "audio");
+
+	const producer = this.mediasoupProducers[0] || await transport.produce({
+		kind: "audio",
+		rtpParameters: {
+			mid: "audio",
+			codecs: [{
+				clockRate: audioCodec!.clockRate,
+				payloadType: audioCodec!.preferredPayloadType as number,
+				mimeType: audioCodec!.mimeType,
+				channels: audioCodec?.channels,
+			}],
+			headerExtensions: res.ext?.map(x => ({
+				id: x.value,
+				uri: x.uri,
 			})),
-	*/
+		},
+		paused: false,
+	});
 
-	const videoCodec = this.mediasoupRouters[0].rtpCapabilities.codecs!.find((x: any) => x.kind === "video")?.mimeType
-	const audioCodec = this.mediasoupRouters[0].rtpCapabilities.codecs!.find((x: any) => x.kind === "audio")
+	console.log("can consume: " + this.mediasoupRouters[0].canConsume({ producerId: producer.id, rtpCapabilities: rtpCapabilities }));
 
-	if (!test_hasMadeProducer) {
-		const producer = await transport.produce({
-			kind: "audio",
-			rtpParameters: {
-				mid: "audio",
-				codecs: [{
-					clockRate: audioCodec!.clockRate,
-					payloadType: audioCodec!.preferredPayloadType as number,
-					mimeType: audioCodec!.mimeType,
-					channels: audioCodec?.channels,
-				}],
-				headerExtensions: res.ext?.map(x => ({
-					id: x.value,
-					uri: x.uri,
-				})),
-			},
-			paused: false,
-		});
-
-		const consumer = await transport.consume({
-			producerId: producer.id,
-			paused: true,
-			rtpCapabilities,
-		});
-		
-		test_hasMadeProducer = true;
-	}
-
-	/* server sends sdp:
-
-	m=audio 50021 ICE/SDP		//same port as sent in READY
-	a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87
-	c=IN IP4 109.200.213.132	//same IP as sent in READY
-	a=rtcp:50021				//same port?
-	a=ice-ufrag:rTmX
-	a=ice-pwd:M+ncqWK6SEdHhirOjG2VFA
-	a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87
-	a=candidate:1 1 UDP 4261412862 109.200.213.132 50021 typ host	//same IP and PORT
-
-	*/
-
-
-	var test = {
-		"video_codec": "H264",
-		"sdp": `
-			m=audio 50011 ICE/SDP\n
-			a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87\n
-			c=IN IP4 109.200.214.156\n
-			a=rtcp:50011\n
-			a=ice-ufrag:d0aZ\n
-			a=ice-pwd:51ubWYu7GSkQRqlH/apTSZ\n
-			a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87\n
-			a=candidate:1 1 UDP 4261412862 109.200.214.156 50011 typ host\n`,
-		"media_session_id": "9e18c981687f2de5399edd5cb3f3babf",
-		"audio_codec": "opus"
-	};
-
+	const consumer = this.mediasoupConsumers[0] || await transport.consume({
+		producerId: producer.id,
+		paused: false,
+		rtpCapabilities,
+	});
 
 	socket.send(JSON.stringify({
 		op: VoiceOPCodes.SESSION_DESCRIPTION,
 		d: {
-			video_codec: videoCodec?.substring(6) || undefined,
-			// mode: "xsalsa20_poly1305",
+			video_codec: videoCodec?.mimeType?.substring(6) || undefined,
+			mode: "xsalsa20_poly1305_lite",
 			media_session_id: transport.id,
 			audio_codec: audioCodec?.mimeType.substring(6),
 			sdp: `m=audio ${transport.iceCandidates[0].port} ICE/SDP\n`
 				+ `a=fingerprint:sha-256 ${transport.dtlsParameters.fingerprints.find(x => x.algorithm === "sha-256")?.value}\n`
 				+ `c=IN IPV4 ${transport.iceCandidates[0].ip}\n`
-				+ `a=rtcp:${transport.iceCandidates[0].port}\n`
+				+ `a=rtcp: ${transport.iceCandidates[0].port}\n`
 				+ `a=ice-ufrag:${transport.iceParameters.usernameFragment}\n`
 				+ `a=ice-pwd:${transport.iceParameters.password}\n`
 				+ `a=fingerprint:sha-1 ${transport.dtlsParameters.fingerprints[0].value}\n`
