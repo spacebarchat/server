@@ -6,7 +6,7 @@ import { setHeartbeat } from "./util";
 import * as mediasoup from "mediasoup";
 import { types as MediasoupTypes } from "mediasoup";
 
-import Net from "net";
+import udp from "dgram";
 
 var port = Number(process.env.PORT);
 if (isNaN(port)) port = 3004;
@@ -16,6 +16,8 @@ export class Server {
 	public mediasoupWorkers: MediasoupTypes.Worker[] = [];
 	public mediasoupRouters: MediasoupTypes.Router[] = [];
 	public mediasoupTransports: MediasoupTypes.WebRtcTransport[] = [];
+	public mediasoupProducers: MediasoupTypes.Producer[] = [];
+	public mediasoupConsumers: MediasoupTypes.Consumer[] = [];
 
 	constructor() {
 		this.ws = new WebSocketServer({
@@ -27,8 +29,6 @@ export class Server {
 
 			socket.on("message", async (message: string) => {
 				const payload: Payload = JSON.parse(message);
-
-				// console.log(payload);
 
 				if (OPCodeHandlers[payload.op])
 					try {
@@ -44,6 +44,7 @@ export class Server {
 				}
 			});
 		});
+
 	}
 
 	async listen(): Promise<void> {
@@ -73,18 +74,26 @@ export class Server {
 				router.observer.on("newtransport", async (transport: MediasoupTypes.WebRtcTransport) => {
 					console.log("new transport created [id:%s]", transport.id);
 
-					transport.observer.on("sctpstatechange", (state) => {
-						console.log(state)
-					});
-
 					await transport.enableTraceEvent();
+
+					transport.on("connect", () => {
+						console.log("transport connect")
+					})
 
 					transport.observer.on("newproducer", (producer: MediasoupTypes.Producer) => {
 						console.log("new producer created [id:%s]", producer.id);
+
+						this.mediasoupProducers.push(producer);
 					});
 
 					transport.observer.on("newconsumer", (consumer: MediasoupTypes.Consumer) => {
 						console.log("new consumer created [id:%s]", consumer.id);
+
+						this.mediasoupConsumers.push(consumer);
+
+						consumer.on("rtp", (rtpPacket) => {
+							console.log(rtpPacket);
+						});
 					});
 
 					transport.observer.on("newdataproducer", (dataProducer) => {

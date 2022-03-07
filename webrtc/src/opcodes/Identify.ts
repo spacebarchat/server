@@ -34,63 +34,12 @@ export async function onIdentify(this: Server, socket: WebSocket, data: Identify
 		return socket.close(CLOSECODES.Invalid_intent);
 
 	var transport = this.mediasoupTransports[0] || await this.mediasoupRouters[0].createWebRtcTransport({
-		listenIps: [{ ip: "0.0.0.0", announcedIp: "127.0.0.1" }],
+		listenIps: [{ ip: "10.22.64.69" }],
 		enableUdp: true,
 		enableTcp: true,
 		preferUdp: true,
+		enableSctp: true,
 	});
-
-	/*
-		//discord proper sends:
-		{ 
-			"streams": [
-				{ "type": "video", "ssrc": 1311885, "rtx_ssrc": 1311886, "rid": "50", "quality": 50, "active": false },
-				{ "type": "video", "ssrc": 1311887, "rtx_ssrc": 1311888, "rid": "100", "quality": 100, "active": false }
-			],
-			"ssrc": 1311884,
-			"port": 50008,
-			"modes": [
-				"aead_aes256_gcm_rtpsize",
-				"aead_aes256_gcm",
-				"xsalsa20_poly1305_lite_rtpsize",
-				"xsalsa20_poly1305_lite",
-				"xsalsa20_poly1305_suffix",
-				"xsalsa20_poly1305"
-			],
-			"ip": "109.200.214.158",
-			"experiments": [
-				"bwe_conservative_link_estimate",
-				"bwe_remote_locus_client",
-				"fixed_keyframe_interval"
-			]
-		}
-	*/
-
-
-
-	/* 
-		{
-			"streams": [
-				{ "type": "video", "ssrc": 129861, "rtx_ssrc": 129862, "rid": "100", "quality": 100, "active": false }
-			],
-			"ssrc": 129860,
-			"port": 50003,
-			"modes": [
-				"aead_aes256_gcm_rtpsize",
-				"aead_aes256_gcm",
-				"xsalsa20_poly1305_lite_rtpsize",
-				"xsalsa20_poly1305_lite",
-				"xsalsa20_poly1305_suffix",
-				"xsalsa20_poly1305"
-			],
-			"ip": "109.200.213.251",
-			"experiments": [
-				"bwe_conservative_link_estimate",
-				"bwe_remote_locus_client",
-				"fixed_keyframe_interval"
-			];
-		};
-	*/
 
 	socket.send(JSON.stringify({
 		op: VoiceOPCodes.READY,
@@ -98,7 +47,7 @@ export async function onIdentify(this: Server, socket: WebSocket, data: Identify
 			streams: [...data.d.streams.map(x => ({ ...x, rtx_ssrc: Math.floor(Math.random() * 10000), ssrc: Math.floor(Math.random() * 10000), active: false, }))],
 			ssrc: Math.floor(Math.random() * 10000),
 			ip: transport.iceCandidates[0].ip,
-			port: "50001",
+			port: transport.iceCandidates[0].port,
 			modes: [
 				"aead_aes256_gcm_rtpsize",
 				"aead_aes256_gcm",
@@ -107,7 +56,11 @@ export async function onIdentify(this: Server, socket: WebSocket, data: Identify
 				"xsalsa20_poly1305_suffix",
 				"xsalsa20_poly1305"
 			],
-			experiments: [],
+			experiments: [
+				"bwe_conservative_link_estimate",
+				"bwe_remote_locus_client",
+				"fixed_keyframe_interval"
+			]
 		},
 	}));
 }
