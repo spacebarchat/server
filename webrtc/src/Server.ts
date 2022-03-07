@@ -6,6 +6,8 @@ import { setHeartbeat } from "./util";
 import * as mediasoup from "mediasoup";
 import { types as MediasoupTypes } from "mediasoup";
 
+import Net from "net";
+
 var port = Number(process.env.PORT);
 if (isNaN(port)) port = 3004;
 
@@ -13,7 +15,7 @@ export class Server {
 	public ws: WebSocketServer;
 	public mediasoupWorkers: MediasoupTypes.Worker[] = [];
 	public mediasoupRouters: MediasoupTypes.Router[] = [];
-	public mediasoupTransports: MediasoupTypes.Transport[] = [];
+	public mediasoupTransports: MediasoupTypes.WebRtcTransport[] = [];
 
 	constructor() {
 		this.ws = new WebSocketServer({
@@ -26,7 +28,7 @@ export class Server {
 			socket.on("message", async (message: string) => {
 				const payload: Payload = JSON.parse(message);
 
-				console.log(payload);
+				// console.log(payload);
 
 				if (OPCodeHandlers[payload.op])
 					try {
@@ -68,8 +70,12 @@ export class Server {
 
 				this.mediasoupRouters.push(router);
 
-				router.observer.on("newtransport", async (transport: MediasoupTypes.Transport) => {
+				router.observer.on("newtransport", async (transport: MediasoupTypes.WebRtcTransport) => {
 					console.log("new transport created [id:%s]", transport.id);
+
+					transport.observer.on("sctpstatechange", (state) => {
+						console.log(state)
+					});
 
 					await transport.enableTraceEvent();
 

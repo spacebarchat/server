@@ -15,6 +15,8 @@ import { onSpeaking } from "./Speaking";
 import { onResume } from "./Resume";
 import { onConnect } from "./Connect";
 
+import { onVersion } from "./Version";
+
 export type OPCodeHandler = (this: WebSocket, data: Payload) => any;
 
 export default {
@@ -34,4 +36,5 @@ export default {
 	//op 13?
 	//op 15?
 	//op 16? empty data on client send but server sends {"voice":"0.8.24+bugfix.voice.streams.opt.branch-ffcefaff7","rtc_worker":"0.3.14-crypto-collision-copy"}
+	[VoiceOPCodes.VERSION]: onVersion,
 };
