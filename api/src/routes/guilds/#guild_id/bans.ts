@@ -33,22 +33,16 @@ router.get("/", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: 
 	const { guild_id } = req.params;
 
 	let bans = await Ban.find({ guild_id: guild_id });
-
-	/* Filter secret from database registry.*/
-
-	bans.filter(ban => ban.user_id !== ban.executor_id);
-	// pretend self-bans don't exist to prevent victim chasing
 	
-	bans.forEach((registry: BanRegistrySchema) => {
-	delete registry.ip;
-	});
+	// pretend self-bans don't exist to prevent victim chasing
+	bans.filter(ban => ban.user_id !== ban.executor_id);
 	
 	/* Create an separate array to modify and return */
 	
 	var bans_array: object[] = [];
 
 	for (const ban of bans) {
-	const banned_user = await User.getPublicUser(ban.user_id);
+	const banned_user = User.getPublicUser(ban.user_id);
 	var ban_object = {user: {id: banned_user.id, username: banned_user.username, avatar: banned_user.avatar, discriminator: banned_user.discriminator, public_flags: banned_user.public_flags}, reason: ban.reason};
 	bans_array.push(ban_object)
 	}
