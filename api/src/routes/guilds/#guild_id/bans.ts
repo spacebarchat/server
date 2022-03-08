@@ -43,7 +43,17 @@ router.get("/", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: 
 	delete registry.ip;
 	});
 	
-	return res.json(bans);
+	/* Create an separate array to modify and return */
+	
+	var bans_array: object[] = [];
+
+	for (const ban of bans) {
+	const banned_user = await User.getPublicUser(ban.user_id);
+	var ban_object = {user: {id: banned_user.id, username: banned_user.username, avatar: banned_user.avatar, discriminator: banned_user.discriminator, public_flags: banned_user.public_flags}, reason: ban.reason};
+	bans_array.push(ban_object)
+	}
+	
+	return res.json(bans_array);
 });
 
 router.get("/:user", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: Response) => {
