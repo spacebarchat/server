@@ -86,7 +86,7 @@ export class Member extends BaseClassWithoutId {
 	joined_at: Date;
 
 	@Column({ nullable: true })
-	premium_since?: Date;
+	premium_since?: number;
 
 	@Column()
 	deaf: boolean;
