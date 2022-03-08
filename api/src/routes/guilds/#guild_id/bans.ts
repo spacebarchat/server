@@ -33,21 +33,32 @@ router.get("/", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: 
 	const { guild_id } = req.params;
 
 	let bans = await Ban.find({ guild_id: guild_id });
-	
-	// pretend self-bans don't exist to prevent victim chasing
-	bans.filter(ban => ban.user_id !== ban.executor_id);
-	
-	/* Create an separate array to modify and return */
-	
-	var bans_array: object[] = [];
+	let promisesToAwait: object[] = [];
+	const bansObj: object[] = [];
 
-	for (const ban of bans) {
-	const banned_user = await User.getPublicUser(ban.user_id);
-	var ban_object = {user: {id: banned_user.id, username: banned_user.username, avatar: banned_user.avatar, discriminator: banned_user.discriminator, public_flags: banned_user.public_flags}, reason: ban.reason};
-	bans_array.push(ban_object)
-	}
-	
-	return res.json(bans_array);
+	bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
+
+	bans.forEach((ban) => {
+		promisesToAwait.push(User.getPublicUser(ban.user_id));
+	});
+
+	const bannedUsers: object[] = await Promise.all(promisesToAwait);
+
+	bans.forEach((ban, index) => {
+		const user = bannedUsers[index] as User;
+		bansObj.push({
+			reason: ban.reason,
+			user: {
+				username: user.username,
+				discriminator: user.discriminator,
+				id: user.id,
+				avatar: user.avatar,
+				public_flags: user.public_flags
+			}
+		});
+	});
+
+	return res.json(bansObj);
 });
 
 router.get("/:user", route({ permission: "BAN_MEMBERS" }), async (req: Request, res: Response) => {
