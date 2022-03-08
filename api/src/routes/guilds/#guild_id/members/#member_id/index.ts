@@ -28,6 +28,9 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 
 	if (body.roles) {
 		permission.hasThrow("MANAGE_ROLES");
+
+		const everyone = await Role.findOneOrFail({ guild_id: guild_id, name: "@everyone", position: 0 });
+		body.roles.push(everyone?.id);
 		member.roles = body.roles.map((x) => new Role({ id: x })); // foreign key constraint will fail if role doesn't exist
 	}
 
