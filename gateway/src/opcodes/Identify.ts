@@ -240,8 +240,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			x.guild_hashes = {}; // @ts-ignore
 			x.guild_scheduled_events = []; // @ts-ignore
 			x.threads = [];
-			x.premium_subscription_count = 30;
-			x.premium_tier = 3;
 			return x;
 		}),
 		guild_experiments: [], // TODO
