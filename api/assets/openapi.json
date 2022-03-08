@@ -3119,7 +3119,7 @@
 						"type": "boolean"
 					},
 					"status": {
-						"enum": ["dnd", "idle", "offline", "online"],
+						"enum": ["dnd", "idle", "offline", "online", "invisible"],
 						"type": "string"
 					},
 					"stream_notifications_enabled": {
@@ -5677,7 +5677,7 @@
 						"type": "boolean"
 					},
 					"status": {
-						"enum": ["dnd", "idle", "offline", "online"],
+						"enum": ["dnd", "idle", "offline", "online", "invisible"],
 						"type": "string"
 					},
 					"stream_notifications_enabled": {
