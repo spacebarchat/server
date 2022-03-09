@@ -210,6 +210,68 @@ export class User extends BaseClass {
 			return undefined;
 		}
 	}
+	
+	static async addBot({
+		name,
+		id,
+		req
+	}: {
+		name: string;
+		id: string;
+		req?: any;
+	}) {
+		// trim special uf8 control characters -> Backspace, Newline, ...
+		name = trimSpecial(name);
+
+		const discriminator = await User.generateDiscriminator(name);
+		if (!discriminator) {
+			// We've failed to generate a valid and unused discriminator
+			throw FieldErrors({
+				username: {
+					code: "USERNAME_TOO_MANY_USERS",
+					message: req.t("auth:register.USERNAME_TOO_MANY_USERS"),
+				},
+			});
+		}
+
+		// TODO: save date_of_birth
+		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
+		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
+		const language = req.language === "en" ? "en-US" : req.language || "en-US";
+
+		const user = new User({
+			created_at: new Date(),
+			username: name,
+			discriminator,
+			id: id,
+			bot: true,
+			system: false,
+			premium_since: null,
+			desktop: false,
+			mobile: false,
+			premium: false,
+			premium_type: 0,
+			bio: "",
+			mfa_enabled: false,
+			verified: true,
+			disabled: false,
+			deleted: false,
+			rights: "0", // TODO: grant rights correctly, as 0 actually stands for no rights at all
+			nsfw_allowed: true, // TODO: depending on age
+			public_flags: "0",
+			flags: "0", // TODO: generate
+			data: {
+				hash: undefined,
+				valid_tokens_since: new Date(),
+			},
+			settings: { ...defaultSettings, locale: language },
+			fingerprints: [],
+		});
+
+		await user.save();
+
+		return user;
+	}
 
 	static async register({
 		email,

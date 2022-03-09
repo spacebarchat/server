@@ -8,13 +8,36 @@ const router: Router = Router();
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const members = await Member.find({ relations: ["guild"], where: { id: req.user_id } });
 
-	let guild = members.map((x) => x.guild);
+	let guilds = members.map((x) => x.guild);
 
-	if ("with_counts" in req.query && req.query.with_counts == "true") {
-		guild = []; // TODO: Load guilds with user role permissions number
+	if (req.query.with_counts! == "true") {
+		let permissionGuilds = [];
+
+		for (const guild of guilds) {
+			const guild_id = guild.id;
+
+			let permissions: number = 0;
+
+			const member = await Member.findOneOrFail({
+				where: { id: req.user_id, guild_id },
+				relations: ["roles"]
+			});
+
+			for (const role of member.roles) {
+				permissions += Number(role.permissions);
+			}
+
+			if (guild.owner_id == req.user_id) {
+				permissions += 2196771451326;
+			}
+
+			permissionGuilds.push(Object.assign({ ...guild, permissions: `${permissions}` }));
+
+			guilds = permissionGuilds;
+		}
 	}
 
-	res.json(guild);
+	res.json(guilds);
 });
 
 // user send to leave a certain guild

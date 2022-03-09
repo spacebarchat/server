@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { ClientApplicationAssetTypes } from "../util";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Team } from "./Team";
@@ -29,6 +30,9 @@ export class Application extends BaseClass {
 
 	@Column({ nullable: true })
 	privacy_policy_url?: string;
+
+	@ManyToOne(() => User)
+	bot?: User;
 
 	@JoinColumn({ name: "owner_id" })
 	@ManyToOne(() => User)
@@ -61,6 +65,40 @@ export class Application extends BaseClass {
 
 	@Column()
 	flags: string; // the application's public flags
+
+	@Column({ nullable: true })
+	type?: string;
+
+	@Column()
+	hook: boolean;
+
+	@Column()
+	store_application_state: number;
+
+	@Column()
+	rpc_application_state: number;
+
+	@Column({ type: "simple-array" })
+	redirect_uris: string[];
+
+	@Column()
+	verification_state: number;
+
+	@Column({ nullable: true })
+	interactions_endpoint_url: string;
+
+	@Column()
+	integration_public: boolean;
+
+	@Column()
+	integration_require_code_grant: boolean;
+
+	@Column()
+	discoverability_state: number;
+
+	@Column()
+	discovery_eligibility_flags: number;
+
 }
 
 export interface ApplicationCommand {
