@@ -9,11 +9,19 @@ const InviteRegex = /\W/g;
 
 router.get("/", route({ permission: "MANAGE_GUILD" }), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
+	const guild = await Guild.findOneOrFail({ id: guild_id });
 
-	const invite = await Invite.findOne({ where: { guild_id: guild_id, vanity_url: true } });
-	if (!invite) return res.json({ code: null });
+	if (!guild.features.includes("ALIASABLE_NAMES")) {
+		const invite = await Invite.findOne({ where: { guild_id: guild_id, vanity_url: true } });
+		if (!invite) return res.json({ code: null });
 
-	return res.json({ code: invite.code, uses: invite.uses });
+		return res.json({ code: invite.code, uses: invite.uses });
+	} else {
+		const invite = await Invite.find({ where: { guild_id: guild_id, vanity_url: true } });
+		if (!invite || invite.length == 0) return res.json({ code: null });
+
+		return res.json(invite.map((x) => ({ code: x.code, uses: x.uses })));
+	}
 });
 
 export interface VanityUrlSchema {
