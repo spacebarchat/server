@@ -6,13 +6,13 @@ const router: Router = Router();
 
 router.post("/", route({}), async (req: Request, res: Response) => {
 
-	const application = await Application.findOneOrFail({ where: `"id" = ${req.params.id}`})
+	const application = await Application.findOneOrFail({ where: { id: req.params.id }, relations: ["owner", "bot"]})
 
-	if (application.owner_id == req.user_id) {
+	if (application.owner!.id == req.user_id) {
 		await Promise.all([
-			Application.delete({ id: req.params.id }),
-			User.delete({ id: req.params.id }),
-			Member.delete({ id: req.params.id })
+			Application.delete({ id: application.id }),
+			User.delete({ id: application.id }),
+			Member.delete({ id: application.id })
 		]);
 	}
 	res.send([]).status(204);

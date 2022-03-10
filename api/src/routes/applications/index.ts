@@ -1,20 +1,11 @@
 import { Request, Response, Router } from "express";
-import { User, Application, Role } from "@fosscord/util";
+import { User, Application } from "@fosscord/util";
 import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-
-	const applications = await Application.find({ where: `"owner_id" = ${req.user_id}` })
-
-	for (const application of applications) {
-		const owner = await User.findOneOrFail({ where: { id: req.user_id }});
-		const bot = await User.findOne({ where: { id: application.id }})
-		application.assign({ owner: owner, bot: bot });
-	}
-
-	res.send(applications);
+	res.send(await Application.find({ where: `"owner_id" = ${req.user_id}`, relations: ["owner", "bot"]}));
 });
 
 export interface AppliationCreateSchema {

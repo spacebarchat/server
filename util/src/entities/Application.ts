@@ -31,8 +31,17 @@ export class Application extends BaseClass {
 	@Column({ nullable: true })
 	privacy_policy_url?: string;
 
+	@Column({ nullable: true })
+	@RelationId((application: Application) => application.bot)
+	bot_id: string;
+
+	@JoinColumn({ name: "bot_id" })
 	@ManyToOne(() => User)
 	bot?: User;
+
+	@Column()
+	@RelationId((application: Application) => application.owner)
+	owner_id: string;
 
 	@JoinColumn({ name: "owner_id" })
 	@ManyToOne(() => User)
@@ -43,6 +52,10 @@ export class Application extends BaseClass {
 
 	@Column()
 	verify_key: string;
+
+	@Column({ nullable: true })
+	@RelationId((application: Application) => application.team)
+	team_id: string;
 
 	@JoinColumn({ name: "team_id" })
 	@ManyToOne(() => Team, {
