@@ -6,17 +6,16 @@ const router: Router = Router();
 
 router.post("/", route({}), async (req: Request, res: Response) => {
 
-	const id = req.params.id
+	const { application_id } = req.params
 
-	const application = await Application.findOneOrFail({ where: {id: id}})
+	const application = await Application.findOneOrFail({ where: {id: application_id}})
 
 	const name = application.name
  
-	await User.addBot({ name, id, req })
+	await User.addBot({ name, id: application_id, req })
 
-	application.assign({ bot_id: id })
-
-	await Application.update({id}, { bot_id: id })
+	//TODO: Application.update never works
+	await Application.update({id: application_id}, { bot_id: application_id })
 
 	res.send([]).status(204);
 });
