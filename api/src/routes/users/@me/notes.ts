@@ -6,9 +6,9 @@ const router: Router = Router();
 router.put("/:id", route({}), async (req: Request, res: Response) => {
 	//TODO
 	res.json({
-		message: "400: Bad Request",
-		code: 0
-	}).status(400);
+		message: "Unknown User",
+		code: 10013
+	}).status(404);
 });
 
 export default router;
