@@ -12,7 +12,7 @@ import {
 	RelationId,
 } from "typeorm";
 import { Guild } from "./Guild";
-import { Config, emitEvent,Sorting } from "../util";
+import { Config, emitEvent } from "../util";
 import {
 	GuildCreateEvent,
 	GuildDeleteEvent,
@@ -25,7 +25,6 @@ import { Role } from "./Role";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Ban, PublicGuildRelations } from ".";
 import { DiscordApiErrors } from "../util/Constants";
-import { getRepository } from "typeorm";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
 	"id",
@@ -251,6 +250,7 @@ export class Member extends BaseClassWithoutId {
 			mute: false,
 			pending: false,
 		};
+
 		await Promise.all([
 			new Member({
 				...member,
@@ -293,97 +293,6 @@ export class Member extends BaseClassWithoutId {
 				user_id,
 			} as GuildCreateEvent),
 		]);
-		/*const guild_roles = await Role.find({
-	        where: { guild_id: guild_id },
-	        select: ["id"],
-	        order: {position: "DESC"},
-	    });
-	    let guild_members = await getRepository(Member)
-	            .createQueryBuilder("member")
-	            .where("member.guild_id = :guild_id", { guild_id: guild_id })
-	            .leftJoinAndSelect("member.roles", "role")
-	            .leftJoinAndSelect("member.user", "user")
-	            .leftJoinAndSelect("user.sessions", "session")
-	            .addSelect(
-	                "CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
-	                "_status"
-	                )
-	            .orderBy("role.position", "DESC")
-	            .addOrderBy("_status", "DESC")
-	            .addOrderBy("user.username", "ASC")
-	            .getMany();
-	    let sorted = await Sorting(guild_id, guild_roles,guild_members);
-	    let items = [] as any[];
-	    let groups = [] as any[];
-	    items = sorted.items;
-	    groups = sorted.groups;
-	    let total_online = sorted.total_online;
-	    let gmluser_group = groups;
-		let gml_index = items.map(object => object.member? object.member.id : false).indexOf(user_id);
-	    let ops = [];
-		let index_online = items_before.map(object => object.member? object.member.id : false).indexOf(user_id);
-        let contains_group = items_before.map(object => object.group? object.group.id : false).indexOf("offline");
-        let contains_group_new = items.map(object => object.group? object.group.id : false).indexOf("offline");
-
-        if(contains_group == -1){
-            ops.push({
-                op: "INSERT", // INSERT new group, if not existing
-                item: {
-                    group: {
-                        id: "offline",
-                        count: 1
-                    }
-                },
-                index: contains_group_new,
-            });
-        }
-        
-        if(contains_group_new == -1){
-            ops.push({
-                op: "DELETE", // DELETE group
-                index: contains_group,
-            });
-        }*/
-         
-        /*ops.push({
-            op: "DELETE",
-            index: index_online//DELETE USER FROM GROUP
-        });
-        ops.push({
-            op: "INSERT", // INSERT USER INTO GROUP, PROBABLY ISSUE WITH INDEX NUM WOULD NEED TO FIGURE THIS OUT.
-            index: gml_index,
-            item:{
-                member: {
-                    user: member,
-                    roles: ["offline"],
-                    presence: {
-                        user: {
-                            id: user_id,
-                        },
-                        activities: [],
-                        client_status: "offline", // TODO:
-                        status: "offline",
-                    },
-                    joined_at: member.joined_at,
-                    hoisted_role: null,
-                    premium_since: member.premium_since,
-                    deaf: false,
-                    mute: false,
-                }
-            }
-        });
-        await emitEvent({
-		    event: "GUILD_MEMBER_LIST_UPDATE",
-		    guild_id: member.guild_id,
-		    data: {
-		        online_count: total_online,
-		        member_count: guild.member_count,
-		        guild_id: member.guild_id,
-		        id: "everyone",
-		        groups: groups,
-		        ops: ops
-		    },
-		});*/
 	}
 }
 

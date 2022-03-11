@@ -47,10 +47,6 @@ export async function Close(this: WebSocket, code: number, reason: string) {
     }
     
 	console.log("[WebSocket] closed", code, reason);
-    
-    console.log("items_before");
-    console.log(items_before);
-    console.log("items_before-end");
 	if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
 	if (this.readyTimeout) clearTimeout(this.readyTimeout);
 	this.deflate?.close();
@@ -145,14 +141,12 @@ export async function Close(this: WebSocket, code: number, reason: string) {
                 index: index_online//DELETE USER FROM GROUP
             }); 
             if(contains_group_new == -1){
-
                 ops.push({
                     op: "DELETE", // DELETE group
                     index: group_old_pos,
                 });
             }
             if(contains_offline == -1){
-
                 ops.push({
                     op: "INSERT", // INSERT new group, if not existing
                     item: {

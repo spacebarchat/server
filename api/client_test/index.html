@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html>
-  <head>    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" name="viewport" />
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Discord Test Client</title>
+		<link rel="stylesheet" href="/assets/fosscord.css" />
+		<link id="logincss" rel="stylesheet" href="/assets/fosscord-login.css" />
+		<link id="customcss" rel="stylesheet" href="/assets/user.css" />
+		<!-- preload plugin marker -->
+	</head>
 
-    <title>LoliSho.Chat</title>
-    <link rel="stylesheet" href="/assets/fosscord.css" />
-    <link id="logincss" rel="stylesheet" href="/assets/fosscord-login.css" />
-    <link id="customcss" rel="stylesheet" href="/assets/user.css" />
-    <!-- section:seometa -->
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Lolisho.Chat" />
-    <meta property="og:title" content="Lolisho.Chat - A way to chat without the limitations of Discord" />
-    <meta property="og:description" content="LoliSho.Chat, you can chat about anything here, rules are the same as Pomf.TV." />
-    <meta property="og:image" content="//lolisho.chat/assets/favicon.svg" />    
-    <meta name="twitter:card" content="summary_large_image" />
+	<body>
+		<div id="app-mount"></div>
 		<script>
 			window.__OVERLAY__ = /overlay/.test(location.pathname);
 			window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
@@ -42,47 +40,17 @@
 				MIGRATION_DESTINATION_ORIGIN: "https://discord.com",
 				HTML_TIMESTAMP: Date.now(),
 				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
-      };
-    GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
-    const localStorage = window.localStorage;
-    // TODO: remote auth
-    // window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
-    localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
-    localStorage.setItem("DeveloperOptionsStore",`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`);
-      </script>
-        <script nonce="MTc4LDE2MiwyNDMsMTU3LDE3MywxMCwyMjQsMTM1">
-        !(function () {
-            if (null != window.WebSocket) {
-                if (
-                    (function (n) {
-                        try {
-                            var e = localStorage.getItem(n);
-                            return null == e ? null : JSON.parse(e);
-                        } catch (n) {
-                            return null;
-                        }
-                    })("token") &&
-                    !window.__OVERLAY__
-                ) {
-                    var n = null != window.DiscordNative || null != window.require ? "etf" : "json",
-                        e = window.GLOBAL_ENV.GATEWAY_ENDPOINT + "/?encoding=" + n + "&v=" + window.GLOBAL_ENV.API_VERSION + "&compress=zlib-stream";
-                    console.log("[FAST CONNECT] connecting to: " + e);
-                    var o = new WebSocket(e);
-                    o.binaryType = "arraybuffer";
-                    var t = Date.now(),
-                        i = { open: !1, identify: !1, gateway: e, messages: [] };
-                    (o.onopen = function () {
-                        console.log("[FAST CONNECT] connected in " + (Date.now() - t) + "ms"), (i.open = !0);
-                    }),
-                        (o.onclose = o.onerror = function () {
-                            window._ws = null;
-                        }),
-                        (o.onmessage = function (n) {
-                            i.messages.push(n);
-                        }),
-                        (window._ws = { ws: o, state: i });
-                }
-            }
+			};
+			GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
+			const localStorage = window.localStorage;
+			// TODO: remote auth
+			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
+			localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
+			localStorage.setItem(
+				"DeveloperOptionsStore",
+				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
+			);
+
 			setInterval(() => {
 				var token = JSON.parse(localStorage.getItem("token"));
 				if (token) {
@@ -101,25 +69,12 @@
 				settings.locale = "en-US";
 				localStorage.setItem("UserSettingsStore", JSON.stringify(settings));
 			}
-        })();
-        </script>
-        <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
-        <link rel="manifest" href="/assets/site.webmanifest">
-        <link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#5bbad5">
-        <meta name="msapplication-TileColor" content="#da532c">
-        <meta name="theme-color" content="#ffffff">
-
-
-        <!-- endsection -->
-    </head>
-    <body>
-        <div id="app-mount"></div>
+		</script>
 	 	<script src="/assets/checkLocale.js"></script>
 		<script src="/assets/1e18f2aac02e172db283.js"></script>
 		<script src="/assets/681e53cdfefa5b82249a.js"></script>
 		<script src="/assets/7a036838c0a0e73f59d8.js"></script>
 		<script src="/assets/b6cf2184a7a05e7525ce.js"></script>
-    </body>
+		<!-- plugin marker -->
+	</body>
 </html>
