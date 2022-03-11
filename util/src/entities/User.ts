@@ -360,7 +360,7 @@ export interface UserSettings {
 	render_reactions: boolean;
 	restricted_guilds: string[];
 	show_current_game: boolean;
-	status: "online" | "offline" | "dnd" | "idle";
+	status: "online" | "offline" | "dnd" | "idle" | "invisible";
 	stream_notifications_enabled: boolean;
 	theme: "dark" | "white"; // dark
 	timezone_offset: number; // e.g -60
