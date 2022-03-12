@@ -1,5 +1,8 @@
 {
 	"include": ["src/**/*.ts"],
+	"ts-node": {
+		"require": ["tsconfig-paths/register"],
+	},
 	"compilerOptions": {
 		/* Visit https://aka.ms/tsconfig.json to read more about this file */
 
@@ -18,7 +21,7 @@
 		"sourceMap": true /* Generates corresponding '.map' file. */,
 		// "outFile": "./",                       /* Concatenate and emit output to single file. */
 		"outDir": "./dist/" /* Redirect output structure to the directory. */,
-		"rootDir": "./src/" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
+		"rootDir": "../" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
 		// "composite": true,                     /* Enable project compilation */
 		// "tsBuildInfoFile": "./",               /* Specify file to store incremental compilation information */
 		// "removeComments": true,                /* Do not emit comments to output. */
@@ -62,11 +65,19 @@
 		// "inlineSources": true,                 /* Emit the source alongside the sourcemaps within a single file; requires '--inlineSourceMap' or '--sourceMap' to be set. */
 
 		/* Experimental Options */
-		// "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
-		// "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
+		"experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
+		"emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
 
 		/* Advanced Options */
 		"skipLibCheck": true /* Skip type checking of declaration files. */,
-		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
+		"forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
+
+		"baseUrl": "../",
+		"paths": {
+			"@fosscord/api": ["api/src/index"],
+			"@fosscord/gateway": ["gateway/src/index"],
+			"@fosscord/cdn": ["cdn/src/index"],
+			"@fosscord/util": ["util/src/index"]
+		},
 	}
 }

@@ -3,7 +3,8 @@ export const VoiceStateUpdateSchema = {
 	$channel_id: String,
 	self_mute: Boolean,
 	self_deaf: Boolean,
-	self_video: Boolean,
+	$self_video: Boolean,	//required in docs but bots don't always send it
+	$preferred_region: String,
 };
 
 export interface VoiceStateUpdateSchema {
@@ -11,5 +12,6 @@ export interface VoiceStateUpdateSchema {
 	channel_id?: string;
 	self_mute: boolean;
 	self_deaf: boolean;
-	self_video: boolean;
+	self_video?: boolean;
+	preferred_region?: string;
 }

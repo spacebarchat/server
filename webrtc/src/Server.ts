@@ -1,46 +1,125 @@
 import { Server as WebSocketServer } from "ws";
-import { Config, db } from "@fosscord/util";
-import mediasoup from "mediasoup";
+import { WebSocket, CLOSECODES } from "@fosscord/gateway";
+import { Config, initDatabase } from "@fosscord/util";
+import OPCodeHandlers, { Payload } from "./opcodes";
+import { setHeartbeat } from "./util";
+import * as mediasoup from "mediasoup";
+import { types as MediasoupTypes } from "mediasoup";
+
+import udp from "dgram";
 
 var port = Number(process.env.PORT);
 if (isNaN(port)) port = 3004;
 
 export class Server {
 	public ws: WebSocketServer;
-	public turn: any;
+	public mediasoupWorkers: MediasoupTypes.Worker[] = [];
+	public mediasoupRouters: MediasoupTypes.Router[] = [];
+	public mediasoupTransports: MediasoupTypes.WebRtcTransport[] = [];
+	public mediasoupProducers: MediasoupTypes.Producer[] = [];
+	public mediasoupConsumers: MediasoupTypes.Consumer[] = [];
 
 	constructor() {
 		this.ws = new WebSocketServer({
 			port,
 			maxPayload: 4096,
 		});
-		this.ws.on("connection", (socket) => {
-			socket.on("message", (message) => {
-				socket.emit(
-					JSON.stringify({
-						op: 2,
-						d: {
-							ssrc: 1,
-							ip: "127.0.0.1",
-							port: 3004,
-							modes: [
-								"xsalsa20_poly1305",
-								"xsalsa20_poly1305_suffix",
-								"xsalsa20_poly1305_lite",
-							],
-							heartbeat_interval: 1,
-						},
-					})
-				);
+		this.ws.on("connection", async (socket: WebSocket) => {
+			await setHeartbeat(socket);
+
+			socket.on("message", async (message: string) => {
+				const payload: Payload = JSON.parse(message);
+
+				if (OPCodeHandlers[payload.op])
+					try {
+						await OPCodeHandlers[payload.op].call(this, socket, payload);
+					}
+					catch (e) {
+						console.error(e);
+						socket.close(CLOSECODES.Unknown_error);
+					}
+				else {
+					console.error(`Unimplemented`, payload);
+					socket.close(CLOSECODES.Unknown_opcode);
+				}
 			});
 		});
+
 	}
 
 	async listen(): Promise<void> {
 		// @ts-ignore
-		await (db as Promise<Connection>);
+		await initDatabase();
 		await Config.init();
+		await this.createWorkers();
 		console.log("[DB] connected");
 		console.log(`[WebRTC] online on 0.0.0.0:${port}`);
+	}
+
+	async createWorkers(): Promise<void> {
+		const numWorkers = 1;
+		for (let i = 0; i < numWorkers; i++) {
+			const worker = await mediasoup.createWorker({ logLevel: "debug" });
+			if (!worker) return;
+
+			worker.on("died", () => {
+				console.error("mediasoup worker died");
+			});
+
+			worker.observer.on("newrouter", async (router: MediasoupTypes.Router) => {
+				console.log("new router created [id:%s]", router.id);
+
+				this.mediasoupRouters.push(router);
+
+				router.observer.on("newtransport", async (transport: MediasoupTypes.WebRtcTransport) => {
+					console.log("new transport created [id:%s]", transport.id);
+
+					await transport.enableTraceEvent();
+
+					transport.on("connect", () => {
+						console.log("transport connect")
+					})
+
+					transport.observer.on("newproducer", (producer: MediasoupTypes.Producer) => {
+						console.log("new producer created [id:%s]", producer.id);
+
+						this.mediasoupProducers.push(producer);
+					});
+
+					transport.observer.on("newconsumer", (consumer: MediasoupTypes.Consumer) => {
+						console.log("new consumer created [id:%s]", consumer.id);
+
+						this.mediasoupConsumers.push(consumer);
+
+						consumer.on("rtp", (rtpPacket) => {
+							console.log(rtpPacket);
+						});
+					});
+
+					transport.observer.on("newdataproducer", (dataProducer) => {
+						console.log("new data producer created [id:%s]", dataProducer.id);
+					});
+
+					transport.on("trace", (trace) => {
+						console.log(trace);
+					});
+
+					this.mediasoupTransports.push(transport);
+				});
+			});
+
+			await worker.createRouter({
+				mediaCodecs: [
+					{
+						kind: "audio",
+						mimeType: "audio/opus",
+						clockRate: 48000,
+						channels: 2
+					},
+				]
+			});
+
+			this.mediasoupWorkers.push(worker);
+		}
 	}
 }
