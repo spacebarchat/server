@@ -65,6 +65,8 @@ export class Rights extends BitField {
 		// inverts the presence confidentiality default (OPERATOR's presence is not routed by default, others' are) for a given user
 		SELF_ADD_DISCOVERABLE: BitFlag(36), // can mark discoverable guilds that they have permissions to mark as discoverable
 		MANAGE_GUILD_DIRECTORY: BitFlag(37), // can change anything in the primary guild directory
+		POGGERS: BitFlag(38), // can send confetti, screenshake, random user mention (@someone)
+		USE_ACHIEVEMENTS: BitFlag(39), // can use achievements and cheers
 		INITIATE_INTERACTIONS: BitFlag(40), // can initiate interactions
 		RESPOND_TO_INTERACTIONS: BitFlag(41), // can respond to interactions
 		SEND_BACKDATED_EVENTS: BitFlag(42), // can send backdated events

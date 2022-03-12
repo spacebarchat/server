@@ -25,13 +25,19 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 
 	const member = await Member.findOneOrFail({ where: { id: member_id, guild_id }, relations: ["roles", "user"] });
 	const permission = await getPermission(req.user_id, guild_id);
+	const everyone = await Role.findOneOrFail({ guild_id: guild_id, name: "@everyone", position: 0 });
 
 	if (body.roles) {
 		permission.hasThrow("MANAGE_ROLES");
+
+		if (body.roles.indexOf(everyone.id) === -1) body.roles.push(everyone.id);
 		member.roles = body.roles.map((x) => new Role({ id: x })); // foreign key constraint will fail if role doesn't exist
 	}
 
 	await member.save();
+
+	member.roles = member.roles.filter((x) => x.id !== everyone.id);
+
 	// do not use promise.all as we have to first write to db before emitting the event to catch errors
 	await emitEvent({
 		event: "GUILD_MEMBER_UPDATE",
