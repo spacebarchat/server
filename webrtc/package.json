@@ -13,12 +13,17 @@
 	"license": "ISC",
 	"devDependencies": {
 		"@types/node": "^15.6.1",
+		"@types/sdp-transform": "^2.4.5",
 		"@types/ws": "^7.4.4",
+		"ts-node": "^10.4.0",
 		"typescript": "^4.3.2"
 	},
 	"dependencies": {
-		"mediasoup": "^3.7.16",
+		"dotenv": "^12.0.4",
+		"mediasoup": "^3.9.5",
 		"node-turn": "^0.0.6",
+		"sdp-transform": "^2.14.1",
+		"tsconfig-paths": "^3.12.0",
 		"ws": "^7.4.6"
 	}
 }
