@@ -2960,7 +2960,7 @@
 					"type": {
 						"type": "string"
 					},
-					"verifie": {
+					"verified": {
 						"type": "boolean"
 					},
 					"visibility": {
@@ -2980,7 +2980,7 @@
 					"type",
 					"user",
 					"user_id",
-					"verifie",
+					"verified",
 					"visibility"
 				]
 			},
