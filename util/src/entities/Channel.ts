@@ -212,7 +212,7 @@ export class Channel extends BaseClass {
 			...channel,
 			...(!opts?.keepId && { id: Snowflake.generate() }),
 			created_at: new Date(),
-			position: ((channel.type === ChannelType.UNHANDLED) || channel.position) || 0,
+			position: (channel.type === ChannelType.UNHANDLED ? 0 : channel.position) || 0,
 		};
 
 		await Promise.all([
