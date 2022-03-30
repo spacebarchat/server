@@ -18,7 +18,7 @@ router.get("/:id", route({}), async (req: Request, res: Response) => {
 			access_type: 2,
 			name: "",
 			features: [],
-			relase_date: "",
+			release_date: "",
 			premium: false,
 			slug: "",
 			flags: 4,

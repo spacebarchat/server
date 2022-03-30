@@ -27,4 +27,4 @@ export * from "./Template";
 export * from "./User";
 export * from "./VoiceState";
 export * from "./Webhook";
-export * from "./ClientRelase";
+export * from "./ClientRelease";
