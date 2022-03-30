@@ -34,11 +34,8 @@ export async function onIdentify(this: Server, socket: WebSocket, data: Identify
 		return socket.close(CLOSECODES.Invalid_intent);
 
 	var transport = this.mediasoupTransports[0] || await this.mediasoupRouters[0].createWebRtcTransport({
-		listenIps: [{ ip: "10.22.64.69" }],
+		listenIps: [{ ip: "10.22.64.63" }],
 		enableUdp: true,
-		enableTcp: true,
-		preferUdp: true,
-		enableSctp: true,
 	});
 
 	socket.send(JSON.stringify({
