@@ -6,7 +6,6 @@ import * as mediasoup from "mediasoup";
 import { RtpCodecCapability } from "mediasoup/node/lib/RtpParameters";
 import * as sdpTransform from 'sdp-transform';
 
-
 /*
 
 	Sent by client:
@@ -68,30 +67,7 @@ import * as sdpTransform from 'sdp-transform';
 		"rtc_connection_id": "3faa0b80-b3e2-4bae-b291-273801fbb7ab"
 	}
 }
-
-Sent by server:
-
-{
-	"op": 4,
-	"d": {
-		"video_codec": "H264",
-		"sdp": "
-			m=audio 50001 ICE/SDP
-			a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87
-			c=IN IP4 109.200.214.158
-			a=rtcp:50001
-			a=ice-ufrag:CLzn
-			a=ice-pwd:qEmIcNwigd07mu46Ok0XCh
-			a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87
-			a=candidate:1 1 UDP 4261412862 109.200.214.158 50001 typ host
-		",
-		"media_session_id": "807955cb953e98c5b90704cf048e81ec",
-		"audio_codec": "opus"
-	}
-}
-
 */
-
 
 export async function onSelectProtocol(this: Server, socket: WebSocket, data: Payload) {
 	const rtpCapabilities = this.mediasoupRouters[0].rtpCapabilities;
@@ -124,27 +100,49 @@ export async function onSelectProtocol(this: Server, socket: WebSocket, data: Pa
 
 	console.log("can consume: " + this.mediasoupRouters[0].canConsume({ producerId: producer.id, rtpCapabilities: rtpCapabilities }));
 
-	const consumer = this.mediasoupConsumers[0] || await transport.consume({
-		producerId: producer.id,
-		paused: false,
-		rtpCapabilities,
-	});
+	// const consumer = this.mediasoupConsumers[0] || await transport.consume({
+	// 	producerId: producer.id,
+	// 	paused: false,
+	// 	rtpCapabilities,
+	// });
+
+	/*
+		{
+			"video_codec":"H264",
+			"sdp":
+			"
+				m=audio 50010 ICE/SDP
+				a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87
+				c=IN IP4 109.200.214.158
+				a=rtcp:50010
+				a=ice-ufrag:+npq
+				a=ice-pwd:+jf7jAesMeHHby43FRqWTy
+				a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87
+				a=candidate:1 1 UDP 4261412862 109.200.214.158 50010 typ host",
+				"media_session_id":"59265c94fa13e313492c372c4c8da801
+			",
+			"audio_codec":"opus"
+		}
+	*/
 
 	socket.send(JSON.stringify({
 		op: VoiceOPCodes.SESSION_DESCRIPTION,
 		d: {
 			video_codec: videoCodec?.mimeType?.substring(6) || undefined,
-			mode: "xsalsa20_poly1305_lite",
+			// mode: "xsalsa20_poly1305_lite",
 			media_session_id: transport.id,
 			audio_codec: audioCodec?.mimeType.substring(6),
 			sdp: `m=audio ${transport.iceCandidates[0].port} ICE/SDP\n`
 				+ `a=fingerprint:sha-256 ${transport.dtlsParameters.fingerprints.find(x => x.algorithm === "sha-256")?.value}\n`
-				+ `c=IN IPV4 ${transport.iceCandidates[0].ip}\n`
-				+ `a=rtcp: ${transport.iceCandidates[0].port}\n`
+				+ `c=IN IP4 ${transport.iceCandidates[0].ip}\n`
+				+ `t=0 0\n`
+				+ `a=ice-lite\n`
+				+ `a=rtcp-mux\n`
+				+ `a=rtcp:${transport.iceCandidates[0].port}\n`
 				+ `a=ice-ufrag:${transport.iceParameters.usernameFragment}\n`
 				+ `a=ice-pwd:${transport.iceParameters.password}\n`
-				+ `a=fingerprint:sha-1 ${transport.dtlsParameters.fingerprints[0].value}\n`
-				+ `a=candidate:1 1 ${transport.iceCandidates[0].protocol} ${transport.iceCandidates[0].priority} ${transport.iceCandidates[0].ip} ${transport.iceCandidates[0].port} typ ${transport.iceCandidates[0].type}`
+				+ `a=fingerprint:sha-256 ${transport.dtlsParameters.fingerprints.find(x => x.algorithm === "sha-256")?.value}\n`
+				+ `a=candidate:1 1 ${transport.iceCandidates[0].protocol.toUpperCase()} ${transport.iceCandidates[0].priority} ${transport.iceCandidates[0].ip} ${transport.iceCandidates[0].port} typ ${transport.iceCandidates[0].type}`
 		}
 	}));
 }

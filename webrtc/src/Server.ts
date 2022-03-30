@@ -19,6 +19,8 @@ export class Server {
 	public mediasoupProducers: MediasoupTypes.Producer[] = [];
 	public mediasoupConsumers: MediasoupTypes.Consumer[] = [];
 
+	public testUdp = udp.createSocket("udp6");
+
 	constructor() {
 		this.ws = new WebSocketServer({
 			port,
@@ -45,6 +47,12 @@ export class Server {
 			});
 		});
 
+		// this.testUdp.bind(50001);
+		// this.testUdp.on("message", (msg, rinfo) => {
+		// 	if (msg[0] === 0 && msg[1] === 1 && msg[2] === 0) { //idk stun?
+
+		// 	}
+		// })
 	}
 
 	async listen(): Promise<void> {
@@ -59,7 +67,7 @@ export class Server {
 	async createWorkers(): Promise<void> {
 		const numWorkers = 1;
 		for (let i = 0; i < numWorkers; i++) {
-			const worker = await mediasoup.createWorker({ logLevel: "debug" });
+			const worker = await mediasoup.createWorker({ logLevel: "debug", logTags: ["dtls", "ice", "info", "message", "bwe"] });
 			if (!worker) return;
 
 			worker.on("died", () => {
@@ -76,9 +84,23 @@ export class Server {
 
 					await transport.enableTraceEvent();
 
-					transport.on("connect", () => {
-						console.log("transport connect")
+					transport.on('dtlsstatechange', (dtlsstate) => {
+						console.log(dtlsstate);
 					})
+
+					transport.on("sctpstatechange", (sctpstate) => {
+						console.log(sctpstate)
+					})
+
+					router.observer.on("newrtpobserver", (rtpObserver: MediasoupTypes.RtpObserver) => {
+						console.log("new RTP observer created [id:%s]", rtpObserver.id);
+
+						// rtpObserver.observer.on("")
+					})
+
+					transport.on("connect", () => {
+						console.log("transport connect");
+					});
 
 					transport.observer.on("newproducer", (producer: MediasoupTypes.Producer) => {
 						console.log("new producer created [id:%s]", producer.id);
@@ -114,9 +136,10 @@ export class Server {
 						kind: "audio",
 						mimeType: "audio/opus",
 						clockRate: 48000,
-						channels: 2
+						channels: 2,
+						preferredPayloadType: 111,
 					},
-				]
+				],
 			});
 
 			this.mediasoupWorkers.push(worker);
