@@ -164,6 +164,9 @@ export class User extends BaseClass {
 	@Column({ type: "simple-json", select: false })
 	settings: UserSettings;
 
+	@Column({ type: "simple-json" })
+	notes: { [key: string]: string };	//key is ID of user
+
 	toPublicUser() {
 		const user: any = {};
 		PublicUserProjection.forEach((x) => {
@@ -271,6 +274,7 @@ export class User extends BaseClass {
 			},
 			settings: { ...defaultSettings, locale: language },
 			fingerprints: [],
+			notes: {},
 		});
 
 		await user.save();
