@@ -19,12 +19,12 @@ router.get("/:id", route({}), async (req: Request, res: Response) => {
 router.put("/:id", route({}), async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const user = await User.findOneOrFail({ where: { id: req.user_id } });
-	const noteUser = await User.findOneOrFail({ where: { id: id }});
+	const noteUser = await User.findOneOrFail({ where: { id: id }});		//if noted user does not exist throw
 	const { note } = req.body;
 
-	await User.update({ id: req.user_id }, { notes: { ...user.notes, [id]: note } });
+	await User.update({ id: req.user_id }, { notes: { ...user.notes, [noteUser.id]: note } });
 
-	return res.status(204).send("");
+	return res.status(204);
 });
 
 export default router;
