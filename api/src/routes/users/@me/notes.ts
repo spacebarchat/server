@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
-import { User } from "@fosscord/util";
+import { User, emitEvent } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -23,6 +23,15 @@ router.put("/:id", route({}), async (req: Request, res: Response) => {
 	const { note } = req.body;
 
 	await User.update({ id: req.user_id }, { notes: { ...user.notes, [noteUser.id]: note } });
+
+	await emitEvent({
+		event: "USER_NOTE_UPDATE",
+		data: {
+			note: note,
+			id: noteUser.id
+		},
+		user_id: user.id,
+	})
 
 	return res.status(204);
 });
