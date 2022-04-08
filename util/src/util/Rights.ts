@@ -87,15 +87,14 @@ export class Rights extends BitField {
 		throw new HTTPError(`You are missing the following rights ${permission}`, 403);
 	}
 	
-	export async function getRight(
-	user_id: string,
-	/** opts: {
-		in_behalf?: (keyof User)[];
-	} = {} **/)
-	{
-		user = await User.findOneOrFail({ where: { id: user_id } });
-		return new Rights(user.right);
-	} 
 }
 
 const ALL_RIGHTS = Object.values(Rights.FLAGS).reduce((total, val) => total | val, BigInt(0));
+
+export async function getRights(	user_id: string
+	/**, opts: {
+		in_behalf?: (keyof User)[];
+	} = {} **/) {
+	let user = await User.findOneOrFail({ where: { id: user_id } });
+	return new Rights(user.rights);
+} 

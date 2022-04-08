@@ -1,4 +1,4 @@
-import { Channel, emitEvent, getPermission, getRight MessageDeleteEvent, Message, MessageUpdateEvent } from "@fosscord/util";
+import { Channel, emitEvent, getPermission, getRights, MessageDeleteEvent, Message, MessageUpdateEvent } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { route } from "@fosscord/api";
 import { handleMessage, postHandleMessage } from "@fosscord/api";
@@ -18,9 +18,11 @@ router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGE
 	const rights = await getRights(req.user_id);
 
 	if ((req.user_id !== message.author_id)) {
-		if (rights.has("MANAGE_MESSAGES")) break;
-		permissions.hasThrow("MANAGE_MESSAGES");
-		body = { flags: body.flags }; // admins can only suppress embeds of other messages
+		if (!rights.has("MANAGE_MESSAGES")) {
+			permissions.hasThrow("MANAGE_MESSAGES");
+			body = { flags: body.flags };
+// guild admins can only suppress embeds of other messages, no such restriction imposed to instance-wide admins
+		}
 	} else rights.hasThrow("SELF_EDIT_MESSAGES");
 
 	const new_message = await handleMessage({
@@ -54,11 +56,14 @@ router.delete("/", route({}), async (req: Request, res: Response) => {
 
 	const channel = await Channel.findOneOrFail({ id: channel_id });
 	const message = await Message.findOneOrFail({ id: message_id });
+	
+	const rights = await getRights(req.user_id);
 
 	if ((message.author_id !== req.user_id)) {
-		if (rights.has("MANAGE_MESSAGES")) break;
-		const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
-		permission.hasThrow("MANAGE_MESSAGES");
+		if (!rights.has("MANAGE_MESSAGES")) {
+			const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
+			permission.hasThrow("MANAGE_MESSAGES");
+		}
 	} else rights.hasThrow("SELF_DELETE_MESSAGES");
 
 	await Message.delete({ id: message_id });
