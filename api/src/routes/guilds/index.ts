@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { Role, Guild, Snowflake, Config, Member, Channel, DiscordApiErrors, handleFile } from "@fosscord/util";
+import { Role, Guild, Snowflake, Config, getRights, Member, Channel, DiscordApiErrors, handleFile } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { ChannelModifySchema } from "../channels/#channel_id";
 
@@ -20,12 +20,13 @@ export interface GuildCreateSchema {
 
 //TODO: create default channel
 
-router.post("/", route({ body: "GuildCreateSchema" }), async (req: Request, res: Response) => {
+router.post("/", route({ body: "GuildCreateSchema", right: "CREATE_GUILDS" }), async (req: Request, res: Response) => {
 	const body = req.body as GuildCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
 	const guild_count = await Member.count({ id: req.user_id });
-	if (guild_count >= maxGuilds) {
+	const rights = await getRights(req.user_id);
+	if ((guild_count >= maxGuilds)&&!rights.has("MANAGE_GUILDS")) {
 		throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
 	}
 
