@@ -109,8 +109,8 @@ export class Member extends BaseClassWithoutId {
 		onDelete: "DO NOTHING",
 	// do not auto-kick force-joined members just because their joiners left the server
 	}) **/
-	@Column({ nullable: true })
-	joined_by: string;
+	@Column({ nullable: true})
+	joined_by?: string;
 
 	// TODO: add this when we have proper read receipts
 	// @Column({ type: "simple-json" })
