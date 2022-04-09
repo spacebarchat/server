@@ -132,7 +132,7 @@ export class User extends BaseClass {
 	@Column()
 	public_flags: number;
 
-	@Column()
+	@Column({ type: "bigint" })
 	rights: string; // Rights
 
 	@OneToMany(() => Session, (session: Session) => session.user)
