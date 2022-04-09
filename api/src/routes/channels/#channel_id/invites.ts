@@ -19,7 +19,7 @@ export interface InviteCreateSchema {
 	target_user_type?: number;
 }
 
-router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INVITES", right: "CREATE_INSTANT_INVITE" }),
+router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT_INVITE", right: "CREATE_INVITES" }),
 			async (req: Request, res: Response) => {
 	const { user_id } = req;
 	const { channel_id } = req.params;
