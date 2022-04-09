@@ -46,7 +46,7 @@ export function checkPassword(password: string): number {
 		strength = 0;
 	}
 	
-	var entropyMap;
+	let entropyMap;
 	for (let i = 0; i < password.length; i++) {
 		if (entropyMap[password[i]]) entropyMap[password[i]]++;
 		else entropyMap[password[i]] = 1;
