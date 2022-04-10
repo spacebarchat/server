@@ -1,6 +1,7 @@
 import { BitField } from "./BitField";
 import "missing-native-js-functions";
 import { BitFieldResolvable, BitFlag } from "./BitField";
+import { User } from "../entities";
 
 var HTTPError: any;
 
@@ -85,6 +86,15 @@ export class Rights extends BitField {
 		// @ts-ignore
 		throw new HTTPError(`You are missing the following rights ${permission}`, 403);
 	}
+	
 }
 
 const ALL_RIGHTS = Object.values(Rights.FLAGS).reduce((total, val) => total | val, BigInt(0));
+
+export async function getRights(	user_id: string
+	/**, opts: {
+		in_behalf?: (keyof User)[];
+	} = {} **/) {
+	let user = await User.findOneOrFail({ where: { id: user_id } });
+	return new Rights(user.rights);
+} 
