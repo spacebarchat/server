@@ -70,7 +70,7 @@ export class Member extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	nick?: string;
-
+	
 	@JoinTable({
 		name: "member_roles",
 		joinColumn: { name: "index", referencedColumnName: "index" },
@@ -85,8 +85,8 @@ export class Member extends BaseClassWithoutId {
 	@Column()
 	joined_at: Date;
 
-	@Column({ nullable: true })
-	premium_since?: Date;
+	@Column({ type: "bigint", nullable: true })
+	premium_since?: number;
 
 	@Column()
 	deaf: boolean;
@@ -102,8 +102,17 @@ export class Member extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	last_message_id?: string;
+	
+	/**
+	@JoinColumn({ name: "id" })
+	@ManyToOne(() => User, {
+		onDelete: "DO NOTHING",
+	// do not auto-kick force-joined members just because their joiners left the server
+	}) **/
+	@Column({ nullable: true})
+	joined_by?: string;
 
-	// TODO: update
+	// TODO: add this when we have proper read receipts
 	// @Column({ type: "simple-json" })
 	// read_state: ReadState;
 
@@ -245,7 +254,7 @@ export class Member extends BaseClassWithoutId {
 			nick: undefined,
 			roles: [guild_id], // @everyone role
 			joined_at: new Date(),
-			premium_since: new Date(),
+			premium_since: (new Date()).getTime(),
 			deaf: false,
 			mute: false,
 			pending: false,

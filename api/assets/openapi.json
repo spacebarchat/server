@@ -2,7 +2,7 @@
 	"openapi": "3.0.0",
 	"servers": [
 		{
-			"url": "https://api.fosscord.com/v{version}",
+			"url": "https://api.fosscord.com/api/v{version}",
 			"description": "Official fosscord instance",
 			"variables": {
 				"version": {
@@ -2960,7 +2960,7 @@
 					"type": {
 						"type": "string"
 					},
-					"verifie": {
+					"verified": {
 						"type": "boolean"
 					},
 					"visibility": {
@@ -2980,7 +2980,7 @@
 					"type",
 					"user",
 					"user_id",
-					"verifie",
+					"verified",
 					"visibility"
 				]
 			},
@@ -3119,7 +3119,7 @@
 						"type": "boolean"
 					},
 					"status": {
-						"enum": ["dnd", "idle", "offline", "online"],
+						"enum": ["dnd", "idle", "offline", "online", "invisible"],
 						"type": "string"
 					},
 					"stream_notifications_enabled": {
@@ -5677,7 +5677,7 @@
 						"type": "boolean"
 					},
 					"status": {
-						"enum": ["dnd", "idle", "offline", "online"],
+						"enum": ["dnd", "idle", "offline", "online", "invisible"],
 						"type": "string"
 					},
 					"stream_notifications_enabled": {

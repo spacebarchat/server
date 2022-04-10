@@ -1,4 +1,4 @@
-export type Status = "idle" | "dnd" | "online" | "offline";
+export type Status = "idle" | "dnd" | "online" | "offline" | "invisible";
 
 export interface ClientStatus {
 	desktop?: string; // e.g. Windows/Linux/Mac

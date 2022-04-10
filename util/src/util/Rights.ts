@@ -1,6 +1,7 @@
 import { BitField } from "./BitField";
 import "missing-native-js-functions";
 import { BitFieldResolvable, BitFlag } from "./BitField";
+import { User } from "../entities";
 
 var HTTPError: any;
 
@@ -65,6 +66,8 @@ export class Rights extends BitField {
 		// inverts the presence confidentiality default (OPERATOR's presence is not routed by default, others' are) for a given user
 		SELF_ADD_DISCOVERABLE: BitFlag(36), // can mark discoverable guilds that they have permissions to mark as discoverable
 		MANAGE_GUILD_DIRECTORY: BitFlag(37), // can change anything in the primary guild directory
+		POGGERS: BitFlag(38), // can send confetti, screenshake, random user mention (@someone)
+		USE_ACHIEVEMENTS: BitFlag(39), // can use achievements and cheers
 		INITIATE_INTERACTIONS: BitFlag(40), // can initiate interactions
 		RESPOND_TO_INTERACTIONS: BitFlag(41), // can respond to interactions
 		SEND_BACKDATED_EVENTS: BitFlag(42), // can send backdated events
@@ -83,6 +86,15 @@ export class Rights extends BitField {
 		// @ts-ignore
 		throw new HTTPError(`You are missing the following rights ${permission}`, 403);
 	}
+	
 }
 
 const ALL_RIGHTS = Object.values(Rights.FLAGS).reduce((total, val) => total | val, BigInt(0));
+
+export async function getRights(	user_id: string
+	/**, opts: {
+		in_behalf?: (keyof User)[];
+	} = {} **/) {
+	let user = await User.findOneOrFail({ where: { id: user_id } });
+	return new Rights(user.rights);
+} 

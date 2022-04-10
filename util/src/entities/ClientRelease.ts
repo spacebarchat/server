@@ -1,8 +1,8 @@
 import { Column, Entity} from "typeorm";
 import { BaseClass } from "./BaseClass";
 
-@Entity("client_relase")
-export class Relase extends BaseClass {
+@Entity("client_release")
+export class Release extends BaseClass {
 	@Column()
 	name: string;
 

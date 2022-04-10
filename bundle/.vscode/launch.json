@@ -1,9 +1,26 @@
 {
-	// Use IntelliSense to learn about possible attributes.
-	// Hover to view descriptions of existing attributes.
-	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
+		{
+			"sourceMaps": true,
+			"name": "ts-node",
+			"type": "node",
+			"request": "launch",
+			"args": [
+				"${workspaceFolder}/src/start.ts"
+			],
+			"runtimeArgs": [
+				"-r",
+				"ts-node/register"
+			],
+			"protocol": "inspector",
+			"internalConsoleOptions": "openOnSessionStart",
+			"env": {
+				"TS_NODE_PROJECT": "${workspaceFolder}/tsnode.tsconfig.json",
+				"TS_NODE_COMPILER": "typescript-cached-transpile"
+			},
+			"resolveSourceMapLocations": null, /* allow breakpoints in modules other than bundle */
+		},
 		{
 			"sourceMaps": true,
 			"type": "node",
@@ -12,7 +29,7 @@
 			"program": "${workspaceFolder}/dist/bundle/src/start.js",
 			"preLaunchTask": "tsc: build - tsconfig.json",
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
-			"envFile": "${workspaceFolder}/.env"
+			"envFile": "${workspaceFolder}/.env",
 		}
 	]
 }

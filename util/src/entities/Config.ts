@@ -188,8 +188,8 @@ export interface ConfigValue {
 	},
 	client: {
 		useTestClient: Boolean;
-		relases: {
-			useLocalRelases: Boolean; //TODO
+		releases: {
+			useLocalRelease: Boolean; //TODO
 			upstreamVersion: string;
 		}
 	},
@@ -222,7 +222,7 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	general: {
 		instanceName: "Fosscord Instance",
-		instanceDescription: "This is a Fosscord instance made in pre-relase days",
+		instanceDescription: "This is a Fosscord instance made in pre-release days",
 		frontPage: null,
 		tosPage: null,
 		correspondenceEmail: "noreply@localhost.local",
@@ -389,8 +389,8 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	client: {
 		useTestClient: true,
-		relases: {
-			useLocalRelases: true,
+		releases: {
+			useLocalRelease: true,
 			upstreamVersion: "0.0.264"
 		}
 	},
