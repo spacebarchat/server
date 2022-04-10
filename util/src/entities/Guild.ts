@@ -187,11 +187,11 @@ export class Guild extends BaseClass {
 
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.owner)
-	owner_id: string;
+	owner_id?: string; // optional to allow for ownerless guilds
 
 	@JoinColumn({ name: "owner_id", referencedColumnName: "id" })
 	@ManyToOne(() => User)
-	owner: User;
+	owner?: User; // optional to allow for ownerless guilds
 
 	@Column({ nullable: true })
 	preferred_locale?: string;
@@ -200,7 +200,7 @@ export class Guild extends BaseClass {
 	premium_subscription_count?: number;
 
 	@Column({ nullable: true })
-	premium_tier?: number; // nitro boost level
+	premium_tier?: number; // crowd premium level
 
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.public_updates_channel)
@@ -269,6 +269,10 @@ export class Guild extends BaseClass {
 
 	@Column({ nullable: true })
 	nsfw?: boolean;
+	
+	// TODO: nested guilds
+	@Column({ nullable: true })
+	parent?: string;
 
 	// only for developer portal
 	permissions?: number;
@@ -308,7 +312,7 @@ export class Guild extends BaseClass {
 			verification_level: 0,
 			welcome_screen: {
 				enabled: false,
-				description: "No description",
+				description: "Fill in your description",
 				welcome_channels: [],
 			},
 			widget_enabled: true, // NB: don't set it as false to prevent artificial restrictions
