@@ -14,19 +14,23 @@ import { Webhook } from "./Webhook";
 import { DmChannelDTO } from "../dtos";
 
 export enum ChannelType {
-	GUILD_TEXT = 0, // a text channel within a server
+	GUILD_TEXT = 0, // a text channel within a guild
 	DM = 1, // a direct message between users
-	GUILD_VOICE = 2, // a voice channel within a server
+	GUILD_VOICE = 2, // a voice channel within a guild
 	GROUP_DM = 3, // a direct message between multiple users
-	GUILD_CATEGORY = 4, // an organizational category that contains up to 50 channels
-	GUILD_NEWS = 5, // a channel that users can follow and crosspost into their own server
-	GUILD_STORE = 6, // a channel in which game developers can sell their game on Discord
+	GUILD_CATEGORY = 4, // an organizational category that contains zero or more channels
+	GUILD_NEWS = 5, // a channel that users can follow and crosspost into a guild or route
+	GUILD_STORE = 6, // a channel in which game developers can sell their things
 	ENCRYPTED = 7, // end-to-end encrypted channel
 	ENCRYPTED_THREAD = 8, // end-to-end encrypted thread channel
+	TRANSACTIONAL = 9, // event chain style transactional channel
 	GUILD_NEWS_THREAD = 10, // a temporary sub-channel within a GUILD_NEWS channel
 	GUILD_PUBLIC_THREAD = 11, // a temporary sub-channel within a GUILD_TEXT channel
 	GUILD_PRIVATE_THREAD = 12, // a temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
 	GUILD_STAGE_VOICE = 13, // a voice channel for hosting events with an audience
+	TICKET_TRACKER = 33, // ticket tracker, individual ticket items shall have type 12
+	KANBAN = 34, // confluence like kanban board
+	VOICELESS_WHITEBOARD = 35, // whiteboard but without voice (whiteboard + voice is the same as stage)
 	CUSTOM_START = 64, // start custom channel types from here
 	UNHANDLED = 255 // unhandled unowned pass-through channel type
 }
@@ -72,7 +76,7 @@ export class Channel extends BaseClass {
 	@ManyToOne(() => Channel)
 	parent?: Channel;
 
-	// only for group dms
+	// for group DMs and owned custom channel types
 	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.owner)
 	owner_id: string;
@@ -117,6 +121,9 @@ export class Channel extends BaseClass {
 	})
 	invites?: Invite[];
 
+	@Column({ nullable: true })
+	retention_policy_id?: string;
+
 	@OneToMany(() => Message, (message: Message) => message.channel, {
 		cascade: true,
 		orphanedRowAction: "delete",
@@ -140,7 +147,7 @@ export class Channel extends BaseClass {
 		orphanedRowAction: "delete",
 	})
 	webhooks?: Webhook[];
-
+	
 	// TODO: DM channel
 	static async createChannel(
 		channel: Partial<Channel>,
@@ -182,6 +189,7 @@ export class Channel extends BaseClass {
 
 		switch (channel.type) {
 			case ChannelType.GUILD_TEXT:
+			case ChannelType.GUILD_NEWS:
 			case ChannelType.GUILD_VOICE:
 				if (channel.parent_id && !opts?.skipExistsCheck) {
 					const exists = await Channel.findOneOrFail({ id: channel.parent_id });
@@ -191,25 +199,24 @@ export class Channel extends BaseClass {
 				}
 				break;
 			case ChannelType.GUILD_CATEGORY:
+			case ChannelType.UNHANDLED:
 				break;
 			case ChannelType.DM:
 			case ChannelType.GROUP_DM:
 				throw new HTTPError("You can't create a dm channel in a guild");
-			// TODO: check if guild is community server
 			case ChannelType.GUILD_STORE:
-			case ChannelType.GUILD_NEWS:
 			default:
 				throw new HTTPError("Not yet supported");
 		}
 
 		if (!channel.permission_overwrites) channel.permission_overwrites = [];
-		// TODO: auto generate position
+		// TODO: eagerly auto generate position of all guild channels
 
 		channel = {
 			...channel,
 			...(!opts?.keepId && { id: Snowflake.generate() }),
 			created_at: new Date(),
-			position: channel.position || 0,
+			position: (channel.type === ChannelType.UNHANDLED ? 0 : channel.position) || 0,
 		};
 
 		await Promise.all([
@@ -231,11 +238,13 @@ export class Channel extends BaseClass {
 		const otherRecipientsUsers = await User.find({ where: recipients.map((x) => ({ id: x })) });
 
 		// TODO: check config for max number of recipients
+		/** if you want to disallow note to self channels, uncomment the conditional below
 		if (otherRecipientsUsers.length !== recipients.length) {
 			throw new HTTPError("Recipient/s not found");
 		}
+		**/
 
-		const type = recipients.length === 1 ? ChannelType.DM : ChannelType.GROUP_DM;
+		const type = recipients.length > 1 ? ChannelType.DM : ChannelType.GROUP_DM;
 
 		let channel = null;
 
@@ -288,7 +297,8 @@ export class Channel extends BaseClass {
 			await emitEvent({ event: "CHANNEL_CREATE", data: channel_dto, user_id: creator_user_id });
 		}
 
-		return channel_dto.excludedRecipients([creator_user_id]);
+		if (recipients.length === 1) return channel_dto; 
+		else return channel_dto.excludedRecipients([creator_user_id]);
 	}
 
 	static async removeRecipientFromChannel(channel: Channel, user_id: string) {
@@ -354,4 +364,5 @@ export interface ChannelPermissionOverwrite {
 export enum ChannelPermissionOverwriteType {
 	role = 0,
 	member = 1,
+	group = 2,
 }

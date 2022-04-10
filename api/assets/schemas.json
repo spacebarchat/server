@@ -355,11 +355,11 @@
 					"type": {
 						"type": "string"
 					},
-					"verifie": {
+					"verified": {
 						"type": "boolean"
 					}
 				},
-				"required": ["name", "type", "verifie"]
+				"required": ["name", "type", "verified"]
 			}
 		},
 		"$schema": "http://json-schema.org/draft-07/schema#"
@@ -7900,7 +7900,7 @@
 				"type": "boolean"
 			},
 			"status": {
-				"enum": ["dnd", "idle", "offline", "online"],
+				"enum": ["dnd", "idle", "offline", "online", "invisible"],
 				"type": "string"
 			},
 			"stream_notifications_enabled": {

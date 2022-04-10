@@ -53,8 +53,6 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 			throw FieldErrors({ email: { message: req.t("auth:register.EMAIL_INVALID"), code: "EMAIL_INVALID" } });
 	}
 
-	user.assign(body);
-
 	if (body.new_password) {
 		if (!body.password && !user.email) {
 			throw FieldErrors({
@@ -64,14 +62,16 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		user.data.hash = await bcrypt.hash(body.new_password, 12);
 	}
 
-	var check_username = body?.username?.replace(/\s/g, '');
-
-	if(!check_username && !body?.avatar && !body?.banner) {
-		throw FieldErrors({
-			username: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
-		});
+	if (body.username) {
+		var check_username = body?.username?.replace(/\s/g, '');
+		if (!check_username) {
+			throw FieldErrors({
+				username: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
+			});
+		}
 	}
 
+	user.assign(body);
 	await user.save();
 
 	// @ts-ignore
