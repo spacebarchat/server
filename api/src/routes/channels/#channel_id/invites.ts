@@ -19,7 +19,8 @@ export interface InviteCreateSchema {
 	target_user_type?: number;
 }
 
-router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT_INVITE" }), async (req: Request, res: Response) => {
+router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT_INVITE", right: "CREATE_INVITES" }),
+			async (req: Request, res: Response) => {
 	const { user_id } = req;
 	const { channel_id } = req.params;
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id }, select: ["id", "name", "type", "guild_id"] });

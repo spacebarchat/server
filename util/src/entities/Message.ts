@@ -41,8 +41,14 @@ export enum MessageType {
 	CHANNEL_FOLLOW_ADD = 12,
 	GUILD_DISCOVERY_DISQUALIFIED = 14,
 	GUILD_DISCOVERY_REQUALIFIED = 15,
+	ENCRYPTED = 16,
 	REPLY = 19,
 	APPLICATION_COMMAND = 20,
+	ROUTE_ADDED = 41, // custom message routing: new route affecting that channel
+	ROUTE_DISABLED = 42, // custom message routing: given route no longer affecting that channel
+	ENCRYPTION = 50,
+	CUSTOM_START = 63,
+	UNHANDLED = 255
 }
 
 @Entity("messages")
@@ -84,7 +90,7 @@ export class Message extends BaseClass {
 	@RelationId((message: Message) => message.member)
 	member_id: string;
 
-	@JoinColumn({ name: "author_id", referencedColumnName: "id" })
+	@JoinColumn({ name: "member_id", referencedColumnName: "id" })
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE",
 	})
@@ -203,6 +209,7 @@ export interface MessageComponent {
 }
 
 export enum MessageComponentType {
+	Script = 0, // self command script
 	ActionRow = 1,
 	Button = 2,
 }
