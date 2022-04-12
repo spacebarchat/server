@@ -13,7 +13,7 @@ const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored
  *  - min <n> numbers
  *  - min <n> symbols
  *  - min <n> uppercase chars
- *  - shannon entropy divided by password entropy
+ *  - shannon entropy folded into [0, 1) interval
  *
  * Returns: 0 > pw > 1
  */
