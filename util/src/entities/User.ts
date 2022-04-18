@@ -264,7 +264,7 @@ export class User extends BaseClass {
 			disabled: false,
 			deleted: false,
 			email: email,
-			rights: "0", // TODO: grant rights correctly, as 0 actually stands for no rights at all
+			rights: Config.get().register.rights, // TODO: grant rights correctly, as 0 actually stands for no rights at all
 			nsfw_allowed: true, // TODO: depending on age
 			public_flags: "0",
 			flags: "0", // TODO: generate
