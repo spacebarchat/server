@@ -120,7 +120,7 @@ router.get("/", async (req: Request, res: Response) => {
 				delete x.user_ids;
 			});
 			// @ts-ignore
-			if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: "0", avatar: null };
+			if (!x.author) x.author = { id: "4", discriminator: "0000", username: "Fosscord Ghost", public_flags: "0", avatar: null };
 			x.attachments?.forEach((y: any) => {
 				// dynamically set attachment proxy_url in case the endpoint changed
 				const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
