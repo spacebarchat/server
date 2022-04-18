@@ -8,6 +8,7 @@ import {
 	Embed,
 	emitEvent,
 	getPermission,
+	getRights,
 	Message,
 	MessageCreateEvent,
 	uploadFile,
@@ -149,7 +150,7 @@ const messageUpload = multer({
 }); // max upload 50 mb
 
 // TODO: dynamically change limit of MessageCreateSchema with config
-// TODO: check: sum of all characters in an embed structure must not exceed 6000 characters
+// TODO: check: sum of all characters in an embed structure must not exceed instance limits
 
 // https://discord.com/developers/docs/resources/channel#create-message
 // TODO: text channel slowdown
@@ -167,7 +168,7 @@ router.post(
 
 		next();
 	},
-	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES" }),
+	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_MESSAGES" }),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 		var body = req.body as MessageCreateSchema;

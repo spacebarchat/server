@@ -51,6 +51,18 @@ router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGE
 	return res.json(message);
 });
 
+router.get("/", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res: Response) => {
+	const { message_id, channel_id } = req.params;
+
+	const message = await Message.findOneOrFail({ where: { id: message_id, channel_id }, relations: ["attachments"] });
+
+	const permissions = await getPermission(req.user_id, undefined, channel_id);
+	
+	if (message.author_id !== req.user_id) permissions.hasThrow("READ_MESSAGE_HISTORY");
+
+	return res.json(message);
+});
+
 router.delete("/", route({}), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 
