@@ -9,7 +9,12 @@ config();
 import { execSync } from "child_process";
 
 // TODO: add socket event transmission
-let cores = Number(process.env.THREADS) || os.cpus().length;
+var cores = 1;
+try {
+	cores = Number(process.env.THREADS) || os.cpus().length;
+} catch {
+	console.log("[API] Failed to get thread count! Using 1...")
+}
 
 if (cluster.isMaster) {
 	function getCommitOrFail() {
