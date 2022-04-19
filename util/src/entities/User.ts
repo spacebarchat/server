@@ -60,7 +60,7 @@ export class User extends BaseClass {
 	username: string; // username max length 32, min 2 (should be configurable)
 
 	@Column()
-	discriminator: string; // #0001 4 digit long string from #0001 - #9999
+	discriminator: string; // opaque string: 4 digits on discord.com
 
 	setDiscriminator(val: string) {
 		const number = Number(val);
@@ -88,10 +88,10 @@ export class User extends BaseClass {
 	mobile: boolean; // if the user has mobile app installed
 
 	@Column()
-	premium: boolean; // if user bought nitro
-
+	premium: boolean; // if user bought individual premium
+	
 	@Column()
-	premium_type: number; // nitro level
+	premium_type: number; // individual premium level
 
 	@Column()
 	bot: boolean; // if user is bot
@@ -100,11 +100,11 @@ export class User extends BaseClass {
 	bio: string; // short description of the user (max 190 chars -> should be configurable)
 
 	@Column()
-	system: boolean; // shouldn't be used, the api sents this field type true, if the generated message comes from a system generated author
+	system: boolean; // shouldn't be used, the api sends this field type true, if the generated message comes from a system generated author
 
 	@Column({ select: false })
-	nsfw_allowed: boolean; // if the user is older than 18 (resp. Config)
-
+	nsfw_allowed: boolean; // if the user can do age-restricted actions (NSFW channels/guilds/commands)
+	
 	@Column({ select: false })
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 
@@ -132,7 +132,7 @@ export class User extends BaseClass {
 	@Column()
 	public_flags: number;
 
-	@Column()
+	@Column({ type: "bigint" })
 	rights: string; // Rights
 
 	@OneToMany(() => Session, (session: Session) => session.user)
@@ -163,6 +163,9 @@ export class User extends BaseClass {
 
 	@Column({ type: "simple-json", select: false })
 	settings: UserSettings;
+
+	@Column({ type: "simple-json" })
+	notes: { [key: string]: string };	//key is ID of user
 
 	toPublicUser() {
 		const user: any = {};
@@ -271,6 +274,7 @@ export class User extends BaseClass {
 			},
 			settings: { ...defaultSettings, locale: language },
 			fingerprints: [],
+			notes: {},
 		});
 
 		await user.save();

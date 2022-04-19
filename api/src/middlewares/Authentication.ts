@@ -15,6 +15,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/experiments",
 	"/updates",
 	"/downloads/",
+	"/scheduled-maintenances/upcoming.json",
 	// Public kubernetes integration
 	"/-/readyz",
 	"/-/healthz",

@@ -101,7 +101,7 @@ router.get("/:emoji", route({ permission: "VIEW_CHANNEL" }), async (req: Request
 	res.json(users);
 });
 
-router.put("/:emoji/:user_id", route({ permission: "READ_MESSAGE_HISTORY" }), async (req: Request, res: Response) => {
+router.put("/:emoji/:user_id", route({ permission: "READ_MESSAGE_HISTORY", right: "SELF_ADD_REACTIONS" }), async (req: Request, res: Response) => {
 	const { message_id, channel_id, user_id } = req.params;
 	if (user_id !== "@me") throw new HTTPError("Invalid user");
 	const emoji = getEmoji(req.params.emoji);

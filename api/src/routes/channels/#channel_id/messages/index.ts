@@ -8,6 +8,7 @@ import {
 	Embed,
 	emitEvent,
 	getPermission,
+	getRights,
 	Message,
 	MessageCreateEvent,
 	uploadFile,
@@ -119,7 +120,7 @@ router.get("/", async (req: Request, res: Response) => {
 				delete x.user_ids;
 			});
 			// @ts-ignore
-			if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: "0", avatar: null };
+			if (!x.author) x.author = { id: "4", discriminator: "0000", username: "Fosscord Ghost", public_flags: "0", avatar: null };
 			x.attachments?.forEach((y: any) => {
 				// dynamically set attachment proxy_url in case the endpoint changed
 				const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
@@ -149,7 +150,7 @@ const messageUpload = multer({
 }); // max upload 50 mb
 
 // TODO: dynamically change limit of MessageCreateSchema with config
-// TODO: check: sum of all characters in an embed structure must not exceed 6000 characters
+// TODO: check: sum of all characters in an embed structure must not exceed instance limits
 
 // https://discord.com/developers/docs/resources/channel#create-message
 // TODO: text channel slowdown
@@ -167,7 +168,7 @@ router.post(
 
 		next();
 	},
-	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES" }),
+	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_MESSAGES" }),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 		var body = req.body as MessageCreateSchema;
