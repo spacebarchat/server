@@ -4,8 +4,9 @@ import { route } from "@fosscord/api";
 
 const router = Router();
 
-// TODO: check if message exists
+// TODO: public read receipts & privacy scoping
 // TODO: send read state event to all channel members
+// TODO: advance-only notification cursor
 
 export interface MessageAcknowledgeSchema {
 	manual?: boolean;
