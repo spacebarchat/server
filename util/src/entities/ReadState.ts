@@ -49,6 +49,7 @@ export class ReadState extends BaseClass {
 	@Column({ nullable: true })
 	mention_count: number;
 
-	@Column({ nullable: true })
+	// @Column({ nullable: true })
+	// TODO: derive this from (last_message_id=notifications_cursor=public_ack)=true
 	manual: boolean;
 }
