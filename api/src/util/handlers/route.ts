@@ -6,6 +6,7 @@ import {
 	FieldErrors,
 	FosscordApiErrors,
 	getPermission,
+	getRights,
 	PermissionResolvable,
 	Permissions,
 	RightResolvable,
@@ -105,6 +106,8 @@ export function route(opts: RouteOptions) {
 
 		if (opts.right) {
 			const required = new Rights(opts.right);
+			req.rights = await getRights(req.user_id);
+
 			if (!req.rights || !req.rights.has(required)) {
 				throw FosscordApiErrors.MISSING_RIGHTS.withParams(opts.right as string);
 			}

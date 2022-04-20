@@ -3,8 +3,13 @@ const cluster = require("cluster");
 const WebSocket = require("ws");
 const endpoint = process.env.GATEWAY || "ws://localhost:3001";
 const connections = Number(process.env.CONNECTIONS) || 50;
-const threads = Number(process.env.THREADS) || require("os").cpus().length || 1;
 const token = process.env.TOKEN;
+var cores = 1;
+try {
+	cores = Number(process.env.THREADS) || os.cpus().length;
+} catch {
+	console.log("[Bundle] Failed to get thread count! Using 1...")
+}
 
 if (!token) {
 	console.error("TOKEN env var missing");

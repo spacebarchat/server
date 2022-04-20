@@ -26,6 +26,6 @@ DROP TABLE webhooks;
 DROP TABLE channels;
 DROP TABLE members;
 DROP TABLE guilds;
-DROP TABLE client_relase;
+DROP TABLE client_release;
 -- DROP TABLE users;
 -- DROP TABLE config;
