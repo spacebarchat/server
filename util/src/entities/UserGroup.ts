@@ -27,13 +27,6 @@ export class UserGroup extends BaseClass {
 
 	@Column({ nullable: true })
 	icon: string;
-
-	@Column({ type: "simple-json", nullable: true })
-	tags?: {
-		bot_id?: string;
-		integration_id?: string;
-		premium_subscriber?: boolean;
-	};
 	
 	@Column({ nullable: true })
 	parent?: string;
