@@ -19,6 +19,7 @@ export class Server {
 	public mediasoupProducers: MediasoupTypes.Producer[] = [];
 	public mediasoupConsumers: MediasoupTypes.Consumer[] = [];
 
+	public decryptKey: number[] = [];
 	public testUdp = udp.createSocket("udp6");
 
 	constructor() {
@@ -50,7 +51,6 @@ export class Server {
 		this.testUdp.bind(50001);
 		this.testUdp.on("message", (msg, rinfo) => {
 			//random key from like, the libsodium examples on npm lol
-			const decryptKey = sodium.from_hex("724b092810ec86d7e35c9d067702b31ef90bc43a7b598626749914d6a3e033ed");
 
 			//give me my remote port?
 			if (sodium.to_hex(msg) == "0001004600000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000") {
@@ -66,17 +66,27 @@ export class Server {
 			}
 
 			const nonce = Buffer.concat([msg.slice(-4), Buffer.from("\x00".repeat(20))]);
-			console.log(`[UDP] nonce for this message: ${nonce}`);
+			console.log(`[UDP] nonce for this message: ${nonce.toString("hex")}`);
 
-			console.log(sodium.to_hex(msg));
+			console.log(`[UDP] message: ${sodium.to_hex(msg)}`);
+
+			let encrypted;
+			if (msg.slice(0, 2).indexOf("\x81\xc9") == 0) {
+				encrypted = msg.slice(0x18, -4);
+			}
+			else if (msg.slice(0, 2).indexOf("\x90\x78") == 0) {
+				encrypted = msg.slice(0x1C, -4);
+			}
+			else {
+				encrypted = msg.slice(0x18, -4);
+				console.log(`wtf header received: ${encrypted.toString("hex")}`);
+			}
+
 			if (sodium.to_hex(msg).indexOf("80c8000600000001") == 0) {
 				//call status
-				const encrypted = msg.slice(8, -4);
-				const currentPacket = msg.slice(-4);
-				console.log(`[UDP] Current packet: ${currentPacket}`);
+
 				try {
-					console.log(`[UDP] Encrypted bytes: ${encrypted.toString("base64")}`);
-					const decrypted = sodium.crypto_secretbox_open_easy(encrypted, nonce, decryptKey);
+					const decrypted = sodium.crypto_secretbox_open_easy(encrypted, nonce, Uint8Array.from(this.decryptKey));
 					console.log("[UDP] [ call status ]" + decrypted);
 				}
 				catch (e) {
@@ -86,7 +96,7 @@ export class Server {
 			}
 
 			try {
-				const decrypted = sodium.crypto_secretbox_open_easy(msg, nonce, decryptKey);
+				const decrypted = sodium.crypto_secretbox_open_easy(encrypted, nonce, Uint8Array.from(this.decryptKey));
 				console.log("[UDP] " + decrypted);
 			}
 			catch (e) {

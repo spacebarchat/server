@@ -161,11 +161,14 @@ export async function onSelectProtocol(this: Server, socket: WebSocket, data: Pa
 		};
 	*/
 
+	this.decryptKey = [...sodium.randombytes_buf(sodium.crypto_secretbox_KEYBYTES)];
+	console.log(this.decryptKey.map(x => String.fromCharCode(x)).join(""));
+
 	socket.send(JSON.stringify({
 		op:VoiceOPCodes.SESSION_DESCRIPTION,
 		d: {
 			video_codec: "H264",
-			secret_key: [...sodium.from_hex("724b092810ec86d7e35c9d067702b31ef90bc43a7b598626749914d6a3e033ed")],
+			secret_key: this.decryptKey,
 			mode: "aead_aes256_gcm_rtpsize",
 			media_session_id: "blah blah blah",
 			audio_codec: "opus",
