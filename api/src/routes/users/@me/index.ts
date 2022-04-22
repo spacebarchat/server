@@ -53,8 +53,6 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 			throw FieldErrors({ email: { message: req.t("auth:register.EMAIL_INVALID"), code: "EMAIL_INVALID" } });
 	}
 
-	user.assign(body);
-
 	if (body.new_password) {
 		if (!body.password && !user.email) {
 			throw FieldErrors({
@@ -73,6 +71,7 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
         }
     }
 
+	user.assign(body);
 	await user.save();
 
 	// @ts-ignore
