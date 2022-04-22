@@ -34,7 +34,6 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 	if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
 
 	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: [...PrivateUserProjection, "data"] });
-	user.assign(body);
 
 	if (body.password) {
 		if (user.data?.hash) {
@@ -65,6 +64,7 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
         }
     }
 
+	user.assign(body);
 	await user.save();
 
 	// @ts-ignore
