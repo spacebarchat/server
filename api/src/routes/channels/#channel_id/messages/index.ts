@@ -183,6 +183,9 @@ router.post(
 			}
 		}
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
+		if (!channel.isWritable()) {
+			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400)
+		}
 
 		const embeds = body.embeds || [];
 		if (body.embed) embeds.push(body.embed);
@@ -220,6 +223,8 @@ router.post(
 				})
 			);
 		}
+
+
 	
 		//Fix for the client bug
 		delete message.member

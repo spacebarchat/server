@@ -31,7 +31,6 @@ const Excluded = [
 ];
 
 function modify(obj) {
-	delete obj.additionalProperties;
 	for (var k in obj) {
 		if (typeof obj[k] === "object" && obj[k] !== null) {
 			modify(obj[k]);
