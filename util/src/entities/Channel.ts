@@ -352,6 +352,16 @@ export class Channel extends BaseClass {
 	isDm() {
 		return this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM;
 	}
+
+	// Does the channel support sending messages ( eg categories do not )
+	isWritable() {
+		const disallowedChannelTypes = [
+			ChannelType.GUILD_CATEGORY,
+			ChannelType.GUILD_STAGE_VOICE,
+			ChannelType.VOICELESS_WHITEBOARD,
+		];
+		return disallowedChannelTypes.indexOf(this.type) == -1;
+	}
 }
 
 export interface ChannelPermissionOverwrite {
