@@ -1,9 +1,10 @@
 // List from https://invisible-characters.com/
 export const InvisibleCharacters = [
 	"\u{9}", //Tab
+	'\u{c}',			//Form feed
 	//'\u{20}',			//Space	//categories can have spaces in them
 	"\u{ad}", //Soft hyphen
-	"\u{34f}", //Combining grapheme joiner
+	//"\u{34f}", //Combining grapheme joiner
 	"\u{61c}", //Arabic letter mark
 	"\u{115f}", //Hangul choseong filler
 	"\u{1160}", //Hangul jungseong filler
@@ -23,12 +24,12 @@ export const InvisibleCharacters = [
 	"\u{200a}", //Hair space
 	"\u{200b}", //Zero width space
 	"\u{200c}", //Zero width non-joiner
-	"\u{200d}", //Zero width joiner
+	//"\u{200d}", //Zero width joiner
 	"\u{200e}", //Left-to-right mark
 	"\u{200f}", //Right-to-left mark
 	"\u{202f}", //Narrow no-break space
 	"\u{205f}", //Medium mathematical space
-	"\u{2060}", //Word joiner
+	//"\u{2060}", //Word joiner -- WJ is required in some languages that don't use spaces to split words
 	"\u{2061}", //Function application
 	"\u{2062}", //Invisible times
 	"\u{2063}", //Invisible separator
