@@ -92,10 +92,13 @@ router.put(
 		const { channel_id, message_id } = req.params;
 		var body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
+		
+		const rights = getRights(req.user_id);
+		rights.hasThrow("SEND_MESSAGES");
 
 		// regex to check if message contains anything other than numerals ( also no decimals )
 		if (!message_id.match(/^\+?\d+$/)) {
-			throw new HTTPError("Message IDs must be positive integers")
+			throw new HTTPError("Message IDs must be positive integers", 400);
 		}
 
 		const snowflake = Snowflake.deconstruct(message_id)
@@ -106,7 +109,7 @@ router.put(
 
 		const exists = await Message.findOne({ where: { id: message_id, channel_id: channel_id }});
 		if (exists) {
-			throw new HTTPError("Cannot backfill to message ID that already exists", 400);
+			throw new HTTPError("Cannot backfill to message ID that already exists", 409);
 		}
 
 		if (req.file) {
