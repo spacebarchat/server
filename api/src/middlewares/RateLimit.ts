@@ -70,8 +70,9 @@ export default function rateLimit(opts: {
 
 			if (offender.blocked) {
 				const global = bucket_id === "global";
-				reset = reset + opts.window * 1000; // each block violation pushes the expiry one full window further
-				offender.expires_at = offender.expires_at + opts.window * 1000;
+				// each block violation pushes the expiry one full window further
+				reset = new Date(reset.getTime() + opts.window * 1000);
+				offender.expires_at = new Date(offender.expires_at.getTime() + opts.window * 1000);
 				resetAfterMs = reset - Date.now();
 				resetAfterSec = Math.ceil(resetAfterMs / 1000);
 
