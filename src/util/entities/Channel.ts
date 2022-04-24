@@ -203,7 +203,7 @@ export class Channel extends BaseClass {
 						);
 
 				// Categories skip these checks on discord.com
-				if (channel.type !== ChannelType.GUILD_CATEGORY) {
+				if (channel.type !== ChannelType.GUILD_CATEGORY || guild.features.includes("IRC_LIKE_CATEGORY_NAMES")) {
 					if (channel.name.includes(" "))
 						throw new HTTPError(
 							"Channel name cannot include invalid characters",
@@ -280,10 +280,10 @@ export class Channel extends BaseClass {
 			Channel.create(channel).save(),
 			!opts?.skipEventEmit
 				? emitEvent({
-						event: "CHANNEL_CREATE",
-						data: channel,
-						guild_id: channel.guild_id,
-				  } as ChannelCreateEvent)
+					event: "CHANNEL_CREATE",
+					data: channel,
+					guild_id: channel.guild_id,
+				} as ChannelCreateEvent)
 				: Promise.resolve(),
 		]);
 
