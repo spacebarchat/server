@@ -53,12 +53,12 @@ export default function rateLimit(opts: {
 		if (opts.GET && ["GET", "OPTIONS", "HEAD"].includes(req.method)) max_hits = opts.GET;
 		else if (opts.MODIFY && ["POST", "DELETE", "PATCH", "PUT"].includes(req.method)) max_hits = opts.MODIFY;
 
-		const offender = Cache.get(executor_id + bucket_id);
+		let offender = Cache.get(executor_id + bucket_id);
 
 		if (offender) {
-			const reset = offender.expires_at.getTime();
-			const resetAfterMs = reset - Date.now();
-			const resetAfterSec = resetAfterMs / 1000;
+			let reset = offender.expires_at.getTime();
+			let resetAfterMs = reset - Date.now();
+			let resetAfterSec = (resetAfterMs + 999) / 1000;
 
 			if (resetAfterMs <= 0) {
 				offender.hits = 0;
@@ -70,6 +70,10 @@ export default function rateLimit(opts: {
 
 			if (offender.blocked) {
 				const global = bucket_id === "global";
+				reset = reset + opts.window * 1000; // each block violation pushes the expiry one full window further
+				offender.expires_at += opts.window * 1000;
+				resetAfterMs = reset - Date.now();
+				resetAfterSec = (resetAfterMs + 999) / 1000;
 
 				console.log("blocked bucket: " + bucket_id, { resetAfterMs });
 				return (
