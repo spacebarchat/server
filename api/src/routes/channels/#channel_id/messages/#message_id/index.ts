@@ -16,6 +16,8 @@ import multer from "multer";
 import { route } from "@fosscord/api";
 import { handleMessage, postHandleMessage } from "@fosscord/api";
 import { MessageCreateSchema } from "../index";
+import { Snowflake } from "@fosscord/util";
+import { HTTPError } from "lambert-server";
 
 const router = Router();
 // TODO: message content/embed string length limit
@@ -91,6 +93,22 @@ router.put(
 		var body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
 
+		// regex to check if message contains anything other than numerals ( also no decimals )
+		if (!message_id.match(/^\+?\d+$/)) {
+			throw new HTTPError("Message IDs must be positive integers")
+		}
+
+		const snowflake = Snowflake.deconstruct(message_id)
+		if (Date.now() < snowflake.timestamp) {
+			// message is in the future
+			throw new HTTPError("You cannot backfill messages in the future", 400);
+		}
+
+		const exists = await Message.findOne({ where: { id: message_id, channel_id: channel_id }});
+		if (exists) {
+			throw new HTTPError("Cannot backfill to message ID that already exists", 400);
+		}
+
 		if (req.file) {
 			try {
 				const file = await uploadFile(`/attachments/${req.params.channel_id}`, req.file);
@@ -100,8 +118,6 @@ router.put(
 			}
 		}
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
-		
-		// TODO: check the ID is not from the future, to prevent future-faking of channel histories
 
 		const embeds = body.embeds || [];
 		if (body.embed) embeds.push(body.embed);
@@ -115,10 +131,8 @@ router.put(
 			channel_id,
 			attachments,
 			edited_timestamp: undefined,
-			timestamp: undefined, // FIXME: calculate timestamp from snowflake
+			timestamp: new Date(snowflake.timestamp),
 		});
-
-		channel.last_message_id = message.id;
 
 		//Fix for the client bug
 		delete message.member
