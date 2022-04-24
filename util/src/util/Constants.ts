@@ -742,6 +742,8 @@ export const FosscordApiErrors = {
 	DELETE_MESSAGE_DISABLED: new ApiError("You are not allowed to delete your own messages", 25061),
 	FEATURE_PERMANENTLY_DISABLED: new ApiError("This feature has been disabled server-side", 45006),
 	MISSING_RIGHTS: new ApiError("You lack rights to perform that action ({})", 50013, undefined, [""]),
+	CANNOT_REPLACE_BY_BACKFILL: new APIError("Cannot backfill to message ID that already exists", 55002),
+	CANNOT_BACKFILL_TO_THE_FUTURE: new APIError("You cannot backfill messages in the future", 55003),
 	CANNOT_GRANT_PERMISSIONS_EXCEEDING_RIGHTS: new ApiError("You cannot grant permissions exceeding your own rights", 50050),
 	ROUTES_LOOPING: new ApiError("Loops in the route definition ({})", 50060, undefined, [""]),
 	CANNOT_REMOVE_ROUTE: new ApiError("Cannot remove message route while it is in effect and being used", 50061),
