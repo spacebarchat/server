@@ -2,13 +2,16 @@ import {
 	Attachment,
 	Channel,
 	Embed,
+	DiscordApiErrors,
 	emitEvent,
+	FosscordApiErrors,
 	getPermission,
 	getRights,
  	Message,
 	MessageCreateEvent,
 	MessageDeleteEvent,
 	MessageUpdateEvent,
+	Snowflake,
 	uploadFile 
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
@@ -16,7 +19,6 @@ import multer from "multer";
 import { route } from "@fosscord/api";
 import { handleMessage, postHandleMessage } from "@fosscord/api";
 import { MessageCreateSchema } from "../index";
-import { Snowflake } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 
 const router = Router();
@@ -104,12 +106,12 @@ router.put(
 		const snowflake = Snowflake.deconstruct(message_id)
 		if (Date.now() < snowflake.timestamp) {
 			// message is in the future
-			throw new HTTPError("You cannot backfill messages in the future", 400);
+			throw FosscordApiErrors.CANNOT_BACKFILL_TO_THE_FUTURE;
 		}
 
 		const exists = await Message.findOne({ where: { id: message_id, channel_id: channel_id }});
 		if (exists) {
-			throw new HTTPError("Cannot backfill to message ID that already exists", 409);
+			throw FosscordApiErrors.CANNOT_REPLACE_BY_BACKFILL;
 		}
 
 		if (req.file) {
