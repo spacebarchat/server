@@ -3,7 +3,7 @@ import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { PublicUserProjection, User } from "./User";
 import { HTTPError } from "lambert-server";
-import { containsAll, emitEvent, getPermission, Snowflake, trimSpecial, InvisibleCharacters } from "../util";
+import { containsAll, emitEvent, getPermission, Snowflake, trimSpecial, InvisibleCharacters, ChannelTypes } from "../util";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import { Recipient } from "./Recipient";
 import { Message } from "./Message";
@@ -147,7 +147,7 @@ export class Channel extends BaseClass {
 		orphanedRowAction: "delete",
 	})
 	webhooks?: Webhook[];
-	
+
 	// TODO: DM channel
 	static async createChannel(
 		channel: Partial<Channel>,
@@ -173,12 +173,20 @@ export class Channel extends BaseClass {
 					if (channel.name.includes(character))
 						throw new HTTPError("Channel name cannot include invalid characters", 403);
 
-				if (channel.name.match(/\-\-+/g))
-					throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403)
+				// Categories skip these checks on discord.com
+				if (channel.type !== ChannelType.GUILD_CATEGORY) {
+					if (channel.name.includes(" "))
+						throw new HTTPError("Channel name cannot include invalid characters", 403);
 
-				if (channel.name.charAt(0) === "-" ||
-					channel.name.charAt(channel.name.length - 1) === "-")
-					throw new HTTPError("Channel name cannot start/end with dash.", 403)
+					if (channel.name.match(/\-\-+/g))
+						throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403);
+
+					if (channel.name.charAt(0) === "-" ||
+						channel.name.charAt(channel.name.length - 1) === "-")
+						throw new HTTPError("Channel name cannot start/end with dash.", 403);
+				}
+				else
+					channel.name = channel.name.trim();	//category names are trimmed client side on discord.com
 			}
 
 			if (!guild.features.includes("ALLOW_UNNAMED_CHANNELS")) {
@@ -297,7 +305,7 @@ export class Channel extends BaseClass {
 			await emitEvent({ event: "CHANNEL_CREATE", data: channel_dto, user_id: creator_user_id });
 		}
 
-		if (recipients.length === 1) return channel_dto; 
+		if (recipients.length === 1) return channel_dto;
 		else return channel_dto.excludedRecipients([creator_user_id]);
 	}
 
