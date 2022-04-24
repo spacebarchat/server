@@ -174,7 +174,7 @@ export class Channel extends BaseClass {
 						throw new HTTPError("Channel name cannot include invalid characters", 403);
 
 				// Categories skip these checks on discord.com
-				if (channel.type !== ChannelType.GUILD_CATEGORY) {
+				if (channel.type !== ChannelType.GUILD_CATEGORY || guild.features.includes("IRC_LIKE_CATEGORY_NAMES")) {
 					if (channel.name.includes(" "))
 						throw new HTTPError("Channel name cannot include invalid characters", 403);
 
