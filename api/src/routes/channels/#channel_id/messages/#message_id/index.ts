@@ -2,13 +2,16 @@ import {
 	Attachment,
 	Channel,
 	Embed,
+	DiscordApiErrors,
 	emitEvent,
+	FosscordApiErrors,
 	getPermission,
 	getRights,
  	Message,
 	MessageCreateEvent,
 	MessageDeleteEvent,
 	MessageUpdateEvent,
+	Snowflake,
 	uploadFile 
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
@@ -16,6 +19,7 @@ import multer from "multer";
 import { route } from "@fosscord/api";
 import { handleMessage, postHandleMessage } from "@fosscord/api";
 import { MessageCreateSchema } from "../index";
+import { HTTPError } from "lambert-server";
 
 const router = Router();
 // TODO: message content/embed string length limit
@@ -90,6 +94,25 @@ router.put(
 		const { channel_id, message_id } = req.params;
 		var body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
+		
+		const rights = getRights(req.user_id);
+		rights.hasThrow("SEND_MESSAGES");
+
+		// regex to check if message contains anything other than numerals ( also no decimals )
+		if (!message_id.match(/^\+?\d+$/)) {
+			throw new HTTPError("Message IDs must be positive integers", 400);
+		}
+
+		const snowflake = Snowflake.deconstruct(message_id)
+		if (Date.now() < snowflake.timestamp) {
+			// message is in the future
+			throw FosscordApiErrors.CANNOT_BACKFILL_TO_THE_FUTURE;
+		}
+
+		const exists = await Message.findOne({ where: { id: message_id, channel_id: channel_id }});
+		if (exists) {
+			throw FosscordApiErrors.CANNOT_REPLACE_BY_BACKFILL;
+		}
 
 		if (req.file) {
 			try {
@@ -100,8 +123,6 @@ router.put(
 			}
 		}
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
-		
-		// TODO: check the ID is not from the future, to prevent future-faking of channel histories
 
 		const embeds = body.embeds || [];
 		if (body.embed) embeds.push(body.embed);
@@ -115,10 +136,8 @@ router.put(
 			channel_id,
 			attachments,
 			edited_timestamp: undefined,
-			timestamp: undefined, // FIXME: calculate timestamp from snowflake
+			timestamp: new Date(snowflake.timestamp),
 		});
-
-		channel.last_message_id = message.id;
 
 		//Fix for the client bug
 		delete message.member
