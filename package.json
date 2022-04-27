@@ -2,7 +2,7 @@
 	"name": "fosscord-server",
 	"version": "1.0.0",
 	"description": "A Fosscord server written in Node.js",
-	"workspaces": ["api", "bundle", "cdn", "gateway", "webrtc"],
+	"workspaces": ["api", "cdn", "gateway"],
 	"scripts": {},
 	"repository": {
 		"type": "git",
