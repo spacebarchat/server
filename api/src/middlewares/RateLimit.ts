@@ -1,4 +1,4 @@
-import { Config, listenEvent } from "@fosscord/util";
+import { Config, getRights, listenEvent, Rights } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { getIpAdress } from "@fosscord/api";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
@@ -9,6 +9,7 @@ import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
 /*
 ? bucket limit? Max actions/sec per bucket?
+(ANSWER: a small fosscord instance might not need a complex rate limiting system)
 
 TODO: delay database requests to include multiple queries
 TODO: different for methods (GET/POST)
@@ -44,9 +45,12 @@ export default function rateLimit(opts: {
 	onlyIp?: boolean;
 }): any {
 	return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+		// exempt user? if so, immediately short circuit
+		if (getRights(req.user_id).has("BYPASS_RATE_LIMITS")) return;
+		
 		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
 		var executor_id = getIpAdress(req);
-		if (!opts.onlyIp && req.user_id) executor_id = req.user_id;
+		if (!opts.onlyIp && req.user_id) executor_id = req.user_id;		
 
 		var max_hits = opts.count;
 		if (opts.bot && req.user_bot) max_hits = opts.bot;
