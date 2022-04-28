@@ -46,7 +46,8 @@ export default function rateLimit(opts: {
 }): any {
 	return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
 		// exempt user? if so, immediately short circuit
-		if (getRights(req.user_id).has("BYPASS_RATE_LIMITS")) return;
+		const rights = await getRights(req.user_id);
+		if (rights.has("BYPASS_RATE_LIMITS")) return;
 		
 		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
 		var executor_id = getIpAdress(req);

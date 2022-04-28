@@ -95,7 +95,7 @@ router.put(
 		var body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
 		
-		const rights = getRights(req.user_id);
+		const rights = await getRights(req.user_id);
 		rights.hasThrow("SEND_MESSAGES");
 
 		// regex to check if message contains anything other than numerals ( also no decimals )
