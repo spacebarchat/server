@@ -30,6 +30,8 @@ export function isTextChannel(type: ChannelType): boolean {
 		case ChannelType.GUILD_VOICE:
 		case ChannelType.GUILD_STAGE_VOICE:
 		case ChannelType.GUILD_CATEGORY:
+		case ChannelType.GUILD_FORUM:
+		case ChannelType.DIRECTORY:
 			throw new HTTPError("not a text channel", 400);
 		case ChannelType.DM:
 		case ChannelType.GROUP_DM:
@@ -155,7 +157,7 @@ const messageUpload = multer({
 // https://discord.com/developers/docs/resources/channel#create-message
 // TODO: text channel slowdown
 // TODO: trim and replace message content and every embed field
-// TODO: check allowed_mentions
+// TODO: only dispatch mentions denoted in allowed_mentions
 
 // Send message
 router.post(
