@@ -1,7 +1,7 @@
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 import { isTextChannel } from "./messages";
-import { FindManyOptions, Between } from "typeorm";
+import { FindManyOptions, Between, Not } from "typeorm";
 import {
 	Attachment,
 	Channel,
@@ -33,7 +33,7 @@ export interface PurgeSchema {
 // TODO: should users be able to bulk delete messages or only bots?
 // TODO: should this request fail, if you provide messages older than 14 days/invalid ids?
 // https://discord.com/developers/docs/resources/channel#bulk-delete-messages
-router.post("/", route({ body: "PurgeSchema", right: "SELF_DELETE_MESSAGES" }), async (req: Request, res: Response) => {
+router.post("/", route({ /*body: "PurgeSchema",*/ }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 	const channel = await Channel.findOneOrFail({ id: channel_id });
 	
@@ -50,18 +50,27 @@ router.post("/", route({ body: "PurgeSchema", right: "SELF_DELETE_MESSAGES" }), 
 	const { before, after } = req.body as PurgeSchema;
 
 	// TODO: send the deletion event bite-by-bite to prevent client stress
+
 	var query: FindManyOptions<Message> & { where: { id?: any; }; } = {
 		order: { id: "ASC" },
 		// take: limit,
 		where: {
 		 channel_id,
 		 id: Between(after, before), // the right way around
+		 author_id: rights.has("SELF_DELETE_MESSAGES") ? undefined : Not(req.user_id)
+		 // if you lack the right of self-deletion, you can't delete your own messages, even in purges
 		 },
 		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"]
 	};
+	
 
 	const messages = await Message.find(query);
 	const endpoint = Config.get().cdn.endpointPublic;
+			
+	if (messages.length == 0) { 
+		res.sendStatus(304);
+		return;
+	}
 
 	await Message.delete(messages.map((x) => ({ id: x })));
 	
