@@ -11,6 +11,7 @@ import {
 	getRights,
 	Message,
 	MessageCreateEvent,
+	Snowflake,
 	uploadFile,
 	Member
 } from "@fosscord/util";
@@ -86,7 +87,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const before = req.query.before ? `${req.query.before}` : undefined;
 	const after = req.query.after ? `${req.query.after}` : undefined;
 	const limit = Number(req.query.limit) || 50;
-	if (limit < 1 || limit > 100) throw new HTTPError("limit must be between 1 and 100");
+	if (limit < 1 || limit > 100) throw new HTTPError("limit must be between 1 and 100", 422);
 
 	var halfLimit = Math.floor(limit / 2);
 
@@ -100,9 +101,16 @@ router.get("/", async (req: Request, res: Response) => {
 		where: { channel_id },
 		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"]
 	};
+	
 
-	if (after) query.where.id = MoreThan(after);
-	else if (before) query.where.id = LessThan(before);
+	if (after) {
+		if (after > new Snowflake()) return res.status(422);
+		query.where.id = MoreThan(after);
+	}
+	else if (before) { 
+		if (before < req.params.channel_id) return res.status(422);
+		query.where.id = LessThan(before);
+	}
 	else if (around) {
 		query.where.id = [
 			MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
@@ -243,3 +251,4 @@ router.post(
 		return res.json(message);
 	}
 );
+
