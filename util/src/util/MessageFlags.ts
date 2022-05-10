@@ -14,6 +14,7 @@ export class MessageFlags extends BitField {
 		PRIVATE_ROUTE: BigInt(1) << BigInt(6), // it that has been routed to only some of the users that can see the channel
 		INTERACTION_WAIT: BigInt(1) << BigInt(7), // discord.com calls this LOADING
 		// FAILED_TO_MENTION_SOME_ROLES_IN_THREAD: BigInt(1) << BigInt(8)
-		SCRIPT_WAIT: BigInt(1) << BigInt(24) // waiting for the self command to complete
+		SCRIPT_WAIT: BigInt(1) << BigInt(24), // waiting for the self command to complete
+		IMPORT_WAIT: BigInt(1) << BigInt(25), // last message of a channel bulk guild import, waiting for the rest of the channel to be backfilled
 	};
 }
