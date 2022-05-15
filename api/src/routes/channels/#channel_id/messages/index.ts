@@ -71,7 +71,11 @@ export interface MessageCreateSchema {
 	};
 	payload_json?: string;
 	file?: any;
-	attachments?: any[]; //TODO we should create an interface for attachments
+	/**
+	TODO: we should create an interface for attachments
+	TODO: OpenWAAO<-->attachment-style metadata conversion
+	**/
+	attachments?: any[];
 	sticker_ids?: string[];
 }
 
@@ -136,9 +140,12 @@ router.get("/", async (req: Request, res: Response) => {
 				const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
 				y.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
 			});
-
-			//Some clients ( discord.js ) only check if a property exists within the response,
-			//which causes erorrs when, say, the `application` property is `null`.
+			
+			/**
+			Some clients ( discord.js ) only check if a property exists within the response,
+			which causes erorrs when, say, the `application` property is `null`.
+			**/
+			
 			for (var curr in x) {
 				if (x[curr] === null)
 					delete x[curr];
@@ -158,15 +165,14 @@ const messageUpload = multer({
 	},
 	storage: multer.memoryStorage()
 }); // max upload 50 mb
+/**
+ TODO: dynamically change limit of MessageCreateSchema with config
 
-// TODO: dynamically change limit of MessageCreateSchema with config
-// TODO: check: sum of all characters in an embed structure must not exceed instance limits
-
-// https://discord.com/developers/docs/resources/channel#create-message
-// TODO: text channel slowdown
-// TODO: trim and replace message content and every embed field
-// TODO: only dispatch mentions denoted in allowed_mentions
-
+ https://discord.com/developers/docs/resources/channel#create-message
+ TODO: text channel slowdown (per-user and across-users)
+ Q: trim and replace message content and every embed field A: NO, given this cannot be implemented in E2EE channels
+ TODO: only dispatch notifications for mentions denoted in allowed_mentions
+**/
 // Send message
 router.post(
 	"/",
@@ -233,8 +239,6 @@ router.post(
 				})
 			);
 		}
-
-
 	
 		//Fix for the client bug
 		delete message.member
