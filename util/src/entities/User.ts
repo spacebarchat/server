@@ -163,6 +163,10 @@ export class User extends BaseClass {
 
 	@Column({ type: "simple-json", select: false })
 	settings: UserSettings;
+		
+	// workaround to prevent fossord-unaware clients from deleting settings not used by them
+	@Column({ type: "simple-json", select: false })
+	extended_settings: UserSettings;
 
 	@Column({ type: "simple-json" })
 	notes: { [key: string]: string };	//key is ID of user
@@ -273,6 +277,7 @@ export class User extends BaseClass {
 				valid_tokens_since: new Date(),
 			},
 			settings: { ...defaultSettings, locale: language },
+			extended_settings: {},
 			fingerprints: [],
 			notes: {},
 		});
