@@ -81,8 +81,10 @@ export enum AuditLogEvents {
 	// automod
 	POLICY_CREATE = 140, 
 	POLICY_UPDATE = 141,
+	POLICY_DELETE = 142,
+	MESSAGE_BLOCKED_BY_POLICIES = 143,  // in fosscord, blocked messages are stealth-dropped
 	// instance policies affecting the guild
-	GUILD_CROPPED_BY_POLICIES = 216,
+	GUILD_AFFECTED_BY_POLICIES = 216,
 	// message moves
 	IN_GUILD_MESSAGE_MOVE = 223,
 	CROSS_GUILD_MESSAGE_MOVE = 224,
