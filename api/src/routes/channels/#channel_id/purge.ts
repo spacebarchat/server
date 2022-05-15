@@ -30,9 +30,9 @@ export interface PurgeSchema {
 	after: string
 }
 
-// TODO: should users be able to bulk delete messages or only bots?
-// TODO: should this request fail, if you provide messages older than 14 days/invalid ids?
-// https://discord.com/developers/docs/resources/channel#bulk-delete-messages
+/**
+TODO: apply the delete bit by bit to prevent client and database stress
+**/
 router.post("/", route({ /*body: "PurgeSchema",*/ }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 	const channel = await Channel.findOneOrFail({ id: channel_id });
