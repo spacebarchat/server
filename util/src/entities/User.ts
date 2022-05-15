@@ -166,7 +166,7 @@ export class User extends BaseClass {
 		
 	// workaround to prevent fossord-unaware clients from deleting settings not used by them
 	@Column({ type: "simple-json", select: false })
-	extended_settings: UserSettings;
+	extended_settings: string;
 
 	@Column({ type: "simple-json" })
 	notes: { [key: string]: string };	//key is ID of user
