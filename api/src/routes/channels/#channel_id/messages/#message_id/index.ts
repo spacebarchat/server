@@ -1,11 +1,37 @@
-import { Channel, emitEvent, getPermission, getRights, MessageDeleteEvent, Message, MessageUpdateEvent } from "@fosscord/util";
+import {
+	Attachment,
+	Channel,
+	Embed,
+	DiscordApiErrors,
+	emitEvent,
+	FosscordApiErrors,
+	getPermission,
+	getRights,
+ 	Message,
+	MessageCreateEvent,
+	MessageDeleteEvent,
+	MessageUpdateEvent,
+	Snowflake,
+	uploadFile 
+} from "@fosscord/util";
 import { Router, Response, Request } from "express";
+import multer from "multer";
 import { route } from "@fosscord/api";
 import { handleMessage, postHandleMessage } from "@fosscord/api";
 import { MessageCreateSchema } from "../index";
+import { HTTPError } from "lambert-server";
 
 const router = Router();
 // TODO: message content/embed string length limit
+
+const messageUpload = multer({
+	limits: {
+		fileSize: 1024 * 1024 * 100,
+		fields: 10,
+		files: 1
+	},
+	storage: multer.memoryStorage()
+}); // max upload 50 mb
 
 router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_MESSAGES" }), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
@@ -50,6 +76,83 @@ router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGE
 
 	return res.json(message);
 });
+
+
+// Backfill message with specific timestamp
+router.put(
+	"/",
+	messageUpload.single("file"),
+	async (req, res, next) => {
+		if (req.body.payload_json) {
+			req.body = JSON.parse(req.body.payload_json);
+		}
+
+		next();
+	},
+	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_BACKDATED_EVENTS" }),
+	async (req: Request, res: Response) => {
+		const { channel_id, message_id } = req.params;
+		var body = req.body as MessageCreateSchema;
+		const attachments: Attachment[] = [];
+		
+		const rights = await getRights(req.user_id);
+		rights.hasThrow("SEND_MESSAGES");
+
+		// regex to check if message contains anything other than numerals ( also no decimals )
+		if (!message_id.match(/^\+?\d+$/)) {
+			throw new HTTPError("Message IDs must be positive integers", 400);
+		}
+
+		const snowflake = Snowflake.deconstruct(message_id)
+		if (Date.now() < snowflake.timestamp) {
+			// message is in the future
+			throw FosscordApiErrors.CANNOT_BACKFILL_TO_THE_FUTURE;
+		}
+
+		const exists = await Message.findOne({ where: { id: message_id, channel_id: channel_id }});
+		if (exists) {
+			throw FosscordApiErrors.CANNOT_REPLACE_BY_BACKFILL;
+		}
+
+		if (req.file) {
+			try {
+				const file = await uploadFile(`/attachments/${req.params.channel_id}`, req.file);
+				attachments.push({ ...file, proxy_url: file.url });
+			} catch (error) {
+				return res.status(400).json(error);
+			}
+		}
+		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
+
+		const embeds = body.embeds || [];
+		if (body.embed) embeds.push(body.embed);
+		let message = await handleMessage({
+			...body,
+			type: 0,
+			pinned: false,
+			author_id: req.user_id,
+			id: message_id,
+			embeds,
+			channel_id,
+			attachments,
+			edited_timestamp: undefined,
+			timestamp: new Date(snowflake.timestamp),
+		});
+
+		//Fix for the client bug
+		delete message.member
+		
+		await Promise.all([
+			message.save(),
+			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent),
+			channel.save()
+		]);
+
+		postHandleMessage(message).catch((e) => { }); // no await as it shouldnt block the message send function and silently catch error
+
+		return res.json(message);
+	}
+);
 
 router.get("/", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
