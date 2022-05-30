@@ -39,13 +39,15 @@ export enum MessageType {
 	USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2 = 10,
 	USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3 = 11,
 	CHANNEL_FOLLOW_ADD = 12,
+	ACTION = 13, // /me messages
 	GUILD_DISCOVERY_DISQUALIFIED = 14,
 	GUILD_DISCOVERY_REQUALIFIED = 15,
 	ENCRYPTED = 16,
 	REPLY = 19,
-	APPLICATION_COMMAND = 20,
+	APPLICATION_COMMAND = 20, // application command or self command invocation
 	ROUTE_ADDED = 41, // custom message routing: new route affecting that channel
 	ROUTE_DISABLED = 42, // custom message routing: given route no longer affecting that channel
+	SELF_COMMAND_SCRIPT = 43, // self command scripts
 	ENCRYPTION = 50,
 	CUSTOM_START = 63,
 	UNHANDLED = 255

@@ -46,8 +46,6 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		}
 	}
 
-	user.assign(body);
-
 	if (body.new_password) {
 		if (!body.password && !user.email) {
 			throw FieldErrors({
@@ -66,6 +64,7 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
         }
     }
 
+	user.assign(body);
 	await user.save();
 
 	// @ts-ignore
