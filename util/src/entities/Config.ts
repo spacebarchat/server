@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { Snowflake } from "../util/Snowflake";
 import { SessionsReplace } from "..";
 import { hostname } from "os";
+import { Rights } from "../util/Rights";
 
 @Entity("config")
 export class ConfigEntity extends BaseClassWithoutId {
@@ -120,6 +121,7 @@ export interface ConfigValue {
 			secret: string | null;
 		};
 		ipdataApiKey: string | null;
+		defaultRights: string;
 	};
 	login: {
 		requireCaptcha: boolean;
@@ -311,6 +313,33 @@ export const DefaultConfigOptions: ConfigValue = {
 			secret: null,
 		},
 		ipdataApiKey: "eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9",
+		defaultRights: (
+			Rights.FLAGS.CREATE_CHANNELS +
+			Rights.FLAGS.CREATE_DMS +
+			Rights.FLAGS.CREATE_DM_GROUPS +
+			Rights.FLAGS.CREATE_GUILDS +
+			Rights.FLAGS.CREATE_INVITES +
+			Rights.FLAGS.CREATE_ROLES +
+			Rights.FLAGS.CREATE_TEMPLATES +
+			Rights.FLAGS.CREATE_WEBHOOKS +
+			Rights.FLAGS.JOIN_GUILDS +
+			Rights.FLAGS.PIN_MESSAGES +
+			Rights.FLAGS.SELF_ADD_REACTIONS +
+			Rights.FLAGS.SELF_DELETE_MESSAGES +
+			Rights.FLAGS.SELF_EDIT_MESSAGES +
+			Rights.FLAGS.SELF_EDIT_NAME +
+			Rights.FLAGS.SEND_MESSAGES +
+			Rights.FLAGS.USE_ACTIVITIES +
+			Rights.FLAGS.USE_VIDEO +
+			Rights.FLAGS.USE_VOICE +
+			Rights.FLAGS.INVITE_USERS +
+			Rights.FLAGS.SELF_DELETE_DISABLE +
+			Rights.FLAGS.DEBTABLE +
+			Rights.FLAGS.KICK_BAN_MEMBERS +
+			Rights.FLAGS.SELF_LEAVE_GROUPS +
+			Rights.FLAGS.SELF_ADD_DISCOVERABLE +
+			Rights.FLAGS.USE_ACHIEVEMENTS
+		).toString()
 	},
 	login: {
 		requireCaptcha: false,
