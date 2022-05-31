@@ -11,6 +11,10 @@ export const inactiveMembers = async (guild_id: string, user_id: string, days: n
 	//Snowflake should have `generateFromTime` method? Or similar?
 	var minId = BigInt(date.valueOf() - Snowflake.EPOCH) << BigInt(22);
 
+	/**
+	idea: ability to customise the cutoff variable
+	possible candidates: public read receipt, last presence, last VC leave
+	**/
 	var members = await Member.find({
 		where: [
 			{
@@ -47,7 +51,7 @@ export const inactiveMembers = async (guild_id: string, user_id: string, days: n
 	return members;
 };
 
-router.get("/", route({ permission: "KICK_MEMBERS" }), async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const days = parseInt(req.query.days as string);
 
 	var roles = req.query.include_roles;
@@ -65,7 +69,7 @@ export interface PruneSchema {
 	days: number;
 }
 
-router.post("/", route({ permission: "KICK_MEMBERS" }), async (req: Request, res: Response) => {
+router.post("/", route({ permission: "KICK_MEMBERS", right: "KICK_BAN_MEMBERS" }), async (req: Request, res: Response) => {
 	const days = parseInt(req.body.days);
 
 	var roles = req.query.include_roles;

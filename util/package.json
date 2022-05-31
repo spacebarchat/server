@@ -23,7 +23,7 @@
 		"discord-open-source"
 	],
 	"author": "Fosscord",
-	"license": "GPLV3",
+	"license": "AGPLV3",
 	"bugs": {
 		"url": "https://github.com/fosscord/fosscord-server/issues"
 	},
