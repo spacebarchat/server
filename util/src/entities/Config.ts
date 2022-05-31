@@ -334,7 +334,6 @@ export const DefaultConfigOptions: ConfigValue = {
 			Rights.FLAGS.USE_VOICE +
 			Rights.FLAGS.INVITE_USERS +
 			Rights.FLAGS.SELF_DELETE_DISABLE +
-			Rights.FLAGS.DEBTABLE +
 			Rights.FLAGS.KICK_BAN_MEMBERS +
 			Rights.FLAGS.SELF_LEAVE_GROUPS +
 			Rights.FLAGS.SELF_ADD_DISCOVERABLE +
