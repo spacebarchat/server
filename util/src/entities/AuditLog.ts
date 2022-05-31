@@ -4,41 +4,93 @@ import { ChannelPermissionOverwrite } from "./Channel";
 import { User } from "./User";
 
 export enum AuditLogEvents {
-	GUILD_UPDATE = 1,
-	CHANNEL_CREATE = 10,
+	// guild level
+	GUILD_UPDATE = 1, 
+	GUILD_IMPORT = 2,
+	GUILD_EXPORTED = 3,
+	GUILD_ARCHIVE = 4,
+	GUILD_UNARCHIVE = 5,
+	// join-leave
+	USER_JOIN = 6, 
+	USER_LEAVE = 7,
+	// channels
+	CHANNEL_CREATE = 10, 
 	CHANNEL_UPDATE = 11,
 	CHANNEL_DELETE = 12,
-	CHANNEL_OVERWRITE_CREATE = 13,
+	// permission overrides
+	CHANNEL_OVERWRITE_CREATE = 13, 
 	CHANNEL_OVERWRITE_UPDATE = 14,
 	CHANNEL_OVERWRITE_DELETE = 15,
-	MEMBER_KICK = 20,
+	// kick and ban
+	MEMBER_KICK = 20, 
 	MEMBER_PRUNE = 21,
 	MEMBER_BAN_ADD = 22,
 	MEMBER_BAN_REMOVE = 23,
+	// member updates
 	MEMBER_UPDATE = 24,
 	MEMBER_ROLE_UPDATE = 25,
 	MEMBER_MOVE = 26,
 	MEMBER_DISCONNECT = 27,
 	BOT_ADD = 28,
+	// roles
 	ROLE_CREATE = 30,
 	ROLE_UPDATE = 31,
 	ROLE_DELETE = 32,
+	ROLE_SWAP = 33,
+	// invites
 	INVITE_CREATE = 40,
 	INVITE_UPDATE = 41,
 	INVITE_DELETE = 42,
+	// webhooks
 	WEBHOOK_CREATE = 50,
 	WEBHOOK_UPDATE = 51,
 	WEBHOOK_DELETE = 52,
+	WEBHOOK_SWAP = 53,
+	// custom emojis
 	EMOJI_CREATE = 60,
 	EMOJI_UPDATE = 61,
 	EMOJI_DELETE = 62,
+	EMOJI_SWAP = 63,
+	// deletion
+	MESSAGE_CREATE = 70, // messages sent using non-primary seat of the user only
+	MESSAGE_EDIT = 71, // non-self edits only
 	MESSAGE_DELETE = 72,
 	MESSAGE_BULK_DELETE = 73,
+	// pinning
 	MESSAGE_PIN = 74,
 	MESSAGE_UNPIN = 75,
+	// integrations
 	INTEGRATION_CREATE = 80,
 	INTEGRATION_UPDATE = 81,
 	INTEGRATION_DELETE = 82,
+	// stage actions
+	STAGE_INSTANCE_CREATE = 83,
+	STAGE_INSTANCE_UPDATE = 84,
+	STAGE_INSTANCE_DELETE = 85,
+	// stickers
+	STICKER_CREATE = 90,
+	STICKER_UPDATE = 91,
+	STICKER_DELETE = 92,
+	STICKER_SWAP = 93,
+	// threads
+	THREAD_CREATE = 110,
+	THREAD_UPDATE = 111,
+	THREAD_DELETE = 112,
+	// application commands
+	APPLICATION_COMMAND_PERMISSION_UPDATE = 121,
+	// automod
+	POLICY_CREATE = 140, 
+	POLICY_UPDATE = 141,
+	POLICY_DELETE = 142,
+	MESSAGE_BLOCKED_BY_POLICIES = 143,  // in fosscord, blocked messages are stealth-dropped
+	// instance policies affecting the guild
+	GUILD_AFFECTED_BY_POLICIES = 216,
+	// message moves
+	IN_GUILD_MESSAGE_MOVE = 223,
+	CROSS_GUILD_MESSAGE_MOVE = 224,
+	// message routing
+	ROUTE_CREATE = 225, 
+	ROUTE_UPDATE = 226,
 }
 
 @Entity("audit_logs")

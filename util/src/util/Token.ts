@@ -6,7 +6,12 @@ export const JWTOptions: VerifyOptions = { algorithms: ["HS256"] };
 
 export function checkToken(token: string, jwtSecret: string): Promise<any> {
 	return new Promise((res, rej) => {
-		token = token.replace("Bot ", ""); // TODO: proper bot support
+		token = token.replace("Bot ", "");
+		/**
+		in fosscord, even with instances that have bot distinction; we won't enforce "Bot" prefix,
+		as we don't really have separate pathways for bots 
+		**/
+		
 		jwt.verify(token, jwtSecret, JWTOptions, async (err, decoded: any) => {
 			if (err || !decoded) return rej("Invalid Token");
 
