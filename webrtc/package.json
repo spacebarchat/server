@@ -10,7 +10,7 @@
 	},
 	"keywords": [],
 	"author": "Fosscord",
-	"license": "AGPLV3",
+	"license": "AGPL-3.0-only",
 	"devDependencies": {
 		"@types/node": "^15.6.1",
 		"@types/ws": "^7.4.4",
