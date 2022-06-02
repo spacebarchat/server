@@ -324,7 +324,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			// domains: fs.readFileSync(__dirname + "/blockedEmailDomains.txt", { encoding: "utf8" }).split("\n"),
 		},
 		dateOfBirth: {
-			required: false,
+			required: true,
 			minimum: 13,
 		},
 		disabled: false,

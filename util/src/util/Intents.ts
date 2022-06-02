@@ -18,6 +18,8 @@ export class Intents extends BitField {
 		DIRECT_MESSAGE_REACTIONS: BigInt(1) << BigInt(13), // DM or orphan channel message reactions
 		DIRECT_MESSAGE_TYPING: BigInt(1) << BigInt(14), // DM typing notifications
 		GUILD_MESSAGES_CONTENT: BigInt(1) << BigInt(15), // guild message content
+		GUILD_POLICIES: BigInt(1) << BigInt(20), // guild policies
+		GUILD_POLICY_EXECUTION: BigInt(1) << BigInt(21), // guild policy execution
 		LIVE_MESSAGE_COMPOSITION: BigInt(1) << BigInt(32), // allow composing messages using the gateway
 		GUILD_ROUTES: BigInt(1) << BigInt(41), // message routes affecting the guild
 		DIRECT_MESSAGES_THREADS: BigInt(1) << BigInt(42),  // direct message threads
