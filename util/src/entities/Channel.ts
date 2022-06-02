@@ -28,6 +28,8 @@ export enum ChannelType {
 	GUILD_PUBLIC_THREAD = 11, // a temporary sub-channel within a GUILD_TEXT channel
 	GUILD_PRIVATE_THREAD = 12, // a temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
 	GUILD_STAGE_VOICE = 13, // a voice channel for hosting events with an audience
+	DIRECTORY = 14, // guild directory listing channel
+	GUILD_FORUM = 15, // forum composed of IM threads
 	TICKET_TRACKER = 33, // ticket tracker, individual ticket items shall have type 12
 	KANBAN = 34, // confluence like kanban board
 	VOICELESS_WHITEBOARD = 35, // whiteboard but without voice (whiteboard + voice is the same as stage)
@@ -351,6 +353,16 @@ export class Channel extends BaseClass {
 
 	isDm() {
 		return this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM;
+	}
+
+	// Does the channel support sending messages ( eg categories do not )
+	isWritable() {
+		const disallowedChannelTypes = [
+			ChannelType.GUILD_CATEGORY,
+			ChannelType.GUILD_STAGE_VOICE,
+			ChannelType.VOICELESS_WHITEBOARD,
+		];
+		return disallowedChannelTypes.indexOf(this.type) == -1;
 	}
 }
 
