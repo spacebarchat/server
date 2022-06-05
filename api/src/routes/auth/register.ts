@@ -7,6 +7,9 @@ import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
+/**
+* @TJS-additionalProperties true
+*/
 export interface RegisterSchema {
 	/**
 	 * @minLength 2
