@@ -7,6 +7,7 @@ import * as mediasoup from "mediasoup";
 import { types as MediasoupTypes } from "mediasoup";
 import udp from "dgram";
 import sodium from "libsodium-wrappers";
+import { assert } from "console";
 
 var port = Number(process.env.PORT);
 if (isNaN(port)) port = 3004;
@@ -19,7 +20,7 @@ export class Server {
 	public mediasoupProducers: MediasoupTypes.Producer[] = [];
 	public mediasoupConsumers: MediasoupTypes.Consumer[] = [];
 
-	public decryptKey: number[] = [];
+	public decryptKey: Uint8Array;
 	public testUdp = udp.createSocket("udp6");
 
 	constructor() {
@@ -46,9 +47,20 @@ export class Server {
 					socket.close(CLOSECODES.Unknown_opcode);
 				}
 			});
+
+			socket.on("close", (code: number, reason: string) => {
+				console.log(`client closed ${code} ${reason}`);
+				for (var consumer of this.mediasoupConsumers)  consumer.close();
+				for (var producer of this.mediasoupProducers) producer.close();
+				for (var transport of this.mediasoupTransports) transport.close();
+
+				this.mediasoupConsumers = [];
+				this.mediasoupProducers = [];
+				this.mediasoupTransports = [];
+			})
 		});
 
-		this.testUdp.bind(50001);
+		this.testUdp.bind(60000);
 		this.testUdp.on("message", (msg, rinfo) => {
 			//random key from like, the libsodium examples on npm lol
 
@@ -70,23 +82,28 @@ export class Server {
 
 			console.log(`[UDP] message: ${sodium.to_hex(msg)}`);
 
-			let encrypted;
-			if (msg.slice(0, 2).indexOf("\x81\xc9") == 0) {
-				encrypted = msg.slice(0x18, -4);
-			}
-			else if (msg.slice(0, 2).indexOf("\x90\x78") == 0) {
-				encrypted = msg.slice(0x1C, -4);
-			}
-			else {
-				encrypted = msg.slice(0x18, -4);
-				console.log(`wtf header received: ${encrypted.toString("hex")}`);
-			}
+			// let encrypted;
+			// if (Buffer.from(msg).indexOf("\x81\xc9") == 0) {
+			// 	encrypted = msg.slice(0x18, -4);
+			// }
+			// else if (Buffer.from(msg).indexOf("\x90\x78") == 0) {
+			// 	encrypted = msg.slice(0x1C, -4);
+			// }
+			// else {
+			// 	encrypted = msg.slice(0x18, -4);
+			// 	console.log(`wtf header received: ${encrypted.toString("hex")}`);
+			// }
+
+			let encrypted = msg;
 
 			if (sodium.to_hex(msg).indexOf("80c8000600000001") == 0) {
 				//call status
 
+				encrypted = encrypted.slice(8, -4);
+				assert(encrypted.length == 40);
+
 				try {
-					const decrypted = sodium.crypto_secretbox_open_easy(encrypted, nonce, Uint8Array.from(this.decryptKey));
+					const decrypted = sodium.crypto_secretbox_open_easy(encrypted, nonce, Buffer.from(this.decryptKey));
 					console.log("[UDP] [ call status ]" + decrypted);
 				}
 				catch (e) {
@@ -95,13 +112,13 @@ export class Server {
 				return;
 			}
 
-			try {
-				const decrypted = sodium.crypto_secretbox_open_easy(encrypted, nonce, Uint8Array.from(this.decryptKey));
-				console.log("[UDP] " + decrypted);
-			}
-			catch (e) {
-				console.error(`[UDP] decrypt failure\n${e}\n${msg.toString("base64")}`);
-			}
+			// try {
+			// 	const decrypted = sodium.crypto_secretbox_open_easy(encrypted, nonce, Buffer.from(this.decryptKey.map(x => String.fromCharCode(x)).join("")));
+			// 	console.log("[UDP] " + decrypted);
+			// }
+			// catch (e) {
+			// 	console.error(`[UDP] decrypt failure\n${e}\n${msg.toString("base64")}`);
+			// }
 		});
 	}
 
@@ -109,7 +126,7 @@ export class Server {
 		// @ts-ignore
 		await initDatabase();
 		await Config.init();
-		//await this.createWorkers();
+		await this.createWorkers();
 		console.log("[DB] connected");
 		console.log(`[WebRTC] online on 0.0.0.0:${port}`);
 	}

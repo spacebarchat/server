@@ -33,18 +33,18 @@ export async function onIdentify(this: Server, socket: WebSocket, data: Identify
 	if (!guild.members.find(x => x.id === user.id))
 		return socket.close(CLOSECODES.Invalid_intent);
 
-	// var transport = this.mediasoupTransports[0] || await this.mediasoupRouters[0].createWebRtcTransport({
-	// 	listenIps: [{ ip: "10.22.64.56" }],
-	// 	enableUdp: true,
-	// });
-7
+	var transport = this.mediasoupTransports[0] || await this.mediasoupRouters[0].createWebRtcTransport({
+		listenIps: [{ ip: "10.22.64.146" }],
+		enableUdp: true,
+	});
+
 	socket.send(JSON.stringify({
 		op: VoiceOPCodes.READY,
 		d: {
-			streams: data.d.streams ? [...data.d.streams.map(x => ({ ...x, rtx_ssrc: Math.floor(Math.random() * 10000), ssrc: Math.floor(Math.random() * 10000), active: false, }))] : undefined,
+			streams: data.d.streams ? [...data.d.streams.map(x => ({ ...x, rtx_ssrc: Math.floor(Math.random() * 10000), ssrc: Math.floor(Math.random() * 10000), active: true, }))] : undefined,
 			ssrc: Math.floor(Math.random() * 10000),
-			ip: "127.0.0.1",//transport.iceCandidates[0].ip,
-			port: 50001,//transport.iceCandidates[0].port,
+			ip: transport.iceCandidates[0].ip,
+			port: transport.iceCandidates[0].port,
 			modes: [
 				"aead_aes256_gcm_rtpsize",
 				"aead_aes256_gcm",
