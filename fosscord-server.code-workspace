@@ -23,7 +23,12 @@
 		},
 		{
 			"path": "webrtc"
+		},
+		{
+			"path": "slowcord"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"typescript.tsdk": "util\\node_modules\\typescript\\lib"
+	}
 }

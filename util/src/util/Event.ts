@@ -62,6 +62,7 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 			msg.type === "event" && msg.id === event && callback({ ...msg.event, cancel });
 		};
 
+		//@ts-ignore apparently theres no function addListener with this signature
 		process.addListener("message", listener);
 		process.setMaxListeners(process.getMaxListeners() + 1);
 

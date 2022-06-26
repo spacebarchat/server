@@ -1,0 +1,65 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Slowcord</title>
+</head>
+
+<body>
+	<div class="content">
+		<form action="javascript:void(0);">
+			<input type="email" name="email" />
+			<input type="password" name="password" />
+			<input type="submit" />
+
+			<a
+				href="https://discord.com/api/oauth2/authorize?client_id=990585211966324806&redirect_uri=https%3A%2F%2Fslowcord.maddy.k.vu%2Foauth%2Fdiscord&response_type=code&scope=identify%20email">
+				Login with Discord
+			</a>
+		</form>
+	</div>
+
+	<script>
+		/* https://stackoverflow.com/questions/5639346/what-is-the-shortest-function-for-reading-a-cookie-by-name-in-javascript */
+		const getCookieValue = (name) => (
+			document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
+		);
+
+		let token = getCookieValue("token");
+		if (token) {
+			document.cookie = "";	// don't care
+			window.localStorage.setItem("token", json.token);
+			window.location.href = "/app";
+		}
+
+		token = window.localStorage.getItem("token");
+		if (token) window.location.href = "/app";
+
+		document.forms[0].addEventListener("submit", async (e) => {
+			const data = new FormData(e.target);
+			const email = data.get("email");
+			const password = data.get("password");
+
+			const response = await fetch("/api/v9/auth/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					login: email,
+					password: password,
+				})
+			});
+
+			const json = response.json();
+			if (json.token) {
+				window.localStorage.setItem("token", json.token);
+				window.location.href = "/app";
+			}
+		})
+	</script>
+</body>
+
+</html>

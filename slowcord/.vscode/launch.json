@@ -1,0 +1,14 @@
+{
+	"configurations": [
+		{
+			"name": "Launch Program",
+			"program": "${workspaceFolder}/build/index.js",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "node",
+			"preLaunchTask": "tsc: build - tsconfig.json"
+		}
+	]
+}

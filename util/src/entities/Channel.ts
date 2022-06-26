@@ -245,6 +245,7 @@ export class Channel extends BaseClass {
 
 	static async createDMChannel(recipients: string[], creator_user_id: string, name?: string) {
 		recipients = recipients.unique().filter((x) => x !== creator_user_id);
+		//@ts-ignore	some typeorm typescript issue
 		const otherRecipientsUsers = await User.find({ where: recipients.map((x) => ({ id: x })) });
 
 		// TODO: check config for max number of recipients
