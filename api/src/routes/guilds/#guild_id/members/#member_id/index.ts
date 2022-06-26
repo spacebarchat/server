@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { Member, getPermission, Role, GuildMemberUpdateEvent, emitEvent, Sticker, Emoji, Guild } from "@fosscord/util";
+import { Member, getPermission, getRights, Role, GuildMemberUpdateEvent, emitEvent, Sticker, Emoji, Rights, Guild } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 
@@ -51,9 +51,16 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 router.put("/", route({}), async (req: Request, res: Response) => {
 
 	// TODO: Lurker mode
+	
+	const rights = await getRights(req.user_id);
 
 	let { guild_id, member_id } = req.params;
-	if (member_id === "@me") member_id = req.user_id;
+	if (member_id === "@me") {
+		member_id = req.user_id;
+		rights.hasThrow("JOIN_GUILDS");
+	} else {
+	   // TODO: join others by controller	
+	}
 
 	var guild = await Guild.findOneOrFail({
 		where: { id: guild_id }	});
@@ -71,7 +78,16 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 	res.send({...guild, emojis: emoji, roles: roles, stickers: stickers});
 });
 
-router.delete("/", route({ permission: "KICK_MEMBERS" }), async (req: Request, res: Response) => {
+router.delete("/", route(), async (req: Request, res: Response) => {
+	const permission = await getPermission(req.user_id);
+	const rights = await getRights(req.user_id);
+	if (member_id !== "@me" || member_id === req.user_id) {
+		// TODO: unless force-joined
+		rights.hasThrow("SELF_LEAVE_GUILDS");
+	} else {
+		rights.hasThrow("KICK_BAN_MEMBERS");
+		permission.hasThrow("KICK_MEMBERS");
+	}
 	const { guild_id, member_id } = req.params;
 
 	await Member.removeFromGuild(member_id, guild_id);
