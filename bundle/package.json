@@ -18,7 +18,7 @@
 	},
 	"keywords": [],
 	"author": "Fosscord",
-	"license": "AGPLV3",
+	"license": "AGPL-3.0-only",
 	"bugs": {
 		"url": "https://github.com/fosscord/fosscord-server/issues"
 	},
