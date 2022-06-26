@@ -83,7 +83,7 @@ router.delete("/", route(), async (req: Request, res: Response) => {
 	const rights = await getRights(req.user_id);
 	if (member_id !== "@me" || member_id === req.user_id) {
 		// TODO: unless force-joined
-		rights.hasThrow("SELF_LEAVE_GUILDS");
+		rights.hasThrow("SELF_LEAVE_GROUPS");
 	} else {
 		rights.hasThrow("KICK_BAN_MEMBERS");
 		permission.hasThrow("KICK_MEMBERS");
