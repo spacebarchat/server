@@ -51,7 +51,7 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 router.put("/", route({}), async (req: Request, res: Response) => {
 
 	// TODO: Lurker mode
-	
+
 	const rights = await getRights(req.user_id);
 
 	let { guild_id, member_id } = req.params;
@@ -59,28 +59,33 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 		member_id = req.user_id;
 		rights.hasThrow("JOIN_GUILDS");
 	} else {
-	   // TODO: join others by controller	
+		// TODO: join others by controller	
 	}
 
 	var guild = await Guild.findOneOrFail({
-		where: { id: guild_id }	});
+		where: { id: guild_id }
+	});
 
 	var emoji = await Emoji.find({
-		where: { guild_id: guild_id }	});
+		where: { guild_id: guild_id }
+	});
 
 	var roles = await Role.find({
-		where: { guild_id: guild_id }	});
+		where: { guild_id: guild_id }
+	});
 
 	var stickers = await Sticker.find({
-		where: { guild_id: guild_id }	});
-	
+		where: { guild_id: guild_id }
+	});
+
 	await Member.addToGuild(member_id, guild_id);
-	res.send({...guild, emojis: emoji, roles: roles, stickers: stickers});
+	res.send({ ...guild, emojis: emoji, roles: roles, stickers: stickers });
 });
 
-router.delete("/", route(), async (req: Request, res: Response) => {
+router.delete("/", route({}), async (req: Request, res: Response) => {
 	const permission = await getPermission(req.user_id);
 	const rights = await getRights(req.user_id);
+	const { guild_id, member_id } = req.params;
 	if (member_id !== "@me" || member_id === req.user_id) {
 		// TODO: unless force-joined
 		rights.hasThrow("SELF_LEAVE_GROUPS");
@@ -88,7 +93,6 @@ router.delete("/", route(), async (req: Request, res: Response) => {
 		rights.hasThrow("KICK_BAN_MEMBERS");
 		permission.hasThrow("KICK_MEMBERS");
 	}
-	const { guild_id, member_id } = req.params;
 
 	await Member.removeFromGuild(member_id, guild_id);
 	res.sendStatus(204);
