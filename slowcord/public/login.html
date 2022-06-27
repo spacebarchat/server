@@ -89,6 +89,13 @@
 		#loginDiscord {
 			background-color: var(--background-login-discord);
 		}
+
+		#failure {
+			width: 100%;
+			margin-top: 10px;
+			color: rgb(200, 20, 20);
+			display: none;
+		}
 	</style>
 </head>
 
@@ -98,7 +105,10 @@
 			<div class="header">
 				<h1>Welcome to Slowcord</h1>
 				<p>Glad to see you &lt;3 </p>
+
+				<p id="failure">Login failed</p>
 			</div>
+
 
 			<form action="javascript:void(0);">
 				<label for="email">Email</label>
@@ -107,7 +117,7 @@
 				<label for="password">Password</label>
 				<input type="password" name="password" />
 				
-				<input type="submit" />
+				<input type="submit" value="Login" />
 
 				<a
 					id="loginDiscord"
@@ -157,7 +167,10 @@
 			if (json.token) {
 				window.localStorage.setItem("token", `"${json.token}"`);
 				window.location.href = "/app";
+				return;
 			}
+
+			document.getElementById("failure").style.display = "block";
 		})
 	</script>
 </body>

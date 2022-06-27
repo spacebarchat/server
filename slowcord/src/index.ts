@@ -71,9 +71,8 @@ const handlers: { [key: string]: any; } = {
 
 app.get("/oauth/:type", async (req, res) => {
 	const { type } = req.params;
-	if (!type) return res.sendStatus(400);
 	const handler = handlers[type];
-	if (!handler) return res.sendStatus(400);
+	if (!type || !handler) return res.sendStatus(400);
 
 	const data = await handler.getAccessToken(req, res);
 	if (!data) return res.sendStatus(500);
