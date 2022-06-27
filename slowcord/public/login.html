@@ -124,9 +124,9 @@
 			document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
 		);
 
-		let token = getCookieValue("oauth-discord");
+		let token = getCookieValue("token");
 		if (token.trim().length) {
-			document.cookie = "oauth-discord=";	// don't care
+			document.cookie = "token=";	// don't care
 			window.localStorage.setItem("token", `"${token}"`);
 			window.location.href = "/app";
 		}
