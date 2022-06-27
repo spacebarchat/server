@@ -73,6 +73,7 @@
 			border: 1px solid grey;
 			color: var(--foreground-primary);
 			text-decoration: none;
+			cursor: pointer;
 		}
 
 		form a {
@@ -126,7 +127,9 @@
 
 		let token = getCookieValue("token");
 		if (token.trim().length) {
-			document.cookie = "token=";	// don't care
+			/* https://stackoverflow.com/a/27374365 */
+			// why is clearing cookies so weird? wtf
+			document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
 			window.localStorage.setItem("token", `"${token}"`);
 			window.location.href = "/app";
 		}
