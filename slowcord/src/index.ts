@@ -104,7 +104,7 @@ app.get("/oauth/:type", async (req, res) => {
 
 	const token = await generateToken(user.id);
 
-	res.cookie("oauth-discord", token, { signed: true });
+	res.cookie("token", token, { signed: true });
 
 	res.sendFile(path.join(__dirname, "../public/login.html"));
 });
