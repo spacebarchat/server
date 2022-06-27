@@ -127,7 +127,7 @@
 		let token = getCookieValue("oauth-discord");
 		if (token.trim().length) {
 			document.cookie = "oauth-discord=";	// don't care
-			window.localStorage.setItem("token", token);
+			window.localStorage.setItem("token", `"${token}"`);
 			window.location.href = "/app";
 		}
 
@@ -152,7 +152,7 @@
 
 			const json = await response.json();
 			if (json.token) {
-				window.localStorage.setItem("token", json.token);
+				window.localStorage.setItem("token", `"${json.token}"`);
 				window.location.href = "/app";
 			}
 		})
