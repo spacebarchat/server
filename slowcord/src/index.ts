@@ -5,6 +5,12 @@ import { initDatabase, generateToken, User, Config } from "@fosscord/util";
 import path from "path";
 import fetch from "node-fetch";
 
+// apparently dirname doesn't exist in modules, nice
+/* https://stackoverflow.com/a/62892482 */
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 app.use(cookieParser());
 const port = process.env.PORT;
@@ -52,6 +58,7 @@ class Discord {
 		if (!json.username || !json.email) return null;	// eh, deal with bad code later
 
 		return {
+			id: json.id,
 			email: json.email,
 			username: json.username,
 		};
@@ -74,6 +81,18 @@ app.get("/oauth/:type", async (req, res) => {
 	const details = await handler.getUserDetails(data.access_token);
 	if (!details) return res.sendStatus(500);
 
+	// temp dirty solution
+	const whitelist = [
+		"226230010132824066",	// maddyunderstars
+		"84022289024159744",	// arcane
+		"841745750576726057",	// gold
+		"398941530053672962",	// erkinalp
+		"682572949219180547",	// cyber
+		"920388642604732456",	// aaron
+	];
+
+	if (whitelist.indexOf(details.id) === -1) return res.sendStatus(403);
+
 	let user = await User.findOne({ where: { email: details.email } });
 	if (!user) {
 		user = await User.register({
@@ -85,10 +104,13 @@ app.get("/oauth/:type", async (req, res) => {
 
 	const token = await generateToken(user.id);
 
-	res.cookie("token", token);
+	res.cookie("oauth-discord", token, { signed: true });
 
 	res.sendFile(path.join(__dirname, "../public/login.html"));
 });
+
+// not actually needed but whatever
+app.get("/app", (req, res) => res.sendStatus(200));
 
 app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "../public/login.html"));
