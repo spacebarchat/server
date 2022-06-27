@@ -5,20 +5,117 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Slowcord</title>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+	<style>
+		html {
+			--background-primary: rgb(22, 23, 25);
+			--background-secondary: rgb(15, 16, 18);
+			--foreground-primary: rgb(200, 200, 200);
+			--background-login-discord: #5865F2;
+
+			background: url("https://slowcord.maddy.k.vu/assets/background.png");
+			background-size: 100% 100%;
+			background-repeat: no-repeat;
+
+			font-family: 'Montserrat', sans-serif;
+
+			color: var(--foreground-primary);
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.content {
+			display: flex;
+			width: 100vw;
+			height: 100vh;
+			justify-content: flex-start;
+			align-items: center;
+		}
+
+		.login {
+			height: 100%;
+			width: 25%;
+			min-width: 400px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+
+			background-color: var(--background-primary);
+
+			padding: 0 50px 0 50px;
+		}
+
+		.header {
+			margin: 40px;
+			width: 100%;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+		}
+
+		input,
+		form a {
+			background-color: var(--background-secondary);
+			padding: 10px;
+			margin: 5px 0 5px 0;
+			outline: none;
+			border: 1px solid grey;
+			color: var(--foreground-primary);
+			text-decoration: none;
+		}
+
+		form a {
+			text-align: center;
+		}
+
+		label {
+			text-transform: uppercase;
+			font-size: 0.75rem;
+			font-weight: bold;
+		}
+
+		#loginDiscord {
+			background-color: var(--background-login-discord);
+		}
+	</style>
 </head>
 
 <body>
 	<div class="content">
-		<form action="javascript:void(0);">
-			<input type="email" name="email" />
-			<input type="password" name="password" />
-			<input type="submit" />
+		<div class="login">
+			<div class="header">
+				<h1>Welcome to Slowcord</h1>
+				<p>Glad to see you &lt;3 </p>
+			</div>
 
-			<a
-				href="https://discord.com/api/oauth2/authorize?client_id=990585211966324806&redirect_uri=https%3A%2F%2Fslowcord.maddy.k.vu%2Foauth%2Fdiscord&response_type=code&scope=identify%20email">
-				Login with Discord
-			</a>
-		</form>
+			<form action="javascript:void(0);">
+				<label for="email">Email</label>
+				<input type="email" name="email" />
+
+				<label for="password">Password</label>
+				<input type="password" name="password" />
+				
+				<input type="submit" />
+
+				<a
+					id="loginDiscord"
+					class="oauth"
+					href="https://discord.com/api/oauth2/authorize?client_id=990585211966324806&redirect_uri=https%3A%2F%2Fslowcord.maddy.k.vu%2Foauth%2Fdiscord&response_type=code&scope=identify%20email">
+					Login with Discord
+				</a>
+			</form>
+		</div>
 	</div>
 
 	<script>
@@ -27,10 +124,10 @@
 			document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
 		);
 
-		let token = getCookieValue("token");
-		if (token) {
-			document.cookie = "";	// don't care
-			window.localStorage.setItem("token", json.token);
+		let token = getCookieValue("oauth-discord");
+		if (token.trim().length) {
+			document.cookie = "oauth-discord=";	// don't care
+			window.localStorage.setItem("token", token);
 			window.location.href = "/app";
 		}
 

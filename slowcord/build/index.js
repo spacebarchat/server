@@ -14,6 +14,11 @@ import cookieParser from "cookie-parser";
 import { initDatabase, generateToken, User, Config } from "@fosscord/util";
 import path from "path";
 import fetch from "node-fetch";
+// apparently dirname doesn't exist in modules, nice
+/* https://stackoverflow.com/a/62892482 */
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 app.use(cookieParser());
 const port = process.env.PORT;
@@ -57,6 +62,7 @@ Discord.getUserDetails = (token) => __awaiter(void 0, void 0, void 0, function* 
     if (!json.username || !json.email)
         return null; // eh, deal with bad code later
     return {
+        id: json.id,
         email: json.email,
         username: json.username,
     };
@@ -77,6 +83,15 @@ app.get("/oauth/:type", (req, res) => __awaiter(void 0, void 0, void 0, function
     const details = yield handler.getUserDetails(data.access_token);
     if (!details)
         return res.sendStatus(500);
+    // temp dirty solution
+    const whitelist = [
+        "226230010132824066",
+        "84022289024159744",
+        "841745750576726057",
+        "398941530053672962", // erkinalp
+    ];
+    if (whitelist.indexOf(details.id) === -1)
+        return res.sendStatus(403);
     let user = yield User.findOne({ where: { email: details.email } });
     if (!user) {
         user = yield User.register({
@@ -89,6 +104,7 @@ app.get("/oauth/:type", (req, res) => __awaiter(void 0, void 0, void 0, function
     res.cookie("token", token);
     res.sendFile(path.join(__dirname, "../public/login.html"));
 }));
+app.get("/app", (req, res) => res.sendStatus(200));
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../public/login.html"));
 });
