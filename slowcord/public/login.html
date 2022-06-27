@@ -150,7 +150,7 @@
 				})
 			});
 
-			const json = response.json();
+			const json = await response.json();
 			if (json.token) {
 				window.localStorage.setItem("token", json.token);
 				window.location.href = "/app";
