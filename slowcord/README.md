@@ -1,1 +1,1 @@
-Additional resources/services for [Slowcord](slowcord.maddy.k.vu)
+Additional resources/services for [Slowcord](https://slowcord.maddy.k.vu/login)
