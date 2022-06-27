@@ -5,7 +5,7 @@
 	"main": "build/index.js",
 	"scripts": {
 		"build": "tsc -b",
-		"run": "node build/index.js"
+		"start": "node build/index.js"
 	},
 	"repository": {
 		"type": "git",
