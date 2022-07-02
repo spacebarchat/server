@@ -193,7 +193,7 @@ export interface ConfigValue {
 		releases: {
 			useLocalRelease: Boolean; //TODO
 			upstreamVersion: string;
-		}
+		};
 	},
 	metrics: {
 		timeout: number;
@@ -203,7 +203,7 @@ export interface ConfigValue {
 		endpoint: string;
 		traceSampleRate: number;
 		environment: string;
-	}
+	};
 }
 
 export const DefaultConfigOptions: ConfigValue = {
@@ -338,7 +338,9 @@ export const DefaultConfigOptions: ConfigValue = {
 			Rights.FLAGS.KICK_BAN_MEMBERS +
 			Rights.FLAGS.SELF_LEAVE_GROUPS +
 			Rights.FLAGS.SELF_ADD_DISCOVERABLE +
-			Rights.FLAGS.USE_ACHIEVEMENTS
+			Rights.FLAGS.USE_ACHIEVEMENTS +
+			Rights.FLAGS.MANAGE_GUILDS +
+			Rights.FLAGS.MANAGE_MESSAGES
 		).toString()
 	},
 	login: {
