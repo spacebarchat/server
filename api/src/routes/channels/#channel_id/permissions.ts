@@ -16,7 +16,14 @@ const router: Router = Router();
 
 // TODO: Only permissions your bot has in the guild or channel can be allowed/denied (unless your bot has a MANAGE_ROLES overwrite in the channel)
 
-export interface ChannelPermissionOverwriteSchema extends ChannelPermissionOverwrite {}
+// export interface ChannelPermissionOverwriteSchema extends ChannelPermissionOverwrite {}
+// TODO: typescript-json-schema does not like extending types
+export interface ChannelPermissionOverwriteSchema {
+	allow: string;
+	deny: string;
+	id: string;
+	type: ChannelPermissionOverwriteType;
+}
 
 router.put(
 	"/:overwrite_id",
