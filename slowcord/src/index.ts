@@ -15,6 +15,16 @@ const app = express();
 app.use(cookieParser());
 const port = process.env.PORT;
 
+// ip -> unix epoch that requests will be accepted again
+const rateLimits: { [ip: string]: number; } = {};
+const allowRequestsEveryMs = 0.5 * 1000;	// every half second
+
+const allowedRequestsPerSecond = 50;
+let requestsThisSecond = 0;
+setInterval(() => {
+	requestsThisSecond = 0;
+}, 1000);
+
 class Discord {
 	static getAccessToken = async (req: Request, res: Response) => {
 		const { code } = req.query;
@@ -69,6 +79,27 @@ const handlers: { [key: string]: any; } = {
 	"discord": Discord,
 };
 
+app.use((req, res, next) => {
+	requestsThisSecond++;
+	if (requestsThisSecond > allowedRequestsPerSecond)
+		return res.sendStatus(429);
+
+	const ip = (req.headers["X-Forwarded-For"] as string) || req.socket.remoteAddress as string;
+	console.log(`${ip}`);
+	if (!rateLimits[ip]) {
+		rateLimits[ip] = Date.now() + allowRequestsEveryMs;
+	}
+	else if (rateLimits[ip] > Date.now()) {
+		rateLimits[ip] += allowRequestsEveryMs;
+		return res.sendStatus(429);
+	}
+	else {
+		delete rateLimits[ip];
+	}
+
+	next();
+});
+
 app.get("/oauth/:type", async (req, res) => {
 	const { type } = req.params;
 	const handler = handlers[type];
@@ -79,18 +110,6 @@ app.get("/oauth/:type", async (req, res) => {
 
 	const details = await handler.getUserDetails(data.access_token);
 	if (!details) return res.sendStatus(500);
-
-	// temp dirty solution
-	const whitelist = [
-		"226230010132824066",	// maddyunderstars
-		"84022289024159744",	// arcane
-		"841745750576726057",	// gold
-		"398941530053672962",	// erkinalp
-		"682572949219180547",	// cyber
-		"920388642604732456",	// aaron
-	];
-
-	if (whitelist.indexOf(details.id) === -1) return res.sendStatus(403);
 
 	let user = await User.findOne({ where: { email: details.email } });
 	if (!user) {
