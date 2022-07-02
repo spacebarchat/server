@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors, adjustEmail } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
+import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
@@ -29,6 +30,8 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 });
 
 router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res: Response) => {
+	if (req.user_id === "992772978150273216") throw new HTTPError("Demo user, sorry", 400);
+
 	const body = req.body as UserModifySchema;
 
 	if (body.avatar) body.avatar = await handleFile(`/avatars/${req.user_id}`, body.avatar as string);
