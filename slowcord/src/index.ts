@@ -91,6 +91,7 @@ app.use((req, res, next) => {
 	}
 	else if (rateLimits[ip] > Date.now()) {
 		rateLimits[ip] += allowRequestsEveryMs;
+		console.log(`user ${ip} was timed out for ${(rateLimits[ip] - Date.now()) / 1000}s`);
 		return res.sendStatus(429);
 	}
 	else {
