@@ -19,11 +19,11 @@
 			<div class="header">
 				<h1>Welcome to Slowcord</h1>
 				<div class="header-subtext">
-					<p>Glad to see you &lt;3 </p>
-					<a href="/register">Wait, I'm new!</a>
+					<p>You're new?</p>
+					<a href="/login">Actually, I'm not!</a>
 				</div>
 
-				<p id="failure">Login failed</p>
+				<p id="failure">Register failed</p>
 			</div>
 
 
@@ -31,10 +31,16 @@
 				<label for="email">Email</label>
 				<input type="email" name="email" />
 
+				<label for="username">Username</label>
+				<input type="username" name="username" />
+
 				<label for="password">Password</label>
 				<input type="password" name="password" />
 
-				<input type="submit" value="Login" />
+				<label for="dob">Date of Birth</label>
+				<input type="date" name="dob" />
+
+				<input type="submit" value="Register" />
 
 				<a id="loginDiscord" class="oauth"
 					href="https://discord.com/api/oauth2/authorize?client_id=991688571415175198&redirect_uri=https%3A%2F%2Fslowcord.maddy.k.vu%2Foauth%2Fdiscord&response_type=code&scope=identify%20email">
@@ -45,36 +51,23 @@
 	</div>
 
 	<script>
-		/* https://stackoverflow.com/questions/5639346/what-is-the-shortest-function-for-reading-a-cookie-by-name-in-javascript */
-		const getCookieValue = (name) => (
-			document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
-		);
-
-		let token = getCookieValue("token");
-		if (token.trim().length) {
-			/* https://stackoverflow.com/a/27374365 */
-			// why is clearing cookies so weird? wtf
-			document.cookie.split(";").forEach(function (c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-			window.localStorage.setItem("token", `"${token}"`);
-			window.location.href = "/app";
-		}
-
-		token = window.localStorage.getItem("token");
-		if (token) window.location.href = "/app";
-
 		document.forms[0].addEventListener("submit", async (e) => {
 			const data = new FormData(e.target);
 			const email = data.get("email");
+			const username = data.get("username");
 			const password = data.get("password");
+			const dob = data.get("dob");
 
-			const response = await fetch("/api/v9/auth/login", {
+			const response = await fetch("/api/v9/auth/register", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					login: email,
+					email: email,
+					username: username,
 					password: password,
+					date_of_birth: dob,
 				})
 			});
 

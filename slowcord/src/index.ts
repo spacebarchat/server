@@ -79,7 +79,7 @@ const handlers: { [key: string]: any; } = {
 	"discord": Discord,
 };
 
-app.use((req, res, next) => {
+app.get("/oauth/:type", async (req, res) => {
 	requestsThisSecond++;
 	if (requestsThisSecond > allowedRequestsPerSecond)
 		return res.sendStatus(429);
@@ -98,10 +98,6 @@ app.use((req, res, next) => {
 		delete rateLimits[ip];
 	}
 
-	next();
-});
-
-app.get("/oauth/:type", async (req, res) => {
 	const { type } = req.params;
 	const handler = handlers[type];
 	if (!type || !handler) return res.sendStatus(400);
@@ -128,12 +124,7 @@ app.get("/oauth/:type", async (req, res) => {
 	res.sendFile(path.join(__dirname, "../public/login.html"));
 });
 
-// not actually needed but whatever
-app.get("/app", (req, res) => res.sendStatus(200));
-
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "../public/login.html"));
-});
+app.use(express.static("public", { extensions: ["html"] }));
 
 (async () => {
 	await initDatabase();
