@@ -341,7 +341,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			Rights.FLAGS.USE_ACHIEVEMENTS +
 			Rights.FLAGS.MANAGE_GUILDS +
 			Rights.FLAGS.MANAGE_MESSAGES +
-			Rights.FLAGS.USE_MASS_INVITES,
+			Rights.FLAGS.USE_MASS_INVITES
 		).toString()
 	},
 	login: {
