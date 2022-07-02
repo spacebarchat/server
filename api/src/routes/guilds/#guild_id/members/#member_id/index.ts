@@ -7,6 +7,7 @@ const router = Router();
 
 export interface MemberChangeSchema {
 	roles?: string[];
+	nick?: string;
 }
 
 router.get("/", route({}), async (req: Request, res: Response) => {
@@ -33,6 +34,8 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 		if (body.roles.indexOf(everyone.id) === -1) body.roles.push(everyone.id);
 		member.roles = body.roles.map((x) => new Role({ id: x })); // foreign key constraint will fail if role doesn't exist
 	}
+
+	if (body.nick) member.nick = body.nick;
 
 	await member.save();
 

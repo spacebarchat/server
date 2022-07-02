@@ -7213,6 +7213,9 @@
                 "items": {
                     "type": "string"
                 }
+            },
+            "nick": {
+                "type": "string"
             }
         },
         "additionalProperties": false,
