@@ -35,10 +35,7 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 		member.roles = body.roles.map((x) => new Role({ id: x })); // foreign key constraint will fail if role doesn't exist
 	}
 
-	if ('nick' in body) {
-		permission.hasThrow("CHANGE_NICKNAME");
-		Member.changeNickname(member.id, member.guild.id, body.nick!);
-	}
+	if (body.nick) member.nick = body.nick;
 
 	await member.save();
 
