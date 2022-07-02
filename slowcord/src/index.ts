@@ -84,7 +84,7 @@ app.use((req, res, next) => {
 	if (requestsThisSecond > allowedRequestsPerSecond)
 		return res.sendStatus(429);
 
-	const ip = (req.headers["X-Forwarded-For"] as string) || req.socket.remoteAddress as string;
+	const ip = (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress as string;
 	console.log(`${ip}`);
 	if (!rateLimits[ip]) {
 		rateLimits[ip] = Date.now() + allowRequestsEveryMs;
