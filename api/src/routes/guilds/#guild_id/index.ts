@@ -20,6 +20,7 @@ export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels"> {
 	afk_timeout?: number;
 	afk_channel_id?: string;
 	preferred_locale?: string;
+	premium_progress_bar_enabled?: boolean;
 }
 
 router.get("/", route({}), async (req: Request, res: Response) => {
