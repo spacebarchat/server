@@ -42,7 +42,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		.flat()
 		.unique((r: Role) => r.id);
 
-	const offlineMembers = [];
+	const offlineItems = [];
 
 	for (const role of member_roles) {
 		// @ts-ignore
@@ -58,12 +58,6 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		groups.push(group);
 
 		for (const member of role_members) {
-			if (!member?.user?.sessions || !member.user.sessions.length) {
-				offlineMembers.push(member);
-				group.count--;
-				continue;
-			}
-
 			const roles = member.roles
 				.filter((x: Role) => x.id !== guild_id)
 				.map((x: Role) => x.id);
@@ -71,7 +65,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 			const session = member.user.sessions.first();
 
 			// TODO: properly mock/hide offline/invisible status
-			items.push({
+			const item = {
 				member: {
 					...member,
 					roles,
@@ -82,48 +76,35 @@ async function getMembers(guild_id: string, range: [number, number]) {
 						user: { id: member.user.id },
 					},
 				},
-			});
+			}
+
+			if (!member?.user?.sessions || !member.user.sessions.length) {
+				offlineItems.push(item);
+				group.count--;
+				continue;
+			}
+
+			items.push(item);
 		}
 		members = other_members;
 	}
 
-	if (offlineMembers.length) {
+	if (offlineItems.length) {
 		const group = {
-			count: offlineMembers.length,
+			count: offlineItems.length,
 			id: "offline",
 		};
 		items.push({ group });
 		groups.push(group);
 
-		for (var member of offlineMembers) {
-			const roles = member.roles
-				.filter((x: Role) => x.id !== guild_id)
-				.map((x: Role) => x.id);
-
-			const session = member.user.sessions.first();
-
-			items.push({
-				member: {
-					...member,
-					roles,
-					user: { ...member.user, sessions: undefined },
-					presence: {
-						...session,
-						activities: session?.activities || [],
-						user: { id: member.user.id },
-					}
-				}
-			})
-		}
+		items.push(...offlineItems);
 	}
-
-	console.log(items, groups, range, members);
 
 	return {
 		items,
 		groups,
 		range,
-		members: items.map((x) => x.member).filter((x) => x),
+		members: items.map((x) => 'member' in x ? x.member : undefined).filter(x => !!x),
 	};
 }
 
