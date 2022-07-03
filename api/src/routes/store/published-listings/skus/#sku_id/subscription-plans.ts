@@ -5,6 +5,22 @@ const router: Router = Router();
 
 const skus = new Map([
 	[
+		"978380684370378762",
+		[
+			{
+				id: "978380692553465866",
+				name: "Nitro Lite Monthly",
+				interval: 1,
+				interval_count: 1,
+				tag_inclusive: true,
+				sku_id: "978380684370378762",
+				currency: "usd",
+				price: 0,
+				price_tier: null,
+			}
+		]
+	],
+	[
 		"521842865731534868",
 		[
 			{
