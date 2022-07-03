@@ -42,6 +42,8 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		.flat()
 		.unique((r: Role) => r.id);
 
+	const offlineMembers = [];
+
 	for (const role of member_roles) {
 		// @ts-ignore
 		const [role_members, other_members] = partition(members, (m: Member) =>
@@ -56,6 +58,12 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		groups.push(group);
 
 		for (const member of role_members) {
+			if (!member?.user?.sessions || !member.user.sessions.length) {
+				offlineMembers.push(member);
+				group.count--;
+				continue;
+			}
+
 			const roles = member.roles
 				.filter((x: Role) => x.id !== guild_id)
 				.map((x: Role) => x.id);
@@ -77,6 +85,36 @@ async function getMembers(guild_id: string, range: [number, number]) {
 			});
 		}
 		members = other_members;
+	}
+
+	if (offlineMembers.length) {
+		const group = {
+			count: offlineMembers.length,
+			id: "offline",
+		};
+		items.push({ group });
+		groups.push(group);
+
+		for (var member of offlineMembers) {
+			const roles = member.roles
+				.filter((x: Role) => x.id !== guild_id)
+				.map((x: Role) => x.id);
+
+			const session = member.user.sessions.first();
+
+			items.push({
+				member: {
+					...member,
+					roles,
+					user: { ...member.user, sessions: undefined },
+					presence: {
+						...session,
+						activities: session?.activities || [],
+						user: { id: member.user.id },
+					}
+				}
+			})
+		}
 	}
 
 	return {
