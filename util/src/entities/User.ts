@@ -318,7 +318,7 @@ export const defaultSettings: UserSettings = {
 	inline_attachment_media: true,
 	inline_embed_media: true,
 	locale: "en-US",
-	message_display_compact: true,
+	message_display_compact: false,
 	native_phone_integration_enabled: true,
 	render_embeds: true,
 	render_reactions: true,
