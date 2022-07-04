@@ -10506,8 +10506,7 @@
                     "additionalProperties": false,
                     "required": [
                         "channel_id",
-                        "description",
-                        "emoji_name"
+                        "description"
                     ]
                 }
             },
