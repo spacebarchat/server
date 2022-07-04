@@ -19,52 +19,14 @@ const router = Router();
 router.get("/",route({}), async (req: Request, res: Response) => {
     const { guild_id, role_id } = req.params
     await Member.IsInGuildOrFail(req.user_id, guild_id);
-	const role = await Role.find({ guild_id: guild_id }).find((r: {id: string}) => r.id === role_id);
+	const roles = await Role.find({ guild_id: guild_id })
+    const role = roles.find((r: {id: string}) => r.id === role_id);
 	return res.json(role);
 });
 
-// router.post("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" }), async (req: Request, res: Response) => {
-// 	const guild_id = req.params.guild_id;
-// 	const body = req.body as RoleModifySchema;
 
-// 	const role_count = await Role.count({ guild_id });
-// 	const { maxRoles } = Config.get().limits.guild;
-
-// 	if (role_count > maxRoles) throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
-
-// 	const role = new Role({
-// 		// values before ...body are default and can be overriden
-// 		position: 0,
-// 		hoist: false,
-// 		color: 0,
-// 		mentionable: false,
-// 		...body,
-// 		guild_id: guild_id,
-// 		managed: false,
-// 		permissions: String(req.permission!.bitfield & BigInt(body.permissions || "0")),
-// 		tags: undefined,
-// 		icon: null,
-// 		unicode_emoji: null
-// 	});
-
-// 	await Promise.all([
-// 		role.save(),
-// 		emitEvent({
-// 			event: "GUILD_ROLE_CREATE",
-// 			guild_id,
-// 			data: {
-// 				guild_id,
-// 				role: role
-// 			}
-// 		} as GuildRoleCreateEvent)
-// 	]);
-
-// 	res.json(role);
-// });
-
-// router.delete("/:role_id", route({ permission: "MANAGE_ROLES" }), async (req: Request, res: Response) => {
-// 	const guild_id = req.params.guild_id;
-// 	const { role_id } = req.params;
+// router.delete("/", route({ permission: "MANAGE_ROLES" }), async (req: Request, res: Response) => {
+// 	const { guild_id, role_id } = req.params;
 // 	if (role_id === guild_id) throw new HTTPError("You can't delete the @everyone role");
 
 // 	await Promise.all([
