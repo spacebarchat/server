@@ -16,8 +16,7 @@ const router = Router();
 router.get("/",route({}), async (req: Request, res: Response) => {
     const { guild_id, role_id } = req.params
     await Member.IsInGuildOrFail(req.user_id, guild_id);
-	const roles = await Role.find({ guild_id: guild_id })
-    const role = roles.find((r: {id: string}) => r.id === role_id);
+	const role = await Role.find({ guild_id, id: role_id })
 	return res.json(role);
 });
 
