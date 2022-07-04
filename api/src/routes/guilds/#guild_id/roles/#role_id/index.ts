@@ -1,21 +1,14 @@
 import { Router, Request, Response } from "express";
-import {
-	Role,
-	Member,
-	GuildRoleUpdateEvent,
-	GuildRoleDeleteEvent,
-	emitEvent,
-    handleFile
-} from "@fosscord/util";
+import { Role, Member, GuildRoleUpdateEvent, GuildRoleDeleteEvent, emitEvent, handleFile } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { HTTPError } from "lambert-server";
-import {RoleModifySchema} from '../'
+import { RoleModifySchema } from "../";
 
 const router = Router();
 
-router.get("/",route({}), async (req: Request, res: Response) => {
-    const { guild_id, role_id } = req.params
-    await Member.IsInGuildOrFail(req.user_id, guild_id);
+router.get("/", route({}), async (req: Request, res: Response) => {
+	const { guild_id, role_id } = req.params;
+	await Member.IsInGuildOrFail(req.user_id, guild_id);
 	const role = await Role.findOneOrFail({ guild_id, id: role_id });
 	return res.json(role);
 });
@@ -48,7 +41,7 @@ router.patch("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" }
 	const { role_id, guild_id } = req.params;
 	const body = req.body as RoleModifySchema;
 
-	if (body.icon) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string); 
+	if (body.icon) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string);
 
 	const role = new Role({
 		...body,
