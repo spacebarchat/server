@@ -18,7 +18,7 @@
 	},
 	"homepage": "https://github.com/maddyunderstars/fosscord-server#readme",
 	"dependencies": {
-		"@fosscord/util": "file:../util",
+		"@fosscord/util": "file:../../util",
 		"cookie-parser": "^1.4.6",
 		"dotenv": "^16.0.1",
 		"express": "^4.18.1",
