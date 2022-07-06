@@ -13,7 +13,7 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 	res.status(200).send(invite);
 });
 
-router.post("/:code", route({}), async (req: Request, res: Response) => {
+router.post("/:code", route({right: "USE_MASS_INVITES"}), async (req: Request, res: Response) => {
 	const { code } = req.params;
     const { guild_id } = await Invite.findOneOrFail({ code })
 	const { features } = await Guild.findOneOrFail({ id: guild_id});

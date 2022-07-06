@@ -12,11 +12,13 @@ export interface Interaction {
 }
 
 export enum InteractionType {
+	SelfCommand = 0,
 	Ping = 1,
 	ApplicationCommand = 2,
 }
 
 export enum InteractionResponseType {
+	SelfCommandResponse = 0,
 	Pong = 1,
 	Acknowledge = 2,
 	ChannelMessage = 3,

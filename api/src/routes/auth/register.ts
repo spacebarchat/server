@@ -128,7 +128,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		throw FieldErrors({
 			date_of_birth: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
 		});
-	} else if (register.dateOfBirth.minimum) {
+	} else if (register.dateOfBirth.required && register.dateOfBirth.minimum) {
 		const minimum = new Date();
 		minimum.setFullYear(minimum.getFullYear() - register.dateOfBirth.minimum);
 		body.date_of_birth = new Date(body.date_of_birth as Date);

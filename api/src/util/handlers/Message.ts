@@ -7,6 +7,7 @@ import {
 	MessageCreateEvent,
 	MessageUpdateEvent,
 	getPermission,
+	getRights,
 	CHANNEL_MENTION,
 	Snowflake,
 	USER_MENTION,
@@ -61,19 +62,20 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		throw new HTTPError("Content length over max character limit")
 	}
 
-	// TODO: are tts messages allowed in dm channels? should permission be checked?
 	if (opts.author_id) {
 		message.author = await User.getPublicUser(opts.author_id);
-	}
+		const rights = await getRights(opts.author_id);
+		rights.hasThrow("SEND_MESSAGES");
+	}	
 	if (opts.application_id) {
 		message.application = await Application.findOneOrFail({ id: opts.application_id });
 	}
 	if (opts.webhook_id) {
 		message.webhook = await Webhook.findOneOrFail({ id: opts.webhook_id });
 	}
-
+	
 	const permission = await getPermission(opts.author_id, channel.guild_id, opts.channel_id);
-	permission.hasThrow("SEND_MESSAGES"); // TODO: add the rights check
+	permission.hasThrow("SEND_MESSAGES");
 	if (permission.cache.member) {
 		message.member = permission.cache.member;
 	}
@@ -81,7 +83,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
 	if (opts.message_reference) {
 		permission.hasThrow("READ_MESSAGE_HISTORY");
-		// code below has to be redone when we add custom message routing and cross-channel replies
+		// code below has to be redone when we add custom message routing
 		if (message.guild_id !== null) {
 			const guild = await Guild.findOneOrFail({ id: channel.guild_id });
 			if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
@@ -89,7 +91,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 				if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
 			}
 		}
-		// TODO: should be checked if the referenced message exists?
+		/** Q: should be checked if the referenced message exists? ANSWER: NO
+		 otherwise backfilling won't work **/
 		// @ts-ignore
 		message.type = MessageType.REPLY;
 	}

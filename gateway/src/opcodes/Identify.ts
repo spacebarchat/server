@@ -29,8 +29,8 @@ const experiments: any = [];
 import { check } from "./instanceOf";
 import { Recipient } from "@fosscord/util";
 
-// TODO: bot sharding
-// TODO: check priviliged intents
+// TODO: user sharding
+// TODO: check privileged intents, if defined in the config
 // TODO: check if already identified
 
 export async function onIdentify(this: WebSocket, data: Payload) {
@@ -87,7 +87,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				user_id: this.user_id,
 				session_id: session_id,
 				// TODO: check if status is only one of: online, dnd, offline, idle
-				status: identify.presence?.status || "online", //does the session always start as online?
+				status: identify.presence?.status || "offline", //does the session always start as online?
 				client_info: {
 					//TODO read from identity
 					client: "desktop",
@@ -101,7 +101,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 
-	if (!identify.intents) identify.intents = BigInt("0b11111111111111");
+	if (!identify.intents) identify.intents = BigInt("0x6ffffffff");
 	this.intents = new Intents(identify.intents);
 	if (identify.shard) {
 		this.shard_id = identify.shard[0];
@@ -271,7 +271,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		guild_join_requests: [], // TODO what is this?
 		users: users.filter((x) => x).unique(),
 		merged_members: merged_members,
-		// shard // TODO: only for bots sharding
+		// shard // TODO: only for user sharding
 	};
 
 	// TODO: send real proper data structure

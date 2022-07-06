@@ -1,6 +1,7 @@
 import { BitField } from "./BitField";
 import "missing-native-js-functions";
 import { BitFieldResolvable, BitFlag } from "./BitField";
+import { User } from "../entities";
 
 var HTTPError: any;
 
@@ -70,6 +71,8 @@ export class Rights extends BitField {
 		INITIATE_INTERACTIONS: BitFlag(40), // can initiate interactions
 		RESPOND_TO_INTERACTIONS: BitFlag(41), // can respond to interactions
 		SEND_BACKDATED_EVENTS: BitFlag(42), // can send backdated events
+		USE_MASS_INVITES: BitFlag(43), // added per @xnacly's request — can accept mass invites
+		ACCEPT_INVITES: BitFlag(44) // added per @xnacly's request — can accept user-specific invites and DM requests
 	};
 
 	any(permission: RightResolvable, checkOperator = true) {
@@ -85,6 +88,15 @@ export class Rights extends BitField {
 		// @ts-ignore
 		throw new HTTPError(`You are missing the following rights ${permission}`, 403);
 	}
+	
 }
 
 const ALL_RIGHTS = Object.values(Rights.FLAGS).reduce((total, val) => total | val, BigInt(0));
+
+export async function getRights(	user_id: string
+	/**, opts: {
+		in_behalf?: (keyof User)[];
+	} = {} **/) {
+	let user = await User.findOneOrFail({ where: { id: user_id } });
+	return new Rights(user.rights);
+} 

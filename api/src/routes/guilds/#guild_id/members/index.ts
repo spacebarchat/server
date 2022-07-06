@@ -6,7 +6,6 @@ import { HTTPError } from "lambert-server";
 
 const router = Router();
 
-// TODO: not allowed for user -> only allowed for bots with privileged intents
 // TODO: send over websocket
 // TODO: check for GUILD_MEMBERS intent
 

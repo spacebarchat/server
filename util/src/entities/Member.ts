@@ -70,7 +70,7 @@ export class Member extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	nick?: string;
-
+	
 	@JoinTable({
 		name: "member_roles",
 		joinColumn: { name: "index", referencedColumnName: "index" },
@@ -102,8 +102,17 @@ export class Member extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	last_message_id?: string;
+	
+	/**
+	@JoinColumn({ name: "id" })
+	@ManyToOne(() => User, {
+		onDelete: "DO NOTHING",
+	// do not auto-kick force-joined members just because their joiners left the server
+	}) **/
+	@Column({ nullable: true})
+	joined_by?: string;
 
-	// TODO: update
+	// TODO: add this when we have proper read receipts
 	// @Column({ type: "simple-json" })
 	// read_state: ReadState;
 

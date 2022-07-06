@@ -3,7 +3,7 @@
 </p>
 <h1 align="center">Fosscord Server</h1>
 
-<p>
+<p align="center">
   <a href="https://discord.gg/ZrnGQP6p3d">
     <img src="https://img.shields.io/discord/806142446094385153?color=7489d5&logo=discord&logoColor=ffffff" />
   </a>
@@ -30,6 +30,6 @@ This repository contains:
 
 -   [Contributing](https://docs.fosscord.com/contributing/server/)
 
-## [Setup](https://docs.fosscord.com/setup/server/)
+## [Setup](https://docs.fosscord.com/server/setup/)
 
 -   [Download](https://github.com/fosscord/fosscord-server/releases)

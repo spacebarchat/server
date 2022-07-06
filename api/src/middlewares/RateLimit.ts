@@ -1,4 +1,4 @@
-import { Config, listenEvent } from "@fosscord/util";
+import { Config, getRights, listenEvent, Rights } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { getIpAdress } from "@fosscord/api";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
@@ -9,6 +9,7 @@ import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
 /*
 ? bucket limit? Max actions/sec per bucket?
+(ANSWER: a small fosscord instance might not need a complex rate limiting system)
 
 TODO: delay database requests to include multiple queries
 TODO: different for methods (GET/POST)
@@ -44,6 +45,12 @@ export default function rateLimit(opts: {
 	onlyIp?: boolean;
 }): any {
 	return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+		// exempt user? if so, immediately short circuit
+		if (req.user_id) {
+			const rights = await getRights(req.user_id);
+			if (rights.has("BYPASS_RATE_LIMITS")) return;
+		}
+
 		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
 		var executor_id = getIpAdress(req);
 		if (!opts.onlyIp && req.user_id) executor_id = req.user_id;
@@ -53,12 +60,12 @@ export default function rateLimit(opts: {
 		if (opts.GET && ["GET", "OPTIONS", "HEAD"].includes(req.method)) max_hits = opts.GET;
 		else if (opts.MODIFY && ["POST", "DELETE", "PATCH", "PUT"].includes(req.method)) max_hits = opts.MODIFY;
 
-		const offender = Cache.get(executor_id + bucket_id);
+		let offender = Cache.get(executor_id + bucket_id);
 
 		if (offender) {
-			const reset = offender.expires_at.getTime();
-			const resetAfterMs = reset - Date.now();
-			const resetAfterSec = resetAfterMs / 1000;
+			let reset = offender.expires_at.getTime();
+			let resetAfterMs = reset - Date.now();
+			let resetAfterSec = Math.ceil(resetAfterMs / 1000);
 
 			if (resetAfterMs <= 0) {
 				offender.hits = 0;
@@ -70,6 +77,11 @@ export default function rateLimit(opts: {
 
 			if (offender.blocked) {
 				const global = bucket_id === "global";
+				// each block violation pushes the expiry one full window further
+				reset += opts.window * 1000;
+				offender.expires_at = new Date(offender.expires_at.getTime() + opts.window * 1000);
+				resetAfterMs = reset - Date.now();
+				resetAfterSec = Math.ceil(resetAfterMs / 1000);
 
 				console.log("blocked bucket: " + bucket_id, { resetAfterMs });
 				return (
@@ -151,7 +163,7 @@ export async function initRateLimits(app: Router) {
 	app.use("/auth/register", rateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
 }
 
-async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number }) {
+async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number; }) {
 	const id = opts.executor_id + opts.bucket_id;
 	var limit = Cache.get(id);
 	if (!limit) {

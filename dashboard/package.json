@@ -14,8 +14,8 @@
 		"url": "git+https://github.com/fosscord/fosscord-server.git"
 	},
 	"keywords": [],
-	"author": "",
-	"license": "GPLV3",
+	"author": "Fosscord",
+	"license": "AGPL-3.0-only",
 	"bugs": {
 		"url": "https://github.com/fosscord/fosscord-server/issues"
 	},
