@@ -6505,9 +6505,6 @@
             }
         },
         "additionalProperties": false,
-        "required": [
-            "name"
-        ],
         "definitions": {
             "Embed": {
                 "type": "object",
@@ -6867,6 +6864,9 @@
             "preferred_locale": {
                 "type": "string"
             },
+            "premium_progress_bar_enabled": {
+                "type": "boolean"
+            },
             "name": {
                 "maxLength": 100,
                 "type": "string"
@@ -6891,9 +6891,6 @@
             }
         },
         "additionalProperties": false,
-        "required": [
-            "name"
-        ],
         "definitions": {
             "Embed": {
                 "type": "object",
@@ -10512,8 +10509,7 @@
                     "additionalProperties": false,
                     "required": [
                         "channel_id",
-                        "description",
-                        "emoji_name"
+                        "description"
                     ]
                 }
             },

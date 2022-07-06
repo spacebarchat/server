@@ -9,7 +9,7 @@ export interface GuildCreateSchema {
 	/**
 	 * @maxLength 100
 	 */
-	name: string;
+	name?: string;
 	region?: string;
 	icon?: string | null;
 	channels?: ChannelModifySchema[];

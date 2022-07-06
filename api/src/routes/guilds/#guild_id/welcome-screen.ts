@@ -10,7 +10,7 @@ export interface GuildUpdateWelcomeScreenSchema {
 		channel_id: string;
 		description: string;
 		emoji_id?: string;
-		emoji_name: string;
+		emoji_name?: string;
 	}[];
 	enabled?: boolean;
 	description?: string;
@@ -35,6 +35,8 @@ router.patch("/", route({ body: "GuildUpdateWelcomeScreenSchema", permission: "M
 	if (body.welcome_channels) guild.welcome_screen.welcome_channels = body.welcome_channels; // TODO: check if they exist and are valid
 	if (body.description) guild.welcome_screen.description = body.description;
 	if (body.enabled != null) guild.welcome_screen.enabled = body.enabled;
+
+	await guild.save();
 
 	res.sendStatus(204);
 });
