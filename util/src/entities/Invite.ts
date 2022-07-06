@@ -79,7 +79,7 @@ export class Invite extends BaseClassWithoutId {
 		if (invite.uses++ >= invite.max_uses && invite.max_uses !== 0) await Invite.delete({ code });
 		else await invite.save();
 
-		await Member.addToGuild(user_id, invite.guild_id);
+		await Member.addToOrLurkGuild(user_id, invite.guild_id, false);
 		return invite;
 	}
 }

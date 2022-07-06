@@ -54,6 +54,8 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 
 	const rights = await getRights(req.user_id);
 
+	let { lurker } = req.query;
+
 	let { guild_id, member_id } = req.params;
 	if (member_id === "@me") {
 		member_id = req.user_id;
@@ -78,7 +80,11 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 		where: { guild_id: guild_id }
 	});
 
-	await Member.addToGuild(member_id, guild_id);
+	if (lurker && lurker == "true") {
+		await Member.addToOrLurkGuild(member_id, guild_id, true);
+	} else {
+		await Member.addToOrLurkGuild(member_id, guild_id, false);
+	}
 	res.send({ ...guild, emojis: emoji, roles: roles, stickers: stickers });
 });
 

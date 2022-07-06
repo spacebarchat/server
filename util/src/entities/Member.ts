@@ -226,7 +226,7 @@ export class Member extends BaseClassWithoutId {
 		]);
 	}
 
-	static async addToGuild(user_id: string, guild_id: string) {
+	static async addToOrLurkGuild(user_id: string, guild_id: string, lurk: boolean) {
 		const user = await User.getPublicUser(user_id);
 		const isBanned = await Ban.count({ where: { guild_id, user_id } });
 		if (isBanned) {
@@ -248,61 +248,81 @@ export class Member extends BaseClassWithoutId {
 		if (await Member.count({ id: user.id, guild: { id: guild_id } }))
 			throw new HTTPError("You are already a member of this guild", 400);
 
-		const member = {
-			id: user_id,
-			guild_id,
-			nick: undefined,
-			roles: [guild_id], // @everyone role
-			joined_at: new Date(),
-			premium_since: (new Date()).getTime(),
-			deaf: false,
-			mute: false,
-			pending: false,
-		};
-
-		await Promise.all([
-			new Member({
-				...member,
-				roles: [new Role({ id: guild_id })],
-				// read_state: {},
-				settings: {
-					channel_overrides: [],
-					message_notifications: 0,
-					mobile_push: true,
-					muted: false,
-					suppress_everyone: false,
-					suppress_roles: false,
-					version: 0,
-				},
-				// Member.save is needed because else the roles relations wouldn't be updated
-			}).save(),
-			Guild.increment({ id: guild_id }, "member_count", 1),
-			emitEvent({
-				event: "GUILD_MEMBER_ADD",
-				data: {
-					...member,
-					user,
-					guild_id,
-				},
+		if (lurk == false) {
+			const member = {
+				id: user_id,
 				guild_id,
-			} as GuildMemberAddEvent),
-			emitEvent({
-				event: "GUILD_CREATE",
-				data: {
-					...guild,
-					members: [...guild.members, { ...member, user }],
-					member_count: (guild.member_count || 0) + 1,
-					guild_hashes: {},
-					guild_scheduled_events: [],
-					joined_at: member.joined_at,
-					presences: [],
-					stage_instances: [],
-					threads: [],
-				},
-				user_id,
-			} as GuildCreateEvent),
-		]);
+				nick: undefined,
+				roles: [guild_id], // @everyone role
+				joined_at: new Date(),
+				premium_since: (new Date()).getTime(),
+				deaf: false,
+				mute: false,
+				pending: false,
+			};
+
+			await Promise.all([
+				new Member({
+					...member,
+					roles: [new Role({ id: guild_id })],
+					// read_state: {},
+					settings: {
+						channel_overrides: [],
+						message_notifications: 0,
+						mobile_push: true,
+						muted: false,
+						suppress_everyone: false,
+						suppress_roles: false,
+						version: 0,
+					},
+					// Member.save is needed because else the roles relations wouldn't be updated
+				}).save(),
+				Guild.increment({ id: guild_id }, "member_count", 1),
+				emitEvent({
+					event: "GUILD_MEMBER_ADD",
+					data: {
+						...member,
+						user,
+						guild_id,
+					},
+					guild_id,
+				} as GuildMemberAddEvent),
+				emitEvent({
+					event: "GUILD_CREATE",
+					data: {
+						...guild,
+						members: [...guild.members, { ...member, user }],
+						member_count: (guild.member_count || 0) + 1,
+						guild_hashes: {},
+						guild_scheduled_events: [],
+						joined_at: member.joined_at,
+						presences: [],
+						stage_instances: [],
+						threads: [],
+					},
+					user_id,
+				} as GuildCreateEvent),
+			]);
+		} else {
+			await Promise.all([
+				emitEvent({
+					event: "GUILD_CREATE",
+					data: {
+						...guild,
+						members: [...guild.members],
+						member_count: guild.member_count,
+						guild_hashes: {},
+						guild_scheduled_events: [],
+						presences: [],
+						stage_instances: [],
+						threads: [],
+					},
+					user_id,
+				} as GuildCreateEvent),
+			]);
+		}
 	}
+
 }
 
 export interface UserGuildSettings {
@@ -346,7 +366,7 @@ export const PublicMemberProjection: PublicMemberKeys[] = [
 	"pending",
 	"deaf",
 	"mute",
-	"premium_since",
+	"premium_since"
 ];
 
 // @ts-ignore

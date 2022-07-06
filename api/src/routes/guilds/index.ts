@@ -38,7 +38,7 @@ router.post("/", route({ body: "GuildCreateSchema", right: "CREATE_GUILDS" }), a
 		await Config.set({ guild: { autoJoin: { guilds: [guild.id] } } });
 	}
 
-	await Member.addToGuild(req.user_id, guild.id);
+	await Member.addToOrLurkGuild(req.user_id, guild.id, false);
 
 	res.status(201).json({ id: guild.id });
 });

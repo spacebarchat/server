@@ -234,6 +234,7 @@ export async function getPermission(
 			select: [
 				"id",
 				"owner_id",
+				"features",
 				// @ts-ignore
 				...(opts.guild_select || []),
 			],
@@ -241,7 +242,8 @@ export async function getPermission(
 		});
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
-		member = await Member.findOneOrFail({
+		member = await Member.findOne({
+			// lurker mode
 			where: { guild_id, id: user_id },
 			relations: ["roles", ...(opts.member_relations || [])],
 			select: [
@@ -256,24 +258,33 @@ export async function getPermission(
 	let recipient_ids: any = channel?.recipients?.map((x) => x.user_id);
 	if (!recipient_ids?.length) recipient_ids = null;
 
+	let obj;
+
 	// TODO: remove guild.roles and convert recipient_ids to recipients
-	var permission = Permissions.finalPermission({
-		user: {
-			id: user_id,
-			roles: member?.roles.map((x) => x.id) || [],
-		},
-		guild: {
-			roles: member?.roles || [],
-		},
-		channel: {
-			overwrites: channel?.permission_overwrites,
-			owner_id: channel?.owner_id,
-			recipient_ids,
-		},
-	});
+	if (member) {
+		var permission = Permissions.finalPermission({
+			user: {
+				id: user_id,
+				roles: member?.roles.map((x) => x.id) || [],
+			},
+			guild: {
+				roles: member?.roles || [],
+			},
+			channel: {
+				overwrites: channel?.permission_overwrites,
+				owner_id: channel?.owner_id,
+				recipient_ids,
+			},
+		});
 
-	const obj = new Permissions(permission);
+		obj = new Permissions(permission);
+	} else if (guild?.features.includes("DISCOVERABLE")) {
+		obj = new Permissions("VIEW_CHANNEL");
+	} else {
+		obj = new Permissions();
+	}
 
+	
 	// pass cache to permission for possible future getPermission calls
 	obj.cache = { guild, member, channel, roles: member?.roles, user_id };
 

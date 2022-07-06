@@ -57,7 +57,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
     const { client_id, scope } = req.query;
 
     if (scope == "bot") {
-        await Member.addToGuild(client_id as string, body.guild_id);
+        await Member.addToOrLurkGuild(client_id as string, body.guild_id, false);
 
         const application = await Application.findOneOrFail({ where: `"id" = ${client_id}` })
 

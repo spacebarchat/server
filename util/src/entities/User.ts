@@ -349,7 +349,7 @@ export class User extends BaseClass {
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
-					await Member.addToGuild(user.id, guild).catch((e) => {});
+					await Member.addToOrLurkGuild(user.id, guild, false).catch((e) => {});
 				}
 			}
 		});

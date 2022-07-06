@@ -77,7 +77,7 @@ router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: 
 		}).save()
 	]);
 
-	await Member.addToGuild(req.user_id, guild_id);
+	await Member.addToOrLurkGuild(req.user_id, guild_id, false);
 
 	res.status(201).json({ id: guild.id });
 });
