@@ -1,7 +1,8 @@
 import "dotenv/config";
 import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
-import { initDatabase, generateToken, User, Config } from "@fosscord/util";
+import * as util from "@fosscord/util";
+const { initDatabase, generateToken, User, Config, handleFile } = util;
 import path from "path";
 import fetch from "node-fetch";
 
@@ -24,6 +25,13 @@ let requestsThisSecond = 0;
 setInterval(() => {
 	requestsThisSecond = 0;
 }, 1000);
+
+const toDataURL = async (url: string) => {
+	const response = await fetch(url);
+	const blob = await response.blob();
+	const buffer = Buffer.from(await blob.text());
+	return `data:${blob.type};base64,${buffer.toString("base64")}`;
+}
 
 class Discord {
 	static getAccessToken = async (req: Request, res: Response) => {
@@ -71,6 +79,7 @@ class Discord {
 			id: json.id,
 			email: json.email,
 			username: json.username,
+			avatar_url: json.avatar ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=2048` : null,
 		};
 	};
 }
@@ -115,6 +124,12 @@ app.get("/oauth/:type", async (req, res) => {
 			username: details.username,
 			req
 		});
+
+		if (details.avatar_url) {
+			const avatar = await handleFile(`/avatars/${user.id}`, await toDataURL(details.avatar_url) as string);
+			user.avatar = avatar;
+			await user.save();
+		}
 	}
 
 	const token = await generateToken(user.id);
