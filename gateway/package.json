@@ -13,7 +13,7 @@
 	},
 	"keywords": [],
 	"author": "Fosscord",
-	"license": "GPLV3",
+	"license": "AGPL-3.0-only",
 	"devDependencies": {
 		"@types/amqplib": "^0.8.1",
 		"@types/jsonwebtoken": "^8.5.0",

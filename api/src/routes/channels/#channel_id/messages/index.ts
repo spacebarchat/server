@@ -8,8 +8,10 @@ import {
 	Embed,
 	emitEvent,
 	getPermission,
+	getRights,
 	Message,
 	MessageCreateEvent,
+	Snowflake,
 	uploadFile,
 	Member
 } from "@fosscord/util";
@@ -29,6 +31,8 @@ export function isTextChannel(type: ChannelType): boolean {
 		case ChannelType.GUILD_VOICE:
 		case ChannelType.GUILD_STAGE_VOICE:
 		case ChannelType.GUILD_CATEGORY:
+		case ChannelType.GUILD_FORUM:
+		case ChannelType.DIRECTORY:
 			throw new HTTPError("not a text channel", 400);
 		case ChannelType.DM:
 		case ChannelType.GROUP_DM:
@@ -67,7 +71,11 @@ export interface MessageCreateSchema {
 	};
 	payload_json?: string;
 	file?: any;
-	attachments?: any[]; //TODO we should create an interface for attachments
+	/**
+	TODO: we should create an interface for attachments
+	TODO: OpenWAAO<-->attachment-style metadata conversion
+	**/
+	attachments?: any[];
 	sticker_ids?: string[];
 }
 
@@ -83,7 +91,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const before = req.query.before ? `${req.query.before}` : undefined;
 	const after = req.query.after ? `${req.query.after}` : undefined;
 	const limit = Number(req.query.limit) || 50;
-	if (limit < 1 || limit > 100) throw new HTTPError("limit must be between 1 and 100");
+	if (limit < 1 || limit > 100) throw new HTTPError("limit must be between 1 and 100", 422);
 
 	var halfLimit = Math.floor(limit / 2);
 
@@ -97,9 +105,16 @@ router.get("/", async (req: Request, res: Response) => {
 		where: { channel_id },
 		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"]
 	};
+	
 
-	if (after) query.where.id = MoreThan(after);
-	else if (before) query.where.id = LessThan(before);
+	if (after) {
+		if (after > new Snowflake()) return res.status(422);
+		query.where.id = MoreThan(after);
+	}
+	else if (before) { 
+		if (before < req.params.channel_id) return res.status(422);
+		query.where.id = LessThan(before);
+	}
 	else if (around) {
 		query.where.id = [
 			MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
@@ -119,15 +134,18 @@ router.get("/", async (req: Request, res: Response) => {
 				delete x.user_ids;
 			});
 			// @ts-ignore
-			if (!x.author) x.author = { discriminator: "0000", username: "Deleted User", public_flags: "0", avatar: null };
+			if (!x.author) x.author = { id: "4", discriminator: "0000", username: "Fosscord Ghost", public_flags: "0", avatar: null };
 			x.attachments?.forEach((y: any) => {
 				// dynamically set attachment proxy_url in case the endpoint changed
 				const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
 				y.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
 			});
-
-			//Some clients ( discord.js ) only check if a property exists within the response,
-			//which causes erorrs when, say, the `application` property is `null`.
+			
+			/**
+			Some clients ( discord.js ) only check if a property exists within the response,
+			which causes erorrs when, say, the `application` property is `null`.
+			**/
+			
 			for (var curr in x) {
 				if (x[curr] === null)
 					delete x[curr];
@@ -147,15 +165,14 @@ const messageUpload = multer({
 	},
 	storage: multer.memoryStorage()
 }); // max upload 50 mb
+/**
+ TODO: dynamically change limit of MessageCreateSchema with config
 
-// TODO: dynamically change limit of MessageCreateSchema with config
-// TODO: check: sum of all characters in an embed structure must not exceed 6000 characters
-
-// https://discord.com/developers/docs/resources/channel#create-message
-// TODO: text channel slowdown
-// TODO: trim and replace message content and every embed field
-// TODO: check allowed_mentions
-
+ https://discord.com/developers/docs/resources/channel#create-message
+ TODO: text channel slowdown (per-user and across-users)
+ Q: trim and replace message content and every embed field A: NO, given this cannot be implemented in E2EE channels
+ TODO: only dispatch notifications for mentions denoted in allowed_mentions
+**/
 // Send message
 router.post(
 	"/",
@@ -167,7 +184,7 @@ router.post(
 
 		next();
 	},
-	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES" }),
+	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_MESSAGES" }),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 		var body = req.body as MessageCreateSchema;
@@ -182,6 +199,9 @@ router.post(
 			}
 		}
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
+		if (!channel.isWritable()) {
+			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400)
+		}
 
 		const embeds = body.embeds || [];
 		if (body.embed) embeds.push(body.embed);
@@ -235,3 +255,4 @@ router.post(
 		return res.json(message);
 	}
 );
+

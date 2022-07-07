@@ -1,0 +1,17 @@
+{
+	"name": "fosscord-server",
+	"version": "1.0.0",
+	"description": "A Fosscord server written in Node.js",
+	"workspaces": ["api", "cdn", "gateway"],
+	"scripts": {},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/fosscord/fosscord-server.git"
+	},
+	"author": "Fosscord",
+	"license": "AGPL-3.0-only",
+	"bugs": {
+		"url": "https://github.com/fosscord/fosscord-server/issues"
+	},
+	"homepage": "https://fosscord.com"
+}

@@ -13,7 +13,7 @@ const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored
  *  - min <n> numbers
  *  - min <n> symbols
  *  - min <n> uppercase chars
- *  - shannon entropy divided by password entropy
+ *  - shannon entropy folded into [0, 1) interval
  *
  * Returns: 0 > pw > 1
  */
@@ -46,15 +46,15 @@ export function checkPassword(password: string): number {
 		strength = 0;
 	}
 	
-	let entropyMap;
+	let entropyMap: { [key: string]: number } = {};
 	for (let i = 0; i < password.length; i++) {
 		if (entropyMap[password[i]]) entropyMap[password[i]]++;
 		else entropyMap[password[i]] = 1;
 	}
 	
-	let entropies = Array(entropyMap);
-		
+	let entropies = Object.values(entropyMap);
+	
 	entropies.map(x => (x / entropyMap.length));
-	strength += entropies.reduceRight((a, x), a - (x * Math.log2(x))) / Math.log2(password.length);	
+	strength += entropies.reduceRight((a: number, x: number) => a - (x * Math.log2(x))) / Math.log2(password.length);	
 	return strength;
 }
