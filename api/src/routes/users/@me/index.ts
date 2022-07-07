@@ -54,6 +54,8 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		body.email = adjustEmail(body.email);
 		if (!body.email)
 			throw FieldErrors({ email: { message: req.t("auth:register.EMAIL_INVALID"), code: "EMAIL_INVALID" } });
+		if (!body.password)
+			throw FieldErrors({ password: { message: req.t("auth:register.INVALID_PASSWORD"), code: "INVALID_PASSWORD" } })
 	}
 
 	if (body.new_password) {
