@@ -4,7 +4,13 @@ import { red } from "picocolors";
 
 export function initStats() {
 	console.log(`[Path] running in ${__dirname}`);
-	console.log(`[CPU] ${osu.cpu.model()} Cores x${osu.cpu.count()}`);
+	try {
+		console.log(`[CPU] ${osu.cpu.model()} Cores x${osu.cpu.count()}`);
+	}
+	catch {
+		console.log('[CPU] Failed to get cpu model!')
+	}
+	
 	console.log(`[System] ${os.platform()} ${os.arch()}`);
 	console.log(`[Process] running with PID: ${process.pid}`);
 	if (process.getuid && process.getuid() === 0) {

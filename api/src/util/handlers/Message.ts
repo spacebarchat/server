@@ -91,7 +91,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 				if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
 			}
 		}
-		// Q: should be checked if the referenced message exists? ANSWER: NO
+		/** Q: should be checked if the referenced message exists? ANSWER: NO
+		 otherwise backfilling won't work **/
 		// @ts-ignore
 		message.type = MessageType.REPLY;
 	}

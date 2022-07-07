@@ -727,21 +727,23 @@ export const DiscordApiErrors = {
  * An error encountered while performing an API request (Fosscord only). Here are the potential errors:
  */
 export const FosscordApiErrors = {
-	MANUALLY_TRIGGERED_ERROR: new ApiError("This is an artificial error", 1),
+	MANUALLY_TRIGGERED_ERROR: new ApiError("This is an artificial error", 1, 500),
 	PREMIUM_DISABLED_FOR_GUILD: new ApiError("This guild cannot be boosted", 25001),
 	NO_FURTHER_PREMIUM: new ApiError("This guild does not receive further boosts", 25002),
-	GUILD_PREMIUM_DISABLED_FOR_YOU: new ApiError("This guild cannot be boosted by you", 25003),
+	GUILD_PREMIUM_DISABLED_FOR_YOU: new ApiError("This guild cannot be boosted by you", 25003, 403),
 	CANNOT_FRIEND_SELF: new ApiError("Cannot friend oneself", 25009),
 	USER_SPECIFIC_INVITE_WRONG_RECIPIENT: new ApiError("This invite is not meant for you", 25010),
 	USER_SPECIFIC_INVITE_FAILED: new ApiError("Failed to invite user", 25011),
-	CANNOT_MODIFY_USER_GROUP: new ApiError("This user cannot manipulate this group", 25050),
+	CANNOT_MODIFY_USER_GROUP: new ApiError("This user cannot manipulate this group", 25050, 403),
 	CANNOT_REMOVE_SELF_FROM_GROUP: new ApiError("This user cannot remove oneself from user group", 25051),
 	CANNOT_BAN_OPERATOR: new ApiError("Non-OPERATOR cannot ban OPERATOR from instance", 25052),
-	CANNOT_LEAVE_GUILD: new ApiError("You are not allowed to leave guilds that you joined by yourself", 25059),
-	EDITS_DISABLED: new ApiError("You are not allowed to edit your own messages", 25060),
-	DELETE_MESSAGE_DISABLED: new ApiError("You are not allowed to delete your own messages", 25061),
-	FEATURE_PERMANENTLY_DISABLED: new ApiError("This feature has been disabled server-side", 45006),
+	CANNOT_LEAVE_GUILD: new ApiError("You are not allowed to leave guilds that you joined by yourself", 25059, 403),
+	EDITS_DISABLED: new ApiError("You are not allowed to edit your own messages", 25060, 403),
+	DELETE_MESSAGE_DISABLED: new ApiError("You are not allowed to delete your own messages", 25061, 403),
+	FEATURE_PERMANENTLY_DISABLED: new ApiError("This feature has been disabled server-side", 45006, 501),
 	MISSING_RIGHTS: new ApiError("You lack rights to perform that action ({})", 50013, undefined, [""]),
+	CANNOT_REPLACE_BY_BACKFILL: new ApiError("Cannot backfill to message ID that already exists", 55002, 409),
+	CANNOT_BACKFILL_TO_THE_FUTURE: new ApiError("You cannot backfill messages in the future", 55003),
 	CANNOT_GRANT_PERMISSIONS_EXCEEDING_RIGHTS: new ApiError("You cannot grant permissions exceeding your own rights", 50050),
 	ROUTES_LOOPING: new ApiError("Loops in the route definition ({})", 50060, undefined, [""]),
 	CANNOT_REMOVE_ROUTE: new ApiError("Cannot remove message route while it is in effect and being used", 50061),
@@ -787,3 +789,4 @@ function keyMirror(arr: string[]) {
 	for (const value of arr) tmp[value] = value;
 	return tmp;
 }
+

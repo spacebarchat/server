@@ -9,8 +9,8 @@
 		"start": "npm run build && node dist/start.js"
 	},
 	"keywords": [],
-	"author": "",
-	"license": "ISC",
+	"author": "Fosscord",
+	"license": "AGPL-3.0-only",
 	"devDependencies": {
 		"@types/node": "^15.6.1",
 		"@types/ws": "^7.4.4",
