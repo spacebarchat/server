@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors, adjustEmail } from "@fosscord/util";
+import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors, adjustEmail, Config } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
 import { HTTPError } from "lambert-server";
@@ -52,10 +52,10 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 
 	if (body.email) {
 		body.email = adjustEmail(body.email);
-		if (!body.email)
+		if (!body.email && Config.get().register.email.required)
 			throw FieldErrors({ email: { message: req.t("auth:register.EMAIL_INVALID"), code: "EMAIL_INVALID" } });
 		if (!body.password)
-			throw FieldErrors({ password: { message: req.t("auth:register.INVALID_PASSWORD"), code: "INVALID_PASSWORD" } })
+			throw FieldErrors({ password: { message: req.t("auth:register.INVALID_PASSWORD"), code: "INVALID_PASSWORD" } });
 	}
 
 	if (body.new_password) {
