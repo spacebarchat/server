@@ -58,6 +58,9 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		});
 	}
 
+	// 'Fix' for this one voice state error
+	if (!voiceState.guild_id) return;
+
 	//TODO the member should only have these properties: hoisted_role, deaf, joined_at, mute, roles, user
 	//TODO the member.user should only have these properties: avatar, discriminator, id, username
 	//TODO this may fail
@@ -65,7 +68,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		where: { id: voiceState.user_id, guild_id: voiceState.guild_id },
 		relations: ["user", "roles"],
 	});
-
+	
 	//If the session changed we generate a new token
 	if (voiceState.session_id !== this.session_id)
 		voiceState.token = genVoiceToken();
