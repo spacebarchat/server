@@ -2,10 +2,16 @@
     "MessageCreateSchema": {
         "type": "object",
         "properties": {
+            "type": {
+                "type": "integer"
+            },
             "content": {
                 "type": "string"
             },
             "nonce": {
+                "type": "string"
+            },
+            "channel_id": {
                 "type": "string"
             },
             "tts": {
