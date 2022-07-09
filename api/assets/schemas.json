@@ -1106,6 +1106,9 @@
             },
             "captcha_key": {
                 "type": "string"
+            },
+            "promotional_email_opt_in": {
+                "type": "boolean"
             }
         },
         "additionalProperties": false,
