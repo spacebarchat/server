@@ -1355,70 +1355,73 @@
                 },
                 "additionalProperties": false
             },
-            "password": {
-                "type": "string"
+            "UserPublic": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "public_flags",
+                    "username"
+                ]
             },
-            "undelete": {
-                "type": "boolean"
-            },
-            "captcha_key": {
-                "type": "string"
-            },
-            "login_source": {
-                "type": "string"
-            },
-            "gift_code_sku_id": {
-                "type": "string"
+            "PublicConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "type",
+                    "verified"
+                ]
             }
         },
-        "additionalProperties": false,
-        "required": [
-            "login",
-            "password"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RegisterSchema": {
-        "type": "object",
-        "properties": {
-            "username": {
-                "minLength": 2,
-                "maxLength": 32,
-                "type": "string"
-            },
-            "password": {
-                "minLength": 1,
-                "maxLength": 72,
-                "type": "string"
-            },
-            "consent": {
-                "type": "boolean"
-            },
-            "email": {
-                "format": "email",
-                "type": "string"
-            },
-            "fingerprint": {
-                "type": "string"
-            },
-            "invite": {
-                "type": "string"
-            },
-            "date_of_birth": {
-                "type": "string"
-            },
-            "gift_code_sku_id": {
-                "type": "string"
-            },
-            "captcha_key": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "consent",
-            "username"
-        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "ChannelModifySchema": {
@@ -1436,6 +1439,8 @@
                     11,
                     12,
                     13,
+                    14,
+                    15,
                     2,
                     255,
                     3,
@@ -1518,14 +1523,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -1656,262 +1653,10 @@
                 },
                 "additionalProperties": false
             },
-            "ChannelModifySchema": {
+            "Record<string,string>": {
                 "type": "object",
-                "properties": {
-                    "name": {
-                        "maxLength": 100,
-                        "type": "string"
-                    },
-                    "type": {
-                        "enum": [
-                            0,
-                            1,
-                            10,
-                            11,
-                            12,
-                            13,
-                            2,
-                            255,
-                            3,
-                            33,
-                            34,
-                            35,
-                            4,
-                            5,
-                            6,
-                            64,
-                            7,
-                            8,
-                            9
-                        ],
-                        "type": "number"
-                    },
-                    "topic": {
-                        "type": "string"
-                    },
-                    "icon": {
-                        "type": [
-                            "null",
-                            "string"
-                        ]
-                    },
-                    "bitrate": {
-                        "type": "integer"
-                    },
-                    "user_limit": {
-                        "type": "integer"
-                    },
-                    "rate_limit_per_user": {
-                        "type": "integer"
-                    },
-                    "position": {
-                        "type": "integer"
-                    },
-                    "permission_overwrites": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "$ref": "#/definitions/ChannelPermissionOverwriteType"
-                                },
-                                "allow": {
-                                    "type": "string"
-                                },
-                                "deny": {
-                                    "type": "string"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "allow",
-                                "deny",
-                                "id",
-                                "type"
-                            ]
-                        }
-                    },
-                    "parent_id": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "nsfw": {
-                        "type": "boolean"
-                    },
-                    "rtc_region": {
-                        "type": "string"
-                    },
-                    "default_auto_archive_duration": {
-                        "type": "integer"
-                    }
-                },
                 "additionalProperties": false
             },
-            "UserPublic": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "accent_color": {
-                        "type": "integer"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "premium_since": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "bio",
-                    "bot",
-                    "discriminator",
-                    "id",
-                    "premium_since",
-                    "public_flags",
-                    "username"
-                ]
-            },
-            "PublicConnectedAccount": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "type": "string"
-                    },
-                    "verified": {
-                        "type": "boolean"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type",
-                    "verified"
-                ]
-            }
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "MessageCreateSchema": {
-        "type": "object",
-        "properties": {
-            "content": {
-                "type": "string"
-            },
-            "nonce": {
-                "type": "string"
-            },
-            "tts": {
-                "type": "boolean"
-            },
-            "flags": {
-                "type": "string"
-            },
-            "embeds": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Embed"
-                }
-            },
-            "embed": {
-                "$ref": "#/definitions/Embed"
-            },
-            "allowed_mentions": {
-                "type": "object",
-                "properties": {
-                    "parse": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "roles": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "users": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "replied_user": {
-                        "type": "boolean"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "message_reference": {
-                "type": "object",
-                "properties": {
-                    "message_id": {
-                        "type": "string"
-                    },
-                    "channel_id": {
-                        "type": "string"
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "fail_if_not_exists": {
-                        "type": "boolean"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "channel_id",
-                    "message_id"
-                ]
-            },
-            "payload_json": {
-                "type": "string"
-            },
-            "file": {},
-            "attachments": {
-                "type": "array",
-                "items": {}
-            },
-            "sticker_ids": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "definitions": {
             "ChannelPermissionOverwriteType": {
                 "enum": [
                     0,
@@ -1920,136 +1665,6 @@
                 ],
                 "type": "number"
             },
-            "Embed": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "enum": [
-                            "article",
-                            "gifv",
-                            "image",
-                            "link",
-                            "rich",
-                            "video"
-                        ],
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "url": {
-                        "type": "string"
-                    },
-                    "timestamp": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "color": {
-                        "type": "integer"
-                    },
-                    "footer": {
-                        "type": "object",
-                        "properties": {
-                            "text": {
-                                "type": "string"
-                            },
-                            "icon_url": {
-                                "type": "string"
-                            },
-                            "proxy_icon_url": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "text"
-                        ]
-                    },
-                    "image": {
-                        "$ref": "#/definitions/EmbedImage"
-                    },
-                    "thumbnail": {
-                        "$ref": "#/definitions/EmbedImage"
-                    },
-                    "video": {
-                        "$ref": "#/definitions/EmbedImage"
-                    },
-                    "provider": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "url": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false
-                    },
-                    "author": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "url": {
-                                "type": "string"
-                            },
-                            "icon_url": {
-                                "type": "string"
-                            },
-                            "proxy_icon_url": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false
-                    },
-                    "fields": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "type": "string"
-                                },
-                                "inline": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "name",
-                                "value"
-                            ]
-                        }
-                    }
-                },
-                "additionalProperties": false
-            },
-            "EmbedImage": {
-                "type": "object",
-                "properties": {
-                    "url": {
-                        "type": "string"
-                    },
-                    "proxy_url": {
-                        "type": "string"
-                    },
-                    "height": {
-                        "type": "integer"
-                    },
-                    "width": {
-                        "type": "integer"
-                    }
-                },
-                "additionalProperties": false
-            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -2065,6 +1680,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -2249,14 +1866,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -2387,6 +1996,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -2402,6 +2023,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -2565,14 +2188,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -2703,6 +2318,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -2718,6 +2345,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -2884,14 +2513,6 @@
             "messages"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -3022,6 +2643,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -3037,6 +2670,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -3212,14 +2847,6 @@
             "type"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -3350,6 +2977,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -3365,6 +3004,334 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
+                            2,
+                            255,
+                            3,
+                            33,
+                            34,
+                            35,
+                            4,
+                            5,
+                            6,
+                            64,
+                            7,
+                            8,
+                            9
+                        ],
+                        "type": "number"
+                    },
+                    "topic": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "bitrate": {
+                        "type": "integer"
+                    },
+                    "user_limit": {
+                        "type": "integer"
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "permission_overwrites": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/ChannelPermissionOverwriteType"
+                                },
+                                "allow": {
+                                    "type": "string"
+                                },
+                                "deny": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "allow",
+                                "deny",
+                                "id",
+                                "type"
+                            ]
+                        }
+                    },
+                    "parent_id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "nsfw": {
+                        "type": "boolean"
+                    },
+                    "rtc_region": {
+                        "type": "string"
+                    },
+                    "default_auto_archive_duration": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "UserPublic": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "PublicConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "type",
+                    "verified"
+                ]
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PurgeSchema": {
+        "type": "object",
+        "properties": {
+            "before": {
+                "type": "string"
+            },
+            "after": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "after",
+            "before"
+        ],
+        "definitions": {
+            "Embed": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "color": {
+                        "type": "integer"
+                    },
+                    "footer": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string"
+                            },
+                            "icon_url": {
+                                "type": "string"
+                            },
+                            "proxy_icon_url": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "text"
+                        ]
+                    },
+                    "image": {
+                        "$ref": "#/definitions/EmbedImage"
+                    },
+                    "thumbnail": {
+                        "$ref": "#/definitions/EmbedImage"
+                    },
+                    "video": {
+                        "$ref": "#/definitions/EmbedImage"
+                    },
+                    "provider": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "author": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string"
+                            },
+                            "icon_url": {
+                                "type": "string"
+                            },
+                            "proxy_icon_url": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                },
+                                "inline": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "name",
+                                "value"
+                            ]
+                        }
+                    }
+                },
+                "additionalProperties": false
+            },
+            "EmbedImage": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "proxy_url": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "width": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
+            "ChannelModifySchema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "maxLength": 100,
+                        "type": "string"
+                    },
+                    "type": {
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -3533,14 +3500,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -3671,6 +3630,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -3686,6 +3657,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -3878,14 +3851,6 @@
             "url"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -4016,6 +3981,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -4031,6 +4008,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -4194,14 +4173,6 @@
             "url"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -4332,6 +4303,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -4347,6 +4330,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -4510,14 +4495,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -4648,6 +4625,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -4663,6 +4652,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -4844,14 +4835,6 @@
             "user_id"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -4982,6 +4965,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -4997,6 +4992,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -5175,14 +5172,6 @@
             "user_id"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -5313,6 +5302,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -5328,6 +5329,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -5503,14 +5506,6 @@
             ]
         },
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -5641,6 +5636,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -5656,6 +5663,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -5834,14 +5843,6 @@
             "image"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -5972,6 +5973,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -5987,6 +6000,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -6153,14 +6168,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -6291,6 +6298,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -6306,6 +6325,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -6494,14 +6515,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -6632,6 +6645,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -6647,6 +6672,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -6874,14 +6901,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -7012,6 +7031,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -7027,6 +7058,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -7190,14 +7223,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -7328,6 +7353,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -7343,6 +7380,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -7506,14 +7545,6 @@
             "nick"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -7644,6 +7675,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -7659,6 +7702,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -7822,14 +7867,6 @@
             "days"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -7960,6 +7997,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -7975,6 +8024,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -8156,14 +8207,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -8294,6 +8337,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -8309,6 +8364,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -8479,14 +8536,6 @@
             ]
         },
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -8617,6 +8666,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -8632,6 +8693,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -8806,14 +8869,6 @@
             "tags"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -8944,6 +8999,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -8959,6 +9026,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -9125,14 +9194,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -9263,6 +9324,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -9278,6 +9351,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -9444,14 +9519,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -9582,6 +9649,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -9597,6 +9676,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -9759,14 +9840,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -9897,6 +9970,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -9912,6 +9997,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -10094,14 +10181,6 @@
             "channel_id"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -10232,6 +10311,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -10247,6 +10338,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -10436,14 +10529,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -10574,6 +10659,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -10589,6 +10686,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -10756,14 +10855,6 @@
             "enabled"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -10894,6 +10985,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -10909,6 +11012,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -11078,14 +11183,6 @@
             "name"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -11216,6 +11313,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -11231,6 +11340,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -11406,14 +11517,6 @@
             "user"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -11544,6 +11647,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -11559,6 +11674,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -11740,14 +11857,6 @@
             "object"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -11878,6 +11987,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -11893,6 +12014,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -12062,14 +12185,6 @@
             "recipients"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -12200,6 +12315,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -12215,6 +12342,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -12367,7 +12496,6 @@
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "UserModifySchema": {
-        "additionalProperties": false,
         "type": "object",
         "properties": {
             "username": {
@@ -12404,15 +12532,8 @@
                 "type": "string"
             }
         },
+        "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -12543,6 +12664,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -12558,6 +12691,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -12724,14 +12859,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -12862,6 +12989,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -12877,6 +13016,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -13044,14 +13185,6 @@
             "username"
         ],
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -13182,6 +13315,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -13197,6 +13342,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
@@ -13522,14 +13669,6 @@
         },
         "additionalProperties": false,
         "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            },
             "Embed": {
                 "type": "object",
                 "properties": {
@@ -13660,6 +13799,18 @@
                 },
                 "additionalProperties": false
             },
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -13675,6 +13826,8 @@
                             11,
                             12,
                             13,
+                            14,
+                            15,
                             2,
                             255,
                             3,
