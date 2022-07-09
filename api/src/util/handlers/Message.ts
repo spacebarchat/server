@@ -38,7 +38,7 @@ const DEFAULT_FETCH_OPTIONS: any = {
 	headers: {
 		"user-agent": "Mozilla/5.0 (compatible; Fosscord/1.0; +https://github.com/fosscord/fosscord)"
 	},
-	size: 1024 * 1024 * 1,
+	// size: 1024 * 1024 * 5, 	// grabbed from config later
 	compress: true,
 	method: "GET"
 };
@@ -154,7 +154,10 @@ export async function postHandleMessage(message: Message) {
 
 	for (const link of links) {
 		try {
-			const request = await fetch(link, DEFAULT_FETCH_OPTIONS);
+			const request = await fetch(link, {
+				...DEFAULT_FETCH_OPTIONS,
+				size: Config.get().limits.message.maxEmbedDownloadSize,
+			});
 
 			const text = await request.text();
 			const $ = cheerio.load(text);
@@ -191,7 +194,7 @@ export async function postHandleMessage(message: Message) {
 			channel_id: message.channel_id,
 			data
 		} as MessageUpdateEvent),
-		Message.update({ id: message.id, channel_id: message.channel_id }, data)
+		Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: data.embeds })
 	]);
 }
 
