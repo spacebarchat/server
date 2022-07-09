@@ -235,30 +235,30 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	limits: {
 		user: {
-			maxGuilds: 100,
-			maxUsername: 32,
-			maxFriends: 1000,
+			maxGuilds: 1048576,
+			maxUsername: 127,
+			maxFriends: 5000,
 		},
 		guild: {
-			maxRoles: 250,
-			maxEmojis: 50, // TODO: max emojis per guild per nitro level
-			maxMembers: 250000,
-			maxChannels: 500,
-			maxChannelsInCategory: 50,
-			hideOfflineMember: 1000,
+			maxRoles: 1000,
+			maxEmojis: 2000,
+			maxMembers: 25000000,
+			maxChannels: 65535,
+			maxChannelsInCategory: 65535,
+			hideOfflineMember: 3,
 		},
 		message: {
-			maxCharacters: 2000,
-			maxTTSCharacters: 200,
-			maxReactions: 20,
-			maxAttachmentSize: 8388608,
+			maxCharacters: 1048576,
+			maxTTSCharacters: 160,
+			maxReactions: 2048,
+			maxAttachmentSize: 1024 * 1024 * 1024,
 			maxEmbedDownloadSize: 1024 * 1024 * 5,
-			maxBulkDelete: 100,
+			maxBulkDelete: 1000,
 		},
 		channel: {
-			maxPins: 50,
+			maxPins: 500,
 			maxTopic: 1024,
-			maxWebhooks: 10,
+			maxWebhooks: 100,
 		},
 		rate: {
 			disabled: true,
@@ -267,9 +267,8 @@ export const DefaultConfigOptions: ConfigValue = {
 				window: 5,
 			},
 			global: {
-				count: 20,
+				count: 250,
 				window: 5,
-				bot: 250,
 			},
 			error: {
 				count: 10,
