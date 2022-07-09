@@ -85,6 +85,7 @@ export interface ConfigValue {
 			maxReactions: number;
 			maxAttachmentSize: number;
 			maxBulkDelete: number;
+			maxEmbedDownloadSize: number;
 		};
 		channel: {
 			maxPins: number;
@@ -249,6 +250,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			maxTTSCharacters: 200,
 			maxReactions: 20,
 			maxAttachmentSize: 8388608,
+			maxEmbedDownloadSize: 1024 * 1024 * 5,
 			maxBulkDelete: 100,
 		},
 		channel: {
