@@ -1,14 +1,20 @@
 {
 	"configurations": [
 		{
-			"name": "Launch Program",
-			"program": "${workspaceFolder}/build/index.js",
-			"request": "launch",
-			"skipFiles": [
-				"<node_internals>/**"
-			],
+			"name": "ts-node",
 			"type": "node",
-			"preLaunchTask": "tsc: build - tsconfig.json"
+			"request": "launch",
+			"args": [
+				"${relativeFile}"
+			],
+			"runtimeArgs": [
+				"-r",
+				"ts-node/register"
+			],
+			"cwd": "${workspaceRoot}",
+			"protocol": "inspector",
+			"internalConsoleOptions": "openOnSessionStart"
 		}
+		
 	]
 }

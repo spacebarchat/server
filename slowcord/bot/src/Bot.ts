@@ -1,14 +1,19 @@
 import { Message } from "discord.js";
 import { Client } from "fosscord-gopnik/build/lib";	// huh? oh well. some bugs in my lib Ig
 
+import { Command, getCommands } from "./commands/index.js";
+
 export default class Bot {
 	client: Client;
+	commands: { [key: string]: Command; } = {};
 
 	constructor(client: Client) {
 		this.client = client;
 	}
 
-	onReady = () => {
+	onReady = async () => {
+		this.commands = await getCommands();
+
 		console.log(`Logged in as ${this.client.user!.tag}`);
 
 		this.client.user!.setPresence({
@@ -16,10 +21,29 @@ export default class Bot {
 				name: "EVERYTHING",
 				type: "WATCHING",
 			}]
-		})
+		});
+
 	};
 
 	onMessageCreate = (msg: Message) => {
-		
+		const prefix = process.env.PREFIX as string;
+		if (msg.content.indexOf(prefix) === -1) return;
+		if (msg.author.bot) return;
+
+		const content = msg.content.slice(prefix.length).split(" ");
+		const cmd = content.shift();
+		if (!cmd) return;
+		const args = content;
+
+		const command = this.commands[cmd];
+		if (!command) return;
+
+		command.exec({
+			user: msg.author,
+			member: msg.member,
+			guild: msg.guild,
+			message: msg,
+			args: args,
+		});
 	};
 }
