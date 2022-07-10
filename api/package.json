@@ -12,7 +12,7 @@
 		"start": "npm run build && node dist/start",
 		"build": "npx tsc -p .",
 		"dev": "tsnd --respawn src/start.ts",
-		"patch": "ts-patch install -s && npx patch-package",
+		"patch": "npx ts-patch install -s && npx patch-package",
 		"postinstall": "npm run patch",
 		"generate:docs": "node scripts/generate_openapi",
 		"generate:schema": "node scripts/generate_schema"
