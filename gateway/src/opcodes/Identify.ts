@@ -35,6 +35,8 @@ import { Recipient } from "@fosscord/util";
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	clearTimeout(this.readyTimeout);
+	if (typeof data.d?.client_state?.highest_last_message_id === "number") 
+		data.d.client_state.highest_last_message_id += "";
 	check.call(this, IdentifySchema, data.d);
 
 	const identify: IdentifySchema = data.d;
