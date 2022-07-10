@@ -12526,6 +12526,9 @@
             },
             "code": {
                 "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
             }
         },
         "additionalProperties": false,
