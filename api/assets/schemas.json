@@ -12535,6 +12535,9 @@
             },
             "email": {
                 "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
             }
         },
         "additionalProperties": false,
