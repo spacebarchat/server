@@ -21,6 +21,7 @@ export interface UserModifySchema {
 	password?: string;
 	new_password?: string;
 	code?: string;
+	discriminator?: string;
 }
 
 router.get("/", route({}), async (req: Request, res: Response) => {
