@@ -27,7 +27,16 @@ const Excluded = [
 	"Response",
 	"e.Response",
 	"request.Response",
-	"supertest.Response"
+	"supertest.Response",
+
+	// TODO: Figure out how to exclude schemas from node_modules?
+	"SomeJSONSchema",
+	"UncheckedPartialSchema",
+	"PartialSchema",
+	"UncheckedPropertiesSchema",
+	"PropertiesSchema",
+	"AsyncSchema",
+	"AnySchema",
 ];
 
 function modify(obj) {
@@ -39,11 +48,18 @@ function modify(obj) {
 }
 
 function main() {
-	const program = TJS.getProgramFromFiles(walk(path.join(__dirname, "..", "src", "routes")), compilerOptions);
+	const files = 		[
+		...walk(path.join(__dirname, "..", "src", "routes")),
+		...walk(path.join(__dirname, "..", "..", "util", "src")),
+	];
+	const program = TJS.getProgramFromFiles(
+		files,
+		compilerOptions
+	);
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 
-	const schemas = generator.getUserSymbols().filter((x) => (x.endsWith("Schema") || x.endsWith("Response")) && !Excluded.includes(x));
+	let schemas = generator.getUserSymbols().filter((x) => (x.endsWith("Schema") || x.endsWith("Response")) && !Excluded.includes(x));
 	console.log(schemas);
 
 	var definitions = {};
