@@ -42,6 +42,7 @@ router.patch("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" }
 	const body = req.body as RoleModifySchema;
 
 	if (body.icon) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string);
+	else body.icon = undefined;
 
 	const role = new Role({
 		...body,
