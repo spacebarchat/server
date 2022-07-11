@@ -34,6 +34,8 @@ import { Recipient } from "@fosscord/util";
 // TODO: check if already identified
 
 export async function onIdentify(this: WebSocket, data: Payload) {
+	console.log(data);
+
 	clearTimeout(this.readyTimeout);
 	if (typeof data.d?.client_state?.highest_last_message_id === "number") 
 		data.d.client_state.highest_last_message_id += "";
