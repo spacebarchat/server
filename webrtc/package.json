@@ -19,7 +19,10 @@
 		"typescript": "^4.3.2"
 	},
 	"dependencies": {
+		"@types/libsodium-wrappers": "^0.7.9",
 		"dotenv": "^12.0.4",
+		"libsodium": "^0.7.10",
+		"libsodium-wrappers": "^0.7.10",
 		"mediasoup": "^3.9.5",
 		"node-turn": "^0.0.6",
 		"sdp-transform": "^2.14.1",

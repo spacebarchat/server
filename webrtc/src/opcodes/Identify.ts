@@ -34,17 +34,14 @@ export async function onIdentify(this: Server, socket: WebSocket, data: Identify
 		return socket.close(CLOSECODES.Invalid_intent);
 
 	var transport = this.mediasoupTransports[0] || await this.mediasoupRouters[0].createWebRtcTransport({
-		listenIps: [{ ip: "10.22.64.69" }],
+		listenIps: [{ ip: "10.22.64.146" }],
 		enableUdp: true,
-		enableTcp: true,
-		preferUdp: true,
-		enableSctp: true,
 	});
 
 	socket.send(JSON.stringify({
 		op: VoiceOPCodes.READY,
 		d: {
-			streams: [...data.d.streams.map(x => ({ ...x, rtx_ssrc: Math.floor(Math.random() * 10000), ssrc: Math.floor(Math.random() * 10000), active: false, }))],
+			streams: data.d.streams ? [...data.d.streams.map(x => ({ ...x, rtx_ssrc: Math.floor(Math.random() * 10000), ssrc: Math.floor(Math.random() * 10000), active: true, }))] : undefined,
 			ssrc: Math.floor(Math.random() * 10000),
 			ip: transport.iceCandidates[0].ip,
 			port: transport.iceCandidates[0].port,
