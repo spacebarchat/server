@@ -35,7 +35,7 @@ router.post("/", route({ body: "MessageAcknowledgeSchema" }), async (req: Reques
 		}
 	} as MessageAckEvent);
 
-	res.sendStatus(204);
+	res.json({ token: null });
 });
 
 export default router;
