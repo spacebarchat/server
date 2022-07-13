@@ -50,8 +50,10 @@ export function isTextChannel(type: ChannelType): boolean {
 }
 
 export interface MessageCreateSchema {
+	type?: number;
 	content?: string;
 	nonce?: string;
+	channel_id?: string;
 	tts?: boolean;
 	flags?: string;
 	embeds?: Embed[];
@@ -161,7 +163,7 @@ const messageUpload = multer({
 	limits: {
 		fileSize: 1024 * 1024 * 100,
 		fields: 10,
-		files: 1
+		// files: 1
 	},
 	storage: multer.memoryStorage()
 }); // max upload 50 mb
@@ -176,7 +178,7 @@ const messageUpload = multer({
 // Send message
 router.post(
 	"/",
-	messageUpload.single("file"),
+	messageUpload.any(),
 	async (req, res, next) => {
 		if (req.body.payload_json) {
 			req.body = JSON.parse(req.body.payload_json);
@@ -190,17 +192,20 @@ router.post(
 		var body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
 
-		if (req.file) {
-			try {
-				const file = await uploadFile(`/attachments/${req.params.channel_id}`, req.file);
-				attachments.push({ ...file, proxy_url: file.url });
-			} catch (error) {
-				return res.status(400).json(error);
-			}
-		}
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
 		if (!channel.isWritable()) {
 			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400)
+		}
+
+		const files = req.files as Express.Multer.File[] ?? [];
+		for (var currFile of files) {
+			try {
+				const file = await uploadFile(`/attachments/${channel.id}`, currFile);
+				attachments.push({ ...file, proxy_url: file.url });
+			}
+			catch (error) {
+				return res.status(400).json(error);
+			}
 		}
 
 		const embeds = body.embeds || [];
