@@ -18,7 +18,7 @@ export interface IdentifyPayload extends Payload {
 	};
 }
 
-export async function onIdentify(this: Server, socket: WebSocket, data: IdentifyPayload) {
+export async function onIdentify(this: Server, socket: WebSocket, data: Payload) {
 
 	const session = await Session.findOneOrFail(
 		{ session_id: data.d.session_id, },
