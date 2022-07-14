@@ -1,5 +1,6 @@
 import { WebSocket } from "@fosscord/gateway";
 import { VoiceOPCodes } from "@fosscord/util";
+import { Server } from "../Server";
 
 export interface Payload {
 	op: number;
@@ -17,9 +18,9 @@ import { onConnect } from "./Connect";
 
 import { onVersion } from "./Version";
 
-export type OPCodeHandler = (this: WebSocket, data: Payload) => any;
+export type OPCodeHandler = (this: Server, socket: WebSocket, data: Payload) => any;
 
-export default {
+const handlers: { [key: number]: OPCodeHandler } = {
 	[VoiceOPCodes.IDENTIFY]: onIdentify,				//op 0
 	[VoiceOPCodes.SELECT_PROTOCOL]: onSelectProtocol,	//op 1
 	//op 2 voice_ready
@@ -38,3 +39,5 @@ export default {
 	//op 16? empty data on client send but server sends {"voice":"0.8.24+bugfix.voice.streams.opt.branch-ffcefaff7","rtc_worker":"0.3.14-crypto-collision-copy"}
 	[VoiceOPCodes.VERSION]: onVersion,
 };
+
+export default handlers;
