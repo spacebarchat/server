@@ -88,7 +88,7 @@ export interface SelectProtocolPayload extends Payload {
 }
 */
 
-export async function onSelectProtocol(this: Server, socket: WebSocket, data: SelectProtocolPayload) {
+export async function onSelectProtocol(this: Server, socket: WebSocket, data: Payload) {
 	if (data.d.sdp) {
 		const rtpCapabilities = this.mediasoupRouters[0].rtpCapabilities;
 		const codecs = rtpCapabilities.codecs as RtpCodecCapability[];
