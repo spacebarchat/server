@@ -42,6 +42,8 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		.flat()
 		.unique((r: Role) => r.id);
 
+	const offlineItems = [];
+
 	for (const role of member_roles) {
 		// @ts-ignore
 		const [role_members, other_members] = partition(members, (m: Member) =>
@@ -63,7 +65,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 			const session = member.user.sessions.first();
 
 			// TODO: properly mock/hide offline/invisible status
-			items.push({
+			const item = {
 				member: {
 					...member,
 					roles,
@@ -74,16 +76,35 @@ async function getMembers(guild_id: string, range: [number, number]) {
 						user: { id: member.user.id },
 					},
 				},
-			});
+			}
+
+			if (!member?.user?.sessions || !member.user.sessions.length) {
+				offlineItems.push(item);
+				group.count--;
+				continue;
+			}
+
+			items.push(item);
 		}
 		members = other_members;
+	}
+
+	if (offlineItems.length) {
+		const group = {
+			count: offlineItems.length,
+			id: "offline",
+		};
+		items.push({ group });
+		groups.push(group);
+
+		items.push(...offlineItems);
 	}
 
 	return {
 		items,
 		groups,
 		range,
-		members: items.map((x) => x.member).filter((x) => x),
+		members: items.map((x) => 'member' in x ? x.member : undefined).filter(x => !!x),
 	};
 }
 
