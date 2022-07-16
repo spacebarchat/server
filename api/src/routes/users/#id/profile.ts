@@ -74,7 +74,7 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 		mute: guild_member.mute,
 		nick: guild_member.nick,
 		premium_since: guild_member.premium_since,
-		roles: guild_member.roles.map(x => x.id),
+		roles: guild_member.roles.map(x => x.id).filter(id => id != guild_id),
 		user: userDto
 	} : undefined;
 
