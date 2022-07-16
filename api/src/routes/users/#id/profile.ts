@@ -21,7 +21,7 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 	var mutual_guilds: object[] = [];
 	var premium_guild_since;
 
-	if (with_mutual_guilds) {
+	if (with_mutual_guilds == "true") {
 		const requested_member = await Member.find({ id: req.params.id, });
 		const self_member = await Member.find({ id: req.user_id, });
 
