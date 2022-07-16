@@ -47,36 +47,44 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 		? await Member.findOneOrFail({ id: req.params.id, guild_id: guild_id }, { relations: ["roles"] })
 		: undefined;
 
+	// TODO: make proper DTO's in util?
+
+	const userDto = {
+		username: user.username,
+		discriminator: user.discriminator,
+		id: user.id,
+		public_flags: user.public_flags,
+		avatar: user.avatar,
+		accent_color: user.accent_color,
+		banner: user.banner,
+		bio: req.user_bot ? null : user.bio,
+		bot: user.bot
+	};
+
+	const guildMemberDto = guild_member ? {
+		avatar: user.avatar,	// TODO
+		banner: user.banner,	// TODO
+		bio: req.user_bot ? null : user.bio, // TODO
+		communication_disabled_until: null,	// TODO
+		deaf: guild_member.deaf,
+		flags: user.flags,
+		is_pending: guild_member.pending,
+		pending: guild_member.pending,	// why is this here twice, discord?
+		joined_at: guild_member.joined_at,
+		mute: guild_member.mute,
+		nick: guild_member.nick,
+		premium_since: guild_member.premium_since,
+		roles: guild_member.roles.map(x => x.id),
+		user: userDto
+	} : undefined;
+
 	res.json({
 		connected_accounts: user.connected_accounts,
 		premium_guild_since: premium_guild_since, // TODO
 		premium_since: user.premium_since, // TODO
 		mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
-		user: {
-			username: user.username,
-			discriminator: user.discriminator,
-			id: user.id,
-			public_flags: user.public_flags,
-			avatar: user.avatar,
-			accent_color: user.accent_color,
-			banner: user.banner,
-			bio: req.user_bot ? null : user.bio,
-			bot: user.bot
-		},
-		guild_member: guild_member ? {
-			avatar: user.avatar,	// TODO
-			banner: user.banner,	// TODO
-			bio: req.user_bot ? null : user.bio, // TODO
-			communication_disabled_until: null,	// TODO
-			deaf: guild_member.deaf,
-			flags: user.flags,
-			is_pending: guild_member.pending,
-			pending: guild_member.pending,	// why is this here twice, discord?
-			joined_at: guild_member.joined_at,
-			mute: guild_member.mute,
-			nick: guild_member.nick,
-			premium_since: guild_member.premium_since,
-		} : undefined,
+		user: userDto,
+		guild_member: guildMemberDto,
 	});
 });
 
