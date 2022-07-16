@@ -75,7 +75,7 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 		nick: guild_member.nick,
 		premium_since: guild_member.premium_since,
 		roles: guild_member.roles.map(x => x.id),
-		user: 
+		user: userDto
 	} : undefined;
 
 	res.json({
