@@ -179,7 +179,7 @@ const messageUpload = multer({
 router.post(
 	"/",
 	messageUpload.any(),
-	async (req, res, next) => {
+	(req, res, next) => {
 		if (req.body.payload_json) {
 			req.body = JSON.parse(req.body.payload_json);
 		}
