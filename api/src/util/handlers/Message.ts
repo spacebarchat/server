@@ -166,7 +166,11 @@ export async function postHandleMessage(message: Message) {
 			const provider_name = $('meta[property="og:site_name"]').text();
 			const author_name = $('meta[property="article:author"]').attr("content");
 			const description = $('meta[property="og:description"]').attr("content") || $('meta[property="description"]').attr("content");
+
 			const image = $('meta[property="og:image"]').attr("content");
+			const width = parseInt($('meta[property="og:image:width"]').attr("content") || "") || undefined;
+			const height = parseInt($('meta[property="og:image:height"]').attr("content") || "") || undefined;
+
 			const url = $('meta[property="og:url"]').attr("content");
 			// TODO: color
 			const embed: Embed = {
@@ -177,7 +181,7 @@ export async function postHandleMessage(message: Message) {
 			};
 
 			if (author_name) embed.author = { name: author_name };
-			if (image) embed.thumbnail = { proxy_url: image, url: image };
+			if (image) embed.thumbnail = { proxy_url: image, url: image, width: width, height: height };
 			if (title) embed.title = title;
 			if (url) embed.url = url;
 			if (description) embed.description = description;
