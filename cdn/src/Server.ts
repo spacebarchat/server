@@ -5,7 +5,7 @@ import avatarsRoute from "./routes/avatars";
 import iconsRoute from "./routes/role-icons";
 import bodyParser from "body-parser";
 
-export interface CDNServerOptions extends ServerOptions {}
+export interface CDNServerOptions extends ServerOptions { }
 
 export class CDNServer extends Server {
 	public declare options: CDNServerOptions;
