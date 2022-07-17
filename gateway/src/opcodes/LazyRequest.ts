@@ -45,6 +45,8 @@ async function getMembers(guild_id: string, range: [number, number]) {
 
 	const offlineItems = [];
 
+	const offlineItems = [];
+
 	for (const role of member_roles) {
 		// @ts-ignore
 		const [role_members, other_members] = partition(members, (m: Member) =>
