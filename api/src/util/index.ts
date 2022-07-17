@@ -6,3 +6,4 @@ export * from "./utility/RandomInviteID";
 export * from "./handlers/route";
 export * from "./utility/String";
 export * from "./handlers/Voice";
+export * from "./entities/AssetCacheItem";

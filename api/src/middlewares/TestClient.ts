@@ -1,54 +1,47 @@
 import express, { Request, Response, Application } from "express";
-import fs from "fs";
+import fs, { writeFile } from "fs";
 import path from "path";
-import fetch, { Response as FetchResponse } from "node-fetch";
+import fetch, { Response as FetchResponse, Headers } from "node-fetch";
 import ProxyAgent from 'proxy-agent';
 import { Config } from "@fosscord/util";
+import { AssetCacheItem } from "../util/entities/AssetCacheItem"
+import { FileLogger } from "typeorm";
 
 export default function TestClient(app: Application) {
 	const agent = new ProxyAgent();
-	const assetCache = new Map<string, { response: FetchResponse; buffer: Buffer }>();
-	const indexHTML = fs.readFileSync(path.join(__dirname, "..", "..", "client_test", "index.html"), { encoding: "utf8" });
-
-	var html = indexHTML;
-	const CDN_ENDPOINT = (Config.get().cdn.endpointClient || Config.get()?.cdn.endpointPublic || process.env.CDN || "").replace(
-		/(https?)?(:\/\/?)/g,
-		""
-	);
-	const GATEWAY_ENDPOINT = Config.get().gateway.endpointClient || Config.get()?.gateway.endpointPublic || process.env.GATEWAY || "";
-
-	if (CDN_ENDPOINT) {
-		html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${CDN_ENDPOINT}\`,`);
-	}
-	if (GATEWAY_ENDPOINT) {
-		html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${GATEWAY_ENDPOINT}\`,`);
-	}
-	// inline plugins
-	var files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "preload-plugins"));
-	var plugins = "";
-	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(__dirname, "..", "..", "assets", "preload-plugins", x))}</script>\n`; });
-	html = html.replaceAll("<!-- preload plugin marker -->", plugins);
-
-	// plugins
-	files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "plugins"));
-	plugins = "";
-	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script src='/assets/plugins/${x}'></script>\n`; });
-	html = html.replaceAll("<!-- plugin marker -->", plugins);
-	//preload plugins
-	files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "preload-plugins"));
-	plugins = "";
-	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(__dirname, "..", "..", "assets", "preload-plugins", x))}</script>\n`; });
-	html = html.replaceAll("<!-- preload plugin marker -->", plugins);
-
-
-	app.use("/assets", express.static(path.join(__dirname, "..", "..", "assets")));
 	
+	//build client page
+	let html = fs.readFileSync(path.join(__dirname, "..", "..", "client_test", "index.html"), { encoding: "utf8" });
+	html = applyEnv(html);
+	html = applyInlinePlugins(html);
+	html = applyPlugins(html);
+	html = applyPreloadPlugins(html);
+
+	//load asset cache
+	let newAssetCache: Map<string, AssetCacheItem> = new Map<string, AssetCacheItem>();
+	if(!fs.existsSync(path.join(__dirname, "..", "..", "assets", "cache"))) {
+		fs.mkdirSync(path.join(__dirname, "..", "..", "assets", "cache"));
+	}
+	if(fs.existsSync(path.join(__dirname, "..", "..", "assets", "cache", "index.json"))) {
+		let rawdata = fs.readFileSync(path.join(__dirname, "..", "..", "assets", "cache", "index.json"));
+		newAssetCache = new Map<string, AssetCacheItem>(Object.entries(JSON.parse(rawdata.toString())));
+	}
+
+	//define routes
+	app.use("/assets", express.static(path.join(__dirname, "..", "..", "assets")));	
 	app.get("/assets/:file", async (req: Request, res: Response) => {
 		delete req.headers.host;
-		var response: FetchResponse;
-		var buffer: Buffer;
-		const cache = assetCache.get(req.params.file);
-		if (!cache) {
+		let response: FetchResponse;
+		let buffer: Buffer;
+		let assetCacheItem: AssetCacheItem = new AssetCacheItem(req.params.file);
+		if(newAssetCache.has(req.params.file)){
+			assetCacheItem = newAssetCache.get(req.params.file)!;
+			assetCacheItem.Headers.forEach((value: any, name: any) => {
+				res.set(name, value);
+			});
+		}
+		else {
+			console.log(`CACHE MISS! Asset file: ${req.params.file}`);
 			response = await fetch(`https://discord.com/assets/${req.params.file}`, {
 				agent,
 				// @ts-ignore
@@ -56,34 +49,24 @@ export default function TestClient(app: Application) {
 					...req.headers
 				}
 			});
-			buffer = await response.buffer();
-		} else {
-			response = cache.response;
-			buffer = cache.buffer;
+			
+			//set cache info
+			assetCacheItem.Headers = Object.fromEntries(stripHeaders(response.headers));
+			assetCacheItem.FilePath = path.join(__dirname, "..", "..", "assets", "cache", req.params.file);
+			assetCacheItem.Key = req.params.file;
+			//add to cache and save
+			newAssetCache.set(req.params.file, assetCacheItem);
+			fs.writeFileSync(path.join(__dirname, "..", "..", "assets", "cache", "index.json"), JSON.stringify(Object.fromEntries(newAssetCache), null, 4));
+			//download file
+			fs.writeFileSync(assetCacheItem.FilePath, await response.buffer());
 		}
-
-		response.headers.forEach((value, name) => {
-			if (
-				[
-					"content-length",
-					"content-security-policy",
-					"strict-transport-security",
-					"set-cookie",
-					"transfer-encoding",
-					"expect-ct",
-					"access-control-allow-origin",
-					"content-encoding"
-				].includes(name.toLowerCase())
-			) {
-				return;
-			}
+		
+		assetCacheItem.Headers.forEach((value: string, name: string) => {
 			res.set(name, value);
 		});
-		assetCache.set(req.params.file, { buffer, response });
-
-		return res.send(buffer);
+		return res.send(fs.readFileSync(assetCacheItem.FilePath));
 	});
-	app.get("/developers*", (req: Request, res: Response) => {
+	app.get("/developers*", (_req: Request, res: Response) => {
 		const { useTestClient } = Config.get().client;
 		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
 		res.set("content-type", "text/html");
@@ -104,4 +87,62 @@ export default function TestClient(app: Application) {
 		
 		res.send(html);
 	});
+
+	
+}
+
+function applyEnv(html: string): string {
+	const CDN_ENDPOINT = (Config.get().cdn.endpointClient || Config.get()?.cdn.endpointPublic || process.env.CDN || "").replace(
+		/(https?)?(:\/\/?)/g,
+		""
+	);
+	const GATEWAY_ENDPOINT = Config.get().gateway.endpointClient || Config.get()?.gateway.endpointPublic || process.env.GATEWAY || "";
+
+	if (CDN_ENDPOINT) {
+		html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${CDN_ENDPOINT}\`,`);
+	}
+	if (GATEWAY_ENDPOINT) {
+		html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${GATEWAY_ENDPOINT}\`,`);
+	}
+	return html;
+}
+
+function applyPlugins(html: string): string {
+	// plugins
+	let files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "plugins"));
+	let plugins = "";
+	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script src='/assets/plugins/${x}'></script>\n`; });
+	return html.replaceAll("<!-- plugin marker -->", plugins);
+}
+
+function applyInlinePlugins(html: string): string{
+	// inline plugins
+	let files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "inline-plugins"));
+	let plugins = "";
+	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script src='/assets/inline-plugins/${x}'></script>\n\n`; });
+	return html.replaceAll("<!-- inline plugin marker -->", plugins);
+}
+
+function applyPreloadPlugins(html: string): string{
+	//preload plugins
+	let files = fs.readdirSync(path.join(__dirname, "..", "..", "assets", "preload-plugins"));
+	let plugins = "";
+	files.forEach(x =>{if(x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(__dirname, "..", "..", "assets", "preload-plugins", x))}</script>\n`; });
+	return html.replaceAll("<!-- preload plugin marker -->", plugins);
+}
+
+function stripHeaders(headers: Headers): Headers {
+	[
+		"content-length",
+		"content-security-policy",
+		"strict-transport-security",
+		"set-cookie",
+		"transfer-encoding",
+		"expect-ct",
+		"access-control-allow-origin",
+		"content-encoding"
+	].forEach(headerName => {
+		headers.delete(headerName);
+	});
+	return headers;
 }
