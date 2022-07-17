@@ -73,7 +73,7 @@ router.get("/:user_id", async (req: Request, res: Response) => {
 	return res.send(file);
 });
 
-router.get("/:user_id/:hash", async (req: Request, res: Response) => {
+export const getAvatar = async (req: Request, res: Response) => {
 	var { user_id, hash } = req.params;
 	hash = hash.split(".")[0]; // remove .file extension
 	const path = `avatars/${user_id}/${hash}`;
@@ -86,7 +86,9 @@ router.get("/:user_id/:hash", async (req: Request, res: Response) => {
 	res.set("Cache-Control", "public, max-age=31536000");
 
 	return res.send(file);
-});
+}
+
+router.get("/:user_id/:hash", getAvatar);
 
 router.delete("/:user_id/:id", async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature)
