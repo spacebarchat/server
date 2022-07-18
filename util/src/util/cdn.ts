@@ -1,8 +1,9 @@
 import FormData from "form-data";
 import { HTTPError } from "lambert-server";
-import fetch from "node-fetch";
 import { Config } from "./Config";
 import multer from "multer";
+import fetch from "../fetch"
+import { nodeModuleNameResolver } from "typescript";
 
 export async function uploadFile(path: string, file?: Express.Multer.File) {
 	if (!file?.buffer) throw new HTTPError("Missing file in body");

@@ -1,5 +1,5 @@
 import "missing-native-js-functions";
-import fetch from "node-fetch";
+import fetch from "../fetch";
 import ProxyAgent from 'proxy-agent';
 import readline from "readline";
 import fs from "fs/promises";
