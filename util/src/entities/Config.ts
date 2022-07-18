@@ -169,6 +169,7 @@ export interface ConfigValue {
 			guilds: string[];
 			canLeave: boolean;
 		};
+		defaultFeatures: string[];
 	};
 	gif: {
 		enabled: boolean;
@@ -370,6 +371,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			canLeave: true,
 			guilds: [],
 		},
+		defaultFeatures: [],
 	},
 	gif: {
 		enabled: true,
