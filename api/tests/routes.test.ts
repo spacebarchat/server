@@ -23,10 +23,10 @@ export const ajv = new Ajv({
 });
 addFormats(ajv);
 
-var token: string;
-var user: User;
-var guild: Guild;
-var channel: Channel;
+let token: string;
+let user: User;
+let guild: Guild;
+let channel: Channel;
 
 const request = async (path: string, opts: any = {}): Promise<any> => {
 	const response = await fetch(`http://localhost:3001/api${path}`, {
@@ -41,7 +41,7 @@ const request = async (path: string, opts: any = {}): Promise<any> => {
 	});
 	if (response.status === 204) return;
 
-	var data = await response.text();
+	let data = await response.text();
 	try {
 		data = JSON.parse(data);
 		if (response.status >= 400) throw data;
@@ -95,13 +95,13 @@ describe("Automatic unit tests with route description middleware", () => {
 			}
 			const urlPath =
 				path.replace(":id", user.id).replace(":guild_id", guild.id).replace(":channel_id", channel.id) || route.test?.path;
-			var validate: any;
+			let validate: any;
 			if (route.test.body) {
 				validate = ajv.getSchema(route.test.body);
 				if (!validate) return done(new Error(`Response schema ${route.test.body} not found`));
 			}
 
-			var body = "";
+			let body = "";
 			let eventEmitted = Promise.resolve();
 
 			if (route.test.event) {

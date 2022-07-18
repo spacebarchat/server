@@ -7,7 +7,7 @@ const path = require("path");
 global.expect.extend({
 	toBeFasterThan: async (func, target) => {
 		const start = performance.now();
-		var error;
+		let error;
 		try {
 			await func();
 		} catch (e) {

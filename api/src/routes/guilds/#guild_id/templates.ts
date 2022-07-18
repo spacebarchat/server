@@ -36,7 +36,7 @@ export interface TemplateModifySchema {
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	var templates = await Template.find({ source_guild_id: guild_id });
+	let templates = await Template.find({ where: { source_guild_id: guild_id } });
 
 	return res.json(templates);
 });

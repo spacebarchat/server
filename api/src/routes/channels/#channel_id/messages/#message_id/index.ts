@@ -35,7 +35,7 @@ const messageUpload = multer({
 
 router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_MESSAGES" }), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
-	var body = req.body as MessageCreateSchema;
+	let body = req.body as MessageCreateSchema;
 
 	const message = await Message.findOneOrFail({ where: { id: message_id, channel_id }, relations: ["attachments"] });
 
@@ -92,7 +92,7 @@ router.put(
 	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_BACKDATED_EVENTS" }),
 	async (req: Request, res: Response) => {
 		const { channel_id, message_id } = req.params;
-		var body = req.body as MessageCreateSchema;
+		let body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
 		
 		const rights = await getRights(req.user_id);

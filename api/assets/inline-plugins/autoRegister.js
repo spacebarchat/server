@@ -44,7 +44,7 @@ function _generateName() {
 	return `${prefix.random()}${suffix.random()}`;
 }
 
-var token = JSON.parse(localStorage.getItem("token"));
+let token = JSON.parse(localStorage.getItem("token"));
 if (!token && location.pathname !== "/login" && location.pathname !== "/register") {
 	fetch(`${window.GLOBAL_ENV.API_ENDPOINT}/auth/register`, {
 		method: "POST",

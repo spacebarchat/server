@@ -6,16 +6,16 @@ const router = Router();
 
 //Returns all inactive members, respecting role hierarchy
 export const inactiveMembers = async (guild_id: string, user_id: string, days: number, roles: string[] = []) => {
-	var date = new Date();
+	let date = new Date();
 	date.setDate(date.getDate() - days);
 	//Snowflake should have `generateFromTime` method? Or similar?
-	var minId = BigInt(date.valueOf() - Snowflake.EPOCH) << BigInt(22);
+	let minId = BigInt(date.valueOf() - Snowflake.EPOCH) << BigInt(22);
 
 	/**
 	idea: ability to customise the cutoff variable
 	possible candidates: public read receipt, last presence, last VC leave
 	**/
-	var members = await Member.find({
+	let members = await Member.find({
 		where: [
 			{
 				guild_id,
@@ -54,7 +54,7 @@ export const inactiveMembers = async (guild_id: string, user_id: string, days: n
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const days = parseInt(req.query.days as string);
 
-	var roles = req.query.include_roles;
+	let roles = req.query.include_roles;
 	if (typeof roles === "string") roles = [roles]; //express will return array otherwise
 
 	const members = await inactiveMembers(req.params.guild_id, req.user_id, days, roles as string[]);
@@ -72,7 +72,7 @@ export interface PruneSchema {
 router.post("/", route({ permission: "KICK_MEMBERS", right: "KICK_BAN_MEMBERS" }), async (req: Request, res: Response) => {
 	const days = parseInt(req.body.days);
 
-	var roles = req.query.include_roles;
+	let roles = req.query.include_roles;
 	if (typeof roles === "string") roles = [roles];
 
 	const { guild_id } = req.params;

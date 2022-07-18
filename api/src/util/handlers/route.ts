@@ -87,7 +87,7 @@ const normalizeBody = (body: any = {}) => {
 };
 
 export function route(opts: RouteOptions) {
-	var validate: AnyValidateFunction<any> | undefined;
+	let validate: AnyValidateFunction<any> | undefined;
 	if (opts.body) {
 		validate = ajv.getSchema(opts.body);
 		if (!validate) throw new Error(`Body schema ${opts.body} not found`);

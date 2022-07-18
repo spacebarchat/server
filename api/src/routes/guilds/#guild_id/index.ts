@@ -55,7 +55,7 @@ router.patch("/", route({ body: "GuildUpdateSchema"}), async (req: Request, res:
 	if (body.banner) body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
 	if (body.splash) body.splash = await handleFile(`/splashes/${guild_id}`, body.splash);
 
-	var guild = await Guild.findOneOrFail({
+	let guild = await Guild.findOneOrFail({
 		where: { id: guild_id },
 		relations: ["emojis", "roles", "stickers"]
 	});

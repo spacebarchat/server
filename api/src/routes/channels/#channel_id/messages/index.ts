@@ -95,13 +95,13 @@ router.get("/", async (req: Request, res: Response) => {
 	const limit = Number(req.query.limit) || 50;
 	if (limit < 1 || limit > 100) throw new HTTPError("limit must be between 1 and 100", 422);
 
-	var halfLimit = Math.floor(limit / 2);
+	let halfLimit = Math.floor(limit / 2);
 
 	const permissions = await getPermission(req.user_id, channel.guild_id, channel_id);
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	var query: FindManyOptions<Message> & { where: { id?: any; }; } = {
+	let query: FindManyOptions<Message> & { where: { id?: any; }; } = {
 		order: { id: "DESC" },
 		take: limit,
 		where: { channel_id },
@@ -148,7 +148,7 @@ router.get("/", async (req: Request, res: Response) => {
 			which causes erorrs when, say, the `application` property is `null`.
 			**/
 			
-			for (var curr in x) {
+			for (let curr in x) {
 				if (x[curr] === null)
 					delete x[curr];
 			}
@@ -189,7 +189,7 @@ router.post(
 	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_MESSAGES" }),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
-		var body = req.body as MessageCreateSchema;
+		let body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
 
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
@@ -198,7 +198,7 @@ router.post(
 		}
 
 		const files = req.files as Express.Multer.File[] ?? [];
-		for (var currFile of files) {
+		for (let currFile of files) {
 			try {
 				const file = await uploadFile(`/attachments/${channel.id}`, currFile);
 				attachments.push({ ...file, proxy_url: file.url });

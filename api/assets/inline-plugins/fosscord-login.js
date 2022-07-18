@@ -6,7 +6,7 @@
 // fosscord-login.css after login is successful, but not if you reload the page after logging in. This script is to remove fosscord-login.css in
 // that specific case.
 
-var token = JSON.parse(localStorage.getItem("token"));
+let token = JSON.parse(localStorage.getItem("token"));
 if (!token && location.pathname !== "/login" && location.pathname !== "/register") {
 	document.getElementById("logincss").remove();
 }

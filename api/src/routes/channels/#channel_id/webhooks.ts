@@ -31,7 +31,7 @@ router.post("/", route({ body: "WebhookCreateSchema", permission: "MANAGE_WEBHOO
 	const { maxWebhooks } = Config.get().limits.channel;
 	if (webhook_count > maxWebhooks) throw DiscordApiErrors.MAXIMUM_WEBHOOKS.withParams(maxWebhooks);
 
-	var { avatar, name } = req.body as { name: string; avatar?: string };
+	let { avatar, name } = req.body as { name: string; avatar?: string };
 	name = trimSpecial(name);
 	if (name === "clyde") throw new HTTPError("Invalid name", 400);
 

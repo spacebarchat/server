@@ -102,11 +102,11 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 
-	var content = opts.content;
-	var mention_channel_ids = [] as string[];
-	var mention_role_ids = [] as string[];
-	var mention_user_ids = [] as string[];
-	var mention_everyone = false;
+	let content = opts.content;
+	let mention_channel_ids = [] as string[];
+	let mention_role_ids = [] as string[];
+	let mention_user_ids = [] as string[];
+	let mention_everyone = false;
 
 	if (content) { // TODO: explicit-only mentions
 		message.content = content.trim();
@@ -144,7 +144,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 // TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
-	var links = message.content?.match(LINK_REGEX);
+	let links = message.content?.match(LINK_REGEX);
 	if (!links) return;
 
 	const data = { ...message };

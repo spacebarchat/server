@@ -5,7 +5,7 @@ import { BitField } from "./BitField";
 import "missing-native-js-functions";
 import { BitFieldResolvable, BitFlag } from "./BitField";
 
-var HTTPError: any;
+let HTTPError: any;
 
 try {
 	HTTPError = require("lambert-server").HTTPError;
@@ -207,9 +207,9 @@ export async function getPermission(
 	} = {}
 ) {
 	if (!user_id) throw new HTTPError("User not found");
-	var channel: Channel | undefined;
-	var member: Member | undefined;
-	var guild: Guild | undefined;
+	let channel: Channel | undefined;
+	let member: Member | undefined;
+	let guild: Guild | undefined;
 
 	if (channel_id) {
 		channel = await Channel.findOneOrFail({
@@ -257,7 +257,7 @@ export async function getPermission(
 	if (!recipient_ids?.length) recipient_ids = null;
 
 	// TODO: remove guild.roles and convert recipient_ids to recipients
-	var permission = Permissions.finalPermission({
+	let permission = Permissions.finalPermission({
 		user: {
 			id: user_id,
 			roles: member?.roles.map((x) => x.id) || [],

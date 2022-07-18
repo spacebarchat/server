@@ -2,7 +2,7 @@ import { Server as WebSocketServer } from "ws";
 import { Config, db } from "@fosscord/util";
 import mediasoup from "mediasoup";
 
-var port = Number(process.env.PORT);
+let port = Number(process.env.PORT);
 if (isNaN(port)) port = 3004;
 
 export class Server {

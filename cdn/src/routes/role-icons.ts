@@ -33,7 +33,7 @@ router.post(
 		const { buffer, mimetype, size, originalname, fieldname } = req.file;
 		const { role_id } = req.params;
 
-		var hash = crypto
+		let hash = crypto
 			.createHash("md5")
 			.update(Snowflake.generate())
 			.digest("hex");
@@ -58,7 +58,7 @@ router.post(
 );
 
 router.get("/:role_id", async (req: Request, res: Response) => {
-	var { role_id } = req.params;
+	let { role_id } = req.params;
 	//role_id = role_id.split(".")[0]; // remove .file extension
 	const path = `role-icons/${role_id}`;
 
@@ -73,7 +73,7 @@ router.get("/:role_id", async (req: Request, res: Response) => {
 });
 
 router.get("/:role_id/:hash", async (req: Request, res: Response) => {
-	var { role_id, hash } = req.params;
+	let { role_id, hash } = req.params;
 	//hash = hash.split(".")[0]; // remove .file extension
 	const path = `role-icons/${role_id}/${hash}`;
 

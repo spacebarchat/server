@@ -19,19 +19,19 @@ setInterval(() => {
 	getUsers();
 }, 60 * 1000);
 async function generate() {
-	var accounts = await JSON.parse(fs.readFileSync("accounts.json"));
+	let accounts = await JSON.parse(fs.readFileSync("accounts.json"));
 	console.log(accounts);
-	var account = await register();
+	let account = await register();
 	accounts.push(account);
 	fs.writeFileSync("accounts.json", JSON.stringify(accounts));
 	console.log(accounts.length);
-	var y = await login(account);
+	let y = await login(account);
 	sendMessage(y);
 }
 async function getUsers() {
-	var accounts = await JSON.parse(fs.readFileSync("accounts.json"));
+	let accounts = await JSON.parse(fs.readFileSync("accounts.json"));
 	accounts.forEach(async (x) => {
-		var y = await login(x);
+		let y = await login(x);
 		console.log(y);
 		sendMessage(y);
 	});

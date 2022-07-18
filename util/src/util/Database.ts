@@ -8,8 +8,8 @@ import { yellow, green, red } from "picocolors";
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
 
-var promise: Promise<any>;
-var dbConnection: Connection | undefined;
+let promise: Promise<any>;
+let dbConnection: Connection | undefined;
 let dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
 
 export function initDatabase(): Promise<Connection> {

@@ -16,7 +16,7 @@ export interface UserRelationsResponse {
 
 
 router.get("/", route({ test: { response: { body: "UserRelationsResponse" } } }), async (req: Request, res: Response) => {
-	var mutual_relations: object[] = [];
+	let mutual_relations: object[] = [];
     const requested_relations = await User.findOneOrFail({
 		where: { id: req.params.id },
 		relations: ["relationships"]
@@ -29,7 +29,7 @@ router.get("/", route({ test: { response: { body: "UserRelationsResponse" } } })
     for(const rmem of requested_relations.relationships) {
 		for(const smem of self_relations.relationships)
 		if (rmem.to_id === smem.to_id && rmem.type === 1 && rmem.to_id !== req.user_id) {
-			var relation_user = await User.getPublicUser(rmem.to_id)
+			let relation_user = await User.getPublicUser(rmem.to_id)
 
 			mutual_relations.push({id: relation_user.id, username: relation_user.username, avatar: relation_user.avatar, discriminator: relation_user.discriminator, public_flags: relation_user.public_flags})
 		}

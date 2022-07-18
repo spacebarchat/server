@@ -41,7 +41,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	try {
 		const { jwtSecret } = Config.get().security;
-		var { decoded } = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
+		let { decoded } = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
 	} catch (error) {
 		console.error("invalid token", error);
 		return this.close(CLOSECODES.Authentication_failed);
@@ -117,7 +117,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			return this.close(CLOSECODES.Invalid_shard);
 		}
 	}
-	var users: PublicUser[] = [];
+	let users: PublicUser[] = [];
 
 	const merged_members = members.map((x: Member) => {
 		return [

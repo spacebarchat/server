@@ -6,8 +6,8 @@ import fs from "fs";
 // TODO: yaml instead of json
 // const overridePath = path.join(process.cwd(), "config.json");
 
-var config: ConfigValue;
-var pairs: ConfigEntity[];
+let config: ConfigValue;
+let pairs: ConfigEntity[];
 
 // TODO: use events to inform about config updates
 // Config keys are separated with _
@@ -57,7 +57,7 @@ function applyConfig(val: ConfigValue) {
 }
 
 function pairsToConfig(pairs: ConfigEntity[]) {
-	var value: any = {};
+	let value: any = {};
 
 	pairs.forEach((p) => {
 		const keys = p.key.split("_");

@@ -145,7 +145,7 @@ router.put("/:emoji/:user_id", route({ permission: "READ_MESSAGE_HISTORY", right
 });
 
 router.delete("/:emoji/:user_id", route({}), async (req: Request, res: Response) => {
-	var { message_id, channel_id, user_id } = req.params;
+	let { message_id, channel_id, user_id } = req.params;
 
 	const emoji = getEmoji(req.params.emoji);
 

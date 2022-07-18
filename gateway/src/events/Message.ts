@@ -1,6 +1,6 @@
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { WebSocket, Payload } from "@fosscord/gateway";
-var erlpack: any;
+let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
@@ -18,7 +18,7 @@ const PayloadSchema = {
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
-	var data: Payload;
+	let data: Payload;
 
 	if (this.encoding === "etf" && buffer instanceof Buffer)
 		data = erlpack.unpack(buffer);

@@ -8,7 +8,7 @@ const router = Router();
 // discord prefixes this route with /delete instead of using the delete method
 // docs are wrong https://discord.com/developers/docs/resources/guild#delete-guild
 router.post("/", route({}), async (req: Request, res: Response) => {
-	var { guild_id } = req.params;
+	let { guild_id } = req.params;
 
 	const guild = await Guild.findOneOrFail({ where: { id: guild_id }, select: ["owner_id"] });
 	if (guild.owner_id !== req.user_id) throw new HTTPError("You are not the owner of this guild", 401);

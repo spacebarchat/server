@@ -8,7 +8,7 @@ import { Close } from "./Close";
 import { Message } from "./Message";
 import { createDeflate } from "zlib";
 import { URL } from "url";
-var erlpack: any;
+let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}

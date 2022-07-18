@@ -28,7 +28,7 @@ type RateLimit = {
 	expires_at: Date;
 };
 
-var Cache = new Map<string, RateLimit>();
+let Cache = new Map<string, RateLimit>();
 const EventRateLimit = "RATELIMIT";
 
 export default function rateLimit(opts: {
@@ -52,10 +52,10 @@ export default function rateLimit(opts: {
 		}
 
 		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
-		var executor_id = getIpAdress(req);
+		let executor_id = getIpAdress(req);
 		if (!opts.onlyIp && req.user_id) executor_id = req.user_id;
 
-		var max_hits = opts.count;
+		let max_hits = opts.count;
 		if (opts.bot && req.user_bot) max_hits = opts.bot;
 		if (opts.GET && ["GET", "OPTIONS", "HEAD"].includes(req.method)) max_hits = opts.GET;
 		else if (opts.MODIFY && ["POST", "DELETE", "PATCH", "PUT"].includes(req.method)) max_hits = opts.MODIFY;
@@ -165,7 +165,7 @@ export async function initRateLimits(app: Router) {
 
 async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number; }) {
 	const id = opts.executor_id + opts.bucket_id;
-	var limit = Cache.get(id);
+	let limit = Cache.get(id);
 	if (!limit) {
 		limit = {
 			id: opts.bucket_id,
@@ -183,7 +183,7 @@ async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits
 	}
 
 	/*
-	var ratelimit = await RateLimit.findOne({ id: opts.bucket_id, executor_id: opts.executor_id });
+	let ratelimit = await RateLimit.findOne({ where: { id: opts.bucket_id, executor_id: opts.executor_id } });
 	if (!ratelimit) {
 		ratelimit = new RateLimit({
 			id: opts.bucket_id,

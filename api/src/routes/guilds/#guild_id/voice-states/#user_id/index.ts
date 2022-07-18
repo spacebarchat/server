@@ -17,7 +17,7 @@ export interface VoiceStateUpdateSchema {
 
 router.patch("/", route({ body: "VoiceStateUpdateSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as VoiceStateUpdateSchema;
-	var { guild_id, user_id } = req.params;
+	let { guild_id, user_id } = req.params;
 	if (user_id === "@me") user_id = req.user_id;
 
 	const perms = await getPermission(req.user_id, guild_id, body.channel_id);

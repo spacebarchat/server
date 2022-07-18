@@ -9,7 +9,7 @@ config();
 import { execSync } from "child_process";
 
 // TODO: add socket event transmission
-var cores = 1;
+let cores = 1;
 try {
 	cores = Number(process.env.THREADS) || os.cpus().length;
 } catch {

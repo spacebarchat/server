@@ -11,7 +11,7 @@ const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 const specification = JSON.parse(fs.readFileSync(openapiPath, { encoding: "utf8" }));
 
 function combineSchemas(schemas) {
-	var definitions = {};
+	let definitions = {};
 
 	for (const name in schemas) {
 		definitions = {

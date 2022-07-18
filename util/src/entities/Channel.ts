@@ -171,7 +171,7 @@ export class Channel extends BaseClass {
 		if (!opts?.skipNameChecks) {
 			const guild = await Guild.findOneOrFail({ id: channel.guild_id });
 			if (!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") && channel.name) {
-				for (var character of InvisibleCharacters)
+				for (let character of InvisibleCharacters)
 					if (channel.name.includes(character))
 						throw new HTTPError("Channel name cannot include invalid characters", 403);
 
