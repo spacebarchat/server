@@ -50,8 +50,8 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		})
 	]);
 
-	const { tags } = await responseSource.json();
-	const { results } = await trendGifSource.json();
+	const { tags } = await responseSource.json() as any;
+	const { results } = await trendGifSource.json() as any;
 
 	res.json({
 		categories: tags.map((x: any) => ({ name: x.searchterm, src: x.image })),

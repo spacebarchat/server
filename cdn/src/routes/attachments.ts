@@ -68,7 +68,7 @@ router.get(
 			`attachments/${channel_id}/${id}/${filename}`
 		);
 		if (!file) throw new HTTPError("File not found");
-		const type = await FileType.fromBuffer(file);
+		const type = await FileType.fileTypeFromBuffer(file);
 		let content_type = type?.mime || "application/octet-stream";
 
 		if (SANITIZED_CONTENT_TYPE.includes(content_type)) {

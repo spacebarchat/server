@@ -20,7 +20,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		headers: { "Content-Type": "application/json" }
 	});
 
-	const { results } = await response.json();
+	const { results } = await response.json() as any;
 
 	res.json(results.map(parseGifResult)).status(200);
 });

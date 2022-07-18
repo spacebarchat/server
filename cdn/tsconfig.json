@@ -8,7 +8,7 @@
 		"target": "ES6" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */,
 		"module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
 		"lib": [
-			"ES2015",
+			"ES2021",
 			"dom"
 		] /* Specify library files to be included in the compilation. */,
 		"allowJs": true /* Allow javascript files to be compiled. */,
@@ -65,7 +65,7 @@
 		// "inlineSources": true,                 /* Emit the source alongside the sourcemaps within a single file; requires '--inlineSourceMap' or '--sourceMap' to be set. */
 
 		/* Experimental Options */
-		// "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
+		"experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
 		// "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
 
 		/* Advanced Options */
@@ -76,6 +76,6 @@
 			"@fosscord/cdn": ["src/index"],
 			"@fosscord/cdn/*": ["src/*"]
 		},
-		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
+		"plugins": [{ "transform": "@ovos-media/ts-transform-paths" }]
 	}
 }

@@ -49,7 +49,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 	const file = await storage.get(`/external/${id}`);
 	if (!file) throw new HTTPError("File not found");
-	const result = await FileType.fromBuffer(file);
+	const result = await FileType.fileTypeFromBuffer(file);
 
 	res.set("Content-Type", result?.mime);
 

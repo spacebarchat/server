@@ -69,7 +69,7 @@
 		"paths": {
 			"@fosscord/api": ["src/index"]
 		},
-		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }],
+		"plugins": [{ "transform": "@ovos-media/ts-transform-paths" }],
 		"experimentalDecorators": true
 	}
 }

@@ -65,7 +65,7 @@ export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 	const { ipdataApiKey } = Config.get().security;
 	if (!ipdataApiKey) return { ...exampleData, ip };
 
-	return (await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)).json();
+	return (await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)).json() as any;
 }
 
 export function isProxy(data: typeof exampleData) {

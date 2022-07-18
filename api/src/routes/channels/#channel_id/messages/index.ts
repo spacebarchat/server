@@ -200,7 +200,7 @@ router.post(
 		const files = req.files as Express.Multer.File[] ?? [];
 		for (let currFile of files) {
 			try {
-				const file = await uploadFile(`/attachments/${channel.id}`, currFile);
+				const file: any = await uploadFile(`/attachments/${channel.id}`, currFile);
 				attachments.push({ ...file, proxy_url: file.url });
 			}
 			catch (error) {
