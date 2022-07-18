@@ -41,7 +41,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	try {
 		const { jwtSecret } = Config.get().security;
-		let { decoded } = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
+		var { decoded } = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
 	} catch (error) {
 		console.error("invalid token", error);
 		return this.close(CLOSECODES.Authentication_failed);

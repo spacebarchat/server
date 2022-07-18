@@ -93,7 +93,7 @@
 		"picocolors": "^1.0.0",
 		"proxy-agent": "^5.0.0",
 		"supertest": "^6.1.6",
-		"typeorm": "^0.2.37"
+		"typeorm": "^0.2.45"
 	},
 	"jest": {
 		"setupFiles": [

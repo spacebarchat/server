@@ -155,7 +155,7 @@ export class Member extends BaseClassWithoutId {
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
-				select: ["index", "roles.id"],
+				select: ["index"],
 			}),
 			Role.findOneOrFail({ where: { id: role_id, guild_id }, select: ["id"] }),
 		]);
@@ -181,7 +181,7 @@ export class Member extends BaseClassWithoutId {
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
-				select: ["roles.id", "index"],
+				select: ["index"],
 			}),
 			await Role.findOneOrFail({ id: role_id, guild_id }),
 		]);

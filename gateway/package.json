@@ -34,7 +34,7 @@
 		"missing-native-js-functions": "^1.2.18",
 		"node-fetch": "^2.6.2",
 		"proxy-agent": "^5.0.0",
-		"typeorm": "^0.2.37",
+		"typeorm": "^0.2.45",
 		"ws": "^7.4.2"
 	},
 	"optionalDependencies": {
