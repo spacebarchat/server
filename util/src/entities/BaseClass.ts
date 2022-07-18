@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { BaseEntity, EntityMetadata, FindConditions, ObjectIdColumn, PrimaryColumn } from "typeorm";
+import { BaseEntity, EntityMetadata, ObjectIdColumn, PrimaryColumn, FindOptionsWhere } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
 import "missing-native-js-functions";
 
@@ -50,14 +50,14 @@ export class BaseClassWithoutId extends BaseEntity {
 		);
 	}
 
-	static increment<T extends BaseClass>(conditions: FindConditions<T>, propertyPath: string, value: number | string) {
+	static increment<T extends BaseClass>(conditions: FindOptionsWhere<T>, propertyPath: string, value: number | string) {
 		const repository = this.getRepository();
-		return repository.increment(conditions as T, propertyPath, value);
+		return repository.increment(conditions, propertyPath, value);
 	}
 
-	static decrement<T extends BaseClass>(conditions: FindConditions<T>, propertyPath: string, value: number | string) {
+	static decrement<T extends BaseClass>(conditions: FindOptionsWhere<T>, propertyPath: string, value: number | string) {
 		const repository = this.getRepository();
-		return repository.decrement(conditions as T, propertyPath, value);
+		return repository.decrement(conditions, propertyPath, value);
 	}
 }
 
