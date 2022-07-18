@@ -50,12 +50,20 @@ export class BaseClassWithoutId extends BaseEntity {
 		);
 	}
 
-	static increment<T extends BaseClass>(conditions: FindOptionsWhere<T>, propertyPath: string, value: number | string) {
+	static increment<T extends BaseClass>(
+		conditions: FindOptionsWhere<T>,
+		propertyPath: string,
+		value: number | string
+	) {
 		const repository = this.getRepository();
 		return repository.increment(conditions, propertyPath, value);
 	}
 
-	static decrement<T extends BaseClass>(conditions: FindOptionsWhere<T>, propertyPath: string, value: number | string) {
+	static decrement<T extends BaseClass>(
+		conditions: FindOptionsWhere<T>,
+		propertyPath: string,
+		value: number | string
+	) {
 		const repository = this.getRepository();
 		return repository.decrement(conditions, propertyPath, value);
 	}

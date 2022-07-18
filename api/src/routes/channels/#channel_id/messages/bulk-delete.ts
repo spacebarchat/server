@@ -17,15 +17,15 @@ export interface BulkDeleteSchema {
 // https://discord.com/developers/docs/resources/channel#bulk-delete-messages
 router.post("/", route({ body: "BulkDeleteSchema" }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
-	const channel = await Channel.findOneOrFail({ id: channel_id });
+	const channel = await Channel.findOneByOrFail({ id: channel_id });
 	if (!channel.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
 
 	const rights = await getRights(req.user_id);
 	rights.hasThrow("SELF_DELETE_MESSAGES");
-	
+
 	let superuser = rights.has("MANAGE_MESSAGES");
 	const permission = await getPermission(req.user_id, channel?.guild_id, channel_id);
-		
+
 	const { maxBulkDelete } = Config.get().limits.message;
 
 	const { messages } = req.body as { messages: string[] };
@@ -35,7 +35,7 @@ router.post("/", route({ body: "BulkDeleteSchema" }), async (req: Request, res: 
 		if (messages.length > maxBulkDelete) throw new HTTPError(`You cannot delete more than ${maxBulkDelete} messages`);
 	}
 
-	await Message.delete(messages.map((x) => ({ id: x })));
+	await Message.delete({ id: In(messages) });
 
 	await emitEvent({
 		event: "MESSAGE_DELETE_BULK",

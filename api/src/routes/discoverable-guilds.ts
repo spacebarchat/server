@@ -16,19 +16,24 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	if (categories == undefined) {
 		guilds = showAllGuilds
 			? await Guild.find({ take: Math.abs(Number(limit || configLimit)) })
-			: await Guild.find({ where: `"features" LIKE '%DISCOVERABLE%'`, take: Math.abs(Number(limit || configLimit)) });
+			: await Guild.find({ where: { features: Like("%DISCOVERABLE%") }, take: Math.abs(Number(limit || configLimit)) });
 	} else {
 		guilds = showAllGuilds
-				? await Guild.find({ where: `"primary_category_id" = ${categories}`, take: Math.abs(Number(limit || configLimit)) })
-				: await Guild.find({
-						where: `"primary_category_id" = ${categories} AND "features" LIKE '%DISCOVERABLE%'`,
-						take: Math.abs(Number(limit || configLimit))
-				  });
+			? await Guild.find({ where: { primary_category_id: Number(categories) }, take: Math.abs(Number(limit || configLimit)) })
+			: await Guild.find({
+					where: { primary_category_id: Number(categories), features: Like("%DISCOVERABLE%") },
+					take: Math.abs(Number(limit || configLimit))
+			  });
 	}
 
 	const total = guilds ? guilds.length : undefined;
 
-	res.send({ total: total, guilds: guilds, offset: Number(offset || Config.get().guild.discovery.offset), limit: Number(limit || configLimit) });
+	res.send({
+		total: total,
+		guilds: guilds,
+		offset: Number(offset || Config.get().guild.discovery.offset),
+		limit: Number(limit || configLimit)
+	});
 });
 
 export default router;

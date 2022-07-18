@@ -1,4 +1,4 @@
-import { Column, Entity, FindOneOptions, JoinColumn, OneToMany } from "typeorm";
+import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, ManyToMany, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
@@ -90,7 +90,7 @@ export class User extends BaseClass {
 
 	@Column()
 	premium: boolean; // if user bought individual premium
-	
+
 	@Column()
 	premium_type: number; // individual premium level
 
@@ -105,7 +105,7 @@ export class User extends BaseClass {
 
 	@Column({ select: false })
 	nsfw_allowed: boolean; // if the user can do age-restricted actions (NSFW channels/guilds/commands)
-	
+
 	@Column({ select: false })
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 
@@ -170,10 +170,13 @@ export class User extends BaseClass {
 
 	@Column({ type: "simple-json", select: false })
 	settings: UserSettings;
-		
+
 	// workaround to prevent fossord-unaware clients from deleting settings not used by them
 	@Column({ type: "simple-json", select: false })
 	extended_settings: string;
+
+	@Column({ type: "simple-json" })
+	notes: { [key: string]: string }; //key is ID of user
 
 	toPublicUser() {
 		const user: any = {};
@@ -184,19 +187,17 @@ export class User extends BaseClass {
 	}
 
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {
-		return await User.findOneOrFail(
-			{ id: user_id },
-			{
-				...opts,
-				select: [...PublicUserProjection, ...(opts?.select || [])],
-			}
-		);
+		return await User.findOneOrFail({
+			where: { id: user_id },
+			select: [...PublicUserProjection, ...((opts?.select as FindOptionsSelectByString<User>) || [])],
+			...opts,
+		});
 	}
 
 	private static async generateDiscriminator(username: string): Promise<string | undefined> {
 		if (Config.get().register.incrementingDiscriminators) {
 			// discriminator will be incrementally generated
-			
+
 			// First we need to figure out the currently highest discrimnator for the given username and then increment it
 			const users = await User.find({ where: { username }, select: ["discriminator"] });
 			const highestDiscriminator = Math.max(0, ...users.map((u) => Number(u.discriminator)));
@@ -268,6 +269,8 @@ export class User extends BaseClass {
 			premium_type: 2,
 			bio: "",
 			mfa_enabled: false,
+			totp_secret: "",
+			totp_backup_codes: [],
 			verified: true,
 			disabled: false,
 			deleted: false,
