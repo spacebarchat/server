@@ -11,6 +11,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" href="./css/index.css">
+	<script src="js/handler.js"></script>
 </head>
 
 <body>
@@ -58,28 +59,13 @@
 			const password = data.get("password");
 			const dob = data.get("dob");
 
-			const response = await fetch("/api/v9/auth/register", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					consent: true,
-					email: email,
-					username: username,
-					password: password,
-					date_of_birth: dob,
-				})
+			await handleSubmit("/api/v9/auth/register", {
+				consent: true,
+				email: email,
+				username: username,
+				password: password,
+				date_of_birth: dob,
 			});
-
-			const json = await response.json();
-			if (json.token) {
-				window.localStorage.setItem("token", `"${json.token}"`);
-				window.location.href = "/app";
-				return;
-			}
-
-			document.getElementById("failure").style.display = "block";
 		})
 	</script>
 </body>
