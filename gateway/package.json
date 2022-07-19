@@ -9,7 +9,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "npm run build && node dist/start.js",
 		"build": "npx tsc -p .",
-		"dev": "tsnd --respawn src/start.ts"
+		"dev": "npx tsnd --respawn src/start.ts"
 	},
 	"keywords": [],
 	"author": "Fosscord",
