@@ -19,7 +19,7 @@ import multer from "multer";
 import { route } from "@fosscord/api";
 import { handleMessage, postHandleMessage } from "@fosscord/api";
 import { MessageCreateSchema } from "../index";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 
 const router = Router();
 // TODO: message content/embed string length limit

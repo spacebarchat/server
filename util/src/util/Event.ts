@@ -58,8 +58,8 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 			process.setMaxListeners(process.getMaxListeners() - 1);
 		};
 
-		const listener = (msg: ProcessEvent) => {
-			msg.type === "event" && msg.id === event && callback({ ...msg.event, cancel });
+		const listener = (message: any) => {
+			message.type === "event" && message.id === event && callback({ ...message.event, cancel });
 		};
 
 		process.addListener("message", listener);

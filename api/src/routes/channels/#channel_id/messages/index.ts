@@ -15,7 +15,7 @@ import {
 	uploadFile,
 	Member
 } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { handleMessage, postHandleMessage, route } from "@fosscord/api";
 import multer from "multer";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { checkToken, Config, Rights } from "@fosscord/util";
 
 export const NO_AUTHORIZATION_ROUTES = [

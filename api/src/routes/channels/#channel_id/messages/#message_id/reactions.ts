@@ -15,7 +15,7 @@ import {
 } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { Router, Response, Request } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { In } from "typeorm";
 
 const router = Router();

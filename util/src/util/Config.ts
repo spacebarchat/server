@@ -1,4 +1,3 @@
-import "missing-native-js-functions";
 import { ConfigValue, ConfigEntity, DefaultConfigOptions } from "../entities/Config";
 import path from "path";
 import fs from "fs";

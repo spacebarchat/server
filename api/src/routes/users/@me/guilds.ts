@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { Guild, Member, User, GuildDeleteEvent, GuildMemberRemoveEvent, emitEvent, Config } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
 
 const router: Router = Router();

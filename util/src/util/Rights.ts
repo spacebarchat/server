@@ -1,15 +1,6 @@
-import { BitField } from "./BitField";
-import "missing-native-js-functions";
-import { BitFieldResolvable, BitFlag } from "./BitField";
+import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 import { User } from "../entities";
-
-let HTTPError: any;
-
-try {
-	HTTPError = require("lambert-server").HTTPError;
-} catch (e) {
-	HTTPError = Error;
-}
+import { HTTPError } from "..";
 
 export type RightResolvable = bigint | number | Rights | RightResolvable[] | RightString;
 

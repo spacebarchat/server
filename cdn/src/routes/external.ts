@@ -1,10 +1,9 @@
 import { Router, Response, Request } from "express";
 import fetch from "node-fetch";
-import { HTTPError } from "lambert-server";
-import { Snowflake } from "@fosscord/util";
+import { HTTPError } from "@fosscord/util";
+import { Snowflake, Config } from "@fosscord/util";
 import { storage } from "../util/Storage";
 import FileType from "file-type";
-import { Config } from "@fosscord/util";
 
 // TODO: somehow handle the deletion of images posted to the /external route
 

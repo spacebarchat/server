@@ -4,9 +4,7 @@ import { Send } from "../util/Send";
 import { OPCODES } from "../util/Constants";
 import { WebSocket, Payload, handlePresenceUpdate } from "@fosscord/gateway";
 import { check } from "./instanceOf";
-import "missing-native-js-functions";
 import { getRepository } from "typeorm";
-import "missing-native-js-functions";
 
 // TODO: only show roles/members that have access to this channel
 // TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online

@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { DiscordApiErrors, emitEvent, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, Guild, Ban, User, Member } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { getIpAdress, route } from "@fosscord/api";
 
 export interface BanCreateSchema {

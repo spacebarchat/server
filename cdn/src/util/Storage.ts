@@ -1,6 +1,7 @@
 import { FileStorage } from "./FileStorage";
 import path from "path";
-import fse from "fs-extra";
+//import fse from "fs-extra";
+import fs from "fs";
 import { bgCyan, black } from "picocolors";
 import { S3 } from "@aws-sdk/client-s3";
 import { S3Storage } from "./S3Storage";
@@ -22,7 +23,8 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
 		location = path.join(process.cwd(), "files");
 	}
 	console.log(`[CDN] storage location: ${bgCyan(`${black(location)}`)}`);
-	fse.ensureDirSync(location);
+	//fse.ensureDirSync(location);
+	fs.mkdirSync(location, {recursive: true});
 	process.env.STORAGE_LOCATION = location;
 
 	storage = new FileStorage();

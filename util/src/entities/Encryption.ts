@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "ty
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { PublicUserProjection, User } from "./User";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "..";
 import { containsAll, emitEvent, getPermission, Snowflake, trimSpecial, InvisibleCharacters } from "../util";
 import { BitField, BitFieldResolvable, BitFlag } from "../util/BitField";
 import { Recipient } from "./Recipient";

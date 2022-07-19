@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { random } from "@fosscord/api";
 import { Channel, Invite, InviteCreateEvent, emitEvent, User, Guild, PublicInviteRelation } from "@fosscord/util";

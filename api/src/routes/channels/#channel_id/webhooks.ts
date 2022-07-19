@@ -1,7 +1,7 @@
 import { Router, Response, Request } from "express";
 import { route } from "@fosscord/api";
 import { Channel, Config, getPermission, trimSpecial, Webhook } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { isTextChannel } from "./messages/index";
 import { DiscordApiErrors } from "@fosscord/util";
 

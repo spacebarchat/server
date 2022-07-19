@@ -2,7 +2,7 @@ import { Router, Response, Request } from "express";
 import { Config, Snowflake } from "@fosscord/util";
 import { storage } from "../util/Storage";
 import FileType from "file-type";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import crypto from "crypto";
 import { multer } from "../util/multer";
 

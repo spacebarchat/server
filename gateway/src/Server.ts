@@ -1,4 +1,3 @@
-import "missing-native-js-functions";
 import dotenv from "dotenv";
 dotenv.config();
 import { closeDatabase, Config, initDatabase, initEvent } from "@fosscord/util";

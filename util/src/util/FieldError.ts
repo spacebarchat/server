@@ -1,5 +1,3 @@
-import "missing-native-js-functions";
-
 export function FieldErrors(fields: Record<string, { code?: string; message: string }>) {
 	return new FieldError(
 		50035,

@@ -22,7 +22,7 @@ import {
 	Attachment,
 	Config,
 } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
 import { MessageCreateSchema } from "../../routes/channels/#channel_id/messages";

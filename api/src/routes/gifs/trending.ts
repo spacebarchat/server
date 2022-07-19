@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import ProxyAgent from 'proxy-agent';
 import { route } from "@fosscord/api";
 import { Config } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 
 const router = Router();
 

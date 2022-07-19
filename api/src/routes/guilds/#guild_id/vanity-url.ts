@@ -1,7 +1,7 @@
 import { Channel, ChannelType, getPermission, Guild, Invite, trimSpecial } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 
 const router = Router();
 

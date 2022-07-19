@@ -1,4 +1,4 @@
-import { instanceOf } from "lambert-server";
+import { instanceOf } from "@fosscord/util";
 import { WebSocket } from "@fosscord/gateway";
 import { CLOSECODES } from "../util/Constants";
 

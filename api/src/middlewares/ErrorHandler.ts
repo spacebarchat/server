@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { ApiError, FieldError } from "@fosscord/util";
 const EntityNotFoundErrorRegex = /"(\w+)"/;
 

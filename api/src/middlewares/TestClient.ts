@@ -1,11 +1,10 @@
 import express, { Request, Response, Application } from "express";
-import fs, { writeFile } from "fs";
+import fs from "fs";
 import path from "path";
 import fetch, { Response as FetchResponse, Headers } from "node-fetch";
 import ProxyAgent from 'proxy-agent';
 import { Config } from "@fosscord/util";
 import { AssetCacheItem } from "../util/entities/AssetCacheItem"
-import { FileLogger } from "typeorm";
 
 export default function TestClient(app: Application) {
 	const agent = new ProxyAgent();

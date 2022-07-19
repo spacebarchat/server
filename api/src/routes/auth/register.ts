@@ -1,9 +1,8 @@
 import { Request, Response, Router } from "express";
 import { Config, generateToken, Invite, FieldErrors, User, adjustEmail, trimSpecial } from "@fosscord/util";
 import { route, getIpAdress, IPAnalysis, isProxy } from "@fosscord/api";
-import "missing-native-js-functions";
 import bcrypt from "bcrypt";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 
 const router: Router = Router();
 

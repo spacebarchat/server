@@ -9,7 +9,7 @@ import {
 	Config
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { DiscordApiErrors } from "@fosscord/util";
 import { route } from "@fosscord/api";
 

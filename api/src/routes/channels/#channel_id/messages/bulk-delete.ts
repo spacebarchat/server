@@ -1,6 +1,6 @@
 import { Router, Response, Request } from "express";
 import { Channel, Config, emitEvent, getPermission, getRights, MessageDeleteBulkEvent, Message } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { In } from "typeorm";
 

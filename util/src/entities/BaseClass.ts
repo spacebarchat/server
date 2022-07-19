@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { BaseEntity, EntityMetadata, ObjectIdColumn, PrimaryColumn, FindOptionsWhere } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
-import "missing-native-js-functions";
 
 export class BaseClassWithoutId extends BaseEntity {
 	constructor(props?: any) {

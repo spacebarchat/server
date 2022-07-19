@@ -1,17 +1,8 @@
 // https://github.com/discordjs/discord.js/blob/master/src/util/Permissions.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
 import { Channel, ChannelPermissionOverwrite, Guild, Member, Role } from "../entities";
-import { BitField } from "./BitField";
-import "missing-native-js-functions";
-import { BitFieldResolvable, BitFlag } from "./BitField";
-
-let HTTPError: any;
-
-try {
-	HTTPError = require("lambert-server").HTTPError;
-} catch (e) {
-	HTTPError = Error;
-}
+import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
+import { HTTPError } from "..";
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 

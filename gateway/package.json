@@ -15,9 +15,7 @@
 	"author": "Fosscord",
 	"license": "AGPL-3.0-only",
 	"devDependencies": {
-		"@ovos-media/ts-transform-paths": "^1.7.18-1",
 		"@types/amqplib": "^0.8.1",
-		"@types/jsonwebtoken": "^8.5.0",
 		"@types/node": "^18.0.6",
 		"@types/ws": "^8.5.3",
 		"ts-node-dev": "^2.0.0",
@@ -28,10 +26,6 @@
 		"@fosscord/util": "file:../util",
 		"amqplib": "^0.10.0",
 		"dotenv": "^16.0.1",
-		"jsonwebtoken": "^8.5.1",
-		"lambert-server": "^1.2.11",
-		"missing-native-js-functions": "^1.2.18",
-		"proxy-agent": "^5.0.0",
 		"typeorm": "^0.3.7",
 		"ws": "^8.8.1"
 	},

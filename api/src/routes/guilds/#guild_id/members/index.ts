@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { Guild, Member, PublicMemberProjection } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { MoreThan } from "typeorm";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 
 const router = Router();
 

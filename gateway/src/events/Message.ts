@@ -1,17 +1,16 @@
-import { CLOSECODES, OPCODES } from "../util/Constants";
+import { CLOSECODES } from "../util/Constants";
 import { WebSocket, Payload } from "@fosscord/gateway";
 let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 import OPCodeHandlers from "../opcodes";
-import { Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";
 
 const PayloadSchema = {
 	op: Number,
-	$d: new Tuple(Object, Number), // or number for heartbeat sequence
+	$d: Object || Number, // or number for heartbeat sequence
 	$s: Number,
 	$t: String,
 };

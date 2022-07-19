@@ -12,7 +12,7 @@ import {
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import multer from "multer";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {

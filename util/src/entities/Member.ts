@@ -20,7 +20,7 @@ import {
 	GuildMemberRemoveEvent,
 	GuildMemberUpdateEvent,
 } from "../interfaces";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "..";
 import { Role } from "./Role";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Ban, PublicGuildRelations } from ".";

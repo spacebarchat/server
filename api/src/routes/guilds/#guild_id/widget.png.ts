@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Guild } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import fs from "fs";
 import path from "path";
