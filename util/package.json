@@ -6,7 +6,7 @@
 	"types": "src/index.ts",
 	"scripts": {
 		"start": "npm run build && node dist/",
-		"test": "npm run build && jest",
+		"test": "npm run build && npx jest",
 		"postinstall": "npm run build",
 		"build": "npx tsc -p .",
 		"typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
