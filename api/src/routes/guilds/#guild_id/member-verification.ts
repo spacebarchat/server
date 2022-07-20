@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { DiscordApiErrors, emitEvent, Guild, GuildUpdateEvent, MemberVerificationForm, MemberVerificationFormField } from "@fosscord/util";
+import { emitEvent, Guild, GuildUpdateEvent, MemberVerificationForm, MemberVerificationFormField } from "@fosscord/util";
 const router = Router();
 
 export interface GuildUpdateMemberVerificationSchema {

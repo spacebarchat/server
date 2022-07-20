@@ -22,8 +22,8 @@ export class MemberVerificationForm extends BaseClassWithoutId {
 	})
 	guild: Guild;
 
-	@Column()
-	description: string;
+	@Column({ nullable: true })
+	description?: string;
 
 	@Column({ type: "simple-json" })
 	form_fields: MemberVerificationFormField[];
