@@ -39,8 +39,8 @@ export async function verifyCaptcha(response: string, ip?: string) {
 		body: `response=${encodeURIComponent(response)}`
 			+ `&secret=${encodeURIComponent(secret!)}`
 			+ `&sitekey=${encodeURIComponent(sitekey!)}`
-			+ ip ? `&remoteip=${encodeURIComponent(ip!)}` : "",
-	})
+			+ (ip ? `&remoteip=${encodeURIComponent(ip!)}` : ""),
+	});
 
 	return await res.json() as hcaptchaResponse | recaptchaResponse;
 }
