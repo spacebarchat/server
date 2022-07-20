@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
-import { Config, generateToken, Invite, FieldErrors, User, adjustEmail, trimSpecial } from "@fosscord/util";
-import { route, getIpAdress, IPAnalysis, isProxy } from "@fosscord/api";
+import { Config, generateToken, Invite, FieldErrors, User, adjustEmail } from "@fosscord/util";
+import { route, getIpAdress, IPAnalysis, isProxy, verifyCaptcha } from "@fosscord/api";
 import "missing-native-js-functions";
 import bcrypt from "bcrypt";
 import { HTTPError } from "lambert-server";
@@ -65,8 +65,8 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	}
 
 	if (register.requireCaptcha && security.captcha.enabled) {
+		const { sitekey, service } = security.captcha;
 		if (!body.captcha_key) {
-			const { sitekey, service } = security.captcha;
 			return res?.status(400).json({
 				captcha_key: ["captcha-required"],
 				captcha_sitekey: sitekey,
@@ -74,7 +74,14 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 			});
 		}
 
-		// TODO: check captcha
+		const verify = await verifyCaptcha(body.captcha_key, ip);
+		if (!verify.success) {
+			return res.status(400).json({
+				captcha_key: verify["error-codes"],
+				captcha_sitekey: sitekey,
+				captcha_service: service
+			})
+		}
 	}
 
 	if (!register.allowMultipleAccounts) {
