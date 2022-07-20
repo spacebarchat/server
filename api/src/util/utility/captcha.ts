@@ -17,6 +17,9 @@ export async function verifyHcaptcha(response: string, ip?: string) {
 	
 	const res = await fetch("https://hcaptcha.com/siteverify", {
 		method: "POST",
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded",
+		},
 		body: `response=${response}&secret=${secret}&remoteip=${ip}&sitekey=${sitekey}`,
 	})
 
