@@ -354,14 +354,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -709,14 +717,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -1074,14 +1090,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -1453,14 +1477,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -1889,14 +1921,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -2259,14 +2299,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -2608,14 +2656,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -2960,14 +3016,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -3321,14 +3385,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -3674,14 +3746,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -4028,14 +4108,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -4406,14 +4494,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -4755,14 +4851,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -5104,14 +5208,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -5471,14 +5583,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -5835,14 +5955,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -6196,14 +6324,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -6560,14 +6696,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -6912,14 +7056,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -7286,14 +7438,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -7699,14 +7859,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -8054,14 +8222,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -8403,14 +8579,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -8752,14 +8936,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -9101,14 +9293,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -9468,14 +9668,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -9824,14 +10032,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -10184,14 +10400,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -10536,14 +10760,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -10888,14 +11120,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -11236,14 +11476,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -11604,14 +11852,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -11979,14 +12235,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -12332,14 +12596,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -12687,14 +12959,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -13048,14 +13328,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -13415,14 +13703,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -13770,14 +14066,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -14146,14 +14450,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -14498,14 +14810,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -14851,14 +15171,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {
@@ -15362,14 +15690,22 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
                     "field_type",
                     "label",
-                    "required",
-                    "values"
+                    "required"
                 ]
             },
             "UserPublic": {

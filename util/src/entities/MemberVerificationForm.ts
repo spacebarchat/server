@@ -6,7 +6,9 @@ export interface MemberVerificationFormField {
 	field_type: string;
 	label: string;
 	required: boolean;
-	values: string[];
+	values?: string[]; // for rules
+	choices?: string[]; // for multiple choice
+	placeholder?: string; // for short answers and paragraphs
 }
 
 @Entity("member_verification_forms")
