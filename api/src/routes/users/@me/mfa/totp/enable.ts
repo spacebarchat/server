@@ -17,7 +17,9 @@ export interface TotpEnableSchema {
 router.post("/", route({ body: "TotpEnableSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as TotpEnableSchema;
 
-	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["data"] });
+	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["data", "email"] });
+
+	if (user.email == "demo@maddy.k.vu") throw new HTTPError("Demo user, sorry", 400);
 
 	// TODO: Are guests allowed to enable 2fa?
 	if (user.data.hash) {
