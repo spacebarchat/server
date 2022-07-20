@@ -104,3 +104,9 @@ label {
 	color: rgb(200, 20, 20);
 	display: none;
 }
+
+.h-captcha {
+	display: flex;
+	justify-content: center;
+	margin-top: 10px;
+}
