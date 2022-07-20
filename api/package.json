@@ -86,6 +86,7 @@
 		"missing-native-js-functions": "^1.2.18",
 		"morgan": "^1.10.0",
 		"multer": "^1.4.2",
+		"node-2fa": "^2.0.3",
 		"node-fetch": "^2.6.2",
 		"patch-package": "^6.4.7",
 		"picocolors": "^1.0.0",
