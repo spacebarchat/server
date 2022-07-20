@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { route, getIpAdress, verifyHcaptcha } from "@fosscord/api";
+import { route, getIpAdress, verifyCaptcha } from "@fosscord/api";
 import bcrypt from "bcrypt";
 import { Config, User, generateToken, adjustEmail, FieldErrors } from "@fosscord/util";
 
@@ -23,7 +23,7 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 	const config = Config.get();
 
 	if (config.login.requireCaptcha && config.security.captcha.enabled) {
-		const { sitekey, service, secret } = config.security.captcha;
+		const { sitekey, service } = config.security.captcha;
 		if (!captcha_key) {
 			return res.status(400).json({
 				captcha_key: ["captcha-required"],
@@ -33,7 +33,7 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 		}
 
 		const ip = getIpAdress(req);
-		const verify = await verifyHcaptcha(captcha_key, ip);
+		const verify = await verifyCaptcha(captcha_key, ip);
 		if (!verify.success) {
 			return res.status(400).json({
 				captcha_key: verify["error-codes"],
