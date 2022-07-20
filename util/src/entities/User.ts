@@ -1,4 +1,4 @@
-import { Column, Entity, FindOneOptions, JoinColumn, ManyToMany, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, FindOneOptions, JoinColumn, OneToMany } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
@@ -107,6 +107,12 @@ export class User extends BaseClass {
 	
 	@Column({ select: false })
 	mfa_enabled: boolean; // if multi factor authentication is enabled
+
+	@Column({ select: false, nullable: true })
+	totp_secret?: string;
+
+	@Column({ nullable: true, select: false })
+	totp_last_ticket?: string;
 
 	@Column()
 	created_at: Date; // registration date
