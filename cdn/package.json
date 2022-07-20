@@ -5,7 +5,7 @@
 	"main": "dist/index.js",
 	"types": "src/index.ts",
 	"scripts": {
-		"test": "npm run build && jest --coverage ./tests",
+		"test": "npm run build && npx jest --coverage ./tests",
 		"build": "npx tsc -p .",
 		"start": "node dist/start.js"
 	},
