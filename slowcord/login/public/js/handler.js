@@ -16,6 +16,18 @@ const handleSubmit = async (path, body) => {
 		return;
 	}
 
+	if (json.ticket) {
+		// my terrible solution to 2fa
+		const twoFactorForm = document.forms["2fa"];
+		const loginForm = document.forms["login"];
+
+		twoFactorForm.style.display = "flex";
+		loginForm.style.display = "none";
+
+		twoFactorForm.ticket.value = json.ticket;
+		return;
+	}
+
 	// Very fun error message here lol
 	const error =
 		json.errors
