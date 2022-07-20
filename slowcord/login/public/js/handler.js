@@ -16,8 +16,14 @@ const handleSubmit = async (path, body) => {
 		return;
 	}
 
-	const error = json.errors ? Object.values(json.errors)[0]._errors[0].message : json.message;
+	// Very fun error message here lol
+	const error =
+		json.errors
+			? Object.values(json.errors)[0]._errors[0].message
+			: (
+				json.captcha_key ? "Captcha required" : json.message
+			);
 
 	failureMessage.innerHTML = error;
 	failureMessage.style.display = "block";
-}
+};
