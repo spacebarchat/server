@@ -1,7 +1,6 @@
 FROM node:alpine
 
 # env vars
-ENV WORK_DIR=/srv/fosscord-server
 ENV HTTP_PORT=3001
 ENV WS_PORT=3002
 ENV CDN_PORT=3003
@@ -19,5 +18,5 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 # RUN adduser -D fosscord
 # USER fosscord
 
-WORKDIR $WORK_DIR/
-ENTRYPOINT ["npm", "--prefix", "src/bundle", "run", "start:bundle"]
+WORKDIR /srv/fosscord-server/bundle
+ENTRYPOINT ["npm", "run", "start:bundle"]

@@ -10,11 +10,9 @@ services:
     ports:
       - '3001-3005:3001-3005'
     volumes:
-      - ./instance/fosscord/:/srv/fosscord-server/
+      - ./:/srv/fosscord-server/
     environment:
       THREADS: ${THREADS:-1}
-      DATABASE: ${DATABASE:-../../data/database.db}
-      STORAGE_LOCATION: ${STORAGE_LOCATION:-../../data/files/}
       HTTP_PORT: 3001
       WS_PORT: 3002
       CDN_PORT: 3003
