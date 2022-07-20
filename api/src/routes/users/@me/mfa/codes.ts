@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { BackupCode, FieldErrors, generateMfaBackupCodes, User } from "@fosscord/util";
+import { BackupCode, Config, FieldErrors, generateMfaBackupCodes, User } from "@fosscord/util";
 import bcrypt from "bcrypt";
 
 const router = Router();
@@ -22,7 +22,7 @@ router.post("/", route({ body: "MfaCodesSchema" }), async (req: Request, res: Re
 	}
 
 	var codes: BackupCode[];
-	if (regenerate) {
+	if (regenerate && Config.get().security.twoFactor.generateBackupCodes) {
 		await BackupCode.update(
 			{ user: { id: req.user_id } },
 			{ expired: true }

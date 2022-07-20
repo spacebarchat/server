@@ -121,6 +121,9 @@ export interface ConfigValue {
 			secret: string | null;
 		};
 		ipdataApiKey: string | null;
+		twoFactor: {
+			generateBackupCodes: boolean;
+		};
 	};
 	login: {
 		requireCaptcha: boolean;
@@ -312,6 +315,9 @@ export const DefaultConfigOptions: ConfigValue = {
 			secret: null,
 		},
 		ipdataApiKey: "eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9",
+		twoFactor: {
+			generateBackupCodes: true,
+		},
 	},
 	login: {
 		requireCaptcha: false,
