@@ -20,17 +20,14 @@ const client = new Fosscord.Client({
 	}
 });
 
+const gatewayMeasure = async (name: string) => {
+	const time = Math.max(client.ws.ping, 0);
+	await savePerf(time, name, null);
+	console.log(`${name} took ${time}ms`);
+};
+
 client.on("ready", () => {
 	console.log(`Ready on gateway as ${client.user!.tag}`);
-
-	const gatewayMeasure = async (name: string) => {
-		const time = Math.max(client.ws.ping, 0);
-		await savePerf(time, name, null);
-		console.log(`${name} took ${time}ms`);
-		setTimeout(gatewayMeasure, parseInt(process.env.MEASURE_INTERVAL as string), name);
-	};
-
-	gatewayMeasure("websocketPing")
 });
 
 client.on("error", (error) => {
@@ -73,8 +70,6 @@ const measureApi = async (name: string, path: string, body?: object) => {
 	console.log(`${name} took ${time}ms ${(error ? "with error" : "")}`, error ?? "");
 
 	await savePerf(time, name, error?.message ?? null);
-
-	setTimeout(measureApi, parseInt(process.env.MEASURE_INTERVAL as string), name, path, body);
 };
 
 const app = async () => {
@@ -84,8 +79,15 @@ const app = async () => {
 
 	console.log(`Monitoring performance for instance at ${new URL(instance.api).hostname}`);
 
-	measureApi("ping", `${instance.api}/ping`);
-	measureApi("users/@me", `${instance.api}/users/@me`);
+	const doMeasurements = async () => {
+		await measureApi("ping", `${instance.api}/ping`);
+		await measureApi("users/@me", `${instance.api}/users/@me`);
+		await gatewayMeasure("websocketPing");
+
+		setTimeout(doMeasurements, parseInt(process.env.MEASURE_INTERVAL as string));
+	};
+
+	doMeasurements();
 };
 
 app();
