@@ -1,7 +1,7 @@
 {
-	"name": "slowcord-login",
+	"name": "slowcord-status",
 	"version": "1.0.0",
-	"description": "Slowcord login service",
+	"description": "Slowcord status service",
 	"main": "build/index.js",
 	"scripts": {
 		"build": "tsc -b",
@@ -11,24 +11,20 @@
 		"type": "git",
 		"url": "git+https://github.com/maddyunderstars/fosscord-server.git"
 	},
-	"author": "MaddyUnderStars",
-	"license": "AGPL-3.0-only",
 	"bugs": {
 		"url": "https://github.com/maddyunderstars/fosscord-server/issues"
 	},
 	"homepage": "https://github.com/maddyunderstars/fosscord-server#readme",
-	"dependencies": {
-		"@fosscord/util": "file:../../util",
-		"cookie-parser": "^1.4.6",
-		"dotenv": "^16.0.1",
-		"express": "^4.18.1",
-		"node-fetch": "^3.2.6",
-		"sqlite3": "^5.0.8"
-	},
+	"author": "MaddyUnderStars",
+	"license": "AGPL-3.0-only",
 	"devDependencies": {
-		"@types/cookie-parser": "^1.4.3",
-		"@types/express": "^4.17.13",
-		"@types/node": "^18.0.0"
+		"@types/node": "^18.0.6"
+	},
+	"dependencies": {
+		"dotenv": "^16.0.1",
+		"fosscord-gopnik": "^1.0.0",
+		"mysql2": "^2.3.3",
+		"node-fetch": "^3.2.9"
 	},
 	"type": "module"
 }
