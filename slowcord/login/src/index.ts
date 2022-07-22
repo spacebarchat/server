@@ -31,7 +31,7 @@ const toDataURL = async (url: string) => {
 	const blob = await response.blob();
 	const buffer = Buffer.from(await blob.text());
 	return `data:${blob.type};base64,${buffer.toString("base64")}`;
-}
+};
 
 class Discord {
 	static getAccessToken = async (req: Request, res: Response) => {
@@ -126,9 +126,14 @@ app.get("/oauth/:type", async (req, res) => {
 		});
 
 		if (details.avatar_url) {
-			const avatar = await handleFile(`/avatars/${user.id}`, await toDataURL(details.avatar_url) as string);
-			user.avatar = avatar;
-			await user.save();
+			try {
+				const avatar = await handleFile(`/avatars/${user.id}`, await toDataURL(details.avatar_url) as string);
+				user.avatar = avatar;
+				await user.save();
+			}
+			catch (e) {
+				console.error(e);
+			}
 		}
 	}
 
