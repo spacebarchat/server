@@ -1,0 +1,15 @@
+{
+	"configurations": [
+		{
+			"name": "Slowcord Bot",
+			"program": "${workspaceFolder}/build/index.js",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "node",
+			"preLaunchTask": "npm: build"
+		}
+
+	]
+}

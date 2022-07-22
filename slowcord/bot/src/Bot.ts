@@ -22,13 +22,12 @@ export default class Bot {
 				type: "WATCHING",
 			}]
 		});
-
 	};
 
-	onMessageCreate = (msg: Message) => {
+	onMessageCreate = async (msg: Message) => {
 		const prefix = process.env.PREFIX as string;
-		if (msg.content.indexOf(prefix) === -1) return;
 		if (msg.author.bot) return;
+		if (msg.content && msg.content.indexOf(prefix) === -1) return;
 
 		const content = msg.content.slice(prefix.length).split(" ");
 		const cmd = content.shift();
@@ -38,7 +37,7 @@ export default class Bot {
 		const command = this.commands[cmd];
 		if (!command) return;
 
-		command.exec({
+		await command.exec({
 			user: msg.author,
 			member: msg.member,
 			guild: msg.guild,
