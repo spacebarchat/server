@@ -49,20 +49,20 @@ async function main() {
 				endpointPublic: `ws://localhost:${port}`,
 			}),
 		},
-		regions: {
-			default: "fosscord",
-			useDefaultAsOptimal: true,
-			available: [
-				{
-					id: "fosscord",
-					name: "Fosscord",
-					endpoint: "127.0.0.1:3004",
-					vip: false,
-					custom: false,
-					deprecated: false,
-				},
-			],
-		},
+		// regions: {
+		// 	default: "fosscord",
+		// 	useDefaultAsOptimal: true,
+		// 	available: [
+		// 		{
+		// 			id: "fosscord",
+		// 			name: "Fosscord",
+		// 			endpoint: "slowcord.maddy.k.vu:3004",
+		// 			vip: false,
+		// 			custom: false,
+		// 			deprecated: false,
+		// 		},
+		// 	],
+		// },
 	} as any);
 
 	//Sentry
