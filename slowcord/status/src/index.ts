@@ -1,5 +1,5 @@
 import "dotenv/config";
-import fetch from "node-fetch";
+import https from "https";
 import Fosscord from "fosscord-gopnik";
 import mysql from "mysql2";
 
@@ -23,7 +23,7 @@ const client = new Fosscord.Client({
 
 const gatewayMeasure = async (name: string) => {
 	const time = Math.max(client.ws.ping, 0);
-	await savePerf(time, name, null);
+	await savePerf(time, name, '');
 	console.log(`${name} took ${time}ms`);
 };
 
@@ -39,9 +39,10 @@ client.on("warn", (msg) => {
 	console.log(`Gateway warning:`, msg);
 });
 
-const savePerf = async (time: number, name: string, error: string | null) => {
+const savePerf = async (time: number, name: string, error?: string | Error) => {
+	if (error && typeof error != "string") error = error.message;
 	try {
-		await executePromise("INSERT INTO performance (value, endpoint, timestamp, error) VALUES (?, ?, ?, ?)", [time, name, new Date(), error]);
+		await executePromise("INSERT INTO performance (value, endpoint, timestamp, error) VALUES (?, ?, ?, ?)", [time, name, new Date(), error ?? null]);
 		await executePromise("DELETE FROM performance WHERE DATE(timestamp) < now() - interval ? DAY", [process.env.RETENTION_DAYS]);
 	}
 	catch (e) {
@@ -49,28 +50,58 @@ const savePerf = async (time: number, name: string, error: string | null) => {
 	}
 };
 
-const measureApi = async (name: string, path: string, isJson?: boolean, body?: object) => {
-	const start = Date.now();
+const makeTimedRequest = (path: string, body?: object): Promise<number> => new Promise((resolve, reject) => {
+	const opts = {
+		hostname: new URL(path).hostname,
+		port: 443,
+		path: new URL(path).pathname,
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": instance.token,
+		},
+		timeout: 1000,
+	};
 
-	let error: Error | null = null;
-	try {
-		const res = await fetch(path, {
-			headers: {
-				"Content-Type": "application/json",
-				"Authorization": instance.token,
-			},
-			body: body ? JSON.stringify(body) : undefined,
+	let start: number, end: number;
+	const req = https.request(opts, res => {
+		if (res.statusCode! < 200 || res.statusCode! > 300) {
+			return reject(`${res.statusCode} ${res.statusMessage}`);
+		}
+
+		res.on("data", (data) => {
 		});
-		if (isJson !== false) await res.json();
+
+		res.on("end", () => {
+			end = Date.now();
+			resolve(end - start);
+		})
+	});
+
+	req.on("finish", () => {
+		if (body) req.write(JSON.stringify(body));
+		start = Date.now();
+	});
+
+	req.on("error", (error) => {
+		reject(error);
+	});
+
+	req.end();
+});
+
+const measureApi = async (name: string, path: string, body?: object) => {
+	let error, time = -1;
+	try {
+		time = await makeTimedRequest(path, body);
 	}
 	catch (e) {
-		error = e as Error;
+		error = e as Error | string;
 	}
 
-	const time = Date.now() - start;
 	console.log(`${name} took ${time}ms ${(error ? "with error" : "")}`, error ?? "");
 
-	await savePerf(time, name, error?.message ?? null);
+	await savePerf(time, name, error);
 };
 
 const app = async () => {
@@ -81,10 +112,9 @@ const app = async () => {
 	console.log(`Monitoring performance for instance at ${new URL(instance.api).hostname}`);
 
 	const doMeasurements = async () => {
-		await new Promise((resolve) => resolve(null));	// uhhh shitty way to fix bug?
 		await measureApi("ping", `${instance.api}/ping`);
 		await measureApi("users/@me", `${instance.api}/users/@me`);
-		await measureApi("login", `${instance.app}/login`, false);
+		await measureApi("login", `${instance.app}/login`);
 		// await gatewayMeasure("websocketPing");
 
 		setTimeout(doMeasurements, parseInt(process.env.MEASURE_INTERVAL as string));
