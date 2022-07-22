@@ -102,12 +102,11 @@ router.get("/", async (req: Request, res: Response) => {
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
 	var query: FindManyOptions<Message> & { where: { id?: any; }; } = {
-		order: { id: "DESC" },
+		order: { timestamp: "DESC" },
 		take: limit,
 		where: { channel_id },
 		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"]
 	};
-	
 
 	if (after) {
 		if (after > new Snowflake()) return res.status(422);
