@@ -41,7 +41,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		return await OPCodeHandler.call(this, data);
 	} catch (error) {
 		console.error(error);
-		// if (!this.CLOSED && this.CLOSING)
+		if (!this.CLOSED && this.CLOSING)
 			return this.close(CLOSECODES.Unknown_error);
 	}
 }
