@@ -228,7 +228,7 @@ router.post(
 			const channel_dto = await DmChannelDTO.from(channel);
 
 			// Only one recipients should be closed here, since in group DMs the recipient is deleted not closed
-			Promise.all(
+			await Promise.all(
 				channel.recipients!.map((recipient) => {
 					if (recipient.closed) {
 						recipient.closed = false;
