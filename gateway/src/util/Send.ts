@@ -6,7 +6,7 @@ try {
 }
 import { Payload, WebSocket } from "@fosscord/gateway";
 
-export async function Send(socket: WebSocket, data: Payload) {
+export function Send(socket: WebSocket, data: Payload) {
 	let buffer: Buffer | string;
 	if (socket.encoding === "etf") buffer = erlpack.pack(data);
 	// TODO: encode circular object
