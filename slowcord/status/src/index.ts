@@ -7,6 +7,7 @@ const dbConn = mysql.createConnection(process.env.DATABASE as string);
 const executePromise = (sql: string, args: any[]) => new Promise((resolve, reject) => dbConn.execute(sql, args, (err, res) => { if (err) reject(err); else resolve(res); }));
 
 const instance = {
+	app: process.env.INSTANCE_WEB_APP as string,
 	api: process.env.INSTANCE_API as string,
 	cdn: process.env.INSTANCE_CDN as string,
 	token: process.env.INSTANCE_TOKEN as string,
@@ -48,7 +49,7 @@ const savePerf = async (time: number, name: string, error: string | null) => {
 	}
 };
 
-const measureApi = async (name: string, path: string, body?: object) => {
+const measureApi = async (name: string, path: string, isJson?: boolean, body?: object) => {
 	const start = Date.now();
 
 	let error: Error | null = null;
@@ -60,7 +61,7 @@ const measureApi = async (name: string, path: string, body?: object) => {
 			},
 			body: body ? JSON.stringify(body) : undefined,
 		});
-		await res.json();
+		if (isJson !== false) await res.json();
 	}
 	catch (e) {
 		error = e as Error;
@@ -75,14 +76,15 @@ const measureApi = async (name: string, path: string, body?: object) => {
 const app = async () => {
 	await new Promise((resolve) => dbConn.connect(resolve));
 	console.log("Connected to db");
-	await client.login(instance.token);
+	// await client.login(instance.token);
 
 	console.log(`Monitoring performance for instance at ${new URL(instance.api).hostname}`);
 
 	const doMeasurements = async () => {
 		await measureApi("ping", `${instance.api}/ping`);
 		await measureApi("users/@me", `${instance.api}/users/@me`);
-		await gatewayMeasure("websocketPing");
+		await measureApi("login", `${instance.app}/login`, false);
+		// await gatewayMeasure("websocketPing");
 
 		setTimeout(doMeasurements, parseInt(process.env.MEASURE_INTERVAL as string));
 	};
