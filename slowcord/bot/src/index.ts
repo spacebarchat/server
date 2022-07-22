@@ -1,6 +1,7 @@
 import "dotenv/config";
 import Fosscord from "fosscord-gopnik";
 import Bot from "./Bot.js";	// huh?
+import { initDatabase } from "@fosscord/util";
 
 const client = new Fosscord.Client({
 	intents: ["GUILD_MESSAGES"],
@@ -17,4 +18,7 @@ const bot = new Bot(client);
 client.on("ready", bot.onReady);
 client.on("messageCreate", bot.onMessageCreate);
 
-client.login(process.env.TOKEN);
+(async () => {
+	await initDatabase();
+	await client.login(process.env.TOKEN);
+})();
