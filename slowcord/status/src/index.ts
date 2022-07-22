@@ -81,6 +81,7 @@ const app = async () => {
 	console.log(`Monitoring performance for instance at ${new URL(instance.api).hostname}`);
 
 	const doMeasurements = async () => {
+		await new Promise((resolve) => resolve(null));	// uhhh shitty way to fix bug?
 		await measureApi("ping", `${instance.api}/ping`);
 		await measureApi("users/@me", `${instance.api}/users/@me`);
 		await measureApi("login", `${instance.app}/login`, false);
