@@ -42,7 +42,7 @@ client.on("warn", (msg) => {
 const savePerf = async (time: number, name: string, error?: string | Error) => {
 	if (error && typeof error != "string") error = error.message;
 	try {
-		await executePromise("INSERT INTO performance (value, endpoint, timestamp, error) VALUES (?, ?, ?, ?)", [time, name, new Date(), error ?? null]);
+		await executePromise("INSERT INTO performance (value, endpoint, timestamp, error) VALUES (?, ?, ?, ?)", [time ?? 0, name, new Date(), error ?? null]);
 		await executePromise("DELETE FROM performance WHERE DATE(timestamp) < now() - interval ? DAY", [process.env.RETENTION_DAYS]);
 	}
 	catch (e) {
