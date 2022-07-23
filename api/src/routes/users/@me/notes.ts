@@ -27,18 +27,22 @@ router.put("/:id", route({}), async (req: Request, res: Response) => {
 	const target = await User.findOneOrFail({ where: { id: id } });		//if noted user does not exist throw
 	const { note } = req.body;
 
-	// await User.update({ id: req.user_id }, { notes: { ...user.notes, [noteUser.id]: note } });
-
-	if (await Note.findOne({ owner: { id: owner.id }, target: { id: target.id } })) {
-		Note.update(
-			{ owner: { id: owner.id }, target: { id: target.id } },
-			{ owner, target, content: note }
-		);
+	if (note && note.length) {
+		// upsert a note
+		if (await Note.findOne({ owner: { id: owner.id }, target: { id: target.id } })) {
+			Note.update(
+				{ owner: { id: owner.id }, target: { id: target.id } },
+				{ owner, target, content: note }
+			);
+		}
+		else {
+			Note.insert(
+				{ id: Snowflake.generate(), owner, target, content: note }
+			);
+		}
 	}
 	else {
-		Note.insert(
-			{ id: Snowflake.generate(), owner, target, content: note }
-		);
+		await Note.delete({ owner: { id: owner.id }, target: { id: target.id } });
 	}
 
 	await emitEvent({
