@@ -50,6 +50,8 @@ export interface ConfigValue {
 		endpointClient: string | null;
 		endpointPublic: string | null;
 		endpointPrivate: string | null;
+		resizeHeightMax: number | null;
+		resizeWidthMax: number | null;
 	};
 	api: {
 		defaultVersion: string;
@@ -218,6 +220,8 @@ export const DefaultConfigOptions: ConfigValue = {
 		endpointClient: null,
 		endpointPrivate: null,
 		endpointPublic: null,
+		resizeHeightMax: 1000,
+		resizeWidthMax: 1000,
 	},
 	api: {
 		defaultVersion: "9",
