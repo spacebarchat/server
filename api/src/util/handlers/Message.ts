@@ -180,8 +180,16 @@ export async function postHandleMessage(message: Message) {
 				}
 			};
 
+			const { endpointPublic, resizeWidthMax, resizeHeightMax } = Config.get().cdn;
+			const resizeWidth = Math.min(resizeWidthMax ?? 1, width ?? 100);
+			const resizeHeight = Math.min(resizeHeightMax ?? 1, height ?? 100);
 			if (author_name) embed.author = { name: author_name };
-			if (image) embed.thumbnail = { proxy_url: image, url: image, width: width, height: height };
+			if (image) embed.thumbnail = {
+				proxy_url: `${endpointPublic}/external/resize/${encodeURIComponent(image)}?width=${resizeWidth}&height=${resizeHeight}`,
+				url: image,
+				width: width,
+				height: height
+			};
 			if (title) embed.title = title;
 			if (url) embed.url = url;
 			if (description) embed.description = description;
