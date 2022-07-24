@@ -3,8 +3,9 @@ import fetch from "node-fetch";
 import { HTTPError } from "lambert-server";
 import { Snowflake } from "@fosscord/util";
 import { storage } from "../util/Storage";
-import FileType from "file-type";
+import FileType, { stream } from "file-type";
 import { Config } from "@fosscord/util";
+import sharp from "sharp";
 
 // TODO: somehow handle the deletion of images posted to the /external route
 
@@ -54,6 +55,41 @@ router.get("/:id", async (req: Request, res: Response) => {
 	res.set("Content-Type", result?.mime);
 
 	return res.send(file);
+});
+
+// this method is gross lol don't care
+router.get("/resize/:url", async (req: Request, res: Response) => {
+	const url = decodeURIComponent(req.params.url);
+	const { width, height } = req.query;
+	if (!width || !height) throw new HTTPError("Must provide width and height");
+	const w = parseInt(width as string);
+	const h = parseInt(height as string);
+	if (w < 1 || h < 1) throw new HTTPError("Width and height must be greater than 0");
+
+	const { resizeHeightMax, resizeWidthMax } = Config.get().cdn;
+	if (resizeHeightMax && resizeWidthMax &&
+		(w > resizeWidthMax || h > resizeHeightMax))
+		throw new HTTPError(`Width and height must not exceed ${resizeWidthMax}, ${resizeHeightMax}`);
+
+	let buffer;
+	try {
+		const response = await fetch(url, DEFAULT_FETCH_OPTIONS);
+		buffer = await response.buffer();
+	}
+	catch (e) {
+		throw new HTTPError("Couldn't fetch website");
+	}
+
+	const resizedBuffer = await sharp(buffer)
+		.resize(parseInt(width as string), parseInt(height as string), {
+			fit: "inside",
+		})
+		.png()
+		.toBuffer();
+
+	res.setHeader("Content-Disposition", "attachment");
+	res.setHeader("Content-Type", "image/png");
+	return res.end(resizedBuffer);
 });
 
 export default router;
