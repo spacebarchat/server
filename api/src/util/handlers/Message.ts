@@ -54,26 +54,26 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		channel_id: opts.channel_id,
 		attachments: opts.attachments || [],
 		embeds: opts.embeds || [],
-		reactions: /*opts.reactions ||*/ [],
+		reactions: /*opts.reactions ||*/[],
 		type: opts.type ?? 0
 	});
 
 	if (message.content && message.content.length > Config.get().limits.message.maxCharacters) {
-		throw new HTTPError("Content length over max character limit")
+		throw new HTTPError("Content length over max character limit");
 	}
 
 	if (opts.author_id) {
 		message.author = await User.getPublicUser(opts.author_id);
 		const rights = await getRights(opts.author_id);
 		rights.hasThrow("SEND_MESSAGES");
-	}	
+	}
 	if (opts.application_id) {
 		message.application = await Application.findOneOrFail({ id: opts.application_id });
 	}
 	if (opts.webhook_id) {
 		message.webhook = await Webhook.findOneOrFail({ id: opts.webhook_id });
 	}
-	
+
 	const permission = await getPermission(opts.author_id, channel.guild_id, opts.channel_id);
 	permission.hasThrow("SEND_MESSAGES");
 	if (permission.cache.member) {
@@ -152,6 +152,8 @@ export async function postHandleMessage(message: Message) {
 
 	links = links.slice(0, 20); // embed max 20 links — TODO: make this configurable with instance policies
 
+	const { endpointPublic, resizeWidthMax, resizeHeightMax } = Config.get().cdn;
+
 	for (const link of links) {
 		try {
 			const request = await fetch(link, {
@@ -159,45 +161,65 @@ export async function postHandleMessage(message: Message) {
 				size: Config.get().limits.message.maxEmbedDownloadSize,
 			});
 
-			const text = await request.text();
-			const $ = cheerio.load(text);
+			let embed: Embed;
 
-			const title = $('meta[property="og:title"]').attr("content");
-			const provider_name = $('meta[property="og:site_name"]').text();
-			const author_name = $('meta[property="article:author"]').attr("content");
-			const description = $('meta[property="og:description"]').attr("content") || $('meta[property="description"]').attr("content");
-
-			const image = $('meta[property="og:image"]').attr("content");
-			const width = parseInt($('meta[property="og:image:width"]').attr("content") || "") || undefined;
-			const height = parseInt($('meta[property="og:image:height"]').attr("content") || "") || undefined;
-
-			const url = $('meta[property="og:url"]').attr("content");
-			// TODO: color
-			const embed: Embed = {
-				provider: {
-					url: link,
-					name: provider_name
-				}
-			};
-
-			const { endpointPublic, resizeWidthMax, resizeHeightMax } = Config.get().cdn;
-			const resizeWidth = Math.min(resizeWidthMax ?? 1, width ?? 100);
-			const resizeHeight = Math.min(resizeHeightMax ?? 1, height ?? 100);
-			if (author_name) embed.author = { name: author_name };
-			if (image) embed.thumbnail = {
-				proxy_url: `${endpointPublic}/external/resize/${encodeURIComponent(image)}?width=${resizeWidth}&height=${resizeHeight}`,
-				url: image,
-				width: width,
-				height: height
-			};
-			if (title) embed.title = title;
-			if (url) embed.url = url;
-			if (description) embed.description = description;
-
-			if (title || description) {
+			const type = request.headers.get("content-type");
+			if (type?.indexOf("image") == 0) {
+				embed = {
+					provider: {
+						url: link,
+						name: new URL(link).hostname,
+					},
+					image: {
+						// can't be bothered rn
+						proxy_url: `${endpointPublic}/external/resize/${encodeURIComponent(link)}?width=500&height=400`,
+						url: link,
+						width: 500,
+						height: 400
+					}
+				};
 				data.embeds.push(embed);
 			}
-		} catch (error) {}
+			else {
+				const text = await request.text();
+				const $ = cheerio.load(text);
+
+				const title = $('meta[property="og:title"]').attr("content");
+				const provider_name = $('meta[property="og:site_name"]').text();
+				const author_name = $('meta[property="article:author"]').attr("content");
+				const description = $('meta[property="og:description"]').attr("content") || $('meta[property="description"]').attr("content");
+
+				const image = $('meta[property="og:image"]').attr("content");
+				const width = parseInt($('meta[property="og:image:width"]').attr("content") || "") || undefined;
+				const height = parseInt($('meta[property="og:image:height"]').attr("content") || "") || undefined;
+
+				const url = $('meta[property="og:url"]').attr("content");
+				// TODO: color
+				embed = {
+					provider: {
+						url: link,
+						name: provider_name
+					}
+				};
+
+				const resizeWidth = Math.min(resizeWidthMax ?? 1, width ?? 100);
+				const resizeHeight = Math.min(resizeHeightMax ?? 1, height ?? 100);
+				if (author_name) embed.author = { name: author_name };
+				if (image) embed.thumbnail = {
+					proxy_url: `${endpointPublic}/external/resize/${encodeURIComponent(image)}?width=${resizeWidth}&height=${resizeHeight}`,
+					url: image,
+					width: width,
+					height: height
+				};
+				if (title) embed.title = title;
+				if (url) embed.url = url;
+				if (description) embed.description = description;
+
+				if (title || description) {
+					data.embeds.push(embed);
+				}
+			}
+		} catch (error) { }
 	}
 
 	await Promise.all([
@@ -218,7 +240,7 @@ export async function sendMessage(opts: MessageOptions) {
 		emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data: message.toJSON() } as MessageCreateEvent)
 	]);
 
-	postHandleMessage(message).catch((e) => {}); // no await as it should catch error non-blockingly
+	postHandleMessage(message).catch((e) => { }); // no await as it should catch error non-blockingly
 
 	return message;
 }
