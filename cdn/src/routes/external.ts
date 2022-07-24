@@ -62,14 +62,11 @@ router.get("/resize/:url", async (req: Request, res: Response) => {
 	const url = decodeURIComponent(req.params.url);
 	const { width, height } = req.query;
 	if (!width || !height) throw new HTTPError("Must provide width and height");
-	const w = parseInt(width as string);
-	const h = parseInt(height as string);
-	if (w < 1 || h < 1) throw new HTTPError("Width and height must be greater than 0");
 
 	const { resizeHeightMax, resizeWidthMax } = Config.get().cdn;
-	if (resizeHeightMax && resizeWidthMax &&
-		(w > resizeWidthMax || h > resizeHeightMax))
-		throw new HTTPError(`Width and height must not exceed ${resizeWidthMax}, ${resizeHeightMax}`);
+	const w = Math.min(parseInt(width as string), resizeWidthMax ?? 100);
+	const h = Math.min(parseInt(height as string), resizeHeightMax ?? 100);
+	if (w < 1 || h < 1) throw new HTTPError("Width and height must be greater than 0");
 
 	let buffer;
 	try {
