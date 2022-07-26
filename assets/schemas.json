@@ -18260,6 +18260,9 @@
     "GuildUpdateSchema": {
         "type": "object",
         "properties": {
+            "name": {
+                "type": "string"
+            },
             "banner": {
                 "type": [
                     "null",
@@ -18309,10 +18312,6 @@
                 "type": "boolean"
             },
             "discovery_splash": {
-                "type": "string"
-            },
-            "name": {
-                "maxLength": 100,
                 "type": "string"
             },
             "region": {

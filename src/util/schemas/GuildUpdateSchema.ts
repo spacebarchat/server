@@ -1,6 +1,7 @@
 import { GuildCreateSchema } from "@fosscord/util";
 
-export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels"> {
+export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels" | "name"> {
+	name?: string;
 	banner?: string | null;
 	splash?: string | null;
 	description?: string;
