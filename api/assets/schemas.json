@@ -6828,6 +6828,9 @@
     "GuildUpdateSchema": {
         "type": "object",
         "properties": {
+            "name": {
+                "type": "string"
+            },
             "banner": {
                 "type": [
                     "null",
@@ -6873,10 +6876,6 @@
             "preferred_locale": {
                 "type": "string"
             },
-            "name": {
-                "maxLength": 100,
-                "type": "string"
-            },
             "region": {
                 "type": "string"
             },
@@ -6897,9 +6896,6 @@
             }
         },
         "additionalProperties": false,
-        "required": [
-            "name"
-        ],
         "definitions": {
             "Embed": {
                 "type": "object",
