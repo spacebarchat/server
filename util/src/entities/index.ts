@@ -11,6 +11,7 @@ export * from "./Emoji";
 export * from "./Guild";
 export * from "./Invite";
 export * from "./Member";
+export * from "./MemberVerificationForm";
 export * from "./Message";
 export * from "./Migration";
 export * from "./RateLimit";
