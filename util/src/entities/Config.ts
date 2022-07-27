@@ -2,7 +2,7 @@ import { Column, Entity } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import crypto from "crypto";
 import { Snowflake } from "../util/Snowflake";
-import { SessionsReplace } from "..";
+import { ChannelPermissionOverwrite, SessionsReplace } from "..";
 import { hostname } from "os";
 
 @Entity("config")
@@ -168,6 +168,12 @@ export interface ConfigValue {
 			enabled: boolean;
 			guilds: string[];
 			canLeave: boolean;
+		};
+		community: {
+			defaultRulesChannelName: string;
+			defaultPublicUpdatesChannelName: string;
+			defaultRulesChannelPermissionOverrides: ChannelPermissionOverwrite[];
+			defaultPublicUpdatesChannelPermissionOverrides: ChannelPermissionOverwrite[];
 		};
 	};
 	gif: {
@@ -369,6 +375,26 @@ export const DefaultConfigOptions: ConfigValue = {
 			enabled: true,
 			canLeave: true,
 			guilds: [],
+		},
+		community: {
+			defaultRulesChannelName: "rules",
+			defaultPublicUpdatesChannelName: "moderator-only",
+			defaultRulesChannelPermissionOverrides: [
+				{
+					allow: "0",
+					deny: "2048",
+					type: 0,
+					id: "@everyone",
+				},
+			],
+			defaultPublicUpdatesChannelPermissionOverrides: [
+				{
+					allow: "0",
+					deny: "1024",
+					type: 0,
+					id: "@everyone",
+				},
+			],
 		},
 	},
 	gif: {
