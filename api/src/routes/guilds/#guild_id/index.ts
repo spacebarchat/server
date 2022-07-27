@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { DiscordApiErrors, emitEvent, getPermission, getRights, Guild, GuildUpdateEvent, handleFile, Member } from "@fosscord/util";
+import { Channel, DiscordApiErrors, emitEvent, getPermission, getRights, Guild, GuildUpdateEvent, handleFile, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 import "missing-native-js-functions";
@@ -59,6 +59,40 @@ router.patch("/", route({ body: "GuildUpdateSchema"}), async (req: Request, res:
 		where: { id: guild_id },
 		relations: ["emojis", "roles", "stickers"]
 	});
+	
+	if (body.public_updates_channel_id && body.public_updates_channel_id === "1") {
+		const publicUpdatesChannel = await Channel.createChannel({
+			name: "moderator-only",
+			type: 0,
+			guild_id,
+			permission_overwrites: [
+				{
+					id: guild_id,
+					allow: "0",
+					deny: "1024",
+					type: 0
+				}
+			]
+		}, req.user_id);
+		body.public_updates_channel_id = publicUpdatesChannel.id;
+	}
+
+	if (body.rules_channel_id && body.rules_channel_id === "1") {
+		const rulesChannel = await Channel.createChannel({
+			name: "rules",
+			type: 0,
+			guild_id,
+			permission_overwrites: [
+				{
+					id: guild_id,
+					allow: "0",
+					deny: "2048",
+					type: 0
+				}
+			]
+		}, req.user_id);
+		body.rules_channel_id = rulesChannel.id;
+	}
 	// TODO: check if body ids are valid
 	guild.assign(body);
 
