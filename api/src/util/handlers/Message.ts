@@ -215,6 +215,29 @@ export async function postHandleMessage(message: Message) {
 				if (url) embed.url = url;
 				if (description) embed.description = description;
 
+				const approvedProviders = [
+					"media4.giphy.com",
+					"c.tenor.com",
+					// todo: make configurable? don't really care tho
+				];
+
+				// very bad code below
+				// don't care lol
+				if (embed?.thumbnail?.url && approvedProviders.indexOf(new URL(embed.thumbnail.url).hostname) !== -1) {
+					embed = {
+						provider: {
+							url: link,
+							name: new URL(link).hostname,
+						},
+						image: {
+							proxy_url: `${endpointPublic}/external/resize/${encodeURIComponent(image!)}?width=${resizeWidth}&height=${resizeHeight}`,
+							url: image,
+							width: width,
+							height: height
+						}
+					};
+				}
+
 				if (title || description) {
 					data.embeds.push(embed);
 				}
