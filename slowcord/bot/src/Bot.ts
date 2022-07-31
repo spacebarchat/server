@@ -27,7 +27,7 @@ export default class Bot {
 	onMessageCreate = async (msg: Message) => {
 		const prefix = process.env.PREFIX as string;
 		if (msg.author.bot) return;
-		if (msg.content && msg.content.indexOf(prefix) === -1) return;
+		if (!msg.content || msg.content.indexOf(prefix) === -1) return;
 
 		const content = msg.content.slice(prefix.length).split(" ");
 		const cmd = content.shift();
