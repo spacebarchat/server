@@ -68,9 +68,9 @@ router.get("/resize/:url", async (req: Request, res: Response) => {
 	const h = Math.min(parseInt(height as string), resizeHeightMax ?? 100);
 	if (w < 1 || h < 1) throw new HTTPError("Width and height must be greater than 0");
 
-	let buffer;
+	let buffer, response;
 	try {
-		const response = await fetch(url, DEFAULT_FETCH_OPTIONS);
+		response = await fetch(url, DEFAULT_FETCH_OPTIONS);
 		buffer = await response.buffer();
 	}
 	catch (e) {
@@ -81,11 +81,10 @@ router.get("/resize/:url", async (req: Request, res: Response) => {
 		.resize(parseInt(width as string), parseInt(height as string), {
 			fit: "inside",
 		})
-		.png()
 		.toBuffer();
 
 	res.setHeader("Content-Disposition", "attachment");
-	res.setHeader("Content-Type", "image/png");
+	res.setHeader("Content-Type", response.headers.get("content-type") ?? "image/png");
 	return res.end(resizedBuffer);
 });
 
