@@ -8,6 +8,7 @@ import { Close } from "./Close";
 import { Message } from "./Message";
 import { createDeflate } from "zlib";
 import { URL } from "url";
+import { Config } from "@fosscord/util";
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
@@ -22,12 +23,15 @@ export async function Connection(
 	socket: WebSocket,
 	request: IncomingMessage
 ) {
+	const forwardedFor = Config.get().security.forwadedFor;
+	const ipAddress = forwardedFor ? request.headers[forwardedFor] as string : request.socket.remoteAddress;
+
 	try {
 		// @ts-ignore
 		socket.on("close", Close);
 		// @ts-ignore
 		socket.on("message", Message);
-		console.log(`[Gateway] Connections: ${this.clients.size}`);
+		console.log(`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`);
 
 		const { searchParams } = new URL(`http://localhost${request.url}`);
 		// @ts-ignore
