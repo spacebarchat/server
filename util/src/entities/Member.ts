@@ -1,4 +1,5 @@
 import { PublicUser, User } from "./User";
+import { Message } from "./Message";
 import { BaseClass } from "./BaseClass";
 import {
 	Column,
@@ -19,6 +20,7 @@ import {
 	GuildMemberAddEvent,
 	GuildMemberRemoveEvent,
 	GuildMemberUpdateEvent,
+	MessageCreateEvent,
 } from "../interfaces";
 import { HTTPError } from "lambert-server";
 import { Role } from "./Role";
@@ -70,7 +72,7 @@ export class Member extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	nick?: string;
-	
+
 	@JoinTable({
 		name: "member_roles",
 		joinColumn: { name: "index", referencedColumnName: "index" },
@@ -102,14 +104,14 @@ export class Member extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	last_message_id?: string;
-	
+
 	/**
 	@JoinColumn({ name: "id" })
 	@ManyToOne(() => User, {
 		onDelete: "DO NOTHING",
 	// do not auto-kick force-joined members just because their joiners left the server
 	}) **/
-	@Column({ nullable: true})
+	@Column({ nullable: true })
 	joined_by?: string;
 
 	// TODO: add this when we have proper read receipts
@@ -242,7 +244,7 @@ export class Member extends BaseClassWithoutId {
 			where: {
 				id: guild_id,
 			},
-			relations: PublicGuildRelations,
+			relations: [ ...PublicGuildRelations, "system_channel" ],
 		});
 
 		if (await Member.count({ id: user.id, guild: { id: guild_id } }))
@@ -302,6 +304,27 @@ export class Member extends BaseClassWithoutId {
 				user_id,
 			} as GuildCreateEvent),
 		]);
+
+		if (guild.system_channel_id) {
+			// send welcome message
+			const message = new Message({
+				type: 7,
+				guild_id: guild.id,
+				channel_id: guild.system_channel_id,
+				author: user,
+				timestamp: new Date(),
+
+				reactions: [],
+				attachments: [],
+				embeds: [],
+				sticker_items: [],
+				edited_timestamp: undefined,
+			});
+			await Promise.all([
+				message.save(),
+				emitEvent({ event: "MESSAGE_CREATE", channel_id: message.channel_id, data: message } as MessageCreateEvent)
+			]);
+		}
 	}
 }
 
