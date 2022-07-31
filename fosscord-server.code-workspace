@@ -24,9 +24,5 @@
 		{
 			"path": "webrtc"
 		}
-	],
-	"settings": {
-		"awooga.originalColorCustomizations": {},
-		"workbench.colorCustomizations": {}
-	}
+	]
 }

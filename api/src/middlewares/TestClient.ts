@@ -27,7 +27,6 @@ export default function TestClient(app: Application) {
 		newAssetCache = new Map<string, AssetCacheItem>(Object.entries(JSON.parse(rawdata.toString())));
 	}
 
-	//define routes
 	app.use("/assets", express.static(path.join(__dirname, "..", "..", "assets")));	
 	app.get("/assets/:file", async (req: Request, res: Response) => {
 		delete req.headers.host;
