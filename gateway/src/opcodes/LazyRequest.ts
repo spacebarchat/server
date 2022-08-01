@@ -41,6 +41,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		.map((m) => m.roles)
 		.flat()
 		.unique((r: Role) => r.id);
+	member_roles.push(member_roles.splice(member_roles.findIndex(x => x.id === x.guild_id), 1)[0]);
 
 	const offlineItems = [];
 
