@@ -1,4 +1,4 @@
-import { getPermission, listenEvent, Member, Role } from "@fosscord/util";
+import { getPermission, listenEvent, Member, Role, Session } from "@fosscord/util";
 import { LazyRequest } from "../schema/LazyRequest";
 import { Send } from "../util/Send";
 import { OPCODES } from "../util/Constants";
@@ -63,9 +63,8 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				.filter((x: Role) => x.id !== guild_id)
 				.map((x: Role) => x.id);
 
-			const session = member.user.sessions.first();
+			const session: Session = member.user.sessions.first();
 
-			// TODO: properly mock/hide offline/invisible status
 			const item = {
 				member: {
 					...member,
@@ -77,9 +76,10 @@ async function getMembers(guild_id: string, range: [number, number]) {
 						user: { id: member.user.id },
 					},
 				},
-			}
+			};
 
-			if (!member?.user?.sessions || !member.user.sessions.length) {
+			if (!session || session.status == "invisible") {
+				item.member.presence.status = "offline"; 
 				offlineItems.push(item);
 				group.count--;
 				continue;
@@ -140,6 +140,11 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 		});
 	});
 
+	const groups = ops
+		.map((x) => x.groups)
+		.flat()
+		.unique();
+
 	return Send(this, {
 		op: OPCODES.Dispatch,
 		s: this.sequence++,
@@ -150,14 +155,11 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 				op: "SYNC",
 				range: x.range,
 			})),
-			online_count: member_count,
+			online_count: member_count - groups.find(x => x.id == "offline").count,
 			member_count,
 			id: "everyone",
 			guild_id,
-			groups: ops
-				.map((x) => x.groups)
-				.flat()
-				.unique(),
+			groups,
 		},
 	});
 }
