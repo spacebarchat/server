@@ -109,7 +109,7 @@ router.get("/", async (req: Request, res: Response) => {
 	};
 
 	if (after) {
-		if (after > new Snowflake()) return res.status(422);
+		if (after > Snowflake.generate()) return res.status(422);
 		query.where.id = MoreThan(after);
 	}
 	else if (before) { 
