@@ -109,11 +109,11 @@ router.get("/", async (req: Request, res: Response) => {
 	};
 
 	if (after) {
-		if (after > Snowflake.generate()) return res.status(422);
+		if (BigInt(after) > BigInt(Snowflake.generate())) return res.status(422);
 		query.where.id = MoreThan(after);
 	}
 	else if (before) { 
-		if (before < req.params.channel_id) return res.status(422);
+		if (BigInt(before) < BigInt(req.params.channel_id)) return res.status(422);
 		query.where.id = LessThan(before);
 	}
 	else if (around) {
