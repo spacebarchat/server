@@ -18,22 +18,34 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	}
 	// TODO: wait for typeorm to implement ordering for .find queries https://github.com/typeorm/typeorm/issues/2620
 
-	let members = await getRepository(Member)
-		.createQueryBuilder("member")
-		.where("member.guild_id = :guild_id", { guild_id })
-		.leftJoinAndSelect("member.roles", "role")
-		.leftJoinAndSelect("member.user", "user")
-		.leftJoinAndSelect("user.sessions", "session")
-		.addSelect(
-			"CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
-			"_status"
-		)
-		.orderBy("role.position", "DESC")
-		.addOrderBy("_status", "DESC")
-		.addOrderBy("user.username", "ASC")
-		.offset(Number(range[0]) || 0)
-		.limit(Number(range[1]) || 100)
-		.getMany();
+	let members;
+	try {
+		members = await getRepository(Member)
+			.createQueryBuilder("member")
+			.where("member.guild_id = :guild_id", { guild_id })
+			.leftJoinAndSelect("member.roles", "role")
+			.leftJoinAndSelect("member.user", "user")
+			.leftJoinAndSelect("user.sessions", "session")
+			.addSelect(
+				"CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
+				"_status"
+			)
+			.orderBy("role.position", "DESC")
+			.addOrderBy("_status", "DESC")
+			.addOrderBy("user.username", "ASC")
+			.offset(Number(range[0]) || 0)
+			.limit(Number(range[1]) || 100)
+			.getMany();
+	}
+	catch (e) {
+		console.error(`LazyRequest`, e);
+		return {
+			items: [],
+			groups: [],
+			range: [],
+			members: [],
+		}
+	}		
 
 	const groups = [] as any[];
 	const items = [];
@@ -79,7 +91,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 			};
 
 			if (!session || session.status == "invisible") {
-				item.member.presence.status = "offline"; 
+				item.member.presence.status = "offline";
 				offlineItems.push(item);
 				group.count--;
 				continue;
@@ -155,7 +167,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 				op: "SYNC",
 				range: x.range,
 			})),
-			online_count: member_count - groups.find(x => x.id == "offline").count,
+			online_count: member_count - (groups.find(x => x.id == "offline")?.count ?? 0),
 			member_count,
 			id: "everyone",
 			guild_id,
