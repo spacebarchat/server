@@ -38,7 +38,7 @@ router.post(
 			.update(Snowflake.generate())
 			.digest("hex");
 
-		const type = await FileType.fileTypeFromBuffer(buffer);
+		const type = await FileType.fromBuffer(buffer);
 		if (!type || !ALLOWED_MIME_TYPES.includes(type.mime))
 			throw new HTTPError("Invalid file type");
 		if (ANIMATED_MIME_TYPES.includes(type.mime)) hash = `a_${hash}`; // animated icons have a_ infront of the hash
@@ -65,7 +65,7 @@ router.get("/:user_id", async (req: Request, res: Response) => {
 
 	const file = await storage.get(path);
 	if (!file) throw new HTTPError("not found", 404);
-	const type = await FileType.fileTypeFromBuffer(file);
+	const type = await FileType.fromBuffer(file);
 
 	res.set("Content-Type", type?.mime);
 	res.set("Cache-Control", "public, max-age=31536000");
@@ -80,7 +80,7 @@ router.get("/:user_id/:hash", async (req: Request, res: Response) => {
 
 	const file = await storage.get(path);
 	if (!file) throw new HTTPError("not found", 404);
-	const type = await FileType.fileTypeFromBuffer(file);
+	const type = await FileType.fromBuffer(file);
 
 	res.set("Content-Type", type?.mime);
 	res.set("Cache-Control", "public, max-age=31536000");
