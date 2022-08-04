@@ -1,9 +1,9 @@
 import { Storage } from "./Storage";
 import fs from "fs";
-//import fse from "fs-extra";
 import { join, relative, dirname } from "path";
 import { Readable } from "stream";
-import ExifTransformer = require("exif-be-gone");
+//import ExifTransformer = require("exif-be-gone");
+import ExifTransformer from "exif-be-gone";
 
 // TODO: split stored files into separate folders named after cloned route
 
