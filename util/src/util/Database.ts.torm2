@@ -1,6 +1,6 @@
 import path from "path";
 import "reflect-metadata";
-import { DataSource, createConnection } from "typeorm";
+import { Connection, createConnection } from "typeorm";
 import * as Models from "../entities";
 import { Migration } from "../entities/Migration";
 import { yellow, green, red } from "picocolors";
@@ -9,24 +9,21 @@ import { yellow, green, red } from "picocolors";
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
 
 let promise: Promise<any>;
-let dataSource: DataSource | undefined;
+let dbConnection: Connection | undefined;
 let dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
-let verbose_db = false;
 
-export async function initDatabase(): Promise<DataSource> {
-	if (dataSource) return dataSource; // prevent initalizing multiple times
+export function initDatabase(): Promise<Connection> {
+	if (promise) return promise; // prevent initalizing multiple times
 
-	const type = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite" as any;
+	const type = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
 	const isSqlite = type.includes("sqlite");
-	if(process.env.DB_VERBOSE) verbose_db = true;
 
 	console.log(`[Database] ${yellow(`connecting to ${type} db`)}`);
-	if(isSqlite)
+	if(isSqlite) {
 		console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
-	if(verbose_db)
-		console.log(`[Database] ${red(`Verbose database logging is enabled, this might impact performance! Unset VERBOSE_DB to disable.`)}`);
+	}
 	// @ts-ignore
-	dataSource = new DataSource({
+	promise = createConnection({
 		type,
         charset: 'utf8mb4',
 		url: isSqlite ? undefined : dbConnectionString,
@@ -34,7 +31,7 @@ export async function initDatabase(): Promise<DataSource> {
 		// @ts-ignore
 		entities: Object.values(Models).filter((x) => x.constructor.name !== "Object" && x.name),
 		synchronize: type !== "mongodb",
-		logging: verbose_db,
+		logging: false,
 		cache: {
 			duration: 1000 * 3, // cache all find queries for 3 seconds
 		},
@@ -43,30 +40,33 @@ export async function initDatabase(): Promise<DataSource> {
 		name: "default",
 		migrations: [path.join(__dirname, "..", "migrations", "*.js")],
 	});
-	promise = dataSource.initialize();
-	await promise;
-	// run migrations, and if it is a new fresh database, set it to the last migration
-	if (dataSource.migrations.length) {
-		if (!(await Migration.findOne({}))) {
-			let i = 0;
 
-			await Migration.insert(
-				dataSource.migrations.map((x) => ({
-					id: i++,
-					name: x.name,
-					timestamp: Date.now(),
-				}))
-			);
+	promise.then(async (connection: Connection) => {
+		dbConnection = connection;
+
+		// run migrations, and if it is a new fresh database, set it to the last migration
+		if (connection.migrations.length) {
+			if (!(await Migration.findOne({}))) {
+				let i = 0;
+
+				await Migration.insert(
+					connection.migrations.map((x) => ({
+						id: i++,
+						name: x.name,
+						timestamp: Date.now(),
+					}))
+				);
+			}
 		}
-	}
-	await dataSource.runMigrations();
-	console.log(`[Database] ${green("connected")}`);
+		await connection.runMigrations();
+		console.log(`[Database] ${green("connected")}`);
+	});
 
 	return promise;
 }
 
-export { dataSource };
+export { dbConnection };
 
 export function closeDatabase() {
-	dataSource?.destroy();
+	dbConnection?.close();
 }
