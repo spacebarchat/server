@@ -12499,6 +12499,9 @@
                 "maxLength": 100,
                 "type": "string"
             },
+            "discriminator": {
+                "type": "string"
+            },
             "avatar": {
                 "type": [
                     "null",

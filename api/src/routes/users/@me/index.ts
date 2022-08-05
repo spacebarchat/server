@@ -11,6 +11,7 @@ export interface UserModifySchema {
 	 * @maxLength 100
 	 */
 	username?: string;
+	discriminator?: string;
 	avatar?: string | null;
 	/**
 	 * @maxLength 1024
