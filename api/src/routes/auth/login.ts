@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
 import { Config, User, generateToken, adjustEmail, FieldErrors } from "@fosscord/util";
+import crypto from "crypto";
 
 const router: Router = Router();
 export default router;
@@ -37,7 +38,7 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 
 	const user = await User.findOneOrFail({
 		where: [{ phone: login }, { email: login }],
-		select: ["data", "id", "disabled", "deleted", "settings"]
+		select: ["data", "id", "disabled", "deleted", "settings", "totp_secret", "mfa_enabled"]
 	}).catch((e) => {
 		throw FieldErrors({ login: { message: req.t("auth:login.INVALID_LOGIN"), code: "INVALID_LOGIN" } });
 	});
@@ -55,6 +56,20 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 	const same_password = await bcrypt.compare(password, user.data.hash || "");
 	if (!same_password) {
 		throw FieldErrors({ password: { message: req.t("auth:login.INVALID_PASSWORD"), code: "INVALID_PASSWORD" } });
+	}
+
+	if (user.mfa_enabled) {
+		// TODO: This is not a discord.com ticket. I'm not sure what it is but I'm lazy
+		const ticket = crypto.randomBytes(40).toString("hex");
+
+		await User.update({ id: user.id }, { totp_last_ticket: ticket });
+
+		return res.json({
+			ticket: ticket,
+			mfa: true,
+			sms: false,	// TODO
+			token: null,
+		})
 	}
 
 	const token = await generateToken(user.id);
