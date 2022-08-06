@@ -13,3 +13,6 @@ api/assets/plugins/*.js
 .idea/
 *.code-workspace
 
+
+*.log
+*.log.ansi
