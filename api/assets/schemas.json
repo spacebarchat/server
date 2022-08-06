@@ -13828,6 +13828,33 @@
     "TotpEnableSchema": {
         "type": "object",
         "properties": {
+            "username": {
+                "minLength": 1,
+                "maxLength": 100,
+                "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
+            },
+            "avatar": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "bio": {
+                "maxLength": 1024,
+                "type": "string"
+            },
+            "accent_color": {
+                "type": "integer"
+            },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
             "password": {
                 "type": "string"
             },
