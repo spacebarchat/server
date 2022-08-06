@@ -68,6 +68,7 @@
 		"@fosscord/gateway": "file:../gateway",
 		"@sentry/node": "^6.16.1",
 		"@sentry/tracing": "^6.16.1",
+		"@yukikaze-bot/erlpack": "^1.0.1",
 		"ajv": "8.6.2",
 		"ajv-formats": "^2.1.1",
 		"amqplib": "^0.8.0",
