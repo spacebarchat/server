@@ -40,7 +40,6 @@ export default function TestClient(app: Application) {
 			});
 		}
 		else {
-			console.log(`CACHE MISS! Asset file: ${req.params.file}`);
 			response = await fetch(`https://discord.com/assets/${req.params.file}`, {
 				agent,
 				// @ts-ignore
