@@ -1,10 +1,11 @@
-import { Column, Entity, FindOneOptions, JoinColumn, ManyToMany, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, FindOneOptions, JoinColumn, OneToMany } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
 import { Member, Session } from ".";
+import { Note } from "./Note";
 
 export enum PublicUserEnum {
 	username,
@@ -108,6 +109,12 @@ export class User extends BaseClass {
 	@Column({ select: false })
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 
+	@Column({ select: false, nullable: true })
+	totp_secret?: string;
+
+	@Column({ nullable: true, select: false })
+	totp_last_ticket?: string;
+
 	@Column()
 	created_at: Date; // registration date
 
@@ -167,9 +174,6 @@ export class User extends BaseClass {
 	// workaround to prevent fossord-unaware clients from deleting settings not used by them
 	@Column({ type: "simple-json", select: false })
 	extended_settings: string;
-
-	@Column({ type: "simple-json" })
-	notes: { [key: string]: string };	//key is ID of user
 
 	toPublicUser() {
 		const user: any = {};

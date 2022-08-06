@@ -1,18 +1,18 @@
 {
 	"field": {
-		"BASE_TYPE_REQUIRED": "שדה זה חובה",
-		"BASE_TYPE_STRING": "שדה זה חייב להיות כטקסט",
-		"BASE_TYPE_NUMBER": "שדה זה חייב להיות מספר",
-		"BASE_TYPE_BIGINT": "השדה הזה חייב להיות ביגינט",
-		"BASE_TYPE_BOOLEAN": "השדה הזה חייב להיות בוליאני",
-		"BASE_TYPE_CHOICES": "({{types}}) שדה זה חייב להיות אחד מ",
-		"BASE_TYPE_CLASS": "{{type}} מסוג instance שדה זה חייב להיות",
+		"BASE_TYPE_REQUIRED": "This field is required",
+		"BASE_TYPE_STRING": "This field must be a string",
+		"BASE_TYPE_NUMBER": "This field must be a number",
+		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
+		"BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
+		"BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
 		"BASE_TYPE_OBJECT": "שדה זה חייב להיות אובייקט",
 		"BASE_TYPE_ARRAY": "שדה זה חייב להיות מערך",
-		"UNKOWN_FIELD": "{{key}} :מפתח לא ידוע",
-		"BASE_TYPE_CONSTANT": "{{value}} שדה זה חייב להיות",
+		"UNKOWN_FIELD": "מפתח לא ידוע: {{key}}",
+		"BASE_TYPE_CONSTANT": "שדה זה להיות {{value}}",
 		"EMAIL_TYPE_INVALID_EMAIL": "כתובת דואר אלקטרוני לא חוקית",
-		"DATE_TYPE_PARSE": "ISO8601 אמור להיות {{date}} לא ניתן לאתר",
-		"BASE_TYPE_BAD_LENGTH": "{{length}} האורך חייב להיות בין"
+		"DATE_TYPE_PARSE": "לא ניתן לנתח {{date}}. צריך להיות ISO8601",
+		"BASE_TYPE_BAD_LENGTH": "האורך חייב להיות בין {{length}}"
 	}
 }

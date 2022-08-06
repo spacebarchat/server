@@ -28,3 +28,5 @@ export * from "./User";
 export * from "./VoiceState";
 export * from "./Webhook";
 export * from "./ClientRelease";
+export * from "./BackupCodes";
+export * from "./Note";
