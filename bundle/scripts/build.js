@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const { getSystemErrorMap } = require("util");
 const { argv, stdout, exit } = require("process");
-const {copyRecursiveSync,execIn} = require('./utils');
+const { copyRecursiveSync, execIn, parts } = require('./utils');
 
 if(argv.includes("help")) {
 	console.log(`Fosscord build script help:
@@ -20,7 +20,6 @@ Arguments:
 let steps = 3, i = 0;
 if (argv.includes("clean")) steps++;
 if (argv.includes("copyonly")) steps--;
-const dirs = ["api", "util", "cdn", "gateway", "bundle"];
 
 const verbose = argv.includes("verbose") || argv.includes("v");
 const logerr = argv.includes("logerrors");
@@ -31,7 +30,7 @@ if(silent) console.error = console.log = function(){}
 
 if (argv.includes("clean")) {
 	console.log(`[${++i}/${steps}] Cleaning...`);
-	dirs.forEach((a) => {
+	parts.forEach((a) => {
 		let d = "../" + a + "/dist";
 		if (fs.existsSync(d)) {
 			fs.rmSync(d, { recursive: true });
@@ -49,7 +48,7 @@ console.log(`[${++i}/${steps}] Copying src files...`);
 copyRecursiveSync(path.join(__dirname, "..", "..", "api", "assets"), path.join(__dirname, "..", "dist", "api", "assets"));
 copyRecursiveSync(path.join(__dirname, "..", "..", "api", "client_test"), path.join(__dirname, "..", "dist", "api", "client_test"));
 copyRecursiveSync(path.join(__dirname, "..", "..", "api", "locales"), path.join(__dirname, "..", "dist", "api", "locales"));
-dirs.forEach((a) => {
+parts.forEach((a) => {
 	copyRecursiveSync("../" + a + "/src", "dist/" + a + "/src");
 	if (verbose) console.log(`Copied ${"../" + a + "/dist"} -> ${"dist/" + a + "/src"}!`);
 });
