@@ -33,7 +33,7 @@ export const inactiveMembers = async (guild_id: string, user_id: string, days: n
 	//I'm sure I can do this in the above db query ( and it would probably be better to do so ), but oh well.
 	if (roles.length && members.length) members = members.filter((user) => user.roles?.some((role) => roles.includes(role.id)));
 
-	const me = await Member.findOneOrFail({ id: user_id, guild_id }, { relations: ["roles"] });
+	const me = await Member.findOneOrFail({ where: { id: user_id, guild_id }, relations: ["roles"] });
 	const myHighestRole = Math.max(...(me.roles?.map((x) => x.position) || []));
 
 	const guild = await Guild.findOneOrFail({ where: { id: guild_id } });

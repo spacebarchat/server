@@ -14,7 +14,7 @@ const router: Router = Router();
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	const guild = await Guild.findOneOrFail({ id: guild_id });
+	const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
 	if (!guild.widget_enabled) throw new HTTPError("Unknown Guild", 404);
 
 	// Fetch guild information

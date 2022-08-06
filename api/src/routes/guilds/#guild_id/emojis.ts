@@ -41,13 +41,13 @@ router.post("/", route({ body: "EmojiCreateSchema", permission: "MANAGE_EMOJIS_A
 	const body = req.body as EmojiCreateSchema;
 
 	const id = Snowflake.generate();
-	const emoji_count = await Emoji.count({ guild_id: guild_id });
+	const emoji_count = await Emoji.count({ where: { guild_id } });
 	const { maxEmojis } = Config.get().limits.guild;
 
 	if (emoji_count >= maxEmojis) throw DiscordApiErrors.MAXIMUM_NUMBER_OF_EMOJIS_REACHED.withParams(maxEmojis);
 	if (body.require_colons == null) body.require_colons = true;
 
-	const user = await User.findOneOrFail({ id: req.user_id });
+	const user = await User.findOneOrFail({ where: { id: req.user_id } });
 	body.image = (await handleFile(`/emojis/${id}`, body.image)) as string;
 
 	const emoji = await new Emoji({
@@ -66,7 +66,7 @@ router.post("/", route({ body: "EmojiCreateSchema", permission: "MANAGE_EMOJIS_A
 		guild_id: guild_id,
 		data: {
 			guild_id: guild_id,
-			emojis: await Emoji.find({ guild_id: guild_id })
+			emojis: await Emoji.find({ where: { guild_id } })
 		}
 	} as GuildEmojisUpdateEvent);
 
@@ -87,7 +87,7 @@ router.patch(
 			guild_id: guild_id,
 			data: {
 				guild_id: guild_id,
-				emojis: await Emoji.find({ guild_id: guild_id })
+				emojis: await Emoji.find({ where: { guild_id } })
 			}
 		} as GuildEmojisUpdateEvent);
 
@@ -108,7 +108,7 @@ router.delete("/:emoji_id", route({ permission: "MANAGE_EMOJIS_AND_STICKERS" }),
 		guild_id: guild_id,
 		data: {
 			guild_id: guild_id,
-			emojis: await Emoji.find({ guild_id: guild_id })
+			emojis: await Emoji.find({ where: { guild_id } })
 		}
 	} as GuildEmojisUpdateEvent);
 

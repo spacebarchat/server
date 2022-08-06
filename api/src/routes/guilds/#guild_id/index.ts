@@ -26,8 +26,8 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
 	const [guild, member] = await Promise.all([
-		Guild.findOneOrFail({ id: guild_id }),
-		Member.findOne({ guild_id: guild_id, id: req.user_id })
+		Guild.findOneOrFail({ where: { id: guild_id } }),
+		Member.findOne({ where: { guild_id, id: req.user_id } })
 	]);
 	if (!member) throw new HTTPError("You are not a member of the guild you are trying to access", 401);
 

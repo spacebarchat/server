@@ -26,7 +26,7 @@ router.post("/", route({ body: "TotpSchema" }), async (req: Request, res: Respon
 		],
 	});
 
-	const backup = await BackupCode.findOne({ code: code, expired: false, consumed: false, user: { id: user.id }});
+	const backup = await BackupCode.findOne({ where: { code: code, expired: false, consumed: false, user: { id: user.id } } });
 
 	if (!backup) {
 		const ret = verifyToken(user.totp_secret!, code);

@@ -19,8 +19,8 @@ router.post("/", route({ body: "MessageAcknowledgeSchema" }), async (req: Reques
 	const permission = await getPermission(req.user_id, undefined, channel_id);
 	permission.hasThrow("VIEW_CHANNEL");
 
-	let read_state = await ReadState.findOne({ user_id: req.user_id, channel_id });
-	if (!read_state) read_state = new ReadState({ user_id: req.user_id, channel_id });
+	let read_state = await ReadState.findOne({ where: { user_id: req.user_id, channel_id } });
+	if (!read_state) read_state = new ReadState({ where: { user_id: req.user_id, channel_id } });
 	read_state.last_message_id = message_id;
 
 	await read_state.save();

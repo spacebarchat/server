@@ -12,7 +12,7 @@ router.get("/:branch", route({}), async (req: Request, res: Response) => {
 
 	if(!platform || !["linux", "osx", "win"].includes(platform.toString())) return res.status(404)
 
-	const release = await Release.findOneOrFail({ name: client.releases.upstreamVersion });
+	const release = await Release.findOneOrFail({ where: { name: client.releases.upstreamVersion } });
 
 	res.redirect(release[`win_url`]);
 });

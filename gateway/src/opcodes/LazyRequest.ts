@@ -120,7 +120,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const ranges = channels![channel_id];
 	if (!Array.isArray(ranges)) throw new Error("Not a valid Array");
 
-	const member_count = await Member.count({ guild_id });
+	const member_count = await Member.count({ where: { guild_id } });
 	const ops = await Promise.all(ranges.map((x) => getMembers(guild_id, x)));
 
 	// TODO: unsubscribe member_events that are not in op.members

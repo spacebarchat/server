@@ -24,7 +24,7 @@ router.post("/", route({ body: "GuildCreateSchema", right: "CREATE_GUILDS" }), a
 	const body = req.body as GuildCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
-	const guild_count = await Member.count({ id: req.user_id });
+	const guild_count = await Member.count({ where: { id: req.user_id } });
 	const rights = await getRights(req.user_id);
 	if ((guild_count >= maxGuilds)&&!rights.has("MANAGE_GUILDS")) {
 		throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);

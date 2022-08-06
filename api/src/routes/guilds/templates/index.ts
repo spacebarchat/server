@@ -33,7 +33,7 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 		return res.json(code.split("external:", 2)[1]);
 	}
 
-	const template = await Template.findOneOrFail({ code: code });
+	const template = await Template.findOneOrFail({ where: { code } });
 	res.json(template);
 });
 
@@ -47,12 +47,12 @@ router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: 
 
 	const { maxGuilds } = Config.get().limits.user;
 
-	const guild_count = await Member.count({ id: req.user_id });
+	const guild_count = await Member.count({ where: { id: req.user_id } });
 	if (guild_count >= maxGuilds) {
 		throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
 	}
 
-	const template = await Template.findOneOrFail({ code: code });
+	const template = await Template.findOneOrFail({ where: { code } });
 
 	const guild_id = Snowflake.generate();
 

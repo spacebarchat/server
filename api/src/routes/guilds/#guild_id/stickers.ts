@@ -19,7 +19,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	res.json(await Sticker.find({ guild_id }));
+	res.json(await Sticker.find({ where: { guild_id } }));
 });
 
 const bodyParser = multer({
@@ -79,7 +79,7 @@ router.get("/:sticker_id", route({}), async (req: Request, res: Response) => {
 	const { guild_id, sticker_id } = req.params;
 	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	res.json(await Sticker.findOneOrFail({ guild_id, id: sticker_id }));
+	res.json(await Sticker.findOneOrFail({ where: { guild_id, id: sticker_id } }));
 });
 
 export interface ModifyGuildStickerSchema {
@@ -118,7 +118,7 @@ async function sendStickerUpdateEvent(guild_id: string) {
 		guild_id: guild_id,
 		data: {
 			guild_id: guild_id,
-			stickers: await Sticker.find({ guild_id: guild_id })
+			stickers: await Sticker.find({ where: { guild_id } })
 		}
 	} as GuildStickersUpdateEvent);
 }

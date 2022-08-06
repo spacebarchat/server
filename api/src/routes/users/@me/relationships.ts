@@ -45,7 +45,7 @@ router.put("/:id", route({ body: "RelationshipPutSchema" }), async (req: Request
 	return await updateRelationship(
 		req,
 		res,
-		await User.findOneOrFail({ id: req.params.id }, { relations: ["relationships", "relationships.to"], select: userProjection }),
+		await User.findOneOrFail({ where: { id: req.params.id }, relations: ["relationships", "relationships.to"], select: userProjection }),
 		req.body.type ?? RelationshipType.friends
 	);
 });
@@ -75,8 +75,8 @@ router.delete("/:id", route({}), async (req: Request, res: Response) => {
 	const { id } = req.params;
 	if (id === req.user_id) throw new HTTPError("You can't remove yourself as a friend");
 
-	const user = await User.findOneOrFail({ id: req.user_id }, { select: userProjection, relations: ["relationships"] });
-	const friend = await User.findOneOrFail({ id: id }, { select: userProjection, relations: ["relationships"] });
+	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: userProjection, relations: ["relationships"] });
+	const friend = await User.findOneOrFail({ where: { id: id }, select: userProjection, relations: ["relationships"] });
 
 	const relationship = user.relationships.find((x) => x.to_id === id);
 	const friendRequest = friend.relationships.find((x) => x.to_id === req.user_id);
@@ -124,10 +124,11 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 	const id = friend.id;
 	if (id === req.user_id) throw new HTTPError("You can't add yourself as a friend");
 
-	const user = await User.findOneOrFail(
-		{ id: req.user_id },
-		{ relations: ["relationships", "relationships.to"], select: userProjection }
-	);
+	const user = await User.findOneOrFail({
+		where: { id: req.user_id },
+		relations: ["relationships", "relationships.to"],
+		select: userProjection
+	});
 
 	let relationship = user.relationships.find((x) => x.to_id === id);
 	const friendRequest = friend.relationships.find((x) => x.to_id === req.user_id);

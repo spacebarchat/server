@@ -7,7 +7,7 @@ const router = Router();
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { client } = Config.get();
 
-    const release = await Release.findOneOrFail({ name: client.releases.upstreamVersion})
+    const release = await Release.findOneOrFail({ where: { name: client.releases.upstreamVersion } })
 
 	res.json({
         name: release.name,

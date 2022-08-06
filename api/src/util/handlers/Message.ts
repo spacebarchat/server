@@ -68,10 +68,10 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		rights.hasThrow("SEND_MESSAGES");
 	}	
 	if (opts.application_id) {
-		message.application = await Application.findOneOrFail({ id: opts.application_id });
+		message.application = await Application.findOneOrFail({ where: { id: opts.application_id } });
 	}
 	if (opts.webhook_id) {
-		message.webhook = await Webhook.findOneOrFail({ id: opts.webhook_id });
+		message.webhook = await Webhook.findOneOrFail({ where: { id: opts.webhook_id } });
 	}
 	
 	const permission = await getPermission(opts.author_id, channel.guild_id, opts.channel_id);
@@ -85,7 +85,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		permission.hasThrow("READ_MESSAGE_HISTORY");
 		// code below has to be redone when we add custom message routing
 		if (message.guild_id !== null) {
-			const guild = await Guild.findOneOrFail({ id: channel.guild_id });
+			const guild = await Guild.findOneOrFail({ where: { id: channel.guild_id } });
 			if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
 				if (opts.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
 				if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
@@ -120,7 +120,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 		await Promise.all(
 			Array.from(content.matchAll(ROLE_MENTION)).map(async ([_, mention]) => {
-				const role = await Role.findOneOrFail({ id: mention, guild_id: channel.guild_id });
+				const role = await Role.findOneOrFail({ where: { id: mention, guild_id: channel.guild_id } });
 				if (role.mentionable || permission.has("MANAGE_ROLES")) {
 					mention_role_ids.push(mention);
 				}

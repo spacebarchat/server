@@ -15,10 +15,10 @@ export function checkToken(token: string, jwtSecret: string): Promise<any> {
 		jwt.verify(token, jwtSecret, JWTOptions, async (err, decoded: any) => {
 			if (err || !decoded) return rej("Invalid Token");
 
-			const user = await User.findOne(
-				{ id: decoded.id },
-				{ select: ["data", "bot", "disabled", "deleted", "rights"] }
-			);
+			const user = await User.findOne({
+				where: { id: decoded.id },
+				select: ["data", "bot", "disabled", "deleted", "rights"] 
+			});
 			if (!user) return rej("Invalid Token");
 			// we need to round it to seconds as it saved as seconds in jwt iat and valid_tokens_since is stored in milliseconds
 			if (decoded.iat * 1000 < new Date(user.data.valid_tokens_since).setSeconds(0, 0))

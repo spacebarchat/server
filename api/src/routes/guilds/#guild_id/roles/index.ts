@@ -37,7 +37,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	const roles = await Role.find({ guild_id: guild_id });
+	const roles = await Role.find({ where: { guild_id } });
 
 	return res.json(roles);
 });
@@ -46,7 +46,7 @@ router.post("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" })
 	const guild_id = req.params.guild_id;
 	const body = req.body as RoleModifySchema;
 
-	const role_count = await Role.count({ guild_id });
+	const role_count = await Role.count({ where: { guild_id } });
 	const { maxRoles } = Config.get().limits.guild;
 
 	if (role_count > maxRoles) throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);

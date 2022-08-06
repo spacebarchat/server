@@ -17,7 +17,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 	const guilds = showAllGuilds
 		? await Guild.find({ take: Math.abs(Number(limit || 24)) })
-		: await Guild.find({ where: `"features" LIKE '%DISCOVERABLE%'`, take: Math.abs(Number(limit || 24)) });
+		: await Guild.find({ where: { features: Like('%DISCOVERABLE%') }, take: Math.abs(Number(limit || 24)) });
 	res.send({ recommended_guilds: guilds, load_id: `server_recs/${genLoadId(32)}`}).status(200);
 });
 

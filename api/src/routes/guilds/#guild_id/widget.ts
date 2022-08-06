@@ -13,7 +13,7 @@ const router: Router = Router();
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	const guild = await Guild.findOneOrFail({ id: guild_id });
+	const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
 
 	return res.json({ enabled: guild.widget_enabled || false, channel_id: guild.widget_channel_id || null });
 });

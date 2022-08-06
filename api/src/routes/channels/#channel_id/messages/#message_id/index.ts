@@ -169,8 +169,8 @@ router.get("/", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res:
 router.delete("/", route({}), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
 
-	const channel = await Channel.findOneOrFail({ id: channel_id });
-	const message = await Message.findOneOrFail({ id: message_id });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
+	const message = await Message.findOneOrFail({ where: { id: message_id } });
 	
 	const rights = await getRights(req.user_id);
 

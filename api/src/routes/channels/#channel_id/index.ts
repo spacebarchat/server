@@ -18,7 +18,7 @@ const router: Router = Router();
 router.get("/", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 
-	const channel = await Channel.findOneOrFail({ id: channel_id });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 
 	return res.send(channel);
 });
@@ -29,7 +29,7 @@ router.delete("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients"] });
 
 	if (channel.type === ChannelType.DM) {
-		const recipient = await Recipient.findOneOrFail({ where: { channel_id: channel_id, user_id: req.user_id } });
+		const recipient = await Recipient.findOneOrFail({ where: { channel_id, user_id: req.user_id } });
 		recipient.closed = true;
 		await Promise.all([
 			recipient.save(),
@@ -77,7 +77,7 @@ router.patch("/", route({ body: "ChannelModifySchema", permission: "MANAGE_CHANN
 	const { channel_id } = req.params;
 	if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
 
-	const channel = await Channel.findOneOrFail({ id: channel_id });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 	channel.assign(payload);
 
 	await Promise.all([

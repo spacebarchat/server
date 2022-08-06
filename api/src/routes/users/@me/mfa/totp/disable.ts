@@ -13,9 +13,9 @@ export interface TotpDisableSchema {
 router.post("/", route({ body: "TotpDisableSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as TotpDisableSchema;
 
-	const user = await User.findOneOrFail({ id: req.user_id }, { select: ["totp_secret"] });
+	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["totp_secret"] });
 
-	const backup = await BackupCode.findOne({ code: body.code });
+	const backup = await BackupCode.findOne({ where: { code: body.code } });
 	if (!backup) {
 		const ret = verifyToken(user.totp_secret!, body.code);
 		if (!ret || ret.delta != 0)

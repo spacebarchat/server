@@ -169,7 +169,7 @@ export class Channel extends BaseClass {
 		}
 
 		if (!opts?.skipNameChecks) {
-			const guild = await Guild.findOneOrFail({ id: channel.guild_id });
+			const guild = await Guild.findOneOrFail({ where: { id: channel.guild_id } });
 			if (!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") && channel.name) {
 				for (let character of InvisibleCharacters)
 					if (channel.name.includes(character))
@@ -194,7 +194,7 @@ export class Channel extends BaseClass {
 			case ChannelType.GUILD_NEWS:
 			case ChannelType.GUILD_VOICE:
 				if (channel.parent_id && !opts?.skipExistsCheck) {
-					const exists = await Channel.findOneOrFail({ id: channel.parent_id });
+					const exists = await Channel.findOneOrFail({ where: { id: channel.parent_id } });
 					if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
 					if (exists.guild_id !== channel.guild_id)
 						throw new HTTPError("The category channel needs to be in the guild");

@@ -17,12 +17,12 @@ const router: Router = Router();
 router.put("/:message_id", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res: Response) => {
 	const { channel_id, message_id } = req.params;
 
-	const message = await Message.findOneOrFail({ id: message_id });
+	const message = await Message.findOneOrFail({ where: { id: message_id } });
 
 	// * in dm channels anyone can pin messages -> only check for guilds
 	if (message.guild_id) req.permission!.hasThrow("MANAGE_MESSAGES");
 
-	const pinned_count = await Message.count({ channel: { id: channel_id }, pinned: true });
+	const pinned_count = await Message.count({ where: { channel: { id: channel_id }, pinned: true } });
 	const { maxPins } = Config.get().limits.channel;
 	if (pinned_count >= maxPins) throw DiscordApiErrors.MAXIMUM_PINS.withParams(maxPins);
 
@@ -50,10 +50,10 @@ router.put("/:message_id", route({ permission: "VIEW_CHANNEL" }), async (req: Re
 router.delete("/:message_id", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res: Response) => {
 	const { channel_id, message_id } = req.params;
 
-	const channel = await Channel.findOneOrFail({ id: channel_id });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 	if (channel.guild_id) req.permission!.hasThrow("MANAGE_MESSAGES");
 
-	const message = await Message.findOneOrFail({ id: message_id });
+	const message = await Message.findOneOrFail({ where: { id: message_id } });
 	message.pinned = false;
 
 	await Promise.all([
@@ -82,7 +82,7 @@ router.delete("/:message_id", route({ permission: "VIEW_CHANNEL" }), async (req:
 router.get("/", route({ permission: ["READ_MESSAGE_HISTORY"] }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
 
-	let pins = await Message.find({ channel_id: channel_id, pinned: true });
+	let pins = await Message.find({ where: { channel_id, pinned: true } });
 
 	res.send(pins);
 });

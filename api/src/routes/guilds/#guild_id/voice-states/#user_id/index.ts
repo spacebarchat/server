@@ -34,14 +34,16 @@ router.patch("/", route({ body: "VoiceStateUpdateSchema" }), async (req: Request
 	if (body.request_to_speak_timestamp) perms.hasThrow("REQUEST_TO_SPEAK");
 
 	const voice_state = await VoiceState.findOne({
-		guild_id,
-		channel_id: body.channel_id,
-		user_id
+		where: {
+			guild_id,
+			channel_id: body.channel_id,
+			user_id
+		}
 	});
 	if (!voice_state) throw DiscordApiErrors.UNKNOWN_VOICE_STATE;
 
 	voice_state.assign(body);
-	const channel = await Channel.findOneOrFail({ guild_id, id: body.channel_id });
+	const channel = await Channel.findOneOrFail({ where: { guild_id, id: body.channel_id } });
 	if (channel.type !== ChannelType.GUILD_STAGE_VOICE) {
 		throw DiscordApiErrors.CANNOT_EXECUTE_ON_THIS_CHANNEL_TYPE;
 	}

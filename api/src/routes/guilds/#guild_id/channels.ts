@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
-	const channels = await Channel.find({ guild_id });
+	const channels = await Channel.find({ where: { guild_id } });
 
 	res.json(channels);
 });
@@ -48,7 +48,7 @@ router.patch("/", route({ body: "ChannelReorderSchema", permission: "MANAGE_CHAN
 			}
 
 			await Channel.update({ guild_id, id: x.id }, opts);
-			const channel = await Channel.findOneOrFail({ guild_id, id: x.id });
+			const channel = await Channel.findOneOrFail({ where: { guild_id, id: x.id } });
 
 			await emitEvent({ event: "CHANNEL_UPDATE", data: channel, channel_id: x.id, guild_id } as ChannelUpdateEvent);
 		})

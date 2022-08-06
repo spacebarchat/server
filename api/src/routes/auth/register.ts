@@ -107,7 +107,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		}
 
 		// check if there is already an account with this email
-		const exists = await User.findOne({ email: email });
+		const exists = await User.findOne({ where: { email: email } });
 
 		if (exists) {
 			throw FieldErrors({

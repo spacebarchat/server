@@ -75,7 +75,7 @@ export class Invite extends BaseClassWithoutId {
 	vanity_url?: boolean;
 
 	static async joinGuild(user_id: string, code: string) {
-		const invite = await Invite.findOneOrFail({ code });
+		const invite = await Invite.findOneOrFail({ where: { code } });
 		if (invite.uses++ >= invite.max_uses && invite.max_uses !== 0) await Invite.delete({ code });
 		else await invite.save();
 

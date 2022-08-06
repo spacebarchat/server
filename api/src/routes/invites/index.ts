@@ -15,9 +15,9 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 
 router.post("/:code", route({right: "USE_MASS_INVITES"}), async (req: Request, res: Response) => {
 	const { code } = req.params;
-    const { guild_id } = await Invite.findOneOrFail({ code })
-	const { features } = await Guild.findOneOrFail({ id: guild_id});
-	const { public_flags } = await User.findOneOrFail({ id: req.user_id });
+    const { guild_id } = await Invite.findOneOrFail({ where: { code } })
+	const { features } = await Guild.findOneOrFail({ where: { id: guild_id} });
+	const { public_flags } = await User.findOneOrFail({ where: { id: req.user_id } });
 	
 	if(features.includes("INTERNAL_EMPLOYEE_ONLY") && (public_flags & 1) !== 1) throw new HTTPError("Only intended for the staff of this server.", 401);
 	if(features.includes("INVITES_CLOSED")) throw new HTTPError("Sorry, this guild has joins closed.", 403);
@@ -30,7 +30,7 @@ router.post("/:code", route({right: "USE_MASS_INVITES"}), async (req: Request, r
 // * cant use permission of route() function because path doesn't have guild_id/channel_id
 router.delete("/:code", route({}), async (req: Request, res: Response) => {
 	const { code } = req.params;
-	const invite = await Invite.findOneOrFail({ code });
+	const invite = await Invite.findOneOrFail({ where: { code } });
 	const { guild_id, channel_id } = invite;
 
 	const permission = await getPermission(req.user_id, guild_id, channel_id);

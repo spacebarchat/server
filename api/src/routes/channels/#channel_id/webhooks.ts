@@ -22,12 +22,12 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 // TODO: use Image Data Type for avatar instead of String
 router.post("/", route({ body: "WebhookCreateSchema", permission: "MANAGE_WEBHOOKS" }), async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
-	const channel = await Channel.findOneOrFail({ id: channel_id });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 
 	isTextChannel(channel.type);
 	if (!channel.guild_id) throw new HTTPError("Not a guild channel", 400);
 
-	const webhook_count = await Webhook.count({ channel_id });
+	const webhook_count = await Webhook.count({ where: { channel_id } });
 	const { maxWebhooks } = Config.get().limits.channel;
 	if (webhook_count > maxWebhooks) throw DiscordApiErrors.MAXIMUM_WEBHOOKS.withParams(maxWebhooks);
 

@@ -47,7 +47,7 @@ router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT
 	}).save();
 	const data = invite.toJSON();
 	data.inviter = await User.getPublicUser(req.user_id);
-	data.guild = await Guild.findOne({ id: guild_id });
+	data.guild = await Guild.findOne({ where: { id: guild_id } });
 	data.channel = channel;
 
 	await emitEvent({ event: "INVITE_CREATE", data, guild_id } as InviteCreateEvent);
@@ -57,7 +57,7 @@ router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT
 router.get("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request, res: Response) => {
 	const { user_id } = req;
 	const { channel_id } = req.params;
-	const channel = await Channel.findOneOrFail({ id: channel_id });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 
 	if (!channel.guild_id) {
 		throw new HTTPError("This channel doesn't exist", 404);

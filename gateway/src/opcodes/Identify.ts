@@ -58,7 +58,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				relations: ["relationships", "relationships.to"],
 				select: [...PrivateUserProjection, "relationships"],
 			}),
-			ReadState.find({ user_id: this.user_id }),
+			ReadState.find({ where: { user_id: this.user_id } }),
 			Member.find({
 				where: { id: this.user_id },
 				select: MemberPrivateProjection,
@@ -96,7 +96,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				},
 				activities: [],
 			}).save(),
-			Application.findOne({ id: this.user_id }),
+			Application.findOne({ where: { id: this.user_id } }),
 		]);
 
 	if (!user) return this.close(CLOSECODES.Authentication_failed);

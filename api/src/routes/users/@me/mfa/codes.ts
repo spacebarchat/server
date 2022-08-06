@@ -15,7 +15,7 @@ export interface MfaCodesSchema {
 router.post("/", route({ body: "MfaCodesSchema" }), async (req: Request, res: Response) => {
 	const { password, regenerate } = req.body as MfaCodesSchema;
 
-	const user = await User.findOneOrFail({ id: req.user_id }, { select: ["data"] });
+	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["data"] });
 
 	if (!await bcrypt.compare(password, user.data.hash || "")) {
 		throw FieldErrors({ password: { message: req.t("auth:login.INVALID_PASSWORD"), code: "INVALID_PASSWORD" } });
@@ -33,10 +33,12 @@ router.post("/", route({ body: "MfaCodesSchema" }), async (req: Request, res: Re
 	}
 	else {
 		codes = await BackupCode.find({
-			user: {
-				id: req.user_id,
-			},
-			expired: false,
+			where: {
+				user: {
+					id: req.user_id,
+				},
+				expired: false
+			}
 		});
 	}
 

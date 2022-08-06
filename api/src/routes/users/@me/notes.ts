@@ -29,7 +29,7 @@ router.put("/:id", route({}), async (req: Request, res: Response) => {
 
 	if (note && note.length) {
 		// upsert a note
-		if (await Note.findOne({ owner: { id: owner.id }, target: { id: target.id } })) {
+		if (await Note.findOne({ where: { owner: { id: owner.id }, target: { id: target.id } } })) {
 			Note.update(
 				{ owner: { id: owner.id }, target: { id: target.id } },
 				{ owner, target, content: note }

@@ -29,9 +29,9 @@ router.put(
 		if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
 		if (body.type === 0) {
-			if (!(await Role.count({ id: overwrite_id }))) throw new HTTPError("role not found", 404);
+			if (!(await Role.count({ where: { id: overwrite_id } }))) throw new HTTPError("role not found", 404);
 		} else if (body.type === 1) {
-			if (!(await Member.count({ id: overwrite_id }))) throw new HTTPError("user not found", 404);
+			if (!(await Member.count({ where: { id: overwrite_id } }))) throw new HTTPError("user not found", 404);
 		} else throw new HTTPError("type not supported", 501);
 
 		// @ts-ignore
@@ -64,7 +64,7 @@ router.put(
 router.delete("/:overwrite_id", route({ permission: "MANAGE_ROLES" }), async (req: Request, res: Response) => {
 	const { channel_id, overwrite_id } = req.params;
 
-	const channel = await Channel.findOneOrFail({ id: channel_id });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 	if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
 	channel.permission_overwrites = channel.permission_overwrites!.filter((x) => x.id === overwrite_id);

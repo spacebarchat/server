@@ -49,10 +49,10 @@ export async function setupListener(this: WebSocket) {
 			where: { user_id: this.user_id, closed: false },
 			relations: ["channel"],
 		}),
-		Relationship.find({
+		Relationship.find({ where: {
 			from_id: this.user_id,
 			type: RelationshipType.friends,
-		}),
+		} }),
 	]);
 
 	const guilds = members.map((x) => x.guild);
