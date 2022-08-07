@@ -92,7 +92,7 @@ function getDataSourceOptions(): DataSourceOptions {
 }
 
 function shouldIncludeEntity(name: string): boolean {
-	return ![ 
+	return ![
 		BaseClassWithoutId,
 		PrimaryColumn,
 		BaseClass,
