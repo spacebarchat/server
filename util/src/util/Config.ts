@@ -19,10 +19,10 @@ export const Config = {
 		config = (config || {}).merge(DefaultConfigOptions);
 
 		// try {
-		// 	const overrideConfig = JSON.parse(fs.readFileSync(overridePath, { encoding: "utf8" }));
-		// 	config = overrideConfig.merge(config);
+		//  const overrideConfig = JSON.parse(fs.readFileSync(overridePath, { encoding: "utf8" }));
+		//  config = overrideConfig.merge(config);
 		// } catch (error) {
-		// 	fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
+		//  fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
 		// }
 
 		return this.set(config);

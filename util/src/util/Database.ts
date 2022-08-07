@@ -7,6 +7,7 @@ import { yellow, green, red } from "picocolors";
 import fs from "fs";
 import { exit } from "process";
 import { BaseClass, BaseClassWithoutId } from "../entities";
+import { config } from "dotenv";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -14,28 +15,29 @@ import { BaseClass, BaseClassWithoutId } from "../entities";
 let promise: Promise<any>;
 let dataSource: DataSource;
 
-
-
 export async function initDatabase(): Promise<DataSource> {
-	if (dataSource) return dataSource; // prevent initalizing multiple times
+	//if (dataSource) return dataSource; // prevent initalizing multiple times
 
-	let dso = getDataSourceOptions();
-	console.log(`[Database] ${yellow(`Connecting to ${dso.type} database...`)}`);
-
-	//promise = dataSource.initialize();
-	//await promise;
-
+	if(dataSource.isInitialized) return dataSource;
+	
+	await dataSource.initialize();
 	console.log(`[Database] ${green("Connected!")}`);
+	await dataSource.runMigrations();
+	console.log(`[Database] ${green("Up to date!")}`);
 
-	return promise;
+	if("DB_MIGRATE" in process.env) {
+		console.log("DB_MIGRATE specified, exiting!")
+		exit(0);
+	}
+	return dataSource;
 }
-
 
 export function closeDatabase() {
 	dataSource?.destroy();
 }
 
 function getDataSourceOptions(): DataSourceOptions {
+	config();
 	//get connection string and check for migrations
 	const dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
 	const type = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite" as any;
@@ -61,9 +63,9 @@ function getDataSourceOptions(): DataSourceOptions {
 			migrations_exist: migrationsExist
 		}, null, 4))}`);
 
-		//exit(1);
+		if(!("DB_MIGRATE" in process.env)) exit(1);
 	}
-	
+	console.log(`[Database] ${yellow(`Configuring data source to use ${type} database...`)}`);
 	return {
 		type,
         charset: 'utf8mb4',
@@ -82,9 +84,10 @@ function getDataSourceOptions(): DataSourceOptions {
 		name: "default",
 		migrations: synchronizeInsteadOfMigrations ? [] : [path.join(__dirname, "..", "migrations", type, "*.js")],
 		migrationsRun: !synchronizeInsteadOfMigrations,
+		//migrationsRun: false,
 		cli: {
 			migrationsDir: `src/migrations/${type}`
-		}
+		},
 	} as DataSourceOptions;
 }
 
