@@ -34,7 +34,9 @@ parts.forEach((part) => {
 		missing: [],
 		using: [],
 	};
-	x = JSON.parse(execIn("npx depcheck --json", partDir).stdout);
+	let dcproc = execIn("npx depcheck --json", partDir);
+	if(dcproc.stdout) x = JSON.parse(dcproc.stdout);
+	else x = JSON.parse(dcproc);
 
 	fs.writeFileSync(
 		path.join(__dirname, "..", `depclean.out.${part}.json`),
