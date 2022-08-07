@@ -201,9 +201,10 @@ export async function postHandleMessage(message: Message) {
 export async function sendMessage(opts: MessageOptions) {
 	const message = await handleMessage({ ...opts, timestamp: new Date() });
 
+	//TODO: check this, removed toJSON call
 	await Promise.all([
 		Message.insert(message),
-		emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data: message.toJSON() } as MessageCreateEvent)
+		emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data: message } as MessageCreateEvent)
 	]);
 
 	postHandleMessage(message).catch((e) => {}); // no await as it should catch error non-blockingly

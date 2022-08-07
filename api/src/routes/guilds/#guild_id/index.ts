@@ -61,7 +61,8 @@ router.patch("/", route({ body: "GuildUpdateSchema"}), async (req: Request, res:
 	// TODO: check if body ids are valid
 	guild.assign(body);
 
-	const data = guild.toJSON();
+	//TODO: check this, removed toJSON call
+	const data = JSON.parse(JSON.stringify(guild));
 	// TODO: guild hashes
 	// TODO: fix vanity_url_code, template_id
 	delete data.vanity_url_code;
