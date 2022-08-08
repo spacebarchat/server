@@ -19,7 +19,6 @@ export interface LoginSchema {
 router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Response) => {
 	const { login, password, captcha_key, undelete } = req.body as LoginSchema;
 	const email = adjustEmail(login);
-	console.log("login", email);
 
 	const config = Config.get();
 
