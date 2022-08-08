@@ -205,8 +205,6 @@ router.post(
 			await Invite.joinGuild(user.id, body.invite);
 		}
 
-		console.log("register", body.email, body.username, ip);
-
 		return res.json({ token: await generateToken(user.id) });
 	},
 );
