@@ -290,8 +290,6 @@ export class User extends BaseClass {
 			notes: {},
 		});
 
-		console.log("new user")
-		console.log(user);
 		await user.save();
 
 		setImmediate(async () => {
