@@ -1,11 +1,12 @@
 import "reflect-metadata";
-import { BaseEntity, EntityMetadata, ObjectIdColumn, PrimaryColumn, FindOptionsWhere } from "typeorm";
+import { BaseEntity, EntityMetadata, ObjectIdColumn, PrimaryColumn, FindOptionsWhere, Generated, SaveOptions } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
 
 export class BaseClassWithoutId extends BaseEntity {
 	constructor(props?: any) {
 		super();
-		this.assign(props);
+		if(props != undefined && props != null && Object.keys(props).length > 0)
+			this.assign(props);
 	}
 
 	assign(props: any = {}) {
@@ -13,8 +14,11 @@ export class BaseClassWithoutId extends BaseEntity {
 		delete props.opts;
 		delete props.props;
 		// will not include relational properties
-
-		for (const key in props) {
+		console.warn("WARNING: BaseClass.assign called! This will probably fail!");
+		console.warn(this)
+		Object.assign(this,props);
+		if(/--debug|--inspect/.test(process.execArgv.join(' '))) debugger;
+		/*for (const key in props) {
 			// @ts-ignore
 			const setter = this[`set${key.capitalize()}`]; // use setter function if it exists
 
@@ -24,7 +28,7 @@ export class BaseClassWithoutId extends BaseEntity {
 				// @ts-ignore
 				this[key] = props[key];
 			}
-		}
+		}*/
 	}
 }
 
@@ -35,8 +39,13 @@ export class BaseClass extends BaseClassWithoutId {
 	id: string;
 
 	assign(props: any = {}) {
-		super.assign(props);
+			super.assign(props);
 		if (!this.id) this.id = Snowflake.generate();
 		return this;
+	}
+
+	save(options?: SaveOptions | undefined): Promise<this> {
+		if (!this.id) this.id = Snowflake.generate();
+		return super.save(options);
 	}
 }

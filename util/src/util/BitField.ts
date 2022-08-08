@@ -138,6 +138,9 @@ export class BitField {
 			return bit.map((p) => resolve.call(this, p)).reduce((prev, p) => BigInt(prev) | BigInt(p), BigInt(0));
 		}
 		if (typeof bit === "string" && typeof FLAGS[bit] !== "undefined") return FLAGS[bit];
+		if (bit === "0") return BigInt(0); //special case: 0
+		if (typeof bit === "string") return BigInt(bit); //last ditch effort...
+		if(/--debug|--inspect/.test(process.execArgv.join(' '))) debugger; //if you're here, we have an invalid bitfield... if bit is 0, thats fine, I guess...
 		throw new RangeError("BITFIELD_INVALID: " + bit);
 	}
 }

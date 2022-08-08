@@ -285,7 +285,7 @@ export class Guild extends BaseClass {
 	}) {
 		const guild_id = Snowflake.generate();
 
-		const guild = await new Guild({
+		const guild: Guild = Object.assign(new Guild(),{
 			name: body.name || "Fosscord",
 			icon: await handleFile(`/icons/${guild_id}`, body.icon as string),
 			region: Config.get().regions.default,
@@ -316,11 +316,12 @@ export class Guild extends BaseClass {
 				welcome_channels: [],
 			},
 			widget_enabled: true, // NB: don't set it as false to prevent artificial restrictions
-		}).save();
+		});
+		await guild.save();
 
 		// we have to create the role _after_ the guild because else we would get a "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" error
 		// TODO: make the @everyone a pseudorole that is dynamically generated at runtime so we can save storage
-		await new Role({
+		let role: Role = Object.assign(new Role(), {
 			id: guild_id,
 			guild_id: guild_id,
 			color: 0,
@@ -333,7 +334,8 @@ export class Guild extends BaseClass {
 			position: 0,
 			icon: null,
 			unicode_emoji: null
-		}).save();
+		});
+		await role.save();
 
 		if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
 

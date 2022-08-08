@@ -43,7 +43,7 @@ router.post(
 		const id = Snowflake.generate();
 
 		const [sticker] = await Promise.all([
-			new Sticker({
+			Object.assign(new Sticker(), {
 				...body,
 				guild_id,
 				id,
@@ -105,7 +105,7 @@ router.patch(
 		const { guild_id, sticker_id } = req.params;
 		const body = req.body as ModifyGuildStickerSchema;
 
-		const sticker = await new Sticker({ ...body, guild_id, id: sticker_id }).save();
+		const sticker = await Object.assign(new Sticker(), { ...body, guild_id, id: sticker_id }).save();
 		await sendStickerUpdateEvent(guild_id);
 
 		return res.json(sticker);

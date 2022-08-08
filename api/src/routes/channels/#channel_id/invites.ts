@@ -33,7 +33,7 @@ router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT
 
 	const expires_at = new Date(req.body.max_age * 1000 + Date.now());
 
-	const invite = await new Invite({
+	const invite = await Object.assign(new Invite(),{
 		code: random(),
 		temporary: req.body.temporary,
 		uses: 0,

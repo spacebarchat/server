@@ -28,7 +28,7 @@ router.put("/:user_id", route({}), async (req: Request, res: Response) => {
 			throw DiscordApiErrors.INVALID_RECIPIENT; //TODO is this the right error?
 		}
 
-		channel.recipients!.push(new Recipient({ channel_id, user_id: user_id }));
+		channel.recipients!.push(Object.assign(new Recipient(), { channel_id, user_id: user_id }));
 		await channel.save();
 
 		await emitEvent({

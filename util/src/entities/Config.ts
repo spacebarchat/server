@@ -129,6 +129,7 @@ export interface ConfigValue {
 		requireCaptcha: boolean;
 	};
 	register: {
+		defaultRights: string;
 		email: {
 			required: boolean;
 			allowlist: boolean;
@@ -349,6 +350,7 @@ export const DefaultConfigOptions: ConfigValue = {
 			minSymbols: 0,
 		},
 		incrementingDiscriminators: false,
+		defaultRights: "0"
 	},
 	regions: {
 		default: "fosscord",

@@ -77,8 +77,8 @@ router.patch("/", route({ body: "ChannelModifySchema", permission: "MANAGE_CHANN
 	const { channel_id } = req.params;
 	if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
 
-	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
-	channel.assign(payload);
+	let channel = await Channel.findOneOrFail({ where: { id: channel_id } });
+	channel = Object.assign(channel, payload);
 
 	await Promise.all([
 		channel.save(),

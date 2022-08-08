@@ -43,7 +43,7 @@ router.patch("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" }
 
 	if (body.icon) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string);
 
-	const role = new Role({
+	const role = Object.assign(new Role(), {
 		...body,
 		id: role_id,
 		guild_id,

@@ -27,6 +27,21 @@ export async function Connection(
 		socket.on("close", Close);
 		// @ts-ignore
 		socket.on("message", Message);
+		
+		if(process.env.WS_LOGEVENTS)
+		[
+			"close",
+			"error",
+			"upgrade",
+			//"message",
+			"open",
+			"ping",
+			"pong",
+			"unexpected-response"
+		].forEach(x=>{
+			socket.on(x, y => console.log(x, y));
+		});
+
 		console.log(`[Gateway] Connections: ${this.clients.size}`);
 
 		const { searchParams } = new URL(`http://localhost${request.url}`);

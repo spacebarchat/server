@@ -85,8 +85,8 @@ export class Member extends BaseClassWithoutId {
 	@Column()
 	joined_at: Date;
 
-	@Column({ type: "bigint", nullable: true })
-	premium_since?: number;
+	@Column({ nullable: true })
+	premium_since?: Date;
 
 	@Column()
 	deaf: boolean;
@@ -161,7 +161,7 @@ export class Member extends BaseClassWithoutId {
 			}),
 			Role.findOneOrFail({ where: { id: role_id, guild_id }, select: ["id"] }),
 		]);
-		member.roles.push(new Role({ id: role_id }));
+		member.roles.push(Object.assign(new Role(), { id: role_id }));
 
 		await Promise.all([
 			member.save(),
@@ -264,9 +264,9 @@ export class Member extends BaseClassWithoutId {
 		//TODO: check for bugs
 		if(guild.member_count) guild.member_count++;
 		await Promise.all([
-			new Member({
+			Object.assign(new Member(), {
 				...member,
-				roles: [new Role({ id: guild_id })],
+				roles: [Object.assign(new Role(), { id: guild_id })],
 				// read_state: {},
 				settings: {
 					channel_overrides: [],

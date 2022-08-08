@@ -47,7 +47,7 @@ router.patch("/", route({ body: "VanityUrlSchema", permission: "MANAGE_GUILD" })
 
 	const { id } = await Channel.findOneOrFail({ where: { guild_id, type: ChannelType.GUILD_TEXT } });
 
-	await new Invite({
+	await Object.assign(new Invite(), {
 		vanity_url: true,
 		code: code,
 		temporary: false,

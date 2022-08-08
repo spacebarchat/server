@@ -51,7 +51,7 @@ router.post("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" })
 
 	if (role_count > maxRoles) throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
 
-	const role = new Role({
+	let role: Role = Object.assign(new Role(),{
 		// values before ...body are default and can be overriden
 		position: 0,
 		hoist: false,

@@ -140,7 +140,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 			relationship.type = RelationshipType.blocked;
 			await relationship.save();
 		} else {
-			relationship = await new Relationship({ to_id: id, type: RelationshipType.blocked, from_id: req.user_id }).save();
+			relationship = await Object.assign(new Relationship(), { to_id: id, type: RelationshipType.blocked, from_id: req.user_id }).save();
 		}
 
 		if (friendRequest && friendRequest.type !== RelationshipType.blocked) {
@@ -166,8 +166,8 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 	const { maxFriends } = Config.get().limits.user;
 	if (user.relationships.length >= maxFriends) throw DiscordApiErrors.MAXIMUM_FRIENDS.withParams(maxFriends);
 
-	let incoming_relationship = new Relationship({ nickname: undefined, type: RelationshipType.incoming, to: user, from: friend });
-	let outgoing_relationship = new Relationship({
+	let incoming_relationship = Object.assign(new Relationship(), { nickname: undefined, type: RelationshipType.incoming, to: user, from: friend });
+	let outgoing_relationship = Object.assign(new Relationship(), {
 		nickname: undefined,
 		type: RelationshipType.outgoing,
 		to: friend,
@@ -178,7 +178,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 		if (friendRequest.type === RelationshipType.blocked) throw new HTTPError("The user blocked you");
 		if (friendRequest.type === RelationshipType.friends) throw new HTTPError("You are already friends with the user");
 		// accept friend request
-		incoming_relationship = friendRequest;
+		incoming_relationship = friendRequest as any; //TODO: checkme, any cast
 		incoming_relationship.type = RelationshipType.friends;
 	}
 
@@ -186,7 +186,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 		if (relationship.type === RelationshipType.outgoing) throw new HTTPError("You already sent a friend request");
 		if (relationship.type === RelationshipType.blocked) throw new HTTPError("Unblock the user before sending a friend request");
 		if (relationship.type === RelationshipType.friends) throw new HTTPError("You are already friends with the user");
-		outgoing_relationship = relationship;
+		outgoing_relationship = relationship as any; //TODO: checkme, any cast
 		outgoing_relationship.type = RelationshipType.friends;
 	}
 

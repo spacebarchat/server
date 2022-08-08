@@ -90,7 +90,7 @@ router.put("/:user_id", route({ body: "BanCreateSchema", permission: "BAN_MEMBER
 	
 	const banned_user = await User.getPublicUser(banned_user_id);
 
-	const ban = new Ban({
+	const ban = Object.assign(new Ban(),{
 		user_id: banned_user_id,
 		guild_id: guild_id,
 		ip: getIpAdress(req),
@@ -122,7 +122,7 @@ router.put("/@me", route({ body: "BanCreateSchema"}), async (req: Request, res: 
 	if (req.permission!.cache.guild?.owner_id === req.params.user_id) 
 		throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
 	
-	const ban = new Ban({
+	const ban = Object.assign(new Ban(), {
 		user_id: req.params.user_id,
 		guild_id: guild_id,
 		ip: getIpAdress(req),

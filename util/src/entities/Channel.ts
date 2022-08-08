@@ -222,7 +222,7 @@ export class Channel extends BaseClass {
 		};
 
 		await Promise.all([
-			new Channel(channel).save(),
+			Object.assign(new Channel(),channel).save(),
 			!opts?.skipEventEmit
 				? emitEvent({
 					event: "CHANNEL_CREATE",
@@ -263,7 +263,8 @@ export class Channel extends BaseClass {
 				if (containsAll(re, channelRecipients)) {
 					if (channel == null) {
 						channel = ur.channel;
-						await ur.assign({ closed: false }).save();
+						ur = Object.assign(ur, { closed: false });
+						await ur.save();
 					}
 				}
 			}
@@ -272,7 +273,7 @@ export class Channel extends BaseClass {
 		if (channel == null) {
 			name = trimSpecial(name);
 
-			channel = await new Channel({
+			channel = await (Object.assign(new Channel(), {
 				name,
 				type,
 				owner_id: type === ChannelType.DM ? undefined : null, // 1:1 DMs are ownerless in fosscord-server
@@ -280,9 +281,9 @@ export class Channel extends BaseClass {
 				last_message_id: null,
 				recipients: channelRecipients.map(
 					(x) =>
-						new Recipient({ user_id: x, closed: !(type === ChannelType.GROUP_DM || x === creator_user_id) })
+						Object.assign(new Recipient(), { user_id: x, closed: !(type === ChannelType.GROUP_DM || x === creator_user_id) })
 				),
-			}).save();
+			}) as Channel).save();
 		}
 
 		const channel_dto = await DmChannelDTO.from(channel);

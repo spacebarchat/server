@@ -50,7 +50,7 @@ router.post("/", route({ body: "EmojiCreateSchema", permission: "MANAGE_EMOJIS_A
 	const user = await User.findOneOrFail({ where: { id: req.user_id } });
 	body.image = (await handleFile(`/emojis/${id}`, body.image)) as string;
 
-	const emoji = await new Emoji({
+	const emoji = await Object.assign(new Emoji(), {
 		id: id,
 		guild_id: guild_id,
 		...body,
@@ -80,7 +80,7 @@ router.patch(
 		const { emoji_id, guild_id } = req.params;
 		const body = req.body as EmojiModifySchema;
 
-		const emoji = await new Emoji({ ...body, id: emoji_id, guild_id: guild_id }).save();
+		const emoji = await Object.assign(new Emoji(), { ...body, id: emoji_id, guild_id: guild_id }).save();
 
 		await emitEvent({
 			event: "GUILD_EMOJIS_UPDATE",

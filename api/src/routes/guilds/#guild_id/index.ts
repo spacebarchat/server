@@ -59,7 +59,7 @@ router.patch("/", route({ body: "GuildUpdateSchema"}), async (req: Request, res:
 		relations: ["emojis", "roles", "stickers"]
 	});
 	// TODO: check if body ids are valid
-	guild.assign(body);
+	guild = Object.assign(guild, body);
 
 	//TODO: check this, removed toJSON call
 	const data = JSON.parse(JSON.stringify(guild));

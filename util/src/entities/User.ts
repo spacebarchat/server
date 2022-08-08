@@ -255,7 +255,7 @@ export class User extends BaseClass {
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 		const language = req.language === "en" ? "en-US" : req.language || "en-US";
 
-		const user = new User({
+		const user = Object.assign(new User(), {
 			created_at: new Date(),
 			username: username,
 			discriminator,
@@ -275,7 +275,7 @@ export class User extends BaseClass {
 			disabled: false,
 			deleted: false,
 			email: email,
-			rights: "0", // TODO: grant rights correctly, as 0 actually stands for no rights at all
+			rights: Config.get().register.defaultRights, // TODO: grant rights correctly, as 0 actually stands for no rights at all
 			nsfw_allowed: true, // TODO: depending on age
 			public_flags: "0",
 			flags: "0", // TODO: generate
@@ -289,6 +289,8 @@ export class User extends BaseClass {
 			notes: {},
 		});
 
+		console.log("new user")
+		console.log(user);
 		await user.save();
 
 		setImmediate(async () => {

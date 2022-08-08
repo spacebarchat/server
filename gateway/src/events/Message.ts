@@ -15,17 +15,33 @@ const PayloadSchema = {
 	$t: String,
 };
 
-export async function Message(this: WebSocket, buffer: WS.Data) {
+export async function Message(this: WebSocket, buffer: WS.RawData) {
 	// TODO: compression
 	let data: Payload;
 
 	if (this.encoding === "etf" && buffer instanceof Buffer)
 		data = erlpack.unpack(buffer);
-	else if (this.encoding === "json" && typeof buffer === "string")
-		data = JSON.parse(buffer);
-	else return;
+	else if (this.encoding === "json")
+		data = JSON.parse(buffer as unknown as string); //TODO: is this even correct?? seems to work for web clients...
+	else if(/--debug|--inspect/.test(process.execArgv.join(' '))) {
+		debugger;
+		return;
+	}
+	else {
+		console.log("Invalid gateway connection! Use a debugger to inspect!");
+		return;
+	}
 
-	check.call(this, PayloadSchema, data);
+	if(process.env.WS_VERBOSE)
+		console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
+	if(data.op !== 1)
+		check.call(this, PayloadSchema, data);
+	else { //custom validation for numbers, because heartbeat
+		if(data.s || data.t || typeof data.d !== "number") {
+			console.log("Invalid heartbeat...");
+			this.close(CLOSECODES.Decode_error);
+		}
+	}
 
 	// @ts-ignore
 	const OPCodeHandler = OPCodeHandlers[data.op];

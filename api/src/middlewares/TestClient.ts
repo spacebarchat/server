@@ -5,6 +5,7 @@ import fetch, { Response as FetchResponse, Headers } from "node-fetch";
 import ProxyAgent from 'proxy-agent';
 import { Config } from "@fosscord/util";
 import { AssetCacheItem } from "../util/entities/AssetCacheItem"
+import { green } from "picocolors";
 
 export default function TestClient(app: Application) {
 	const agent = new ProxyAgent();
@@ -18,11 +19,16 @@ export default function TestClient(app: Application) {
 
 	//load asset cache
 	let newAssetCache: Map<string, AssetCacheItem> = new Map<string, AssetCacheItem>();
-	if(!fs.existsSync(path.join(__dirname, "..", "..", "assets", "cache"))) {
-		fs.mkdirSync(path.join(__dirname, "..", "..", "assets", "cache"));
+	let assetCacheDir = path.join(__dirname, "..", "..", "assets", "cache");
+	if(process.env.ASSET_CACHE_DIR)
+		assetCacheDir = process.env.ASSET_CACHE_DIR
+
+	console.log(`[TestClient] ${green(`Using asset cache path: ${assetCacheDir}`)}`)
+	if(!fs.existsSync(assetCacheDir)) {
+		fs.mkdirSync(assetCacheDir);
 	}
-	if(fs.existsSync(path.join(__dirname, "..", "..", "assets", "cache", "index.json"))) {
-		let rawdata = fs.readFileSync(path.join(__dirname, "..", "..", "assets", "cache", "index.json"));
+	if(fs.existsSync(path.join(assetCacheDir, "index.json"))) {
+		let rawdata = fs.readFileSync(path.join(assetCacheDir, "index.json"));
 		newAssetCache = new Map<string, AssetCacheItem>(Object.entries(JSON.parse(rawdata.toString())));
 	}
 
@@ -39,6 +45,7 @@ export default function TestClient(app: Application) {
 			});
 		}
 		else {
+			console.log(`[TestClient] Downloading file not yet cached! Asset file: ${req.params.file}`);
 			response = await fetch(`https://discord.com/assets/${req.params.file}`, {
 				agent,
 				// @ts-ignore
@@ -49,11 +56,11 @@ export default function TestClient(app: Application) {
 			
 			//set cache info
 			assetCacheItem.Headers = Object.fromEntries(stripHeaders(response.headers));
-			assetCacheItem.FilePath = path.join(__dirname, "..", "..", "assets", "cache", req.params.file);
+			assetCacheItem.FilePath = path.join(assetCacheDir, req.params.file);
 			assetCacheItem.Key = req.params.file;
 			//add to cache and save
 			newAssetCache.set(req.params.file, assetCacheItem);
-			fs.writeFileSync(path.join(__dirname, "..", "..", "assets", "cache", "index.json"), JSON.stringify(Object.fromEntries(newAssetCache), null, 4));
+			fs.writeFileSync(path.join(assetCacheDir, "index.json"), JSON.stringify(Object.fromEntries(newAssetCache), null, 4));
 			//download file
 			fs.writeFileSync(assetCacheItem.FilePath, await response.buffer());
 		}

@@ -57,13 +57,13 @@ router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: 
 	const guild_id = Snowflake.generate();
 
 	const [guild, role] = await Promise.all([
-		new Guild({
+		Object.assign(new Guild(), {
 			...body,
 			...template.serialized_source_guild,
 			id: guild_id,
 			owner_id: req.user_id
 		}).save(),
-		new Role({
+		(Object.assign(new Role(), {
 			id: guild_id,
 			guild_id: guild_id,
 			color: 0,
@@ -74,7 +74,7 @@ router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: 
 			permissions: BigInt("2251804225"),
 			position: 0,
 			tags: null
-		}).save()
+		}) as Role).save()
 	]);
 
 	await Member.addToGuild(req.user_id, guild_id);

@@ -83,7 +83,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				// TODO: public user selection
 			}),
 			// save the session and delete it when the websocket is closed
-			new Session({
+			Object.assign(new Session(),{
 				user_id: this.user_id,
 				session_id: session_id,
 				// TODO: check if status is only one of: online, dnd, offline, idle
