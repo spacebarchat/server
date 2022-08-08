@@ -2,6 +2,7 @@ import { Channel, ChannelType, getPermission, Guild, Invite, trimSpecial } from 
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import { HTTPError } from "@fosscord/util";
+import { OrmUtils } from "@fosscord/util";
 
 const router = Router();
 
@@ -47,7 +48,7 @@ router.patch("/", route({ body: "VanityUrlSchema", permission: "MANAGE_GUILD" })
 
 	const { id } = await Channel.findOneOrFail({ where: { guild_id, type: ChannelType.GUILD_TEXT } });
 
-	await Object.assign(new Invite(), {
+	await OrmUtils.mergeDeep(new Invite(), {
 		vanity_url: true,
 		code: code,
 		temporary: false,

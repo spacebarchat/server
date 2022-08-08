@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { Member, getPermission, getRights, Role, GuildMemberUpdateEvent, emitEvent, Sticker, Emoji, Rights, Guild } from "@fosscord/util";
 import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { OrmUtils } from "@fosscord/util";
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 		permission.hasThrow("MANAGE_ROLES");
 
 		if (body.roles.indexOf(everyone.id) === -1) body.roles.push(everyone.id);
-		member.roles = body.roles.map((x) => Object.assign(new Role(), { id: x })); // foreign key constraint will fail if role doesn't exist
+		member.roles = body.roles.map((x) => OrmUtils.mergeDeep(new Role(), { id: x })); // foreign key constraint will fail if role doesn't exist
 	}
 
 	await member.save();

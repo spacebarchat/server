@@ -13,6 +13,7 @@ import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import multer from "multer";
 import { HTTPError } from "@fosscord/util";
+import { OrmUtils } from "@fosscord/util";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
@@ -43,7 +44,7 @@ router.post(
 		const id = Snowflake.generate();
 
 		const [sticker] = await Promise.all([
-			Object.assign(new Sticker(), {
+			OrmUtils.mergeDeep(new Sticker(), {
 				...body,
 				guild_id,
 				id,
@@ -105,7 +106,7 @@ router.patch(
 		const { guild_id, sticker_id } = req.params;
 		const body = req.body as ModifyGuildStickerSchema;
 
-		const sticker = await Object.assign(new Sticker(), { ...body, guild_id, id: sticker_id }).save();
+		const sticker = await OrmUtils.mergeDeep(new Sticker(), { ...body, guild_id, id: sticker_id }).save();
 		await sendStickerUpdateEvent(guild_id);
 
 		return res.json(sticker);

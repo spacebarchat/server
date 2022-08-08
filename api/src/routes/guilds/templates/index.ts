@@ -4,6 +4,7 @@ import { route } from "@fosscord/api";
 import { DiscordApiErrors } from "@fosscord/util";
 import fetch from "node-fetch";
 const router: Router = Router();
+import { OrmUtils } from "@fosscord/util";
 
 export interface GuildTemplateCreateSchema {
 	name: string;
@@ -57,13 +58,13 @@ router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: 
 	const guild_id = Snowflake.generate();
 
 	const [guild, role] = await Promise.all([
-		Object.assign(new Guild(), {
+		OrmUtils.mergeDeep(new Guild(), {
 			...body,
 			...template.serialized_source_guild,
 			id: guild_id,
 			owner_id: req.user_id
 		}).save(),
-		(Object.assign(new Role(), {
+		(OrmUtils.mergeDeep(new Role(), {
 			id: guild_id,
 			guild_id: guild_id,
 			color: 0,

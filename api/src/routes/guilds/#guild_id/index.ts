@@ -3,6 +3,7 @@ import { DiscordApiErrors, emitEvent, getPermission, getRights, Guild, GuildUpda
 import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { GuildCreateSchema } from "../index";
+import { OrmUtils } from "@fosscord/util";
 
 const router = Router();
 
@@ -59,7 +60,7 @@ router.patch("/", route({ body: "GuildUpdateSchema"}), async (req: Request, res:
 		relations: ["emojis", "roles", "stickers"]
 	});
 	// TODO: check if body ids are valid
-	guild = Object.assign(guild, body);
+	guild = OrmUtils.mergeDeep(guild, body);
 
 	//TODO: check this, removed toJSON call
 	const data = JSON.parse(JSON.stringify(guild));

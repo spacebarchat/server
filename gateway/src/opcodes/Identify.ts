@@ -28,6 +28,7 @@ import { IdentifySchema } from "../schema/Identify";
 const experiments: any = [];
 import { check } from "./instanceOf";
 import { Recipient } from "@fosscord/util";
+import { OrmUtils } from "@fosscord/util";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
@@ -50,7 +51,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
-
+	
 	const [user, read_states, members, recipients, session, application] =
 		await Promise.all([
 			User.findOneOrFail({
@@ -83,7 +84,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				// TODO: public user selection
 			}),
 			// save the session and delete it when the websocket is closed
-			Object.assign(new Session(),{
+			await OrmUtils.mergeDeep(new Session(), {
 				user_id: this.user_id,
 				session_id: session_id,
 				// TODO: check if status is only one of: online, dnd, offline, idle

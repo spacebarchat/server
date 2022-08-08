@@ -25,6 +25,7 @@ import { Role } from "./Role";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Ban, PublicGuildRelations } from ".";
 import { DiscordApiErrors } from "../util/Constants";
+import { OrmUtils } from "@fosscord/util";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
 	"id",
@@ -161,7 +162,7 @@ export class Member extends BaseClassWithoutId {
 			}),
 			Role.findOneOrFail({ where: { id: role_id, guild_id }, select: ["id"] }),
 		]);
-		member.roles.push(Object.assign(new Role(), { id: role_id }));
+		member.roles.push(OrmUtils.mergeDeep(new Role(), { id: role_id }));
 
 		await Promise.all([
 			member.save(),
@@ -256,7 +257,7 @@ export class Member extends BaseClassWithoutId {
 			nick: undefined,
 			roles: [guild_id], // @everyone role
 			joined_at: new Date(),
-			premium_since: (new Date()).getTime(),
+			premium_since: new Date(),
 			deaf: false,
 			mute: false,
 			pending: false,
@@ -264,9 +265,9 @@ export class Member extends BaseClassWithoutId {
 		//TODO: check for bugs
 		if(guild.member_count) guild.member_count++;
 		await Promise.all([
-			Object.assign(new Member(), {
+			OrmUtils.mergeDeep(new Member(), {
 				...member,
-				roles: [Object.assign(new Role(), { id: guild_id })],
+				roles: [OrmUtils.mergeDeep(new Role(), { id: guild_id })],
 				// read_state: {},
 				settings: {
 					channel_overrides: [],

@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId} from "typeorm";
+import { OrmUtils } from "@fosscord/util";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { PublicUserProjection, User } from "./User";
@@ -222,7 +223,7 @@ export class Channel extends BaseClass {
 		};
 
 		await Promise.all([
-			Object.assign(new Channel(),channel).save(),
+			OrmUtils.mergeDeep(new Channel(),channel).save(),
 			!opts?.skipEventEmit
 				? emitEvent({
 					event: "CHANNEL_CREATE",
@@ -263,7 +264,7 @@ export class Channel extends BaseClass {
 				if (containsAll(re, channelRecipients)) {
 					if (channel == null) {
 						channel = ur.channel;
-						ur = Object.assign(ur, { closed: false });
+						ur = OrmUtils.mergeDeep(ur, { closed: false });
 						await ur.save();
 					}
 				}
@@ -273,7 +274,7 @@ export class Channel extends BaseClass {
 		if (channel == null) {
 			name = trimSpecial(name);
 
-			channel = await (Object.assign(new Channel(), {
+			channel = await (OrmUtils.mergeDeep(new Channel(), {
 				name,
 				type,
 				owner_id: type === ChannelType.DM ? undefined : null, // 1:1 DMs are ownerless in fosscord-server
@@ -281,7 +282,7 @@ export class Channel extends BaseClass {
 				last_message_id: null,
 				recipients: channelRecipients.map(
 					(x) =>
-						Object.assign(new Recipient(), { user_id: x, closed: !(type === ChannelType.GROUP_DM || x === creator_user_id) })
+						OrmUtils.mergeDeep(new Recipient(), { user_id: x, closed: !(type === ChannelType.GROUP_DM || x === creator_user_id) })
 				),
 			}) as Channel).save();
 		}

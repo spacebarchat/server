@@ -26,6 +26,7 @@ import { HTTPError } from "@fosscord/util";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
 import { MessageCreateSchema } from "../../routes/channels/#channel_id/messages";
+import { OrmUtils } from "@fosscord/util";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
@@ -47,7 +48,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	const channel = await Channel.findOneOrFail({ where: { id: opts.channel_id }, relations: ["recipients"] });
 	if (!channel || !opts.channel_id) throw new HTTPError("Channel not found", 404);
 
-	const message = Object.assign(new Message(), {
+	const message = OrmUtils.mergeDeep(new Message(), {
 		...opts,
 		sticker_items: opts.sticker_ids?.map((x) => ({ id: x })),
 		guild_id: channel.guild_id,
@@ -132,9 +133,9 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		}
 	}
 
-	message.mention_channels = mention_channel_ids.map((x) => Object.assign(new Channel(), { id: x }));
-	message.mention_roles = mention_role_ids.map((x) => Object.assign(new Role(), { id: x }));
-	message.mentions = mention_user_ids.map((x) => Object.assign(new User(), { id: x }));
+	message.mention_channels = mention_channel_ids.map((x) => OrmUtils.mergeDeep(new Channel(), { id: x }));
+	message.mention_roles = mention_role_ids.map((x) => OrmUtils.mergeDeep(new Role(), { id: x }));
+	message.mentions = mention_user_ids.map((x) => OrmUtils.mergeDeep(new User(), { id: x }));
 	message.mention_everyone = mention_everyone;
 
 	// TODO: check and put it all in the body

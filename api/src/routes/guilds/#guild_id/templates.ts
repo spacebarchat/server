@@ -3,6 +3,7 @@ import { Guild, Template } from "@fosscord/util";
 import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { generateCode } from "@fosscord/api";
+import { OrmUtils } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -47,7 +48,7 @@ router.post("/", route({ body: "TemplateCreateSchema", permission: "MANAGE_GUILD
 	const exists = await Template.findOneOrFail({ where: { id: guild_id } }).catch((e) => {});
 	if (exists) throw new HTTPError("Template already exists", 400);
 
-	const template = await Object.assign(new Template(), {
+	const template = await OrmUtils.mergeDeep(new Template(), {
 		...req.body,
 		code: generateCode(),
 		creator_id: req.user_id,
@@ -75,7 +76,7 @@ router.put("/:code", route({ permission: "MANAGE_GUILD" }), async (req: Request,
 	const { code, guild_id } = req.params;
 	const guild = await Guild.findOneOrFail({ where: { id: guild_id }, select: TemplateGuildProjection });
 
-	const template = await Object.assign(new Template(), { code, serialized_source_guild: guild }).save();
+	const template = await OrmUtils.mergeDeep(new Template(), { code, serialized_source_guild: guild }).save();
 
 	res.json(template);
 });
@@ -84,7 +85,7 @@ router.patch("/:code", route({ body: "TemplateModifySchema", permission: "MANAGE
 	const { code, guild_id } = req.params;
 	const { name, description } = req.body;
 
-	const template = await Object.assign(new Template(), { code, name: name, description: description, source_guild_id: guild_id }).save();
+	const template = await OrmUtils.mergeDeep(new Template(), { code, name: name, description: description, source_guild_id: guild_id }).save();
 
 	res.json(template);
 });

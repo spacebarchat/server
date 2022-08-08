@@ -1,4 +1,5 @@
-import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, ManyToMany, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, ManyToMany, OneToMany, RelationId} from "typeorm";
+import { OrmUtils } from "@fosscord/util";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
@@ -255,7 +256,7 @@ export class User extends BaseClass {
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 		const language = req.language === "en" ? "en-US" : req.language || "en-US";
 
-		const user = Object.assign(new User(), {
+		const user = OrmUtils.mergeDeep(new User(), {
 			created_at: new Date(),
 			username: username,
 			discriminator,

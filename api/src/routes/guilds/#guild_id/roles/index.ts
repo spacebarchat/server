@@ -13,6 +13,7 @@ import {
 } from "@fosscord/util";
 import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { OrmUtils } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -51,7 +52,7 @@ router.post("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" })
 
 	if (role_count > maxRoles) throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
 
-	let role: Role = Object.assign(new Role(),{
+	let role: Role = OrmUtils.mergeDeep(new Role(),{
 		// values before ...body are default and can be overriden
 		position: 0,
 		hoist: false,

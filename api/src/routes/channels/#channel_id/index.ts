@@ -10,6 +10,7 @@ import {
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
+import { OrmUtils } from "@fosscord/util";
 
 const router: Router = Router();
 // TODO: delete channel
@@ -78,7 +79,7 @@ router.patch("/", route({ body: "ChannelModifySchema", permission: "MANAGE_CHANN
 	if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
 
 	let channel = await Channel.findOneOrFail({ where: { id: channel_id } });
-	channel = Object.assign(channel, payload);
+	channel = OrmUtils.mergeDeep(channel, payload);
 
 	await Promise.all([
 		channel.save(),

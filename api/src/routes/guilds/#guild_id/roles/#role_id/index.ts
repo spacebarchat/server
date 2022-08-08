@@ -3,6 +3,7 @@ import { Role, Member, GuildRoleUpdateEvent, GuildRoleDeleteEvent, emitEvent, ha
 import { route } from "@fosscord/api";
 import { HTTPError } from "@fosscord/util";
 import { RoleModifySchema } from "../";
+import { OrmUtils } from "@fosscord/util";
 
 const router = Router();
 
@@ -43,7 +44,7 @@ router.patch("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" }
 
 	if (body.icon) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string);
 
-	const role = Object.assign(new Role(), {
+	const role = OrmUtils.mergeDeep(new Role(), {
 		...body,
 		id: role_id,
 		guild_id,

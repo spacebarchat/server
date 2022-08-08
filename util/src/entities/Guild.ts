@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId} from "typeorm";
+import { OrmUtils } from "@fosscord/util";
 import { Config, handleFile, Snowflake } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
@@ -285,7 +286,7 @@ export class Guild extends BaseClass {
 	}) {
 		const guild_id = Snowflake.generate();
 
-		const guild: Guild = Object.assign(new Guild(),{
+		const guild: Guild = OrmUtils.mergeDeep(new Guild(),{
 			name: body.name || "Fosscord",
 			icon: await handleFile(`/icons/${guild_id}`, body.icon as string),
 			region: Config.get().regions.default,
@@ -321,7 +322,7 @@ export class Guild extends BaseClass {
 
 		// we have to create the role _after_ the guild because else we would get a "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" error
 		// TODO: make the @everyone a pseudorole that is dynamically generated at runtime so we can save storage
-		let role: Role = Object.assign(new Role(), {
+		let role: Role = OrmUtils.mergeDeep(new Role(), {
 			id: guild_id,
 			guild_id: guild_id,
 			color: 0,

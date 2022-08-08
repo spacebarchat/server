@@ -4,6 +4,7 @@ import { route } from "@fosscord/api";
 import { random } from "@fosscord/api";
 import { Channel, Invite, InviteCreateEvent, emitEvent, User, Guild, PublicInviteRelation } from "@fosscord/util";
 import { isTextChannel } from "./messages";
+import { OrmUtils } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -33,7 +34,7 @@ router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT
 
 	const expires_at = new Date(req.body.max_age * 1000 + Date.now());
 
-	const invite = await Object.assign(new Invite(),{
+	const invite = await OrmUtils.mergeDeep(new Invite(),{
 		code: random(),
 		temporary: req.body.temporary,
 		uses: 0,

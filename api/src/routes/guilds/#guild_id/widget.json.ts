@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { Config, Permissions, Guild, Invite, Channel, Member } from "@fosscord/util";
 import { HTTPError } from "@fosscord/util";
 import { random, route } from "@fosscord/api";
+import { OrmUtils } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -41,7 +42,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			inviter_id: null
 		};
 
-		invite = await new Invite(body).save();
+		invite = await OrmUtils.mergeDeep(new Invite(), body).save();
 	}
 
 	// Fetch voice channels, and the @everyone permissions object

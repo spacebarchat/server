@@ -12,6 +12,7 @@ import {
 	VoiceState,
 	VoiceStateUpdateEvent,
 } from "@fosscord/util";
+import { OrmUtils } from "@fosscord/util";
 // TODO: check if a voice server is setup
 // Notice: Bot users respect the voice channel's user limit, if set. When the voice channel is full, you will not receive the Voice State Update or Voice Server Update events in response to your own Voice State Update. Having MANAGE_CHANNELS permission bypasses this limit and allows you to join regardless of the channel being full or not.
 
@@ -47,9 +48,9 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 
 		//The event send by Discord's client on channel leave has both guild_id and channel_id as null
 		if (body.guild_id === null) body.guild_id = voiceState.guild_id;
-		voiceState = Object.assign(voiceState, body);
+		voiceState = OrmUtils.mergeDeep(voiceState, body);
 	} catch (error) {
-		voiceState = Object.assign(new VoiceState(), {
+		voiceState = OrmUtils.mergeDeep(new VoiceState(), {
 			...body,
 			user_id: this.user_id,
 			deaf: false,

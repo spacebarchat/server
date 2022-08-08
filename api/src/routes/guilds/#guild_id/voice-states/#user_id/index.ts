@@ -1,6 +1,7 @@
 import { Channel, ChannelType, DiscordApiErrors, emitEvent, getPermission, VoiceState, VoiceStateUpdateEvent } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
+import { OrmUtils } from "@fosscord/util";
 
 const router = Router();
 //TODO need more testing when community guild and voice stage channel are working
@@ -42,7 +43,7 @@ router.patch("/", route({ body: "VoiceStateUpdateSchema" }), async (req: Request
 	});
 	if (!voice_state) throw DiscordApiErrors.UNKNOWN_VOICE_STATE;
 
-	voice_state = Object.assign(voice_state, body);
+	voice_state = OrmUtils.mergeDeep(voice_state, body) as VoiceState;
 	const channel = await Channel.findOneOrFail({ where: { guild_id, id: body.channel_id } });
 	if (channel.type !== ChannelType.GUILD_STAGE_VOICE) {
 		throw DiscordApiErrors.CANNOT_EXECUTE_ON_THIS_CHANNEL_TYPE;

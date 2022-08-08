@@ -1,6 +1,7 @@
 import { emitEvent, getPermission, MessageAckEvent, ReadState, Snowflake } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
+import { OrmUtils } from "@fosscord/util";
 
 const router = Router();
 
@@ -20,7 +21,7 @@ router.post("/", route({ body: "MessageAcknowledgeSchema" }), async (req: Reques
 	permission.hasThrow("VIEW_CHANNEL");
 
 	let read_state = await ReadState.findOne({ where: { user_id: req.user_id, channel_id } });
-	if (!read_state) read_state = Object.assign(new ReadState(), { user_id: req.user_id, channel_id });
+	if (!read_state) read_state = OrmUtils.mergeDeep(new ReadState(), { user_id: req.user_id, channel_id }) as ReadState;
 	read_state.last_message_id = message_id;
 
 	await read_state.save();

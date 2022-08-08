@@ -11,6 +11,7 @@ import {
 	User
 } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { OrmUtils } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -28,7 +29,7 @@ router.put("/:user_id", route({}), async (req: Request, res: Response) => {
 			throw DiscordApiErrors.INVALID_RECIPIENT; //TODO is this the right error?
 		}
 
-		channel.recipients!.push(Object.assign(new Recipient(), { channel_id, user_id: user_id }));
+		channel.recipients!.push(OrmUtils.mergeDeep(new Recipient(), { channel_id, user_id: user_id }));
 		await channel.save();
 
 		await emitEvent({

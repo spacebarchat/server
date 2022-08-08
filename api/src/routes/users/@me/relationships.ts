@@ -12,6 +12,7 @@ import { Router, Response, Request } from "express";
 import { HTTPError } from "@fosscord/util";
 import { DiscordApiErrors } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { OrmUtils } from "@fosscord/util";
 
 const router = Router();
 
@@ -140,7 +141,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 			relationship.type = RelationshipType.blocked;
 			await relationship.save();
 		} else {
-			relationship = await Object.assign(new Relationship(), { to_id: id, type: RelationshipType.blocked, from_id: req.user_id }).save();
+			relationship = await (OrmUtils.mergeDeep(new Relationship(), { to_id: id, type: RelationshipType.blocked, from_id: req.user_id }) as Relationship).save();
 		}
 
 		if (friendRequest && friendRequest.type !== RelationshipType.blocked) {
@@ -166,8 +167,8 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 	const { maxFriends } = Config.get().limits.user;
 	if (user.relationships.length >= maxFriends) throw DiscordApiErrors.MAXIMUM_FRIENDS.withParams(maxFriends);
 
-	let incoming_relationship = Object.assign(new Relationship(), { nickname: undefined, type: RelationshipType.incoming, to: user, from: friend });
-	let outgoing_relationship = Object.assign(new Relationship(), {
+	let incoming_relationship = OrmUtils.mergeDeep(new Relationship(), { nickname: undefined, type: RelationshipType.incoming, to: user, from: friend });
+	let outgoing_relationship = OrmUtils.mergeDeep(new Relationship(), {
 		nickname: undefined,
 		type: RelationshipType.outgoing,
 		to: friend,
