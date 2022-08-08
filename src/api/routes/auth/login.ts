@@ -21,7 +21,6 @@ router.post(
 		const { login, password, captcha_key, undelete } =
 			req.body as LoginSchema;
 		const email = adjustEmail(login);
-		console.log("login", email);
 
 		const config = Config.get();
 
