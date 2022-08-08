@@ -7,7 +7,7 @@ import * as Gateway from "@fosscord/gateway";
 import { CDNServer } from "@fosscord/cdn";
 import express from "express";
 import { green, bold, yellow } from "picocolors";
-import { Config, initDatabase } from "@fosscord/util";
+import { Config, getOrInitialiseDatabase } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 
@@ -34,7 +34,7 @@ process.on('SIGTERM', () => {
 
 async function main() {
 	server.listen(port);
-	await initDatabase();
+	await getOrInitialiseDatabase();
 	await Config.init();
 	// only set endpointPublic, if not already set
 	await Config.set({
