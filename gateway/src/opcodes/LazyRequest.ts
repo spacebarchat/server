@@ -1,4 +1,4 @@
-import { getPermission, listenEvent, Member, Role, initDatabase } from "@fosscord/util";
+import { getPermission, listenEvent, Member, Role, getOrInitialiseDatabase } from "@fosscord/util";
 import { LazyRequest } from "../schema/LazyRequest";
 import { Send } from "../util/Send";
 import { OPCODES } from "../util/Constants";
@@ -17,7 +17,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	// TODO: wait for typeorm to implement ordering for .find queries https://github.com/typeorm/typeorm/issues/2620
 	// TODO: rewrite this, released in 0.3.0
 
-	let members = await (await initDatabase()).getRepository(Member)
+	let members = await (await getOrInitialiseDatabase()).getRepository(Member)
 		.createQueryBuilder("member")
 		.where("member.guild_id = :guild_id", { guild_id })
 		.leftJoinAndSelect("member.roles", "role")

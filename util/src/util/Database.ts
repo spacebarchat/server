@@ -15,7 +15,7 @@ import { config } from "dotenv";
 let promise: Promise<any>;
 let dataSource: DataSource;
 
-export async function initDatabase(): Promise<DataSource> {
+export async function getOrInitialiseDatabase(): Promise<DataSource> {
 	//if (dataSource) return dataSource; // prevent initalizing multiple times
 
 	if(dataSource.isInitialized) return dataSource;

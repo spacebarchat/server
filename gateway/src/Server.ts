@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
-import { closeDatabase, Config, initDatabase, initEvent } from "@fosscord/util";
+import { closeDatabase, Config, getOrInitialiseDatabase, initEvent } from "@fosscord/util";
 import ws from "ws";
 import { Connection } from "./events/Connection";
 import http from "http";
@@ -46,7 +46,7 @@ export class Server {
 	}
 
 	async start(): Promise<void> {
-		await initDatabase();
+		await getOrInitialiseDatabase();
 		await Config.init();
 		await initEvent();
 		if (!this.server.listening) {

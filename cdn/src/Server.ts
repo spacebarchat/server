@@ -1,5 +1,5 @@
 import { Server, ServerOptions } from "lambert-server";
-import { Config, initDatabase, registerRoutes } from "@fosscord/util";
+import { Config, getOrInitialiseDatabase, registerRoutes } from "@fosscord/util";
 import path from "path";
 import avatarsRoute from "./routes/avatars";
 import iconsRoute from "./routes/role-icons";
@@ -15,7 +15,7 @@ export class CDNServer extends Server {
 	}
 
 	async start() {
-		await initDatabase();
+		await getOrInitialiseDatabase();
 		await Config.init();
 		this.app.use((req, res, next) => {
 			res.set("Access-Control-Allow-Origin", "*");

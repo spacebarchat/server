@@ -1,6 +1,6 @@
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
-import { Config, initDatabase, initEvent, registerRoutes } from "@fosscord/util";
+import { Config, getOrInitialiseDatabase, initEvent, registerRoutes } from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import { Router, Request, Response, NextFunction } from "express";
@@ -32,7 +32,7 @@ export class FosscordServer extends Server {
 	}
 
 	async start() {
-		await initDatabase();
+		await getOrInitialiseDatabase();
 		await Config.init();
 		await initEvent();
 		await initInstance();
