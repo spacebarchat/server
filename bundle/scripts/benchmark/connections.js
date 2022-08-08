@@ -12,7 +12,7 @@ try {
 }
 
 if (!token) {
-	console.error("TOKEN env let missing");
+	console.error("TOKEN env var missing");
 	process.exit();
 }
 
