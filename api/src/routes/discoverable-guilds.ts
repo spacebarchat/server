@@ -11,7 +11,6 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	let showAllGuilds = Config.get().guild.discovery.showAllGuilds;
 	let configLimit = Config.get().guild.discovery.limit;
 	// ! this only works using SQL querys
-	// TODO: implement this with default typeorm query
 	// const guilds = await Guild.find({ where: { features: "DISCOVERABLE" } }); //, take: Math.abs(Number(limit)) });
 	let guilds;
 	if (categories == undefined) {
