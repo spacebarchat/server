@@ -25,7 +25,7 @@ import { Role } from "./Role";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Ban, PublicGuildRelations } from ".";
 import { DiscordApiErrors } from "../util/Constants";
-import { OrmUtils } from "typeorm/util/OrmUtils";
+import { OrmUtils } from "../util/imports/OrmUtils";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
 	"id",

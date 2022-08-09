@@ -1,5 +1,5 @@
 import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, OneToMany } from "typeorm";
-import { OrmUtils } from "typeorm/util/OrmUtils";
+import { OrmUtils } from "../util/imports/OrmUtils";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
@@ -245,7 +245,7 @@ export class User extends BaseClass {
 			throw FieldErrors({
 				username: {
 					code: "USERNAME_TOO_MANY_USERS",
-					message: req.t("auth:register.USERNAME_TOO_MANY_USERS"),
+					message: req?.t("auth:register.USERNAME_TOO_MANY_USERS"),
 				},
 			});
 		}
@@ -253,7 +253,7 @@ export class User extends BaseClass {
 		// TODO: save date_of_birth
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
-		const language = req.language === "en" ? "en-US" : req.language || "en-US";
+		const language = req?.language === "en" ? "en-US" : req?.language || "en-US";
 
 		const user = OrmUtils.mergeDeep(new User(), {
 			created_at: new Date(),

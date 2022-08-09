@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
-import { OrmUtils } from "typeorm/util/OrmUtils";
+import { OrmUtils } from "../util/imports/OrmUtils";
 import { Config, handleFile, Snowflake } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";

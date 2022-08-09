@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
-import { OrmUtils } from "typeorm/util/OrmUtils";
+import { OrmUtils } from "../util/imports/OrmUtils";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { PublicUserProjection, User } from "./User";
