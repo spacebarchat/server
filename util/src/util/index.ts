@@ -1,6 +1,8 @@
 export * from "./ApiError";
 export * from "./BitField";
 export * from "./Token";
+export * from "./imports/HTTPError";
+export * from "./imports/OrmUtils";
 //export * from "./Categories";
 export * from "./cdn";
 export * from "./Config";
@@ -21,4 +23,4 @@ export * from "./Array";
 export * from "./TraverseDirectory";
 export * from "./InvisibleCharacters";
 
-export * from "./imports/index"
+export * from "./imports/index";

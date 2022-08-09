@@ -1,12 +1,11 @@
-import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, ManyToMany, OneToMany, RelationId} from "typeorm";
-import { OrmUtils } from "@fosscord/util";
+import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, OneToMany } from "typeorm";
+import { OrmUtils } from "typeorm/util/OrmUtils";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
 import { Member, Session } from ".";
-import { Note } from "./Note";
 
 export enum PublicUserEnum {
 	username,

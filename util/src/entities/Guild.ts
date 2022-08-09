@@ -1,5 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId} from "typeorm";
-import { OrmUtils } from "@fosscord/util";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
+import { OrmUtils } from "typeorm/util/OrmUtils";
 import { Config, handleFile, Snowflake } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
@@ -270,7 +270,7 @@ export class Guild extends BaseClass {
 
 	@Column({ nullable: true })
 	nsfw?: boolean;
-	
+
 	// TODO: nested guilds
 	@Column({ nullable: true })
 	parent?: string;
@@ -286,7 +286,7 @@ export class Guild extends BaseClass {
 	}) {
 		const guild_id = Snowflake.generate();
 
-		const guild: Guild = OrmUtils.mergeDeep(new Guild(),{
+		const guild: Guild = OrmUtils.mergeDeep(new Guild(), {
 			name: body.name || "Fosscord",
 			icon: await handleFile(`/icons/${guild_id}`, body.icon as string),
 			region: Config.get().regions.default,
@@ -334,7 +334,7 @@ export class Guild extends BaseClass {
 			permissions: String("2251804225"),
 			position: 0,
 			icon: null,
-			unicode_emoji: null
+			unicode_emoji: null,
 		});
 		await role.save();
 

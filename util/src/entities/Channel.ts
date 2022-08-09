@@ -1,9 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId} from "typeorm";
-import { OrmUtils } from "@fosscord/util";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { OrmUtils } from "typeorm/util/OrmUtils";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { PublicUserProjection, User } from "./User";
-import { HTTPError } from "..";
+import { HTTPError } from "../util/imports/HTTPError";
 import { containsAll, emitEvent, getPermission, Snowflake, trimSpecial, InvisibleCharacters } from "../util";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import { Recipient } from "./Recipient";
@@ -35,7 +35,7 @@ export enum ChannelType {
 	KANBAN = 34, // confluence like kanban board
 	VOICELESS_WHITEBOARD = 35, // whiteboard but without voice (whiteboard + voice is the same as stage)
 	CUSTOM_START = 64, // start custom channel types from here
-	UNHANDLED = 255 // unhandled unowned pass-through channel type
+	UNHANDLED = 255, // unhandled unowned pass-through channel type
 }
 
 @Entity("channels")
@@ -150,7 +150,7 @@ export class Channel extends BaseClass {
 		orphanedRowAction: "delete",
 	})
 	webhooks?: Webhook[];
-	
+
 	// TODO: DM channel
 	static async createChannel(
 		channel: Partial<Channel>,
@@ -177,16 +177,14 @@ export class Channel extends BaseClass {
 						throw new HTTPError("Channel name cannot include invalid characters", 403);
 
 				if (channel.name.match(/\-\-+/g))
-					throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403)
+					throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403);
 
-				if (channel.name.charAt(0) === "-" ||
-					channel.name.charAt(channel.name.length - 1) === "-")
-					throw new HTTPError("Channel name cannot start/end with dash.", 403)
+				if (channel.name.charAt(0) === "-" || channel.name.charAt(channel.name.length - 1) === "-")
+					throw new HTTPError("Channel name cannot start/end with dash.", 403);
 			}
 
 			if (!guild.features.includes("ALLOW_UNNAMED_CHANNELS")) {
-				if (!channel.name)
-					throw new HTTPError("Channel name cannot be empty.", 403);
+				if (!channel.name) throw new HTTPError("Channel name cannot be empty.", 403);
 			}
 		}
 
@@ -223,13 +221,13 @@ export class Channel extends BaseClass {
 		};
 
 		await Promise.all([
-			OrmUtils.mergeDeep(new Channel(),channel).save(),
+			OrmUtils.mergeDeep(new Channel(), channel).save(),
 			!opts?.skipEventEmit
 				? emitEvent({
-					event: "CHANNEL_CREATE",
-					data: channel,
-					guild_id: channel.guild_id,
-				} as ChannelCreateEvent)
+						event: "CHANNEL_CREATE",
+						data: channel,
+						guild_id: channel.guild_id,
+				  } as ChannelCreateEvent)
 				: Promise.resolve(),
 		]);
 
@@ -274,17 +272,21 @@ export class Channel extends BaseClass {
 		if (channel == null) {
 			name = trimSpecial(name);
 
-			channel = await (OrmUtils.mergeDeep(new Channel(), {
-				name,
-				type,
-				owner_id: type === ChannelType.DM ? undefined : null, // 1:1 DMs are ownerless in fosscord-server
-				created_at: new Date(),
-				last_message_id: null,
-				recipients: channelRecipients.map(
-					(x) =>
-						OrmUtils.mergeDeep(new Recipient(), { user_id: x, closed: !(type === ChannelType.GROUP_DM || x === creator_user_id) })
-				),
-			}) as Channel).save();
+			channel = await (
+				OrmUtils.mergeDeep(new Channel(), {
+					name,
+					type,
+					owner_id: type === ChannelType.DM ? undefined : null, // 1:1 DMs are ownerless in fosscord-server
+					created_at: new Date(),
+					last_message_id: null,
+					recipients: channelRecipients.map((x) =>
+						OrmUtils.mergeDeep(new Recipient(), {
+							user_id: x,
+							closed: !(type === ChannelType.GROUP_DM || x === creator_user_id),
+						})
+					),
+				}) as Channel
+			).save();
 		}
 
 		const channel_dto = await DmChannelDTO.from(channel);
@@ -301,7 +303,7 @@ export class Channel extends BaseClass {
 			await emitEvent({ event: "CHANNEL_CREATE", data: channel_dto, user_id: creator_user_id });
 		}
 
-		if (recipients.length === 1) return channel_dto; 
+		if (recipients.length === 1) return channel_dto;
 		else return channel_dto.excludedRecipients([creator_user_id]);
 	}
 

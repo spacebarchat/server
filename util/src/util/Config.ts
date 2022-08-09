@@ -5,7 +5,7 @@ import fs from "fs";
 // TODO: yaml instead of json
 // const overridePath = path.join(process.cwd(), "config.json");
 
-let config: ConfigValue;
+let config: ConfigValue = DefaultConfigOptions;
 let pairs: ConfigEntity[];
 
 // TODO: use events to inform about config updates

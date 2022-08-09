@@ -20,12 +20,12 @@ import {
 	GuildMemberRemoveEvent,
 	GuildMemberUpdateEvent,
 } from "../interfaces";
-import { HTTPError } from "..";
+import { HTTPError } from "../util/imports/HTTPError";
 import { Role } from "./Role";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Ban, PublicGuildRelations } from ".";
 import { DiscordApiErrors } from "../util/Constants";
-import { OrmUtils } from "@fosscord/util";
+import { OrmUtils } from "typeorm/util/OrmUtils";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
 	"id",
@@ -71,7 +71,7 @@ export class Member extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	nick?: string;
-	
+
 	@JoinTable({
 		name: "member_roles",
 		joinColumn: { name: "index", referencedColumnName: "index" },
@@ -103,14 +103,14 @@ export class Member extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	last_message_id?: string;
-	
+
 	/**
 	@JoinColumn({ name: "id" })
 	@ManyToOne(() => User, {
 		onDelete: "DO NOTHING",
 	// do not auto-kick force-joined members just because their joiners left the server
 	}) **/
-	@Column({ nullable: true})
+	@Column({ nullable: true })
 	joined_by?: string;
 
 	// TODO: add this when we have proper read receipts
@@ -129,7 +129,7 @@ export class Member extends BaseClassWithoutId {
 
 		// use promise all to execute all promises at the same time -> save time
 		//TODO: check for bugs
-		if(guild.member_count) guild.member_count--;
+		if (guild.member_count) guild.member_count--;
 		return Promise.all([
 			Member.delete({
 				id: user_id,
@@ -263,7 +263,7 @@ export class Member extends BaseClassWithoutId {
 			pending: false,
 		};
 		//TODO: check for bugs
-		if(guild.member_count) guild.member_count++;
+		if (guild.member_count) guild.member_count++;
 		await Promise.all([
 			OrmUtils.mergeDeep(new Member(), {
 				...member,
