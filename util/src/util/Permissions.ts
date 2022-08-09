@@ -238,6 +238,7 @@ export async function getPermission(
 			select: [
 				"id",
 				"roles",
+				"index",
 				// @ts-ignore
 				...(opts.member_select || []),
 			],
