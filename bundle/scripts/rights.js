@@ -32,5 +32,3 @@ discordRights -= rights.ADD_MEMBERS;
 discordRights -= rights.MANAGE_RATE_LIMITS;
 discordRights -= rights.OPERATOR;
 console.log(`Discord-like rights: ${discordRights}`);
-
-console.log(lines4)
