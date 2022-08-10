@@ -104,6 +104,7 @@ export class Application extends BaseClass {
 	@JoinColumn({ name: "team_id" })
 	@ManyToOne(() => Team, {
 		onDelete: "CASCADE",
+		nullable: true
 	})
 	team?: Team;
 

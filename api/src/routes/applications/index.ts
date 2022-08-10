@@ -23,10 +23,9 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		name: trimSpecial(body.name),
 		description: "",
 		bot_public: true,
-		bot_require_code_grant: false,
 		owner: user,
 		verify_key: "IMPLEMENTME",
-		flags: ""
+		flags: 0
 	});
 	await app.save();
 	res.json(app).status(200);
