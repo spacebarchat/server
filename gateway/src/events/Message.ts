@@ -37,7 +37,7 @@ export async function Message(this: WebSocket, buffer: WS.RawData) {
 	if(data.op !== 1)
 		check.call(this, PayloadSchema, data);
 	else { //custom validation for numbers, because heartbeat
-		if(data.s || data.t || typeof data.d !== "number") {
+		if(data.s || data.t || (typeof data.d !== "number" && data.d)) {
 			console.log("Invalid heartbeat...");
 			this.close(CLOSECODES.Decode_error);
 		}
