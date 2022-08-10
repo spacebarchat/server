@@ -26,6 +26,7 @@ const gateway = new Gateway.Server({ server, port, production });
 
 //this is what has been added for the /stop API route
 process.on('SIGTERM', () => {
+	setTimeout(()=>process.exit(0), 3000)
 	server.close(() => {
 		console.log("Stop API has been successfully POSTed, SIGTERM sent")
 	})
