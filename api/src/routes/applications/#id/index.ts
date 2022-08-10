@@ -5,7 +5,6 @@ import { Application, OrmUtils, Team, trimSpecial, User } from "@fosscord/util";
 const router: Router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	//TODO
 	let results = await Application.findOne({where: {id: req.params.id}, relations: ["owner", "bot"] });
 	res.json(results).status(200);
 });
@@ -22,5 +21,11 @@ router.patch("/", route({}), async (req: Request, res: Response) => {
 	debugger;
 	res.json(app).status(200);
 });
+
+router.post("/delete", route({}), async (req: Request, res: Response) => {
+	await Application.delete(req.params.id);
+	res.send().status(200);
+});
+
 
 export default router;
