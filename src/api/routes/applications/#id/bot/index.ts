@@ -74,7 +74,7 @@ router.post("/reset", route({}), async (req: Request, res: Response) => {
 });
 
 router.patch("/", route({}), async (req: Request, res: Response) => {
-	delete req.body.icon;
+	delete req.body.avatar;
 	let app = OrmUtils.mergeDeep(await User.findOne({where: {id: req.params.id}}), req.body);
 	await app.save();
 	res.json(app).status(200);
