@@ -100,7 +100,7 @@ export interface ReadyEventData {
 	};
 	application?: {
 		id: string;
-		flags: string;
+		flags: number;
 	};
 	merged_members?: PublicMember[][];
 	// probably all users who the user is in contact with
