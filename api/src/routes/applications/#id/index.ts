@@ -18,7 +18,6 @@ router.patch("/", route({}), async (req: Request, res: Response) => {
 	}
 	if(req.body.tags) app.tags = req.body.tags;
 	await app.save();
-	debugger;
 	res.json(app).status(200);
 });
 
