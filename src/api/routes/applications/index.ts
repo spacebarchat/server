@@ -17,7 +17,6 @@ router.post("/", route({ body: "ApplicationCreateSchema" }), async (req: Request
 		name: trimSpecial(body.name),
 		description: "",
 		bot_public: true,
-		bot_require_code_grant: false,
 		owner: user,
 		verify_key: "IMPLEMENTME",
 		flags: 0,
