@@ -253,9 +253,7 @@ export class User extends BaseClass {
 		});
 	}
 
-	private static async generateDiscriminator(
-		username: string,
-	): Promise<string | undefined> {
+	public static async generateDiscriminator(username: string): Promise<string | undefined> {
 		if (Config.get().register.incrementingDiscriminators) {
 			// discriminator will be incrementally generated
 

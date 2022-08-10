@@ -251,7 +251,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const d: ReadyEventData = {
 		v: 8,
-		application: application ?? undefined,
+		application: { id: application?.id ?? '', flags: application?.flags ?? 0 }, //TODO: check this code!
 		user: privateUser,
 		user_settings: user.settings,
 		// @ts-ignore

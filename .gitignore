@@ -12,3 +12,8 @@ config.json
 .vscode/settings.json
 
 build
+
+*.log
+*.log.ansi
+*.tmp
+tmp/
