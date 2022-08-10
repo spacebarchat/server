@@ -7,7 +7,6 @@ const router: Router = Router();
 router.get("/", route({}), async (req: Request, res: Response) => {
 	//TODO
 	let results = await Application.findOne({where: {id: req.params.id}, relations: ["owner", "bot"] });
-	//debugger;
 	res.json(results).status(200);
 });
 

@@ -11,7 +11,7 @@ export interface ApplicationCreateSchema {
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	//TODO
-	let results = await Application.find({where: {owner: {id: req.user_id}}, relations: ["owner"] });
+	let results = await Application.find({where: {owner: {id: req.user_id}}, relations: ["owner", "bot"] });
 	res.json(results).status(200);
 });
 
