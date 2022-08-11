@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
-import { OrmUtils } from "@fosscord/util";
+import { OrmUtils, generateToken } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -30,6 +30,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 });
 
 router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res: Response) => {
+	var token = null as any;
 	const body = req.body as UserModifySchema;
 
 	if (body.avatar) body.avatar = await handleFile(`/avatars/${req.user_id}`, body.avatar as string);
@@ -54,6 +55,8 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 			});
 		}
 		user.data.hash = await bcrypt.hash(body.new_password, 12);
+		user.data.valid_tokens_since = new Date();
+		token = await generateToken(user.id) as string;
 	}
 
     if(body.username){
@@ -77,8 +80,11 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		user_id: req.user_id,
 		data: user
 	} as UserUpdateEvent);
-
-	res.json(user);
+	
+	res.json({
+		...user,
+		token
+	});
 });
 
 export default router;
