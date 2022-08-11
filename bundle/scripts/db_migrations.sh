@@ -1,5 +1,13 @@
 #!/bin/sh
-read -p "Enter migration filename: " FILENAME
+
+if [ ! -z "$1" ]
+then
+    FILENAME="$1"
+    echo "Using filename: $FILENAME"
+else
+    read -p "Enter migration filename: " FILENAME
+fi
+
 [ -f ".env" ] && (
     mv .env .env.tmp
     source .env.tmp
@@ -8,8 +16,8 @@ read -p "Enter migration filename: " FILENAME
 make_migration() {
     echo "Creating migrations for $2"
     mkdir "../util/src/migrations/$2"
-    npm run build clean logerrors pretty-errors
-    THREADS=1 DATABASE="$1" DB_MIGRATE=a npm run start:bundle
+#    npm run build clean logerrors pretty-errors
+#    THREADS=1 DATABASE="$1" DB_MIGRATE=a npm run start:bundle
     THREADS=1 DATABASE="$1" DB_MIGRATE=a npx typeorm-ts-node-commonjs migration:generate "../util/src/migrations/$2/$FILENAME" -d ../util/src/util/Database.ts -p
     npm run build clean logerrors pretty-errors
     THREADS=1 DATABASE="$1" DB_MIGRATE=a npm run start:bundle

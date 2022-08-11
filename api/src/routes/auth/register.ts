@@ -30,6 +30,7 @@ export interface RegisterSchema {
 	date_of_birth?: Date; // "2000-04-03"
 	gift_code_sku_id?: string;
 	captcha_key?: string;
+	promotional_email_opt_in?: boolean;
 }
 
 router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Response) => {

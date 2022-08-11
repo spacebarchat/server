@@ -20,6 +20,11 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	check.call(this, VoiceStateUpdateSchema, data.d);
 	const body = data.d as VoiceStateUpdateSchema;
 
+	if(body.guild_id == null) {
+		console.log(`[Gateway] VoiceStateUpdate called with guild_id == null by user ${this.user_id}!`);
+		return;
+	}
+
 	let voiceState: VoiceState;
 	try {
 		voiceState = await VoiceState.findOneOrFail({

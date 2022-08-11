@@ -30,3 +30,4 @@ export * from "./Webhook";
 export * from "./ClientRelease";
 export * from "./BackupCodes";
 export * from "./Note";
+export * from "./UserSettings";

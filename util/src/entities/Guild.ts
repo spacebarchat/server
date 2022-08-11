@@ -53,7 +53,7 @@ export class Guild extends BaseClass {
 	afk_channel?: Channel;
 
 	@Column({ nullable: true })
-	afk_timeout?: number;
+	afk_timeout?: number = Config.get().defaults.guild.afkTimeout;
 
 	// * commented out -> use owner instead
 	// application id of the guild creator if it is bot-created
@@ -71,7 +71,7 @@ export class Guild extends BaseClass {
 	banner?: string;
 
 	@Column({ nullable: true })
-	default_message_notifications?: number;
+	default_message_notifications?: number = Config.get().defaults.guild.defaultMessageNotifications;
 
 	@Column({ nullable: true })
 	description?: string;
@@ -80,7 +80,7 @@ export class Guild extends BaseClass {
 	discovery_splash?: string;
 
 	@Column({ nullable: true })
-	explicit_content_filter?: number;
+	explicit_content_filter?: number = Config.get().defaults.guild.explicitContentFilter;
 
 	@Column({ type: "simple-array" })
 	features: string[]; //TODO use enum
@@ -96,19 +96,19 @@ export class Guild extends BaseClass {
 	large?: boolean;
 
 	@Column({ nullable: true })
-	max_members?: number; // e.g. default 100.000
+	max_members?: number = Config.get().limits.guild.maxMembers; // e.g. default 100.000
 
 	@Column({ nullable: true })
-	max_presences?: number;
+	max_presences?: number = Config.get().defaults.guild.maxPresences;
 
 	@Column({ nullable: true })
-	max_video_channel_users?: number; // ? default: 25, is this max 25 streaming or watching
+	max_video_channel_users?: number = Config.get().defaults.guild.maxVideoChannelUsers; // ? default: 25, is this max 25 streaming or watching
 
 	@Column({ nullable: true })
-	member_count?: number;
+	member_count?: number = 0;
 
 	@Column({ nullable: true })
-	presence_count?: number; // users online
+	presence_count?: number = 0; // users online
 
 	@OneToMany(() => Member, (member: Member) => member.guild, {
 		cascade: true,
@@ -277,6 +277,10 @@ export class Guild extends BaseClass {
 
 	// only for developer portal
 	permissions?: number;
+
+	//new guild settings, 11/08/2022:
+	@Column({ nullable: true })
+	premium_progress_bar_enabled: boolean = false;
 
 	static async createGuild(body: {
 		name?: string;
