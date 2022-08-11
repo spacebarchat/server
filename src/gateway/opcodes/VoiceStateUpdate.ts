@@ -6,13 +6,12 @@ import {
 	emitEvent,
 	Guild,
 	Member,
-	Region,
 	VoiceServerUpdateEvent,
 	VoiceState,
 	VoiceStateUpdateEvent,
 	VoiceStateUpdateSchema,
 } from "@fosscord/util";
-
+import { Region } from "@fosscord/util/src/config";
 // TODO: check if a voice server is setup
 
 // Notice: Bot users respect the voice channel's user limit, if set.

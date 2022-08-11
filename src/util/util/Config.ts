@@ -1,11 +1,6 @@
-import "missing-native-js-functions";
-import {
-	ConfigValue,
-	ConfigEntity,
-	DefaultConfigOptions,
-} from "../entities/Config";
-import path from "path";
+import { ConfigEntity } from "../entities/Config";
 import fs from "fs";
+import { ConfigValue } from "../config";
 
 // TODO: yaml instead of json
 const overridePath = process.env.CONFIG_PATH ?? "";
@@ -19,9 +14,10 @@ var pairs: ConfigEntity[];
 export const Config = {
 	init: async function init() {
 		if (config) return config;
+		console.log('[Config] Loading configuration...')
 		pairs = await ConfigEntity.find();
 		config = pairsToConfig(pairs);
-		config = (config || {}).merge(DefaultConfigOptions);
+		config = (config || {}).merge(new ConfigValue());
 
 		if (process.env.CONFIG_PATH) {
 			console.log(`[Config] Using config path from environment rather than database.`);
