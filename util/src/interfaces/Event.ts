@@ -1,4 +1,4 @@
-import { PublicUser, User, UserSettings } from "../entities/User";
+import { PublicUser, User } from "../entities/User";
 import { Channel } from "../entities/Channel";
 import { Guild } from "../entities/Guild";
 import { Member, PublicMember, UserGuildSettings } from "../entities/Member";
@@ -12,7 +12,7 @@ import { Interaction } from "./Interaction";
 import { ConnectedAccount } from "../entities/ConnectedAccount";
 import { Relationship, RelationshipType } from "../entities/Relationship";
 import { Presence } from "./Presence";
-import { Sticker } from "..";
+import { Sticker, UserSettings } from "..";
 import { Activity, Status } from ".";
 
 export interface Event {

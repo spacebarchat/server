@@ -28,13 +28,14 @@ function copyRecursiveSync(src, dest) {
 	}
 }
 
-function execIn(cmd, workdir) {
+function execIn(cmd, workdir, opts) {
 	try {
 		return execSync(cmd, {
 			cwd: workdir,
 			shell: true,
 			env: process.env,
 			encoding: "utf-8",
+			...opts
 		});
 	} catch (error) {
 		return error.stdout;

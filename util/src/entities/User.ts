@@ -1,11 +1,11 @@
-import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, OneToMany } from "typeorm";
+import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { OrmUtils } from "../util/imports/OrmUtils";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
-import { Member, Session } from ".";
+import { Member, Session, UserSettings } from ".";
 
 export enum PublicUserEnum {
 	username,
@@ -83,28 +83,28 @@ export class User extends BaseClass {
 	phone?: string; // phone number of the user
 
 	@Column({ select: false })
-	desktop: boolean; // if the user has desktop app installed
+	desktop: boolean = false; // if the user has desktop app installed
 
 	@Column({ select: false })
-	mobile: boolean; // if the user has mobile app installed
+	mobile: boolean = false; // if the user has mobile app installed
 
 	@Column()
-	premium: boolean; // if user bought individual premium
+	premium: boolean = Config.get().defaults.user.premium; // if user bought individual premium
 
 	@Column()
-	premium_type: number; // individual premium level
+	premium_type: number = Config.get().defaults.user.premium_type; // individual premium level
 
 	@Column()
-	bot: boolean; // if user is bot
+	bot: boolean = false; // if user is bot
 
 	@Column()
 	bio: string; // short description of the user (max 190 chars -> should be configurable)
 
 	@Column()
-	system: boolean; // shouldn't be used, the api sends this field type true, if the generated message comes from a system generated author
+	system: boolean = false; // shouldn't be used, the api sends this field type true, if the generated message comes from a system generated author
 
 	@Column({ select: false })
-	nsfw_allowed: boolean; // if the user can do age-restricted actions (NSFW channels/guilds/commands)
+	nsfw_allowed: boolean = true; // if the user can do age-restricted actions (NSFW channels/guilds/commands) // TODO: depending on age
 
 	@Column({ select: false })
 	mfa_enabled: boolean; // if multi factor authentication is enabled
@@ -116,31 +116,31 @@ export class User extends BaseClass {
 	totp_last_ticket?: string;
 
 	@Column()
-	created_at: Date; // registration date
+	created_at: Date = new Date(); // registration date
 
 	@Column({ nullable: true })
-	premium_since: Date; // premium date
+	premium_since: Date = new Date(); // premium date
 
 	@Column({ select: false })
-	verified: boolean; // if the user is offically verified
+	verified: boolean = Config.get().defaults.user.verified; // if the user is offically verified
 
 	@Column()
-	disabled: boolean; // if the account is disabled
+	disabled: boolean = false; // if the account is disabled
 
 	@Column()
-	deleted: boolean; // if the user was deleted
+	deleted: boolean = false; // if the user was deleted
 
 	@Column({ nullable: true, select: false })
 	email?: string; // email of the user
 
 	@Column()
-	flags: string; // UserFlags
+	flags: string = "0"; // UserFlags // TODO: generate
 
 	@Column()
-	public_flags: number;
+	public_flags: number = 0;
 
 	@Column({ type: "bigint" })
-	rights: string; // Rights
+	rights: string = Config.get().register.defaultRights; // Rights
 
 	@OneToMany(() => Session, (session: Session) => session.user)
 	sessions: Session[];
@@ -166,17 +166,28 @@ export class User extends BaseClass {
 	};
 
 	@Column({ type: "simple-array", select: false })
-	fingerprints: string[]; // array of fingerprints -> used to prevent multiple accounts
+	fingerprints: string[] = []; // array of fingerprints -> used to prevent multiple accounts
 
-	@Column({ type: "simple-json", select: false })
+	
+	@OneToOne(()=> UserSettings, {
+		cascade: true,
+		orphanedRowAction: "delete",
+		eager: false
+	})
+	@JoinColumn()
 	settings: UserSettings;
 
 	// workaround to prevent fossord-unaware clients from deleting settings not used by them
 	@Column({ type: "simple-json", select: false })
-	extended_settings: string;
+	extended_settings: string = "{}";
 
 	@Column({ type: "simple-json" })
-	notes: { [key: string]: string }; //key is ID of user
+	notes: { [key: string]: string } = {}; //key is ID of user
+
+	async save(): Promise<any> {
+		await this.settings.save();
+		return this.save();
+	}
 
 	toPublicUser() {
 		const user: any = {};
@@ -256,40 +267,20 @@ export class User extends BaseClass {
 		const language = req?.language === "en" ? "en-US" : req?.language || "en-US";
 
 		const user = OrmUtils.mergeDeep(new User(), {
-			created_at: new Date(),
+			//required:
 			username: username,
 			discriminator,
 			id: Snowflake.generate(),
-			bot: false,
-			system: false,
-			premium_since: new Date(),
-			desktop: false,
-			mobile: false,
-			premium: true,
-			premium_type: 2,
-			bio: "",
-			mfa_enabled: false,
-			totp_secret: "",
-			totp_backup_codes: [],
-			verified: true,
-			disabled: false,
-			deleted: false,
 			email: email,
-			rights: Config.get().register.defaultRights, // TODO: grant rights correctly, as 0 actually stands for no rights at all
-			nsfw_allowed: true, // TODO: depending on age
-			public_flags: "0",
-			flags: "0", // TODO: generate
 			data: {
 				hash: password,
 				valid_tokens_since: new Date(),
 			},
-			settings: { ...defaultSettings, locale: language },
-			extended_settings: {},
-			fingerprints: [],
-			notes: {},
+			settings: { ...new UserSettings(), locale: language }
 		});
 
 		await user.save();
+		await user.settings.save();
 
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
@@ -301,85 +292,6 @@ export class User extends BaseClass {
 
 		return user;
 	}
-}
-
-export const defaultSettings: UserSettings = {
-	afk_timeout: 3600,
-	allow_accessibility_detection: true,
-	animate_emoji: true,
-	animate_stickers: 0,
-	contact_sync_enabled: false,
-	convert_emoticons: false,
-	custom_status: null,
-	default_guilds_restricted: false,
-	detect_platform_accounts: false,
-	developer_mode: true,
-	disable_games_tab: true,
-	enable_tts_command: false,
-	explicit_content_filter: 0,
-	friend_source_flags: { all: true },
-	gateway_connected: false,
-	gif_auto_play: true,
-	guild_folders: [],
-	guild_positions: [],
-	inline_attachment_media: true,
-	inline_embed_media: true,
-	locale: "en-US",
-	message_display_compact: false,
-	native_phone_integration_enabled: true,
-	render_embeds: true,
-	render_reactions: true,
-	restricted_guilds: [],
-	show_current_game: true,
-	status: "online",
-	stream_notifications_enabled: false,
-	theme: "dark",
-	timezone_offset: 0, // TODO: timezone from request
-};
-
-export interface UserSettings {
-	afk_timeout: number;
-	allow_accessibility_detection: boolean;
-	animate_emoji: boolean;
-	animate_stickers: number;
-	contact_sync_enabled: boolean;
-	convert_emoticons: boolean;
-	custom_status: {
-		emoji_id?: string;
-		emoji_name?: string;
-		expires_at?: number;
-		text?: string;
-	} | null;
-	default_guilds_restricted: boolean;
-	detect_platform_accounts: boolean;
-	developer_mode: boolean;
-	disable_games_tab: boolean;
-	enable_tts_command: boolean;
-	explicit_content_filter: number;
-	friend_source_flags: { all: boolean };
-	gateway_connected: boolean;
-	gif_auto_play: boolean;
-	// every top guild is displayed as a "folder"
-	guild_folders: {
-		color: number;
-		guild_ids: string[];
-		id: number;
-		name: string;
-	}[];
-	guild_positions: string[]; // guild ids ordered by position
-	inline_attachment_media: boolean;
-	inline_embed_media: boolean;
-	locale: string; // en_US
-	message_display_compact: boolean;
-	native_phone_integration_enabled: boolean;
-	render_embeds: boolean;
-	render_reactions: boolean;
-	restricted_guilds: string[];
-	show_current_game: boolean;
-	status: "online" | "offline" | "dnd" | "idle" | "invisible";
-	stream_notifications_enabled: boolean;
-	theme: "dark" | "white"; // dark
-	timezone_offset: number; // e.g -60
 }
 
 export const CUSTOM_USER_FLAG_OFFSET = BigInt(1) << BigInt(32);
