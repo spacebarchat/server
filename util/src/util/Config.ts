@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 
 // TODO: yaml instead of json
-// const overridePath = path.join(process.cwd(), "config.json");
+const overridePath = process.env.CONFIG_PATH ?? "";
 
 let config: ConfigValue;
 let pairs: ConfigEntity[];
@@ -18,12 +18,14 @@ export const Config = {
 		config = pairsToConfig(pairs);
 		config = (config || {}).merge(DefaultConfigOptions);
 
-		// try {
-		//  const overrideConfig = JSON.parse(fs.readFileSync(overridePath, { encoding: "utf8" }));
-		//  config = overrideConfig.merge(config);
-		// } catch (error) {
-		//  fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
-		// }
+		if(process.env.CONFIG_PATH)
+			try {
+				const overrideConfig = JSON.parse(fs.readFileSync(overridePath, { encoding: "utf8" }));
+				config = overrideConfig.merge(config);
+			} catch (error) {
+				fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
+			}
+		
 
 		return this.set(config);
 	},
@@ -50,7 +52,8 @@ function applyConfig(val: ConfigValue) {
 		pair.value = obj;
 		return pair.save();
 	}
-	// fs.writeFileSync(overridePath, JSON.stringify(val, null, 4));
+	if(process.env.CONFIG_PATH)
+		fs.writeFileSync(overridePath, JSON.stringify(val, null, 4));
 
 	return apply(val);
 }
