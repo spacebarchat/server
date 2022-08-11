@@ -7,7 +7,7 @@ const router = Router();
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const user = await User.findOneOrFail({
 		where: { id: req.user_id },
-		select: ["settings"],
+		relations: ["settings"],
 	});
 	return res.json(user.settings);
 });
@@ -21,10 +21,12 @@ router.patch(
 
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id, bot: false },
-			select: ["settings"]
+			relations: ["settings"]
 		});
-		user.settings = OrmUtils.mergeDeep(user.settings, body);
-		User.update({ id: user.id }, { settings: user.settings });
+
+		user.settings.assign(body);
+
+		user.settings.save();
 
 		res.json(user.settings);
 	},
