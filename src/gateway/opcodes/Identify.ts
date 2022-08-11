@@ -18,9 +18,10 @@ import {
 	PrivateSessionProjection,
 	MemberPrivateProjection,
 	PresenceUpdateEvent,
+	UserSettings,
+	IdentifySchema,
 	DefaultUserGuildSettings,
 	UserGuildSettings,
-	IdentifySchema,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
@@ -60,7 +61,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		await Promise.all([
 			User.findOneOrFail({
 				where: { id: this.user_id },
-				relations: ["relationships", "relationships.to"],
+				relations: ["relationships", "relationships.to", "settings"],
 				select: [...PrivateUserProjection, "relationships"],
 			}),
 			ReadState.find({ where: { user_id: this.user_id } }),
@@ -105,6 +106,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		]);
 
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
+	if (!user.settings) {
+		user.settings = new UserSettings();
+		await user.settings.save();
+	}
 
 	if (!identify.intents) identify.intents = BigInt("0x6ffffffff");
 	this.intents = new Intents(identify.intents);

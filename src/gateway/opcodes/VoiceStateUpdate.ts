@@ -62,7 +62,11 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	}
 
 	// 'Fix' for this one voice state error. TODO: Find out why this is sent
-	if (!voiceState.guild_id) return;
+	// It seems to be sent on client load, 
+	// so maybe its trying to find which server you were connected to before disconnecting, if any?
+	if (body.guild_id == null) {
+		return;
+	}
 
 	//TODO the member should only have these properties: hoisted_role, deaf, joined_at, mute, roles, user
 	//TODO the member.user should only have these properties: avatar, discriminator, id, username

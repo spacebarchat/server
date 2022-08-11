@@ -110,7 +110,7 @@ export class Guild extends BaseClass {
 	max_presences?: number;
 
 	@Column({ nullable: true })
-	max_video_channel_users?: number; // ? default: 25, is this max 25 streaming or watching
+	max_video_channel_users?: number;
 
 	@Column({ nullable: true })
 	member_count?: number;
@@ -285,6 +285,10 @@ export class Guild extends BaseClass {
 
 	// only for developer portal
 	permissions?: number;
+
+	//new guild settings, 11/08/2022:
+	@Column({ nullable: true })
+	premium_progress_bar_enabled: boolean;
 
 	static async createGuild(body: {
 		name?: string;
