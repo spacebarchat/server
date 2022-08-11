@@ -9,10 +9,10 @@ import {
 	adjustEmail,
 	Config,
 	UserModifySchema,
+	generateToken,
 } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
-import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
@@ -35,6 +35,9 @@ router.patch(
 			where: { id: req.user_id },
 			select: [...PrivateUserProjection, "data"],
 		});
+
+		// Populated on password change
+		var newToken: string | undefined;
 
 		if (body.avatar)
 			body.avatar = await handleFile(
@@ -94,6 +97,8 @@ router.patch(
 				});
 			}
 			user.data.hash = await bcrypt.hash(body.new_password, 12);
+			user.data.valid_tokens_since = new Date();
+			newToken = await generateToken(user.id) as string;
 		}
 
 		if (body.username) {
@@ -140,7 +145,10 @@ router.patch(
 			data: user,
 		} as UserUpdateEvent);
 
-		res.json(user);
+		res.json({
+			...user,
+			newToken,
+		});
 	},
 );
 
