@@ -1,6 +1,7 @@
-import { ConfigValue, ConfigEntity, DefaultConfigOptions } from "../entities/Config";
-import path from "path";
+import { ConfigEntity } from "../entities/Config";
 import fs from "fs";
+import { ConfigValue } from "../config";
+import { OrmUtils } from ".";
 
 // TODO: yaml instead of json
 const overridePath = process.env.CONFIG_PATH ?? "";
@@ -14,9 +15,11 @@ let pairs: ConfigEntity[];
 export const Config = {
 	init: async function init() {
 		if (config) return config;
+		console.log('[Config] Loading configuration...')
 		pairs = await ConfigEntity.find();
 		config = pairsToConfig(pairs);
-		config = (config || {}).merge(DefaultConfigOptions);
+		//config = (config || {}).merge(new ConfigValue());
+		config = OrmUtils.mergeDeep(new ConfigValue(), config)
 
 		if(process.env.CONFIG_PATH)
 			try {
@@ -30,6 +33,11 @@ export const Config = {
 		return this.set(config);
 	},
 	get: function get() {
+		if(!config) {
+			if(/--debug|--inspect/.test(process.execArgv.join(' ')))
+				console.log("Oops.. trying to get config without config existing... Returning defaults... (Is the database still initialising?)");
+			return new ConfigValue();
+		}
 		return config;
 	},
 	set: function set(val: Partial<ConfigValue>) {
