@@ -17,7 +17,7 @@ try {
 	console.log("[API] Failed to get thread count! Using 1...");
 }
 
-if (cluster.isMaster) {
+if (cluster.isPrimary) {
 	function getCommitOrFail() {
 		try {
 			return execSync("git rev-parse HEAD").toString().trim();
