@@ -14,7 +14,7 @@ import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 const router: Router = Router();
 
-// TODO: Only permissions your bot has in the guild or channel can be allowed/denied (unless your bot has a MANAGE_ROLES overwrite in the channel)
+// TODO: Only permissions the user in the guild or channel can be allowed/denied (unless it has a MANAGE_ROLES overwrite in the channel)
 
 export interface ChannelPermissionOverwriteSchema
   extends ChannelPermissionOverwrite {}
