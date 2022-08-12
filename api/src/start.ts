@@ -13,7 +13,7 @@ try {
 	console.log("[API] Failed to get thread count! Using 1...")
 }
 
-if (cluster.isMaster && process.env.NODE_ENV == "production") {
+if (cluster.isPrimary && process.env.NODE_ENV == "production") {
 	console.log(`Primary ${process.pid} is running`);
 
 	// Fork workers.
