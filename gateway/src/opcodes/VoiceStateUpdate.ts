@@ -1,4 +1,3 @@
-import { VoiceStateUpdateSchema } from "../schema/VoiceStateUpdateSchema";
 import { Payload, WebSocket } from "@fosscord/gateway";
 import { genVoiceToken } from "../util/SessionUtils";
 import { check } from "./instanceOf";
@@ -10,6 +9,7 @@ import {
 	VoiceServerUpdateEvent,
 	VoiceState,
 	VoiceStateUpdateEvent,
+	VoiceStateUpdateSchema,
 } from "@fosscord/util";
 import { OrmUtils } from "@fosscord/util";
 import { Region } from "@fosscord/util/src/config";

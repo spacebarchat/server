@@ -1,17 +1,11 @@
 import { Router, Request, Response } from "express";
-import { User, generateToken, BackupCode, generateMfaBackupCodes, Config } from "@fosscord/util";
+import { User, generateToken, BackupCode, generateMfaBackupCodes, Config, TotpEnableSchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from 'node-2fa';
 
 const router = Router();
-
-export interface TotpEnableSchema {
-	password: string;
-	code?: string;
-	secret?: string;
-}
 
 router.post("/", route({ body: "TotpEnableSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as TotpEnableSchema;

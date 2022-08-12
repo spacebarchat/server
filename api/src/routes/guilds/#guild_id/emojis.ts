@@ -1,21 +1,9 @@
 import { Router, Request, Response } from "express";
-import { Config, DiscordApiErrors, emitEvent, Emoji, GuildEmojisUpdateEvent, handleFile, Member, Snowflake, User } from "@fosscord/util";
+import { Config, DiscordApiErrors, emitEvent, Emoji, EmojiCreateSchema, EmojiModifySchema, GuildEmojisUpdateEvent, handleFile, Member, Snowflake, User } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { OrmUtils } from "@fosscord/util";
 
 const router = Router();
-
-export interface EmojiCreateSchema {
-	name?: string;
-	image: string;
-	require_colons?: boolean | null;
-	roles?: string[];
-}
-
-export interface EmojiModifySchema {
-	name?: string;
-	roles?: string[];
-}
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;

@@ -5,3 +5,4 @@ export * from "./interfaces/index";
 export * from "./entities/index";
 export * from "./dtos/index";
 export * from "./util/MFA";
+export * from "./schemas";

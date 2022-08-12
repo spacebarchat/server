@@ -1,4 +1,4 @@
-import { ActivitySchema } from "./Activity";
+import { ActivitySchema } from "./ActivitySchema";
 
 export const IdentifySchema = {
 	token: String,

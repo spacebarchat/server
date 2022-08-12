@@ -62,13 +62,6 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	res.send({ pruned: members.length });
 });
 
-export interface PruneSchema {
-	/**
-	 * @min 0
-	 */
-	days: number;
-}
-
 router.post("/", route({ permission: "KICK_MEMBERS", right: "KICK_BAN_MEMBERS" }), async (req: Request, res: Response) => {
 	const days = parseInt(req.body.days);
 

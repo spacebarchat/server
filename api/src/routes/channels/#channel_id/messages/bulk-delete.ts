@@ -8,10 +8,6 @@ const router: Router = Router();
 
 export default router;
 
-export interface BulkDeleteSchema {
-	messages: string[];
-}
-
 // should users be able to bulk delete messages or only bots? ANSWER: all users
 // should this request fail, if you provide messages older than 14 days/invalid ids? ANSWER: NO
 // https://discord.com/developers/docs/resources/channel#bulk-delete-messages

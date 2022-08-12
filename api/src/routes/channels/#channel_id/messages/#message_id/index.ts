@@ -12,13 +12,13 @@ import {
 	MessageDeleteEvent,
 	MessageUpdateEvent,
 	Snowflake,
-	uploadFile 
+	uploadFile, 
+	MessageCreateSchema
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import multer from "multer";
 import { route } from "@fosscord/api";
 import { handleMessage, postHandleMessage } from "@fosscord/api";
-import { MessageCreateSchema } from "../index";
 import { HTTPError } from "@fosscord/util";
 
 const router = Router();

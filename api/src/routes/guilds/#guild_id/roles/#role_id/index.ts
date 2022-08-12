@@ -1,8 +1,7 @@
 import { Router, Request, Response } from "express";
-import { Role, Member, GuildRoleUpdateEvent, GuildRoleDeleteEvent, emitEvent, handleFile } from "@fosscord/util";
+import { Role, Member, GuildRoleUpdateEvent, GuildRoleDeleteEvent, emitEvent, handleFile, RoleModifySchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { HTTPError } from "@fosscord/util";
-import { RoleModifySchema } from "../";
 import { OrmUtils } from "@fosscord/util";
 
 const router = Router();

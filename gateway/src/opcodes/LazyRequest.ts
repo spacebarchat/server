@@ -1,5 +1,4 @@
-import { getPermission, listenEvent, Member, Role, getOrInitialiseDatabase } from "@fosscord/util";
-import { LazyRequest } from "../schema/LazyRequest";
+import { getPermission, listenEvent, Member, Role, getOrInitialiseDatabase, LazyRequest } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { OPCODES } from "../util/Constants";
 import { WebSocket, Payload, handlePresenceUpdate } from "@fosscord/gateway";
