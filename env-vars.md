@@ -15,3 +15,4 @@
 |DB\_UNSAFE|any|Ignores migrations for database, enabled if defined|
 |DB\_VERBOSE|any|Log database queries, enabled if defined|
 |DB\_MIGRATE|any|Exit fosscord after connecting to and migrating database, used internally|
+|LOG\_INVALID\_BODY|any|Log request method, path and body if invalid|

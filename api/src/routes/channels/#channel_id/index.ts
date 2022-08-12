@@ -71,6 +71,8 @@ export interface ChannelModifySchema {
 	nsfw?: boolean;
 	rtc_region?: string;
 	default_auto_archive_duration?: number;
+	flags?: number;
+	default_thread_rate_limit_per_user?: number;
 }
 
 router.patch("/", route({ body: "ChannelModifySchema", permission: "MANAGE_CHANNELS" }), async (req: Request, res: Response) => {

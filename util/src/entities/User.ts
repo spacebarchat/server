@@ -185,8 +185,10 @@ export class User extends BaseClass {
 	notes: { [key: string]: string } = {}; //key is ID of user
 
 	async save(): Promise<any> {
-		await this.settings.save();
-		return this.save();
+		if(!this.settings) this.settings = new UserSettings();
+		this.settings.id = this.id;
+		//await this.settings.save();
+		return super.save();
 	}
 
 	toPublicUser() {

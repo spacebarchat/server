@@ -117,6 +117,11 @@ export function route(opts: RouteOptions) {
 			const valid = validate(normalizeBody(req.body));
 			if (!valid) {
 				const fields: Record<string, { code?: string; message: string }> = {};
+				if(process.env.LOG_INVALID_BODY) {
+					console.log(`Got invalid request: ${req.method} ${req.originalUrl}`)
+					console.log(req.body)
+					validate.errors?.forEach(x => console.log(x.params))
+				}
 				validate.errors?.forEach((x) => (fields[x.instancePath.slice(1)] = { code: x.keyword, message: x.message || "" }));
 				throw FieldErrors(fields);
 			}

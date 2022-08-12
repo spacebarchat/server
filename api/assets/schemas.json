@@ -552,6 +552,12 @@
             },
             "default_auto_archive_duration": {
                 "type": "integer"
+            },
+            "flags": {
+                "type": "integer"
+            },
+            "default_thread_rate_limit_per_user": {
+                "type": "integer"
             }
         },
         "additionalProperties": false,
@@ -695,7 +701,6 @@
         },
         "additionalProperties": false,
         "required": [
-            "avatar",
             "name"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -1028,6 +1033,12 @@
                     },
                     "default_auto_archive_duration": {
                         "type": "integer"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "default_thread_rate_limit_per_user": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false
@@ -1093,6 +1104,9 @@
             },
             "preferred_locale": {
                 "type": "string"
+            },
+            "premium_progress_bar_enabled": {
+                "type": "boolean"
             },
             "region": {
                 "type": "string"
@@ -1651,6 +1665,9 @@
     "UserSettingsSchema": {
         "type": "object",
         "properties": {
+            "id": {
+                "type": "string"
+            },
             "afk_timeout": {
                 "type": "integer"
             },
@@ -1672,22 +1689,7 @@
             "custom_status": {
                 "anyOf": [
                     {
-                        "type": "object",
-                        "properties": {
-                            "emoji_id": {
-                                "type": "string"
-                            },
-                            "emoji_name": {
-                                "type": "string"
-                            },
-                            "expires_at": {
-                                "type": "integer"
-                            },
-                            "text": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false
+                        "$ref": "#/definitions/CustomStatus"
                     },
                     {
                         "type": "null"
@@ -1713,16 +1715,7 @@
                 "type": "integer"
             },
             "friend_source_flags": {
-                "type": "object",
-                "properties": {
-                    "all": {
-                        "type": "boolean"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "all"
-                ]
+                "$ref": "#/definitions/FriendSourceFlags"
             },
             "gateway_connected": {
                 "type": "boolean"
@@ -1733,31 +1726,7 @@
             "guild_folders": {
                 "type": "array",
                 "items": {
-                    "type": "object",
-                    "properties": {
-                        "color": {
-                            "type": "integer"
-                        },
-                        "guild_ids": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "id": {
-                            "type": "integer"
-                        },
-                        "name": {
-                            "type": "string"
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "color",
-                        "guild_ids",
-                        "id",
-                        "name"
-                    ]
+                    "$ref": "#/definitions/GuildFolder"
                 }
             },
             "guild_positions": {
@@ -1818,9 +1787,98 @@
             },
             "timezone_offset": {
                 "type": "integer"
+            },
+            "hasId": {
+                "description": "Checks if entity has an id.\nIf entity composite compose ids, it will check them all.",
+                "type": "object",
+                "additionalProperties": false
+            },
+            "save": {
+                "description": "Saves current entity in the database.\nIf entity does not exist in the database then inserts, otherwise updates.",
+                "type": "object",
+                "additionalProperties": false
+            },
+            "remove": {
+                "description": "Removes current entity from the database.",
+                "type": "object",
+                "additionalProperties": false
+            },
+            "softRemove": {
+                "description": "Records the delete date of current entity.",
+                "type": "object",
+                "additionalProperties": false
+            },
+            "recover": {
+                "description": "Recovers a given entity in the database.",
+                "type": "object",
+                "additionalProperties": false
+            },
+            "reload": {
+                "description": "Reloads entity data from the database.",
+                "type": "object",
+                "additionalProperties": false
             }
         },
         "additionalProperties": false,
+        "definitions": {
+            "CustomStatus": {
+                "type": "object",
+                "properties": {
+                    "emoji_id": {
+                        "type": "string"
+                    },
+                    "emoji_name": {
+                        "type": "string"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "text": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "FriendSourceFlags": {
+                "type": "object",
+                "properties": {
+                    "all": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "all"
+                ]
+            },
+            "GuildFolder": {
+                "type": "object",
+                "properties": {
+                    "color": {
+                        "type": "integer"
+                    },
+                    "guild_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "color",
+                    "guild_ids",
+                    "id",
+                    "name"
+                ]
+            }
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     }
 }

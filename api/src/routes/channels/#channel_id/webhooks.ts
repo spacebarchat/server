@@ -12,7 +12,7 @@ export interface WebhookCreateSchema {
 	 * @maxLength 80
 	 */
 	name: string;
-	avatar: string;
+	avatar?: string;
 }
 //TODO: implement webhooks
 router.get("/", route({}), async (req: Request, res: Response) => {
@@ -36,6 +36,7 @@ router.post("/", route({ body: "WebhookCreateSchema", permission: "MANAGE_WEBHOO
 	if (name === "clyde") throw new HTTPError("Invalid name", 400);
 
 	// TODO: save webhook in database and send response
+	res.json(new Webhook());
 });
 
 export default router;

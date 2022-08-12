@@ -13,7 +13,7 @@ export class Invite extends BaseClassWithoutId {
 	code: string;
 
 	@Column()
-	temporary: boolean;
+	temporary: boolean = true;
 
 	@Column()
 	uses: number;

@@ -102,8 +102,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		]);
 
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
-	if (!user.settings) {
+	if (!user.settings) { //settings may not exist after updating...
 		user.settings = new UserSettings();
+		user.settings.id = user.id;
 		await user.settings.save();
 	}
 
