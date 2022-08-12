@@ -60,9 +60,9 @@
 			);
 
 			setInterval(() => {
-				var token = JSON.parse(localStorage.getItem("token"));
+				let token = JSON.parse(localStorage.getItem("token"));
 				if (token) {
-					var logincss = document.querySelector('#logincss'),
+					let logincss = document.querySelector('#logincss'),
 					canRemove = logincss ? logincss: "";
 					if(canRemove !== "") {
 					document.querySelector("#logincss").remove();
