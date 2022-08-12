@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { BaseEntity, EntityMetadata, ObjectIdColumn, PrimaryColumn, FindOptionsWhere, Generated, SaveOptions } from "typeorm";
+import { BaseEntity, ObjectIdColumn, PrimaryColumn, SaveOptions } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
 
 export class BaseClassWithoutId extends BaseEntity {

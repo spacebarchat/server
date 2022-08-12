@@ -36,7 +36,7 @@ router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT
 
 	const invite = await OrmUtils.mergeDeep(new Invite(),{
 		code: random(),
-		temporary: req.body.temporary,
+		temporary: req.body.temporary || true,
 		uses: 0,
 		max_uses: req.body.max_uses,
 		max_age: req.body.max_age,
