@@ -1,9 +1,3 @@
-/* Your custom CSS goes here, enjoy! */
-/* replace tos acceptance popup */
-#app-mount > div:nth-child(7) > div > div > div.tooltipContent-bqVLWK {
-    visibility: hidden;
-}
-
 /* replace login header */
 #app-mount > div.app-1q1i1E > div > div > div > div > form > div > div > div.mainLoginContainer-1ddwnR > h3 {
 	visibility: hidden;
