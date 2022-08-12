@@ -98,6 +98,1176 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ActivitySchema": {
+        "type": "object",
+        "properties": {
+            "afk": {
+                "type": "boolean"
+            },
+            "status": {
+                "$ref": "#/definitions/Status"
+            },
+            "activities": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Activity"
+                }
+            },
+            "since": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "afk",
+            "status"
+        ],
+        "definitions": {
+            "Status": {
+                "enum": [
+                    "dnd",
+                    "idle",
+                    "invisible",
+                    "offline",
+                    "online"
+                ],
+                "type": "string"
+            },
+            "Activity": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/definitions/ActivityType"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "integer"
+                    },
+                    "timestamps": {
+                        "type": "object",
+                        "properties": {
+                            "start": {
+                                "type": "integer"
+                            },
+                            "end": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "end",
+                            "start"
+                        ]
+                    },
+                    "application_id": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "emoji": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "animated": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "animated",
+                            "name"
+                        ]
+                    },
+                    "party": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "size": {
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "assets": {
+                        "type": "object",
+                        "properties": {
+                            "large_image": {
+                                "type": "string"
+                            },
+                            "large_text": {
+                                "type": "string"
+                            },
+                            "small_image": {
+                                "type": "string"
+                            },
+                            "small_text": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "secrets": {
+                        "type": "object",
+                        "properties": {
+                            "join": {
+                                "type": "string"
+                            },
+                            "spectate": {
+                                "type": "string"
+                            },
+                            "match": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "instance": {
+                        "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "flags",
+                    "name",
+                    "type"
+                ]
+            },
+            "ActivityType": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    4,
+                    5
+                ],
+                "type": "number"
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "BanCreateSchema": {
+        "type": "object",
+        "properties": {
+            "delete_message_days": {
+                "type": "string"
+            },
+            "reason": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "BanModeratorSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "user_id": {
+                "type": "string"
+            },
+            "guild_id": {
+                "type": "string"
+            },
+            "executor_id": {
+                "type": "string"
+            },
+            "reason": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "executor_id",
+            "guild_id",
+            "id",
+            "user_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "BanRegistrySchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "user_id": {
+                "type": "string"
+            },
+            "guild_id": {
+                "type": "string"
+            },
+            "executor_id": {
+                "type": "string"
+            },
+            "ip": {
+                "type": "string"
+            },
+            "reason": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "executor_id",
+            "guild_id",
+            "id",
+            "user_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "BulkDeleteSchema": {
+        "type": "object",
+        "properties": {
+            "messages": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "messages"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ChannelModifySchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "maxLength": 100,
+                "type": "string"
+            },
+            "type": {
+                "enum": [
+                    0,
+                    1,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    2,
+                    255,
+                    3,
+                    33,
+                    34,
+                    35,
+                    4,
+                    5,
+                    6,
+                    64,
+                    7,
+                    8,
+                    9
+                ],
+                "type": "number"
+            },
+            "topic": {
+                "type": "string"
+            },
+            "icon": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "bitrate": {
+                "type": "integer"
+            },
+            "user_limit": {
+                "type": "integer"
+            },
+            "rate_limit_per_user": {
+                "type": "integer"
+            },
+            "position": {
+                "type": "integer"
+            },
+            "permission_overwrites": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "$ref": "#/definitions/ChannelPermissionOverwriteType"
+                        },
+                        "allow": {
+                            "type": "string"
+                        },
+                        "deny": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "allow",
+                        "deny",
+                        "id",
+                        "type"
+                    ]
+                }
+            },
+            "parent_id": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "nsfw": {
+                "type": "boolean"
+            },
+            "rtc_region": {
+                "type": "string"
+            },
+            "default_auto_archive_duration": {
+                "type": "integer"
+            },
+            "flags": {
+                "type": "integer"
+            },
+            "default_thread_rate_limit_per_user": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "definitions": {
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ChannelPermissionOverwriteSchema": {
+        "type": "object",
+        "properties": {
+            "allow": {
+                "type": "string"
+            },
+            "deny": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "type": {
+                "$ref": "#/definitions/ChannelPermissionOverwriteType"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "allow",
+            "deny",
+            "id",
+            "type"
+        ],
+        "definitions": {
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "DmChannelCreateSchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "recipients": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "recipients"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "EmojiCreateSchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "image": {
+                "type": "string"
+            },
+            "require_colons": {
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            "roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "image"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "EmojiModifySchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildCreateSchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "maxLength": 100,
+                "type": "string"
+            },
+            "region": {
+                "type": "string"
+            },
+            "icon": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "channels": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ChannelModifySchema"
+                }
+            },
+            "guild_template_code": {
+                "type": "string"
+            },
+            "system_channel_id": {
+                "type": "string"
+            },
+            "rules_channel_id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name"
+        ],
+        "definitions": {
+            "ChannelModifySchema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "maxLength": 100,
+                        "type": "string"
+                    },
+                    "type": {
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            13,
+                            14,
+                            15,
+                            2,
+                            255,
+                            3,
+                            33,
+                            34,
+                            35,
+                            4,
+                            5,
+                            6,
+                            64,
+                            7,
+                            8,
+                            9
+                        ],
+                        "type": "number"
+                    },
+                    "topic": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "bitrate": {
+                        "type": "integer"
+                    },
+                    "user_limit": {
+                        "type": "integer"
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "permission_overwrites": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/ChannelPermissionOverwriteType"
+                                },
+                                "allow": {
+                                    "type": "string"
+                                },
+                                "deny": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "allow",
+                                "deny",
+                                "id",
+                                "type"
+                            ]
+                        }
+                    },
+                    "parent_id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "nsfw": {
+                        "type": "boolean"
+                    },
+                    "rtc_region": {
+                        "type": "string"
+                    },
+                    "default_auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "default_thread_rate_limit_per_user": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ChannelPermissionOverwriteType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildTemplateCreateSchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "avatar": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildUpdateSchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "splash": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "description": {
+                "type": "string"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "verification_level": {
+                "type": "integer"
+            },
+            "default_message_notifications": {
+                "type": "integer"
+            },
+            "system_channel_flags": {
+                "type": "integer"
+            },
+            "explicit_content_filter": {
+                "type": "integer"
+            },
+            "public_updates_channel_id": {
+                "type": "string"
+            },
+            "afk_timeout": {
+                "type": "integer"
+            },
+            "afk_channel_id": {
+                "type": "string"
+            },
+            "preferred_locale": {
+                "type": "string"
+            },
+            "premium_progress_bar_enabled": {
+                "type": "boolean"
+            },
+            "region": {
+                "type": "string"
+            },
+            "icon": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "guild_template_code": {
+                "type": "string"
+            },
+            "system_channel_id": {
+                "type": "string"
+            },
+            "rules_channel_id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildUpdateWelcomeScreenSchema": {
+        "type": "object",
+        "properties": {
+            "welcome_channels": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "channel_id": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "emoji_id": {
+                            "type": "string"
+                        },
+                        "emoji_name": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "channel_id",
+                        "description",
+                        "emoji_name"
+                    ]
+                }
+            },
+            "enabled": {
+                "type": "boolean"
+            },
+            "description": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "IdentifySchema": {
+        "type": "object",
+        "properties": {
+            "token": {
+                "type": "string"
+            },
+            "properties": {
+                "type": "object",
+                "properties": {
+                    "os": {
+                        "type": "string"
+                    },
+                    "os_atch": {
+                        "type": "string"
+                    },
+                    "browser": {
+                        "type": "string"
+                    },
+                    "device": {
+                        "type": "string"
+                    },
+                    "$os": {
+                        "type": "string"
+                    },
+                    "$browser": {
+                        "type": "string"
+                    },
+                    "$device": {
+                        "type": "string"
+                    },
+                    "browser_user_agent": {
+                        "type": "string"
+                    },
+                    "browser_version": {
+                        "type": "string"
+                    },
+                    "os_version": {
+                        "type": "string"
+                    },
+                    "referrer": {
+                        "type": "string"
+                    },
+                    "referring_domain": {
+                        "type": "string"
+                    },
+                    "referrer_current": {
+                        "type": "string"
+                    },
+                    "referring_domain_current": {
+                        "type": "string"
+                    },
+                    "release_channel": {
+                        "enum": [
+                            "canary",
+                            "dev",
+                            "ptb",
+                            "stable"
+                        ],
+                        "type": "string"
+                    },
+                    "client_build_number": {
+                        "type": "integer"
+                    },
+                    "client_event_source": {},
+                    "client_version": {
+                        "type": "string"
+                    },
+                    "system_locale": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "intents": {
+                "type": "bigint"
+            },
+            "presence": {
+                "$ref": "#/definitions/ActivitySchema"
+            },
+            "compress": {
+                "type": "boolean"
+            },
+            "large_threshold": {
+                "type": "integer"
+            },
+            "shard": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "bigint"
+                    },
+                    {
+                        "type": "bigint"
+                    }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+            },
+            "guild_subscriptions": {
+                "type": "boolean"
+            },
+            "capabilities": {
+                "type": "integer"
+            },
+            "client_state": {
+                "type": "object",
+                "properties": {
+                    "guild_hashes": {},
+                    "highest_last_message_id": {
+                        "type": "string"
+                    },
+                    "read_state_version": {
+                        "type": "integer"
+                    },
+                    "user_guild_settings_version": {
+                        "type": "integer"
+                    },
+                    "user_settings_version": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "v": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "properties",
+            "token"
+        ],
+        "definitions": {
+            "ActivitySchema": {
+                "type": "object",
+                "properties": {
+                    "afk": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "$ref": "#/definitions/Status"
+                    },
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Activity"
+                        }
+                    },
+                    "since": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "afk",
+                    "status"
+                ]
+            },
+            "Status": {
+                "enum": [
+                    "dnd",
+                    "idle",
+                    "invisible",
+                    "offline",
+                    "online"
+                ],
+                "type": "string"
+            },
+            "Activity": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/definitions/ActivityType"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "integer"
+                    },
+                    "timestamps": {
+                        "type": "object",
+                        "properties": {
+                            "start": {
+                                "type": "integer"
+                            },
+                            "end": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "end",
+                            "start"
+                        ]
+                    },
+                    "application_id": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "emoji": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "animated": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "animated",
+                            "name"
+                        ]
+                    },
+                    "party": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "size": {
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "assets": {
+                        "type": "object",
+                        "properties": {
+                            "large_image": {
+                                "type": "string"
+                            },
+                            "large_text": {
+                                "type": "string"
+                            },
+                            "small_image": {
+                                "type": "string"
+                            },
+                            "small_text": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "secrets": {
+                        "type": "object",
+                        "properties": {
+                            "join": {
+                                "type": "string"
+                            },
+                            "spectate": {
+                                "type": "string"
+                            },
+                            "match": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "instance": {
+                        "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "flags",
+                    "name",
+                    "type"
+                ]
+            },
+            "ActivityType": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    4,
+                    5
+                ],
+                "type": "number"
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InviteCreateSchema": {
+        "type": "object",
+        "properties": {
+            "target_user_id": {
+                "type": "string"
+            },
+            "target_type": {
+                "type": "string"
+            },
+            "validate": {
+                "type": "string"
+            },
+            "max_age": {
+                "type": "integer"
+            },
+            "max_uses": {
+                "type": "integer"
+            },
+            "temporary": {
+                "type": "boolean"
+            },
+            "unique": {
+                "type": "boolean"
+            },
+            "target_user": {
+                "type": "string"
+            },
+            "target_user_type": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "LoginSchema": {
+        "type": "object",
+        "properties": {
+            "login": {
+                "type": "string"
+            },
+            "password": {
+                "type": "string"
+            },
+            "undelete": {
+                "type": "boolean"
+            },
+            "captcha_key": {
+                "type": "string"
+            },
+            "login_source": {
+                "type": "string"
+            },
+            "gift_code_sku_id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "login",
+            "password"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MemberChangeSchema": {
+        "type": "object",
+        "properties": {
+            "roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MemberNickChangeSchema": {
+        "type": "object",
+        "properties": {
+            "nick": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "nick"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageAcknowledgeSchema": {
+        "type": "object",
+        "properties": {
+            "manual": {
+                "type": "boolean"
+            },
+            "mention_count": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "MessageCreateSchema": {
         "type": "object",
         "properties": {
@@ -328,86 +1498,73 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "RouteResponse": {
+    "MfaCodesSchema": {
         "type": "object",
         "properties": {
-            "status": {
-                "type": "integer"
-            },
-            "body": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "headers": {
-                "$ref": "#/definitions/Record<string,string>"
-            }
-        },
-        "additionalProperties": false,
-        "definitions": {
-            "Record<string,string>": {
-                "type": "object",
-                "additionalProperties": false
-            }
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "LoginSchema": {
-        "type": "object",
-        "properties": {
-            "login": {
-                "type": "string"
-            },
             "password": {
                 "type": "string"
             },
-            "undelete": {
+            "regenerate": {
                 "type": "boolean"
-            },
-            "captcha_key": {
-                "type": "string"
-            },
-            "login_source": {
-                "type": "string"
-            },
-            "gift_code_sku_id": {
-                "type": "string"
             }
         },
         "additionalProperties": false,
         "required": [
-            "login",
             "password"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "TotpSchema": {
+    "ModifyGuildStickerSchema": {
         "type": "object",
         "properties": {
-            "code": {
+            "name": {
+                "minLength": 2,
+                "maxLength": 30,
                 "type": "string"
             },
-            "ticket": {
+            "description": {
+                "maxLength": 100,
                 "type": "string"
             },
-            "gift_code_sku_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "login_source": {
-                "type": [
-                    "null",
-                    "string"
-                ]
+            "tags": {
+                "maxLength": 200,
+                "type": "string"
             }
         },
         "additionalProperties": false,
         "required": [
-            "code",
-            "ticket"
+            "name",
+            "tags"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PruneSchema": {
+        "type": "object",
+        "properties": {
+            "days": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "days"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PurgeSchema": {
+        "type": "object",
+        "properties": {
+            "before": {
+                "type": "string"
+            },
+            "after": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "after",
+            "before"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -457,716 +1614,37 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ChannelModifySchema": {
+    "RelationshipPostSchema": {
         "type": "object",
         "properties": {
-            "name": {
-                "maxLength": 100,
+            "discriminator": {
                 "type": "string"
             },
+            "username": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "discriminator",
+            "username"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RelationshipPutSchema": {
+        "type": "object",
+        "properties": {
             "type": {
                 "enum": [
-                    0,
                     1,
-                    10,
-                    11,
-                    12,
-                    13,
-                    14,
-                    15,
                     2,
-                    255,
                     3,
-                    33,
-                    34,
-                    35,
-                    4,
-                    5,
-                    6,
-                    64,
-                    7,
-                    8,
-                    9
-                ],
-                "type": "number"
-            },
-            "topic": {
-                "type": "string"
-            },
-            "icon": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "bitrate": {
-                "type": "integer"
-            },
-            "user_limit": {
-                "type": "integer"
-            },
-            "rate_limit_per_user": {
-                "type": "integer"
-            },
-            "position": {
-                "type": "integer"
-            },
-            "permission_overwrites": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "type": {
-                            "$ref": "#/definitions/ChannelPermissionOverwriteType"
-                        },
-                        "allow": {
-                            "type": "string"
-                        },
-                        "deny": {
-                            "type": "string"
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "allow",
-                        "deny",
-                        "id",
-                        "type"
-                    ]
-                }
-            },
-            "parent_id": {
-                "type": "string"
-            },
-            "id": {
-                "type": "string"
-            },
-            "nsfw": {
-                "type": "boolean"
-            },
-            "rtc_region": {
-                "type": "string"
-            },
-            "default_auto_archive_duration": {
-                "type": "integer"
-            },
-            "flags": {
-                "type": "integer"
-            },
-            "default_thread_rate_limit_per_user": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
+                    4
                 ],
                 "type": "number"
             }
         },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "InviteCreateSchema": {
-        "type": "object",
-        "properties": {
-            "target_user_id": {
-                "type": "string"
-            },
-            "target_type": {
-                "type": "string"
-            },
-            "validate": {
-                "type": "string"
-            },
-            "max_age": {
-                "type": "integer"
-            },
-            "max_uses": {
-                "type": "integer"
-            },
-            "temporary": {
-                "type": "boolean"
-            },
-            "unique": {
-                "type": "boolean"
-            },
-            "target_user": {
-                "type": "string"
-            },
-            "target_user_type": {
-                "type": "integer"
-            }
-        },
         "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "MessageAcknowledgeSchema": {
-        "type": "object",
-        "properties": {
-            "manual": {
-                "type": "boolean"
-            },
-            "mention_count": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "BulkDeleteSchema": {
-        "type": "object",
-        "properties": {
-            "messages": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "messages"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ChannelPermissionOverwriteSchema": {
-        "type": "object",
-        "properties": {
-            "allow": {
-                "type": "string"
-            },
-            "deny": {
-                "type": "string"
-            },
-            "id": {
-                "type": "string"
-            },
-            "type": {
-                "$ref": "#/definitions/ChannelPermissionOverwriteType"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "allow",
-            "deny",
-            "id",
-            "type"
-        ],
-        "definitions": {
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            }
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "PurgeSchema": {
-        "type": "object",
-        "properties": {
-            "before": {
-                "type": "string"
-            },
-            "after": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "after",
-            "before"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "WebhookCreateSchema": {
-        "type": "object",
-        "properties": {
-            "name": {
-                "maxLength": 80,
-                "type": "string"
-            },
-            "avatar": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "name"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GatewayBotResponse": {
-        "type": "object",
-        "properties": {
-            "url": {
-                "type": "string"
-            },
-            "shards": {
-                "type": "integer"
-            },
-            "session_start_limit": {
-                "type": "object",
-                "properties": {
-                    "total": {
-                        "type": "integer"
-                    },
-                    "remaining": {
-                        "type": "integer"
-                    },
-                    "reset_after": {
-                        "type": "integer"
-                    },
-                    "max_concurrency": {
-                        "type": "integer"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "max_concurrency",
-                    "remaining",
-                    "reset_after",
-                    "total"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "session_start_limit",
-            "shards",
-            "url"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GatewayResponse": {
-        "type": "object",
-        "properties": {
-            "url": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "url"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "BanCreateSchema": {
-        "type": "object",
-        "properties": {
-            "delete_message_days": {
-                "type": "string"
-            },
-            "reason": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "BanRegistrySchema": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "user_id": {
-                "type": "string"
-            },
-            "guild_id": {
-                "type": "string"
-            },
-            "executor_id": {
-                "type": "string"
-            },
-            "ip": {
-                "type": "string"
-            },
-            "reason": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "executor_id",
-            "guild_id",
-            "id",
-            "user_id"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "BanModeratorSchema": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "user_id": {
-                "type": "string"
-            },
-            "guild_id": {
-                "type": "string"
-            },
-            "executor_id": {
-                "type": "string"
-            },
-            "reason": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "executor_id",
-            "guild_id",
-            "id",
-            "user_id"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ChannelReorderSchema": {
-        "type": "array",
-        "items": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "position": {
-                    "type": "integer"
-                },
-                "lock_permissions": {
-                    "type": "boolean"
-                },
-                "parent_id": {
-                    "type": "string"
-                }
-            },
-            "additionalProperties": false,
-            "required": [
-                "id"
-            ]
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "EmojiCreateSchema": {
-        "type": "object",
-        "properties": {
-            "name": {
-                "type": "string"
-            },
-            "image": {
-                "type": "string"
-            },
-            "require_colons": {
-                "type": [
-                    "null",
-                    "boolean"
-                ]
-            },
-            "roles": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "image"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "EmojiModifySchema": {
-        "type": "object",
-        "properties": {
-            "name": {
-                "type": "string"
-            },
-            "roles": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GuildCreateSchema": {
-        "type": "object",
-        "properties": {
-            "name": {
-                "maxLength": 100,
-                "type": "string"
-            },
-            "region": {
-                "type": "string"
-            },
-            "icon": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "channels": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/ChannelModifySchema"
-                }
-            },
-            "guild_template_code": {
-                "type": "string"
-            },
-            "system_channel_id": {
-                "type": "string"
-            },
-            "rules_channel_id": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "name"
-        ],
-        "definitions": {
-            "ChannelModifySchema": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "maxLength": 100,
-                        "type": "string"
-                    },
-                    "type": {
-                        "enum": [
-                            0,
-                            1,
-                            10,
-                            11,
-                            12,
-                            13,
-                            14,
-                            15,
-                            2,
-                            255,
-                            3,
-                            33,
-                            34,
-                            35,
-                            4,
-                            5,
-                            6,
-                            64,
-                            7,
-                            8,
-                            9
-                        ],
-                        "type": "number"
-                    },
-                    "topic": {
-                        "type": "string"
-                    },
-                    "icon": {
-                        "type": [
-                            "null",
-                            "string"
-                        ]
-                    },
-                    "bitrate": {
-                        "type": "integer"
-                    },
-                    "user_limit": {
-                        "type": "integer"
-                    },
-                    "rate_limit_per_user": {
-                        "type": "integer"
-                    },
-                    "position": {
-                        "type": "integer"
-                    },
-                    "permission_overwrites": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "$ref": "#/definitions/ChannelPermissionOverwriteType"
-                                },
-                                "allow": {
-                                    "type": "string"
-                                },
-                                "deny": {
-                                    "type": "string"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "allow",
-                                "deny",
-                                "id",
-                                "type"
-                            ]
-                        }
-                    },
-                    "parent_id": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "nsfw": {
-                        "type": "boolean"
-                    },
-                    "rtc_region": {
-                        "type": "string"
-                    },
-                    "default_auto_archive_duration": {
-                        "type": "integer"
-                    },
-                    "flags": {
-                        "type": "integer"
-                    },
-                    "default_thread_rate_limit_per_user": {
-                        "type": "integer"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "ChannelPermissionOverwriteType": {
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "type": "number"
-            }
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GuildUpdateSchema": {
-        "type": "object",
-        "properties": {
-            "name": {
-                "type": "string"
-            },
-            "banner": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "splash": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "description": {
-                "type": "string"
-            },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "verification_level": {
-                "type": "integer"
-            },
-            "default_message_notifications": {
-                "type": "integer"
-            },
-            "system_channel_flags": {
-                "type": "integer"
-            },
-            "explicit_content_filter": {
-                "type": "integer"
-            },
-            "public_updates_channel_id": {
-                "type": "string"
-            },
-            "afk_timeout": {
-                "type": "integer"
-            },
-            "afk_channel_id": {
-                "type": "string"
-            },
-            "preferred_locale": {
-                "type": "string"
-            },
-            "premium_progress_bar_enabled": {
-                "type": "boolean"
-            },
-            "region": {
-                "type": "string"
-            },
-            "icon": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "guild_template_code": {
-                "type": "string"
-            },
-            "system_channel_id": {
-                "type": "string"
-            },
-            "rules_channel_id": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "MemberChangeSchema": {
-        "type": "object",
-        "properties": {
-            "roles": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "MemberNickChangeSchema": {
-        "type": "object",
-        "properties": {
-            "nick": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "nick"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "PruneSchema": {
-        "type": "object",
-        "properties": {
-            "days": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "days"
-        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "RoleModifySchema": {
@@ -1198,50 +1676,6 @@
             }
         },
         "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RolePositionUpdateSchema": {
-        "type": "array",
-        "items": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "position": {
-                    "type": "integer"
-                }
-            },
-            "additionalProperties": false,
-            "required": [
-                "id",
-                "position"
-            ]
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ModifyGuildStickerSchema": {
-        "type": "object",
-        "properties": {
-            "name": {
-                "minLength": 2,
-                "maxLength": 30,
-                "type": "string"
-            },
-            "description": {
-                "maxLength": 100,
-                "type": "string"
-            },
-            "tags": {
-                "maxLength": 200,
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "name",
-            "tags"
-        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "TemplateCreateSchema": {
@@ -1276,113 +1710,54 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "VanityUrlSchema": {
+    "TotpDisableSchema": {
         "type": "object",
         "properties": {
             "code": {
-                "minLength": 1,
-                "maxLength": 20,
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "VoiceStateUpdateSchema": {
-        "type": "object",
-        "properties": {
-            "channel_id": {
-                "type": "string"
-            },
-            "guild_id": {
-                "type": "string"
-            },
-            "suppress": {
-                "type": "boolean"
-            },
-            "request_to_speak_timestamp": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "self_mute": {
-                "type": "boolean"
-            },
-            "self_deaf": {
-                "type": "boolean"
-            },
-            "self_video": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "channel_id"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GuildUpdateWelcomeScreenSchema": {
-        "type": "object",
-        "properties": {
-            "welcome_channels": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "channel_id": {
-                            "type": "string"
-                        },
-                        "description": {
-                            "type": "string"
-                        },
-                        "emoji_id": {
-                            "type": "string"
-                        },
-                        "emoji_name": {
-                            "type": "string"
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "channel_id",
-                        "description",
-                        "emoji_name"
-                    ]
-                }
-            },
-            "enabled": {
-                "type": "boolean"
-            },
-            "description": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "WidgetModifySchema": {
-        "type": "object",
-        "properties": {
-            "enabled": {
-                "type": "boolean"
-            },
-            "channel_id": {
                 "type": "string"
             }
         },
         "additionalProperties": false,
         "required": [
-            "channel_id",
-            "enabled"
+            "code"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "GuildTemplateCreateSchema": {
+    "TotpEnableSchema": {
         "type": "object",
         "properties": {
-            "name": {
+            "password": {
                 "type": "string"
             },
-            "avatar": {
+            "code": {
+                "type": "string"
+            },
+            "secret": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "password"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "TotpSchema": {
+        "type": "object",
+        "properties": {
+            "code": {
+                "type": "string"
+            },
+            "ticket": {
+                "type": "string"
+            },
+            "gift_code_sku_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "login_source": {
                 "type": [
                     "null",
                     "string"
@@ -1391,150 +1766,8 @@
         },
         "additionalProperties": false,
         "required": [
-            "name"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "UserProfileResponse": {
-        "type": "object",
-        "properties": {
-            "user": {
-                "$ref": "#/definitions/UserPublic"
-            },
-            "connected_accounts": {
-                "$ref": "#/definitions/PublicConnectedAccount"
-            },
-            "premium_guild_since": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "premium_since": {
-                "type": "string",
-                "format": "date-time"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "connected_accounts",
-            "user"
-        ],
-        "definitions": {
-            "UserPublic": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "accent_color": {
-                        "type": "integer"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "premium_since": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "bio",
-                    "bot",
-                    "discriminator",
-                    "id",
-                    "premium_since",
-                    "public_flags",
-                    "username"
-                ]
-            },
-            "PublicConnectedAccount": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "type": "string"
-                    },
-                    "verified": {
-                        "type": "boolean"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "type",
-                    "verified"
-                ]
-            }
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "UserRelationsResponse": {
-        "type": "object",
-        "properties": {
-            "object": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    }
-                },
-                "additionalProperties": false
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "object"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "DmChannelCreateSchema": {
-        "type": "object",
-        "properties": {
-            "name": {
-                "type": "string"
-            },
-            "recipients": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "recipients"
+            "code",
+            "ticket"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -1579,87 +1812,6 @@
             }
         },
         "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "MfaCodesSchema": {
-        "type": "object",
-        "properties": {
-            "password": {
-                "type": "string"
-            },
-            "regenerate": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "password"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "TotpDisableSchema": {
-        "type": "object",
-        "properties": {
-            "code": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "code"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "TotpEnableSchema": {
-        "type": "object",
-        "properties": {
-            "password": {
-                "type": "string"
-            },
-            "code": {
-                "type": "string"
-            },
-            "secret": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "password"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RelationshipPutSchema": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RelationshipPostSchema": {
-        "type": "object",
-        "properties": {
-            "discriminator": {
-                "type": "string"
-            },
-            "username": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "discriminator",
-            "username"
-        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "UserSettingsSchema": {
@@ -1879,6 +2031,333 @@
                 ]
             }
         },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "VanityUrlSchema": {
+        "type": "object",
+        "properties": {
+            "code": {
+                "minLength": 1,
+                "maxLength": 20,
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "VoiceStateUpdateSchema": {
+        "type": "object",
+        "properties": {
+            "channel_id": {
+                "type": "string"
+            },
+            "guild_id": {
+                "type": "string"
+            },
+            "suppress": {
+                "type": "boolean"
+            },
+            "request_to_speak_timestamp": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "self_mute": {
+                "type": "boolean"
+            },
+            "self_deaf": {
+                "type": "boolean"
+            },
+            "self_video": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "channel_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "WebhookCreateSchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "maxLength": 80,
+                "type": "string"
+            },
+            "avatar": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "WidgetModifySchema": {
+        "type": "object",
+        "properties": {
+            "enabled": {
+                "type": "boolean"
+            },
+            "channel_id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "channel_id",
+            "enabled"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RouteResponse": {
+        "type": "object",
+        "properties": {
+            "status": {
+                "type": "integer"
+            },
+            "body": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "headers": {
+                "$ref": "#/definitions/Record<string,string>"
+            }
+        },
+        "additionalProperties": false,
+        "definitions": {
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GatewayBotResponse": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string"
+            },
+            "shards": {
+                "type": "integer"
+            },
+            "session_start_limit": {
+                "type": "object",
+                "properties": {
+                    "total": {
+                        "type": "integer"
+                    },
+                    "remaining": {
+                        "type": "integer"
+                    },
+                    "reset_after": {
+                        "type": "integer"
+                    },
+                    "max_concurrency": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "max_concurrency",
+                    "remaining",
+                    "reset_after",
+                    "total"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "session_start_limit",
+            "shards",
+            "url"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GatewayResponse": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "url"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ChannelReorderSchema": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "integer"
+                },
+                "lock_permissions": {
+                    "type": "boolean"
+                },
+                "parent_id": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "id"
+            ]
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RolePositionUpdateSchema": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "integer"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "position"
+            ]
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UserProfileResponse": {
+        "type": "object",
+        "properties": {
+            "user": {
+                "$ref": "#/definitions/UserPublic"
+            },
+            "connected_accounts": {
+                "$ref": "#/definitions/PublicConnectedAccount"
+            },
+            "premium_guild_since": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "premium_since": {
+                "type": "string",
+                "format": "date-time"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "connected_accounts",
+            "user"
+        ],
+        "definitions": {
+            "UserPublic": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "PublicConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "type",
+                    "verified"
+                ]
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UserRelationsResponse": {
+        "type": "object",
+        "properties": {
+            "object": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "object"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     }
 }

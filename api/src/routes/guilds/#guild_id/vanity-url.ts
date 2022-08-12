@@ -1,4 +1,4 @@
-import { Channel, ChannelType, getPermission, Guild, Invite, trimSpecial } from "@fosscord/util";
+import { Channel, ChannelType, getPermission, Guild, Invite, trimSpecial, VanityUrlSchema } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import { HTTPError } from "@fosscord/util";
@@ -24,14 +24,6 @@ router.get("/", route({ permission: "MANAGE_GUILD" }), async (req: Request, res:
 		return res.json(invite.map((x) => ({ code: x.code, uses: x.uses })));
 	}
 });
-
-export interface VanityUrlSchema {
-	/**
-	 * @minLength 1
-	 * @maxLength 20
-	 */
-	code?: string;
-}
 
 router.patch("/", route({ body: "VanityUrlSchema", permission: "MANAGE_GUILD" }), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;

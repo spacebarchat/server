@@ -21,12 +21,13 @@ import {
 	Webhook,
 	Attachment,
 	Config,
+	MessageCreateSchema,
 } from "@fosscord/util";
 import { HTTPError } from "@fosscord/util";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
-import { MessageCreateSchema } from "../../routes/channels/#channel_id/messages";
 import { OrmUtils } from "@fosscord/util";
+
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images

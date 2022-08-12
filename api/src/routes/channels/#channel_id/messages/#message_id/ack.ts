@@ -5,15 +5,6 @@ import { OrmUtils } from "@fosscord/util";
 
 const router = Router();
 
-// TODO: public read receipts & privacy scoping
-// TODO: send read state event to all channel members
-// TODO: advance-only notification cursor
-
-export interface MessageAcknowledgeSchema {
-	manual?: boolean;
-	mention_count?: number;
-}
-
 router.post("/", route({ body: "MessageAcknowledgeSchema" }), async (req: Request, res: Response) => {
 	const { channel_id, message_id } = req.params;
 

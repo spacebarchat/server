@@ -1,20 +1,11 @@
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
-import { Config, User, generateToken, adjustEmail, FieldErrors } from "@fosscord/util";
+import { Config, User, generateToken, adjustEmail, FieldErrors, LoginSchema } from "@fosscord/util";
 import crypto from "crypto";
 
 const router: Router = Router();
 export default router;
-
-export interface LoginSchema {
-	login: string;
-	password: string;
-	undelete?: boolean;
-	captcha_key?: string;
-	login_source?: string;
-	gift_code_sku_id?: string;
-}
 
 router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Response) => {
 	const { login, password, captcha_key, undelete } = req.body as LoginSchema;

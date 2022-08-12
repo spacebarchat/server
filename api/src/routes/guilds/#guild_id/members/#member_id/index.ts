@@ -1,14 +1,10 @@
 import { Request, Response, Router } from "express";
-import { Member, getPermission, getRights, Role, GuildMemberUpdateEvent, emitEvent, Sticker, Emoji, Rights, Guild } from "@fosscord/util";
+import { Member, getPermission, getRights, Role, GuildMemberUpdateEvent, emitEvent, Sticker, Emoji, Rights, Guild, MemberChangeSchema } from "@fosscord/util";
 import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { OrmUtils } from "@fosscord/util";
 
 const router = Router();
-
-export interface MemberChangeSchema {
-	roles?: string[];
-}
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;

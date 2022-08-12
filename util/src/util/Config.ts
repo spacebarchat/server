@@ -60,8 +60,11 @@ function applyConfig(val: ConfigValue) {
 		pair.value = obj;
 		return pair.save();
 	}
-	if(process.env.CONFIG_PATH)
+	if(process.env.CONFIG_PATH) {
+		if(/--debug|--inspect/.test(process.execArgv.join(' ')))
+			console.log(`Writing config: ${process.env.CONFIG_PATH}`)
 		fs.writeFileSync(overridePath, JSON.stringify(val, null, 4));
+	}
 
 	return apply(val);
 }

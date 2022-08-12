@@ -1,4 +1,4 @@
-import { HTTPError } from "@fosscord/util";
+import { HTTPError, PurgeSchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { isTextChannel } from "./messages";
 import { FindManyOptions, Between, Not } from "typeorm";
@@ -9,11 +9,6 @@ import { In } from "typeorm";
 const router: Router = Router();
 
 export default router;
-
-export interface PurgeSchema {
-	before: string;
-	after: string;
-}
 
 /**
 TODO: apply the delete bit by bit to prevent client and database stress

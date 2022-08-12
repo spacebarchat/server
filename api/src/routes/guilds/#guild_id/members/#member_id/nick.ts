@@ -4,10 +4,6 @@ import { Request, Response, Router } from "express";
 
 const router = Router();
 
-export interface MemberNickChangeSchema {
-	nick: string;
-}
-
 router.patch("/", route({ body: "MemberNickChangeSchema" }), async (req: Request, res: Response) => {
 	let { guild_id, member_id } = req.params;
 	let permissionString: PermissionResolvable = "MANAGE_NICKNAMES";

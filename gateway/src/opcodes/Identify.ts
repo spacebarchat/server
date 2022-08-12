@@ -19,12 +19,12 @@ import {
 	MemberPrivateProjection,
 	PresenceUpdateEvent,
 	UserSettings,
+	IdentifySchema,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { genSessionId } from "../util/SessionUtils";
 import { setupListener } from "../listener/listener";
-import { IdentifySchema } from "../schema/Identify";
 // import experiments from "./experiments.json";
 const experiments: any = [];
 import { check } from "./instanceOf";

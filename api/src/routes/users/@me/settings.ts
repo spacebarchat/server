@@ -4,8 +4,6 @@ import { route } from "@fosscord/api";
 
 const router = Router();
 
-export interface UserSettingsSchema extends Partial<UserSettings> {}
-
 router.patch("/", route({ body: "UserSettingsSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as UserSettings;
 	if (body.locale === "en") body.locale = "en-US"; // fix discord client crash on unkown locale

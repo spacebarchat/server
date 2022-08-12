@@ -1,14 +1,9 @@
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { BackupCode, Config, FieldErrors, generateMfaBackupCodes, User } from "@fosscord/util";
+import { BackupCode, Config, FieldErrors, generateMfaBackupCodes, MfaCodesSchema, User } from "@fosscord/util";
 import bcrypt from "bcrypt";
 
 const router = Router();
-
-export interface MfaCodesSchema {
-	password: string;
-	regenerate?: boolean;
-}
 
 // TODO: This route is replaced with users/@me/mfa/codes-verification in newer clients
 

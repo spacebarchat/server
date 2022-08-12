@@ -1,29 +1,10 @@
 import { Router, Request, Response } from "express";
-import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors } from "@fosscord/util";
+import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors, UserModifySchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
 import { OrmUtils, generateToken } from "@fosscord/util";
 
 const router: Router = Router();
-
-export interface UserModifySchema {
-	/**
-	 * @minLength 1
-	 * @maxLength 100
-	 */
-	username?: string;
-	discriminator?: string;
-	avatar?: string | null;
-	/**
-	 * @maxLength 1024
-	 */
-	bio?: string;
-	accent_color?: number;
-	banner?: string | null;
-	password?: string;
-	new_password?: string;
-	code?: string;
-}
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	res.json(await User.findOne({ select: PrivateUserProjection, where: { id: req.user_id } }));
