@@ -16,16 +16,14 @@
 			window.GLOBAL_ENV = {
 				API_VERSION: 9,
 				API_ENDPOINT: "/api",
-				WEBAPP_ENDPOINT: "",
-				CDN_HOST: `${location.hostname}:3003`,
-
-				BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
-				STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
-				MARKETING_ENDPOINT: "//discord.com",
+				WEBAPP_ENDPOINT: null,
+				CDN_HOST: location.hostname+":"+location.port,
+				BRAINTREE_KEY: null,
+				STRIPE_KEY: null,
+				MARKETING_ENDPOINT: null,
 				RELEASE_CHANNEL: "stable",
-				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
+				ALGOLIA_KEY: null,
 			};
-            GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
 			const localStorage = window.localStorage;
 			// TODO: remote auth
 			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
