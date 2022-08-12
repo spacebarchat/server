@@ -1,4 +1,5 @@
 {
+    "id": "example-plugin",
     "name": "Fosscord example plugin",
     "authors": [
         "The Arcane Brony"
