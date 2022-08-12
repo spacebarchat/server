@@ -98,175 +98,27 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ActivitySchema": {
+    "RouteResponse": {
         "type": "object",
         "properties": {
-            "afk": {
-                "type": "boolean"
-            },
             "status": {
-                "$ref": "#/definitions/Status"
+                "type": "integer"
             },
-            "activities": {
+            "body": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/Activity"
+                    "type": "string"
                 }
             },
-            "since": {
-                "type": "integer"
+            "headers": {
+                "$ref": "#/definitions/Record<string,string>"
             }
         },
         "additionalProperties": false,
-        "required": [
-            "afk",
-            "status"
-        ],
         "definitions": {
-            "Status": {
-                "enum": [
-                    "dnd",
-                    "idle",
-                    "invisible",
-                    "offline",
-                    "online"
-                ],
-                "type": "string"
-            },
-            "Activity": {
+            "Record<string,string>": {
                 "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/definitions/ActivityType"
-                    },
-                    "url": {
-                        "type": "string"
-                    },
-                    "created_at": {
-                        "type": "integer"
-                    },
-                    "timestamps": {
-                        "type": "object",
-                        "properties": {
-                            "start": {
-                                "type": "integer"
-                            },
-                            "end": {
-                                "type": "integer"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "end",
-                            "start"
-                        ]
-                    },
-                    "application_id": {
-                        "type": "string"
-                    },
-                    "details": {
-                        "type": "string"
-                    },
-                    "state": {
-                        "type": "string"
-                    },
-                    "emoji": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "animated": {
-                                "type": "boolean"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "animated",
-                            "name"
-                        ]
-                    },
-                    "party": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "string"
-                            },
-                            "size": {
-                                "type": "array",
-                                "items": [
-                                    {
-                                        "type": "integer"
-                                    }
-                                ],
-                                "minItems": 1,
-                                "maxItems": 1
-                            }
-                        },
-                        "additionalProperties": false
-                    },
-                    "assets": {
-                        "type": "object",
-                        "properties": {
-                            "large_image": {
-                                "type": "string"
-                            },
-                            "large_text": {
-                                "type": "string"
-                            },
-                            "small_image": {
-                                "type": "string"
-                            },
-                            "small_text": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false
-                    },
-                    "secrets": {
-                        "type": "object",
-                        "properties": {
-                            "join": {
-                                "type": "string"
-                            },
-                            "spectate": {
-                                "type": "string"
-                            },
-                            "match": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false
-                    },
-                    "instance": {
-                        "type": "boolean"
-                    },
-                    "flags": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "flags",
-                    "name",
-                    "type"
-                ]
-            },
-            "ActivityType": {
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    4,
-                    5
-                ],
-                "type": "number"
+                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -507,6 +359,31 @@
                 ],
                 "type": "number"
             }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ChannelReorderSchema": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "integer"
+                },
+                "lock_permissions": {
+                    "type": "boolean"
+                },
+                "parent_id": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "id"
+            ]
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -1678,6 +1555,26 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "RolePositionUpdateSchema": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "integer"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "position"
+            ]
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "TemplateCreateSchema": {
         "type": "object",
         "properties": {
@@ -2111,253 +2008,177 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "RouteResponse": {
+    "ActivitySchema": {
         "type": "object",
         "properties": {
-            "status": {
-                "type": "integer"
+            "afk": {
+                "type": "boolean"
             },
-            "body": {
+            "status": {
+                "$ref": "#/definitions/Status"
+            },
+            "activities": {
                 "type": "array",
                 "items": {
-                    "type": "string"
+                    "$ref": "#/definitions/Activity"
                 }
             },
-            "headers": {
-                "$ref": "#/definitions/Record<string,string>"
-            }
-        },
-        "additionalProperties": false,
-        "definitions": {
-            "Record<string,string>": {
-                "type": "object",
-                "additionalProperties": false
-            }
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GatewayBotResponse": {
-        "type": "object",
-        "properties": {
-            "url": {
-                "type": "string"
-            },
-            "shards": {
+            "since": {
                 "type": "integer"
-            },
-            "session_start_limit": {
-                "type": "object",
-                "properties": {
-                    "total": {
-                        "type": "integer"
-                    },
-                    "remaining": {
-                        "type": "integer"
-                    },
-                    "reset_after": {
-                        "type": "integer"
-                    },
-                    "max_concurrency": {
-                        "type": "integer"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "max_concurrency",
-                    "remaining",
-                    "reset_after",
-                    "total"
-                ]
             }
         },
         "additionalProperties": false,
         "required": [
-            "session_start_limit",
-            "shards",
-            "url"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GatewayResponse": {
-        "type": "object",
-        "properties": {
-            "url": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "url"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ChannelReorderSchema": {
-        "type": "array",
-        "items": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "position": {
-                    "type": "integer"
-                },
-                "lock_permissions": {
-                    "type": "boolean"
-                },
-                "parent_id": {
-                    "type": "string"
-                }
-            },
-            "additionalProperties": false,
-            "required": [
-                "id"
-            ]
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RolePositionUpdateSchema": {
-        "type": "array",
-        "items": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "position": {
-                    "type": "integer"
-                }
-            },
-            "additionalProperties": false,
-            "required": [
-                "id",
-                "position"
-            ]
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "UserProfileResponse": {
-        "type": "object",
-        "properties": {
-            "user": {
-                "$ref": "#/definitions/UserPublic"
-            },
-            "connected_accounts": {
-                "$ref": "#/definitions/PublicConnectedAccount"
-            },
-            "premium_guild_since": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "premium_since": {
-                "type": "string",
-                "format": "date-time"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "connected_accounts",
-            "user"
+            "afk",
+            "status"
         ],
         "definitions": {
-            "UserPublic": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "accent_color": {
-                        "type": "integer"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "premium_since": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "bio",
-                    "bot",
-                    "discriminator",
-                    "id",
-                    "premium_since",
-                    "public_flags",
-                    "username"
-                ]
+            "Status": {
+                "enum": [
+                    "dnd",
+                    "idle",
+                    "invisible",
+                    "offline",
+                    "online"
+                ],
+                "type": "string"
             },
-            "PublicConnectedAccount": {
+            "Activity": {
                 "type": "object",
                 "properties": {
                     "name": {
                         "type": "string"
                     },
                     "type": {
+                        "$ref": "#/definitions/ActivityType"
+                    },
+                    "url": {
                         "type": "string"
                     },
-                    "verified": {
+                    "created_at": {
+                        "type": "integer"
+                    },
+                    "timestamps": {
+                        "type": "object",
+                        "properties": {
+                            "start": {
+                                "type": "integer"
+                            },
+                            "end": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "end",
+                            "start"
+                        ]
+                    },
+                    "application_id": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "emoji": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "animated": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "animated",
+                            "name"
+                        ]
+                    },
+                    "party": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "size": {
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "assets": {
+                        "type": "object",
+                        "properties": {
+                            "large_image": {
+                                "type": "string"
+                            },
+                            "large_text": {
+                                "type": "string"
+                            },
+                            "small_image": {
+                                "type": "string"
+                            },
+                            "small_text": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "secrets": {
+                        "type": "object",
+                        "properties": {
+                            "join": {
+                                "type": "string"
+                            },
+                            "spectate": {
+                                "type": "string"
+                            },
+                            "match": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "instance": {
                         "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
+                    "flags",
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
+            },
+            "ActivityType": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    4,
+                    5
+                ],
+                "type": "number"
             }
         },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "UserRelationsResponse": {
-        "type": "object",
-        "properties": {
-            "object": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    }
-                },
-                "additionalProperties": false
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "object"
-        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     }
 }

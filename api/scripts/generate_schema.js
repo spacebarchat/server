@@ -48,9 +48,8 @@ function modify(obj) {
 }
 
 function main() {
-	const files = 		[
-		...walk(path.join(__dirname, "..", "src", "routes")),
-		...walk(path.join(__dirname, "..", "..", "util", "src")),
+	const files = [
+		...walk(path.join(__dirname, "..", "..", "util", "src", "schemas")),
 	];
 	const program = TJS.getProgramFromFiles(
 		files,

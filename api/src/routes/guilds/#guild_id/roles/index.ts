@@ -10,18 +10,14 @@ import {
 	Config,
 	DiscordApiErrors,
 	handleFile,
-	RoleModifySchema
+	RoleModifySchema,
+	RolePositionUpdateSchema
 } from "@fosscord/util";
 import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { OrmUtils } from "@fosscord/util";
 
 const router: Router = Router();
-
-export type RolePositionUpdateSchema = {
-	id: string;
-	position: number;
-}[];
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;
