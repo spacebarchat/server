@@ -35,15 +35,12 @@ router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT
 	const expires_at = new Date(req.body.max_age * 1000 + Date.now());
 
 	const invite = await OrmUtils.mergeDeep(new Invite(),{
-		code: random(),
 		temporary: req.body.temporary || true,
-		uses: 0,
 		max_uses: req.body.max_uses,
 		max_age: req.body.max_age,
 		expires_at,
-		created_at: new Date(),
 		guild_id,
-		channel_id: channel_id,
+		channel_id,
 		inviter_id: user_id
 	}).save();
 	//TODO: check this, removed toJSON call
@@ -57,7 +54,6 @@ router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT
 });
 
 router.get("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request, res: Response) => {
-	const { user_id } = req;
 	const { channel_id } = req.params;
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 
