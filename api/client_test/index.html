@@ -12,6 +12,15 @@
 	<body>
 		<div id="app-mount"></div>
 		<script>
+			FOSSCORD_INV_HOST = location.hostname+":"+location.port+"/invite";
+			if (location.protocol == "http:" && location.port == "80") { 
+			delete FOSSCORD_INV_HOST; 
+			FOSSCORD_INV_HOST = location.hostname+"/invite"; 
+			}
+			if (location.protocol === "https:" && location.port === "443") { 
+			delete FOSSCORD_INV_HOST; 
+			FOSSCORD_INV_HOST = location.hostname+"/invite"; 
+			} 
 			window.__OVERLAY__ = /overlay/.test(location.pathname);
 			window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
 			window.GLOBAL_ENV = {
@@ -23,7 +32,7 @@
 				ASSET_ENDPOINT: null,
 				MEDIA_PROXY_ENDPOINT: location.protocol + "//" + location.hostname+":"+location.port,
 				WIDGET_ENDPOINT: "//"+location.hostname+":"+location.port+"/widget",
-				INVITE_HOST: location.hostname+"/invite",
+				INVITE_HOST: FOSSCORD_INV_HOST,
 				GUILD_TEMPLATE_HOST: location.hostname+":"+location.port,
 				GIFT_CODE_HOST: location.hostname+":"+location.port,
 				RELEASE_CHANNEL: "stable",
