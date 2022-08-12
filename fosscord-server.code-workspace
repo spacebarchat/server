@@ -1,13 +1,10 @@
 {
 	"folders": [
 		{
-			"path": "api"
-		},
-		{
-			"path": "dashboard"
-		},
-		{
 			"path": "bundle"
+		},
+		{
+			"path": "api"
 		},
 		{
 			"path": "cdn"
@@ -16,13 +13,31 @@
 			"path": "gateway"
 		},
 		{
-			"path": "rtc"
-		},
-		{
 			"path": "util"
 		},
 		{
-			"path": "webrtc"
+			"path": "plugins"
 		}
-	]
+	],
+	"settings": {
+		"files.exclude": {
+			".gitignore": true,
+			".npmignore": true,
+			".prettierrc": true,
+			".vscode": true,
+			"*.ansi": true,
+			"benchmarks": true,
+			"database.db": true,
+			"files/": true,
+			"jest": true,
+			"locales/[!e]*": true,
+			"locales/e[!n]*": true,
+			"node_modules": true,
+			"package-lock.json": true,
+			"patches": true,
+			"README.md": true,
+			"tests/": true,
+			"tsconfig.tsbuildinfo": true
+		}
+	}
 }
