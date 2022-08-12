@@ -245,16 +245,8 @@ router.post(
 			);
 		}
 	
-	    //Defining member fields
-		var member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles"] });
-        member.roles = member.roles.filter((role) => {
-			return role.id !== role.guild_id;
-		}).map((role) => {
-			return role.id;
-		});
-		message.member = member;
-		delete message.member.last_message_id;
-		delete message.member.index;
+		//Fix for the client bug
+		delete message.member
 		
 		await Promise.all([
 			message.save(),
