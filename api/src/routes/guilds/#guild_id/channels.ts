@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import { Channel, ChannelUpdateEvent, getPermission, emitEvent, ChannelModifySchema } from "@fosscord/util";
+import { Channel, ChannelUpdateEvent, getPermission, emitEvent, ChannelModifySchema, ChannelReorderSchema } from "@fosscord/util";
 import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
 const router = Router();
@@ -20,8 +20,6 @@ router.post("/", route({ body: "ChannelModifySchema", permission: "MANAGE_CHANNE
 
 	res.status(201).json(channel);
 });
-
-export type ChannelReorderSchema = { id: string; position?: number; lock_permissions?: boolean; parent_id?: string }[];
 
 router.patch("/", route({ body: "ChannelReorderSchema", permission: "MANAGE_CHANNELS" }), async (req: Request, res: Response) => {
 	// changes guild channel position
