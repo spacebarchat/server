@@ -12,7 +12,6 @@ export default function TestClient(app: Application) {
 	
 	//build client page
 	let html = fs.readFileSync(path.join(__dirname, "..", "..", "client_test", "index.html"), { encoding: "utf8" });
-	html = applyEnv(html);
 	html = applyInlinePlugins(html);
 	html = applyPlugins(html);
 	html = applyPreloadPlugins(html);
@@ -93,22 +92,6 @@ export default function TestClient(app: Application) {
 	});
 
 	
-}
-
-function applyEnv(html: string): string {
-	const CDN_ENDPOINT = (Config.get().cdn.endpointClient || Config.get()?.cdn.endpointPublic || process.env.CDN || "").replace(
-		/(https?)?(:\/\/?)/g,
-		""
-	);
-	const GATEWAY_ENDPOINT = Config.get().gateway.endpointClient || Config.get()?.gateway.endpointPublic || process.env.GATEWAY || "";
-
-	if (CDN_ENDPOINT) {
-		html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${CDN_ENDPOINT}\`,`);
-	}
-	if (GATEWAY_ENDPOINT) {
-		html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${GATEWAY_ENDPOINT}\`,`);
-	}
-	return html;
 }
 
 function applyPlugins(html: string): string {

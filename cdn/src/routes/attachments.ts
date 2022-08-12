@@ -50,7 +50,7 @@ router.post(
 			content_type: mimetype,
 			filename: filename,
 			size,
-			url: `${endpoint}/${path}`,
+			url: `/${path}`,
 			width,
 			height,
 		};
