@@ -71,7 +71,7 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
-		"baseUrl": "../../",
+		"baseUrl": "../../bundle/dist/",
 		"paths": {
 			"@fosscord/api": ["../../api/src/index"],
 			"@fosscord/gateway": ["../../gateway/src/index"],
