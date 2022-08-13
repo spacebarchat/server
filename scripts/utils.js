@@ -71,8 +71,12 @@ function walk(dir) {
 	return results;
 }
 
+function sanitizeVarName(str) {
+	return str.replace('-','_').replace(/[^\w\s]/gi, '');
+}
+
 module.exports = { 
 	//consts
 	//functions
-	copyRecursiveSync, execIn, getLines, getDirs, walk
+	copyRecursiveSync, execIn, getLines, getDirs, walk, sanitizeVarName
 };
