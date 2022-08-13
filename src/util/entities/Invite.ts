@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId, PrimaryColumn } from "typeorm";
 import { Member } from "./Member";
 import { BaseClassWithoutId } from "./BaseClass";
@@ -37,7 +38,7 @@ export class Invite extends BaseClassWithoutId {
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	guild: Guild;
 
@@ -47,7 +48,7 @@ export class Invite extends BaseClassWithoutId {
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => Channel, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	channel: Channel;
 
@@ -65,7 +66,7 @@ export class Invite extends BaseClassWithoutId {
 
 	@JoinColumn({ name: "target_user_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	target_user?: string; // could be used for "User specific invites" https://github.com/fosscord/fosscord/issues/62
 

@@ -1,4 +1,5 @@
-import { Column, Entity} from "typeorm";
+import "reflect-metadata";
+import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
 
 @Entity("client_release")

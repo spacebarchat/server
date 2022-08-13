@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -14,7 +15,7 @@ export class VoiceState extends BaseClass {
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	guild?: Guild;
 
@@ -24,7 +25,7 @@ export class VoiceState extends BaseClass {
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => Channel, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	channel: Channel;
 
@@ -34,7 +35,7 @@ export class VoiceState extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	user: User;
 

@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
@@ -11,7 +12,7 @@ export class Role extends BaseClass {
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	guild: Guild;
 

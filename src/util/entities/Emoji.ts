@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { User } from ".";
 import { BaseClass } from "./BaseClass";
@@ -17,7 +18,7 @@ export class Emoji extends BaseClass {
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	guild: Guild;
 
@@ -40,7 +41,7 @@ export class Emoji extends BaseClass {
 
 	@Column({ type: "simple-array" })
 	roles: string[]; // roles this emoji is whitelisted to (new discord feature?)
-	
+
 	@Column({ type: "simple-array", nullable: true })
 	groups: string[]; // user groups this emoji is whitelisted to (Fosscord extension)
 }

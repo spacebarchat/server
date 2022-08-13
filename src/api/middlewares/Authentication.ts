@@ -10,7 +10,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/auth/mfa/totp",
 	// Routes with a seperate auth system
 	"/webhooks/",
-	// Public information endpoints 
+	// Public information endpoints
 	"/ping",
 	"/gateway",
 	"/experiments",

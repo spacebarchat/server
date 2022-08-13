@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { TeamMember } from "./TeamMember";
@@ -10,7 +11,7 @@ export class Team extends BaseClass {
 
 	@JoinColumn({ name: "member_ids" })
 	@OneToMany(() => TeamMember, (member: TeamMember) => member.team, {
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	members: TeamMember[];
 

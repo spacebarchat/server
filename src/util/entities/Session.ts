@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { User } from "./User";
 import { BaseClass } from "./BaseClass";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
@@ -14,7 +15,7 @@ export class Session extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	user: User;
 
@@ -37,10 +38,4 @@ export class Session extends BaseClass {
 	status: Status; //TODO enum
 }
 
-export const PrivateSessionProjection: (keyof Session)[] = [
-	"user_id",
-	"session_id",
-	"activities",
-	"client_info",
-	"status",
-];
+export const PrivateSessionProjection: (keyof Session)[] = ["user_id", "session_id", "activities", "client_info", "status"];

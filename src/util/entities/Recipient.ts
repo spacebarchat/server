@@ -1,5 +1,8 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
+import { Channel } from "./Channel";
+import { User } from "./User";
 
 @Entity("recipients")
 export class Recipient extends BaseClass {
@@ -9,9 +12,9 @@ export class Recipient extends BaseClass {
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => require("./Channel").Channel, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
-	channel: import("./Channel").Channel;
+	channel: Channel;
 
 	@Column()
 	@RelationId((recipient: Recipient) => recipient.user)
@@ -19,9 +22,9 @@ export class Recipient extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => require("./User").User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
-	user: import("./User").User;
+	user: User;
 
 	@Column({ default: false })
 	closed: boolean;

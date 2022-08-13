@@ -1,22 +1,22 @@
 {
 	"folders": [
 		{
-			"path": "bundle"
+			"path": "src/api"
 		},
 		{
-			"path": "api"
+			"path": "src/cdn"
 		},
 		{
-			"path": "cdn"
+			"path": "src/gateway"
 		},
 		{
-			"path": "gateway"
+			"path": "src/util"
 		},
 		{
-			"path": "util"
+			"path": "src/plugins"
 		},
 		{
-			"path": "plugins"
+			"path": "src/webrtc"
 		}
 	],
 	"settings": {

@@ -19,7 +19,7 @@ import {
 	MemberPrivateProjection,
 	PresenceUpdateEvent,
 	UserSettings,
-	IdentifySchema,
+	IdentifySchema
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
@@ -52,63 +52,50 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
-	
-	const [user, read_states, members, recipients, session, application] =
-		await Promise.all([
-			User.findOneOrFail({
-				where: { id: this.user_id },
-				relations: ["relationships", "relationships.to", "settings"],
-				select: [...PrivateUserProjection, "relationships"],
-			}),
-			ReadState.find({ where: { user_id: this.user_id } }),
-			Member.find({
-				where: { id: this.user_id },
-				select: MemberPrivateProjection,
-				relations: [
-					"guild",
-					"guild.channels",
-					"guild.emojis",
-					"guild.emojis.user",
-					"guild.roles",
-					"guild.stickers",
-					"user",
-					"roles",
-				],
-			}),
-			Recipient.find({
-				where: { user_id: this.user_id, closed: false },
-				relations: [
-					"channel",
-					"channel.recipients",
-					"channel.recipients.user",
-				],
-				// TODO: public user selection
-			}),
-			// save the session and delete it when the websocket is closed
-			await OrmUtils.mergeDeep(new Session(), {
-				user_id: this.user_id,
-				session_id: session_id,
-				// TODO: check if status is only one of: online, dnd, offline, idle
-				status: identify.presence?.status || "offline", //does the session always start as online?
-				client_info: {
-					//TODO read from identity
-					client: "desktop",
-					os: identify.properties?.os,
-					version: 0,
-				},
-				activities: [],
-			}).save(),
-			Application.findOne({ where: { id: this.user_id } }),
-		]);
+
+	const [user, read_states, members, recipients, session, application] = await Promise.all([
+		User.findOneOrFail({
+			where: { id: this.user_id },
+			relations: ["relationships", "relationships.to", "settings"],
+			select: [...PrivateUserProjection, "relationships"]
+		}),
+		ReadState.find({ where: { user_id: this.user_id } }),
+		Member.find({
+			where: { id: this.user_id },
+			select: MemberPrivateProjection,
+			relations: ["guild", "guild.channels", "guild.emojis", "guild.emojis.user", "guild.roles", "guild.stickers", "user", "roles"]
+		}),
+		Recipient.find({
+			where: { user_id: this.user_id, closed: false },
+			relations: ["channel", "channel.recipients", "channel.recipients.user"]
+			// TODO: public user selection
+		}),
+		// save the session and delete it when the websocket is closed
+		await OrmUtils.mergeDeep(new Session(), {
+			user_id: this.user_id,
+			session_id: session_id,
+			// TODO: check if status is only one of: online, dnd, offline, idle
+			status: identify.presence?.status || "offline", //does the session always start as online?
+			client_info: {
+				//TODO read from identity
+				client: "desktop",
+				os: identify.properties?.os,
+				version: 0
+			},
+			activities: []
+		}).save(),
+		Application.findOne({ where: { id: this.user_id } })
+	]);
 
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
-	if (!user.settings) { //settings may not exist after updating...
+	if (!user.settings) {
+		//settings may not exist after updating...
 		user.settings = new UserSettings();
 		user.settings.id = user.id;
 		await user.settings.save();
 	}
 
-	if (!identify.intents) identify.intents = "0x6ffffffff"
+	if (!identify.intents) identify.intents = "0x6ffffffff";
 	this.intents = new Intents(identify.intents);
 	if (identify.shard) {
 		this.shard_id = identify.shard[0];
@@ -132,8 +119,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				...x,
 				roles: x.roles.map((x) => x.id),
 				settings: undefined,
-				guild: undefined,
-			},
+				guild: undefined
+			}
 		];
 	}) as PublicMember[][];
 	let guilds = members.map((x) => ({ ...x.guild, joined_at: x.joined_at }));
@@ -146,7 +133,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					op: OPCODES.Dispatch,
 					t: EVENTEnum.GuildCreate,
 					s: this.sequence++,
-					d: guild,
+					d: guild
 				});
 			}, 500);
 			return { id: guild.id, unavailable: true };
@@ -163,9 +150,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
 		users = users.concat(x.channel.recipients as unknown as User[]);
 		if (x.channel.isDm()) {
-			x.channel.recipients = x.channel.recipients!.filter(
-				(x) => x.id !== this.user_id
-			);
+			x.channel.recipients = x.channel.recipients!.filter((x) => x.id !== this.user_id);
 		}
 		return x.channel;
 	});
@@ -192,8 +177,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			user_id: this.user_id,
 			data: await Session.find({
 				where: { user_id: this.user_id },
-				select: PrivateSessionProjection,
-			}),
+				select: PrivateSessionProjection
+			})
 		} as SessionsReplace);
 		emitEvent({
 			event: "PRESENCE_UPDATE",
@@ -202,8 +187,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				user: await User.getPublicUser(this.user_id),
 				activities: session.activities,
 				client_status: session?.client_info,
-				status: session.status,
-			},
+				status: session.status
+			}
 		} as PresenceUpdateEvent);
 	});
 
@@ -238,7 +223,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const d: ReadyEventData = {
 		v: 8,
-		application: {id: application?.id??'', flags: application?.flags??''}, //TODO: check this code!
+		application: { id: application?.id ?? "", flags: application?.flags ?? "" }, //TODO: check this code!
 		user: privateUser,
 		user_settings: user.settings,
 		// @ts-ignore
@@ -255,12 +240,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		read_state: {
 			entries: read_states,
 			partial: false,
-			version: 304128,
+			version: 304128
 		},
 		user_guild_settings: {
 			entries: user_guild_settings_entries,
 			partial: false, // TODO partial
-			version: 642,
+			version: 642
 		},
 		private_channels: channels,
 		session_id: session_id,
@@ -268,8 +253,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		connected_accounts: [], // TODO
 		consents: {
 			personalization: {
-				consented: false, // TODO
-			},
+				consented: false // TODO
+			}
 		},
 		country_code: user.settings.locale,
 		friend_suggestion_count: 0, // TODO
@@ -277,7 +262,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
 		users: users.filter((x) => x).unique(),
-		merged_members: merged_members,
+		merged_members: merged_members
 		// shard // TODO: only for user sharding
 	};
 
@@ -286,7 +271,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		op: OPCODES.Dispatch,
 		t: EVENTEnum.Ready,
 		s: this.sequence++,
-		d,
+		d
 	});
 
 	//TODO send READY_SUPPLEMENTAL

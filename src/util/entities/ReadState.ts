@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -17,7 +18,7 @@ export class ReadState extends BaseClass {
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => Channel, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	channel: Channel;
 
@@ -27,14 +28,14 @@ export class ReadState extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	user: User;
 
 	// fully read marker
 	@Column({ nullable: true })
-	last_message_id: string; 
-	
+	last_message_id: string;
+
 	// public read receipt
 	@Column({ nullable: true })
 	public_ack: string;

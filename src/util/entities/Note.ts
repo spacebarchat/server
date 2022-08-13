@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";

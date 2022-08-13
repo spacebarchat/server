@@ -1,7 +1,7 @@
 import "missing-native-js-functions";
 import dotenv from "dotenv";
 dotenv.config();
-import { closeDatabase, Config, initDatabase, initEvent } from "@fosscord/util";
+import { closeDatabase, Config, getOrInitialiseDatabase, initEvent } from "@fosscord/util";
 import { Server as WebSocketServer } from "ws";
 import http from "http";
 
@@ -11,15 +11,7 @@ export class Server {
 	public server: http.Server;
 	public production: boolean;
 
-	constructor({
-		port,
-		server,
-		production,
-	}: {
-		port: number;
-		server?: http.Server;
-		production?: boolean;
-	}) {
+	constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
 		this.port = port;
 		this.production = production || false;
 
@@ -40,14 +32,14 @@ export class Server {
 
 		this.ws = new WebSocketServer({
 			maxPayload: 4096,
-			noServer: true,
+			noServer: true
 		});
 		// this.ws.on("connection", Connection);
 		this.ws.on("error", console.error);
 	}
 
 	async start(): Promise<void> {
-		await initDatabase();
+		await getOrInitialiseDatabase();
 		await Config.init();
 		await initEvent();
 		if (!this.server.listening) {

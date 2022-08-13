@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { BeforeRemove, Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { URL } from "url";
 import { deleteFile } from "../util/cdn";
@@ -31,10 +32,10 @@ export class Attachment extends BaseClass {
 	message_id: string;
 
 	@JoinColumn({ name: "message_id" })
-	@ManyToOne(() => require("./Message").Message, (message: import("./Message").Message) => message.attachments, {
-		onDelete: "CASCADE",
+	@ManyToOne(() => require("./Message").Message, (message: any) => message.attachments, {
+		onDelete: "CASCADE"
 	})
-	message: import("./Message").Message;
+	message: any;
 
 	@BeforeRemove()
 	onDelete() {
