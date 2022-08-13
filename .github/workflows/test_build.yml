@@ -17,7 +17,7 @@ jobs:
                     - os: macos
                       deps: ''
                     - os: ubuntu
-                      deps: 'sudo apt install -y libpango1.0-dev'
+                      deps: 'sudo apt install -y libpango1.0-dev libgif-dev'
         runs-on: ${{ matrix.os }}-latest
         steps:
             - uses: actions/checkout@v2
