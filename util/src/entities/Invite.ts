@@ -4,19 +4,20 @@ import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { User } from "./User";
+import { random } from "@fosscord/api";
 
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 
 @Entity("invites")
 export class Invite extends BaseClassWithoutId {
 	@PrimaryColumn()
-	code: string;
+	code: string = random();
 
 	@Column()
-	temporary: boolean;
+	temporary: boolean = true;
 
 	@Column()
-	uses: number;
+	uses: number = 0;
 
 	@Column()
 	max_uses: number;
@@ -25,7 +26,7 @@ export class Invite extends BaseClassWithoutId {
 	max_age: number;
 
 	@Column()
-	created_at: Date;
+	created_at: Date = new Date();
 
 	@Column()
 	expires_at: Date;
@@ -55,7 +56,9 @@ export class Invite extends BaseClassWithoutId {
 	inviter_id: string;
 
 	@JoinColumn({ name: "inviter_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE"
+	})
 	inviter: User;
 
 	@Column({ nullable: true })
