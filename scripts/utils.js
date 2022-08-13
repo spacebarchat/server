@@ -44,8 +44,35 @@ function getLines(output) {
 	return output.split("\n").length;
 }
 
+function getDirs(dir) {
+	return fs.readdirSync(dir).filter((x) => {
+		try {
+			fs.readdirSync(dir.join(dir, x));
+			return true;
+		} catch (e) {
+			return false;
+		}
+	});
+}
+
+function walk(dir) {
+	let results = [];
+	let list = fs.readdirSync(dir);
+	list.forEach(function (file) {
+		file = dir + "/" + file;
+		let stat = fs.statSync(file);
+		if (stat && stat.isDirectory()) {
+			/* Recurse into a subdirectory */
+			results = results.concat(walk(file));
+		} else {
+			results.push(file);
+		}
+	});
+	return results;
+}
+
 module.exports = { 
 	//consts
 	//functions
-	copyRecursiveSync, execIn, getLines
+	copyRecursiveSync, execIn, getLines, getDirs, walk
 };

@@ -7,3 +7,4 @@ export * from "./entities/index";
 export * from "./dtos/index";
 export * from "./util/MFA";
 export * from "./schemas";
+export * from "./plugin";
