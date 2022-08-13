@@ -1,0 +1,29 @@
+on:
+    workflow_dispatch:
+    push:
+        paths:
+            - "**"
+
+name: Test Build
+
+jobs:
+    insiders-build:
+        strategy:
+            matrix:
+                os: [windows, macos, ubuntu]
+                include:
+                    - os: windows
+                    - os: macos
+                    - os: ubuntu
+        runs-on: ${{ matrix.os }}-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              env:
+                  MONGOMS_VERSION: 4.4.3
+              with:
+                  node-version: 18
+            - run: |
+                  cd bundle
+                  npm run setup
+                  npm run build clean logerrors pretty-errors propagate-err

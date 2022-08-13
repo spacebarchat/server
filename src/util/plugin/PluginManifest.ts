@@ -6,4 +6,5 @@ export class PluginManifest {
     license: string;
 	version: string // semver
 	versionCode: number // integer
+    index: string;
 }

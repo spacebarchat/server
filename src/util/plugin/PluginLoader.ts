@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs";
 import { Plugin, PluginManifest } from "./";
 
-const root = process.env.PLUGIN_LOCATION || "../plugins";
+const root = process.env.PLUGIN_LOCATION || "dist/plugins";
 
 let pluginsLoaded = false;
 export class PluginLoader {
@@ -24,7 +24,7 @@ export class PluginLoader {
 			console.log(
 				`Plugin info: ${manifest.name} (${manifest.id}), written by ${manifest.authors}, available at ${manifest.repository}`
 			);
-			const module_ = require(path.join(modPath, "dist", "index.js")) as Plugin;
+			const module_ = require(path.join(modPath, manifest.index)) as Plugin;
 			try {
 				await module_.init();
 				module_.emit("loaded");
