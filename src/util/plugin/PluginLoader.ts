@@ -1,11 +1,13 @@
 import path from "path";
 import fs from "fs";
-import { Plugin, PluginManifest } from "./";
+import { Plugin, PluginLoadedEventArgs, PluginManifest } from "./";
+import { PluginIndex } from "plugins/PluginIndex";
 
 const root = process.env.PLUGIN_LOCATION || "dist/plugins";
 
 let pluginsLoaded = false;
 export class PluginLoader {
+	public static plugins: Plugin[] = [];
 	public static loadPlugins() {
 		console.log(`Plugin root directory: ${path.resolve(root)}`);
 		const dirs = fs.readdirSync(root).filter((x) => {
@@ -17,6 +19,9 @@ export class PluginLoader {
 			}
 		});
 		console.log(dirs);
+		PluginIndex.forEach((x: any)=>{
+			console.log(x.onPluginLoaded)
+		})
 		dirs.forEach(async (x) => {
 			let modPath = path.resolve(path.join(root, x));
 			console.log(`Trying to load plugin: ${modPath}`);
@@ -24,16 +29,13 @@ export class PluginLoader {
 			console.log(
 				`Plugin info: ${manifest.name} (${manifest.id}), written by ${manifest.authors}, available at ${manifest.repository}`
 			);
-			const module_ = require(path.join(modPath, manifest.index)) as Plugin;
-			try {
-				await module_.init();
-				module_.emit("loaded");
-			} catch (error) {
-				module_.emit("error", error);
-			}
+			const module_ = PluginIndex["example-plugin"];
+			
+			module_.pluginPath = modPath;
+			if(module_.onPluginLoaded) module_.onPluginLoaded({} as PluginLoadedEventArgs); 
+			this.plugins.push(module_);
 		});
 
-		//
-		//module_.pluginPath =
+		console.log(`Done loading ${this.plugins.length} plugins!`)
 	}
 }
