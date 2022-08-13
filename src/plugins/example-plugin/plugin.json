@@ -6,5 +6,5 @@
     ],
     "repository": "https://github.com/fosscord/fosscord-server",
     "license": "",
-    "index": "ExamplePlugin.js"
+    "mainClass": "TestPlugin"
 }
