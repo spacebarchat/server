@@ -28,7 +28,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		id: app.id,
 		bot: true,
 		system: false,
-		premium_since: 0,
+		premium_since: null,
 		desktop: false,
 		mobile: false,
 		premium: false,
