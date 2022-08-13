@@ -253,8 +253,9 @@ router.post(
 			return role.id;
 		});
 		message.member = member;
-		delete message.member.last_message_id;
-		delete message.member.index;
+		// TODO: Figure this out
+		// delete message.member.last_message_id;
+		// delete message.member.index;
 		
 		await Promise.all([
 			message.save(),
