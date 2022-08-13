@@ -233,6 +233,26 @@ export class User extends BaseClass {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @static
+	 * @param {{
+	 * 		username: string;
+	 * 		password?: string;
+	 * 		email?: string;
+	 * 		date_of_birth?: Date; // "2000-04-03"
+	 * 		req?: any;
+	 * 	}} {
+	 * 		email,
+	 * 		username,
+	 * 		password,
+	 * 		date_of_birth,
+	 * 		req,
+	 * 	}
+	 * @return {*} 
+	 * @memberof User
+	 */
 	static async register({
 		email,
 		username,

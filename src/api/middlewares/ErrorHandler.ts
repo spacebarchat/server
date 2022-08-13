@@ -10,8 +10,12 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 		let httpcode = code;
 		let message = error?.toString();
 		let errors = undefined;
+		let data = undefined;
 
-		if (error instanceof HTTPError && error.code) code = httpcode = error.code;
+		if (error instanceof HTTPError && error.code) {
+			code = httpcode = error.code;
+			if(error.data) data = error.data;
+		}
 		else if (error instanceof ApiError) {
 			code = error.code;
 			message = error.message;
@@ -35,7 +39,7 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 
 		if (httpcode > 511) httpcode = 400;
 
-		res.status(httpcode).json({ code: code, message, errors });
+		res.status(httpcode).json({ code: code, message, errors, data });
 	} catch (error) {
 		console.error(`[Internal Server Error] 500`, error);
 		return res.status(500).json({ code: 500, message: "Internal Server Error" });

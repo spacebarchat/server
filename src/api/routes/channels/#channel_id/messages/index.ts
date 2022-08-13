@@ -13,7 +13,11 @@ import {
 	MessageCreateEvent,
 	MessageCreateSchema,
 	Snowflake,
-	uploadFile
+	uploadFile,
+	Member,
+	MessageCreateSchema,
+	PluginEventHandler,
+	PreMessageEventArgs
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import multer from "multer";
@@ -206,9 +210,9 @@ router.post(
 				})
 			);
 		}
-
-		//Defining member fields
-		var member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles"] });
+	
+	    //Defining member fields
+		var member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles", "user"] });
 		// TODO: This doesn't work either
 		// member.roles = member.roles.filter((role) => {
 		// 	return role.id !== role.guild_id;
@@ -219,6 +223,11 @@ router.post(
 		// TODO: Figure this out
 		// delete message.member.last_message_id;
 		// delete message.member.index;
+
+		let blocks = (await PluginEventHandler.preMessageEvent({
+			message
+		} as PreMessageEventArgs)).filter(x=>x.cancel);
+		if(blocks.length > 0) throw new HTTPError("Message denied.", 400, blocks.filter(x=>x.blockReason).map(x=>x.blockReason));
 
 		await Promise.all([
 			message.save(),

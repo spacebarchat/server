@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import http from "http";
 import ws from "ws";
 import { Connection } from "./events/Connection";
+import http from "http";
+import { PluginConfig } from "util/plugin/PluginConfig";
 dotenv.config();
 
 export class Server {
@@ -40,6 +42,7 @@ export class Server {
 	async start(): Promise<void> {
 		await getOrInitialiseDatabase();
 		await Config.init();
+		await PluginConfig.init();
 		await initEvent();
 		if (!this.server.listening) {
 			this.server.listen(this.port);

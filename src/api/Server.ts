@@ -12,6 +12,7 @@ import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
 import { initInstance } from "./util/handlers/Instance";
 import fs from "fs";
+import { PluginConfig } from "util/plugin/PluginConfig";
 
 export interface FosscordServerOptions extends ServerOptions {}
 
@@ -35,6 +36,7 @@ export class FosscordServer extends Server {
 	async start() {
 		await getOrInitialiseDatabase();
 		await Config.init();
+		await PluginConfig.init();
 		await initEvent();
 		await initInstance();
 

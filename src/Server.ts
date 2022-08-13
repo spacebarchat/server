@@ -8,6 +8,7 @@ import { Config, getOrInitialiseDatabase } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import { PluginLoader } from "@fosscord/util";
+import { PluginConfig } from "util/plugin/PluginConfig";
 
 const app = express();
 const server = http.createServer();
@@ -34,6 +35,7 @@ process.on("SIGTERM", () => {
 async function main() {
 	await getOrInitialiseDatabase();
 	await Config.init();
+	await PluginConfig.init();
 
 	//Sentry
 	if (Config.get().sentry.enabled) {
@@ -61,7 +63,7 @@ async function main() {
 	}
 
 	console.log(`[Server] ${green(`listening on port ${bold(port)}`)}`);
-	PluginLoader.loadPlugins();
+	await PluginLoader.loadPlugins();
 }
 
 main().catch(console.error);

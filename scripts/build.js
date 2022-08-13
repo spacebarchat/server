@@ -29,7 +29,7 @@ if (silent) console.error = console.log = function () {};
 
 if (argv.includes("clean")) {
 	console.log(`[${++i}/${steps}] Cleaning...`);
-	let d = "../" + "/dist";
+	let d = "dist";
 		if (fs.existsSync(d)) {
 			fs.rmSync(d, { recursive: true });
 			if (verbose) console.log(`Deleted ${d}!`);

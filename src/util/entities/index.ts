@@ -31,3 +31,8 @@ export * from "./User";
 export * from "./UserSettings";
 export * from "./VoiceState";
 export * from "./Webhook";
+export * from "./ClientRelease";
+export * from "./BackupCodes";
+export * from "./Note";
+export * from "./UserSettings";
+export * from "./PluginConfig";
