@@ -24,6 +24,5 @@ jobs:
               with:
                   node-version: 18
             - run: |
-                  cd bundle
                   npm run setup
                   npm run build clean logerrors pretty-errors propagate-err
