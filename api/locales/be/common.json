@@ -1,9 +1,9 @@
 {
 	"field": {
-		"BASE_TYPE_REQUIRED": "This field is required",
-		"BASE_TYPE_STRING": "This field must be a string",
-		"BASE_TYPE_NUMBER": "This field must be a number",
-		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_REQUIRED": "Гэта поле з'яўляецца абавязковым",
+		"BASE_TYPE_STRING": "Гэта поле павінна быць радком",
+		"BASE_TYPE_NUMBER": "Гэта поле павінна быць лікам",
+		"BASE_TYPE_BIGINT": "Гэта поле павінна быць bigint",
 		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
 		"BASE_TYPE_CHOICES": "This field must be one of ({{types}})",
 		"BASE_TYPE_CLASS": "This field must be an instance of {{type}}",
