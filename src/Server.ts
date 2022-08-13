@@ -7,10 +7,7 @@ import * as Gateway from "@fosscord/gateway";
 import { Config, getOrInitialiseDatabase } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
-import express from "express";
-import http from "http";
-import { bold, green, yellow } from "picocolors";
-// import { PluginLoader } from "@fosscord/util";
+import { PluginLoader } from "@fosscord/util";
 
 const app = express();
 const server = http.createServer();
@@ -64,7 +61,7 @@ async function main() {
 	}
 
 	console.log(`[Server] ${green(`listening on port ${bold(port)}`)}`);
-	// PluginLoader.loadPlugins();
+	PluginLoader.loadPlugins();
 }
 
 main().catch(console.error);

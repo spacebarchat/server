@@ -7,3 +7,5 @@ export * from "./interfaces/index";
 export * from "./schemas";
 export * from "./util/index";
 export * from "./util/MFA";
+export * from "./schemas";
+export * from "./plugin";
