@@ -112,8 +112,7 @@ if (!argv.includes("copyonly")) {
 
 
 console.log(`[${++i}/${steps}] Copying plugin data...`);
-const root = path.join("src", "plugins")
-let pluginFiles = walk(root).filter(x=>!x.endsWith('.ts')).map(x=>x.replace('src/',''));
+let pluginFiles = walk(pluginDir).filter(x=>!x.endsWith('.ts'));
 pluginFiles.forEach(x=>{
-	fs.copyFileSync(path.join('src',x),path.join('dist',x))
+	fs.copyFileSync(x, x.replace('src','dist'))
 })
