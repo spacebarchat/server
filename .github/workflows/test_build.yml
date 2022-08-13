@@ -13,8 +13,11 @@ jobs:
                 os: [windows, macos, ubuntu]
                 include:
                     - os: windows
+                      deps: ''
                     - os: macos
+                      deps: ''
                     - os: ubuntu
+                      deps: 'sudo apt install -y libpango1.0-dev libgif-dev'
         runs-on: ${{ matrix.os }}-latest
         steps:
             - uses: actions/checkout@v2
@@ -24,6 +27,6 @@ jobs:
               with:
                   node-version: 18
             - run: |
-                  cd bundle
+                  ${{ matrix.deps }}
                   npm run setup
                   npm run build clean logerrors pretty-errors propagate-err
