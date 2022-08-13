@@ -17,3 +17,5 @@ api/assets/plugins/*.js
 *.log
 *.log.ansi
 bundle/depclean.*
+*.tmp
+tmp/
