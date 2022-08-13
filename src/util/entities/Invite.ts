@@ -61,7 +61,9 @@ export class Invite extends BaseClassWithoutId {
 	inviter_id?: string;
 
 	@JoinColumn({ name: "inviter_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE"
+	})
 	inviter: User;
 
 	@Column({ nullable: true })
