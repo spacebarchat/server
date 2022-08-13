@@ -1,11 +1,12 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
 
 @Entity("groups")
 export class UserGroup extends BaseClass {
-  @Column({ nullable: true })
-  parent?: BigInt;
+	@Column({ nullable: true })
+	parent?: BigInt;
 
 	@Column()
 	color: number;
@@ -13,7 +14,7 @@ export class UserGroup extends BaseClass {
 	@Column()
 	hoist: boolean;
 
- 	@Column()
+	@Column()
 	mentionable: boolean;
 
 	@Column()

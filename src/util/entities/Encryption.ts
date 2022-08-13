@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
@@ -13,23 +14,21 @@ import { DmChannelDTO } from "../dtos";
 
 @Entity("security_settings")
 export class SecuritySettings extends BaseClass {
+	@Column({ nullable: true })
+	guild_id: Snowflake;
 
-  @Column({nullable: true})
-  guild_id: Snowflake;
+	@Column({ nullable: true })
+	channel_id: Snowflake;
 
-  @Column({nullable: true})
-  channel_id: Snowflake;
+	@Column()
+	encryption_permission_mask: BitField;
 
-  @Column()
-  encryption_permission_mask: BitField;
+	@Column()
+	allowed_algorithms: string[];
 
-  @Column()
-  allowed_algorithms: string[];
+	@Column()
+	current_algorithm: string;
 
-  @Column()
-  current_algorithm: string;
-
-  @Column({nullable: true})
-  used_since_message: Snowflake;
-
+	@Column({ nullable: true })
+	used_since_message: Snowflake;
 }

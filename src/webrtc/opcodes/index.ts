@@ -4,5 +4,5 @@ import { onHeartbeat } from "./Heartbeat";
 export type OPCodeHandler = (this: WebSocket, data: Payload) => any;
 
 export default {
-	[OPCODES.Heartbeat]: onHeartbeat,
+	[OPCODES.Heartbeat]: onHeartbeat
 };

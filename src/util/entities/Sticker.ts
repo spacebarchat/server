@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { User } from "./User";
 import { BaseClass } from "./BaseClass";
@@ -5,14 +6,14 @@ import { Guild } from "./Guild";
 
 export enum StickerType {
 	STANDARD = 1,
-	GUILD = 2,
+	GUILD = 2
 }
 
 export enum StickerFormatType {
 	GIF = 0, // gif is a custom format type and not in discord spec
 	PNG = 1,
 	APNG = 2,
-	LOTTIE = 3,
+	LOTTIE = 3
 }
 
 @Entity("stickers")
@@ -36,16 +37,16 @@ export class Sticker extends BaseClass {
 	@JoinColumn({ name: "pack_id" })
 	@ManyToOne(() => require("./StickerPack").StickerPack, {
 		onDelete: "CASCADE",
-		nullable: true,
+		nullable: true
 	})
-	pack: import("./StickerPack").StickerPack;
+	pack: any;
 
 	@Column({ nullable: true })
 	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	guild?: Guild;
 
@@ -54,7 +55,7 @@ export class Sticker extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	user?: User;
 

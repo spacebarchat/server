@@ -1,25 +1,10 @@
+import "reflect-metadata";
 import { PublicUser, User } from "./User";
 import { BaseClass } from "./BaseClass";
-import {
-	Column,
-	Entity,
-	Index,
-	JoinColumn,
-	JoinTable,
-	ManyToMany,
-	ManyToOne,
-	PrimaryGeneratedColumn,
-	RelationId,
-} from "typeorm";
+import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { Guild } from "./Guild";
 import { Config, emitEvent } from "../util";
-import {
-	GuildCreateEvent,
-	GuildDeleteEvent,
-	GuildMemberAddEvent,
-	GuildMemberRemoveEvent,
-	GuildMemberUpdateEvent,
-} from "../interfaces";
+import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent } from "../interfaces";
 import { HTTPError } from "../util/imports/HTTPError";
 import { Role } from "./Role";
 import { BaseClassWithoutId } from "./BaseClass";
@@ -40,7 +25,7 @@ export const MemberPrivateProjection: (keyof Member)[] = [
 	"premium_since",
 	"roles",
 	"settings",
-	"user",
+	"user"
 ];
 
 @Entity("members")
@@ -55,7 +40,7 @@ export class Member extends BaseClassWithoutId {
 
 	@JoinColumn({ name: "id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	user: User;
 
@@ -65,7 +50,7 @@ export class Member extends BaseClassWithoutId {
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	guild: Guild;
 
@@ -77,8 +62,8 @@ export class Member extends BaseClassWithoutId {
 		joinColumn: { name: "index", referencedColumnName: "index" },
 		inverseJoinColumn: {
 			name: "role_id",
-			referencedColumnName: "id",
-		},
+			referencedColumnName: "id"
+		}
 	})
 	@ManyToMany(() => Role, { cascade: true })
 	roles: Role[];
@@ -133,22 +118,22 @@ export class Member extends BaseClassWithoutId {
 		return Promise.all([
 			Member.delete({
 				id: user_id,
-				guild_id,
+				guild_id
 			}),
 			//Guild.decrement({ id: guild_id }, "member_count", -1),
 
 			emitEvent({
 				event: "GUILD_DELETE",
 				data: {
-					id: guild_id,
+					id: guild_id
 				},
-				user_id: user_id,
+				user_id: user_id
 			} as GuildDeleteEvent),
 			emitEvent({
 				event: "GUILD_MEMBER_REMOVE",
 				data: { guild_id, user: member.user },
-				guild_id,
-			} as GuildMemberRemoveEvent),
+				guild_id
+			} as GuildMemberRemoveEvent)
 		]);
 	}
 
@@ -158,9 +143,9 @@ export class Member extends BaseClassWithoutId {
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
-				select: ["index"],
+				select: ["index"]
 			}),
-			Role.findOneOrFail({ where: { id: role_id, guild_id }, select: ["id"] }),
+			Role.findOneOrFail({ where: { id: role_id, guild_id }, select: ["id"] })
 		]);
 		member.roles.push(OrmUtils.mergeDeep(new Role(), { id: role_id }));
 
@@ -171,10 +156,10 @@ export class Member extends BaseClassWithoutId {
 				data: {
 					guild_id,
 					user: member.user,
-					roles: member.roles.map((x) => x.id),
+					roles: member.roles.map((x) => x.id)
 				},
-				guild_id,
-			} as GuildMemberUpdateEvent),
+				guild_id
+			} as GuildMemberUpdateEvent)
 		]);
 	}
 
@@ -184,9 +169,9 @@ export class Member extends BaseClassWithoutId {
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
-				select: ["index"],
+				select: ["index"]
 			}),
-			await Role.findOneOrFail({ where: { id: role_id, guild_id } }),
+			await Role.findOneOrFail({ where: { id: role_id, guild_id } })
 		]);
 		member.roles = member.roles.filter((x) => x.id == role_id);
 
@@ -197,10 +182,10 @@ export class Member extends BaseClassWithoutId {
 				data: {
 					guild_id,
 					user: member.user,
-					roles: member.roles.map((x) => x.id),
+					roles: member.roles.map((x) => x.id)
 				},
-				guild_id,
-			} as GuildMemberUpdateEvent),
+				guild_id
+			} as GuildMemberUpdateEvent)
 		]);
 	}
 
@@ -208,9 +193,9 @@ export class Member extends BaseClassWithoutId {
 		const member = await Member.findOneOrFail({
 			where: {
 				id: user_id,
-				guild_id,
+				guild_id
 			},
-			relations: ["user"],
+			relations: ["user"]
 		});
 		member.nick = nickname;
 
@@ -222,10 +207,10 @@ export class Member extends BaseClassWithoutId {
 				data: {
 					guild_id,
 					user: member.user,
-					nick: nickname,
+					nick: nickname
 				},
-				guild_id,
-			} as GuildMemberUpdateEvent),
+				guild_id
+			} as GuildMemberUpdateEvent)
 		]);
 	}
 
@@ -243,9 +228,9 @@ export class Member extends BaseClassWithoutId {
 
 		const guild = await Guild.findOneOrFail({
 			where: {
-				id: guild_id,
+				id: guild_id
 			},
-			relations: PublicGuildRelations,
+			relations: PublicGuildRelations
 		});
 
 		if (await Member.count({ where: { id: user.id, guild: { id: guild_id } } }))
@@ -260,7 +245,7 @@ export class Member extends BaseClassWithoutId {
 			premium_since: new Date(),
 			deaf: false,
 			mute: false,
-			pending: false,
+			pending: false
 		};
 		//TODO: check for bugs
 		if (guild.member_count) guild.member_count++;
@@ -276,8 +261,8 @@ export class Member extends BaseClassWithoutId {
 					muted: false,
 					suppress_everyone: false,
 					suppress_roles: false,
-					version: 0,
-				},
+					version: 0
+				}
 				// Member.save is needed because else the roles relations wouldn't be updated
 			}).save(),
 			//Guild.increment({ id: guild_id }, "member_count", 1),
@@ -286,9 +271,9 @@ export class Member extends BaseClassWithoutId {
 				data: {
 					...member,
 					user,
-					guild_id,
+					guild_id
 				},
-				guild_id,
+				guild_id
 			} as GuildMemberAddEvent),
 			emitEvent({
 				event: "GUILD_CREATE",
@@ -301,10 +286,10 @@ export class Member extends BaseClassWithoutId {
 					joined_at: member.joined_at,
 					presences: [],
 					stage_instances: [],
-					threads: [],
+					threads: []
 				},
-				user_id,
-			} as GuildCreateEvent),
+				user_id
+			} as GuildCreateEvent)
 		]);
 	}
 }
@@ -330,16 +315,7 @@ export interface MuteConfig {
 	selected_time_window: number;
 }
 
-export type PublicMemberKeys =
-	| "id"
-	| "guild_id"
-	| "nick"
-	| "roles"
-	| "joined_at"
-	| "pending"
-	| "deaf"
-	| "mute"
-	| "premium_since";
+export type PublicMemberKeys = "id" | "guild_id" | "nick" | "roles" | "joined_at" | "pending" | "deaf" | "mute" | "premium_since";
 
 export const PublicMemberProjection: PublicMemberKeys[] = [
 	"id",
@@ -350,7 +326,7 @@ export const PublicMemberProjection: PublicMemberKeys[] = [
 	"pending",
 	"deaf",
 	"mute",
-	"premium_since",
+	"premium_since"
 ];
 
 // @ts-ignore

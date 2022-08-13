@@ -1,4 +1,5 @@
-import { PrimaryColumn, Column, Entity} from "typeorm";
+import "reflect-metadata";
+import { PrimaryColumn, Column, Entity } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
 
 // TODO: categories:
@@ -16,18 +17,18 @@ import { BaseClassWithoutId } from "./BaseClass";
 // Also populate discord default categories
 
 @Entity("categories")
-export class Categories extends BaseClassWithoutId { // Not using snowflake
-    
-    @PrimaryColumn()
+export class Categories extends BaseClassWithoutId {
+	// Not using snowflake
+
+	@PrimaryColumn()
 	id: number;
 
-    @Column({ nullable: true })
-    name: string;
+	@Column({ nullable: true })
+	name: string;
 
-    @Column({ type: "simple-json" })
-    localizations: string;
+	@Column({ type: "simple-json" })
+	localizations: string;
 
-    @Column({ nullable: true })
-    is_primary: boolean;
-
+	@Column({ nullable: true })
+	is_primary: boolean;
 }

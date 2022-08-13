@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { User } from "./User";
 import { Member } from "./Member";
 import { Role } from "./Role";
@@ -16,7 +17,7 @@ import {
 	OneToMany,
 	RelationId,
 	RemoveOptions,
-	UpdateDateColumn,
+	UpdateDateColumn
 } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
@@ -62,7 +63,7 @@ export class Message extends BaseClass {
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => Channel, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	channel: Channel;
 
@@ -72,7 +73,7 @@ export class Message extends BaseClass {
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	guild?: Guild;
 
@@ -83,7 +84,7 @@ export class Message extends BaseClass {
 
 	@JoinColumn({ name: "author_id", referencedColumnName: "id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	author?: User;
 
@@ -93,7 +94,7 @@ export class Message extends BaseClass {
 
 	@JoinColumn({ name: "member_id", referencedColumnName: "id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	member?: Member;
 
@@ -147,7 +148,7 @@ export class Message extends BaseClass {
 
 	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	attachments?: Attachment[];
 
@@ -212,7 +213,7 @@ export interface MessageComponent {
 export enum MessageComponentType {
 	Script = 0, // self command script
 	ActionRow = 1,
-	Button = 2,
+	Button = 2
 }
 
 export interface Embed {
@@ -253,7 +254,7 @@ export enum EmbedType {
 	video = "video",
 	gifv = "gifv",
 	article = "article",
-	link = "link",
+	link = "link"
 }
 
 export interface EmbedImage {

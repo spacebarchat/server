@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
@@ -42,7 +43,7 @@ export class Application extends BaseClass {
 
 	@JoinColumn({ name: "team_id" })
 	@ManyToOne(() => Team, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	team?: Team;
 
@@ -93,7 +94,7 @@ export enum ApplicationCommandOptionType {
 	BOOLEAN = 5,
 	USER = 6,
 	CHANNEL = 7,
-	ROLE = 8,
+	ROLE = 8
 }
 
 export interface ApplicationCommandInteractionData {
