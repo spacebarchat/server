@@ -97,7 +97,7 @@ async function main() {
 		});
 	}
 	console.log(`[Server] ${green(`listening on port ${bold(port)}`)}`);
-	PluginLoader.loadPlugins();
+	await PluginLoader.loadPlugins();
 }
 
 main().catch(console.error);

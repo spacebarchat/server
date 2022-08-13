@@ -34,7 +34,7 @@ export class Plugin {
 	 * @memberof Plugin
 	 */
 	
-	onPluginLoaded?(args?: PluginLoadedEventArgs) {
+	async onPluginLoaded?(args?: PluginLoadedEventArgs) {
 		
 	}
 
