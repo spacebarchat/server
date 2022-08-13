@@ -108,7 +108,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		await user.settings.save();
 	}
 
-	if (!identify.intents) identify.intents = "0x6ffffffff"
+	if (!identify.intents) identify.intents = "30064771071";
 	this.intents = new Intents(identify.intents);
 	if (identify.shard) {
 		this.shard_id = identify.shard[0];
@@ -238,7 +238,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const d: ReadyEventData = {
 		v: 8,
-		application: {id: application?.id??'', flags: application?.flags??''}, //TODO: check this code!
+		application: {id: application?.id??'', flags: application?.flags??0}, //TODO: check this code!
 		user: privateUser,
 		user_settings: user.settings,
 		// @ts-ignore
