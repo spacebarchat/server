@@ -310,7 +310,6 @@ export class Member extends BaseClassWithoutId {
 			nick: undefined,
 			roles: [guild_id], // @everyone role
 			joined_at: new Date(),
-			premium_since: new Date().getTime(),
 			deaf: false,
 			mute: false,
 			pending: false,
