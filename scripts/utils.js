@@ -4,8 +4,6 @@ const { env } = require("process");
 const { execSync } = require("child_process");
 const { argv, stdout, exit } = require("process");
 
-const parts = ["api", "util", "cdn", "gateway", "bundle"];
-
 function copyRecursiveSync(src, dest) {
 	//if (verbose) console.log(`cpsync: ${src} -> ${dest}`);
 	let exists = fs.existsSync(src);

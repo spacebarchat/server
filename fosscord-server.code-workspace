@@ -1,22 +1,16 @@
 {
 	"folders": [
 		{
-			"path": "bundle"
+			"path": "src/"
 		},
 		{
-			"path": "api"
+			"path": "assets/"
 		},
 		{
-			"path": "cdn"
+			"path": "scripts/"
 		},
 		{
-			"path": "gateway"
-		},
-		{
-			"path": "util"
-		},
-		{
-			"path": "plugins"
+			"path": "."
 		}
 	],
 	"settings": {
@@ -26,18 +20,6 @@
 			".prettierrc": true,
 			".vscode": true,
 			"*.ansi": true,
-			"benchmarks": true,
-			"database.db": true,
-			"files/": true,
-			"jest": true,
-			"locales/[!e]*": true,
-			"locales/e[!n]*": true,
-			"node_modules": true,
-			"package-lock.json": true,
-			"patches": true,
-			"README.md": true,
-			"tests/": true,
-			"tsconfig.tsbuildinfo": true
 		}
 	}
 }

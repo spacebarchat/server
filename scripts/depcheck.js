@@ -4,7 +4,7 @@ const { env } = require("process");
 const { execSync } = require("child_process");
 const { argv, stdout, exit } = require("process");
 
-const { execIn, getLines, parts } = require("./utils");
+const { execIn, getLines } = require("./utils");
 
 let npmi_extra_flags = "";
 
