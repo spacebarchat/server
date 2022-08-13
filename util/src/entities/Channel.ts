@@ -245,7 +245,7 @@ export class Channel extends BaseClass {
 		}
 		**/
 
-		const type = recipients.length > 1 ? ChannelType.DM : ChannelType.GROUP_DM;
+		const type = recipients.length > 1 ? ChannelType.GROUP_DM : ChannelType.DM;
 
 		let channel = null;
 
