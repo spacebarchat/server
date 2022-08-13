@@ -5,3 +5,4 @@ GuildCreate
 ChannelCreate
 Typing
 StatusChange
+UserProfileUpdate

@@ -44,6 +44,7 @@ import morgan from "morgan";
 import path from "path";
 import { red } from "picocolors";
 import { initInstance } from "./util/handlers/Instance";
+import { PluginConfig } from "util/plugin/PluginConfig";
 
 const PUBLIC_ASSETS_FOLDER = path.join(
 	__dirname,
@@ -76,6 +77,7 @@ export class SpacebarServer extends Server {
 	async start() {
 		await initDatabase();
 		await Config.init();
+		await PluginConfig.init();
 		await initEvent();
 		await Email.init();
 		await ConnectionConfig.init();

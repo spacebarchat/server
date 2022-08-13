@@ -31,6 +31,8 @@ import guildProfilesRoute from "./routes/guild-profiles";
 import iconsRoute from "./routes/role-icons";
 import morgan from "morgan";
 import { Like, Or } from "typeorm";
+import bodyParser from "body-parser";
+import { PluginConfig } from "util/plugin/PluginConfig";
 
 export type CDNServerOptions = ServerOptions;
 
@@ -44,6 +46,7 @@ export class CDNServer extends Server {
 	async start() {
 		await initDatabase();
 		await Config.init();
+		await PluginConfig.init();
 		await this.cleanupSignaturesInDb();
 		await Sentry.init(this.app);
 

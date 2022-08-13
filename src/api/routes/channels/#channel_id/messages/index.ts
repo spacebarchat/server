@@ -38,7 +38,7 @@ import {
 	getUrlSignature,
 	uploadFile,
 	NewUrlSignatureData,
-	NewUrlUserSignatureData,
+	NewUrlUserSignatureData, PluginEventHandler, PreMessageEventArgs,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -426,6 +426,11 @@ router.post(
 		if (!read_state)
 			read_state = ReadState.create({ user_id: req.user_id, channel_id });
 		read_state.last_message_id = message.id;
+
+		let blocks = (await PluginEventHandler.preMessageEvent({
+			message
+		} as PreMessageEventArgs)).filter(x=>x.cancel);
+		if(blocks.length > 0) throw new HTTPError("Message denied.", 400, blocks.filter(x=>x.blockReason).map(x=>x.blockReason));
 
 		await Promise.all([
 			read_state.save(),

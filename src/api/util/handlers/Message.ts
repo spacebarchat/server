@@ -46,7 +46,7 @@ import {
 	handleFile,
 	Permissions,
 	normalizeUrl,
-	Reaction,
+	Reaction, PluginEventHandler, PreMessageEventArgs,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
@@ -436,6 +436,11 @@ export async function postHandleMessage(message: Message) {
 export async function sendMessage(opts: MessageOptions) {
 	const message = await handleMessage({ ...opts, timestamp: new Date() });
 
+	if((await PluginEventHandler.preMessageEvent({
+		message
+	} as PreMessageEventArgs)).filter(x=>x.cancel).length > 0) return;
+
+	//TODO: check this, removed toJSON call
 	await Promise.all([
 		Message.insert(message),
 		emitEvent({

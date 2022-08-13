@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -34,9 +34,12 @@ export function ErrorHandler(
 		let httpcode = code;
 		let message = error?.toString();
 		let errors = undefined;
+		let data = undefined;
 
-		if (error instanceof HTTPError && error.code)
+		if (error instanceof HTTPError && error.code) {
 			code = httpcode = error.code;
+			if(error.data) data = error.data;
+		}
 		else if (error instanceof ApiError) {
 			code = error.code;
 			message = error.message;
@@ -72,7 +75,7 @@ export function ErrorHandler(
 
 		if (httpcode > 511) httpcode = 400;
 
-		res.status(httpcode).json({ code: code, message, errors });
+		res.status(httpcode).json({ code: code, message, errors, data });
 	} catch (error) {
 		console.error(`[Internal Server Error] 500`, error);
 		return res

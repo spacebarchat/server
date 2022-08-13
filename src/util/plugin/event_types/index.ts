@@ -4,4 +4,6 @@ export * from "./LoginEventArgs";
 export * from "./MessageEventArgs";
 export * from "./PluginLoadedEventArgs";
 export * from "./RegisterEventArgs";
+export * from "./StatusChangeEventArgs";
 export * from "./TypingEventArgs";
+export * from "./base/index";
