@@ -2,6 +2,8 @@ import path from "path";
 import fs from "fs";
 import { Plugin, PluginLoadedEventArgs, PluginManifest } from "./";
 import { PluginIndex } from "plugins/PluginIndex";
+import { PluginConfig } from "./PluginConfig";
+import { OrmUtils } from "..";
 
 const root = process.env.PLUGIN_LOCATION || "dist/plugins";
 
@@ -9,6 +11,8 @@ let pluginsLoaded = false;
 export class PluginLoader {
 	public static plugins: Plugin[] = [];
 	public static loadPlugins() {
+		if(pluginsLoaded) return;
+		PluginConfig.init();
 		console.log(`Plugin root directory: ${path.resolve(root)}`);
 		const dirs = fs.readdirSync(root).filter((x) => {
 			try {
@@ -18,10 +22,10 @@ export class PluginLoader {
 				return false;
 			}
 		});
-		console.log(dirs);
-		PluginIndex.forEach((x: any)=>{
-			console.log(x.onPluginLoaded)
-		})
+		//console.log(dirs);
+		PluginIndex.forEach((x: any) => {
+			//console.log(x.onPluginLoaded)
+		});
 		dirs.forEach(async (x) => {
 			let modPath = path.resolve(path.join(root, x));
 			console.log(`Trying to load plugin: ${modPath}`);
@@ -32,10 +36,25 @@ export class PluginLoader {
 			const module_ = PluginIndex["example-plugin"];
 			
 			module_.pluginPath = modPath;
-			if(module_.onPluginLoaded) module_.onPluginLoaded({} as PluginLoadedEventArgs); 
+			module_.pluginManifest = manifest;
+			Object.freeze(module_.pluginPath);
+			Object.freeze(module_.pluginManifest);
+			
+			if(module_.onPluginLoaded) module_.onPluginLoaded({} as PluginLoadedEventArgs);
 			this.plugins.push(module_);
 		});
 
 		console.log(`Done loading ${this.plugins.length} plugins!`)
+	}
+	public static getPluginConfig(id: string, defaults?: any): any {
+		let cfg = PluginConfig.get()[id];
+		if(defaults) {
+			OrmUtils.mergeDeep(defaults, cfg);
+		}
+
+		return cfg;
+	}
+	public static setPluginConfig(id: string, config: Partial<any>): any {
+		PluginConfig.set({ [id]: config.merge(PluginLoader.getPluginConfig(id)) })
 	}
 }

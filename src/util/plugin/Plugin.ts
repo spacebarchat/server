@@ -1,10 +1,11 @@
 import EventEmitter from "events";
-import { PluginLoadedEventArgs, TypedEventEmitter } from "@fosscord/util";
+import { PluginLoadedEventArgs, PluginManifest, TypedEventEmitter } from "@fosscord/util";
+import { PluginConfig } from "./PluginConfig";
 
-type PluginEvents = {
+/*type PluginEvents = {
 	error: (error: Error | unknown) => void;
 	loaded: () => void;
-};
+};*/
 
 //this doesnt work, check later:
  //EventEmitter as new () => TypedEventEmitter<PluginEvents>
@@ -15,7 +16,8 @@ export class Plugin {
 	 * @type {string}
 	 * @memberof Plugin
 	 */
-	pluginPath: string;
+	pluginPath?: string;
+	pluginManifest?: PluginManifest;
 	/**
 	 *
 	 *
@@ -31,7 +33,16 @@ export class Plugin {
 	 * @param {PluginLoadedEventArgs} args Info about plugin environment
 	 * @memberof Plugin
 	 */
+	
 	onPluginLoaded?(args?: PluginLoadedEventArgs) {
 		
+	}
+
+	//frozen functions
+	loadConfig?: any = () => {
+		return PluginConfig.get();
+	}
+	saveConfig?: any = () => {
+
 	}
 }

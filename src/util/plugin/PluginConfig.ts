@@ -1,26 +1,26 @@
-import { ConfigEntity } from "../entities/Config";
 import fs from "fs";
 import { OrmUtils, Environment } from "..";
+import { PluginConfigEntity } from "util/entities/PluginConfig";
 
 // TODO: yaml instead of json
 const overridePath = process.env.PLUGIN_CONFIG_PATH ?? "";
 
 let config: any;
-let pairs: ConfigEntity[];
+let pairs: PluginConfigEntity[];
 
 // TODO: use events to inform about config updates
 // Config keys are separated with _
 
-export const Config = {
+export const PluginConfig = {
 	init: async function init() {
 		if (config) return config;
-		console.log('[Config] Loading configuration...')
-		pairs = await ConfigEntity.find();
+		console.log('[PluginConfig] Loading configuration...')
+		pairs = await PluginConfigEntity.find();
 		config = pairsToConfig(pairs);
 		//config = (config || {}).merge(new ConfigValue());
 		//config = OrmUtils.mergeDeep(new ConfigValue(), config)
 
-		if(process.env.CONFIG_PATH)
+		if(process.env.PLUGIN_CONFIG_PATH)
 			try {
 				const overrideConfig = JSON.parse(fs.readFileSync(overridePath, { encoding: "utf8" }));
 				config = overrideConfig.merge(config);
@@ -52,22 +52,22 @@ function applyConfig(val: any) {
 			return Promise.all(Object.keys(obj).map((k) => apply(obj[k], key ? `${key}_${k}` : k)));
 
 		let pair = pairs.find((x) => x.key === key);
-		if (!pair) pair = new ConfigEntity();
+		if (!pair) pair = new PluginConfigEntity();
 
 		pair.key = key;
 		pair.value = obj;
 		return pair.save();
 	}
-	if(process.env.CONFIG_PATH) {
+	if(process.env.PLUGIN_CONFIG_PATH) {
 		if(Environment.isDebug)
-			console.log(`Writing config: ${process.env.CONFIG_PATH}`)
+			console.log(`Writing config: ${process.env.PLUGIN_CONFIG_PATH}`)
 		fs.writeFileSync(overridePath, JSON.stringify(val, null, 4));
 	}
 
 	return apply(val);
 }
 
-function pairsToConfig(pairs: ConfigEntity[]) {
+function pairsToConfig(pairs: PluginConfigEntity[]) {
 	let value: any = {};
 
 	pairs.forEach((p) => {

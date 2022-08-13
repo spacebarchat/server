@@ -4,6 +4,7 @@ import path from "path";
 import avatarsRoute from "./routes/avatars";
 import iconsRoute from "./routes/role-icons";
 import bodyParser from "body-parser";
+import { PluginConfig } from "util/plugin/PluginConfig";
 
 export interface CDNServerOptions extends ServerOptions {}
 
@@ -17,6 +18,7 @@ export class CDNServer extends Server {
 	async start() {
 		await getOrInitialiseDatabase();
 		await Config.init();
+		await PluginConfig.init();
 		this.app.use((req, res, next) => {
 			res.set("Access-Control-Allow-Origin", "*");
 			// TODO: use better CSP policy

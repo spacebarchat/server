@@ -11,6 +11,7 @@ import { Config, getOrInitialiseDatabase } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import { PluginLoader } from "@fosscord/util";
+import { PluginConfig } from "util/plugin/PluginConfig";
 
 const app = express();
 const server = http.createServer();
@@ -38,6 +39,7 @@ async function main() {
 	server.listen(port);
 	await getOrInitialiseDatabase();
 	await Config.init();
+	await PluginConfig.init();
 	// only set endpointPublic, if not already set
 	await Config.set({
 		cdn: {

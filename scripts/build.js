@@ -59,7 +59,7 @@ dirs.forEach(x => {
 });
 output += `\nexport const PluginIndex: any = {\n`
 dirs.forEach(x => {
-    output += `    "${x}": new ${sanitizeVarName(x)}.default(),\n`
+    output += `    "${x}": new ${sanitizeVarName(x)}.default(),\n` //ctor test: '${path.resolve(path.join(pluginDir, x))}', require('./${x}/plugin.json')
 })
 output += `};`
 

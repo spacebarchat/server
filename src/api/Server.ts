@@ -11,6 +11,7 @@ import { initTranslation } from "./middlewares/Translation";
 import morgan from "morgan";
 import { initInstance } from "./util/handlers/Instance";
 import { red } from "picocolors"
+import { PluginConfig } from "util/plugin/PluginConfig";
 
 export interface FosscordServerOptions extends ServerOptions {}
 
@@ -34,6 +35,7 @@ export class FosscordServer extends Server {
 	async start() {
 		await getOrInitialiseDatabase();
 		await Config.init();
+		await PluginConfig.init();
 		await initEvent();
 		await initInstance();
 
