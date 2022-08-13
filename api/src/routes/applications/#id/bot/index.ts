@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
-import { Application, Config, FieldErrors, generateToken, OrmUtils, Snowflake, trimSpecial, User } from "@fosscord/util";
+import { Application, Config, FieldErrors, generateToken, OrmUtils, Snowflake, trimSpecial, User, handleFile } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
 
@@ -74,7 +74,7 @@ router.post("/reset", route({}), async (req: Request, res: Response) => {
 });
 
 router.patch("/", route({}), async (req: Request, res: Response) => {
-	delete req.body.avatar;
+	if (req.body.avatar) req.body.avatar = await handleFile(`/avatars/${req.params.id}`, req.body.avatar as string);
 	let app = OrmUtils.mergeDeep(await User.findOne({where: {id: req.params.id}}), req.body);
 	await app.save();
 	res.json(app).status(200);
