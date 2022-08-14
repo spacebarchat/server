@@ -9,7 +9,7 @@ import {
 	VoiceServerUpdateEvent,
 	VoiceState,
 	VoiceStateUpdateEvent,
-	VoiceStateUpdateSchema,
+	VoiceStateUpdateSchema
 } from "@fosscord/util";
 import { OrmUtils } from "@fosscord/util";
 import { Region } from "@fosscord/util";
@@ -20,7 +20,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	check.call(this, VoiceStateUpdateSchema, data.d);
 	const body = data.d as VoiceStateUpdateSchema;
 
-	if(body.guild_id == null) {
+	if (body.guild_id == null) {
 		console.log(`[Gateway] VoiceStateUpdate called with guild_id == null by user ${this.user_id}!`);
 		return;
 	}
@@ -28,26 +28,20 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	let voiceState: VoiceState;
 	try {
 		voiceState = await VoiceState.findOneOrFail({
-			where: { user_id: this.user_id },
+			where: { user_id: this.user_id }
 		});
-		if (
-			voiceState.session_id !== this.session_id &&
-			body.channel_id === null
-		) {
+		if (voiceState.session_id !== this.session_id && body.channel_id === null) {
 			//Should we also check guild_id === null?
 			//changing deaf or mute on a client that's not the one with the same session of the voicestate in the database should be ignored
 			return;
 		}
 
 		//If a user change voice channel between guild we should send a left event first
-		if (
-			voiceState.guild_id !== body.guild_id &&
-			voiceState.session_id === this.session_id
-		) {
+		if (voiceState.guild_id !== body.guild_id && voiceState.session_id === this.session_id) {
 			await emitEvent({
 				event: "VOICE_STATE_UPDATE",
 				data: { ...voiceState, channel_id: null },
-				guild_id: voiceState.guild_id,
+				guild_id: voiceState.guild_id
 			});
 		}
 
@@ -60,7 +54,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 			user_id: this.user_id,
 			deaf: false,
 			mute: false,
-			suppress: false,
+			suppress: false
 		});
 	}
 
@@ -69,12 +63,11 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	//TODO this may fail
 	voiceState.member = await Member.findOneOrFail({
 		where: { id: voiceState.user_id, guild_id: voiceState.guild_id },
-		relations: ["user", "roles"],
+		relations: ["user", "roles"]
 	});
 
 	//If the session changed we generate a new token
-	if (voiceState.session_id !== this.session_id)
-		voiceState.token = genVoiceToken();
+	if (voiceState.session_id !== this.session_id) voiceState.token = genVoiceToken();
 	voiceState.session_id = this.session_id;
 
 	const { id, ...newObj } = voiceState;
@@ -84,8 +77,8 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		emitEvent({
 			event: "VOICE_STATE_UPDATE",
 			data: newObj,
-			guild_id: voiceState.guild_id,
-		} as VoiceStateUpdateEvent),
+			guild_id: voiceState.guild_id
+		} as VoiceStateUpdateEvent)
 	]);
 
 	//If it's null it means that we are leaving the channel and this event is not needed
@@ -94,13 +87,9 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		const regions = Config.get().regions;
 		let guildRegion: Region;
 		if (guild && guild.region) {
-			guildRegion = regions.available.filter(
-				(r) => r.id === guild.region
-			)[0];
+			guildRegion = regions.available.filter((r) => r.id === guild.region)[0];
 		} else {
-			guildRegion = regions.available.filter(
-				(r) => r.id === regions.default
-			)[0];
+			guildRegion = regions.available.filter((r) => r.id === regions.default)[0];
 		}
 
 		await emitEvent({
@@ -108,9 +97,9 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 			data: {
 				token: voiceState.token,
 				guild_id: voiceState.guild_id,
-				endpoint: guildRegion.endpoint,
+				endpoint: guildRegion.endpoint || "localhost:3001/voice"
 			},
-			guild_id: voiceState.guild_id,
+			guild_id: voiceState.guild_id
 		} as VoiceServerUpdateEvent);
 	}
 }

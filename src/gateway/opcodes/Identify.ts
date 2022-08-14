@@ -22,7 +22,7 @@ import {
 	IdentifySchema
 } from "@fosscord/util";
 import { Send } from "../util/Send";
-import { CLOSECODES, OPCODES } from "../util/Constants";
+import { CloseCodes, GatewayOPCodes } from "../util/Constants";
 import { genSessionId } from "../util/SessionUtils";
 import { setupListener } from "../listener/listener";
 // import experiments from "./experiments.json";
@@ -46,7 +46,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		var { decoded } = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
 	} catch (error) {
 		console.error("invalid token", error);
-		return this.close(CLOSECODES.Authentication_failed);
+		return this.close(CloseCodes.Authentication_failed);
 	}
 	this.user_id = decoded.id;
 
@@ -87,7 +87,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		Application.findOne({ where: { id: this.user_id } })
 	]);
 
-	if (!user) return this.close(CLOSECODES.Authentication_failed);
+	if (!user) return this.close(CloseCodes.Authentication_failed);
 	if (!user.settings) {
 		//settings may not exist after updating...
 		user.settings = new UserSettings();
@@ -108,7 +108,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			this.shard_count <= 0
 		) {
 			console.log(identify.shard);
-			return this.close(CLOSECODES.Invalid_shard);
+			return this.close(CloseCodes.Invalid_shard);
 		}
 	}
 	let users: PublicUser[] = [];
@@ -130,7 +130,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		if (user.bot) {
 			setTimeout(() => {
 				Send(this, {
-					op: OPCODES.Dispatch,
+					op: GatewayOPCodes.Dispatch,
 					t: EVENTEnum.GuildCreate,
 					s: this.sequence++,
 					d: guild
@@ -268,7 +268,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	// TODO: send real proper data structure
 	await Send(this, {
-		op: OPCODES.Dispatch,
+		op: GatewayOPCodes.Dispatch,
 		t: EVENTEnum.Ready,
 		s: this.sequence++,
 		d
