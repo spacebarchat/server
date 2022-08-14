@@ -1,12 +1,12 @@
-import "missing-native-js-functions";
 import dotenv from "dotenv";
 dotenv.config();
 import { closeDatabase, Config, getOrInitialiseDatabase, initEvent } from "@fosscord/util";
-import { Server as WebSocketServer } from "ws";
+import ws from "ws";
+import { Connection } from "./events/Connection";
 import http from "http";
 
 export class Server {
-	public ws: WebSocketServer;
+	public ws: ws.Server;
 	public port: number;
 	public server: http.Server;
 	public production: boolean;
@@ -23,18 +23,18 @@ export class Server {
 		}
 
 		this.server.on("upgrade", (request, socket, head) => {
-			console.log("socket requests upgrade", request.url);
+			if (!request.url?.includes("voice")) return;
 			// @ts-ignore
 			this.ws.handleUpgrade(request, socket, head, (socket) => {
 				this.ws.emit("connection", socket, request);
 			});
 		});
 
-		this.ws = new WebSocketServer({
-			maxPayload: 4096,
+		this.ws = new ws.Server({
+			maxPayload: 1024 * 1024 * 100,
 			noServer: true
 		});
-		// this.ws.on("connection", Connection);
+		this.ws.on("connection", Connection);
 		this.ws.on("error", console.error);
 	}
 

@@ -1,36 +1,26 @@
-export enum OPCODES {
-	Identify = 0,
-	Select_Protocol = 1,
-	Ready = 2,
-	Heartbeat = 3,
-	Session_Description = 4,
-	Speaking = 5,
-	Heartbeat_Acknowledge = 6,
-	Resume = 7,
-	Hello = 8,
-	Resumed = 9,
-	Client_Disconnected = 13,
+export enum VoiceStatus {
+	CONNECTED = 0,
+	CONNECTING = 1,
+	AUTHENTICATING = 2,
+	RECONNECTING = 3,
+	DISCONNECTED = 4
 }
 
-export enum CLOSECODES {
-	Unknown_error = 4000,
-	Unknown_opcode = 4001,
-	Decode_error = 4002,
-	Not_authenticated = 4003,
-	Authentication_failed = 4004,
-	Already_authenticated = 4005,
-	Invalid_session = 4006,
-	Session_Timeout = 4009,
-	Server_not_found = 4011,
-	Unkown_Protocol = 4012,
-	Disconnected = 4014, // Channel was deleted, you were kicked, voice server changed, or the main gateway session was dropped. Should not reconnect.
-	Voice_Server_Crash = 4015, // The server crashed. Try resuming.
-	Unkown_Encryption_mode = 4016,
-}
-
-export interface Payload {
-	op: OPCODES;
-	d?: any;
-	s?: number;
-	t?: string;
+export enum VoiceOPCodes {
+	IDENTIFY = 0,
+	SELECT_PROTOCOL = 1,
+	READY = 2,
+	HEARTBEAT = 3,
+	SELECT_PROTOCOL_ACK = 4,
+	SPEAKING = 5,
+	HEARTBEAT_ACK = 6,
+	RESUME = 7,
+	HELLO = 8,
+	RESUMED = 9,
+	VIDEO = 12,
+	CLIENT_DISCONNECT = 13,
+	SESSION_UPDATE = 14,
+	MEDIA_SINK_WANTS = 15,
+	VOICE_BACKEND_VERSION = 16,
+	CHANNEL_OPTIONS_UPDATE = 17
 }
