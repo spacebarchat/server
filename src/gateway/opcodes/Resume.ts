@@ -5,8 +5,8 @@ export async function onResume(this: WebSocket, data: Payload) {
 	console.log("Got Resume -> cancel not implemented");
 	await Send(this, {
 		op: 9,
-		d: false,
+		d: false
 	});
 
-	// return this.close(CLOSECODES.Invalid_session);
+	// return this.close(CloseCodes.Invalid_session);
 }
