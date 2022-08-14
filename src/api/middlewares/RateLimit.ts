@@ -46,10 +46,7 @@ export default function rateLimit(opts: {
 }): any {
 	return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
 		// exempt user? if so, immediately short circuit
-		if (req.user_id) {
-			const rights = await getRights(req.user_id);
-			if (rights.has("BYPASS_RATE_LIMITS")) return;
-		}
+		if (req.rights?.has("BYPASS_RATE_LIMITS")) return;
 
 		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
 		let executor_id = getIpAdress(req);
@@ -163,7 +160,7 @@ export async function initRateLimits(app: Router) {
 	app.use("/auth/register", rateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
 }
 
-async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number; }) {
+async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number }) {
 	const id = opts.executor_id + opts.bucket_id;
 	let limit = Cache.get(id);
 	if (!limit) {
