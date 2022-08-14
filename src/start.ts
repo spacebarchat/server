@@ -7,6 +7,7 @@ import { initStats } from "./stats";
 import { config } from "dotenv";
 config();
 import { execSync } from "child_process";
+import { Logo } from "util/util/Logo";
 
 // TODO: add socket event transmission
 let cores = 1;
@@ -25,16 +26,8 @@ if (cluster.isMaster) {
 		}
 	}
 	const commit = getCommitOrFail();
-
-	console.log(
-		bold(`
-███████╗ ██████╗ ███████╗███████╗ ██████╗ ██████╗ ██████╗ ██████╗
-██╔════╝██╔═══██╗██╔════╝██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔══██╗
-█████╗  ██║   ██║███████╗███████╗██║     ██║   ██║██████╔╝██║  ██║
-██╔══╝  ██║   ██║╚════██║╚════██║██║     ██║   ██║██╔══██╗██║  ██║
-██║     ╚██████╔╝███████║███████║╚██████╗╚██████╔╝██║  ██║██████╔╝
-╚═╝      ╚═════╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝
-
+Logo.printLogo();
+console.log(bold(`
 		fosscord-server | ${yellow(
 			`Pre-release (${
 				commit !== null

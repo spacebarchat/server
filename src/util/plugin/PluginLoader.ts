@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { Plugin, PluginLoadedEventArgs, PluginManifest } from "./";
+import { Plugin, PluginLoadedEventArgs, PluginManifest, PluginStore } from "./";
 import { PluginIndex } from "plugins/PluginIndex";
 import { PluginConfig } from "./PluginConfig";
 import { OrmUtils, PluginConfigEntity } from "..";
@@ -9,7 +9,6 @@ const root = process.env.PLUGIN_LOCATION || "dist/plugins";
 
 let pluginsLoaded = false;
 export class PluginLoader {
-	public static plugins: Plugin[] = [];
 	public static async loadPlugins() {
 		if(pluginsLoaded) return;
 		PluginConfig.init();
@@ -41,22 +40,32 @@ export class PluginLoader {
 			Object.freeze(module_.pluginManifest);
 			
 			if(module_.onPluginLoaded) await module_.onPluginLoaded({} as PluginLoadedEventArgs);
-			this.plugins.push(module_);
+			PluginStore.plugins.push(module_);
 		});
 
-		console.log(`Done loading ${this.plugins.length} plugins!`)
-		await PluginConfigEntity.save(PluginConfig.get());
+		console.log(`Done loading ${PluginStore.plugins.length} plugins!`);
 	}
+	
 	public static getPluginConfig(id: string, defaults?: any): any {
 		let cfg = PluginConfig.get()[id];
 		if(defaults) {
-			cfg = OrmUtils.mergeDeep(defaults, cfg);
-			this.setPluginConfig(id, cfg);
+			if(cfg){
+				console.log('merging config......')
+				cfg = OrmUtils.mergeDeep(defaults, cfg);
+				console.log(defaults,cfg);
+				this.setPluginConfig(id, cfg);
+			}
+			else {
+				console.log(`setting configs....`, defaults)
+				this.setPluginConfig(id, defaults);
+				cfg = defaults;
+			}
 		}
-
 		return cfg;
 	}
-	public static async setPluginConfig(id: string, config: Partial<any>): Promise<any> {
-		await PluginConfig.set({ [id]: config.merge(PluginLoader.getPluginConfig(id) as any) } as any)
+	public static async setPluginConfig(id: string, config: Partial<any>): Promise<void> {
+		let cfg = { [id]: config.merge(PluginLoader.getPluginConfig(id)) };
+		console.log(`setPluginCfg`, cfg)
+		await PluginConfig.set(cfg)
 	}
 }
