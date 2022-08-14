@@ -33,7 +33,7 @@ router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT
 	}).save();
 	//TODO: check this, removed toJSON call
 	const data = JSON.parse(JSON.stringify(invite));
-	data.inviter = await User.getPublicUser(req.user_id);
+	data.inviter = await User.getPublicUser(req.user_id!);
 	data.guild = await Guild.findOne({ where: { id: guild_id } });
 	data.channel = channel;
 

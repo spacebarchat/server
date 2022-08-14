@@ -1,4 +1,5 @@
 import {
+	ajv,
 	DiscordApiErrors,
 	EVENT,
 	Event,
@@ -7,33 +8,14 @@ import {
 	FosscordApiErrors,
 	getPermission,
 	getRights,
+	normalizeBody,
 	PermissionResolvable,
 	Permissions,
 	RightResolvable,
 	Rights
 } from "@fosscord/util";
 import { NextFunction, Request, Response } from "express";
-import fs from "fs";
-import path from "path";
-import Ajv from "ajv";
 import { AnyValidateFunction } from "ajv/dist/core";
-import addFormats from "ajv-formats";
-
-const SchemaPath = path.join(__dirname, "..", "..", "..","..", "assets", "schemas.json");
-const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
-
-export const ajv = new Ajv({
-	allErrors: true,
-	parseDate: true,
-	allowDate: true,
-	schemas,
-	coerceTypes: true,
-	messages: true,
-	strict: true,
-	strictRequired: true
-});
-
-addFormats(ajv);
 
 declare global {
 	namespace Express {
@@ -57,34 +39,6 @@ export interface RouteOptions {
 		headers?: Record<string, string>;
 	};
 }
-
-// Normalizer is introduced to workaround https://github.com/ajv-validator/ajv/issues/1287
-// this removes null values as ajv doesn't treat them as undefined
-// normalizeBody allows to handle circular structures without issues
-// taken from https://github.com/serverless/serverless/blob/master/lib/classes/ConfigSchemaHandler/index.js#L30 (MIT license)
-const normalizeBody = (body: any = {}) => {
-	const normalizedObjectsSet = new WeakSet();
-	const normalizeObject = (object: any) => {
-		if (normalizedObjectsSet.has(object)) return;
-		normalizedObjectsSet.add(object);
-		if (Array.isArray(object)) {
-			for (const [index, value] of object.entries()) {
-				if (typeof value === "object") normalizeObject(value);
-			}
-		} else {
-			for (const [key, value] of Object.entries(object)) {
-				if (value == null) {
-					if (key === "icon" || key === "avatar" || key === "banner" || key === "splash" || key === "discovery_splash") continue;
-					delete object[key];
-				} else if (typeof value === "object") {
-					normalizeObject(value);
-				}
-			}
-		}
-	};
-	normalizeObject(body);
-	return body;
-};
 
 export function route(opts: RouteOptions) {
 	let validate: AnyValidateFunction<any> | undefined;
@@ -117,10 +71,10 @@ export function route(opts: RouteOptions) {
 			const valid = validate(normalizeBody(req.body));
 			if (!valid) {
 				const fields: Record<string, { code?: string; message: string }> = {};
-				if(process.env.LOG_INVALID_BODY) {
-					console.log(`Got invalid request: ${req.method} ${req.originalUrl}`)
-					console.log(req.body)
-					validate.errors?.forEach(x => console.log(x.params))
+				if (process.env.LOG_INVALID_BODY) {
+					console.log(`Got invalid request: ${req.method} ${req.originalUrl}`);
+					console.log(req.body);
+					validate.errors?.forEach((x) => console.log(x.params));
 				}
 				validate.errors?.forEach((x) => (fields[x.instancePath.slice(1)] = { code: x.keyword, message: x.message || "" }));
 				throw FieldErrors(fields);

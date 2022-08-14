@@ -1,23 +1,15 @@
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { User } from "@fosscord/util";
 
 const router: Router = Router();
 
 router.post("/", route({}), async (req: Request, res: Response) => {
+	if (!req.rights?.has("OPERATOR")) return res.sendStatus(403);
 	//EXPERIMENTAL: have an "OPERATOR" platform permission implemented for this API route
-	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["rights"] });
-	if((Number(user.rights) << Number(0))%Number(2)==Number(1)) {
-		console.log("user that POSTed to the API was ALLOWED");
-		console.log(user.rights);
-		res.sendStatus(200)
-		process.kill(process.pid, 'SIGTERM')
-	}
-	else {
-		console.log("operation failed");
-		console.log(user.rights);
-		res.sendStatus(403)
-	}
+	console.log(`[Server] Operator requested shutdown: user_id: ${req.user_id}`);
+
+	res.sendStatus(200);
+	process.kill(process.pid, "SIGTERM");
 });
 
 export default router;
