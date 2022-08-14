@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { ChannelPermissionOverwrite } from "./Channel";
 import { User } from "./User";
@@ -98,7 +98,7 @@ export enum AuditLogEvents {
 export class AuditLog extends BaseClass {
 	@JoinColumn({ name: "target_id" })
 	@ManyToOne(() => User)
-	target?: User;
+	target?: Relation<User>;
 
 	@Column({ nullable: true })
 	@RelationId((auditlog: AuditLog) => auditlog.user)
@@ -106,7 +106,7 @@ export class AuditLog extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, (user: User) => user.id)
-	user: User;
+	user: Relation<User>;
 
 	@Column({ type: "int" })
 	action_type: AuditLogEvents;

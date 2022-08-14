@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Team } from "./Team";
@@ -33,7 +33,7 @@ export class Application extends BaseClass {
 
 	@JoinColumn({ name: "owner_id" })
 	@ManyToOne(() => User)
-	owner?: User;
+	owner?: Relation<User>;
 
 	@Column({ nullable: true })
 	summary?: string;
@@ -45,11 +45,11 @@ export class Application extends BaseClass {
 	@ManyToOne(() => Team, {
 		onDelete: "CASCADE"
 	})
-	team?: Team;
+	team?: Relation<Team>;
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild)
-	guild: Guild; // if this application is a game sold, this field will be the guild to which it has been linked
+	guild: Relation<Guild>; // if this application is a game sold, this field will be the guild to which it has been linked
 
 	@Column({ nullable: true })
 	primary_sku_id?: string; // if this application is a game sold, this field will be the id of the "Game SKU" that is created,

@@ -1,8 +1,6 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
 import { User } from "./User";
 
 @Entity("groups")
@@ -15,7 +13,7 @@ export class UserGroup extends BaseClass {
 
 	@JoinColumn({ name: "controller", referencedColumnName: "id" })
 	@ManyToOne(() => User)
-	controller?: User;
+	controller?: Relation<User>;
 
 	@Column()
 	mentionable_by?: string;

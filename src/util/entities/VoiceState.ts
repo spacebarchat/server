@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
@@ -17,7 +17,7 @@ export class VoiceState extends BaseClass {
 	@ManyToOne(() => Guild, {
 		onDelete: "CASCADE"
 	})
-	guild?: Guild;
+	guild?: Relation<Guild>;
 
 	@Column({ nullable: true })
 	@RelationId((voice_state: VoiceState) => voice_state.channel)
@@ -27,7 +27,7 @@ export class VoiceState extends BaseClass {
 	@ManyToOne(() => Channel, {
 		onDelete: "CASCADE"
 	})
-	channel: Channel;
+	channel: Relation<Channel>;
 
 	@Column({ nullable: true })
 	@RelationId((voice_state: VoiceState) => voice_state.user)
@@ -37,14 +37,14 @@ export class VoiceState extends BaseClass {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	user: User;
+	user: Relation<User>;
 
 	// @JoinColumn([{ name: "user_id", referencedColumnName: "id" },{ name: "guild_id", referencedColumnName: "guild_id" }])
 	// @ManyToOne(() => Member, {
 	// 	onDelete: "CASCADE",
 	// })
 	//TODO find a way to make it work without breaking Guild.voice_states
-	member: Member;
+	member: Relation<Member>;
 
 	@Column()
 	session_id: string;

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId, PrimaryColumn, Relation } from "typeorm";
 import { Member } from "./Member";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -40,7 +40,7 @@ export class Invite extends BaseClassWithoutId {
 	@ManyToOne(() => Guild, {
 		onDelete: "CASCADE"
 	})
-	guild: Guild;
+	guild: Relation<Guild>;
 
 	@Column({ nullable: true })
 	@RelationId((invite: Invite) => invite.channel)
@@ -50,7 +50,7 @@ export class Invite extends BaseClassWithoutId {
 	@ManyToOne(() => Channel, {
 		onDelete: "CASCADE"
 	})
-	channel: Channel;
+	channel: Relation<Channel>;
 
 	@Column({ nullable: true })
 	@RelationId((invite: Invite) => invite.inviter)
@@ -58,7 +58,7 @@ export class Invite extends BaseClassWithoutId {
 
 	@JoinColumn({ name: "inviter_id" })
 	@ManyToOne(() => User)
-	inviter: User;
+	inviter: Relation<User>;
 
 	@Column({ nullable: true })
 	@RelationId((invite: Invite) => invite.target_user)
@@ -68,7 +68,7 @@ export class Invite extends BaseClassWithoutId {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	target_user?: string; // could be used for "User specific invites" https://github.com/fosscord/fosscord/issues/62
+	target_user?: Relation<User>; // could be used for "User specific invites" https://github.com/fosscord/fosscord/issues/62
 
 	@Column({ nullable: true })
 	target_user_type?: number;

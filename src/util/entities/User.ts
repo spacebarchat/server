@@ -1,12 +1,12 @@
 import "reflect-metadata";
-import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, OneToMany, OneToOne, Relation } from "typeorm";
 import { OrmUtils } from "../util/imports/OrmUtils";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
-import { Member, Session, UserSettings } from ".";
+import { Session, UserSettings } from ".";
 
 export enum PublicUserEnum {
 	username,
@@ -97,7 +97,7 @@ export class User extends BaseClass {
 	bot: boolean = false; // if user is bot
 
 	@Column()
-	bio: string; // short description of the user (max 190 chars -> should be configurable)
+	bio: string = ""; // short description of the user (max 190 chars -> should be configurable)
 
 	@Column()
 	system: boolean = false; // shouldn't be used, the api sends this field type true, if the generated message comes from a system generated author
@@ -106,7 +106,7 @@ export class User extends BaseClass {
 	nsfw_allowed: boolean = true; // if the user can do age-restricted actions (NSFW channels/guilds/commands) // TODO: depending on age
 
 	@Column({ select: false })
-	mfa_enabled: boolean; // if multi factor authentication is enabled
+	mfa_enabled: boolean = false; // if multi factor authentication is enabled
 
 	@Column({ select: false, nullable: true })
 	totp_secret?: string;
@@ -142,21 +142,21 @@ export class User extends BaseClass {
 	rights: string = Config.get().register.defaultRights; // Rights
 
 	@OneToMany(() => Session, (session: Session) => session.user)
-	sessions: Session[];
+	sessions: Relation<Session[]>;
 
 	@JoinColumn({ name: "relationship_ids" })
 	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	relationships: Relationship[];
+	relationships: Relation<Relationship[]>;
 
 	@JoinColumn({ name: "connected_account_ids" })
 	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user, {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	connected_accounts: ConnectedAccount[];
+	connected_accounts: Relation<ConnectedAccount[]>;
 
 	@Column({ type: "simple-json", select: false })
 	data: {
@@ -173,7 +173,7 @@ export class User extends BaseClass {
 		eager: false
 	})
 	@JoinColumn()
-	settings: UserSettings;
+	settings: Relation<UserSettings>;
 
 	// workaround to prevent fossord-unaware clients from deleting settings not used by them
 	@Column({ type: "simple-json", select: false })
@@ -265,6 +265,8 @@ export class User extends BaseClass {
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 		const language = req?.language === "en" ? "en-US" : req?.language || "en-US";
+		const settings = new UserSettings();
+		settings.locale = language;
 
 		const user = OrmUtils.mergeDeep(new User(), {
 			//required:
@@ -276,7 +278,7 @@ export class User extends BaseClass {
 				hash: password,
 				valid_tokens_since: new Date()
 			},
-			settings: { ...new UserSettings(), locale: language }
+			settings
 		});
 
 		await user.save();
@@ -285,7 +287,9 @@ export class User extends BaseClass {
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
-					await Member.addToGuild(user.id, guild).catch((e) => {});
+					await require("./Member")
+						.Member.addToGuild(user.id, guild)
+						.catch((e: any) => {});
 				}
 			}
 		});

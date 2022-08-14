@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -7,7 +7,7 @@ import { User } from "./User";
 export class BackupCode extends BaseClass {
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, { onDelete: "CASCADE" })
-	user: User;
+	user: Relation<User>;
 
 	@Column()
 	code: string;
