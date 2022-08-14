@@ -64,8 +64,10 @@ export class PluginLoader {
 		return cfg;
 	}
 	public static async setPluginConfig(id: string, config: Partial<any>): Promise<void> {
-		let cfg = { [id]: config.merge(PluginLoader.getPluginConfig(id)) };
+		if(!config) console.log(`[setPluginConfig] ${id} tried to set config=null!`)
+		console.log('setPluginCfg(in)',config as any)
+		let cfg = { [id]: OrmUtils.mergeDeep(PluginLoader.getPluginConfig(id), config) };
 		console.log(`setPluginCfg`, cfg)
-		await PluginConfig.set(cfg)
+		await PluginConfig.set(cfg);
 	}
 }
