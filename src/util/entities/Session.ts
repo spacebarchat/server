@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { User } from "./User";
 import { BaseClass } from "./BaseClass";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { Status } from "../interfaces/Status";
 import { Activity } from "../interfaces/Activity";
 
@@ -17,7 +17,7 @@ export class Session extends BaseClass {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	user: User;
+	user: Relation<User>;
 
 	//TODO check, should be 32 char long hex string
 	@Column({ nullable: false, select: false })

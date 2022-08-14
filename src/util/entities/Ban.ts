@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
@@ -14,7 +14,7 @@ export class Ban extends BaseClass {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	user: User;
+	user: Relation<User>;
 
 	@Column({ nullable: true })
 	@RelationId((ban: Ban) => ban.guild)
@@ -24,7 +24,7 @@ export class Ban extends BaseClass {
 	@ManyToOne(() => Guild, {
 		onDelete: "CASCADE"
 	})
-	guild: Guild;
+	guild: Relation<Guild>;
 
 	@Column({ nullable: true })
 	@RelationId((ban: Ban) => ban.executor)
@@ -32,7 +32,7 @@ export class Ban extends BaseClass {
 
 	@JoinColumn({ name: "executor_id" })
 	@ManyToOne(() => User)
-	executor: User;
+	executor: Relation<User>;
 
 	@Column()
 	ip: string;

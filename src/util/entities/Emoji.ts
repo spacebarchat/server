@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { User } from ".";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
@@ -20,7 +20,7 @@ export class Emoji extends BaseClass {
 	@ManyToOne(() => Guild, {
 		onDelete: "CASCADE"
 	})
-	guild: Guild;
+	guild: Relation<Guild>;
 
 	@Column({ nullable: true })
 	@RelationId((emoji: Emoji) => emoji.user)
@@ -28,7 +28,7 @@ export class Emoji extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User)
-	user: User;
+	user: Relation<User>;
 
 	@Column()
 	managed: boolean;

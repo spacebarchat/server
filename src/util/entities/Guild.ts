@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
-import { OrmUtils } from "../util/imports/OrmUtils";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, Relation, RelationId } from "typeorm";
 import { Config, handleFile, Snowflake } from "..";
+import { OrmUtils } from "../util";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -42,8 +42,8 @@ export class Guild extends BaseClass {
 	afk_channel_id?: string;
 
 	@JoinColumn({ name: "afk_channel_id" })
-	@ManyToOne(() => Channel)
-	afk_channel?: Channel;
+	@ManyToOne(() => Channel, { nullable: true })
+	afk_channel?: Relation<Channel>;
 
 	@Column({ nullable: true })
 	afk_timeout?: number = Config.get().defaults.guild.afkTimeout;
@@ -58,7 +58,7 @@ export class Guild extends BaseClass {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	bans: Ban[];
+	bans: Relation<Ban[]>;
 
 	@Column({ nullable: true })
 	banner?: string;
@@ -108,7 +108,7 @@ export class Guild extends BaseClass {
 		orphanedRowAction: "delete",
 		onDelete: "CASCADE"
 	})
-	members: Member[];
+	members: Relation<Member[]>;
 
 	@JoinColumn({ name: "role_ids" })
 	@OneToMany(() => Role, (role: Role) => role.guild, {
@@ -116,14 +116,14 @@ export class Guild extends BaseClass {
 		orphanedRowAction: "delete",
 		onDelete: "CASCADE"
 	})
-	roles: Role[];
+	roles: Relation<Role[]>;
 
 	@JoinColumn({ name: "channel_ids" })
 	@OneToMany(() => Channel, (channel: Channel) => channel.guild, {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	channels: Channel[];
+	channels: Relation<Channel[]>;
 
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.template)
@@ -131,7 +131,7 @@ export class Guild extends BaseClass {
 
 	@JoinColumn({ name: "template_id", referencedColumnName: "id" })
 	@ManyToOne(() => Template)
-	template: Template;
+	template: Relation<Template>;
 
 	@JoinColumn({ name: "emoji_ids" })
 	@OneToMany(() => Emoji, (emoji: Emoji) => emoji.guild, {
@@ -139,7 +139,7 @@ export class Guild extends BaseClass {
 		orphanedRowAction: "delete",
 		onDelete: "CASCADE"
 	})
-	emojis: Emoji[];
+	emojis: Relation<Emoji[]>;
 
 	@JoinColumn({ name: "sticker_ids" })
 	@OneToMany(() => Sticker, (sticker: Sticker) => sticker.guild, {
@@ -147,7 +147,7 @@ export class Guild extends BaseClass {
 		orphanedRowAction: "delete",
 		onDelete: "CASCADE"
 	})
-	stickers: Sticker[];
+	stickers: Relation<Sticker[]>;
 
 	@JoinColumn({ name: "invite_ids" })
 	@OneToMany(() => Invite, (invite: Invite) => invite.guild, {
@@ -155,7 +155,7 @@ export class Guild extends BaseClass {
 		orphanedRowAction: "delete",
 		onDelete: "CASCADE"
 	})
-	invites: Invite[];
+	invites: Relation<Invite[]>;
 
 	@JoinColumn({ name: "voice_state_ids" })
 	@OneToMany(() => VoiceState, (voicestate: VoiceState) => voicestate.guild, {
@@ -163,7 +163,7 @@ export class Guild extends BaseClass {
 		orphanedRowAction: "delete",
 		onDelete: "CASCADE"
 	})
-	voice_states: VoiceState[];
+	voice_states: Relation<VoiceState[]>;
 
 	@JoinColumn({ name: "webhook_ids" })
 	@OneToMany(() => Webhook, (webhook: Webhook) => webhook.guild, {
@@ -171,7 +171,7 @@ export class Guild extends BaseClass {
 		orphanedRowAction: "delete",
 		onDelete: "CASCADE"
 	})
-	webhooks: Webhook[];
+	webhooks: Relation<Webhook[]>;
 
 	@Column({ nullable: true })
 	mfa_level?: number;
@@ -184,8 +184,8 @@ export class Guild extends BaseClass {
 	owner_id?: string; // optional to allow for ownerless guilds
 
 	@JoinColumn({ name: "owner_id", referencedColumnName: "id" })
-	@ManyToOne(() => User)
-	owner?: User; // optional to allow for ownerless guilds
+	@ManyToOne(() => User, { nullable: true })
+	owner?: Relation<User>; // optional to allow for ownerless guilds
 
 	@Column({ nullable: true })
 	preferred_locale?: string;
@@ -201,16 +201,16 @@ export class Guild extends BaseClass {
 	public_updates_channel_id: string;
 
 	@JoinColumn({ name: "public_updates_channel_id" })
-	@ManyToOne(() => Channel)
-	public_updates_channel?: Channel;
+	@ManyToOne(() => Channel, { nullable: true })
+	public_updates_channel?: Relation<Channel>;
 
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.rules_channel)
 	rules_channel_id?: string;
 
 	@JoinColumn({ name: "rules_channel_id" })
-	@ManyToOne(() => Channel)
-	rules_channel?: string;
+	@ManyToOne(() => Channel, { nullable: true })
+	rules_channel?: Relation<Channel>;
 
 	@Column({ nullable: true })
 	region?: string;
@@ -223,8 +223,8 @@ export class Guild extends BaseClass {
 	system_channel_id?: string;
 
 	@JoinColumn({ name: "system_channel_id" })
-	@ManyToOne(() => Channel)
-	system_channel?: Channel;
+	@ManyToOne(() => Channel, { nullable: true })
+	system_channel?: Relation<Channel>;
 
 	@Column({ nullable: true })
 	system_channel_flags?: number;
@@ -252,8 +252,8 @@ export class Guild extends BaseClass {
 	widget_channel_id?: string;
 
 	@JoinColumn({ name: "widget_channel_id" })
-	@ManyToOne(() => Channel)
-	widget_channel?: Channel;
+	@ManyToOne(() => Channel, { nullable: true })
+	widget_channel?: Relation<Channel>;
 
 	@Column({ nullable: true })
 	widget_enabled?: boolean;
@@ -334,13 +334,13 @@ export class Guild extends BaseClass {
 
 		const ids = new Map();
 
-		body.channels.forEach((x) => {
-			if (x.id) {
-				ids.set(x.id, Snowflake.generate());
+		body.channels!.forEach((x) => {
+			if (x!.id) {
+				ids.set(x!.id, Snowflake.generate());
 			}
 		});
 
-		for (const channel of body.channels?.sort((a, b) => (a.parent_id ? 1 : -1))) {
+		for (const channel of body.channels!.sort((a, b) => (a.parent_id ? 1 : -1))) {
 			let id = ids.get(channel.id) || Snowflake.generate();
 
 			let parent_id = ids.get(channel.parent_id);

@@ -1,14 +1,12 @@
 import "reflect-metadata";
 import { PublicUser, User } from "./User";
-import { BaseClass } from "./BaseClass";
-import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
-import { Guild } from "./Guild";
+import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, Relation, RelationId } from "typeorm";
 import { Config, emitEvent } from "../util";
 import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent } from "../interfaces";
 import { HTTPError } from "../util/imports/HTTPError";
 import { Role } from "./Role";
 import { BaseClassWithoutId } from "./BaseClass";
-import { Ban, PublicGuildRelations } from ".";
+import { Ban, PublicGuildRelations, Guild } from ".";
 import { DiscordApiErrors } from "../util/Constants";
 import { OrmUtils } from "../util/imports/OrmUtils";
 
@@ -42,7 +40,7 @@ export class Member extends BaseClassWithoutId {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	user: User;
+	user: Relation<User>;
 
 	@Column()
 	@RelationId((member: Member) => member.guild)
@@ -52,7 +50,7 @@ export class Member extends BaseClassWithoutId {
 	@ManyToOne(() => Guild, {
 		onDelete: "CASCADE"
 	})
-	guild: Guild;
+	guild: Relation<Guild>;
 
 	@Column({ nullable: true })
 	nick?: string;
@@ -66,7 +64,7 @@ export class Member extends BaseClassWithoutId {
 		}
 	})
 	@ManyToMany(() => Role, { cascade: true })
-	roles: Role[];
+	roles: Relation<Role[]>;
 
 	@Column()
 	joined_at: Date;
@@ -108,7 +106,7 @@ export class Member extends BaseClassWithoutId {
 	}
 
 	static async removeFromGuild(user_id: string, guild_id: string) {
-		const guild = await Guild.findOneOrFail({ select: ["owner_id", "member_count"], where: { id: guild_id } });
+		const guild = await require("./Guild").Guild.findOneOrFail({ select: ["owner_id", "member_count"], where: { id: guild_id } });
 		if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
 		const member = await Member.findOneOrFail({ where: { id: user_id, guild_id }, relations: ["user"] });
 
@@ -226,7 +224,7 @@ export class Member extends BaseClassWithoutId {
 			throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
 		}
 
-		const guild = await Guild.findOneOrFail({
+		const guild = await require("./Guild").Guild.findOneOrFail({
 			where: {
 				id: guild_id
 			},

@@ -1,6 +1,7 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
+import { Team } from "./Team";
 import { User } from "./User";
 
 export enum TeamMemberState {
@@ -21,10 +22,10 @@ export class TeamMember extends BaseClass {
 	team_id: string;
 
 	@JoinColumn({ name: "team_id" })
-	@ManyToOne(() => require("./Team").Team, (team: any) => team.members, {
+	@ManyToOne(() => Team, (team: any) => team.members, {
 		onDelete: "CASCADE"
 	})
-	team: any;
+	team: Relation<Team>;
 
 	@Column({ nullable: true })
 	@RelationId((member: TeamMember) => member.user)
@@ -34,5 +35,5 @@ export class TeamMember extends BaseClass {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	user: User;
+	user: Relation<User>;
 }

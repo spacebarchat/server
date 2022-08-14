@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -7,7 +7,7 @@ export enum RelationshipType {
 	outgoing = 4,
 	incoming = 3,
 	blocked = 2,
-	friends = 1,
+	friends = 1
 }
 
 @Entity("relationships")
@@ -19,9 +19,9 @@ export class Relationship extends BaseClass {
 
 	@JoinColumn({ name: "from_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
-	from: User;
+	from: Relation<User>;
 
 	@Column({})
 	@RelationId((relationship: Relationship) => relationship.to)
@@ -29,9 +29,9 @@ export class Relationship extends BaseClass {
 
 	@JoinColumn({ name: "to_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
-	to: User;
+	to: Relation<User>;
 
 	@Column({ nullable: true })
 	nickname?: string;
@@ -44,7 +44,7 @@ export class Relationship extends BaseClass {
 			id: this.to?.id || this.to_id,
 			type: this.type,
 			nickname: this.nickname,
-			user: this.to?.toPublicUser(),
+			user: this.to?.toPublicUser()
 		};
 	}
 }

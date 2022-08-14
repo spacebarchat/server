@@ -1,7 +1,7 @@
 export interface Region {
 	id: string;
 	name: string;
-	endpoint: string;
+	endpoint?: string;
 	location?: {
 		latitude: number;
 		longitude: number;

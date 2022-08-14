@@ -1,8 +1,9 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { User } from "./User";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
+import { StickerPack } from "./StickerPack";
 
 export enum StickerType {
 	STANDARD = 1,
@@ -35,11 +36,11 @@ export class Sticker extends BaseClass {
 	pack_id?: string;
 
 	@JoinColumn({ name: "pack_id" })
-	@ManyToOne(() => require("./StickerPack").StickerPack, {
+	@ManyToOne(() => StickerPack, {
 		onDelete: "CASCADE",
 		nullable: true
 	})
-	pack: any;
+	pack: Relation<StickerPack>;
 
 	@Column({ nullable: true })
 	guild_id?: string;
@@ -48,7 +49,7 @@ export class Sticker extends BaseClass {
 	@ManyToOne(() => Guild, {
 		onDelete: "CASCADE"
 	})
-	guild?: Guild;
+	guild?: Relation<Guild>;
 
 	@Column({ nullable: true })
 	user_id?: string;
@@ -57,7 +58,7 @@ export class Sticker extends BaseClass {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	user?: User;
+	user?: Relation<User>;
 
 	@Column({ type: "int" })
 	type: StickerType;
