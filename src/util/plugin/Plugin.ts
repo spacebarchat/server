@@ -26,15 +26,6 @@ export class Plugin {
 	pluginPath?: string;
 	pluginManifest?: PluginManifest;
 	/**
-	 *
-	 *
-	 * @memberof Plugin
-	 */
-	async initConfig() {
-		// insert default config into database?
-		console.log("did you forget to implement initConfig?");
-	}
-	/**
 	 *	
 	 *
 	 * @param {PluginLoadedEventArgs} args Info about plugin environment

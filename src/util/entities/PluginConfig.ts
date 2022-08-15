@@ -7,5 +7,5 @@ export class PluginConfigEntity extends BaseClassWithoutId {
 	key: string;
 
 	@Column({ type: "simple-json", nullable: true })
-	value: number | boolean | null | string | undefined;
+	value: number | boolean | null | string | Date | undefined;
 }

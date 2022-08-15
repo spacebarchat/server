@@ -3,4 +3,9 @@ export class TestSettings {
     someStr: string = "asdf";
     someBool: boolean = true;
     someDate: Date = new Date();
+    subSettings: SubSettings = new SubSettings();
+}
+
+export class SubSettings {
+    someStr: string = "jklm";
 }

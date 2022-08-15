@@ -49,25 +49,17 @@ export class PluginLoader {
 	public static getPluginConfig(id: string, defaults?: any): any {
 		let cfg = PluginConfig.get()[id];
 		if(defaults) {
-			if(cfg){
-				console.log('merging config......')
+			if(cfg)
 				cfg = OrmUtils.mergeDeep(defaults, cfg);
-				console.log(defaults,cfg);
-				this.setPluginConfig(id, cfg);
-			}
-			else {
-				console.log(`setting configs....`, defaults)
-				this.setPluginConfig(id, defaults);
+			else
 				cfg = defaults;
-			}
+			this.setPluginConfig(id, cfg);
 		}
+		if(!cfg) console.log(`[PluginConfig/WARN] Getting plugin settings for '${id}' returned null! (Did you forget to add settings?)`);
 		return cfg;
 	}
 	public static async setPluginConfig(id: string, config: Partial<any>): Promise<void> {
-		if(!config) console.log(`[setPluginConfig] ${id} tried to set config=null!`)
-		console.log('setPluginCfg(in)',config as any)
-		let cfg = { [id]: OrmUtils.mergeDeep(PluginLoader.getPluginConfig(id), config) };
-		console.log(`setPluginCfg`, cfg)
-		await PluginConfig.set(cfg);
+		if(!config) console.log(`[PluginConfig/WARN] ${id} tried to set config=null!`);
+		await PluginConfig.set({ [id]: OrmUtils.mergeDeep(PluginLoader.getPluginConfig(id) || {}, config) });
 	}
 }

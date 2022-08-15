@@ -48,17 +48,14 @@ export const PluginConfig = {
 
 function applyConfig(val: any) {
 	async function apply(obj: any, key = ""): Promise<any> {
-		if (typeof obj === "object" && obj !== null)
+		if (typeof obj === "object" && obj !== null && !(obj instanceof Date))
 			return Promise.all(Object.keys(obj).map((k) => apply(obj[k], key ? `${key}_${k}` : k)));
-		console.log(typeof obj)
+
 		let pair = pairs.find((x) => x.key === key);
 		if (!pair) pair = new PluginConfigEntity();
 
 		pair.key = key;
 		pair.value = obj;
-		if(Environment.isDebug) {
-			console.log(`[PluginConfig/DEBUG] Setting object: `, pair)
-		}
 		if(!pair.key || pair.key == null) {
 			console.log(`[PluginConfig] WARN: Empty key`)
 			console.log(pair);
