@@ -49,4 +49,5 @@ export * from "./Application";
 export * from "./NameValidation";
 export * from "./InvisibleCharacters";
 export * from "./Environment";
+export * from "./Logo";
 export * from "./Paths";
