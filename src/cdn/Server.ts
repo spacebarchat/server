@@ -1,10 +1,10 @@
-import { Server, ServerOptions } from "lambert-server";
 import { Config, getOrInitialiseDatabase, registerRoutes } from "@fosscord/util";
+import bodyParser from "body-parser";
+import { Server, ServerOptions } from "lambert-server";
 import path from "path";
+import { PluginConfig } from "util/plugin/PluginConfig";
 import avatarsRoute from "./routes/avatars";
 import iconsRoute from "./routes/role-icons";
-import bodyParser from "body-parser";
-import { PluginConfig } from "util/plugin/PluginConfig";
 
 export interface CDNServerOptions extends ServerOptions {}
 
@@ -26,14 +26,8 @@ export class CDNServer extends Server {
 				"Content-security-policy",
 				"default-src *  data: blob: filesystem: about: ws: wss: 'unsafe-inline' 'unsafe-eval'; script-src * data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src * data: blob: 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src * data: blob: ; style-src * data: blob: 'unsafe-inline'; font-src * data: blob: 'unsafe-inline';"
 			);
-			res.set(
-				"Access-Control-Allow-Headers",
-				req.header("Access-Control-Request-Headers") || "*"
-			);
-			res.set(
-				"Access-Control-Allow-Methods",
-				req.header("Access-Control-Request-Methods") || "*"
-			);
+			res.set("Access-Control-Allow-Headers", req.header("Access-Control-Request-Headers") || "*");
+			res.set("Access-Control-Allow-Methods", req.header("Access-Control-Request-Methods") || "*");
 			next();
 		});
 		this.app.use(bodyParser.json({ inflate: true, limit: "10mb" }));

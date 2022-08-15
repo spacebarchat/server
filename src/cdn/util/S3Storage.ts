@@ -11,11 +11,7 @@ const readableToBuffer = (readable: Readable): Promise<Buffer> =>
 	});
 
 export class S3Storage implements Storage {
-	public constructor(
-		private client: S3,
-		private bucket: string,
-		private basePath?: string
-	) {}
+	public constructor(private client: S3, private bucket: string, private basePath?: string) {}
 
 	/**
 	 * Always return a string, to ensure consistency.
@@ -28,7 +24,7 @@ export class S3Storage implements Storage {
 		await this.client.putObject({
 			Bucket: this.bucket,
 			Key: `${this.bucketBasePath}${path}`,
-			Body: data,
+			Body: data
 		});
 	}
 
@@ -36,7 +32,7 @@ export class S3Storage implements Storage {
 		try {
 			const s3Object = await this.client.getObject({
 				Bucket: this.bucket,
-				Key: `${this.bucketBasePath ?? ""}${path}`,
+				Key: `${this.bucketBasePath ?? ""}${path}`
 			});
 
 			if (!s3Object.Body) return null;
@@ -54,7 +50,7 @@ export class S3Storage implements Storage {
 	async delete(path: string): Promise<void> {
 		await this.client.deleteObject({
 			Bucket: this.bucket,
-			Key: `${this.bucketBasePath}${path}`,
+			Key: `${this.bucketBasePath}${path}`
 		});
 	}
 }

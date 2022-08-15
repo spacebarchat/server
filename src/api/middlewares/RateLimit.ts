@@ -1,6 +1,6 @@
-import { Config, getRights, listenEvent, Rights } from "@fosscord/util";
+import { Config, getRights, listenEvent } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
-import { getIpAdress } from "@fosscord/api";
+import { getIpAdress } from "..";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
 // Docs: https://discord.com/developers/docs/topics/rate-limits
@@ -163,7 +163,7 @@ export async function initRateLimits(app: Router) {
 	app.use("/auth/register", rateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
 }
 
-async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number; }) {
+async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number }) {
 	const id = opts.executor_id + opts.bucket_id;
 	let limit = Cache.get(id);
 	if (!limit) {

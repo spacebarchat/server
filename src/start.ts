@@ -1,20 +1,20 @@
 // process.env.MONGOMS_DEBUG = "true";
-import "reflect-metadata";
-import cluster, { Worker } from "cluster";
-import os from "os";
-import { red, bold, yellow, cyan } from "picocolors";
-import { initStats } from "./stats";
-import { config } from "dotenv";
-config();
 import { execSync } from "child_process";
+import cluster, { Worker } from "cluster";
+import { config } from "dotenv";
+import os from "os";
+import { bold, cyan, red, yellow } from "picocolors";
+import "reflect-metadata";
+import { initStats } from "./stats";
 import { Logo } from "./util";
+config();
 
 // TODO: add socket event transmission
 let cores = 1;
 try {
 	cores = Number(process.env.THREADS) || os.cpus().length;
 } catch {
-	console.log("[API] Failed to get thread count! Using 1...")
+	console.log("[API] Failed to get thread count! Using 1...");
 }
 
 if (cluster.isMaster) {
@@ -26,21 +26,12 @@ if (cluster.isMaster) {
 		}
 	}
 	const commit = getCommitOrFail();
-Logo.printLogo();
-console.log(bold(`
-		fosscord-server | ${yellow(
-			`Pre-release (${
-				commit !== null
-					? commit.slice(0, 7)
-					: "Unknown (Git cannot be found)"
-			})`
-		)}
+	Logo.printLogo();
+	console.log(
+		bold(`
+		fosscord-server | ${yellow(`Pre-release (${commit !== null ? commit.slice(0, 7) : "Unknown (Git cannot be found)"})`)}
 
-Commit Hash: ${
-			commit !== null
-				? `${cyan(commit)} (${yellow(commit.slice(0, 7))})`
-				: "Unknown (Git cannot be found)"
-		}
+Commit Hash: ${commit !== null ? `${cyan(commit)} (${yellow(commit.slice(0, 7))})` : "Unknown (Git cannot be found)"}
 Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 `)
 	);
@@ -77,11 +68,7 @@ Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 		});
 
 		cluster.on("exit", (worker: any, code: any, signal: any) => {
-			console.log(
-				`[Worker] ${red(
-					`died with PID: ${worker.process.pid} , restarting ...`
-				)}`
-			);
+			console.log(`[Worker] ${red(`died with PID: ${worker.process.pid} , restarting ...`)}`);
 			cluster.fork();
 		});
 	}

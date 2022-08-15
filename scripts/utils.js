@@ -4,6 +4,8 @@ const { env } = require("process");
 const { execSync } = require("child_process");
 const { argv, stdout, exit } = require("process");
 
+const projectRoot = path.resolve(path.join(__dirname, ".."));
+
 function copyRecursiveSync(src, dest) {
 	//if (verbose) console.log(`cpsync: ${src} -> ${dest}`);
 	let exists = fs.existsSync(src);
@@ -16,10 +18,7 @@ function copyRecursiveSync(src, dest) {
 	if (isDirectory) {
 		fs.mkdirSync(dest, { recursive: true });
 		fs.readdirSync(src).forEach(function (childItemName) {
-			copyRecursiveSync(
-				path.join(src, childItemName),
-				path.join(dest, childItemName)
-			);
+			copyRecursiveSync(path.join(src, childItemName), path.join(dest, childItemName));
 		});
 	} else {
 		fs.copyFileSync(src, dest);
@@ -72,11 +71,17 @@ function walk(dir) {
 }
 
 function sanitizeVarName(str) {
-	return str.replace('-','_').replace(/[^\w\s]/gi, '');
+	return str.replace("-", "_").replace(/[^\w\s]/gi, "");
 }
 
-module.exports = { 
+module.exports = {
 	//consts
+	projectRoot,
 	//functions
-	copyRecursiveSync, execIn, getLines, getDirs, walk, sanitizeVarName
+	copyRecursiveSync,
+	execIn,
+	getLines,
+	getDirs,
+	walk,
+	sanitizeVarName
 };

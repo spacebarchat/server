@@ -1,21 +1,18 @@
-import { Request, Response, Router } from "express";
+import { route } from "@fosscord/api";
 import {
-	Role,
-	getPermission,
-	Member,
-	GuildRoleCreateEvent,
-	GuildRoleUpdateEvent,
-	GuildRoleDeleteEvent,
-	emitEvent,
 	Config,
 	DiscordApiErrors,
-	handleFile,
+	emitEvent,
+	getPermission,
+	GuildRoleCreateEvent,
+	GuildRoleUpdateEvent,
+	Member,
+	OrmUtils,
+	Role,
 	RoleModifySchema,
 	RolePositionUpdateSchema
 } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
-import { route } from "@fosscord/api";
-import { OrmUtils } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
@@ -38,7 +35,7 @@ router.post("/", route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" })
 
 	if (role_count > maxRoles) throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
 
-	let role: Role = OrmUtils.mergeDeep(new Role(),{
+	let role: Role = OrmUtils.mergeDeep(new Role(), {
 		// values before ...body are default and can be overriden
 		position: 0,
 		hoist: false,

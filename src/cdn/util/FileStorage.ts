@@ -1,7 +1,7 @@
-import { Storage } from "./Storage";
 import fs from "fs";
-import { join, relative, dirname } from "path";
+import { dirname, join } from "path";
 import { Readable } from "stream";
+import { Storage } from "./Storage";
 //import ExifTransformer = require("exif-be-gone");
 import ExifTransformer from "exif-be-gone";
 
@@ -12,8 +12,7 @@ function getPath(path: string) {
 	const root = process.env.STORAGE_LOCATION || "../";
 	let filename = join(root, path);
 
-	if (path.indexOf("\0") !== -1 || !filename.startsWith(root))
-		throw new Error("invalid path");
+	if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
 	return filename;
 }
 
@@ -36,7 +35,7 @@ export class FileStorage implements Storage {
 	async set(path: string, value: any) {
 		path = getPath(path);
 		//fse.ensureDirSync(dirname(path));
-		fs.mkdirSync(dirname(path), {recursive: true});
+		fs.mkdirSync(dirname(path), { recursive: true });
 
 		value = Readable.from(value);
 		const cleaned_file = fs.createWriteStream(path);

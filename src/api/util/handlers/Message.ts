@@ -1,34 +1,33 @@
 import {
+	Application,
+	Attachment,
 	Channel,
+	CHANNEL_MENTION,
+	Config,
 	Embed,
 	emitEvent,
-	Guild,
-	Message,
-	MessageCreateEvent,
-	MessageUpdateEvent,
+	EVERYONE_MENTION,
 	getPermission,
 	getRights,
-	CHANNEL_MENTION,
-	Snowflake,
-	USER_MENTION,
-	ROLE_MENTION,
-	Role,
-	EVERYONE_MENTION,
+	Guild,
 	HERE_MENTION,
-	MessageType,
-	User,
-	Application,
-	Webhook,
-	Attachment,
-	Config,
+	HTTPError,
+	Message,
+	MessageCreateEvent,
 	MessageCreateSchema,
+	MessageType,
+	MessageUpdateEvent,
+	OrmUtils,
 	PluginEventHandler,
 	PreMessageEventArgs,
+	Role,
+	ROLE_MENTION,
+	User,
+	USER_MENTION,
+	Webhook
 } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
-import fetch from "node-fetch";
 import cheerio from "cheerio";
-import { OrmUtils } from "@fosscord/util";
+import fetch from "node-fetch";
 
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
@@ -63,21 +62,21 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	});
 
 	if (message.content && message.content.length > Config.get().limits.message.maxCharacters) {
-		throw new HTTPError("Content length over max character limit")
+		throw new HTTPError("Content length over max character limit");
 	}
 
 	if (opts.author_id) {
 		message.author = await User.getPublicUser(opts.author_id);
 		const rights = await getRights(opts.author_id);
 		rights.hasThrow("SEND_MESSAGES");
-	}	
+	}
 	if (opts.application_id) {
 		message.application = await Application.findOneOrFail({ where: { id: opts.application_id } });
 	}
 	if (opts.webhook_id) {
 		message.webhook = await Webhook.findOneOrFail({ where: { id: opts.webhook_id } });
 	}
-	
+
 	const permission = await getPermission(opts.author_id, channel.guild_id, opts.channel_id);
 	permission.hasThrow("SEND_MESSAGES");
 	if (permission.cache.member) {
@@ -91,8 +90,10 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		if (message.guild_id !== null) {
 			const guild = await Guild.findOneOrFail({ where: { id: channel.guild_id } });
 			if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
-				if (opts.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
-				if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
+				if (opts.message_reference.guild_id !== channel.guild_id)
+					throw new HTTPError("You can only reference messages from this guild");
+				if (opts.message_reference.channel_id !== opts.channel_id)
+					throw new HTTPError("You can only reference messages from this channel");
 			}
 		}
 		/** Q: should be checked if the referenced message exists? ANSWER: NO
@@ -102,7 +103,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	}
 
 	// TODO: stickers/activity
-	if (!allow_empty && (!opts.content && !opts.embeds?.length && !opts.attachments?.length && !opts.sticker_ids?.length)) {
+	if (!allow_empty && !opts.content && !opts.embeds?.length && !opts.attachments?.length && !opts.sticker_ids?.length) {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 
@@ -112,7 +113,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	let mention_user_ids = [] as string[];
 	let mention_everyone = false;
 
-	if (content) { // TODO: explicit-only mentions
+	if (content) {
+		// TODO: explicit-only mentions
 		message.content = content.trim();
 		for (const [_, mention] of content.matchAll(CHANNEL_MENTION)) {
 			if (!mention_channel_ids.includes(mention)) mention_channel_ids.push(mention);
@@ -160,7 +162,7 @@ export async function postHandleMessage(message: Message) {
 		try {
 			const request = await fetch(link, {
 				...DEFAULT_FETCH_OPTIONS,
-				size: Config.get().limits.message.maxEmbedDownloadSize,
+				size: Config.get().limits.message.maxEmbedDownloadSize
 			});
 
 			const text = await request.text();
@@ -205,9 +207,14 @@ export async function postHandleMessage(message: Message) {
 export async function sendMessage(opts: MessageOptions) {
 	const message = await handleMessage({ ...opts, timestamp: new Date() });
 
-	if((await PluginEventHandler.preMessageEvent({
-		message
-	} as PreMessageEventArgs)).filter(x=>x.cancel).length > 0) return;
+	if (
+		(
+			await PluginEventHandler.preMessageEvent({
+				message
+			} as PreMessageEventArgs)
+		).filter((x) => x.cancel).length > 0
+	)
+		return;
 
 	//TODO: check this, removed toJSON call
 	await Promise.all([

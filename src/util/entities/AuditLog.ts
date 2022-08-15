@@ -5,24 +5,24 @@ import { User } from "./User";
 
 export enum AuditLogEvents {
 	// guild level
-	GUILD_UPDATE = 1, 
+	GUILD_UPDATE = 1,
 	GUILD_IMPORT = 2,
 	GUILD_EXPORTED = 3,
 	GUILD_ARCHIVE = 4,
 	GUILD_UNARCHIVE = 5,
 	// join-leave
-	USER_JOIN = 6, 
+	USER_JOIN = 6,
 	USER_LEAVE = 7,
 	// channels
-	CHANNEL_CREATE = 10, 
+	CHANNEL_CREATE = 10,
 	CHANNEL_UPDATE = 11,
 	CHANNEL_DELETE = 12,
 	// permission overrides
-	CHANNEL_OVERWRITE_CREATE = 13, 
+	CHANNEL_OVERWRITE_CREATE = 13,
 	CHANNEL_OVERWRITE_UPDATE = 14,
 	CHANNEL_OVERWRITE_DELETE = 15,
 	// kick and ban
-	MEMBER_KICK = 20, 
+	MEMBER_KICK = 20,
 	MEMBER_PRUNE = 21,
 	MEMBER_BAN_ADD = 22,
 	MEMBER_BAN_REMOVE = 23,
@@ -79,18 +79,18 @@ export enum AuditLogEvents {
 	// application commands
 	APPLICATION_COMMAND_PERMISSION_UPDATE = 121,
 	// automod
-	POLICY_CREATE = 140, 
+	POLICY_CREATE = 140,
 	POLICY_UPDATE = 141,
 	POLICY_DELETE = 142,
-	MESSAGE_BLOCKED_BY_POLICIES = 143,  // in fosscord, blocked messages are stealth-dropped
+	MESSAGE_BLOCKED_BY_POLICIES = 143, // in fosscord, blocked messages are stealth-dropped
 	// instance policies affecting the guild
 	GUILD_AFFECTED_BY_POLICIES = 216,
 	// message moves
 	IN_GUILD_MESSAGE_MOVE = 223,
 	CROSS_GUILD_MESSAGE_MOVE = 224,
 	// message routing
-	ROUTE_CREATE = 225, 
-	ROUTE_UPDATE = 226,
+	ROUTE_CREATE = 225,
+	ROUTE_UPDATE = 226
 }
 
 @Entity("audit_logs")

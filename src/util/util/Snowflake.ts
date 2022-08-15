@@ -83,14 +83,15 @@ export class Snowflake {
 		return dec;
 	}
 
-	static generateWorkerProcess() { // worker process - returns a number
+	static generateWorkerProcess() {
+		// worker process - returns a number
 		let time = BigInt(Date.now() - Snowflake.EPOCH) << BigInt(22);
 		let worker = Snowflake.workerId << 17n;
 		let process = Snowflake.processId << 12n;
 		let increment = Snowflake.INCREMENT++;
 		return BigInt(time | worker | process | increment);
 	}
-	
+
 	static generate() {
 		return Snowflake.generateWorkerProcess().toString();
 	}
@@ -117,13 +118,13 @@ export class Snowflake {
 			workerID: parseInt(BINARY.substring(42, 47), 2),
 			processID: parseInt(BINARY.substring(47, 52), 2),
 			increment: parseInt(BINARY.substring(52, 64), 2),
-			binary: BINARY,
+			binary: BINARY
 		};
 		Object.defineProperty(res, "date", {
 			get: function get() {
 				return new Date(this.timestamp);
 			},
-			enumerable: true,
+			enumerable: true
 		});
 		return res;
 	}

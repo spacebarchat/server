@@ -1,4 +1,4 @@
-import { Activity, Status } from "@fosscord/util";
+import { Activity, Status } from "..";
 
 export const ActivitySchema = {
 	afk: Boolean,
@@ -11,7 +11,7 @@ export const ActivitySchema = {
 			$created_at: Date,
 			$timestamps: {
 				$start: Number,
-				$end: Number,
+				$end: Number
 			},
 			$application_id: String,
 			$details: String,
@@ -19,28 +19,28 @@ export const ActivitySchema = {
 			$emoji: {
 				$name: String,
 				$id: String,
-				$animated: Boolean,
+				$animated: Boolean
 			},
 			$party: {
 				$id: String,
-				$size: [Number, Number],
+				$size: [Number, Number]
 			},
 			$assets: {
 				$large_image: String,
 				$large_text: String,
 				$small_image: String,
-				$small_text: String,
+				$small_text: String
 			},
 			$secrets: {
 				$join: String,
 				$spectate: String,
-				$match: String,
+				$match: String
 			},
 			$instance: Boolean,
-			$flags: String,
-		},
+			$flags: String
+		}
 	],
-	$since: Number, // unix time (in milliseconds) of when the client went idle, or null if the client is not idle
+	$since: Number // unix time (in milliseconds) of when the client went idle, or null if the client is not idle
 };
 
 export interface ActivitySchema {

@@ -3,14 +3,14 @@ import { Presence } from "util/interfaces";
 import { EventResult } from ".";
 
 export interface PreStatusChangeEventArgs {
-    user: User,
-	presence: Presence
+	user: User;
+	presence: Presence;
 }
 export interface PreStatusChangeEventResult extends EventResult {
-    presence: Partial<Presence>
+	presence: Partial<Presence>;
 }
 
 export interface OnStatusChangeEventArgs {
-    user: User,
-	presence: Presence
+	user: User;
+	presence: Presence;
 }

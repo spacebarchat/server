@@ -1,4 +1,4 @@
-import { Snowflake } from "@fosscord/util";
+import { Snowflake } from ".";
 
 export function random(length = 6) {
 	// Declare all characters
@@ -22,11 +22,10 @@ export function snowflakeBasedInvite() {
 	// snowflakes hold ~10.75 characters worth of entropy;
 	// safe to generate a 8-char invite out of them
 	let str = "";
-	for (let i=0; i < 10; i++) {
-		
+	for (let i = 0; i < 10; i++) {
 		str.concat(chars.charAt(Number(snowflake % base)));
 		snowflake = snowflake / base;
 	}
-	
-	return str.substr(3,8).split("").reverse().join("");
+
+	return str.substr(3, 8).split("").reverse().join("");
 }

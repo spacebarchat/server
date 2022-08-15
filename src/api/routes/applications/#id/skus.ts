@@ -1,6 +1,5 @@
-import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
-import { Application, OrmUtils, Team, trimSpecial, User } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 

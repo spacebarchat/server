@@ -1,8 +1,6 @@
 import {
 	DiscordApiErrors,
 	EVENT,
-	Event,
-	EventData,
 	FieldErrors,
 	FosscordApiErrors,
 	getPermission,
@@ -12,14 +10,14 @@ import {
 	RightResolvable,
 	Rights
 } from "@fosscord/util";
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
+import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
 import fs from "fs";
 import path from "path";
-import Ajv from "ajv";
-import { AnyValidateFunction } from "ajv/dist/core";
-import addFormats from "ajv-formats";
 
-const SchemaPath = path.join(__dirname, "..", "..", "..","..", "assets", "schemas.json");
+const SchemaPath = path.join(__dirname, "..", "..", "..", "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 
 export const ajv = new Ajv({
@@ -117,10 +115,10 @@ export function route(opts: RouteOptions) {
 			const valid = validate(normalizeBody(req.body));
 			if (!valid) {
 				const fields: Record<string, { code?: string; message: string }> = {};
-				if(process.env.LOG_INVALID_BODY) {
-					console.log(`Got invalid request: ${req.method} ${req.originalUrl}`)
-					console.log(req.body)
-					validate.errors?.forEach(x => console.log(x.params))
+				if (process.env.LOG_INVALID_BODY) {
+					console.log(`Got invalid request: ${req.method} ${req.originalUrl}`);
+					console.log(req.body);
+					validate.errors?.forEach((x) => console.log(x.params));
 				}
 				validate.errors?.forEach((x) => (fields[x.instancePath.slice(1)] = { code: x.keyword, message: x.message || "" }));
 				throw FieldErrors(fields);

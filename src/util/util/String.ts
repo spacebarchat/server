@@ -1,7 +1,6 @@
-import { SPECIAL_CHAR } from "./Regex";
 import { Request } from "express";
-import { ntob } from ".";
-import { FieldErrors } from "@fosscord/util";
+import { FieldErrors, ntob } from ".";
+import { SPECIAL_CHAR } from "./Regex";
 
 export function trimSpecial(str?: string): string {
 	// @ts-ignore

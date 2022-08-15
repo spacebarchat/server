@@ -1,4 +1,4 @@
-import { Config } from "@fosscord/util";
+import { Config } from ".";
 
 const reNUMBER = /[0-9]/g;
 const reUPPERCASELETTER = /[A-Z]/g;
@@ -44,16 +44,16 @@ export function checkPassword(password: string): number {
 	if (password.length == password.count(reNUMBER) || password.length === password.count(reUPPERCASELETTER)) {
 		strength = 0;
 	}
-	
+
 	let entropyMap: { [key: string]: number } = {};
 	for (let i = 0; i < password.length; i++) {
 		if (entropyMap[password[i]]) entropyMap[password[i]]++;
 		else entropyMap[password[i]] = 1;
 	}
-	
+
 	let entropies = Object.values(entropyMap);
-	
-	entropies.map(x => (x / entropyMap.length));
-	strength += entropies.reduceRight((a: number, x: number) => a - (x * Math.log2(x))) / Math.log2(password.length);	
+
+	entropies.map((x) => x / entropyMap.length);
+	strength += entropies.reduceRight((a: number, x: number) => a - x * Math.log2(x)) / Math.log2(password.length);
 	return strength;
 }

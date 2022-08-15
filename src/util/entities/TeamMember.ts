@@ -4,7 +4,7 @@ import { User } from "./User";
 
 export enum TeamMemberState {
 	INVITED = 1,
-	ACCEPTED = 2,
+	ACCEPTED = 2
 }
 
 @Entity("team_members")
@@ -21,7 +21,7 @@ export class TeamMember extends BaseClass {
 
 	@JoinColumn({ name: "team_id" })
 	@ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.members, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	team: import("./Team").Team;
 
@@ -31,7 +31,7 @@ export class TeamMember extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	user: User;
 }

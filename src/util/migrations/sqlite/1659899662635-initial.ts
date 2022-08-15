@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class initial1659899662635 implements MigrationInterface {
-    name = 'initial1659899662635'
+	name = "initial1659899662635";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             CREATE TABLE "config" ("key" varchar PRIMARY KEY NOT NULL, "value" text)
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "relationships" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "from_id" varchar NOT NULL,
@@ -16,10 +16,10 @@ export class initial1659899662635 implements MigrationInterface {
                 "type" integer NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_a0b2ff0a598df0b0d055934a17" ON "relationships" ("from_id", "to_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "connected_accounts" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -33,7 +33,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "visibility" integer NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "users" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "username" varchar NOT NULL,
@@ -69,7 +69,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "notes" text NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "backup_codes" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "code" varchar NOT NULL,
@@ -78,7 +78,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "user_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "bans" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -88,7 +88,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "reason" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "recipients" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "channel_id" varchar NOT NULL,
@@ -96,7 +96,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "closed" boolean NOT NULL DEFAULT (0)
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "roles" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "guild_id" varchar,
@@ -112,7 +112,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "tags" text
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "members" (
                 "index" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                 "id" varchar NOT NULL,
@@ -128,10 +128,10 @@ export class initial1659899662635 implements MigrationInterface {
                 "joined_by" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_bb2bf9386ac443afbbbf9f12d3" ON "members" ("id", "guild_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "webhooks" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "type" integer NOT NULL,
@@ -145,7 +145,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "source_guild_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "stickers" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -159,7 +159,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "format_type" integer NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "attachments" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "filename" varchar NOT NULL,
@@ -172,7 +172,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "message_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "messages" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "channel_id" varchar,
@@ -199,16 +199,16 @@ export class initial1659899662635 implements MigrationInterface {
                 "message_reference_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_86b9109b155eb70c0a2ca3b4b6" ON "messages" ("channel_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_05535bc695e9f7ee104616459d" ON "messages" ("author_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_3ed7a60fb7dbe04e1ba9332a8b" ON "messages" ("channel_id", "id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "read_states" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "channel_id" varchar NOT NULL,
@@ -220,10 +220,10 @@ export class initial1659899662635 implements MigrationInterface {
                 "mention_count" integer
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_0abf8b443321bd3cf7f81ee17a" ON "read_states" ("channel_id", "user_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "invites" (
                 "code" varchar PRIMARY KEY NOT NULL,
                 "temporary" boolean NOT NULL,
@@ -240,7 +240,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "vanity_url" boolean
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "voice_states" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "guild_id" varchar,
@@ -258,7 +258,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "request_to_speak_timestamp" datetime
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "channels" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "created_at" datetime NOT NULL,
@@ -282,7 +282,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "retention_policy_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "emojis" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "animated" boolean NOT NULL,
@@ -296,7 +296,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "groups" text
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "templates" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "code" varchar NOT NULL,
@@ -311,7 +311,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "UQ_be38737bf339baf63b1daeffb55" UNIQUE ("code")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "guilds" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "afk_channel_id" varchar,
@@ -353,7 +353,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "parent" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "team_members" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "membership_state" integer NOT NULL,
@@ -362,7 +362,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "user_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "teams" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "icon" varchar,
@@ -370,7 +370,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "owner_user_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -392,7 +392,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "guild_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "audit_logs" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -403,7 +403,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "target_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "categories" (
                 "id" integer PRIMARY KEY NOT NULL,
                 "name" varchar,
@@ -411,7 +411,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "is_primary" boolean
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "rate_limits" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "executor_id" varchar NOT NULL,
@@ -420,7 +420,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "expires_at" datetime NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "sessions" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -430,7 +430,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "status" varchar NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "sticker_packs" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -440,7 +440,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "coverStickerId" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "client_release" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -452,7 +452,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "notes" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "notes" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "content" varchar NOT NULL,
@@ -461,75 +461,75 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "UQ_74e6689b9568cc965b8bfc9150b" UNIQUE ("owner_id", "target_id")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "member_roles" (
                 "index" integer NOT NULL,
                 "role_id" varchar NOT NULL,
                 PRIMARY KEY ("index", "role_id")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_5d7ddc8a5f9c167f548625e772" ON "member_roles" ("index")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_e9080e7a7997a0170026d5139c" ON "member_roles" ("role_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "message_user_mentions" (
                 "messagesId" varchar NOT NULL,
                 "usersId" varchar NOT NULL,
                 PRIMARY KEY ("messagesId", "usersId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_a343387fc560ef378760681c23" ON "message_user_mentions" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_b831eb18ceebd28976239b1e2f" ON "message_user_mentions" ("usersId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "message_role_mentions" (
                 "messagesId" varchar NOT NULL,
                 "rolesId" varchar NOT NULL,
                 PRIMARY KEY ("messagesId", "rolesId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_a8242cf535337a490b0feaea0b" ON "message_role_mentions" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_29d63eb1a458200851bc37d074" ON "message_role_mentions" ("rolesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "message_channel_mentions" (
                 "messagesId" varchar NOT NULL,
                 "channelsId" varchar NOT NULL,
                 PRIMARY KEY ("messagesId", "channelsId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_2a27102ecd1d81b4582a436092" ON "message_channel_mentions" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_bdb8c09e1464cabf62105bf4b9" ON "message_channel_mentions" ("channelsId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "message_stickers" (
                 "messagesId" varchar NOT NULL,
                 "stickersId" varchar NOT NULL,
                 PRIMARY KEY ("messagesId", "stickersId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_40bb6f23e7cc133292e92829d2" ON "message_stickers" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_e22a70819d07659c7a71c112a1" ON "message_stickers" ("stickersId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_a0b2ff0a598df0b0d055934a17"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_relationships" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "from_id" varchar NOT NULL,
@@ -540,7 +540,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_9c7f6b98a9843b76dce1b0c878b" FOREIGN KEY ("to_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_relationships"("id", "from_id", "to_id", "nickname", "type")
             SELECT "id",
                 "from_id",
@@ -549,17 +549,17 @@ export class initial1659899662635 implements MigrationInterface {
                 "type"
             FROM "relationships"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "relationships"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_relationships"
                 RENAME TO "relationships"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_a0b2ff0a598df0b0d055934a17" ON "relationships" ("from_id", "to_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_connected_accounts" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -574,7 +574,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_f47244225a6a1eac04a3463dd90" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_connected_accounts"(
                     "id",
                     "user_id",
@@ -599,14 +599,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "visibility"
             FROM "connected_accounts"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "connected_accounts"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_connected_accounts"
                 RENAME TO "connected_accounts"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_backup_codes" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "code" varchar NOT NULL,
@@ -616,7 +616,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_70066ea80d2f4b871beda32633b" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_backup_codes"("id", "code", "consumed", "expired", "user_id")
             SELECT "id",
                 "code",
@@ -625,14 +625,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "user_id"
             FROM "backup_codes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "backup_codes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_backup_codes"
                 RENAME TO "backup_codes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_bans" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -645,7 +645,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_07ad88c86d1f290d46748410d58" FOREIGN KEY ("executor_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_bans"(
                     "id",
                     "user_id",
@@ -662,14 +662,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "reason"
             FROM "bans"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "bans"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_bans"
                 RENAME TO "bans"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_recipients" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "channel_id" varchar NOT NULL,
@@ -679,7 +679,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_6157e8b6ba4e6e3089616481fe2" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_recipients"("id", "channel_id", "user_id", "closed")
             SELECT "id",
                 "channel_id",
@@ -687,14 +687,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "closed"
             FROM "recipients"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "recipients"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_recipients"
                 RENAME TO "recipients"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_roles" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "guild_id" varchar,
@@ -711,7 +711,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_c32c1ab1c4dc7dcb0278c4b1b8b" FOREIGN KEY ("guild_id") REFERENCES "guilds" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_roles"(
                     "id",
                     "guild_id",
@@ -740,17 +740,17 @@ export class initial1659899662635 implements MigrationInterface {
                 "tags"
             FROM "roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_roles"
                 RENAME TO "roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_bb2bf9386ac443afbbbf9f12d3"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_members" (
                 "index" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                 "id" varchar NOT NULL,
@@ -768,7 +768,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_16aceddd5b89825b8ed6029ad1c" FOREIGN KEY ("guild_id") REFERENCES "guilds" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_members"(
                     "index",
                     "id",
@@ -797,17 +797,17 @@ export class initial1659899662635 implements MigrationInterface {
                 "joined_by"
             FROM "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_members"
                 RENAME TO "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_bb2bf9386ac443afbbbf9f12d3" ON "members" ("id", "guild_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_webhooks" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "type" integer NOT NULL,
@@ -826,7 +826,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_3a285f4f49c40e0706d3018bc9f" FOREIGN KEY ("source_guild_id") REFERENCES "guilds" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_webhooks"(
                     "id",
                     "type",
@@ -851,14 +851,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "source_guild_id"
             FROM "webhooks"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "webhooks"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_webhooks"
                 RENAME TO "webhooks"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_stickers" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -875,7 +875,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_8f4ee73f2bb2325ff980502e158" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_stickers"(
                     "id",
                     "name",
@@ -900,14 +900,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "format_type"
             FROM "stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_stickers"
                 RENAME TO "stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_attachments" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "filename" varchar NOT NULL,
@@ -921,7 +921,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_623e10eec51ada466c5038979e3" FOREIGN KEY ("message_id") REFERENCES "messages" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_attachments"(
                     "id",
                     "filename",
@@ -944,23 +944,23 @@ export class initial1659899662635 implements MigrationInterface {
                 "message_id"
             FROM "attachments"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "attachments"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_attachments"
                 RENAME TO "attachments"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_86b9109b155eb70c0a2ca3b4b6"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_05535bc695e9f7ee104616459d"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_3ed7a60fb7dbe04e1ba9332a8b"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_messages" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "channel_id" varchar,
@@ -994,7 +994,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_61a92bb65b302a76d9c1fcd3174" FOREIGN KEY ("message_reference_id") REFERENCES "messages" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_messages"(
                     "id",
                     "channel_id",
@@ -1045,26 +1045,26 @@ export class initial1659899662635 implements MigrationInterface {
                 "message_reference_id"
             FROM "messages"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "messages"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_messages"
                 RENAME TO "messages"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_86b9109b155eb70c0a2ca3b4b6" ON "messages" ("channel_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_05535bc695e9f7ee104616459d" ON "messages" ("author_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_3ed7a60fb7dbe04e1ba9332a8b" ON "messages" ("channel_id", "id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_0abf8b443321bd3cf7f81ee17a"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_read_states" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "channel_id" varchar NOT NULL,
@@ -1078,7 +1078,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_195f92e4dd1254a4e348c043763" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_read_states"(
                     "id",
                     "channel_id",
@@ -1099,17 +1099,17 @@ export class initial1659899662635 implements MigrationInterface {
                 "mention_count"
             FROM "read_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "read_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_read_states"
                 RENAME TO "read_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_0abf8b443321bd3cf7f81ee17a" ON "read_states" ("channel_id", "user_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_invites" (
                 "code" varchar PRIMARY KEY NOT NULL,
                 "temporary" boolean NOT NULL,
@@ -1130,7 +1130,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_11a0d394f8fc649c19ce5f16b59" FOREIGN KEY ("target_user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_invites"(
                     "code",
                     "temporary",
@@ -1161,14 +1161,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "vanity_url"
             FROM "invites"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "invites"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_invites"
                 RENAME TO "invites"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_voice_states" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "guild_id" varchar,
@@ -1189,7 +1189,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_5fe1d5f931a67e85039c640001b" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_voice_states"(
                     "id",
                     "guild_id",
@@ -1222,14 +1222,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "request_to_speak_timestamp"
             FROM "voice_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "voice_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_voice_states"
                 RENAME TO "voice_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_channels" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "created_at" datetime NOT NULL,
@@ -1256,7 +1256,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_3873ed438575cce703ecff4fc7b" FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_channels"(
                     "id",
                     "created_at",
@@ -1301,14 +1301,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "retention_policy_id"
             FROM "channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_channels"
                 RENAME TO "channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_emojis" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "animated" boolean NOT NULL,
@@ -1324,7 +1324,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_fa7ddd5f9a214e28ce596548421" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_emojis"(
                     "id",
                     "animated",
@@ -1349,14 +1349,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "groups"
             FROM "emojis"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "emojis"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_emojis"
                 RENAME TO "emojis"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_templates" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "code" varchar NOT NULL,
@@ -1373,7 +1373,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_445d00eaaea0e60a017a5ed0c11" FOREIGN KEY ("source_guild_id") REFERENCES "guilds" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_templates"(
                     "id",
                     "code",
@@ -1398,14 +1398,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "serialized_source_guild"
             FROM "templates"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "templates"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_templates"
                 RENAME TO "templates"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_guilds" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "afk_channel_id" varchar,
@@ -1454,7 +1454,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_9d1d665379eefde7876a17afa99" FOREIGN KEY ("widget_channel_id") REFERENCES "channels" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_guilds"(
                     "id",
                     "afk_channel_id",
@@ -1535,14 +1535,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "parent"
             FROM "guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_guilds"
                 RENAME TO "guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_team_members" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "membership_state" integer NOT NULL,
@@ -1553,7 +1553,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_c2bf4967c8c2a6b845dadfbf3d4" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_team_members"(
                     "id",
                     "membership_state",
@@ -1568,14 +1568,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "user_id"
             FROM "team_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "team_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_team_members"
                 RENAME TO "team_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_teams" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "icon" varchar,
@@ -1584,7 +1584,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_13f00abf7cb6096c43ecaf8c108" FOREIGN KEY ("owner_user_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_teams"("id", "icon", "name", "owner_user_id")
             SELECT "id",
                 "icon",
@@ -1592,14 +1592,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "owner_user_id"
             FROM "teams"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "teams"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_teams"
                 RENAME TO "teams"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -1624,7 +1624,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_e5bf78cdbbe9ba91062d74c5aba" FOREIGN KEY ("guild_id") REFERENCES "guilds" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_applications"(
                     "id",
                     "name",
@@ -1665,14 +1665,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "guild_id"
             FROM "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_applications"
                 RENAME TO "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_audit_logs" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -1685,7 +1685,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_bd2726fd31b35443f2245b93ba0" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_audit_logs"(
                     "id",
                     "user_id",
@@ -1704,14 +1704,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "target_id"
             FROM "audit_logs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "audit_logs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_audit_logs"
                 RENAME TO "audit_logs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_sessions" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -1722,7 +1722,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_085d540d9f418cfbdc7bd55bb19" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_sessions"(
                     "id",
                     "user_id",
@@ -1739,14 +1739,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "status"
             FROM "sessions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "sessions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_sessions"
                 RENAME TO "sessions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_sticker_packs" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -1757,7 +1757,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_448fafba4355ee1c837bbc865f1" FOREIGN KEY ("coverStickerId") REFERENCES "stickers" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_sticker_packs"(
                     "id",
                     "name",
@@ -1774,14 +1774,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "coverStickerId"
             FROM "sticker_packs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "sticker_packs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_sticker_packs"
                 RENAME TO "sticker_packs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_notes" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "content" varchar NOT NULL,
@@ -1792,7 +1792,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "FK_23e08e5b4481711d573e1abecdc" FOREIGN KEY ("target_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_notes"("id", "content", "owner_id", "target_id")
             SELECT "id",
                 "content",
@@ -1800,20 +1800,20 @@ export class initial1659899662635 implements MigrationInterface {
                 "target_id"
             FROM "notes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "notes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_notes"
                 RENAME TO "notes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_5d7ddc8a5f9c167f548625e772"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_e9080e7a7997a0170026d5139c"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_member_roles" (
                 "index" integer NOT NULL,
                 "role_id" varchar NOT NULL,
@@ -1822,32 +1822,32 @@ export class initial1659899662635 implements MigrationInterface {
                 PRIMARY KEY ("index", "role_id")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_member_roles"("index", "role_id")
             SELECT "index",
                 "role_id"
             FROM "member_roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "member_roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_member_roles"
                 RENAME TO "member_roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_5d7ddc8a5f9c167f548625e772" ON "member_roles" ("index")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_e9080e7a7997a0170026d5139c" ON "member_roles" ("role_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_a343387fc560ef378760681c23"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_b831eb18ceebd28976239b1e2f"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_message_user_mentions" (
                 "messagesId" varchar NOT NULL,
                 "usersId" varchar NOT NULL,
@@ -1856,32 +1856,32 @@ export class initial1659899662635 implements MigrationInterface {
                 PRIMARY KEY ("messagesId", "usersId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_message_user_mentions"("messagesId", "usersId")
             SELECT "messagesId",
                 "usersId"
             FROM "message_user_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "message_user_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_message_user_mentions"
                 RENAME TO "message_user_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_a343387fc560ef378760681c23" ON "message_user_mentions" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_b831eb18ceebd28976239b1e2f" ON "message_user_mentions" ("usersId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_a8242cf535337a490b0feaea0b"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_29d63eb1a458200851bc37d074"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_message_role_mentions" (
                 "messagesId" varchar NOT NULL,
                 "rolesId" varchar NOT NULL,
@@ -1890,32 +1890,32 @@ export class initial1659899662635 implements MigrationInterface {
                 PRIMARY KEY ("messagesId", "rolesId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_message_role_mentions"("messagesId", "rolesId")
             SELECT "messagesId",
                 "rolesId"
             FROM "message_role_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "message_role_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_message_role_mentions"
                 RENAME TO "message_role_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_a8242cf535337a490b0feaea0b" ON "message_role_mentions" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_29d63eb1a458200851bc37d074" ON "message_role_mentions" ("rolesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_2a27102ecd1d81b4582a436092"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_bdb8c09e1464cabf62105bf4b9"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_message_channel_mentions" (
                 "messagesId" varchar NOT NULL,
                 "channelsId" varchar NOT NULL,
@@ -1924,32 +1924,32 @@ export class initial1659899662635 implements MigrationInterface {
                 PRIMARY KEY ("messagesId", "channelsId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_message_channel_mentions"("messagesId", "channelsId")
             SELECT "messagesId",
                 "channelsId"
             FROM "message_channel_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "message_channel_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_message_channel_mentions"
                 RENAME TO "message_channel_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_2a27102ecd1d81b4582a436092" ON "message_channel_mentions" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_bdb8c09e1464cabf62105bf4b9" ON "message_channel_mentions" ("channelsId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_40bb6f23e7cc133292e92829d2"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_e22a70819d07659c7a71c112a1"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_message_stickers" (
                 "messagesId" varchar NOT NULL,
                 "stickersId" varchar NOT NULL,
@@ -1958,26 +1958,26 @@ export class initial1659899662635 implements MigrationInterface {
                 PRIMARY KEY ("messagesId", "stickersId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_message_stickers"("messagesId", "stickersId")
             SELECT "messagesId",
                 "stickersId"
             FROM "message_stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "message_stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_message_stickers"
                 RENAME TO "message_stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_40bb6f23e7cc133292e92829d2" ON "message_stickers" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_e22a70819d07659c7a71c112a1" ON "message_stickers" ("stickersId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "query-result-cache" (
                 "id" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                 "identifier" varchar,
@@ -1987,177 +1987,177 @@ export class initial1659899662635 implements MigrationInterface {
                 "result" text NOT NULL
             )
         `);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             DROP TABLE "query-result-cache"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_e22a70819d07659c7a71c112a1"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_40bb6f23e7cc133292e92829d2"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "message_stickers"
                 RENAME TO "temporary_message_stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "message_stickers" (
                 "messagesId" varchar NOT NULL,
                 "stickersId" varchar NOT NULL,
                 PRIMARY KEY ("messagesId", "stickersId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "message_stickers"("messagesId", "stickersId")
             SELECT "messagesId",
                 "stickersId"
             FROM "temporary_message_stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_message_stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_e22a70819d07659c7a71c112a1" ON "message_stickers" ("stickersId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_40bb6f23e7cc133292e92829d2" ON "message_stickers" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_bdb8c09e1464cabf62105bf4b9"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_2a27102ecd1d81b4582a436092"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "message_channel_mentions"
                 RENAME TO "temporary_message_channel_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "message_channel_mentions" (
                 "messagesId" varchar NOT NULL,
                 "channelsId" varchar NOT NULL,
                 PRIMARY KEY ("messagesId", "channelsId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "message_channel_mentions"("messagesId", "channelsId")
             SELECT "messagesId",
                 "channelsId"
             FROM "temporary_message_channel_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_message_channel_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_bdb8c09e1464cabf62105bf4b9" ON "message_channel_mentions" ("channelsId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_2a27102ecd1d81b4582a436092" ON "message_channel_mentions" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_29d63eb1a458200851bc37d074"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_a8242cf535337a490b0feaea0b"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "message_role_mentions"
                 RENAME TO "temporary_message_role_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "message_role_mentions" (
                 "messagesId" varchar NOT NULL,
                 "rolesId" varchar NOT NULL,
                 PRIMARY KEY ("messagesId", "rolesId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "message_role_mentions"("messagesId", "rolesId")
             SELECT "messagesId",
                 "rolesId"
             FROM "temporary_message_role_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_message_role_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_29d63eb1a458200851bc37d074" ON "message_role_mentions" ("rolesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_a8242cf535337a490b0feaea0b" ON "message_role_mentions" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_b831eb18ceebd28976239b1e2f"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_a343387fc560ef378760681c23"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "message_user_mentions"
                 RENAME TO "temporary_message_user_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "message_user_mentions" (
                 "messagesId" varchar NOT NULL,
                 "usersId" varchar NOT NULL,
                 PRIMARY KEY ("messagesId", "usersId")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "message_user_mentions"("messagesId", "usersId")
             SELECT "messagesId",
                 "usersId"
             FROM "temporary_message_user_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_message_user_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_b831eb18ceebd28976239b1e2f" ON "message_user_mentions" ("usersId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_a343387fc560ef378760681c23" ON "message_user_mentions" ("messagesId")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_e9080e7a7997a0170026d5139c"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_5d7ddc8a5f9c167f548625e772"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "member_roles"
                 RENAME TO "temporary_member_roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "member_roles" (
                 "index" integer NOT NULL,
                 "role_id" varchar NOT NULL,
                 PRIMARY KEY ("index", "role_id")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "member_roles"("index", "role_id")
             SELECT "index",
                 "role_id"
             FROM "temporary_member_roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_member_roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_e9080e7a7997a0170026d5139c" ON "member_roles" ("role_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_5d7ddc8a5f9c167f548625e772" ON "member_roles" ("index")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "notes"
                 RENAME TO "temporary_notes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "notes" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "content" varchar NOT NULL,
@@ -2166,7 +2166,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "UQ_74e6689b9568cc965b8bfc9150b" UNIQUE ("owner_id", "target_id")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "notes"("id", "content", "owner_id", "target_id")
             SELECT "id",
                 "content",
@@ -2174,14 +2174,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "target_id"
             FROM "temporary_notes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_notes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "sticker_packs"
                 RENAME TO "temporary_sticker_packs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "sticker_packs" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -2191,7 +2191,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "coverStickerId" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "sticker_packs"(
                     "id",
                     "name",
@@ -2208,14 +2208,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "coverStickerId"
             FROM "temporary_sticker_packs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_sticker_packs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "sessions"
                 RENAME TO "temporary_sessions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "sessions" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -2225,7 +2225,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "status" varchar NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "sessions"(
                     "id",
                     "user_id",
@@ -2242,14 +2242,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "status"
             FROM "temporary_sessions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_sessions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "audit_logs"
                 RENAME TO "temporary_audit_logs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "audit_logs" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -2260,7 +2260,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "target_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "audit_logs"(
                     "id",
                     "user_id",
@@ -2279,14 +2279,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "target_id"
             FROM "temporary_audit_logs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_audit_logs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "applications"
                 RENAME TO "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -2308,7 +2308,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "guild_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "applications"(
                     "id",
                     "name",
@@ -2349,14 +2349,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "guild_id"
             FROM "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "teams"
                 RENAME TO "temporary_teams"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "teams" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "icon" varchar,
@@ -2364,7 +2364,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "owner_user_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "teams"("id", "icon", "name", "owner_user_id")
             SELECT "id",
                 "icon",
@@ -2372,14 +2372,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "owner_user_id"
             FROM "temporary_teams"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_teams"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "team_members"
                 RENAME TO "temporary_team_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "team_members" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "membership_state" integer NOT NULL,
@@ -2388,7 +2388,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "user_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "team_members"(
                     "id",
                     "membership_state",
@@ -2403,14 +2403,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "user_id"
             FROM "temporary_team_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_team_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "guilds"
                 RENAME TO "temporary_guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "guilds" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "afk_channel_id" varchar,
@@ -2452,7 +2452,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "parent" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "guilds"(
                     "id",
                     "afk_channel_id",
@@ -2533,14 +2533,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "parent"
             FROM "temporary_guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "templates"
                 RENAME TO "temporary_templates"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "templates" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "code" varchar NOT NULL,
@@ -2555,7 +2555,7 @@ export class initial1659899662635 implements MigrationInterface {
                 CONSTRAINT "UQ_be38737bf339baf63b1daeffb55" UNIQUE ("code")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "templates"(
                     "id",
                     "code",
@@ -2580,14 +2580,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "serialized_source_guild"
             FROM "temporary_templates"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_templates"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "emojis"
                 RENAME TO "temporary_emojis"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "emojis" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "animated" boolean NOT NULL,
@@ -2601,7 +2601,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "groups" text
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "emojis"(
                     "id",
                     "animated",
@@ -2626,14 +2626,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "groups"
             FROM "temporary_emojis"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_emojis"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "channels"
                 RENAME TO "temporary_channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "channels" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "created_at" datetime NOT NULL,
@@ -2657,7 +2657,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "retention_policy_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "channels"(
                     "id",
                     "created_at",
@@ -2702,14 +2702,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "retention_policy_id"
             FROM "temporary_channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "voice_states"
                 RENAME TO "temporary_voice_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "voice_states" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "guild_id" varchar,
@@ -2727,7 +2727,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "request_to_speak_timestamp" datetime
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "voice_states"(
                     "id",
                     "guild_id",
@@ -2760,14 +2760,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "request_to_speak_timestamp"
             FROM "temporary_voice_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_voice_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "invites"
                 RENAME TO "temporary_invites"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "invites" (
                 "code" varchar PRIMARY KEY NOT NULL,
                 "temporary" boolean NOT NULL,
@@ -2784,7 +2784,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "vanity_url" boolean
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "invites"(
                     "code",
                     "temporary",
@@ -2815,17 +2815,17 @@ export class initial1659899662635 implements MigrationInterface {
                 "vanity_url"
             FROM "temporary_invites"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_invites"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_0abf8b443321bd3cf7f81ee17a"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "read_states"
                 RENAME TO "temporary_read_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "read_states" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "channel_id" varchar NOT NULL,
@@ -2837,7 +2837,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "mention_count" integer
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "read_states"(
                     "id",
                     "channel_id",
@@ -2858,26 +2858,26 @@ export class initial1659899662635 implements MigrationInterface {
                 "mention_count"
             FROM "temporary_read_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_read_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_0abf8b443321bd3cf7f81ee17a" ON "read_states" ("channel_id", "user_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_3ed7a60fb7dbe04e1ba9332a8b"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_05535bc695e9f7ee104616459d"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_86b9109b155eb70c0a2ca3b4b6"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "messages"
                 RENAME TO "temporary_messages"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "messages" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "channel_id" varchar,
@@ -2904,7 +2904,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "message_reference_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "messages"(
                     "id",
                     "channel_id",
@@ -2955,23 +2955,23 @@ export class initial1659899662635 implements MigrationInterface {
                 "message_reference_id"
             FROM "temporary_messages"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_messages"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_3ed7a60fb7dbe04e1ba9332a8b" ON "messages" ("channel_id", "id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_05535bc695e9f7ee104616459d" ON "messages" ("author_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE INDEX "IDX_86b9109b155eb70c0a2ca3b4b6" ON "messages" ("channel_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "attachments"
                 RENAME TO "temporary_attachments"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "attachments" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "filename" varchar NOT NULL,
@@ -2984,7 +2984,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "message_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "attachments"(
                     "id",
                     "filename",
@@ -3007,14 +3007,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "message_id"
             FROM "temporary_attachments"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_attachments"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "stickers"
                 RENAME TO "temporary_stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "stickers" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -3028,7 +3028,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "format_type" integer NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "stickers"(
                     "id",
                     "name",
@@ -3053,14 +3053,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "format_type"
             FROM "temporary_stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "webhooks"
                 RENAME TO "temporary_webhooks"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "webhooks" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "type" integer NOT NULL,
@@ -3074,7 +3074,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "source_guild_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "webhooks"(
                     "id",
                     "type",
@@ -3099,17 +3099,17 @@ export class initial1659899662635 implements MigrationInterface {
                 "source_guild_id"
             FROM "temporary_webhooks"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_webhooks"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_bb2bf9386ac443afbbbf9f12d3"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "members"
                 RENAME TO "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "members" (
                 "index" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                 "id" varchar NOT NULL,
@@ -3125,7 +3125,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "joined_by" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "members"(
                     "index",
                     "id",
@@ -3154,17 +3154,17 @@ export class initial1659899662635 implements MigrationInterface {
                 "joined_by"
             FROM "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_bb2bf9386ac443afbbbf9f12d3" ON "members" ("id", "guild_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "roles"
                 RENAME TO "temporary_roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "roles" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "guild_id" varchar,
@@ -3180,7 +3180,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "tags" text
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "roles"(
                     "id",
                     "guild_id",
@@ -3209,14 +3209,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "tags"
             FROM "temporary_roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "recipients"
                 RENAME TO "temporary_recipients"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "recipients" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "channel_id" varchar NOT NULL,
@@ -3224,7 +3224,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "closed" boolean NOT NULL DEFAULT (0)
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "recipients"("id", "channel_id", "user_id", "closed")
             SELECT "id",
                 "channel_id",
@@ -3232,14 +3232,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "closed"
             FROM "temporary_recipients"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_recipients"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "bans"
                 RENAME TO "temporary_bans"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "bans" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -3249,7 +3249,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "reason" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "bans"(
                     "id",
                     "user_id",
@@ -3266,14 +3266,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "reason"
             FROM "temporary_bans"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_bans"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "backup_codes"
                 RENAME TO "temporary_backup_codes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "backup_codes" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "code" varchar NOT NULL,
@@ -3282,7 +3282,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "user_id" varchar
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "backup_codes"("id", "code", "consumed", "expired", "user_id")
             SELECT "id",
                 "code",
@@ -3291,14 +3291,14 @@ export class initial1659899662635 implements MigrationInterface {
                 "user_id"
             FROM "temporary_backup_codes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_backup_codes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "connected_accounts"
                 RENAME TO "temporary_connected_accounts"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "connected_accounts" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "user_id" varchar,
@@ -3312,7 +3312,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "visibility" integer NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "connected_accounts"(
                     "id",
                     "user_id",
@@ -3337,17 +3337,17 @@ export class initial1659899662635 implements MigrationInterface {
                 "visibility"
             FROM "temporary_connected_accounts"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_connected_accounts"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_a0b2ff0a598df0b0d055934a17"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "relationships"
                 RENAME TO "temporary_relationships"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "relationships" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "from_id" varchar NOT NULL,
@@ -3356,7 +3356,7 @@ export class initial1659899662635 implements MigrationInterface {
                 "type" integer NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "relationships"("id", "from_id", "to_id", "nickname", "type")
             SELECT "id",
                 "from_id",
@@ -3365,165 +3365,164 @@ export class initial1659899662635 implements MigrationInterface {
                 "type"
             FROM "temporary_relationships"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_relationships"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_a0b2ff0a598df0b0d055934a17" ON "relationships" ("from_id", "to_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_e22a70819d07659c7a71c112a1"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_40bb6f23e7cc133292e92829d2"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "message_stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_bdb8c09e1464cabf62105bf4b9"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_2a27102ecd1d81b4582a436092"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "message_channel_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_29d63eb1a458200851bc37d074"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_a8242cf535337a490b0feaea0b"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "message_role_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_b831eb18ceebd28976239b1e2f"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_a343387fc560ef378760681c23"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "message_user_mentions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_e9080e7a7997a0170026d5139c"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_5d7ddc8a5f9c167f548625e772"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "member_roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "notes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "client_release"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "sticker_packs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "sessions"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "rate_limits"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "categories"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "audit_logs"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "teams"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "team_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "templates"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "emojis"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "voice_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "invites"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_0abf8b443321bd3cf7f81ee17a"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "read_states"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_3ed7a60fb7dbe04e1ba9332a8b"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_05535bc695e9f7ee104616459d"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_86b9109b155eb70c0a2ca3b4b6"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "messages"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "attachments"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "stickers"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "webhooks"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_bb2bf9386ac443afbbbf9f12d3"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "roles"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "recipients"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "bans"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "backup_codes"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "connected_accounts"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_a0b2ff0a598df0b0d055934a17"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "relationships"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "config"
         `);
-    }
-
+	}
 }

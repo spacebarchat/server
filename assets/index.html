@@ -1,84 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Discord Test Client</title>
+		<link rel="stylesheet" href="/assets/fosscord.css" />
+		<link id="logincss" rel="stylesheet" href="/assets/fosscord-login.css" />
+		<link id="customcss" rel="stylesheet" href="/assets/user.css" />
+		<!-- inline plugin marker -->
+		<!-- preload plugin marker -->
+	</head>
 
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Discord Test Client</title>
-	<link rel="stylesheet" href="/assets/fosscord.css" />
-	<link id="logincss" rel="stylesheet" href="/assets/fosscord-login.css" />
-	<link id="customcss" rel="stylesheet" href="/assets/user.css" />
-	<!-- inline plugin marker -->
-	<!-- preload plugin marker -->
-</head>
+	<body>
+		<div id="app-mount"></div>
+		<script>
+			window.__OVERLAY__ = /overlay/.test(location.pathname);
+			window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
+			window.GLOBAL_ENV = {
+				API_ENDPOINT: "/api",
+				API_VERSION: 9,
+				GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}`,
+				WEBAPP_ENDPOINT: "",
+				CDN_HOST: `${location.hostname}:3003`,
+				ASSET_ENDPOINT: "",
+				MEDIA_PROXY_ENDPOINT: "https://media.discordapp.net",
+				WIDGET_ENDPOINT: `//${location.host}/widget`,
+				INVITE_HOST: `${location.hostname}/invite`,
+				GUILD_TEMPLATE_HOST: "${location.host}",
+				GIFT_CODE_HOST: "${location.hostname}",
+				RELEASE_CHANNEL: "stable",
+				MARKETING_ENDPOINT: "//discord.com",
+				BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
+				STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
+				NETWORKING_ENDPOINT: "//router.discordapp.net",
+				RTC_LATENCY_ENDPOINT: "//${location.hostname}/rtc",
+				ACTIVITY_APPLICATION_HOST: "discordsays.com",
+				PROJECT_ENV: "production",
+				REMOTE_AUTH_ENDPOINT: "//localhost:3020",
+				SENTRY_TAGS: { buildId: "75e36d9", buildType: "normal" },
+				MIGRATION_SOURCE_ORIGIN: "https://${location.hostname}",
+				MIGRATION_DESTINATION_ORIGIN: "https://${location.hostname}",
+				HTML_TIMESTAMP: Date.now(),
+				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
+			};
+			GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
+			const localStorage = window.localStorage;
+			// TODO: remote auth
+			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
+			localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
+			localStorage.setItem(
+				"DeveloperOptionsStore",
+				`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
+			);
 
-<body>
-	<div id="app-mount"></div>
-	<script>
-		window.__OVERLAY__ = /overlay/.test(location.pathname);
-		window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
-		window.GLOBAL_ENV = {
-			API_ENDPOINT: "/api",
-			API_VERSION: 9,
-			GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}`,
-			WEBAPP_ENDPOINT: "",
-			CDN_HOST: `${location.hostname}:3003`,
-			ASSET_ENDPOINT: "",
-			MEDIA_PROXY_ENDPOINT: "https://media.discordapp.net",
-			WIDGET_ENDPOINT: `//${location.host}/widget`,
-			INVITE_HOST: `${location.hostname}/invite`,
-			GUILD_TEMPLATE_HOST: "${location.host}",
-			GIFT_CODE_HOST: "${location.hostname}",
-			RELEASE_CHANNEL: "stable",
-			MARKETING_ENDPOINT: "//discord.com",
-			BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
-			STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
-			NETWORKING_ENDPOINT: "//router.discordapp.net",
-			RTC_LATENCY_ENDPOINT: "//${location.hostname}/rtc",
-			ACTIVITY_APPLICATION_HOST: 'discordsays.com',
-			PROJECT_ENV: "production",
-			REMOTE_AUTH_ENDPOINT: "//localhost:3020",
-			SENTRY_TAGS: { buildId: "75e36d9", buildType: "normal" },
-			MIGRATION_SOURCE_ORIGIN: "https://${location.hostname}",
-			MIGRATION_DESTINATION_ORIGIN: "https://${location.hostname}",
-			HTML_TIMESTAMP: Date.now(),
-			ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0",
-		};
-		GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
-		const localStorage = window.localStorage;
-		// TODO: remote auth
-		// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
-		localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
-		localStorage.setItem(
-			"DeveloperOptionsStore",
-			`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
-		);
-
-		setInterval(() => {
-			let token = JSON.parse(localStorage.getItem("token"));
-			if (token) {
-				let logincss = document.querySelector('#logincss'),
-					canRemove = logincss ? logincss : "";
-				if (canRemove !== "") {
-					document.querySelector("#logincss").remove();
-					canRemove = "";
+			setInterval(() => {
+				let token = JSON.parse(localStorage.getItem("token"));
+				if (token) {
+					let logincss = document.querySelector("#logincss"),
+						canRemove = logincss ? logincss : "";
+					if (canRemove !== "") {
+						document.querySelector("#logincss").remove();
+						canRemove = "";
+					}
 				}
+			}, 1000);
+
+			const settings = JSON.parse(localStorage.getItem("UserSettingsStore"));
+			if (settings && settings.locale.length <= 2) {
+				// fix client locale wrong and client not loading at all
+				settings.locale = "en-US";
+				localStorage.setItem("UserSettingsStore", JSON.stringify(settings));
 			}
-		}, 1000)
-
-		const settings = JSON.parse(localStorage.getItem("UserSettingsStore"));
-		if (settings && settings.locale.length <= 2) {
-			// fix client locale wrong and client not loading at all
-			settings.locale = "en-US";
-			localStorage.setItem("UserSettingsStore", JSON.stringify(settings));
-		}
-	</script>
-	<script src="/assets/checkLocale.js"></script>
-	<script src="/assets/2f2e0c25e45eb2f5a6f1.js"></script>
-	<script src="/assets/006e72c08a4c69cb66fc.js"></script>
-	<script src="/assets/2f94a3ba801087653a38.js"></script>
-	<script src="/assets/f7703f092bdbfc607cc7.js"></script>
-	<!-- plugin marker -->
-</body>
-
+		</script>
+		<script src="/assets/checkLocale.js"></script>
+		<script src="/assets/2f2e0c25e45eb2f5a6f1.js"></script>
+		<script src="/assets/006e72c08a4c69cb66fc.js"></script>
+		<script src="/assets/2f94a3ba801087653a38.js"></script>
+		<script src="/assets/f7703f092bdbfc607cc7.js"></script>
+		<!-- plugin marker -->
+	</body>
 </html>

@@ -1,8 +1,18 @@
-import { Request, Response, Router } from "express";
-import { DiscordApiErrors, emitEvent, getPermission, GuildBanAddEvent, GuildBanRemoveEvent, Guild, Ban, User, Member, BanRegistrySchema, BanModeratorSchema } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
 import { getIpAdress, route } from "@fosscord/api";
-import { OrmUtils } from "@fosscord/util";
+import {
+	Ban,
+	BanModeratorSchema,
+	BanRegistrySchema,
+	DiscordApiErrors,
+	emitEvent,
+	GuildBanAddEvent,
+	GuildBanRemoveEvent,
+	HTTPError,
+	Member,
+	OrmUtils,
+	User
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
@@ -44,16 +54,16 @@ router.get("/:user", route({ permission: "BAN_MEMBERS" }), async (req: Request, 
 	const { guild_id } = req.params;
 	const user_id = req.params.ban;
 
-	let ban = await Ban.findOneOrFail({ where: { guild_id, user_id } }) as BanRegistrySchema;
-	
+	let ban = (await Ban.findOneOrFail({ where: { guild_id, user_id } })) as BanRegistrySchema;
+
 	if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
 	// pretend self-bans don't exist to prevent victim chasing
-	
+
 	/* Filter secret from registry. */
-	
+
 	ban = ban as BanModeratorSchema;
 
-	delete ban.ip
+	delete ban.ip;
 
 	return res.json(ban);
 });
@@ -62,14 +72,14 @@ router.put("/:user_id", route({ body: "BanCreateSchema", permission: "BAN_MEMBER
 	const { guild_id } = req.params;
 	const banned_user_id = req.params.user_id;
 
-	if ( (req.user_id === banned_user_id) && (banned_user_id === req.permission!.cache.guild?.owner_id))
+	if (req.user_id === banned_user_id && banned_user_id === req.permission!.cache.guild?.owner_id)
 		throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
-	
+
 	if (req.permission!.cache.guild?.owner_id === banned_user_id) throw new HTTPError("You can't ban the owner", 400);
-	
+
 	const banned_user = await User.getPublicUser(banned_user_id);
 
-	const ban = OrmUtils.mergeDeep(new Ban(),{
+	const ban = OrmUtils.mergeDeep(new Ban(), {
 		user_id: banned_user_id,
 		guild_id: guild_id,
 		ip: getIpAdress(req),
@@ -93,14 +103,14 @@ router.put("/:user_id", route({ body: "BanCreateSchema", permission: "BAN_MEMBER
 	return res.json(ban);
 });
 
-router.put("/@me", route({ body: "BanCreateSchema"}), async (req: Request, res: Response) => {
+router.put("/@me", route({ body: "BanCreateSchema" }), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
 	const banned_user = await User.getPublicUser(req.params.user_id);
 
-	if (req.permission!.cache.guild?.owner_id === req.params.user_id) 
+	if (req.permission!.cache.guild?.owner_id === req.params.user_id)
 		throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
-	
+
 	const ban = OrmUtils.mergeDeep(new Ban(), {
 		user_id: req.params.user_id,
 		guild_id: guild_id,
@@ -129,12 +139,12 @@ router.delete("/:user_id", route({ permission: "BAN_MEMBERS" }), async (req: Req
 	const { guild_id, user_id } = req.params;
 
 	let ban = await Ban.findOneOrFail({ where: { guild_id, user_id } });
-	
+
 	if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
 	// make self-bans irreversible and hide them from view to avoid victim chasing
-	
+
 	const banned_user = await User.getPublicUser(user_id);
-	
+
 	await Promise.all([
 		Ban.delete({
 			user_id: user_id,

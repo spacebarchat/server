@@ -1,10 +1,10 @@
-import dotenv from "dotenv";
-dotenv.config();
 import { closeDatabase, Config, getOrInitialiseDatabase, initEvent } from "@fosscord/util";
-import ws from "ws";
-import { Connection } from "./events/Connection";
+import dotenv from "dotenv";
 import http from "http";
 import { PluginConfig } from "util/plugin/PluginConfig";
+import ws from "ws";
+import { Connection } from "./events/Connection";
+dotenv.config();
 
 export class Server {
 	public ws: ws.Server;
@@ -12,15 +12,7 @@ export class Server {
 	public server: http.Server;
 	public production: boolean;
 
-	constructor({
-		port,
-		server,
-		production,
-	}: {
-		port: number;
-		server?: http.Server;
-		production?: boolean;
-	}) {
+	constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
 		this.port = port;
 		this.production = production || false;
 
@@ -40,7 +32,7 @@ export class Server {
 
 		this.ws = new ws.Server({
 			maxPayload: 4096,
-			noServer: true,
+			noServer: true
 		});
 		this.ws.on("connection", Connection);
 		this.ws.on("error", console.error);

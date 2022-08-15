@@ -6,20 +6,20 @@ const { argv, stdout, exit } = require("process");
 
 const { execIn, getLines, parts } = require("./utils");
 
-let lines = fs.readFileSync(path.join(__dirname, "..", "src", "util", "util","Rights.ts")).toString()
+let lines = fs.readFileSync(path.join(__dirname, "..", "src", "util", "util", "Rights.ts")).toString();
 let lines2 = lines.split("\n");
-let lines3 = lines2.filter(y=>y.includes(": BitFlag("));
-let lines4 = lines3.map(x=>x.split("//")[0].trim())
+let lines3 = lines2.filter((y) => y.includes(": BitFlag("));
+let lines4 = lines3.map((x) => x.split("//")[0].trim());
 
 function BitFlag(int) {
-    return 1n << eval(`${int}n`);
+	return 1n << eval(`${int}n`);
 }
 
-let rights = []
+let rights = [];
 let maxRights = 0n;
-lines4.forEach(x=>{
-    maxRights += eval(`rights.${x.replace(':'," = ").replace(",",";")}`)
-})
+lines4.forEach((x) => {
+	maxRights += eval(`rights.${x.replace(":", " = ").replace(",", ";")}`);
+});
 //max rights...
 console.log(`Maximum rights: ${maxRights}`);
 //discord rights...

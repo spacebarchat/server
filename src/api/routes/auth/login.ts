@@ -1,8 +1,8 @@
-import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
+import { adjustEmail, Config, FieldErrors, generateToken, LoginSchema, User } from "@fosscord/util";
 import bcrypt from "bcrypt";
-import { Config, User, generateToken, adjustEmail, FieldErrors, LoginSchema } from "@fosscord/util";
 import crypto from "crypto";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 export default router;
@@ -57,9 +57,9 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 		return res.json({
 			ticket: ticket,
 			mfa: true,
-			sms: false,	// TODO
-			token: null,
-		})
+			sms: false, // TODO
+			token: null
+		});
 	}
 
 	const token = await generateToken(user.id);

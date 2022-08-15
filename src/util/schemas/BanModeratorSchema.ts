@@ -1,4 +1,3 @@
-
 export interface BanModeratorSchema {
 	id: string;
 	user_id: string;

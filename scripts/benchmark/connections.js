@@ -8,7 +8,7 @@ let cores = 1;
 try {
 	cores = Number(process.env.THREADS) || os.cpus().length;
 } catch {
-	console.log("[Bundle] Failed to get thread count! Using 1...")
+	console.log("[Bundle] Failed to get thread count! Using 1...");
 }
 
 if (!token) {
@@ -46,8 +46,8 @@ function connect() {
 						op: 2,
 						d: {
 							token,
-							properties: {},
-						},
+							properties: {}
+						}
 					})
 				);
 

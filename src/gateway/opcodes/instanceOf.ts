@@ -1,5 +1,5 @@
-import { instanceOf } from "@fosscord/util";
 import { WebSocket } from "@fosscord/gateway";
+import { instanceOf } from "@fosscord/util";
 import { CLOSECODES } from "../util/Constants";
 
 export function check(this: WebSocket, schema: any, data: any) {

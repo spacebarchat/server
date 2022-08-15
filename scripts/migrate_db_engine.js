@@ -25,7 +25,7 @@ const {
 	Template,
 	User,
 	VoiceState,
-	Webhook,
+	Webhook
 } = require("../../dist/entities/index");
 
 async function main() {
@@ -54,7 +54,7 @@ async function main() {
 		VoiceState,
 		Webhook,
 		Message,
-		Attachment,
+		Attachment
 	];
 
 	const oldDB = await initDatabase();
@@ -69,7 +69,7 @@ async function main() {
 		database: isSqlite ? process.env.TO : undefined,
 		entities,
 		name: "new",
-		synchronize: true,
+		synchronize: true
 	});
 	let i = 0;
 

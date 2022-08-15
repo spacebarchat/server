@@ -1,8 +1,8 @@
-import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
-import { verifyToken } from 'node-2fa';
+import { BackupCode, generateToken, TotpDisableSchema, User } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { User, generateToken, BackupCode, TotpDisableSchema } from "@fosscord/util";
+import { verifyToken } from "node-2fa";
+import { route } from "../../../../..";
 
 const router = Router();
 
@@ -14,27 +14,26 @@ router.post("/", route({ body: "TotpDisableSchema" }), async (req: Request, res:
 	const backup = await BackupCode.findOne({ where: { code: body.code } });
 	if (!backup) {
 		const ret = verifyToken(user.totp_secret!, body.code);
-		if (!ret || ret.delta != 0)
-			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+		if (!ret || ret.delta != 0) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 	}
 
 	await User.update(
 		{ id: req.user_id },
 		{
 			mfa_enabled: false,
-			totp_secret: "",
-		},
+			totp_secret: ""
+		}
 	);
 
 	await BackupCode.update(
 		{ user: { id: req.user_id } },
 		{
-			expired: true,
+			expired: true
 		}
 	);
 
 	return res.json({
-		token: await generateToken(user.id),
+		token: await generateToken(user.id)
 	});
 });
 

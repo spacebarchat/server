@@ -1,8 +1,7 @@
-import { Request, Response, Router } from "express";
-import { Config, generateToken, Invite, FieldErrors, User, adjustEmail, trimSpecial, RegisterSchema } from "@fosscord/util";
-import { route, getIpAdress, IPAnalysis, isProxy } from "@fosscord/api";
+import { getIpAdress, IPAnalysis, isProxy, route } from "@fosscord/api";
+import { adjustEmail, Config, FieldErrors, generateToken, HTTPError, Invite, RegisterSchema, User } from "@fosscord/util";
 import bcrypt from "bcrypt";
-import { HTTPError } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 

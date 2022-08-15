@@ -5,6 +5,6 @@ export const multer = multerConfig({
 	limits: {
 		fields: 10,
 		files: 10,
-		fileSize: 1024 * 1024 * 100, // 100 mb
-	},
+		fileSize: 1024 * 1024 * 100 // 100 mb
+	}
 });

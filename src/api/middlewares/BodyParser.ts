@@ -1,6 +1,6 @@
+import { HTTPError } from "@fosscord/util";
 import bodyParser, { OptionsJson } from "body-parser";
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "@fosscord/util";
 
 export function BodyParser(opts?: OptionsJson) {
 	const jsonParser = bodyParser.json(opts);

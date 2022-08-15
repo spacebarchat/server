@@ -1,6 +1,5 @@
+import { ApiError, FieldError, HTTPError } from "@fosscord/util";
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "@fosscord/util";
-import { ApiError, FieldError } from "@fosscord/util";
 const EntityNotFoundErrorRegex = /"(\w+)"/;
 
 export function ErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
@@ -15,9 +14,8 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 
 		if (error instanceof HTTPError && error.code) {
 			code = httpcode = error.code;
-			if(error.data) data = error.data;
-		}
-		else if (error instanceof ApiError) {
+			if (error.data) data = error.data;
+		} else if (error instanceof ApiError) {
 			code = error.code;
 			message = error.message;
 			httpcode = error.httpStatus;
