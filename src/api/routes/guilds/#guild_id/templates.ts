@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { Guild, Template } from "@fosscord/util";
 import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import { generateCode } from "@fosscord/api";
+import { generateCode } from "@fosscord/util";
 import { OrmUtils } from "@fosscord/util";
 
 const router: Router = Router();

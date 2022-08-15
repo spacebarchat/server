@@ -4,7 +4,7 @@ import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { User } from "./User";
-import { random } from "@fosscord/api";
+import { random } from "..";
 
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 
