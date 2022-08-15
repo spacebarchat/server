@@ -1,31 +1,20 @@
 import { CloseCodes, Payload, Send, WebSocket } from "@fosscord/gateway";
 import { validateSchema, SelectProtocolSchema } from "@fosscord/util";
-import { VoiceOPCodes } from "@fosscord/webrtc";
+import { VoiceOPCodes, endpoint, PublicIP } from "@fosscord/webrtc";
 import MediaServer, { Transport } from "medooze-media-server";
 import SemanticSDP from "semantic-sdp";
-
-const PublicIP = "192.168.178.21";
-
-MediaServer.enableLog(true);
-export const endpoint = MediaServer.createEndpoint(PublicIP);
-export const transports = new Map<string, Transport>();
 
 export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 	const data = validateSchema("SelectProtocolSchema", payload.d) as SelectProtocolSchema;
 
 	const offer = SemanticSDP.SDPInfo.parse("m=audio\n" + data.sdp!);
-	this.sdp!.setICE(offer.getICE());
-	this.sdp!.setDTLS(offer.getDTLS());
-	console.log(offer);
+	this.client.sdp!.setICE(offer.getICE());
+	this.client.sdp!.setDTLS(offer.getDTLS());
 
-	const transport = endpoint.createTransport(this.sdp!);
-	transports.set(this.user_id, transport);
-	transport.on("stopped", () => {
-		transports.delete(this.user_id);
-	});
-	this.transport = transport;
-	transport.setRemoteProperties(this.sdp!);
-	transport.setLocalProperties(this.sdp!);
+	const transport = endpoint.createTransport(this.client.sdp!);
+	this.client.transport = transport;
+	transport.setRemoteProperties(this.client.sdp!);
+	transport.setLocalProperties(this.client.sdp!);
 
 	const dtls = transport.getLocalDTLSInfo();
 	const ice = transport.getLocalICEInfo();
@@ -33,8 +22,6 @@ export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 	const fingerprint = dtls.getHash() + " " + dtls.getFingerprint();
 	const candidates = transport.getLocalCandidates();
 	const candidate = candidates[0];
-
-	const capabilities = MediaServer.getDefaultCapabilities();
 
 	const answer = `m=audio ${port} ICE/SDP
 a=fingerprint:${fingerprint}
