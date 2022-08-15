@@ -1612,5 +1612,95 @@
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "VoiceVideoSchema": {
+        "type": "object",
+        "properties": {
+            "audio_ssrc": {
+                "type": "integer"
+            },
+            "video_ssrc": {
+                "type": "integer"
+            },
+            "rtx_ssrc": {
+                "type": "integer"
+            },
+            "streams": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "audio",
+                                "video"
+                            ],
+                            "type": "string"
+                        },
+                        "rid": {
+                            "type": "string"
+                        },
+                        "ssrc": {
+                            "type": "integer"
+                        },
+                        "active": {
+                            "type": "boolean"
+                        },
+                        "quality": {
+                            "type": "integer"
+                        },
+                        "rtx_ssrc": {
+                            "type": "integer"
+                        },
+                        "max_bitrate": {
+                            "type": "integer"
+                        },
+                        "max_framerate": {
+                            "type": "integer"
+                        },
+                        "max_resolution": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                },
+                                "width": {
+                                    "type": "integer"
+                                },
+                                "height": {
+                                    "type": "integer"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "height",
+                                "type",
+                                "width"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "active",
+                        "max_bitrate",
+                        "max_framerate",
+                        "max_resolution",
+                        "quality",
+                        "rid",
+                        "rtx_ssrc",
+                        "ssrc",
+                        "type"
+                    ]
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "audio_ssrc",
+            "rtx_ssrc",
+            "streams",
+            "video_ssrc"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
     }
 }

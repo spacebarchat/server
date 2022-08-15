@@ -8,7 +8,7 @@
 		"depclean": "node scripts/depclean.js",
 		"depcheck": "node scripts/depcheck.js",
 		"syncdeps": "node scripts/install.js",
-		"build": "node scripts/build.js",
+		"build": "node scripts/build.js swc",
 		"postinstall": "patch-package",
 		"genschemas": "node scripts/generate_schema.js",
 		"start": "node scripts/build.js swc && node --enable-source-maps dist/start.js",
@@ -17,8 +17,7 @@
 		"start:bundle:dbg": "node --enable-source-maps --inspect dist/start.js",
 		"start:bundle:vscode-dbg": "npm run build clean logerrors pretty-errors && node --enable-source-maps --inspect dist/start.js",
 		"migrate": "cd ../util/ && npm i && node --require ts-node/register node_modules/typeorm/cli.js -f ../util/ormconfig.json migration:run",
-		"tsnode": "npx ts-node --transpile-only -P tsnode.tsconfig.json src/start.ts",
-		"webrtc": "turnserver -c src/webrtc/turnserver.conf"
+		"tsnode": "npx ts-node --transpile-only -P tsnode.tsconfig.json src/start.ts"
 	},
 	"repository": {
 		"type": "git",

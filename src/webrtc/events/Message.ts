@@ -1,7 +1,6 @@
 import OPCodeHandlers from "../opcodes";
 import { instanceOf, Tuple } from "lambert-server";
-import WS, { WebSocket } from "ws";
-import { Payload, CloseCodes } from "@fosscord/gateway";
+import { Payload, CloseCodes, WebSocket } from "@fosscord/gateway";
 import { VoiceOPCodes } from "../util";
 
 const PayloadSchema = {
@@ -11,9 +10,10 @@ const PayloadSchema = {
 	$t: String
 };
 
-export async function onMessage(this: WebSocket, buffer: WS.Data) {
+export async function onMessage(this: WebSocket, buffer: Buffer) {
 	try {
 		var data: Payload = JSON.parse(buffer.toString());
+		if (data.op !== VoiceOPCodes.IDENTIFY && !this.user_id) return this.close(CloseCodes.Not_authenticated);
 
 		// @ts-ignore
 		const OPCodeHandler = OPCodeHandlers[data.op];
@@ -25,8 +25,10 @@ export async function onMessage(this: WebSocket, buffer: WS.Data) {
 			return;
 		}
 
-		// @ts-ignore
-		console.log("[WebRTC] Opcode " + VoiceOPCodes[data.op]);
+		if (![VoiceOPCodes.HEARTBEAT, VoiceOPCodes.SPEAKING].includes(data.op as VoiceOPCodes)) {
+			// @ts-ignore
+			console.log("[WebRTC] Opcode " + VoiceOPCodes[data.op]);
+		}
 
 		return await OPCodeHandler.call(this, data);
 	} catch (error) {

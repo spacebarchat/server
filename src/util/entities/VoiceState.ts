@@ -50,7 +50,7 @@ export class VoiceState extends BaseClass {
 	session_id: string;
 
 	@Column({ nullable: true })
-	token: string;
+	token?: string;
 
 	@Column()
 	deaf: boolean;
