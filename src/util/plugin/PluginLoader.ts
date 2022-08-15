@@ -27,12 +27,12 @@ export class PluginLoader {
 		});
 		dirs.forEach(async (x) => {
 			let modPath = path.resolve(path.join(root, x));
-			console.log(`Trying to load plugin: ${modPath}`);
+			//console.log(`Trying to load plugin: ${modPath}`);
 			const manifest = require(path.join(modPath, "plugin.json")) as PluginManifest;
 			console.log(
 				`Plugin info: ${manifest.name} (${manifest.id}), written by ${manifest.authors}, available at ${manifest.repository}`
 			);
-			const module_ = PluginIndex["example-plugin"];
+			const module_ = PluginIndex[manifest.id];
 			
 			module_.pluginPath = modPath;
 			module_.pluginManifest = manifest;

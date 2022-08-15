@@ -13,7 +13,9 @@ import {
 	Snowflake,
 	uploadFile,
 	Member,
-	MessageCreateSchema
+	MessageCreateSchema,
+	PluginEventHandler,
+	PreMessageEventArgs
 } from "@fosscord/util";
 import { HTTPError } from "@fosscord/util";
 import { handleMessage, postHandleMessage, route } from "@fosscord/api";
@@ -214,7 +216,7 @@ router.post(
 		}
 	
 	    //Defining member fields
-		var member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles"] });
+		var member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles", "user"] });
 		// TODO: This doesn't work either
         // member.roles = member.roles.filter((role) => {
 		// 	return role.id !== role.guild_id;
@@ -225,7 +227,11 @@ router.post(
 		// TODO: Figure this out
 		// delete message.member.last_message_id;
 		// delete message.member.index;
-		
+
+		if((await PluginEventHandler.preMessageEvent({
+			message
+		} as PreMessageEventArgs)).filter(x=>x.cancel).length > 0) return;
+
 		await Promise.all([
 			message.save(),
 			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent),
