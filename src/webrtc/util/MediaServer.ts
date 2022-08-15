@@ -3,7 +3,16 @@ import MediaServer, { IncomingStream, OutgoingStream, SSRCs, Transport } from "m
 import { WebSocket } from "@fosscord/gateway";
 MediaServer.enableLog(true);
 
-export const PublicIP = "192.168.178.21";
+export const PublicIP = process.env.PUBLIC_IP || "127.0.0.1";
+
+try {
+	const range = process.env.WEBRTC_PORT_RANGE || "4000";
+	const [min, max] = range.split("-");
+	MediaServer.setPortRange(Number(min), Number(max));
+} catch (error) {
+	console.error("Invalid env var: WEBRTC_PORT_RANGE", process.env.WEBRTC_PORT_RANGE, error);
+	process.exit(1);
+}
 
 export const endpoint = MediaServer.createEndpoint(PublicIP);
 

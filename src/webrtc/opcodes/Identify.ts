@@ -44,7 +44,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				// { type: "video", ssrc: this.ssrc + 1, rtx_ssrc: this.ssrc + 2, rid: "100", quality: 100, active: false }
 			],
 			ssrc: -1,
-			port: 3478,
+			port: endpoint.getLocalPort(),
 			modes: [
 				"aead_aes256_gcm_rtpsize",
 				"aead_aes256_gcm",

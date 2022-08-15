@@ -17,7 +17,7 @@ try {
 export async function Connection(this: WS.Server, socket: WebSocket, request: IncomingMessage) {
 	try {
 		socket.on("close", onClose.bind(socket));
-		socket.on("message", onMessage);
+		socket.on("message", onMessage.bind(socket));
 		console.log("[WebRTC] new connection", request.url);
 
 		if (process.env.WS_LOGEVENTS) {
