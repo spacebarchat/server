@@ -8,7 +8,6 @@ if(argv.includes("help")) {
 	console.log(`Fosscord build script help:
 Arguments:
   clean			Cleans up previous builds
-  copyonly		Only copy source files, don't build (useful for updating assets)
   verbose		Enable verbose logging
   logerrors		Log build errors to console
   pretty-errors		Pretty-print build errors
@@ -18,7 +17,6 @@ Arguments:
 
 let steps = 3, i = 0;
 if (argv.includes("clean")) steps++;
-if (argv.includes("copyonly")) steps--;
 
 const verbose = argv.includes("verbose") || argv.includes("v");
 const logerr = argv.includes("logerrors");
@@ -29,13 +27,11 @@ if(silent) console.error = console.log = function(){}
 
 if (argv.includes("clean")) {
 	console.log(`[${++i}/${steps}] Cleaning...`);
-	parts.forEach((a) => {
-		let d = "../" + a + "/dist";
-		if (fs.existsSync(d)) {
-			fs.rmSync(d, { recursive: true });
-			if (verbose) console.log(`Deleted ${d}!`);
-		}
-	});
+	let d = "dist";
+	if (fs.existsSync(d)) {
+		fs.rmSync(d, { recursive: true });
+		if (verbose) console.log(`Deleted ${d}!`);
+	}
 }
 
 console.log(`[${++i}/${steps}] Checking if dependencies were installed correctly...`);
@@ -43,42 +39,39 @@ console.log(`[${++i}/${steps}] Checking if dependencies were installed correctly
 if(!fs.existsSync(path.join(__dirname, "..", "node_modules", "exif-be-gone", "index.js")))
 	execIn("npm run build", path.join(__dirname, "..", "node_modules", "exif-be-gone"));
 
+console.log(`[${++i}/${steps}] Compiling src files ...`);
 
-if (!argv.includes("copyonly")) {
-	console.log(`[${++i}/${steps}] Compiling src files ...`);
+let buildFlags = ''
+if(pretty) buildFlags += '--pretty '
 
-	let buildFlags = ''
-	if(pretty) buildFlags += '--pretty '
-
-	try {
-		execSync(
-			'node "' +
-				path.join(__dirname, "..", "node_modules", "typescript", "lib", "tsc.js") +
-				'" -p "' +
-				path.join(__dirname, "..") +
-				'" ' + buildFlags,
-			{
-				cwd: path.join(__dirname, ".."),
-				shell: true,
-				env: process.env,
-				encoding: "utf8"
+try {
+	execSync(
+		'node "' +
+			path.join(__dirname, "..", "node_modules", "typescript", "lib", "tsc.js") +
+			'" -p "' +
+			path.join(__dirname, "..") +
+			'" ' + buildFlags,
+		{
+			cwd: path.join(__dirname, ".."),
+			shell: true,
+			env: process.env,
+			encoding: "utf8"
+		}
+	)
+} catch (error) {
+	if(verbose || logerr) {
+		error.stdout.split(/\r?\n/).forEach((line) => {
+			let _line = line.replace('dist/','',1);
+			if(!pretty && _line.includes('.ts(')) {
+				//reformat file path for easy jumping
+				_line = _line.replace('(',':',1).replace(',',':',1).replace(')','',1)
 			}
-		)
-	} catch (error) {
-		if(verbose || logerr) {
-			error.stdout.split(/\r?\n/).forEach((line) => {
-				let _line = line.replace('dist/','',1);
-				if(!pretty && _line.includes('.ts(')) {
-					//reformat file path for easy jumping
-					_line = _line.replace('(',':',1).replace(',',':',1).replace(')','',1)
-				}
-				console.error(_line);
-			})
-		}
-		console.error(`Build failed! Please check build.log for info!`);
-		if(!silent){
-			if(pretty) fs.writeFileSync("build.log.ansi",  error.stdout);
-			fs.writeFileSync("build.log",  error.stdout.replaceAll(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''));
-		}
+			console.error(_line);
+		})
+	}
+	console.error(`Build failed! Please check build.log for info!`);
+	if(!silent){
+		if(pretty) fs.writeFileSync("build.log.ansi",  error.stdout);
+		fs.writeFileSync("build.log",  error.stdout.replaceAll(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''));
 	}
 }

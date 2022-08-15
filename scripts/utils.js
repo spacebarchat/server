@@ -46,7 +46,6 @@ function getLines(output) {
 
 module.exports = { 
 	//consts
-	parts,
 	//functions
 	copyRecursiveSync, execIn, getLines
 };

@@ -15,10 +15,6 @@
 	],
 	"settings": {
 		"files.exclude": {
-			".gitignore": true,
-			".npmignore": true,
-			".prettierrc": true,
-			".vscode": true,
 			"*.ansi": true,
 		}
 	}

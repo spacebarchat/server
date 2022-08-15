@@ -7,7 +7,6 @@
 		"setup": "npm install --omit optional && ts-patch install -s && patch-package && npm run build",
 		"depclean": "node scripts/depclean.js",
 		"depcheck": "node scripts/depcheck.js",
-		"syncdeps": "node scripts/install.js",
 		"build": "node scripts/build.js",
 		"postinstall": "patch-package",
 		"genschemas": "node scripts/generate_schemas.js",
