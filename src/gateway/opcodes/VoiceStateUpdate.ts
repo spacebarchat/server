@@ -93,7 +93,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 			data: {
 				token: token,
 				guild_id: voiceState.guild_id,
-				endpoint: guildRegion.endpoint || `localhost:${process.env.PORT || 3001}/voice`
+				endpoint: guildRegion.endpoint ? guildRegion.endpoint + "/voice" : `localhost:${process.env.PORT || 3001}/voice`
 			},
 			user_id: this.user_id
 		} as VoiceServerUpdateEvent);

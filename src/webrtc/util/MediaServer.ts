@@ -7,8 +7,11 @@ export const PublicIP = process.env.PUBLIC_IP || "127.0.0.1";
 
 try {
 	const range = process.env.WEBRTC_PORT_RANGE || "4000";
-	const [min, max] = range.split("-");
-	MediaServer.setPortRange(Number(min), Number(max));
+	var ports = range.split("-");
+	const min = Number(ports[0]);
+	const max = Number(ports[1]);
+
+	MediaServer.setPortRange(min, max);
 } catch (error) {
 	console.error("Invalid env var: WEBRTC_PORT_RANGE", process.env.WEBRTC_PORT_RANGE, error);
 	process.exit(1);
