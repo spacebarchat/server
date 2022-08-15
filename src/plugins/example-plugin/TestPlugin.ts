@@ -12,8 +12,8 @@ export default class TestPlugin implements Plugin {
     async onPreMessage(data: PreMessageEventArgs): Promise<PreMessageEventResult> {
         let channel = await Channel.findOne({ where: { id: data.message.channel_id } });
         let guild = await Guild.findOne({ where: { id: data.message.guild_id } });
-        
-        console.log(`[TestPlugin] Blocked message in ${guild?.name}/#${channel?.name} by ${data.message.author?.username}: ${data.message.content}`);
-        return {cancel: true} as PreMessageEventResult;
+        let block = data.message.content?.includes('UwU');
+        if(block) console.log(`[TestPlugin] Blocked message in ${guild?.name}/#${channel?.name} by ${data.message.author?.username}: ${data.message.content}`);
+        return {cancel: block} as PreMessageEventResult;
     }
 }
