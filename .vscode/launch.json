@@ -1,0 +1,16 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"sourceMaps": true,
+			"type": "node",
+			"request": "launch",
+			"name": "Launch Server",
+			"program": "${workspaceFolder}/dist/start.js",
+			"preLaunchTask": "npm: build",
+			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+			"envFile": "${workspaceFolder}/.env",
+			"resolveSourceMapLocations": ["${workspaceFolder}/dist/**/*.js"]
+		}
+	]
+}

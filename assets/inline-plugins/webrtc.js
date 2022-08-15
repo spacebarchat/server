@@ -49,16 +49,26 @@ function retry(callback) {
 
 async function init() {
 	const SDP = await retry(() => findByUniqueProperties(["truncateSDP"]));
+	const StringManipulator = findByUniqueProperties(["uniq"]);
+
 	const truncateSDP = SDP.truncateSDP;
 	SDP.truncateSDP = (e) => {
 		const result = truncateSDP(e);
-		console.log("truncateSDP", result.codecs, e);
+		const i = result.codecs.find((x) => x.name === "VP8");
+		const a = new RegExp("^a=ice|a=extmap|opus|VP8|fingerprint|" + i?.rtxPayloadType + " rtx", "i");
 		return {
-			codecs: result.codecs,
-			sdp: e
+			sdp: StringManipulator(e)
+				.split(/\r\n/)
+				.filter(function (e) {
+					return a.test(e);
+				})
+				.uniq()
+				.join("\n"),
+			codecs: result.codecs
 		};
 	};
-	SDP.generateUnifiedSessionDescription = (e) => {
-		return new RTCSessionDescription({ sdp: e.baseSDP, type: "answer" });
-	};
+	// SDP.generateUnifiedSessionDescription = (e) => {
+	// 	console.log(e);
+	// 	return new RTCSessionDescription({ sdp: e.baseSDP.replace(/sendonly/g, "recvonly"), type: "answer" });
+	// };
 }
