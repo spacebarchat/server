@@ -1,28 +1,21 @@
 {
 	"folders": [
 		{
-			"path": "api"
+			"path": "src/"
 		},
 		{
-			"path": "dashboard"
+			"path": "assets/"
 		},
 		{
-			"path": "bundle"
+			"path": "scripts/"
 		},
 		{
-			"path": "cdn"
-		},
-		{
-			"path": "gateway"
-		},
-		{
-			"path": "rtc"
-		},
-		{
-			"path": "util"
-		},
-		{
-			"path": "webrtc"
+			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"files.exclude": {
+			"*.ansi": true,
+		}
+	}
 }
