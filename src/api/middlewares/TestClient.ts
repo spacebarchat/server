@@ -79,7 +79,7 @@ export default function TestClient(app: Application) {
 
 		if(!useTestClient) return res.send("Test client is disabled on this instance. Use a stand-alone client to connect this instance.")
 		
-		res.send(fs.readFileSync(path.join(__dirname, "..", "..", "client_test", "developers.html"), { encoding: "utf8" }));
+		res.send(fs.readFileSync(path.join(__dirname, "..", "..", "..", "assets", "developers.html"), { encoding: "utf8" }));
 	});
 	app.get("*", (req: Request, res: Response) => {
 		const { useTestClient } = Config.get().client;
