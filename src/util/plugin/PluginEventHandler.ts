@@ -4,6 +4,7 @@ import { PreLoginEventArgs, OnLoginEventArgs, PreLoginEventResult } from './even
 import { PreGuildCreateEventArgs, OnGuildCreateEventArgs, PreGuildCreateEventResult } from './event_types';
 import { PreChannelCreateEventArgs, OnChannelCreateEventArgs, PreChannelCreateEventResult } from './event_types';
 import { PreTypingEventArgs, OnTypingEventArgs, PreTypingEventResult } from './event_types';
+import { PreStatusChangeEventArgs, OnStatusChangeEventArgs, PreStatusChangeEventResult } from './event_types';
 import { PluginStore } from ".";
 
 export class PluginEventHandler {
@@ -53,6 +54,14 @@ export class PluginEventHandler {
     
     public static async onTypingEvent(args: OnTypingEventArgs): Promise<void> {
         await Promise.all(PluginStore.plugins.filter(x=>x.onTyping).map(x=>x.onTyping && x.onTyping(args)));
+    }
+    
+    public static async preStatusChangeEvent(args: PreStatusChangeEventArgs): Promise<PreStatusChangeEventResult[]> {
+        return (await Promise.all(PluginStore.plugins.filter(x=>x.onPreStatusChange).map(x=>x.onPreStatusChange && x.onPreStatusChange(args)))).filter(x=>x) as PreStatusChangeEventResult[];
+    }
+    
+    public static async onStatusChangeEvent(args: OnStatusChangeEventArgs): Promise<void> {
+        await Promise.all(PluginStore.plugins.filter(x=>x.onStatusChange).map(x=>x.onStatusChange && x.onStatusChange(args)));
     }
     
 }
