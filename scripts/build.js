@@ -15,7 +15,7 @@ Arguments:
 	exit(0);
 }
 
-let steps = 3, i = 0;
+let steps = 1, i = 0;
 if (argv.includes("clean")) steps++;
 
 const verbose = argv.includes("verbose") || argv.includes("v");
@@ -33,11 +33,6 @@ if (argv.includes("clean")) {
 		if (verbose) console.log(`Deleted ${d}!`);
 	}
 }
-
-console.log(`[${++i}/${steps}] Checking if dependencies were installed correctly...`);
-//exif-be-gone v1.3.0 doesnt build js, known bug
-if(!fs.existsSync(path.join(__dirname, "..", "node_modules", "exif-be-gone", "index.js")))
-	execIn("npm run build", path.join(__dirname, "..", "node_modules", "exif-be-gone"));
 
 console.log(`[${++i}/${steps}] Compiling src files ...`);
 
