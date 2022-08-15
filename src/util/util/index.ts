@@ -23,5 +23,6 @@ export * from "./Array";
 export * from "./TraverseDirectory";
 export * from "./InvisibleCharacters";
 export * from "./Environment";
+export * from "./Logo";
 
 export * from "./imports/index";

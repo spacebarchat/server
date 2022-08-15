@@ -7,7 +7,7 @@ import { initStats } from "./stats";
 import { config } from "dotenv";
 config();
 import { execSync } from "child_process";
-import { Logo } from "util/util/Logo";
+import { Logo } from "./util";
 
 // TODO: add socket event transmission
 let cores = 1;
