@@ -1,3 +1,4 @@
 export interface EventResult {
-    cancel: boolean;
+    cancel?: boolean;
+    blockReason?: string;
 }

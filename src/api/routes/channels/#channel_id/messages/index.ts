@@ -228,9 +228,10 @@ router.post(
 		// delete message.member.last_message_id;
 		// delete message.member.index;
 
-		if((await PluginEventHandler.preMessageEvent({
+		let blocks = (await PluginEventHandler.preMessageEvent({
 			message
-		} as PreMessageEventArgs)).filter(x=>x.cancel).length > 0) return;
+		} as PreMessageEventArgs)).filter(x=>x.cancel);
+		if(blocks.length > 0) throw new HTTPError("Message denied.", 400, blocks.filter(x=>x.blockReason).map(x=>x.blockReason));
 
 		await Promise.all([
 			message.save(),
