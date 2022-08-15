@@ -1,8 +1,6 @@
 import { validateSchema, VoiceIdentifySchema, VoiceState } from "@fosscord/util";
 import { CloseCodes, Payload, Send, setHeartbeat, WebSocket } from "@fosscord/gateway";
-import { VoiceOPCodes } from "../util/Constants";
-import MediaServer from "medooze-media-server";
-import { endpoint } from "./SelectProtocol";
+import { VoiceOPCodes, channels, endpoint, getClients } from "@fosscord/webrtc";
 import SemanticSDP from "semantic-sdp";
 const defaultSDP = require("../../../assets/sdp.json");
 
@@ -15,10 +13,29 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	this.user_id = user_id;
 	this.session_id = session_id;
-	this.sdp = SemanticSDP.SDPInfo.expand(defaultSDP);
-	this.sdp.setDTLS(SemanticSDP.DTLSInfo.expand({ setup: "actpass", hash: "sha-256", fingerprint: endpoint.getDTLSFingerprint() }));
+	const sdp = SemanticSDP.SDPInfo.expand(defaultSDP);
+	sdp.setDTLS(SemanticSDP.DTLSInfo.expand({ setup: "actpass", hash: "sha-256", fingerprint: endpoint.getDTLSFingerprint() }));
 
-	this.ssrc = Math.randomIntBetween(10000, 99999);
+	this.client = {
+		websocket: this,
+		out: {
+			tracks: new Map()
+		},
+		in: {
+			audio_ssrc: 0,
+			video_ssrc: 0,
+			rtx_ssrc: 0
+		},
+		sdp,
+		channel_id: voiceState.channel_id
+	};
+
+	const clients = getClients(voiceState.channel_id)!;
+	clients.add(this.client);
+
+	this.on("close", () => {
+		clients.delete(this.client);
+	});
 
 	await Send(this, {
 		op: VoiceOPCodes.READY,

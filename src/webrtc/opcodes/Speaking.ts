@@ -1,20 +1,21 @@
 import { Payload, Send, WebSocket } from "@fosscord/gateway";
-import { VoiceOPCodes } from "../util";
-import { transports } from "./SelectProtocol";
+import { getClients, VoiceOPCodes } from "../util";
 
 // {"speaking":1,"delay":5,"ssrc":2805246727}
 
 export async function onSpeaking(this: WebSocket, data: Payload) {
-	this.server!.ws.clients.forEach((c) => {
-		const client = c as WebSocket;
-		const ssrc = transports.get(client.user_id!)?.getOutgoingStreams()[0].getAudioTracks()[0].getSSRCs().media;
+	if (!this.client) return;
 
-		Send(client, {
+	getClients(this.client.channel_id).forEach((client) => {
+		if (client === this.client) return;
+		const ssrc = this.client.out.tracks.get(client.websocket.user_id);
+
+		Send(client.websocket, {
 			op: VoiceOPCodes.SPEAKING,
 			d: {
-				user_id: client.user_id,
+				user_id: client.websocket.user_id,
 				speaking: data.d.speaking,
-				ssrc: ssrc
+				ssrc: ssrc?.audio_ssrc || 0
 			}
 		});
 	});
