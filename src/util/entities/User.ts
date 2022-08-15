@@ -97,7 +97,7 @@ export class User extends BaseClass {
 	@Column()
 	bot: boolean = false; // if user is bot
 
-	@Column()
+	@Column({ nullable: true })
 	bio: string; // short description of the user (max 190 chars -> should be configurable)
 
 	@Column()
@@ -106,7 +106,7 @@ export class User extends BaseClass {
 	@Column({ select: false })
 	nsfw_allowed: boolean = true; // if the user can do age-restricted actions (NSFW channels/guilds/commands) // TODO: depending on age
 
-	@Column({ select: false })
+	@Column({ select: false, nullable: true })
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 
 	@Column({ select: false, nullable: true })
@@ -281,8 +281,8 @@ export class User extends BaseClass {
 			settings: { ...new UserSettings(), locale: language }
 		});
 
+		//await (user.settings as UserSettings).save();
 		await user.save();
-		await user.settings.save();
 
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {

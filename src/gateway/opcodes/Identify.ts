@@ -105,7 +105,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	if (!user.settings) { //settings may not exist after updating...
 		user.settings = new UserSettings();
 		user.settings.id = user.id;
-		await user.settings.save();
+		//await (user.settings as UserSettings).save();
 	}
 
 	if (!identify.intents) identify.intents = "30064771071";
