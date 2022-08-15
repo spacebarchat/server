@@ -28,7 +28,7 @@ if(silent) console.error = console.log = function(){}
 
 if (argv.includes("clean")) {
 	console.log(`[${++i}/${steps}] Cleaning...`);
-	let d = "../" + "/dist";
+	let d = "dist";
 		if (fs.existsSync(d)) {
 			fs.rmSync(d, { recursive: true });
 			if (verbose) console.log(`Deleted ${d}!`);
@@ -102,11 +102,6 @@ if (!argv.includes("copyonly")) {
 			fs.writeFileSync("build.log",  error.stdout.replaceAll(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''));
 		}
 		throw error;
-	}
-	console.error(`Build failed! Please check build.log for info!`);
-	if(!silent){
-		if(pretty) fs.writeFileSync("build.log.ansi",  error.stdout);
-		fs.writeFileSync("build.log",  error.stdout.replaceAll(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''));
 	}
 }
 
