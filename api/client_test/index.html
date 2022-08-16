@@ -12,47 +12,45 @@
 	<body>
 		<div id="app-mount"></div>
 		<script>
-			FOSSCORD_INV_HOST = location.hostname+":"+location.port+"/invite";
-			if (location.protocol == "http:" && location.port == "80") { 
-			delete FOSSCORD_INV_HOST; 
-			FOSSCORD_INV_HOST = location.hostname+"/invite"; 
-			}
-			if (location.protocol === "https:" && location.port === "443") { 
-			delete FOSSCORD_INV_HOST; 
-			FOSSCORD_INV_HOST = location.hostname+"/invite"; 
-			} 
 			window.__OVERLAY__ = /overlay/.test(location.pathname);
 			window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
-			window.GLOBAL_ENV = {
-				API_ENDPOINT: "//"+location.hostname+":"+location.port+"/api",
-				API_VERSION: 9,
-				GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}`+location.hostname+":"+location.port,
-				WEBAPP_ENDPOINT: "//"+location.hostname+":"+location.port,
-				CDN_HOST: location.hostname+":"+location.port,
-				ASSET_ENDPOINT: "//"+location.hostname+":"+location.port,
-				MEDIA_PROXY_ENDPOINT: "//" + location.hostname+":"+location.port+'/voice',
-				WIDGET_ENDPOINT: "//"+location.hostname+":"+location.port+"/widget",
-				INVITE_HOST: FOSSCORD_INV_HOST,
-				GUILD_TEMPLATE_HOST: location.hostname+":"+location.port,
-				GIFT_CODE_HOST: location.hostname+":"+location.port,
-				RELEASE_CHANNEL: "stable",
-				MARKETING_ENDPOINT: "",
-				BRAINTREE_KEY: "",
-				STRIPE_KEY: "",
-				NETWORKING_ENDPOINT: "",
-				RTC_LATENCY_ENDPOINT: "//"+location.hostname+":"+location.port+"/rtc",
-				ACTIVITY_APPLICATION_HOST: "",
-				PROJECT_ENV: "production",
-				REMOTE_AUTH_ENDPOINT: "//"+location.hostname+":"+location.port,
-				SENTRY_TAGS: {"buildId":"","buildType":"normal"},
-				MIGRATION_SOURCE_ORIGIN: "",
-				MIGRATION_DESTINATION_ORIGIN: "",
-				HTML_TIMESTAMP: Date.now(),
-				ALGOLIA_KEY: "",
-			};
+FOSSCORD_INV_HOST = location.hostname+":"+location.port+"/invite";
+if (location.protocol == "http:" && location.port == "80") { 
+delete FOSSCORD_INV_HOST; 
+FOSSCORD_INV_HOST = location.hostname+"/invite"; 
+}
+if (location.protocol === "https:" && location.port === "443") { 
+delete FOSSCORD_INV_HOST; 
+FOSSCORD_INV_HOST = location.hostname+"/invite"; 
+}
+window.GLOBAL_ENV = {
+API_ENDPOINT: "//"+location.hostname+":"+location.port+"/api",
+API_VERSION: 9,
+GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}`+location.hostname+":"+location.port,
+WEBAPP_ENDPOINT: "//"+location.hostname+":"+location.port+"/app",
+CDN_HOST: location.hostname+":"+location.port,
+ASSET_ENDPOINT: "//"+location.hostname+":"+location.port,
+MEDIA_PROXY_ENDPOINT: "//"+location.hostname+":"+location.port+"/media",
+WIDGET_ENDPOINT: "//"+location.hostname+":"+location.port+"/widget",
+INVITE_HOST: FOSSCORD_INV_HOST,
+GUILD_TEMPLATE_HOST: location.hostname+":"+location.port+"/new",
+GIFT_CODE_HOST: location.hostname+":"+location.port+"/gift",
+RELEASE_CHANNEL: "",
+MARKETING_ENDPOINT: "//"+location.hostname+":"+location.port,
+BRAINTREE_KEY: "",
+STRIPE_KEY: "",
+NETWORKING_ENDPOINT: "//"+location.hostname+":"+location.port+"/router",
+RTC_LATENCY_ENDPOINT: "//"+location.hostname+":"+location.port+"/rtc",
+ACTIVITY_APPLICATION_HOST: location.hostname+":"+location.port+"/says",
+PROJECT_ENV: "",
+REMOTE_AUTH_ENDPOINT: "//"+location.hostname+":"+location.port+"/rag",
+SENTRY_TAGS: {"buildId":"","buildType":""},
+MIGRATION_SOURCE_ORIGIN: location.protocol+"//"+location.hostname+":"+location.port,
+MIGRATION_DESTINATION_ORIGIN: location.protocol+"//"+location.hostname+":"+location.port,
+HTML_TIMESTAMP: Date.now(),
+ALGOLIA_KEY: "",
+};
 			const localStorage = window.localStorage;
-			// TODO: remote auth
-			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
 			localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
 			localStorage.setItem(
 				"DeveloperOptionsStore",
