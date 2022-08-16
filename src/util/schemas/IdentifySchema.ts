@@ -33,6 +33,7 @@ export const IdentifySchema = {
 	$presence: ActivitySchema,
 	$compress: Boolean,
 	$large_threshold: Number,
+	$largeThreshold: Number,
 	$shard: [Number, Number],
 	$guild_subscriptions: Boolean,
 	$capabilities: Number,
@@ -42,6 +43,13 @@ export const IdentifySchema = {
 		$read_state_version: Number,
 		$user_guild_settings_version: Number,
 		$user_settings_version: undefined,
+	},
+	$clientState: {
+			$guildHashes: Object,
+			$highestLastMessageId: Number,
+			$readStateVersion: Number,
+			$userGuildSettingsVersion: Number,
+			$useruserGuildSettingsVersion: Number
 	},
 	$v: Number,
 	$version: Number,
@@ -75,6 +83,7 @@ export interface IdentifySchema {
 	presence?: ActivitySchema;
 	compress?: boolean;
 	large_threshold?: number;
+	largeThreshold?: number;
 	shard?: [number, number];
 	guild_subscriptions?: boolean;
 	capabilities?: number;
@@ -84,6 +93,13 @@ export interface IdentifySchema {
 		read_state_version?: number;
 		user_guild_settings_version?: number;
 		user_settings_version?: number;
+	};
+	clientState?: {
+			guildHashes?: any;
+			highestLastMessageId?: number;
+			readStateVersion?: number;
+			userGuildSettingsVersion?: number;
+			useruserGuildSettingsVersion?: number;
 	};
 	v?: number;
 }

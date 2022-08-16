@@ -57,7 +57,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		attachments: opts.attachments || [],
 		embeds: opts.embeds || [],
 		reactions: /*opts.reactions ||*/ [],
-		type: opts.type ?? 0
+		type: opts.type ?? 0,
+		edited_timestamp: null
 	});
 
 	if (message.content && message.content.length > Config.get().limits.message.maxCharacters) {
@@ -224,6 +225,6 @@ interface MessageOptions extends MessageCreateSchema {
 	embeds?: Embed[];
 	channel_id?: string;
 	attachments?: Attachment[];
-	edited_timestamp?: Date;
+	edited_timestamp: Date | null;
 	timestamp?: Date;
 }

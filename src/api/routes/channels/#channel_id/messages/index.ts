@@ -186,7 +186,7 @@ router.post(
 			embeds,
 			channel_id,
 			attachments,
-			edited_timestamp: undefined,
+			edited_timestamp: null,
 			timestamp: new Date()
 		});
 

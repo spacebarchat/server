@@ -342,7 +342,7 @@ export class Guild extends BaseClass {
 		});
 		await role.save();
 
-		if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
+		if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general", nsfw: false }];
 
 		const ids = new Map();
 
