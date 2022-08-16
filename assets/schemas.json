@@ -673,6 +673,9 @@
             "large_threshold": {
                 "type": "integer"
             },
+            "largeThreshold": {
+                "type": "integer"
+            },
             "shard": {
                 "type": "array",
                 "items": [
@@ -697,7 +700,7 @@
                 "properties": {
                     "guild_hashes": {},
                     "highest_last_message_id": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "read_state_version": {
                         "type": "integer"
@@ -705,7 +708,29 @@
                     "user_guild_settings_version": {
                         "type": "integer"
                     },
+                    "useruser_guild_settings_version": {
+                        "type": "integer"
+                    },
                     "user_settings_version": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "clientState": {
+                "type": "object",
+                "properties": {
+                    "guildHashes": {},
+                    "highestLastMessageId": {
+                        "type": "integer"
+                    },
+                    "readStateVersion": {
+                        "type": "integer"
+                    },
+                    "userGuildSettingsVersion": {
+                        "type": "integer"
+                    },
+                    "useruserGuildSettingsVersion": {
                         "type": "integer"
                     }
                 },

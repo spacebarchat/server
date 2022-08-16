@@ -14,14 +14,22 @@ const PayloadSchema = {
 	$t: String,
 };
 
+
 export async function Message(this: WebSocket, buffer: Buffer) {
-	// TODO: compression
 	let data: Payload;
 
 	if (this.encoding === "etf" && buffer instanceof Buffer)
 		data = erlpack.unpack(buffer);
-	else if (this.encoding === "json")
+	else if (this.encoding === "json") {
+		if(this.inflate) {
+			try {
+				buffer = this.inflate.process(buffer) as any;
+			} catch {
+				buffer = buffer.toString() as any;
+			}
+		}
 		data = JSON.parse(buffer as unknown as string); //TODO: is this even correct?? seems to work for web clients...
+	}
 	else if(/--debug|--inspect/.test(process.execArgv.join(' '))) {
 		debugger;
 		return;

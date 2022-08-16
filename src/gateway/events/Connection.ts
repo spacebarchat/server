@@ -6,7 +6,7 @@ import { setHeartbeat } from "../util/Heartbeat";
 import { IncomingMessage } from "http";
 import { Close } from "./Close";
 import { Message } from "./Message";
-import { createDeflate } from "zlib";
+import {Deflate, Inflate} from "fast-zlib"
 import { URL } from "url";
 let erlpack: any;
 try {
@@ -66,8 +66,8 @@ export async function Connection(
 		if (socket.compress) {
 			if (socket.compress !== "zlib-stream")
 				return socket.close(CLOSECODES.Decode_error);
-			socket.deflate = createDeflate({ chunkSize: 65535 });
-			socket.deflate.on("data", (chunk) => socket.send(chunk));
+			socket.deflate = new Deflate()
+			socket.inflate = new Inflate()
 		}
 
 		socket.events = {};

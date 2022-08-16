@@ -17,6 +17,9 @@ export class UserSettings extends BaseClassWithoutId {
 	
     @Column({ nullable: true })
     animate_stickers: number = 0;
+
+	@Column({ nullable: true })
+	banner_color: string;
 	
     @Column({ nullable: true })
     contact_sync_enabled: boolean = false;

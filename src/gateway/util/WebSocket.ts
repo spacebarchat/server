@@ -1,6 +1,6 @@
 import { Intents, Permissions } from "@fosscord/util";
 import WS from "ws";
-import { Deflate } from "zlib";
+import { Deflate, Inflate } from "fast-zlib";
 
 export interface WebSocket extends WS {
 	version: number;
@@ -11,6 +11,7 @@ export interface WebSocket extends WS {
 	shard_count?: number;
 	shard_id?: number;
 	deflate?: Deflate;
+	inflate?: Inflate;
 	heartbeatTimeout: NodeJS.Timeout;
 	readyTimeout: NodeJS.Timeout;
 	intents: Intents;

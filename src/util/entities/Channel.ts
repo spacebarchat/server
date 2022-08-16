@@ -109,8 +109,8 @@ export class Channel extends BaseClass {
 	@Column({ nullable: true })
 	user_limit?: number;
 
-	@Column({ nullable: true })
-	nsfw: boolean;
+	@Column()
+	nsfw: boolean = false;
 
 	@Column({ nullable: true })
 	rate_limit_per_user?: number;
@@ -292,6 +292,7 @@ export class Channel extends BaseClass {
 							closed: !(type === ChannelType.GROUP_DM || x === creator_user_id),
 						})
 					),
+					nsfw: false,
 				}) as Channel
 			).save();
 		}
