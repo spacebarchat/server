@@ -30,6 +30,8 @@ export enum PrivateUserEnum {
 	nsfw_allowed,
 	premium,
 	premium_type,
+	purchased_flags,
+	premium_usage_flags,
 	disabled,
 	settings
 	// locale
@@ -50,8 +52,6 @@ export interface UserPublic extends Pick<User, PublicUserKeys> {}
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
 }
-
-// TODO: add purchased_flags, premium_usage_flags
 
 @Entity("users")
 export class User extends BaseClass {
@@ -104,8 +104,8 @@ export class User extends BaseClass {
 	@Column({ select: false })
 	nsfw_allowed: boolean = true; // if the user can do age-restricted actions (NSFW channels/guilds/commands) // TODO: depending on age
 
-	@Column({ select: false, nullable: true })
-	mfa_enabled: boolean; // if multi factor authentication is enabled
+	@Column({ select: false })
+	mfa_enabled: boolean = false; // if multi factor authentication is enabled
 
 	@Column({ select: false, nullable: true })
 	totp_secret?: string;
@@ -136,6 +136,12 @@ export class User extends BaseClass {
 
 	@Column()
 	public_flags: number = 0;
+
+	@Column()
+	purchased_flags: number;
+
+	@Column()
+	premium_usage_flags: number;
 
 	@Column({ type: "bigint" })
 	rights: string = Config.get().register.defaultRights; // Rights
@@ -275,7 +281,10 @@ export class User extends BaseClass {
 				hash: password,
 				valid_tokens_since: new Date()
 			},
-			settings: { ...new UserSettings(), locale: language }
+			settings: { ...new UserSettings(), locale: language },
+			purchased_flags: 5, // TODO: idk what the values for this are
+			premium_usage_flags: 2,  // TODO: idk what the values for this are
+			mfa_enabled: false,
 		});
 
 		//await (user.settings as UserSettings).save();

@@ -45,6 +45,9 @@ export class UserSettings extends BaseClassWithoutId {
 	@Column({ nullable: true })
 	explicit_content_filter: number = 0;
 
+	@Column()
+	friend_discovery_flags: number = 0;
+
 	@Column({ nullable: true, type: "simple-json" })
 	friend_source_flags: FriendSourceFlags = { all: true };
 
@@ -98,6 +101,12 @@ export class UserSettings extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	timezone_offset: number = 0; // e.g -60
+
+	@Column()
+	view_nsfw_guilds: boolean = false;
+
+	@Column()
+	passwordless: boolean = false; // TODO: what does this mean?
 }
 
 interface CustomStatus {

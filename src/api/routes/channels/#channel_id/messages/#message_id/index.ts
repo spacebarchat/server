@@ -135,8 +135,8 @@ router.put(
 			embeds,
 			channel_id,
 			attachments,
-			edited_timestamp: undefined,
-			timestamp: new Date(snowflake.timestamp)
+			edited_timestamp: null,
+			timestamp: new Date(snowflake.timestamp),
 		});
 
 		//Fix for the client bug

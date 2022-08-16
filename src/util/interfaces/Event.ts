@@ -98,6 +98,7 @@ export interface ReadyEventData {
 	merged_members?: PublicMember[][];
 	// probably all users who the user is in contact with
 	users?: PublicUser[];
+	sessions: any[]
 }
 
 export interface ReadyEvent extends Event {

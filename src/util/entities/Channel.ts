@@ -110,7 +110,7 @@ export class Channel extends BaseClass {
 	user_limit?: number;
 
 	@Column({ nullable: true })
-	nsfw?: boolean;
+	nsfw: boolean;
 
 	@Column({ nullable: true })
 	rate_limit_per_user?: number;

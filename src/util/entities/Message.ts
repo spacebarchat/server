@@ -108,7 +108,7 @@ export class Message extends BaseClass {
 	timestamp: Date;
 
 	@Column({ nullable: true })
-	edited_timestamp?: Date;
+	edited_timestamp: Date;
 
 	@Column({ nullable: true })
 	tts?: boolean;
