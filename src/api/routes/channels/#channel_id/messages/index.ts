@@ -115,11 +115,12 @@ router.get("/", async (req: Request, res: Response) => {
 			Some clients ( discord.js ) only check if a property exists within the response,
 			which causes erorrs when, say, the `application` property is `null`.
 			**/
-			
-			for (let curr in x) {
-				if (x[curr] === null)
-					delete x[curr];
-			}
+
+			// TODO: how do we solve this if android client wants null values but djs doesnt?
+			// for (let curr in x) {
+			// 	if (x[curr] === null)
+			// 		delete x[curr];
+			// }
 
 			return x;
 		})
