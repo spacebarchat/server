@@ -13,17 +13,17 @@
 	<body>
 		<div id="app-mount"></div>
 		<script>
-			window.GLOBAL_ENV = {
-				API_VERSION: 9,
-				API_ENDPOINT: "//"+location.hostname+":"+location.port+"/api",
-				WEBAPP_ENDPOINT: "//"+location.hostname+":"+location.port,
-				CDN_HOST: location.hostname+":"+location.port,
-				BRAINTREE_KEY: null,
-				STRIPE_KEY: null,
-				MARKETING_ENDPOINT: null,
-				RELEASE_CHANNEL: "stable",
-				ALGOLIA_KEY: null,
-			};
+window.GLOBAL_ENV = {
+API_VERSION: 9,
+API_ENDPOINT: "//"+location.hostname+":"+location.port+"/api",
+WEBAPP_ENDPOINT: "//"+location.hostname+":"+location.port,
+CDN_HOST: location.hostname+":"+location.port,
+BRAINTREE_KEY: "",
+STRIPE_KEY: "",
+MARKETING_ENDPOINT: "",
+RELEASE_CHANNEL: "",
+ALGOLIA_KEY: "",
+};
 			const localStorage = window.localStorage;
 			// TODO: remote auth
 			// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
