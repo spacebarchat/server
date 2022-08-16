@@ -14,39 +14,39 @@
 		<script>
 			window.__OVERLAY__ = /overlay/.test(location.pathname);
 			window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
-FOSSCORD_INV_HOST = location.hostname+":"+location.port+"/invite";
+FOSSCORD_HOST = location.hostname+":"+location.port;
 if (location.protocol == "http:" && location.port == "80") { 
-delete FOSSCORD_INV_HOST; 
-FOSSCORD_INV_HOST = location.hostname+"/invite"; 
+delete FOSSCORD_HOST; 
+FOSSCORD_HOST = location.hostname; 
 }
 if (location.protocol === "https:" && location.port === "443") { 
-delete FOSSCORD_INV_HOST; 
-FOSSCORD_INV_HOST = location.hostname+"/invite"; 
+delete FOSSCORD_HOST; 
+FOSSCORD_HOST = location.hostname; 
 }
 window.GLOBAL_ENV = {
-API_ENDPOINT: "//"+location.hostname+":"+location.port+"/api",
+API_ENDPOINT: "//"+FOSSCORD_HOST+"/api",
 API_VERSION: 9,
-GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}`+location.hostname+":"+location.port,
-WEBAPP_ENDPOINT: "//"+location.hostname+":"+location.port+"/app",
-CDN_HOST: location.hostname+":"+location.port,
-ASSET_ENDPOINT: "//"+location.hostname+":"+location.port,
-MEDIA_PROXY_ENDPOINT: "//"+location.hostname+":"+location.port+"/media",
-WIDGET_ENDPOINT: "//"+location.hostname+":"+location.port+"/widget",
-INVITE_HOST: FOSSCORD_INV_HOST,
-GUILD_TEMPLATE_HOST: location.hostname+":"+location.port+"/new",
-GIFT_CODE_HOST: location.hostname+":"+location.port+"/gift",
+GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}`+FOSSCORD_HOST,
+WEBAPP_ENDPOINT: "//"+FOSSCORD_HOST+"/app",
+CDN_HOST: FOSSCORD_HOST,
+ASSET_ENDPOINT: "//"+FOSSCORD_HOST,
+MEDIA_PROXY_ENDPOINT: "//"+FOSSCORD_HOST+"/media",
+WIDGET_ENDPOINT: "//"+FOSSCORD_HOST+"/widget",
+INVITE_HOST: FOSSCORD_HOST+"/invite",
+GUILD_TEMPLATE_HOST: FOSSCORD_HOST+"/new",
+GIFT_CODE_HOST: FOSSCORD_HOST+"/gift",
 RELEASE_CHANNEL: "",
-MARKETING_ENDPOINT: "//"+location.hostname+":"+location.port,
+MARKETING_ENDPOINT: "//"+FOSSCORD_HOST,
 BRAINTREE_KEY: "",
 STRIPE_KEY: "",
-NETWORKING_ENDPOINT: "//"+location.hostname+":"+location.port+"/router",
-RTC_LATENCY_ENDPOINT: "//"+location.hostname+":"+location.port+"/rtc",
-ACTIVITY_APPLICATION_HOST: location.hostname+":"+location.port+"/says",
+NETWORKING_ENDPOINT: "//"+FOSSCORD_HOST+"/router",
+RTC_LATENCY_ENDPOINT: "//"+FOSSCORD_HOST+"/rtc",
+ACTIVITY_APPLICATION_HOST: FOSSCORD_HOST+"/says",
 PROJECT_ENV: "",
-REMOTE_AUTH_ENDPOINT: "//"+location.hostname+":"+location.port+"/rag",
+REMOTE_AUTH_ENDPOINT: "//"+FOSSCORD_HOST+"/rag",
 SENTRY_TAGS: {"buildId":"","buildType":""},
-MIGRATION_SOURCE_ORIGIN: location.protocol+"//"+location.hostname+":"+location.port,
-MIGRATION_DESTINATION_ORIGIN: location.protocol+"//"+location.hostname+":"+location.port,
+MIGRATION_SOURCE_ORIGIN: location.protocol+"//"+FOSSCORD_HOST,
+MIGRATION_DESTINATION_ORIGIN: location.protocol+"//"+FOSSCORD_HOST,
 HTML_TIMESTAMP: Date.now(),
 ALGOLIA_KEY: "",
 };
