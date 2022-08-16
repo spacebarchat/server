@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { DiscordApiErrors, emitEvent, getPermission, getRights, Guild, GuildUpdateEvent, handleFile, Member } from "@fosscord/util";
+import { Channel, Config, DiscordApiErrors, emitEvent, getPermission, getRights, Guild, GuildUpdateEvent, handleFile, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 import "missing-native-js-functions";
@@ -59,6 +59,26 @@ router.patch("/", route({ body: "GuildUpdateSchema"}), async (req: Request, res:
 		where: { id: guild_id },
 		relations: ["emojis", "roles", "stickers"]
 	});
+	
+	if (body.public_updates_channel_id && body.public_updates_channel_id === "1") {
+		const publicUpdatesChannel = await Channel.createChannel({
+			name: Config.get().guild.community.defaultPublicUpdatesChannelName,
+			type: 0,
+			guild_id,
+			permission_overwrites: Config.get().guild.community.defaultPublicUpdatesChannelPermissionOverrides.map(x => ({...x, id: x.id.replace("@everyone", guild_id)}))
+		}, req.user_id);
+		body.public_updates_channel_id = publicUpdatesChannel.id;
+	}
+
+	if (body.rules_channel_id && body.rules_channel_id === "1") {
+		const rulesChannel = await Channel.createChannel({
+			name: Config.get().guild.community.defaultRulesChannelName,
+			type: 0,
+			guild_id,
+			permission_overwrites: Config.get().guild.community.defaultRulesChannelPermissionOverrides.map(x => ({...x, id: x.id.replace("@everyone", guild_id)}))
+		}, req.user_id);
+		body.rules_channel_id = rulesChannel.id;
+	}
 	// TODO: check if body ids are valid
 	guild.assign(body);
 
