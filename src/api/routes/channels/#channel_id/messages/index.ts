@@ -211,12 +211,11 @@ router.post(
 
 		//Defining member fields
 		var member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles"] });
-		// TODO: This doesn't work either
-		// member.roles = member.roles.filter((role) => {
-		// 	return role.id !== role.guild_id;
-		// }).map((role) => {
-		// 	return role.id;
-		// });
+        member.roles = member.roles.filter((role) => {
+			return role.id !== role.guild_id;
+		}).map((role) => {
+			return role.id;
+		}) as any;
 		message.member = member;
 		// TODO: Figure this out
 		// delete message.member.last_message_id;

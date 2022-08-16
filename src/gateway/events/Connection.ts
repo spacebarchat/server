@@ -2,12 +2,12 @@ import { WebSocket } from "@fosscord/gateway";
 import { IncomingMessage } from "http";
 import { URL } from "url";
 import WS from "ws";
-import { createDeflate } from "zlib";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { setHeartbeat } from "../util/Heartbeat";
 import { Send } from "../util/Send";
 import { Close } from "./Close";
 import { Message } from "./Message";
+import {Deflate, Inflate} from "fast-zlib"
 let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
@@ -57,9 +57,10 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
 		// @ts-ignore
 		socket.compress = searchParams.get("compress") || "";
 		if (socket.compress) {
-			if (socket.compress !== "zlib-stream") return socket.close(CLOSECODES.Decode_error);
-			socket.deflate = createDeflate({ chunkSize: 65535 });
-			socket.deflate.on("data", (chunk) => socket.send(chunk));
+			if (socket.compress !== "zlib-stream")
+				return socket.close(CLOSECODES.Decode_error);
+			socket.deflate = new Deflate()
+			socket.inflate = new Inflate()
 		}
 
 		socket.events = {};

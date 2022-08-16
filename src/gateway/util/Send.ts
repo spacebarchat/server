@@ -13,11 +13,8 @@ export async function Send(socket: WebSocket, data: Payload) {
 	// TODO: encode circular object
 	else if (socket.encoding === "json") buffer = JSON.stringify(data);
 	else return;
-	// TODO: compression
 	if (socket.deflate) {
-		socket.deflate.write(buffer);
-		socket.deflate.flush();
-		return;
+		buffer = socket.deflate.process(buffer) as any;
 	}
 
 	return new Promise((res, rej) => {

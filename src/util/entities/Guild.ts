@@ -260,8 +260,8 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	nsfw_level?: number;
 
-	@Column({ nullable: true })
-	nsfw?: boolean;
+	@Column()
+	nsfw: boolean;
 
 	// TODO: nested guilds
 	@Column({ nullable: true })
