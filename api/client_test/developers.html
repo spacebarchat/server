@@ -13,11 +13,20 @@
 	<body>
 		<div id="app-mount"></div>
 		<script>
+FOSSCORD_HOST = location.hostname+":"+location.port;
+if (location.protocol == "http:" && location.port == "80") { 
+delete FOSSCORD_HOST; 
+FOSSCORD_HOST = location.hostname; 
+}
+if (location.protocol === "https:" && location.port === "443") { 
+delete FOSSCORD_HOST; 
+FOSSCORD_HOST = location.hostname; 
+}
 window.GLOBAL_ENV = {
 API_VERSION: 9,
-API_ENDPOINT: "//"+location.hostname+":"+location.port+"/api",
-WEBAPP_ENDPOINT: "//"+location.hostname+":"+location.port,
-CDN_HOST: location.hostname+":"+location.port,
+API_ENDPOINT: "//"+FOSSCORD_HOST+"/api",
+WEBAPP_ENDPOINT: "//"+FOSSCORD_HOST,
+CDN_HOST: FOSSCORD_HOST,
 BRAINTREE_KEY: "",
 STRIPE_KEY: "",
 MARKETING_ENDPOINT: "",
