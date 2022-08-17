@@ -10,5 +10,3 @@ A admin dashboard for fosscord-server
 -   Done = Configuration ([Config.ts](https://github.com/fosscord/fosscord-server-util/blob/master/src/util/Config.ts))
 
 port = 9595
-
-This will be updates
