@@ -18,8 +18,10 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 	var stream = this.client.in.stream!;
 	if (!stream) {
 		stream = this.client.transport!.createIncomingStream(
+			// @ts-ignore
 			SemanticSDP.StreamInfo.expand({
 				id,
+				// @ts-ignore
 				tracks: []
 			})
 		);
@@ -41,8 +43,10 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 			transport!.stop();
 		});
 		const out = transport.createOutgoingStream(
+			// @ts-ignore
 			SemanticSDP.StreamInfo.expand({
 				id: "out" + this.user_id,
+				// @ts-ignore
 				tracks: []
 			})
 		);
