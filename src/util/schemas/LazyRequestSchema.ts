@@ -1,5 +1,5 @@
 export interface LazyRequest {
-	guild_id: string;
+	guild_id: string | number;
 	channels?: Record<string, [number, number][]>;
 	activities?: boolean;
 	threads?: boolean;
@@ -9,7 +9,7 @@ export interface LazyRequest {
 }
 
 export const LazyRequest = {
-	guild_id: String,
+	guild_id: String || Number,
 	$activities: Boolean,
 	$channels: Object,
 	$typing: Boolean,
