@@ -1,5 +1,5 @@
 export const VoiceStateUpdateSchema = {
-	$guild_id: String,
+	$guild_id: Number,
 	$channel_id: String,
 	self_mute: Boolean,
 	self_deaf: Boolean,
@@ -8,7 +8,7 @@ export const VoiceStateUpdateSchema = {
 
 //TODO need more testing when community guild and voice stage channel are working
 export interface VoiceStateUpdateSchema {
-	channel_id: string;
+	channel_id: string | number;
 	guild_id?: string;
 	suppress?: boolean;
 	request_to_speak_timestamp?: Date;
