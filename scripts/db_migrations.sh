@@ -9,18 +9,19 @@ else
 fi
 
 [ -f ".env" ] && (
-    mv .env .env.tmp
-    source .env.tmp
+    mv .env .env.tmp 2>/dev/null
+    source .env.tmp 2>/dev/null
 )
+npm run build clean logerrors pretty-errors
 
 make_migration() {
     echo "Creating migrations for $2"
-    mkdir "../util/src/migrations/$2"
+    mkdir "src/util/migrations/$2" 2>/dev/null
 #    npm run build clean logerrors pretty-errors
-#    THREADS=1 DATABASE="$1" DB_MIGRATE=a npm run start:bundle
-    THREADS=1 DATABASE="$1" DB_MIGRATE=a npx typeorm-ts-node-commonjs migration:generate "../util/src/migrations/$2/$FILENAME" -d ../util/src/util/Database.ts -p
-    npm run build clean logerrors pretty-errors
     THREADS=1 DATABASE="$1" DB_MIGRATE=a npm run start:bundle
+    THREADS=1 DATABASE="$1" DB_MIGRATE=a npx typeorm-ts-node-commonjs migration:generate "src/util/migrations/$2/$FILENAME" -d src/util/util/Database.ts -p
+    #npm run build clean logerrors pretty-errors
+    #THREADS=1 DATABASE="$1" DB_MIGRATE=a npm run start:bundle
 }
 
 npm i sqlite3
@@ -36,5 +37,5 @@ make_migration "database.db" "sqlite"
     make_migration "$FC_DB_MARIADB" "mariadb"
 )
 
-[ -f ".env.tmp" ] && mv .env.tmp .env
+[ -f ".env.tmp" ] && mv .env.tmp .env 2>/dev/null
 
