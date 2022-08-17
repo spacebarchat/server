@@ -9,7 +9,7 @@ import {
 } from "@fosscord/util";
 
 export async function Close(this: WebSocket, code: number, reason: string) {
-	console.log("[WebSocket] closed", code, reason);
+	console.log("[WebSocket] closed", code, reason.toString());
 	if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
 	if (this.readyTimeout) clearTimeout(this.readyTimeout);
 	this.deflate?.close();

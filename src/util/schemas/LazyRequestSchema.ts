@@ -9,7 +9,7 @@ export interface LazyRequest {
 }
 
 export const LazyRequest = {
-	guild_id: String || Number,
+	guild_id: Number,
 	$activities: Boolean,
 	$channels: Object,
 	$typing: Boolean,
