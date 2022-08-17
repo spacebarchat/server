@@ -4,7 +4,7 @@ import { Request, Response, Router } from "express";
 const router = Router();
 
 router.post("/", route({ permission: "MANAGE_MESSAGES" }), (req: Request, res: Response) => {
-	// TODO:
+	// TODO: implement route
 	res.json({
 		id: "",
 		type: 0,

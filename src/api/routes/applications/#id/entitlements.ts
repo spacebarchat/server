@@ -4,7 +4,7 @@ import { Request, Response, Router } from "express";
 const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	// TODO:
+	// TODO: implement route
 	//const { exclude_consumed } = req.query;
 	res.status(200).send([]);
 });

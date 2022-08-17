@@ -7,9 +7,10 @@ import { route } from "..";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
+	let cfg = Config.get();
 	const { offset, limit, categories } = req.query;
-	let showAllGuilds = Config.get().guild.discovery.showAllGuilds;
-	let configLimit = Config.get().guild.discovery.limit;
+	let showAllGuilds = cfg.guild.discovery.showAllGuilds;
+	let configLimit = cfg.guild.discovery.limit;
 	// ! this only works using SQL querys
 	// const guilds = await Guild.find({ where: { features: "DISCOVERABLE" } }); //, take: Math.abs(Number(limit)) });
 	let guilds;
@@ -31,7 +32,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	res.send({
 		total: total,
 		guilds: guilds,
-		offset: Number(offset || Config.get().guild.discovery.offset),
+		offset: Number(offset || cfg.guild.discovery.offset),
 		limit: Number(limit || configLimit)
 	});
 });

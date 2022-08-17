@@ -19,8 +19,14 @@ import {
 } from ".";
 
 export class ConfigValue {
-	gateway: EndpointConfiguration = new EndpointConfiguration();
-	cdn: EndpointConfiguration = new EndpointConfiguration();
+	gateway: EndpointConfiguration = {
+		endpointPrivate: `ws://localhost:3001`,
+		endpointPublic: '${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}'
+	};
+	cdn: EndpointConfiguration = {
+		endpointPrivate: `ws://localhost:3001`,
+		endpointPublic: "${location.host}"
+	};
 	api: ApiConfiguration = new ApiConfiguration();
 	general: GeneralConfiguration = new GeneralConfiguration();
 	limits: LimitsConfiguration = new LimitsConfiguration();

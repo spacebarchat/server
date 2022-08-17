@@ -3,7 +3,6 @@ import { OrmUtils } from ".";
 import { ConfigValue } from "../config";
 import { ConfigEntity } from "../entities/Config";
 
-// TODO: yaml instead of json
 const overridePath = process.env.CONFIG_PATH ?? "";
 
 let config: ConfigValue;

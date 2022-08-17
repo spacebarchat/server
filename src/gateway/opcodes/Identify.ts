@@ -77,7 +77,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			// TODO: check if status is only one of: online, dnd, offline, idle
 			status: identify.presence?.status || "offline", //does the session always start as online?
 			client_info: {
-				//TODO read from identity
+				//TODO: read from identity
 				client: "desktop",
 				os: identify.properties?.os,
 				version: 0
@@ -147,7 +147,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const channels = recipients.map((x) => {
 		// @ts-ignore
 		x.channel.recipients = x.channel.recipients?.map((x) => x.user);
-		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
+		//TODO: is this needed? check if users in group dm that are not friends are sent in the READY event
 		users = users.concat(x.channel.recipients as unknown as User[]);
 		if (x.channel.isDm()) {
 			x.channel.recipients = x.channel.recipients!.filter((x) => x.id !== this.user_id);
@@ -274,10 +274,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		d
 	});
 
-	//TODO send READY_SUPPLEMENTAL
-	//TODO send GUILD_MEMBER_LIST_UPDATE
-	//TODO send SESSIONS_REPLACE
-	//TODO send VOICE_STATE_UPDATE to let the client know if another device is already connected to a voice channel
+	//TODO: send READY_SUPPLEMENTAL
+	//TODO: send GUILD_MEMBER_LIST_UPDATE
+	//TODO: send SESSIONS_REPLACE
+	//TODO: send VOICE_STATE_UPDATE to let the client know if another device is already connected to a voice channel
 
 	await setupListener.call(this);
 }

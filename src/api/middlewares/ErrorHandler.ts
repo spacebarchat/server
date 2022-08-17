@@ -9,8 +9,8 @@ export function ErrorHandler(error: Error, req: Request, res: Response, next: Ne
 		let code = 400;
 		let httpcode = code;
 		let message = error?.toString();
-		let errors = undefined;
-		let data = undefined;
+		let errors = null;
+		let data = null;
 
 		if (error instanceof HTTPError && error.code) {
 			code = httpcode = error.code;

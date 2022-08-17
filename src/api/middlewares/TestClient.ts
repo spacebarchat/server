@@ -8,6 +8,7 @@ import ProxyAgent from "proxy-agent";
 import { AssetCacheItem } from "../util/entities/AssetCacheItem";
 
 const AssetsPath = path.join(__dirname, "..", "..", "..", "assets");
+const cfg = Config.get();
 
 export default function TestClient(app: Application) {
 	const agent = new ProxyAgent();
@@ -71,22 +72,22 @@ export default function TestClient(app: Application) {
 		return res.send(fs.readFileSync(assetCacheItem.FilePath));
 	});
 	app.get("/developers*", (_req: Request, res: Response) => {
-		const { useTestClient } = Config.get().client;
 		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
 		res.set("content-type", "text/html");
 
-		if (!useTestClient) return res.send("Test client is disabled on this instance. Use a stand-alone client to connect this instance.");
+		if (!cfg.client.useTestClient)
+			return res.send("Test client is disabled on this instance. Use a stand-alone client to connect this instance.");
 
 		res.send(fs.readFileSync(path.join(__dirname, "..", "..", "..", "assets", "developers.html"), { encoding: "utf8" }));
 	});
 	app.get("*", (req: Request, res: Response) => {
-		const { useTestClient } = Config.get().client;
 		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
 		res.set("content-type", "text/html");
 
 		if (req.url.startsWith("/api") || req.url.startsWith("/__development")) return;
 
-		if (!useTestClient) return res.send("Test client is disabled on this instance. Use a stand-alone client to connect this instance.");
+		if (!cfg.client.useTestClient)
+			return res.send("Test client is disabled on this instance. Use a stand-alone client to connect this instance.");
 		if (req.url.startsWith("/invite")) return res.send(html.replace("9b2b7f0632acd0c5e781", "9f24f709a3de09b67c49"));
 
 		res.send(html);
@@ -94,11 +95,8 @@ export default function TestClient(app: Application) {
 }
 
 function applyEnv(html: string): string {
-	const CDN_ENDPOINT = (Config.get().cdn.endpointClient || Config.get()?.cdn.endpointPublic || process.env.CDN || "").replace(
-		/(https?)?(:\/\/?)/g,
-		""
-	);
-	const GATEWAY_ENDPOINT = Config.get().gateway.endpointClient || Config.get()?.gateway.endpointPublic || process.env.GATEWAY || "";
+	const CDN_ENDPOINT = (process.env.CDN || cfg.cdn.endpointPublic || "").replace(/(https?)?(:\/\/?)/g, "");
+	const GATEWAY_ENDPOINT = process.env.GATEWAY || cfg.gateway.endpointPublic || "";
 
 	if (CDN_ENDPOINT) {
 		html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${CDN_ENDPOINT}\`,`);

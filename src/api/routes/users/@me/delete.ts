@@ -17,7 +17,11 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		}
 	}
 
-	// TODO: decrement guild member count
+	(await Member.find({ where: { id: req.user_id }, relations: ["guild"] })).forEach((x) => {
+		let g = x.guild;
+		if (g.member_count) g.member_count--;
+		g.save();
+	});
 
 	if (correctpass) {
 		await Promise.all([User.delete({ id: req.user_id }), Member.delete({ id: req.user_id })]);

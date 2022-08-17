@@ -60,7 +60,7 @@ const exampleData = {
 	status: 200
 };
 
-//TODO add function that support both ip and domain names
+//TODO: add function that support both ip and domain names
 export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 	const { ipdataApiKey } = Config.get().security;
 	if (!ipdataApiKey) return { ...exampleData, ip };

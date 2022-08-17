@@ -4,8 +4,9 @@ import { Request, Response, Router } from "express";
 import fetch from "node-fetch";
 const router: Router = Router();
 
+let cfg = Config.get();
 router.get("/:code", route({}), async (req: Request, res: Response) => {
-	const { allowDiscordTemplates, allowRaws, enabled } = Config.get().templates;
+	const { allowDiscordTemplates, allowRaws, enabled } = cfg.templates;
 	if (!enabled) res.json({ code: 403, message: "Template creation & usage is disabled on this instance." }).sendStatus(403);
 
 	const { code } = req.params;
@@ -33,14 +34,14 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 });
 
 router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: Request, res: Response) => {
-	const { enabled, allowTemplateCreation, allowDiscordTemplates, allowRaws } = Config.get().templates;
+	const { enabled, allowTemplateCreation, allowDiscordTemplates, allowRaws } = cfg.templates;
 	if (!enabled) return res.json({ code: 403, message: "Template creation & usage is disabled on this instance." }).sendStatus(403);
 	if (!allowTemplateCreation) return res.json({ code: 403, message: "Template creation is disabled on this instance." }).sendStatus(403);
 
 	const { code } = req.params;
 	const body = req.body as GuildTemplateCreateSchema;
 
-	const { maxGuilds } = Config.get().limits.user;
+	const { maxGuilds } = cfg.limits.user;
 
 	const guild_count = await Member.count({ where: { id: req.user_id } });
 	if (guild_count >= maxGuilds) {

@@ -39,7 +39,7 @@ export class FosscordServer extends Server {
 		await initEvent();
 		await initInstance();
 
-		let logRequests = process.env["LOG_REQUESTS"] != undefined;
+		let logRequests = "LOG_REQUESTS" in process.env;
 		if (logRequests) {
 			this.app.use(
 				morgan("combined", {

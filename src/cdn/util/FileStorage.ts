@@ -1,5 +1,5 @@
 import fs from "fs";
-import { dirname, join } from "path";
+import path, { dirname, join } from "path";
 import { Readable } from "stream";
 import { Storage } from "./Storage";
 //import ExifTransformer = require("exif-be-gone");
@@ -7,44 +7,47 @@ import ExifTransformer from "exif-be-gone";
 
 // TODO: split stored files into separate folders named after cloned route
 
-function getPath(path: string) {
+function getPath(filePath: string) {
 	// STORAGE_LOCATION has a default value in start.ts
 	const root = process.env.STORAGE_LOCATION || "../";
-	let filename = join(root, path);
+	let filename = join(root, filePath);
 
-	if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
+	if (filePath.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
 	return filename;
 }
 
 export class FileStorage implements Storage {
-	async get(path: string): Promise<Buffer | null> {
-		path = getPath(path);
+	async get(filePath: string): Promise<Buffer | null> {
+		filePath = getPath(filePath);
 		try {
-			return fs.readFileSync(path);
+			return fs.readFileSync(filePath);
 		} catch (error) {
 			try {
-				const files = fs.readdirSync(path);
+				const files = fs.readdirSync(filePath);
 				if (!files.length) return null;
-				return fs.readFileSync(join(path, files[0]));
+				return fs.readFileSync(join(filePath, files[0]));
 			} catch (error) {
 				return null;
 			}
 		}
 	}
 
-	async set(path: string, value: any) {
-		path = getPath(path);
+	async set(filePath: string, value: any) {
+		filePath = getPath(filePath);
 		//fse.ensureDirSync(dirname(path));
-		fs.mkdirSync(dirname(path), { recursive: true });
+		fs.mkdirSync(dirname(filePath), { recursive: true });
 
 		value = Readable.from(value);
-		const cleaned_file = fs.createWriteStream(path);
+		const cleaned_file = fs.createWriteStream(filePath);
 
 		return value.pipe(new ExifTransformer()).pipe(cleaned_file);
 	}
 
-	async delete(path: string) {
-		//TODO we should delete the parent directory if empty
-		fs.unlinkSync(getPath(path));
+	async delete(filePath: string) {
+		//TODO: (done?) we should delete the parent directory if empty
+		fs.unlinkSync(getPath(filePath));
+		if (fs.readdirSync(path.dirname(filePath)).length == 0) {
+			fs.rmSync(path.dirname(filePath));
+		}
 	}
 }

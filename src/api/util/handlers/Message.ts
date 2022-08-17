@@ -216,7 +216,6 @@ export async function sendMessage(opts: MessageOptions) {
 	)
 		return;
 
-	//TODO: check this, removed toJSON call
 	await Promise.all([
 		Message.insert(message),
 		emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data: message } as MessageCreateEvent)

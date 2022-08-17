@@ -7,9 +7,10 @@ const router: Router = Router();
 //TODO: create default channel
 
 router.post("/", route({ body: "GuildCreateSchema", right: "CREATE_GUILDS" }), async (req: Request, res: Response) => {
+	let cfg = Config.get();
 	const body = req.body as GuildCreateSchema;
 
-	const { maxGuilds } = Config.get().limits.user;
+	const { maxGuilds } = cfg.limits.user;
 	const guild_count = await Member.count({ where: { id: req.user_id } });
 	const rights = await getRights(req.user_id);
 	if (guild_count >= maxGuilds && !rights.has("MANAGE_GUILDS")) {
@@ -18,7 +19,7 @@ router.post("/", route({ body: "GuildCreateSchema", right: "CREATE_GUILDS" }), a
 
 	const guild = await Guild.createGuild({ ...body, owner_id: req.user_id });
 
-	const { autoJoin } = Config.get().guild;
+	const { autoJoin } = cfg.guild;
 	if (autoJoin.enabled && !autoJoin.guilds?.length) {
 		// @ts-ignore
 		await Config.set({ guild: { autoJoin: { guilds: [guild.id] } } });

@@ -26,7 +26,7 @@ router.put("/:user_id", route({}), async (req: Request, res: Response) => {
 		return res.status(201).json(new_channel);
 	} else {
 		if (channel.recipients!.map((r) => r.user_id).includes(user_id)) {
-			throw DiscordApiErrors.INVALID_RECIPIENT; //TODO is this the right error?
+			throw DiscordApiErrors.INVALID_RECIPIENT; //TODO: is this the right error?
 		}
 
 		channel.recipients!.push(OrmUtils.mergeDeep(new Recipient(), { channel_id, user_id: user_id }));
@@ -57,7 +57,7 @@ router.delete("/:user_id", route({}), async (req: Request, res: Response) => {
 		throw DiscordApiErrors.MISSING_PERMISSIONS;
 
 	if (!channel.recipients!.map((r) => r.user_id).includes(user_id)) {
-		throw DiscordApiErrors.INVALID_RECIPIENT; //TODO is this the right error?
+		throw DiscordApiErrors.INVALID_RECIPIENT; //TODO: is this the right error?
 	}
 
 	await Channel.removeRecipientFromChannel(channel, user_id);
