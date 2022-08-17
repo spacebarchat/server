@@ -5237,6 +5237,11 @@
   dependencies:
     "whatwg-url" "^5.0.0"
 
+"node-git-hooks@^1.0.6":
+  "integrity" "sha512-ZTiTpRm16kxZY3JQugqjtm1u6nRt0cF2IH8lTMbiyv1V0qUA6ao8yHBwu4p58s3Ry+DbrlXOgUR4b4o/KzjWAA=="
+  "resolved" "https://registry.npmjs.org/node-git-hooks/-/node-git-hooks-1.0.6.tgz"
+  "version" "1.0.6"
+
 "node-gyp@8.x":
   "integrity" "sha512-olTJRgUtAb/hOXG0E93wZDs5YiJlgbXxTwQAFHyNlRsXQnYzUaF2aGgujZbw+hR8aF4ZG/rST57bWMWD16jr9w=="
   "resolved" "https://registry.npmjs.org/node-gyp/-/node-gyp-8.4.1.tgz"
