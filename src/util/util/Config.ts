@@ -5,6 +5,7 @@ import { ConfigValue } from "../config";
 import { ConfigEntity } from "../entities/Config";
 
 const overridePath = process.env.CONFIG_PATH ?? "";
+const initialPath = path.join(process.cwd(), "initial.json");
 
 let config: ConfigValue;
 let pairs: ConfigEntity[];
@@ -28,6 +29,14 @@ export const Config = {
 			} catch (error) {
 				fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
 			}
+		if (fs.existsSync(initialPath)) {
+			console.log("[Config] Importing initial configuration...");
+			try {
+				const overrideConfig = JSON.parse(fs.readFileSync(initialPath, { encoding: "utf8" }));
+				config = overrideConfig.merge(config);
+				fs.rmSync(initialPath);
+			} catch (error) {}
+		}
 
 		if (fs.existsSync(path.join(process.cwd(), "initial.json")))
 			try {

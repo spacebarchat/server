@@ -12,7 +12,7 @@ let lines3 = lines2.filter((y) => y.includes(": BitFlag("));
 let lines4 = lines3.map((x) => x.split("//")[0].trim());
 
 function BitFlag(int) {
-	return 1n << eval(`${int}n`);
+	return 1n << BigInt(int);
 }
 
 let rights = [];
