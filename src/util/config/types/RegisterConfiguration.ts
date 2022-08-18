@@ -6,13 +6,13 @@ export class RegisterConfiguration {
     dateOfBirth: DateOfBirthConfiguration = new DateOfBirthConfiguration();
     password: PasswordConfiguration = new PasswordConfiguration();
     //base types
-    disabled: boolean = false;
-    requireCaptcha: boolean = true;
-    requireInvite: boolean = false;
-    guestsRequireInvite: boolean = true;
-    allowNewRegistration: boolean = true;
-    allowMultipleAccounts: boolean = true;
-    blockProxies: boolean = true;
-    incrementingDiscriminators: boolean = false; // random otherwise
-    defaultRights: string = "0";
+    disabled = false;
+    requireCaptcha = true;
+    requireInvite = false;
+    guestsRequireInvite = true;
+    allowNewRegistration = true;
+    allowMultipleAccounts = true;
+    blockProxies = true;
+    incrementingDiscriminators = false; // random otherwise
+    defaultRights = "648540060672";
 }
