@@ -1,5 +1,5 @@
 export class AutoJoinConfiguration {
-    enabled: boolean = true;
+    enabled = true;
     guilds: string[] = [];
-    canLeave: boolean = true;
+    canLeave = true;
 }
