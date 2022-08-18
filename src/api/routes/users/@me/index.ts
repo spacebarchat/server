@@ -10,8 +10,15 @@ import {
 	UserModifySchema,
 	UserUpdateEvent
 } from "@fosscord/util";
-import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
+
+let bcrypt: any;
+try {
+	bcrypt = require("bcrypt");
+} catch {
+	bcrypt = require("bcryptjs");
+	console.log("Warning: using bcryptjs because bcrypt is not installed! Performance will be affected.");
+}
 
 const router: Router = Router();
 
