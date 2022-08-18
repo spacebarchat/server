@@ -1,5 +1,5 @@
 export class ChannelLimits {
-    maxPins: number = 500;
-    maxTopic: number = 1024;
-    maxWebhooks: number = 100;
+    maxPins = 500;
+    maxTopic = 1024;
+    maxWebhooks = 100;
 }
