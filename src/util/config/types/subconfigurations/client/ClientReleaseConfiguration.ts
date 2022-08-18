@@ -1,4 +1,4 @@
 export class ClientReleaseConfiguration {
-    useLocalRelease: boolean = true; //TODO
-    upstreamVersion: string = "0.0.264";
+    useLocalRelease = true; //TODO
+    upstreamVersion = "0.0.264";
 }
