@@ -22,6 +22,7 @@ export async function Message(this: WebSocket, buffer: Buffer) {
 		data = erlpack.unpack(buffer);
 	else if (this.encoding === "json") {
 		if(this.inflate) {
+			// TODO: for some reason, this seems to still have a tendency to throw an unhandled exception, this is here because not all payloads seem to be compressed.
 			try {
 				buffer = this.inflate.process(buffer) as any;
 			} catch {
