@@ -4,13 +4,13 @@
 	"description": "",
 	"main": "src/start.js",
 	"scripts": {
-		"setup": "npm install --omit optional && ts-patch install -s && patch-package && npm run build",
+		"setup": "npm install --omit optional && patch-package && npm run build",
 		"depclean": "node scripts/depclean.js",
 		"depcheck": "node scripts/depcheck.js",
-		"build": "node scripts/build.js",
+		"build": "node scripts/build_new.js",
 		"postinstall": "patch-package && node-git-hooks",
 		"genschemas": "node scripts/generate_schemas.js",
-		"start": "node scripts/build.js && node --enable-source-maps dist/start.js",
+		"start": "node scripts/build_new.js && node --enable-source-maps dist/start.js",
 		"start:bundle": "node --enable-source-maps dist/start.js",
 		"start:bundle:dbg": "node --enable-source-maps --inspect dist/start.js",
 		"start:bundle:vscode-dbg": "npm run build clean logerrors pretty-errors && node --enable-source-maps --inspect dist/start.js",
@@ -29,10 +29,7 @@
 	},
 	"homepage": "https://fosscord.com",
 	"imports": {
-		"@fosscord/api": "./dist/api/index",
-		"@fosscord/gateway": "./dist/gateway/index",
-		"@fosscord/cdn": "./dist/cdn/index",
-		"@fosscord/util": "./dist/util/index"
+		"#*": "./dist/*/index.js"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.18.9",
@@ -63,7 +60,6 @@
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.137.0",
 		"@babel/preset-typescript": "^7.15.0",
-		"@ovos-media/ts-transform-paths": "^1.7.18-1",
 		"@sentry/node": "^7.7.0",
 		"@sentry/tracing": "^7.7.0",
 		"@types/node-fetch": "^2.6.2",

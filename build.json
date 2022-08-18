@@ -1,11 +1,5 @@
 {
 	"compiler": "tsc",
-	"paths": {
-		"@fosscord/api": "api/index",
-		"@fosscord/gateway": "gateway/index",
-		"@fosscord/cdn": "cdn/index",
-		"@fosscord/util": "util/index"
-	},
 	"verbose": true,
 	"writeBuildLog": true,
 	"writeAnsiBuildLog": true,
