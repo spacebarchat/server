@@ -1216,10 +1216,16 @@
         "type": "object",
         "properties": {
             "channel_id": {
-                "type": "string"
+                "type": [
+                    "string",
+                    "integer"
+                ]
             },
             "guild_id": {
-                "type": "string"
+                "type": [
+                    "string",
+                    "integer"
+                ]
             },
             "suppress": {
                 "type": "boolean"
