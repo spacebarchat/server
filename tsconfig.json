@@ -73,7 +73,6 @@
 			"@fosscord/cdn": ["./cdn/index"],
 			"@fosscord/util": ["./util/index"]
 		},
-		"plugins": [{ "transform": "@ovos-media/ts-transform-paths" }],
 		"noEmitHelpers": true,
 		"importHelpers": true
 	}
