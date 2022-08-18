@@ -1,6 +1,6 @@
 import fs from "fs";
-import { PluginConfigEntity } from "util/entities/PluginConfig";
 import { Environment } from "..";
+import { PluginConfigEntity } from "../entities/PluginConfig";
 
 // TODO: yaml instead of json
 const overridePath = process.env.PLUGIN_CONFIG_PATH ?? "";

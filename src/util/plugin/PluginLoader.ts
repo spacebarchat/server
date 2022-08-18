@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { PluginIndex } from "plugins/PluginIndex";
 import { OrmUtils } from "..";
+import { PluginIndex } from "../../plugins/PluginIndex";
 import { PluginLoadedEventArgs, PluginManifest, PluginStore } from "./";
 import { PluginConfig } from "./PluginConfig";
 
