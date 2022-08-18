@@ -1,3 +1,3 @@
 export class LoginConfiguration {
-    requireCaptcha: boolean = false;
+     requireCaptcha = false;
 }
