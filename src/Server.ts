@@ -10,7 +10,7 @@ import * as Tracing from "@sentry/tracing";
 import express from "express";
 import http from "http";
 import { bold, green, yellow } from "picocolors";
-import { PluginConfig } from "util/plugin/PluginConfig";
+import { PluginConfig } from "./util/plugin/PluginConfig";
 
 const app = express();
 const server = http.createServer();

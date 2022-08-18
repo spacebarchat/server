@@ -4,7 +4,7 @@ import { Server, ServerOptions } from "lambert-server";
 import morgan from "morgan";
 import path from "path";
 import { red } from "picocolors";
-import { PluginConfig } from "util/plugin/PluginConfig";
+import { PluginConfig } from "../util";
 import { Authentication, CORS } from "./middlewares/";
 import { BodyParser } from "./middlewares/BodyParser";
 import { ErrorHandler } from "./middlewares/ErrorHandler";

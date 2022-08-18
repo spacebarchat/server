@@ -2,7 +2,7 @@ import { Config, getOrInitialiseDatabase, registerRoutes } from "@fosscord/util"
 import bodyParser from "body-parser";
 import { Server, ServerOptions } from "lambert-server";
 import path from "path";
-import { PluginConfig } from "util/plugin/PluginConfig";
+import { PluginConfig } from "../util/plugin/PluginConfig";
 import avatarsRoute from "./routes/avatars";
 import iconsRoute from "./routes/role-icons";
 

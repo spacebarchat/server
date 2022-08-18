@@ -1,8 +1,8 @@
 import { closeDatabase, Config, getOrInitialiseDatabase, initEvent } from "@fosscord/util";
 import dotenv from "dotenv";
 import http from "http";
-import { PluginConfig } from "util/plugin/PluginConfig";
 import ws from "ws";
+import { PluginConfig } from "../util/plugin/PluginConfig";
 import { Connection } from "./events/Connection";
 dotenv.config();
 
