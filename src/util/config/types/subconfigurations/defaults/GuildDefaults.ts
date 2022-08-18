@@ -1,8 +1,8 @@
 export class GuildDefaults {
-    maxPresences: number = 250000;
-    maxVideoChannelUsers: number = 200;
-    afkTimeout: number = 300;
-    defaultMessageNotifications: number = 1;
-    explicitContentFilter: number = 0;
-    test: number = 123;
+    maxPresences = 250000;
+    maxVideoChannelUsers = 200;
+    afkTimeout = 300;
+    defaultMessageNotifications = 1;
+    explicitContentFilter = 0;
+    test = 123;
 }
