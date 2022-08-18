@@ -2,7 +2,7 @@ import { Region } from ".";
 
 export class RegionConfiguration {
     default = "fosscord";
-    useDefaultAsOptimal: boolean = true;
+    useDefaultAsOptimal = true;
     available: Region[] = [
         {
             id: "fosscord",
