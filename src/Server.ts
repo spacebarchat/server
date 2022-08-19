@@ -10,6 +10,7 @@ import * as Tracing from "@sentry/tracing";
 import express from "express";
 import http from "http";
 import { bold, green, yellow } from "picocolors";
+import { Connections } from "./util/util/Connections";
 // import { PluginLoader } from "@fosscord/util";
 
 const app = express();
@@ -38,6 +39,8 @@ async function main() {
 	server.listen(port);
 	await getOrInitialiseDatabase();
 	await Config.init();
+
+	Connections.init()
 
 	//Sentry
 	if (Config.get().sentry.enabled) {

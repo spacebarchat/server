@@ -6,6 +6,9 @@ export interface PublicConnectedAccount extends Pick<ConnectedAccount, "name" | 
 
 @Entity("connected_accounts")
 export class ConnectedAccount extends BaseClass {
+	@Column()
+	external_id: string;
+
 	@Column({ nullable: true })
 	@RelationId((account: ConnectedAccount) => account.user)
 	user_id: string;
@@ -16,8 +19,8 @@ export class ConnectedAccount extends BaseClass {
 	})
 	user: User;
 
-	@Column({ select: false })
-	access_token: string;
+	@Column({ select: false, nullable: true })
+	access_token?: string;
 
 	@Column({ select: false })
 	friend_sync: boolean;
@@ -39,4 +42,7 @@ export class ConnectedAccount extends BaseClass {
 
 	@Column({ select: false })
 	visibility: number;
+
+	@Column({ type: "simple-array" })
+	integrations: string[];
 }

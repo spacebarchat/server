@@ -1,6 +1,7 @@
 import {
 	ApiConfiguration,
 	ClientConfiguration,
+	ConnectionsConfiguration,
 	DefaultsConfiguration,
 	EndpointConfiguration,
 	GeneralConfiguration,
@@ -43,4 +44,5 @@ export class ConfigValue {
 	metrics: MetricsConfiguration = new MetricsConfiguration();
 	sentry: SentryConfiguration = new SentryConfiguration();
 	defaults: DefaultsConfiguration = new DefaultsConfiguration();
+	connections: ConnectionsConfiguration = new ConnectionsConfiguration();
 }

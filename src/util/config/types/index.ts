@@ -1,5 +1,6 @@
 export * from "./ApiConfiguration";
 export * from "./ClientConfiguration";
+export * from "./ConnectionsConfiguration";
 export * from "./DefaultsConfiguration";
 export * from "./EndpointConfiguration";
 export * from "./GeneralConfiguration";
