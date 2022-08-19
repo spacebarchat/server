@@ -91,6 +91,7 @@
 		"prettier": "^2.7.1",
 		"proxy-agent": "^5.0.0",
 		"reflect-metadata": "^0.1.13",
+		"sqlite3": "^5.0.11",
 		"typeorm": "^0.3.7",
 		"typescript": "^4.2.3",
 		"ws": "^8.8.1"
