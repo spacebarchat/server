@@ -14,5 +14,5 @@ export class RegisterConfiguration {
     allowMultipleAccounts: boolean = true;
     blockProxies: boolean = true;
     incrementingDiscriminators: boolean = false; // random otherwise
-    defaultRights: string = "0";
+    defaultRights: string = "648540060672";
 }
