@@ -7,7 +7,7 @@ Please note that currently our Rendered documentation is out of date. It is accu
 
 Please see the [contributors' guide](https://matrix-org.github.io/synapse/latest/development/contributing_guide.html) in our rendered documentation.
 
-# 1. Who can contribute to Fosscord?
+# 1. Who can contribute to Synapse?
 
 Everyone is welcome to contribute code to [Fosscord GitHub Organisation Projects](https://github.com/fosscord), 
 provided that they are willing to license their contributions under the 
@@ -123,7 +123,7 @@ By making a contribution to this project, I certify that:
 ```
 
 If you agree to this for your contribution, then all that's needed is to
-include the line in your commit:
+include the line in your commit or pull request comment:
 
 ```
 Signed-off-by: Your Name <your@email.example.org>
@@ -133,22 +133,13 @@ We accept contributions under a legally identifiable name, such as
 your name on government documentation or common-law names (names
 claimed by legitimate usage or repute). 
 
+We also accept contributions where Sign-Off is done privately with Fosscord Organisation.
+For this alternative Path please contact the Staff on the Discord.
+
 Git allows you to add this signoff automatically when using the `-s`
 flag to `git commit`, which uses the name and email set in your
 `user.name` and `user.email` git configs.
 
-We also accept contributions where Sign-Off is done privately with
-Fosscord Organisation. For this alternative Path please contact
-the Staff on the Discord. We also accept electronically signed
-authorship certificates that are signed with a legally admissible
-electronic signature in the author's jurisdiction. If you present
-such a certificate, you must then reference the fingerprint of the
-signature in the commit. We only accept such electronic signatures
-if there is a way for anyone (including those that are not citizens
-of the author's jurisdiction) to verify the authenticity of
-the certificate. If a commit with an e-signed authorship certificate
-is co-authored, all co-authors of that commit must have an electronically
-signed authorship certificate.
 
 # 10. Turn feedback into better code.
 
