@@ -146,7 +146,9 @@ such a certificate, you must then reference the fingerprint of the
 signature in the commit. We only accept such electronic signatures
 if there is a way for anyone (including those that are not citizens
 of the author's jurisdiction) to verify the authenticity of
-the certificate.
+the certificate. If a commit with an e-signed authorship certificate
+is co-authored, all co-authors of that commit must have an electronically
+signed authorship certificate.
 
 # 10. Turn feedback into better code.
 
