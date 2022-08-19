@@ -19,5 +19,6 @@ api/assets/plugins/*.js
 bundle/depclean.*
 *.tmp
 tmp/
-
 assets/cache/
+*.generated
+initial.json

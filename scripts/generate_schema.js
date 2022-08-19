@@ -36,7 +36,7 @@ const Excluded = [
 	"UncheckedPropertiesSchema",
 	"PropertiesSchema",
 	"AsyncSchema",
-	"AnySchema",
+	"AnySchema"
 ];
 
 function modify(obj) {
@@ -48,13 +48,8 @@ function modify(obj) {
 }
 
 function main() {
-	const files = [
-		...walk(path.join(__dirname, "..", "src", "util", "schemas")),
-	];
-	const program = TJS.getProgramFromFiles(
-		files,
-		compilerOptions
-	);
+	const files = [...walk(path.join(__dirname, "..", "src", "util", "schemas"))];
+	const program = TJS.getProgramFromFiles(files, compilerOptions);
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 

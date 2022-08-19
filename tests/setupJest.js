@@ -17,7 +17,7 @@ global.expect.extend({
 
 		return {
 			pass: time < target && !error,
-			message: () => error || `${func.name} took ${time}ms of maximum ${target}`,
+			message: () => error || `${func.name} took ${time}ms of maximum ${target}`
 		};
-	},
+	}
 });
