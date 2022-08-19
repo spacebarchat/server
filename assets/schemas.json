@@ -1467,5 +1467,76 @@
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ConnectionAuthCallbackSchema": {
+        "type": "object",
+        "properties": {
+            "code": {
+                "type": "string"
+            },
+            "friend_sync": {
+                "type": "boolean"
+            },
+            "insecure": {
+                "type": "boolean"
+            },
+            "state": {
+                "type": "string"
+            },
+            "openid_params": {
+                "type": "object",
+                "properties": {
+                    "openid.assoc_handle": {
+                        "type": "string"
+                    },
+                    "openid.claimed_id": {
+                        "type": "string"
+                    },
+                    "openid.identity": {
+                        "type": "string"
+                    },
+                    "openid.mode": {
+                        "type": "string"
+                    },
+                    "openid.ns": {
+                        "type": "string"
+                    },
+                    "openid.op_endpoint": {
+                        "type": "string"
+                    },
+                    "openid.response_nonce": {
+                        "type": "string"
+                    },
+                    "openid.return_to": {
+                        "type": "string"
+                    },
+                    "openid.sig": {
+                        "type": "string"
+                    },
+                    "openid.signed": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "openid.assoc_handle",
+                    "openid.claimed_id",
+                    "openid.identity",
+                    "openid.mode",
+                    "openid.ns",
+                    "openid.op_endpoint",
+                    "openid.response_nonce",
+                    "openid.return_to",
+                    "openid.sig",
+                    "openid.signed"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "friend_sync",
+            "insecure"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
     }
 }

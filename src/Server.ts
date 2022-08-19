@@ -10,6 +10,7 @@ import { green, bold, yellow } from "picocolors";
 import { Config, getOrInitialiseDatabase } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
+import { Connections } from "./util/util/Connections";
 // import { PluginLoader } from "@fosscord/util";
 
 const app = express();
@@ -67,6 +68,8 @@ async function main() {
 		// 	],
 		// },
 	} as any);
+
+	Connections.init()
 
 	//Sentry
 	if (Config.get().sentry.enabled) {

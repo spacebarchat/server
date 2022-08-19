@@ -2421,6 +2421,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/openid@^2.0.2":
+  "integrity" "sha512-PFLFF6h3n6nsjOC+BBKVDkqGeM+CvYYFHA95Klmg0DOVzuiHEBZFOKoEEubkRMkv/aS684/ww+Gw/2tcBo2n8A=="
+  "resolved" "https://registry.npmjs.org/@types/openid/-/openid-2.0.2.tgz"
+  "version" "2.0.2"
+
 "@types/prettier@^2.1.5":
   "integrity" "sha512-ymZk3LEC/fsut+/Q5qejp6R9O1rMxz3XaRHDV6kX8MrGAhOSPqVARbDi+EZvInBpw+BnCX3TD240byVkOfQsHg=="
   "resolved" "https://registry.npmjs.org/@types/prettier/-/prettier-2.6.3.tgz"
@@ -2691,6 +2696,13 @@
   "integrity" "sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q=="
   "resolved" "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz"
   "version" "0.4.0"
+
+"axios@^0.21.4":
+  "integrity" "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg=="
+  "resolved" "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz"
+  "version" "0.21.4"
+  dependencies:
+    "follow-redirects" "^1.14.0"
 
 "babel-jest@^28.1.3":
   "integrity" "sha512-epUaPOEWMk3cWX0M/sPvCHHCe9fMFAa/9hXEgKP8nFfNl/jlGkE9ucq9NqkZGXLDduCJYS0UvSlPUwC0S+rH6Q=="
@@ -3758,6 +3770,11 @@
   "version" "2.0.0"
   dependencies:
     "micromatch" "^4.0.2"
+
+"follow-redirects@^1.14.0":
+  "integrity" "sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA=="
+  "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.1.tgz"
+  "version" "1.15.1"
 
 "form-data@^3.0.0":
   "integrity" "sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg=="
@@ -5380,6 +5397,14 @@
     "is-docker" "^2.0.0"
     "is-wsl" "^2.1.1"
 
+"openid@^2.0.10":
+  "integrity" "sha512-EFTQ61/OUVhCeq78Y3rBpdKSuvgb0lwkU8nN4QTdcv0afc5MT7e4IVuZwgkMsgE993dmhbIhkxHFP3iTVJXWmw=="
+  "resolved" "https://registry.npmjs.org/openid/-/openid-2.0.10.tgz"
+  "version" "2.0.10"
+  dependencies:
+    "axios" "^0.21.4"
+    "qs" "^6.5.2"
+
 "optional-require@^1.1.8":
   "integrity" "sha512-jq83qaUb0wNg9Krv1c5OQ+58EK+vHde6aBPzLvPPqJm89UQWsvSuFy9X/OSNJnFeSOKo7btE0n8Nl2+nE+z5nA=="
   "resolved" "https://registry.npmjs.org/optional-require/-/optional-require-1.1.8.tgz"
@@ -5745,7 +5770,7 @@
   "resolved" "https://registry.npmjs.org/punycode/-/punycode-2.1.1.tgz"
   "version" "2.1.1"
 
-"qs@^6.10.3", "qs@6.10.3":
+"qs@^6.10.3", "qs@^6.5.2", "qs@6.10.3":
   "integrity" "sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ=="
   "resolved" "https://registry.npmjs.org/qs/-/qs-6.10.3.tgz"
   "version" "6.10.3"

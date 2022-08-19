@@ -10,7 +10,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/auth/mfa/totp",
 	// Routes with a seperate auth system
 	"/webhooks/",
-	// Public information endpoints 
+	// Public information endpoints
 	"/ping",
 	"/gateway",
 	"/experiments",
@@ -26,7 +26,9 @@ export const NO_AUTHORIZATION_ROUTES = [
 	// Public policy pages
 	"/policies/instance",
 	// Asset delivery
-	/\/guilds\/\d+\/widget\.(json|png)/
+	/\/guilds\/\d+\/widget\.(json|png)/,
+	// Connections
+	/\/connections\/\w+\/callback/
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;
