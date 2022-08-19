@@ -7,7 +7,7 @@ Please note that currently our Rendered documentation is out of date. It is accu
 
 Please see the [contributors' guide](https://matrix-org.github.io/synapse/latest/development/contributing_guide.html) in our rendered documentation.
 
-# 1. Who can contribute to Synapse?
+# 1. Who can contribute to Fosscord?
 
 Everyone is welcome to contribute code to [Fosscord GitHub Organisation Projects](https://github.com/fosscord), 
 provided that they are willing to license their contributions under the 
