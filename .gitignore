@@ -22,8 +22,7 @@ tmp/
 assets/cache/
 *.generated
 initial.json
-.yarn/
-.yarnrc.yml
+.yarn/cache
 build.json
 
 yarn.lock
