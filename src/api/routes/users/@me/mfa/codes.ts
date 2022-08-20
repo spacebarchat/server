@@ -1,4 +1,3 @@
-import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import { BackupCode, Config, FieldErrors, generateMfaBackupCodes, MfaCodesSchema, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";

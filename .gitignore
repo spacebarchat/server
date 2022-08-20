@@ -24,3 +24,6 @@ assets/cache/
 initial.json
 .yarn/
 .yarnrc.yml
+build.json
+
+yarn.lock

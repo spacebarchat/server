@@ -1,5 +1,3 @@
-import { Router, Request, Response } from "express";
-import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors, UserModifySchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import {
 	emitEvent,
