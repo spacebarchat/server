@@ -38,34 +38,6 @@ async function main() {
 	server.listen(port);
 	await getOrInitialiseDatabase();
 	await Config.init();
-	// only set endpointPublic, if not already set
-	await Config.set({
-		cdn: {
-			endpointClient: "${location.host}",
-			endpointPrivate: `http://localhost:${port}`
-		},
-		gateway: {
-			endpointClient: '${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}',
-			endpointPrivate: `ws://localhost:${port}`,
-			...(!Config.get().gateway.endpointPublic && {
-				endpointPublic: `ws://localhost:${port}`
-			})
-		}
-		// regions: {
-		// 	default: "fosscord",
-		// 	useDefaultAsOptimal: true,
-		// 	available: [
-		// 		{
-		// 			id: "fosscord",
-		// 			name: "Fosscord",
-		// 			endpoint: "127.0.0.1:3001",
-		// 			vip: false,
-		// 			custom: false,
-		// 			deprecated: false,
-		// 		},
-		// 	],
-		// },
-	} as any);
 
 	//Sentry
 	if (Config.get().sentry.enabled) {

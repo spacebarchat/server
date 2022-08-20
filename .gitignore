@@ -26,3 +26,5 @@ initial.json
 build.json
 
 yarn.lock
+
+.yarn/install-state.gz

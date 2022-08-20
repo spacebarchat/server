@@ -1,3 +1,4 @@
+#!/usr/bin/node
 const path = require("path");
 const fs = require("fs");
 const { stdout, exit } = require("process");
@@ -142,9 +143,15 @@ async function main() {
 	execIn("npx yarn set version stable", process.cwd());
 	console.log("  ==> Installing base packages");
 	execIn("npx --yes yarn install", process.cwd(), { stdio: "inherit" });
+	if (data.extra_pkgs.length > 0) {
+		console.log("  ==> Checking dependencies...");
+		checkCompilers();
+		if (data.extra_pkgs.includes("canvas")) checkCanvasDeps();
+		if (data.extra_pkgs.includes("bcrypt")) checkBcryptDeps();
 
-	console.log(`  ==> Installing extra packages: ${data.extra_pkgs.join(", ")}...`);
-	execIn(`npx --yes yarn add -O ${data.extra_pkgs.join(" ")}`, process.cwd(), { stdio: "inherit" });
+		console.log(`  ==> Installing extra packages: ${data.extra_pkgs.join(", ")}...`);
+		execIn(`npx --yes yarn add -O ${data.extra_pkgs.join(" ")}`, process.cwd(), { stdio: "inherit" });
+	}
 
 	console.log("==> Building...");
 	execIn("npx --yes yarn run build", process.cwd(), { stdio: "inherit" });
@@ -208,7 +215,7 @@ function printTitle(input) {
 	console.log();
 }
 async function ask(question) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve, _reject) => {
 		return rl.question(question, (answer) => {
 			resolve(answer);
 		});
@@ -219,4 +226,60 @@ async function ask(question) {
 
 function BitFlag(int) {
 	return 1n << BigInt(int);
+}
+
+function checkCanvasDeps() {
+	if (
+		!(
+			checkDep("pixman", "/usr/include/pixman-1/pixman.h") &&
+			checkDep("pixman", "/usr/lib/libpixman-1.so") &&
+			checkDep("cairo", "/usr/include/cairo/cairo.h") &&
+			checkDep("cairo", "/usr/lib/libcairo.so") &&
+			checkDep("pango", "/usr/include/pango-1.0/pango/pangocairo.h") &&
+			checkDep("pango", "/usr/lib/libpango-1.0.so") &&
+			checkDep("pkgconfig", "/usr/bin/pkg-config")
+		)
+	) {
+		console.log("Canvas requires the following dependencies to be installed: pixman, cairo, pango, pkgconfig");
+		exit(1);
+	}
+}
+function checkBcryptDeps() {
+	/*if (!(checkDep("bcrypt", "/usr/include/bcrypt.h") && checkDep("bcrypt", "/usr/lib/libbcrypt.so"))) {
+		console.log("Bcrypt requires the following dependencies to be installed: bcrypt");
+		exit(1);
+	}*/
+	//TODO: check if required
+}
+
+function checkCompilers() {
+	//check for gcc, grep, make, python-is-python3
+	if (
+		!(
+			checkDep("gcc", "/usr/bin/gcc") &&
+			checkDep("grep", "/usr/bin/grep") &&
+			checkDep("make", "/usr/bin/make") &&
+			checkDep("python3", "/usr/bin/python3")
+		)
+	) {
+		console.log("Compiler requirements not met. Please install the following: gcc, grep, make, python3");
+		exit(1);
+	}
+
+	//check if /usr/bin/python is a symlink to /usr/bin/python3
+	if (!fs.lstatSync("/usr/bin/python").isSymbolicLink()) {
+		console.log("/usr/bin/python is not a symlink. Please make sure it is a symlink to /usr/bin/python3");
+		if (fs.existsSync("/usr/bin/python3")) {
+			console.log("Hint: sudo ln -s /usr/bin/python3 /usr/bin/python");
+		}
+		exit(1);
+	}
+}
+
+function checkDep(name, path, message) {
+	if (!fs.existsSync(path)) {
+		console.log(`${name} not found at ${path}! Installation of some modules may fail!`);
+		console.log(message ?? `Please consult your distro's manual for installation instructions.`);
+	}
+	return fs.existsSync(path);
 }

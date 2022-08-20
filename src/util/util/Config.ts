@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 import { OrmUtils } from ".";
 import { ConfigValue } from "../config";
 import { ConfigEntity } from "../entities/Config";
@@ -24,9 +25,19 @@ export const Config = {
 		if (process.env.CONFIG_PATH)
 			try {
 				const overrideConfig = JSON.parse(fs.readFileSync(overridePath, { encoding: "utf8" }));
-				config = overrideConfig.merge(config);
+				config = OrmUtils.mergeDeep(config, overrideConfig);
 			} catch (error) {
 				fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
+			}
+
+		if (fs.existsSync(path.join(process.cwd(), "initial.json")))
+			try {
+				console.log("[Config] Found initial configuration, merging...");
+				const overrideConfig = JSON.parse(fs.readFileSync(path.join(process.cwd(), "initial.json"), { encoding: "utf8" }));
+				config = OrmUtils.mergeDeep(config, overrideConfig);
+				fs.rmSync(path.join(process.cwd(), "initial.json"));
+			} catch (error) {
+				fs.writeFileSync(path.join(process.cwd(), "failed.conf"), JSON.stringify(config, null, 4));
 			}
 
 		return this.set(config);

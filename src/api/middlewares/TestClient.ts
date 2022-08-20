@@ -94,11 +94,8 @@ export default function TestClient(app: Application) {
 }
 
 function applyEnv(html: string): string {
-	const CDN_ENDPOINT = (Config.get().cdn.endpointClient || Config.get()?.cdn.endpointPublic || process.env.CDN || "").replace(
-		/(https?)?(:\/\/?)/g,
-		""
-	);
-	const GATEWAY_ENDPOINT = Config.get().gateway.endpointClient || Config.get()?.gateway.endpointPublic || process.env.GATEWAY || "";
+	const CDN_ENDPOINT = (Config.get()?.cdn.endpointPublic || process.env.CDN || "").replace(/(https?)?(:\/\/?)/g, "");
+	const GATEWAY_ENDPOINT = Config.get()?.gateway.endpointPublic || process.env.GATEWAY || "";
 
 	if (CDN_ENDPOINT) {
 		html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${CDN_ENDPOINT}\`,`);
