@@ -1,9 +1,15 @@
-import { Router, Request, Response } from "express";
-import { User, generateToken, BackupCode, generateMfaBackupCodes, Config, TotpEnableSchema } from "@fosscord/util";
-import { route } from "@fosscord/api";
-import bcrypt from "bcrypt";
+import { BackupCode, Config, generateMfaBackupCodes, generateToken, TotpEnableSchema, User } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from 'node-2fa';
+
+let bcrypt: any;
+try {
+	bcrypt = require("bcrypt");
+} catch {
+	bcrypt = require("bcryptjs");
+	console.log("Warning: using bcryptjs because bcrypt is not installed! Performance will be affected.");
+}
 
 const router = Router();
 

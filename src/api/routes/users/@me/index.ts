@@ -1,8 +1,26 @@
 import { Router, Request, Response } from "express";
 import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors, UserModifySchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import bcrypt from "bcrypt";
-import { OrmUtils, generateToken } from "@fosscord/util";
+import {
+	emitEvent,
+	FieldErrors,
+	generateToken,
+	handleFile,
+	OrmUtils,
+	PrivateUserProjection,
+	User,
+	UserModifySchema,
+	UserUpdateEvent
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
+
+let bcrypt: any;
+try {
+	bcrypt = require("bcrypt");
+} catch {
+	bcrypt = require("bcryptjs");
+	console.log("Warning: using bcryptjs because bcrypt is not installed! Performance will be affected.");
+}
 
 const router: Router = Router();
 
