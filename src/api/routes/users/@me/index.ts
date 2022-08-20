@@ -53,17 +53,17 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		}
 		user.data.hash = await bcrypt.hash(body.new_password, 12);
 		user.data.valid_tokens_since = new Date();
-		token = await generateToken(user.id) as string;
+		token = (await generateToken(user.id)) as string;
 	}
 
-    if(body.username){
-        let check_username = body?.username?.replace(/\s/g, '');
-        if(!check_username) {
-            throw FieldErrors({
-                username: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
-            });
-        }
-    }
+	if (body.username) {
+		let check_username = body?.username?.replace(/\s/g, "");
+		if (!check_username) {
+			throw FieldErrors({
+				username: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
+			});
+		}
+	}
 
 	user = OrmUtils.mergeDeep(user, body);
 	await user.save();
@@ -77,7 +77,7 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		user_id: req.user_id,
 		data: user
 	} as UserUpdateEvent);
-	
+
 	res.json({
 		...user,
 		token

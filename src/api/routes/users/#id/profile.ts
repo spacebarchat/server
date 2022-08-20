@@ -1,6 +1,6 @@
-import { Router, Request, Response } from "express";
-import { PublicConnectedAccount, PublicUser, User, UserPublic, Member } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Member, PublicConnectedAccount, User, UserPublic } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
@@ -17,22 +17,22 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 
 	let mutual_guilds: object[] = [];
 	let premium_guild_since;
-	const requested_member = await Member.find( { where: { id: req.params.id, } })
-	const self_member = await Member.find( { where: { id: req.user_id, } })
+	const requested_member = await Member.find({ where: { id: req.params.id } });
+	const self_member = await Member.find({ where: { id: req.user_id } });
 
-	for(const rmem of requested_member) {
-		if(rmem.premium_since) {
-			if(premium_guild_since){
-				if(premium_guild_since > rmem.premium_since) {
+	for (const rmem of requested_member) {
+		if (rmem.premium_since) {
+			if (premium_guild_since) {
+				if (premium_guild_since > rmem.premium_since) {
 					premium_guild_since = rmem.premium_since;
 				}
 			} else {
 				premium_guild_since = rmem.premium_since;
 			}
 		}
-		for(const smem of self_member) {
+		for (const smem of self_member) {
 			if (smem.guild_id === rmem.guild_id) {
-				mutual_guilds.push({id: rmem.guild_id, nick: rmem.nick})
+				mutual_guilds.push({ id: rmem.guild_id, nick: rmem.nick });
 			}
 		}
 	}

@@ -1,6 +1,6 @@
-import { DiscoveryConfiguration, AutoJoinConfiguration } from ".";
+import { AutoJoinConfiguration, DiscoveryConfiguration } from ".";
 
 export class GuildConfiguration {
-    discovery: DiscoveryConfiguration = new DiscoveryConfiguration();
-    autoJoin: AutoJoinConfiguration = new AutoJoinConfiguration();
+	discovery: DiscoveryConfiguration = new DiscoveryConfiguration();
+	autoJoin: AutoJoinConfiguration = new AutoJoinConfiguration();
 }

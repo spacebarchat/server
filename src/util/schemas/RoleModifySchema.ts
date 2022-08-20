@@ -1,4 +1,3 @@
-
 export interface RoleModifySchema {
 	name?: string;
 	permissions?: string;

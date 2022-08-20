@@ -1,18 +1,18 @@
-import {
-	RelationshipAddEvent,
-	User,
-	PublicUserProjection,
-	RelationshipType,
-	RelationshipRemoveEvent,
-	emitEvent,
-	Relationship,
-	Config
-} from "@fosscord/util";
-import { Router, Response, Request } from "express";
-import { HTTPError } from "@fosscord/util";
-import { DiscordApiErrors } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import { OrmUtils } from "@fosscord/util";
+import {
+	Config,
+	DiscordApiErrors,
+	emitEvent,
+	HTTPError,
+	OrmUtils,
+	PublicUserProjection,
+	Relationship,
+	RelationshipAddEvent,
+	RelationshipRemoveEvent,
+	RelationshipType,
+	User
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -42,7 +42,11 @@ router.put("/:id", route({ body: "RelationshipPutSchema" }), async (req: Request
 	return await updateRelationship(
 		req,
 		res,
-		await User.findOneOrFail({ where: { id: req.params.id }, relations: ["relationships", "relationships.to"], select: userProjection }),
+		await User.findOneOrFail({
+			where: { id: req.params.id },
+			relations: ["relationships", "relationships.to"],
+			select: userProjection
+		}),
 		req.body.type ?? RelationshipType.friends
 	);
 });
@@ -132,7 +136,9 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 			relationship.type = RelationshipType.blocked;
 			await relationship.save();
 		} else {
-			relationship = await (OrmUtils.mergeDeep(new Relationship(), { to_id: id, type: RelationshipType.blocked, from_id: req.user_id }) as Relationship).save();
+			relationship = await (
+				OrmUtils.mergeDeep(new Relationship(), { to_id: id, type: RelationshipType.blocked, from_id: req.user_id }) as Relationship
+			).save();
 		}
 
 		if (friendRequest && friendRequest.type !== RelationshipType.blocked) {
@@ -158,7 +164,12 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 	const { maxFriends } = Config.get().limits.user;
 	if (user.relationships.length >= maxFriends) throw DiscordApiErrors.MAXIMUM_FRIENDS.withParams(maxFriends);
 
-	let incoming_relationship = OrmUtils.mergeDeep(new Relationship(), { nickname: undefined, type: RelationshipType.incoming, to: user, from: friend });
+	let incoming_relationship = OrmUtils.mergeDeep(new Relationship(), {
+		nickname: undefined,
+		type: RelationshipType.incoming,
+		to: user,
+		from: friend
+	});
 	let outgoing_relationship = OrmUtils.mergeDeep(new Relationship(), {
 		nickname: undefined,
 		type: RelationshipType.outgoing,

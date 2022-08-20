@@ -1,6 +1,6 @@
-import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
-import { Application, OrmUtils, Team, trimSpecial, User } from "@fosscord/util";
+import { Application, OrmUtils, trimSpecial, User } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
@@ -11,14 +11,14 @@ export interface ApplicationCreateSchema {
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	//TODO
-	let results = await Application.find({where: {owner: {id: req.user_id}}, relations: ["owner", "bot"] });
+	let results = await Application.find({ where: { owner: { id: req.user_id } }, relations: ["owner", "bot"] });
 	res.json(results).status(200);
 });
 
 router.post("/", route({}), async (req: Request, res: Response) => {
 	const body = req.body as ApplicationCreateSchema;
-	const user = await User.findOne({where: {id: req.user_id}})
-	if(!user) res.status(420);
+	const user = await User.findOne({ where: { id: req.user_id } });
+	if (!user) res.status(420);
 	let app = OrmUtils.mergeDeep(new Application(), {
 		name: trimSpecial(body.name),
 		description: "",

@@ -1,17 +1,15 @@
+import { route } from "@fosscord/api";
 import {
 	Channel,
 	ChannelPermissionOverwrite,
 	ChannelPermissionOverwriteSchema,
-	ChannelPermissionOverwriteType,
 	ChannelUpdateEvent,
 	emitEvent,
-	getPermission,
+	HTTPError,
 	Member,
 	Role
 } from "@fosscord/util";
-import { Router, Response, Request } from "express";
-import { HTTPError } from "@fosscord/util";
-import { route } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
@@ -22,7 +20,7 @@ router.put(
 		const { channel_id, overwrite_id } = req.params;
 		const body = req.body as ChannelPermissionOverwriteSchema;
 
-		let channel = await Channel.findOneOrFail({ where: {id: channel_id} });
+		let channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 		if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
 		if (body.type === 0) {

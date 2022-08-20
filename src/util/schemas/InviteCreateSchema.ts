@@ -1,4 +1,3 @@
-
 export interface InviteCreateSchema {
 	target_user_id?: string;
 	target_type?: string;

@@ -1,13 +1,13 @@
-import WS from "ws";
 import { WebSocket } from "@fosscord/gateway";
-import { Send } from "../util/Send";
+import { IncomingMessage } from "http";
+import { URL } from "url";
+import WS from "ws";
+import { createDeflate } from "zlib";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { setHeartbeat } from "../util/Heartbeat";
-import { IncomingMessage } from "http";
+import { Send } from "../util/Send";
 import { Close } from "./Close";
 import { Message } from "./Message";
-import { createDeflate } from "zlib";
-import { URL } from "url";
 let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
@@ -17,30 +17,26 @@ try {
 // TODO: specify rate limit in config
 // TODO: check msg max size
 
-export async function Connection(
-	this: WS.Server,
-	socket: WebSocket,
-	request: IncomingMessage
-) {
+export async function Connection(this: WS.Server, socket: WebSocket, request: IncomingMessage) {
 	try {
 		// @ts-ignore
 		socket.on("close", Close);
 		// @ts-ignore
 		socket.on("message", Message);
-		
-		if(process.env.WS_LOGEVENTS)
-		[
-			"close",
-			"error",
-			"upgrade",
-			//"message",
-			"open",
-			"ping",
-			"pong",
-			"unexpected-response"
-		].forEach(x=>{
-			socket.on(x, y => console.log(x, y));
-		});
+
+		if (process.env.WS_LOGEVENTS)
+			[
+				"close",
+				"error",
+				"upgrade",
+				//"message",
+				"open",
+				"ping",
+				"pong",
+				"unexpected-response"
+			].forEach((x) => {
+				socket.on(x, (y) => console.log(x, y));
+			});
 
 		console.log(`[Gateway] Connections: ${this.clients.size}`);
 
@@ -49,23 +45,19 @@ export async function Connection(
 		socket.encoding = searchParams.get("encoding") || "json";
 		if (!["json", "etf"].includes(socket.encoding)) {
 			if (socket.encoding === "etf" && erlpack) {
-				throw new Error(
-					"Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'"
-				);
+				throw new Error("Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'");
 			}
 			return socket.close(CLOSECODES.Decode_error);
 		}
 
 		// @ts-ignore
 		socket.version = Number(searchParams.get("version")) || 8;
-		if (socket.version != 8)
-			return socket.close(CLOSECODES.Invalid_API_version);
+		if (socket.version != 8) return socket.close(CLOSECODES.Invalid_API_version);
 
 		// @ts-ignore
 		socket.compress = searchParams.get("compress") || "";
 		if (socket.compress) {
-			if (socket.compress !== "zlib-stream")
-				return socket.close(CLOSECODES.Decode_error);
+			if (socket.compress !== "zlib-stream") return socket.close(CLOSECODES.Decode_error);
 			socket.deflate = createDeflate({ chunkSize: 65535 });
 			socket.deflate.on("data", (chunk) => socket.send(chunk));
 		}
@@ -80,8 +72,8 @@ export async function Connection(
 		await Send(socket, {
 			op: OPCODES.Hello,
 			d: {
-				heartbeat_interval: 1000 * 30,
-			},
+				heartbeat_interval: 1000 * 30
+			}
 		});
 
 		socket.readyTimeout = setTimeout(() => {

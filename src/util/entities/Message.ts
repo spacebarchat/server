@@ -1,28 +1,15 @@
-import { User } from "./User";
-import { Member } from "./Member";
-import { Role } from "./Role";
-import { Channel } from "./Channel";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { InteractionType } from "../interfaces/Interaction";
 import { Application } from "./Application";
-import {
-	Column,
-	CreateDateColumn,
-	Entity,
-	Index,
-	JoinColumn,
-	JoinTable,
-	ManyToMany,
-	ManyToOne,
-	OneToMany,
-	RelationId,
-	RemoveOptions,
-	UpdateDateColumn,
-} from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
-import { Webhook } from "./Webhook";
-import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
+import { BaseClass } from "./BaseClass";
+import { Channel } from "./Channel";
+import { Guild } from "./Guild";
+import { Member } from "./Member";
+import { Role } from "./Role";
+import { Sticker } from "./Sticker";
+import { User } from "./User";
+import { Webhook } from "./Webhook";
 
 export enum MessageType {
 	DEFAULT = 0,
@@ -62,7 +49,7 @@ export class Message extends BaseClass {
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => Channel, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	channel: Channel;
 
@@ -72,7 +59,7 @@ export class Message extends BaseClass {
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	guild?: Guild;
 
@@ -83,7 +70,7 @@ export class Message extends BaseClass {
 
 	@JoinColumn({ name: "author_id", referencedColumnName: "id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	author?: User;
 
@@ -93,7 +80,7 @@ export class Message extends BaseClass {
 
 	@JoinColumn({ name: "member_id", referencedColumnName: "id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	member?: Member;
 
@@ -147,7 +134,7 @@ export class Message extends BaseClass {
 
 	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	attachments?: Attachment[];
 
@@ -212,7 +199,7 @@ export interface MessageComponent {
 export enum MessageComponentType {
 	Script = 0, // self command script
 	ActionRow = 1,
-	Button = 2,
+	Button = 2
 }
 
 export interface Embed {
@@ -253,7 +240,7 @@ export enum EmbedType {
 	video = "video",
 	gifv = "gifv",
 	article = "article",
-	link = "link",
+	link = "link"
 }
 
 export interface EmbedImage {

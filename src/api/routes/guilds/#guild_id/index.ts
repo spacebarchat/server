@@ -1,8 +1,18 @@
-import { Request, Response, Router } from "express";
-import { DiscordApiErrors, emitEvent, getPermission, getRights, Guild, GuildUpdateEvent, GuildUpdateSchema, handleFile, Member } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import { OrmUtils } from "@fosscord/util";
+import {
+	DiscordApiErrors,
+	emitEvent,
+	getPermission,
+	getRights,
+	Guild,
+	GuildUpdateEvent,
+	GuildUpdateSchema,
+	handleFile,
+	HTTPError,
+	Member,
+	OrmUtils
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -21,17 +31,16 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	return res.send(guild);
 });
 
-router.patch("/", route({ body: "GuildUpdateSchema"}), async (req: Request, res: Response) => {
+router.patch("/", route({ body: "GuildUpdateSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as GuildUpdateSchema;
 	const { guild_id } = req.params;
-	
-	
+
 	const rights = await getRights(req.user_id);
 	const permission = await getPermission(req.user_id, guild_id);
-	
-	if (!rights.has("MANAGE_GUILDS")||!permission.has("MANAGE_GUILD"))
+
+	if (!rights.has("MANAGE_GUILDS") || !permission.has("MANAGE_GUILD"))
 		throw DiscordApiErrors.MISSING_PERMISSIONS.withParams("MANAGE_GUILD");
-	
+
 	// TODO: guild update check image
 
 	if (body.icon) body.icon = await handleFile(`/icons/${guild_id}`, body.icon);

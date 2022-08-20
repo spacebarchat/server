@@ -1,8 +1,8 @@
-import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { BackupCode, FieldErrors, generateToken, TotpSchema, User } from "@fosscord/util";
-import { verifyToken } from "node-2fa";
+import { BackupCode, generateToken, TotpSchema, User } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { verifyToken } from "node-2fa";
 const router = Router();
 
 router.post("/", route({ body: "TotpSchema" }), async (req: Request, res: Response) => {
@@ -10,23 +10,17 @@ router.post("/", route({ body: "TotpSchema" }), async (req: Request, res: Respon
 
 	const user = await User.findOneOrFail({
 		where: {
-			totp_last_ticket: ticket,
+			totp_last_ticket: ticket
 		},
-		select: [
-			"id",
-			"totp_secret",
-			"settings",
-		],
+		select: ["id", "totp_secret", "settings"]
 	});
 
 	const backup = await BackupCode.findOne({ where: { code: code, expired: false, consumed: false, user: { id: user.id } } });
 
 	if (!backup) {
 		const ret = verifyToken(user.totp_secret!, code);
-		if (!ret || ret.delta != 0)
-			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
-	}
-	else {
+		if (!ret || ret.delta != 0) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+	} else {
 		backup.consumed = true;
 		await backup.save();
 	}
@@ -35,7 +29,7 @@ router.post("/", route({ body: "TotpSchema" }), async (req: Request, res: Respon
 
 	return res.json({
 		token: await generateToken(user.id),
-		user_settings: user.settings,
+		user_settings: user.settings
 	});
 });
 

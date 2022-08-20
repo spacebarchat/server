@@ -19,25 +19,21 @@ router.post("/", route({ body: "MfaCodesSchema" }), async (req: Request, res: Re
 
 	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["data"] });
 
-	if (!await bcrypt.compare(password, user.data.hash || "")) {
+	if (!(await bcrypt.compare(password, user.data.hash || ""))) {
 		throw FieldErrors({ password: { message: req.t("auth:login.INVALID_PASSWORD"), code: "INVALID_PASSWORD" } });
 	}
 
 	var codes: BackupCode[];
 	if (regenerate && Config.get().security.twoFactor.generateBackupCodes) {
-		await BackupCode.update(
-			{ user: { id: req.user_id } },
-			{ expired: true }
-		);
+		await BackupCode.update({ user: { id: req.user_id } }, { expired: true });
 
 		codes = generateMfaBackupCodes(req.user_id);
-		await Promise.all(codes.map(x => x.save()));
-	}
-	else {
+		await Promise.all(codes.map((x) => x.save()));
+	} else {
 		codes = await BackupCode.find({
 			where: {
 				user: {
-					id: req.user_id,
+					id: req.user_id
 				},
 				expired: false
 			}
@@ -45,8 +41,8 @@ router.post("/", route({ body: "MfaCodesSchema" }), async (req: Request, res: Re
 	}
 
 	return res.json({
-		backup_codes: codes.map(x => ({ ...x, expired: undefined })),
-	})
+		backup_codes: codes.map((x) => ({ ...x, expired: undefined }))
+	});
 });
 
 export default router;

@@ -1,6 +1,6 @@
-import { Request, Response, Router } from "express";
-import { Recipient, DmChannelDTO, Channel, DmChannelCreateSchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Channel, DmChannelCreateSchema, DmChannelDTO, Recipient } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 

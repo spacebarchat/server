@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class CodeCleanup11660257576211 implements MigrationInterface {
-    name = 'CodeCleanup11660257576211'
+	name = "CodeCleanup11660257576211";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             CREATE TABLE "user_settings" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "afk_timeout" integer,
@@ -40,7 +40,7 @@ export class CodeCleanup11660257576211 implements MigrationInterface {
                 "timezone_offset" integer
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_guilds" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "afk_channel_id" varchar,
@@ -90,7 +90,7 @@ export class CodeCleanup11660257576211 implements MigrationInterface {
                 CONSTRAINT "FK_f591a66b8019d87b0fe6c12dad6" FOREIGN KEY ("afk_channel_id") REFERENCES "channels" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_guilds"(
                     "id",
                     "afk_channel_id",
@@ -171,21 +171,21 @@ export class CodeCleanup11660257576211 implements MigrationInterface {
                 "parent"
             FROM "guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_guilds"
                 RENAME TO "guilds"
         `);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             ALTER TABLE "guilds"
                 RENAME TO "temporary_guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "guilds" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "afk_channel_id" varchar,
@@ -234,7 +234,7 @@ export class CodeCleanup11660257576211 implements MigrationInterface {
                 CONSTRAINT "FK_f591a66b8019d87b0fe6c12dad6" FOREIGN KEY ("afk_channel_id") REFERENCES "channels" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "guilds"(
                     "id",
                     "afk_channel_id",
@@ -315,12 +315,11 @@ export class CodeCleanup11660257576211 implements MigrationInterface {
                 "parent"
             FROM "temporary_guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_guilds"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "user_settings"
         `);
-    }
-
+	}
 }

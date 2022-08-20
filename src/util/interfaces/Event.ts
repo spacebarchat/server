@@ -1,19 +1,19 @@
-import { PublicUser, User } from "../entities/User";
-import { Channel } from "../entities/Channel";
-import { Guild } from "../entities/Guild";
-import { Member, PublicMember, UserGuildSettings } from "../entities/Member";
-import { Emoji } from "../entities/Emoji";
-import { Role } from "../entities/Role";
-import { Invite } from "../entities/Invite";
-import { Message, PartialEmoji } from "../entities/Message";
-import { VoiceState } from "../entities/VoiceState";
-import { ApplicationCommand } from "../entities/Application";
-import { Interaction } from "./Interaction";
-import { ConnectedAccount } from "../entities/ConnectedAccount";
-import { Relationship, RelationshipType } from "../entities/Relationship";
-import { Presence } from "./Presence";
-import { Sticker, UserSettings } from "..";
 import { Activity, Status } from ".";
+import { Sticker, UserSettings } from "..";
+import { ApplicationCommand } from "../entities/Application";
+import { Channel } from "../entities/Channel";
+import { ConnectedAccount } from "../entities/ConnectedAccount";
+import { Emoji } from "../entities/Emoji";
+import { Guild } from "../entities/Guild";
+import { Invite } from "../entities/Invite";
+import { PublicMember, UserGuildSettings } from "../entities/Member";
+import { Message, PartialEmoji } from "../entities/Message";
+import { RelationshipType } from "../entities/Relationship";
+import { Role } from "../entities/Role";
+import { PublicUser, User } from "../entities/User";
+import { VoiceState } from "../entities/VoiceState";
+import { Interaction } from "./Interaction";
+import { Presence } from "./Presence";
 
 export interface Event {
 	guild_id?: string;
@@ -580,7 +580,7 @@ export enum EVENTEnum {
 	ApplicationCommandCreate = "APPLICATION_COMMAND_CREATE",
 	ApplicationCommandUpdate = "APPLICATION_COMMAND_UPDATE",
 	ApplicationCommandDelete = "APPLICATION_COMMAND_DELETE",
-	SessionsReplace = "SESSIONS_REPLACE",
+	SessionsReplace = "SESSIONS_REPLACE"
 }
 
 export type EVENT =

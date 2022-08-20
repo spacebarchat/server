@@ -1,9 +1,6 @@
+import { generateCode, route } from "@fosscord/api";
+import { Guild, HTTPError, OrmUtils, Template } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { Guild, Template } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
-import { route } from "@fosscord/api";
-import { generateCode } from "@fosscord/api";
-import { OrmUtils } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -75,7 +72,12 @@ router.patch("/:code", route({ body: "TemplateModifySchema", permission: "MANAGE
 	const { code, guild_id } = req.params;
 	const { name, description } = req.body;
 
-	const template = await OrmUtils.mergeDeep(new Template(), { code, name: name, description: description, source_guild_id: guild_id }).save();
+	const template = await OrmUtils.mergeDeep(new Template(), {
+		code,
+		name: name,
+		description: description,
+		source_guild_id: guild_id
+	}).save();
 
 	res.json(template);
 });
