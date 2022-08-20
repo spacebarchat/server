@@ -2,15 +2,24 @@ const path = require("path");
 const fs = require("fs");
 const { stdout, exit } = require("process");
 const readline = require("readline");
+const { execIn } = require("./utils.js");
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-const data = { env: [], config: { register: {} } };
+const data = { env: [], config: { register: {} }, extra_pkgs: [] };
 let rights = [];
+
+process.on('SIGINT', function() {
+    console.log("Caught interrupt signal");
+    process.exit();
+});
 
 console.log("Welcome to Fosscord!");
 console.log("Please remember this is pre-release software!");
 console.log("We will guide you through some important setup steps.");
 console.log();
+
+if(fs.existsSync("package-lock.json")) fs.rmSync("package-lock.json");
+if(fs.existsSync("yarn.lock")) fs.rmSync("yarn.lock");
 
 async function main() {
 	printTitle("Step 1: Database setup");
@@ -22,10 +31,13 @@ async function main() {
 		let answer = await ask("Please select a database type: ");
 		if (answer == "1") {
 			data.db = "postgres";
+			data.extra_pkgs.push("pg");
 		} else if (answer == "2") {
 			data.db = "mariadb";
+			data.extra_pkgs.push("mysql2");
 		} else if (answer == "3") {
 			data.db = "sqlite";
+			data.extra_pkgs.push("sqlite3");
 		} else {
 			console.log("Invalid choice!");
 		}
@@ -62,7 +74,7 @@ async function main() {
 
 	data.domain = await ask("Domain (default=localhost): ");
 	if (!data.domain) data.domain = "localhost";
-	else data.ssl = /y?/i.test(await ask("SSL/HTTPS (Y/n): ")).toLowerCase();
+	else data.ssl = /y?/i.test(await ask("SSL/HTTPS (Y/n): "));
 
 	data.port = await ask("Port (default=3001): ");
 	if (!data.port) data.port = "3001";
@@ -70,6 +82,7 @@ async function main() {
 	if (data.db != "sqlite")
 		data.env.push(`DATABASE=${data.db}://${data.db_user}:${data.db_pass}@${data.db_host}:${data.db_port}/${data.db_name}`);
 	data.env.push(`PORT=${data.port}`);
+	data.env.push('THREADS=1')
 
 	printTitle("Step 4: Default rights");
 	console.log("Please enter the default rights for new users.");
@@ -111,9 +124,32 @@ async function main() {
 			},
 			...data.config
 		};
+	printTitle("Step 5: extra options");
+
+	if(/y?/i.test(await ask("Use fast BCrypt implementation (requires a compiler) (Y/n): "))) data.extra_pkgs.push("bcrypt");
+	if(/y?/.test(await ask("Enable support for widgets (requires compiler, known to fail on some ARM devices.) (Y/n): "))) data.extra_pkgs.push("canvas");
+
+	printTitle("Step 6: finalizing...");
 	//save
+	console.log("==> Writing .env...");
 	fs.writeFileSync(".env", data.env.join("\n"));
+	console.log("==> Writing initial.json");
 	fs.writeFileSync("initial.json", JSON.stringify(data.config, (space = 4)));
+	//install packages...
+	console.log("==> Installing packages...");
+	console.log("  ==> Ensuring yarn is up to date (v3, not v1)...");
+	execIn("npx yarn set version stable", process.cwd());
+	console.log("  ==> Installing base packages");
+	execIn("npx --yes yarn install", process.cwd(), {stdio: "inherit"});
+
+	console.log(`  ==> Installing extra packages: ${data.extra_pkgs.join(', ')}...`);
+	execIn(`npx --yes yarn add -O ${data.extra_pkgs.join(' ')}`, process.cwd(), {stdio: "inherit"});
+
+	console.log('==> Building...')
+	execIn('npx --yes yarn run build', process.cwd(), {stdio: "inherit"});
+	printTitle("Step 6: run your instance!");
+	console.log("Installation is complete!");
+	console.log("You can now start your instance by running 'npm run start:bundle'!");
 	exit(0);
 }
 main();
