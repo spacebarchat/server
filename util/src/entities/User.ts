@@ -30,6 +30,8 @@ export enum PrivateUserEnum {
 	nsfw_allowed,
 	premium,
 	premium_type,
+	purchased_flags,
+	premium_usage_flags,
 	disabled,
 	settings,
 	// locale
@@ -52,8 +54,6 @@ export interface UserPublic extends Pick<User, PublicUserKeys> {}
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
 }
-
-// TODO: add purchased_flags, premium_usage_flags
 
 @Entity("users")
 export class User extends BaseClass {
@@ -138,6 +138,12 @@ export class User extends BaseClass {
 
 	@Column()
 	public_flags: number;
+
+	@Column()
+	purchased_flags: number;
+
+	@Column()
+	premium_usage_flags: number;
 
 	@Column({ type: "bigint" })
 	rights: string; // Rights
@@ -281,6 +287,8 @@ export class User extends BaseClass {
 				valid_tokens_since: new Date(),
 			},
 			settings: { ...defaultSettings, locale: language },
+			purchased_flags: 5, // TODO: idk what the values for this are
+			premium_usage_flags: 2,  // TODO: idk what the values for this are
 			extended_settings: {},
 			fingerprints: [],
 			notes: {},
@@ -332,6 +340,11 @@ export const defaultSettings: UserSettings = {
 	stream_notifications_enabled: false,
 	theme: "dark",
 	timezone_offset: 0, // TODO: timezone from request
+
+	banner_color: null,
+	friend_discovery_flags: 0,
+	view_nsfw_guilds: true,
+	passwordless: false,
 };
 
 export interface UserSettings {
@@ -377,6 +390,10 @@ export interface UserSettings {
 	stream_notifications_enabled: boolean;
 	theme: "dark" | "white"; // dark
 	timezone_offset: number; // e.g -60
+	banner_color: string | null;
+	friend_discovery_flags: number;
+	view_nsfw_guilds: boolean;
+	passwordless: boolean;
 }
 
 export const CUSTOM_USER_FLAG_OFFSET = BigInt(1) << BigInt(32);

@@ -175,7 +175,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			avatar: related_user.avatar,
 			bot: related_user.bot,
 			bio: related_user.bio,
-			premium_since: user.premium_since
+			premium_since: user.premium_since,
+			accent_color: related_user.accent_color,
 		};
 		users.push(public_related_user);
 	}
@@ -222,10 +223,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		premium: user.premium,
 		premium_type: user.premium_type,
 		public_flags: user.public_flags,
+		premium_usage_flags: user.premium_usage_flags,
+		purchased_flags: user.purchased_flags,
 		username: user.username,
 		verified: user.verified,
 		bot: user.bot,
-		accent_color: user.accent_color || 0,
+		accent_color: user.accent_color,
 		banner: user.banner,
 		bio: user.bio,
 		premium_since: user.premium_since
@@ -274,6 +277,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		users: users.filter((x) => x).unique(),
 		merged_members: merged_members,
 		// shard // TODO: only for user sharding
+		sessions: [], // TODO:
+		presences: [], // TODO:
 	};
 
 	// TODO: send real proper data structure

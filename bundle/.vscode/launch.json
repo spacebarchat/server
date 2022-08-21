@@ -23,6 +23,7 @@
 		},
 		{
 			"sourceMaps": true,
+			"resolveSourceMapLocations": null, /* allow breakpoints in modules other than bundle */
 			"type": "node",
 			"request": "launch",
 			"name": "Launch Server",

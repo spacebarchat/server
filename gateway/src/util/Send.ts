@@ -14,9 +14,7 @@ export function Send(socket: WebSocket, data: Payload) {
 	else return;
 	// TODO: compression
 	if (socket.deflate) {
-		socket.deflate.write(buffer);
-		socket.deflate.flush();
-		return;
+		buffer = socket.deflate.process(buffer) as Buffer;
 	}
 
 	return new Promise((res, rej) => {

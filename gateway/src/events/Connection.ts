@@ -6,7 +6,7 @@ import { setHeartbeat } from "../util/Heartbeat";
 import { IncomingMessage } from "http";
 import { Close } from "./Close";
 import { Message } from "./Message";
-import { createDeflate } from "zlib";
+import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "url";
 import { Config } from "@fosscord/util";
 var erlpack: any;
@@ -45,7 +45,6 @@ export async function Connection(
 			return socket.close(CLOSECODES.Decode_error);
 		}
 
-		// @ts-ignore
 		socket.version = Number(searchParams.get("version")) || 8;
 		if (socket.version != 8)
 			return socket.close(CLOSECODES.Invalid_API_version);
@@ -55,8 +54,8 @@ export async function Connection(
 		if (socket.compress) {
 			if (socket.compress !== "zlib-stream")
 				return socket.close(CLOSECODES.Decode_error);
-			socket.deflate = createDeflate({ chunkSize: 65535 });
-			socket.deflate.on("data", (chunk) => socket.send(chunk));
+			socket.deflate = new Deflate();
+			socket.inflate = new Inflate();
 		}
 
 		socket.events = {};

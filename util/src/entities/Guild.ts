@@ -267,8 +267,8 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	nsfw_level?: number;
 
-	@Column({ nullable: true })
-	nsfw?: boolean;
+	@Column()
+	nsfw: boolean;
 	
 	// TODO: nested guilds
 	@Column({ nullable: true })
@@ -335,7 +335,7 @@ export class Guild extends BaseClass {
 			unicode_emoji: null
 		}).save();
 
-		if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general" }];
+		if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general", nsfw: false }];
 
 		const ids = new Map();
 

@@ -29,7 +29,7 @@ export function initDatabase(): Promise<Connection> {
 		url: isSqlite ? undefined : dbConnectionString,
 		database: isSqlite ? dbConnectionString : undefined,
 		// @ts-ignore
-		entities: Object.values(Models).filter((x) => x.constructor.name !== "Object" && x.name),
+		entities: Object.values(Models).filter((x) => x?.constructor?.name !== "Object" && x?.name),
 		synchronize: type !== "mongodb",
 		logging: false,
 		cache: {
