@@ -37,6 +37,9 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	}
 	else return;
 
+	// TODO: find a way to properly convert a funny number to string
+	if (data?.op == 14 && typeof data.d.guild_id == "number") return;
+
 	check.call(this, PayloadSchema, data);
 
 	// @ts-ignore
