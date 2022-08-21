@@ -5,7 +5,7 @@ This document aims to get you started with contributing to this repo!
 
 Please note that currently our Rendered documentation is out of date. It is accurate for the master branch as of writing but its not always accurate for Staging.
 
-Please see the [contributors' guide](https://matrix-org.github.io/synapse/latest/development/contributing_guide.html) in our rendered documentation.
+
 
 # 1. Who can contribute to Fosscord?
 
@@ -21,7 +21,7 @@ license - in our case, this is almost always GNU Affero General Public License v
 
 Fosscord Server is written in TypeScript and requires [a NodeJS version of 14 or above](https://nodejs.org/en/download/).
 
-The source code for Fosscord Server is hosted on GitHub. You will also need a Git client.
+The source code for Fosscord Server is hosted on GitHub. You will also need a Git client. Like for example Git CLI or Git Kraken or the one built into VSCode for example. Gitkraken is liked by project members that have access to it via Student Package or pay for it them selfs.
 
 To build Fosscord Server you will need Python 3 due to dependencies needing it. A currently supported version of Python 3 is required 
 as issues that cant be replicated using non EOL Python versions will be closed.
@@ -133,7 +133,7 @@ We accept contributions under a legally identifiable name, such as
 your name on government documentation or common-law names (names
 claimed by legitimate usage or repute). 
 
-We also accept contributions where Sign-Off is done privately with Fosscord Organisation.
+We also accept contributions where Sign-Off is done privately with the Fosscord Organisation.
 For this alternative Path please contact the Staff on the Discord.
 
 Git allows you to add this signoff automatically when using the `-s`
