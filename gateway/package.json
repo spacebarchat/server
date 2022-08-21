@@ -17,7 +17,7 @@
 	"devDependencies": {
 		"@types/amqplib": "^0.8.1",
 		"@types/jsonwebtoken": "^8.5.0",
-		"@types/node": "^14.17.9",
+		"@types/node": "^14.18.24",
 		"@types/node-fetch": "^2.5.12",
 		"@types/ws": "^7.4.0",
 		"@zerollup/ts-transform-paths": "^1.7.18",
@@ -29,6 +29,7 @@
 		"@fosscord/util": "file:../util",
 		"amqplib": "^0.8.0",
 		"dotenv": "^8.2.0",
+		"fast-zlib": "^2.0.1",
 		"jsonwebtoken": "^8.5.1",
 		"lambert-server": "^1.2.11",
 		"missing-native-js-functions": "^1.2.18",

@@ -13,7 +13,8 @@ import {
 	MessageCreateEvent,
 	Snowflake,
 	uploadFile,
-	Member
+	Member,
+	Role,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { handleMessage, postHandleMessage, route } from "@fosscord/api";
@@ -146,11 +147,11 @@ router.get("/", async (req: Request, res: Response) => {
 			Some clients ( discord.js ) only check if a property exists within the response,
 			which causes erorrs when, say, the `application` property is `null`.
 			**/
-			
-			for (var curr in x) {
-				if (x[curr] === null)
-					delete x[curr];
-			}
+
+			// for (var curr in x) {
+			// 	if (x[curr] === null)
+			// 		delete x[curr];
+			// }
 
 			return x;
 		})
@@ -217,7 +218,7 @@ router.post(
 			embeds,
 			channel_id,
 			attachments,
-			edited_timestamp: undefined,
+			edited_timestamp: null,
 			timestamp: new Date()
 		});
 
@@ -244,8 +245,12 @@ router.post(
 			);
 		}
 	
-		//Fix for the client bug
-		delete message.member
+		const member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles"] });
+		member.roles = member.roles.filter((role: Role) => {
+			return role.id !== role.guild_id;
+		}).map((role: Role) => {
+			return role.id;
+		}) as any;
 		
 		await Promise.all([
 			message.save(),

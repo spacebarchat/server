@@ -42,7 +42,14 @@ export const IdentifySchema = {
 		$read_state_version: Number,
 		$user_guild_settings_version: Number,
 		$user_settings_version: undefined,
-		$useruser_guild_settings_version: Number,
+		$useruser_guild_settings_version: undefined,
+	},
+	$clientState: {
+		$guildHashes: Object,
+		$highestLastMessageId: String || Number,
+		$readStateVersion: Number,
+		$useruserGuildSettingsVersion: undefined,
+		$userGuildSettingsVersion: undefined,
 	},
 	$v: Number,
 	$version: Number,
@@ -76,6 +83,7 @@ export interface IdentifySchema {
 	presence?: ActivitySchema;
 	compress?: boolean;
 	large_threshold?: number;
+	largeThreshold?: number;
 	shard?: [bigint, bigint];
 	guild_subscriptions?: boolean;
 	capabilities?: number;
@@ -86,6 +94,13 @@ export interface IdentifySchema {
 		user_guild_settings_version?: number;
 		user_settings_version?: number;
 		useruser_guild_settings_version?: number;
+	};
+	clientState?: {
+		guildHashes?: any;
+		highestLastMessageId?: string | number;
+		readStateVersion?: number;
+		userGuildSettingsVersion?: number;
+		useruserGuildSettingsVersion?: number;
 	};
 	v?: number;
 }

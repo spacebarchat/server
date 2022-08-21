@@ -13,6 +13,7 @@ export async function Close(this: WebSocket, code: number, reason: string) {
 	if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
 	if (this.readyTimeout) clearTimeout(this.readyTimeout);
 	this.deflate?.close();
+	this.inflate?.close();
 	this.removeAllListeners();
 
 	if (this.session_id) {
