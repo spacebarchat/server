@@ -155,7 +155,7 @@ From this point, you should:
    - Push this commits to your Pull Request.
 3. Back to 1.
 
-Once he developers are happy, the patch will be merged into Fosscord Server!
+Once the developers are happy, the patch will be merged into Fosscord Server!
 
 # 11. Find a new issue.
 
