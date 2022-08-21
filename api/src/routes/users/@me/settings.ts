@@ -4,13 +4,13 @@ import { route } from "@fosscord/api";
 
 const router = Router();
 
-export interface UserSettingsSchema extends Partial<UserSettings> {}
+export interface UserSettingsSchema extends Partial<UserSettings> { }
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const user = await User.findOneOrFail(
 		{ id: req.user_id },
-		{ relations: ["settings"] }
-	)
+		{ select: ["settings"] }
+	);
 	return res.json(user.settings);
 });
 
