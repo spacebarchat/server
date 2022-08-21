@@ -8,9 +8,15 @@ export class mobileFixes21660689892073 implements MigrationInterface {
             ALTER TABLE \`user_settings\`
             ADD \`banner_color\` varchar(255) NULL
         `);
+		await queryRunner.query(`
+			UPDATE \`channels\` SET \`nsfw\` = 0 WHERE \`nsfw\` = NULL
+		`);
         await queryRunner.query(`
             ALTER TABLE \`channels\` CHANGE \`nsfw\` \`nsfw\` tinyint NOT NULL
         `);
+		await queryRunner.query(`
+			UPDATE \`guilds\` SET \`nsfw\` = 0 WHERE \`nsfw\` = NULL
+		`);
         await queryRunner.query(`
             ALTER TABLE \`guilds\` CHANGE \`nsfw\` \`nsfw\` tinyint NOT NULL
         `);
