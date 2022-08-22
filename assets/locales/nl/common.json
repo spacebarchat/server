@@ -1,0 +1,18 @@
+{
+	"field": {
+		"BASE_TYPE_REQUIRED": "Dit veld is verplicht",
+		"BASE_TYPE_STRING": "This field must be a string",
+		"BASE_TYPE_NUMBER": "Dit veld moet een getal zijn",
+		"BASE_TYPE_BIGINT": "This field must be a bigint",
+		"BASE_TYPE_BOOLEAN": "This field must be a boolean",
+		"BASE_TYPE_CHOICES": "Dit veld moet een van ({{types}}) zijn",
+		"BASE_TYPE_CLASS": "Dit veld moet een exemplaar zijn van {{type}}",
+		"BASE_TYPE_OBJECT": "Dit veld moet een object zijn",
+		"BASE_TYPE_ARRAY": "Dit veld moet een array zijn",
+		"UNKOWN_FIELD": "Unknown key: {{key}}",
+		"BASE_TYPE_CONSTANT": "Dit veld moet {{value}} zijn",
+		"EMAIL_TYPE_INVALID_EMAIL": "Niet een geldig e-mailadres",
+		"DATE_TYPE_PARSE": "Kan {{date}} niet parsen. Moet ISO8601 zijn",
+		"BASE_TYPE_BAD_LENGTH": "Moet tussen {{length}} in lengte zijn"
+	}
+}
