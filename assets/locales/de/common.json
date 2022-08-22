@@ -1,0 +1,18 @@
+{
+	"field": {
+		"BASE_TYPE_REQUIRED": "Dieses Feld ist erforderlich",
+		"BASE_TYPE_STRING": "Dieses Feld muss ein String sein",
+		"BASE_TYPE_NUMBER": "Dieses Feld muss eine Zahl sein",
+		"BASE_TYPE_BIGINT": "Dieses Feld muss ein Bigint sein",
+		"BASE_TYPE_BOOLEAN": "Dieses Feld muss ein Boolean sein",
+		"BASE_TYPE_CHOICES": "Dieses Feld muss eines von ({{types}}) sein",
+		"BASE_TYPE_CLASS": "Dieses Feld muss eine Instanz von {{type}} sein",
+		"BASE_TYPE_OBJECT": "Dieses Feld muss ein Objekt sein",
+		"BASE_TYPE_ARRAY": "Dieses Feld muss ein Array sein",
+		"UNKOWN_FIELD": "Unbekanntes Feld: {{key}}",
+		"BASE_TYPE_CONSTANT": "Dieses Feld muss {{value}} sein",
+		"EMAIL_TYPE_INVALID_EMAIL": "Keine wohlgeformte E-Mail-Adresse",
+		"DATE_TYPE_PARSE": "Konnte {{date}} nicht verarbeiten. Es muss dem ISO8601 Standard entsprechen",
+		"BASE_TYPE_BAD_LENGTH": "Muss zwischen {{length}} lang sein"
+	}
+}
