@@ -241,7 +241,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			break;
 	}
 
-	Send(this, {
+	await Send(this, {
 		op: OPCODES.Dispatch,
 		t: event,
 		d: data,

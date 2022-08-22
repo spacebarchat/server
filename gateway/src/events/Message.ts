@@ -8,6 +8,8 @@ import OPCodeHandlers from "../opcodes";
 import { Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";
+import BigIntJson from "json-bigint";
+const bigIntJson = BigIntJson({ storeAsString: true });
 
 const PayloadSchema = {
 	op: Number,
@@ -30,15 +32,12 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 				buffer = buffer.toString() as any;
 			}
 		}
-		data = JSON.parse(buffer as string);
+		data = bigIntJson.parse(buffer as string);
 	}
 	else if (typeof buffer == "string") {
-		data = JSON.parse(buffer as string);
+		data = bigIntJson.parse(buffer as string)
 	}
 	else return;
-
-	// TODO: find a way to properly convert a funny number to string
-	if (data?.op == 14 && typeof data.d.guild_id == "number") return;
 
 	check.call(this, PayloadSchema, data);
 
@@ -54,7 +53,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	try {
 		return await OPCodeHandler.call(this, data);
 	} catch (error) {
-		console.error(error);
+		console.error(`Error: Op ${data.op}`, error);
 		// if (!this.CLOSED && this.CLOSING)
 		return this.close(CLOSECODES.Unknown_error);
 	}
