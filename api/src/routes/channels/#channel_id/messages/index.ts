@@ -161,7 +161,7 @@ router.get("/", async (req: Request, res: Response) => {
 // TODO: config max upload size
 const messageUpload = multer({
 	limits: {
-		fileSize: 1024 * 1024 * 100,
+		fileSize: Config.get().limits.message.maxAttachmentSize,
 		fields: 10,
 		// files: 1
 	},
