@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html class="theme-dark" data-theme="dark">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" name="viewport" />
+
+	<link rel="stylesheet" href="/assets/532.03aaeef88460fae60534.css" integrity="" />
+	<link rel="icon" href="/assets/07dca80a102d4149e9736d4b162cff6f.ico" />
+	<title>Discord Test Client Developer Portal</title>
+	<meta charset="utf-8" data-react-helmet="true" />
+</head>
+
+<body>
+	<div id="app-mount"></div>
+	<script>
+		window.GLOBAL_ENV = {
+			API_VERSION: 9,
+			API_ENDPOINT: "/api",
+			WEBAPP_ENDPOINT: "",
+			CDN_HOST: `${location.hostname}:3003`,
+
+			BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
+			STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
+			MARKETING_ENDPOINT: "//discord.com",
+			RELEASE_CHANNEL: "stable",
+			ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
+		};
+		GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
+		const localStorage = window.localStorage;
+		// TODO: remote auth
+		// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
+		localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
+		localStorage.setItem(
+			"DeveloperOptionsStore",
+			`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
+		);
+	</script>
+	<script src="/assets/38f40c32d3c8a2fdf73b.js" integrity=""></script>
+	<script src="/assets/aa190934324e05fcc35c.js" integrity=""></script>
+	<script src="/assets/45664a0209e828a528b4.js" integrity=""></script>
+</body>
+
+</html>
