@@ -39,13 +39,16 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	}
 	catch (e) {
 		console.error(`LazyRequest`, e);
+	}
+
+	if (!members) {
 		return {
 			items: [],
 			groups: [],
 			range: [],
 			members: [],
-		}
-	}		
+		};
+	}
 
 	const groups = [] as any[];
 	const items = [];
@@ -157,7 +160,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 		.flat()
 		.unique();
 
-	return Send(this, {
+	return await Send(this, {
 		op: OPCODES.Dispatch,
 		s: this.sequence++,
 		t: "GUILD_MEMBER_LIST_UPDATE",

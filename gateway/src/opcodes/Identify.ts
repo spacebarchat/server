@@ -137,12 +137,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	guilds = guilds.map((guild) => {
 		if (user.bot) {
 			setTimeout(() => {
-				Send(this, {
+				var promise = Send(this, {
 					op: OPCODES.Dispatch,
 					t: EVENTEnum.GuildCreate,
 					s: this.sequence++,
 					d: guild,
 				});
+				if (promise) promise.catch(console.error);
 			}, 500);
 			return { id: guild.id, unavailable: true };
 		}
