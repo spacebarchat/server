@@ -87,7 +87,7 @@ function getDataSourceOptions(): DataSourceOptions {
 		//entities: Object.values(Models).filter((x) => x.constructor.name !== "Object" && x.constructor.name !== "Array" && x.constructor.name !== "BigInt" && x).map(x=>x.name),
 		entities: Object.values(Models).filter((x) => x.constructor.name == "Function" && shouldIncludeEntity(x.name)),
 		synchronize: synchronizeInsteadOfMigrations,
-		logging: verboseDb,
+		logging: verboseDb ? "all" : false,
 		cache: {
 			duration: 1000 * 3 // cache all find queries for 3 seconds
 		},
@@ -96,10 +96,7 @@ function getDataSourceOptions(): DataSourceOptions {
 		name: "default",
 		migrations: synchronizeInsteadOfMigrations ? [] : [path.join(__dirname, "..", "migrations", type, "*.js")],
 		migrationsRun: !synchronizeInsteadOfMigrations,
-		//migrationsRun: false,
-		cli: {
-			migrationsDir: `src/migrations/${type}`
-		}
+		applicationName: `Fosscord Server`,
 	} as DataSourceOptions;
 }
 
