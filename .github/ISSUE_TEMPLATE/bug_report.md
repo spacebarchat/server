@@ -23,9 +23,9 @@ A clear and concise description of what you expected to happen.
 **Console Logs**
 If applicable, add console logs to help give more information about your problem.
 
-**System Information(please complete the following information):**
+**System Information (please complete the following information):**
  - OS: [e.g. iOS]
- - Version: [e.g Ubuntu 22.04 LTS/Windows Server 2022]
+ - Version (If not applicable skip): [e.g Ubuntu 22.04 LTS/Windows Server 2022]
  - Node Version: [e.g Node v18.7.0]
  - Python 3 Version: [e.g Python 3.10.6]
 
