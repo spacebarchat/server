@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class syncMigrations1660538628956 implements MigrationInterface {
-    name = 'syncMigrations1660538628956'
+	name = "syncMigrations1660538628956";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             CREATE TABLE "temporary_channels" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "created_at" datetime NOT NULL,
@@ -33,7 +33,7 @@ export class syncMigrations1660538628956 implements MigrationInterface {
                 CONSTRAINT "FK_c253dafe5f3a03ec00cd8fb4581" FOREIGN KEY ("guild_id") REFERENCES "guilds" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_channels"(
                     "id",
                     "created_at",
@@ -78,21 +78,21 @@ export class syncMigrations1660538628956 implements MigrationInterface {
                 "retention_policy_id"
             FROM "channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_channels"
                 RENAME TO "channels"
         `);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             ALTER TABLE "channels"
                 RENAME TO "temporary_channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "channels" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "created_at" datetime NOT NULL,
@@ -119,7 +119,7 @@ export class syncMigrations1660538628956 implements MigrationInterface {
                 CONSTRAINT "FK_c253dafe5f3a03ec00cd8fb4581" FOREIGN KEY ("guild_id") REFERENCES "guilds" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "channels"(
                     "id",
                     "created_at",
@@ -164,9 +164,8 @@ export class syncMigrations1660538628956 implements MigrationInterface {
                 "retention_policy_id"
             FROM "temporary_channels"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_channels"
         `);
-    }
-
+	}
 }

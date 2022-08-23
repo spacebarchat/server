@@ -14,5 +14,5 @@ export * from "./RegionConfiguration";
 export * from "./RegisterConfiguration";
 export * from "./SecurityConfiguration";
 export * from "./SentryConfiguration";
-export * from "./TemplateConfiguration";
 export * from "./subconfigurations/index";
+export * from "./TemplateConfiguration";

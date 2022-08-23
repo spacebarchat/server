@@ -1,9 +1,18 @@
-import { Request, Response, Router } from "express";
-import { Guild } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Guild, HTTPError } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import fs from "fs";
 import path from "path";
+
+// Setup canvas
+let createCanvas: any, loadImage: any;
+try {
+	createCanvas = require("canvas").createCanvas;
+	loadImage = require("canvas").loadImage;
+} catch {
+	console.log("Canvas not found, disabling widgets!");
+}
+const sizeOf = require("image-size");
 
 const router: Router = Router();
 
@@ -12,6 +21,7 @@ const router: Router = Router();
 // https://discord.com/developers/docs/resources/guild#get-guild-widget-image
 // TODO: Cache the response
 router.get("/", route({}), async (req: Request, res: Response) => {
+	if (!createCanvas) return res.status(404);
 	const { guild_id } = req.params;
 
 	const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
@@ -27,11 +37,6 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	if (!["shield", "banner1", "banner2", "banner3", "banner4"].includes(style)) {
 		throw new HTTPError("Value must be one of ('shield', 'banner1', 'banner2', 'banner3', 'banner4').", 400);
 	}
-
-	// Setup canvas
-	const { createCanvas } = require("canvas");
-	const { loadImage } = require("canvas");
-	const sizeOf = require("image-size");
 
 	// TODO: Widget style templates need Fosscord branding
 	const source = path.join(__dirname, "..", "..", "..", "..", "..", "assets", "widget", `${style}.png`);

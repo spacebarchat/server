@@ -3,7 +3,7 @@ export const VoiceStateUpdateSchema = {
 	$channel_id: String,
 	self_mute: Boolean,
 	self_deaf: Boolean,
-	self_video: Boolean,
+	self_video: Boolean
 };
 
 //TODO need more testing when community guild and voice stage channel are working

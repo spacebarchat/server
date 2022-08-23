@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class CodeCleanup31660258351379 implements MigrationInterface {
-    name = 'CodeCleanup31660258351379'
+	name = "CodeCleanup31660258351379";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             CREATE TABLE "temporary_users" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "username" varchar NOT NULL,
@@ -39,7 +39,7 @@ export class CodeCleanup31660258351379 implements MigrationInterface {
                 "notes" text NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_users"(
                     "id",
                     "username",
@@ -106,21 +106,21 @@ export class CodeCleanup31660258351379 implements MigrationInterface {
                 "notes"
             FROM "users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_users"
                 RENAME TO "users"
         `);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             ALTER TABLE "users"
                 RENAME TO "temporary_users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "users" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "username" varchar NOT NULL,
@@ -156,7 +156,7 @@ export class CodeCleanup31660258351379 implements MigrationInterface {
                 "notes" text NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "users"(
                     "id",
                     "username",
@@ -223,9 +223,8 @@ export class CodeCleanup31660258351379 implements MigrationInterface {
                 "notes"
             FROM "temporary_users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_users"
         `);
-    }
-
+	}
 }

@@ -1,4 +1,4 @@
-import { Router, Response, Request } from "express";
+import { handleMessage, postHandleMessage, route } from "@fosscord/api";
 import {
 	Attachment,
 	Channel,
@@ -7,16 +7,15 @@ import {
 	DmChannelDTO,
 	emitEvent,
 	getPermission,
-	getRights,
+	HTTPError,
+	Member,
 	Message,
 	MessageCreateEvent,
+	MessageCreateSchema,
 	Snowflake,
-	uploadFile,
-	Member,
-	MessageCreateSchema
+	uploadFile
 } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
-import { handleMessage, postHandleMessage, route } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 import multer from "multer";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 import { URL } from "url";
@@ -69,23 +68,20 @@ router.get("/", async (req: Request, res: Response) => {
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	let query: FindManyOptions<Message> & { where: { id?: any; }; } = {
+	let query: FindManyOptions<Message> & { where: { id?: any } } = {
 		order: { id: "DESC" },
 		take: limit,
 		where: { channel_id },
 		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"]
 	};
-	
 
 	if (after) {
 		if (after > new Snowflake()) return res.status(422);
 		query.where.id = MoreThan(after);
-	}
-	else if (before) { 
+	} else if (before) {
 		if (before < req.params.channel_id) return res.status(422);
 		query.where.id = LessThan(before);
-	}
-	else if (around) {
+	} else if (around) {
 		query.where.id = [
 			MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
 			LessThan((BigInt(around) + BigInt(halfLimit)).toString())
@@ -110,15 +106,14 @@ router.get("/", async (req: Request, res: Response) => {
 				const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
 				y.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
 			});
-			
+
 			/**
 			Some clients ( discord.js ) only check if a property exists within the response,
 			which causes erorrs when, say, the `application` property is `null`.
 			**/
-			
+
 			for (let curr in x) {
-				if (x[curr] === null)
-					delete x[curr];
+				if (x[curr] === null) delete x[curr];
 			}
 
 			return x;
@@ -130,7 +125,7 @@ router.get("/", async (req: Request, res: Response) => {
 const messageUpload = multer({
 	limits: {
 		fileSize: 1024 * 1024 * 100,
-		fields: 10,
+		fields: 10
 		// files: 1
 	},
 	storage: multer.memoryStorage()
@@ -162,16 +157,15 @@ router.post(
 
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
 		if (!channel.isWritable()) {
-			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400)
+			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
 		}
 
-		const files = req.files as Express.Multer.File[] ?? [];
+		const files = (req.files as Express.Multer.File[]) ?? [];
 		for (let currFile of files) {
 			try {
 				const file: any = await uploadFile(`/attachments/${channel.id}`, currFile);
 				attachments.push({ ...file, proxy_url: file.url });
-			}
-			catch (error) {
+			} catch (error) {
 				return res.status(400).json(error);
 			}
 		}
@@ -212,11 +206,11 @@ router.post(
 				})
 			);
 		}
-	
-	    //Defining member fields
+
+		//Defining member fields
 		var member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles"] });
 		// TODO: This doesn't work either
-        // member.roles = member.roles.filter((role) => {
+		// member.roles = member.roles.filter((role) => {
 		// 	return role.id !== role.guild_id;
 		// }).map((role) => {
 		// 	return role.id;
@@ -225,7 +219,7 @@ router.post(
 		// TODO: Figure this out
 		// delete message.member.last_message_id;
 		// delete message.member.index;
-		
+
 		await Promise.all([
 			message.save(),
 			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent),
@@ -233,9 +227,8 @@ router.post(
 			channel.save()
 		]);
 
-		postHandleMessage(message).catch((e) => { }); // no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
 
 		return res.json(message);
 	}
 );
-

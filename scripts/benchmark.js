@@ -3,9 +3,7 @@ const Models = require("../dist/entities");
 const { PrimaryColumn } = require("typeorm");
 
 function shouldIncludeEntity(name) {
-	return ![Models.BaseClassWithoutId, PrimaryColumn, Models.BaseClass, Models.PrimaryGeneratedColumn]
-		.map((x) => x?.name)
-		.includes(name);
+	return ![Models.BaseClassWithoutId, PrimaryColumn, Models.BaseClass, Models.PrimaryGeneratedColumn].map((x) => x?.name).includes(name);
 }
 
 async function main() {
@@ -14,7 +12,7 @@ async function main() {
 		type: "sqlite",
 		database: ":memory:",
 		entities: Object.values(Models).filter((x) => x.constructor.name == "Function" && shouldIncludeEntity(x.name)),
-		synchronize: true,
+		synchronize: true
 	});
 	await db.initialize();
 	console.log("Initialized database");

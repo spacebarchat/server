@@ -1,16 +1,16 @@
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
-import { config } from "dotenv";
-config();
-import { FosscordServer } from "./Server";
 import cluster from "cluster";
+import { config } from "dotenv";
 import os from "os";
+import { FosscordServer } from "./Server";
+config();
 let cores = 1;
 try {
 	cores = Number(process.env.THREADS) || os.cpus().length;
 } catch {
-	console.log("[API] Failed to get thread count! Using 1...")
+	console.log("[API] Failed to get thread count! Using 1...");
 }
 
 if (cluster.isMaster && process.env.NODE_ENV == "production") {

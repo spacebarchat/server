@@ -1,8 +1,8 @@
 // https://github.com/discordjs/discord.js/blob/master/src/util/Permissions.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
+import { HTTPError } from "..";
 import { Channel, ChannelPermissionOverwrite, Guild, Member, Role } from "../entities";
 import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
-import { HTTPError } from "..";
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
@@ -59,7 +59,7 @@ export class Permissions extends BitField {
 		MANAGE_THREADS: BitFlag(34),
 		USE_PUBLIC_THREADS: BitFlag(35),
 		USE_PRIVATE_THREADS: BitFlag(36),
-		USE_EXTERNAL_STICKERS: BitFlag(37),
+		USE_EXTERNAL_STICKERS: BitFlag(37)
 
 		/**
 		 * CUSTOM PERMISSIONS ideas:
@@ -123,7 +123,7 @@ export class Permissions extends BitField {
 	static finalPermission({
 		user,
 		guild,
-		channel,
+		channel
 	}: {
 		user: { id: string; roles: string[] };
 		guild: { roles: Role[] };
@@ -163,7 +163,7 @@ export class Permissions extends BitField {
 					"USE_EXTERNAL_EMOJIS",
 					"CONNECT",
 					"SPEAK",
-					"MANAGE_CHANNELS",
+					"MANAGE_CHANNELS"
 				]);
 			}
 
@@ -213,8 +213,8 @@ export async function getPermission(
 				"owner_id",
 				"guild_id",
 				// @ts-ignore
-				...(opts.channel_select || []),
-			],
+				...(opts.channel_select || [])
+			]
 		});
 		if (channel.guild_id) guild_id = channel.guild_id; // derive guild_id from the channel
 	}
@@ -226,9 +226,9 @@ export async function getPermission(
 				"id",
 				"owner_id",
 				// @ts-ignore
-				...(opts.guild_select || []),
+				...(opts.guild_select || [])
 			],
-			relations: opts.guild_relations,
+			relations: opts.guild_relations
 		});
 		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
@@ -240,8 +240,8 @@ export async function getPermission(
 				"roles",
 				"index",
 				// @ts-ignore
-				...(opts.member_select || []),
-			],
+				...(opts.member_select || [])
+			]
 		});
 	}
 
@@ -252,16 +252,16 @@ export async function getPermission(
 	let permission = Permissions.finalPermission({
 		user: {
 			id: user_id,
-			roles: member?.roles.map((x) => x.id) || [],
+			roles: member?.roles.map((x) => x.id) || []
 		},
 		guild: {
-			roles: member?.roles || [],
+			roles: member?.roles || []
 		},
 		channel: {
 			overwrites: channel?.permission_overwrites,
 			owner_id: channel?.owner_id,
-			recipient_ids,
-		},
+			recipient_ids
+		}
 	});
 
 	const obj = new Permissions(permission);

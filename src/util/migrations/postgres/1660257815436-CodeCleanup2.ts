@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class CodeCleanup21660257815436 implements MigrationInterface {
-    name = 'CodeCleanup21660257815436'
+	name = "CodeCleanup21660257815436";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             CREATE TABLE "user_settings" (
                 "id" character varying NOT NULL,
                 "afk_timeout" integer,
@@ -41,19 +41,18 @@ export class CodeCleanup21660257815436 implements MigrationInterface {
                 CONSTRAINT "PK_00f004f5922a0744d174530d639" PRIMARY KEY ("id")
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "guilds"
             ADD "premium_progress_bar_enabled" boolean
         `);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             ALTER TABLE "guilds" DROP COLUMN "premium_progress_bar_enabled"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "user_settings"
         `);
-    }
-
+	}
 }

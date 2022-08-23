@@ -6,7 +6,7 @@ export const WSCodes = {
 	4010: "SHARDING_INVALID",
 	4011: "SHARDING_REQUIRED",
 	4013: "INVALID_INTENTS",
-	4014: "DISALLOWED_INTENTS",
+	4014: "DISALLOWED_INTENTS"
 };
 
 /**
@@ -31,7 +31,7 @@ export const WsStatus = {
 	DISCONNECTED: 5,
 	WAITING_FOR_GUILDS: 6,
 	IDENTIFYING: 7,
-	RESUMING: 8,
+	RESUMING: 8
 };
 
 /**
@@ -48,7 +48,7 @@ export const VoiceStatus = {
 	CONNECTING: 1,
 	AUTHENTICATING: 2,
 	RECONNECTING: 3,
-	DISCONNECTED: 4,
+	DISCONNECTED: 4
 };
 
 export const OPCodes = {
@@ -63,7 +63,7 @@ export const OPCodes = {
 	REQUEST_GUILD_MEMBERS: 8,
 	INVALID_SESSION: 9,
 	HELLO: 10,
-	HEARTBEAT_ACK: 11,
+	HEARTBEAT_ACK: 11
 };
 
 export const VoiceOPCodes = {
@@ -75,7 +75,7 @@ export const VoiceOPCodes = {
 	SPEAKING: 5,
 	HELLO: 8,
 	CLIENT_CONNECT: 12,
-	CLIENT_DISCONNECT: 13,
+	CLIENT_DISCONNECT: 13
 };
 
 export const Events = {
@@ -133,7 +133,7 @@ export const Events = {
 	SHARD_READY: "shardReady",
 	SHARD_RESUME: "shardResume",
 	INVALIDATED: "invalidated",
-	RAW: "raw",
+	RAW: "raw"
 };
 
 export const ShardEvents = {
@@ -142,7 +142,7 @@ export const ShardEvents = {
 	INVALID_SESSION: "invalidSession",
 	READY: "ready",
 	RESUMED: "resumed",
-	ALL_READY: "allReady",
+	ALL_READY: "allReady"
 };
 
 /**
@@ -234,7 +234,7 @@ export const WSEvents = keyMirror([
 	"TYPING_START",
 	"VOICE_STATE_UPDATE",
 	"VOICE_SERVER_UPDATE",
-	"WEBHOOKS_UPDATE",
+	"WEBHOOKS_UPDATE"
 ]);
 
 /**
@@ -277,7 +277,7 @@ export const MessageTypes = [
 	null,
 	null,
 	null,
-	"REPLY",
+	"REPLY"
 ];
 
 /**
@@ -286,9 +286,7 @@ export const MessageTypes = [
  * * REPLY
  * @typedef {string} SystemMessageType
  */
-export const SystemMessageTypes = MessageTypes.filter(
-	(type: string | null) => type && type !== "DEFAULT" && type !== "REPLY"
-);
+export const SystemMessageTypes = MessageTypes.filter((type: string | null) => type && type !== "DEFAULT" && type !== "REPLY");
 
 /**
  * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
@@ -310,12 +308,12 @@ export const ChannelTypes = {
 	GROUP: 3,
 	CATEGORY: 4,
 	NEWS: 5,
-	STORE: 6,
+	STORE: 6
 };
 
 export const ClientApplicationAssetTypes = {
 	SMALL: 1,
-	BIG: 2,
+	BIG: 2
 };
 
 export const Colors = {
@@ -347,7 +345,7 @@ export const Colors = {
 	BLURPLE: 0x7289da,
 	GREYPLE: 0x99aab5,
 	DARK_BUT_NOT_BLACK: 0x2c2f33,
-	NOT_QUITE_BLACK: 0x23272a,
+	NOT_QUITE_BLACK: 0x23272a
 };
 
 /**
@@ -556,14 +554,8 @@ export const DiscordApiErrors = {
 	UNKNOWN_GUILD_SCHEDULED_EVENT_USER: new ApiError("Unknown Guild Scheduled Event User", 10071),
 	BOT_PROHIBITED_ENDPOINT: new ApiError("Bots cannot use this endpoint", 20001),
 	BOT_ONLY_ENDPOINT: new ApiError("Only bots can use this endpoint", 20002),
-	EXPLICIT_CONTENT_CANNOT_BE_SENT_TO_RECIPIENT: new ApiError(
-		"Explicit content cannot be sent to the desired recipient(s)",
-		20009
-	),
-	ACTION_NOT_AUTHORIZED_ON_APPLICATION: new ApiError(
-		"You are not authorized to perform this action on this application",
-		20012
-	),
+	EXPLICIT_CONTENT_CANNOT_BE_SENT_TO_RECIPIENT: new ApiError("Explicit content cannot be sent to the desired recipient(s)", 20009),
+	ACTION_NOT_AUTHORIZED_ON_APPLICATION: new ApiError("You are not authorized to perform this action on this application", 20012),
 	SLOWMODE_RATE_LIMIT: new ApiError("This action cannot be performed due to slowmode rate limit", 20016),
 	ONLY_OWNER: new ApiError("Only the owner of this account can perform this action", 20018),
 	ANNOUNCEMENT_RATE_LIMITS: new ApiError("This message cannot be edited due to announcement rate limits", 20022),
@@ -576,40 +568,25 @@ export const DiscordApiErrors = {
 	MAXIMUM_GUILDS: new ApiError("Maximum number of guilds reached ({})", 30001, undefined, ["100"]),
 	MAXIMUM_FRIENDS: new ApiError("Maximum number of friends reached ({})", 30002, undefined, ["1000"]),
 	MAXIMUM_PINS: new ApiError("Maximum number of pins reached for the channel ({})", 30003, undefined, ["50"]),
-	MAXIMUM_NUMBER_OF_RECIPIENTS_REACHED: new ApiError("Maximum number of recipients reached ({})", 30004, undefined, [
-		"10",
-	]),
+	MAXIMUM_NUMBER_OF_RECIPIENTS_REACHED: new ApiError("Maximum number of recipients reached ({})", 30004, undefined, ["10"]),
 	MAXIMUM_ROLES: new ApiError("Maximum number of guild roles reached ({})", 30005, undefined, ["250"]),
 	MAXIMUM_WEBHOOKS: new ApiError("Maximum number of webhooks reached ({})", 30007, undefined, ["10"]),
 	MAXIMUM_NUMBER_OF_EMOJIS_REACHED: new ApiError("Maximum number of emojis reached", 30008),
 	MAXIMUM_REACTIONS: new ApiError("Maximum number of reactions reached ({})", 30010, undefined, ["20"]),
 	MAXIMUM_CHANNELS: new ApiError("Maximum number of guild channels reached ({})", 30013, undefined, ["500"]),
-	MAXIMUM_ATTACHMENTS: new ApiError("Maximum number of attachments in a message reached ({})", 30015, undefined, [
-		"10",
-	]),
+	MAXIMUM_ATTACHMENTS: new ApiError("Maximum number of attachments in a message reached ({})", 30015, undefined, ["10"]),
 	MAXIMUM_INVITES: new ApiError("Maximum number of invites reached ({})", 30016, undefined, ["1000"]),
 	MAXIMUM_ANIMATED_EMOJIS: new ApiError("Maximum number of animated emojis reached", 30018),
 	MAXIMUM_SERVER_MEMBERS: new ApiError("Maximum number of server members reached", 30019),
-	MAXIMUM_SERVER_CATEGORIES: new ApiError(
-		"Maximum number of server categories has been reached ({})",
-		30030,
-		undefined,
-		["5"]
-	),
+	MAXIMUM_SERVER_CATEGORIES: new ApiError("Maximum number of server categories has been reached ({})", 30030, undefined, ["5"]),
 	GUILD_ALREADY_HAS_TEMPLATE: new ApiError("Guild already has a template", 30031),
 	MAXIMUM_THREAD_PARTICIPANTS: new ApiError("Max number of thread participants has been reached", 30033),
-	MAXIMUM_BANS_FOR_NON_GUILD_MEMBERS: new ApiError(
-		"Maximum number of bans for non-guild members have been exceeded",
-		30035
-	),
+	MAXIMUM_BANS_FOR_NON_GUILD_MEMBERS: new ApiError("Maximum number of bans for non-guild members have been exceeded", 30035),
 	MAXIMUM_BANS_FETCHES: new ApiError("Maximum number of bans fetches has been reached", 30037),
 	MAXIMUM_STICKERS: new ApiError("Maximum number of stickers reached", 30039),
 	MAXIMUM_PRUNE_REQUESTS: new ApiError("Maximum number of prune requests has been reached. Try again later", 30040),
 	UNAUTHORIZED: new ApiError("Unauthorized. Provide a valid token and try again", 40001),
-	ACCOUNT_VERIFICATION_REQUIRED: new ApiError(
-		"You need to verify your account in order to perform this action",
-		40002
-	),
+	ACCOUNT_VERIFICATION_REQUIRED: new ApiError("You need to verify your account in order to perform this action", 40002),
 	OPENING_DIRECT_MESSAGES_TOO_FAST: new ApiError("You are opening direct messages too fast", 40003),
 	REQUEST_ENTITY_TOO_LARGE: new ApiError("Request entity too large. Try sending something smaller in size", 40005),
 	FEATURE_TEMPORARILY_DISABLED: new ApiError("This feature has been temporarily disabled server-side", 40006),
@@ -625,10 +602,7 @@ export const DiscordApiErrors = {
 	CANNOT_SEND_EMPTY_MESSAGE: new ApiError("Cannot send an empty message", 50006),
 	CANNOT_MESSAGE_USER: new ApiError("Cannot send messages to this user", 50007),
 	CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL: new ApiError("Cannot send messages in a voice channel", 50008),
-	CHANNEL_VERIFICATION_LEVEL_TOO_HIGH: new ApiError(
-		"Channel verification level is too high for you to gain access",
-		50009
-	),
+	CHANNEL_VERIFICATION_LEVEL_TOO_HIGH: new ApiError("Channel verification level is too high for you to gain access", 50009),
 	OAUTH2_APPLICATION_BOT_ABSENT: new ApiError("OAuth2 application does not have a bot", 50010),
 	MAXIMUM_OAUTH2_APPLICATIONS: new ApiError("OAuth2 application limit reached", 50011),
 	INVALID_OAUTH_STATE: new ApiError("Invalid OAuth2 state", 50012),
@@ -641,10 +615,7 @@ export const DiscordApiErrors = {
 		undefined,
 		["2", "100"]
 	),
-	CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: new ApiError(
-		"A message can only be pinned to the channel it was sent in",
-		50019
-	),
+	CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: new ApiError("A message can only be pinned to the channel it was sent in", 50019),
 	INVALID_OR_TAKEN_INVITE_CODE: new ApiError("Invite code was either invalid or taken", 50020),
 	CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: new ApiError("Cannot execute action on a system message", 50021),
 	CANNOT_EXECUTE_ON_THIS_CHANNEL_TYPE: new ApiError("Cannot execute action on this channel type", 50024),
@@ -658,34 +629,22 @@ export const DiscordApiErrors = {
 		"Invalid form body (returned for both application/json and multipart/form-data bodies), or invalid Content-Type provided",
 		50035
 	),
-	INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: new ApiError(
-		"An invite was accepted to a guild the application's bot is not in",
-		50036
-	),
+	INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: new ApiError("An invite was accepted to a guild the application's bot is not in", 50036),
 	INVALID_API_VERSION: new ApiError("Invalid API version provided", 50041),
 	FILE_EXCEEDS_MAXIMUM_SIZE: new ApiError("File uploaded exceeds the maximum size", 50045),
 	INVALID_FILE_UPLOADED: new ApiError("Invalid file uploaded", 50046),
 	CANNOT_SELF_REDEEM_GIFT: new ApiError("Cannot self-redeem this gift", 50054),
 	PAYMENT_SOURCE_REQUIRED: new ApiError("Payment source required to redeem gift", 50070),
-	CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: new ApiError(
-		"Cannot delete a channel required for Community guilds",
-		50074
-	),
+	CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: new ApiError("Cannot delete a channel required for Community guilds", 50074),
 	INVALID_STICKER_SENT: new ApiError("Invalid sticker sent", 50081),
 	CANNOT_EDIT_ARCHIVED_THREAD: new ApiError(
 		"Tried to perform an operation on an archived thread, such as editing a message or adding a user to the thread",
 		50083
 	),
 	INVALID_THREAD_NOTIFICATION_SETTINGS: new ApiError("Invalid thread notification settings", 50084),
-	BEFORE_EARLIER_THAN_THREAD_CREATION_DATE: new ApiError(
-		"before value is earlier than the thread creation date",
-		50085
-	),
+	BEFORE_EARLIER_THAN_THREAD_CREATION_DATE: new ApiError("before value is earlier than the thread creation date", 50085),
 	SERVER_NOT_AVAILABLE_IN_YOUR_LOCATION: new ApiError("This server is not available in your location", 50095),
-	SERVER_NEEDS_MONETIZATION_ENABLED: new ApiError(
-		"This server needs monetization enabled in order to perform this action",
-		50097
-	),
+	SERVER_NEEDS_MONETIZATION_ENABLED: new ApiError("This server needs monetization enabled in order to perform this action", 50097),
 	TWO_FACTOR_REQUIRED: new ApiError("Two factor is required for this operation", 60003),
 	NO_USERS_WITH_DISCORDTAG_EXIST: new ApiError("No users with DiscordTag exist", 80004),
 	REACTION_BLOCKED: new ApiError("Reaction was blocked", 90001),
@@ -694,33 +653,17 @@ export const DiscordApiErrors = {
 	THREAD_ALREADY_CREATED_FOR_THIS_MESSAGE: new ApiError("A thread has already been created for this message", 160004),
 	THREAD_IS_LOCKED: new ApiError("Thread is locked", 160005),
 	MAXIMUM_NUMBER_OF_ACTIVE_THREADS: new ApiError("Maximum number of active threads reached", 160006),
-	MAXIMUM_NUMBER_OF_ACTIVE_ANNOUNCEMENT_THREADS: new ApiError(
-		"Maximum number of active announcement threads reached",
-		160007
-	),
+	MAXIMUM_NUMBER_OF_ACTIVE_ANNOUNCEMENT_THREADS: new ApiError("Maximum number of active announcement threads reached", 160007),
 	INVALID_JSON_FOR_UPLOADED_LOTTIE_FILE: new ApiError("Invalid JSON for uploaded Lottie file", 170001),
-	LOTTIES_CANNOT_CONTAIN_RASTERIZED_IMAGES: new ApiError(
-		"Uploaded Lotties cannot contain rasterized images such as PNG or JPEG",
-		170002
-	),
+	LOTTIES_CANNOT_CONTAIN_RASTERIZED_IMAGES: new ApiError("Uploaded Lotties cannot contain rasterized images such as PNG or JPEG", 170002),
 	STICKER_MAXIMUM_FRAMERATE: new ApiError("Sticker maximum framerate exceeded", 170003),
-	STICKER_MAXIMUM_FRAME_COUNT: new ApiError("Sticker frame count exceeds maximum of {} frames", 170004, undefined, [
-		"1000",
-	]),
+	STICKER_MAXIMUM_FRAME_COUNT: new ApiError("Sticker frame count exceeds maximum of {} frames", 170004, undefined, ["1000"]),
 	LOTTIE_ANIMATION_MAXIMUM_DIMENSIONS: new ApiError("Lottie animation maximum dimensions exceeded", 170005),
-	STICKER_FRAME_RATE_TOO_SMALL_OR_TOO_LARGE: new ApiError(
-		"Sticker frame rate is either too small or too large",
-		170006
-	),
-	STICKER_ANIMATION_DURATION_MAXIMUM: new ApiError(
-		"Sticker animation duration exceeds maximum of {} seconds",
-		170007,
-		undefined,
-		["5"]
-	),
+	STICKER_FRAME_RATE_TOO_SMALL_OR_TOO_LARGE: new ApiError("Sticker frame rate is either too small or too large", 170006),
+	STICKER_ANIMATION_DURATION_MAXIMUM: new ApiError("Sticker animation duration exceeds maximum of {} seconds", 170007, undefined, ["5"]),
 
 	//Other errors
-	UNKNOWN_VOICE_STATE: new ApiError("Unknown Voice State", 10065, 404),
+	UNKNOWN_VOICE_STATE: new ApiError("Unknown Voice State", 10065, 404)
 };
 
 /**
@@ -746,7 +689,7 @@ export const FosscordApiErrors = {
 	CANNOT_BACKFILL_TO_THE_FUTURE: new ApiError("You cannot backfill messages in the future", 55003),
 	CANNOT_GRANT_PERMISSIONS_EXCEEDING_RIGHTS: new ApiError("You cannot grant permissions exceeding your own rights", 50050),
 	ROUTES_LOOPING: new ApiError("Loops in the route definition ({})", 50060, undefined, [""]),
-	CANNOT_REMOVE_ROUTE: new ApiError("Cannot remove message route while it is in effect and being used", 50061),
+	CANNOT_REMOVE_ROUTE: new ApiError("Cannot remove message route while it is in effect and being used", 50061)
 };
 
 /**
@@ -765,11 +708,7 @@ export const DefaultMessageNotifications = ["ALL", "MENTIONS", "MUTED"];
  * * INSERTED (Fosscord extension)
  * @typedef {string} MembershipStates
  */
-export const MembershipStates = [
-	"INSERTED",
-	"INVITED",
-	"ACCEPTED",
-];
+export const MembershipStates = ["INSERTED", "INVITED", "ACCEPTED"];
 
 /**
  * The value set for a webhook's type:
@@ -778,15 +717,10 @@ export const MembershipStates = [
  * * Custom (Fosscord extension)
  * @typedef {string} WebhookTypes
  */
-export const WebhookTypes = [
-	"Custom",
-	"Incoming",
-	"Channel Follower",
-];
+export const WebhookTypes = ["Custom", "Incoming", "Channel Follower"];
 
 function keyMirror(arr: string[]) {
 	let tmp = Object.create(null);
 	for (const value of arr) tmp[value] = value;
 	return tmp;
 }
-

@@ -1,20 +1,19 @@
+import { route } from "@fosscord/api";
 import {
 	emitEvent,
 	GuildStickersUpdateEvent,
-	handleFile,
+	HTTPError,
 	Member,
 	ModifyGuildStickerSchema,
+	OrmUtils,
 	Snowflake,
 	Sticker,
 	StickerFormatType,
 	StickerType,
 	uploadFile
 } from "@fosscord/util";
-import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 import multer from "multer";
-import { HTTPError } from "@fosscord/util";
-import { OrmUtils } from "@fosscord/util";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {

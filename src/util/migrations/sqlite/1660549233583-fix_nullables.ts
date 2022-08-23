@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class fixNullables1660549233583 implements MigrationInterface {
-    name = 'fixNullables1660549233583'
+	name = "fixNullables1660549233583";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             CREATE TABLE "temporary_users" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "username" varchar NOT NULL,
@@ -42,7 +42,7 @@ export class fixNullables1660549233583 implements MigrationInterface {
                 CONSTRAINT "FK_76ba283779c8441fd5ff819c8cf" FOREIGN KEY ("settingsId") REFERENCES "user_settings" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_users"(
                     "id",
                     "username",
@@ -111,21 +111,21 @@ export class fixNullables1660549233583 implements MigrationInterface {
                 "settingsId"
             FROM "users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_users"
                 RENAME TO "users"
         `);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             ALTER TABLE "users"
                 RENAME TO "temporary_users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "users" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "username" varchar NOT NULL,
@@ -163,7 +163,7 @@ export class fixNullables1660549233583 implements MigrationInterface {
                 CONSTRAINT "FK_76ba283779c8441fd5ff819c8cf" FOREIGN KEY ("settingsId") REFERENCES "user_settings" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "users"(
                     "id",
                     "username",
@@ -232,9 +232,8 @@ export class fixNullables1660549233583 implements MigrationInterface {
                 "settingsId"
             FROM "temporary_users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_users"
         `);
-    }
-
+	}
 }

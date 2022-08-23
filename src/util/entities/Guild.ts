@@ -1,6 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
-import { OrmUtils } from "../util/imports/OrmUtils";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { Config, handleFile, Snowflake } from "..";
+import { OrmUtils } from "../util/imports/OrmUtils";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -32,15 +32,7 @@ import { Webhook } from "./Webhook";
 // 		"Gacha"
 // 	],
 
-export const PublicGuildRelations = [
-	"channels",
-	"emojis",
-	"members",
-	"roles",
-	"stickers",
-	"voice_states",
-	"members.user",
-];
+export const PublicGuildRelations = ["channels", "emojis", "members", "roles", "stickers", "voice_states", "members.user"];
 
 @Entity("guilds")
 export class Guild extends BaseClass {
@@ -63,7 +55,7 @@ export class Guild extends BaseClass {
 	@JoinColumn({ name: "ban_ids" })
 	@OneToMany(() => Ban, (ban: Ban) => ban.guild, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	bans: Ban[];
 
@@ -113,7 +105,7 @@ export class Guild extends BaseClass {
 	@OneToMany(() => Member, (member: Member) => member.guild, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	members: Member[];
 
@@ -121,14 +113,14 @@ export class Guild extends BaseClass {
 	@OneToMany(() => Role, (role: Role) => role.guild, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	roles: Role[];
 
 	@JoinColumn({ name: "channel_ids" })
 	@OneToMany(() => Channel, (channel: Channel) => channel.guild, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	channels: Channel[];
 
@@ -144,7 +136,7 @@ export class Guild extends BaseClass {
 	@OneToMany(() => Emoji, (emoji: Emoji) => emoji.guild, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	emojis: Emoji[];
 
@@ -152,7 +144,7 @@ export class Guild extends BaseClass {
 	@OneToMany(() => Sticker, (sticker: Sticker) => sticker.guild, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	stickers: Sticker[];
 
@@ -160,7 +152,7 @@ export class Guild extends BaseClass {
 	@OneToMany(() => Invite, (invite: Invite) => invite.guild, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	invites: Invite[];
 
@@ -168,7 +160,7 @@ export class Guild extends BaseClass {
 	@OneToMany(() => VoiceState, (voicestate: VoiceState) => voicestate.guild, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	voice_states: VoiceState[];
 
@@ -176,7 +168,7 @@ export class Guild extends BaseClass {
 	@OneToMany(() => Webhook, (webhook: Webhook) => webhook.guild, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	webhooks: Webhook[];
 
@@ -282,12 +274,7 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	premium_progress_bar_enabled: boolean = false;
 
-	static async createGuild(body: {
-		name?: string;
-		icon?: string | null;
-		owner_id?: string;
-		channels?: Partial<Channel>[];
-	}) {
+	static async createGuild(body: { name?: string; icon?: string | null; owner_id?: string; channels?: Partial<Channel>[] }) {
 		const guild_id = Snowflake.generate();
 
 		const guild: Guild = OrmUtils.mergeDeep(new Guild(), {
@@ -318,9 +305,9 @@ export class Guild extends BaseClass {
 			welcome_screen: {
 				enabled: false,
 				description: "Fill in your description",
-				welcome_channels: [],
+				welcome_channels: []
 			},
-			widget_enabled: true, // NB: don't set it as false to prevent artificial restrictions
+			widget_enabled: true // NB: don't set it as false to prevent artificial restrictions
 		});
 		await guild.save();
 
@@ -338,7 +325,7 @@ export class Guild extends BaseClass {
 			permissions: String("2251804225"),
 			position: 0,
 			icon: null,
-			unicode_emoji: null,
+			unicode_emoji: null
 		});
 		await role.save();
 
@@ -361,7 +348,7 @@ export class Guild extends BaseClass {
 				keepId: true,
 				skipExistsCheck: true,
 				skipPermissionCheck: true,
-				skipEventEmit: true,
+				skipEventEmit: true
 			});
 		}
 

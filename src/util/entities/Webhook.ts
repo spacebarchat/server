@@ -7,7 +7,7 @@ import { User } from "./User";
 
 export enum WebhookType {
 	Incoming = 1,
-	ChannelFollower = 2,
+	ChannelFollower = 2
 }
 
 @Entity("webhooks")
@@ -30,7 +30,7 @@ export class Webhook extends BaseClass {
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	guild: Guild;
 
@@ -40,7 +40,7 @@ export class Webhook extends BaseClass {
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => Channel, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	channel: Channel;
 
@@ -50,7 +50,7 @@ export class Webhook extends BaseClass {
 
 	@JoinColumn({ name: "application_id" })
 	@ManyToOne(() => Application, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	application: Application;
 
@@ -60,7 +60,7 @@ export class Webhook extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	user: User;
 
@@ -70,7 +70,7 @@ export class Webhook extends BaseClass {
 
 	@JoinColumn({ name: "source_guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	source_guild: Guild;
 }

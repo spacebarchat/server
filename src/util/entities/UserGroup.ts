@@ -1,7 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
 import { User } from "./User";
 
 @Entity("groups")
@@ -11,11 +10,11 @@ export class UserGroup extends BaseClass {
 
 	@Column()
 	hoist: boolean;
-	
+
 	@JoinColumn({ name: "controller", referencedColumnName: "id" })
 	@ManyToOne(() => User)
 	controller?: User;
-	 
+
 	@Column()
 	mentionable_by?: string;
 
@@ -27,11 +26,10 @@ export class UserGroup extends BaseClass {
 
 	@Column({ nullable: true })
 	icon: string;
-	
+
 	@Column({ nullable: true })
 	parent?: string;
-	
-	@Column({ type: "simple-array", nullable: true})
-	associciations: string[];
 
+	@Column({ type: "simple-array", nullable: true })
+	associciations: string[];
 }
