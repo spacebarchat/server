@@ -9,6 +9,10 @@ import { initStats } from "./stats";
 import { Logo } from "./util";
 config();
 
+if (process.env.DB_MIGRATE) {
+	console.log = () => {};
+}
+
 // TODO: add socket event transmission
 let cores = 1;
 try {

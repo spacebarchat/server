@@ -5,7 +5,7 @@ export class Logo {
 	public static printLogo() {
 		if (existsSync("/usr/bin/chafa"))
 			return execSync(
-				"chafa https://raw.githubusercontent.com/fosscord/fosscord/master/assets-rebrand/svg/Fosscord-Wordmark-Orange.svg",
+				"chafa https://raw.githubusercontent.com/fosscord/fosscord/master/assets-rebrand/svg/Fosscord-Wordmark-Orange.svg -s 70",
 				{
 					env: process.env,
 					encoding: "utf-8",
@@ -29,7 +29,8 @@ export class Logo {
 		return 1;
 	}
 	private static logoVersions: any = {
-		"1": `███████╗ ██████╗ ███████╗███████╗ ██████╗ ██████╗ ██████╗ ██████╗
+		"1": `
+			███████╗ ██████╗ ███████╗███████╗ ██████╗ ██████╗ ██████╗ ██████╗
             ██╔════╝██╔═══██╗██╔════╝██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔══██╗
             █████╗  ██║   ██║███████╗███████╗██║     ██║   ██║██████╔╝██║  ██║
             ██╔══╝  ██║   ██║╚════██║╚════██║██║     ██║   ██║██╔══██╗██║  ██║

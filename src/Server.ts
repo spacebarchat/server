@@ -4,10 +4,9 @@ process.on("uncaughtException", console.error);
 import * as Api from "@fosscord/api";
 import { CDNServer } from "@fosscord/cdn";
 import * as Gateway from "@fosscord/gateway";
-import { Config, getOrInitialiseDatabase } from "@fosscord/util";
+import { Config, getOrInitialiseDatabase, PluginLoader } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
-import { PluginLoader } from "@fosscord/util";
 import express from "express";
 import http from "http";
 import { bold, green, yellow } from "picocolors";
@@ -36,7 +35,7 @@ async function main() {
 	await getOrInitialiseDatabase();
 	await Config.init();
 	await PluginConfig.init();
-
+	let cfg = Config.get();
 	//Sentry
 	if (cfg.sentry.enabled) {
 		console.log(`[Bundle] ${yellow("You are using Sentry! This may slightly impact performance on large loads!")}`);
