@@ -2,10 +2,17 @@
 const path = require("path");
 const fs = require("fs");
 const { stdout, exit } = require("process");
+<<<<<<< HEAD
 const { execIn } = require("./utils.js");
 const { ask } = require("./utils/ask.js");
 
 
+=======
+const readline = require("readline");
+const { execIn } = require("./utils.js");
+
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+>>>>>>> 751383d629a48de871534679ef3ac873dd8fe61f
 const data = { env: [], config: { register: {} }, extra_pkgs: [] };
 let rights = [];
 
@@ -128,7 +135,11 @@ async function main() {
 	printTitle("Step 5: extra options");
 
 	if (/y?/i.test(await ask("Use fast BCrypt implementation (requires a compiler) (Y/n): "))) data.extra_pkgs.push("bcrypt");
+<<<<<<< HEAD
 	if (/y?/i.test(await ask("Enable support for widgets (requires compiler, known to fail on some ARM devices.) (Y/n): ")))
+=======
+	if (/y?/.test(await ask("Enable support for widgets (requires compiler, known to fail on some ARM devices.) (Y/n): ")))
+>>>>>>> 751383d629a48de871534679ef3ac873dd8fe61f
 		data.extra_pkgs.push("canvas");
 
 	printTitle("Step 6: finalizing...");
@@ -201,7 +212,16 @@ async function askRights() {
 	return selectedRights;
 }
 
+<<<<<<< HEAD
 
+=======
+async function askRight(right) {
+	let answer = await ask(`${right}: `);
+	if (answer == "y") return true;
+	else if (answer == "n") return false;
+	else return askRight(right);
+}
+>>>>>>> 751383d629a48de871534679ef3ac873dd8fe61f
 
 function printTitle(input) {
 	let width = stdout.columns / 2 - 1; //40
@@ -209,7 +229,19 @@ function printTitle(input) {
 	console.log("-".repeat(width - input.length / 2), input, "-".repeat(width - input.length / 2));
 	console.log();
 }
+<<<<<<< HEAD
 
+=======
+async function ask(question) {
+	return new Promise((resolve, _reject) => {
+		return rl.question(question, (answer) => {
+			resolve(answer);
+		});
+	}).catch((err) => {
+		console.log(err);
+	});
+}
+>>>>>>> 751383d629a48de871534679ef3ac873dd8fe61f
 
 function BitFlag(int) {
 	return 1n << BigInt(int);
