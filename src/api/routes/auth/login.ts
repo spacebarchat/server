@@ -1,7 +1,8 @@
-import { route } from "@fosscord/api";
+import { route, getIpAdress } from "@fosscord/api";
 import { adjustEmail, Config, FieldErrors, generateToken, LoginSchema, User } from "@fosscord/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
+import fetch from "node-fetch";
 
 let bcrypt: any;
 try {
@@ -17,12 +18,13 @@ export default router;
 router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Response) => {
 	const { login, password, captcha_key, undelete } = req.body as LoginSchema;
 	const email = adjustEmail(login);
+	const ip = getIpAdress(req);
 
 	const config = Config.get();
 
 	if (config.login.requireCaptcha && config.security.captcha.enabled) {
+		const { sitekey, secret, service } = config.security.captcha;
 		if (!captcha_key) {
-			const { sitekey, service } = config.security.captcha;
 			return res.status(400).json({
 				captcha_key: ["captcha-required"],
 				captcha_sitekey: sitekey,
@@ -30,7 +32,21 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 			});
 		}
 
-		// TODO: check captcha
+
+		let captchaUrl = "";
+		if (service === "recaptcha") {
+			captchaUrl = `https://www.google.com/recaptcha/api/siteverify=${sitekey}?secret=${secret}&response=${captcha_key}&remoteip=${ip}`;
+		} else if (service === "hcaptcha") {
+			captchaUrl = `https://hcaptcha.com/siteverify?sitekey=${sitekey}&secret=${secret}&response=${captcha_key}&remoteip=${ip}`;
+		}
+		const response: { success: boolean; "error-codes": string[] } = await (await fetch(captchaUrl, { method: "POST" })).json();
+		if (!response.success) {
+			return res.status(400).json({
+				captcha_key: response["error-codes"],
+				captcha_sitekey: sitekey,
+				captcha_service: service
+			});
+		}
 	}
 
 	const user = await User.findOneOrFail({
