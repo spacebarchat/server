@@ -1,6 +1,5 @@
 import { ChannelPermissionOverwriteType, ChannelType } from "..";
 
-
 export interface ChannelModifySchema {
 	/**
 	 * @maxLength 100

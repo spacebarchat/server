@@ -1,6 +1,5 @@
 import { Embed } from "@fosscord/util";
 
-
 export interface MessageCreateSchema {
 	type?: number;
 	content?: string;

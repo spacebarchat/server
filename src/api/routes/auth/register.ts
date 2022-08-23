@@ -1,8 +1,15 @@
+import { getIpAdress, IPAnalysis, isProxy, route } from "@fosscord/api";
+import { adjustEmail, Config, FieldErrors, generateToken, HTTPError, Invite, RegisterSchema, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { Config, generateToken, Invite, FieldErrors, User, adjustEmail, trimSpecial, RegisterSchema } from "@fosscord/util";
-import { route, getIpAdress, IPAnalysis, isProxy } from "@fosscord/api";
-import bcrypt from "bcrypt";
-import { HTTPError } from "@fosscord/util";
+import fetch from "node-fetch";
+
+let bcrypt: any;
+try {
+	bcrypt = require("bcrypt");
+} catch {
+	bcrypt = require("bcryptjs");
+	console.log("Warning: using bcryptjs because bcrypt is not installed! Performance will be affected.");
+}
 
 const router: Router = Router();
 
@@ -38,8 +45,9 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	}
 
 	if (register.requireCaptcha && security.captcha.enabled) {
+		const { sitekey, secret, service } = security.captcha;
+
 		if (!body.captcha_key) {
-			const { sitekey, service } = security.captcha;
 			return res?.status(400).json({
 				captcha_key: ["captcha-required"],
 				captcha_sitekey: sitekey,
@@ -47,7 +55,21 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 			});
 		}
 
-		// TODO: check captcha
+
+		let captchaUrl = "";
+		if (service === "recaptcha") {
+			captchaUrl = `https://www.google.com/recaptcha/api/siteverify=${sitekey}?secret=${secret}&response=${body.captcha_key}&remoteip=${ip}`;
+		} else if (service === "hcaptcha") {
+			captchaUrl = `https://hcaptcha.com/siteverify?sitekey=${sitekey}&secret=${secret}&response=${body.captcha_key}&remoteip=${ip}`;
+		}
+		const response: { success: boolean; "error-codes": string[] } = await (await fetch(captchaUrl, { method: "POST" })).json();
+		if (!response.success) {
+			return res.status(400).json({
+				captcha_key: response["error-codes"],
+				captcha_sitekey: sitekey,
+				captcha_service: service
+			});
+		}
 	}
 
 	if (!register.allowMultipleAccounts) {

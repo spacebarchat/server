@@ -17,5 +17,22 @@
 		"files.exclude": {
 			"*.ansi": true,
 		}
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"command": "npm run start:bundle:vscode-dbg",
+				"name": "Run Fosscord with debugger",
+				"request": "launch",
+				"type": "node-terminal"
+			},
+			{
+				"command": "kitty npm run start:bundle:vscode-dbg",
+				"name": "Run Fosscord with debugger (kitty)",
+				"request": "launch",
+				"type": "node-terminal"
+			}
+		]
 	}
 }

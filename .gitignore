@@ -19,5 +19,16 @@ api/assets/plugins/*.js
 bundle/depclean.*
 *.tmp
 tmp/
-
 assets/cache/
+*.generated
+initial.json
+.yarn/cache
+build.json
+
+yarn.lock
+
+.yarn/install-state.gz
+
+dbconf.json
+
+migrations.db

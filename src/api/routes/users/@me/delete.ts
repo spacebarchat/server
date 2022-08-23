@@ -1,8 +1,14 @@
-import { Router, Request, Response } from "express";
-import { Guild, Member, User } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import bcrypt from "bcrypt";
-import { HTTPError } from "@fosscord/util";
+import { HTTPError, Member, User } from "@fosscord/util";
+import { Request, Response, Router } from "express";
+
+let bcrypt: any;
+try {
+	bcrypt = require("bcrypt");
+} catch {
+	bcrypt = require("bcryptjs");
+	console.log("Warning: using bcryptjs because bcrypt is not installed! Performance will be affected.");
+}
 
 const router = Router();
 

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { Sticker } from ".";
 import { BaseClass } from "./BaseClass";
 
@@ -15,7 +15,7 @@ export class StickerPack extends BaseClass {
 
 	@OneToMany(() => Sticker, (sticker: Sticker) => sticker.pack, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	stickers: Sticker[];
 

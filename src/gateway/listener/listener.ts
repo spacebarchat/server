@@ -1,20 +1,20 @@
+import { WebSocket } from "@fosscord/gateway";
 import {
-	getPermission,
-	Permissions,
-	RabbitMQ,
-	listenEvent,
+	EVENTEnum,
 	EventOpts,
+	getPermission,
+	listenEvent,
 	ListenEventOpts,
 	Member,
-	EVENTEnum,
+	Permissions,
+	RabbitMQ,
+	Recipient,
 	Relationship,
-	RelationshipType,
+	RelationshipType
 } from "@fosscord/util";
+import { Channel as AMQChannel } from "amqplib";
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
-import { WebSocket } from "@fosscord/gateway";
-import { Channel as AMQChannel } from "amqplib";
-import { Recipient } from "@fosscord/util";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent
@@ -23,17 +23,14 @@ import { Recipient } from "@fosscord/util";
 // Sharding: calculate if the current shard id matches the formula: shard_id = (guild_id >> 22) % num_shards
 // https://discord.com/developers/docs/topics/gateway#sharding
 
-export function handlePresenceUpdate(
-	this: WebSocket,
-	{ event, acknowledge, data }: EventOpts
-) {
+export function handlePresenceUpdate(this: WebSocket, { event, acknowledge, data }: EventOpts) {
 	acknowledge?.();
 	if (event === EVENTEnum.PresenceUpdate) {
 		return Send(this, {
 			op: OPCODES.Dispatch,
 			t: event,
 			d: data,
-			s: this.sequence++,
+			s: this.sequence++
 		});
 	}
 }
@@ -43,23 +40,25 @@ export async function setupListener(this: WebSocket) {
 	const [members, recipients, relationships] = await Promise.all([
 		Member.find({
 			where: { id: this.user_id },
-			relations: ["guild", "guild.channels"],
+			relations: ["guild", "guild.channels"]
 		}),
 		Recipient.find({
 			where: { user_id: this.user_id, closed: false },
-			relations: ["channel"],
+			relations: ["channel"]
 		}),
-		Relationship.find({ where: {
-			from_id: this.user_id,
-			type: RelationshipType.friends,
-		} }),
+		Relationship.find({
+			where: {
+				from_id: this.user_id,
+				type: RelationshipType.friends
+			}
+		})
 	]);
 
 	const guilds = members.map((x) => x.guild);
 	const dm_channels = recipients.map((x) => x.channel);
 
 	const opts: { acknowledge: boolean; channel?: AMQChannel } = {
-		acknowledge: true,
+		acknowledge: true
 	};
 	this.listen_options = opts;
 	const consumer = consume.bind(this);
@@ -73,11 +72,7 @@ export async function setupListener(this: WebSocket) {
 	this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
 
 	relationships.forEach(async (relationship) => {
-		this.events[relationship.to_id] = await listenEvent(
-			relationship.to_id,
-			handlePresenceUpdate.bind(this),
-			opts
-		);
+		this.events[relationship.to_id] = await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts);
 	});
 
 	dm_channels.forEach(async (channel) => {
@@ -90,16 +85,8 @@ export async function setupListener(this: WebSocket) {
 		this.events[guild.id] = await listenEvent(guild.id, consumer, opts);
 
 		guild.channels.forEach(async (channel) => {
-			if (
-				permission
-					.overwriteChannel(channel.permission_overwrites!)
-					.has("VIEW_CHANNEL")
-			) {
-				this.events[channel.id] = await listenEvent(
-					channel.id,
-					consumer,
-					opts
-				);
+			if (permission.overwriteChannel(channel.permission_overwrites!).has("VIEW_CHANNEL")) {
+				this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
 			}
 		});
 	});
@@ -131,11 +118,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			delete this.member_events[data.user.id];
 		case "GUILD_MEMBER_ADD":
 			if (this.member_events[data.user.id]) break; // already subscribed
-			this.member_events[data.user.id] = await listenEvent(
-				data.user.id,
-				handlePresenceUpdate.bind(this),
-				this.listen_options
-			);
+			this.member_events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
 			break;
 		case "GUILD_MEMBER_REMOVE":
 			if (!this.member_events[data.user.id]) break;
@@ -148,21 +131,13 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			opts.cancel();
 			break;
 		case "CHANNEL_CREATE":
-			if (
-				!permission
-					.overwriteChannel(data.permission_overwrites)
-					.has("VIEW_CHANNEL")
-			) {
+			if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
 				return;
 			}
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
 			break;
 		case "RELATIONSHIP_ADD":
-			this.events[data.user.id] = await listenEvent(
-				data.user.id,
-				handlePresenceUpdate.bind(this),
-				this.listen_options
-			);
+			this.events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
 			break;
 		case "GUILD_CREATE":
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
@@ -170,11 +145,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		case "CHANNEL_UPDATE":
 			const exists = this.events[id];
 			// @ts-ignore
-			if (
-				permission
-					.overwriteChannel(data.permission_overwrites)
-					.has("VIEW_CHANNEL")
-			) {
+			if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
 				if (exists) break;
 				this.events[id] = await listenEvent(id, consumer, listenOpts);
 			} else {
@@ -244,6 +215,6 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		op: OPCODES.Dispatch,
 		t: event,
 		d: data,
-		s: this.sequence++,
+		s: this.sequence++
 	});
 }

@@ -6,7 +6,7 @@ export enum RelationshipType {
 	outgoing = 4,
 	incoming = 3,
 	blocked = 2,
-	friends = 1,
+	friends = 1
 }
 
 @Entity("relationships")
@@ -18,7 +18,7 @@ export class Relationship extends BaseClass {
 
 	@JoinColumn({ name: "from_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	from: User;
 
@@ -28,7 +28,7 @@ export class Relationship extends BaseClass {
 
 	@JoinColumn({ name: "to_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	to: User;
 
@@ -43,7 +43,7 @@ export class Relationship extends BaseClass {
 			id: this.to?.id || this.to_id,
 			type: this.type,
 			nickname: this.nickname,
-			user: this.to?.toPublicUser(),
+			user: this.to?.toPublicUser()
 		};
 	}
 }

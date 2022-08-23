@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class updatedApplications1660130536131 implements MigrationInterface {
-    name = 'updatedApplications1660130536131'
+	name = "updatedApplications1660130536131";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             CREATE TABLE "temporary_applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -28,7 +28,7 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 CONSTRAINT "FK_e57508958bf92b9d9d25231b5e8" FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_applications"(
                     "id",
                     "name",
@@ -69,14 +69,14 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 "guild_id"
             FROM "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_applications"
                 RENAME TO "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -96,7 +96,7 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 CONSTRAINT "FK_e57508958bf92b9d9d25231b5e8" FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_applications"(
                     "id",
                     "name",
@@ -129,14 +129,14 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 "team_id"
             FROM "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_applications"
                 RENAME TO "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -171,7 +171,7 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 CONSTRAINT "FK_e57508958bf92b9d9d25231b5e8" FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_applications"(
                     "id",
                     "name",
@@ -204,14 +204,14 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 "team_id"
             FROM "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_applications"
                 RENAME TO "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -246,7 +246,7 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 CONSTRAINT "FK_e57508958bf92b9d9d25231b5e8" FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_applications"(
                     "id",
                     "name",
@@ -307,14 +307,14 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 "bot_user_id"
             FROM "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_applications"
                 RENAME TO "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -350,7 +350,7 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 CONSTRAINT "FK_2ce5a55796fe4c2f77ece57a647" FOREIGN KEY ("bot_user_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_applications"(
                     "id",
                     "name",
@@ -411,21 +411,21 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 "bot_user_id"
             FROM "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_applications"
                 RENAME TO "applications"
         `);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             ALTER TABLE "applications"
                 RENAME TO "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -460,7 +460,7 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 CONSTRAINT "FK_e57508958bf92b9d9d25231b5e8" FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "applications"(
                     "id",
                     "name",
@@ -521,14 +521,14 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 "bot_user_id"
             FROM "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "applications"
                 RENAME TO "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -563,7 +563,7 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 CONSTRAINT "FK_e57508958bf92b9d9d25231b5e8" FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "applications"(
                     "id",
                     "name",
@@ -624,14 +624,14 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 "bot_user_id"
             FROM "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "applications"
                 RENAME TO "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -651,7 +651,7 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 CONSTRAINT "FK_e57508958bf92b9d9d25231b5e8" FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "applications"(
                     "id",
                     "name",
@@ -684,14 +684,14 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 "team_id"
             FROM "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "applications"
                 RENAME TO "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -715,7 +715,7 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 CONSTRAINT "FK_e57508958bf92b9d9d25231b5e8" FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "applications"(
                     "id",
                     "name",
@@ -748,14 +748,14 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 "team_id"
             FROM "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "applications"
                 RENAME TO "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "applications" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "name" varchar NOT NULL,
@@ -780,7 +780,7 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 CONSTRAINT "FK_e57508958bf92b9d9d25231b5e8" FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "applications"(
                     "id",
                     "name",
@@ -821,9 +821,8 @@ export class updatedApplications1660130536131 implements MigrationInterface {
                 "guild_id"
             FROM "temporary_applications"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_applications"
         `);
-    }
-
+	}
 }

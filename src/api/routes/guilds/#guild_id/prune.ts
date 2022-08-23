@@ -1,7 +1,7 @@
-import { Router, Request, Response } from "express";
-import { Guild, Member, Snowflake } from "@fosscord/util";
-import { LessThan, IsNull } from "typeorm";
 import { route } from "@fosscord/api";
+import { Guild, Member, Snowflake } from "@fosscord/util";
+import { Request, Response, Router } from "express";
+import { IsNull, LessThan } from "typeorm";
 const router = Router();
 
 //Returns all inactive members, respecting role hierarchy

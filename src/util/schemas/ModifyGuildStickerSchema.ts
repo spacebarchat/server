@@ -1,4 +1,3 @@
-
 export interface ModifyGuildStickerSchema {
 	/**
 	 * @minLength 2

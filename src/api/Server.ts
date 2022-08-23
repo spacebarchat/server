@@ -1,16 +1,16 @@
-import { Server, ServerOptions } from "lambert-server";
-import { Authentication, CORS } from "./middlewares/";
 import { Config, getOrInitialiseDatabase, initEvent, registerRoutes } from "@fosscord/util";
-import { ErrorHandler } from "./middlewares/ErrorHandler";
-import { BodyParser } from "./middlewares/BodyParser";
-import { Router, Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response, Router } from "express";
+import { Server, ServerOptions } from "lambert-server";
+import morgan from "morgan";
 import path from "path";
+import { red } from "picocolors";
+import { Authentication, CORS } from "./middlewares/";
+import { BodyParser } from "./middlewares/BodyParser";
+import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
-import morgan from "morgan";
 import { initInstance } from "./util/handlers/Instance";
-import { red } from "picocolors"
 
 export interface FosscordServerOptions extends ServerOptions {}
 
@@ -85,8 +85,13 @@ export class FosscordServer extends Server {
 		this.app.use(ErrorHandler);
 		TestClient(this.app);
 
-		if (logRequests) console.log(red(`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`));
-		
+		if (logRequests)
+			console.log(
+				red(
+					`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`
+				)
+			);
+
 		return super.start();
 	}
 }

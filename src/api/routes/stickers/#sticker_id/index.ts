@@ -1,6 +1,6 @@
-import { Sticker } from "@fosscord/util";
-import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
+import { Sticker } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {

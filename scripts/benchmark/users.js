@@ -14,9 +14,9 @@ async function main() {
 				consent: true,
 				date_of_birth: "2000-01-01",
 				gift_code_sku_id: null,
-				captcha_key: null,
+				captcha_key: null
 			}),
-			headers: { "content-type": "application/json" },
+			headers: { "content-type": "application/json" }
 		});
 		console.log(i);
 	}

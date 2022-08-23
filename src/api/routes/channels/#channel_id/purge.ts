@@ -1,10 +1,18 @@
-import { HTTPError, PurgeSchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import {
+	Channel,
+	Config,
+	emitEvent,
+	getPermission,
+	getRights,
+	HTTPError,
+	Message,
+	MessageDeleteBulkEvent,
+	PurgeSchema
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
+import { Between, FindManyOptions, In, Not } from "typeorm";
 import { isTextChannel } from "./messages";
-import { FindManyOptions, Between, Not } from "typeorm";
-import { Channel, Config, emitEvent, getPermission, getRights, Message, MessageDeleteBulkEvent } from "@fosscord/util";
-import { Router, Response, Request } from "express";
-import { In } from "typeorm";
 
 const router: Router = Router();
 
@@ -13,7 +21,12 @@ export default router;
 /**
 TODO: apply the delete bit by bit to prevent client and database stress
 **/
-router.post("/",route({ /*body: "PurgeSchema",*/ }), async (req: Request, res: Response) => {
+router.post(
+	"/",
+	route({
+		/*body: "PurgeSchema",*/
+	}),
+	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 

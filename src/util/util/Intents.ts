@@ -22,13 +22,12 @@ export class Intents extends BitField {
 		GUILD_POLICY_EXECUTION: BigInt(1) << BigInt(21), // guild policy execution
 		LIVE_MESSAGE_COMPOSITION: BigInt(1) << BigInt(32), // allow composing messages using the gateway
 		GUILD_ROUTES: BigInt(1) << BigInt(41), // message routes affecting the guild
-		DIRECT_MESSAGES_THREADS: BigInt(1) << BigInt(42),  // direct message threads
+		DIRECT_MESSAGES_THREADS: BigInt(1) << BigInt(42), // direct message threads
 		JUMBO_EVENTS: BigInt(1) << BigInt(43), // jumbo events (size limits to be defined later)
 		LOBBIES: BigInt(1) << BigInt(44), // lobbies
-		INSTANCE_ROUTES: BigInt(1) << BigInt(60), // all message route changes 
+		INSTANCE_ROUTES: BigInt(1) << BigInt(60), // all message route changes
 		INSTANCE_GUILD_CHANGES: BigInt(1) << BigInt(61), // all guild create, guild object patch, split, merge and delete events
 		INSTANCE_POLICY_UPDATES: BigInt(1) << BigInt(62), // all instance policy updates
 		INSTANCE_USER_UPDATES: BigInt(1) << BigInt(63) // all instance user updates
 	};
 }
-

@@ -1,7 +1,8 @@
-import { ConfigEntity } from "../entities/Config";
 import fs from "fs";
-import { ConfigValue } from "../config";
+import path from "path";
 import { OrmUtils } from ".";
+import { ConfigValue } from "../config";
+import { ConfigEntity } from "../entities/Config";
 
 // TODO: yaml instead of json
 const overridePath = process.env.CONFIG_PATH ?? "";
@@ -15,27 +16,38 @@ let pairs: ConfigEntity[];
 export const Config = {
 	init: async function init() {
 		if (config) return config;
-		console.log('[Config] Loading configuration...')
+		console.log("[Config] Loading configuration...");
 		pairs = await ConfigEntity.find();
 		config = pairsToConfig(pairs);
 		//config = (config || {}).merge(new ConfigValue());
-		config = OrmUtils.mergeDeep(new ConfigValue(), config)
+		config = OrmUtils.mergeDeep(new ConfigValue(), config);
 
-		if(process.env.CONFIG_PATH)
+		if (process.env.CONFIG_PATH)
 			try {
 				const overrideConfig = JSON.parse(fs.readFileSync(overridePath, { encoding: "utf8" }));
-				config = overrideConfig.merge(config);
+				config = OrmUtils.mergeDeep(config, overrideConfig);
 			} catch (error) {
 				fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
 			}
-		
+
+		if (fs.existsSync(path.join(process.cwd(), "initial.json")))
+			try {
+				console.log("[Config] Found initial configuration, merging...");
+				const overrideConfig = JSON.parse(fs.readFileSync(path.join(process.cwd(), "initial.json"), { encoding: "utf8" }));
+				config = OrmUtils.mergeDeep(config, overrideConfig);
+				fs.rmSync(path.join(process.cwd(), "initial.json"));
+			} catch (error) {
+				fs.writeFileSync(path.join(process.cwd(), "failed.conf"), JSON.stringify(config, null, 4));
+			}
 
 		return this.set(config);
 	},
 	get: function get() {
-		if(!config) {
-			if(/--debug|--inspect/.test(process.execArgv.join(' ')))
-				console.log("Oops.. trying to get config without config existing... Returning defaults... (Is the database still initialising?)");
+		if (!config) {
+			if (/--debug|--inspect/.test(process.execArgv.join(" ")))
+				console.log(
+					"Oops.. trying to get config without config existing... Returning defaults... (Is the database still initialising?)"
+				);
 			return new ConfigValue();
 		}
 		return config;
@@ -45,7 +57,7 @@ export const Config = {
 		config = val.merge(config);
 
 		return applyConfig(config);
-	},
+	}
 };
 
 function applyConfig(val: ConfigValue) {
@@ -60,9 +72,8 @@ function applyConfig(val: ConfigValue) {
 		pair.value = obj;
 		return pair.save();
 	}
-	if(process.env.CONFIG_PATH) {
-		if(/--debug|--inspect/.test(process.execArgv.join(' ')))
-			console.log(`Writing config: ${process.env.CONFIG_PATH}`)
+	if (process.env.CONFIG_PATH) {
+		if (/--debug|--inspect/.test(process.execArgv.join(" "))) console.log(`Writing config: ${process.env.CONFIG_PATH}`);
 		fs.writeFileSync(overridePath, JSON.stringify(val, null, 4));
 	}
 

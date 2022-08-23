@@ -1,4 +1,4 @@
-import amqp, { Connection, Channel } from "amqplib";
+import { Channel, Connection } from "amqplib";
 // import Config from "./Config";
 
 export const RabbitMQ: { connection: Connection | null; channel: Channel | null; init: () => Promise<void> } = {
@@ -15,5 +15,5 @@ export const RabbitMQ: { connection: Connection | null; channel: Channel | null;
 		// console.log(`[RabbitMQ] connected`);
 		// this.channel = await this.connection.createChannel();
 		// console.log(`[RabbitMQ] channel created`);
-	},
+	}
 };

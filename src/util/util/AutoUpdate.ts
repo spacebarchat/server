@@ -1,12 +1,12 @@
-import fetch from "node-fetch";
-import ProxyAgent from 'proxy-agent';
-import readline from "readline";
 import fs from "fs/promises";
+import fetch from "node-fetch";
 import path from "path";
+import ProxyAgent from "proxy-agent";
+import readline from "readline";
 
 const rl = readline.createInterface({
 	input: process.stdin,
-	output: process.stdout,
+	output: process.stdout
 });
 
 export function enableAutoUpdate(opts: {

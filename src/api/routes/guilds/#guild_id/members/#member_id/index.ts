@@ -1,8 +1,18 @@
-import { Request, Response, Router } from "express";
-import { Member, getPermission, getRights, Role, GuildMemberUpdateEvent, emitEvent, Sticker, Emoji, Rights, Guild, MemberChangeSchema } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import { OrmUtils } from "@fosscord/util";
+import {
+	emitEvent,
+	Emoji,
+	getPermission,
+	getRights,
+	Guild,
+	GuildMemberUpdateEvent,
+	Member,
+	MemberChangeSchema,
+	OrmUtils,
+	Role,
+	Sticker
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -46,7 +56,6 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 });
 
 router.put("/", route({}), async (req: Request, res: Response) => {
-
 	// TODO: Lurker mode
 
 	const rights = await getRights(req.user_id);
@@ -56,7 +65,7 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 		member_id = req.user_id;
 		rights.hasThrow("JOIN_GUILDS");
 	} else {
-		// TODO: join others by controller	
+		// TODO: join others by controller
 	}
 
 	let guild = await Guild.findOneOrFail({

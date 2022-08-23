@@ -1,8 +1,8 @@
-import { User } from "./User";
-import { BaseClass } from "./BaseClass";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { Status } from "../interfaces/Status";
 import { Activity } from "../interfaces/Activity";
+import { Status } from "../interfaces/Status";
+import { BaseClass } from "./BaseClass";
+import { User } from "./User";
 
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 
@@ -14,7 +14,7 @@ export class Session extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	user: User;
 
@@ -37,10 +37,4 @@ export class Session extends BaseClass {
 	status: Status; //TODO enum
 }
 
-export const PrivateSessionProjection: (keyof Session)[] = [
-	"user_id",
-	"session_id",
-	"activities",
-	"client_info",
-	"status",
-];
+export const PrivateSessionProjection: (keyof Session)[] = ["user_id", "session_id", "activities", "client_info", "status"];
