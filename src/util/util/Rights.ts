@@ -78,6 +78,10 @@ export class Rights extends BitField {
 		SEND_BACKDATED_EVENTS: BitFlag(42), // can send backdated events
 		USE_MASS_INVITES: BitFlag(43), // added per @xnacly's request — can accept mass invites
 		ACCEPT_INVITES: BitFlag(44), // added per @xnacly's request — can accept user-specific invites and DM requests
+		SELF_EDIT_FLAGS: BitFlag(45), // can modify own flags
+		EDIT_FLAGS: BitFlag(46), // can set others' flags
+		MANAGE_GROUPS: BitFlag(47), // can manage others' groups
+		VIEW_SERVER_STATS: BitFlag(48) // added per @chrischrome's request — can view server stats)
 	};
 
 	any(permission: RightResolvable, checkOperator = true) {
