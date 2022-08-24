@@ -15,4 +15,5 @@ export class SecurityConfiguration {
 	forwadedFor: string | null = null;
 	ipdataApiKey: string | null = "eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9";
 	mfaBackupCodeCount: number = 10;
+	mfaBackupCodeBytes: number = 4;
 }
