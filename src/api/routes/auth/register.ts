@@ -1,7 +1,6 @@
-import { getIpAdress, IPAnalysis, isProxy, route } from "@fosscord/api";
-import { adjustEmail, Config, FieldErrors, generateToken, HTTPError, Invite, RegisterSchema, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import fetch from "node-fetch";
+import { Config, generateToken, Invite, FieldErrors, User, adjustEmail, RegisterSchema } from "@fosscord/util";
+import { route, getIpAdress, IPAnalysis, isProxy, verifyCaptcha } from "@fosscord/api";
 
 let bcrypt: any;
 try {
@@ -10,6 +9,7 @@ try {
 	bcrypt = require("bcryptjs");
 	console.log("Warning: using bcryptjs because bcrypt is not installed! Performance will be affected.");
 }
+import { HTTPError } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -45,8 +45,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	}
 
 	if (register.requireCaptcha && security.captcha.enabled) {
-		const { sitekey, secret, service } = security.captcha;
-
+		const { sitekey, service } = security.captcha;
 		if (!body.captcha_key) {
 			return res?.status(400).json({
 				captcha_key: ["captcha-required"],
@@ -55,20 +54,13 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 			});
 		}
 
-
-		let captchaUrl = "";
-		if (service === "recaptcha") {
-			captchaUrl = `https://www.google.com/recaptcha/api/siteverify=${sitekey}?secret=${secret}&response=${body.captcha_key}&remoteip=${ip}`;
-		} else if (service === "hcaptcha") {
-			captchaUrl = `https://hcaptcha.com/siteverify?sitekey=${sitekey}&secret=${secret}&response=${body.captcha_key}&remoteip=${ip}`;
-		}
-		const response: { success: boolean; "error-codes": string[] } = await (await fetch(captchaUrl, { method: "POST" })).json();
-		if (!response.success) {
+		const verify = await verifyCaptcha(body.captcha_key, ip);
+		if (!verify.success) {
 			return res.status(400).json({
-				captcha_key: response["error-codes"],
+				captcha_key: verify["error-codes"],
 				captcha_sitekey: sitekey,
 				captcha_service: service
-			});
+			})
 		}
 	}
 
