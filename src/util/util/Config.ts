@@ -5,7 +5,6 @@ import { ConfigValue } from "../config";
 import { ConfigEntity } from "../entities/Config";
 
 const overridePath = process.env.CONFIG_PATH ?? "";
-const initialPath = path.join(process.cwd(), "initial.json");
 
 let config: ConfigValue;
 let pairs: ConfigEntity[];
@@ -18,25 +17,21 @@ export const Config = {
 		if (config) return config;
 		console.log("[Config] Loading configuration...");
 		pairs = await ConfigEntity.find();
+		console.log(`[Config] Loaded ${pairs.length} configuration pairs`);
 		config = pairsToConfig(pairs);
+		console.log("[Config] Configuration loaded");
 		//config = (config || {}).merge(new ConfigValue());
 		config = OrmUtils.mergeDeep(new ConfigValue(), config);
+		console.log("[Config] Configuration merged");
 
 		if (process.env.CONFIG_PATH)
 			try {
 				const overrideConfig = JSON.parse(fs.readFileSync(overridePath, { encoding: "utf8" }));
 				config = OrmUtils.mergeDeep(config, overrideConfig);
+				console.log("[Config] Override configuration loaded");
 			} catch (error) {
 				fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
 			}
-		if (fs.existsSync(initialPath)) {
-			console.log("[Config] Importing initial configuration...");
-			try {
-				const overrideConfig = JSON.parse(fs.readFileSync(initialPath, { encoding: "utf8" }));
-				config = overrideConfig.merge(config);
-				fs.rmSync(initialPath);
-			} catch (error) {}
-		}
 
 		if (fs.existsSync(path.join(process.cwd(), "initial.json")))
 			try {
@@ -77,8 +72,10 @@ function applyConfig(val: ConfigValue) {
 		if (!pair) pair = new ConfigEntity();
 
 		pair.key = key;
-		pair.value = obj;
-		return pair.save();
+		if (pair.value != obj) {
+			pair.value = obj;
+			return pair.save();
+		}
 	}
 	if (process.env.CONFIG_PATH) {
 		if (/--debug|--inspect/.test(process.execArgv.join(" "))) console.log(`Writing config: ${process.env.CONFIG_PATH}`);

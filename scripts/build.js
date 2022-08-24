@@ -30,10 +30,10 @@ if (silent) console.error = console.log = function () {};
 if (argv.includes("clean")) {
 	console.log(`[${++i}/${steps}] Cleaning...`);
 	let d = "../" + "/dist";
-		if (fs.existsSync(d)) {
-			fs.rmSync(d, { recursive: true });
-			if (verbose) console.log(`Deleted ${d}!`);
-		}
+	if (fs.existsSync(d)) {
+		fs.rmSync(d, { recursive: true });
+		if (verbose) console.log(`Deleted ${d}!`);
+	}
 }
 
 console.log(`[${++i}/${steps}] Compiling src files ...`);
@@ -110,7 +110,7 @@ if (!argv.includes("copyonly")) {
 }
 
 console.log(`[${++i}/${steps}] Copying plugin data...`);
-let pluginFiles = walk(pluginDir).filter(x=>!x.endsWith('.ts'));
-pluginFiles.forEach(x=>{
-	fs.copyFileSync(x, x.replace('src','dist'))
-})
+let pluginFiles = walk(pluginDir).filter((x) => !x.endsWith(".ts"));
+pluginFiles.forEach((x) => {
+	fs.copyFileSync(x, x.replace("src", "dist"));
+});

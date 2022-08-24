@@ -57,12 +57,14 @@ function applyConfig(val: any) {
 		if (!pair) pair = new PluginConfigEntity();
 
 		pair.key = key;
-		pair.value = obj;
-		if (!pair.key || pair.key == null) {
-			console.log(`[PluginConfig] WARN: Empty key`);
-			console.log(pair);
-			if (Environment.isDebug) debugger;
-		} else return pair.save();
+		if (pair.value != obj) {
+			pair.value = obj;
+			if (!pair.key || pair.key == null) {
+				console.log(`[PluginConfig] WARN: Empty key`);
+				console.log(pair);
+				if (Environment.isDebug) debugger;
+			} else return pair.save();
+		}
 	}
 	if (process.env.PLUGIN_CONFIG_PATH) {
 		if (Environment.isDebug) console.log(`Writing config: ${process.env.PLUGIN_CONFIG_PATH}`);

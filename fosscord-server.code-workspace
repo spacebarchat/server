@@ -30,7 +30,7 @@
 				"type": "node-terminal"
 			},
 			{
-				"command": "kitty npm run start:bundle:vscode-dbg",
+				"command": "[ \"$(basename $PWD)\" != \"fosscord-server\" ] && cd ..; node scripts/build_new.js && kitty node --enable-source-maps --inspect dist/start.js",
 				"name": "Run Fosscord with debugger (kitty)",
 				"request": "launch",
 				"type": "node-terminal"

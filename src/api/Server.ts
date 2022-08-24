@@ -1,5 +1,6 @@
 import { Config, getOrInitialiseDatabase, initEvent, registerRoutes } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
+import fs from "fs";
 import { Server, ServerOptions } from "lambert-server";
 import morgan from "morgan";
 import path from "path";
@@ -12,8 +13,6 @@ import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
 import { initInstance } from "./util/handlers/Instance";
-import fs from "fs";
-import { PluginConfig } from "util/plugin/PluginConfig";
 
 export interface FosscordServerOptions extends ServerOptions {}
 
