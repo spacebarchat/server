@@ -1,8 +1,15 @@
 import { Request, Response, Router } from "express";
 import { route, getIpAdress, verifyCaptcha } from "@fosscord/api";
-import bcrypt from "bcrypt";
 import { Config, User, generateToken, adjustEmail, FieldErrors, LoginSchema } from "@fosscord/util";
 import crypto from "crypto";
+
+let bcrypt: any;
+try {
+	bcrypt = require("bcrypt");
+} catch {
+	bcrypt = require("bcryptjs");
+	console.log("Warning: using bcryptjs because bcrypt is not installed! Performance will be affected.");
+}
 
 const router: Router = Router();
 export default router;
@@ -10,6 +17,7 @@ export default router;
 router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Response) => {
 	const { login, password, captcha_key, undelete } = req.body as LoginSchema;
 	const email = adjustEmail(login);
+	const ip = getIpAdress(req);
 
 	const config = Config.get();
 
@@ -65,9 +73,9 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 		return res.json({
 			ticket: ticket,
 			mfa: true,
-			sms: false,	// TODO
-			token: null,
-		})
+			sms: false, // TODO
+			token: null
+		});
 	}
 
 	const token = await generateToken(user.id);

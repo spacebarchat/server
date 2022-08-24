@@ -1,4 +1,3 @@
-
 export interface TotpSchema {
 	code: string;
 	ticket: string;

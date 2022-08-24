@@ -1,6 +1,6 @@
-import { Config, getRights, listenEvent, Rights } from "@fosscord/util";
-import { NextFunction, Request, Response, Router } from "express";
 import { getIpAdress } from "@fosscord/api";
+import { Config, getRights, listenEvent } from "@fosscord/util";
+import { NextFunction, Request, Response, Router } from "express";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
 // Docs: https://discord.com/developers/docs/topics/rate-limits
@@ -48,7 +48,7 @@ export default function rateLimit(opts: {
 		// exempt user? if so, immediately short circuit
 		if (req.user_id) {
 			const rights = await getRights(req.user_id);
-			if (rights.has("BYPASS_RATE_LIMITS")) return;
+			if (rights.has("BYPASS_RATE_LIMITS")) return next();
 		}
 
 		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
@@ -121,6 +121,7 @@ export default function rateLimit(opts: {
 export async function initRateLimits(app: Router) {
 	const { routes, global, ip, error, disabled } = Config.get().limits.rate;
 	if (disabled) return;
+	console.log("Enabling rate limits...");
 	await listenEvent(EventRateLimit, (event) => {
 		Cache.set(event.channel_id as string, event.data);
 		event.acknowledge?.();
@@ -163,7 +164,7 @@ export async function initRateLimits(app: Router) {
 	app.use("/auth/register", rateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
 }
 
-async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number; }) {
+async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number }) {
 	const id = opts.executor_id + opts.bucket_id;
 	let limit = Cache.get(id);
 	if (!limit) {

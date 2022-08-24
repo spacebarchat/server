@@ -1,4 +1,3 @@
 import { UserSettings } from "@fosscord/util";
 
-
-export interface UserSettingsSchema extends Partial<UserSettings> { }
+export interface UserSettingsSchema extends Partial<UserSettings> {}

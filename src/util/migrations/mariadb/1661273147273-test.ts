@@ -1,14 +1,21 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class syncMigrations1660540527213 implements MigrationInterface {
-    name = 'syncMigrations1660540527213'
+export class test1661273147273 implements MigrationInterface {
+    name = 'test1661273147273'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
             ALTER TABLE \`invites\` DROP FOREIGN KEY \`FK_15c35422032e0b22b4ada95f48f\`
         `);
         await queryRunner.query(`
-            ALTER TABLE \`users\` CHANGE \`settings\` \`settingsId\` text NOT NULL
+            DROP INDEX \`IDX_2ce5a55796fe4c2f77ece57a64\` ON \`applications\`
+        `);
+        await queryRunner.query(`
+            CREATE TABLE \`plugin_config\` (
+                \`key\` varchar(255) NOT NULL,
+                \`value\` text NULL,
+                PRIMARY KEY (\`key\`)
+            ) ENGINE = InnoDB
         `);
         await queryRunner.query(`
             CREATE TABLE \`user_settings\` (
@@ -48,6 +55,17 @@ export class syncMigrations1660540527213 implements MigrationInterface {
             ) ENGINE = InnoDB
         `);
         await queryRunner.query(`
+            ALTER TABLE \`users\` DROP COLUMN \`settings\`
+        `);
+        await queryRunner.query(`
+            ALTER TABLE \`users\`
+            ADD \`settingsId\` varchar(255) NULL
+        `);
+        await queryRunner.query(`
+            ALTER TABLE \`users\`
+            ADD UNIQUE INDEX \`IDX_76ba283779c8441fd5ff819c8c\` (\`settingsId\`)
+        `);
+        await queryRunner.query(`
             ALTER TABLE \`channels\`
             ADD \`flags\` int NULL
         `);
@@ -60,15 +78,10 @@ export class syncMigrations1660540527213 implements MigrationInterface {
             ADD \`premium_progress_bar_enabled\` tinyint NULL
         `);
         await queryRunner.query(`
-            ALTER TABLE \`users\` DROP COLUMN \`settingsId\`
+            ALTER TABLE \`users\` CHANGE \`bio\` \`bio\` varchar(255) NULL
         `);
         await queryRunner.query(`
-            ALTER TABLE \`users\`
-            ADD \`settingsId\` varchar(255) NULL
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`users\`
-            ADD UNIQUE INDEX \`IDX_76ba283779c8441fd5ff819c8c\` (\`settingsId\`)
+            ALTER TABLE \`users\` CHANGE \`mfa_enabled\` \`mfa_enabled\` tinyint NULL
         `);
         await queryRunner.query(`
             CREATE UNIQUE INDEX \`REL_76ba283779c8441fd5ff819c8c\` ON \`users\` (\`settingsId\`)
@@ -94,14 +107,10 @@ export class syncMigrations1660540527213 implements MigrationInterface {
             DROP INDEX \`REL_76ba283779c8441fd5ff819c8c\` ON \`users\`
         `);
         await queryRunner.query(`
-            ALTER TABLE \`users\` DROP INDEX \`IDX_76ba283779c8441fd5ff819c8c\`
+            ALTER TABLE \`users\` CHANGE \`mfa_enabled\` \`mfa_enabled\` tinyint NOT NULL
         `);
         await queryRunner.query(`
-            ALTER TABLE \`users\` DROP COLUMN \`settingsId\`
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`users\`
-            ADD \`settingsId\` text NOT NULL
+            ALTER TABLE \`users\` CHANGE \`bio\` \`bio\` varchar(255) NOT NULL
         `);
         await queryRunner.query(`
             ALTER TABLE \`guilds\` DROP COLUMN \`premium_progress_bar_enabled\`
@@ -113,10 +122,23 @@ export class syncMigrations1660540527213 implements MigrationInterface {
             ALTER TABLE \`channels\` DROP COLUMN \`flags\`
         `);
         await queryRunner.query(`
+            ALTER TABLE \`users\` DROP INDEX \`IDX_76ba283779c8441fd5ff819c8c\`
+        `);
+        await queryRunner.query(`
+            ALTER TABLE \`users\` DROP COLUMN \`settingsId\`
+        `);
+        await queryRunner.query(`
+            ALTER TABLE \`users\`
+            ADD \`settings\` text NOT NULL
+        `);
+        await queryRunner.query(`
             DROP TABLE \`user_settings\`
         `);
         await queryRunner.query(`
-            ALTER TABLE \`users\` CHANGE \`settingsId\` \`settings\` text NOT NULL
+            DROP TABLE \`plugin_config\`
+        `);
+        await queryRunner.query(`
+            CREATE UNIQUE INDEX \`IDX_2ce5a55796fe4c2f77ece57a64\` ON \`applications\` (\`bot_user_id\`)
         `);
         await queryRunner.query(`
             ALTER TABLE \`invites\`

@@ -22,7 +22,7 @@ export enum OPCODES {
 	Stream_Watch = 20,
 	Stream_Ping = 21,
 	Stream_Set_Paused = 22,
-	Request_Application_Commands = 24,
+	Request_Application_Commands = 24
 }
 export enum CLOSECODES {
 	Unknown_error = 4000,
@@ -39,7 +39,7 @@ export enum CLOSECODES {
 	Sharding_required,
 	Invalid_API_version,
 	Invalid_intent,
-	Disallowed_intent,
+	Disallowed_intent
 }
 
 export interface Payload {

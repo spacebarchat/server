@@ -1,9 +1,8 @@
-import { Router, Response, Request } from "express";
-import fetch from "node-fetch";
-import ProxyAgent from 'proxy-agent';
 import { route } from "@fosscord/api";
-import { Config } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
+import { Config, HTTPError } from "@fosscord/util";
+import { Request, Response, Router } from "express";
+import fetch from "node-fetch";
+import ProxyAgent from "proxy-agent";
 
 const router = Router();
 
@@ -34,7 +33,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const { media_format, locale } = req.query;
 
 	const apiKey = getGifApiKey();
-	
+
 	const agent = new ProxyAgent();
 
 	const [responseSource, trendGifSource] = await Promise.all([
@@ -50,8 +49,8 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		})
 	]);
 
-	const { tags } = await responseSource.json() as any;
-	const { results } = await trendGifSource.json() as any;
+	const { tags } = (await responseSource.json()) as any;
+	const { results } = (await trendGifSource.json()) as any;
 
 	res.json({
 		categories: tags.map((x: any) => ({ name: x.searchterm, src: x.image })),

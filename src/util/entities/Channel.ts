@@ -1,18 +1,18 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { DmChannelDTO } from "../dtos";
+import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
+import { containsAll, emitEvent, getPermission, InvisibleCharacters, Snowflake, trimSpecial } from "../util";
+import { HTTPError } from "../util/imports/HTTPError";
 import { OrmUtils } from "../util/imports/OrmUtils";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
-import { PublicUserProjection, User } from "./User";
-import { HTTPError } from "../util/imports/HTTPError";
-import { containsAll, emitEvent, getPermission, Snowflake, trimSpecial, InvisibleCharacters } from "../util";
-import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
-import { Recipient } from "./Recipient";
+import { Invite } from "./Invite";
 import { Message } from "./Message";
 import { ReadState } from "./ReadState";
-import { Invite } from "./Invite";
+import { Recipient } from "./Recipient";
+import { PublicUserProjection, User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
-import { DmChannelDTO } from "../dtos";
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a guild
@@ -35,7 +35,7 @@ export enum ChannelType {
 	KANBAN = 34, // confluence like kanban board
 	VOICELESS_WHITEBOARD = 35, // whiteboard but without voice (whiteboard + voice is the same as stage)
 	CUSTOM_START = 64, // start custom channel types from here
-	UNHANDLED = 255, // unhandled unowned pass-through channel type
+	UNHANDLED = 255 // unhandled unowned pass-through channel type
 }
 
 @Entity("channels")
@@ -54,7 +54,7 @@ export class Channel extends BaseClass {
 
 	@OneToMany(() => Recipient, (recipient: Recipient) => recipient.channel, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	recipients?: Recipient[];
 
@@ -67,7 +67,7 @@ export class Channel extends BaseClass {
 
 	@JoinColumn({ name: "guild_id" })
 	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	guild: Guild;
 
@@ -120,7 +120,7 @@ export class Channel extends BaseClass {
 
 	@OneToMany(() => Invite, (invite: Invite) => invite.channel, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	invites?: Invite[];
 
@@ -129,34 +129,33 @@ export class Channel extends BaseClass {
 
 	@OneToMany(() => Message, (message: Message) => message.channel, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	messages?: Message[];
 
 	@OneToMany(() => VoiceState, (voice_state: VoiceState) => voice_state.channel, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	voice_states?: VoiceState[];
 
 	@OneToMany(() => ReadState, (read_state: ReadState) => read_state.channel, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	read_states?: ReadState[];
 
 	@OneToMany(() => Webhook, (webhook: Webhook) => webhook.channel, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	webhooks?: Webhook[];
 
 	@Column({ nullable: true })
 	flags?: number = 0;
-	
+
 	@Column({ nullable: true })
 	default_thread_rate_limit_per_user?: number = 0;
-
 
 	// TODO: DM channel
 	static async createChannel(
@@ -180,11 +179,9 @@ export class Channel extends BaseClass {
 			const guild = await Guild.findOneOrFail({ where: { id: channel.guild_id } });
 			if (!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") && channel.name) {
 				for (let character of InvisibleCharacters)
-					if (channel.name.includes(character))
-						throw new HTTPError("Channel name cannot include invalid characters", 403);
+					if (channel.name.includes(character)) throw new HTTPError("Channel name cannot include invalid characters", 403);
 
-				if (channel.name.match(/\-\-+/g))
-					throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403);
+				if (channel.name.match(/\-\-+/g)) throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403);
 
 				if (channel.name.charAt(0) === "-" || channel.name.charAt(channel.name.length - 1) === "-")
 					throw new HTTPError("Channel name cannot start/end with dash.", 403);
@@ -202,8 +199,7 @@ export class Channel extends BaseClass {
 				if (channel.parent_id && !opts?.skipExistsCheck) {
 					const exists = await Channel.findOneOrFail({ where: { id: channel.parent_id } });
 					if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
-					if (exists.guild_id !== channel.guild_id)
-						throw new HTTPError("The category channel needs to be in the guild");
+					if (exists.guild_id !== channel.guild_id) throw new HTTPError("The category channel needs to be in the guild");
 				}
 				break;
 			case ChannelType.GUILD_CATEGORY:
@@ -224,7 +220,7 @@ export class Channel extends BaseClass {
 			...channel,
 			...(!opts?.keepId && { id: Snowflake.generate() }),
 			created_at: new Date(),
-			position: (channel.type === ChannelType.UNHANDLED ? 0 : channel.position) || 0,
+			position: (channel.type === ChannelType.UNHANDLED ? 0 : channel.position) || 0
 		};
 
 		await Promise.all([
@@ -233,9 +229,9 @@ export class Channel extends BaseClass {
 				? emitEvent({
 						event: "CHANNEL_CREATE",
 						data: channel,
-						guild_id: channel.guild_id,
+						guild_id: channel.guild_id
 				  } as ChannelCreateEvent)
-				: Promise.resolve(),
+				: Promise.resolve()
 		]);
 
 		return channel;
@@ -260,7 +256,7 @@ export class Channel extends BaseClass {
 
 		const userRecipients = await Recipient.find({
 			where: { user_id: creator_user_id },
-			relations: ["channel", "channel.recipients"],
+			relations: ["channel", "channel.recipients"]
 		});
 
 		for (let ur of userRecipients) {
@@ -289,9 +285,9 @@ export class Channel extends BaseClass {
 					recipients: channelRecipients.map((x) =>
 						OrmUtils.mergeDeep(new Recipient(), {
 							user_id: x,
-							closed: !(type === ChannelType.GROUP_DM || x === creator_user_id),
+							closed: !(type === ChannelType.GROUP_DM || x === creator_user_id)
 						})
-					),
+					)
 				}) as Channel
 			).save();
 		}
@@ -303,7 +299,7 @@ export class Channel extends BaseClass {
 				await emitEvent({
 					event: "CHANNEL_CREATE",
 					data: channel_dto.excludedRecipients([recipient.user_id]),
-					user_id: recipient.user_id,
+					user_id: recipient.user_id
 				});
 			}
 		} else {
@@ -323,7 +319,7 @@ export class Channel extends BaseClass {
 			await emitEvent({
 				event: "CHANNEL_DELETE",
 				data: await DmChannelDTO.from(channel, [user_id]),
-				user_id: user_id,
+				user_id: user_id
 			});
 			return;
 		}
@@ -331,7 +327,7 @@ export class Channel extends BaseClass {
 		await emitEvent({
 			event: "CHANNEL_DELETE",
 			data: await DmChannelDTO.from(channel, [user_id]),
-			user_id: user_id,
+			user_id: user_id
 		});
 
 		//If the owner leave the server user is the new owner
@@ -340,7 +336,7 @@ export class Channel extends BaseClass {
 			await emitEvent({
 				event: "CHANNEL_UPDATE",
 				data: await DmChannelDTO.from(channel, [user_id]),
-				channel_id: channel.id,
+				channel_id: channel.id
 			});
 		}
 
@@ -350,9 +346,9 @@ export class Channel extends BaseClass {
 			event: "CHANNEL_RECIPIENT_REMOVE",
 			data: {
 				channel_id: channel.id,
-				user: await User.findOneOrFail({ where: { id: user_id }, select: PublicUserProjection }),
+				user: await User.findOneOrFail({ where: { id: user_id }, select: PublicUserProjection })
 			},
-			channel_id: channel.id,
+			channel_id: channel.id
 		} as ChannelRecipientRemoveEvent);
 	}
 
@@ -368,11 +364,7 @@ export class Channel extends BaseClass {
 
 	// Does the channel support sending messages ( eg categories do not )
 	isWritable() {
-		const disallowedChannelTypes = [
-			ChannelType.GUILD_CATEGORY,
-			ChannelType.GUILD_STAGE_VOICE,
-			ChannelType.VOICELESS_WHITEBOARD,
-		];
+		const disallowedChannelTypes = [ChannelType.GUILD_CATEGORY, ChannelType.GUILD_STAGE_VOICE, ChannelType.VOICELESS_WHITEBOARD];
 		return disallowedChannelTypes.indexOf(this.type) == -1;
 	}
 }
@@ -387,5 +379,5 @@ export interface ChannelPermissionOverwrite {
 export enum ChannelPermissionOverwriteType {
 	role = 0,
 	member = 1,
-	group = 2,
+	group = 2
 }

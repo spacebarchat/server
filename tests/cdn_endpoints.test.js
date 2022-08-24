@@ -11,17 +11,12 @@ if (!process.env.STORAGE_PROVIDER) process.env.STORAGE_PROVIDER = "file";
 if (process.env.STORAGE_PROVIDER === "file") {
 	if (process.env.STORAGE_LOCATION) {
 		if (!process.env.STORAGE_LOCATION.startsWith("/")) {
-			process.env.STORAGE_LOCATION = path.join(
-				__dirname,
-				"..",
-				process.env.STORAGE_LOCATION,
-				"/"
-			);
+			process.env.STORAGE_LOCATION = path.join(__dirname, "..", process.env.STORAGE_LOCATION, "/");
 		}
 	} else {
 		process.env.STORAGE_LOCATION = path.join(__dirname, "..", "files", "/");
 	}
-	if(!fs.existsSync(process.env.STORAGE_LOCATION)) fs.mkdirSync(process.env.STORAGE_LOCATION, {recursive:true});
+	if (!fs.existsSync(process.env.STORAGE_LOCATION)) fs.mkdirSync(process.env.STORAGE_LOCATION, { recursive: true });
 }
 const { CDNServer } = require("../dist/Server");
 const { Config } = require("@fosscord/util");
@@ -59,9 +54,7 @@ describe("/attachments", () => {
 		});
 		describe("with signature specified, without file specified", () => {
 			test("route should respond with 400", async () => {
-				const response = await request
-					.post("/attachments/123456789")
-					.set({ signature: Config.get().security.requestSignature });
+				const response = await request.post("/attachments/123456789").set({ signature: Config.get().security.requestSignature });
 				expect(response.statusCode).toBe(400);
 			});
 		});
@@ -72,9 +65,7 @@ describe("/attachments", () => {
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
 				expect(response.statusCode).toBe(200);
-				expect(response.headers["content-type"]).toEqual(
-					expect.stringContaining("json")
-				);
+				expect(response.headers["content-type"]).toEqual(expect.stringContaining("json"));
 				expect(response.body.url).toBeDefined();
 			});
 		});
@@ -86,11 +77,9 @@ describe("/attachments", () => {
 					.post("/attachments/123456789")
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
-				request
-					.get(response.body.url.replace("http://localhost:3003", ""))
-					.then((x) => {
-						expect(x.statusCode).toBe(200);
-					});
+				request.get(response.body.url.replace("http://localhost:3003", "")).then((x) => {
+					expect(x.statusCode).toBe(200);
+				});
 			});
 		});
 	});
@@ -101,13 +90,9 @@ describe("/attachments", () => {
 					.post("/attachments/123456789")
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
-				request
-					.delete(
-						response.body.url.replace("http://localhost:3003", "")
-					)
-					.then((x) => {
-						expect(x.body.success).toBeDefined();
-					});
+				request.delete(response.body.url.replace("http://localhost:3003", "")).then((x) => {
+					expect(x.body.success).toBeDefined();
+				});
 			});
 		});
 	});
@@ -123,9 +108,7 @@ describe("/avatars", () => {
 		});
 		describe("with signature specified, without file specified", () => {
 			test("route should respond with 400", async () => {
-				const response = await request
-					.post("/avatars/123456789")
-					.set({ signature: Config.get().security.requestSignature });
+				const response = await request.post("/avatars/123456789").set({ signature: Config.get().security.requestSignature });
 				expect(response.statusCode).toBe(400);
 			});
 		});
@@ -136,9 +119,7 @@ describe("/avatars", () => {
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
 				expect(response.statusCode).toBe(200);
-				expect(response.headers["content-type"]).toEqual(
-					expect.stringContaining("json")
-				);
+				expect(response.headers["content-type"]).toEqual(expect.stringContaining("json"));
 				expect(response.body.url).toBeDefined();
 			});
 		});
@@ -150,11 +131,9 @@ describe("/avatars", () => {
 					.post("/avatars/123456789")
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
-				request
-					.get(response.body.url.replace("http://localhost:3003", ""))
-					.then((x) => {
-						expect(x.statusCode).toBe(200);
-					});
+				request.get(response.body.url.replace("http://localhost:3003", "")).then((x) => {
+					expect(x.statusCode).toBe(200);
+				});
 			});
 		});
 	});
@@ -165,13 +144,9 @@ describe("/avatars", () => {
 					.post("/avatars/123456789")
 					.set({ signature: Config.get().security.requestSignature })
 					.attach("file", __dirname + "/antman.jpg");
-				request
-					.delete(
-						response.body.url.replace("http://localhost:3003", "")
-					)
-					.then((x) => {
-						expect(x.body.success).toBeDefined();
-					});
+				request.delete(response.body.url.replace("http://localhost:3003", "")).then((x) => {
+					expect(x.body.success).toBeDefined();
+				});
 			});
 		});
 	});
@@ -187,35 +162,25 @@ describe("/external", () => {
 		});
 		describe("with signature specified, without file specified", () => {
 			test("route should respond with 400", async () => {
-				const response = await request
-					.post("/external")
-					.set({ signature: Config.get().security.requestSignature });
+				const response = await request.post("/external").set({ signature: Config.get().security.requestSignature });
 				expect(response.statusCode).toBe(400);
 			});
 		});
 		describe("with signature specified, with file specified ", () => {
 			test("route should respond with Content-type: application/json, 200 and res.body.url", async () => {
-				const response = await request
-					.post("/external")
-					.set({ signature: Config.get().security.requestSignature })
-					.send({
-						url: "https://i.ytimg.com/vi_webp/TiXzhQr5AUc/mqdefault.webp",
-					});
+				const response = await request.post("/external").set({ signature: Config.get().security.requestSignature }).send({
+					url: "https://i.ytimg.com/vi_webp/TiXzhQr5AUc/mqdefault.webp"
+				});
 				expect(response.statusCode).toBe(200);
-				expect(response.headers["content-type"]).toEqual(
-					expect.stringContaining("json")
-				);
+				expect(response.headers["content-type"]).toEqual(expect.stringContaining("json"));
 				expect(response.body.id).toBeDefined();
 			});
 		});
 		describe("with signature specified, with falsy url specified ", () => {
 			test("route should respond with 400", async () => {
-				const response = await request
-					.post("/external")
-					.set({ signature: Config.get().security.requestSignature })
-					.send({
-						url: "notavalidurl.123",
-					});
+				const response = await request.post("/external").set({ signature: Config.get().security.requestSignature }).send({
+					url: "notavalidurl.123"
+				});
 				expect(response.statusCode).toBe(400);
 			});
 		});
@@ -223,12 +188,9 @@ describe("/external", () => {
 	describe("GET", () => {
 		describe("getting uploaded image by url returned by POST /avatars", () => {
 			test("route should respond with 200", async () => {
-				let response = await request
-					.post("/external")
-					.set({ signature: Config.get().security.requestSignature })
-					.send({
-						url: "https://i.ytimg.com/vi_webp/TiXzhQr5AUc/mqdefault.webp",
-					});
+				let response = await request.post("/external").set({ signature: Config.get().security.requestSignature }).send({
+					url: "https://i.ytimg.com/vi_webp/TiXzhQr5AUc/mqdefault.webp"
+				});
 				request.get(`external/${response.body.id}`).then((x) => {
 					expect(x.statusCode).toBe(200);
 				});

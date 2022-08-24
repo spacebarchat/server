@@ -1,7 +1,7 @@
 import { Channel } from "amqplib";
-import { RabbitMQ } from "./RabbitMQ";
 import EventEmitter from "events";
 import { EVENT, Event } from "../interfaces";
+import { RabbitMQ } from "./RabbitMQ";
 export const events = new EventEmitter();
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
@@ -79,12 +79,7 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 	}
 }
 
-async function rabbitListen(
-	channel: Channel,
-	id: string,
-	callback: (event: EventOpts) => any,
-	opts?: { acknowledge?: boolean }
-) {
+async function rabbitListen(channel: Channel, id: string, callback: (event: EventOpts) => any, opts?: { acknowledge?: boolean }) {
 	await channel.assertExchange(id, "fanout", { durable: false });
 	const q = await channel.assertQueue("", { exclusive: true, autoDelete: true });
 
@@ -109,12 +104,12 @@ async function rabbitListen(
 					channel.ack(opts);
 				},
 				channel,
-				cancel,
+				cancel
 			});
 			// rabbitCh.ack(opts);
 		},
 		{
-			noAck: !opts?.acknowledge,
+			noAck: !opts?.acknowledge
 		}
 	);
 

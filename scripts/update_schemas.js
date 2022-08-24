@@ -6,4 +6,4 @@ const { argv, stdout, exit } = require("process");
 
 const { execIn, getLines, parts } = require("./utils");
 
-execIn("node scripts/generate_schema.js", path.join('.'));
+execIn("node scripts/generate_schema.js", path.join("."));

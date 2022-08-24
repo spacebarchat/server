@@ -1,4 +1,3 @@
-
 export interface EmojiCreateSchema {
 	name?: string;
 	image: string;

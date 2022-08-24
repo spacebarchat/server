@@ -1,16 +1,6 @@
-import {
-	Channel,
-	ChannelPinsUpdateEvent,
-	Config,
-	emitEvent,
-	getPermission,
-	Message,
-	MessageUpdateEvent,
-	DiscordApiErrors
-} from "@fosscord/util";
-import { Router, Request, Response } from "express";
-import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Channel, ChannelPinsUpdateEvent, Config, DiscordApiErrors, emitEvent, Message, MessageUpdateEvent } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 

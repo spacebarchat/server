@@ -1,17 +1,16 @@
+import { route } from "@fosscord/api";
 import {
 	Channel,
 	ChannelDeleteEvent,
-	ChannelPermissionOverwriteType,
+	ChannelModifySchema,
 	ChannelType,
 	ChannelUpdateEvent,
 	emitEvent,
-	Recipient,
 	handleFile,
-	ChannelModifySchema
+	OrmUtils,
+	Recipient
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
-import { OrmUtils } from "@fosscord/util";
 
 const router: Router = Router();
 // TODO: delete channel

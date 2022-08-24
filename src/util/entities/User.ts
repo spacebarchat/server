@@ -1,11 +1,11 @@
 import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Member, Session, UserSettings } from ".";
+import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
+import { BitField } from "../util/BitField";
 import { OrmUtils } from "../util/imports/OrmUtils";
 import { BaseClass } from "./BaseClass";
-import { BitField } from "../util/BitField";
-import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
-import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
-import { Member, Session, UserSettings } from ".";
+import { Relationship } from "./Relationship";
 
 export enum PublicUserEnum {
 	username,
@@ -17,7 +17,7 @@ export enum PublicUserEnum {
 	banner,
 	bio,
 	bot,
-	premium_since,
+	premium_since
 }
 export type PublicUserKeys = keyof typeof PublicUserEnum;
 
@@ -31,17 +31,15 @@ export enum PrivateUserEnum {
 	premium,
 	premium_type,
 	disabled,
-	settings,
+	settings
 	// locale
 }
 export type PrivateUserKeys = keyof typeof PrivateUserEnum | PublicUserKeys;
 
-export const PublicUserProjection = Object.values(PublicUserEnum).filter(
-	(x) => typeof x === "string"
-) as PublicUserKeys[];
+export const PublicUserProjection = Object.values(PublicUserEnum).filter((x) => typeof x === "string") as PublicUserKeys[];
 export const PrivateUserProjection = [
 	...PublicUserProjection,
-	...Object.values(PrivateUserEnum).filter((x) => typeof x === "string"),
+	...Object.values(PrivateUserEnum).filter((x) => typeof x === "string")
 ] as PrivateUserKeys[];
 
 // Private user data that should never get sent to the client
@@ -148,14 +146,14 @@ export class User extends BaseClass {
 	@JoinColumn({ name: "relationship_ids" })
 	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	relationships: Relationship[];
 
 	@JoinColumn({ name: "connected_account_ids" })
 	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user, {
 		cascade: true,
-		orphanedRowAction: "delete",
+		orphanedRowAction: "delete"
 	})
 	connected_accounts: ConnectedAccount[];
 
@@ -168,8 +166,7 @@ export class User extends BaseClass {
 	@Column({ type: "simple-array", select: false })
 	fingerprints: string[] = []; // array of fingerprints -> used to prevent multiple accounts
 
-	
-	@OneToOne(()=> UserSettings, {
+	@OneToOne(() => UserSettings, {
 		cascade: true,
 		orphanedRowAction: "delete",
 		eager: false
@@ -185,7 +182,7 @@ export class User extends BaseClass {
 	notes: { [key: string]: string } = {}; //key is ID of user
 
 	async save(): Promise<any> {
-		if(!this.settings) this.settings = new UserSettings();
+		if (!this.settings) this.settings = new UserSettings();
 		this.settings.id = this.id;
 		//await this.settings.save();
 		return super.save();
@@ -203,7 +200,7 @@ export class User extends BaseClass {
 		return await User.findOneOrFail({
 			where: { id: user_id },
 			select: [...PublicUserProjection, ...((opts?.select as FindOptionsSelectByString<User>) || [])],
-			...opts,
+			...opts
 		});
 	}
 
@@ -241,7 +238,7 @@ export class User extends BaseClass {
 		username,
 		password,
 		date_of_birth,
-		req,
+		req
 	}: {
 		username: string;
 		password?: string;
@@ -258,8 +255,8 @@ export class User extends BaseClass {
 			throw FieldErrors({
 				username: {
 					code: "USERNAME_TOO_MANY_USERS",
-					message: req?.t("auth:register.USERNAME_TOO_MANY_USERS"),
-				},
+					message: req?.t("auth:register.USERNAME_TOO_MANY_USERS")
+				}
 			});
 		}
 
@@ -276,7 +273,7 @@ export class User extends BaseClass {
 			email: email,
 			data: {
 				hash: password,
-				valid_tokens_since: new Date(),
+				valid_tokens_since: new Date()
 			},
 			settings: { ...new UserSettings(), locale: language }
 		});
@@ -319,6 +316,6 @@ export class UserFlags extends BitField {
 		VERIFIED_BOT: BigInt(1) << BigInt(16),
 		EARLY_VERIFIED_BOT_DEVELOPER: BigInt(1) << BigInt(17),
 		CERTIFIED_MODERATOR: BigInt(1) << BigInt(18),
-		BOT_HTTP_INTERACTIONS: BigInt(1) << BigInt(19),
+		BOT_HTTP_INTERACTIONS: BigInt(1) << BigInt(19)
 	};
 }

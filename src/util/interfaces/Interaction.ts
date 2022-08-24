@@ -14,7 +14,7 @@ export interface Interaction {
 export enum InteractionType {
 	SelfCommand = 0,
 	Ping = 1,
-	ApplicationCommand = 2,
+	ApplicationCommand = 2
 }
 
 export enum InteractionResponseType {
@@ -23,7 +23,7 @@ export enum InteractionResponseType {
 	Acknowledge = 2,
 	ChannelMessage = 3,
 	ChannelMessageWithSource = 4,
-	AcknowledgeWithSource = 5,
+	AcknowledgeWithSource = 5
 }
 
 export interface InteractionApplicationCommandCallbackData {

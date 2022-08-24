@@ -1,6 +1,6 @@
-import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
-import { User } from "../entities";
 import { HTTPError } from "..";
+import { User } from "../entities";
+import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 
 export type RightResolvable = bigint | number | Rights | RightResolvable[] | RightString;
 
@@ -51,7 +51,7 @@ export class Rights extends BitField {
 		CREDITABLE: BitFlag(32), // can receive money from monetisation related features
 		KICK_BAN_MEMBERS: BitFlag(33),
 		// can kick or ban guild or group DM members in the guilds/groups that they have KICK_MEMBERS, or BAN_MEMBERS
-		SELF_LEAVE_GROUPS: BitFlag(34), 
+		SELF_LEAVE_GROUPS: BitFlag(34),
 		// can leave the guilds or group DMs that they joined on their own (one can always leave a guild or group DMs they have been force-added)
 		PRESENCE: BitFlag(35),
 		// inverts the presence confidentiality default (OPERATOR's presence is not routed by default, others' are) for a given user
@@ -79,15 +79,16 @@ export class Rights extends BitField {
 		// @ts-ignore
 		throw new HTTPError(`You are missing the following rights ${permission}`, 403);
 	}
-	
 }
 
 const ALL_RIGHTS = Object.values(Rights.FLAGS).reduce((total, val) => total | val, BigInt(0));
 
-export async function getRights(	user_id: string
+export async function getRights(
+	user_id: string
 	/**, opts: {
 		in_behalf?: (keyof User)[];
-	} = {} **/) {
+	} = {} **/
+) {
 	let user = await User.findOneOrFail({ where: { id: user_id } });
 	return new Rights(user.rights);
-} 
+}

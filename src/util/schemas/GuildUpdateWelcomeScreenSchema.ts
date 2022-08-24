@@ -1,4 +1,3 @@
-
 export interface GuildUpdateWelcomeScreenSchema {
 	welcome_channels?: {
 		channel_id: string;

@@ -1,7 +1,6 @@
-import { Router, Request, Response } from "express";
-import { emitEvent, getPermission, Guild, Invite, InviteDeleteEvent, User, PublicInviteRelation } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import { HTTPError } from "@fosscord/util";
+import { emitEvent, getPermission, Guild, HTTPError, Invite, InviteDeleteEvent, PublicInviteRelation, User } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
@@ -13,15 +12,16 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 	res.status(200).send(invite);
 });
 
-router.post("/:code", route({right: "USE_MASS_INVITES"}), async (req: Request, res: Response) => {
+router.post("/:code", route({ right: "USE_MASS_INVITES" }), async (req: Request, res: Response) => {
 	const { code } = req.params;
-    const { guild_id } = await Invite.findOneOrFail({ where: { code } })
-	const { features } = await Guild.findOneOrFail({ where: { id: guild_id} });
+	const { guild_id } = await Invite.findOneOrFail({ where: { code } });
+	const { features } = await Guild.findOneOrFail({ where: { id: guild_id } });
 	const { public_flags } = await User.findOneOrFail({ where: { id: req.user_id } });
-	
-	if(features.includes("INTERNAL_EMPLOYEE_ONLY") && (public_flags & 1) !== 1) throw new HTTPError("Only intended for the staff of this server.", 401);
-	if(features.includes("INVITES_CLOSED")) throw new HTTPError("Sorry, this guild has joins closed.", 403);
-	
+
+	if (features.includes("INTERNAL_EMPLOYEE_ONLY") && (public_flags & 1) !== 1)
+		throw new HTTPError("Only intended for the staff of this server.", 401);
+	if (features.includes("INVITES_CLOSED")) throw new HTTPError("Sorry, this guild has joins closed.", 403);
+
 	const invite = await Invite.joinGuild(req.user_id, code);
 
 	res.json(invite);

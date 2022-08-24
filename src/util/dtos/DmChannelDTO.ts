@@ -1,5 +1,5 @@
-import { MinimalPublicUserDTO } from "./UserDTO";
 import { Channel, PublicUserProjection, User } from "../entities";
+import { MinimalPublicUserDTO } from "./UserDTO";
 
 export class DmChannelDTO {
 	icon: string | null;
@@ -35,7 +35,7 @@ export class DmChannelDTO {
 	excludedRecipients(excluded_recipients: string[]): DmChannelDTO {
 		return {
 			...this,
-			recipients: this.recipients.filter((r) => !excluded_recipients.includes(r.id)),
+			recipients: this.recipients.filter((r) => !excluded_recipients.includes(r.id))
 		};
 	}
 }

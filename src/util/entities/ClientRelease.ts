@@ -1,4 +1,4 @@
-import { Column, Entity} from "typeorm";
+import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
 
 @Entity("client_release")
