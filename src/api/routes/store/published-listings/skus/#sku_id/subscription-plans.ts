@@ -9,7 +9,7 @@ const skus = new Map([
 		[
 			{
 				id: "511651856145973248",
-				name: "Individual Premium Tier 2 Monthly (Legacy)",
+				name: "Individual Premium Tier 3 Monthly (Legacy)",
 				interval: 1,
 				interval_count: 1,
 				tax_inclusive: true,
@@ -20,7 +20,7 @@ const skus = new Map([
 			},
 			{
 				id: "511651860671627264",
-				name: "Individiual Premium Tier 2 Yearly (Legacy)",
+				name: "Individiual Premium Tier 3 Yearly (Legacy)",
 				interval: 2,
 				interval_count: 1,
 				tax_inclusive: true,
@@ -36,7 +36,7 @@ const skus = new Map([
 		[
 			{
 				id: "511651871736201216",
-				name: "Individual Premium Tier 1 Monthly",
+				name: "Individual Premium Tier 2 Monthly",
 				interval: 1,
 				interval_count: 1,
 				tax_inclusive: true,
@@ -47,7 +47,7 @@ const skus = new Map([
 			},
 			{
 				id: "511651876987469824",
-				name: "Individual Premum Tier 1 Yearly",
+				name: "Individual Premum Tier 2 Yearly",
 				interval: 2,
 				interval_count: 1,
 				tax_inclusive: true,
@@ -58,7 +58,7 @@ const skus = new Map([
 			},
 			{
 				id: "978380684370378761",
-				name: "Individual Premum Tier 0",
+				name: "Individual Premum Tier 1",
 				interval: 2,
 				interval_count: 1,
 				tax_inclusive: true,
@@ -74,7 +74,7 @@ const skus = new Map([
 		[
 			{
 				id: "642251038925127690",
-				name: "Individual Premium Tier 2 Quarterly",
+				name: "Individual Premium Tier 3 Quarterly",
 				interval: 1,
 				interval_count: 3,
 				tax_inclusive: true,
@@ -85,7 +85,7 @@ const skus = new Map([
 			},
 			{
 				id: "511651880837840896",
-				name: "Individual Premium Tier 2 Monthly",
+				name: "Individual Premium Tier 3 Monthly",
 				interval: 1,
 				interval_count: 1,
 				tax_inclusive: true,
@@ -96,7 +96,7 @@ const skus = new Map([
 			},
 			{
 				id: "511651885459963904",
-				name: "Individual Premium Tier 2 Yearly",
+				name: "Individual Premium Tier 3 Yearly",
 				interval: 2,
 				interval_count: 1,
 				tax_inclusive: true,
@@ -134,6 +134,166 @@ const skus = new Map([
 				price: 0,
 				price_tier: null
 			}
+		],
+	],
+	[
+		"978380684370378762",
+		[
+			[
+				{
+					"id": "978380692553465866",
+					"name": "Premium Tier 0 Monthly",
+					"interval": 1,
+					"interval_count": 1,
+					"tax_inclusive": true,
+					"sku_id": "978380684370378762",
+					"currency": "usd",
+					"price": 299,
+					"price_tier": null,
+					"prices": {
+						"0": {
+							"country_prices": {
+								"country_code": "US",
+								"prices": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								]
+							},
+							"payment_source_prices": {
+								"775487223059316758": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								],
+								"736345864146255982": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								],
+								"683074999590060249": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								]
+							}
+						},
+						"3": {
+							"country_prices": {
+								"country_code": "US",
+								"prices": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								]
+							},
+							"payment_source_prices": {
+								"775487223059316758": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								],
+								"736345864146255982": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								],
+								"683074999590060249": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								]
+							}
+						},
+						"4": {
+							"country_prices": {
+								"country_code": "US",
+								"prices": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								]
+							},
+							"payment_source_prices": {
+								"775487223059316758": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								],
+								"736345864146255982": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								],
+								"683074999590060249": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								]
+							}
+						},
+						"1": {
+							"country_prices": {
+								"country_code": "US",
+								"prices": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								]
+							},
+							"payment_source_prices": {
+								"775487223059316758": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								],
+								"736345864146255982": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								],
+								"683074999590060249": [
+									{
+										"currency": "usd",
+										"amount": 0,
+										"exponent": 2
+									}
+								]
+							}
+						}
+					}
+				}
+			]
 		]
 	]
 ]);
