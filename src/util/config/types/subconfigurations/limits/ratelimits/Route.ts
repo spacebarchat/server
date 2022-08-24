@@ -14,6 +14,6 @@ export class RouteRateLimit {
 		count: 10,
 		window: 5
 	};
-	auth: AuthRateLimit;
+	auth: AuthRateLimit = new AuthRateLimit();
 	// TODO: rate limit configuration for all routes
 }

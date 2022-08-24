@@ -14,5 +14,5 @@ export class RateLimits {
 		count: 10,
 		window: 5
 	};
-	routes: RouteRateLimit;
+	routes: RouteRateLimit = new RouteRateLimit();
 }
