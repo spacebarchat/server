@@ -1,7 +1,7 @@
-import { route } from "@fosscord/api";
-import { adjustEmail, Config, FieldErrors, generateToken, LoginSchema, User } from "@fosscord/util";
-import crypto from "crypto";
 import { Request, Response, Router } from "express";
+import { route, getIpAdress, verifyCaptcha } from "@fosscord/api";
+import { Config, User, generateToken, adjustEmail, FieldErrors, LoginSchema } from "@fosscord/util";
+import crypto from "crypto";
 
 let bcrypt: any;
 try {
@@ -17,12 +17,13 @@ export default router;
 router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Response) => {
 	const { login, password, captcha_key, undelete } = req.body as LoginSchema;
 	const email = adjustEmail(login);
+	const ip = getIpAdress(req);
 
 	const config = Config.get();
 
 	if (config.login.requireCaptcha && config.security.captcha.enabled) {
+		const { sitekey, service } = config.security.captcha;
 		if (!captcha_key) {
-			const { sitekey, service } = config.security.captcha;
 			return res.status(400).json({
 				captcha_key: ["captcha-required"],
 				captcha_sitekey: sitekey,
@@ -30,7 +31,15 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 			});
 		}
 
-		// TODO: check captcha
+		const ip = getIpAdress(req);
+		const verify = await verifyCaptcha(captcha_key, ip);
+		if (!verify.success) {
+			return res.status(400).json({
+				captcha_key: verify["error-codes"],
+				captcha_sitekey: sitekey,
+				captcha_service: service
+			})
+		}
 	}
 
 	const user = await User.findOneOrFail({

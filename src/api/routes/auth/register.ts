@@ -1,6 +1,6 @@
-import { getIpAdress, IPAnalysis, isProxy, route } from "@fosscord/api";
-import { adjustEmail, Config, FieldErrors, generateToken, HTTPError, Invite, RegisterSchema, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";
+import { Config, generateToken, Invite, FieldErrors, User, adjustEmail, RegisterSchema } from "@fosscord/util";
+import { route, getIpAdress, IPAnalysis, isProxy, verifyCaptcha } from "@fosscord/api";
 
 let bcrypt: any;
 try {
@@ -9,6 +9,7 @@ try {
 	bcrypt = require("bcryptjs");
 	console.log("Warning: using bcryptjs because bcrypt is not installed! Performance will be affected.");
 }
+import { HTTPError } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -44,8 +45,8 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	}
 
 	if (register.requireCaptcha && security.captcha.enabled) {
+		const { sitekey, service } = security.captcha;
 		if (!body.captcha_key) {
-			const { sitekey, service } = security.captcha;
 			return res?.status(400).json({
 				captcha_key: ["captcha-required"],
 				captcha_sitekey: sitekey,
@@ -53,7 +54,14 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 			});
 		}
 
-		// TODO: check captcha
+		const verify = await verifyCaptcha(body.captcha_key, ip);
+		if (!verify.success) {
+			return res.status(400).json({
+				captcha_key: verify["error-codes"],
+				captcha_sitekey: sitekey,
+				captcha_service: service
+			})
+		}
 	}
 
 	if (!register.allowMultipleAccounts) {
