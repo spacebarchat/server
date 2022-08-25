@@ -1,12 +1,5 @@
 import { WebSocket } from "@fosscord/gateway";
-import {
-	emitEvent,
-	PresenceUpdateEvent,
-	PrivateSessionProjection,
-	Session,
-	SessionsReplace,
-	User,
-} from "@fosscord/util";
+import { emitEvent, PresenceUpdateEvent, PrivateSessionProjection, Session, SessionsReplace, User } from "@fosscord/util";
 
 export async function Close(this: WebSocket, code: number, reason: string) {
 	console.log("[WebSocket] closed", code, reason);
@@ -19,17 +12,17 @@ export async function Close(this: WebSocket, code: number, reason: string) {
 		await Session.delete({ session_id: this.session_id });
 		const sessions = await Session.find({
 			where: { user_id: this.user_id },
-			select: PrivateSessionProjection,
+			select: PrivateSessionProjection
 		});
 		await emitEvent({
 			event: "SESSIONS_REPLACE",
 			user_id: this.user_id,
-			data: sessions,
+			data: sessions
 		} as SessionsReplace);
 		const session = sessions.first() || {
 			activities: [],
 			client_info: {},
-			status: "offline",
+			status: "offline"
 		};
 
 		await emitEvent({
@@ -39,8 +32,8 @@ export async function Close(this: WebSocket, code: number, reason: string) {
 				user: await User.getPublicUser(this.user_id),
 				activities: session.activities,
 				client_status: session?.client_info,
-				status: session.status,
-			},
+				status: session.status
+			}
 		} as PresenceUpdateEvent);
 	}
 }

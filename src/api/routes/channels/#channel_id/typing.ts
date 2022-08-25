@@ -1,6 +1,6 @@
-import { Channel, emitEvent, Member, TypingStartEvent } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import { Router, Request, Response } from "express";
+import { Channel, emitEvent, Member, TypingStartEvent } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 

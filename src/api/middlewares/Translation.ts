@@ -1,9 +1,9 @@
+import { Router } from "express";
 import fs from "fs";
-import path from "path";
 import i18next from "i18next";
 import i18nextMiddleware from "i18next-http-middleware";
 import i18nextBackend from "i18next-node-fs-backend";
-import { Router } from "express";
+import path from "path";
 
 export async function initTranslation(router: Router) {
 	const languages = fs.readdirSync(path.join(__dirname, "..", "..", "..", "assets", "locales"));

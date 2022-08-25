@@ -9,7 +9,7 @@ export class Recipient extends BaseClass {
 
 	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => require("./Channel").Channel, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	channel: import("./Channel").Channel;
 
@@ -19,7 +19,7 @@ export class Recipient extends BaseClass {
 
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => require("./User").User, {
-		onDelete: "CASCADE",
+		onDelete: "CASCADE"
 	})
 	user: import("./User").User;
 

@@ -1,7 +1,6 @@
-import { Router, Request, Response } from "express";
-import { Guild, Member, User, GuildDeleteEvent, GuildMemberRemoveEvent, emitEvent, Config } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Config, emitEvent, Guild, GuildDeleteEvent, GuildMemberRemoveEvent, HTTPError, Member, User } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 

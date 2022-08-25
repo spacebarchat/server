@@ -1,12 +1,12 @@
 /* replace tos acceptance popup */
 #app-mount > div:nth-child(7) > div > div > div.tooltipContent-bqVLWK {
-    visibility: hidden;
+	visibility: hidden;
 }
-#app-mount > div:nth-child(7) > div > div > div.tooltipContent-bqVLWK::after{
-    visibility: visible;
-    display: block;
-    content: "You need to agree to this instance's rules to continue";
-    margin-top: -32px;
+#app-mount > div:nth-child(7) > div > div > div.tooltipContent-bqVLWK::after {
+	visibility: visible;
+	display: block;
+	content: "You need to agree to this instance's rules to continue";
+	margin-top: -32px;
 }
 /* replace login header */
 #app-mount > div.app-1q1i1E > div > div > div > div > form > div > div > div.mainLoginContainer-1ddwnR > h3 {

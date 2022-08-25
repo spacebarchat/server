@@ -1,8 +1,10 @@
+import { route } from "@fosscord/api";
 import {
 	Channel,
 	emitEvent,
 	Emoji,
 	getPermission,
+	HTTPError,
 	Member,
 	Message,
 	MessageReactionAddEvent,
@@ -13,9 +15,7 @@ import {
 	PublicUserProjection,
 	User
 } from "@fosscord/util";
-import { route } from "@fosscord/api";
-import { Router, Response, Request } from "express";
-import { HTTPError } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import { In } from "typeorm";
 
 const router = Router();
@@ -101,48 +101,52 @@ router.get("/:emoji", route({ permission: "VIEW_CHANNEL" }), async (req: Request
 	res.json(users);
 });
 
-router.put("/:emoji/:user_id", route({ permission: "READ_MESSAGE_HISTORY", right: "SELF_ADD_REACTIONS" }), async (req: Request, res: Response) => {
-	const { message_id, channel_id, user_id } = req.params;
-	if (user_id !== "@me") throw new HTTPError("Invalid user");
-	const emoji = getEmoji(req.params.emoji);
+router.put(
+	"/:emoji/:user_id",
+	route({ permission: "READ_MESSAGE_HISTORY", right: "SELF_ADD_REACTIONS" }),
+	async (req: Request, res: Response) => {
+		const { message_id, channel_id, user_id } = req.params;
+		if (user_id !== "@me") throw new HTTPError("Invalid user");
+		const emoji = getEmoji(req.params.emoji);
 
-	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
-	const message = await Message.findOneOrFail({ where: { id: message_id, channel_id } });
-	const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
+		const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
+		const message = await Message.findOneOrFail({ where: { id: message_id, channel_id } });
+		const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
 
-	if (!already_added) req.permission!.hasThrow("ADD_REACTIONS");
+		if (!already_added) req.permission!.hasThrow("ADD_REACTIONS");
 
-	if (emoji.id) {
-		const external_emoji = await Emoji.findOneOrFail({ where: { id: emoji.id } });
-		if (!already_added) req.permission!.hasThrow("USE_EXTERNAL_EMOJIS");
-		emoji.animated = external_emoji.animated;
-		emoji.name = external_emoji.name;
-	}
-
-	if (already_added) {
-		if (already_added.user_ids.includes(req.user_id)) return res.sendStatus(204); // Do not throw an error ¯\_(ツ)_/¯ as discord also doesn't throw any error
-		already_added.count++;
-	} else message.reactions.push({ count: 1, emoji, user_ids: [req.user_id] });
-
-	await message.save();
-
-	const member = channel.guild_id && (await Member.findOneOrFail({ where: { id: req.user_id } }));
-
-	await emitEvent({
-		event: "MESSAGE_REACTION_ADD",
-		channel_id,
-		data: {
-			user_id: req.user_id,
-			channel_id,
-			message_id,
-			guild_id: channel.guild_id,
-			emoji,
-			member
+		if (emoji.id) {
+			const external_emoji = await Emoji.findOneOrFail({ where: { id: emoji.id } });
+			if (!already_added) req.permission!.hasThrow("USE_EXTERNAL_EMOJIS");
+			emoji.animated = external_emoji.animated;
+			emoji.name = external_emoji.name;
 		}
-	} as MessageReactionAddEvent);
 
-	res.sendStatus(204);
-});
+		if (already_added) {
+			if (already_added.user_ids.includes(req.user_id)) return res.sendStatus(204); // Do not throw an error ¯\_(ツ)_/¯ as discord also doesn't throw any error
+			already_added.count++;
+		} else message.reactions.push({ count: 1, emoji, user_ids: [req.user_id] });
+
+		await message.save();
+
+		const member = channel.guild_id && (await Member.findOneOrFail({ where: { id: req.user_id } }));
+
+		await emitEvent({
+			event: "MESSAGE_REACTION_ADD",
+			channel_id,
+			data: {
+				user_id: req.user_id,
+				channel_id,
+				message_id,
+				guild_id: channel.guild_id,
+				emoji,
+				member
+			}
+		} as MessageReactionAddEvent);
+
+		res.sendStatus(204);
+	}
+);
 
 router.delete("/:emoji/:user_id", route({}), async (req: Request, res: Response) => {
 	let { message_id, channel_id, user_id } = req.params;

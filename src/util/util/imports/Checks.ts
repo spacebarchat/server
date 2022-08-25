@@ -30,11 +30,7 @@ export class Email {
 		return !!this.email.match(EMAIL_REGEX);
 	}
 }
-export function instanceOf(
-	type: any,
-	value: any,
-	{ path = "", optional = false }: { path?: string; optional?: boolean } = {}
-): boolean {
+export function instanceOf(type: any, value: any, { path = "", optional = false }: { path?: string; optional?: boolean } = {}): boolean {
 	if (!type) return true; // no type was specified
 
 	if (value == null) {
@@ -110,7 +106,7 @@ export function instanceOf(
 
 			return instanceOf(type[key], value[newKey], {
 				path: `${path}.${newKey}`,
-				optional: OPTIONAL,
+				optional: OPTIONAL
 			});
 		});
 	} else if (typeof type === "number" || typeof type === "string" || typeof type === "boolean") {

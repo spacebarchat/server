@@ -1,4 +1,3 @@
-
 export interface VanityUrlSchema {
 	/**
 	 * @minLength 1

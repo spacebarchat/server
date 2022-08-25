@@ -1,9 +1,8 @@
-import { Router, Response, Request } from "express";
-import fetch from "node-fetch";
-import { HTTPError } from "@fosscord/util";
-import { Snowflake, Config } from "@fosscord/util";
-import { storage } from "../util/Storage";
+import { Config, HTTPError, Snowflake } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import FileType from "file-type";
+import fetch from "node-fetch";
+import { storage } from "../util/Storage";
 
 // TODO: somehow handle the deletion of images posted to the /external route
 
@@ -12,17 +11,15 @@ const DEFAULT_FETCH_OPTIONS: any = {
 	redirect: "follow",
 	follow: 1,
 	headers: {
-		"user-agent":
-			"Mozilla/5.0 (compatible Fosscordbot/0.1; +https://fosscord.com)",
+		"user-agent": "Mozilla/5.0 (compatible Fosscordbot/0.1; +https://fosscord.com)"
 	},
 	size: 1024 * 1024 * 8,
 	compress: true,
-	method: "GET",
+	method: "GET"
 };
 
 router.post("/", async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature)
-		throw new HTTPError("Invalid request signature");
+	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
 
 	if (!req.body) throw new HTTPError("Invalid Body");
 

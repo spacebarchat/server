@@ -1,3 +1,3 @@
 export class RabbitMQConfiguration {
-    host: string | null = null;
+	host: string | null = null;
 }

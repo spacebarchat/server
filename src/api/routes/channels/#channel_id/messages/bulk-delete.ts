@@ -1,7 +1,6 @@
-import { Router, Response, Request } from "express";
-import { Channel, Config, emitEvent, getPermission, getRights, MessageDeleteBulkEvent, Message } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Channel, Config, emitEvent, getPermission, getRights, HTTPError, Message, MessageDeleteBulkEvent } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import { In } from "typeorm";
 
 const router: Router = Router();
@@ -13,7 +12,7 @@ export default router;
 // https://discord.com/developers/docs/resources/channel#bulk-delete-messages
 router.post("/", route({ body: "BulkDeleteSchema" }), async (req: Request, res: Response) => {
 	const { channel_id } = req.params;
-	const channel = await Channel.findOneOrFail({where:{ id: channel_id} });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 	if (!channel.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
 
 	const rights = await getRights(req.user_id);

@@ -1,42 +1,39 @@
+import { Payload, WebSocket } from "@fosscord/gateway";
+import OPCodeHandlers from "../opcodes";
+import { check } from "../opcodes/instanceOf";
 import { CLOSECODES } from "../util/Constants";
-import { WebSocket, Payload } from "@fosscord/gateway";
 let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
-import OPCodeHandlers from "../opcodes";
-import { check } from "../opcodes/instanceOf";
 
 const PayloadSchema = {
 	op: Number,
 	$d: Object || Number, // or number for heartbeat sequence
 	$s: Number,
-	$t: String,
+	$t: String
 };
 
 export async function Message(this: WebSocket, buffer: Buffer) {
 	// TODO: compression
 	let data: Payload;
 
-	if (this.encoding === "etf" && buffer instanceof Buffer)
-		data = erlpack.unpack(buffer);
+	if (this.encoding === "etf" && buffer instanceof Buffer) data = erlpack.unpack(buffer);
 	else if (this.encoding === "json")
 		data = JSON.parse(buffer as unknown as string); //TODO: is this even correct?? seems to work for web clients...
-	else if(/--debug|--inspect/.test(process.execArgv.join(' '))) {
+	else if (/--debug|--inspect/.test(process.execArgv.join(" "))) {
 		debugger;
 		return;
-	}
-	else {
+	} else {
 		console.log("Invalid gateway connection! Use a debugger to inspect!");
 		return;
 	}
 
-	if(process.env.WS_VERBOSE)
-		console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
-	if(data.op !== 1)
-		check.call(this, PayloadSchema, data);
-	else { //custom validation for numbers, because heartbeat
-		if(data.s || data.t || (typeof data.d !== "number" && data.d)) {
+	if (process.env.WS_VERBOSE) console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
+	if (data.op !== 1) check.call(this, PayloadSchema, data);
+	else {
+		//custom validation for numbers, because heartbeat
+		if (data.s || data.t || (typeof data.d !== "number" && data.d)) {
 			console.log("Invalid heartbeat...");
 			this.close(CLOSECODES.Decode_error);
 		}
@@ -55,7 +52,6 @@ export async function Message(this: WebSocket, buffer: Buffer) {
 		return await OPCodeHandler.call(this, data);
 	} catch (error) {
 		console.error(error);
-		if (!this.CLOSED && this.CLOSING)
-			return this.close(CLOSECODES.Unknown_error);
+		if (!this.CLOSED && this.CLOSING) return this.close(CLOSECODES.Unknown_error);
 	}
 }

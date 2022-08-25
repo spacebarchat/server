@@ -78,7 +78,11 @@ export function isProxy(data: typeof exampleData) {
 
 export function getIpAdress(req: Request): string {
 	// @ts-ignore
-	return req.headers[Config.get().security.forwadedFor] || req.socket.remoteAddress;
+	return (
+		req.headers[Config.get().security.forwadedFor as string] ||
+		req.headers[Config.get().security.forwadedFor?.toLowerCase() as string] ||
+		req.socket.remoteAddress
+	);
 }
 
 export function distanceBetweenLocations(loc1: any, loc2: any): number {

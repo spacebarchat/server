@@ -1,8 +1,24 @@
-import { Router, Request, Response } from "express";
-import { User, PrivateUserProjection, emitEvent, UserUpdateEvent, handleFile, FieldErrors, UserModifySchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import bcrypt from "bcrypt";
-import { OrmUtils, generateToken } from "@fosscord/util";
+import {
+	emitEvent,
+	FieldErrors,
+	generateToken,
+	handleFile,
+	OrmUtils,
+	PrivateUserProjection,
+	User,
+	UserModifySchema,
+	UserUpdateEvent
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
+
+let bcrypt: any;
+try {
+	bcrypt = require("bcrypt");
+} catch {
+	bcrypt = require("bcryptjs");
+	console.log("Warning: using bcryptjs because bcrypt is not installed! Performance will be affected.");
+}
 
 const router: Router = Router();
 
@@ -37,17 +53,17 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		}
 		user.data.hash = await bcrypt.hash(body.new_password, 12);
 		user.data.valid_tokens_since = new Date();
-		token = await generateToken(user.id) as string;
+		token = (await generateToken(user.id)) as string;
 	}
 
-    if(body.username){
-        let check_username = body?.username?.replace(/\s/g, '');
-        if(!check_username) {
-            throw FieldErrors({
-                username: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
-            });
-        }
-    }
+	if (body.username) {
+		let check_username = body?.username?.replace(/\s/g, "");
+		if (!check_username) {
+			throw FieldErrors({
+				username: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
+			});
+		}
+	}
 
 	user = OrmUtils.mergeDeep(user, body);
 	await user.save();
@@ -61,7 +77,7 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		user_id: req.user_id,
 		data: user
 	} as UserUpdateEvent);
-	
+
 	res.json({
 		...user,
 		token

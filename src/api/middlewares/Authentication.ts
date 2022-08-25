@@ -1,6 +1,5 @@
+import { checkToken, Config, HTTPError, Rights } from "@fosscord/util";
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "@fosscord/util";
-import { checkToken, Config, Rights } from "@fosscord/util";
 
 export const NO_AUTHORIZATION_ROUTES = [
 	// Authentication routes
@@ -10,7 +9,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/auth/mfa/totp",
 	// Routes with a seperate auth system
 	"/webhooks/",
-	// Public information endpoints 
+	// Public information endpoints
 	"/ping",
 	"/gateway",
 	"/experiments",

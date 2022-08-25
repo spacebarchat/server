@@ -1,9 +1,8 @@
-import { getPermission, listenEvent, Member, Role, getOrInitialiseDatabase, LazyRequest } from "@fosscord/util";
-import { Send } from "../util/Send";
+import { handlePresenceUpdate, Payload, WebSocket } from "@fosscord/gateway";
+import { getOrInitialiseDatabase, getPermission, LazyRequest, listenEvent, Member, Role } from "@fosscord/util";
 import { OPCODES } from "../util/Constants";
-import { WebSocket, Payload, handlePresenceUpdate } from "@fosscord/gateway";
+import { Send } from "../util/Send";
 import { check } from "./instanceOf";
-import { getRepository } from "typeorm";
 
 // TODO: only show roles/members that have access to this channel
 // TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online
@@ -16,16 +15,16 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	// TODO: wait for typeorm to implement ordering for .find queries https://github.com/typeorm/typeorm/issues/2620
 	// TODO: rewrite this, released in 0.3.0
 
-	let members: Member[] = await (await getOrInitialiseDatabase()).getRepository(Member)
+	let members: Member[] = await (
+		await getOrInitialiseDatabase()
+	)
+		.getRepository(Member)
 		.createQueryBuilder("member")
 		.where("member.guild_id = :guild_id", { guild_id })
 		.leftJoinAndSelect("member.roles", "role")
 		.leftJoinAndSelect("member.user", "user")
 		.leftJoinAndSelect("user.sessions", "session")
-		.addSelect(
-			"CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
-			"_status"
-		)
+		.addSelect("CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END", "_status")
 		.orderBy("role.position", "DESC")
 		.addOrderBy("_status", "DESC")
 		.addOrderBy("user.username", "ASC")
@@ -44,21 +43,17 @@ async function getMembers(guild_id: string, range: [number, number]) {
 
 	for (const role of member_roles) {
 		// @ts-ignore
-		const [role_members, other_members] = partition(members, (m: Member) =>
-			m.roles.find((r) => r.id === role.id)
-		);
+		const [role_members, other_members] = partition(members, (m: Member) => m.roles.find((r) => r.id === role.id));
 		const group = {
 			count: role_members.length,
-			id: role.id === guild_id ? "online" : role.id,
+			id: role.id === guild_id ? "online" : role.id
 		};
 
 		items.push({ group });
 		groups.push(group);
 
 		for (const member of role_members) {
-			const roles = member.roles
-				.filter((x: Role) => x.id !== guild_id)
-				.map((x: Role) => x.id);
+			const roles = member.roles.filter((x: Role) => x.id !== guild_id).map((x: Role) => x.id);
 
 			const session = member.user.sessions.first();
 
@@ -71,10 +66,10 @@ async function getMembers(guild_id: string, range: [number, number]) {
 					presence: {
 						...session,
 						activities: session?.activities || [],
-						user: { id: member.user.id },
-					},
-				},
-			}
+						user: { id: member.user.id }
+					}
+				}
+			};
 
 			if (!member?.user?.sessions || !member.user.sessions.length) {
 				offlineItems.push(item);
@@ -90,7 +85,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	if (offlineItems.length) {
 		const group = {
 			count: offlineItems.length,
-			id: "offline",
+			id: "offline"
 		};
 		items.push({ group });
 		groups.push(group);
@@ -102,7 +97,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		items,
 		groups,
 		range,
-		members: items.map((x) => 'member' in x ? x.member : undefined).filter(x => !!x),
+		members: items.map((x) => ("member" in x ? x.member : undefined)).filter((x) => !!x)
 	};
 }
 
@@ -129,11 +124,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 		op.members.forEach(async (member) => {
 			if (this.events[member.user.id]) return; // already subscribed as friend
 			if (this.member_events[member.user.id]) return; // already subscribed in member list
-			this.member_events[member.user.id] = await listenEvent(
-				member.user.id,
-				handlePresenceUpdate.bind(this),
-				this.listen_options
-			);
+			this.member_events[member.user.id] = await listenEvent(member.user.id, handlePresenceUpdate.bind(this), this.listen_options);
 		});
 	});
 
@@ -145,7 +136,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 			ops: ops.map((x) => ({
 				items: x.items,
 				op: "SYNC",
-				range: x.range,
+				range: x.range
 			})),
 			online_count: member_count,
 			member_count,
@@ -154,8 +145,8 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 			groups: ops
 				.map((x) => x.groups)
 				.flat()
-				.unique(),
-		},
+				.unique()
+		}
 	});
 }
 
@@ -164,9 +155,7 @@ function partition<T>(array: T[], isValid: Function) {
 	return array.reduce(
 		// @ts-ignore
 		([pass, fail], elem) => {
-			return isValid(elem)
-				? [[...pass, elem], fail]
-				: [pass, [...fail, elem]];
+			return isValid(elem) ? [[...pass, elem], fail] : [pass, [...fail, elem]];
 		},
 		[[], []]
 	);

@@ -1,6 +1,6 @@
-import { ClientStatus, Status } from "./Status";
-import { Activity } from "./Activity";
 import { PublicUser } from "../entities/User";
+import { Activity } from "./Activity";
+import { ClientStatus, Status } from "./Status";
 
 export interface Presence {
 	user: PublicUser;

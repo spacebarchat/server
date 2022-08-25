@@ -1,13 +1,13 @@
 // TODO: check every route based on route() parameters: https://github.com/fosscord/fosscord-server/issues/308
 // TODO: check every route with different database engine
 
-import getRouteDescriptions from "../jest/getRouteDescriptions";
-import { join } from "path";
-import fs from "fs";
+import { Channel, Event, events, Guild, User } from "@fosscord/util";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
+import fs from "fs";
 import fetch from "node-fetch";
-import { Event, User, events, Guild, Channel } from "@fosscord/util";
+import { join } from "path";
+import getRouteDescriptions from "../jest/getRouteDescriptions";
 
 const SchemaPath = join(__dirname, "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));

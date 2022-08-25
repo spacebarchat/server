@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { route } from "@fosscord/api";
 import {
 	Channel,
 	ChannelRecipientAddEvent,
@@ -6,12 +6,12 @@ import {
 	DiscordApiErrors,
 	DmChannelDTO,
 	emitEvent,
+	OrmUtils,
 	PublicUserProjection,
 	Recipient,
 	User
 } from "@fosscord/util";
-import { route } from "@fosscord/api";
-import { OrmUtils } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 

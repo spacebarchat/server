@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class premiumSinceAsDate1659921722863 implements MigrationInterface {
-    name = 'premiumSinceAsDate1659921722863'
+	name = "premiumSinceAsDate1659921722863";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             DROP INDEX "IDX_bb2bf9386ac443afbbbf9f12d3"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_members" (
                 "index" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                 "id" varchar NOT NULL,
@@ -25,7 +25,7 @@ export class premiumSinceAsDate1659921722863 implements MigrationInterface {
                 CONSTRAINT "FK_28b53062261b996d9c99fa12404" FOREIGN KEY ("id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_members"(
                     "index",
                     "id",
@@ -54,20 +54,20 @@ export class premiumSinceAsDate1659921722863 implements MigrationInterface {
                 "joined_by"
             FROM "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_members"
                 RENAME TO "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_bb2bf9386ac443afbbbf9f12d3" ON "members" ("id", "guild_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_bb2bf9386ac443afbbbf9f12d3"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_members" (
                 "index" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                 "id" varchar NOT NULL,
@@ -85,7 +85,7 @@ export class premiumSinceAsDate1659921722863 implements MigrationInterface {
                 CONSTRAINT "FK_28b53062261b996d9c99fa12404" FOREIGN KEY ("id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_members"(
                     "index",
                     "id",
@@ -114,27 +114,27 @@ export class premiumSinceAsDate1659921722863 implements MigrationInterface {
                 "joined_by"
             FROM "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_members"
                 RENAME TO "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_bb2bf9386ac443afbbbf9f12d3" ON "members" ("id", "guild_id")
         `);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             DROP INDEX "IDX_bb2bf9386ac443afbbbf9f12d3"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "members"
                 RENAME TO "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "members" (
                 "index" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                 "id" varchar NOT NULL,
@@ -152,7 +152,7 @@ export class premiumSinceAsDate1659921722863 implements MigrationInterface {
                 CONSTRAINT "FK_28b53062261b996d9c99fa12404" FOREIGN KEY ("id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "members"(
                     "index",
                     "id",
@@ -181,20 +181,20 @@ export class premiumSinceAsDate1659921722863 implements MigrationInterface {
                 "joined_by"
             FROM "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_bb2bf9386ac443afbbbf9f12d3" ON "members" ("id", "guild_id")
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP INDEX "IDX_bb2bf9386ac443afbbbf9f12d3"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "members"
                 RENAME TO "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "members" (
                 "index" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                 "id" varchar NOT NULL,
@@ -212,7 +212,7 @@ export class premiumSinceAsDate1659921722863 implements MigrationInterface {
                 CONSTRAINT "FK_28b53062261b996d9c99fa12404" FOREIGN KEY ("id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "members"(
                     "index",
                     "id",
@@ -241,12 +241,11 @@ export class premiumSinceAsDate1659921722863 implements MigrationInterface {
                 "joined_by"
             FROM "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_bb2bf9386ac443afbbbf9f12d3" ON "members" ("id", "guild_id")
         `);
-    }
-
+	}
 }

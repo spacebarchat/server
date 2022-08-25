@@ -1,8 +1,32 @@
-import { ApiConfiguration, ClientConfiguration, DefaultsConfiguration, EndpointConfiguration, GeneralConfiguration, GifConfiguration, GuildConfiguration, KafkaConfiguration, LimitsConfiguration, LoginConfiguration, MetricsConfiguration, RabbitMQConfiguration, RegionConfiguration, RegisterConfiguration, SecurityConfiguration, SentryConfiguration, TemplateConfiguration } from ".";
+import {
+	ApiConfiguration,
+	ClientConfiguration,
+	DefaultsConfiguration,
+	EndpointConfiguration,
+	GeneralConfiguration,
+	GifConfiguration,
+	GuildConfiguration,
+	KafkaConfiguration,
+	LimitsConfiguration,
+	LoginConfiguration,
+	MetricsConfiguration,
+	RabbitMQConfiguration,
+	RegionConfiguration,
+	RegisterConfiguration,
+	SecurityConfiguration,
+	SentryConfiguration,
+	TemplateConfiguration
+} from ".";
 
 export class ConfigValue {
-	gateway: EndpointConfiguration = new EndpointConfiguration();
-	cdn: EndpointConfiguration = new EndpointConfiguration();
+	gateway: EndpointConfiguration = {
+		endpointPublic: '${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}',
+		endpointPrivate: `ws://localhost:3001`
+	};
+	cdn: EndpointConfiguration = {
+		endpointPublic: "${location.host}",
+		endpointPrivate: `http://localhost:3001`
+	};
 	api: ApiConfiguration = new ApiConfiguration();
 	general: GeneralConfiguration = new GeneralConfiguration();
 	limits: LimitsConfiguration = new LimitsConfiguration();

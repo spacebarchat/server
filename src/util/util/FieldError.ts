@@ -6,9 +6,9 @@ export function FieldErrors(fields: Record<string, { code?: string; message: str
 			_errors: [
 				{
 					message,
-					code: code || "BASE_TYPE_INVALID",
-				},
-			],
+					code: code || "BASE_TYPE_INVALID"
+				}
+			]
 		}))
 	);
 }

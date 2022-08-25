@@ -1,8 +1,8 @@
-import { Guild, Config } from "@fosscord/util";
+import { Config, Guild } from "@fosscord/util";
 
-import { Router, Request, Response } from "express";
-import { route } from "..";
+import { Request, Response, Router } from "express";
 import { Like } from "typeorm";
+import { route } from "..";
 
 const router = Router();
 
