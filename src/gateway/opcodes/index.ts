@@ -13,7 +13,7 @@ export default {
 	1: onHeartbeat,
 	2: onIdentify,
 	3: onPresenceUpdate,
-	// 4: onVoiceStateUpdate,
+	4: onVoiceStateUpdate,
 	// 5: Voice Server Ping
 	6: onResume,
 	// 7: Reconnect: You should attempt to reconnect and resume immediately.
@@ -21,5 +21,5 @@ export default {
 	// 9: Invalid Session
 	// 10: Hello
 	// 13: Dm_update
-	// 14: onLazyRequest,
+	14: onLazyRequest,
 };

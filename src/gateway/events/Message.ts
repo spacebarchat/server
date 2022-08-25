@@ -1,4 +1,5 @@
 import { Payload, WebSocket } from "@fosscord/gateway";
+import BigIntJson from "json-bigint";
 import OPCodeHandlers from "../opcodes";
 import { check } from "../opcodes/instanceOf";
 import { CLOSECODES } from "../util/Constants";
@@ -7,6 +8,7 @@ try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 
+
 const PayloadSchema = {
 	op: Number,
 	$d: Object || Number, // or number for heartbeat sequence
@@ -14,22 +16,26 @@ const PayloadSchema = {
 	$t: String
 };
 
+const bigIntJson = BigIntJson({ storeAsString: true });
+
 
 export async function Message(this: WebSocket, buffer: Buffer) {
 	let data: Payload;
 
 	if (this.encoding === "etf" && buffer instanceof Buffer)
 		data = erlpack.unpack(buffer);
-	else if (this.encoding === "json") {
+	else if (this.encoding === "json" && buffer instanceof Buffer) {
 		if(this.inflate) {
-			// TODO: for some reason, this seems to still have a tendency to throw an unhandled exception, this is here because not all payloads seem to be compressed.
 			try {
 				buffer = this.inflate.process(buffer) as any;
 			} catch {
 				buffer = buffer.toString() as any;
 			}
 		}
-		data = JSON.parse(buffer as unknown as string); //TODO: is this even correct?? seems to work for web clients...
+		data = bigIntJson.parse(buffer as unknown as string); //TODO: is this even correct?? seems to work for web clients...
+	}
+	else if (typeof buffer == "string") {
+		data = bigIntJson.parse(buffer as string)
 	}
 	else if(/--debug|--inspect/.test(process.execArgv.join(' '))) {
 		debugger;

@@ -265,7 +265,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
 		users: users.filter((x) => x).unique(),
-		merged_members: merged_members
+		merged_members: merged_members,
 		// shard // TODO: only for user sharding
 		sessions: [], // TODO:
 		presences: [] // TODO:
