@@ -21,5 +21,5 @@ export default {
 	// 9: Invalid Session
 	// 10: Hello
 	// 13: Dm_update
-	14: onLazyRequest,
+	14: onLazyRequest
 };

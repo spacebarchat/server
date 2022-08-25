@@ -8,7 +8,6 @@ try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 
-
 const PayloadSchema = {
 	op: Number,
 	$d: Object || Number, // or number for heartbeat sequence
@@ -18,14 +17,12 @@ const PayloadSchema = {
 
 const bigIntJson = BigIntJson({ storeAsString: true });
 
-
 export async function Message(this: WebSocket, buffer: Buffer) {
 	let data: Payload;
 
-	if (this.encoding === "etf" && buffer instanceof Buffer)
-		data = erlpack.unpack(buffer);
+	if (this.encoding === "etf" && buffer instanceof Buffer) data = erlpack.unpack(buffer);
 	else if (this.encoding === "json" && buffer instanceof Buffer) {
-		if(this.inflate) {
+		if (this.inflate) {
 			try {
 				buffer = this.inflate.process(buffer) as any;
 			} catch {
@@ -33,11 +30,9 @@ export async function Message(this: WebSocket, buffer: Buffer) {
 			}
 		}
 		data = bigIntJson.parse(buffer as unknown as string); //TODO: is this even correct?? seems to work for web clients...
-	}
-	else if (typeof buffer == "string") {
-		data = bigIntJson.parse(buffer as string)
-	}
-	else if(/--debug|--inspect/.test(process.execArgv.join(' '))) {
+	} else if (typeof buffer == "string") {
+		data = bigIntJson.parse(buffer as string);
+	} else if (/--debug|--inspect/.test(process.execArgv.join(" "))) {
 		debugger;
 		return;
 	} else {

@@ -283,8 +283,8 @@ export class User extends BaseClass {
 			},
 			settings: { ...new UserSettings(), locale: language },
 			purchased_flags: 5, // TODO: idk what the values for this are
-			premium_usage_flags: 2,  // TODO: idk what the values for this are
-			mfa_enabled: false,
+			premium_usage_flags: 2, // TODO: idk what the values for this are
+			mfa_enabled: false
 		});
 
 		//await (user.settings as UserSettings).save();

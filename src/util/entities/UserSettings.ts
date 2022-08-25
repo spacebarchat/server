@@ -10,43 +10,43 @@ export class UserSettings extends BaseClassWithoutId {
 	afk_timeout: number = 3600;
 
 	@Column({ nullable: true })
-    allow_accessibility_detection: boolean = true;
-	
-    @Column({ nullable: true })
-    animate_emoji: boolean = true;
-	
-    @Column({ nullable: true })
-    animate_stickers: number = 0;
+	allow_accessibility_detection: boolean = true;
+
+	@Column({ nullable: true })
+	animate_emoji: boolean = true;
+
+	@Column({ nullable: true })
+	animate_stickers: number = 0;
 
 	@Column({ nullable: true })
 	banner_color: string;
-	
-    @Column({ nullable: true })
-    contact_sync_enabled: boolean = false;
-	
-    @Column({ nullable: true })
-    convert_emoticons: boolean = false;
-	
-    @Column({ nullable: true, type: "simple-json" })
-    custom_status: CustomStatus | null = null;
-	
-    @Column({ nullable: true })
-    default_guilds_restricted: boolean = false;
-	
-    @Column({ nullable: true })
-    detect_platform_accounts: boolean = false;
-	
-    @Column({ nullable: true })
-    developer_mode: boolean = true;
-	
-    @Column({ nullable: true })
-    disable_games_tab: boolean = true;
-	
-    @Column({ nullable: true })
-    enable_tts_command: boolean = false;
-	
-    @Column({ nullable: true })
-    explicit_content_filter: number = 0;
+
+	@Column({ nullable: true })
+	contact_sync_enabled: boolean = false;
+
+	@Column({ nullable: true })
+	convert_emoticons: boolean = false;
+
+	@Column({ nullable: true, type: "simple-json" })
+	custom_status: CustomStatus | null = null;
+
+	@Column({ nullable: true })
+	default_guilds_restricted: boolean = false;
+
+	@Column({ nullable: true })
+	detect_platform_accounts: boolean = false;
+
+	@Column({ nullable: true })
+	developer_mode: boolean = true;
+
+	@Column({ nullable: true })
+	disable_games_tab: boolean = true;
+
+	@Column({ nullable: true })
+	enable_tts_command: boolean = false;
+
+	@Column({ nullable: true })
+	explicit_content_filter: number = 0;
 
 	@Column()
 	friend_discovery_flags: number = 0;
