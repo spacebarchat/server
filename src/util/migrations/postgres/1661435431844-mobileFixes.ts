@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class opencordFixes1660678725589 implements MigrationInterface {
-    name = 'opencordFixes1660678725589'
+export class mobileFixes1661435431844 implements MigrationInterface {
+    name = 'mobileFixes1661435431844'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
@@ -11,6 +11,10 @@ export class opencordFixes1660678725589 implements MigrationInterface {
         await queryRunner.query(`
             ALTER TABLE "users"
             ADD "premium_usage_flags" integer NOT NULL
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "user_settings"
+            ADD "banner_color" character varying
         `);
         await queryRunner.query(`
             ALTER TABLE "user_settings"
@@ -29,9 +33,27 @@ export class opencordFixes1660678725589 implements MigrationInterface {
             ALTER COLUMN "mfa_enabled"
             SET NOT NULL
         `);
+        await queryRunner.query(`
+            ALTER TABLE "channels"
+            ALTER COLUMN "nsfw"
+            SET NOT NULL
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "guilds"
+            ALTER COLUMN "nsfw"
+            SET NOT NULL
+        `);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            ALTER TABLE "guilds"
+            ALTER COLUMN "nsfw" DROP NOT NULL
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "channels"
+            ALTER COLUMN "nsfw" DROP NOT NULL
+        `);
         await queryRunner.query(`
             ALTER TABLE "users"
             ALTER COLUMN "mfa_enabled" DROP NOT NULL
@@ -44,6 +66,9 @@ export class opencordFixes1660678725589 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE "user_settings" DROP COLUMN "friend_discovery_flags"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "user_settings" DROP COLUMN "banner_color"
         `);
         await queryRunner.query(`
             ALTER TABLE "users" DROP COLUMN "premium_usage_flags"

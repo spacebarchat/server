@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class mobileFixes21660689586029 implements MigrationInterface {
-    name = 'mobileFixes21660689586029'
+export class mobileFixes1661435373211 implements MigrationInterface {
+    name = 'mobileFixes1661435373211'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
@@ -230,6 +230,122 @@ export class mobileFixes21660689586029 implements MigrationInterface {
                 RENAME TO "guilds"
         `);
         await queryRunner.query(`
+            CREATE TABLE "temporary_users" (
+                "id" varchar PRIMARY KEY NOT NULL,
+                "username" varchar NOT NULL,
+                "discriminator" varchar NOT NULL,
+                "avatar" varchar,
+                "accent_color" integer,
+                "banner" varchar,
+                "phone" varchar,
+                "desktop" boolean NOT NULL,
+                "mobile" boolean NOT NULL,
+                "premium" boolean NOT NULL,
+                "premium_type" integer NOT NULL,
+                "bot" boolean NOT NULL,
+                "bio" varchar,
+                "system" boolean NOT NULL,
+                "nsfw_allowed" boolean NOT NULL,
+                "mfa_enabled" boolean,
+                "totp_secret" varchar,
+                "totp_last_ticket" varchar,
+                "created_at" datetime NOT NULL,
+                "premium_since" datetime,
+                "verified" boolean NOT NULL,
+                "disabled" boolean NOT NULL,
+                "deleted" boolean NOT NULL,
+                "email" varchar,
+                "flags" varchar NOT NULL,
+                "public_flags" integer NOT NULL,
+                "rights" bigint NOT NULL,
+                "data" text NOT NULL,
+                "fingerprints" text NOT NULL,
+                "extended_settings" text NOT NULL,
+                "notes" text NOT NULL,
+                "settingsId" varchar,
+                "purchased_flags" integer NOT NULL,
+                "premium_usage_flags" integer NOT NULL,
+                CONSTRAINT "UQ_b1dd13b6ed980004a795ca184a6" UNIQUE ("settingsId"),
+                CONSTRAINT "FK_76ba283779c8441fd5ff819c8cf" FOREIGN KEY ("settingsId") REFERENCES "user_settings" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            )
+        `);
+        await queryRunner.query(`
+            INSERT INTO "temporary_users"(
+                    "id",
+                    "username",
+                    "discriminator",
+                    "avatar",
+                    "accent_color",
+                    "banner",
+                    "phone",
+                    "desktop",
+                    "mobile",
+                    "premium",
+                    "premium_type",
+                    "bot",
+                    "bio",
+                    "system",
+                    "nsfw_allowed",
+                    "mfa_enabled",
+                    "totp_secret",
+                    "totp_last_ticket",
+                    "created_at",
+                    "premium_since",
+                    "verified",
+                    "disabled",
+                    "deleted",
+                    "email",
+                    "flags",
+                    "public_flags",
+                    "rights",
+                    "data",
+                    "fingerprints",
+                    "extended_settings",
+                    "notes",
+                    "settingsId"
+                )
+            SELECT "id",
+                "username",
+                "discriminator",
+                "avatar",
+                "accent_color",
+                "banner",
+                "phone",
+                "desktop",
+                "mobile",
+                "premium",
+                "premium_type",
+                "bot",
+                "bio",
+                "system",
+                "nsfw_allowed",
+                "mfa_enabled",
+                "totp_secret",
+                "totp_last_ticket",
+                "created_at",
+                "premium_since",
+                "verified",
+                "disabled",
+                "deleted",
+                "email",
+                "flags",
+                "public_flags",
+                "rights",
+                "data",
+                "fingerprints",
+                "extended_settings",
+                "notes",
+                "settingsId"
+            FROM "users"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "users"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "temporary_users"
+                RENAME TO "users"
+        `);
+        await queryRunner.query(`
             CREATE TABLE "temporary_user_settings" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "afk_timeout" integer,
@@ -263,10 +379,10 @@ export class mobileFixes21660689586029 implements MigrationInterface {
                 "stream_notifications_enabled" boolean,
                 "theme" varchar,
                 "timezone_offset" integer,
+                "banner_color" varchar,
                 "friend_discovery_flags" integer NOT NULL,
                 "view_nsfw_guilds" boolean NOT NULL,
-                "passwordless" boolean NOT NULL,
-                "banner_color" varchar
+                "passwordless" boolean NOT NULL
             )
         `);
         await queryRunner.query(`
@@ -302,10 +418,7 @@ export class mobileFixes21660689586029 implements MigrationInterface {
                     "status",
                     "stream_notifications_enabled",
                     "theme",
-                    "timezone_offset",
-                    "friend_discovery_flags",
-                    "view_nsfw_guilds",
-                    "passwordless"
+                    "timezone_offset"
                 )
             SELECT "id",
                 "afk_timeout",
@@ -338,10 +451,7 @@ export class mobileFixes21660689586029 implements MigrationInterface {
                 "status",
                 "stream_notifications_enabled",
                 "theme",
-                "timezone_offset",
-                "friend_discovery_flags",
-                "view_nsfw_guilds",
-                "passwordless"
+                "timezone_offset"
             FROM "user_settings"
         `);
         await queryRunner.query(`
@@ -350,6 +460,126 @@ export class mobileFixes21660689586029 implements MigrationInterface {
         await queryRunner.query(`
             ALTER TABLE "temporary_user_settings"
                 RENAME TO "user_settings"
+        `);
+        await queryRunner.query(`
+            CREATE TABLE "temporary_users" (
+                "id" varchar PRIMARY KEY NOT NULL,
+                "username" varchar NOT NULL,
+                "discriminator" varchar NOT NULL,
+                "avatar" varchar,
+                "accent_color" integer,
+                "banner" varchar,
+                "phone" varchar,
+                "desktop" boolean NOT NULL,
+                "mobile" boolean NOT NULL,
+                "premium" boolean NOT NULL,
+                "premium_type" integer NOT NULL,
+                "bot" boolean NOT NULL,
+                "bio" varchar,
+                "system" boolean NOT NULL,
+                "nsfw_allowed" boolean NOT NULL,
+                "mfa_enabled" boolean NOT NULL,
+                "totp_secret" varchar,
+                "totp_last_ticket" varchar,
+                "created_at" datetime NOT NULL,
+                "premium_since" datetime,
+                "verified" boolean NOT NULL,
+                "disabled" boolean NOT NULL,
+                "deleted" boolean NOT NULL,
+                "email" varchar,
+                "flags" varchar NOT NULL,
+                "public_flags" integer NOT NULL,
+                "rights" bigint NOT NULL,
+                "data" text NOT NULL,
+                "fingerprints" text NOT NULL,
+                "extended_settings" text NOT NULL,
+                "notes" text NOT NULL,
+                "settingsId" varchar,
+                "purchased_flags" integer NOT NULL,
+                "premium_usage_flags" integer NOT NULL,
+                CONSTRAINT "UQ_b1dd13b6ed980004a795ca184a6" UNIQUE ("settingsId"),
+                CONSTRAINT "FK_76ba283779c8441fd5ff819c8cf" FOREIGN KEY ("settingsId") REFERENCES "user_settings" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            )
+        `);
+        await queryRunner.query(`
+            INSERT INTO "temporary_users"(
+                    "id",
+                    "username",
+                    "discriminator",
+                    "avatar",
+                    "accent_color",
+                    "banner",
+                    "phone",
+                    "desktop",
+                    "mobile",
+                    "premium",
+                    "premium_type",
+                    "bot",
+                    "bio",
+                    "system",
+                    "nsfw_allowed",
+                    "mfa_enabled",
+                    "totp_secret",
+                    "totp_last_ticket",
+                    "created_at",
+                    "premium_since",
+                    "verified",
+                    "disabled",
+                    "deleted",
+                    "email",
+                    "flags",
+                    "public_flags",
+                    "rights",
+                    "data",
+                    "fingerprints",
+                    "extended_settings",
+                    "notes",
+                    "settingsId",
+                    "purchased_flags",
+                    "premium_usage_flags"
+                )
+            SELECT "id",
+                "username",
+                "discriminator",
+                "avatar",
+                "accent_color",
+                "banner",
+                "phone",
+                "desktop",
+                "mobile",
+                "premium",
+                "premium_type",
+                "bot",
+                "bio",
+                "system",
+                "nsfw_allowed",
+                "mfa_enabled",
+                "totp_secret",
+                "totp_last_ticket",
+                "created_at",
+                "premium_since",
+                "verified",
+                "disabled",
+                "deleted",
+                "email",
+                "flags",
+                "public_flags",
+                "rights",
+                "data",
+                "fingerprints",
+                "extended_settings",
+                "notes",
+                "settingsId",
+                "purchased_flags",
+                "premium_usage_flags"
+            FROM "users"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "users"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "temporary_users"
+                RENAME TO "users"
         `);
         await queryRunner.query(`
             CREATE TABLE "temporary_channels" (
@@ -805,6 +1035,126 @@ export class mobileFixes21660689586029 implements MigrationInterface {
             DROP TABLE "temporary_channels"
         `);
         await queryRunner.query(`
+            ALTER TABLE "users"
+                RENAME TO "temporary_users"
+        `);
+        await queryRunner.query(`
+            CREATE TABLE "users" (
+                "id" varchar PRIMARY KEY NOT NULL,
+                "username" varchar NOT NULL,
+                "discriminator" varchar NOT NULL,
+                "avatar" varchar,
+                "accent_color" integer,
+                "banner" varchar,
+                "phone" varchar,
+                "desktop" boolean NOT NULL,
+                "mobile" boolean NOT NULL,
+                "premium" boolean NOT NULL,
+                "premium_type" integer NOT NULL,
+                "bot" boolean NOT NULL,
+                "bio" varchar,
+                "system" boolean NOT NULL,
+                "nsfw_allowed" boolean NOT NULL,
+                "mfa_enabled" boolean,
+                "totp_secret" varchar,
+                "totp_last_ticket" varchar,
+                "created_at" datetime NOT NULL,
+                "premium_since" datetime,
+                "verified" boolean NOT NULL,
+                "disabled" boolean NOT NULL,
+                "deleted" boolean NOT NULL,
+                "email" varchar,
+                "flags" varchar NOT NULL,
+                "public_flags" integer NOT NULL,
+                "rights" bigint NOT NULL,
+                "data" text NOT NULL,
+                "fingerprints" text NOT NULL,
+                "extended_settings" text NOT NULL,
+                "notes" text NOT NULL,
+                "settingsId" varchar,
+                "purchased_flags" integer NOT NULL,
+                "premium_usage_flags" integer NOT NULL,
+                CONSTRAINT "UQ_b1dd13b6ed980004a795ca184a6" UNIQUE ("settingsId"),
+                CONSTRAINT "FK_76ba283779c8441fd5ff819c8cf" FOREIGN KEY ("settingsId") REFERENCES "user_settings" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            )
+        `);
+        await queryRunner.query(`
+            INSERT INTO "users"(
+                    "id",
+                    "username",
+                    "discriminator",
+                    "avatar",
+                    "accent_color",
+                    "banner",
+                    "phone",
+                    "desktop",
+                    "mobile",
+                    "premium",
+                    "premium_type",
+                    "bot",
+                    "bio",
+                    "system",
+                    "nsfw_allowed",
+                    "mfa_enabled",
+                    "totp_secret",
+                    "totp_last_ticket",
+                    "created_at",
+                    "premium_since",
+                    "verified",
+                    "disabled",
+                    "deleted",
+                    "email",
+                    "flags",
+                    "public_flags",
+                    "rights",
+                    "data",
+                    "fingerprints",
+                    "extended_settings",
+                    "notes",
+                    "settingsId",
+                    "purchased_flags",
+                    "premium_usage_flags"
+                )
+            SELECT "id",
+                "username",
+                "discriminator",
+                "avatar",
+                "accent_color",
+                "banner",
+                "phone",
+                "desktop",
+                "mobile",
+                "premium",
+                "premium_type",
+                "bot",
+                "bio",
+                "system",
+                "nsfw_allowed",
+                "mfa_enabled",
+                "totp_secret",
+                "totp_last_ticket",
+                "created_at",
+                "premium_since",
+                "verified",
+                "disabled",
+                "deleted",
+                "email",
+                "flags",
+                "public_flags",
+                "rights",
+                "data",
+                "fingerprints",
+                "extended_settings",
+                "notes",
+                "settingsId",
+                "purchased_flags",
+                "premium_usage_flags"
+            FROM "temporary_users"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "temporary_users"
+        `);
+        await queryRunner.query(`
             ALTER TABLE "user_settings"
                 RENAME TO "temporary_user_settings"
         `);
@@ -841,10 +1191,7 @@ export class mobileFixes21660689586029 implements MigrationInterface {
                 "status" varchar,
                 "stream_notifications_enabled" boolean,
                 "theme" varchar,
-                "timezone_offset" integer,
-                "friend_discovery_flags" integer NOT NULL,
-                "view_nsfw_guilds" boolean NOT NULL,
-                "passwordless" boolean NOT NULL
+                "timezone_offset" integer
             )
         `);
         await queryRunner.query(`
@@ -880,10 +1227,7 @@ export class mobileFixes21660689586029 implements MigrationInterface {
                     "status",
                     "stream_notifications_enabled",
                     "theme",
-                    "timezone_offset",
-                    "friend_discovery_flags",
-                    "view_nsfw_guilds",
-                    "passwordless"
+                    "timezone_offset"
                 )
             SELECT "id",
                 "afk_timeout",
@@ -916,14 +1260,125 @@ export class mobileFixes21660689586029 implements MigrationInterface {
                 "status",
                 "stream_notifications_enabled",
                 "theme",
-                "timezone_offset",
-                "friend_discovery_flags",
-                "view_nsfw_guilds",
-                "passwordless"
+                "timezone_offset"
             FROM "temporary_user_settings"
         `);
         await queryRunner.query(`
             DROP TABLE "temporary_user_settings"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "users"
+                RENAME TO "temporary_users"
+        `);
+        await queryRunner.query(`
+            CREATE TABLE "users" (
+                "id" varchar PRIMARY KEY NOT NULL,
+                "username" varchar NOT NULL,
+                "discriminator" varchar NOT NULL,
+                "avatar" varchar,
+                "accent_color" integer,
+                "banner" varchar,
+                "phone" varchar,
+                "desktop" boolean NOT NULL,
+                "mobile" boolean NOT NULL,
+                "premium" boolean NOT NULL,
+                "premium_type" integer NOT NULL,
+                "bot" boolean NOT NULL,
+                "bio" varchar,
+                "system" boolean NOT NULL,
+                "nsfw_allowed" boolean NOT NULL,
+                "mfa_enabled" boolean,
+                "totp_secret" varchar,
+                "totp_last_ticket" varchar,
+                "created_at" datetime NOT NULL,
+                "premium_since" datetime,
+                "verified" boolean NOT NULL,
+                "disabled" boolean NOT NULL,
+                "deleted" boolean NOT NULL,
+                "email" varchar,
+                "flags" varchar NOT NULL,
+                "public_flags" integer NOT NULL,
+                "rights" bigint NOT NULL,
+                "data" text NOT NULL,
+                "fingerprints" text NOT NULL,
+                "extended_settings" text NOT NULL,
+                "notes" text NOT NULL,
+                "settingsId" varchar,
+                CONSTRAINT "UQ_b1dd13b6ed980004a795ca184a6" UNIQUE ("settingsId"),
+                CONSTRAINT "FK_76ba283779c8441fd5ff819c8cf" FOREIGN KEY ("settingsId") REFERENCES "user_settings" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            )
+        `);
+        await queryRunner.query(`
+            INSERT INTO "users"(
+                    "id",
+                    "username",
+                    "discriminator",
+                    "avatar",
+                    "accent_color",
+                    "banner",
+                    "phone",
+                    "desktop",
+                    "mobile",
+                    "premium",
+                    "premium_type",
+                    "bot",
+                    "bio",
+                    "system",
+                    "nsfw_allowed",
+                    "mfa_enabled",
+                    "totp_secret",
+                    "totp_last_ticket",
+                    "created_at",
+                    "premium_since",
+                    "verified",
+                    "disabled",
+                    "deleted",
+                    "email",
+                    "flags",
+                    "public_flags",
+                    "rights",
+                    "data",
+                    "fingerprints",
+                    "extended_settings",
+                    "notes",
+                    "settingsId"
+                )
+            SELECT "id",
+                "username",
+                "discriminator",
+                "avatar",
+                "accent_color",
+                "banner",
+                "phone",
+                "desktop",
+                "mobile",
+                "premium",
+                "premium_type",
+                "bot",
+                "bio",
+                "system",
+                "nsfw_allowed",
+                "mfa_enabled",
+                "totp_secret",
+                "totp_last_ticket",
+                "created_at",
+                "premium_since",
+                "verified",
+                "disabled",
+                "deleted",
+                "email",
+                "flags",
+                "public_flags",
+                "rights",
+                "data",
+                "fingerprints",
+                "extended_settings",
+                "notes",
+                "settingsId"
+            FROM "temporary_users"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "temporary_users"
         `);
         await queryRunner.query(`
             ALTER TABLE "guilds"

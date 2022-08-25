@@ -1,16 +1,12 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class opencordFixes1660678870706 implements MigrationInterface {
-    name = 'opencordFixes1660678870706'
+export class mobileFixes1661435486857 implements MigrationInterface {
+    name = 'mobileFixes1661435486857'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
-            ALTER TABLE \`users\`
-            ADD \`purchased_flags\` int NOT NULL
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`users\`
-            ADD \`premium_usage_flags\` int NOT NULL
+            ALTER TABLE \`user_settings\`
+            ADD \`banner_color\` varchar(255) NULL
         `);
         await queryRunner.query(`
             ALTER TABLE \`user_settings\`
@@ -27,9 +23,21 @@ export class opencordFixes1660678870706 implements MigrationInterface {
         await queryRunner.query(`
             ALTER TABLE \`users\` CHANGE \`mfa_enabled\` \`mfa_enabled\` tinyint NOT NULL
         `);
+        await queryRunner.query(`
+            ALTER TABLE \`channels\` CHANGE \`nsfw\` \`nsfw\` tinyint NOT NULL
+        `);
+        await queryRunner.query(`
+            ALTER TABLE \`guilds\` CHANGE \`nsfw\` \`nsfw\` tinyint NOT NULL
+        `);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            ALTER TABLE \`guilds\` CHANGE \`nsfw\` \`nsfw\` tinyint NULL
+        `);
+        await queryRunner.query(`
+            ALTER TABLE \`channels\` CHANGE \`nsfw\` \`nsfw\` tinyint NULL
+        `);
         await queryRunner.query(`
             ALTER TABLE \`users\` CHANGE \`mfa_enabled\` \`mfa_enabled\` tinyint NULL
         `);
@@ -43,10 +51,7 @@ export class opencordFixes1660678870706 implements MigrationInterface {
             ALTER TABLE \`user_settings\` DROP COLUMN \`friend_discovery_flags\`
         `);
         await queryRunner.query(`
-            ALTER TABLE \`users\` DROP COLUMN \`premium_usage_flags\`
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`users\` DROP COLUMN \`purchased_flags\`
+            ALTER TABLE \`user_settings\` DROP COLUMN \`banner_color\`
         `);
     }
 
