@@ -204,7 +204,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			break;
 		case "GUILD_BAN_ADD":
 		case "GUILD_BAN_REMOVE":
-			if (!permission.has("BAN_MEMBERS")) break;
+			if (!permission.has("BAN_MEMBERS")) return;
 			break;
 		case "VOICE_STATE_UPDATE":
 		case "MESSAGE_CREATE":
