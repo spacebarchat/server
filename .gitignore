@@ -34,3 +34,4 @@ dbconf.json
 migrations.db
 
 assets/cache_src/
+package-lock.json
