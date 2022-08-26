@@ -5,7 +5,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Discord Test Client</title>
 		<link rel="stylesheet" href="/assets/fosscord.css" />
-		<link id="logincss" rel="stylesheet" href="/assets/fosscord-login.css" />
 		<link id="customcss" rel="stylesheet" href="/assets/user.css" />
 		<!-- inline plugin marker -->
 		<!-- preload plugin marker -->
@@ -28,20 +27,21 @@
 				INVITE_HOST: `${location.hostname}/invite`,
 				GUILD_TEMPLATE_HOST: "${location.host}",
 				GIFT_CODE_HOST: "${location.hostname}",
-				RELEASE_CHANNEL: "stable",
 				MARKETING_ENDPOINT: "//discord.com",
 				BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
 				STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
 				NETWORKING_ENDPOINT: "//router.discordapp.net",
 				RTC_LATENCY_ENDPOINT: "//${location.hostname}/rtc",
 				ACTIVITY_APPLICATION_HOST: "discordsays.com",
-				PROJECT_ENV: "production",
 				REMOTE_AUTH_ENDPOINT: "//localhost:3020",
 				SENTRY_TAGS: { buildId: "75e36d9", buildType: "normal" },
 				MIGRATION_SOURCE_ORIGIN: "https://${location.hostname}",
 				MIGRATION_DESTINATION_ORIGIN: "https://${location.hostname}",
 				HTML_TIMESTAMP: Date.now(),
-				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
+				ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0",
+				SENTRY_TAGS: { instance: document.location.host },
+				PROJECT_ENV: "development",
+				RELEASE_CHANNEL: "staging",
 			};
 			GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
 			const localStorage = window.localStorage;

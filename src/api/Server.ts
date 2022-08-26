@@ -11,6 +11,7 @@ import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
 import { initInstance } from "./util/handlers/Instance";
+import fs from "fs";
 
 export interface FosscordServerOptions extends ServerOptions {}
 
@@ -42,6 +43,8 @@ export class FosscordServer extends Server {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
+						if(req.path.endsWith(".map")) return true;
+						if(req.path.includes("/assets/") && !fs.existsSync(path.join(__dirname, "..", "..", "..", "assets", req.path.split("/")[0].split('?')[0]))) return true;
 						let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
 						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
 						return skip;
