@@ -6,7 +6,9 @@ import path from "path";
 import { green } from "picocolors";
 import ProxyAgent from "proxy-agent";
 import { AssetCacheItem } from "../util/entities/AssetCacheItem";
+import { patchFile } from "..";
 
+const prettier = require("prettier");
 const AssetsPath = path.join(__dirname, "..", "..", "..", "assets");
 
 export default function TestClient(app: Application) {
@@ -39,7 +41,7 @@ export default function TestClient(app: Application) {
 		let response: FetchResponse;
 		let buffer: Buffer;
 		let assetCacheItem: AssetCacheItem = new AssetCacheItem(req.params.file);
-		if (newAssetCache.has(req.params.file)) {
+		if (newAssetCache.has(req.params.file) && fs.existsSync(newAssetCache.get(req.params.file)!.FilePath)) {
 			assetCacheItem = newAssetCache.get(req.params.file)!;
 			assetCacheItem.Headers.forEach((value: any, name: any) => {
 				res.set(name, value);
@@ -56,16 +58,21 @@ export default function TestClient(app: Application) {
 					...req.headers
 				}
 			});
-
 			//set cache info
 			assetCacheItem.Headers = Object.fromEntries(stripHeaders(response.headers));
-			assetCacheItem.FilePath = path.join(assetCacheDir, req.params.file);
 			assetCacheItem.Key = req.params.file;
 			//add to cache and save
 			newAssetCache.set(req.params.file, assetCacheItem);
+
+			if(response.status != 200) {
+				return res.status(404).send("Not found");
+			}
+			assetCacheItem.FilePath = path.join(assetCacheDir, req.params.file);
+			if(!fs.existsSync(assetCacheDir))
+				fs.mkdirSync(assetCacheDir);
 			fs.writeFileSync(path.join(assetCacheDir, "index.json"), JSON.stringify(Object.fromEntries(newAssetCache), null, 4));
 			//download file
-			fs.writeFileSync(assetCacheItem.FilePath, await response.buffer());
+			fs.writeFileSync(assetCacheItem.FilePath, /.*\.(js|css)/.test(req.params.file) ? patchFile(assetCacheItem.FilePath, (await response.buffer()).toString()) : await response.buffer());
 		}
 
 		assetCacheItem.Headers.forEach((value: string, name: string) => {

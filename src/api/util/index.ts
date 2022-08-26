@@ -8,3 +8,5 @@ export * from "./utility/ipAddress";
 export * from "./utility/passwordStrength";
 export * from "./utility/RandomInviteID";
 export * from "./utility/String";
+export * from "./utility/captcha";
+export * from "./TestClientPatcher";
