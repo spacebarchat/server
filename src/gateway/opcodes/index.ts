@@ -6,6 +6,7 @@ import { onPresenceUpdate } from "./PresenceUpdate";
 import { onRequestGuildMembers } from "./RequestGuildMembers";
 import { onResume } from "./Resume";
 import { onVoiceStateUpdate } from "./VoiceStateUpdate";
+import { onVoiceServerPing } from "./VoiceServerPing";
 
 export type OPCodeHandler = (this: WebSocket, data: Payload) => any;
 
@@ -14,12 +15,14 @@ export default {
 	2: onIdentify,
 	3: onPresenceUpdate,
 	4: onVoiceStateUpdate,
-	// 5: Voice Server Ping
+	5: onVoiceServerPing, //Voice Server Ping
 	6: onResume,
 	// 7: Reconnect: You should attempt to reconnect and resume immediately.
 	8: onRequestGuildMembers,
 	// 9: Invalid Session
 	// 10: Hello
+	// 11: Heartbeat ACK
+	
 	// 13: Dm_update
 	14: onLazyRequest
 };

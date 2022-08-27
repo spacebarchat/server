@@ -82,6 +82,15 @@ export default function TestClient(app: Application) {
 
 		res.send(fs.readFileSync(path.join(__dirname, "..", "..", "..", "assets", "developers.html"), { encoding: "utf8" }));
 	});
+	app.get("/popout", (_req: Request, res: Response) => {
+		const { useTestClient } = Config.get().client;
+		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
+		res.set("content-type", "text/html");
+
+		if (!useTestClient) return res.send("Test client is disabled on this instance. Use a stand-alone client to connect this instance.");
+
+		res.send(fs.readFileSync(path.join(__dirname, "..", "..", "..", "assets", "popout.html"), { encoding: "utf8" }));
+	});
 	app.get("*", (req: Request, res: Response) => {
 		const { useTestClient } = Config.get().client;
 		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);

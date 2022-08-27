@@ -43,6 +43,7 @@ export async function Message(this: WebSocket, buffer: Buffer) {
 	const OPCodeHandler = OPCodeHandlers[data.op];
 	if (!OPCodeHandler) {
 		console.error("[Gateway] Unkown opcode " + data.op);
+		if(process.env.WS_VERBOSE_UNKNOWN) console.log(data);
 		// TODO: if all opcodes are implemented comment this out:
 		// this.close(CloseCodes.Unknown_opcode);
 		return;

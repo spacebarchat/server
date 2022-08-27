@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0, maximum-scale=3.0" name="viewport" />
+
+		<title>Discord Popout</title>
+		<link rel="icon" href="/assets/ec2c34cadd4b5f4594415127380a85e6.ico" />
+		<script nonce="MTI1LDcwLDIzNSw4MiwxODcsMjM4LDExNCw5">
+			(window.onload = function () {
+				null != window.opener &&
+					window.opener.postMessage({ discordPopoutEvent: { type: "loaded", key: window.windowKey } }, window.origin);
+			}),
+				(window.onunload = function () {
+					null != window.opener &&
+						window.opener.postMessage({ discordPopoutEvent: { type: "unloaded", key: window.windowKey } }, window.origin);
+				});
+		</script>
+		<style>
+			body,
+			html {
+				overflow: hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="app-mount"></div>
+	</body>
+</html>
