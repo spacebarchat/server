@@ -45,6 +45,9 @@ export default function TestClient(app: Application) {
 				res.set(name, value);
 			});
 		} else {
+			if(req.params.file.endsWith(".map")) {
+				return res.status(404).send("Not found");	
+			}
 			console.log(`[TestClient] Downloading file not yet cached! Asset file: ${req.params.file}`);
 			response = await fetch(`https://discord.com/assets/${req.params.file}`, {
 				agent,
