@@ -60,7 +60,7 @@ router.post("/", route({ body: "ConnectionAuthCallbackSchema" }), async (req: Re
 	if (!user_id) throw DiscordApiErrors.INVALID_OAUTH_STATE;
 
 	// for OID, this just returns the user's external id
-	const token = await connection.exchangeCode(body.code! ?? body.openid_params?.["openid.claimed_id"]!, body.state!);
+	const token = await connection.exchangeCode(body);
 	const userInfo = await connection.getUser(token);
 
 	// check if the user has already linked this external account

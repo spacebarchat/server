@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import { ConnectedAccount } from "../entities";
-import { Config, OrmUtils } from "../util";
+import { OIDConnectionCallbackSchema } from "../schemas/ConnectionAuthCallbackSchema";
+import { Config, DiscordApiErrors, OrmUtils } from "../util";
 import { BaseOIDConnection } from "./BaseOIDConnection";
 
 export interface SteamConnectionUserInfo {
@@ -22,8 +23,25 @@ export class SteamConnection extends BaseOIDConnection {
 		this.apiKey = Config.get().connections.steam.apiKey;
 	}
 
-	exchangeCode(claimedIdentifier: string): string {
-		return claimedIdentifier.replace("https://steamcommunity.com/openid/id/", "");
+	/**
+	 * Validates the state and the response signature and returns the users id
+	 * @param param the openid callback parameters
+	 * @returns the users steam id
+	 */
+	async exchangeCode({ state, openid_params }: OIDConnectionCallbackSchema): Promise<string> {
+		this.validateState(state);
+		return new Promise((resolve, reject) => {
+			this.verifyAssertion(openid_params)
+				.then((r) => {
+					if (!r.authenticated) {
+						return reject(DiscordApiErrors.INVALID_OAUTH_STATE);
+					}
+					const claimedIdentifier = openid_params["openid.claimed_id"];
+					const steamId = claimedIdentifier.replace("https://steamcommunity.com/openid/id/", "");
+					resolve(steamId);
+				})
+				.catch(reject);
+		});
 	}
 
 	async getUser(steamId: string): Promise<SteamConnectionUserInfo> {

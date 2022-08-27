@@ -1,5 +1,6 @@
 import { Config, ConnectedAccount, DiscordApiErrors, OAuthConnectionConfiguration } from "@fosscord/util";
 import crypto from "crypto";
+import { OAuthConnectionCallbackSchema } from "../schemas/ConnectionAuthCallbackSchema";
 
 export interface ConnectionOptions {
 	id: string;
@@ -69,7 +70,7 @@ export abstract class BaseOAuthConnection {
 
 	abstract makeTokenUrl(code: string): string;
 
-	abstract exchangeCode(code: string, state: string): Promise<string>;
+	abstract exchangeCode(body: OAuthConnectionCallbackSchema): Promise<string>;
 
 	abstract getUser(token: string): Promise<unknown>;
 

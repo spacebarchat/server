@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import { ConnectedAccount } from "../entities";
+import { OAuthConnectionCallbackSchema } from "../schemas/ConnectionAuthCallbackSchema";
 import { Config, DiscordApiErrors, OrmUtils } from "../util";
 import { BaseOAuthConnection, OAuthTokenResponse } from "./BaseOAuthConnection";
 
@@ -55,7 +56,7 @@ export class TwitterConnection extends BaseOAuthConnection {
 		return this.options.tokenUrl;
 	}
 
-	async exchangeCode(code: string, state: string): Promise<string> {
+	async exchangeCode({ state, code }: OAuthConnectionCallbackSchema): Promise<string> {
 		this.validateState(state);
 
 		const url = this.makeTokenUrl();

@@ -1,37 +1,18 @@
 import {
-	RedditConnection,
-	EpicGamesConnection,
-	YouTubeConnection,
-	TwitchConnection,
 	BattleNetConnection,
+	EpicGamesConnection,
 	FacebookConnection,
-	TwitterConnection,
+	RedditConnection,
 	SpotifyConnection,
+	SteamConnection,
+	TwitchConnection,
+	TwitterConnection,
 	XboxConnection,
-	SteamConnection
+	YouTubeConnection
 } from "../connections";
 import { BaseOAuthConnection } from "../connections/BaseOAuthConnection";
 import { BaseOIDConnection } from "../connections/BaseOIDConnection";
 import { GitHubConnection } from "../connections/GitHubConnection";
-
-export interface ConnectionAuthCallbackSchema {
-	code?: string;
-	friend_sync: boolean;
-	insecure: boolean;
-	state?: string;
-	openid_params?: {
-		"openid.assoc_handle": string;
-		"openid.claimed_id": string;
-		"openid.identity": string;
-		"openid.mode": string;
-		"openid.ns": string;
-		"openid.op_endpoint": string;
-		"openid.response_nonce": string;
-		"openid.return_to": string;
-		"openid.sig": string;
-		"openid.signed": string;
-	};
-}
 
 export const Connections: {
 	connections: { [key: string]: BaseOAuthConnection | BaseOIDConnection };

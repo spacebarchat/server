@@ -1,5 +1,7 @@
-import { ConnectedAccount, DiscordApiErrors } from "@fosscord/util";
+import { Config, ConnectedAccount, DiscordApiErrors } from "@fosscord/util";
+import { RelyingParty } from "@puyodead1/openid";
 import crypto from "crypto";
+import { OIDConnectionCallbackParams, OIDConnectionCallbackSchema } from "../schemas/ConnectionAuthCallbackSchema";
 
 interface ConnectionOptions {
 	id: string;
@@ -13,11 +15,10 @@ export abstract class BaseOIDConnection {
 	public readonly options: ConnectionOptions;
 	public realm: string;
 	public returnUrl: string;
-	// public relyingParty: RelyingParty;
+	public relyingParty: RelyingParty;
 	public enabled: boolean = false;
 	public readonly states: Map<string, string> = new Map();
 
-	// TODO: add state to return url
 	constructor(options: ConnectionOptions) {
 		this.options = options;
 	}
@@ -35,28 +36,29 @@ export abstract class BaseOIDConnection {
 	}
 
 	init(): void {
-		// TODO: temporarily disabled, needs to be fixed to use state in callback url
-		// const config = (Config.get().connections as unknown as { [key: string]: BaseOIDConnection })[this.options.id];
-		// this.enabled = config.enabled;
-		// this.realm = Config.get().general.frontPage || "http://localhost:3001";
-		// this.returnUrl = `${Config.get().cdn.endpointPrivate || "http://localhost:3001"}/connections/${this.options.id}/callback`;
-		// this.relyingParty = new RelyingParty(this.returnUrl, this.realm, true, true, []);
-		// this.initCustom();
+		const config = (Config.get().connections as unknown as { [key: string]: BaseOIDConnection })[this.options.id];
+		this.enabled = config.enabled;
+		this.realm = Config.get().general.frontPage || "http://localhost:3001";
+		this.relyingParty = new RelyingParty(this.realm, true, true, []);
+		this.initCustom();
 	}
 
 	isEnabled(): boolean {
 		return this.enabled;
 	}
 
-	async makeAuthorizeUrl(): Promise<String> {
+	async makeAuthorizeUrl(userId: string): Promise<String> {
 		return new Promise((resolve, reject) => {
-			reject(new Error("Not implemented"));
-			// this.relyingParty.authenticate(this.options.identifier, false, (error, authUrl) => {
-			// 	if (error) return reject(error);
-			// 	if (!authUrl) return reject(new Error(`Failed to make authorize url for ${this.options.identifier}`));
+			const state = this.createState(userId);
+			const returnUrl = `${Config.get().cdn.endpointPrivate || "http://localhost:3001"}/connections/${
+				this.options.id
+			}/callback?state=${state}`;
+			this.relyingParty.authenticate(this.options.identifier, returnUrl, false, (error, authUrl) => {
+				if (error) return reject(error);
+				if (!authUrl) return reject(new Error(`Failed to make authorize url for ${this.options.identifier}`));
 
-			// 	resolve(authUrl);
-			// });
+				resolve(authUrl);
+			});
 		});
 	}
 
@@ -64,7 +66,7 @@ export abstract class BaseOIDConnection {
 		return this.states.get(state);
 	}
 
-	abstract exchangeCode(claimedIdentifier: string, state: string): string;
+	abstract exchangeCode(body: OIDConnectionCallbackSchema): Promise<string>;
 
 	abstract initCustom(): void;
 
@@ -73,4 +75,22 @@ export abstract class BaseOIDConnection {
 	abstract createConnection(userId: string, friend_sync: boolean, userInfo: unknown, token: string): ConnectedAccount;
 
 	abstract hasConnection(userId: string, userInfo: unknown): Promise<boolean>;
+
+	/**
+	 * validates the response
+	 * @param params openid params from the response
+	 * @returns object containing a boolean indicating if the response is valid and the claimed id
+	 */
+	async verifyAssertion(params: OIDConnectionCallbackParams): Promise<{
+		authenticated: boolean;
+		claimedIdentifier?: string | undefined;
+	}> {
+		return new Promise((resolve, reject) => {
+			this.relyingParty._verifyAssertionData(params, (err, result) => {
+				if (err) return reject(err);
+				if (!result) return reject(new Error("No result"));
+				resolve(result);
+			});
+		});
+	}
 }

@@ -1,5 +1,6 @@
 import { Config, ConnectedAccount, DiscordApiErrors, OrmUtils } from "@fosscord/util";
 import fetch from "node-fetch";
+import { OAuthConnectionCallbackSchema } from "../schemas/ConnectionAuthCallbackSchema";
 import { BaseOAuthConnection, OAuthTokenResponse } from "./BaseOAuthConnection";
 
 export interface FacebookConnectionUser {
@@ -57,7 +58,7 @@ export class FacebookConnection extends BaseOAuthConnection {
 		return url.toString();
 	}
 
-	async exchangeCode(code: string, state: string): Promise<string> {
+	async exchangeCode({ state, code }: OAuthConnectionCallbackSchema): Promise<string> {
 		this.validateState(state);
 
 		const url = this.makeTokenUrl(code);
