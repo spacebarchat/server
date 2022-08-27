@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { Activity } from "../interfaces/Activity";
 import { Status } from "../interfaces/Status";
 import { BaseClass } from "./BaseClass";

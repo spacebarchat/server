@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, Relation, RelationId } from "typeorm";
 import { InteractionType } from "../interfaces/Interaction";
 import { Application } from "./Application";
 import { Attachment } from "./Attachment";

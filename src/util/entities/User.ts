@@ -1,4 +1,4 @@
-import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, OneToMany, OneToOne, Relation } from "typeorm";
 import { Member, Session, UserSettings } from ".";
 import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
 import { BitField } from "../util/BitField";

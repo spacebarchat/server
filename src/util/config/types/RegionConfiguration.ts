@@ -7,7 +7,7 @@ export class RegionConfiguration {
 		{
 			id: "fosscord",
 			name: "Fosscord",
-			endpoint: undefined,
+			endpoint: "",
 			vip: false,
 			custom: false,
 			deprecated: false

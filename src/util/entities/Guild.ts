@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, Relation, RelationId } from "typeorm";
 import { Config, handleFile, Snowflake } from "..";
 import { OrmUtils } from "../util/imports/OrmUtils";
 import { Ban } from "./Ban";

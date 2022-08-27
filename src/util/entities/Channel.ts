@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, Relation, RelationId } from "typeorm";
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import { containsAll, emitEvent, getPermission, InvisibleCharacters, Snowflake, trimSpecial } from "../util";

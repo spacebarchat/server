@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
+import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, Relation, RelationId } from "typeorm";
 import { Ban, PublicGuildRelations } from ".";
 import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent } from "../interfaces";
 import { Config, emitEvent } from "../util";

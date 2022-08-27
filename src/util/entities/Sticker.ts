@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
+import { StickerPack } from ".";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";

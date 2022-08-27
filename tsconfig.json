@@ -71,7 +71,7 @@
 			"@fosscord/api": ["./api/index"],
 			"@fosscord/gateway": ["./gateway/index"],
 			"@fosscord/cdn": ["./cdn/index"],
-			"@fosscord/util": ["./util/index"]
+			"@fosscord/util": ["./util/index"],
 			"@fosscord/webrtc": ["./webrtc/index"]
 		},
 		"noEmitHelpers": true,
