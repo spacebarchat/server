@@ -1,5 +1,5 @@
-import { Router, Request, Response } from "express";
-import { FieldErrors, emitEvent, UserConnectionsUpdateEvent, DiscordApiErrors } from "../../../../util";
+import { Request, Response, Router } from "express";
+import { DiscordApiErrors, emitEvent, FieldErrors, UserConnectionsUpdateEvent } from "../../../../util";
 import { ConnectionAuthCallbackSchema } from "../../../../util/schemas/ConnectionAuthCallbackSchema";
 import { Connections } from "../../../../util/util/Connections";
 import { route } from "../../../util";
@@ -62,15 +62,21 @@ router.post("/", route({ body: "ConnectionAuthCallbackSchema" }), async (req: Re
 	// for OID, this just returns the user's external id
 	const token = await connection.exchangeCode(body.code! ?? body.openid_params?.["openid.claimed_id"]!, body.state!);
 	const userInfo = await connection.getUser(token);
-	const connectedAccount = connection.createConnection(user_id, body.friend_sync, userInfo, token);
-	await connectedAccount.save();
 
-	const d = {
-		event: "USER_CONNECTIONS_UPDATE",
-		user_id,
-		data: {}
-	} as UserConnectionsUpdateEvent;
-	await emitEvent(d);
+	// check if the user has already linked this external account
+	const exists = await connection.hasConnection(user_id, userInfo);
+
+	if (!exists) {
+		const connectedAccount = connection.createConnection(user_id, body.friend_sync, userInfo, token);
+		await connectedAccount.save();
+
+		const d = {
+			event: "USER_CONNECTIONS_UPDATE",
+			user_id,
+			data: {}
+		} as UserConnectionsUpdateEvent;
+		await emitEvent(d);
+	}
 
 	res.sendStatus(204);
 });

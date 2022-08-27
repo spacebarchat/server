@@ -1,5 +1,4 @@
-import { Config, ConnectedAccount, DiscordApiErrors } from "@fosscord/util";
-import { RelyingParty } from "openid";
+import { ConnectedAccount, DiscordApiErrors } from "@fosscord/util";
 import crypto from "crypto";
 
 interface ConnectionOptions {
@@ -14,7 +13,7 @@ export abstract class BaseOIDConnection {
 	public readonly options: ConnectionOptions;
 	public realm: string;
 	public returnUrl: string;
-	public relyingParty: RelyingParty;
+	// public relyingParty: RelyingParty;
 	public enabled: boolean = false;
 	public readonly states: Map<string, string> = new Map();
 
@@ -51,12 +50,13 @@ export abstract class BaseOIDConnection {
 
 	async makeAuthorizeUrl(): Promise<String> {
 		return new Promise((resolve, reject) => {
-			this.relyingParty.authenticate(this.options.identifier, false, (error, authUrl) => {
-				if (error) return reject(error);
-				if (!authUrl) return reject(new Error(`Failed to make authorize url for ${this.options.identifier}`));
+			reject(new Error("Not implemented"));
+			// this.relyingParty.authenticate(this.options.identifier, false, (error, authUrl) => {
+			// 	if (error) return reject(error);
+			// 	if (!authUrl) return reject(new Error(`Failed to make authorize url for ${this.options.identifier}`));
 
-				resolve(authUrl);
-			});
+			// 	resolve(authUrl);
+			// });
 		});
 	}
 
@@ -71,4 +71,6 @@ export abstract class BaseOIDConnection {
 	abstract getUser(token: string): Promise<unknown>;
 
 	abstract createConnection(userId: string, friend_sync: boolean, userInfo: unknown, token: string): ConnectedAccount;
+
+	abstract hasConnection(userId: string, userInfo: unknown): Promise<boolean>;
 }

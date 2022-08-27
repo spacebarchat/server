@@ -108,4 +108,15 @@ export class FacebookConnection extends BaseOAuthConnection {
 			integrations: []
 		});
 	}
+
+	async hasConnection(userId: string, userInfo: FacebookConnectionUser): Promise<boolean> {
+		const existing = await ConnectedAccount.findOne({
+			where: {
+				user_id: userId,
+				external_id: userInfo.id
+			}
+		});
+
+		return !!existing;
+	}
 }

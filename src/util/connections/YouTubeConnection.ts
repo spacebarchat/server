@@ -113,4 +113,15 @@ export class YouTubeConnection extends BaseOAuthConnection {
 			integrations: []
 		});
 	}
+
+	async hasConnection(userId: string, channelInfo: YouTubeConnectionChannelListResult): Promise<boolean> {
+		const existing = await ConnectedAccount.findOne({
+			where: {
+				user_id: userId,
+				external_id: channelInfo.items[0].id
+			}
+		});
+
+		return !!existing;
+	}
 }

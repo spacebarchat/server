@@ -110,4 +110,15 @@ export class SpotifyConnection extends BaseOAuthConnection {
 			access_token: token
 		});
 	}
+
+	async hasConnection(userId: string, userInfo: SpotifyConnectionUser): Promise<boolean> {
+		const existing = await ConnectedAccount.findOne({
+			where: {
+				user_id: userId,
+				external_id: userInfo.id
+			}
+		});
+
+		return !!existing;
+	}
 }

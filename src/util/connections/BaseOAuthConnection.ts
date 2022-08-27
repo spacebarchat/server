@@ -74,4 +74,6 @@ export abstract class BaseOAuthConnection {
 	abstract getUser(token: string): Promise<unknown>;
 
 	abstract createConnection(userId: string, friend_sync: boolean, userInfo: unknown, token: string): ConnectedAccount;
+
+	abstract hasConnection(userId: string, userInfo: unknown): Promise<boolean>;
 }

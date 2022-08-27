@@ -116,4 +116,15 @@ export class TwitterConnection extends BaseOAuthConnection {
 			integrations: []
 		});
 	}
+
+	async hasConnection(userId: string, userInfo: TwitterConnectionUserResponse): Promise<boolean> {
+		const existing = await ConnectedAccount.findOne({
+			where: {
+				user_id: userId,
+				external_id: userInfo.data.id
+			}
+		});
+
+		return !!existing;
+	}
 }

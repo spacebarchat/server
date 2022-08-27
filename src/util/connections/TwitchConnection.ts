@@ -107,4 +107,15 @@ export class TwitchConnection extends BaseOAuthConnection {
 			integrations: []
 		});
 	}
+
+	async hasConnection(userId: string, userInfo: TwitchConnectionUserResponse): Promise<boolean> {
+		const existing = await ConnectedAccount.findOne({
+			where: {
+				user_id: userId,
+				external_id: userInfo.data[0].id
+			}
+		});
+
+		return !!existing;
+	}
 }

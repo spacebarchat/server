@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { ConnectedAccount } from "../entities";
 import { Config, DiscordApiErrors, OrmUtils } from "../util";
-import { OAuthTokenResponse, BaseOAuthConnection } from "./BaseOAuthConnection";
+import { BaseOAuthConnection, OAuthTokenResponse } from "./BaseOAuthConnection";
 
 export interface EpicGamesConnectionUser {
 	accountId: string;
@@ -99,5 +99,16 @@ export class EpicGamesConnection extends BaseOAuthConnection {
 			visibility: 0,
 			integrations: []
 		});
+	}
+
+	async hasConnection(userId: string, userInfo: EpicGamesConnectionUser[]): Promise<boolean> {
+		const existing = await ConnectedAccount.findOne({
+			where: {
+				user_id: userId,
+				external_id: userInfo[0].accountId
+			}
+		});
+
+		return !!existing;
 	}
 }

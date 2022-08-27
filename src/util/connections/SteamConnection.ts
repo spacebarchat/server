@@ -57,4 +57,15 @@ export class SteamConnection extends BaseOIDConnection {
 			integrations: []
 		});
 	}
+
+	async hasConnection(userId: string, userInfo: SteamConnectionUserInfo): Promise<boolean> {
+		const existing = await ConnectedAccount.findOne({
+			where: {
+				user_id: userId,
+				external_id: userInfo.steamid
+			}
+		});
+
+		return !!existing;
+	}
 }

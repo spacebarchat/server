@@ -86,4 +86,15 @@ export class GitHubConnection extends BaseOAuthConnection {
 			integrations: []
 		});
 	}
+
+	async hasConnection(userId: string, userInfo: GitHubConnectionUser): Promise<boolean> {
+		const existing = await ConnectedAccount.findOne({
+			where: {
+				user_id: userId,
+				external_id: userInfo.id.toString()
+			}
+		});
+
+		return !!existing;
+	}
 }

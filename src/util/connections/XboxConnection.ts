@@ -153,4 +153,15 @@ export class XboxConnection extends BaseOAuthConnection {
 			integrations: []
 		});
 	}
+
+	async hasConnection(userId: string, userInfo: XboxConnectionUserResponse): Promise<boolean> {
+		const existing = await ConnectedAccount.findOne({
+			where: {
+				user_id: userId,
+				external_id: userInfo.DisplayClaims.xui[0].xid
+			}
+		});
+
+		return !!existing;
+	}
 }

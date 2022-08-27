@@ -104,4 +104,15 @@ export class BattleNetConnection extends BaseOAuthConnection {
 			integrations: []
 		});
 	}
+
+	async hasConnection(userId: string, userInfo: BattleNetConnectionUser): Promise<boolean> {
+		const existing = await ConnectedAccount.findOne({
+			where: {
+				user_id: userId,
+				external_id: userInfo.battletag
+			}
+		});
+
+		return !!existing;
+	}
 }
