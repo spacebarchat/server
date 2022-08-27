@@ -45,7 +45,7 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 
 	const guild_member =
 		guild_id && typeof guild_id == "string"
-			? await Member.findOneOrFail({ id: req.params.id, guild_id: guild_id }, { relations: ["roles"] })
+			? await Member.findOneOrFail({ where: { id: req.params.id, guild_id: guild_id }, relations: ["roles"] })
 			: undefined;
 
 	// TODO: make proper DTO's in util?
