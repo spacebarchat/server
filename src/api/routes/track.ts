@@ -22,7 +22,7 @@ import { route } from "@spacebar/api";
 const router = Router();
 
 router.post("/", route({}), (req: Request, res: Response) => {
-	// TODO:
+	// TODO: implement route?
 	res.sendStatus(204);
 });
 

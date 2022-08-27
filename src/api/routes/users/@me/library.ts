@@ -22,7 +22,7 @@ import { route } from "@spacebar/api";
 const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	// TODO:
+	// TODO: Add library route
 	res.status(200).send([]);
 });
 

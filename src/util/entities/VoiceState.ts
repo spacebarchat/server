@@ -87,7 +87,7 @@ export class VoiceState extends BaseClass {
 	// @ManyToOne(() => Member, {
 	// 	onDelete: "CASCADE",
 	// })
-	//TODO find a way to make it work without breaking Guild.voice_states
+	//TODO: find a way to make it work without breaking Guild.voice_states
 	member: Member;
 
 	@Column()

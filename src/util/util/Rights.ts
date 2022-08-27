@@ -30,7 +30,7 @@ export type RightResolvable =
 	| RightString;
 
 type RightString = keyof typeof Rights.FLAGS;
-// TODO: just like roles for members, users should have privilidges which combine multiple rights into one and make it easy to assign
+// TODO: just like roles for members, users should have privilides which combine multiple rights into one and make it easy to assign
 
 export class Rights extends BitField {
 	constructor(bits: BitFieldResolvable = 0) {

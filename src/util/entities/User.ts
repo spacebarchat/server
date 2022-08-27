@@ -348,7 +348,7 @@ export class User extends BaseClass {
 	 * 		date_of_birth,
 	 * 		req,
 	 * 	}
-	 * @return {*} 
+	 * @return {*}
 	 * @memberof User
 	 */
 	static async register({

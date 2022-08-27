@@ -23,7 +23,7 @@ import { ClientStatus, Status } from "../interfaces/Status";
 import { Activity } from "../interfaces/Activity";
 import { dbEngine } from "../util/Database";
 
-//TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
+//TODO: we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 
 @Entity({
 	name: "sessions",
@@ -40,7 +40,7 @@ export class Session extends BaseClass {
 	})
 	user: User;
 
-	//TODO check, should be 32 char long hex string
+	//TODO: check, should be 32 char long hex string
 	@Column({ nullable: false, select: false })
 	session_id: string;
 
@@ -58,7 +58,7 @@ export class Session extends BaseClass {
 	client_status: ClientStatus;
 
 	@Column({ nullable: false, type: "varchar" })
-	status: Status; //TODO enum
+	status: Status; //TODO: enum
 }
 
 export const PrivateSessionProjection: (keyof Session)[] = [

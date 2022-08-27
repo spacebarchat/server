@@ -26,6 +26,7 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
+import { route } from "../../../../..";
 
 const router = Router();
 

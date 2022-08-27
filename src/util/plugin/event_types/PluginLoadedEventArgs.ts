@@ -1,3 +1,1 @@
-export interface PluginLoadedEventArgs {
-    
-}
+export interface PluginLoadedEventArgs {}

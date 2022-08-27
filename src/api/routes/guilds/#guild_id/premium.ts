@@ -21,7 +21,7 @@ import { route } from "@spacebar/api";
 const router = Router();
 
 router.get("/subscriptions", route({}), async (req: Request, res: Response) => {
-	// TODO:
+	// TODO: implement route
 	res.json([]);
 });
 
