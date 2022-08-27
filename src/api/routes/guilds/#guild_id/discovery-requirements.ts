@@ -5,9 +5,8 @@ const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
-	// TODO:
-	// Load from database
-	// Admin control, but for now it allows anyone to be discoverable
+	// TODO: Load from database
+	// TODO: Admin control, but for now it allows anyone to be discoverable
 
 	res.send({
 		guild_id: guild_id,

@@ -1,6 +1,7 @@
-import { route } from "@fosscord/api";
 import { BackupCode, Config, FieldErrors, generateMfaBackupCodes, MfaCodesSchema, User } from "@fosscord/util";
+import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
+import { route } from "../../../..";
 
 let bcrypt: any;
 try {

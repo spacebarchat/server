@@ -12,6 +12,7 @@ import {
 	UserModifySchema,
 	UserUpdateEvent
 } from "@fosscord/util";
+import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 
 let bcrypt: any;

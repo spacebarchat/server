@@ -359,8 +359,8 @@ export class Channel extends BaseClass {
 	}
 
 	static async deleteChannel(channel: Channel) {
-		await Message.delete({ channel_id: channel.id }); //TODO we should also delete the attachments from the cdn but to do that we need to move cdn.ts in util
-		//TODO before deleting the channel we should check and delete other relations
+		await Message.delete({ channel_id: channel.id }); //TODO: we should also delete the attachments from the cdn but to do that we need to move cdn.ts in util
+		//TODO: before deleting the channel we should check and delete other relations
 		await Channel.delete({ id: channel.id });
 	}
 

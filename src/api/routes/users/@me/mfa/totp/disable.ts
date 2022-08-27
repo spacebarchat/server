@@ -2,6 +2,7 @@ import { route } from "@fosscord/api";
 import { BackupCode, generateToken, HTTPError, TotpDisableSchema, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { verifyToken } from "node-2fa";
+import { route } from "../../../../..";
 
 const router = Router();
 

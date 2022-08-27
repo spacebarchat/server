@@ -6,9 +6,8 @@ import os from "os";
 import { bold, cyan, red, yellow } from "picocolors";
 import "reflect-metadata";
 import { initStats } from "./stats";
-config();
-import { execSync } from "child_process";
 import { Logo } from "./util";
+config();
 
 // TODO: add socket event transmission
 let cores = 1;
@@ -27,15 +26,10 @@ if (cluster.isMaster) {
 		}
 	}
 	const commit = getCommitOrFail();
-Logo.printLogo();
-console.log(bold(`
-		fosscord-server | ${yellow(
-			`Pre-release (${
-				commit !== null
-					? commit.slice(0, 7)
-					: "Unknown (Git cannot be found)"
-			})`
-		)}
+	Logo.printLogo();
+	console.log(
+		bold(`
+		fosscord-server | ${yellow(`Pre-release (${commit !== null ? commit.slice(0, 7) : "Unknown (Git cannot be found)"})`)}
 
 Commit Hash: ${commit !== null ? `${cyan(commit)} (${yellow(commit.slice(0, 7))})` : "Unknown (Git cannot be found)"}
 Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)

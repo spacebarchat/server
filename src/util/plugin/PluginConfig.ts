@@ -1,6 +1,6 @@
 import fs from "fs";
-import { OrmUtils, Environment } from "..";
-import { PluginConfigEntity } from "util/entities/PluginConfig";
+import { Environment } from "..";
+import { PluginConfigEntity } from "../entities/PluginConfig";
 
 // TODO: yaml instead of json
 const overridePath = process.env.PLUGIN_CONFIG_PATH ?? "";
@@ -14,26 +14,28 @@ let pairs: PluginConfigEntity[];
 export const PluginConfig = {
 	init: async function init() {
 		if (config) return config;
-		console.log('[PluginConfig] Loading configuration...')
+		console.log("[PluginConfig] Loading configuration...");
 		pairs = await PluginConfigEntity.find();
 		config = pairsToConfig(pairs);
 		//config = (config || {}).merge(new ConfigValue());
 		//config = OrmUtils.mergeDeep(new ConfigValue(), config)
 
-		if(process.env.PLUGIN_CONFIG_PATH)
+		if (process.env.PLUGIN_CONFIG_PATH)
 			try {
 				const overrideConfig = JSON.parse(fs.readFileSync(overridePath, { encoding: "utf8" }));
 				config = overrideConfig.merge(config);
 			} catch (error) {
 				fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
 			}
-		
+
 		return this.set(config);
 	},
 	get: function get() {
-		if(!config) {
-			if(Environment.isDebug)
-				console.log("Oops.. trying to get config without config existing... Returning defaults... (Is the database still initialising?)");
+		if (!config) {
+			if (Environment.isDebug)
+				console.log(
+					"Oops.. trying to get config without config existing... Returning defaults... (Is the database still initialising?)"
+				);
 			return {};
 		}
 		return config;
@@ -43,7 +45,7 @@ export const PluginConfig = {
 		config = val.merge(config);
 
 		return applyConfig(config);
-	},
+	}
 };
 
 function applyConfig(val: any) {
@@ -56,17 +58,14 @@ function applyConfig(val: any) {
 
 		pair.key = key;
 		pair.value = obj;
-		if(!pair.key || pair.key == null) {
-			console.log(`[PluginConfig] WARN: Empty key`)
+		if (!pair.key || pair.key == null) {
+			console.log(`[PluginConfig] WARN: Empty key`);
 			console.log(pair);
-			if(Environment.isDebug) debugger;
-		}
-		else
-			return pair.save();
+			if (Environment.isDebug) debugger;
+		} else return pair.save();
 	}
-	if(process.env.PLUGIN_CONFIG_PATH) {
-		if(Environment.isDebug)
-			console.log(`Writing config: ${process.env.PLUGIN_CONFIG_PATH}`)
+	if (process.env.PLUGIN_CONFIG_PATH) {
+		if (Environment.isDebug) console.log(`Writing config: ${process.env.PLUGIN_CONFIG_PATH}`);
 		fs.writeFileSync(overridePath, JSON.stringify(val, null, 4));
 	}
 

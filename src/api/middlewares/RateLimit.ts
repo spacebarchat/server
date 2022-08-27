@@ -1,6 +1,6 @@
-import { getIpAdress } from "@fosscord/api";
 import { Config, getRights, listenEvent } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
+import { getIpAdress } from "..";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
 // Docs: https://discord.com/developers/docs/topics/rate-limits

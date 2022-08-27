@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router: Router = Router();
-// TODO:
+// TODO: implement route
 
 export default router;
 

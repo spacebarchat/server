@@ -1,5 +1,5 @@
-import { route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
+import { route } from "..";
 
 const router: Router = Router();
 

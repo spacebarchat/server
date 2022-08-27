@@ -1,4 +1,4 @@
-import { Snowflake } from "@fosscord/util";
+import { Snowflake } from ".";
 
 export function random(length = 6) {
 	// Declare all characters

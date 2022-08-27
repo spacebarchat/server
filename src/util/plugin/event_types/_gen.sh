@@ -48,8 +48,8 @@ do
         echo "    async onPre${event}?(args: Pre${event}EventArgs): Promise<Pre${event}EventResult>;"
     ) >> ../plugin.eventfuncs.generated
 
-    echo "import { Pre${event}EventArgs, On${event}EventArgs, Pre${event}EventResult } from './event_types';" >> ../PluginEventHandler.ts.1
-    echo "import { Pre${event}EventArgs, Pre${event}EventResult, On${event}EventArgs } from '.';" >> ../plugin.imports.generated
+    echo "import { Pre${event}EventArgs, On${event}EventArgs, Pre${event}EventResult } from \"./event_types\";" >> ../PluginEventHandler.ts.1
+    echo "import { Pre${event}EventArgs, Pre${event}EventResult, On${event}EventArgs } from \".\";" >> ../plugin.imports.generated
     cmp --silent "${event}EventArgs.ts" "${event}EventArgs.ts.generated" && rm -f "${event}EventArgs.ts.generated"
 done < _pdo
 

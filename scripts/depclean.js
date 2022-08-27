@@ -5,6 +5,8 @@ const { execSync } = require("child_process");
 const { argv, stdout, exit } = require("process");
 const { execIn, getLines } = require("./utils");
 
+const { execIn, getLines } = require("./utils");
+
 const bundleRequired = ["@ovos-media/ts-transform-paths"];
 const removeModules = argv.includes("cleanup");
 

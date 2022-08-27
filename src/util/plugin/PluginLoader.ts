@@ -1,16 +1,16 @@
-import path from "path";
 import fs from "fs";
-import { Plugin, PluginLoadedEventArgs, PluginManifest, PluginStore } from "./";
-import { PluginIndex } from "plugins/PluginIndex";
+import path from "path";
+import { OrmUtils } from "..";
+import { PluginIndex } from "../../plugins/PluginIndex";
+import { PluginLoadedEventArgs, PluginManifest, PluginStore } from "./";
 import { PluginConfig } from "./PluginConfig";
-import { OrmUtils, PluginConfigEntity } from "..";
 
 const root = process.env.PLUGIN_LOCATION || "dist/plugins";
 
 let pluginsLoaded = false;
 export class PluginLoader {
 	public static async loadPlugins() {
-		if(pluginsLoaded) return;
+		if (pluginsLoaded) return;
 		PluginConfig.init();
 		console.log(`Plugin root directory: ${path.resolve(root)}`);
 		const dirs = fs.readdirSync(root).filter((x) => {
@@ -33,33 +33,31 @@ export class PluginLoader {
 				`Plugin info: ${manifest.name} (${manifest.id}), written by ${manifest.authors}, available at ${manifest.repository}`
 			);
 			const module_ = PluginIndex[manifest.id];
-			
+
 			module_.pluginPath = modPath;
 			module_.pluginManifest = manifest;
 			Object.freeze(module_.pluginPath);
 			Object.freeze(module_.pluginManifest);
-			
-			if(module_.onPluginLoaded) await module_.onPluginLoaded({} as PluginLoadedEventArgs);
+
+			if (module_.onPluginLoaded) await module_.onPluginLoaded({} as PluginLoadedEventArgs);
 			PluginStore.plugins.push(module_);
 		});
 
 		console.log(`Done loading ${PluginStore.plugins.length} plugins!`);
 	}
-	
+
 	public static getPluginConfig(id: string, defaults?: any): any {
 		let cfg = PluginConfig.get()[id];
-		if(defaults) {
-			if(cfg)
-				cfg = OrmUtils.mergeDeep(defaults, cfg);
-			else
-				cfg = defaults;
+		if (defaults) {
+			if (cfg) cfg = OrmUtils.mergeDeep(defaults, cfg);
+			else cfg = defaults;
 			this.setPluginConfig(id, cfg);
 		}
-		if(!cfg) console.log(`[PluginConfig/WARN] Getting plugin settings for '${id}' returned null! (Did you forget to add settings?)`);
+		if (!cfg) console.log(`[PluginConfig/WARN] Getting plugin settings for '${id}' returned null! (Did you forget to add settings?)`);
 		return cfg;
 	}
 	public static async setPluginConfig(id: string, config: Partial<any>): Promise<void> {
-		if(!config) console.log(`[PluginConfig/WARN] ${id} tried to set config=null!`);
+		if (!config) console.log(`[PluginConfig/WARN] ${id} tried to set config=null!`);
 		await PluginConfig.set({ [id]: OrmUtils.mergeDeep(PluginLoader.getPluginConfig(id) || {}, config) });
 	}
 }

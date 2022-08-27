@@ -8,7 +8,10 @@ import { Config, getOrInitialiseDatabase } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import { PluginLoader } from "@fosscord/util";
-import { PluginConfig } from "util/plugin/PluginConfig";
+import express from "express";
+import http from "http";
+import { bold, green, yellow } from "picocolors";
+import { PluginConfig } from "./util/plugin/PluginConfig";
 
 const app = express();
 const server = http.createServer();
@@ -16,11 +19,8 @@ const port = Number(process.env.PORT) || 3001;
 const production = process.env.NODE_ENV == "development" ? false : true;
 server.on("request", app);
 
-// @ts-ignore
 const api = new Api.FosscordServer({ server, port, production, app });
-// @ts-ignore
 const cdn = new CDNServer({ server, port, production, app });
-// @ts-ignore
 const gateway = new Gateway.Server({ server, port, production });
 
 //this is what has been added for the /stop API route
@@ -38,13 +38,13 @@ async function main() {
 	await PluginConfig.init();
 
 	//Sentry
-	if (Config.get().sentry.enabled) {
+	if (cfg.sentry.enabled) {
 		console.log(`[Bundle] ${yellow("You are using Sentry! This may slightly impact performance on large loads!")}`);
 		Sentry.init({
-			dsn: Config.get().sentry.endpoint,
+			dsn: cfg.sentry.endpoint,
 			integrations: [new Sentry.Integrations.Http({ tracing: true }), new Tracing.Integrations.Express({ app })],
-			tracesSampleRate: Config.get().sentry.traceSampleRate,
-			environment: Config.get().sentry.environment
+			tracesSampleRate: cfg.sentry.traceSampleRate,
+			environment: cfg.sentry.environment
 		});
 
 		app.use(Sentry.Handlers.requestHandler());
@@ -54,7 +54,7 @@ async function main() {
 	server.listen(port);
 	await Promise.all([api.start(), cdn.start(), gateway.start()]);
 
-	if (Config.get().sentry.enabled) {
+	if (cfg.sentry.enabled) {
 		app.use(Sentry.Handlers.errorHandler());
 		app.use(function onError(err: any, req: any, res: any, next: any) {
 			res.statusCode = 500;
@@ -63,7 +63,7 @@ async function main() {
 	}
 
 	console.log(`[Server] ${green(`listening on port ${bold(port)}`)}`);
-	await PluginLoader.loadPlugins();
+	PluginLoader.loadPlugins();
 }
 
 main().catch(console.error);

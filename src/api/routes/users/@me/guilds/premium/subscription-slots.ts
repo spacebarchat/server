@@ -1,10 +1,10 @@
-import { route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
+import { route } from "../../../../..";
 
 const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	// TODO:
+	// TODO: implement route
 	res.json([]).status(200);
 });
 

@@ -1,5 +1,5 @@
-import { getIpAdress, getVoiceRegions, route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
+import { getIpAdress, getVoiceRegions, route } from "../..";
 
 const router: Router = Router();
 

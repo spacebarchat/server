@@ -1,5 +1,5 @@
 import { Config } from "@fosscord/util";
-import { distanceBetweenLocations, IPAnalysis } from "../utility/ipAddress";
+import { distanceBetweenLocations, IPAnalysis } from "../../../util/util/ipAddress";
 
 export async function getVoiceRegions(ipAddress: string, vip: boolean) {
 	const regions = Config.get().regions;
@@ -12,7 +12,7 @@ export async function getVoiceRegions(ipAddress: string, vip: boolean) {
 		let min = Number.POSITIVE_INFINITY;
 
 		for (let ar of availableRegions) {
-			//TODO the endpoint location should be saved in the database if not already present to prevent IPAnalysis call
+			//TODO: the endpoint location should be saved in the database if not already present to prevent IPAnalysis call
 			const dist = distanceBetweenLocations(clientIpAnalysis, ar.location || (await IPAnalysis(ar.endpoint)));
 
 			if (dist < min) {

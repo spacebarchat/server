@@ -18,16 +18,11 @@ import {
 	MessageType,
 	MessageUpdateEvent,
 	OrmUtils,
+	PluginEventHandler,
+	PreMessageEventArgs,
 	Role,
 	ROLE_MENTION,
 	User,
-	Application,
-	Webhook,
-	Attachment,
-	Config,
-	MessageCreateSchema,
-	PluginEventHandler,
-	PreMessageEventArgs,
 	USER_MENTION,
 	Webhook
 } from "@fosscord/util";
@@ -212,11 +207,15 @@ export async function postHandleMessage(message: Message) {
 export async function sendMessage(opts: MessageOptions) {
 	const message = await handleMessage({ ...opts, timestamp: new Date() });
 
-	if((await PluginEventHandler.preMessageEvent({
-		message
-	} as PreMessageEventArgs)).filter(x=>x.cancel).length > 0) return;
+	if (
+		(
+			await PluginEventHandler.preMessageEvent({
+				message
+			} as PreMessageEventArgs)
+		).filter((x) => x.cancel).length > 0
+	)
+		return;
 
-	//TODO: check this, removed toJSON call
 	await Promise.all([
 		Message.insert(message),
 		emitEvent({ event: "MESSAGE_CREATE", channel_id: opts.channel_id, data: message } as MessageCreateEvent)

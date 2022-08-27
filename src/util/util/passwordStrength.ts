@@ -1,4 +1,4 @@
-import { Config } from "@fosscord/util";
+import { Config } from ".";
 
 const reNUMBER = /[0-9]/g;
 const reUPPERCASELETTER = /[A-Z]/g;

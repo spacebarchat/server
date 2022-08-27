@@ -13,11 +13,11 @@ jobs:
                 os: [windows, macos, ubuntu]
                 include:
                     - os: windows
-                      deps: ''
+                      deps: ""
                     - os: macos
-                      deps: ''
+                      deps: ""
                     - os: ubuntu
-                      deps: 'sudo apt install -y libpango1.0-dev libgif-dev'
+                      deps: "sudo apt install -y libpango1.0-dev libgif-dev"
         runs-on: ${{ matrix.os }}-latest
         steps:
             - uses: actions/checkout@v2

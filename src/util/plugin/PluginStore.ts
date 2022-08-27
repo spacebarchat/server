@@ -1,9 +1,4 @@
-import path from "path";
-import fs from "fs";
-import { Plugin, PluginLoadedEventArgs, PluginManifest } from "./";
-import { PluginIndex } from "plugins/PluginIndex";
-import { PluginConfig } from "./PluginConfig";
-import { OrmUtils, PluginConfigEntity } from "..";
+import { Plugin } from "./";
 
 const root = process.env.PLUGIN_LOCATION || "dist/plugins";
 

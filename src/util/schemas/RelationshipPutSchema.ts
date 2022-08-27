@@ -1,4 +1,4 @@
-import { RelationshipType } from "@fosscord/util";
+import { RelationshipType } from "..";
 
 export interface RelationshipPutSchema {
 	type?: RelationshipType;

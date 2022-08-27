@@ -2,9 +2,8 @@ import { closeDatabase, Config, getOrInitialiseDatabase, initEvent } from "@foss
 import dotenv from "dotenv";
 import http from "http";
 import ws from "ws";
+import { PluginConfig } from "../util/plugin/PluginConfig";
 import { Connection } from "./events/Connection";
-import http from "http";
-import { PluginConfig } from "util/plugin/PluginConfig";
 dotenv.config();
 
 export class Server {

@@ -1,4 +1,4 @@
-import { Embed } from "@fosscord/util";
+import { Embed } from "..";
 
 export interface MessageCreateSchema {
 	type?: number;

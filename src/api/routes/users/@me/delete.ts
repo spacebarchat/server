@@ -1,5 +1,6 @@
 import { route } from "@fosscord/api";
 import { HTTPError, Member, User } from "@fosscord/util";
+import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 
 let bcrypt: any;
@@ -24,7 +25,11 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		}
 	}
 
-	// TODO: decrement guild member count
+	(await Member.find({ where: { id: req.user_id }, relations: ["guild"] })).forEach((x) => {
+		let g = x.guild;
+		if (g.member_count) g.member_count--;
+		g.save();
+	});
 
 	if (correctpass) {
 		await Promise.all([User.delete({ id: req.user_id }), Member.delete({ id: req.user_id })]);

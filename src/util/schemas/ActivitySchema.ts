@@ -1,4 +1,4 @@
-import { Activity, Status } from "@fosscord/util";
+import { Activity, Status } from "..";
 
 export const ActivitySchema = {
 	afk: Boolean,

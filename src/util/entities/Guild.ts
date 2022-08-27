@@ -18,7 +18,7 @@ import { Webhook } from "./Webhook";
 // TODO: guild_scheduled_events
 // TODO: stage_instances
 // TODO: threads
-// TODO:
+// TODO: implement keywords
 // "keywords": [
 // 		"Genshin Impact",
 // 		"Paimon",
@@ -75,7 +75,7 @@ export class Guild extends BaseClass {
 	explicit_content_filter?: number = Config.get().defaults.guild.explicitContentFilter;
 
 	@Column({ type: "simple-array" })
-	features: string[]; //TODO use enum
+	features: string[]; //TODO: use enum
 	//TODO: https://discord.com/developers/docs/resources/guild#guild-object-guild-features
 
 	@Column({ nullable: true })

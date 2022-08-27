@@ -25,7 +25,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		select: ["relationships"]
 	});
 
-	//TODO DTO
+	//TODO: DTO
 	const related_users = user.relationships.map((r) => {
 		return {
 			id: r.to.id,
@@ -181,7 +181,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 		if (friendRequest.type === RelationshipType.blocked) throw new HTTPError("The user blocked you");
 		if (friendRequest.type === RelationshipType.friends) throw new HTTPError("You are already friends with the user");
 		// accept friend request
-		incoming_relationship = friendRequest as any; //TODO: checkme, any cast
+		incoming_relationship = friendRequest;
 		incoming_relationship.type = RelationshipType.friends;
 	}
 
@@ -189,7 +189,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 		if (relationship.type === RelationshipType.outgoing) throw new HTTPError("You already sent a friend request");
 		if (relationship.type === RelationshipType.blocked) throw new HTTPError("Unblock the user before sending a friend request");
 		if (relationship.type === RelationshipType.friends) throw new HTTPError("You are already friends with the user");
-		outgoing_relationship = relationship as any; //TODO: checkme, any cast
+		outgoing_relationship = relationship;
 		outgoing_relationship.type = RelationshipType.friends;
 	}
 

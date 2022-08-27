@@ -6,7 +6,7 @@ export const VoiceStateUpdateSchema = {
 	self_video: Boolean
 };
 
-//TODO need more testing when community guild and voice stage channel are working
+//TODO: need more testing when community guild and voice stage channel are working
 export interface VoiceStateUpdateSchema {
 	channel_id: string;
 	guild_id?: string;

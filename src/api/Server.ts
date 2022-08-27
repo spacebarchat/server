@@ -4,6 +4,7 @@ import { Server, ServerOptions } from "lambert-server";
 import morgan from "morgan";
 import path from "path";
 import { red } from "picocolors";
+import { PluginConfig } from "../util";
 import { Authentication, CORS } from "./middlewares/";
 import { BodyParser } from "./middlewares/BodyParser";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
@@ -40,7 +41,7 @@ export class FosscordServer extends Server {
 		await initEvent();
 		await initInstance();
 
-		let logRequests = process.env["LOG_REQUESTS"] != undefined;
+		let logRequests = "LOG_REQUESTS" in process.env;
 		if (logRequests) {
 			this.app.use(
 				morgan("combined", {

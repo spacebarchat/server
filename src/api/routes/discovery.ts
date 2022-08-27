@@ -5,8 +5,7 @@ import { route } from "..";
 const router = Router();
 
 router.get("/categories", route({}), async (req: Request, res: Response) => {
-	// TODO:
-	// Get locale instead
+	// TODO: Get locale instead
 
 	const { locale, primary_only } = req.query;
 

@@ -14,7 +14,7 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
 		data: {
 			user: await User.getPublicUser(this.user_id),
 			activities: presence.activities,
-			client_status: {}, // TODO:
+			client_status: {}, // TODO: add client status
 			status: presence.status
 		}
 	} as PresenceUpdateEvent);

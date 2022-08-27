@@ -1,5 +1,5 @@
-import { Config } from "@fosscord/util";
 import { Request } from "express";
+import { Config } from ".";
 // use ipdata package instead of simple fetch because of integrated caching
 import fetch from "node-fetch";
 
@@ -60,7 +60,7 @@ const exampleData = {
 	status: 200
 };
 
-//TODO add function that support both ip and domain names
+//TODO: add function that support both ip and domain names
 export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 	const { ipdataApiKey } = Config.get().security;
 	if (!ipdataApiKey) return { ...exampleData, ip };

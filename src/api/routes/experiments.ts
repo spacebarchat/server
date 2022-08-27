@@ -4,7 +4,7 @@ import { route } from "..";
 const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	// TODO:
+	// TODO: implement route
 	res.send({ fingerprint: "", assignments: [], guild_experiments: [] });
 });
 

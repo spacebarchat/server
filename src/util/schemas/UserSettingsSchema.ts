@@ -1,3 +1,3 @@
-import { UserSettings } from "@fosscord/util";
+import { UserSettings } from "..";
 
 export interface UserSettingsSchema extends Partial<UserSettings> {}

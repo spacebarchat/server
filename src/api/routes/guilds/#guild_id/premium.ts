@@ -3,7 +3,7 @@ import { Request, Response, Router } from "express";
 const router = Router();
 
 router.get("/subscriptions", route({}), async (req: Request, res: Response) => {
-	// TODO:
+	// TODO: implement route
 	res.json([]);
 });
 

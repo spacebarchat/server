@@ -20,12 +20,12 @@ import {
 
 export class ConfigValue {
 	gateway: EndpointConfiguration = {
-		endpointPublic: '${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}',
-		endpointPrivate: `ws://localhost:3001`
+		endpointPrivate: `ws://localhost:3001`,
+		endpointPublic: '${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}'
 	};
 	cdn: EndpointConfiguration = {
-		endpointPublic: "${location.host}",
-		endpointPrivate: `http://localhost:3001`
+		endpointPrivate: `http://localhost:3001`,
+		endpointPublic: "${location.host}"
 	};
 	api: ApiConfiguration = new ApiConfiguration();
 	general: GeneralConfiguration = new GeneralConfiguration();
