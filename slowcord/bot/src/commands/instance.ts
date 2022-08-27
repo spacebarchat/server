@@ -21,6 +21,7 @@ export default {
 		return message.reply({
 			embeds: [{
 				title: "Instance Stats",
+				description: "For more indepth information, check out https://grafana.understars.dev",
 				footer: {
 					text: `Last checked: ${Math.floor((Date.now() - cache.lastChecked) / (1000 * 60))} minutes ago`,
 				},
