@@ -1,5 +1,7 @@
 import { route } from "@fosscord/api";
 import {
+	adjustEmail,
+	Config,
 	emitEvent,
 	FieldErrors,
 	generateToken,
@@ -43,6 +45,13 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		} else {
 			user.data.hash = await bcrypt.hash(body.password, 12);
 		}
+	}
+
+	if (body.email) {
+		body.email = adjustEmail(body.email);
+		if (!body.email && Config.get().register.email.required)
+			throw FieldErrors({ email: { message: req.t("auth:register.EMAIL_INVALID"), code: "EMAIL_INVALID" } });
+		if (!body.password) throw FieldErrors({ password: { message: req.t("auth:register.INVALID_PASSWORD"), code: "INVALID_PASSWORD" } });
 	}
 
 	if (body.new_password) {

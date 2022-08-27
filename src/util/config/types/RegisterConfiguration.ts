@@ -9,6 +9,7 @@ export class RegisterConfiguration {
 	disabled: boolean = false;
 	requireCaptcha: boolean = true;
 	requireInvite: boolean = false;
+	allowGuests: boolean = true;
 	guestsRequireInvite: boolean = true;
 	allowNewRegistration: boolean = true;
 	allowMultipleAccounts: boolean = true;

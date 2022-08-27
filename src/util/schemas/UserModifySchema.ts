@@ -15,4 +15,5 @@ export interface UserModifySchema {
 	password?: string;
 	new_password?: string;
 	code?: string;
+	email?: string;
 }

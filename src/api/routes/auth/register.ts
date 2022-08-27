@@ -1,6 +1,6 @@
+import { getIpAdress, IPAnalysis, isProxy, route, verifyCaptcha } from "@fosscord/api";
+import { adjustEmail, Config, FieldErrors, generateToken, HTTPError, Invite, RegisterSchema, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { Config, generateToken, Invite, FieldErrors, User, adjustEmail, RegisterSchema } from "@fosscord/util";
-import { route, getIpAdress, IPAnalysis, isProxy, verifyCaptcha } from "@fosscord/api";
 
 let bcrypt: any;
 try {
@@ -9,7 +9,6 @@ try {
 	bcrypt = require("bcryptjs");
 	console.log("Warning: using bcryptjs because bcrypt is not installed! Performance will be affected.");
 }
-import { HTTPError } from "@fosscord/util";
 
 const router: Router = Router();
 
@@ -44,6 +43,12 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		});
 	}
 
+	if (!register.allowGuests) {
+		throw FieldErrors({
+			email: { code: "GUESTS_DISABLED", message: req.t("auth:register.GUESTS_DISABLED") }
+		});
+	}
+
 	if (register.requireCaptcha && security.captcha.enabled) {
 		const { sitekey, service } = security.captcha;
 		if (!body.captcha_key) {
@@ -60,7 +65,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 				captcha_key: verify["error-codes"],
 				captcha_sitekey: sitekey,
 				captcha_service: service
-			})
+			});
 		}
 	}
 
@@ -111,7 +116,8 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		});
 	}
 
-	if (register.dateOfBirth.required && !body.date_of_birth) {
+	// If no password is provided, this is a guest account
+	if (register.dateOfBirth.required && !body.date_of_birth && body.password) {
 		throw FieldErrors({
 			date_of_birth: { code: "BASE_TYPE_REQUIRED", message: req.t("common:field.BASE_TYPE_REQUIRED") }
 		});

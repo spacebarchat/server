@@ -1105,6 +1105,9 @@
 			},
 			"code": {
 				"type": "string"
+			},
+			"email": {
+				"type": "string"
 			}
 		},
 		"additionalProperties": false,
