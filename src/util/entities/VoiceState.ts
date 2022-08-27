@@ -3,8 +3,8 @@ import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typ
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
-import { User } from "./User";
 import { Member } from "./Member";
+import { User } from "./User";
 
 //https://gist.github.com/vassjozsef/e482c65df6ee1facaace8b3c9ff66145#file-voice_state-ex
 @Entity("voice_states")

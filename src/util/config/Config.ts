@@ -1,4 +1,22 @@
-import { ApiConfiguration, ClientConfiguration, DefaultsConfiguration, EndpointConfiguration, GeneralConfiguration, GifConfiguration, GuildConfiguration, KafkaConfiguration, LimitsConfiguration, LoginConfiguration, MetricsConfiguration, RabbitMQConfiguration, RegionConfiguration, RegisterConfiguration, SecurityConfiguration, SentryConfiguration, TemplateConfiguration } from ".";
+import {
+	ApiConfiguration,
+	ClientConfiguration,
+	DefaultsConfiguration,
+	EndpointConfiguration,
+	GeneralConfiguration,
+	GifConfiguration,
+	GuildConfiguration,
+	KafkaConfiguration,
+	LimitsConfiguration,
+	LoginConfiguration,
+	MetricsConfiguration,
+	RabbitMQConfiguration,
+	RegionConfiguration,
+	RegisterConfiguration,
+	SecurityConfiguration,
+	SentryConfiguration,
+	TemplateConfiguration
+} from ".";
 
 export class ConfigValue {
 	gateway: EndpointConfiguration = new EndpointConfiguration();

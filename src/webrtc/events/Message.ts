@@ -1,6 +1,6 @@
+import { CloseCodes, Payload, WebSocket } from "@fosscord/gateway";
+import { Tuple } from "lambert-server";
 import OPCodeHandlers from "../opcodes";
-import { instanceOf, Tuple } from "lambert-server";
-import { Payload, CloseCodes, WebSocket } from "@fosscord/gateway";
 import { VoiceOPCodes } from "../util";
 
 const PayloadSchema = {

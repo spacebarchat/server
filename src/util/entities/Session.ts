@@ -1,9 +1,9 @@
 import "reflect-metadata";
-import { User } from "./User";
-import { BaseClass } from "./BaseClass";
 import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
-import { Status } from "../interfaces/Status";
 import { Activity } from "../interfaces/Activity";
+import { Status } from "../interfaces/Status";
+import { BaseClass } from "./BaseClass";
+import { User } from "./User";
 
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 

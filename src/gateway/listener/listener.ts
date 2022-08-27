@@ -1,20 +1,20 @@
+import { WebSocket } from "@fosscord/gateway";
 import {
-	getPermission,
-	Permissions,
-	RabbitMQ,
-	listenEvent,
+	EVENTEnum,
 	EventOpts,
+	getPermission,
+	listenEvent,
 	ListenEventOpts,
 	Member,
-	EVENTEnum,
+	Permissions,
+	RabbitMQ,
+	Recipient,
 	Relationship,
 	RelationshipType
 } from "@fosscord/util";
+import { Channel as AMQChannel } from "amqplib";
 import { GatewayOPCodes } from "../util/Constants";
 import { Send } from "../util/Send";
-import { WebSocket } from "@fosscord/gateway";
-import { Channel as AMQChannel } from "amqplib";
-import { Recipient } from "@fosscord/util";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent

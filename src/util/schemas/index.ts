@@ -41,7 +41,7 @@ export * from "./UserSettingsSchema";
 export * from "./Validator";
 export * from "./VanityUrlSchema";
 export * from "./VoiceIdentifySchema";
-export * from "./VoiceVideoSchema";
 export * from "./VoiceStateUpdateSchema";
+export * from "./VoiceVideoSchema";
 export * from "./WebhookCreateSchema";
 export * from "./WidgetModifySchema";

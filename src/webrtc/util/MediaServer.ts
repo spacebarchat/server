@@ -1,6 +1,6 @@
-import SemanticSDP from "semantic-sdp";
-import MediaServer, { IncomingStream, OutgoingStream, SSRCs, Transport } from "medooze-media-server";
 import { WebSocket } from "@fosscord/gateway";
+import MediaServer, { IncomingStream, OutgoingStream, Transport } from "medooze-media-server";
+import SemanticSDP from "semantic-sdp";
 MediaServer.enableLog(true);
 
 export const PublicIP = process.env.PUBLIC_IP || "127.0.0.1";

@@ -1,12 +1,12 @@
 import "reflect-metadata";
 import { Column, Entity, FindOneOptions, FindOptionsSelectByString, JoinColumn, OneToMany, OneToOne, Relation } from "typeorm";
+import { Session, UserSettings } from ".";
+import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
+import { BitField } from "../util/BitField";
 import { OrmUtils } from "../util/imports/OrmUtils";
 import { BaseClass } from "./BaseClass";
-import { BitField } from "../util/BitField";
-import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
-import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
-import { Session, UserSettings } from ".";
+import { Relationship } from "./Relationship";
 
 export enum PublicUserEnum {
 	username,

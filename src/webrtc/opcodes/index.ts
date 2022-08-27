@@ -1,4 +1,4 @@
-import { WebSocket, Payload, GatewayOPCodes } from "@fosscord/gateway";
+import { Payload, WebSocket } from "@fosscord/gateway";
 import { VoiceOPCodes } from "../util";
 import { onBackendVersion } from "./BackendVersion";
 import { onHeartbeat } from "./Heartbeat";

@@ -1,6 +1,5 @@
+import { checkToken, Config, HTTPError, Rights } from "@fosscord/util";
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "@fosscord/util";
-import { checkToken, Config, Rights } from "@fosscord/util";
 
 export const NO_AUTHORIZATION_ROUTES = [
 	// Authentication routes

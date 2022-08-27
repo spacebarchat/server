@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 

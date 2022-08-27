@@ -1,5 +1,5 @@
-import EventEmitter from "events";
 import { TypedEventEmitter } from "@fosscord/util";
+import EventEmitter from "events";
 
 type PluginEvents = {
 	error: (error: Error | unknown) => void;

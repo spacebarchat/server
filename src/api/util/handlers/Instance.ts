@@ -1,5 +1,4 @@
 import { Config, Guild, Session } from "@fosscord/util";
-import { createQueryBuilder } from "typeorm";
 
 export async function initInstance() {
 	// TODO: clean up database and delete tombstone data
@@ -10,7 +9,7 @@ export async function initInstance() {
 	const { autoJoin } = Config.get().guild;
 
 	if (autoJoin.enabled && !autoJoin.guilds?.length) {
-		let guild = await Guild.findOne({where: {}, order: {id: "ASC"}});
+		let guild = await Guild.findOne({ where: {}, order: { id: "ASC" } });
 		if (guild) {
 			// @ts-ignore
 			await Config.set({ guild: { autoJoin: { guilds: [guild.id] } } });

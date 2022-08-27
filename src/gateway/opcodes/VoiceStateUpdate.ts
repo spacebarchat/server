@@ -1,18 +1,18 @@
 import { Payload, WebSocket } from "@fosscord/gateway";
-import { genVoiceToken } from "../util/SessionUtils";
-import { check } from "./instanceOf";
 import {
 	Config,
 	emitEvent,
 	Guild,
 	Member,
+	OrmUtils,
+	Region,
 	VoiceServerUpdateEvent,
 	VoiceState,
 	VoiceStateUpdateEvent,
 	VoiceStateUpdateSchema
 } from "@fosscord/util";
-import { OrmUtils } from "@fosscord/util";
-import { Region } from "@fosscord/util";
+import { genVoiceToken } from "../util/SessionUtils";
+import { check } from "./instanceOf";
 // TODO: check if a voice server is setup
 // Notice: Bot users respect the voice channel's user limit, if set. When the voice channel is full, you will not receive the Voice State Update or Voice Server Update events in response to your own Voice State Update. Having MANAGE_CHANNELS permission bypasses this limit and allows you to join regardless of the channel being full or not.
 

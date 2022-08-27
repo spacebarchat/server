@@ -1,13 +1,13 @@
-import WS from "ws";
 import { WebSocket } from "@fosscord/gateway";
-import { Send } from "../util/Send";
+import { IncomingMessage } from "http";
+import { URL } from "url";
+import WS from "ws";
+import { createDeflate } from "zlib";
 import { CloseCodes, GatewayOPCodes } from "../util/Constants";
 import { setHeartbeat } from "../util/Heartbeat";
-import { IncomingMessage } from "http";
+import { Send } from "../util/Send";
 import { Close } from "./Close";
 import { Message } from "./Message";
-import { createDeflate } from "zlib";
-import { URL } from "url";
 let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");

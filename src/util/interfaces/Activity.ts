@@ -40,5 +40,5 @@ export enum ActivityType {
 	STREAMING = 1,
 	LISTENING = 2,
 	CUSTOM = 4,
-	COMPETING = 5,
+	COMPETING = 5
 }

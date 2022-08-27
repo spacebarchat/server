@@ -1,8 +1,7 @@
-import { Router, Request, Response } from "express";
-import { Guild, Member, User } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { HTTPError, Member, User } from "@fosscord/util";
 import bcrypt from "bcrypt";
-import { HTTPError } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 

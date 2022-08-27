@@ -1,35 +1,35 @@
-import { WebSocket, Payload } from "@fosscord/gateway";
+import { Payload, WebSocket } from "@fosscord/gateway";
 import {
+	Application,
 	checkToken,
+	Config,
+	emitEvent,
+	EVENTEnum,
+	IdentifySchema,
 	Intents,
 	Member,
-	ReadyEventData,
-	User,
-	Session,
-	EVENTEnum,
-	Config,
+	MemberPrivateProjection,
+	OrmUtils,
+	PresenceUpdateEvent,
+	PrivateSessionProjection,
+	PrivateUserProjection,
 	PublicMember,
 	PublicUser,
-	PrivateUserProjection,
 	ReadState,
-	Application,
-	emitEvent,
+	ReadyEventData,
+	Recipient,
+	Session,
 	SessionsReplace,
-	PrivateSessionProjection,
-	MemberPrivateProjection,
-	PresenceUpdateEvent,
-	UserSettings,
-	IdentifySchema
+	User,
+	UserSettings
 } from "@fosscord/util";
-import { Send } from "../util/Send";
-import { CloseCodes, GatewayOPCodes } from "../util/Constants";
-import { genSessionId } from "../util/SessionUtils";
 import { setupListener } from "../listener/listener";
+import { CloseCodes, GatewayOPCodes } from "../util/Constants";
+import { Send } from "../util/Send";
+import { genSessionId } from "../util/SessionUtils";
+import { check } from "./instanceOf";
 // import experiments from "./experiments.json";
 const experiments: any = [];
-import { check } from "./instanceOf";
-import { Recipient } from "@fosscord/util";
-import { OrmUtils } from "@fosscord/util";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config

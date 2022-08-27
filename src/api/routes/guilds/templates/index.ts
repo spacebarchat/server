@@ -1,6 +1,6 @@
-import { Request, Response, Router } from "express";
-import { Template, Guild, Role, Snowflake, Config, User, Member, DiscordApiErrors, OrmUtils, GuildTemplateCreateSchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Config, DiscordApiErrors, Guild, GuildTemplateCreateSchema, Member, OrmUtils, Role, Snowflake, Template } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import fetch from "node-fetch";
 const router: Router = Router();
 
@@ -9,9 +9,10 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 	if (!enabled) res.json({ code: 403, message: "Template creation & usage is disabled on this instance." }).sendStatus(403);
 
 	const { code } = req.params;
-	
+
 	if (code.startsWith("discord:")) {
-		if (!allowDiscordTemplates)	return res.json({ code: 403, message: "Discord templates cannot be used on this instance." }).sendStatus(403);
+		if (!allowDiscordTemplates)
+			return res.json({ code: 403, message: "Discord templates cannot be used on this instance." }).sendStatus(403);
 		const discordTemplateID = code.split("discord:", 2)[1];
 
 		const discordTemplateData = await fetch(`https://discord.com/api/v9/guilds/templates/${discordTemplateID}`, {
@@ -22,7 +23,7 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 	}
 
 	if (code.startsWith("external:")) {
-		if (!allowRaws)	return res.json({ code: 403, message: "Importing raws is disabled on this instance." }).sendStatus(403);
+		if (!allowRaws) return res.json({ code: 403, message: "Importing raws is disabled on this instance." }).sendStatus(403);
 
 		return res.json(code.split("external:", 2)[1]);
 	}
@@ -57,18 +58,20 @@ router.post("/:code", route({ body: "GuildTemplateCreateSchema" }), async (req: 
 			id: guild_id,
 			owner_id: req.user_id
 		}).save(),
-		(OrmUtils.mergeDeep(new Role(), {
-			id: guild_id,
-			guild_id: guild_id,
-			color: 0,
-			hoist: false,
-			managed: true,
-			mentionable: true,
-			name: "@everyone",
-			permissions: BigInt("2251804225"),
-			position: 0,
-			tags: null
-		}) as Role).save()
+		(
+			OrmUtils.mergeDeep(new Role(), {
+				id: guild_id,
+				guild_id: guild_id,
+				color: 0,
+				hoist: false,
+				managed: true,
+				mentionable: true,
+				name: "@everyone",
+				permissions: BigInt("2251804225"),
+				position: 0,
+				tags: null
+			}) as Role
+		).save()
 	]);
 
 	await Member.addToGuild(req.user_id, guild_id);

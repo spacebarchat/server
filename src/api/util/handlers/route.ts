@@ -2,8 +2,6 @@ import {
 	ajv,
 	DiscordApiErrors,
 	EVENT,
-	Event,
-	EventData,
 	FieldErrors,
 	FosscordApiErrors,
 	getPermission,
@@ -14,8 +12,8 @@ import {
 	RightResolvable,
 	Rights
 } from "@fosscord/util";
-import { NextFunction, Request, Response } from "express";
 import { AnyValidateFunction } from "ajv/dist/core";
+import { NextFunction, Request, Response } from "express";
 
 declare global {
 	namespace Express {

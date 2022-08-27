@@ -1,14 +1,14 @@
 import "reflect-metadata";
-import { PublicUser, User } from "./User";
 import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, Relation, RelationId } from "typeorm";
-import { Config, emitEvent } from "../util";
+import { Ban, Guild, PublicGuildRelations } from ".";
 import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent } from "../interfaces";
-import { HTTPError } from "../util/imports/HTTPError";
-import { Role } from "./Role";
-import { BaseClassWithoutId } from "./BaseClass";
-import { Ban, PublicGuildRelations, Guild } from ".";
+import { Config, emitEvent } from "../util";
 import { DiscordApiErrors } from "../util/Constants";
+import { HTTPError } from "../util/imports/HTTPError";
 import { OrmUtils } from "../util/imports/OrmUtils";
+import { BaseClassWithoutId } from "./BaseClass";
+import { Role } from "./Role";
+import { PublicUser, User } from "./User";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
 	"id",

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, Relation, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, Relation, RelationId } from "typeorm";
 import { Config, handleFile, Snowflake } from "..";
 import { OrmUtils } from "../util";
 import { Ban } from "./Ban";

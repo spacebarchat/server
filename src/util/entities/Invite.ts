@@ -1,11 +1,11 @@
+import { random } from "@fosscord/api";
 import "reflect-metadata";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId, PrimaryColumn, Relation } from "typeorm";
-import { Member } from "./Member";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Relation, RelationId } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
+import { Member } from "./Member";
 import { User } from "./User";
-import { random } from "@fosscord/api";
 
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 

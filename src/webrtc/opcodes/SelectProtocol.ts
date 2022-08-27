@@ -1,7 +1,6 @@
-import { CloseCodes, Payload, Send, WebSocket } from "@fosscord/gateway";
-import { validateSchema, SelectProtocolSchema } from "@fosscord/util";
-import { VoiceOPCodes, endpoint, PublicIP } from "@fosscord/webrtc";
-import MediaServer, { Transport } from "medooze-media-server";
+import { Payload, Send, WebSocket } from "@fosscord/gateway";
+import { SelectProtocolSchema, validateSchema } from "@fosscord/util";
+import { endpoint, PublicIP, VoiceOPCodes } from "@fosscord/webrtc";
 import SemanticSDP from "semantic-sdp";
 
 export async function onSelectProtocol(this: WebSocket, payload: Payload) {

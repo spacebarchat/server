@@ -18,10 +18,7 @@ function copyRecursiveSync(src, dest) {
 	if (isDirectory) {
 		fs.mkdirSync(dest, { recursive: true });
 		fs.readdirSync(src).forEach(function (childItemName) {
-			copyRecursiveSync(
-				path.join(src, childItemName),
-				path.join(dest, childItemName)
-			);
+			copyRecursiveSync(path.join(src, childItemName), path.join(dest, childItemName));
 		});
 	} else {
 		fs.copyFileSync(src, dest);
@@ -46,9 +43,11 @@ function getLines(output) {
 	return output.split("\n").length;
 }
 
-module.exports = { 
+module.exports = {
 	//consts
 	parts,
 	//functions
-	copyRecursiveSync, execIn, getLines
+	copyRecursiveSync,
+	execIn,
+	getLines
 };

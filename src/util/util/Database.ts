@@ -1,13 +1,12 @@
-import path from "path";
-import "reflect-metadata";
-import { DataSource, createConnection, DataSourceOptions, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
-import * as Models from "../entities";
-import { Migration } from "../entities/Migration";
-import { yellow, green, red } from "picocolors";
-import fs from "fs";
-import { exit } from "process";
-import { BaseClass, BaseClassWithoutId } from "../entities";
 import { config } from "dotenv";
+import fs from "fs";
+import path from "path";
+import { green, red, yellow } from "picocolors";
+import { exit } from "process";
+import "reflect-metadata";
+import { DataSource, DataSourceOptions, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import * as Models from "../entities";
+import { BaseClass, BaseClassWithoutId } from "../entities";
 import { namingStrategy } from "./NamingStrategy";
 
 // UUID extension option is only supported with postgres

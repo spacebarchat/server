@@ -1,16 +1,16 @@
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
-import http from "http";
 import * as Api from "@fosscord/api";
-import * as Gateway from "@fosscord/gateway";
-import * as WebRTC from "@fosscord/webrtc";
 import { CDNServer } from "@fosscord/cdn";
-import express from "express";
-import { green, bold, yellow } from "picocolors";
+import * as Gateway from "@fosscord/gateway";
 import { Config, getOrInitialiseDatabase } from "@fosscord/util";
+import * as WebRTC from "@fosscord/webrtc";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
+import express from "express";
+import http from "http";
+import { bold, green, yellow } from "picocolors";
 // import { PluginLoader } from "@fosscord/util";
 
 const app = express();

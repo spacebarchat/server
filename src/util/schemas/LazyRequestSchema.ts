@@ -15,5 +15,5 @@ export const LazyRequest = {
 	$typing: Boolean,
 	$threads: Boolean,
 	$members: [] as any[],
-	$thread_member_lists: [] as any[],
+	$thread_member_lists: [] as any[]
 };

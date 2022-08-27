@@ -1,8 +1,7 @@
-import { Request, Response, Router } from "express";
-import { Guild, Member, PublicMemberProjection } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { HTTPError, Member, PublicMemberProjection } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import { MoreThan } from "typeorm";
-import { HTTPError } from "@fosscord/util";
 
 const router = Router();
 

@@ -1,4 +1,3 @@
-
 export interface PruneSchema {
 	/**
 	 * @min 0

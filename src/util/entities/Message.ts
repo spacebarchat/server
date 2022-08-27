@@ -1,10 +1,4 @@
 import "reflect-metadata";
-import { User } from "./User";
-import { Member } from "./Member";
-import { Role } from "./Role";
-import { Channel } from "./Channel";
-import { InteractionType } from "../interfaces/Interaction";
-import { Application } from "./Application";
 import {
 	Column,
 	CreateDateColumn,
@@ -16,15 +10,19 @@ import {
 	ManyToOne,
 	OneToMany,
 	Relation,
-	RelationId,
-	RemoveOptions,
-	UpdateDateColumn
+	RelationId
 } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
-import { Webhook } from "./Webhook";
-import { Sticker } from "./Sticker";
+import { InteractionType } from "../interfaces/Interaction";
+import { Application } from "./Application";
 import { Attachment } from "./Attachment";
+import { BaseClass } from "./BaseClass";
+import { Channel } from "./Channel";
+import { Guild } from "./Guild";
+import { Member } from "./Member";
+import { Role } from "./Role";
+import { Sticker } from "./Sticker";
+import { User } from "./User";
+import { Webhook } from "./Webhook";
 
 export enum MessageType {
 	DEFAULT = 0,

@@ -1,7 +1,6 @@
-import { Router, Response, Request } from "express";
-import { Channel, ChannelUpdateEvent, getPermission, emitEvent, ChannelModifySchema, ChannelReorderSchema } from "@fosscord/util";
-import { HTTPError } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Channel, ChannelModifySchema, ChannelReorderSchema, ChannelUpdateEvent, emitEvent, HTTPError } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {

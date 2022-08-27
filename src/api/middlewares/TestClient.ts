@@ -1,11 +1,11 @@
-import express, { Request, Response, Application } from "express";
-import fs from "fs";
-import path from "path";
-import fetch, { Response as FetchResponse, Headers } from "node-fetch";
-import ProxyAgent from "proxy-agent";
 import { Config } from "@fosscord/util";
-import { AssetCacheItem } from "../util/entities/AssetCacheItem";
+import express, { Application, Request, Response } from "express";
+import fs from "fs";
+import fetch, { Headers, Response as FetchResponse } from "node-fetch";
+import path from "path";
 import { green } from "picocolors";
+import ProxyAgent from "proxy-agent";
+import { AssetCacheItem } from "../util/entities/AssetCacheItem";
 
 const AssetsPath = path.join(__dirname, "..", "..", "..", "assets");
 

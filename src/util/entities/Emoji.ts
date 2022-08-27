@@ -3,7 +3,6 @@ import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typ
 import { User } from ".";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
-import { Role } from "./Role";
 
 @Entity("emojis")
 export class Emoji extends BaseClass {

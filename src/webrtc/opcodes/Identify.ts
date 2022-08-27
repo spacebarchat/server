@@ -1,6 +1,6 @@
+import { CloseCodes, Payload, Send, WebSocket } from "@fosscord/gateway";
 import { validateSchema, VoiceIdentifySchema, VoiceState } from "@fosscord/util";
-import { CloseCodes, Payload, Send, setHeartbeat, WebSocket } from "@fosscord/gateway";
-import { VoiceOPCodes, channels, endpoint, getClients } from "@fosscord/webrtc";
+import { endpoint, getClients, VoiceOPCodes } from "@fosscord/webrtc";
 import SemanticSDP from "semantic-sdp";
 const defaultSDP = require("../../../assets/sdp.json");
 

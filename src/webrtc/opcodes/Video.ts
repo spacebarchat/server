@@ -1,9 +1,8 @@
 import { Payload, Send, WebSocket } from "@fosscord/gateway";
 import { validateSchema, VoiceVideoSchema } from "@fosscord/util";
-import { VoiceOPCodes, channels, getClients } from "@fosscord/webrtc";
+import { channels, getClients, VoiceOPCodes } from "@fosscord/webrtc";
+import { IncomingStreamTrack, SSRCs } from "medooze-media-server";
 import SemanticSDP from "semantic-sdp";
-import MediaServer, { IncomingStreamTrack, SSRCs } from "medooze-media-server";
-import path from "path";
 
 export async function onVideo(this: WebSocket, payload: Payload) {
 	if (!this.client) return;

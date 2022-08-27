@@ -1,19 +1,19 @@
 import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, Relation, RelationId } from "typeorm";
+import { DmChannelDTO } from "../dtos";
+import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
+import { containsAll, emitEvent, getPermission, InvisibleCharacters, Snowflake, trimSpecial } from "../util";
+import { HTTPError } from "../util/imports/HTTPError";
 import { OrmUtils } from "../util/imports/OrmUtils";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
-import { PublicUserProjection, User } from "./User";
-import { HTTPError } from "../util/imports/HTTPError";
-import { containsAll, emitEvent, getPermission, Snowflake, trimSpecial, InvisibleCharacters } from "../util";
-import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
-import { Recipient } from "./Recipient";
+import { Invite } from "./Invite";
 import { Message } from "./Message";
 import { ReadState } from "./ReadState";
-import { Invite } from "./Invite";
+import { Recipient } from "./Recipient";
+import { PublicUserProjection, User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
-import { DmChannelDTO } from "../dtos";
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a guild

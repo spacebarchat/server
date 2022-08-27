@@ -1,4 +1,4 @@
-import { CloseCodes, Payload, Send, setHeartbeat, WebSocket } from "@fosscord/gateway";
+import { Payload, Send, WebSocket } from "@fosscord/gateway";
 import { VoiceOPCodes } from "../util";
 
 export async function onBackendVersion(this: WebSocket, data: Payload) {

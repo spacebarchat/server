@@ -1,4 +1,3 @@
-
 export interface BanRegistrySchema {
 	id: string;
 	user_id: string;

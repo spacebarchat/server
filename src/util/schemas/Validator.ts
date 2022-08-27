@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
+import fs from "fs";
+import path from "path";
 
 const SchemaPath = path.join(__dirname, "..", "..", "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));

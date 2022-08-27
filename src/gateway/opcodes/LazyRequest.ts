@@ -1,9 +1,8 @@
-import { getPermission, listenEvent, Member, Role, getOrInitialiseDatabase, LazyRequest } from "@fosscord/util";
-import { Send } from "../util/Send";
+import { handlePresenceUpdate, Payload, WebSocket } from "@fosscord/gateway";
+import { getOrInitialiseDatabase, getPermission, LazyRequest, listenEvent, Member, Role } from "@fosscord/util";
 import { GatewayOPCodes } from "../util/Constants";
-import { WebSocket, Payload, handlePresenceUpdate } from "@fosscord/gateway";
+import { Send } from "../util/Send";
 import { check } from "./instanceOf";
-import { getRepository } from "typeorm";
 
 // TODO: only show roles/members that have access to this channel
 // TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online

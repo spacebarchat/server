@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
-import { User } from "./User";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { StickerPack } from "./StickerPack";
+import { User } from "./User";
 
 export enum StickerType {
 	STANDARD = 1,

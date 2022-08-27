@@ -1,5 +1,5 @@
-import path from "path";
 import fs from "fs";
+import path from "path";
 import { Plugin, PluginManifest } from "./";
 
 const root = process.env.PLUGIN_LOCATION || "../plugins";

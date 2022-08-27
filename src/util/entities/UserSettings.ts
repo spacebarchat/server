@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Column, Entity, JoinColumn } from "typeorm";
+import { Column, Entity } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from ".";
 
 @Entity("user_settings")

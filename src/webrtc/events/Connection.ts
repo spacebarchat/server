@@ -1,10 +1,10 @@
-import WS from "ws";
 import { CloseCodes, Send, setHeartbeat, WebSocket } from "@fosscord/gateway";
 import { IncomingMessage } from "http";
+import { URL } from "url";
+import WS from "ws";
+import { VoiceOPCodes } from "../util";
 import { onClose } from "./Close";
 import { onMessage } from "./Message";
-import { URL } from "url";
-import { VoiceOPCodes } from "../util";
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");

@@ -1,7 +1,7 @@
 import { Intents, Permissions } from "@fosscord/util";
+import { Client } from "@fosscord/webrtc";
 import WS from "ws";
 import { Deflate } from "zlib";
-import { Client, Server } from "@fosscord/webrtc";
 
 export interface WebSocket extends WS {
 	version: number;

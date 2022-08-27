@@ -1,11 +1,11 @@
+import { Payload, WebSocket } from "@fosscord/gateway";
+import OPCodeHandlers from "../opcodes";
+import { check } from "../opcodes/instanceOf";
 import { CloseCodes } from "../util/Constants";
-import { WebSocket, Payload } from "@fosscord/gateway";
 let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
-import OPCodeHandlers from "../opcodes";
-import { check } from "../opcodes/instanceOf";
 
 const PayloadSchema = {
 	op: Number,

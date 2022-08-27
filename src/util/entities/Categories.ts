@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { PrimaryColumn, Column, Entity } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
 
 // TODO: categories:

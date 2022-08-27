@@ -1,4 +1,4 @@
-import { WebSocket, Payload } from "@fosscord/gateway";
+import { Payload, WebSocket } from "@fosscord/gateway";
 import { Send } from "../util/Send";
 
 export async function onResume(this: WebSocket, data: Payload) {

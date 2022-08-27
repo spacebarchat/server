@@ -1,5 +1,5 @@
-import { getPermission, Invite, PublicInviteRelation } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Invite, PublicInviteRelation } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();
