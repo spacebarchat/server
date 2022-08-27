@@ -96,7 +96,7 @@ function getDataSourceOptions(): DataSourceOptions {
 		name: "default",
 		migrations: synchronizeInsteadOfMigrations ? [] : [path.join(__dirname, "..", "migrations", type, "*.js")],
 		migrationsRun: !synchronizeInsteadOfMigrations,
-		applicationName: `Fosscord Server`,
+		applicationName: `Fosscord Server`
 	} as DataSourceOptions;
 }
 
