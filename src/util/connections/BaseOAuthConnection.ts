@@ -30,10 +30,15 @@ export abstract class BaseOAuthConnection {
 
 	init(): void {
 		const config = (Config.get().connections as unknown as { [key: string]: OAuthConnectionConfiguration })[this.options.id];
+		if (!config) {
+			console.warn(`No configuration found for connection ${this.options.id}`);
+			return;
+		}
 		this.enabled = config.enabled;
 		if (config.enabled && !(config.clientId || config.clientSecret)) {
+			console.warn(`Connection ${this.options.id} is enabled but has no client ID or client secret. Connection will be disabled.`);
 			this.enabled = false;
-			throw new Error(`Missing clientId or clientSecret for ${this.options.id}`);
+			return;
 		}
 		this.clientId = config.clientId!;
 		this.clientSecret = config.clientSecret!;

@@ -1,3 +1,15 @@
+import {
+	RedditConnection,
+	EpicGamesConnection,
+	YouTubeConnection,
+	TwitchConnection,
+	BattleNetConnection,
+	FacebookConnection,
+	TwitterConnection,
+	SpotifyConnection,
+	XboxConnection,
+	SteamConnection
+} from "../connections";
 import { BaseOAuthConnection } from "../connections/BaseOAuthConnection";
 import { BaseOIDConnection } from "../connections/BaseOIDConnection";
 import { GitHubConnection } from "../connections/GitHubConnection";
@@ -26,17 +38,17 @@ export const Connections: {
 	init: () => void;
 } = {
 	connections: {
-		github: new GitHubConnection()
-		// reddit: new RedditConnection(),
-		// epicgames: new EpicGamesConnection(),
-		// youtube: new YouTubeConnection(),
-		// twitch: new TwitchConnection(),
-		// battlenet: new BattleNetConnection(),
-		// facebook: new FacebookConnection(),
-		// twitter: new TwitterConnection(),
-		// spotify: new SpotifyConnection(),
-		// xbox: new XboxConnection(),
-		// steam: new SteamConnection()
+		battlenet: new BattleNetConnection(),
+		epicgames: new EpicGamesConnection(),
+		facebook: new FacebookConnection(),
+		github: new GitHubConnection(),
+		reddit: new RedditConnection(),
+		spotify: new SpotifyConnection(),
+		steam: new SteamConnection(),
+		twitch: new TwitchConnection(),
+		twitter: new TwitterConnection(),
+		xbox: new XboxConnection(),
+		youtube: new YouTubeConnection()
 	},
 	init: () => {
 		for (const connection of Object.values(Connections.connections)) {

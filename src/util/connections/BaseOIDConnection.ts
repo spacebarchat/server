@@ -36,14 +36,13 @@ export abstract class BaseOIDConnection {
 	}
 
 	init(): void {
-		const config = (Config.get().connections as unknown as { [key: string]: BaseOIDConnection })[this.options.id];
-		this.enabled = config.enabled;
-		this.realm = Config.get().general.frontPage || "http://localhost:3001";
-		this.returnUrl = `${Config.get().cdn.endpointPrivate}/connections/${this.options.id}/callback`;
-
-		this.relyingParty = new RelyingParty(this.returnUrl, this.realm, true, true, []);
-
-		this.initCustom();
+		// TODO: temporarily disabled, needs to be fixed to use state in callback url
+		// const config = (Config.get().connections as unknown as { [key: string]: BaseOIDConnection })[this.options.id];
+		// this.enabled = config.enabled;
+		// this.realm = Config.get().general.frontPage || "http://localhost:3001";
+		// this.returnUrl = `${Config.get().cdn.endpointPrivate || "http://localhost:3001"}/connections/${this.options.id}/callback`;
+		// this.relyingParty = new RelyingParty(this.returnUrl, this.realm, true, true, []);
+		// this.initCustom();
 	}
 
 	isEnabled(): boolean {

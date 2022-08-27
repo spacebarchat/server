@@ -2,20 +2,28 @@ import { Config, ConnectedAccount, DiscordApiErrors, OrmUtils } from "@fosscord/
 import fetch from "node-fetch";
 import { BaseOAuthConnection, OAuthTokenResponse } from "./BaseOAuthConnection";
 
-interface GitHubConnectionUser {
-	login: string;
-	id: number;
+export interface FacebookConnectionUser {
 	name: string;
+	id: string;
 }
 
-export class GitHubConnection extends BaseOAuthConnection {
+export interface FacebookErrorResponse {
+	error: {
+		message: string;
+		type: string;
+		code: number;
+		fbtrace_id: string;
+	};
+}
+
+export class FacebookConnection extends BaseOAuthConnection {
 	constructor() {
 		super({
-			id: "github",
-			authorizeUrl: "https://github.com/login/oauth/authorize",
-			tokenUrl: "https://github.com/login/oauth/access_token",
-			userInfoUrl: "https://api.github.com/user",
-			scopes: ["read:user"]
+			id: "facebook",
+			authorizeUrl: "https://www.facebook.com/v14.0/dialog/oauth",
+			tokenUrl: "https://graph.facebook.com/v14.0/oauth/access_token",
+			userInfoUrl: "https://graph.facebook.com/v14.0/me",
+			scopes: ["public_profile"]
 		});
 	}
 
@@ -29,8 +37,10 @@ export class GitHubConnection extends BaseOAuthConnection {
 			"redirect_uri",
 			`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}/connections/${this.options.id}/callback`
 		);
-		url.searchParams.append("scope", this.options.scopes.join(" "));
 		url.searchParams.append("state", state);
+		url.searchParams.append("response_type", "code");
+		url.searchParams.append("scope", this.options.scopes.join(" "));
+		url.searchParams.append("display", "popup");
 		return url.toString();
 	}
 
@@ -39,6 +49,10 @@ export class GitHubConnection extends BaseOAuthConnection {
 		url.searchParams.append("client_id", this.clientId);
 		url.searchParams.append("client_secret", this.clientSecret);
 		url.searchParams.append("code", code);
+		url.searchParams.append(
+			"redirect_uri",
+			`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}/connections/${this.options.id}/callback`
+		);
 
 		return url.toString();
 	}
@@ -49,30 +63,38 @@ export class GitHubConnection extends BaseOAuthConnection {
 		const url = this.makeTokenUrl(code);
 
 		return fetch(url.toString(), {
-			method: "POST",
+			method: "GET",
 			headers: {
 				Accept: "application/json"
 			}
 		})
 			.then((res) => res.json())
-			.then((res: OAuthTokenResponse) => res.access_token)
+			.then((res: OAuthTokenResponse & FacebookErrorResponse) => {
+				if (res.error) throw new Error(res.error.message);
+				return res.access_token;
+			})
 			.catch((e) => {
 				console.error(`Error exchanging token for ${this.options.id} connection: ${e}`);
 				throw DiscordApiErrors.INVALID_OAUTH_TOKEN;
 			});
 	}
 
-	async getUser(token: string): Promise<GitHubConnectionUser> {
+	async getUser(token: string): Promise<FacebookConnectionUser> {
 		const url = new URL(this.options.userInfoUrl);
 		return fetch(url.toString(), {
 			method: "GET",
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
-		}).then((res) => res.json());
+		})
+			.then((res) => res.json())
+			.then((res: FacebookConnectionUser & FacebookErrorResponse) => {
+				if (res.error) throw new Error(res.error.message);
+				return res;
+			});
 	}
 
-	createConnection(userId: string, friend_sync: boolean, userInfo: GitHubConnectionUser): ConnectedAccount {
+	createConnection(userId: string, friend_sync: boolean, userInfo: FacebookConnectionUser): ConnectedAccount {
 		return OrmUtils.mergeDeep(new ConnectedAccount(), {
 			user_id: userId,
 			external_id: userInfo.id,
