@@ -1,6 +1,6 @@
 import { WebSocket } from "@fosscord/gateway";
 import { instanceOf } from "@fosscord/util";
-import { CLOSECODES } from "../util/Constants";
+import { CloseCodes } from "../util/Constants";
 
 export function check(this: WebSocket, schema: any, data: any) {
 	try {
@@ -12,7 +12,7 @@ export function check(this: WebSocket, schema: any, data: any) {
 	} catch (error) {
 		console.error(error);
 		// invalid payload
-		this.close(CLOSECODES.Decode_error);
+		this.close(CloseCodes.Decode_error);
 		throw error;
 	}
 }

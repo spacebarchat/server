@@ -1,0 +1,26 @@
+{
+	"$schema": "https://json.schemastore.org/swcrc",
+	"jsc": {
+		"paths": {
+			"@fosscord/api*": ["./src/api/index"],
+			"@fosscord/gateway*": ["./src/gateway/index"],
+			"@fosscord/cdn*": ["./src/cdn/index"],
+			"@fosscord/util*": ["./src/util/index"],
+			"@fosscord/webrtc*": ["./src/webrtc/index"]
+		},
+		"target": "es5",
+		"parser": {
+			"syntax": "typescript",
+			"decorators": true,
+			"dynamicImport": true
+		},
+		"transform": {
+			"legacyDecorator": false,
+			"decoratorMetadata": true
+		}
+	},
+	"sourceMaps": true,
+	"module": {
+		"type": "commonjs"
+	}
+}

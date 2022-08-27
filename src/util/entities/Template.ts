@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import "reflect-metadata";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
@@ -23,7 +24,7 @@ export class Template extends BaseClass {
 
 	@JoinColumn({ name: "creator_id" })
 	@ManyToOne(() => User)
-	creator: User;
+	creator: Relation<User>;
 
 	@Column()
 	created_at: Date;
@@ -37,7 +38,7 @@ export class Template extends BaseClass {
 
 	@JoinColumn({ name: "source_guild_id" })
 	@ManyToOne(() => Guild)
-	source_guild: Guild;
+	source_guild: Relation<Guild>;
 
 	@Column({ type: "simple-json" })
 	serialized_source_guild: Guild;

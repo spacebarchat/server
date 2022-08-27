@@ -1,0 +1,7 @@
+{
+	"id": "example-plugin",
+	"name": "Fosscord example plugin",
+	"authors": ["The Arcane Brony"],
+	"repository": "https://github.com/fosscord/fosscord-server",
+	"license": ""
+}

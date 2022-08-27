@@ -16,3 +16,5 @@
 | DB_VERBOSE         | any                              | Log database queries, enabled if defined                                  |
 | DB_MIGRATE         | any                              | Exit fosscord after connecting to and migrating database, used internally |
 | LOG_INVALID_BODY   | any                              | Log request method, path and body if invalid                              |
+| WEBRTC_PORT_RANGE  | min-max                          | Minimum and maximum port for the WebRTC server                            |
+| PUBLIC_IP          | string                           | Public ip of the WebRTC server                                            |

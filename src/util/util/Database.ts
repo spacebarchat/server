@@ -91,6 +91,7 @@ function getDataSourceOptions(): DataSourceOptions {
 		cache: {
 			duration: 1000 * 3 // cache all find queries for 3 seconds
 		},
+		// relationLoadStrategy: "query",
 		bigNumberStrings: false,
 		supportBigNumbers: true,
 		name: "default",

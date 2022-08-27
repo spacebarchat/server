@@ -24,7 +24,7 @@ import {
 	UserSettings
 } from "@fosscord/util";
 import { setupListener } from "../listener/listener";
-import { CLOSECODES, OPCODES } from "../util/Constants";
+import { CloseCodes, GatewayOPCodes } from "../util/Constants";
 import { Send } from "../util/Send";
 import { genSessionId } from "../util/SessionUtils";
 import { check } from "./instanceOf";
@@ -46,7 +46,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		var { decoded } = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
 	} catch (error) {
 		console.error("invalid token", error);
-		return this.close(CLOSECODES.Authentication_failed);
+		return this.close(CloseCodes.Authentication_failed);
 	}
 	this.user_id = decoded.id;
 
@@ -87,15 +87,15 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		Application.findOne({ where: { id: this.user_id } })
 	]);
 
-	if (!user) return this.close(CLOSECODES.Authentication_failed);
+	if (!user) return this.close(CloseCodes.Authentication_failed);
 	if (!user.settings) {
 		//settings may not exist after updating...
 		user.settings = new UserSettings();
 		user.settings.id = user.id;
-		//await (user.settings as UserSettings).save();
+		await user.settings.save();
 	}
 
-	if (!identify.intents) identify.intents = "30064771071";
+	if (!identify.intents) identify.intents = "0x6ffffffff";
 	this.intents = new Intents(identify.intents);
 	if (identify.shard) {
 		this.shard_id = identify.shard[0];
@@ -108,7 +108,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			this.shard_count <= 0
 		) {
 			console.log(identify.shard);
-			return this.close(CLOSECODES.Invalid_shard);
+			return this.close(CloseCodes.Invalid_shard);
 		}
 	}
 	let users: PublicUser[] = [];
@@ -130,7 +130,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		if (user.bot) {
 			setTimeout(() => {
 				Send(this, {
-					op: OPCODES.Dispatch,
+					op: GatewayOPCodes.Dispatch,
 					t: EVENTEnum.GuildCreate,
 					s: this.sequence++,
 					d: guild
@@ -223,7 +223,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const d: ReadyEventData = {
 		v: 8,
-		application: { id: application?.id ?? "", flags: application?.flags ?? 0 }, //TODO: check this code!
+		application: { id: application?.id ?? "", flags: application?.flags ?? "" }, //TODO: check this code!
 		user: privateUser,
 		user_settings: user.settings,
 		// @ts-ignore
@@ -268,7 +268,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	// TODO: send real proper data structure
 	await Send(this, {
-		op: OPCODES.Dispatch,
+		op: GatewayOPCodes.Dispatch,
 		t: EVENTEnum.Ready,
 		s: this.sequence++,
 		d

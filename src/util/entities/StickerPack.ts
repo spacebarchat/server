@@ -17,7 +17,7 @@ export class StickerPack extends BaseClass {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	stickers: Sticker[];
+	stickers: Relation<Sticker[]>;
 
 	// sku_id: string
 
@@ -27,5 +27,5 @@ export class StickerPack extends BaseClass {
 
 	@ManyToOne(() => Sticker, { nullable: true })
 	@JoinColumn()
-	cover_sticker?: Sticker;
+	cover_sticker?: Relation<Sticker>;
 }

@@ -5,6 +5,7 @@ import * as Api from "@fosscord/api";
 import { CDNServer } from "@fosscord/cdn";
 import * as Gateway from "@fosscord/gateway";
 import { Config, getOrInitialiseDatabase } from "@fosscord/util";
+import * as WebRTC from "@fosscord/webrtc";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import express from "express";
@@ -18,12 +19,10 @@ const port = Number(process.env.PORT) || 3001;
 const production = process.env.NODE_ENV == "development" ? false : true;
 server.on("request", app);
 
-// @ts-ignore
 const api = new Api.FosscordServer({ server, port, production, app });
-// @ts-ignore
 const cdn = new CDNServer({ server, port, production, app });
-// @ts-ignore
 const gateway = new Gateway.Server({ server, port, production });
+const webrtc = new WebRTC.Server({ server, port, production });
 
 //this is what has been added for the /stop API route
 process.on("SIGTERM", () => {
@@ -52,7 +51,7 @@ async function main() {
 		app.use(Sentry.Handlers.requestHandler());
 		app.use(Sentry.Handlers.tracingHandler());
 	}
-	await Promise.all([api.start(), cdn.start(), gateway.start()]);
+	await Promise.all([api.start(), cdn.start(), gateway.start(), webrtc.start()]);
 	if (Config.get().sentry.enabled) {
 		app.use(Sentry.Handlers.errorHandler());
 		app.use(function onError(err: any, req: any, res: any, next: any) {

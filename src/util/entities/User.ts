@@ -141,21 +141,21 @@ export class User extends BaseClass {
 	rights: string = Config.get().register.defaultRights; // Rights
 
 	@OneToMany(() => Session, (session: Session) => session.user)
-	sessions: Session[];
+	sessions: Relation<Session[]>;
 
 	@JoinColumn({ name: "relationship_ids" })
 	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	relationships: Relationship[];
+	relationships: Relation<Relationship[]>;
 
 	@JoinColumn({ name: "connected_account_ids" })
 	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user, {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	connected_accounts: ConnectedAccount[];
+	connected_accounts: Relation<ConnectedAccount[]>;
 
 	@Column({ type: "simple-json", select: false })
 	data: {
@@ -264,6 +264,8 @@ export class User extends BaseClass {
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 		const language = req?.language === "en" ? "en-US" : req?.language || "en-US";
+		const settings = new UserSettings();
+		settings.locale = language;
 
 		const user = OrmUtils.mergeDeep(new User(), {
 			//required:
@@ -280,11 +282,14 @@ export class User extends BaseClass {
 
 		//await (user.settings as UserSettings).save();
 		await user.save();
+		await user.settings.save();
 
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
-					await Member.addToGuild(user.id, guild).catch((e) => {});
+					await require("./Member")
+						.Member.addToGuild(user.id, guild)
+						.catch((e: any) => {});
 				}
 			}
 		});

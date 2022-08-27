@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Column, Entity, ObjectIdColumn, PrimaryGeneratedColumn } from "typeorm";
 import { BaseClassWithoutId } from ".";
 

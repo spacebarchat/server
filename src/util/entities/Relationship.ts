@@ -1,4 +1,5 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import "reflect-metadata";
+import { Column, Entity, Index, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -20,7 +21,7 @@ export class Relationship extends BaseClass {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	from: User;
+	from: Relation<User>;
 
 	@Column({})
 	@RelationId((relationship: Relationship) => relationship.to)
@@ -30,7 +31,7 @@ export class Relationship extends BaseClass {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	to: User;
+	to: Relation<User>;
 
 	@Column({ nullable: true })
 	nickname?: string;

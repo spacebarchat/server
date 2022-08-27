@@ -8,5 +8,5 @@ export async function onResume(this: WebSocket, data: Payload) {
 		d: false
 	});
 
-	// return this.close(CLOSECODES.Invalid_session);
+	// return this.close(CloseCodes.Invalid_session);
 }

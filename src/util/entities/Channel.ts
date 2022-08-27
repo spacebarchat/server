@@ -56,7 +56,7 @@ export class Channel extends BaseClass {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	recipients?: Recipient[];
+	recipients?: Relation<Recipient[]>;
 
 	@Column({ nullable: true })
 	last_message_id: string;
@@ -69,7 +69,7 @@ export class Channel extends BaseClass {
 	@ManyToOne(() => Guild, {
 		onDelete: "CASCADE"
 	})
-	guild: Guild;
+	guild: Relation<Guild>;
 
 	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.parent)
@@ -77,7 +77,7 @@ export class Channel extends BaseClass {
 
 	@JoinColumn({ name: "parent_id" })
 	@ManyToOne(() => Channel)
-	parent?: Channel;
+	parent?: Relation<Channel>;
 
 	// for group DMs and owned custom channel types
 	@Column({ nullable: true })
@@ -86,7 +86,7 @@ export class Channel extends BaseClass {
 
 	@JoinColumn({ name: "owner_id" })
 	@ManyToOne(() => User)
-	owner: User;
+	owner: Relation<User>;
 
 	@Column({ nullable: true })
 	last_pin_timestamp?: number;
@@ -113,16 +113,13 @@ export class Channel extends BaseClass {
 	nsfw?: boolean;
 
 	@Column({ nullable: true })
-	rate_limit_per_user?: number;
-
-	@Column({ nullable: true })
 	topic?: string;
 
 	@OneToMany(() => Invite, (invite: Invite) => invite.channel, {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	invites?: Invite[];
+	invites?: Relation<Invite[]>;
 
 	@Column({ nullable: true })
 	retention_policy_id?: string;
@@ -131,25 +128,25 @@ export class Channel extends BaseClass {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	messages?: Message[];
+	messages?: Relation<Message[]>;
 
 	@OneToMany(() => VoiceState, (voice_state: VoiceState) => voice_state.channel, {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	voice_states?: VoiceState[];
+	voice_states?: Relation<VoiceState[]>;
 
 	@OneToMany(() => ReadState, (read_state: ReadState) => read_state.channel, {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	read_states?: ReadState[];
+	read_states?: Relation<ReadState[]>;
 
 	@OneToMany(() => Webhook, (webhook: Webhook) => webhook.channel, {
 		cascade: true,
 		orphanedRowAction: "delete"
 	})
-	webhooks?: Webhook[];
+	webhooks?: Relation<Webhook[]>;
 
 	@Column({ nullable: true })
 	flags?: number = 0;

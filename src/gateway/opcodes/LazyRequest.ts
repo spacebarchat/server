@@ -1,6 +1,6 @@
 import { handlePresenceUpdate, Payload, WebSocket } from "@fosscord/gateway";
 import { getOrInitialiseDatabase, getPermission, LazyRequest, listenEvent, Member, Role } from "@fosscord/util";
-import { OPCODES } from "../util/Constants";
+import { GatewayOPCodes } from "../util/Constants";
 import { Send } from "../util/Send";
 import { check } from "./instanceOf";
 
@@ -129,7 +129,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	});
 
 	return Send(this, {
-		op: OPCODES.Dispatch,
+		op: GatewayOPCodes.Dispatch,
 		s: this.sequence++,
 		t: "GUILD_MEMBER_LIST_UPDATE",
 		d: {

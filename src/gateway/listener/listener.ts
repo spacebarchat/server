@@ -13,7 +13,7 @@ import {
 	RelationshipType
 } from "@fosscord/util";
 import { Channel as AMQChannel } from "amqplib";
-import { OPCODES } from "../util/Constants";
+import { GatewayOPCodes } from "../util/Constants";
 import { Send } from "../util/Send";
 
 // TODO: close connection on Invalidated Token
@@ -27,7 +27,7 @@ export function handlePresenceUpdate(this: WebSocket, { event, acknowledge, data
 	acknowledge?.();
 	if (event === EVENTEnum.PresenceUpdate) {
 		return Send(this, {
-			op: OPCODES.Dispatch,
+			op: GatewayOPCodes.Dispatch,
 			t: event,
 			d: data,
 			s: this.sequence++
@@ -212,7 +212,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 	}
 
 	Send(this, {
-		op: OPCODES.Dispatch,
+		op: GatewayOPCodes.Dispatch,
 		t: event,
 		d: data,
 		s: this.sequence++

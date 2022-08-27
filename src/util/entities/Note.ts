@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
+import "reflect-metadata";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, Unique } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -7,11 +8,11 @@ import { User } from "./User";
 export class Note extends BaseClass {
 	@JoinColumn({ name: "owner_id" })
 	@ManyToOne(() => User, { onDelete: "CASCADE" })
-	owner: User;
+	owner: Relation<User>;
 
 	@JoinColumn({ name: "target_id" })
 	@ManyToOne(() => User, { onDelete: "CASCADE" })
-	target: User;
+	target: Relation<User>;
 
 	@Column()
 	content: string;

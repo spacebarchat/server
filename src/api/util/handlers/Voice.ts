@@ -13,7 +13,7 @@ export async function getVoiceRegions(ipAddress: string, vip: boolean) {
 
 		for (let ar of availableRegions) {
 			//TODO the endpoint location should be saved in the database if not already present to prevent IPAnalysis call
-			const dist = distanceBetweenLocations(clientIpAnalysis, ar.location || (await IPAnalysis(ar.endpoint)));
+			const dist = distanceBetweenLocations(clientIpAnalysis, ar.location || (await IPAnalysis(ar.endpoint!)));
 
 			if (dist < min) {
 				min = dist;

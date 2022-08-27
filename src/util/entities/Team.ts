@@ -12,7 +12,7 @@ export class Team extends BaseClass {
 	@OneToMany(() => TeamMember, (member: TeamMember) => member.team, {
 		orphanedRowAction: "delete"
 	})
-	members: TeamMember[];
+	members: Relation<TeamMember[]>;
 
 	@Column()
 	name: string;
@@ -23,5 +23,5 @@ export class Team extends BaseClass {
 
 	@JoinColumn({ name: "owner_user_id" })
 	@ManyToOne(() => User)
-	owner_user: User;
+	owner_user: Relation<User>;
 }

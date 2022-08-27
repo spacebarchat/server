@@ -1,0 +1,13 @@
+{
+	"plugins": [
+		[
+			"transform-imports",
+			{
+				"my-library": {
+					"transform": "../../path/to/transform.js",
+					"preventFullImport": true
+				}
+			}
+		]
+	]
+}

@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import "reflect-metadata";
+import { Column, Entity, JoinColumn, ManyToOne, Relation, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -14,7 +15,7 @@ export class ConnectedAccount extends BaseClass {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	user: User;
+	user: Relation<User>;
 
 	@Column({ select: false })
 	access_token: string;

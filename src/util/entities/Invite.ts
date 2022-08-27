@@ -39,7 +39,7 @@ export class Invite extends BaseClassWithoutId {
 	@ManyToOne(() => Guild, {
 		onDelete: "CASCADE"
 	})
-	guild: Guild;
+	guild: Relation<Guild>;
 
 	@Column({ nullable: true })
 	@RelationId((invite: Invite) => invite.channel)
@@ -49,7 +49,7 @@ export class Invite extends BaseClassWithoutId {
 	@ManyToOne(() => Channel, {
 		onDelete: "CASCADE"
 	})
-	channel: Channel;
+	channel: Relation<Channel>;
 
 	@Column({ nullable: true })
 	@RelationId((invite: Invite) => invite.inviter)
@@ -69,7 +69,7 @@ export class Invite extends BaseClassWithoutId {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	target_user?: string; // could be used for "User specific invites" https://github.com/fosscord/fosscord/issues/62
+	target_user?: Relation<User>; // could be used for "User specific invites" https://github.com/fosscord/fosscord/issues/62
 
 	@Column({ nullable: true })
 	target_user_type?: number;

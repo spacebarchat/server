@@ -16,7 +16,7 @@ export class Session extends BaseClass {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE"
 	})
-	user: User;
+	user: Relation<User>;
 
 	//TODO check, should be 32 char long hex string
 	@Column({ nullable: false, select: false })

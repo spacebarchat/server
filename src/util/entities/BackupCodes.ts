@@ -6,7 +6,7 @@ import { User } from "./User";
 export class BackupCode extends BaseClass {
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, { onDelete: "CASCADE" })
-	user: User;
+	user: Relation<User>;
 
 	@Column()
 	code: string;

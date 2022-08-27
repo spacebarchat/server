@@ -2,7 +2,7 @@ import { WebSocket } from "@fosscord/gateway";
 import { emitEvent, PresenceUpdateEvent, PrivateSessionProjection, Session, SessionsReplace, User } from "@fosscord/util";
 
 export async function Close(this: WebSocket, code: number, reason: string) {
-	console.log("[WebSocket] closed", code, reason);
+	console.log("[Gateway] closed", code, reason);
 	if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
 	if (this.readyTimeout) clearTimeout(this.readyTimeout);
 	this.deflate?.close();
