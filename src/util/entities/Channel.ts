@@ -181,10 +181,16 @@ export class Channel extends BaseClass {
 				for (let character of InvisibleCharacters)
 					if (channel.name.includes(character)) throw new HTTPError("Channel name cannot include invalid characters", 403);
 
-				if (channel.name.match(/\-\-+/g)) throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403);
+				// Categories and voice skip these checks on discord.com
+				const skipChecksTypes = [ChannelType.GUILD_CATEGORY, ChannelType.GUILD_VOICE];
+				if ((channel.type && !skipChecksTypes.includes(channel.type)) || guild.features.includes("IRC_LIKE_CHANNEL_NAMES")) {
+					if (channel.name.includes(" ")) throw new HTTPError("Channel name cannot include invalid characters", 403);
 
-				if (channel.name.charAt(0) === "-" || channel.name.charAt(channel.name.length - 1) === "-")
-					throw new HTTPError("Channel name cannot start/end with dash.", 403);
+					if (channel.name.match(/\-\-+/g)) throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403);
+
+					if (channel.name.charAt(0) === "-" || channel.name.charAt(channel.name.length - 1) === "-")
+						throw new HTTPError("Channel name cannot start/end with dash.", 403);
+				} else channel.name = channel.name.trim(); //category names are trimmed client side on discord.com
 			}
 
 			if (!guild.features.includes("ALLOW_UNNAMED_CHANNELS")) {
