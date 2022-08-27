@@ -1372,7 +1372,28 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ConnectionAuthCallbackSchema": {
+    "ConnectionCallbackSchema": {
+        "type": "object",
+        "properties": {
+            "friend_sync": {
+                "type": "boolean"
+            },
+            "insecure": {
+                "type": "boolean"
+            },
+            "state": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "friend_sync",
+            "insecure",
+            "state"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "OAuthConnectionCallbackSchema": {
         "type": "object",
         "properties": {
             "code": {
@@ -1386,8 +1407,42 @@
             },
             "state": {
                 "type": "string"
-            },
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "code",
+            "friend_sync",
+            "insecure",
+            "state"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "OIDConnectionCallbackSchema": {
+        "type": "object",
+        "properties": {
             "openid_params": {
+                "$ref": "#/definitions/OIDConnectionCallbackParams"
+            },
+            "friend_sync": {
+                "type": "boolean"
+            },
+            "insecure": {
+                "type": "boolean"
+            },
+            "state": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "friend_sync",
+            "insecure",
+            "openid_params",
+            "state"
+        ],
+        "definitions": {
+            "OIDConnectionCallbackParams": {
                 "type": "object",
                 "properties": {
                     "openid.assoc_handle": {
@@ -1436,11 +1491,85 @@
                 ]
             }
         },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ConnectionAuthCallbackSchema": {
         "additionalProperties": false,
+        "type": "object",
+        "properties": {
+            "code": {
+                "type": "string"
+            },
+            "friend_sync": {
+                "type": "boolean"
+            },
+            "insecure": {
+                "type": "boolean"
+            },
+            "state": {
+                "type": "string"
+            },
+            "openid_params": {
+                "$ref": "#/definitions/OIDConnectionCallbackParams"
+            }
+        },
         "required": [
+            "code",
             "friend_sync",
-            "insecure"
+            "insecure",
+            "openid_params",
+            "state"
         ],
+        "definitions": {
+            "OIDConnectionCallbackParams": {
+                "type": "object",
+                "properties": {
+                    "openid.assoc_handle": {
+                        "type": "string"
+                    },
+                    "openid.claimed_id": {
+                        "type": "string"
+                    },
+                    "openid.identity": {
+                        "type": "string"
+                    },
+                    "openid.mode": {
+                        "type": "string"
+                    },
+                    "openid.ns": {
+                        "type": "string"
+                    },
+                    "openid.op_endpoint": {
+                        "type": "string"
+                    },
+                    "openid.response_nonce": {
+                        "type": "string"
+                    },
+                    "openid.return_to": {
+                        "type": "string"
+                    },
+                    "openid.sig": {
+                        "type": "string"
+                    },
+                    "openid.signed": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "openid.assoc_handle",
+                    "openid.claimed_id",
+                    "openid.identity",
+                    "openid.mode",
+                    "openid.ns",
+                    "openid.op_endpoint",
+                    "openid.response_nonce",
+                    "openid.return_to",
+                    "openid.sig",
+                    "openid.signed"
+                ]
+            }
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     }
 }
