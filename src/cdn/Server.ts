@@ -2,6 +2,7 @@ import { Server, ServerOptions } from "lambert-server";
 import { Config, initDatabase, registerRoutes } from "@fosscord/util";
 import path from "path";
 import avatarsRoute from "./routes/avatars";
+import guildProfilesRoute from "./routes/guild-profiles";
 import iconsRoute from "./routes/role-icons";
 import bodyParser from "body-parser";
 
@@ -73,6 +74,12 @@ export class CDNServer extends Server {
 
 		this.app.use("/channel-icons/", avatarsRoute);
 		this.log("verbose", "[Server] Route /channel-icons registered");
+
+		this.app.use("/guilds/:guild_id/users/:user_id/avatars", guildProfilesRoute);
+		this.log("verbose", "[Server] Route /guilds/avatars registered");
+
+		this.app.use("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
+		this.log("verbose", "[Server] Route /guilds/banners registered");
 
 		return super.start();
 	}

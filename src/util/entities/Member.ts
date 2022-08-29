@@ -114,7 +114,19 @@ export class Member extends BaseClassWithoutId {
 	// do not auto-kick force-joined members just because their joiners left the server
 	}) **/
 	@Column({ nullable: true })
-	joined_by?: string;
+	joined_by: string;
+
+	@Column({ nullable: true })
+	avatar: string;
+
+	@Column({ nullable: true })
+	banner: string;
+
+	@Column()
+	bio: string;
+
+	@Column({ nullable: true })
+	communication_disabled_until: Date;
 
 	// TODO: add this when we have proper read receipts
 	// @Column({ type: "simple-json" })
@@ -313,6 +325,7 @@ export class Member extends BaseClassWithoutId {
 			deaf: false,
 			mute: false,
 			pending: false,
+			bio: "",
 		};
 
 		await Promise.all([

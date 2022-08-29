@@ -6,6 +6,11 @@ import {
 	UserPublic,
 	Member,
 	Guild,
+	UserProfileModifySchema,
+	handleFile,
+	PrivateUserProjection,
+	emitEvent,
+	UserUpdateEvent,
 } from "@fosscord/util";
 import { route } from "@fosscord/api";
 
@@ -84,36 +89,66 @@ router.get(
 			bot: user.bot,
 		};
 
-		const guildMemberDto = guild_member
-			? {
-					avatar: user.avatar, // TODO
-					banner: user.banner, // TODO
-					bio: req.user_bot ? null : user.bio, // TODO
-					communication_disabled_until: null, // TODO
-					deaf: guild_member.deaf,
-					flags: user.flags,
-					is_pending: guild_member.pending,
-					pending: guild_member.pending, // why is this here twice, discord?
-					joined_at: guild_member.joined_at,
-					mute: guild_member.mute,
-					nick: guild_member.nick,
-					premium_since: guild_member.premium_since,
-					roles: guild_member.roles
-						.map((x) => x.id)
-						.filter((id) => id != guild_id),
-					user: userDto,
-			  }
-			: undefined;
+	const guildMemberDto = guild_member
+		? {
+				avatar: guild_member.avatar,
+				banner: guild_member.banner,
+				bio: req.user_bot ? null : guild_member.bio,
+				communication_disabled_until: guild_member.communication_disabled_until,
+				deaf: guild_member.deaf,
+				flags: user.flags,
+				is_pending: guild_member.pending,
+				pending: guild_member.pending, // why is this here twice, discord?
+				joined_at: guild_member.joined_at,
+				mute: guild_member.mute,
+				nick: guild_member.nick,
+				premium_since: guild_member.premium_since,
+				roles: guild_member.roles.map((x) => x.id).filter((id) => id != guild_id),
+				user: userDto
+		  }
+		: undefined;
 
-		res.json({
-			connected_accounts: user.connected_accounts,
-			premium_guild_since: premium_guild_since, // TODO
-			premium_since: user.premium_since, // TODO
-			mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
-			user: userDto,
-			guild_member: guildMemberDto,
-		});
-	},
-);
+	const guildMemberProfile = {
+		accent_color: null,
+		banner: guild_member?.banner || null,
+		bio: guild_member?.bio || "",
+		guild_id
+	};
+	res.json({
+		connected_accounts: user.connected_accounts,
+		premium_guild_since: premium_guild_since, // TODO
+		premium_since: user.premium_since, // TODO
+		mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
+		user: userDto,
+		guild_member: guildMemberDto,
+		guild_member_profile: guildMemberProfile
+	});
+});
+
+router.patch("/", route({ body: "UserProfileModifySchema" }), async (req: Request, res: Response) => {
+	const body = req.body as UserProfileModifySchema;
+
+	if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
+	let user = await User.findOneOrFail({ where: { id: req.user_id }, select: [...PrivateUserProjection, "data"] });
+
+	user.assign(body);
+	await user.save();
+
+	// @ts-ignore
+	delete user.data;
+
+	// TODO: send update member list event in gateway
+	await emitEvent({
+		event: "USER_UPDATE",
+		user_id: req.user_id,
+		data: user
+	} as UserUpdateEvent);
+
+	res.json({
+		accent_color: user.accent_color,
+		bio: user.bio,
+		banner: user.banner
+	});
+});
 
 export default router;
