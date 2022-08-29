@@ -2,6 +2,7 @@ import "dotenv/config";
 import https from "https";
 import Fosscord from "fosscord-gopnik";
 import mysql from "mysql2";
+import fetch from "node-fetch";
 
 const dbConn = mysql.createConnection(process.env.DATABASE as string);
 const executePromise = (sql: string, args: any[]) => new Promise((resolve, reject) => dbConn.execute(sql, args, (err, res) => { if (err) reject(err); else resolve(res); }));
@@ -31,11 +32,11 @@ client.on("ready", () => {
 	console.log(`Ready on gateway as ${client.user!.tag}`);
 });
 
-client.on("error", (error) => {
+client.on("error", (error: any) => {
 	console.log(`Gateway error`, error);
 });
 
-client.on("warn", (msg) => {
+client.on("warn", (msg: any) => {
 	console.log(`Gateway warning:`, msg);
 });
 
@@ -43,12 +44,21 @@ const savePerf = async (time: number, name: string, error?: string | Error) => {
 	if (error && typeof error != "string") error = error.message;
 	try {
 		await executePromise("INSERT INTO performance (value, endpoint, timestamp, error) VALUES (?, ?, ?, ?)", [time ?? 0, name, new Date(), error ?? null]);
-		await executePromise("DELETE FROM performance WHERE DATE(timestamp) < now() - interval ? DAY", [process.env.RETENTION_DAYS]);
+		// await executePromise("DELETE FROM performance WHERE DATE(timestamp) < now() - interval ? DAY", [process.env.RETENTION_DAYS]);
 	}
 	catch (e) {
 		console.error(e);
 	}
 };
+
+const saveSystemUsage = async (load: number, procUptime: number, sysUptime: number, ram: number) => {
+	try {
+		await executePromise("INSERT INTO monitor (time, cpu, procUp, sysUp, ram) VALUES (?, ?, ?, ?, ?)", [new Date(), load, procUptime, sysUptime, ram]);
+	}
+	catch (e) {
+		console.error(e);
+	}
+}
 
 const makeTimedRequest = (path: string, body?: object): Promise<number> => new Promise((resolve, reject) => {
 	const opts = {
@@ -104,6 +114,13 @@ const measureApi = async (name: string, path: string, body?: object) => {
 	await savePerf(time, name, error);
 };
 
+interface monitorzSchema {
+	load: number[];
+	procUptime: number;
+	sysUptime: number;
+	memPercent: number;
+}
+
 const app = async () => {
 	await new Promise((resolve) => dbConn.connect(resolve));
 	console.log("Connected to db");
@@ -116,6 +133,14 @@ const app = async () => {
 		await measureApi("users/@me", `${instance.api}/users/@me`);
 		await measureApi("login", `${instance.app}/login`);
 		// await gatewayMeasure("websocketPing");
+
+		const res = await fetch(`${instance.api}/-/monitorz`, {
+			headers: {
+				Authorization: process.env.INSTANCE_TOKEN as string,
+			}
+		});
+		const json = await res.json() as monitorzSchema;
+		await saveSystemUsage(json.load[2], json.procUptime, json.sysUptime, json.memPercent);
 
 		setTimeout(doMeasurements, parseInt(process.env.MEASURE_INTERVAL as string));
 	};
