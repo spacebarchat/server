@@ -58,7 +58,7 @@ const saveSystemUsage = async (load: number, procUptime: number, sysUptime: numb
 	catch (e) {
 		console.error(e);
 	}
-}
+};
 
 const makeTimedRequest = (path: string, body?: object): Promise<number> => new Promise((resolve, reject) => {
 	const opts = {
@@ -85,7 +85,7 @@ const makeTimedRequest = (path: string, body?: object): Promise<number> => new P
 		res.on("end", () => {
 			end = Date.now();
 			resolve(end - start);
-		})
+		});
 	});
 
 	req.on("finish", () => {
@@ -134,13 +134,17 @@ const app = async () => {
 		await measureApi("login", `${instance.app}/login`);
 		// await gatewayMeasure("websocketPing");
 
-		const res = await fetch(`${instance.api}/-/monitorz`, {
-			headers: {
-				Authorization: process.env.INSTANCE_TOKEN as string,
-			}
-		});
-		const json = await res.json() as monitorzSchema;
-		await saveSystemUsage(json.load[2], json.procUptime, json.sysUptime, json.memPercent);
+		try {
+			const res = await fetch(`${instance.api}/-/monitorz`, {
+				headers: {
+					Authorization: process.env.INSTANCE_TOKEN as string,
+				}
+			});
+			const json = await res.json() as monitorzSchema;
+			await saveSystemUsage(json.load[1], json.procUptime, json.sysUptime, json.memPercent);
+		}
+		catch (e) {
+		}
 
 		setTimeout(doMeasurements, parseInt(process.env.MEASURE_INTERVAL as string));
 	};
