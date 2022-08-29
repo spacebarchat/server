@@ -94,88 +94,6 @@
 		"required": ["messages"],
 		"$schema": "http://json-schema.org/draft-07/schema#"
 	},
-	"ts.server.TypingInstallerResponse": {
-		"type": "object",
-		"properties": {
-			"kind": {
-				"enum": [
-					"action::invalidate",
-					"action::packageInstalled",
-					"action::set",
-					"event::beginInstallTypes",
-					"event::endInstallTypes",
-					"event::initializationFailed",
-					"event::typesRegistry"
-				],
-				"type": "string"
-			}
-		},
-		"additionalProperties": false,
-		"required": ["kind"],
-		"$schema": "http://json-schema.org/draft-07/schema#"
-	},
-	"ts.server.PackageInstalledResponse": {
-		"type": "object",
-		"properties": {
-			"kind": {
-				"type": "string",
-				"enum": ["action::packageInstalled"]
-			},
-			"success": {
-				"type": "boolean"
-			},
-			"message": {
-				"type": "string"
-			},
-			"projectName": {
-				"type": "string"
-			}
-		},
-		"additionalProperties": false,
-		"required": ["kind", "message", "projectName", "success"],
-		"$schema": "http://json-schema.org/draft-07/schema#"
-	},
-	"ts.server.InitializationFailedResponse": {
-		"type": "object",
-		"properties": {
-			"kind": {
-				"type": "string",
-				"enum": ["event::initializationFailed"]
-			},
-			"message": {
-				"type": "string"
-			},
-			"stack": {
-				"type": "string"
-			}
-		},
-		"additionalProperties": false,
-		"required": ["kind", "message"],
-		"$schema": "http://json-schema.org/draft-07/schema#"
-	},
-	"ts.server.ProjectResponse": {
-		"type": "object",
-		"properties": {
-			"projectName": {
-				"type": "string"
-			},
-			"kind": {
-				"enum": [
-					"action::invalidate",
-					"action::packageInstalled",
-					"action::set",
-					"event::beginInstallTypes",
-					"event::endInstallTypes",
-					"event::initializationFailed",
-					"event::typesRegistry"
-				],
-				"type": "string"
-			}
-		},
-		"additionalProperties": false,
-		"required": ["kind", "projectName"],
-		"$schema": "http://json-schema.org/draft-07/schema#"
-	},
 	"ChannelPermissionOverwriteSchema": {
 		"type": "object",
 		"additionalProperties": false,
@@ -696,6 +614,22 @@
 		"required": ["login", "password"],
 		"$schema": "http://json-schema.org/draft-07/schema#"
 	},
+	"MemberChangeProfileSchema": {
+		"type": "object",
+		"properties": {
+			"banner": {
+				"type": ["null", "string"]
+			},
+			"nick": {
+				"type": "string"
+			},
+			"bio": {
+				"type": "string"
+			}
+		},
+		"additionalProperties": false,
+		"$schema": "http://json-schema.org/draft-07/schema#"
+	},
 	"MemberChangeSchema": {
 		"type": "object",
 		"properties": {
@@ -704,6 +638,12 @@
 				"items": {
 					"type": "string"
 				}
+			},
+			"nick": {
+				"type": "string"
+			},
+			"avatar": {
+				"type": ["null", "string"]
 			}
 		},
 		"additionalProperties": false,
@@ -1108,6 +1048,22 @@
 			},
 			"email": {
 				"type": "string"
+			}
+		},
+		"additionalProperties": false,
+		"$schema": "http://json-schema.org/draft-07/schema#"
+	},
+	"UserProfileModifySchema": {
+		"type": "object",
+		"properties": {
+			"bio": {
+				"type": "string"
+			},
+			"accent_color": {
+				"type": ["null", "integer"]
+			},
+			"banner": {
+				"type": ["null", "string"]
 			}
 		},
 		"additionalProperties": false,
