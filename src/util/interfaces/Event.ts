@@ -368,6 +368,16 @@ export interface PresenceUpdateEvent extends Event {
 	data: Presence;
 }
 
+export interface ThreadCreateEvent extends Event {
+	event: "THREAD_CREATE";
+	data: Channel & { newly_created: boolean };
+}
+
+export interface ThreadDeleteEvent extends Event {
+	event: "THREAD_DELETE";
+	data: Pick<Channel, "id" | "guild_id" | "parent_id" | "type">;
+}
+
 export interface TypingStartEvent extends Event {
 	event: "TYPING_START";
 	data: {
@@ -522,6 +532,8 @@ export type EventData =
 	| MessageReactionRemoveAllEvent
 	| MessageReactionRemoveEmojiEvent
 	| PresenceUpdateEvent
+	| ThreadCreateEvent
+	| ThreadDeleteEvent
 	| TypingStartEvent
 	| UserUpdateEvent
 	| VoiceStateUpdateEvent
@@ -572,6 +584,8 @@ export enum EVENTEnum {
 	MessageReactionRemoveAll = "MESSAGE_REACTION_REMOVE_ALL",
 	MessageReactionRemoveEmoji = "MESSAGE_REACTION_REMOVE_EMOJI",
 	PresenceUpdate = "PRESENCE_UPDATE",
+	ThreadCreate = "THREAD_CREATE",
+	ThreadDelete = "THREAD_DELETE",
 	TypingStart = "TYPING_START",
 	UserUpdate = "USER_UPDATE",
 	WebhooksUpdate = "WEBHOOKS_UPDATE",
@@ -622,6 +636,8 @@ export type EVENT =
 	| "MESSAGE_REACTION_REMOVE_ALL"
 	| "MESSAGE_REACTION_REMOVE_EMOJI"
 	| "PRESENCE_UPDATE"
+	| "THREAD_CREATE"
+	| "THREAD_DELETE"
 	| "TYPING_START"
 	| "USER_UPDATE"
 	| "USER_NOTE_UPDATE"

@@ -231,7 +231,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			// @ts-ignore
 			x.guild_hashes = {}; // @ts-ignore
 			x.guild_scheduled_events = []; // @ts-ignore
-			x.threads = [];
+			x.threads = x.channels.filter((x) => x.isThread());
 			return x;
 		}),
 		guild_experiments: [], // TODO
