@@ -292,7 +292,11 @@ export class Channel extends BaseClass {
 				id: channel.id
 			}
 		});
-		if (!opts?.skipExistsCheck && exists) throw DiscordApiErrors.THREAD_ALREADY_CREATED_FOR_THIS_MESSAGE;
+
+		const guild = await Guild.findOneOrFail({ where: { id: channel.guild_id } });
+
+		if (!opts?.skipExistsCheck && !guild.features.includes("ALLOW_EXISTING_THREAD_FOR_MESSAGE") && exists)
+			throw DiscordApiErrors.THREAD_ALREADY_CREATED_FOR_THIS_MESSAGE;
 
 		if (!channel.parent_id) throw new HTTPError("Parent id not set", 400);
 		const parent = await Channel.findOneOrFail({ where: { id: channel.parent_id } });
@@ -300,7 +304,11 @@ export class Channel extends BaseClass {
 		if (!opts?.skipPermissionCheck) {
 			// Always check if user has permission first
 			const permissions = await getPermission(user_id, parent.guild_id);
-			permissions.hasThrow((channel.type === ChannelType.GUILD_PRIVATE_THREAD || channel.type === ChannelType.ENCRYPTED_THREAD) ? "CREATE_PRIVATE_THREADS" : "CREATE_PUBLIC_THREADS");
+			permissions.hasThrow(
+				channel.type === ChannelType.GUILD_PRIVATE_THREAD || channel.type === ChannelType.ENCRYPTED_THREAD
+					? "CREATE_PRIVATE_THREADS"
+					: "CREATE_PUBLIC_THREADS"
+			);
 		}
 
 		channel = {
