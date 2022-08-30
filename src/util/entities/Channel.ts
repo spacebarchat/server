@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "ty
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent, ThreadCreateEvent } from "../interfaces";
 import { ThreadMetadataSchema } from "../schemas/ThreadMetadataSchema";
-import { containsAll, DiscordApiErrors, emitEvent, getPermission, InvisibleCharacters, Snowflake, trimSpecial } from "../util";
+import { Config, containsAll, DiscordApiErrors, emitEvent, getPermission, InvisibleCharacters, Snowflake, trimSpecial } from "../util";
 import { HTTPError } from "../util/imports/HTTPError";
 import { OrmUtils } from "../util/imports/OrmUtils";
 import { BaseClass } from "./BaseClass";
@@ -322,7 +322,10 @@ export class Channel extends BaseClass {
 				archive_timestamp: new Date(),
 				archived: false,
 				auto_archive_duration: 0,
-				invitable: channel.type === ChannelType.GUILD_PRIVATE_THREAD ? false : true,
+				invitable:
+					channel.type === ChannelType.GUILD_NEWS_THREAD || channel.type === ChannelType.GUILD_PUBLIC_THREAD
+						? Config.get().guild.publicThreadsInvitable
+						: false,
 				locked: false,
 				...metadata
 			}
@@ -496,6 +499,14 @@ export class Channel extends BaseClass {
 			this.type === ChannelType.GUILD_PUBLIC_THREAD ||
 			this.type === ChannelType.GUILD_PRIVATE_THREAD
 		);
+	}
+
+	isPrivateThread() {
+		return this.type === ChannelType.ENCRYPTED_THREAD || this.type === ChannelType.GUILD_PRIVATE_THREAD;
+	}
+
+	isPublicThread() {
+		return this.type === ChannelType.GUILD_NEWS_THREAD || this.type === ChannelType.GUILD_PUBLIC_THREAD;
 	}
 
 	// Does the channel support sending messages ( eg categories do not )
