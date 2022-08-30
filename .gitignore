@@ -10,3 +10,25 @@ config.json
 
 .vscode/settings.json
 api/assets/plugins/*.js
+.idea/
+*.code-workspace
+
+
+*.log
+*.log.ansi
+bundle/depclean.*
+*.tmp
+tmp/
+assets/cache/
+*.generated
+initial.json
+.yarn/cache
+build.json
+
+yarn.lock
+
+.yarn/install-state.gz
+
+dbconf.json
+
+migrations.db

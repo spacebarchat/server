@@ -1,6 +1,5 @@
-version: '3.9'
+version: "3.9"
 
 services:
-
-  fosscord:
-    entrypoint: [ "npm", "run", "setup" ]
+    fosscord:
+        entrypoint: ["npm", "run", "setup"]
