@@ -1,30 +1,25 @@
 import path from "path";
 import fs from "fs";
+import { Paths, TestClientPaths } from "@fosscord/util";
 
-console.log('[TestClient] Loading private assets...');
 
-const privateAssetsRoot = path.join(__dirname, "..", "..", "..", "assets", "private");
-const iconsRoot = path.join(privateAssetsRoot, "icons");
-const icons = new Map<string, Buffer>();
+function readAssets(): Map<string, Buffer> {
+    const icons = new Map<string, Buffer>();
+    
+    fs.readdirSync(Paths.IconPath).forEach(file => {
+        const fileName = path.basename(file);
+        //check if dir
+        if(fs.lstatSync(path.join(Paths.IconPath, file)).isDirectory()){
+            return;
+        }
+        if(fs.existsSync(path.join(Paths.CustomIconPath, fileName)))
+            icons.set(fileName,fs.readFileSync(path.join(Paths.CustomIconPath, fileName)) as Buffer);
+        else
+            icons.set(fileName,fs.readFileSync(path.join(Paths.IconPath, fileName)) as Buffer);
+    });
 
-fs.readdirSync(iconsRoot).forEach(file => {
-    const fileName = path.basename(file);
-    //check if dir
-    if(fs.lstatSync(path.join(iconsRoot, file)).isDirectory()){
-        return;
-    }
-    icons.set(fileName,fs.readFileSync(path.join(iconsRoot,file)) as Buffer);
-});
-
-fs.readdirSync(path.join(iconsRoot, "custom")).forEach(file => {
-    const fileName = path.basename(file);
-    if(fs.lstatSync(path.join(iconsRoot,"custom", file)).isDirectory()){
-        return;
-    }
-    icons.set(fileName,fs.readFileSync(path.join(iconsRoot,"custom",file)) as Buffer);
-});
-
-console.log('[TestClient] Patcher ready!');
+    return icons;
+}
 
 export function patchFile(filePath: string, content: string): string {
     console.log(`[TestClient] Patching ${filePath}`);
@@ -32,10 +27,12 @@ export function patchFile(filePath: string, content: string): string {
     
     content = prettier(filePath, content);
     content = autoPatch(filePath, content);
+    content = applyPatches(filePath, content);
 
     console.log(`[TestClient] Patched ${filePath} in ${Date.now() - startTime}ms`);
     return content;
 }
+
 function prettier(filePath: string, content: string): string{
     let prettier = require("prettier");
     let parser;
@@ -91,7 +88,7 @@ function autoPatch(filePath: string, content: string): string{
     content = content.replaceAll(/--brand-experiment-(\d{1,4}): hsl\(235/g, '--brand-experiment-\$1: hsl(var(--brand-hue)')
 
     //logos
-    content = content.replace(/d: "M23\.0212.*/, `d: "${icons.get("homeIcon.path")!.toString()}"`);
+    content = content.replace(/d: "M23\.0212.*/, `d: "${readAssets().get("homeIcon.path")!.toString()}"`);
     content = content.replace('width: n, height: o, viewBox: "0 0 28 20"', 'width: 48, height: 48, viewBox: "0 0 48 48"');
 
     //undo webpacking
@@ -100,8 +97,18 @@ function autoPatch(filePath: string, content: string): string{
     content = content.replace(/!1/g, "false");
     // - real esmodule defs
     content = content.replace(/Object.defineProperty\((.), "__esModule", { value: (.*) }\);/g, '\$1.__esModule = \$2;');
-    
 
     console.log(`[TestClient] Autopatched ${path.basename(filePath)}!`);
+    return content;
+}
+
+function applyPatches(filePath: string, content: string): string{
+    //get files in testclient_patches
+    const patches = fs.readdirSync(TestClientPaths.PatchDir);
+    for(let patch of patches){
+        //apply patch with git patch
+        const patchPath = path.join(TestClientPaths.PatchDir, patch);
+
+    }
     return content;
 }

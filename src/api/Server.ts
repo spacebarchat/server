@@ -1,4 +1,4 @@
-import { Config, getOrInitialiseDatabase, initEvent, registerRoutes } from "@fosscord/util";
+import { Config, getOrInitialiseDatabase, initEvent, Paths, registerRoutes, TestClientPaths } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
 import morgan from "morgan";
@@ -44,7 +44,7 @@ export class FosscordServer extends Server {
 				morgan("combined", {
 					skip: (req, res) => {
 						if(req.path.endsWith(".map")) return true;
-						if(req.path.includes("/assets/") && !fs.existsSync(path.join(__dirname, "..", "..", "..", "assets", req.path.split("/")[0].split('?')[0]))) return true;
+						if(req.path.includes("/assets/") && !fs.existsSync(path.join(Paths.AssetsPath, req.path.split("/")[0].split('?')[0]))) return true;
 						let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
 						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
 						return skip;

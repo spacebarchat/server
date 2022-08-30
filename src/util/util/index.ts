@@ -23,3 +23,4 @@ export * from "./Snowflake";
 export * from "./String";
 export * from "./Token";
 export * from "./TraverseDirectory";
+export * from "./Paths";

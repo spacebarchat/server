@@ -5,6 +5,7 @@ import { green, red, yellow } from "picocolors";
 import { exit } from "process";
 import "reflect-metadata";
 import { DataSource, DataSourceOptions, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Paths } from ".";
 import * as Models from "../entities";
 import { BaseClass, BaseClassWithoutId } from "../entities";
 
@@ -41,7 +42,7 @@ function getDataSourceOptions(): DataSourceOptions {
 	const dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
 	const type = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : ("sqlite" as any);
 	const isSqlite = type.includes("sqlite");
-	const migrationsExist = fs.existsSync(path.join(__dirname, "..", "migrations", type));
+	const migrationsExist = fs.existsSync(path.join(Paths.MigrationsRoot, type));
 	//read env vars
 	const synchronizeInsteadOfMigrations = "DB_UNSAFE" in process.env;
 	const verboseDb = "DB_VERBOSE" in process.env;
@@ -94,7 +95,7 @@ function getDataSourceOptions(): DataSourceOptions {
 		bigNumberStrings: false,
 		supportBigNumbers: true,
 		name: "default",
-		migrations: synchronizeInsteadOfMigrations ? [] : [path.join(__dirname, "..", "migrations", type, "*.js")],
+		migrations: synchronizeInsteadOfMigrations ? [] : [path.join(Paths.MigrationsRoot, type, "*.js")],
 		migrationsRun: !synchronizeInsteadOfMigrations,
 		applicationName: `Fosscord Server`,
 	} as DataSourceOptions;

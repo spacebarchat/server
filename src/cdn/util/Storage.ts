@@ -5,6 +5,7 @@ import { S3 } from "@aws-sdk/client-s3";
 import fs from "fs";
 import { bgCyan, black } from "picocolors";
 import { S3Storage } from "./S3Storage";
+import { Paths } from "@fosscord/util";
 process.cwd();
 
 export interface Storage {
@@ -16,12 +17,7 @@ export interface Storage {
 let storage: Storage;
 
 if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
-	let location = process.env.STORAGE_LOCATION;
-	if (location) {
-		location = path.resolve(location);
-	} else {
-		location = path.join(process.cwd(), "files");
-	}
+	let location = Paths.CDNFilePath;
 	console.log(`[CDN] storage location: ${bgCyan(`${black(location)}`)}`);
 	//fse.ensureDirSync(location);
 	fs.mkdirSync(location, { recursive: true });

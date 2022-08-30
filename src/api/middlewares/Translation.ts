@@ -1,3 +1,4 @@
+import { Paths } from "@fosscord/util";
 import { Router } from "express";
 import fs from "fs";
 import i18next from "i18next";
@@ -6,8 +7,8 @@ import i18nextBackend from "i18next-node-fs-backend";
 import path from "path";
 
 export async function initTranslation(router: Router) {
-	const languages = fs.readdirSync(path.join(__dirname, "..", "..", "..", "assets", "locales"));
-	const namespaces = fs.readdirSync(path.join(__dirname, "..", "..", "..", "assets", "locales", "en"));
+	const languages = fs.readdirSync(path.join(Paths.AssetsPath, "locales"));
+	const namespaces = fs.readdirSync(path.join(Paths.AssetsPath, "locales", "en"));
 	const ns = namespaces.filter((x) => x.endsWith(".json")).map((x) => x.slice(0, x.length - 5));
 
 	await i18next

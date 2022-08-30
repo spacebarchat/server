@@ -1,4 +1,4 @@
-import { Config } from "@fosscord/util";
+import { Config, Paths, TestClientPaths } from "@fosscord/util";
 import express, { Application, Request, Response } from "express";
 import fs from "fs";
 import fetch, { Headers, Response as FetchResponse } from "node-fetch";
@@ -7,15 +7,15 @@ import { green } from "picocolors";
 import ProxyAgent from "proxy-agent";
 import { AssetCacheItem } from "../util/entities/AssetCacheItem";
 import { patchFile } from "..";
+import { createHash } from "crypto";
 
 const prettier = require("prettier");
-const AssetsPath = path.join(__dirname, "..", "..", "..", "assets");
 
 export default function TestClient(app: Application) {
 	const agent = new ProxyAgent();
 
 	//build client page
-	let html = fs.readFileSync(path.join(AssetsPath, "index.html"), { encoding: "utf8" });
+	let html = fs.readFileSync(TestClientPaths.Index, { encoding: "utf8" });
 	html = applyEnv(html);
 	html = applyInlinePlugins(html);
 	html = applyPlugins(html);
@@ -23,19 +23,15 @@ export default function TestClient(app: Application) {
 
 	//load asset cache
 	let newAssetCache: Map<string, AssetCacheItem> = new Map<string, AssetCacheItem>();
-	let assetCacheDir = path.join(AssetsPath, "cache");
-	if (process.env.ASSET_CACHE_DIR) assetCacheDir = process.env.ASSET_CACHE_DIR;
 
-	console.log(`[TestClient] ${green(`Using asset cache path: ${assetCacheDir}`)}`);
-	if (!fs.existsSync(assetCacheDir)) {
-		fs.mkdirSync(assetCacheDir);
+	console.log(`[TestClient] ${green(`Using asset cache path: ${TestClientPaths.CacheDir}`)}`);
+	if (!fs.existsSync(TestClientPaths.CacheDir)) {
+		fs.mkdirSync(TestClientPaths.CacheDir);
 	}
-	if (fs.existsSync(path.join(assetCacheDir, "index.json"))) {
-		let rawdata = fs.readFileSync(path.join(assetCacheDir, "index.json"));
-		newAssetCache = new Map<string, AssetCacheItem>(Object.entries(JSON.parse(rawdata.toString())));
-	}
+	if (fs.existsSync(TestClientPaths.CacheIndex))
+		newAssetCache = new Map<string, AssetCacheItem>(Object.entries(JSON.parse(fs.readFileSync(TestClientPaths.CacheIndex).toString())));
 
-	app.use("/assets", express.static(path.join(AssetsPath)));
+	app.use("/assets", express.static(path.join(Paths.AssetsPath)));
 	app.get("/assets/:file", async (req: Request, res: Response) => {
 		delete req.headers.host;
 		let response: FetchResponse;
@@ -58,6 +54,9 @@ export default function TestClient(app: Application) {
 					...req.headers
 				}
 			});
+			buffer = await response.buffer();
+			let hash = createHash("md5").update(buffer).digest('hex');
+			
 			//set cache info
 			assetCacheItem.Headers = Object.fromEntries(stripHeaders(response.headers));
 			assetCacheItem.Key = req.params.file;
@@ -67,12 +66,12 @@ export default function TestClient(app: Application) {
 			if(response.status != 200) {
 				return res.status(404).send("Not found");
 			}
-			assetCacheItem.FilePath = path.join(assetCacheDir, req.params.file);
-			if(!fs.existsSync(assetCacheDir))
-				fs.mkdirSync(assetCacheDir);
-			fs.writeFileSync(path.join(assetCacheDir, "index.json"), JSON.stringify(Object.fromEntries(newAssetCache), null, 4));
+			assetCacheItem.FilePath = path.join(TestClientPaths.CacheDir, req.params.file);
+			if(!fs.existsSync(TestClientPaths.CacheDir))
+				fs.mkdirSync(TestClientPaths.CacheDir);
+			fs.writeFileSync(TestClientPaths.CacheIndex, JSON.stringify(Object.fromEntries(newAssetCache), null, 4));
 			//download file
-			fs.writeFileSync(assetCacheItem.FilePath, /.*\.(js|css)/.test(req.params.file) ? patchFile(assetCacheItem.FilePath, (await response.buffer()).toString()) : await response.buffer());
+			fs.writeFileSync(assetCacheItem.FilePath, /.*\.(js|css)/.test(req.params.file) ? patchFile(assetCacheItem.FilePath, buffer.toString()) : buffer);
 		}
 
 		assetCacheItem.Headers.forEach((value: string, name: string) => {
@@ -87,7 +86,7 @@ export default function TestClient(app: Application) {
 
 		if (!useTestClient) return res.send("Test client is disabled on this instance. Use a stand-alone client to connect this instance.");
 
-		res.send(fs.readFileSync(path.join(__dirname, "..", "..", "..", "assets", "developers.html"), { encoding: "utf8" }));
+		res.send(fs.readFileSync(TestClientPaths.Developers, { encoding: "utf8" }));
 	});
 	app.get("*", (req: Request, res: Response) => {
 		const { useTestClient } = Config.get().client;
@@ -118,7 +117,7 @@ function applyEnv(html: string): string {
 
 function applyPlugins(html: string): string {
 	// plugins
-	let files = fs.readdirSync(path.join(AssetsPath, "plugins"));
+	let files = fs.readdirSync(TestClientPaths.PluginsDir);
 	let plugins = "";
 	files.forEach((x) => {
 		if (x.endsWith(".js")) plugins += `<script src='/assets/plugins/${x}'></script>\n`;
@@ -128,7 +127,7 @@ function applyPlugins(html: string): string {
 
 function applyInlinePlugins(html: string): string {
 	// inline plugins
-	let files = fs.readdirSync(path.join(AssetsPath, "inline-plugins"));
+	let files = fs.readdirSync(TestClientPaths.InlinePluginsDir);
 	let plugins = "";
 	files.forEach((x) => {
 		if (x.endsWith(".js")) plugins += `<script src='/assets/inline-plugins/${x}'></script>\n\n`;
@@ -138,10 +137,10 @@ function applyInlinePlugins(html: string): string {
 
 function applyPreloadPlugins(html: string): string {
 	//preload plugins
-	let files = fs.readdirSync(path.join(AssetsPath, "preload-plugins"));
+	let files = fs.readdirSync(TestClientPaths.PreloadPluginsDir);
 	let plugins = "";
 	files.forEach((x) => {
-		if (x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(AssetsPath, "preload-plugins", x))}</script>\n`;
+		if (x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(TestClientPaths.PreloadPluginsDir, x))}</script>\n`;
 	});
 	return html.replaceAll("<!-- preload plugin marker -->", plugins);
 }
@@ -155,7 +154,13 @@ function stripHeaders(headers: Headers): Headers {
 		"transfer-encoding",
 		"expect-ct",
 		"access-control-allow-origin",
-		"content-encoding"
+		"content-encoding",
+		"cf-cache-status",
+		"cf-ray",
+		"server",
+		"etag",
+		"nel",
+		"report-to"
 	].forEach((headerName) => {
 		headers.delete(headerName);
 	});

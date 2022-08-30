@@ -1,5 +1,5 @@
 import { route } from "@fosscord/api";
-import { Guild, HTTPError } from "@fosscord/util";
+import { Guild, HTTPError, Paths } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import fs from "fs";
 import path from "path";
@@ -39,7 +39,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	}
 
 	// TODO: Widget style templates need Fosscord branding
-	const source = path.join(__dirname, "..", "..", "..", "..", "..", "assets", "widget", `${style}.png`);
+	const source = path.join(Paths.AssetsPath, "widget", `${style}.png`);
 	if (!fs.existsSync(source)) {
 		throw new HTTPError("Widget template does not exist.", 400);
 	}

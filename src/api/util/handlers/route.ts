@@ -5,6 +5,7 @@ import {
 	FosscordApiErrors,
 	getPermission,
 	getRights,
+	Paths,
 	PermissionResolvable,
 	Permissions,
 	RightResolvable,
@@ -17,8 +18,7 @@ import { NextFunction, Request, Response } from "express";
 import fs from "fs";
 import path from "path";
 
-const SchemaPath = path.join(__dirname, "..", "..", "..", "..", "assets", "schemas.json");
-const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
+const schemas = JSON.parse(fs.readFileSync(Paths.SchemaPath, { encoding: "utf8" }));
 
 export const ajv = new Ajv({
 	allErrors: true,
