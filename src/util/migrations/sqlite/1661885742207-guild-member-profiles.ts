@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class guildMemberProfiles1661785235464 implements MigrationInterface {
-    name = 'guildMemberProfiles1661785235464'
+export class guildMemberProfiles1661885742207 implements MigrationInterface {
+    name = 'guildMemberProfiles1661885742207'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
