@@ -382,13 +382,7 @@
                         "type": "integer"
                     },
                     "auto_archive_duration": {
-                        "enum": [
-                            10080,
-                            1440,
-                            4320,
-                            60
-                        ],
-                        "type": "number"
+                        "type": "integer"
                     },
                     "archived": {
                         "type": "boolean"
@@ -1414,13 +1408,7 @@
                 "type": "integer"
             },
             "auto_archive_duration": {
-                "enum": [
-                    10080,
-                    1440,
-                    4320,
-                    60
-                ],
-                "type": "number"
+                "type": "integer"
             },
             "archived": {
                 "type": "boolean"
