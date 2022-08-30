@@ -1,0 +1,36 @@
+process.on("uncaughtException", console.error);
+process.on("unhandledRejection", console.error);
+
+import cluster from "cluster";
+import { config } from "dotenv";
+import os from "os";
+import { FosscordServer } from "./Server";
+config();
+let cores = 1;
+try {
+	cores = Number(process.env.THREADS) || os.cpus().length;
+} catch {
+	console.log("[API] Failed to get thread count! Using 1...");
+}
+
+if (cluster.isMaster && process.env.NODE_ENV == "production") {
+	console.log(`Primary ${process.pid} is running`);
+
+	// Fork workers.
+	for (let i = 0; i < cores; i++) {
+		cluster.fork();
+	}
+
+	cluster.on("exit", (worker, code, signal) => {
+		console.log(`worker ${worker.process.pid} died, restart worker`);
+		cluster.fork();
+	});
+} else {
+	let port = Number(process.env.PORT) || 3001;
+
+	const server = new FosscordServer({ port });
+	server.start().catch(console.error);
+
+	// @ts-ignore
+	global.server = server;
+}
