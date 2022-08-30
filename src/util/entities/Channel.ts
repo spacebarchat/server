@@ -300,7 +300,7 @@ export class Channel extends BaseClass {
 		if (!opts?.skipPermissionCheck) {
 			// Always check if user has permission first
 			const permissions = await getPermission(user_id, parent.guild_id);
-			permissions.hasThrow(channel.type === ChannelType.GUILD_PUBLIC_THREAD ? "CREATE_PUBLIC_THREADS" : "CREATE_PRIVATE_THREADS");
+			permissions.hasThrow((channel.type === ChannelType.GUILD_PRIVATE_THREAD || channel.type === ChannelType.ENCRYPTED_THREAD) ? "CREATE_PRIVATE_THREADS" : "CREATE_PUBLIC_THREADS");
 		}
 
 		channel = {
