@@ -19,7 +19,7 @@ license - in our case, this is almost always GNU Affero General Public License v
 
 # 2. What do I need?
 
-Fosscord Server is written in TypeScript and requires [a NodeJS version of 14 or above](https://nodejs.org/en/download/).
+Fosscord Server is written in TypeScript and requires [a NodeJS version of 16 or above](https://nodejs.org/en/download/).
 
 The source code for Fosscord Server is hosted on GitHub. You will also need a Git client. Like for example Git CLI or Git Kraken or the one built into VSCode for example. Gitkraken is liked by project members that have access to it via Student Package or pay for it them selfs.
 
