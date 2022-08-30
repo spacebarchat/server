@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { FieldErrors, User } from "@fosscord/util";
+import { FieldErrors, User, BackupCodesChallengeSchema } from "@fosscord/util";
 
 let bcrypt: any;
 try {
@@ -11,10 +11,6 @@ try {
 }
 
 const router = Router();
-
-export interface BackupCodesChallengeSchema {
-	password: string;
-}
 
 router.post("/", route({ body: "BackupCodesChallengeSchema" }), async (req: Request, res: Response) => {
 	const { password } = req.body as BackupCodesChallengeSchema;

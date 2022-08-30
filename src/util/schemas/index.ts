@@ -1,4 +1,5 @@
 export * from "./ActivitySchema";
+export * from "./BackupCodesChallengeSchema";
 export * from "./BanCreateSchema";
 export * from "./BanModeratorSchema";
 export * from "./BanRegistrySchema";
@@ -6,6 +7,7 @@ export * from "./BulkDeleteSchema";
 export * from "./ChannelModifySchema";
 export * from "./ChannelPermissionOverwriteSchema";
 export * from "./ChannelReorderSchema";
+export * from "./CodesVerificationSchema";
 export * from "./DmChannelCreateSchema";
 export * from "./EmojiCreateSchema";
 export * from "./EmojiModifySchema";

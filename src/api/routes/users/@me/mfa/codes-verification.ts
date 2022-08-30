@@ -1,14 +1,8 @@
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { BackupCode, generateMfaBackupCodes, User } from "@fosscord/util";
+import { BackupCode, generateMfaBackupCodes, User, CodesVerificationSchema } from "@fosscord/util";
 
 const router = Router();
-
-export interface CodesVerificationSchema {
-	key: string;
-	nonce: string;
-	regenerate?: boolean;
-}
 
 router.post("/", route({ body: "CodesVerificationSchema" }), async (req: Request, res: Response) => {
 	const { key, nonce, regenerate } = req.body as CodesVerificationSchema;

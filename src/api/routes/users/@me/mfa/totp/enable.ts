@@ -1,7 +1,6 @@
 import { route } from "@fosscord/api";
-import { BackupCode, Config, generateMfaBackupCodes, generateToken, TotpEnableSchema, User } from "@fosscord/util";
+import { BackupCode, Config, generateMfaBackupCodes, generateToken, TotpEnableSchema, User, HTTPError } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
 
 let bcrypt: any;

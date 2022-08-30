@@ -21,6 +21,19 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "BackupCodesChallengeSchema": {
+        "type": "object",
+        "properties": {
+            "password": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "password"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "BanCreateSchema": {
         "type": "object",
         "properties": {
@@ -137,6 +150,26 @@
                 "id"
             ]
         },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CodesVerificationSchema": {
+        "type": "object",
+        "properties": {
+            "key": {
+                "type": "string"
+            },
+            "nonce": {
+                "type": "string"
+            },
+            "regenerate": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "key",
+            "nonce"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "DmChannelCreateSchema": {
