@@ -25,4 +25,7 @@ export interface ChannelModifySchema {
 	default_auto_archive_duration?: number;
 	flags?: number;
 	default_thread_rate_limit_per_user?: number;
+	auto_archive_duration?: 60 | 1440 | 4320 | 10080;
+	archived?: boolean;
+	locked?: boolean;
 }

@@ -29,8 +29,10 @@ export enum MessageType {
 	GUILD_DISCOVERY_DISQUALIFIED = 14,
 	GUILD_DISCOVERY_REQUALIFIED = 15,
 	ENCRYPTED = 16,
+	THREAD_CREATED = 18,
 	REPLY = 19,
 	APPLICATION_COMMAND = 20, // application command or self command invocation
+	THREAD_STARTER_MESSAGE = 21,
 	ROUTE_ADDED = 41, // custom message routing: new route affecting that channel
 	ROUTE_DISABLED = 42, // custom message routing: given route no longer affecting that channel
 	SELF_COMMAND_SCRIPT = 43, // self command scripts

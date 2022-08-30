@@ -57,9 +57,10 @@ export class Permissions extends BitField {
 		REQUEST_TO_SPEAK: BitFlag(32),
 		// TODO: what is permission 33?
 		MANAGE_THREADS: BitFlag(34),
-		USE_PUBLIC_THREADS: BitFlag(35),
-		USE_PRIVATE_THREADS: BitFlag(36),
-		USE_EXTERNAL_STICKERS: BitFlag(37)
+		CREATE_PUBLIC_THREADS: BitFlag(35),
+		CREATE_PRIVATE_THREADS: BitFlag(36),
+		USE_EXTERNAL_STICKERS: BitFlag(37),
+		SEND_MESSAGES_IN_THREADS: BitFlag(38)
 
 		/**
 		 * CUSTOM PERMISSIONS ideas:

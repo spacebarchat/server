@@ -1,7 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { DmChannelDTO } from "../dtos";
-import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
-import { containsAll, emitEvent, getPermission, InvisibleCharacters, Snowflake, trimSpecial } from "../util";
+import { ChannelCreateEvent, ChannelRecipientRemoveEvent, ThreadCreateEvent } from "../interfaces";
+import { ThreadMetadataSchema } from "../schemas/ThreadMetadataSchema";
+import { containsAll, DiscordApiErrors, emitEvent, getPermission, InvisibleCharacters, Snowflake, trimSpecial } from "../util";
 import { HTTPError } from "../util/imports/HTTPError";
 import { OrmUtils } from "../util/imports/OrmUtils";
 import { BaseClass } from "./BaseClass";
@@ -157,6 +158,18 @@ export class Channel extends BaseClass {
 	@Column({ nullable: true })
 	default_thread_rate_limit_per_user?: number = 0;
 
+	@Column({ nullable: true })
+	member_count?: number = 0;
+
+	@Column({ nullable: true })
+	message_count?: number = 0;
+
+	@Column({ nullable: true })
+	total_message_sent?: number = 0;
+
+	@Column({ nullable: true, type: "simple-json" })
+	thread_metadata?: ThreadMetadataSchema;
+
 	// TODO: DM channel
 	static async createChannel(
 		channel: Partial<Channel>,
@@ -202,6 +215,9 @@ export class Channel extends BaseClass {
 			case ChannelType.GUILD_TEXT:
 			case ChannelType.GUILD_NEWS:
 			case ChannelType.GUILD_VOICE:
+			case ChannelType.GUILD_PUBLIC_THREAD:
+			case ChannelType.GUILD_PRIVATE_THREAD:
+			case ChannelType.GUILD_NEWS_THREAD:
 				if (channel.parent_id && !opts?.skipExistsCheck) {
 					const exists = await Channel.findOneOrFail({ where: { id: channel.parent_id } });
 					if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
@@ -226,7 +242,10 @@ export class Channel extends BaseClass {
 			...channel,
 			...(!opts?.keepId && { id: Snowflake.generate() }),
 			created_at: new Date(),
-			position: (channel.type === ChannelType.UNHANDLED ? 0 : channel.position) || 0
+			position: (channel.type === ChannelType.UNHANDLED ? 0 : channel.position) || 0,
+			message_count: 0,
+			member_count: 0,
+			total_message_sent: 0
 		};
 
 		await Promise.all([
@@ -241,6 +260,100 @@ export class Channel extends BaseClass {
 		]);
 
 		return channel;
+	}
+
+	static async createThreadChannel(
+		channel: Partial<Channel>,
+		metadata: Partial<ThreadMetadataSchema>,
+		user_id: string = "0",
+		opts?: {
+			keepId?: boolean;
+			skipExistsCheck?: boolean;
+			skipParentExistsCheck?: boolean;
+			skipPermissionCheck?: boolean;
+			skipEventEmit?: boolean;
+			skipNameChecks?: boolean;
+		}
+	): Promise<Channel> {
+		channel = {
+			// set the default type to private
+			type: ChannelType.GUILD_PRIVATE_THREAD,
+			...channel,
+			...(!opts?.keepId && { id: Snowflake.generate() }),
+			created_at: new Date(),
+			position: 0, // TODO:
+			message_count: 0,
+			member_count: 1,
+			total_message_sent: 0
+		};
+
+		const exists = await Channel.findOne({
+			where: {
+				id: channel.id
+			}
+		});
+		if (!opts?.skipExistsCheck && exists) throw DiscordApiErrors.THREAD_ALREADY_CREATED_FOR_THIS_MESSAGE;
+
+		if (!channel.parent_id) throw new HTTPError("Parent id not set", 400);
+		const parent = await Channel.findOneOrFail({ where: { id: channel.parent_id } });
+
+		if (!opts?.skipPermissionCheck) {
+			// Always check if user has permission first
+			const permissions = await getPermission(user_id, parent.guild_id);
+			permissions.hasThrow(channel.type === ChannelType.GUILD_PUBLIC_THREAD ? "CREATE_PUBLIC_THREADS" : "CREATE_PRIVATE_THREADS");
+		}
+
+		channel = {
+			...channel,
+			permission_overwrites: parent.permission_overwrites,
+			nsfw: parent.nsfw,
+			owner_id: user_id,
+			guild_id: parent.guild_id,
+			thread_metadata: {
+				create_timestamp: new Date(),
+				archive_timestamp: new Date(),
+				archived: false,
+				auto_archive_duration: 0,
+				invitable: channel.type === ChannelType.GUILD_PRIVATE_THREAD ? false : true,
+				locked: false,
+				...metadata
+			}
+		};
+
+		if (!opts?.skipParentExistsCheck) {
+			if (!parent) throw new HTTPError("Parent channel doesn't exist", 400);
+			if (parent.guild_id !== channel.guild_id) throw new HTTPError("The category channel needs to be in the guild");
+		}
+
+		if (!opts?.skipNameChecks) {
+			const guild = await Guild.findOneOrFail({ where: { id: channel.guild_id } });
+			if (!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") && channel.name) {
+				for (let character of InvisibleCharacters)
+					if (channel.name.includes(character)) throw new HTTPError("Channel name cannot include invalid characters", 403);
+
+				channel.name = channel.name.trim(); //category names are trimmed client side on discord.com
+			}
+
+			if (!guild.features.includes("ALLOW_UNNAMED_CHANNELS")) {
+				if (!channel.name) throw new HTTPError("Channel name cannot be empty.", 403);
+			}
+		}
+
+		// TODO: eagerly auto generate position of all guild channels
+
+		const thread = await OrmUtils.mergeDeep(new Channel(), channel).save();
+
+		if (!opts?.skipEventEmit)
+			await emitEvent({
+				event: "THREAD_CREATE",
+				data: {
+					...thread,
+					newly_created: true
+				},
+				guild_id: channel.guild_id
+			} as ThreadCreateEvent);
+
+		return thread;
 	}
 
 	static async createDMChannel(recipients: string[], creator_user_id: string, name?: string) {
@@ -366,6 +479,15 @@ export class Channel extends BaseClass {
 
 	isDm() {
 		return this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM;
+	}
+
+	isThread() {
+		return (
+			this.type === ChannelType.ENCRYPTED_THREAD ||
+			this.type === ChannelType.GUILD_NEWS_THREAD ||
+			this.type === ChannelType.GUILD_PUBLIC_THREAD ||
+			this.type === ChannelType.GUILD_PRIVATE_THREAD
+		);
 	}
 
 	// Does the channel support sending messages ( eg categories do not )
