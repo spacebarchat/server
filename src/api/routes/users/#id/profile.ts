@@ -73,6 +73,12 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 		bot: user.bot
 	};
 
+	const userProfile = {
+		bio: req.user_bot ? null : user.bio,
+		accent_color: user.accent_color,
+		banner: user.banner
+	};
+
 	const guildMemberDto = guild_member
 		? {
 				avatar: guild_member.avatar,
@@ -104,8 +110,9 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 		premium_since: user.premium_since, // TODO
 		mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
 		user: userDto,
-		guild_member: guildMemberDto,
-		guild_member_profile: guildMemberProfile
+		user_profile: userProfile,
+		guild_member: guild_id && guildMemberDto,
+		guild_member_profile: guild_id && guildMemberProfile
 	});
 });
 
