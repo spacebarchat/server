@@ -21,7 +21,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const user = await User.findOneOrFail({
 		where: { id: req.user_id },
 		relations: ["relationships", "relationships.to"],
-		select: ["relationships"]
+		select: ["id", "relationships"]
 	});
 
 	//TODO DTO
