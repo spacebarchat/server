@@ -123,15 +123,11 @@ router.get("/", async (req: Request, res: Response) => {
 			MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
 			LessThan((BigInt(around) + BigInt(halfLimit)).toString())
 		];
-	}
 
-	let messages;
-	try {
-		messages = await Message.find(query);
-	}
-	catch (e) {
 		return res.json([]);
 	}
+
+	const messages = await Message.find(query);
 	const endpoint = Config.get().cdn.endpointPublic;
 
 	return res.json(
