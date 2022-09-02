@@ -51,9 +51,9 @@ const savePerf = async (time: number, name: string, error?: string | Error) => {
 	}
 };
 
-const saveSystemUsage = async (load: number, procUptime: number, sysUptime: number, ram: number) => {
+const saveSystemUsage = async (load: number, procUptime: number, sysUptime: number, ram: number, sessions: number) => {
 	try {
-		await executePromise("INSERT INTO monitor (time, cpu, procUp, sysUp, ram) VALUES (?, ?, ?, ?, ?)", [new Date(), load, procUptime, sysUptime, ram]);
+		await executePromise("INSERT INTO monitor (time, cpu, procUp, sysUp, ram, sessions) VALUES (?, ?, ?, ?, ?, ?)", [new Date(), load, procUptime, sysUptime, ram, sessions]);
 	}
 	catch (e) {
 		console.error(e);
@@ -119,6 +119,7 @@ interface monitorzSchema {
 	procUptime: number;
 	sysUptime: number;
 	memPercent: number;
+	sessions: number;
 }
 
 const app = async () => {
@@ -141,7 +142,7 @@ const app = async () => {
 				}
 			});
 			const json = await res.json() as monitorzSchema;
-			await saveSystemUsage(json.load[1], json.procUptime, json.sysUptime, json.memPercent);
+			await saveSystemUsage(json.load[1], json.procUptime, json.sysUptime, json.memPercent, json.sessions);
 		}
 		catch (e) {
 		}
