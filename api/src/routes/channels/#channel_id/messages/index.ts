@@ -106,8 +106,7 @@ router.get("/", async (req: Request, res: Response) => {
 		order: { timestamp: "DESC" },
 		take: limit,
 		where: { channel_id },
-		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"],
-		loadRelationIds: true,
+		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"]
 	};
 
 	if (after) {
@@ -124,7 +123,7 @@ router.get("/", async (req: Request, res: Response) => {
 			LessThan((BigInt(around) + BigInt(halfLimit)).toString())
 		];
 
-		return res.json([]);
+		return res.json([]);	// TODO: fix around
 	}
 
 	const messages = await Message.find(query);
