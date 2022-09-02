@@ -86,7 +86,7 @@ export interface MessageCreateSchema {
 // get messages
 router.get("/", async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
-	const channel = await Channel.findOneOrFail({ id: channel_id });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	isTextChannel(channel.type);
@@ -106,14 +106,15 @@ router.get("/", async (req: Request, res: Response) => {
 		order: { timestamp: "DESC" },
 		take: limit,
 		where: { channel_id },
-		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"]
+		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"],
+		loadRelationIds: true,
 	};
 
 	if (after) {
 		if (BigInt(after) > BigInt(Snowflake.generate())) return res.status(422);
 		query.where.id = MoreThan(after);
 	}
-	else if (before) { 
+	else if (before) {
 		if (BigInt(before) < BigInt(req.params.channel_id)) return res.status(422);
 		query.where.id = LessThan(before);
 	}
@@ -124,7 +125,13 @@ router.get("/", async (req: Request, res: Response) => {
 		];
 	}
 
-	const messages = await Message.find(query);
+	let messages;
+	try {
+		messages = await Message.find(query);
+	}
+	catch (e) {
+		return res.json([]);
+	}
 	const endpoint = Config.get().cdn.endpointPublic;
 
 	return res.json(
@@ -142,7 +149,7 @@ router.get("/", async (req: Request, res: Response) => {
 				const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
 				y.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
 			});
-			
+
 			/**
 			Some clients ( discord.js ) only check if a property exists within the response,
 			which causes erorrs when, say, the `application` property is `null`.
@@ -194,7 +201,7 @@ router.post(
 
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
 		if (!channel.isWritable()) {
-			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400)
+			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
 		}
 
 		const files = req.files as Express.Multer.File[] ?? [];
@@ -244,14 +251,14 @@ router.post(
 				})
 			);
 		}
-	
+
 		const member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles"] });
 		member.roles = member.roles.filter((role: Role) => {
 			return role.id !== role.guild_id;
 		}).map((role: Role) => {
 			return role.id;
 		}) as any;
-		
+
 		await Promise.all([
 			message.save(),
 			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent),
