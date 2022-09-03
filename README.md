@@ -22,7 +22,6 @@ This repository contains:
 -   [WebSocket Gateway Server](/src/gateway)
 -   [HTTP CDN Server](/src/cdn)
 -   [Utility and Database Models](/src/util)
--   [Admin Dashboard](/dashboard)
 
 ## [Resources](https://docs.fosscord.com/resources/)
 
