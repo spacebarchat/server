@@ -14,7 +14,7 @@ export class guildMemberProfiles1661885830688 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE "members"
-            ADD "bio" character varying NOT NULL
+            ADD "bio" character varying NOT NULL default ''
         `);
         await queryRunner.query(`
             ALTER TABLE "members"
