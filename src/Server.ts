@@ -51,7 +51,7 @@ async function main() {
 		app.use(Sentry.Handlers.requestHandler());
 		app.use(Sentry.Handlers.tracingHandler());
 	}
-	
+
 	server.listen(port);
 	await Promise.all([api.start(), cdn.start(), gateway.start()]);
 

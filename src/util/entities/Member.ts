@@ -1,6 +1,13 @@
 import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
-import { Ban, PublicGuildRelations, Message } from ".";
-import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent, MessageCreateEvent } from "../interfaces";
+import { Ban, Message, PublicGuildRelations } from ".";
+import {
+	GuildCreateEvent,
+	GuildDeleteEvent,
+	GuildMemberAddEvent,
+	GuildMemberRemoveEvent,
+	GuildMemberUpdateEvent,
+	MessageCreateEvent
+} from "../interfaces";
 import { Config, emitEvent } from "../util";
 import { DiscordApiErrors } from "../util/Constants";
 import { HTTPError } from "../util/imports/HTTPError";
@@ -301,7 +308,7 @@ export class Member extends BaseClassWithoutId {
 					presences: [],
 					stage_instances: [],
 					threads: [],
-					embedded_activities: [],
+					embedded_activities: []
 				},
 				user_id
 			} as GuildCreateEvent)
@@ -320,7 +327,7 @@ export class Member extends BaseClassWithoutId {
 				attachments: [],
 				embeds: [],
 				sticker_items: [],
-				edited_timestamp: undefined,
+				edited_timestamp: undefined
 			});
 			await Promise.all([
 				message.save(),

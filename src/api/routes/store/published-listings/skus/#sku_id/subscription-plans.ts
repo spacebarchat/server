@@ -134,159 +134,159 @@ const skus = new Map([
 				price: 0,
 				price_tier: null
 			}
-		],
+		]
 	],
 	[
 		"978380684370378762",
 		[
 			[
 				{
-					"id": "978380692553465866",
-					"name": "Premium Tier 0 Monthly",
-					"interval": 1,
-					"interval_count": 1,
-					"tax_inclusive": true,
-					"sku_id": "978380684370378762",
-					"currency": "usd",
-					"price": 299,
-					"price_tier": null,
-					"prices": {
+					id: "978380692553465866",
+					name: "Premium Tier 0 Monthly",
+					interval: 1,
+					interval_count: 1,
+					tax_inclusive: true,
+					sku_id: "978380684370378762",
+					currency: "usd",
+					price: 299,
+					price_tier: null,
+					prices: {
 						"0": {
-							"country_prices": {
-								"country_code": "US",
-								"prices": [
+							country_prices: {
+								country_code: "US",
+								prices: [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								]
 							},
-							"payment_source_prices": {
+							payment_source_prices: {
 								"775487223059316758": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								],
 								"736345864146255982": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								],
 								"683074999590060249": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								]
 							}
 						},
 						"3": {
-							"country_prices": {
-								"country_code": "US",
-								"prices": [
+							country_prices: {
+								country_code: "US",
+								prices: [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								]
 							},
-							"payment_source_prices": {
+							payment_source_prices: {
 								"775487223059316758": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								],
 								"736345864146255982": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								],
 								"683074999590060249": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								]
 							}
 						},
 						"4": {
-							"country_prices": {
-								"country_code": "US",
-								"prices": [
+							country_prices: {
+								country_code: "US",
+								prices: [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								]
 							},
-							"payment_source_prices": {
+							payment_source_prices: {
 								"775487223059316758": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								],
 								"736345864146255982": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								],
 								"683074999590060249": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								]
 							}
 						},
 						"1": {
-							"country_prices": {
-								"country_code": "US",
-								"prices": [
+							country_prices: {
+								country_code: "US",
+								prices: [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								]
 							},
-							"payment_source_prices": {
+							payment_source_prices: {
 								"775487223059316758": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								],
 								"736345864146255982": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								],
 								"683074999590060249": [
 									{
-										"currency": "usd",
-										"amount": 0,
-										"exponent": 2
+										currency: "usd",
+										amount: 0,
+										exponent: 2
 									}
 								]
 							}

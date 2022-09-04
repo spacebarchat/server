@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class guildMemberProfiles1661885742207 implements MigrationInterface {
-    name = 'guildMemberProfiles1661885742207'
+	name = "guildMemberProfiles1661885742207";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             DROP INDEX "IDX_bb2bf9386ac443afbbbf9f12d3"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_members" (
                 "index" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                 "id" varchar NOT NULL,
@@ -29,7 +29,7 @@ export class guildMemberProfiles1661885742207 implements MigrationInterface {
                 CONSTRAINT "FK_16aceddd5b89825b8ed6029ad1c" FOREIGN KEY ("guild_id") REFERENCES "guilds" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_members"(
                     "index",
                     "id",
@@ -58,27 +58,27 @@ export class guildMemberProfiles1661885742207 implements MigrationInterface {
                 "joined_by"
             FROM "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_members"
                 RENAME TO "members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_bb2bf9386ac443afbbbf9f12d3" ON "members" ("id", "guild_id")
         `);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             DROP INDEX "IDX_bb2bf9386ac443afbbbf9f12d3"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "members"
                 RENAME TO "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "members" (
                 "index" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                 "id" varchar NOT NULL,
@@ -96,7 +96,7 @@ export class guildMemberProfiles1661885742207 implements MigrationInterface {
                 CONSTRAINT "FK_16aceddd5b89825b8ed6029ad1c" FOREIGN KEY ("guild_id") REFERENCES "guilds" ("id") ON DELETE CASCADE ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "members"(
                     "index",
                     "id",
@@ -125,12 +125,11 @@ export class guildMemberProfiles1661885742207 implements MigrationInterface {
                 "joined_by"
             FROM "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_members"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_bb2bf9386ac443afbbbf9f12d3" ON "members" ("id", "guild_id")
         `);
-    }
-
+	}
 }

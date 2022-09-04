@@ -1,6 +1,6 @@
-import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { BackupCode, generateMfaBackupCodes, User, CodesVerificationSchema } from "@fosscord/util";
+import { BackupCode, CodesVerificationSchema, generateMfaBackupCodes, User } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -14,27 +14,23 @@ router.post("/", route({ body: "CodesVerificationSchema" }), async (req: Request
 
 	var codes: BackupCode[];
 	if (regenerate) {
-		await BackupCode.update(
-			{ user: { id: req.user_id } },
-			{ expired: true }
-		);
+		await BackupCode.update({ user: { id: req.user_id } }, { expired: true });
 
 		codes = generateMfaBackupCodes(req.user_id);
-		await Promise.all(codes.map(x => x.save()));
-	}
-	else {
+		await Promise.all(codes.map((x) => x.save()));
+	} else {
 		codes = await BackupCode.find({
 			where: {
 				user: {
-					id: req.user_id,
+					id: req.user_id
 				},
-				expired: false,
+				expired: false
 			}
 		});
 	}
 
 	return res.json({
-		backup_codes: codes.map(x => ({ ...x, expired: undefined })),
+		backup_codes: codes.map((x) => ({ ...x, expired: undefined }))
 	});
 });
 

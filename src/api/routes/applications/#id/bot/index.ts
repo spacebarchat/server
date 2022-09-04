@@ -1,5 +1,5 @@
 import { route } from "@fosscord/api";
-import { Application, Config, FieldErrors, generateToken, handleFile, OrmUtils, trimSpecial, User, HTTPError } from "@fosscord/util";
+import { Application, Config, FieldErrors, generateToken, handleFile, HTTPError, OrmUtils, trimSpecial, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { verifyToken } from "node-2fa";
 

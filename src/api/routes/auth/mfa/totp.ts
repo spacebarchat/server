@@ -1,5 +1,5 @@
 import { route } from "@fosscord/api";
-import { BackupCode, generateToken, TotpSchema, User, HTTPError } from "@fosscord/util";
+import { BackupCode, generateToken, HTTPError, TotpSchema, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { verifyToken } from "node-2fa";
 const router = Router();
