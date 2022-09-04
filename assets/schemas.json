@@ -742,6 +742,25 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "MemberChangeProfileSchema": {
+        "type": "object",
+        "properties": {
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "nick": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "MemberChangeSchema": {
         "type": "object",
         "properties": {
@@ -750,6 +769,15 @@
                 "items": {
                     "type": "string"
                 }
+            },
+            "nick": {
+                "type": "string"
+            },
+            "avatar": {
+                "type": [
+                    "null",
+                    "string"
+                ]
             }
         },
         "additionalProperties": false,
@@ -1201,6 +1229,28 @@
             },
             "email": {
                 "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UserProfileModifySchema": {
+        "type": "object",
+        "properties": {
+            "bio": {
+                "type": "string"
+            },
+            "accent_color": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
             }
         },
         "additionalProperties": false,

@@ -6,6 +6,7 @@ import {
 	getRights,
 	Guild,
 	GuildMemberUpdateEvent,
+	handleFile,
 	Member,
 	MemberChangeSchema,
 	OrmUtils,
@@ -30,7 +31,7 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 	if (member_id === "@me") member_id = req.user_id;
 	const body = req.body as MemberChangeSchema;
 
-	const member = await Member.findOneOrFail({ where: { id: member_id, guild_id }, relations: ["roles", "user"] });
+	let member = await Member.findOneOrFail({ where: { id: member_id, guild_id }, relations: ["roles", "user"] });
 	const permission = await getPermission(req.user_id, guild_id);
 	const everyone = await Role.findOneOrFail({ where: { guild_id: guild_id, name: "@everyone", position: 0 } });
 
@@ -40,6 +41,10 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 		if (body.roles.indexOf(everyone.id) === -1) body.roles.push(everyone.id);
 		member.roles = body.roles.map((x) => OrmUtils.mergeDeep(new Role(), { id: x })); // foreign key constraint will fail if role doesn't exist
 	}
+
+	if (body.avatar) body.avatar = await handleFile(`/guilds/${guild_id}/users/${member_id}/avatars`, body.avatar as string);
+
+	member = await OrmUtils.mergeDeep(member, body);
 
 	await member.save();
 
