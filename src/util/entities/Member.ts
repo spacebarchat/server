@@ -1,6 +1,6 @@
 import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
-import { Ban, PublicGuildRelations } from ".";
-import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent } from "../interfaces";
+import { Ban, PublicGuildRelations, Message } from ".";
+import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent, MessageCreateEvent } from "../interfaces";
 import { Config, emitEvent } from "../util";
 import { DiscordApiErrors } from "../util/Constants";
 import { HTTPError } from "../util/imports/HTTPError";
@@ -306,6 +306,27 @@ export class Member extends BaseClassWithoutId {
 				user_id
 			} as GuildCreateEvent)
 		]);
+
+		if (guild.system_channel_id) {
+			// send welcome message
+			const message = OrmUtils.mergeDeep(new Message(), {
+				type: 7,
+				guild_id: guild.id,
+				channel_id: guild.system_channel_id,
+				author: user,
+				timestamp: new Date(),
+
+				reactions: [],
+				attachments: [],
+				embeds: [],
+				sticker_items: [],
+				edited_timestamp: undefined,
+			});
+			await Promise.all([
+				message.save(),
+				emitEvent({ event: "MESSAGE_CREATE", channel_id: message.channel_id, data: message } as MessageCreateEvent)
+			]);
+		}
 	}
 }
 
