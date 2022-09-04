@@ -35,6 +35,7 @@ process.on("SIGTERM", () => {
 //this is what has been added for the /stop API route
 
 async function main() {
+	server.listen(port);
 	await getOrInitialiseDatabase();
 	await Config.init();
 
@@ -51,10 +52,7 @@ async function main() {
 		app.use(Sentry.Handlers.requestHandler());
 		app.use(Sentry.Handlers.tracingHandler());
 	}
-
-	server.listen(port);
 	await Promise.all([api.start(), cdn.start(), gateway.start()]);
-
 	if (Config.get().sentry.enabled) {
 		app.use(Sentry.Handlers.errorHandler());
 		app.use(function onError(err: any, req: any, res: any, next: any) {
@@ -62,7 +60,6 @@ async function main() {
 			res.end(res.sentry + "\n");
 		});
 	}
-
 	console.log(`[Server] ${green(`listening on port ${bold(port)}`)}`);
 	// PluginLoader.loadPlugins();
 }
