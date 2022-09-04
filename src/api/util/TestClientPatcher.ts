@@ -64,7 +64,10 @@ function prettier(filePath: string, content: string): string{
     return content;
 }
 
-function autoPatch(filePath: string, content: string): string{
+function autoPatch(filePath: string, content: string): string {
+    //patches
+    content = content.replaceAll('isDiscordGatewayPlaintextSet = function () {' , 'isDiscordGatewayPlaintextSet = function () { return window.GLOBAL_ENV.PLAINTEXT_GATEWAY;');
+
     //remove nitro references
     content = content.replace(/Discord Nitro/g, "Fosscord Premium");
     content = content.replace(/"Nitro"/g, "\"Premium\"");
@@ -84,6 +87,13 @@ function autoPatch(filePath: string, content: string): string{
     //content = content.replace(/DiscordTag/g, "FosscordTag");
     content = content.replace(/\*Discord\*/g, "*Fosscord*");
 
+    //server -> guild
+    content = content.replace(/"Server"/g, "\"Guild\"");
+    content.replaceAll("server.\"","guild.\"");
+    content.replaceAll(" server "," guild ");
+    content.replaceAll(" Server "," Guild ");
+    content.replaceAll("\"Server","\"Guild");
+
     //change some vars
     content = content.replace('dsn: "https://fa97a90475514c03a42f80cd36d147c4@sentry.io/140984"', "dsn: (/true/.test(localStorage.sentryOptIn)?'https://6bad92b0175d41a18a037a73d0cff282@sentry.thearcanebrony.net/12':'')");
     content = content.replace('t.DSN = "https://fa97a90475514c03a42f80cd36d147c4@sentry.io/140984"', "t.DSN = (/true/.test(localStorage.sentryOptIn)?'https://6bad92b0175d41a18a037a73d0cff282@sentry.thearcanebrony.net/12':'')");
@@ -100,6 +110,10 @@ function autoPatch(filePath: string, content: string): string{
     content = content.replace(/!1/g, "false");
     // - real esmodule defs
     content = content.replace(/Object.defineProperty\((.), "__esModule", { value: (.*) }\);/g, '\$1.__esModule = \$2;');
+
+    //save some time on load resolving asset urls...
+    content = content.replaceAll('e.exports = n.p + "', 'e.exports = "/assets/');
+    content = content.replaceAll('e.exports = r.p + "', 'e.exports = "/assets/');
     
 
     console.log(`[TestClient] Autopatched ${path.basename(filePath)}!`);

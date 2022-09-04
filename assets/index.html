@@ -42,6 +42,9 @@
 				SENTRY_TAGS: { instance: document.location.host },
 				PROJECT_ENV: "development",
 				RELEASE_CHANNEL: "staging",
+
+				//custom
+				PLAINTEXT_GATEWAY: true
 			};
 			GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
 			const localStorage = window.localStorage;
