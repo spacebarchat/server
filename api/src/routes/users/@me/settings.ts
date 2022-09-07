@@ -22,7 +22,7 @@ router.patch("/", route({ body: "UserSettingsSchema" }), async (req: Request, re
 	user.settings = { ...user.settings, ...body };
 	await user.save();
 
-	res.sendStatus(204);
+	res.json(user.settings);
 });
 
 export default router;
