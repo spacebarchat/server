@@ -3,7 +3,7 @@ name: docker-publish-gw
 on:
     push:
         paths:
-            - "gateway/**"
+            - "src/gateway/**"
 
 jobs:
     docker-gw:

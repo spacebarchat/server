@@ -3,7 +3,7 @@ name: docker-publish-cdn
 on:
     push:
         paths:
-            - "cdn/**"
+            - "src/cdn/**"
 
 jobs:
     docker-cdn:

@@ -3,7 +3,7 @@ name: docker-publish-api
 on:
     push:
         paths:
-            - "api/**"
+            - "src/api/**"
 
 jobs:
     docker-api:
