@@ -38,17 +38,18 @@ export const ActivitySchema = {
 			},
 			$instance: Boolean,
 			$flags: String,
+
+			$id: String,
+			$sync_id: String,
+			$metadata: { // spotify
+				$context_url: String,
+				album_id: String,
+				artist_ids: [String],
+			},
+			$session_id: String,
 		},
 	],
 	$since: Number, // unix time (in milliseconds) of when the client went idle, or null if the client is not idle
-
-	$id: String,
-	$sync_id: String,
-	$metadata: { // spotify
-		$context_url: String,
-		album_id: String,
-		artist_ids: [String],
-	}
 };
 
 export interface ActivitySchema {

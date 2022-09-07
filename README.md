@@ -14,5 +14,5 @@
   </a>
 </p>
 
-Branch that [slowcord.maddy.k.vu](https://slowcord.maddy.k.vu) runs.  
+Branch that [slowcord.understars.dev](https://slowcord.understars.dev) runs.  
 Generally up to date with master, also contains my fixes/etc that aren't yet merged.
