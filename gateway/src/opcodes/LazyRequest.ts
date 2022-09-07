@@ -18,7 +18,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	}
 	// TODO: wait for typeorm to implement ordering for .find queries https://github.com/typeorm/typeorm/issues/2620
 
-	let members;
+	let members: Member[] = [];
 	try {
 		members = await getRepository(Member)
 			.createQueryBuilder("member")
@@ -33,8 +33,8 @@ async function getMembers(guild_id: string, range: [number, number]) {
 			.orderBy("role.position", "DESC")
 			.addOrderBy("_status", "DESC")
 			.addOrderBy("user.username", "ASC")
-			.offset(Number(range[0]) || 0)
-			.limit(Number(range[1]) || 100)
+			.skip(Number(range[0]) || 0)
+			.take(Number(range[1]) || 100)
 			.getMany();
 	}
 	catch (e) {
@@ -62,7 +62,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 
 	for (const role of member_roles) {
 		// @ts-ignore
-		const [role_members, other_members] = partition(members, (m: Member) =>
+		const [role_members, other_members]: Member[][] = partition(members, (m: Member) =>
 			m.roles.find((r) => r.id === role.id)
 		);
 		const group = {
@@ -78,7 +78,18 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				.filter((x: Role) => x.id !== guild_id)
 				.map((x: Role) => x.id);
 
-			const session: Session = member.user.sessions.first();
+			const statusMap = {
+				"online": 0,
+				"idle": 1,
+				"dnd": 2,
+				"invisible": 3,
+				"offline": 4,	// for ts, will never be accessed
+			};
+			// sort sessions by relevance
+			const sessions = member.user.sessions.sort((a, b) => {
+				return (statusMap[a.status] - statusMap[b.status]) + ((a.activities.length - b.activities.length) * 2);
+			});
+			var session: Session | undefined = sessions.first();
 
 			const item = {
 				member: {
@@ -138,13 +149,14 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const ranges = channels![channel_id];
 	if (!Array.isArray(ranges)) throw new Error("Not a valid Array");
 
-	const member_count = await Member.count({ guild_id });
+	const member_count = await Member.count({ where: { guild_id } });
 	const ops = await Promise.all(ranges.map((x) => getMembers(guild_id, x)));
 
 	// TODO: unsubscribe member_events that are not in op.members
 
 	ops.forEach((op) => {
 		op.members.forEach(async (member) => {
+			if (!member) return;
 			if (this.events[member.user.id]) return; // already subscribed as friend
 			if (this.member_events[member.user.id]) return; // already subscribed in member list
 			this.member_events[member.user.id] = await listenEvent(
