@@ -178,9 +178,6 @@ export class User extends BaseClass {
 	@Column({ type: "simple-json", select: false })
 	extended_settings: string = "{}";
 
-	@Column({ type: "simple-json" })
-	notes: { [key: string]: string } = {}; //key is ID of user
-
 	async save(): Promise<any> {
 		if (!this.settings) this.settings = new UserSettings();
 		this.settings.id = this.id;
