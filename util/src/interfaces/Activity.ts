@@ -40,7 +40,8 @@ export interface Activity {
 		context_url?: string;
 		album_id: string;
 		artist_ids: string[];
-	}
+	};
+	session_id: string;
 }
 
 export enum ActivityType {
