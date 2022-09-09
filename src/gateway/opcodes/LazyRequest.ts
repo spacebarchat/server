@@ -76,7 +76,6 @@ async function getMembers(guild_id: string, range: [number, number]) {
 			});
 			const session = sessions.first();
 
-			// TODO: properly mock/hide offline/invisible status
 			const item = {
 				member: {
 					...member,
@@ -166,7 +165,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 				range: x.range
 			})),
 			// remove offline members from count
-			online_count: member_count - (groups.find(x => x.id == "ofline")?.count ?? 0),
+			online_count: member_count - (groups.find(x => x.id == "offline")?.count ?? 0),
 			member_count,
 			id: "everyone",
 			guild_id,
