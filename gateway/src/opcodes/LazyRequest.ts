@@ -26,6 +26,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 			.leftJoinAndSelect("member.roles", "role")
 			.leftJoinAndSelect("member.user", "user")
 			.leftJoinAndSelect("user.sessions", "session")
+			.addSelect("user.settings")
 			.addSelect(
 				"CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
 				"_status"
@@ -83,13 +84,17 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				"idle": 1,
 				"dnd": 2,
 				"invisible": 3,
-				"offline": 4,	// for ts, will never be accessed
+				"offline": 4,
 			};
 			// sort sessions by relevance
 			const sessions = member.user.sessions.sort((a, b) => {
 				return (statusMap[a.status] - statusMap[b.status]) + ((a.activities.length - b.activities.length) * 2);
 			});
 			var session: Session | undefined = sessions.first();
+
+			if (session?.status == "offline") {
+				session.status = member.user.settings.status || "online";
+			}
 
 			const item = {
 				member: {
@@ -104,7 +109,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				},
 			};
 
-			if (!session || session.status == "invisible") {
+			if (!session || session.status == "invisible" || session.status == "offline") {
 				item.member.presence.status = "offline";
 				offlineItems.push(item);
 				group.count--;
