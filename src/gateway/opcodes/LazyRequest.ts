@@ -94,8 +94,8 @@ async function getMembers(guild_id: string, range: [number, number]) {
 					}
 				}
 			};
-
-			if (!session || session.status == "invisible") {
+		
+			if (!session || session.status == "invisible" || session.status == "offline") {
 				item.member.presence.status = "offline";
 				item.member.presence.activities = [];
 				offlineItems.push(item);
