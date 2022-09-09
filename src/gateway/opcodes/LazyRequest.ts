@@ -24,6 +24,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		.leftJoinAndSelect("member.roles", "role")
 		.leftJoinAndSelect("member.user", "user")
 		.leftJoinAndSelect("user.sessions", "session")
+		.innerJoinAndSelect("user.settings", "settings")
 		.addSelect("CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END", "_status")
 		.orderBy("role.position", "DESC")
 		.addOrderBy("_status", "DESC")
@@ -67,7 +68,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				"idle": 1,
 				"dnd": 2,
 				"invisible": 3,
-				"offline": 4,	// for ts, will never be accessed
+				"offline": 4,
 			};
 			const sessions = member.user.sessions.sort((a, b) => {
 				// activities are higher priority than status
@@ -75,6 +76,11 @@ async function getMembers(guild_id: string, range: [number, number]) {
 					+ ((a.activities.length - b.activities.length) * 2);
 			});
 			const session = sessions.first();
+
+			if (session?.status == "offline") {
+				// swap out for user settings status
+				session.status = member.user.settings.status;
+			}
 
 			const item = {
 				member: {
