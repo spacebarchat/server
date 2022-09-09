@@ -37,7 +37,7 @@ export interface Activity {
 	id?: string;
 	sync_id?: string;
 	metadata?: {
-		context_url?: string;
+		context_uri?: string;
 		album_id?: string;
 		artist_ids?: string[];
 	},
