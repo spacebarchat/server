@@ -1,7 +1,7 @@
-import { Request, Response, Router } from "express";
-import { route, getIpAdress, verifyCaptcha } from "@fosscord/api";
-import { Config, User, generateToken, adjustEmail, FieldErrors, LoginSchema } from "@fosscord/util";
+import { getIpAdress, route, verifyCaptcha } from "@fosscord/api";
+import { adjustEmail, Config, FieldErrors, generateToken, LoginSchema, User } from "@fosscord/util";
 import crypto from "crypto";
+import { Request, Response, Router } from "express";
 
 let bcrypt: any;
 try {
@@ -38,7 +38,7 @@ router.post("/", route({ body: "LoginSchema" }), async (req: Request, res: Respo
 				captcha_key: verify["error-codes"],
 				captcha_sitekey: sitekey,
 				captcha_service: service
-			})
+			});
 		}
 	}
 

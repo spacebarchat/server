@@ -241,7 +241,7 @@ export class Guild extends BaseClass {
 		welcome_channels: {
 			description: string;
 			emoji_id?: string;
-			emoji_name: string;
+			emoji_name?: string;
 			channel_id: string;
 		}[];
 	};

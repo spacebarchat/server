@@ -1,6 +1,13 @@
 import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
-import { Ban, PublicGuildRelations } from ".";
-import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent } from "../interfaces";
+import { Ban, Message, PublicGuildRelations } from ".";
+import {
+	GuildCreateEvent,
+	GuildDeleteEvent,
+	GuildMemberAddEvent,
+	GuildMemberRemoveEvent,
+	GuildMemberUpdateEvent,
+	MessageCreateEvent
+} from "../interfaces";
 import { Config, emitEvent } from "../util";
 import { DiscordApiErrors } from "../util/Constants";
 import { HTTPError } from "../util/imports/HTTPError";
@@ -94,7 +101,19 @@ export class Member extends BaseClassWithoutId {
 	// do not auto-kick force-joined members just because their joiners left the server
 	}) **/
 	@Column({ nullable: true })
-	joined_by?: string;
+	joined_by: string;
+
+	@Column({ nullable: true })
+	avatar: string;
+
+	@Column({ nullable: true })
+	banner: string;
+
+	@Column()
+	bio: string;
+
+	@Column({ nullable: true })
+	communication_disabled_until: Date;
 
 	// TODO: add this when we have proper read receipts
 	// @Column({ type: "simple-json" })
@@ -243,7 +262,11 @@ export class Member extends BaseClassWithoutId {
 			premium_since: null,
 			deaf: false,
 			mute: false,
-			pending: false
+			pending: false,
+			avatar: null,
+			banner: null,
+			bio: "",
+			communication_disabled_until: null
 		};
 		//TODO: check for bugs
 		if (guild.member_count) guild.member_count++;
@@ -284,11 +307,33 @@ export class Member extends BaseClassWithoutId {
 					joined_at: member.joined_at,
 					presences: [],
 					stage_instances: [],
-					threads: []
+					threads: [],
+					embedded_activities: []
 				},
 				user_id
 			} as GuildCreateEvent)
 		]);
+
+		if (guild.system_channel_id) {
+			// send welcome message
+			const message = OrmUtils.mergeDeep(new Message(), {
+				type: 7,
+				guild_id: guild.id,
+				channel_id: guild.system_channel_id,
+				author: user,
+				timestamp: new Date(),
+
+				reactions: [],
+				attachments: [],
+				embeds: [],
+				sticker_items: [],
+				edited_timestamp: undefined
+			});
+			await Promise.all([
+				message.save(),
+				emitEvent({ event: "MESSAGE_CREATE", channel_id: message.channel_id, data: message } as MessageCreateEvent)
+			]);
+		}
 	}
 }
 

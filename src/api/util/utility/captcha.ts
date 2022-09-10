@@ -7,8 +7,8 @@ export interface hcaptchaResponse {
 	hostname: string;
 	credit: boolean;
 	"error-codes": string[];
-	score: number;	// enterprise only
-	score_reason: string[];	// enterprise only
+	score: number; // enterprise only
+	score_reason: string[]; // enterprise only
 }
 
 export interface recaptchaResponse {
@@ -22,8 +22,8 @@ export interface recaptchaResponse {
 
 const verifyEndpoints = {
 	hcaptcha: "https://hcaptcha.com/siteverify",
-	recaptcha: "https://www.google.com/recaptcha/api/siteverify",
-}
+	recaptcha: "https://www.google.com/recaptcha/api/siteverify"
+};
 
 export async function verifyCaptcha(response: string, ip?: string) {
 	const { security } = Config.get();
@@ -34,13 +34,14 @@ export async function verifyCaptcha(response: string, ip?: string) {
 	const res = await fetch(verifyEndpoints[service], {
 		method: "POST",
 		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
+			"Content-Type": "application/x-www-form-urlencoded"
 		},
-		body: `response=${encodeURIComponent(response)}`
-			+ `&secret=${encodeURIComponent(secret!)}`
-			+ `&sitekey=${encodeURIComponent(sitekey!)}`
-			+ (ip ? `&remoteip=${encodeURIComponent(ip!)}` : ""),
+		body:
+			`response=${encodeURIComponent(response)}` +
+			`&secret=${encodeURIComponent(secret!)}` +
+			`&sitekey=${encodeURIComponent(sitekey!)}` +
+			(ip ? `&remoteip=${encodeURIComponent(ip!)}` : "")
 	});
 
-	return await res.json() as hcaptchaResponse | recaptchaResponse;
+	return (await res.json()) as hcaptchaResponse | recaptchaResponse;
 }

@@ -5,7 +5,6 @@ const { stdout, exit } = require("process");
 const { execIn } = require("./utils.js");
 const { ask } = require("./utils/ask.js");
 
-
 const data = { env: [], config: { register: {} }, extra_pkgs: [] };
 let rights = [];
 
@@ -201,15 +200,12 @@ async function askRights() {
 	return selectedRights;
 }
 
-
-
 function printTitle(input) {
 	let width = stdout.columns / 2 - 1; //40
 	console.log();
 	console.log("-".repeat(width - input.length / 2), input, "-".repeat(width - input.length / 2));
 	console.log();
 }
-
 
 function BitFlag(int) {
 	return 1n << BigInt(int);

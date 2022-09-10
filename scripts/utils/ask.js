@@ -15,6 +15,6 @@ async function askBool(question) {
 }
 
 module.exports = {
-    ask,
-    askBool
-}
+	ask,
+	askBool
+};
