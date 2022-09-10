@@ -70,6 +70,10 @@ export interface ChannelModifySchema {
 	nsfw?: boolean;
 	rtc_region?: string;
 	default_auto_archive_duration?: number;
+	default_reaction_emoji?: string | null;
+	flags?: number;
+	default_thread_rate_limit_per_user?: number;
+	video_quality_mode?: number;
 }
 
 router.patch("/", route({ body: "ChannelModifySchema", permission: "MANAGE_CHANNELS" }), async (req: Request, res: Response) => {
