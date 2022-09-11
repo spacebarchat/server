@@ -79,7 +79,7 @@ export default function rateLimit(opts: {
 				resetAfterMs = reset - Date.now();
 				resetAfterSec = Math.ceil(resetAfterMs / 1000);
 
-				console.log("blocked bucket: " + bucket_id, { resetAfterMs });
+				console.log(`blocked bucket: ${bucket_id} ${executor_id}`, { resetAfterMs });
 				return (
 					res
 						.status(429)
@@ -160,7 +160,7 @@ export async function initRateLimits(app: Router) {
 	app.use("/auth/register", rateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
 }
 
-async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number }) {
+async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number; }) {
 	const id = opts.executor_id + opts.bucket_id;
 	let limit = Cache.get(id);
 	if (!limit) {
