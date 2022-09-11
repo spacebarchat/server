@@ -20,3 +20,4 @@ export * from "./String";
 export * from "./Array";
 export * from "./TraverseDirectory";
 export * from "./InvisibleCharacters";
+export * from "./BannedWords";

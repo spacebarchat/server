@@ -3,9 +3,8 @@ import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
-import { Config, FieldErrors, Snowflake, trimSpecial } from "..";
+import { Config, FieldErrors, Snowflake, trimSpecial, BannedWords } from "..";
 import { Member, Session } from ".";
-import { Note } from "./Note";
 
 export enum PublicUserEnum {
 	username,
@@ -49,7 +48,7 @@ export const PrivateUserProjection = [
 // Private user data that should never get sent to the client
 export type PublicUser = Pick<User, PublicUserKeys>;
 
-export interface UserPublic extends Pick<User, PublicUserKeys> {}
+export interface UserPublic extends Pick<User, PublicUserKeys> { }
 
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
@@ -59,6 +58,11 @@ export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 export class User extends BaseClass {
 	@Column()
 	username: string; // username max length 32, min 2 (should be configurable)
+
+	setUsername(val: string) {
+		if (BannedWords.find(val)) throw FieldErrors({ username: { message: "Bad username", code: "INVALID_USERNAME" } });
+		this.username = val;
+	}
 
 	@Column()
 	discriminator: string; // opaque string: 4 digits on discord.com
@@ -90,7 +94,7 @@ export class User extends BaseClass {
 
 	@Column()
 	premium: boolean; // if user bought individual premium
-	
+
 	@Column()
 	premium_type: number; // individual premium level
 
@@ -105,7 +109,7 @@ export class User extends BaseClass {
 
 	@Column({ select: false })
 	nsfw_allowed: boolean; // if the user can do age-restricted actions (NSFW channels/guilds/commands)
-	
+
 	@Column({ select: false })
 	mfa_enabled: boolean; // if multi factor authentication is enabled
 
@@ -176,7 +180,7 @@ export class User extends BaseClass {
 
 	@Column({ type: "simple-json", select: false })
 	settings: UserSettings;
-		
+
 	// workaround to prevent fossord-unaware clients from deleting settings not used by them
 	@Column({ type: "simple-json", select: false })
 	extended_settings: string;
@@ -202,7 +206,7 @@ export class User extends BaseClass {
 	private static async generateDiscriminator(username: string): Promise<string | undefined> {
 		if (Config.get().register.incrementingDiscriminators) {
 			// discriminator will be incrementally generated
-			
+
 			// First we need to figure out the currently highest discrimnator for the given username and then increment it
 			const users = await User.find({ where: { username }, select: ["discriminator"] });
 			const highestDiscriminator = Math.max(0, ...users.map((u) => Number(u.discriminator)));
@@ -299,7 +303,7 @@ export class User extends BaseClass {
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
-					await Member.addToGuild(user.id, guild).catch((e) => {});
+					await Member.addToGuild(user.id, guild).catch((e) => { });
 				}
 			}
 		});
@@ -366,7 +370,7 @@ export interface UserSettings {
 	disable_games_tab: boolean;
 	enable_tts_command: boolean;
 	explicit_content_filter: number;
-	friend_source_flags: { all: boolean };
+	friend_source_flags: { all: boolean; };
 	gateway_connected: boolean;
 	gif_auto_play: boolean;
 	// every top guild is displayed as a "folder"

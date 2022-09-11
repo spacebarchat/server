@@ -8,7 +8,6 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
-	FindConditions,
 	Index,
 	JoinColumn,
 	JoinTable,
@@ -16,14 +15,14 @@ import {
 	ManyToOne,
 	OneToMany,
 	RelationId,
-	RemoveOptions,
-	UpdateDateColumn,
 } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
+import { BannedWords } from "../util";
+import { HTTPError } from "lambert-server";
 
 export enum MessageType {
 	DEFAULT = 0,
@@ -116,6 +115,11 @@ export class Message extends BaseClass {
 
 	@Column({ nullable: true, type: process.env.PRODUCTION ? "longtext" : undefined })
 	content?: string;
+
+	setContent(val: string) {
+		if (BannedWords.find(val)) throw new HTTPError("Message was blocked by automatic moderation", 200000);
+		this.content = val;
+	}
 
 	@Column()
 	@CreateDateColumn()
