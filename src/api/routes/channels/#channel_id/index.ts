@@ -38,6 +38,20 @@ router.delete("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request
 		]);
 	} else if (channel.type === ChannelType.GROUP_DM) {
 		await Channel.removeRecipientFromChannel(channel, req.user_id);
+	} else if (channel.isThread()) {
+		await Promise.all([
+			Channel.delete({ id: channel_id }),
+			emitEvent({
+				event: "THREAD_DELETE",
+				data: {
+					id: channel_id,
+					guild_id: channel.guild_id,
+					parent_id: channel.parent_id,
+					type: channel.type
+				},
+				guild_id: channel.guild_id
+			})
+		]);
 	} else {
 		await Promise.all([
 			Channel.delete({ id: channel_id }),

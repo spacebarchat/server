@@ -27,6 +27,7 @@ export * from "./StickerPack";
 export * from "./Team";
 export * from "./TeamMember";
 export * from "./Template";
+export * from "./ThreadMember";
 export * from "./User";
 export * from "./UserSettings";
 export * from "./VoiceState";

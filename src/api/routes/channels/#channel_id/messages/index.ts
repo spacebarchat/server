@@ -207,6 +207,19 @@ router.post(
 			);
 		}
 
+		if (channel.isThread()) {
+			channel.message_count = (channel.message_count || 0) + 1;
+			channel.total_message_sent = (channel.total_message_sent || 0) + 1;
+			Promise.all([
+				channel.save(),
+				emitEvent({
+					event: "CHANNEL_UPDATE",
+					data: { ...channel, newly_created: false },
+					guild_id: channel.guild_id
+				})
+			]);
+		}
+
 		//Defining member fields
 		var member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles"] });
 		// TODO: This doesn't work either
