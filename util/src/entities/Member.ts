@@ -74,7 +74,7 @@ export class Member extends BaseClassWithoutId {
 	nick?: string;
 
 	setNick(val: string) {
-		if (BannedWords.find(val)) throw FieldErrors({ nick: { message: "Bad nickname", code: "INVALID_NICKNAME" } });
+		if (val && BannedWords.find(val)) throw FieldErrors({ nick: { message: "Bad nickname", code: "INVALID_NICKNAME" } });
 		this.nick = val;
 	}
 
