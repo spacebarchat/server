@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { DmChannelDTO } from "../dtos";
-import { ChannelCreateEvent, ChannelRecipientRemoveEvent, ThreadCreateEvent } from "../interfaces";
+import { ChannelCreateEvent, ChannelRecipientRemoveEvent, ThreadCreateEvent, ThreadMembersUpdateEvent } from "../interfaces";
 import { ThreadMetadataSchema } from "../schemas/ThreadMetadataSchema";
 import { Config, containsAll, DiscordApiErrors, emitEvent, getPermission, InvisibleCharacters, Snowflake, trimSpecial } from "../util";
 import { HTTPError } from "../util/imports/HTTPError";
@@ -11,6 +11,7 @@ import { Invite } from "./Invite";
 import { Message } from "./Message";
 import { ReadState } from "./ReadState";
 import { Recipient } from "./Recipient";
+import { ThreadMember } from "./ThreadMember";
 import { PublicUserProjection, User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
@@ -354,15 +355,41 @@ export class Channel extends BaseClass {
 
 		const thread = await OrmUtils.mergeDeep(new Channel(), channel).save();
 
-		if (!opts?.skipEventEmit)
-			await emitEvent({
-				event: "THREAD_CREATE",
-				data: {
-					...thread,
-					newly_created: true
-				},
-				guild_id: channel.guild_id
-			} as ThreadCreateEvent);
+		const member = {
+			id: thread.id,
+			user_id,
+			join_timestamp: new Date(),
+			muted: false,
+			mute_config: null,
+			flags: 0
+		};
+		if (channel.member_count) channel.member_count++;
+
+		const threadMember = await OrmUtils.mergeDeep(new ThreadMember(), member).save();
+
+		if (!opts?.skipEventEmit) {
+			await Promise.all([
+				emitEvent({
+					event: "THREAD_CREATE",
+					data: {
+						...thread,
+						newly_created: true
+					},
+					guild_id: channel.guild_id
+				} as ThreadCreateEvent),
+				emitEvent({
+					event: "THREAD_MEMBERS_UPDATE",
+					data: {
+						guild_id: channel.guild_id,
+						id: thread.id,
+						member_count: channel.member_count,
+						added_members: [threadMember],
+						removed_member_ids: []
+					},
+					guild_id: channel.guild_id
+				} as ThreadMembersUpdateEvent)
+			]);
+		}
 
 		return thread;
 	}

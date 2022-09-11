@@ -10,6 +10,7 @@ import { PublicMember, UserGuildSettings } from "../entities/Member";
 import { Message, PartialEmoji } from "../entities/Message";
 import { RelationshipType } from "../entities/Relationship";
 import { Role } from "../entities/Role";
+import { ThreadMember } from "../entities/ThreadMember";
 import { PublicUser, User } from "../entities/User";
 import { VoiceState } from "../entities/VoiceState";
 import { Interaction } from "./Interaction";
@@ -373,9 +374,40 @@ export interface ThreadCreateEvent extends Event {
 	data: Channel & { newly_created: boolean };
 }
 
+export interface ThreadUpdatEvent extends Event {
+	event: "THREAD_UPDATE";
+	data: Channel;
+}
+
 export interface ThreadDeleteEvent extends Event {
 	event: "THREAD_DELETE";
 	data: Pick<Channel, "id" | "guild_id" | "parent_id" | "type">;
+}
+
+export interface ThreadListSyncEvent extends Event {
+	event: "THREAD_LIST_SYNC";
+	data: {
+		guild_id: string;
+		channel_ids?: string[];
+		threads: Channel[];
+		members: ThreadMember[];
+	};
+}
+
+export interface ThreadMemberUpdateEvent extends Event {
+	event: "THREAD_MEMBER_UPDATE";
+	data: ThreadMember & { guild_id: string };
+}
+
+export interface ThreadMembersUpdateEvent extends Event {
+	event: "THREAD_MEMBERS_UPDATE";
+	data: {
+		id: string;
+		guild_id: string;
+		member_count: number;
+		added_members?: ThreadMember[];
+		removed_member_ids?: string[];
+	};
 }
 
 export interface TypingStartEvent extends Event {
@@ -533,7 +565,11 @@ export type EventData =
 	| MessageReactionRemoveEmojiEvent
 	| PresenceUpdateEvent
 	| ThreadCreateEvent
+	| ThreadUpdatEvent
 	| ThreadDeleteEvent
+	| ThreadListSyncEvent
+	| ThreadMemberUpdateEvent
+	| ThreadMembersUpdateEvent
 	| TypingStartEvent
 	| UserUpdateEvent
 	| VoiceStateUpdateEvent
@@ -585,7 +621,11 @@ export enum EVENTEnum {
 	MessageReactionRemoveEmoji = "MESSAGE_REACTION_REMOVE_EMOJI",
 	PresenceUpdate = "PRESENCE_UPDATE",
 	ThreadCreate = "THREAD_CREATE",
+	ThreadUpdate = "THREAD_UPDATE",
 	ThreadDelete = "THREAD_DELETE",
+	ThreadListSync = "THREAD_LIST_SYNC",
+	ThreadMemberUpdate = "THREAD_MEMBER_UPDATE",
+	ThreadMembersUpdate = "THREAD_MEMBERS_UPDATE",
 	TypingStart = "TYPING_START",
 	UserUpdate = "USER_UPDATE",
 	WebhooksUpdate = "WEBHOOKS_UPDATE",
@@ -637,7 +677,11 @@ export type EVENT =
 	| "MESSAGE_REACTION_REMOVE_EMOJI"
 	| "PRESENCE_UPDATE"
 	| "THREAD_CREATE"
+	| "THREAD_UPDATE"
 	| "THREAD_DELETE"
+	| "THREAD_LIST_SYNC"
+	| "THREAD_MEMBER_UPDATE"
+	| "THREAD_MEMBERS_UPDATE"
 	| "TYPING_START"
 	| "USER_UPDATE"
 	| "USER_NOTE_UPDATE"
