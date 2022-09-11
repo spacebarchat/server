@@ -117,7 +117,7 @@ export class Message extends BaseClass {
 	content?: string;
 
 	setContent(val: string) {
-		if (BannedWords.find(val)) throw new HTTPError("Message was blocked by automatic moderation", 200000);
+		if (val && BannedWords.find(val)) throw new HTTPError("Message was blocked by automatic moderation", 200000);
 		this.content = val;
 	}
 
