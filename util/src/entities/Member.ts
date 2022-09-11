@@ -1,6 +1,5 @@
 import { PublicUser, User } from "./User";
 import { Message } from "./Message";
-import { BaseClass } from "./BaseClass";
 import {
 	Column,
 	Entity,
@@ -13,7 +12,7 @@ import {
 	RelationId,
 } from "typeorm";
 import { Guild } from "./Guild";
-import { Config, emitEvent } from "../util";
+import { Config, emitEvent, BannedWords, FieldErrors } from "../util";
 import {
 	GuildCreateEvent,
 	GuildDeleteEvent,
@@ -21,6 +20,7 @@ import {
 	GuildMemberRemoveEvent,
 	GuildMemberUpdateEvent,
 	MessageCreateEvent,
+
 } from "../interfaces";
 import { HTTPError } from "lambert-server";
 import { Role } from "./Role";
@@ -72,6 +72,11 @@ export class Member extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	nick?: string;
+
+	setNick(val: string) {
+		if (BannedWords.find(val)) throw FieldErrors({ nick: { message: "Bad nickname", code: "INVALID_NICKNAME" } });
+		this.nick = val;
+	}
 
 	@JoinTable({
 		name: "member_roles",
@@ -244,7 +249,7 @@ export class Member extends BaseClassWithoutId {
 			where: {
 				id: guild_id,
 			},
-			relations: [ ...PublicGuildRelations, "system_channel" ],
+			relations: [...PublicGuildRelations, "system_channel"],
 		});
 
 		if (await Member.count({ id: user.id, guild: { id: guild_id } }))

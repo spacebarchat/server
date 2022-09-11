@@ -7,7 +7,7 @@ import * as Gateway from "@fosscord/gateway";
 import { CDNServer } from "@fosscord/cdn";
 import express from "express";
 import { green, bold, yellow } from "picocolors";
-import { Config, initDatabase } from "@fosscord/util";
+import { Config, initDatabase, BannedWords } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 
@@ -35,6 +35,7 @@ process.on('SIGTERM', () => {
 async function main() {
 	await initDatabase();
 	await Config.init();
+	await BannedWords.init();
 	// only set endpointPublic, if not already set
 	await Config.set({
 		cdn: {
