@@ -237,7 +237,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const d: ReadyEventData = {
 		v: 8,
-		application,
+		application: application ?? undefined,
 		user: privateUser,
 		user_settings: user.settings,
 		// @ts-ignore
@@ -296,4 +296,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	//TODO send VOICE_STATE_UPDATE to let the client know if another device is already connected to a voice channel
 
 	await setupListener.call(this);
+
+	console.log(`${this.ipAddress} identified as ${d.user.id}`)
 }

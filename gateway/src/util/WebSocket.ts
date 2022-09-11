@@ -8,6 +8,7 @@ export interface WebSocket extends WS {
 	session_id: string;
 	encoding: "etf" | "json";
 	compress?: "zlib-stream";
+	ipAddress?: string;
 	shard_count?: bigint;
 	shard_id?: bigint;
 	deflate?: Deflate;
