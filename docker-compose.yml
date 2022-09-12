@@ -7,8 +7,4 @@ services:
     build: .
     ports: [ '3001-3003:3001-3003' ]
     volumes: [ './:/srv/fosscord-server/' ]
-    environment:
-      THREADS: ${THREADS:-1}
-      HTTP_PORT: 3001
-      WS_PORT: 3002
-      CDN_PORT: 3003
+    env_file: [ '.env' ]
