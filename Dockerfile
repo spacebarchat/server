@@ -2,6 +2,11 @@ FROM node:alpine
 
 # args 
 ARG WAIT_FOR_VERSION=4df3f9262d84cab0039c07bf861045fbb3c20ab7
+ARG PUID=1000
+ARG PGID=1000
+
+# setup non-root user
+RUN deluser --remove-home node && addgroup -S node -g ${PGID} && adduser -S -G node -u ${PUID} node
 
 # install required apps
 RUN apk add --no-cache --update git python3 py-pip make build-base cairo-dev pango-dev jpeg-dev giflib-dev librsvg-dev

@@ -4,7 +4,11 @@ services:
   fosscord:
     image: fosscord
     restart: unless-stopped
-    build: .
+    build:
+      context: .
+      args:
+        PUID: ${PUID:-1000}
+        PGID: ${PGID:-1000}
     ports: [ '3001-3003:3001-3003' ]
     env_file: [ '.env' ]
     volumes: [ './:/srv/fosscord-server/' ]
