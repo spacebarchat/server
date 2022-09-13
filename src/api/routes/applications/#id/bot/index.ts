@@ -51,7 +51,6 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		settings: {},
 		extended_settings: {},
 		fingerprints: [],
-		notes: {}
 	});
 	await user.save();
 	app.bot = user;

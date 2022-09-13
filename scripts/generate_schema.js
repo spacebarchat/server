@@ -49,7 +49,7 @@ function modify(obj) {
 
 function main() {
 	const files = [...walk(path.join(__dirname, "..", "src", "util", "schemas"))];
-	const program = TJS.getProgramFromFiles(files, compilerOptions);
+	const program = TJS.programFromConfig(path.join(__dirname, "..", "tsconfig.json"), files);
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 

@@ -24,6 +24,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		.leftJoinAndSelect("member.roles", "role")
 		.leftJoinAndSelect("member.user", "user")
 		.leftJoinAndSelect("user.sessions", "session")
+		.innerJoinAndSelect("user.settings", "settings")
 		.addSelect("CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END", "_status")
 		.orderBy("role.position", "DESC")
 		.addOrderBy("_status", "DESC")
@@ -38,12 +39,19 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		.map((m) => m.roles)
 		.flat()
 		.unique((r: Role) => r.id);
+	// add online role
+	member_roles.push(
+		member_roles.splice(
+			member_roles.findIndex((x => x.id == x.guild_id)),
+			1
+		)[0]
+	);
 
 	const offlineItems = [];
 
 	for (const role of member_roles) {
 		// @ts-ignore
-		const [role_members, other_members] = partition(members, (m: Member) => m.roles.find((r) => r.id === role.id));
+		const [role_members, other_members]: Member[][] = partition(members, (m: Member) => m.roles.find((r) => r.id === role.id));
 		const group = {
 			count: role_members.length,
 			id: role.id === guild_id ? "online" : role.id
@@ -55,9 +63,25 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		for (const member of role_members) {
 			const roles = member.roles.filter((x: Role) => x.id !== guild_id).map((x: Role) => x.id);
 
-			const session = member.user.sessions.first();
+			const statusPriority = {
+				"online": 0,
+				"idle": 1,
+				"dnd": 2,
+				"invisible": 3,
+				"offline": 4,
+			};
+			const sessions = member.user.sessions.sort((a, b) => {
+				// activities are higher priority than status
+				return (statusPriority[a.status] - statusPriority[b.status])
+					+ ((a.activities.length - b.activities.length) * 2);
+			});
+			const session = sessions.first();
 
-			// TODO: properly mock/hide offline/invisible status
+			if (session?.status == "offline") {
+				// swap out for user settings status
+				session.status = member.user.settings.status;
+			}
+
 			const item = {
 				member: {
 					...member,
@@ -70,8 +94,10 @@ async function getMembers(guild_id: string, range: [number, number]) {
 					}
 				}
 			};
-
-			if (!member?.user?.sessions || !member.user.sessions.length) {
+		
+			if (!session || session.status == "invisible" || session.status == "offline") {
+				item.member.presence.status = "offline";
+				item.member.presence.activities = [];
 				offlineItems.push(item);
 				group.count--;
 				continue;
@@ -122,11 +148,17 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 
 	ops.forEach((op) => {
 		op.members.forEach(async (member) => {
+			if (!member) return;
 			if (this.events[member.user.id]) return; // already subscribed as friend
 			if (this.member_events[member.user.id]) return; // already subscribed in member list
 			this.member_events[member.user.id] = await listenEvent(member.user.id, handlePresenceUpdate.bind(this), this.listen_options);
 		});
 	});
+
+	const groups = ops
+		.map((x) => x.groups)
+		.flat()
+		.unique();
 
 	return Send(this, {
 		op: OPCODES.Dispatch,
@@ -138,14 +170,12 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 				op: "SYNC",
 				range: x.range
 			})),
-			online_count: member_count,
+			// remove offline members from count
+			online_count: member_count - (groups.find(x => x.id == "offline")?.count ?? 0),
 			member_count,
 			id: "everyone",
 			guild_id,
-			groups: ops
-				.map((x) => x.groups)
-				.flat()
-				.unique()
+			groups,
 		}
 	});
 }
