@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  fosscord:
+    depends_on: [ 'postgres' ]
+    command: sh -c 'wait-for postgres:5432 -- npm run start:bundle'
+
+  postgres:
+    image: postgres:latest
+    restart: unless-stopped
+    # ports: [ '5432:5432' ]
+    env_file: [ '.env' ]
+    volumes: [ './db/:/var/lib/postgresql/data' ]

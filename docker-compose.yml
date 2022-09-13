@@ -6,5 +6,5 @@ services:
     restart: unless-stopped
     build: .
     ports: [ '3001-3003:3001-3003' ]
-    volumes: [ './:/srv/fosscord-server/' ]
     env_file: [ '.env' ]
+    volumes: [ './:/srv/fosscord-server/' ]
