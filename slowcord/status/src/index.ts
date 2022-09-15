@@ -1,6 +1,5 @@
 import "dotenv/config";
 import https from "https";
-import Fosscord from "fosscord-gopnik";
 import mysql from "mysql2";
 import fetch from "node-fetch";
 
@@ -13,32 +12,6 @@ const instance = {
 	cdn: process.env.INSTANCE_CDN as string,
 	token: process.env.INSTANCE_TOKEN as string,
 };
-
-const client = new Fosscord.Client({
-	intents: [],
-	http: {
-		api: instance.api,
-		cdn: instance.cdn
-	}
-});
-
-const gatewayMeasure = async (name: string) => {
-	const time = Math.max(client.ws.ping, 0);
-	await savePerf(time, name, '');
-	console.log(`${name} took ${time}ms`);
-};
-
-client.on("ready", () => {
-	console.log(`Ready on gateway as ${client.user!.tag}`);
-});
-
-client.on("error", (error: any) => {
-	console.log(`Gateway error`, error);
-});
-
-client.on("warn", (msg: any) => {
-	console.log(`Gateway warning:`, msg);
-});
 
 const savePerf = async (time: number, name: string, error?: string | Error) => {
 	if (error && typeof error != "string") error = error.message;
