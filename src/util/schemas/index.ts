@@ -35,6 +35,7 @@ export * from "./TemplateModifySchema";
 export * from "./TotpDisableSchema";
 export * from "./TotpEnableSchema";
 export * from "./TotpSchema";
+export * from "./UserDeleteSchema";
 export * from "./UserModifySchema";
 export * from "./UserSettingsSchema";
 export * from "./VanityUrlSchema";
