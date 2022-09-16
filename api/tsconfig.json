@@ -68,6 +68,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@fosscord/api": ["src/index"]
+			"@fosscord/util": ["../util/src/index"]
 		},
 		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }],
 		"experimentalDecorators": true
