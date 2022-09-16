@@ -22,18 +22,18 @@ export class Server {
 			});
 		}
 
-		this.server.on("upgrade", (request, socket, head) => {
-			if (!request.url?.includes("voice")) return;
-			this.ws.handleUpgrade(request, socket, head, (socket) => {
-				// @ts-ignore
-				socket.server = this;
-				this.ws.emit("connection", socket, request);
-			});
-		});
+		// this.server.on("upgrade", (request, socket, head) => {
+		// 	if (!request.url?.includes("voice")) return;
+		// 	this.ws.handleUpgrade(request, socket, head, (socket) => {
+		// 		// @ts-ignore
+		// 		socket.server = this;
+		// 		this.ws.emit("connection", socket, request);
+		// 	});
+		// });
 
 		this.ws = new ws.Server({
 			maxPayload: 1024 * 1024 * 100,
-			noServer: true
+			server: this.server,
 		});
 		this.ws.on("connection", Connection);
 		this.ws.on("error", console.error);
