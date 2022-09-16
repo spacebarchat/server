@@ -4,7 +4,7 @@ import { Request, Response, Router } from "express";
 
 const router = Router();
 
-router.post("/", route({ body: "UserDeleteSchema" }), async (req: Request, res: Response) => {
+router.post("/", route({ body: "UserDeleteSchema", right: "MANAGE_USERS" }), async (req: Request, res: Response) => {
 	const body = req.body as UserDeleteSchema;
 
 	let user = await User.findOneOrFail({ where: { id: req.params.user_id }, select: [...PrivateUserProjection, "data"] });
