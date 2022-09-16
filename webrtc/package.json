@@ -2,7 +2,8 @@
 	"name": "rtc",
 	"version": "1.0.0",
 	"description": "A javascript fosscord webrtc server for voice and video communication",
-	"main": "index.js",
+	"main": "dist/index.js",
+	"types": "src/index.ts",
 	"scripts": {
 		"test": "npm run build && node dist/test.js",
 		"build": "npx tsc -p .",
@@ -23,9 +24,7 @@
 		"dotenv": "^12.0.4",
 		"libsodium": "^0.7.10",
 		"libsodium-wrappers": "^0.7.10",
-		"mediasoup": "^3.9.5-1",
 		"node-turn": "^0.0.6",
-		"sdp-transform": "^2.14.1",
 		"tsconfig-paths": "^3.12.0",
 		"ws": "^7.5.8"
 	}

@@ -1,50 +1,50 @@
-import { WebSocket, CLOSECODES } from "@fosscord/gateway";
-import { Payload } from "./index";
-import { VoiceOPCodes, Session, User, Guild } from "@fosscord/util";
-import { Server } from "../Server";
+import { CLOSECODES, Payload, Send, WebSocket } from "@fosscord/gateway";
+import { validateSchema, VoiceIdentifySchema, VoiceState } from "@fosscord/util";
+import { endpoint, getClients, VoiceOPCodes } from "@fosscord/webrtc";
+import SemanticSDP from "semantic-sdp";
+const defaultSDP = require("../../../assets/sdp.json");
 
-export interface IdentifyPayload extends Payload {
-	d: {
-		server_id: string,	//guild id
-		session_id: string,	//gateway session
-		streams: Array<{
-			type: string,
-			rid: string,	//number
-			quality: number,
-		}>,
-		token: string,		//voice_states token
-		user_id: string,
-		video: boolean,
+export async function onIdentify(this: WebSocket, data: Payload) {
+	clearTimeout(this.readyTimeout);
+	const { server_id, user_id, session_id, token, streams, video } = validateSchema("VoiceIdentifySchema", data.d) as VoiceIdentifySchema;
+
+	const voiceState = await VoiceState.findOne({ guild_id: server_id, user_id, token, session_id });
+	if (!voiceState) return this.close(CLOSECODES.Authentication_failed);
+
+	this.user_id = user_id;
+	this.session_id = session_id;
+	const sdp = SemanticSDP.SDPInfo.expand(defaultSDP);
+	sdp.setDTLS(SemanticSDP.DTLSInfo.expand({ setup: "actpass", hash: "sha-256", fingerprint: endpoint.getDTLSFingerprint() }));
+
+	this.client = {
+		websocket: this,
+		out: {
+			tracks: new Map()
+		},
+		in: {
+			audio_ssrc: 0,
+			video_ssrc: 0,
+			rtx_ssrc: 0
+		},
+		sdp,
+		channel_id: voiceState.channel_id
 	};
-}
 
-export async function onIdentify(this: Server, socket: WebSocket, data: Payload) {
+	const clients = getClients(voiceState.channel_id)!;
+	clients.add(this.client);
 
-	const session = await Session.findOneOrFail(
-		{ session_id: data.d.session_id, },
-		{
-			where: { user_id: data.d.user_id },
-			relations: ["user"]
-		}
-	);
-	const user = session.user;
-	const guild = await Guild.findOneOrFail({ id: data.d.server_id }, { relations: ["members"] });
-
-	if (!guild.members.find(x => x.id === user.id))
-		return socket.close(CLOSECODES.Invalid_intent);
-
-	var transport = this.mediasoupTransports[0] || await this.mediasoupRouters[0].createWebRtcTransport({
-		listenIps: [{ ip: "10.22.64.146" }],
-		enableUdp: true,
+	this.on("close", () => {
+		clients.delete(this.client!);
 	});
 
-	socket.send(JSON.stringify({
+	await Send(this, {
 		op: VoiceOPCodes.READY,
 		d: {
-			streams: data.d.streams ? [...data.d.streams.map(x => ({ ...x, rtx_ssrc: Math.floor(Math.random() * 10000), ssrc: Math.floor(Math.random() * 10000), active: true, }))] : undefined,
-			ssrc: Math.floor(Math.random() * 10000),
-			ip: transport.iceCandidates[0].ip,
-			port: transport.iceCandidates[0].port,
+			streams: [
+				// { type: "video", ssrc: this.ssrc + 1, rtx_ssrc: this.ssrc + 2, rid: "100", quality: 100, active: false }
+			],
+			ssrc: -1,
+			port: endpoint.getLocalPort(),
 			modes: [
 				"aead_aes256_gcm_rtpsize",
 				"aead_aes256_gcm",
@@ -53,11 +53,8 @@ export async function onIdentify(this: Server, socket: WebSocket, data: Payload)
 				"xsalsa20_poly1305_suffix",
 				"xsalsa20_poly1305"
 			],
-			experiments: [
-				"bwe_conservative_link_estimate",
-				"bwe_remote_locus_client",
-				"fixed_keyframe_interval"
-			]
-		},
-	}));
+			ip: "127.0.0.1",
+			experiments: []
+		}
+	});
 }

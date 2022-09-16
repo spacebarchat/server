@@ -1,11 +1,13 @@
+process.on("uncaughtException", console.error);
+process.on("unhandledRejection", console.error);
+
 import { config } from "dotenv";
+import { Server } from "./Server";
 config();
 
-//testing
-process.env.DATABASE = "../bundle/database.db";
-process.env.DEBUG = "mediasoup*"
+const port = Number(process.env.PORT) || 3004;
 
-import { Server } from "./Server";
-
-const server = new Server();
-server.listen();
+const server = new Server({
+	port
+});
+server.start();

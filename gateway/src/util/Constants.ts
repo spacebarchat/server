@@ -1,3 +1,5 @@
+import { VoiceOPCodes } from "@fosscord/webrtc";
+
 export enum OPCODES {
 	Dispatch = 0,
 	Heartbeat = 1,
@@ -43,7 +45,7 @@ export enum CLOSECODES {
 }
 
 export interface Payload {
-	op: OPCODES;
+	op: OPCODES | VoiceOPCodes;
 	d?: any;
 	s?: number;
 	t?: string;

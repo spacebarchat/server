@@ -29,6 +29,7 @@
 		}
 	],
 	"settings": {
-		"typescript.tsdk": "util\\node_modules\\typescript\\lib"
+		"typescript.tsdk": "util\\node_modules\\typescript\\lib",
+		"liveServer.settings.multiRootWorkspaceName": "slowcord"
 	}
 }

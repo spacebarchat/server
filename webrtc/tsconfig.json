@@ -72,12 +72,10 @@
 		"skipLibCheck": true /* Skip type checking of declaration files. */,
 		"forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
 
-		"baseUrl": "../",
 		"paths": {
-			"@fosscord/api": ["api/src/index"],
-			"@fosscord/gateway": ["gateway/src/index"],
-			"@fosscord/cdn": ["cdn/src/index"],
-			"@fosscord/util": ["util/src/index"]
+			"@fosscord/util": ["../util"],
+			"@fosscord/gateway": ["../gateway"],
+			"@fosscord/webrtc": ["."]
 		},
 	}
 }
