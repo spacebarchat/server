@@ -18,13 +18,10 @@
 
 This repository contains:
 
--   [Fosscord HTTP API Server](/api)
--   [WebSocket Gateway Server](/gateway)
--   [HTTP CDN Server](/cdn)
--   [Utility and Database Models](/util)
--   [RTC Server](/rtc)
--   [WebRTC Server](/webrtc)
--   [Admin Dashboard](/dashboard)
+-   [Fosscord HTTP API Server](/src/api)
+-   [WebSocket Gateway Server](/src/gateway)
+-   [HTTP CDN Server](/src/cdn)
+-   [Utility and Database Models](/src/util)
 
 ## [Resources](https://docs.fosscord.com/resources/)
 

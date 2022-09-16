@@ -37,7 +37,16 @@ export const ActivitySchema = {
 				$match: String
 			},
 			$instance: Boolean,
-			$flags: String
+			$flags: String,
+			// spotify and other rich presence data
+			$id: String,
+			$sync_id: String,
+			$metadata: {
+				$context_uri: String,
+				$album_id: String,
+				$artist_ids: [String],
+			},
+			$session_id: String,
 		}
 	],
 	$since: Number // unix time (in milliseconds) of when the client went idle, or null if the client is not idle

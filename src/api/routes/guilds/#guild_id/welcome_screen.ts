@@ -24,6 +24,8 @@ router.patch("/", route({ body: "GuildUpdateWelcomeScreenSchema", permission: "M
 	if (body.description) guild.welcome_screen.description = body.description;
 	if (body.enabled != null) guild.welcome_screen.enabled = body.enabled;
 
+	await guild.save();
+
 	res.sendStatus(204);
 });
 
