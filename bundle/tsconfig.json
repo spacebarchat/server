@@ -77,7 +77,8 @@
 			"@fosscord/api": ["api/src/index"],
 			"@fosscord/gateway": ["gateway/src/index"],
 			"@fosscord/cdn": ["cdn/src/index"],
-			"@fosscord/util": ["util/src/index"]
+			"@fosscord/util": ["util/src/index"],
+			"@fosscord/webrtc": ["webrtc/src/index"]
 		},
 		"plugins": [{ "transform": "@zerollup/ts-transform-paths" }],
 		"noEmitHelpers": true,

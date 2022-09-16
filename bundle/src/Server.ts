@@ -4,6 +4,7 @@ process.on("uncaughtException", console.error);
 import http from "http";
 import * as Api from "@fosscord/api";
 import * as Gateway from "@fosscord/gateway";
+import * as WebRTC from "@fosscord/webrtc";
 import { CDNServer } from "@fosscord/cdn";
 import express from "express";
 import { green, bold, yellow } from "picocolors";
@@ -17,12 +18,10 @@ const port = Number(process.env.PORT) || 3001;
 const production = process.env.NODE_ENV == "development" ? false : true;
 server.on("request", app);
 
-// @ts-ignore
 const api = new Api.FosscordServer({ server, port, production, app });
-// @ts-ignore
 const cdn = new CDNServer({ server, port, production, app });
-// @ts-ignore
 const gateway = new Gateway.Server({ server, port, production });
+const webrtc = new WebRTC.Server({ server, port, production });
 
 //this is what has been added for the /stop API route
 process.on('SIGTERM', () => {
@@ -93,7 +92,7 @@ async function main() {
 		});
 	}
 
-	await Promise.all([api.start(), cdn.start(), gateway.start()]);
+	await Promise.all([api.start(), cdn.start(), gateway.start(), webrtc.start()]);
 	console.log(`[Server] ${green(`listening on port ${bold(port)}`)}`);
 }
 
