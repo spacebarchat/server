@@ -2,7 +2,7 @@ import { CLOSECODES, Payload, Send, WebSocket } from "@fosscord/gateway";
 import { validateSchema, VoiceIdentifySchema, VoiceState } from "@fosscord/util";
 import { endpoint, getClients, VoiceOPCodes } from "@fosscord/webrtc";
 import SemanticSDP from "semantic-sdp";
-const defaultSDP = require("../../../assets/sdp.json");
+const defaultSDP = require("./sdp.json");
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	clearTimeout(this.readyTimeout);
