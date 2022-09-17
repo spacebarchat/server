@@ -1,4 +1,4 @@
-import { getIpAdress, route } from "@fosscord/api";
+import { route } from "@fosscord/api";
 import {
 	Ban,
 	BanModeratorSchema,
@@ -10,7 +10,8 @@ import {
 	HTTPError,
 	Member,
 	OrmUtils,
-	User
+	User,
+	getIpAdress
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 

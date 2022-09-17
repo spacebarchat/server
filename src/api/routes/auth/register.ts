@@ -1,7 +1,7 @@
-import { getIpAdress, IPAnalysis, isProxy, route, verifyCaptcha } from "@fosscord/api";
-import { adjustEmail, Config, FieldErrors, generateToken, HTTPError, Invite, RegisterSchema, User } from "@fosscord/util";
+import { route } from "@fosscord/api";
+import { adjustEmail, Config, FieldErrors, generateToken, HTTPError, Invite, RegisterSchema, User, ValidRegistrationToken, getIpAdress, IPAnalysis, isProxy, verifyCaptcha } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { yellow } from "picocolors";
+import { red, yellow } from "picocolors";
 import { MoreThan } from "typeorm";
 
 let bcrypt: any;
@@ -22,32 +22,10 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	// email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
 	let email = adjustEmail(body.email);
 
-	// check if registration is allowed
-	if (!register.allowNewRegistration) {
-		throw FieldErrors({
-			email: { code: "REGISTRATION_DISABLED", message: req.t("auth:register.REGISTRATION_DISABLED") }
-		});
-	}
-
 	// check if the user agreed to the Terms of Service
 	if (!body.consent) {
 		throw FieldErrors({
 			consent: { code: "CONSENT_REQUIRED", message: req.t("auth:register.CONSENT_REQUIRED") }
-		});
-	}
-
-	if (register.disabled) {
-		throw FieldErrors({
-			email: {
-				code: "DISABLED",
-				message: "registration is disabled on this instance"
-			}
-		});
-	}
-
-	if (!register.allowGuests) {
-		throw FieldErrors({
-			email: { code: "GUESTS_DISABLED", message: req.t("auth:register.GUESTS_DISABLED") }
 		});
 	}
 
@@ -71,24 +49,24 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		}
 	}
 
-	if (!register.allowMultipleAccounts) {
-		// TODO: check if fingerprint was eligible generated
-		const exists = await User.findOne({ where: { fingerprints: body.fingerprint }, select: ["id"] });
-
-		if (exists) {
-			throw FieldErrors({
-				email: {
-					code: "EMAIL_ALREADY_REGISTERED",
-					message: req.t("auth:register.EMAIL_ALREADY_REGISTERED")
-				}
-			});
-		}
+	// check if registration is allowed
+	if (!register.allowNewRegistration) {
+		throw FieldErrors({
+			email: { code: "REGISTRATION_DISABLED", message: req.t("auth:register.REGISTRATION_DISABLED") }
+		});
 	}
 
 	if (register.blockProxies) {
-		if (isProxy(await IPAnalysis(ip))) {
-			console.log(`proxy ${ip} blocked from registration`);
-			throw new HTTPError("Your IP is blocked from registration");
+		let data;
+		try {
+			data = await IPAnalysis(ip);
+		} catch (e: any) {
+			console.warn(red(`[REGISTER]: Failed to analyze IP ${ip}: failed to contact api.ipdata.co!`), e.message);
+		}
+
+		if (data && isProxy(data)) {
+			console.log(yellow(`[REGISTER] Proxy ${ip} blocked from registration!`));
+			throw new HTTPError(req.t("auth:register.IP_BLOCKED"));
 		}
 	}
 
@@ -96,15 +74,10 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	// TODO: check password strength
 
 	if (email) {
-		// replace all dots and chars after +, if its a gmail.com email
-		if (!email) {
-			throw FieldErrors({ email: { code: "INVALID_EMAIL", message: req?.t("auth:register.INVALID_EMAIL") } });
-		}
-
 		// check if there is already an account with this email
 		const exists = await User.findOne({ where: { email: email } });
 
-		if (exists) {
+		if (exists && !register.disabled) {
 			throw FieldErrors({
 				email: {
 					code: "EMAIL_ALREADY_REGISTERED",
@@ -155,14 +128,32 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		});
 	}
 
+	//check if email starts with any valid registration token
+	let validToken = false;
+	if (req.get("Referrer") && req.get("Referrer")?.includes("token=")) {
+		let token = req.get("Referrer")?.split("token=")[1].split("&")[0];
+		if (token) {
+			let registrationToken = await ValidRegistrationToken.findOne({ where: { token: token } });
+			if (registrationToken) {
+				console.log(yellow(`[REGISTER] Registration token ${token} used for registration!`));
+				await ValidRegistrationToken.delete(token);
+				validToken = true;
+			}
+			else {
+				console.log(yellow(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`));
+			}
+		}
+	}
+
 	if (
+		!validToken &&
 		limits.absoluteRate.register.enabled &&
 		(await await User.count({ where: { created_at: MoreThan(new Date(Date.now() - limits.absoluteRate.register.window)) } })) >=
 			limits.absoluteRate.register.limit
 	) {
 		console.log(
 			yellow(
-				`Global register rate limit exceeded for ${getIpAdress(req)}: ${
+				`[REGISTER] Global register rate limit exceeded for ${getIpAdress(req)}: ${
 					process.env.LOG_SENSITIVE ? req.body.email : "<email redacted>"
 				}, ${req.body.username}, ${req.body.invite ?? "No invite given"}`
 			)

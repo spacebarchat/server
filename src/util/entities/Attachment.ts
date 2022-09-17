@@ -1,6 +1,6 @@
 import { BeforeRemove, Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { URL } from "url";
-import { deleteFile } from "../util/cdn";
+import { deleteFile } from "../util/CDN";
 import { BaseClass } from "./BaseClass";
 
 @Entity("attachments")

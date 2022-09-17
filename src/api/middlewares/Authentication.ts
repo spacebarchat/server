@@ -53,7 +53,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 		})
 	)
 		return next();
-	if (!req.headers.authorization) return next(new HTTPError(req.t("auth:generic.MISSING_AUTH_HEADER"), 401));
+	if (!req.headers.authorization) return next(new HTTPError("Missing authorization header!", 401));
 
 	try {
 		const { jwtSecret } = Config.get().security;

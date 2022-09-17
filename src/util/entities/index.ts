@@ -31,3 +31,4 @@ export * from "./User";
 export * from "./UserSettings";
 export * from "./VoiceState";
 export * from "./Webhook";
+export * from "./ValidRegistrationTokens";

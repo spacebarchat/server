@@ -1,5 +1,5 @@
-import { getIpAdress, route, verifyCaptcha } from "@fosscord/api";
-import { adjustEmail, Config, FieldErrors, generateToken, LoginSchema, User } from "@fosscord/util";
+import { route } from "@fosscord/api";
+import { adjustEmail, Config, FieldErrors, generateToken, LoginSchema, User, getIpAdress, verifyCaptcha } from "@fosscord/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
 

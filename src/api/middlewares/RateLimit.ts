@@ -1,4 +1,4 @@
-import { getIpAdress } from "@fosscord/api";
+import { getIpAdress } from "@fosscord/util";
 import { Config, getRights, listenEvent } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";

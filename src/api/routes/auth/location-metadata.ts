@@ -1,4 +1,5 @@
-import { getIpAdress, IPAnalysis, route } from "@fosscord/api";
+import { route } from "@fosscord/api";
+import {getIpAdress, IPAnalysis} from "@fosscord/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 
