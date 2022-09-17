@@ -179,7 +179,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 
 	if (friendRequest) {
 		//TODO: shouldn't this be failed silently?
-		if (friendRequest.type === RelationshipType.blocked) throw new HTTPError(req.t("common:relationship.BLOCKED")); 
+		if (friendRequest.type === RelationshipType.blocked) throw new HTTPError(req.t("common:relationship.BLOCKED"));
 		if (friendRequest.type === RelationshipType.friends) throw new HTTPError(req.t("common:relationship.ALREADY_FRIENDS"));
 		// accept friend request
 		incoming_relationship = friendRequest as any; //TODO: checkme, any cast

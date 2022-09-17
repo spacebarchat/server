@@ -19,7 +19,8 @@ const DEFAULT_FETCH_OPTIONS: any = {
 };
 
 router.post("/", async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
 
 	if (!req.body) throw new HTTPError("Invalid Body");
 

@@ -17,7 +17,8 @@ const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 const router = Router();
 
 router.post("/", multer.single("file"), async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
 	if (!req.file) throw new HTTPError(req.t("common:body.MISSING_FILE"));
 	const { buffer, mimetype, size, originalname, fieldname } = req.file;
 	const { guild_id, user_id } = req.params;
@@ -72,7 +73,8 @@ router.get("/:hash", async (req: Request, res: Response) => {
 });
 
 router.delete("/:id", async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
 	const { guild_id, user_id, id } = req.params;
 	const path = `guilds/${guild_id}/users/${user_id}/avatars/${id}`;
 

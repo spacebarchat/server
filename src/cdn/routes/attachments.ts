@@ -10,7 +10,8 @@ const router = Router();
 const SANITIZED_CONTENT_TYPE = ["text/html", "text/mhtml", "multipart/related", "application/xhtml+xml"];
 
 router.post("/:channel_id", multer.single("file"), async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
 	if (!req.file) throw new HTTPError(req.t("common:body.MISSING_FILE"));
 
 	const { buffer, mimetype, size, originalname, fieldname } = req.file;
@@ -64,7 +65,8 @@ router.get("/:channel_id/:id/:filename", async (req: Request, res: Response) => 
 });
 
 router.delete("/:channel_id/:id/:filename", async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
 
 	const { channel_id, id, filename } = req.params;
 	const path = `attachments/${channel_id}/${id}/${filename}`;

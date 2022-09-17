@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class registrationTokens1663440585960 implements MigrationInterface {
-    name = 'registrationTokens1663440585960'
+	name = "registrationTokens1663440585960";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             CREATE TABLE "valid_registration_tokens" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "token" varchar NOT NULL,
@@ -12,7 +12,7 @@ export class registrationTokens1663440585960 implements MigrationInterface {
                 "expires_at" datetime NOT NULL
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "temporary_users" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "username" varchar NOT NULL,
@@ -49,7 +49,7 @@ export class registrationTokens1663440585960 implements MigrationInterface {
                 CONSTRAINT "FK_76ba283779c8441fd5ff819c8cf" FOREIGN KEY ("settingsId") REFERENCES "user_settings" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "temporary_users"(
                     "id",
                     "username",
@@ -116,21 +116,21 @@ export class registrationTokens1663440585960 implements MigrationInterface {
                 "settingsId"
             FROM "users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             ALTER TABLE "temporary_users"
                 RENAME TO "users"
         `);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`
             ALTER TABLE "users"
                 RENAME TO "temporary_users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             CREATE TABLE "users" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "username" varchar NOT NULL,
@@ -168,7 +168,7 @@ export class registrationTokens1663440585960 implements MigrationInterface {
                 CONSTRAINT "FK_76ba283779c8441fd5ff819c8cf" FOREIGN KEY ("settingsId") REFERENCES "user_settings" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION
             )
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             INSERT INTO "users"(
                     "id",
                     "username",
@@ -235,12 +235,11 @@ export class registrationTokens1663440585960 implements MigrationInterface {
                 "settingsId"
             FROM "temporary_users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "temporary_users"
         `);
-        await queryRunner.query(`
+		await queryRunner.query(`
             DROP TABLE "valid_registration_tokens"
         `);
-    }
-
+	}
 }

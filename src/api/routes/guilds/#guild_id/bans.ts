@@ -5,13 +5,13 @@ import {
 	BanRegistrySchema,
 	DiscordApiErrors,
 	emitEvent,
+	getIpAdress,
 	GuildBanAddEvent,
 	GuildBanRemoveEvent,
 	HTTPError,
 	Member,
 	OrmUtils,
-	User,
-	getIpAdress
+	User
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 

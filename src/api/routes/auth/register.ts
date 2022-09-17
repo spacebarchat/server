@@ -1,8 +1,22 @@
 import { route } from "@fosscord/api";
-import { adjustEmail, Config, FieldErrors, generateToken, HTTPError, Invite, RegisterSchema, User, ValidRegistrationToken, getIpAdress, IPAnalysis, isProxy, verifyCaptcha } from "@fosscord/util";
+import {
+	adjustEmail,
+	Config,
+	FieldErrors,
+	generateToken,
+	getIpAdress,
+	HTTPError,
+	Invite,
+	IPAnalysis,
+	isProxy,
+	RegisterSchema,
+	User,
+	ValidRegistrationToken,
+	verifyCaptcha
+} from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { red, yellow } from "picocolors";
-import { MoreThan } from "typeorm";
+import { LessThan, MoreThan } from "typeorm";
 
 let bcrypt: any;
 try {
@@ -133,13 +147,13 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	if (req.get("Referrer") && req.get("Referrer")?.includes("token=")) {
 		let token = req.get("Referrer")?.split("token=")[1].split("&")[0];
 		if (token) {
-			let registrationToken = await ValidRegistrationToken.findOne({ where: { token: token } });
+			await ValidRegistrationToken.delete({ expires_at: LessThan(new Date()) });
+			let registrationToken = await ValidRegistrationToken.findOne({ where: { token: token, expires_at: MoreThan(new Date()) } });
 			if (registrationToken) {
 				console.log(yellow(`[REGISTER] Registration token ${token} used for registration!`));
 				await ValidRegistrationToken.delete(token);
 				validToken = true;
-			}
-			else {
+			} else {
 				console.log(yellow(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`));
 			}
 		}

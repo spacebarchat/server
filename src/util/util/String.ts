@@ -1,7 +1,7 @@
-import { SPECIAL_CHAR } from "./Regex";
 import { FieldErrors } from "@fosscord/util";
 import { Request } from "express";
 import { ntob } from "./Base64";
+import { SPECIAL_CHAR } from "./Regex";
 
 export function checkLength(str: string, min: number, max: number, key: string, req: Request) {
 	if (str.length < min || str.length > max) {

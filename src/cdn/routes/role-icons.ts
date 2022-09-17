@@ -17,7 +17,8 @@ const ALLOWED_MIME_TYPES = [...STATIC_MIME_TYPES];
 const router = Router();
 
 router.post("/:role_id", multer.single("file"), async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
 	if (!req.file) throw new HTTPError(req.t("common:body.MISSING_FILE"));
 	const { buffer, mimetype, size, originalname, fieldname } = req.file;
 	const { role_id } = req.params;
@@ -71,7 +72,8 @@ router.get("/:role_id/:hash", async (req: Request, res: Response) => {
 });
 
 router.delete("/:role_id/:id", async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
 	const { role_id, id } = req.params;
 	const path = `role-icons/${role_id}/${id}`;
 
