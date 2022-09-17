@@ -1,6 +1,8 @@
 import { getIpAdress, IPAnalysis, isProxy, route, verifyCaptcha } from "@fosscord/api";
 import { adjustEmail, Config, FieldErrors, generateToken, HTTPError, Invite, RegisterSchema, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";
+import { yellow } from "picocolors";
+import { MoreThan } from "typeorm";
 
 let bcrypt: any;
 try {
@@ -14,7 +16,7 @@ const router: Router = Router();
 
 router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as RegisterSchema;
-	const { register, security } = Config.get();
+	const { register, security, limits } = Config.get();
 	const ip = getIpAdress(req);
 
 	// email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
@@ -150,6 +152,23 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		// require invite to register -> e.g. for organizations to send invites to their employees
 		throw FieldErrors({
 			email: { code: "INVITE_ONLY", message: req.t("auth:register.INVITE_ONLY") }
+		});
+	}
+
+	if (
+		limits.absoluteRate.register.enabled &&
+		(await await User.count({ where: { created_at: MoreThan(new Date(Date.now() - limits.absoluteRate.register.window)) } })) >=
+			limits.absoluteRate.register.limit
+	) {
+		console.log(
+			yellow(
+				`Global register rate limit exceeded for ${getIpAdress(req)}: ${
+					process.env.LOG_SENSITIVE ? req.body.email : "<email redacted>"
+				}, ${req.body.username}, ${req.body.invite ?? "No invite given"}`
+			)
+		);
+		throw FieldErrors({
+			email: { code: "TOO_MANY_REGISTRATIONS", message: req.t("auth:register.TOO_MANY_REGISTRATIONS") }
 		});
 	}
 
