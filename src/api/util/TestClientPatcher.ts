@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import { formatFile } from "@fosscord/util";
 
 console.log('[TestClient] Loading private assets...');
 
@@ -27,10 +28,11 @@ fs.readdirSync(path.join(iconsRoot, "custom")).forEach(file => {
 console.log('[TestClient] Patcher ready!');
 
 export function patchFile(filePath: string, content: string): string {
-    console.log(`[TestClient] Patching ${filePath}`);
+    //console.log(`[TestClient] Patching ${filePath}`);
     let startTime = Date.now();
     
-    content = prettier(filePath, content);
+    content = formatFile(filePath, content);
+    //content = prettier(filePath, content);
     content = autoPatch(filePath, content);
 
     console.log(`[TestClient] Patched ${filePath} in ${Date.now() - startTime}ms`);
@@ -104,18 +106,12 @@ function autoPatch(filePath: string, content: string): string {
     content = content.replace(/d: "M23\.0212.*/, `d: "${icons.get("homeIcon.path")!.toString()}"`);
     content = content.replace('width: n, height: o, viewBox: "0 0 28 20"', 'width: 48, height: 48, viewBox: "0 0 48 48"');
 
-    //undo webpacking
-    // - booleans
-    content = content.replace(/!0/g, "true");
-    content = content.replace(/!1/g, "false");
-    // - real esmodule defs
-    content = content.replace(/Object.defineProperty\((.), "__esModule", { value: (.*) }\);/g, '\$1.__esModule = \$2;');
-
+    
     //save some time on load resolving asset urls...
     content = content.replaceAll('e.exports = n.p + "', 'e.exports = "/assets/');
     content = content.replaceAll('e.exports = r.p + "', 'e.exports = "/assets/');
     
 
-    console.log(`[TestClient] Autopatched ${path.basename(filePath)}!`);
+    //console.log(`[TestClient] Autopatched ${path.basename(filePath)}!`);
     return content;
 }
