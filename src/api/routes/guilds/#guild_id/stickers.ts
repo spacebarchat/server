@@ -37,7 +37,7 @@ router.post(
 	bodyParser,
 	route({ permission: "MANAGE_EMOJIS_AND_STICKERS", body: "ModifyGuildStickerSchema" }),
 	async (req: Request, res: Response) => {
-		if (!req.file) throw new HTTPError("missing file");
+		if (!req.file) throw new HTTPError(req.t("common:body.MISSING_FILE"));
 
 		const { guild_id } = req.params;
 		const body = req.body as ModifyGuildStickerSchema;

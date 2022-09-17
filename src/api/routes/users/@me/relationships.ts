@@ -69,7 +69,7 @@ router.post("/", route({ body: "RelationshipPostSchema" }), async (req: Request,
 
 router.delete("/:id", route({}), async (req: Request, res: Response) => {
 	const { id } = req.params;
-	if (id === req.user_id) throw new HTTPError("You can't remove yourself as a friend");
+	if (id === req.user_id) throw new HTTPError(req.t("common:relationship.REMOVE_SELF"));
 
 	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: userProjection, relations: ["relationships"] });
 	const friend = await User.findOneOrFail({ where: { id: id }, select: userProjection, relations: ["relationships"] });
@@ -77,7 +77,7 @@ router.delete("/:id", route({}), async (req: Request, res: Response) => {
 	const relationship = user.relationships.find((x) => x.to_id === id);
 	const friendRequest = friend.relationships.find((x) => x.to_id === req.user_id);
 
-	if (!relationship) throw new HTTPError("You are not friends with the user", 404);
+	if (!relationship) throw new HTTPError(req.t("common:relationship.NOT_FRIENDS"));
 	if (relationship?.type === RelationshipType.blocked) {
 		// unblock user
 
@@ -118,7 +118,7 @@ export default router;
 
 async function updateRelationship(req: Request, res: Response, friend: User, type: RelationshipType) {
 	const id = friend.id;
-	if (id === req.user_id) throw new HTTPError("You can't add yourself as a friend");
+	if (id === req.user_id) throw new HTTPError(req.t("common:relationship.ADD_SELF"));
 
 	const user = await User.findOneOrFail({
 		where: { id: req.user_id },
@@ -132,7 +132,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 	// TODO: you can add infinitely many blocked users (should this be prevented?)
 	if (type === RelationshipType.blocked) {
 		if (relationship) {
-			if (relationship.type === RelationshipType.blocked) throw new HTTPError("You already blocked the user");
+			if (relationship.type === RelationshipType.blocked) throw new HTTPError(req.t("common:relationship.ALREADY_BLOCKED"));
 			relationship.type = RelationshipType.blocked;
 			await relationship.save();
 		} else {
@@ -178,17 +178,18 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 	});
 
 	if (friendRequest) {
-		if (friendRequest.type === RelationshipType.blocked) throw new HTTPError("The user blocked you");
-		if (friendRequest.type === RelationshipType.friends) throw new HTTPError("You are already friends with the user");
+		//TODO: shouldn't this be failed silently?
+		if (friendRequest.type === RelationshipType.blocked) throw new HTTPError(req.t("common:relationship.BLOCKED")); 
+		if (friendRequest.type === RelationshipType.friends) throw new HTTPError(req.t("common:relationship.ALREADY_FRIENDS"));
 		// accept friend request
 		incoming_relationship = friendRequest as any; //TODO: checkme, any cast
 		incoming_relationship.type = RelationshipType.friends;
 	}
 
 	if (relationship) {
-		if (relationship.type === RelationshipType.outgoing) throw new HTTPError("You already sent a friend request");
-		if (relationship.type === RelationshipType.blocked) throw new HTTPError("Unblock the user before sending a friend request");
-		if (relationship.type === RelationshipType.friends) throw new HTTPError("You are already friends with the user");
+		if (relationship.type === RelationshipType.outgoing) throw new HTTPError(req.t("common:relationship.ALREADY_SENT"));
+		if (relationship.type === RelationshipType.blocked) throw new HTTPError(req.t("common:relationship.UNBLOCK"));
+		if (relationship.type === RelationshipType.friends) throw new HTTPError(req.t("common:relationship.ALREADY_FRIENDS"));
 		outgoing_relationship = relationship as any; //TODO: checkme, any cast
 		outgoing_relationship.type = RelationshipType.friends;
 	}

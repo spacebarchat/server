@@ -19,7 +19,7 @@ const DEFAULT_FETCH_OPTIONS: any = {
 };
 
 router.post("/", async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
+	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
 
 	if (!req.body) throw new HTTPError("Invalid Body");
 
@@ -44,7 +44,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	const file = await storage.get(`/external/${id}`);
-	if (!file) throw new HTTPError("File not found");
+	if (!file) throw new HTTPError(req.t("common:notfound.FILE"));
 	const result = await FileType.fromBuffer(file);
 
 	res.set("Content-Type", result?.mime);

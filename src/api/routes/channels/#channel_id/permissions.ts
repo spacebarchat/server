@@ -21,12 +21,12 @@ router.put(
 		const body = req.body as ChannelPermissionOverwriteSchema;
 
 		let channel = await Channel.findOneOrFail({ where: { id: channel_id } });
-		if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
+		if (!channel.guild_id) throw new HTTPError(req.t("common:notfound.CHANNEL"), 404);
 
 		if (body.type === 0) {
-			if (!(await Role.count({ where: { id: overwrite_id } }))) throw new HTTPError("role not found", 404);
+			if (!(await Role.count({ where: { id: overwrite_id } }))) throw new HTTPError(req.t("common:notfound.ROLE"), 404);
 		} else if (body.type === 1) {
-			if (!(await Member.count({ where: { id: overwrite_id } }))) throw new HTTPError("user not found", 404);
+			if (!(await Member.count({ where: { id: overwrite_id } }))) throw new HTTPError(req.t("common:notfound.USER"), 404);
 		} else throw new HTTPError("type not supported", 501);
 
 		// @ts-ignore
@@ -60,7 +60,7 @@ router.delete("/:overwrite_id", route({ permission: "MANAGE_ROLES" }), async (re
 	const { channel_id, overwrite_id } = req.params;
 
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
-	if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
+	if (!channel.guild_id) throw new HTTPError(req.t("common:notfound.CHANNEL"), 404);
 
 	channel.permission_overwrites = channel.permission_overwrites!.filter((x) => x.id === overwrite_id);
 

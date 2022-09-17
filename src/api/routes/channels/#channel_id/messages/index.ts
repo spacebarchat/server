@@ -53,7 +53,7 @@ export function isTextChannel(type: ChannelType): boolean {
 router.get("/", async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
-	if (!channel) throw new HTTPError("Channel not found", 404);
+	if (!channel) throw new HTTPError(req.t("common:notfound.CHANNEL"), 404);
 
 	isTextChannel(channel.type);
 	const around = req.query.around ? `${req.query.around}` : undefined;

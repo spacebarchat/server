@@ -14,5 +14,28 @@
 		"EMAIL_TYPE_INVALID_EMAIL": "Not a well-formed email address",
 		"DATE_TYPE_PARSE": "Could not parse {{date}}. Should be ISO8601",
 		"BASE_TYPE_BAD_LENGTH": "Must be between {{length}} in length"
+	},
+	"body": {
+		"INVALID_BODY": "Invalid Body",
+		"INVALID_REQUEST_SIGNATURE": "Invalid request signature",
+		"MISSING_FILE": "File missing",
+		"INVALID_FILE_TYPE": "Invalid file type"
+	},
+	"notfound": {
+		"CHANNEL": "This channel doesn't exist",
+		"USER": "User not found",
+		"ROLE": "Role not found",
+		"REACTION": "Reaction not found",
+		"FILE": "File not found"
+	},
+	"relationship": {
+		"ALREADY_BLOCKED": "You already blocked the user",
+		"NOT_FRIENDS": "You are not friends with the user",
+		"ALREADY_FRIENDS": "You are already friends with the user",
+		"ALREADY_SENT": "You already sent a friend request",
+		"ADD_SELF": "You can't add yourself as a friend",
+		"REMOVE_SELF": "You can't remove yourself as a friend",
+		"UNBLOCK": "Unblock the user before sending a friend request",
+		"BLOCKED": "The user blocked you"
 	}
 }
