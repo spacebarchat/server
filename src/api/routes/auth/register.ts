@@ -17,6 +17,7 @@ import {
 } from "@fosscord/api";
 import bcrypt from "bcrypt";
 import { HTTPError } from "lambert-server";
+import { MoreThan } from "typeorm";
 
 const router: Router = Router();
 
@@ -25,7 +26,7 @@ router.post(
 	route({ body: "RegisterSchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as RegisterSchema;
-		const { register, security } = Config.get();
+		const { register, security, limits } = Config.get();
 		const ip = getIpAdress(req);
 
 		// email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
@@ -195,6 +196,19 @@ router.post(
 					code: "INVITE_ONLY",
 					message: req.t("auth:register.INVITE_ONLY"),
 				},
+			});
+		}
+
+		if (
+			limits.absoluteRate.register.enabled &&
+			(await User.count({ where: { created_at: MoreThan(new Date(Date.now() - limits.absoluteRate.register.window)) } }))
+			>= limits.absoluteRate.register.limit
+		) {
+			console.log(
+				`Global register ratelimit exceeded for ${getIpAdress(req)}, ${req.body.username}, ${req.body.invite || "No invite given"}`
+			);
+			throw FieldErrors({
+				email: { code: "TOO_MANY_REGISTRATIONS", message: req.t("auth:register.TOO_MANY_REGISTRATIONS") }
 			});
 		}
 
