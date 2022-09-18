@@ -44,6 +44,7 @@ declare global {
 
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
 	if (req.method === "OPTIONS") return res.sendStatus(204);
+	if (req.url.startsWith("/util")) return next();
 	const url = req.url.replace(API_PREFIX, "");
 	if (url.startsWith("/invites") && req.method === "GET") return next();
 	if (

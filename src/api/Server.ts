@@ -1,6 +1,6 @@
-import { Config, getOrInitialiseDatabase, initEvent, registerRoutes } from "@fosscord/util";
+import { Config, getOrInitialiseDatabase, initEvent, registerRoutes, walk } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
-import { Server, ServerOptions } from "lambert-server";
+import { Server, ServerOptions, traverseDirectory } from "lambert-server";
 import morgan from "morgan";
 import path from "path";
 import { red } from "picocolors";
@@ -81,6 +81,24 @@ export class FosscordServer extends Server {
 		app.use("/api/v8", api);
 		app.use("/api/v9", api);
 		app.use("/api", api); // allow unversioned requests
+
+		let utils = walk(path.join(__dirname, "routes-util"));
+		for (let file of utils) {
+			const fullPath = file;
+			file = file.replace(path.join(__dirname, "routes-util"), "");
+			console.log(`[API] Registering util ${file}`);
+			if(file.endsWith(".js") || file.endsWith(".ts") && !file.endsWith(".web.js")) {
+				require(fullPath).default("/util/" + file.replace(".ts","").replace(".js", ""), app);
+			}
+			else {
+				app.use("/util/"+file, (req, res) => {
+					return res.sendFile(path.join(__dirname, "routes-util", file));
+				})
+			}
+		}
+		/*await traverseDirectory({dirname: }, (file) => {
+			app.use("/" + file, (file.endsWith(".ts") || file.endsWith(".js")) ? require(file) : (req, res) => res.status(404).json({ message: "404 endpoint not found", code: 0 }));
+		});*/
 
 		this.app.use(ErrorHandler);
 		TestClient(this.app);

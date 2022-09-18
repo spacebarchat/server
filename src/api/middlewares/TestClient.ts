@@ -83,6 +83,7 @@ export default function TestClient(app: Application) {
 		res.send(fs.readFileSync(path.join(__dirname, "..", "..", "..", "assets", "developers.html"), { encoding: "utf8" }));
 	});
 	app.get("*", (req: Request, res: Response) => {
+		if (req.url.startsWith("/util")) return;
 		const { useTestClient } = Config.get().client;
 		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
 		res.set("content-type", "text/html");

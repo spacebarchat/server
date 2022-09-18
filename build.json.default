@@ -11,6 +11,6 @@
 	"quiet": false,
 	"steps": {
 		"pre": ["clean"],
-		"post": ["remap_imports"]
+		"post": ["util_resources", "remap_imports"]
 	}
 }
