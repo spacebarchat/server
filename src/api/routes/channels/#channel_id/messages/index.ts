@@ -6,6 +6,7 @@ import {
 	Config,
 	DmChannelDTO,
 	emitEvent,
+	FieldErrors,
 	getPermission,
 	Message,
 	MessageCreateEvent,
@@ -16,10 +17,13 @@ import {
 	MessageCreateSchema,
 	ReadState,
 	DiscordApiErrors,
+	getRights,
+	Rights,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { handleMessage, postHandleMessage, route } from "@fosscord/api";
+import { handleMessage, postHandleMessage, route, getIpAdress } from "@fosscord/api";
 import multer from "multer";
+import { yellow } from "picocolors";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 import { URL } from "url";
 
@@ -212,6 +216,23 @@ router.post(
 			});
 			if (existing) {
 				return res.json(existing);
+			}
+		}
+
+		if (!req.rights.has(Rights.FLAGS.BYPASS_RATE_LIMITS)) {
+			var limits = Config.get().limits;
+			if (limits.absoluteRate.register.enabled) {
+				const count = await Message.count({
+					where: {
+						channel_id,
+						timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window))
+					}
+				});
+
+				if (count >= limits.absoluteRate.sendMessage.limit)
+					throw FieldErrors({
+						channel_id: { code: "TOO_MANY_MESSAGES", message: req.t("common:toomany.MESSAGE") }
+					});
 			}
 		}
 
