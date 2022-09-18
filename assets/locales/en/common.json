@@ -28,6 +28,14 @@
 		"REACTION": "Reaction not found",
 		"FILE": "File not found"
 	},
+	"toomany": {
+		"CHANNEL": "Too many channels",
+		"USER": "Too many users",
+		"ROLE": "Too many roles",
+		"REACTION": "Too many reactions",
+		"FILE": "Too many files",
+		"MESSAGE": "Too many messages"
+	},
 	"relationship": {
 		"ALREADY_BLOCKED": "You already blocked the user",
 		"NOT_FRIENDS": "You are not friends with the user",

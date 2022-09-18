@@ -6,17 +6,23 @@ import {
 	Config,
 	DmChannelDTO,
 	emitEvent,
+	FieldErrors,
+	getIpAdress,
 	getPermission,
+	getRights,
 	HTTPError,
 	Member,
 	Message,
 	MessageCreateEvent,
 	MessageCreateSchema,
+	Permissions,
+	Rights,
 	Snowflake,
 	uploadFile
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import multer from "multer";
+import { yellow } from "picocolors";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 import { URL } from "url";
 
@@ -158,6 +164,23 @@ router.post(
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
 		if (!channel.isWritable()) {
 			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
+		}
+		var limits = Config.get().limits;
+
+		if (
+			!(await getRights(req.user_id)).has(Rights.FLAGS.BYPASS_RATE_LIMITS) &&
+			limits.absoluteRate.register.enabled &&
+			(await await Message.count({ where: { channel_id, timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window)) } })) >=
+				limits.absoluteRate.register.limit
+		) {
+			console.log(
+				yellow(
+					`[MESSAGE] Global register rate limit exceeded for ${getIpAdress(req)}: ${channel_id}, ${req.user_id}, ${body.content}`
+				)
+			);
+			throw FieldErrors({
+				channel_id: { code: "TOO_MANY_MESSAGES", message: req.t("common:toomany.MESSAGE") }
+			});
 		}
 
 		const files = (req.files as Express.Multer.File[]) ?? [];
