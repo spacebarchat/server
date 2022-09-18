@@ -32,6 +32,8 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	const body = req.body as RegisterSchema;
 	const { register, security, limits } = Config.get();
 	const ip = getIpAdress(req);
+	// tokens bypass requirements:
+	const hasToken = req.get("Referrer") && req.get("Referrer")?.includes("token=");
 
 	// email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
 	let email = adjustEmail(body.email);
@@ -43,7 +45,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		});
 	}
 
-	if (register.requireCaptcha && security.captcha.enabled) {
+	if (register.requireCaptcha && security.captcha.enabled && !hasToken) {
 		const { sitekey, service } = security.captcha;
 		if (!body.captcha_key) {
 			return res?.status(400).json({
@@ -64,7 +66,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	}
 
 	// check if registration is allowed
-	if (!register.allowNewRegistration) {
+	if (!register.allowNewRegistration && !hasToken) {
 		throw FieldErrors({
 			email: { code: "REGISTRATION_DISABLED", message: req.t("auth:register.REGISTRATION_DISABLED") }
 		});
@@ -142,9 +144,9 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		});
 	}
 
-	//check if email starts with any valid registration token
+	//check if referrer starts with any valid registration token
 	let validToken = false;
-	if (req.get("Referrer") && req.get("Referrer")?.includes("token=")) {
+	if (hasToken) {
 		let token = req.get("Referrer")?.split("token=")[1].split("&")[0];
 		if (token) {
 			await ValidRegistrationToken.delete({ expires_at: LessThan(new Date()) });
@@ -172,9 +174,29 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 				}, ${req.body.username}, ${req.body.invite ?? "No invite given"}`
 			)
 		);
-		throw FieldErrors({
-			email: { code: "TOO_MANY_REGISTRATIONS", message: req.t("auth:register.TOO_MANY_REGISTRATIONS") }
+		let oldest = await User.findOne({
+			where: { created_at: MoreThan(new Date(Date.now() - limits.absoluteRate.register.window)) },
+			order: { created_at: "ASC" }
 		});
+		if (!oldest) {
+			console.warn(
+				red(
+					`[REGISTER/WARN] Global rate limits exceeded, but no oldest user found. This should not happen. Did you misconfigure the limits?`
+				)
+			);
+		} else {
+			let retryAfterSec = Math.ceil((oldest!.created_at.getTime() - new Date(Date.now() - limits.absoluteRate.register.window).getTime())/1000);
+			return res
+				.status(429)
+				.set("X-RateLimit-Limit", `${limits.absoluteRate.register.limit}`)
+				.set("X-RateLimit-Remaining", "0")
+				.set("X-RateLimit-Reset", `${(oldest!.created_at.getTime() + limits.absoluteRate.register.window) / 1000}`)
+				.set("X-RateLimit-Reset-After", `${retryAfterSec}`)
+				.set("X-RateLimit-Global", `true`)
+				.set("Retry-After", `${retryAfterSec}`)
+				.set("X-RateLimit-Bucket", `register`)
+				.send({ message: req.t("auth:register.TOO_MANY_REGISTRATIONS"), retry_after: retryAfterSec, global: true });
+		}
 	}
 
 	const user = await User.register({ ...body, req });

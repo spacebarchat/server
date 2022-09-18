@@ -6,7 +6,6 @@ import {
 	Config,
 	DmChannelDTO,
 	emitEvent,
-	FieldErrors,
 	getIpAdress,
 	getPermission,
 	getRights,
@@ -21,7 +20,7 @@ import {
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import multer from "multer";
-import { yellow } from "picocolors";
+import { red, yellow } from "picocolors";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 import { URL } from "url";
 
@@ -168,19 +167,39 @@ router.post(
 
 		if (
 			!(await getRights(req.user_id)).has(Rights.FLAGS.BYPASS_RATE_LIMITS) &&
-			limits.absoluteRate.register.enabled &&
-			(await await Message.count({
+			limits.absoluteRate.sendMessage.enabled &&
+			(await Message.count({
 				where: { channel_id, timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window)) }
-			})) >= limits.absoluteRate.register.limit
+			})) >= limits.absoluteRate.sendMessage.limit
 		) {
 			console.log(
 				yellow(
 					`[MESSAGE] Global register rate limit exceeded for ${getIpAdress(req)}: ${channel_id}, ${req.user_id}, ${body.content}`
 				)
 			);
-			throw FieldErrors({
-				channel_id: { code: "TOO_MANY_MESSAGES", message: req.t("common:toomany.MESSAGE") }
+			let oldest = await Message.findOne({
+				where: { channel_id, timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window)) },
+				order: { timestamp: "ASC" }
 			});
+			if (!oldest) {
+				console.warn(
+					red(
+						`[MESSAGE/WARN] Global rate limits exceeded, but no oldest message found. This should not happen. Did you misconfigure the limits?`
+					)
+				);
+			} else {
+				let retryAfterSec = Math.ceil((oldest!.timestamp.getTime() - new Date(Date.now() - limits.absoluteRate.sendMessage.window).getTime())/1000);
+				return res
+					.status(429)
+					.set("X-RateLimit-Limit", `${limits.absoluteRate.sendMessage.limit}`)
+					.set("X-RateLimit-Remaining", "0")
+					.set("X-RateLimit-Reset", `${(oldest!.timestamp.getTime() + limits.absoluteRate.sendMessage.window) / 1000}`)
+					.set("X-RateLimit-Reset-After", `${retryAfterSec}`)
+					.set("X-RateLimit-Global", `false`)
+					.set("Retry-After", `${retryAfterSec}`)
+					.set("X-RateLimit-Bucket", `chnl_${channel_id}`)
+					.send({ message: req.t("common:toomany.MESSAGE"), retry_after: retryAfterSec, global: false });
+			}
 		}
 
 		const files = (req.files as Express.Multer.File[]) ?? [];
