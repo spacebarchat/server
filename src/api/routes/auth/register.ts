@@ -32,11 +32,27 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	const body = req.body as RegisterSchema;
 	const { register, security, limits } = Config.get();
 	const ip = getIpAdress(req);
-	// tokens bypass requirements:
-	const hasToken = req.get("Referrer") && req.get("Referrer")?.includes("token=");
 
 	// email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
 	let email = adjustEmail(body.email);
+
+	//check if referrer starts with any valid registration token
+	//!! bypasses captcha and registration disabling !!//
+	let validToken = false;
+	if (req.get("Referrer") && req.get("Referrer")?.includes("token=")) {
+		let token = req.get("Referrer")?.split("token=")[1].split("&")[0];
+		if (token) {
+			await ValidRegistrationToken.delete({ expires_at: LessThan(new Date()) });
+			let registrationToken = await ValidRegistrationToken.findOne({ where: { token: token, expires_at: MoreThan(new Date()) } });
+			if (registrationToken) {
+				console.log(yellow(`[REGISTER] Registration token ${token} used for registration!`));
+				await ValidRegistrationToken.delete(token);
+				validToken = true;
+			} else {
+				console.log(yellow(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`));
+			}
+		}
+	}
 
 	// check if the user agreed to the Terms of Service
 	if (!body.consent) {
@@ -45,7 +61,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		});
 	}
 
-	if (register.requireCaptcha && security.captcha.enabled && !hasToken) {
+	if (register.requireCaptcha && security.captcha.enabled && !validToken) {
 		const { sitekey, service } = security.captcha;
 		if (!body.captcha_key) {
 			return res?.status(400).json({
@@ -66,7 +82,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	}
 
 	// check if registration is allowed
-	if (!register.allowNewRegistration && !hasToken) {
+	if (!register.allowNewRegistration && !validToken) {
 		throw FieldErrors({
 			email: { code: "REGISTRATION_DISABLED", message: req.t("auth:register.REGISTRATION_DISABLED") }
 		});
@@ -142,23 +158,6 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		throw FieldErrors({
 			email: { code: "INVITE_ONLY", message: req.t("auth:register.INVITE_ONLY") }
 		});
-	}
-
-	//check if referrer starts with any valid registration token
-	let validToken = false;
-	if (hasToken) {
-		let token = req.get("Referrer")?.split("token=")[1].split("&")[0];
-		if (token) {
-			await ValidRegistrationToken.delete({ expires_at: LessThan(new Date()) });
-			let registrationToken = await ValidRegistrationToken.findOne({ where: { token: token, expires_at: MoreThan(new Date()) } });
-			if (registrationToken) {
-				console.log(yellow(`[REGISTER] Registration token ${token} used for registration!`));
-				await ValidRegistrationToken.delete(token);
-				validToken = true;
-			} else {
-				console.log(yellow(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`));
-			}
-		}
 	}
 
 	if (
