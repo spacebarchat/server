@@ -15,7 +15,6 @@ import {
 	Message,
 	MessageCreateEvent,
 	MessageCreateSchema,
-	Permissions,
 	Rights,
 	Snowflake,
 	uploadFile
@@ -170,8 +169,9 @@ router.post(
 		if (
 			!(await getRights(req.user_id)).has(Rights.FLAGS.BYPASS_RATE_LIMITS) &&
 			limits.absoluteRate.register.enabled &&
-			(await await Message.count({ where: { channel_id, timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window)) } })) >=
-				limits.absoluteRate.register.limit
+			(await await Message.count({
+				where: { channel_id, timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window)) }
+			})) >= limits.absoluteRate.register.limit
 		) {
 			console.log(
 				yellow(
