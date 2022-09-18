@@ -184,7 +184,9 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 				)
 			);
 		} else {
-			let retryAfterSec = Math.ceil((oldest!.created_at.getTime() - new Date(Date.now() - limits.absoluteRate.register.window).getTime())/1000);
+			let retryAfterSec = Math.ceil(
+				(oldest!.created_at.getTime() - new Date(Date.now() - limits.absoluteRate.register.window).getTime()) / 1000
+			);
 			return res
 				.status(429)
 				.set("X-RateLimit-Limit", `${limits.absoluteRate.register.limit}`)

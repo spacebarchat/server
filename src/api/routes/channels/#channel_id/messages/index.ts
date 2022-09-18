@@ -188,7 +188,9 @@ router.post(
 					)
 				);
 			} else {
-				let retryAfterSec = Math.ceil((oldest!.timestamp.getTime() - new Date(Date.now() - limits.absoluteRate.sendMessage.window).getTime())/1000);
+				let retryAfterSec = Math.ceil(
+					(oldest!.timestamp.getTime() - new Date(Date.now() - limits.absoluteRate.sendMessage.window).getTime()) / 1000
+				);
 				return res
 					.status(429)
 					.set("X-RateLimit-Limit", `${limits.absoluteRate.sendMessage.limit}`)
