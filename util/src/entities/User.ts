@@ -69,8 +69,10 @@ export class User extends BaseClass {
 
 	setDiscriminator(val: string) {
 		const number = Number(val);
+		if (val.length > 4) throw new Error("invalid discriminator");
 		if (isNaN(number)) throw new Error("invalid discriminator");
 		if (number <= 0 || number >= 10000) throw new Error("discriminator must be between 1 and 9999");
+		val = Number(val).toString()
 		this.discriminator = val.toString().padStart(4, "0");
 	}
 
@@ -136,6 +138,11 @@ export class User extends BaseClass {
 
 	@Column({ nullable: true, select: false })
 	email?: string; // email of the user
+
+	setEmail(val: string) {
+		if (!val.match(/([a-z\d.-]{3,})@([a-z\d.-]+).([a-z]{2,})/g)) throw FieldErrors({ email: { message: "Invalid email", code: "EMAIL_INVALID" } });
+        this.email = val;
+    }
 
 	@Column()
 	flags: string; // UserFlags
