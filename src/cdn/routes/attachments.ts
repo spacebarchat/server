@@ -10,8 +10,9 @@ const router = Router();
 const SANITIZED_CONTENT_TYPE = ["text/html", "text/mhtml", "multipart/related", "application/xhtml+xml"];
 
 router.post("/:channel_id", multer.single("file"), async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
-	if (!req.file) throw new HTTPError("file missing");
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
+	if (!req.file) throw new HTTPError(req.t("common:body.MISSING_FILE"));
 
 	const { buffer, mimetype, size, originalname, fieldname } = req.file;
 	const { channel_id } = req.params;
@@ -49,7 +50,7 @@ router.get("/:channel_id/:id/:filename", async (req: Request, res: Response) => 
 	const { channel_id, id, filename } = req.params;
 
 	const file = await storage.get(`attachments/${channel_id}/${id}/${filename}`);
-	if (!file) throw new HTTPError("File not found");
+	if (!file) throw new HTTPError(req.t("common:notfound.FILE"));
 	const type = await FileType.fromBuffer(file);
 	let content_type = type?.mime || "application/octet-stream";
 
@@ -64,7 +65,8 @@ router.get("/:channel_id/:id/:filename", async (req: Request, res: Response) => 
 });
 
 router.delete("/:channel_id/:id/:filename", async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
 
 	const { channel_id, id, filename } = req.params;
 	const path = `attachments/${channel_id}/${id}/${filename}`;

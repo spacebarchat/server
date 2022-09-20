@@ -6,17 +6,21 @@ import {
 	Config,
 	DmChannelDTO,
 	emitEvent,
+	getIpAdress,
 	getPermission,
+	getRights,
 	HTTPError,
 	Member,
 	Message,
 	MessageCreateEvent,
 	MessageCreateSchema,
+	Rights,
 	Snowflake,
 	uploadFile
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import multer from "multer";
+import { red, yellow } from "picocolors";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 import { URL } from "url";
 
@@ -53,7 +57,7 @@ export function isTextChannel(type: ChannelType): boolean {
 router.get("/", async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
-	if (!channel) throw new HTTPError("Channel not found", 404);
+	if (!channel) throw new HTTPError(req.t("common:notfound.CHANNEL"), 404);
 
 	isTextChannel(channel.type);
 	const around = req.query.around ? `${req.query.around}` : undefined;
@@ -158,6 +162,46 @@ router.post(
 		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
 		if (!channel.isWritable()) {
 			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
+		}
+		var limits = Config.get().limits;
+
+		if (
+			!(await getRights(req.user_id)).has(Rights.FLAGS.BYPASS_RATE_LIMITS) &&
+			limits.absoluteRate.sendMessage.enabled &&
+			(await Message.count({
+				where: { channel_id, timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window)) }
+			})) >= limits.absoluteRate.sendMessage.limit
+		) {
+			console.log(
+				yellow(
+					`[MESSAGE] Global register rate limit exceeded for ${getIpAdress(req)}: ${channel_id}, ${req.user_id}, ${body.content}`
+				)
+			);
+			let oldest = await Message.findOne({
+				where: { channel_id, timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window)) },
+				order: { timestamp: "ASC" }
+			});
+			if (!oldest) {
+				console.warn(
+					red(
+						`[MESSAGE/WARN] Global rate limits exceeded, but no oldest message found. This should not happen. Did you misconfigure the limits?`
+					)
+				);
+			} else {
+				let retryAfterSec = Math.ceil(
+					(oldest!.timestamp.getTime() - new Date(Date.now() - limits.absoluteRate.sendMessage.window).getTime()) / 1000
+				);
+				return res
+					.status(429)
+					.set("X-RateLimit-Limit", `${limits.absoluteRate.sendMessage.limit}`)
+					.set("X-RateLimit-Remaining", "0")
+					.set("X-RateLimit-Reset", `${(oldest!.timestamp.getTime() + limits.absoluteRate.sendMessage.window) / 1000}`)
+					.set("X-RateLimit-Reset-After", `${retryAfterSec}`)
+					.set("X-RateLimit-Global", `false`)
+					.set("Retry-After", `${retryAfterSec}`)
+					.set("X-RateLimit-Bucket", `chnl_${channel_id}`)
+					.send({ message: req.t("common:toomany.MESSAGE"), retry_after: retryAfterSec, global: false });
+			}
 		}
 
 		const files = (req.files as Express.Multer.File[]) ?? [];

@@ -1,10 +1,11 @@
-import { getIpAdress, route } from "@fosscord/api";
+import { route } from "@fosscord/api";
 import {
 	Ban,
 	BanModeratorSchema,
 	BanRegistrySchema,
 	DiscordApiErrors,
 	emitEvent,
+	getIpAdress,
 	GuildBanAddEvent,
 	GuildBanRemoveEvent,
 	HTTPError,

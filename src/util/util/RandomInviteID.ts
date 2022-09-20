@@ -1,13 +1,13 @@
 import { Snowflake } from "@fosscord/util";
+import crypto from "crypto";
 
-export function random(length = 6) {
+export function random(length = 6, chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") {
 	// Declare all characters
-	let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	// Pick characers randomly
 	let str = "";
 	for (let i = 0; i < length; i++) {
-		str += chars.charAt(Math.floor(Math.random() * chars.length));
+		str += chars.charAt(Math.floor(crypto.randomInt(chars.length)));
 	}
 
 	return str;
