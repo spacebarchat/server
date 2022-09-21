@@ -4,7 +4,6 @@ process.on("uncaughtException", console.error);
 import http from "http";
 import * as Api from "@fosscord/api";
 import * as Gateway from "@fosscord/gateway";
-import * as WebRTC from "@fosscord/webrtc";
 import { CDNServer } from "@fosscord/cdn";
 import express from "express";
 import { green, bold, yellow } from "picocolors";
@@ -21,14 +20,13 @@ server.on("request", app);
 const api = new Api.FosscordServer({ server, port, production, app });
 const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
-const webrtc = new WebRTC.Server({ server, port, production });
 
 //this is what has been added for the /stop API route
 process.on('SIGTERM', () => {
 	server.close(() => {
-		console.log("Stop API has been successfully POSTed, SIGTERM sent")
-	})
-})
+		console.log("Stop API has been successfully POSTed, SIGTERM sent");
+	});
+});
 //this is what has been added for the /stop API route
 
 async function main() {
@@ -89,7 +87,7 @@ async function main() {
 		app.use(Sentry.Handlers.tracingHandler());
 	}
 
-	await Promise.all([api.start(), cdn.start(), gateway.start(), webrtc.start()]);
+	await Promise.all([api.start(), cdn.start(), gateway.start()]);
 
 	if (Config.get().sentry.enabled) {
 		app.use(Sentry.Handlers.errorHandler());

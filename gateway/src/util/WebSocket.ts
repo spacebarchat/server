@@ -1,7 +1,7 @@
 import { Intents, Permissions } from "@fosscord/util";
 import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
-import { Client } from "@fosscord/webrtc";
+// import { Client } from "@fosscord/webrtc";
 
 export interface WebSocket extends WS {
 	version: number;
@@ -22,5 +22,5 @@ export interface WebSocket extends WS {
 	events: Record<string, Function>;
 	member_events: Record<string, Function>;
 	listen_options: any;
-	client?: Client;
+	// client?: Client;
 }
