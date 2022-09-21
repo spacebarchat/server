@@ -1,7 +1,7 @@
 import { Payload, Send, WebSocket } from "@fosscord/gateway";
 import { SelectProtocolSchema, validateSchema } from "@fosscord/util";
 import { endpoint, PublicIP, VoiceOPCodes } from "@fosscord/webrtc";
-import SemanticSDP from "semantic-sdp";
+import SemanticSDP, { MediaInfo, SDPInfo } from "semantic-sdp";
 
 export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 	if (!this.client) return;
@@ -24,15 +24,15 @@ export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 	const candidates = transport.getLocalCandidates();
 	const candidate = candidates[0];
 
-	const answer = `m=audio ${port} ICE/SDP
-a=fingerprint:${fingerprint}
-c=IN IP4 ${PublicIP}
-a=rtcp:${port}
-a=ice-ufrag:${ice.getUfrag()}
-a=ice-pwd:${ice.getPwd()}
-a=fingerprint:${fingerprint}
-a=candidate:1 1 ${candidate.getTransport()} ${candidate.getFoundation()} ${candidate.getAddress()} ${candidate.getPort()} typ host
-`;
+	const answer =
+		`m=audio ${port} ICE/SDP`
+		+ `a=fingerprint:${fingerprint}`
+		+ `c=IN IP4 ${PublicIP}`
+		+ `a=rtcp:${port}`
+		+ `a=ice-ufrag:${ice.getUfrag()}`
+		+ `a=ice-pwd:${ice.getPwd()}`
+		+ `a=fingerprint:${fingerprint}`
+		+ `a=candidate:1 1 ${candidate.getTransport()} ${candidate.getFoundation()} ${candidate.getAddress()} ${candidate.getPort()} typ host`;
 
 	await Send(this, {
 		op: VoiceOPCodes.SELECT_PROTOCOL_ACK,
