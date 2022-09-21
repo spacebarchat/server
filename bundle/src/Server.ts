@@ -77,12 +77,19 @@ async function main() {
 				new Tracing.Integrations.Express({ app }),
 			],
 			tracesSampleRate: Config.get().sentry.traceSampleRate,
-			environment: Config.get().sentry.environment
+			environment: Config.get().sentry.environment,
+			beforeSend: (event, hint) => {
+				const url = event.request?.url;
+				if (url?.includes("/assets/")) return null;
+				return event;
+			},
 		});
 
 		app.use(Sentry.Handlers.requestHandler());
 		app.use(Sentry.Handlers.tracingHandler());
 	}
+
+	await Promise.all([api.start(), cdn.start(), gateway.start(), webrtc.start()]);
 
 	if (Config.get().sentry.enabled) {
 		app.use(Sentry.Handlers.errorHandler());
@@ -92,7 +99,6 @@ async function main() {
 		});
 	}
 
-	await Promise.all([api.start(), cdn.start(), gateway.start(), webrtc.start()]);
 	console.log(`[Server] ${green(`listening on port ${bold(port)}`)}`);
 }
 
