@@ -78,7 +78,12 @@ async function main() {
 			environment: Config.get().sentry.environment,
 			beforeSend: (event, hint) => {
 				const url = event.request?.url;
-				if (url?.includes("/assets/")) return null;
+				if (url && url.includes("/assets/")) return null;
+
+				if (event.request?.url) {
+					event.request.url = event.request.url.split("/").map(x => !parseInt(x) ? x : ":id").join("/");
+				}
+
 				return event;
 			},
 		});
