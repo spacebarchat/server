@@ -76,16 +76,33 @@ async function main() {
 			],
 			tracesSampleRate: Config.get().sentry.traceSampleRate,
 			environment: Config.get().sentry.environment,
-			beforeSend: (event, hint) => {
-				const url = event.request?.url;
-				if (url && url.includes("/assets/")) return null;
+		});
 
-				if (event.request?.url) {
-					event.request.url = event.request.url.split("/").map(x => !parseInt(x) ? x : ":id").join("/");
-				}
+		Sentry.addGlobalEventProcessor((event, hint) => {
+			if (event.transaction) {
+				event.transaction = event.transaction.split("/").map(x => !parseInt(x) ? x : ":id").join("/");
+			}
 
-				return event;
-			},
+			delete event.request?.cookies;
+			if (event.request?.headers) {
+				delete event.request.headers["X-Real-Ip"];
+				delete event.request.headers["X-Forwarded-For"];
+				delete event.request.headers["X-Forwarded-Host"];
+				delete event.request.headers["X-Super-Properties"];
+			}
+
+			if (event.breadcrumbs) {
+				event.breadcrumbs = event.breadcrumbs.filter(x => {
+					if (x.message?.includes("identified as")) return false;
+					if (x.message?.includes("[WebSocket] closed 4009 ")) return false;
+					if (x.message?.includes("Got Resume -> cancel not implemented")) return false;
+					if (x.message?.includes("[Gateway] New connection from")) return false;
+
+					return true;
+				})
+			}
+
+			return event;
 		});
 
 		app.use(Sentry.Handlers.requestHandler());
