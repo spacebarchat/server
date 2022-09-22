@@ -94,7 +94,7 @@ async function main() {
 			if (event.breadcrumbs) {
 				event.breadcrumbs = event.breadcrumbs.filter(x => {
 					if (x.message?.includes("identified as")) return false;
-					if (x.message?.includes("[WebSocket] closed 4009 ")) return false;
+					if (x.message?.includes("[WebSocket] closed")) return false;
 					if (x.message?.includes("Got Resume -> cancel not implemented")) return false;
 					if (x.message?.includes("[Gateway] New connection from")) return false;
 
