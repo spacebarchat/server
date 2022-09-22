@@ -9,6 +9,7 @@ import { Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";
 import BigIntJson from "json-bigint";
+import Sentry from "@Sentry/node";
 const bigIntJson = BigIntJson({ storeAsString: true });
 
 const PayloadSchema = {
@@ -50,9 +51,22 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		return;
 	}
 
+	const transaction = Sentry.startTransaction({
+		op: OPCODES[data.op],
+		name: `GATEWAY ${OPCODES[data.op]}`,
+		data: {
+			...data.d,
+			token: data.d.token ? "[Redacted]" : undefined,
+		},
+	});
+
 	try {
-		return await OPCodeHandler.call(this, data);
+		var ret = await OPCodeHandler.call(this, data);
+		transaction.finish();
+		return ret;
 	} catch (error) {
+		Sentry.captureException(error);
+		transaction.finish();
 		console.error(`Error: Op ${data.op}`, error);
 		// if (!this.CLOSED && this.CLOSING)
 		return this.close(CLOSECODES.Unknown_error);
