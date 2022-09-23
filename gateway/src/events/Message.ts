@@ -9,7 +9,7 @@ import { Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";
 import BigIntJson from "json-bigint";
-import Sentry from "@Sentry/node";
+import * as Sentry from "@sentry/node";
 const bigIntJson = BigIntJson({ storeAsString: true });
 
 const PayloadSchema = {
@@ -56,7 +56,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		name: `GATEWAY ${OPCODES[data.op]}`,
 		data: {
 			...data.d,
-			token: data.d.token ? "[Redacted]" : undefined,
+			token: data?.d?.token ? "[Redacted]" : undefined,
 		},
 	});
 

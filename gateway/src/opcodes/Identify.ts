@@ -35,7 +35,7 @@ import { Recipient } from "@fosscord/util";
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	clearTimeout(this.readyTimeout);
-	if (typeof data.d?.client_state?.highest_last_message_id === "number") 
+	if (typeof data.d?.client_state?.highest_last_message_id === "number")
 		data.d.client_state.highest_last_message_id += "";
 	check.call(this, IdentifySchema, data.d);
 
@@ -297,5 +297,5 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	await setupListener.call(this);
 
-	console.log(`${this.ipAddress} identified as ${d.user.id}`)
+	console.log(`${this.ipAddress} identified as ${d.user.id}`);
 }

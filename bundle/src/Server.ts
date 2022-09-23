@@ -73,6 +73,7 @@ async function main() {
 			integrations: [
 				new Sentry.Integrations.Http({ tracing: true }),
 				new Tracing.Integrations.Express({ app }),
+				new Tracing.Integrations.Mysql(),
 			],
 			tracesSampleRate: Config.get().sentry.traceSampleRate,
 			environment: Config.get().sentry.environment,
