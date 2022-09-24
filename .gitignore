@@ -25,12 +25,9 @@ initial.json
 .yarn/cache
 build.json
 
-yarn.lock
-
 .yarn/install-state.gz
 
 dbconf.json
 
 migrations.db
 
-package-lock.json
