@@ -1,13 +1,13 @@
 import { route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
-import { getConnection } from "typeorm";
+import { getOrInitialiseDatabase } from "util/util";
 
 const router = Router();
 
-router.get("/", route({}), (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	try {
 		// test that the database is alive & responding
-		getConnection();
+		await getOrInitialiseDatabase();
 		return res.sendStatus(200);
 	} catch (e) {
 		res.sendStatus(503);
