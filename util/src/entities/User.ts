@@ -140,11 +140,9 @@ export class User extends BaseClass {
 	email?: string; // email of the user
 
 	setEmail(val?: string) {
-		if (val) {
-			val = adjustEmail(val);
-			if (!val) throw FieldErrors({ email: { message: "Invalid email", code: "EMAIL_INVALID" } });
-			if (!val.match(/([a-z\d.-]{3,})@([a-z\d.-]+).([a-z]{2,})/g)) throw FieldErrors({ email: { message: "Invalid email", code: "EMAIL_INVALID" } });
-		}
+		val = adjustEmail(val);
+		if (!val) throw FieldErrors({ email: { message: "Invalid email", code: "EMAIL_INVALID" } });
+		if (!val.match(/([a-z\d.-]{3,})@([a-z\d.-]+).([a-z]{2,})/g)) throw FieldErrors({ email: { message: "Invalid email", code: "EMAIL_INVALID" } });
 		this.email = val;
 	}
 
