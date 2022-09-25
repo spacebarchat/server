@@ -56,7 +56,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		embeds: opts.embeds || [],
 		reactions: /*opts.reactions ||*/[],
 		type: opts.type ?? 0,
-		edited_timestamp: null
 	});
 
 	if (message.content && message.content.length > Config.get().limits.message.maxCharacters) {
@@ -151,7 +150,7 @@ export async function postHandleMessage(message: Message) {
 	const data = { ...message };
 	data.embeds = data.embeds.filter((x) => x.type !== "link");
 
-	links = links.slice(0, 20); // embed max 20 links — TODO: make this configurable with instance policies
+	links = links.slice(0, 20) as RegExpMatchArray; // embed max 20 links — TODO: make this configurable with instance policies
 
 	const { endpointPublic, resizeWidthMax, resizeHeightMax } = Config.get().cdn;
 
