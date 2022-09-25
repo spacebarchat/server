@@ -18,6 +18,8 @@ import {
 	PrivateSessionProjection,
 	MemberPrivateProjection,
 	PresenceUpdateEvent,
+	DefaultUserGuildSettings,
+	UserGuildSettings,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
@@ -151,7 +153,16 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return guild;
 	});
 
-	const user_guild_settings_entries = members.map((x) => x.settings);
+	const user_guild_settings_entries = members.map((x) => ({
+		...DefaultUserGuildSettings,
+		...x.settings,
+		guild_id: x.guild.id,
+		// disgusting
+		channel_overrides: Object.entries(x.settings.channel_overrides ?? {}).map(y => ({
+			...y[1],
+			channel_id: y[0],
+		}))
+	})) as any as UserGuildSettings[];	// VERY disgusting. don't care.
 
 	const channels = recipients.map((x) => {
 		// @ts-ignore

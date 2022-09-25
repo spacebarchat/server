@@ -80,7 +80,7 @@ export class Member extends BaseClassWithoutId {
 			val = val.split("\t").join("");
 			if (BannedWords.find(val)) throw FieldErrors({ nick: { message: "Bad nickname", code: "INVALID_NICKNAME" } });
 		}
-		
+
 		this.nick = val;
 	}
 
@@ -339,20 +339,52 @@ export class Member extends BaseClassWithoutId {
 	}
 }
 
+export interface ChannelOverride {
+	message_notifications: number;
+	mute_config: MuteConfig;
+	muted: boolean;
+	channel_id: string | null;
+}
+
 export interface UserGuildSettings {
+	// channel_overrides: {
+	// 	channel_id: string;
+	// 	message_notifications: number;
+	// 	mute_config: MuteConfig;
+	// 	muted: boolean;
+	// }[];
+
 	channel_overrides: {
-		channel_id: string;
-		message_notifications: number;
-		mute_config: MuteConfig;
-		muted: boolean;
-	}[];
+		[channel_id: string]: ChannelOverride;
+	} | null,
 	message_notifications: number;
 	mobile_push: boolean;
-	mute_config: MuteConfig;
+	mute_config: MuteConfig | null;
 	muted: boolean;
 	suppress_everyone: boolean;
 	suppress_roles: boolean;
 	version: number;
+	guild_id: string | null;
+	flags: number;
+	mute_scheduled_events: boolean;
+	hide_muted_channels: boolean;
+	notify_highlights: 0;
+}
+
+export const DefaultUserGuildSettings: UserGuildSettings = {
+	channel_overrides: null,
+	message_notifications: 1,
+	flags: 0,
+	hide_muted_channels: false,
+	mobile_push: true,
+	mute_config: null,
+	mute_scheduled_events: false,
+	muted: false,
+	notify_highlights: 0,
+	suppress_everyone: false,
+	suppress_roles: false,
+	version: 453,	// ?
+	guild_id: null,
 }
 
 export interface MuteConfig {
