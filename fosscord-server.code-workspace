@@ -1,31 +1,13 @@
 {
 	"folders": [
 		{
-			"path": "api"
+			"path": "src"
 		},
 		{
-			"path": "dashboard"
+			"path": "assets"
 		},
 		{
-			"path": "bundle"
-		},
-		{
-			"path": "cdn"
-		},
-		{
-			"path": "gateway"
-		},
-		{
-			"path": "rtc"
-		},
-		{
-			"path": "util"
-		},
-		{
-			"path": "webrtc"
-		},
-		{
-			"path": "slowcord"
+			"path": "."
 		}
 	],
 	"settings": {
