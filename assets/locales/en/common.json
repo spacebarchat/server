@@ -45,5 +45,8 @@
 		"REMOVE_SELF": "You can't remove yourself as a friend",
 		"UNBLOCK": "Unblock the user before sending a friend request",
 		"BLOCKED": "The user blocked you"
+	},
+	"exists": {
+		"DISCRIMINATOR": "This discriminator is already in use",
 	}
 }

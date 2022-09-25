@@ -74,6 +74,14 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 		}
 	}
 
+	if (body.discriminator) {
+		if (await User.findOne({ where: { discriminator: body.discriminator, username: body.username || user.username } })) {
+			throw FieldErrors({
+				discriminator: { code: "INVALID_DISCRIMINATOR", message: req.t("common:exists.DISCRIMINATOR") }
+			});
+		}
+	}
+
 	user = OrmUtils.mergeDeep(user, body);
 	await user.save();
 
