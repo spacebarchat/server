@@ -32,14 +32,14 @@ export function initDatabase(): Promise<Connection> {
 		entities: Object.values(Models).filter((x) => x?.constructor?.name !== "Object" && x?.name),
 		synchronize: type !== "mongodb",
 		logging: false,
-		cache: {
-			duration: 1000 * 30,
-			type: "redis",
-			options: {
-				host: "localhost",
-				port: 6379,
-			},
-		},
+		// cache: { // cache is used only by query builder and entity manager
+			// duration: 1000 * 30,
+			// type: "redis",
+			// options: {
+				// host: "localhost",
+				// port: 6379,
+			// },
+		// },
 		bigNumberStrings: false,
 		supportBigNumbers: true,
 		name: "default",
