@@ -34,7 +34,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const sizeOf = require("image-size");
 
 	// TODO: Widget style templates need Fosscord branding
-	const source = path.join(__dirname, "..", "..", "..", "..", "assets", "widget", `${style}.png`);
+	const source = path.join(__dirname, "..", "..", "..", "..", "..", "assets", "widget", `${style}.png`);
 	if (!fs.existsSync(source)) {
 		throw new HTTPError("Widget template does not exist.", 400);
 	}
