@@ -6,6 +6,8 @@ const { existsSync } = require("fs");
 const CACHE_PATH = path.join(__dirname, "..", "assets", "cache");
 const BASE_URL = "https://discord.com";
 
+const INSTANCE_NAME = "Slowcord";
+
 // Manual for now
 const INDEX_SCRIPTS = [
 	"83ace7450e110d16319e", // 50
@@ -16,7 +18,7 @@ const INDEX_SCRIPTS = [
 
 const doPatch = (content) => {
 	//remove nitro references
-	content = content.replace(/Discord Nitro/g, "Fosscord Premium");
+	content = content.replace(/Discord Nitro/g, `${INSTANCE_NAME} Premium`);
 	content = content.replace(/"Nitro"/g, '"Premium"');
 	content = content.replace(/Nitro /g, "Premium ");
 	content = content.replace(/ Nitro/g, " Premium");
@@ -25,14 +27,14 @@ const doPatch = (content) => {
 	content = content.replace(/\"Nitro \. /g, '"Premium. ');
 
 	//remove discord references
-	content = content.replace(/ Discord /g, " Fosscord ");
-	content = content.replace(/Discord /g, "Fosscord ");
-	content = content.replace(/ Discord/g, " Fosscord");
-	content = content.replace(/Discord Premium/g, "Fosscord Premium");
-	content = content.replace(/Discord Nitro/g, "Fosscord Premium");
-	content = content.replace(/Discord's/g, "Fosscord's");
+	content = content.replace(/ Discord /g, ` ${INSTANCE_NAME} `);
+	content = content.replace(/Discord /g, `${INSTANCE_NAME} `);
+	content = content.replace(/ Discord/g, ` ${INSTANCE_NAME}`);
+	content = content.replace(/Discord Premium/g, `${INSTANCE_NAME} Premium`);
+	content = content.replace(/Discord Nitro/g, `${INSTANCE_NAME} Premium`);
+	content = content.replace(/Discord's/g, `${INSTANCE_NAME}'s`);
 	//content = content.replace(/DiscordTag/g, "FosscordTag");
-	content = content.replace(/\*Discord\*/g, "*Fosscord*");
+	content = content.replace(/\*Discord\*/g, `*${INSTANCE_NAME}*`);
 
 	//server -> guild
 	content = content.replace(/"Server"/g, '"Guild"');
@@ -80,7 +82,7 @@ const processFile = async (name) => {
 
 	// console.log("Deleting previous cache");
 	// await fs.rm(CACHE_PATH, { recursive: true });
-	// await fs.mkdir(CACHE_PATH);
+	if (!existsSync(CACHE_PATH)) await fs.mkdir(CACHE_PATH);
 
 	const assets = [];
 
@@ -110,7 +112,7 @@ const processFile = async (name) => {
 			continue;
 		}
 
-		while (rates.length > 20) rates.shift();
+		while (rates.length > 50) rates.shift();
 		const averageRate = rates.length
 			? rates.reduce((prev, curr) => prev + curr) / rates.length
 			: 1;
