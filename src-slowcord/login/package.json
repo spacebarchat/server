@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "Slowcord login service",
 	"main": "build/index.js",
+	"types": "src/index.ts",
 	"scripts": {
 		"build": "tsc -b",
 		"start": "node build/index.js"
@@ -18,7 +19,7 @@
 	},
 	"homepage": "https://github.com/maddyunderstars/fosscord-server#readme",
 	"dependencies": {
-		"@fosscord/util": "file:../../util",
+		"fosscord-server": "file:../../",
 		"cookie-parser": "^1.4.6",
 		"dotenv": "^16.0.1",
 		"express": "^4.18.1",

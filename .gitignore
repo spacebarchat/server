@@ -9,6 +9,5 @@ files/
 config.json
 
 .vscode/settings.json
-api/assets/plugins/*.js
 
 build
