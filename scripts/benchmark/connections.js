@@ -8,7 +8,7 @@ var cores = 1;
 try {
 	cores = Number(process.env.THREADS) || os.cpus().length;
 } catch {
-	console.log("[Bundle] Failed to get thread count! Using 1...")
+	console.log("[Bundle] Failed to get thread count! Using 1...");
 }
 
 if (!token) {
@@ -17,7 +17,7 @@ if (!token) {
 }
 
 if (cluster.isMaster) {
-	for (let i = 0; i < threads; i++) {
+	for (let i = 0; i < cores; i++) {
 		cluster.fork();
 	}
 
