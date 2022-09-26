@@ -1,12 +1,12 @@
 import {
 	Channel,
 	ChannelDeleteEvent,
-	ChannelPermissionOverwriteType,
 	ChannelType,
 	ChannelUpdateEvent,
 	emitEvent,
 	Recipient,
-	handleFile
+	handleFile,
+	ChannelModifySchema
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
@@ -46,35 +46,6 @@ router.delete("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request
 
 	res.send(channel);
 });
-
-export interface ChannelModifySchema {
-	/**
-	 * @maxLength 100
-	 */
-	name?: string;
-	type?: ChannelType;
-	topic?: string;
-	icon?: string | null;
-	bitrate?: number;
-	user_limit?: number;
-	rate_limit_per_user?: number;
-	position?: number;
-	permission_overwrites?: {
-		id: string;
-		type: ChannelPermissionOverwriteType;
-		allow: string;
-		deny: string;
-	}[];
-	parent_id?: string;
-	id?: string; // is not used (only for guild create)
-	nsfw?: boolean;
-	rtc_region?: string;
-	default_auto_archive_duration?: number;
-	default_reaction_emoji?: string | null;
-	flags?: number;
-	default_thread_rate_limit_per_user?: number;
-	video_quality_mode?: number;
-}
 
 router.patch("/", route({ body: "ChannelModifySchema", permission: "MANAGE_CHANNELS" }), async (req: Request, res: Response) => {
 	var payload = req.body as ChannelModifySchema;

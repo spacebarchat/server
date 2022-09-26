@@ -2,13 +2,9 @@ import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import { verifyToken } from 'node-2fa';
 import { HTTPError } from "lambert-server";
-import { User, generateToken, BackupCode } from "@fosscord/util";
+import { User, generateToken, BackupCode, TotpDisableSchema } from "@fosscord/util";
 
 const router = Router();
-
-export interface TotpDisableSchema {
-	code: string;
-}
 
 router.post("/", route({ body: "TotpDisableSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as TotpDisableSchema;

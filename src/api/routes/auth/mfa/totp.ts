@@ -1,16 +1,9 @@
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { BackupCode, FieldErrors, generateToken, User } from "@fosscord/util";
+import { BackupCode, generateToken, User, TotpSchema } from "@fosscord/util";
 import { verifyToken } from "node-2fa";
 import { HTTPError } from "lambert-server";
 const router = Router();
-
-export interface TotpSchema {
-	code: string,
-	ticket: string,
-	gift_code_sku_id?: string | null,
-	login_source?: string | null,
-}
 
 router.post("/", route({ body: "TotpSchema" }), async (req: Request, res: Response) => {
 	const { code, ticket, gift_code_sku_id, login_source } = req.body as TotpSchema;

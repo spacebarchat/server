@@ -36,7 +36,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		data = bigIntJson.parse(buffer as string);
 	}
 	else if (typeof buffer == "string") {
-		data = bigIntJson.parse(buffer as string)
+		data = bigIntJson.parse(buffer as string);
 	}
 	else return;
 
@@ -51,14 +51,14 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		return;
 	}
 
-	// const transaction = Sentry.startTransaction({
-	// 	op: OPCODES[data.op],
-	// 	name: `GATEWAY ${OPCODES[data.op]}`,
-	// 	data: {
-	// 		...data.d,
-	// 		token: data?.d?.token ? "[Redacted]" : undefined,
-	// 	},
-	// });
+	const transaction = Sentry.startTransaction({
+		op: OPCODES[data.op],
+		name: `GATEWAY ${OPCODES[data.op]}`,
+		data: {
+			...data.d,
+			token: data?.d?.token ? "[Redacted]" : undefined,
+		},
+	});
 
 	try {
 		var ret = await OPCodeHandler.call(this, data);
@@ -66,7 +66,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		return ret;
 	} catch (error) {
 		Sentry.captureException(error);
-		// transaction.finish();
+		transaction.finish();
 		console.error(`Error: Op ${data.op}`, error);
 		// if (!this.CLOSED && this.CLOSING)
 		return this.close(CLOSECODES.Unknown_error);

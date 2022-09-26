@@ -1,14 +1,9 @@
 import { Request, Response, Router } from "express";
-import { Template, Guild, Role, Snowflake, Config, User, Member } from "@fosscord/util";
+import { Template, Guild, Role, Snowflake, Config, Member, GuildTemplateCreateSchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { DiscordApiErrors } from "@fosscord/util";
 import fetch from "node-fetch";
 const router: Router = Router();
-
-export interface GuildTemplateCreateSchema {
-	name: string;
-	avatar?: string | null;
-}
 
 router.get("/:code", route({}), async (req: Request, res: Response) => {
 	const { allowDiscordTemplates, allowRaws, enabled } = Config.get().templates;

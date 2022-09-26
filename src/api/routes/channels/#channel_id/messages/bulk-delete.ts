@@ -2,15 +2,10 @@ import { Router, Response, Request } from "express";
 import { Channel, Config, emitEvent, getPermission, getRights, MessageDeleteBulkEvent, Message } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
-import { In } from "typeorm";
 
 const router: Router = Router();
 
 export default router;
-
-export interface BulkDeleteSchema {
-	messages: string[];
-}
 
 // should users be able to bulk delete messages or only bots? ANSWER: all users
 // should this request fail, if you provide messages older than 14 days/invalid ids? ANSWER: NO

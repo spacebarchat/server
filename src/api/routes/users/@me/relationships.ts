@@ -37,10 +37,6 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	return res.json(related_users);
 });
 
-export interface RelationshipPutSchema {
-	type?: RelationshipType;
-}
-
 router.put("/:id", route({ body: "RelationshipPutSchema" }), async (req: Request, res: Response) => {
 	return await updateRelationship(
 		req,
@@ -49,11 +45,6 @@ router.put("/:id", route({ body: "RelationshipPutSchema" }), async (req: Request
 		req.body.type ?? RelationshipType.friends
 	);
 });
-
-export interface RelationshipPostSchema {
-	discriminator: string;
-	username: string;
-}
 
 router.post("/", route({ body: "RelationshipPostSchema" }), async (req: Request, res: Response) => {
 	return await updateRelationship(

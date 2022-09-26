@@ -1,22 +1,8 @@
 import { Router, Request, Response } from "express";
-import { Role, Guild, Snowflake, Config, getRights, Member, Channel, DiscordApiErrors, handleFile } from "@fosscord/util";
+import { Role, Guild, Config, getRights, Member, DiscordApiErrors, GuildCreateSchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
-import { ChannelModifySchema } from "../channels/#channel_id";
 
 const router: Router = Router();
-
-export interface GuildCreateSchema {
-	/**
-	 * @maxLength 100
-	 */
-	name?: string;
-	region?: string;
-	icon?: string | null;
-	channels?: ChannelModifySchema[];
-	guild_template_code?: string;
-	system_channel_id?: string;
-	rules_channel_id?: string;
-}
 
 //TODO: create default channel
 

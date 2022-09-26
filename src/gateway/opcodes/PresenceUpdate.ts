@@ -1,6 +1,5 @@
 import { WebSocket, Payload } from "@fosscord/gateway";
-import { emitEvent, PresenceUpdateEvent, Session, User } from "@fosscord/util";
-import { ActivitySchema } from "../schema/Activity";
+import { emitEvent, PresenceUpdateEvent, Session, User, ActivitySchema } from "@fosscord/util";
 import { check } from "./instanceOf";
 
 export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {

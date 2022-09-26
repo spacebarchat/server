@@ -1,4 +1,4 @@
-import { emitEvent, getPermission, MessageAckEvent, ReadState, Snowflake } from "@fosscord/util";
+import { emitEvent, getPermission, MessageAckEvent, ReadState } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
 
@@ -7,11 +7,6 @@ const router = Router();
 // TODO: public read receipts & privacy scoping
 // TODO: send read state event to all channel members
 // TODO: advance-only notification cursor
-
-export interface MessageAcknowledgeSchema {
-	manual?: boolean;
-	mention_count?: number;
-}
 
 router.post("/", route({ body: "MessageAcknowledgeSchema" }), async (req: Request, res: Response) => {
 	const { channel_id, message_id } = req.params;

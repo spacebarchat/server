@@ -1,29 +1,7 @@
 import { Request, Response, Router } from "express";
-import { DiscordApiErrors, emitEvent, GuildBanAddEvent, GuildBanRemoveEvent, Ban, User, Member } from "@fosscord/util";
+import { DiscordApiErrors, emitEvent, GuildBanAddEvent, GuildBanRemoveEvent, Ban, User, Member, BanRegistrySchema, BanModeratorSchema } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { getIpAdress, route } from "@fosscord/api";
-
-export interface BanCreateSchema {
-	delete_message_days?: string;
-	reason?: string;
-};
-
-export interface BanRegistrySchema {
-	id: string;
-	user_id: string;
-	guild_id: string;
-	executor_id: string;
-	ip?: string;
-	reason?: string | undefined;
-};
-
-export interface BanModeratorSchema {
-	id: string;
-	user_id: string;
-	guild_id: string;
-	executor_id: string;
-	reason?: string | undefined;
-};
 
 const router: Router = Router();
 

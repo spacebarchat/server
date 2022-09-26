@@ -1,19 +1,9 @@
-import { Channel, ChannelType, DiscordApiErrors, emitEvent, getPermission, VoiceState, VoiceStateUpdateEvent } from "@fosscord/util";
+import { Channel, ChannelType, DiscordApiErrors, emitEvent, getPermission, VoiceState, VoiceStateUpdateEvent, VoiceStateUpdateSchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
 
 const router = Router();
 //TODO need more testing when community guild and voice stage channel are working
-
-export interface VoiceStateUpdateSchema {
-	channel_id: string;
-	guild_id?: string;
-	suppress?: boolean;
-	request_to_speak_timestamp?: Date;
-	self_mute?: boolean;
-	self_deaf?: boolean;
-	self_video?: boolean;
-}
 
 router.patch("/", route({ body: "VoiceStateUpdateSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as VoiceStateUpdateSchema;

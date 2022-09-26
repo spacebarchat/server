@@ -1,8 +1,7 @@
 import { Router, Request, Response } from "express";
-import { Role, Member, GuildRoleUpdateEvent, GuildRoleDeleteEvent, emitEvent, handleFile } from "@fosscord/util";
+import { Role, Member, GuildRoleUpdateEvent, GuildRoleDeleteEvent, emitEvent, handleFile, RoleModifySchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { HTTPError } from "lambert-server";
-import { RoleModifySchema } from "../";
 
 const router = Router();
 

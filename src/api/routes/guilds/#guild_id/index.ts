@@ -1,9 +1,7 @@
 import { Request, Response, Router } from "express";
-import { DiscordApiErrors, emitEvent, getPermission, getRights, Guild, GuildUpdateEvent, handleFile, Member } from "@fosscord/util";
+import { DiscordApiErrors, emitEvent, getPermission, getRights, Guild, GuildUpdateEvent, handleFile, Member, GuildCreateSchema } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
-import "missing-native-js-functions";
-import { GuildCreateSchema } from "../index";
 
 const router = Router();
 
