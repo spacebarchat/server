@@ -6,7 +6,8 @@
 		"postinstall": "npx patch-package",
 		"start": "node dist/bundle/start.js",
 		"build": "tsc -p .",
-		"generate:rights": "node scripts/rights.js"
+		"generate:rights": "node scripts/rights.js",
+		"generate:schema": "node scripts/schema.js"
 	},
 	"main": "dist/bundle/index.js",
 	"types": "src/bundle/index.ts",
@@ -76,6 +77,7 @@
 		"@aws-sdk/client-s3": "^3.178.0",
 		"@sentry/node": "^7.13.0",
 		"@sentry/tracing": "^7.13.0",
+		"@yukikaze-bot/erlpack": "^1.0.1",
 		"amqplib": "^0.10.3"
 	},
 	"_moduleAliases": {

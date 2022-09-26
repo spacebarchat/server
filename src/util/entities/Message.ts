@@ -25,7 +25,6 @@ import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
 import { BannedWords } from "../util";
 import { HTTPError } from "lambert-server";
-import { ValidatorConstraint } from "class-validator";
 
 export enum MessageType {
 	DEFAULT = 0,

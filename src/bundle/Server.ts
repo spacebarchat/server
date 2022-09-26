@@ -110,6 +110,7 @@ async function main() {
 		app.use(Sentry.Handlers.tracingHandler());
 	}
 
+	server.listen(port);
 	await Promise.all([api.start(), cdn.start(), gateway.start()]);
 
 	if (Config.get().sentry.enabled) {
