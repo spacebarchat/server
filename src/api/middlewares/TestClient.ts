@@ -5,10 +5,12 @@ import fetch, { Response as FetchResponse } from "node-fetch";
 import ProxyAgent from 'proxy-agent';
 import { Config } from "@fosscord/util";
 
+const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "assets");
+
 export default function TestClient(app: Application) {
 	const agent = new ProxyAgent();
 	const assetCache = new Map<string, { response: FetchResponse; buffer: Buffer; }>();
-	const indexHTML = fs.readFileSync(path.join(__dirname, "..", "..", "..", "assets", "client_test", "index.html"), { encoding: "utf8" });
+	const indexHTML = fs.readFileSync(path.join(ASSET_FOLDER_PATH, "client_test", "index.html"), { encoding: "utf8" });
 
 	var html = indexHTML;
 	const CDN_ENDPOINT = (Config.get().cdn.endpointClient || Config.get()?.cdn.endpointPublic || process.env.CDN || "").replace(
@@ -24,24 +26,24 @@ export default function TestClient(app: Application) {
 		html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${GATEWAY_ENDPOINT}\`,`);
 	}
 	// inline plugins
-	var files = fs.readdirSync(path.join(__dirname, "..", "..", "..", "assets", "preload-plugins"));
+	var files = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "preload-plugins"));
 	var plugins = "";
-	files.forEach(x => { if (x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(__dirname, "..", "..", "..", "assets", "preload-plugins", x))}</script>\n`; });
+	files.forEach(x => { if (x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(ASSET_FOLDER_PATH, "preload-plugins", x))}</script>\n`; });
 	html = html.replaceAll("<!-- preload plugin marker -->", plugins);
 
 	// plugins
-	files = fs.readdirSync(path.join(__dirname, "..", "..", "..", "assets", "plugins"));
+	files = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "plugins"));
 	plugins = "";
 	files.forEach(x => { if (x.endsWith(".js")) plugins += `<script src='/assets/plugins/${x}'></script>\n`; });
 	html = html.replaceAll("<!-- plugin marker -->", plugins);
 	//preload plugins
-	files = fs.readdirSync(path.join(__dirname, "..", "..", "..", "assets", "preload-plugins"));
+	files = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "preload-plugins"));
 	plugins = "";
-	files.forEach(x => { if (x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(__dirname, "..", "..", "..", "assets", "preload-plugins", x))}</script>\n`; });
+	files.forEach(x => { if (x.endsWith(".js")) plugins += `<script>${fs.readFileSync(path.join(ASSET_FOLDER_PATH, "preload-plugins", x))}</script>\n`; });
 	html = html.replaceAll("<!-- preload plugin marker -->", plugins);
 
 
-	app.use("/assets", express.static(path.join(__dirname, "..", "..", "assets")));
+	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "public")));
 
 	app.get("/assets/:file", async (req: Request, res: Response) => {
 		delete req.headers.host;
@@ -90,7 +92,7 @@ export default function TestClient(app: Application) {
 
 		if (!useTestClient) return res.send("Test client is disabled on this instance. Use a stand-alone client to connect this instance.");
 
-		res.send(fs.readFileSync(path.join(__dirname, "..", "..", "client_test", "developers.html"), { encoding: "utf8" }));
+		res.send(fs.readFileSync(path.join(ASSET_FOLDER_PATH, "client_test", "developers.html"), { encoding: "utf8" }));
 	});
 	app.get("*", (req: Request, res: Response) => {
 		const { useTestClient } = Config.get().client;
