@@ -244,12 +244,12 @@ export async function getPermission(
 		member = await Member.findOneOrFail({
 			where: { guild_id, id: user_id },
 			relations: ["roles", ...(opts.member_relations || [])],
-			select: [
-				"id",
-				"roles",
+			// select: [
+				// "id",		// TODO: Bug in typeorm? adding these selects breaks the query.
+				// "roles",
 				// @ts-ignore
-				...(opts.member_select || []),
-			],
+				// ...(opts.member_select || []),
+			// ],
 		});
 	}
 

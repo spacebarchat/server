@@ -245,11 +245,10 @@ export class Channel extends BaseClass {
 
 	static async createDMChannel(recipients: string[], creator_user_id: string, name?: string) {
 		recipients = recipients.unique().filter((x) => x !== creator_user_id);
-		//@ts-ignore	some typeorm typescript issue
-		const otherRecipientsUsers = await User.find({ where: recipients.map((x) => ({ id: x })) });
-
 		// TODO: check config for max number of recipients
 		/** if you want to disallow note to self channels, uncomment the conditional below
+
+		const otherRecipientsUsers = await User.find({ where: recipients.map((x) => ({ id: x })) });
 		if (otherRecipientsUsers.length !== recipients.length) {
 			throw new HTTPError("Recipient/s not found");
 		}
