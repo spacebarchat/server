@@ -7,7 +7,8 @@
 		"start": "node dist/bundle/start.js",
 		"build": "tsc -p .",
 		"generate:rights": "node scripts/rights.js",
-		"generate:schema": "node scripts/schema.js"
+		"generate:schema": "node scripts/schema.js",
+		"generate:client": "node scripts/client.js"
 	},
 	"main": "dist/bundle/index.js",
 	"types": "src/bundle/index.ts",

@@ -5,9 +5,18 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Launch current file",
+			"program": "${relativeFile}",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "node"
+		},
+		{
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Program",
+			"name": "Bundle",
 			"skipFiles": [
 				"<node_internals>/**"
 			],

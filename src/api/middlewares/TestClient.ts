@@ -7,6 +7,8 @@ import { Config } from "@fosscord/util";
 
 const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "assets");
 
+let hasWarnedAboutCache = false;
+
 export default function TestClient(app: Application) {
 	const agent = new ProxyAgent();
 	const assetCache = new Map<string, { response: FetchResponse; buffer: Buffer; }>();
@@ -44,8 +46,15 @@ export default function TestClient(app: Application) {
 
 
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "public")));
+	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "cache")));
 
 	app.get("/assets/:file", async (req: Request, res: Response) => {
+		if (!hasWarnedAboutCache) {
+			hasWarnedAboutCache = true;
+			if (req.params.file.includes(".js"))
+				console.warn(`[TestClient] Cache miss for file ${req.params.file}! Use 'npm run generate:client' to cache and patch.`);
+		}
+
 		delete req.headers.host;
 		var response: FetchResponse;
 		var buffer: Buffer;

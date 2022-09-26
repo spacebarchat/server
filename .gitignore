@@ -5,6 +5,7 @@ node_modules
 database.db
 tsconfig.tsbuildinfo
 files/
+assets/cache
 .env
 config.json
 
