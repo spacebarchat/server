@@ -1,8 +1,7 @@
 import "dotenv/config";
 import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
-import * as util from "@fosscord/util";
-const { initDatabase, generateToken, User, Config, handleFile } = util;
+import { initDatabase, generateToken, User, Config, handleFile } from "fosscord-server/src/util";
 import path from "path";
 import fetch from "node-fetch";
 

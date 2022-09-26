@@ -1,7 +1,7 @@
 import "dotenv/config";
 import Fosscord from "fosscord-gopnik";
 import Bot from "./Bot.js";	// huh?
-import { initDatabase } from "@fosscord/util";
+import { initDatabase } from "fosscord-server/src/util";
 
 const client = new Fosscord.Client({
 	intents: ["GUILD_MESSAGES"],
