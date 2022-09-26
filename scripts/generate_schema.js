@@ -48,14 +48,7 @@ function modify(obj) {
 }
 
 function main() {
-	const files = 		[
-		...walk(path.join(__dirname, "..", "src", "routes")),
-		...walk(path.join(__dirname, "..", "..", "util", "src")),
-	];
-	const program = TJS.getProgramFromFiles(
-		files,
-		compilerOptions
-	);
+	const program = TJS.programFromConfig("tsconfig.json")
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 
