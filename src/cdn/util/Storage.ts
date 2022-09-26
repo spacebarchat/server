@@ -21,7 +21,8 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
 	} else {
 		location = path.join(process.cwd(), "files");
 	}
-	console.log(`[CDN] storage location: ${bgCyan(`${black(location)}`)}`);
+	// TODO: move this to some start func, so it doesn't run when server is imported
+	//console.log(`[CDN] storage location: ${bgCyan(`${black(location)}`)}`);
 	if (!fs.existsSync(location)) fs.mkdirSync(location);
 	process.env.STORAGE_LOCATION = location;
 
