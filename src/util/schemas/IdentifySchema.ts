@@ -1,4 +1,4 @@
-import { ActivitySchema } from "./Activity";
+import { ActivitySchema } from "@fosscord/util";
 
 export const IdentifySchema = {
 	token: String,

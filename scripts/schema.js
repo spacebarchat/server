@@ -3,7 +3,6 @@
 const path = require("path");
 const fs = require("fs");
 const TJS = require("typescript-json-schema");
-require("missing-native-js-functions");
 const schemaPath = path.join(__dirname, "..", "assets", "schemas.json");
 
 const settings = {

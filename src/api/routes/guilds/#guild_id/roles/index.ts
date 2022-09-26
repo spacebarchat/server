@@ -5,27 +5,14 @@ import {
 	Member,
 	GuildRoleCreateEvent,
 	GuildRoleUpdateEvent,
-	GuildRoleDeleteEvent,
 	emitEvent,
 	Config,
 	DiscordApiErrors,
-	handleFile
+	RoleModifySchema,
 } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 
 const router: Router = Router();
-
-export interface RoleModifySchema {
-	name?: string;
-	permissions?: string;
-	color?: number;
-	hoist?: boolean; // whether the role should be displayed separately in the sidebar
-	mentionable?: boolean; // whether the role should be mentionable
-	position?: number;
-	icon?: string;
-	unicode_emoji?: string;
-}
 
 export type RolePositionUpdateSchema = {
 	id: string;

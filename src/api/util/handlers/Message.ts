@@ -22,11 +22,11 @@ import {
 	Attachment,
 	Config,
 	Sticker,
+	MessageCreateSchema,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import cheerio from "cheerio";
-import { MessageCreateSchema } from "../../routes/channels/#channel_id/messages";
 import { In } from "typeorm";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers

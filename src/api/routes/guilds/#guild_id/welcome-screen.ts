@@ -1,20 +1,9 @@
 import { Request, Response, Router } from "express";
-import { Guild, getPermission, Snowflake, Member } from "@fosscord/util";
+import { Guild, Member, GuildUpdateWelcomeScreenSchema } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 
 const router: Router = Router();
-
-export interface GuildUpdateWelcomeScreenSchema {
-	welcome_channels?: {
-		channel_id: string;
-		description: string;
-		emoji_id?: string;
-		emoji_name?: string;
-	}[];
-	enabled?: boolean;
-	description?: string;
-}
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;

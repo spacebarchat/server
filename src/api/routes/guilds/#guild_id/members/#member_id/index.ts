@@ -1,14 +1,8 @@
 import { Request, Response, Router } from "express";
-import { Member, getPermission, getRights, Role, GuildMemberUpdateEvent, emitEvent, Sticker, Emoji, Rights, Guild } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
+import { Member, getPermission, getRights, Role, GuildMemberUpdateEvent, emitEvent, Sticker, Emoji, Guild, MemberChangeSchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
 
 const router = Router();
-
-export interface MemberChangeSchema {
-	roles?: string[];
-	nick?: string;
-}
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id, member_id } = req.params;

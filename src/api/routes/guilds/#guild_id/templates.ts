@@ -23,16 +23,6 @@ const TemplateGuildProjection: (keyof Guild)[] = [
 	"icon"
 ];
 
-export interface TemplateCreateSchema {
-	name: string;
-	description?: string;
-}
-
-export interface TemplateModifySchema {
-	name: string;
-	description?: string;
-}
-
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 

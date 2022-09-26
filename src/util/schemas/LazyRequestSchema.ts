@@ -1,4 +1,4 @@
-export interface LazyRequest {
+export interface LazyRequestSchema {
 	guild_id: string;
 	channels?: Record<string, [number, number][]>;
 	activities?: boolean;
@@ -8,7 +8,7 @@ export interface LazyRequest {
 	thread_member_lists?: any[];
 }
 
-export const LazyRequest = {
+export const LazyRequestSchema = {
 	guild_id: String,
 	$activities: Boolean,
 	$channels: Object,

@@ -1,6 +1,5 @@
-import { getDatabase, getPermission, listenEvent, Member, Role, Session } from "@fosscord/util";
+import { getDatabase, getPermission, listenEvent, Member, Role, Session, LazyRequestSchema } from "@fosscord/util";
 import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@fosscord/gateway";
-import { LazyRequest } from "../schema/LazyRequest";
 import { check } from "./instanceOf";
 
 // TODO: only show roles/members that have access to this channel
@@ -137,8 +136,8 @@ async function getMembers(guild_id: string, range: [number, number]) {
 
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	// TODO: check data
-	check.call(this, LazyRequest, d);
-	const { guild_id, typing, channels, activities } = d as LazyRequest;
+	check.call(this, LazyRequestSchema, d);
+	const { guild_id, typing, channels, activities } = d as LazyRequestSchema;
 
 	const channel_id = Object.keys(channels || {}).first();
 	if (!channel_id) return;

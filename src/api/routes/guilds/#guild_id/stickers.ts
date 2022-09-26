@@ -1,13 +1,13 @@
 import {
 	emitEvent,
 	GuildStickersUpdateEvent,
-	handleFile,
 	Member,
 	Snowflake,
 	Sticker,
 	StickerFormatType,
 	StickerType,
-	uploadFile
+	uploadFile,
+	ModifyGuildStickerSchema,
 } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
@@ -81,22 +81,6 @@ router.get("/:sticker_id", route({}), async (req: Request, res: Response) => {
 
 	res.json(await Sticker.findOneOrFail({ where: { guild_id, id: sticker_id } }));
 });
-
-export interface ModifyGuildStickerSchema {
-	/**
-	 * @minLength 2
-	 * @maxLength 30
-	 */
-	name: string;
-	/**
-	 * @maxLength 100
-	 */
-	description?: string;
-	/**
-	 * @maxLength 200
-	 */
-	tags: string;
-}
 
 router.patch(
 	"/:sticker_id",

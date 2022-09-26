@@ -7,18 +7,6 @@ import { isTextChannel } from "./messages";
 
 const router: Router = Router();
 
-export interface InviteCreateSchema {
-	target_user_id?: string;
-	target_type?: string;
-	validate?: string; // ? what is this
-	max_age?: number;
-	max_uses?: number;
-	temporary?: boolean;
-	unique?: boolean;
-	target_user?: string;
-	target_user_type?: number;
-}
-
 router.post("/", route({ body: "InviteCreateSchema", permission: "CREATE_INSTANT_INVITE", right: "CREATE_INVITES" }),
 	async (req: Request, res: Response) => {
 		const { user_id } = req;

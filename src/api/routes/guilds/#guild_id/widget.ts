@@ -1,11 +1,6 @@
 import { Request, Response, Router } from "express";
-import { Guild } from "@fosscord/util";
+import { Guild, WidgetModifySchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
-
-export interface WidgetModifySchema {
-	enabled: boolean; // whether the widget is enabled
-	channel_id: string; // the widget channel id
-}
 
 const router: Router = Router();
 
