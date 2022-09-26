@@ -165,7 +165,6 @@ export class Member extends BaseClassWithoutId {
 
 	static async addRole(user_id: string, guild_id: string, role_id: string) {
 		const [member, role] = await Promise.all([
-			// @ts-ignore
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
@@ -192,7 +191,6 @@ export class Member extends BaseClassWithoutId {
 
 	static async removeRole(user_id: string, guild_id: string, role_id: string) {
 		const [member] = await Promise.all([
-			// @ts-ignore
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
