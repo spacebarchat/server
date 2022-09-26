@@ -9,7 +9,8 @@ import { yellow, green, red } from "picocolors";
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
 
 var dbConnection: DataSource | undefined;
-let dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
+let dbConnectionString =
+	process.env.DATABASE || path.join(process.cwd(), "database.db");
 
 export function getDatabase(): DataSource | null {
 	// if (!dbConnection) throw new Error("Tried to get database before it was initialised");
@@ -20,18 +21,24 @@ export function getDatabase(): DataSource | null {
 export async function initDatabase(): Promise<DataSource> {
 	if (dbConnection) return dbConnection;
 
-	const type = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
+	const type = dbConnectionString.includes("://")
+		? dbConnectionString.split(":")[0]?.replace("+srv", "")
+		: "sqlite";
 	const isSqlite = type.includes("sqlite");
 
 	console.log(`[Database] ${yellow(`connecting to ${type} db`)}`);
 	if (isSqlite) {
-		console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
+		console.log(
+			`[Database] ${red(
+				`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`,
+			)}`,
+		);
 	}
 
 	const dataSource = new DataSource({
 		//@ts-ignore
 		type,
-		charset: 'utf8mb4',
+		charset: "utf8mb4",
 		url: isSqlite ? undefined : dbConnectionString,
 		database: isSqlite ? dbConnectionString : undefined,
 		entities: ["dist/util/entities/*.js"],

@@ -15,5 +15,5 @@ export default {
 	[VoiceOPCodes.VOICE_BACKEND_VERSION]: onBackendVersion,
 	[VoiceOPCodes.VIDEO]: onVideo,
 	[VoiceOPCodes.SPEAKING]: onSpeaking,
-	[VoiceOPCodes.SELECT_PROTOCOL]: onSelectProtocol
+	[VoiceOPCodes.SELECT_PROTOCOL]: onSelectProtocol,
 };

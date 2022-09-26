@@ -12,7 +12,7 @@ import { initTranslation } from "./middlewares/Translation";
 import morgan from "morgan";
 import { initInstance } from "./util/handlers/Instance";
 import { registerRoutes } from "@fosscord/util";
-import { red } from "picocolors"
+import { red } from "picocolors";
 
 export interface FosscordServerOptions extends ServerOptions {}
 
@@ -44,13 +44,18 @@ export class FosscordServer extends Server {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						var skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
-						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
+						var skip = !(
+							process.env["LOG_REQUESTS"]?.includes(
+								res.statusCode.toString(),
+							) ?? false
+						);
+						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-")
+							skip = !skip;
 						return skip;
-					}
-				})
+					},
+				}),
 			);
-		};
+		}
 
 		this.app.use(CORS);
 		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
@@ -63,16 +68,22 @@ export class FosscordServer extends Server {
 		await initRateLimits(api);
 		await initTranslation(api);
 
-		this.routes = await registerRoutes(this, path.join(__dirname, "routes", "/"));
+		this.routes = await registerRoutes(
+			this,
+			path.join(__dirname, "routes", "/"),
+		);
 
-		api.use("*", (error: any, req: Request, res: Response, next: NextFunction) => {
-			if (error) return next(error);
-			res.status(404).json({
-				message: "404 endpoint not found",
-				code: 0
-			});
-			next();
-		});
+		api.use(
+			"*",
+			(error: any, req: Request, res: Response, next: NextFunction) => {
+				if (error) return next(error);
+				res.status(404).json({
+					message: "404 endpoint not found",
+					code: 0,
+				});
+				next();
+			},
+		);
 
 		this.app = app;
 
@@ -87,8 +98,13 @@ export class FosscordServer extends Server {
 		this.app.use(ErrorHandler);
 		TestClient(this.app);
 
-		if (logRequests) console.log(red(`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`));
-		
+		if (logRequests)
+			console.log(
+				red(
+					`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`,
+				),
+			);
+
 		return super.start();
 	}
-};
+}

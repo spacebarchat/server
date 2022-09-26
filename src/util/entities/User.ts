@@ -1,9 +1,24 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, FindOneOptions, JoinColumn, OneToMany } from "typeorm";
+import {
+	BeforeInsert,
+	BeforeUpdate,
+	Column,
+	Entity,
+	FindOneOptions,
+	JoinColumn,
+	OneToMany,
+} from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { BitField } from "../util/BitField";
 import { Relationship } from "./Relationship";
 import { ConnectedAccount } from "./ConnectedAccount";
-import { Config, FieldErrors, Snowflake, trimSpecial, BannedWords, adjustEmail } from "..";
+import {
+	Config,
+	FieldErrors,
+	Snowflake,
+	trimSpecial,
+	BannedWords,
+	adjustEmail,
+} from "..";
 import { Member, Session } from ".";
 
 export enum PublicUserEnum {
@@ -38,7 +53,7 @@ export enum PrivateUserEnum {
 export type PrivateUserKeys = keyof typeof PrivateUserEnum | PublicUserKeys;
 
 export const PublicUserProjection = Object.values(PublicUserEnum).filter(
-	(x) => typeof x === "string"
+	(x) => typeof x === "string",
 ) as PublicUserKeys[];
 export const PrivateUserProjection = [
 	...PublicUserProjection,
@@ -48,7 +63,7 @@ export const PrivateUserProjection = [
 // Private user data that should never get sent to the client
 export type PublicUser = Pick<User, PublicUserKeys>;
 
-export interface UserPublic extends Pick<User, PublicUserKeys> { }
+export interface UserPublic extends Pick<User, PublicUserKeys> {}
 
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
@@ -144,17 +159,25 @@ export class User extends BaseClass {
 	sessions: Session[];
 
 	@JoinColumn({ name: "relationship_ids" })
-	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
-		cascade: true,
-		orphanedRowAction: "delete",
-	})
+	@OneToMany(
+		() => Relationship,
+		(relationship: Relationship) => relationship.from,
+		{
+			cascade: true,
+			orphanedRowAction: "delete",
+		},
+	)
 	relationships: Relationship[];
 
 	@JoinColumn({ name: "connected_account_ids" })
-	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user, {
-		cascade: true,
-		orphanedRowAction: "delete",
-	})
+	@OneToMany(
+		() => ConnectedAccount,
+		(account: ConnectedAccount) => account.user,
+		{
+			cascade: true,
+			orphanedRowAction: "delete",
+		},
+	)
 	connected_accounts: ConnectedAccount[];
 
 	@Column({ type: "simple-json", select: false })
@@ -177,16 +200,43 @@ export class User extends BaseClass {
 	@BeforeInsert()
 	validate() {
 		this.email = adjustEmail(this.email);
-		if (!this.email) throw FieldErrors({ email: { message: "Invalid email", code: "EMAIL_INVALID" } });
-		if (!this.email.match(/([a-z\d.-]{3,})@([a-z\d.-]+).([a-z]{2,})/g)) throw FieldErrors({ email: { message: "Invalid email", code: "EMAIL_INVALID" } });
+		if (!this.email)
+			throw FieldErrors({
+				email: { message: "Invalid email", code: "EMAIL_INVALID" },
+			});
+		if (!this.email.match(/([a-z\d.-]{3,})@([a-z\d.-]+).([a-z]{2,})/g))
+			throw FieldErrors({
+				email: { message: "Invalid email", code: "EMAIL_INVALID" },
+			});
 
 		const discrim = Number(this.discriminator);
-		if (this.discriminator.length > 4) throw FieldErrors({ email: { message: "Discriminator cannot be more than 4 digits.", code: "DISCRIMINATOR_INVALID" } });
-		if (isNaN(discrim)) throw FieldErrors({ email: { message: "Discriminator must be a number.", code: "DISCRIMINATOR_INVALID" } });
-		if (discrim <= 0 || discrim >= 10000) throw FieldErrors({ email: { message: "Discriminator must be a number.", code: "DISCRIMINATOR_INVALID" } });
+		if (this.discriminator.length > 4)
+			throw FieldErrors({
+				email: {
+					message: "Discriminator cannot be more than 4 digits.",
+					code: "DISCRIMINATOR_INVALID",
+				},
+			});
+		if (isNaN(discrim))
+			throw FieldErrors({
+				email: {
+					message: "Discriminator must be a number.",
+					code: "DISCRIMINATOR_INVALID",
+				},
+			});
+		if (discrim <= 0 || discrim >= 10000)
+			throw FieldErrors({
+				email: {
+					message: "Discriminator must be a number.",
+					code: "DISCRIMINATOR_INVALID",
+				},
+			});
 		this.discriminator = discrim.toString().padStart(4, "0");
 
-		if (BannedWords.find(this.username)) throw FieldErrors({ username: { message: "Bad username", code: "INVALID_USERNAME" } });
+		if (BannedWords.find(this.username))
+			throw FieldErrors({
+				username: { message: "Bad username", code: "INVALID_USERNAME" },
+			});
 	}
 
 	toPublicUser() {
@@ -202,17 +252,25 @@ export class User extends BaseClass {
 			where: { id: user_id },
 			...opts,
 			//@ts-ignore
-			select: [...PublicUserProjection, ...(opts?.select || [])],	// TODO: fix
+			select: [...PublicUserProjection, ...(opts?.select || [])], // TODO: fix
 		});
 	}
 
-	private static async generateDiscriminator(username: string): Promise<string | undefined> {
+	private static async generateDiscriminator(
+		username: string,
+	): Promise<string | undefined> {
 		if (Config.get().register.incrementingDiscriminators) {
 			// discriminator will be incrementally generated
 
 			// First we need to figure out the currently highest discrimnator for the given username and then increment it
-			const users = await User.find({ where: { username }, select: ["discriminator"] });
-			const highestDiscriminator = Math.max(0, ...users.map((u) => Number(u.discriminator)));
+			const users = await User.find({
+				where: { username },
+				select: ["discriminator"],
+			});
+			const highestDiscriminator = Math.max(
+				0,
+				...users.map((u) => Number(u.discriminator)),
+			);
 
 			const discriminator = highestDiscriminator + 1;
 			if (discriminator >= 10000) {
@@ -226,8 +284,13 @@ export class User extends BaseClass {
 			// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
 			// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
 			for (let tries = 0; tries < 5; tries++) {
-				const discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
-				const exists = await User.findOne({ where: { discriminator, username: username }, select: ["id"] });
+				const discriminator = Math.randomIntBetween(1, 9999)
+					.toString()
+					.padStart(4, "0");
+				const exists = await User.findOne({
+					where: { discriminator, username: username },
+					select: ["id"],
+				});
 				if (!exists) return discriminator;
 			}
 
@@ -265,7 +328,8 @@ export class User extends BaseClass {
 		// TODO: save date_of_birth
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
-		const language = req.language === "en" ? "en-US" : req.language || "en-US";
+		const language =
+			req.language === "en" ? "en-US" : req.language || "en-US";
 
 		const user = User.create({
 			created_at: new Date(),
@@ -295,8 +359,8 @@ export class User extends BaseClass {
 			},
 			settings: { ...defaultSettings, locale: language },
 			purchased_flags: 5, // TODO: idk what the values for this are
-			premium_usage_flags: 2,  // TODO: idk what the values for this are
-			extended_settings: "",	// TODO: was {}
+			premium_usage_flags: 2, // TODO: idk what the values for this are
+			extended_settings: "", // TODO: was {}
 			fingerprints: [],
 		});
 
@@ -305,7 +369,7 @@ export class User extends BaseClass {
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
-					await Member.addToGuild(user.id, guild).catch((e) => { });
+					await Member.addToGuild(user.id, guild).catch((e) => {});
 				}
 			}
 		});
@@ -372,7 +436,7 @@ export interface UserSettings {
 	disable_games_tab: boolean;
 	enable_tts_command: boolean;
 	explicit_content_filter: number;
-	friend_source_flags: { all: boolean; };
+	friend_source_flags: { all: boolean };
 	gateway_connected: boolean;
 	gif_auto_play: boolean;
 	// every top guild is displayed as a "folder"

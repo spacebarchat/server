@@ -26,7 +26,7 @@ import { Recipient } from "@fosscord/util";
 
 export function handlePresenceUpdate(
 	this: WebSocket,
-	{ event, acknowledge, data }: EventOpts
+	{ event, acknowledge, data }: EventOpts,
 ) {
 	acknowledge?.();
 	if (event === EVENTEnum.PresenceUpdate) {
@@ -54,14 +54,14 @@ export async function setupListener(this: WebSocket) {
 			where: {
 				from_id: this.user_id,
 				type: RelationshipType.friends,
-			}
+			},
 		}),
 	]);
 
 	const guilds = members.map((x) => x.guild);
 	const dm_channels = recipients.map((x) => x.channel);
 
-	const opts: { acknowledge: boolean; channel?: AMQChannel; } = {
+	const opts: { acknowledge: boolean; channel?: AMQChannel } = {
 		acknowledge: true,
 	};
 	this.listen_options = opts;
@@ -79,7 +79,7 @@ export async function setupListener(this: WebSocket) {
 		this.events[relationship.to_id] = await listenEvent(
 			relationship.to_id,
 			handlePresenceUpdate.bind(this),
-			opts
+			opts,
 		);
 	});
 
@@ -101,7 +101,7 @@ export async function setupListener(this: WebSocket) {
 				this.events[channel.id] = await listenEvent(
 					channel.id,
 					consumer,
-					opts
+					opts,
 				);
 			}
 		});
@@ -137,7 +137,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			this.member_events[data.user.id] = await listenEvent(
 				data.user.id,
 				handlePresenceUpdate.bind(this),
-				this.listen_options
+				this.listen_options,
 			);
 			break;
 		case "GUILD_MEMBER_REMOVE":
@@ -164,7 +164,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			this.events[data.user.id] = await listenEvent(
 				data.user.id,
 				handlePresenceUpdate.bind(this),
-				this.listen_options
+				this.listen_options,
 			);
 			break;
 		case "GUILD_CREATE":

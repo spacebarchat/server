@@ -75,7 +75,7 @@ export interface ReadyEventData {
 		number,
 		[[number, { e: number; s: number }[]]],
 		[number, [[number, [number, number]]]],
-		{ b: number; k: bigint[] }[]
+		{ b: number; k: bigint[] }[],
 	][];
 	guild_join_requests?: any[]; // ? what is this? this is new
 	shard?: [number, number];

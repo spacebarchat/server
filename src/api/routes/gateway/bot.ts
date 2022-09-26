@@ -18,9 +18,9 @@ export interface GatewayBotResponse {
 const options: RouteOptions = {
 	test: {
 		response: {
-			body: "GatewayBotResponse"
-		}
-	}
+			body: "GatewayBotResponse",
+		},
+	},
 };
 
 router.get("/", route(options), (req: Request, res: Response) => {
@@ -32,8 +32,8 @@ router.get("/", route(options), (req: Request, res: Response) => {
 			total: 1000,
 			remaining: 999,
 			reset_after: 14400000,
-			max_concurrency: 1
-		}
+			max_concurrency: 1,
+		},
 	});
 });
 

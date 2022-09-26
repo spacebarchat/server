@@ -17,11 +17,14 @@ export function checkToken(token: string, jwtSecret: string): Promise<any> {
 
 			const user = await User.findOne({
 				where: { id: decoded.id },
-				select: ["data", "bot", "disabled", "deleted", "rights"]
+				select: ["data", "bot", "disabled", "deleted", "rights"],
 			});
 			if (!user) return rej("Invalid Token");
 			// we need to round it to seconds as it saved as seconds in jwt iat and valid_tokens_since is stored in milliseconds
-			if (decoded.iat * 1000 < new Date(user.data.valid_tokens_since).setSeconds(0, 0))
+			if (
+				decoded.iat * 1000 <
+				new Date(user.data.valid_tokens_since).setSeconds(0, 0)
+			)
 				return rej("Invalid Token");
 			if (user.disabled) return rej("User disabled");
 			if (user.deleted) return rej("User not found");
@@ -45,7 +48,7 @@ export async function generateToken(id: string) {
 			(err, token) => {
 				if (err) return rej(err);
 				return res(token);
-			}
+			},
 		);
 	});
 }

@@ -5,4 +5,4 @@ export interface BanRegistrySchema {
 	executor_id: string;
 	ip?: string;
 	reason?: string | undefined;
-};
+}

@@ -41,29 +41,29 @@ router.get("/:id", route({}), async (req: Request, res: Response) => {
 				publishers: [
 					{
 						id: "",
-						name: ""
-					}
+						name: "",
+					},
 				],
 				developers: [
 					{
 						id: "",
-						name: ""
-					}
+						name: "",
+					},
 				],
 				system_requirements: {},
 				show_age_gate: false,
 				price: {
 					amount: 0,
-					currency: "EUR"
+					currency: "EUR",
 				},
-				locales: []
+				locales: [],
 			},
 			tagline: "",
 			description: "",
 			carousel_items: [
 				{
-					asset_id: ""
-				}
+					asset_id: "",
+				},
 			],
 			header_logo_dark_theme: {}, //{id: "", size: 4665, mime_type: "image/gif", width 160, height: 160}
 			header_logo_light_theme: {},
@@ -71,8 +71,8 @@ router.get("/:id", route({}), async (req: Request, res: Response) => {
 			thumbnail: {},
 			header_background: {},
 			hero_background: {},
-			assets: []
-		}
+			assets: [],
+		},
 	}).status(200);
 });
 

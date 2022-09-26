@@ -51,7 +51,7 @@ export enum MessageType {
 	SELF_COMMAND_SCRIPT = 43, // self command scripts
 	ENCRYPTION = 50,
 	CUSTOM_START = 63,
-	UNHANDLED = 255
+	UNHANDLED = 255,
 }
 
 @Entity("messages")
@@ -115,7 +115,10 @@ export class Message extends BaseClass {
 	@ManyToOne(() => Application)
 	application?: Application;
 
-	@Column({ nullable: true, type: process.env.PRODUCTION ? "longtext" : undefined })
+	@Column({
+		nullable: true,
+		type: process.env.PRODUCTION ? "longtext" : undefined,
+	})
 	content?: string;
 
 	@Column()
@@ -147,10 +150,14 @@ export class Message extends BaseClass {
 	@ManyToMany(() => Sticker, { cascade: true, onDelete: "CASCADE" })
 	sticker_items?: Sticker[];
 
-	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
-		cascade: true,
-		orphanedRowAction: "delete",
-	})
+	@OneToMany(
+		() => Attachment,
+		(attachment: Attachment) => attachment.message,
+		{
+			cascade: true,
+			orphanedRowAction: "delete",
+		},
+	)
 	attachments?: Attachment[];
 
 	@Column({ type: "simple-json" })
@@ -176,7 +183,7 @@ export class Message extends BaseClass {
 
 	@Column({ nullable: true })
 	flags?: string;
-	
+
 	@Column({ type: "simple-json", nullable: true })
 	message_reference?: {
 		message_id: string;
@@ -204,7 +211,11 @@ export class Message extends BaseClass {
 	@BeforeInsert()
 	validate() {
 		if (this.content) {
-			if (BannedWords.find(this.content)) throw new HTTPError("Message was blocked by automatic moderation", 200000);
+			if (BannedWords.find(this.content))
+				throw new HTTPError(
+					"Message was blocked by automatic moderation",
+					200000,
+				);
 		}
 	}
 }

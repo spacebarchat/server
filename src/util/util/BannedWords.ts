@@ -6,7 +6,9 @@ var words: string[];
 export const BannedWords = {
 	init: async function init() {
 		if (words) return words;
-		const file = (await fs.readFile(path.join(process.cwd(), "bannedWords"))).toString();
+		const file = (
+			await fs.readFile(path.join(process.cwd(), "bannedWords"))
+		).toString();
 		if (!file) {
 			words = [];
 			return [];
@@ -18,6 +20,6 @@ export const BannedWords = {
 	get: () => words,
 
 	find: (val: string) => {
-		return words.some(x => val.indexOf(x) != -1);
-	}
+		return words.some((x) => val.indexOf(x) != -1);
+	},
 };

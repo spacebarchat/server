@@ -15,7 +15,7 @@ export function adjustEmail(email?: string): string | undefined {
 		// replace .dots and +alternatives -> Gmail Dot Trick https://support.google.com/mail/answer/7436150 and https://generator.email/blog/gmail-generator
 		let v = user.replace(/[.]|(\+.*)/g, "") + "@gmail.com";
 	}
-	
+
 	if (domain === "google.com") {
 		// replace .dots and +alternatives -> Google Staff GMail Dot Trick
 		let v = user.replace(/[.]|(\+.*)/g, "") + "@google.com";

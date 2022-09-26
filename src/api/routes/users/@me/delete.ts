@@ -7,7 +7,10 @@ import { HTTPError } from "lambert-server";
 const router = Router();
 
 router.post("/", route({}), async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["data"] }); //User object
+	const user = await User.findOneOrFail({
+		where: { id: req.user_id },
+		select: ["data"],
+	}); //User object
 	let correctpass = true;
 
 	if (user.data.hash) {
@@ -21,7 +24,10 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 	// TODO: decrement guild member count
 
 	if (correctpass) {
-		await Promise.all([User.delete({ id: req.user_id }), Member.delete({ id: req.user_id })]);
+		await Promise.all([
+			User.delete({ id: req.user_id }),
+			Member.delete({ id: req.user_id }),
+		]);
 
 		res.sendStatus(204);
 	} else {

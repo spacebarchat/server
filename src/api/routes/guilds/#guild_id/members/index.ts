@@ -12,7 +12,8 @@ const router = Router();
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 	const limit = Number(req.query.limit) || 1;
-	if (limit > 1000 || limit < 1) throw new HTTPError("Limit must be between 1 and 1000");
+	if (limit > 1000 || limit < 1)
+		throw new HTTPError("Limit must be between 1 and 1000");
 	const after = `${req.query.after}`;
 	const query = after ? { id: MoreThan(after) } : {};
 
@@ -22,7 +23,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		where: { guild_id, ...query },
 		select: PublicMemberProjection,
 		take: limit,
-		order: { id: "ASC" }
+		order: { id: "ASC" },
 	});
 
 	return res.json(members);

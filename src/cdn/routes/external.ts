@@ -66,14 +66,14 @@ router.get("/resize/:url", async (req: Request, res: Response) => {
 	const { resizeHeightMax, resizeWidthMax } = Config.get().cdn;
 	const w = Math.min(parseInt(width as string), resizeWidthMax ?? 100);
 	const h = Math.min(parseInt(height as string), resizeHeightMax ?? 100);
-	if (w < 1 || h < 1) throw new HTTPError("Width and height must be greater than 0");
+	if (w < 1 || h < 1)
+		throw new HTTPError("Width and height must be greater than 0");
 
 	let buffer, response;
 	try {
 		response = await fetch(url, DEFAULT_FETCH_OPTIONS);
 		buffer = await response.buffer();
-	}
-	catch (e) {
+	} catch (e) {
 		throw new HTTPError("Couldn't fetch website");
 	}
 
@@ -84,7 +84,10 @@ router.get("/resize/:url", async (req: Request, res: Response) => {
 		.toBuffer();
 
 	res.setHeader("Content-Disposition", "attachment");
-	res.setHeader("Content-Type", response.headers.get("content-type") ?? "image/png");
+	res.setHeader(
+		"Content-Type",
+		response.headers.get("content-type") ?? "image/png",
+	);
 	return res.end(resizedBuffer);
 });
 

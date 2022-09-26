@@ -17,8 +17,8 @@ const skus = new Map([
 				currency: "usd",
 				price: 0,
 				price_tier: null,
-			}
-		]
+			},
+		],
 	],
 	[
 		"521842865731534868",
@@ -32,7 +32,7 @@ const skus = new Map([
 				sku_id: "521842865731534868",
 				currency: "usd",
 				price: 0,
-				price_tier: null
+				price_tier: null,
 			},
 			{
 				id: "511651860671627264",
@@ -43,9 +43,9 @@ const skus = new Map([
 				sku_id: "521842865731534868",
 				currency: "usd",
 				price: 0,
-				price_tier: null
-			}
-		]
+				price_tier: null,
+			},
+		],
 	],
 	[
 		"521846918637420545",
@@ -59,7 +59,7 @@ const skus = new Map([
 				sku_id: "521846918637420545",
 				currency: "usd",
 				price: 0,
-				price_tier: null
+				price_tier: null,
 			},
 			{
 				id: "511651876987469824",
@@ -70,9 +70,9 @@ const skus = new Map([
 				sku_id: "521846918637420545",
 				currency: "usd",
 				price: 0,
-				price_tier: null
-			}
-		]
+				price_tier: null,
+			},
+		],
 	],
 	[
 		"521847234246082599",
@@ -86,7 +86,7 @@ const skus = new Map([
 				sku_id: "521847234246082599",
 				currency: "usd",
 				price: 0,
-				price_tier: null
+				price_tier: null,
 			},
 			{
 				id: "511651880837840896",
@@ -97,7 +97,7 @@ const skus = new Map([
 				sku_id: "521847234246082599",
 				currency: "usd",
 				price: 0,
-				price_tier: null
+				price_tier: null,
 			},
 			{
 				id: "511651885459963904",
@@ -108,9 +108,9 @@ const skus = new Map([
 				sku_id: "521847234246082599",
 				currency: "usd",
 				price: 0,
-				price_tier: null
-			}
-		]
+				price_tier: null,
+			},
+		],
 	],
 	[
 		"590663762298667008",
@@ -125,7 +125,7 @@ const skus = new Map([
 				discount_price: 0,
 				currency: "usd",
 				price: 0,
-				price_tier: null
+				price_tier: null,
 			},
 			{
 				id: "590665538238152709",
@@ -137,10 +137,10 @@ const skus = new Map([
 				discount_price: 0,
 				currency: "usd",
 				price: 0,
-				price_tier: null
-			}
-		]
-	]
+				price_tier: null,
+			},
+		],
+	],
 ]);
 
 router.get("/", route({}), async (req: Request, res: Response) => {

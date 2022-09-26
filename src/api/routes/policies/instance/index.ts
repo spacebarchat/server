@@ -3,8 +3,7 @@ import { route } from "@fosscord/api";
 import { Config } from "@fosscord/util";
 const router = Router();
 
-
-router.get("/",route({}), async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const { general } = Config.get();
 	res.json(general);
 });

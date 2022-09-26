@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, RelationId, PrimaryColumn } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	RelationId,
+	PrimaryColumn,
+} from "typeorm";
 import { Member } from "./Member";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -76,7 +83,8 @@ export class Invite extends BaseClassWithoutId {
 
 	static async joinGuild(user_id: string, code: string) {
 		const invite = await Invite.findOneOrFail({ where: { code } });
-		if (invite.uses++ >= invite.max_uses && invite.max_uses !== 0) await Invite.delete({ code });
+		if (invite.uses++ >= invite.max_uses && invite.max_uses !== 0)
+			await Invite.delete({ code });
 		else await invite.save();
 
 		await Member.addToGuild(user_id, invite.guild_id);

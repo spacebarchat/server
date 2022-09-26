@@ -17,7 +17,9 @@ export class Snowflake {
 	static workerId = BigInt((cluster.worker?.id || 0) % 31); // max 31
 
 	constructor() {
-		throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
+		throw new Error(
+			`The ${this.constructor.name} class may not be instantiated.`,
+		);
 	}
 
 	/**
@@ -83,14 +85,15 @@ export class Snowflake {
 		return dec;
 	}
 
-	static generateWorkerProcess() { // worker process - returns a number
+	static generateWorkerProcess() {
+		// worker process - returns a number
 		var time = BigInt(Date.now() - Snowflake.EPOCH) << BigInt(22);
 		var worker = Snowflake.workerId << 17n;
 		var process = Snowflake.processId << 12n;
 		var increment = Snowflake.INCREMENT++;
 		return BigInt(time | worker | process | increment);
 	}
-	
+
 	static generate() {
 		return Snowflake.generateWorkerProcess().toString();
 	}
@@ -111,7 +114,9 @@ export class Snowflake {
 	 * @returns {DeconstructedSnowflake} Deconstructed snowflake
 	 */
 	static deconstruct(snowflake) {
-		const BINARY = Snowflake.idToBinary(snowflake).toString(2).padStart(64, "0");
+		const BINARY = Snowflake.idToBinary(snowflake)
+			.toString(2)
+			.padStart(64, "0");
 		const res = {
 			timestamp: parseInt(BINARY.substring(0, 42), 2) + Snowflake.EPOCH,
 			workerID: parseInt(BINARY.substring(42, 47), 2),

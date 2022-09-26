@@ -10,7 +10,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/auth/mfa/totp",
 	// Routes with a seperate auth system
 	"/webhooks/",
-	// Public information endpoints 
+	// Public information endpoints
 	"/ping",
 	"/gateway",
 	"/experiments",
@@ -26,7 +26,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	// Public policy pages
 	"/policies/instance",
 	// Asset delivery
-	/\/guilds\/\d+\/widget\.(json|png)/
+	/\/guilds\/\d+\/widget\.(json|png)/,
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;
@@ -43,7 +43,11 @@ declare global {
 	}
 }
 
-export async function Authentication(req: Request, res: Response, next: NextFunction) {
+export async function Authentication(
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) {
 	if (req.method === "OPTIONS") return res.sendStatus(204);
 	const url = req.url.replace(API_PREFIX, "");
 	if (url.startsWith("/invites") && req.method === "GET") return next();
@@ -54,12 +58,16 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 		})
 	)
 		return next();
-	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
+	if (!req.headers.authorization)
+		return next(new HTTPError("Missing Authorization Header", 401));
 
 	try {
 		const { jwtSecret } = Config.get().security;
 
-		const { decoded, user }: any = await checkToken(req.headers.authorization, jwtSecret);
+		const { decoded, user }: any = await checkToken(
+			req.headers.authorization,
+			jwtSecret,
+		);
 
 		req.token = decoded;
 		req.user_id = decoded.id;

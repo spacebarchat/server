@@ -5,14 +5,22 @@ import mysql from "mysql2";
 import fetch from "node-fetch";
 
 const dbConn = mysql.createConnection(process.env.DATABASE as string);
-const executePromise = (sql: string, args: any[]) => new Promise((resolve, reject) => dbConn.execute(sql, args, (err, res) => { if (err) reject(err); else resolve(res); }));
+const executePromise = (sql: string, args: any[]) =>
+	new Promise((resolve, reject) =>
+		dbConn.execute(sql, args, (err, res) => {
+			if (err) reject(err);
+			else resolve(res);
+		}),
+	);
 const savePerf = async (time: number, name: string, error?: string | Error) => {
 	if (error && typeof error != "string") error = error.message;
 	try {
-		await executePromise("INSERT INTO performance (value, endpoint, timestamp, error) VALUES (?, ?, ?, ?)", [time ?? 0, name, new Date(), error ?? null]);
+		await executePromise(
+			"INSERT INTO performance (value, endpoint, timestamp, error) VALUES (?, ?, ?, ?)",
+			[time ?? 0, name, new Date(), error ?? null],
+		);
 		// await executePromise("DELETE FROM performance WHERE DATE(timestamp) < now() - interval ? DAY", [process.env.RETENTION_DAYS]);
-	}
-	catch (e) {
+	} catch (e) {
 		console.error(e);
 	}
 };
@@ -23,7 +31,11 @@ const doMeasurements = async (channel: Discord.TextChannel) => {
 	timestamp = Date.now();
 	await channel.send("hello this is a special message kthxbye");
 
-	setTimeout(doMeasurements, parseInt(process.env.MEASURE_INTERVAL as string), channel);
+	setTimeout(
+		doMeasurements,
+		parseInt(process.env.MEASURE_INTERVAL as string),
+		channel,
+	);
 };
 
 const instance = {
@@ -37,8 +49,8 @@ const client = new Fosscord.Client({
 	intents: [],
 	http: {
 		api: instance.api,
-		cdn: instance.cdn
-	}
+		cdn: instance.cdn,
+	},
 });
 
 client.on("ready", async () => {
@@ -52,19 +64,24 @@ client.on("ready", async () => {
 
 client.on("messageCreate", async (msg: Discord.Message) => {
 	if (!timestamp) return;
-	if (msg.author.id != "992745947417141682"
-		|| msg.channel.id != "1019955729054267764"
-		|| msg.content != "hello this is a special message kthxbye")
+	if (
+		msg.author.id != "992745947417141682" ||
+		msg.channel.id != "1019955729054267764" ||
+		msg.content != "hello this is a special message kthxbye"
+	)
 		return;
 	await savePerf(Date.now() - timestamp, "messageCreate", undefined);
 	timestamp = undefined;
 
-	await fetch(`${instance.api}/channels/1019955729054267764/messages/${msg.id}`, {
-		method: "DELETE",
-		headers: {
-			authorization: instance.token
-		}
-	})
+	await fetch(
+		`${instance.api}/channels/1019955729054267764/messages/${msg.id}`,
+		{
+			method: "DELETE",
+			headers: {
+				authorization: instance.token,
+			},
+		},
+	);
 });
 
 client.on("error", (error: any) => {

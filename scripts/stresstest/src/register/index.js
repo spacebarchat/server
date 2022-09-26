@@ -4,7 +4,11 @@ var config = require("../../config.json");
 module.exports = generate;
 async function generate() {
 	var mail = (Math.random() + 10).toString(36).substring(2);
-	mail = mail + "." + (Math.random() + 10).toString(36).substring(2) + "@stresstest.com";
+	mail =
+		mail +
+		"." +
+		(Math.random() + 10).toString(36).substring(2) +
+		"@stresstest.com";
 	var password =
 		(Math.random() * 69).toString(36).substring(-7) +
 		(Math.random() * 69).toString(36).substring(-7) +
@@ -20,12 +24,12 @@ async function generate() {
 		consent: true,
 		date_of_birth: "2000-04-04",
 		gift_code_sku_id: null,
-		captcha_key: null
+		captcha_key: null,
 	};
 	var x = await fetch(config.url + "/auth/register", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(body)
+		body: JSON.stringify(body),
 	});
 	console.log(x);
 	x = await x.json();

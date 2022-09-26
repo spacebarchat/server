@@ -11,9 +11,9 @@ router.get("/", route({}), (req: Request, res: Response) => {
 			communication: true,
 			tips: false,
 			updates_and_announcements: false,
-			recommendations_and_events: false
+			recommendations_and_events: false,
 		},
-		initialized: false
+		initialized: false,
 	}).status(200);
 });
 

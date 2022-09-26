@@ -56,7 +56,7 @@ router.post(
 		};
 
 		return res.json(file);
-	}
+	},
 );
 
 router.get(
@@ -65,7 +65,7 @@ router.get(
 		const { channel_id, id, filename } = req.params;
 
 		const file = await storage.get(
-			`attachments/${channel_id}/${id}/${filename}`
+			`attachments/${channel_id}/${id}/${filename}`,
 		);
 		if (!file) throw new HTTPError("File not found");
 		const type = await FileType.fromBuffer(file);
@@ -79,7 +79,7 @@ router.get(
 		res.set("Cache-Control", "public, max-age=31536000");
 
 		return res.send(file);
-	}
+	},
 );
 
 router.delete(
@@ -94,7 +94,7 @@ router.delete(
 		await storage.delete(path);
 
 		return res.send({ success: true });
-	}
+	},
 );
 
 export default router;

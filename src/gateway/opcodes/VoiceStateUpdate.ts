@@ -87,16 +87,18 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 
 	//If it's null it means that we are leaving the channel and this event is not needed
 	if (voiceState.channel_id !== null) {
-		const guild = await Guild.findOne({ where: { id: voiceState.guild_id } });
+		const guild = await Guild.findOne({
+			where: { id: voiceState.guild_id },
+		});
 		const regions = Config.get().regions;
 		let guildRegion: Region;
 		if (guild && guild.region) {
 			guildRegion = regions.available.filter(
-				(r) => r.id === guild.region
+				(r) => r.id === guild.region,
 			)[0];
 		} else {
 			guildRegion = regions.available.filter(
-				(r) => r.id === regions.default
+				(r) => r.id === regions.default,
 			)[0];
 		}
 

@@ -1,11 +1,11 @@
 import { Message } from "discord.js";
-import { Client } from "fosscord-gopnik/build/lib";	// huh? oh well. some bugs in my lib Ig
+import { Client } from "fosscord-gopnik/build/lib"; // huh? oh well. some bugs in my lib Ig
 
 import { Command, getCommands } from "./commands/index.js";
 
 export default class Bot {
 	client: Client;
-	commands: { [key: string]: Command; } = {};
+	commands: { [key: string]: Command } = {};
 
 	constructor(client: Client) {
 		this.client = client;
@@ -17,10 +17,12 @@ export default class Bot {
 		console.log(`Logged in as ${this.client.user!.tag}`);
 
 		this.client.user!.setPresence({
-			activities: [{
-				name: "EVERYTHING",
-				type: "WATCHING",
-			}]
+			activities: [
+				{
+					name: "EVERYTHING",
+					type: "WATCHING",
+				},
+			],
 		});
 	};
 

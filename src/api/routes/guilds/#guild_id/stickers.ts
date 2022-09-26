@@ -26,15 +26,18 @@ const bodyParser = multer({
 	limits: {
 		fileSize: 1024 * 1024 * 100,
 		fields: 10,
-		files: 1
+		files: 1,
 	},
-	storage: multer.memoryStorage()
+	storage: multer.memoryStorage(),
 }).single("file");
 
 router.post(
 	"/",
 	bodyParser,
-	route({ permission: "MANAGE_EMOJIS_AND_STICKERS", body: "ModifyGuildStickerSchema" }),
+	route({
+		permission: "MANAGE_EMOJIS_AND_STICKERS",
+		body: "ModifyGuildStickerSchema",
+	}),
 	async (req: Request, res: Response) => {
 		if (!req.file) throw new HTTPError("missing file");
 
@@ -49,15 +52,15 @@ router.post(
 				id,
 				type: StickerType.GUILD,
 				format_type: getStickerFormat(req.file.mimetype),
-				available: true
+				available: true,
 			}).save(),
-			uploadFile(`/stickers/${id}`, req.file)
+			uploadFile(`/stickers/${id}`, req.file),
 		]);
 
 		await sendStickerUpdateEvent(guild_id);
 
 		res.json(sticker);
-	}
+	},
 );
 
 export function getStickerFormat(mime_type: string) {
@@ -71,7 +74,9 @@ export function getStickerFormat(mime_type: string) {
 		case "image/gif":
 			return StickerFormatType.GIF;
 		default:
-			throw new HTTPError("invalid sticker format: must be png, apng or lottie");
+			throw new HTTPError(
+				"invalid sticker format: must be png, apng or lottie",
+			);
 	}
 }
 
@@ -79,21 +84,30 @@ router.get("/:sticker_id", route({}), async (req: Request, res: Response) => {
 	const { guild_id, sticker_id } = req.params;
 	await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	res.json(await Sticker.findOneOrFail({ where: { guild_id, id: sticker_id } }));
+	res.json(
+		await Sticker.findOneOrFail({ where: { guild_id, id: sticker_id } }),
+	);
 });
 
 router.patch(
 	"/:sticker_id",
-	route({ body: "ModifyGuildStickerSchema", permission: "MANAGE_EMOJIS_AND_STICKERS" }),
+	route({
+		body: "ModifyGuildStickerSchema",
+		permission: "MANAGE_EMOJIS_AND_STICKERS",
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id, sticker_id } = req.params;
 		const body = req.body as ModifyGuildStickerSchema;
 
-		const sticker = await Sticker.create({ ...body, guild_id, id: sticker_id }).save();
+		const sticker = await Sticker.create({
+			...body,
+			guild_id,
+			id: sticker_id,
+		}).save();
 		await sendStickerUpdateEvent(guild_id);
 
 		return res.json(sticker);
-	}
+	},
 );
 
 async function sendStickerUpdateEvent(guild_id: string) {
@@ -102,18 +116,22 @@ async function sendStickerUpdateEvent(guild_id: string) {
 		guild_id: guild_id,
 		data: {
 			guild_id: guild_id,
-			stickers: await Sticker.find({ where: { guild_id: guild_id } })
-		}
+			stickers: await Sticker.find({ where: { guild_id: guild_id } }),
+		},
 	} as GuildStickersUpdateEvent);
 }
 
-router.delete("/:sticker_id", route({ permission: "MANAGE_EMOJIS_AND_STICKERS" }), async (req: Request, res: Response) => {
-	const { guild_id, sticker_id } = req.params;
+router.delete(
+	"/:sticker_id",
+	route({ permission: "MANAGE_EMOJIS_AND_STICKERS" }),
+	async (req: Request, res: Response) => {
+		const { guild_id, sticker_id } = req.params;
 
-	await Sticker.delete({ guild_id, id: sticker_id });
-	await sendStickerUpdateEvent(guild_id);
+		await Sticker.delete({ guild_id, id: sticker_id });
+		await sendStickerUpdateEvent(guild_id);
 
-	return res.sendStatus(204);
-});
+		return res.sendStatus(204);
+	},
+);
 
 export default router;

@@ -1,12 +1,12 @@
 export interface SelectProtocolSchema {
 	protocol: "webrtc" | "udp";
 	data:
-	| string
-	| {
-		address: string;
-		port: number;
-		mode: string;
-	};
+		| string
+		| {
+				address: string;
+				port: number;
+				mode: string;
+		  };
 	sdp?: string;
 	codecs?: {
 		name: "opus" | "VP8" | "VP9" | "H264";

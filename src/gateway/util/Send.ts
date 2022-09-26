@@ -2,7 +2,9 @@ var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {
-	console.log("Missing @yukikaze-bot/erlpack, electron-based desktop clients designed for discord.com will not be able to connect!");
+	console.log(
+		"Missing @yukikaze-bot/erlpack, electron-based desktop clients designed for discord.com will not be able to connect!",
+	);
 }
 import { Payload, WebSocket } from "@fosscord/gateway";
 

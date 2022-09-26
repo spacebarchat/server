@@ -1,4 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+	RelationId,
+} from "typeorm";
 import { Sticker } from ".";
 import { BaseClass } from "./BaseClass";
 

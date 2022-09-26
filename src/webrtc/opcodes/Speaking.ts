@@ -15,8 +15,8 @@ export async function onSpeaking(this: WebSocket, data: Payload) {
 			d: {
 				user_id: client.websocket.user_id,
 				speaking: data.d.speaking,
-				ssrc: ssrc?.audio_ssrc || 0
-			}
+				ssrc: ssrc?.audio_ssrc || 0,
+			},
 		});
 	});
 }

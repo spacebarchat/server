@@ -3,7 +3,7 @@ import { WebSocket, Payload } from "@fosscord/gateway";
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) { }
+} catch (error) {}
 import OPCodeHandlers from "../opcodes";
 import { Tuple } from "lambert-server";
 import { check } from "../opcodes/instanceOf";
@@ -34,11 +34,9 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 			}
 		}
 		data = bigIntJson.parse(buffer as string);
-	}
-	else if (typeof buffer == "string") {
+	} else if (typeof buffer == "string") {
 		data = bigIntJson.parse(buffer as string);
-	}
-	else return;
+	} else return;
 
 	check.call(this, PayloadSchema, data);
 

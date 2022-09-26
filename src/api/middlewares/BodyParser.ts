@@ -6,7 +6,8 @@ export function BodyParser(opts?: OptionsJson) {
 	const jsonParser = bodyParser.json(opts);
 
 	return (req: Request, res: Response, next: NextFunction) => {
-		if (!req.headers["content-type"]) req.headers["content-type"] = "application/json";
+		if (!req.headers["content-type"])
+			req.headers["content-type"] = "application/json";
 
 		jsonParser(req, res, (err) => {
 			if (err) {

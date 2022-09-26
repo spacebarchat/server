@@ -3,7 +3,14 @@ import addFormats from "ajv-formats";
 import fs from "fs";
 import path from "path";
 
-const SchemaPath = path.join(__dirname, "..", "..", "..", "assets", "schemas.json");
+const SchemaPath = path.join(
+	__dirname,
+	"..",
+	"..",
+	"..",
+	"assets",
+	"schemas.json",
+);
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 
 export const ajv = new Ajv({
@@ -14,7 +21,7 @@ export const ajv = new Ajv({
 	coerceTypes: true,
 	messages: true,
 	strict: true,
-	strictRequired: true
+	strictRequired: true,
 });
 
 addFormats(ajv);
@@ -41,7 +48,14 @@ export const normalizeBody = (body: any = {}) => {
 		} else {
 			for (const [key, value] of Object.entries(object)) {
 				if (value == null) {
-					if (key === "icon" || key === "avatar" || key === "banner" || key === "splash" || key === "discovery_splash") continue;
+					if (
+						key === "icon" ||
+						key === "avatar" ||
+						key === "banner" ||
+						key === "splash" ||
+						key === "discovery_splash"
+					)
+						continue;
 					delete object[key];
 				} else if (typeof value === "object") {
 					normalizeObject(value);

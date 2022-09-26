@@ -1,7 +1,13 @@
 import "dotenv/config";
 import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
-import { initDatabase, generateToken, User, Config, handleFile } from "fosscord-server/src/util";
+import {
+	initDatabase,
+	generateToken,
+	User,
+	Config,
+	handleFile,
+} from "fosscord-server/src/util";
 import path from "path";
 import fetch from "node-fetch";
 
@@ -16,8 +22,8 @@ app.use(cookieParser());
 const port = process.env.PORT;
 
 // ip -> unix epoch that requests will be accepted again
-const rateLimits: { [ip: string]: number; } = {};
-const allowRequestsEveryMs = 0.5 * 1000;	// every half second
+const rateLimits: { [ip: string]: number } = {};
+const allowRequestsEveryMs = 0.5 * 1000; // every half second
 
 const allowedRequestsPerSecond = 50;
 let requestsThisSecond = 0;
@@ -36,23 +42,25 @@ class Discord {
 	static getAccessToken = async (req: Request, res: Response) => {
 		const { code } = req.query;
 
-		const body = new URLSearchParams(Object.entries({
-			client_id: process.env.DISCORD_CLIENT_ID as string,
-			client_secret: process.env.DISCORD_SECRET as string,
-			redirect_uri: process.env.DISCORD_REDIRECT as string,
-			code: code as string,
-			grant_type: "authorization_code",
-		})).toString();
+		const body = new URLSearchParams(
+			Object.entries({
+				client_id: process.env.DISCORD_CLIENT_ID as string,
+				client_secret: process.env.DISCORD_SECRET as string,
+				redirect_uri: process.env.DISCORD_REDIRECT as string,
+				code: code as string,
+				grant_type: "authorization_code",
+			}),
+		).toString();
 
 		const resp = await fetch("https://discord.com/api/oauth2/token", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
-			body: body
+			body: body,
 		});
 
-		const json = await resp.json() as any;
+		const json = (await resp.json()) as any;
 		if (json.error) return null;
 
 		return {
@@ -67,24 +75,26 @@ class Discord {
 	static getUserDetails = async (token: string) => {
 		const resp = await fetch("https://discord.com/api/users/@me", {
 			headers: {
-				"Authorization": `Bearer ${token}`,
-			}
+				Authorization: `Bearer ${token}`,
+			},
 		});
 
-		const json = await resp.json() as any;
-		if (!json.username || !json.email) return null;	// eh, deal with bad code later
+		const json = (await resp.json()) as any;
+		if (!json.username || !json.email) return null; // eh, deal with bad code later
 
 		return {
 			id: json.id,
 			email: json.email,
 			username: json.username,
-			avatar_url: json.avatar ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=2048` : null,
+			avatar_url: json.avatar
+				? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=2048`
+				: null,
 		};
 	};
 }
 
-const handlers: { [key: string]: any; } = {
-	"discord": Discord,
+const handlers: { [key: string]: any } = {
+	discord: Discord,
 };
 
 app.get("/oauth/:type", async (req, res) => {
@@ -92,17 +102,21 @@ app.get("/oauth/:type", async (req, res) => {
 	if (requestsThisSecond > allowedRequestsPerSecond)
 		return res.sendStatus(429);
 
-	const ip = (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress as string;
+	const ip =
+		(req.headers["x-forwarded-for"] as string) ||
+		(req.socket.remoteAddress as string);
 	console.log(`${ip}`);
 	if (!rateLimits[ip]) {
 		rateLimits[ip] = Date.now() + allowRequestsEveryMs;
-	}
-	else if (rateLimits[ip] > Date.now()) {
+	} else if (rateLimits[ip] > Date.now()) {
 		rateLimits[ip] += allowRequestsEveryMs;
-		console.log(`${new Date()} : user ${ip} was timed out for ${(rateLimits[ip] - Date.now()) / 1000}s`);
+		console.log(
+			`${new Date()} : user ${ip} was timed out for ${
+				(rateLimits[ip] - Date.now()) / 1000
+			}s`,
+		);
 		return res.sendStatus(429);
-	}
-	else {
+	} else {
 		delete rateLimits[ip];
 	}
 
@@ -121,16 +135,18 @@ app.get("/oauth/:type", async (req, res) => {
 		user = await User.register({
 			email: details.email,
 			username: details.username,
-			req
+			req,
 		});
 
 		if (details.avatar_url) {
 			try {
-				const avatar = await handleFile(`/avatars/${user.id}`, await toDataURL(details.avatar_url) as string);
+				const avatar = await handleFile(
+					`/avatars/${user.id}`,
+					(await toDataURL(details.avatar_url)) as string,
+				);
 				user.avatar = avatar;
 				await user.save();
-			}
-			catch (e) {
+			} catch (e) {
 				console.error(e);
 			}
 		}

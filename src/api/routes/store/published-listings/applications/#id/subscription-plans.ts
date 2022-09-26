@@ -17,8 +17,8 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			fallback_currency: "eur",
 			currency: "eur",
 			price: 4199,
-			price_tier: null
-		}
+			price_tier: null,
+		},
 	]).status(200);
 });
 

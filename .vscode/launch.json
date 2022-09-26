@@ -8,20 +8,16 @@
 			"name": "Launch current file",
 			"program": "${relativeFile}",
 			"request": "launch",
-			"skipFiles": [
-				"<node_internals>/**"
-			],
+			"skipFiles": ["<node_internals>/**"],
 			"type": "node"
 		},
 		{
 			"type": "node",
 			"request": "launch",
 			"name": "Bundle",
-			"skipFiles": [
-				"<node_internals>/**"
-			],
+			"skipFiles": ["<node_internals>/**"],
 			"program": "${workspaceFolder}/src/bundle/start.ts",
-			"outFiles": [ "${workspaceFolder}/dist/**/*.js" ],
+			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
 			"preLaunchTask": "tsc: build - tsconfig.json"
 		}
 	]

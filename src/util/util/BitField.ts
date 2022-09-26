@@ -3,7 +3,12 @@
 // https://github.com/discordjs/discord.js/blob/master/src/util/BitField.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
 
-export type BitFieldResolvable = number | BigInt | BitField | string | BitFieldResolvable[];
+export type BitFieldResolvable =
+	| number
+	| BigInt
+	| BitField
+	| string
+	| BitFieldResolvable[];
 
 /**
  * Data structure that makes it easy to interact with a bitfield.
@@ -91,7 +96,8 @@ export class BitField {
 	 */
 	serialize() {
 		const serialized: Record<string, boolean> = {};
-		for (const [flag, bit] of Object.entries(BitField.FLAGS)) serialized[flag] = this.has(bit);
+		for (const [flag, bit] of Object.entries(BitField.FLAGS))
+			serialized[flag] = this.has(bit);
 		return serialized;
 	}
 
@@ -130,14 +136,21 @@ export class BitField {
 	static resolve(bit: BitFieldResolvable = BigInt(0)): bigint {
 		// @ts-ignore
 		const FLAGS = this.FLAGS || this.constructor?.FLAGS;
-		if ((typeof bit === "number" || typeof bit === "bigint") && bit >= BigInt(0)) return BigInt(bit);
+		if (
+			(typeof bit === "number" || typeof bit === "bigint") &&
+			bit >= BigInt(0)
+		)
+			return BigInt(bit);
 		if (bit instanceof BitField) return bit.bitfield;
 		if (Array.isArray(bit)) {
 			// @ts-ignore
 			const resolve = this.constructor?.resolve || this.resolve;
-			return bit.map((p) => resolve.call(this, p)).reduce((prev, p) => BigInt(prev) | BigInt(p), BigInt(0));
+			return bit
+				.map((p) => resolve.call(this, p))
+				.reduce((prev, p) => BigInt(prev) | BigInt(p), BigInt(0));
 		}
-		if (typeof bit === "string" && typeof FLAGS[bit] !== "undefined") return FLAGS[bit];
+		if (typeof bit === "string" && typeof FLAGS[bit] !== "undefined")
+			return FLAGS[bit];
 		throw new RangeError("BITFIELD_INVALID: " + bit);
 	}
 }

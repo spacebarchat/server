@@ -48,7 +48,7 @@ function connect() {
 							token,
 							properties: {},
 						},
-					})
+					}),
 				);
 
 				break;
