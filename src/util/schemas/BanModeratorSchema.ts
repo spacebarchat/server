@@ -4,4 +4,4 @@ export interface BanModeratorSchema {
 	guild_id: string;
 	executor_id: string;
 	reason?: string | undefined;
-};
+}

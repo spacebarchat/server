@@ -6,7 +6,10 @@ import bcrypt from "bcrypt";
 const router = Router();
 
 router.post("/", route({}), async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({ where: { id: req.user_id }, select: ["data"] }); //User object
+	const user = await User.findOneOrFail({
+		where: { id: req.user_id },
+		select: ["data"],
+	}); //User object
 	let correctpass = true;
 
 	if (user.data.hash) {
@@ -19,7 +22,10 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 
 		res.sendStatus(204);
 	} else {
-		res.status(400).json({ message: "Password does not match", code: 50018 });
+		res.status(400).json({
+			message: "Password does not match",
+			code: 50018,
+		});
 	}
 });
 

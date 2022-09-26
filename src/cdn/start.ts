@@ -1,4 +1,4 @@
-require('module-alias/register')
+require("module-alias/register");
 import dotenv from "dotenv";
 dotenv.config();
 

@@ -40,21 +40,32 @@ export default function rateLimit(opts: {
 	success?: boolean;
 	onlyIp?: boolean;
 }): any {
-	return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+	return async (
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	): Promise<any> => {
 		// exempt user? if so, immediately short circuit
 		if (req.user_id) {
 			const rights = await getRights(req.user_id);
 			if (rights.has("BYPASS_RATE_LIMITS")) return next();
 		}
 
-		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
+		const bucket_id =
+			opts.bucket ||
+			req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
 		let executor_id = getIpAdress(req);
 		if (!opts.onlyIp && req.user_id) executor_id = req.user_id;
 
 		let max_hits = opts.count;
 		if (opts.bot && req.user_bot) max_hits = opts.bot;
-		if (opts.GET && ["GET", "OPTIONS", "HEAD"].includes(req.method)) max_hits = opts.GET;
-		else if (opts.MODIFY && ["POST", "DELETE", "PATCH", "PUT"].includes(req.method)) max_hits = opts.MODIFY;
+		if (opts.GET && ["GET", "OPTIONS", "HEAD"].includes(req.method))
+			max_hits = opts.GET;
+		else if (
+			opts.MODIFY &&
+			["POST", "DELETE", "PATCH", "PUT"].includes(req.method)
+		)
+			max_hits = opts.MODIFY;
 
 		let offender = Cache.get(executor_id + bucket_id);
 
@@ -75,11 +86,15 @@ export default function rateLimit(opts: {
 				const global = bucket_id === "global";
 				// each block violation pushes the expiry one full window further
 				reset += opts.window * 1000;
-				offender.expires_at = new Date(offender.expires_at.getTime() + opts.window * 1000);
+				offender.expires_at = new Date(
+					offender.expires_at.getTime() + opts.window * 1000,
+				);
 				resetAfterMs = reset - Date.now();
 				resetAfterSec = Math.ceil(resetAfterMs / 1000);
 
-				console.log(`blocked bucket: ${bucket_id} ${executor_id}`, { resetAfterMs });
+				console.log(`blocked bucket: ${bucket_id} ${executor_id}`, {
+					resetAfterMs,
+				});
 				return (
 					res
 						.status(429)
@@ -91,20 +106,33 @@ export default function rateLimit(opts: {
 						.set("Retry-After", `${Math.ceil(resetAfterSec)}`)
 						.set("X-RateLimit-Bucket", `${bucket_id}`)
 						// TODO: error rate limit message translation
-						.send({ message: "You are being rate limited.", retry_after: resetAfterSec, global })
+						.send({
+							message: "You are being rate limited.",
+							retry_after: resetAfterSec,
+							global,
+						})
 				);
 			}
 		}
 
 		next();
-		const hitRouteOpts = { bucket_id, executor_id, max_hits, window: opts.window };
+		const hitRouteOpts = {
+			bucket_id,
+			executor_id,
+			max_hits,
+			window: opts.window,
+		};
 
 		if (opts.error || opts.success) {
 			res.once("finish", () => {
 				// check if error and increment error rate limit
 				if (res.statusCode >= 400 && opts.error) {
 					return hitRoute(hitRouteOpts);
-				} else if (res.statusCode >= 200 && res.statusCode < 300 && opts.success) {
+				} else if (
+					res.statusCode >= 200 &&
+					res.statusCode < 300 &&
+					opts.success
+				) {
 					return hitRoute(hitRouteOpts);
 				}
 			});
@@ -141,8 +169,8 @@ export async function initRateLimits(app: Router) {
 		rateLimit({
 			bucket: "global",
 			onlyIp: true,
-			...ip
-		})
+			...ip,
+		}),
 	);
 	app.use(rateLimit({ bucket: "global", ...global }));
 	app.use(
@@ -150,17 +178,25 @@ export async function initRateLimits(app: Router) {
 			bucket: "error",
 			error: true,
 			onlyIp: true,
-			...error
-		})
+			...error,
+		}),
 	);
 	app.use("/guilds/:id", rateLimit(routes.guild));
 	app.use("/webhooks/:id", rateLimit(routes.webhook));
 	app.use("/channels/:id", rateLimit(routes.channel));
 	app.use("/auth/login", rateLimit(routes.auth.login));
-	app.use("/auth/register", rateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
+	app.use(
+		"/auth/register",
+		rateLimit({ onlyIp: true, success: true, ...routes.auth.register }),
+	);
 }
 
-async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number; }) {
+async function hitRoute(opts: {
+	executor_id: string;
+	bucket_id: string;
+	max_hits: number;
+	window: number;
+}) {
 	const id = opts.executor_id + opts.bucket_id;
 	let limit = Cache.get(id);
 	if (!limit) {
@@ -169,7 +205,7 @@ async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits
 			executor_id: opts.executor_id,
 			expires_at: new Date(Date.now() + opts.window * 1000),
 			hits: 0,
-			blocked: false
+			blocked: false,
 		};
 		Cache.set(id, limit);
 	}

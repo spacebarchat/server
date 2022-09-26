@@ -2,11 +2,11 @@ import { Message, GuildMember, Guild, User } from "discord.js";
 import fs from "fs";
 
 export type CommandContext = {
-	user: User,
-	guild: Guild | null,
-	member: GuildMember | null,
-	message: Message,
-	args: string[],
+	user: User;
+	guild: Guild | null;
+	member: GuildMember | null;
+	message: Message;
+	args: string[];
 };
 
 export type Command = {
@@ -19,8 +19,7 @@ const walk = async (path: string) => {
 	const out = [];
 	for (var file of files) {
 		if (fs.statSync(`${path}/${file}`).isDirectory()) continue;
-		if (file.indexOf("index") !== -1)
-			continue;
+		if (file.indexOf("index") !== -1) continue;
 		if (file.indexOf(".js") !== file.length - 3) continue;
 		var imported = (await import(`./${file}`)).default;
 		out.push(imported);

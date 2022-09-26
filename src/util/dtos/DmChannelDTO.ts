@@ -11,7 +11,11 @@ export class DmChannelDTO {
 	recipients: MinimalPublicUserDTO[];
 	type: number;
 
-	static async from(channel: Channel, excluded_recipients: string[] = [], origin_channel_id?: string) {
+	static async from(
+		channel: Channel,
+		excluded_recipients: string[] = [],
+		origin_channel_id?: string,
+	) {
 		const obj = new DmChannelDTO();
 		obj.icon = channel.icon || null;
 		obj.id = channel.id;
@@ -23,10 +27,15 @@ export class DmChannelDTO {
 		obj.recipients = (
 			await Promise.all(
 				channel
-					.recipients!.filter((r) => !excluded_recipients.includes(r.user_id))
+					.recipients!.filter(
+						(r) => !excluded_recipients.includes(r.user_id),
+					)
 					.map(async (r) => {
-						return await User.findOneOrFail({ where: { id: r.user_id }, select: PublicUserProjection });
-					})
+						return await User.findOneOrFail({
+							where: { id: r.user_id },
+							select: PublicUserProjection,
+						});
+					}),
 			)
 		).map((u) => new MinimalPublicUserDTO(u));
 		return obj;
@@ -35,7 +44,9 @@ export class DmChannelDTO {
 	excludedRecipients(excluded_recipients: string[]): DmChannelDTO {
 		return {
 			...this,
-			recipients: this.recipients.filter((r) => !excluded_recipients.includes(r.id)),
+			recipients: this.recipients.filter(
+				(r) => !excluded_recipients.includes(r.id),
+			),
 		};
 	}
 }

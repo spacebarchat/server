@@ -21,10 +21,12 @@ try {
 export async function Connection(
 	this: WS.Server,
 	socket: WebSocket,
-	request: IncomingMessage
+	request: IncomingMessage,
 ) {
 	const forwardedFor = Config.get().security.forwadedFor;
-	const ipAddress = forwardedFor ? request.headers[forwardedFor] as string : request.socket.remoteAddress;
+	const ipAddress = forwardedFor
+		? (request.headers[forwardedFor] as string)
+		: request.socket.remoteAddress;
 
 	socket.ipAddress = ipAddress;
 
@@ -33,7 +35,9 @@ export async function Connection(
 		socket.on("close", Close);
 		// @ts-ignore
 		socket.on("message", Message);
-		console.log(`[Gateway] New connection from ${socket.ipAddress}, total ${this.clients.size}`);
+		console.log(
+			`[Gateway] New connection from ${socket.ipAddress}, total ${this.clients.size}`,
+		);
 
 		const { searchParams } = new URL(`http://localhost${request.url}`);
 		// @ts-ignore
@@ -41,7 +45,7 @@ export async function Connection(
 		if (!["json", "etf"].includes(socket.encoding)) {
 			if (socket.encoding === "etf" && erlpack) {
 				throw new Error(
-					"Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'"
+					"Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'",
 				);
 			}
 			return socket.close(CLOSECODES.Decode_error);

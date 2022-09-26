@@ -12,6 +12,6 @@ export interface VoiceVideoSchema {
 		rtx_ssrc: number;
 		max_bitrate: number;
 		max_framerate: number;
-		max_resolution: { type: string; width: number; height: number; };
+		max_resolution: { type: string; width: number; height: number };
 	}[];
 }

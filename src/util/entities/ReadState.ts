@@ -1,4 +1,11 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import {
+	Column,
+	Entity,
+	Index,
+	JoinColumn,
+	ManyToOne,
+	RelationId,
+} from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Message } from "./Message";
@@ -33,8 +40,8 @@ export class ReadState extends BaseClass {
 
 	// fully read marker
 	@Column({ nullable: true })
-	last_message_id: string; 
-	
+	last_message_id: string;
+
 	// public read receipt
 	@Column({ nullable: true })
 	public_ack: string;

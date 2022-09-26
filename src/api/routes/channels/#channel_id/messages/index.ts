@@ -61,36 +61,50 @@ router.get("/", async (req: Request, res: Response) => {
 	const before = req.query.before ? `${req.query.before}` : undefined;
 	const after = req.query.after ? `${req.query.after}` : undefined;
 	const limit = Number(req.query.limit) || 50;
-	if (limit < 1 || limit > 100) throw new HTTPError("limit must be between 1 and 100", 422);
+	if (limit < 1 || limit > 100)
+		throw new HTTPError("limit must be between 1 and 100", 422);
 
 	var halfLimit = Math.floor(limit / 2);
 
-	const permissions = await getPermission(req.user_id, channel.guild_id, channel_id);
+	const permissions = await getPermission(
+		req.user_id,
+		channel.guild_id,
+		channel_id,
+	);
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	var query: FindManyOptions<Message> & { where: { id?: any; }; } = {
+	var query: FindManyOptions<Message> & { where: { id?: any } } = {
 		order: { timestamp: "DESC" },
 		take: limit,
 		where: { channel_id },
-		relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"]
+		relations: [
+			"author",
+			"webhook",
+			"application",
+			"mentions",
+			"mention_roles",
+			"mention_channels",
+			"sticker_items",
+			"attachments",
+		],
 	};
 
 	if (after) {
-		if (BigInt(after) > BigInt(Snowflake.generate())) return res.status(422);
+		if (BigInt(after) > BigInt(Snowflake.generate()))
+			return res.status(422);
 		query.where.id = MoreThan(after);
-	}
-	else if (before) {
-		if (BigInt(before) < BigInt(req.params.channel_id)) return res.status(422);
+	} else if (before) {
+		if (BigInt(before) < BigInt(req.params.channel_id))
+			return res.status(422);
 		query.where.id = LessThan(before);
-	}
-	else if (around) {
+	} else if (around) {
 		query.where.id = [
 			MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
-			LessThan((BigInt(around) + BigInt(halfLimit)).toString())
+			LessThan((BigInt(around) + BigInt(halfLimit)).toString()),
 		];
 
-		return res.json([]);	// TODO: fix around
+		return res.json([]); // TODO: fix around
 	}
 
 	const messages = await Message.find(query);
@@ -105,11 +119,22 @@ router.get("/", async (req: Request, res: Response) => {
 				delete x.user_ids;
 			});
 			// @ts-ignore
-			if (!x.author) x.author = { id: "4", discriminator: "0000", username: "Fosscord Ghost", public_flags: "0", avatar: null };
+			if (!x.author)
+				x.author = {
+					id: "4",
+					discriminator: "0000",
+					username: "Fosscord Ghost",
+					public_flags: "0",
+					avatar: null,
+				};
 			x.attachments?.forEach((y: any) => {
 				// dynamically set attachment proxy_url in case the endpoint changed
-				const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
-				y.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
+				const uri = y.proxy_url.startsWith("http")
+					? y.proxy_url
+					: `https://example.org${y.proxy_url}`;
+				y.proxy_url = `${endpoint == null ? "" : endpoint}${
+					new URL(uri).pathname
+				}`;
 			});
 
 			/**
@@ -123,7 +148,7 @@ router.get("/", async (req: Request, res: Response) => {
 			// }
 
 			return x;
-		})
+		}),
 	);
 });
 
@@ -134,7 +159,7 @@ const messageUpload = multer({
 		fields: 10,
 		// files: 1
 	},
-	storage: multer.memoryStorage()
+	storage: multer.memoryStorage(),
 }); // max upload 50 mb
 /**
  TODO: dynamically change limit of MessageCreateSchema with config
@@ -155,24 +180,38 @@ router.post(
 
 		next();
 	},
-	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_MESSAGES" }),
+	route({
+		body: "MessageCreateSchema",
+		permission: "SEND_MESSAGES",
+		right: "SEND_MESSAGES",
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 		var body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
 
-		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
+		const channel = await Channel.findOneOrFail({
+			where: { id: channel_id },
+			relations: ["recipients", "recipients.user"],
+		});
 		if (!channel.isWritable()) {
-			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
+			throw new HTTPError(
+				`Cannot send messages to channel of type ${channel.type}`,
+				400,
+			);
 		}
 
-		const files = req.files as Express.Multer.File[] ?? [];
+		const files = (req.files as Express.Multer.File[]) ?? [];
 		for (var currFile of files) {
 			try {
-				const file = await uploadFile(`/attachments/${channel.id}`, currFile);
-				attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
-			}
-			catch (error) {
+				const file = await uploadFile(
+					`/attachments/${channel.id}`,
+					currFile,
+				);
+				attachments.push(
+					Attachment.create({ ...file, proxy_url: file.url }),
+				);
+			} catch (error) {
 				return res.status(400).json(error);
 			}
 		}
@@ -188,7 +227,7 @@ router.post(
 			channel_id,
 			attachments,
 			edited_timestamp: undefined,
-			timestamp: new Date()
+			timestamp: new Date(),
 		});
 
 		channel.last_message_id = message.id;
@@ -205,32 +244,47 @@ router.post(
 							recipient.save(),
 							emitEvent({
 								event: "CHANNEL_CREATE",
-								data: channel_dto.excludedRecipients([recipient.user_id]),
-								user_id: recipient.user_id
-							})
+								data: channel_dto.excludedRecipients([
+									recipient.user_id,
+								]),
+								user_id: recipient.user_id,
+							}),
 						]);
 					}
-				})
+				}),
 			);
 		}
 
-		const member = await Member.findOneOrFail({ where: { id: req.user_id }, relations: ["roles"] });
-		member.roles = member.roles.filter((role: Role) => {
-			return role.id !== role.guild_id;
-		}).map((role: Role) => {
-			return role.id;
-		}) as any;
+		const member = await Member.findOneOrFail({
+			where: { id: req.user_id },
+			relations: ["roles"],
+		});
+		member.roles = member.roles
+			.filter((role: Role) => {
+				return role.id !== role.guild_id;
+			})
+			.map((role: Role) => {
+				return role.id;
+			}) as any;
 
 		await Promise.all([
 			message.save(),
-			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent),
-			message.guild_id ? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id }) : null,
-			channel.save()
+			emitEvent({
+				event: "MESSAGE_CREATE",
+				channel_id: channel_id,
+				data: message,
+			} as MessageCreateEvent),
+			message.guild_id
+				? Member.update(
+						{ id: req.user_id, guild_id: message.guild_id },
+						{ last_message_id: message.id },
+				  )
+				: null,
+			channel.save(),
 		]);
 
-		postHandleMessage(message).catch((e) => { }); // no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
 
 		return res.json(message);
-	}
+	},
 );
-

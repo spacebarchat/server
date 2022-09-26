@@ -54,7 +54,7 @@ router.post(
 			size,
 			url: `${endpoint}${req.baseUrl}/${role_id}/${hash}`,
 		});
-	}
+	},
 );
 
 router.get("/:role_id", async (req: Request, res: Response) => {

@@ -1,4 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToMany,
+	ManyToOne,
+	OneToMany,
+	RelationId,
+} from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { TeamMember } from "./TeamMember";
 import { User } from "./User";

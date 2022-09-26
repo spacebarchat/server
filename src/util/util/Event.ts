@@ -5,15 +5,27 @@ import { EVENT, Event } from "../interfaces";
 export const events = new EventEmitter();
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
-	const id = (payload.channel_id || payload.user_id || payload.guild_id) as string;
+	const id = (payload.channel_id ||
+		payload.user_id ||
+		payload.guild_id) as string;
 	if (!id) return console.error("event doesn't contain any id", payload);
 
 	if (RabbitMQ.connection) {
-		const data = typeof payload.data === "object" ? JSON.stringify(payload.data) : payload.data; // use rabbitmq for event transmission
-		await RabbitMQ.channel?.assertExchange(id, "fanout", { durable: false });
+		const data =
+			typeof payload.data === "object"
+				? JSON.stringify(payload.data)
+				: payload.data; // use rabbitmq for event transmission
+		await RabbitMQ.channel?.assertExchange(id, "fanout", {
+			durable: false,
+		});
 
 		// assertQueue isn't needed, because a queue will automatically created if it doesn't exist
-		const successful = RabbitMQ.channel?.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
+		const successful = RabbitMQ.channel?.publish(
+			id,
+			"",
+			Buffer.from(`${data}`),
+			{ type: payload.event },
+		);
 		if (!successful) throw new Error("failed to send event");
 	} else if (process.env.EVENT_TRANSMISSION === "process") {
 		process.send?.({ type: "event", event: payload, id } as ProcessEvent);
@@ -48,10 +60,19 @@ export interface ProcessEvent {
 	id: string;
 }
 
-export async function listenEvent(event: string, callback: (event: EventOpts) => any, opts?: ListenEventOpts) {
+export async function listenEvent(
+	event: string,
+	callback: (event: EventOpts) => any,
+	opts?: ListenEventOpts,
+) {
 	if (RabbitMQ.connection) {
-		// @ts-ignore
-		return rabbitListen(opts?.channel || RabbitMQ.channel, event, callback, { acknowledge: opts?.acknowledge });
+		return rabbitListen(
+			// @ts-ignore
+			opts?.channel || RabbitMQ.channel,
+			event,
+			callback,
+			{ acknowledge: opts?.acknowledge },
+		);
 	} else if (process.env.EVENT_TRANSMISSION === "process") {
 		const cancel = () => {
 			process.removeListener("message", listener);
@@ -59,7 +80,9 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 		};
 
 		const listener = (msg: ProcessEvent) => {
-			msg.type === "event" && msg.id === event && callback({ ...msg.event, cancel });
+			msg.type === "event" &&
+				msg.id === event &&
+				callback({ ...msg.event, cancel });
 		};
 
 		//@ts-ignore apparently theres no function addListener with this signature
@@ -84,10 +107,13 @@ async function rabbitListen(
 	channel: Channel,
 	id: string,
 	callback: (event: EventOpts) => any,
-	opts?: { acknowledge?: boolean }
+	opts?: { acknowledge?: boolean },
 ) {
 	await channel.assertExchange(id, "fanout", { durable: false });
-	const q = await channel.assertQueue("", { exclusive: true, autoDelete: true });
+	const q = await channel.assertQueue("", {
+		exclusive: true,
+		autoDelete: true,
+	});
 
 	const cancel = () => {
 		channel.cancel(q.queue);
@@ -116,7 +142,7 @@ async function rabbitListen(
 		},
 		{
 			noAck: !opts?.acknowledge,
-		}
+		},
 	);
 
 	return cancel;

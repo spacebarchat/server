@@ -25,27 +25,27 @@ const exampleData = {
 		name: "",
 		domain: "",
 		route: "",
-		type: "isp"
+		type: "isp",
 	},
 	languages: [
 		{
 			name: "",
-			native: ""
-		}
+			native: "",
+		},
 	],
 	currency: {
 		name: "",
 		code: "",
 		symbol: "",
 		native: "",
-		plural: ""
+		plural: "",
 	},
 	time_zone: {
 		name: "",
 		abbr: "",
 		offset: "",
 		is_dst: true,
-		current_time: ""
+		current_time: "",
 	},
 	threat: {
 		is_tor: false,
@@ -54,10 +54,10 @@ const exampleData = {
 		is_known_attacker: false,
 		is_known_abuser: false,
 		is_threat: false,
-		is_bogon: false
+		is_bogon: false,
 	},
 	count: 0,
-	status: 200
+	status: 200,
 };
 
 //TODO add function that support both ip and domain names
@@ -65,7 +65,9 @@ export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 	const { ipdataApiKey } = Config.get().security;
 	if (!ipdataApiKey) return { ...exampleData, ip };
 
-	return (await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)).json() as any; // TODO: types
+	return (
+		await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)
+	).json() as any; // TODO: types
 }
 
 export function isProxy(data: typeof exampleData) {
@@ -77,19 +79,35 @@ export function isProxy(data: typeof exampleData) {
 }
 
 export function getIpAdress(req: Request): string {
-	// @ts-ignore
-	return req.headers[Config.get().security.forwadedFor] || req.socket.remoteAddress;
+	return (
+		// @ts-ignore
+		req.headers[Config.get().security.forwadedFor] ||
+		req.socket.remoteAddress
+	);
 }
 
 export function distanceBetweenLocations(loc1: any, loc2: any): number {
-	return distanceBetweenCoords(loc1.latitude, loc1.longitude, loc2.latitude, loc2.longitude);
+	return distanceBetweenCoords(
+		loc1.latitude,
+		loc1.longitude,
+		loc2.latitude,
+		loc2.longitude,
+	);
 }
 
 //Haversine function
-function distanceBetweenCoords(lat1: number, lon1: number, lat2: number, lon2: number) {
+function distanceBetweenCoords(
+	lat1: number,
+	lon1: number,
+	lat2: number,
+	lon2: number,
+) {
 	const p = 0.017453292519943295; // Math.PI / 180
 	const c = Math.cos;
-	const a = 0.5 - c((lat2 - lat1) * p) / 2 + (c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
+	const a =
+		0.5 -
+		c((lat2 - lat1) * p) / 2 +
+		(c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
 
 	return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
 }

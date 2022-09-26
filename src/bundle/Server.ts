@@ -22,7 +22,7 @@ const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
 
 //this is what has been added for the /stop API route
-process.on('SIGTERM', () => {
+process.on("SIGTERM", () => {
 	server.close(() => {
 		console.log("Stop API has been successfully POSTed, SIGTERM sent");
 	});
@@ -66,7 +66,9 @@ async function main() {
 	//Sentry
 	if (Config.get().sentry.enabled) {
 		console.log(
-			`[Bundle] ${yellow("You are using Sentry! This may slightly impact performance on large loads!")}`
+			`[Bundle] ${yellow(
+				"You are using Sentry! This may slightly impact performance on large loads!",
+			)}`,
 		);
 		Sentry.init({
 			dsn: Config.get().sentry.endpoint,
@@ -81,7 +83,10 @@ async function main() {
 
 		Sentry.addGlobalEventProcessor((event, hint) => {
 			if (event.transaction) {
-				event.transaction = event.transaction.split("/").map(x => !parseInt(x) ? x : ":id").join("/");
+				event.transaction = event.transaction
+					.split("/")
+					.map((x) => (!parseInt(x) ? x : ":id"))
+					.join("/");
 			}
 
 			delete event.request?.cookies;
@@ -93,14 +98,20 @@ async function main() {
 			}
 
 			if (event.breadcrumbs) {
-				event.breadcrumbs = event.breadcrumbs.filter(x => {
+				event.breadcrumbs = event.breadcrumbs.filter((x) => {
 					if (x.message?.includes("identified as")) return false;
 					if (x.message?.includes("[WebSocket] closed")) return false;
-					if (x.message?.includes("Got Resume -> cancel not implemented")) return false;
-					if (x.message?.includes("[Gateway] New connection from")) return false;
+					if (
+						x.message?.includes(
+							"Got Resume -> cancel not implemented",
+						)
+					)
+						return false;
+					if (x.message?.includes("[Gateway] New connection from"))
+						return false;
 
 					return true;
-				})
+				});
 			}
 
 			return event;

@@ -36,7 +36,8 @@ export interface Activity {
 
 	id?: string;
 	sync_id?: string;
-	metadata?: { // spotify
+	metadata?: {
+		// spotify
 		context_uri?: string;
 		album_id: string;
 		artist_ids: string[];

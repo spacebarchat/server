@@ -1,4 +1,11 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import {
+	Column,
+	Entity,
+	Index,
+	JoinColumn,
+	ManyToOne,
+	RelationId,
+} from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 

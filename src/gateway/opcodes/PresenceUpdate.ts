@@ -1,5 +1,11 @@
 import { WebSocket, Payload } from "@fosscord/gateway";
-import { emitEvent, PresenceUpdateEvent, Session, User, ActivitySchema } from "@fosscord/util";
+import {
+	emitEvent,
+	PresenceUpdateEvent,
+	Session,
+	User,
+	ActivitySchema,
+} from "@fosscord/util";
 import { check } from "./instanceOf";
 
 export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
@@ -8,7 +14,7 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
 
 	await Session.update(
 		{ session_id: this.session_id },
-		{ status: presence.status, activities: presence.activities }
+		{ status: presence.status, activities: presence.activities },
 	);
 
 	await emitEvent({

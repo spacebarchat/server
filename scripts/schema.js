@@ -11,10 +11,10 @@ const settings = {
 	excludePrivate: true,
 	defaultNumberType: "integer",
 	noExtraProps: true,
-	defaultProps: false
+	defaultProps: false,
 };
 const compilerOptions = {
-	strictNullChecks: true
+	strictNullChecks: true,
 };
 const Excluded = [
 	"DefaultSchema",
@@ -47,11 +47,17 @@ function modify(obj) {
 }
 
 function main() {
-	const program = TJS.programFromConfig("tsconfig.json")
+	const program = TJS.programFromConfig("tsconfig.json");
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 
-	let schemas = generator.getUserSymbols().filter((x) => (x.endsWith("Schema") || x.endsWith("Response")) && !Excluded.includes(x));
+	let schemas = generator
+		.getUserSymbols()
+		.filter(
+			(x) =>
+				(x.endsWith("Schema") || x.endsWith("Response")) &&
+				!Excluded.includes(x),
+		);
 	console.log(schemas);
 
 	var definitions = {};

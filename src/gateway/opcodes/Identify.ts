@@ -158,11 +158,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		...x.settings,
 		guild_id: x.guild.id,
 		// disgusting
-		channel_overrides: Object.entries(x.settings.channel_overrides ?? {}).map(y => ({
+		channel_overrides: Object.entries(
+			x.settings.channel_overrides ?? {},
+		).map((y) => ({
 			...y[1],
 			channel_id: y[0],
-		}))
-	})) as any as UserGuildSettings[];	// VERY disgusting. don't care.
+		})),
+	})) as any as UserGuildSettings[]; // VERY disgusting. don't care.
 
 	const channels = recipients.map((x) => {
 		// @ts-ignore
@@ -171,7 +173,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		users = users.concat(x.channel.recipients as unknown as User[]);
 		if (x.channel.isDm()) {
 			x.channel.recipients = x.channel.recipients!.filter(
-				(x) => x.id !== this.user_id
+				(x) => x.id !== this.user_id,
 			);
 		}
 		return x.channel;
@@ -243,7 +245,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		accent_color: user.accent_color,
 		banner: user.banner,
 		bio: user.bio,
-		premium_since: user.premium_since
+		premium_since: user.premium_since,
 	};
 
 	const d: ReadyEventData = {

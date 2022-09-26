@@ -15,7 +15,7 @@ export const VoiceStateUpdateSchema = {
 	$channel_id: String,
 	self_mute: Boolean,
 	self_deaf: Boolean,
-	$self_video: Boolean,	//required in docs but bots don't always send it
+	$self_video: Boolean, //required in docs but bots don't always send it
 	$preferred_region: String,
 	$request_to_speak_timestamp: Date,
 	$suppress: Boolean,

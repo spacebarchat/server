@@ -1,4 +1,13 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToMany,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+	RelationId,
+} from "typeorm";
 import { Config, handleFile, Snowflake } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
@@ -86,7 +95,7 @@ export class Guild extends BaseClass {
 	//TODO: https://discord.com/developers/docs/resources/guild#guild-object-guild-features
 
 	@Column({ nullable: true })
-	primary_category_id?: string;	// TODO: this was number?
+	primary_category_id?: string; // TODO: this was number?
 
 	@Column({ nullable: true })
 	icon?: string;
@@ -269,7 +278,7 @@ export class Guild extends BaseClass {
 
 	@Column()
 	nsfw: boolean;
-	
+
 	// TODO: nested guilds
 	@Column({ nullable: true })
 	parent?: string;
@@ -332,10 +341,13 @@ export class Guild extends BaseClass {
 			permissions: String("2251804225"),
 			position: 0,
 			icon: undefined,
-			unicode_emoji: undefined
+			unicode_emoji: undefined,
 		}).save();
 
-		if (!body.channels || !body.channels.length) body.channels = [{ id: "01", type: 0, name: "general", nsfw: false }];
+		if (!body.channels || !body.channels.length)
+			body.channels = [
+				{ id: "01", type: 0, name: "general", nsfw: false },
+			];
 
 		const ids = new Map();
 
@@ -345,17 +357,23 @@ export class Guild extends BaseClass {
 			}
 		});
 
-		for (const channel of body.channels?.sort((a, b) => (a.parent_id ? 1 : -1))) {
+		for (const channel of body.channels?.sort((a, b) =>
+			a.parent_id ? 1 : -1,
+		)) {
 			var id = ids.get(channel.id) || Snowflake.generate();
 
 			var parent_id = ids.get(channel.parent_id);
 
-			await Channel.createChannel({ ...channel, guild_id, id, parent_id }, body.owner_id, {
-				keepId: true,
-				skipExistsCheck: true,
-				skipPermissionCheck: true,
-				skipEventEmit: true,
-			});
+			await Channel.createChannel(
+				{ ...channel, guild_id, id, parent_id },
+				body.owner_id,
+				{
+					keepId: true,
+					skipExistsCheck: true,
+					skipPermissionCheck: true,
+					skipEventEmit: true,
+				},
+			);
 		}
 
 		return guild;

@@ -55,7 +55,7 @@ router.post(
 			size,
 			url: `${endpoint}${req.baseUrl}/${user_id}/${hash}`,
 		});
-	}
+	},
 );
 
 router.get("/:user_id", async (req: Request, res: Response) => {
@@ -86,7 +86,7 @@ export const getAvatar = async (req: Request, res: Response) => {
 	res.set("Cache-Control", "public, max-age=31536000");
 
 	return res.send(file);
-}
+};
 
 router.get("/:user_id/:hash", getAvatar);
 

@@ -4,13 +4,13 @@ html {
 	--background-primary: rgb(22, 23, 25);
 	--background-secondary: rgb(15, 16, 18);
 	--foreground-primary: rgb(200, 200, 200);
-	--background-login-discord: #5865F2;
+	--background-login-discord: #5865f2;
 
 	background: url("https://slowcord.maddy.k.vu/assets/background.png");
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 
-	font-family: 'Montserrat', sans-serif;
+	font-family: "Montserrat", sans-serif;
 
 	color: var(--foreground-primary);
 }
@@ -55,7 +55,8 @@ html {
 	text-align: center;
 }
 
-.header-subtext a, .header-subtext p {
+.header-subtext a,
+.header-subtext p {
 	display: inline-block;
 	margin: 0 10px 0 10px;
 }

@@ -7,7 +7,11 @@ export class MigrationTimestamp1634426540271 implements MigrationInterface {
 		await queryRunner.changeColumn(
 			"migrations",
 			"timestamp",
-			new TableColumn({ name: "timestampe", type: "bigint", isNullable: false })
+			new TableColumn({
+				name: "timestampe",
+				type: "bigint",
+				isNullable: false,
+			}),
 		);
 	}
 

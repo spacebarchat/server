@@ -1,6 +1,8 @@
 import "missing-native-js-functions";
 
-export function FieldErrors(fields: Record<string, { code?: string; message: string }>) {
+export function FieldErrors(
+	fields: Record<string, { code?: string; message: string }>,
+) {
 	return new FieldError(
 		50035,
 		"Invalid Form Body",
@@ -11,7 +13,7 @@ export function FieldErrors(fields: Record<string, { code?: string; message: str
 					code: code || "BASE_TYPE_INVALID",
 				},
 			],
-		}))
+		})),
 	);
 }
 
@@ -19,7 +21,11 @@ export function FieldErrors(fields: Record<string, { code?: string; message: str
 // Ensure you use the proper content type (image/jpeg, image/png, image/gif) that matches the image data being provided.
 
 export class FieldError extends Error {
-	constructor(public code: string | number, public message: string, public errors?: any) {
+	constructor(
+		public code: string | number,
+		public message: string,
+		public errors?: any,
+	) {
 		super(message);
 	}
 }

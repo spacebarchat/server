@@ -11,14 +11,16 @@ export interface GatewayResponse {
 const options: RouteOptions = {
 	test: {
 		response: {
-			body: "GatewayResponse"
-		}
-	}
+			body: "GatewayResponse",
+		},
+	},
 };
 
 router.get("/", route(options), (req: Request, res: Response) => {
 	const { endpointPublic } = Config.get().gateway;
-	res.json({ url: endpointPublic || process.env.GATEWAY || "ws://localhost:3002" });
+	res.json({
+		url: endpointPublic || process.env.GATEWAY || "ws://localhost:3002",
+	});
 });
 
 export default router;

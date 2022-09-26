@@ -191,17 +191,17 @@ export interface ConfigValue {
 		allowTemplateCreation: Boolean;
 		allowDiscordTemplates: Boolean;
 		allowRaws: Boolean;
-	},
+	};
 	client: {
 		useTestClient: Boolean;
 		releases: {
 			useLocalRelease: Boolean; //TODO
 			upstreamVersion: string;
 		};
-	},
+	};
 	metrics: {
 		timeout: number;
-	},
+	};
 	sentry: {
 		enabled: boolean;
 		endpoint: string;
@@ -230,7 +230,8 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	general: {
 		instanceName: "Fosscord Instance",
-		instanceDescription: "This is a Fosscord instance made in pre-release days",
+		instanceDescription:
+			"This is a Fosscord instance made in pre-release days",
 		frontPage: null,
 		tosPage: null,
 		correspondenceEmail: "noreply@localhost.local",
@@ -318,8 +319,9 @@ export const DefaultConfigOptions: ConfigValue = {
 			sitekey: null,
 			secret: null,
 		},
-		ipdataApiKey: "eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9",
-		defaultRights: "30644591655936",	// See util/scripts/rights.js
+		ipdataApiKey:
+			"eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9",
+		defaultRights: "30644591655936", // See util/scripts/rights.js
 	},
 	login: {
 		requireCaptcha: false,
@@ -395,22 +397,23 @@ export const DefaultConfigOptions: ConfigValue = {
 		enabled: true,
 		allowTemplateCreation: true,
 		allowDiscordTemplates: true,
-		allowRaws: false
+		allowRaws: false,
 	},
 	client: {
 		useTestClient: true,
 		releases: {
 			useLocalRelease: true,
-			upstreamVersion: "0.0.264"
-		}
+			upstreamVersion: "0.0.264",
+		},
 	},
 	metrics: {
-		timeout: 30000
+		timeout: 30000,
 	},
 	sentry: {
 		enabled: false,
-		endpoint: "https://05e8e3d005f34b7d97e920ae5870a5e5@sentry.thearcanebrony.net/6",
+		endpoint:
+			"https://05e8e3d005f34b7d97e920ae5870a5e5@sentry.thearcanebrony.net/6",
 		traceSampleRate: 1.0,
-		environment: hostname()
-	}
+		environment: hostname(),
+	},
 };

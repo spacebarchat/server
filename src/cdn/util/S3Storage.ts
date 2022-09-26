@@ -14,7 +14,7 @@ export class S3Storage implements Storage {
 	public constructor(
 		private client: S3,
 		private bucket: string,
-		private basePath?: string
+		private basePath?: string,
 	) {}
 
 	/**

@@ -1,4 +1,4 @@
-require('module-alias/register');
+require("module-alias/register");
 const { Rights } = require("..");
 
 const allRights = new Rights(1).bitfield;

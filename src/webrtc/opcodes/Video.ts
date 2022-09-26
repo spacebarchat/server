@@ -21,8 +21,8 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 			SemanticSDP.StreamInfo.expand({
 				id,
 				// @ts-ignore
-				tracks: []
-			})
+				tracks: [],
+			}),
 		);
 		this.client.in.stream = stream;
 
@@ -46,8 +46,8 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 			SemanticSDP.StreamInfo.expand({
 				id: "out" + this.user_id,
 				// @ts-ignore
-				tracks: []
-			})
+				tracks: [],
+			}),
 		);
 		this.client.out.stream = out;
 
@@ -64,20 +64,35 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 	}
 
 	if (d.audio_ssrc) {
-		handleSSRC.call(this, "audio", { media: d.audio_ssrc, rtx: d.audio_ssrc + 1 });
+		handleSSRC.call(this, "audio", {
+			media: d.audio_ssrc,
+			rtx: d.audio_ssrc + 1,
+		});
 	}
 	if (d.video_ssrc && d.rtx_ssrc) {
-		handleSSRC.call(this, "video", { media: d.video_ssrc, rtx: d.rtx_ssrc });
+		handleSSRC.call(this, "video", {
+			media: d.video_ssrc,
+			rtx: d.rtx_ssrc,
+		});
 	}
 }
 
-function attachTrack(this: WebSocket, track: IncomingStreamTrack, user_id: string) {
+function attachTrack(
+	this: WebSocket,
+	track: IncomingStreamTrack,
+	user_id: string,
+) {
 	if (!this.client) return;
-	const outTrack = this.client.transport!.createOutgoingStreamTrack(track.getMedia());
+	const outTrack = this.client.transport!.createOutgoingStreamTrack(
+		track.getMedia(),
+	);
 	outTrack.attachTo(track);
 	this.client.out.stream!.addTrack(outTrack);
 	var ssrcs = this.client.out.tracks.get(user_id)!;
-	if (!ssrcs) ssrcs = this.client.out.tracks.set(user_id, { audio_ssrc: 0, rtx_ssrc: 0, video_ssrc: 0 }).get(user_id)!;
+	if (!ssrcs)
+		ssrcs = this.client.out.tracks
+			.set(user_id, { audio_ssrc: 0, rtx_ssrc: 0, video_ssrc: 0 })
+			.get(user_id)!;
 
 	if (track.getMedia() === "audio") {
 		ssrcs.audio_ssrc = outTrack.getSSRCs().media!;
@@ -90,8 +105,8 @@ function attachTrack(this: WebSocket, track: IncomingStreamTrack, user_id: strin
 		op: VoiceOPCodes.VIDEO,
 		d: {
 			user_id: user_id,
-			...ssrcs
-		} as VoiceVideoSchema
+			...ssrcs,
+		} as VoiceVideoSchema,
 	});
 }
 

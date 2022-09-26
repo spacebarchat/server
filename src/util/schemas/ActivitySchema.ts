@@ -41,7 +41,8 @@ export const ActivitySchema = {
 
 			$id: String,
 			$sync_id: String,
-			$metadata: { // spotify
+			$metadata: {
+				// spotify
 				$context_uri: String,
 				album_id: String,
 				artist_ids: [String],

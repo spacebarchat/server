@@ -1,5 +1,9 @@
 import "missing-native-js-functions";
-import { ConfigValue, ConfigEntity, DefaultConfigOptions } from "../entities/Config";
+import {
+	ConfigValue,
+	ConfigEntity,
+	DefaultConfigOptions,
+} from "../entities/Config";
 import path from "path";
 import fs from "fs";
 
@@ -42,7 +46,11 @@ export const Config = {
 function applyConfig(val: ConfigValue) {
 	async function apply(obj: any, key = ""): Promise<any> {
 		if (typeof obj === "object" && obj !== null)
-			return Promise.all(Object.keys(obj).map((k) => apply(obj[k], key ? `${key}_${k}` : k)));
+			return Promise.all(
+				Object.keys(obj).map((k) =>
+					apply(obj[k], key ? `${key}_${k}` : k),
+				),
+			);
 
 		let pair = pairs.find((x) => x.key === key);
 		if (!pair) pair = new ConfigEntity();
@@ -67,7 +75,8 @@ function pairsToConfig(pairs: ConfigEntity[]) {
 		let i = 0;
 
 		for (const key of keys) {
-			if (!isNaN(Number(key)) && !prevObj[prev]?.length) prevObj[prev] = obj = [];
+			if (!isNaN(Number(key)) && !prevObj[prev]?.length)
+				prevObj[prev] = obj = [];
 			if (i++ === keys.length - 1) obj[key] = p.value;
 			else if (!obj[key]) obj[key] = {};
 

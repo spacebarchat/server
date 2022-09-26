@@ -1,5 +1,19 @@
-import { getDatabase, getPermission, listenEvent, Member, Role, Session, LazyRequestSchema } from "@fosscord/util";
-import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@fosscord/gateway";
+import {
+	getDatabase,
+	getPermission,
+	listenEvent,
+	Member,
+	Role,
+	Session,
+	LazyRequestSchema,
+} from "@fosscord/util";
+import {
+	WebSocket,
+	Payload,
+	handlePresenceUpdate,
+	OPCODES,
+	Send,
+} from "@fosscord/gateway";
 import { check } from "./instanceOf";
 
 // TODO: only show roles/members that have access to this channel
@@ -14,7 +28,8 @@ async function getMembers(guild_id: string, range: [number, number]) {
 
 	let members: Member[] = [];
 	try {
-		members = await getDatabase()!.getRepository(Member)
+		members = await getDatabase()!
+			.getRepository(Member)
 			.createQueryBuilder("member")
 			.where("member.guild_id = :guild_id", { guild_id })
 			.leftJoinAndSelect("member.roles", "role")
@@ -23,7 +38,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 			.addSelect("user.settings")
 			.addSelect(
 				"CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
-				"_status"
+				"_status",
 			)
 			.orderBy("role.position", "DESC")
 			.addOrderBy("_status", "DESC")
@@ -31,8 +46,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 			.offset(Number(range[0]) || 0)
 			.limit(Number(range[1]) || 100)
 			.getMany();
-	}
-	catch (e) {
+	} catch (e) {
 		console.error(`LazyRequest`, e);
 	}
 
@@ -51,14 +65,20 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		.map((m) => m.roles)
 		.flat()
 		.unique((r: Role) => r.id);
-	member_roles.push(member_roles.splice(member_roles.findIndex(x => x.id === x.guild_id), 1)[0]);
+	member_roles.push(
+		member_roles.splice(
+			member_roles.findIndex((x) => x.id === x.guild_id),
+			1,
+		)[0],
+	);
 
 	const offlineItems = [];
 
 	for (const role of member_roles) {
 		// @ts-ignore
-		const [role_members, other_members]: Member[][] = partition(members, (m: Member) =>
-			m.roles.find((r) => r.id === role.id)
+		const [role_members, other_members]: Member[][] = partition(
+			members,
+			(m: Member) => m.roles.find((r) => r.id === role.id),
 		);
 		const group = {
 			count: role_members.length,
@@ -74,15 +94,19 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				.map((x: Role) => x.id);
 
 			const statusMap = {
-				"online": 0,
-				"idle": 1,
-				"dnd": 2,
-				"invisible": 3,
-				"offline": 4,
+				online: 0,
+				idle: 1,
+				dnd: 2,
+				invisible: 3,
+				offline: 4,
 			};
 			// sort sessions by relevance
 			const sessions = member.user.sessions.sort((a, b) => {
-				return (statusMap[a.status] - statusMap[b.status]) + ((a.activities.length - b.activities.length) * 2);
+				return (
+					statusMap[a.status] -
+					statusMap[b.status] +
+					(a.activities.length - b.activities.length) * 2
+				);
 			});
 			var session: Session | undefined = sessions.first();
 
@@ -103,7 +127,11 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				},
 			};
 
-			if (!session || session.status == "invisible" || session.status == "offline") {
+			if (
+				!session ||
+				session.status == "invisible" ||
+				session.status == "offline"
+			) {
 				item.member.presence.status = "offline";
 				offlineItems.push(item);
 				group.count--;
@@ -130,7 +158,9 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		items,
 		groups,
 		range,
-		members: items.map((x) => 'member' in x ? x.member : undefined).filter(x => !!x),
+		members: items
+			.map((x) => ("member" in x ? x.member : undefined))
+			.filter((x) => !!x),
 	};
 }
 
@@ -161,7 +191,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 			this.member_events[member.user.id] = await listenEvent(
 				member.user.id,
 				handlePresenceUpdate.bind(this),
-				this.listen_options
+				this.listen_options,
 			);
 		});
 	});
@@ -181,7 +211,9 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 				op: "SYNC",
 				range: x.range,
 			})),
-			online_count: member_count - (groups.find(x => x.id == "offline")?.count ?? 0),
+			online_count:
+				member_count -
+				(groups.find((x) => x.id == "offline")?.count ?? 0),
 			member_count,
 			id: "everyone",
 			guild_id,
@@ -199,6 +231,6 @@ function partition<T>(array: T[], isValid: Function) {
 				? [[...pass, elem], fail]
 				: [pass, [...fail, elem]];
 		},
-		[[], []]
+		[[], []],
 	);
 }

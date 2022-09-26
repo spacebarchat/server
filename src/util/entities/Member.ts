@@ -22,7 +22,6 @@ import {
 	GuildMemberRemoveEvent,
 	GuildMemberUpdateEvent,
 	MessageCreateEvent,
-
 } from "../interfaces";
 import { HTTPError } from "lambert-server";
 import { Role } from "./Role";
@@ -126,19 +125,34 @@ export class Member extends BaseClassWithoutId {
 		if (this.nick) {
 			this.nick = this.nick.split("\n").join("");
 			this.nick = this.nick.split("\t").join("");
-			if (BannedWords.find(this.nick)) throw FieldErrors({ nick: { message: "Bad nickname", code: "INVALID_NICKNAME" } });
+			if (BannedWords.find(this.nick))
+				throw FieldErrors({
+					nick: { message: "Bad nickname", code: "INVALID_NICKNAME" },
+				});
 		}
 	}
 
 	static async IsInGuildOrFail(user_id: string, guild_id: string) {
-		if (await Member.count({ where: { id: user_id, guild: { id: guild_id } } })) return true;
+		if (
+			await Member.count({
+				where: { id: user_id, guild: { id: guild_id } },
+			})
+		)
+			return true;
 		throw new HTTPError("You are not member of this guild", 403);
 	}
 
 	static async removeFromGuild(user_id: string, guild_id: string) {
-		const guild = await Guild.findOneOrFail({ select: ["owner_id"], where: { id: guild_id } });
-		if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
-		const member = await Member.findOneOrFail({ where: { id: user_id, guild_id }, relations: ["user"] });
+		const guild = await Guild.findOneOrFail({
+			select: ["owner_id"],
+			where: { id: guild_id },
+		});
+		if (guild.owner_id === user_id)
+			throw new Error("The owner cannot be removed of the guild");
+		const member = await Member.findOneOrFail({
+			where: { id: user_id, guild_id },
+			relations: ["user"],
+		});
 
 		// use promise all to execute all promises at the same time -> save time
 		return Promise.all([
@@ -169,9 +183,12 @@ export class Member extends BaseClassWithoutId {
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
 				//@ts-ignore
-				select: ["index", "roles.id"],	// TODO fix type
+				select: ["index", "roles.id"], // TODO fix type
 			}),
-			Role.findOneOrFail({ where: { id: role_id, guild_id }, select: ["id"] }),
+			Role.findOneOrFail({
+				where: { id: role_id, guild_id },
+				select: ["id"],
+			}),
 		]);
 		member.roles.push(Role.create({ id: role_id }));
 
@@ -189,7 +206,11 @@ export class Member extends BaseClassWithoutId {
 		]);
 	}
 
-	static async removeRole(user_id: string, guild_id: string, role_id: string) {
+	static async removeRole(
+		user_id: string,
+		guild_id: string,
+		role_id: string,
+	) {
 		const [member] = await Promise.all([
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
@@ -215,7 +236,11 @@ export class Member extends BaseClassWithoutId {
 		]);
 	}
 
-	static async changeNickname(user_id: string, guild_id: string, nickname: string) {
+	static async changeNickname(
+		user_id: string,
+		guild_id: string,
+		nickname: string,
+	) {
 		const member = await Member.findOneOrFail({
 			where: {
 				id: user_id,
@@ -249,7 +274,10 @@ export class Member extends BaseClassWithoutId {
 		const { maxGuilds } = Config.get().limits.user;
 		const guild_count = await Member.count({ where: { id: user_id } });
 		if (guild_count >= maxGuilds) {
-			throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
+			throw new HTTPError(
+				`You are at the ${maxGuilds} server limit.`,
+				403,
+			);
 		}
 
 		const guild = await Guild.findOneOrFail({
@@ -259,7 +287,11 @@ export class Member extends BaseClassWithoutId {
 			relations: [...PublicGuildRelations, "system_channel"],
 		});
 
-		if (await Member.count({ where: { id: user.id, guild: { id: guild_id } } }))
+		if (
+			await Member.count({
+				where: { id: user.id, guild: { id: guild_id } },
+			})
+		)
 			throw new HTTPError("You are already a member of this guild", 400);
 
 		const member = {
@@ -268,7 +300,7 @@ export class Member extends BaseClassWithoutId {
 			nick: undefined,
 			roles: [guild_id], // @everyone role
 			joined_at: new Date(),
-			premium_since: (new Date()).getTime(),
+			premium_since: new Date().getTime(),
 			deaf: false,
 			mute: false,
 			pending: false,
@@ -339,7 +371,11 @@ export class Member extends BaseClassWithoutId {
 			});
 			await Promise.all([
 				message.save(),
-				emitEvent({ event: "MESSAGE_CREATE", channel_id: message.channel_id, data: message } as MessageCreateEvent)
+				emitEvent({
+					event: "MESSAGE_CREATE",
+					channel_id: message.channel_id,
+					data: message,
+				} as MessageCreateEvent),
 			]);
 		}
 	}
@@ -362,7 +398,7 @@ export interface UserGuildSettings {
 
 	channel_overrides: {
 		[channel_id: string]: ChannelOverride;
-	} | null,
+	} | null;
 	message_notifications: number;
 	mobile_push: boolean;
 	mute_config: MuteConfig | null;
@@ -389,7 +425,7 @@ export const DefaultUserGuildSettings: UserGuildSettings = {
 	notify_highlights: 0,
 	suppress_everyone: false,
 	suppress_roles: false,
-	version: 453,	// ?
+	version: 453, // ?
 	guild_id: null,
 };
 

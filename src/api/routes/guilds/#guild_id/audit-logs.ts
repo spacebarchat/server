@@ -11,7 +11,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		webhooks: [],
 		guild_scheduled_events: [],
 		threads: [],
-		application_commands: []
+		application_commands: [],
 	});
 });
 export default router;

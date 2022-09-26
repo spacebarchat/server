@@ -26,55 +26,69 @@ const messageUpload = multer({
 	limits: {
 		fileSize: 1024 * 1024 * 100,
 		fields: 10,
-		files: 1
+		files: 1,
 	},
-	storage: multer.memoryStorage()
+	storage: multer.memoryStorage(),
 }); // max upload 50 mb
 
-router.patch("/", route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_MESSAGES" }), async (req: Request, res: Response) => {
-	const { message_id, channel_id } = req.params;
-	var body = req.body as MessageCreateSchema;
+router.patch(
+	"/",
+	route({
+		body: "MessageCreateSchema",
+		permission: "SEND_MESSAGES",
+		right: "SEND_MESSAGES",
+	}),
+	async (req: Request, res: Response) => {
+		const { message_id, channel_id } = req.params;
+		var body = req.body as MessageCreateSchema;
 
-	const message = await Message.findOneOrFail({ where: { id: message_id, channel_id }, relations: ["attachments"] });
+		const message = await Message.findOneOrFail({
+			where: { id: message_id, channel_id },
+			relations: ["attachments"],
+		});
 
-	const permissions = await getPermission(req.user_id, undefined, channel_id);
-
-	const rights = await getRights(req.user_id);
-
-	if ((req.user_id !== message.author_id)) {
-		if (!rights.has("MANAGE_MESSAGES")) {
-			permissions.hasThrow("MANAGE_MESSAGES");
-			body = { flags: body.flags };
-			// guild admins can only suppress embeds of other messages, no such restriction imposed to instance-wide admins
-		}
-	} else rights.hasThrow("SELF_EDIT_MESSAGES");
-
-	const new_message = await handleMessage({
-		...message,
-		// TODO: should message_reference be overridable?
-		// @ts-ignore
-		message_reference: message.message_reference,
-		...body,
-		author_id: message.author_id,
-		channel_id,
-		id: message_id,
-		edited_timestamp: new Date()
-	});
-
-	await Promise.all([
-		new_message!.save(),
-		await emitEvent({
-			event: "MESSAGE_UPDATE",
+		const permissions = await getPermission(
+			req.user_id,
+			undefined,
 			channel_id,
-			data: { ...new_message, nonce: undefined }
-		} as MessageUpdateEvent)
-	]);
+		);
 
-	postHandleMessage(message);
+		const rights = await getRights(req.user_id);
 
-	return res.json(message);
-});
+		if (req.user_id !== message.author_id) {
+			if (!rights.has("MANAGE_MESSAGES")) {
+				permissions.hasThrow("MANAGE_MESSAGES");
+				body = { flags: body.flags };
+				// guild admins can only suppress embeds of other messages, no such restriction imposed to instance-wide admins
+			}
+		} else rights.hasThrow("SELF_EDIT_MESSAGES");
 
+		const new_message = await handleMessage({
+			...message,
+			// TODO: should message_reference be overridable?
+			// @ts-ignore
+			message_reference: message.message_reference,
+			...body,
+			author_id: message.author_id,
+			channel_id,
+			id: message_id,
+			edited_timestamp: new Date(),
+		});
+
+		await Promise.all([
+			new_message!.save(),
+			await emitEvent({
+				event: "MESSAGE_UPDATE",
+				channel_id,
+				data: { ...new_message, nonce: undefined },
+			} as MessageUpdateEvent),
+		]);
+
+		postHandleMessage(message);
+
+		return res.json(message);
+	},
+);
 
 // Backfill message with specific timestamp
 router.put(
@@ -87,7 +101,11 @@ router.put(
 
 		next();
 	},
-	route({ body: "MessageCreateSchema", permission: "SEND_MESSAGES", right: "SEND_BACKDATED_EVENTS" }),
+	route({
+		body: "MessageCreateSchema",
+		permission: "SEND_MESSAGES",
+		right: "SEND_BACKDATED_EVENTS",
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id, message_id } = req.params;
 		var body = req.body as MessageCreateSchema;
@@ -107,20 +125,30 @@ router.put(
 			throw FosscordApiErrors.CANNOT_BACKFILL_TO_THE_FUTURE;
 		}
 
-		const exists = await Message.findOne({ where: { id: message_id, channel_id: channel_id } });
+		const exists = await Message.findOne({
+			where: { id: message_id, channel_id: channel_id },
+		});
 		if (exists) {
 			throw FosscordApiErrors.CANNOT_REPLACE_BY_BACKFILL;
 		}
 
 		if (req.file) {
 			try {
-				const file = await uploadFile(`/attachments/${req.params.channel_id}`, req.file);
-				attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
+				const file = await uploadFile(
+					`/attachments/${req.params.channel_id}`,
+					req.file,
+				);
+				attachments.push(
+					Attachment.create({ ...file, proxy_url: file.url }),
+				);
 			} catch (error) {
 				return res.status(400).json(error);
 			}
 		}
-		const channel = await Channel.findOneOrFail({ where: { id: channel_id }, relations: ["recipients", "recipients.user"] });
+		const channel = await Channel.findOneOrFail({
+			where: { id: channel_id },
+			relations: ["recipients", "recipients.user"],
+		});
 
 		const embeds = body.embeds || [];
 		if (body.embed) embeds.push(body.embed);
@@ -142,27 +170,43 @@ router.put(
 
 		await Promise.all([
 			message.save(),
-			emitEvent({ event: "MESSAGE_CREATE", channel_id: channel_id, data: message } as MessageCreateEvent),
-			channel.save()
+			emitEvent({
+				event: "MESSAGE_CREATE",
+				channel_id: channel_id,
+				data: message,
+			} as MessageCreateEvent),
+			channel.save(),
 		]);
 
-		postHandleMessage(message).catch((e) => { }); // no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
 
 		return res.json(message);
-	}
+	},
 );
 
-router.get("/", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res: Response) => {
-	const { message_id, channel_id } = req.params;
+router.get(
+	"/",
+	route({ permission: "VIEW_CHANNEL" }),
+	async (req: Request, res: Response) => {
+		const { message_id, channel_id } = req.params;
 
-	const message = await Message.findOneOrFail({ where: { id: message_id, channel_id }, relations: ["attachments"] });
+		const message = await Message.findOneOrFail({
+			where: { id: message_id, channel_id },
+			relations: ["attachments"],
+		});
 
-	const permissions = await getPermission(req.user_id, undefined, channel_id);
+		const permissions = await getPermission(
+			req.user_id,
+			undefined,
+			channel_id,
+		);
 
-	if (message.author_id !== req.user_id) permissions.hasThrow("READ_MESSAGE_HISTORY");
+		if (message.author_id !== req.user_id)
+			permissions.hasThrow("READ_MESSAGE_HISTORY");
 
-	return res.json(message);
-});
+		return res.json(message);
+	},
+);
 
 router.delete("/", route({}), async (req: Request, res: Response) => {
 	const { message_id, channel_id } = req.params;
@@ -172,9 +216,13 @@ router.delete("/", route({}), async (req: Request, res: Response) => {
 
 	const rights = await getRights(req.user_id);
 
-	if ((message.author_id !== req.user_id)) {
+	if (message.author_id !== req.user_id) {
 		if (!rights.has("MANAGE_MESSAGES")) {
-			const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
+			const permission = await getPermission(
+				req.user_id,
+				channel.guild_id,
+				channel_id,
+			);
 			permission.hasThrow("MANAGE_MESSAGES");
 		}
 	} else rights.hasThrow("SELF_DELETE_MESSAGES");
@@ -187,8 +235,8 @@ router.delete("/", route({}), async (req: Request, res: Response) => {
 		data: {
 			id: message_id,
 			channel_id,
-			guild_id: channel.guild_id
-		}
+			guild_id: channel.guild_id,
+		},
 	} as MessageDeleteEvent);
 
 	res.sendStatus(204);

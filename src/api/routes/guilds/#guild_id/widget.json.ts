@@ -1,5 +1,12 @@
 import { Request, Response, Router } from "express";
-import { Config, Permissions, Guild, Invite, Channel, Member } from "@fosscord/util";
+import {
+	Config,
+	Permissions,
+	Guild,
+	Invite,
+	Channel,
+	Member,
+} from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { random, route } from "@fosscord/api";
 
@@ -21,7 +28,9 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	if (!guild.widget_enabled) throw new HTTPError("Widget Disabled", 404);
 
 	// Fetch existing widget invite for widget channel
-	var invite = await Invite.findOne({ where: { channel_id: guild.widget_channel_id } });
+	var invite = await Invite.findOne({
+		where: { channel_id: guild.widget_channel_id },
+	});
 
 	if (guild.widget_channel_id && !invite) {
 		// Create invite for channel if none exists
@@ -45,16 +54,24 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	// Fetch voice channels, and the @everyone permissions object
 	const channels = [] as any[];
 
-	(await Channel.find({ where: { guild_id: guild_id, type: 2 }, order: { position: "ASC" } })).filter((doc) => {
+	(
+		await Channel.find({
+			where: { guild_id: guild_id, type: 2 },
+			order: { position: "ASC" },
+		})
+	).filter((doc) => {
 		// Only return channels where @everyone has the CONNECT permission
 		if (
 			doc.permission_overwrites === undefined ||
-			Permissions.channelPermission(doc.permission_overwrites, Permissions.FLAGS.CONNECT) === Permissions.FLAGS.CONNECT
+			Permissions.channelPermission(
+				doc.permission_overwrites,
+				Permissions.FLAGS.CONNECT,
+			) === Permissions.FLAGS.CONNECT
 		) {
 			channels.push({
 				id: doc.id,
 				name: doc.name,
-				position: doc.position
+				position: doc.position,
 			});
 		}
 	});
@@ -70,7 +87,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		instant_invite: invite?.code,
 		channels: channels,
 		members: members,
-		presence_count: guild.presence_count
+		presence_count: guild.presence_count,
 	};
 
 	res.set("Cache-Control", "public, max-age=300");
