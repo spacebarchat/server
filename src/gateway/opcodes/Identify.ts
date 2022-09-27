@@ -293,6 +293,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// shard // TODO: only for user sharding
 		sessions: [], // TODO:
 		presences: [], // TODO:
+		tutorial: null,
 	};
 
 	// TODO: send real proper data structure
