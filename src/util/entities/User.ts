@@ -63,7 +63,7 @@ export const PrivateUserProjection = [
 // Private user data that should never get sent to the client
 export type PublicUser = Pick<User, PublicUserKeys>;
 
-export interface UserPublic extends Pick<User, PublicUserKeys> {}
+export interface UserPublic extends Pick<User, PublicUserKeys> { }
 
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
@@ -197,46 +197,57 @@ export class User extends BaseClass {
 	extended_settings: string;
 
 	@BeforeUpdate()
+	_update_validator() { this.validate(true); }
+
 	@BeforeInsert()
-	validate() {
-		this.email = adjustEmail(this.email);
-		if (!this.email)
-			throw FieldErrors({
-				email: { message: "Invalid email", code: "EMAIL_INVALID" },
-			});
-		if (!this.email.match(/([a-z\d.-]{3,})@([a-z\d.-]+).([a-z]{2,})/g))
-			throw FieldErrors({
-				email: { message: "Invalid email", code: "EMAIL_INVALID" },
-			});
+	_insert_validator() { this.validate(false); }
 
-		const discrim = Number(this.discriminator);
-		if (this.discriminator.length > 4)
-			throw FieldErrors({
-				email: {
-					message: "Discriminator cannot be more than 4 digits.",
-					code: "DISCRIMINATOR_INVALID",
-				},
-			});
-		if (isNaN(discrim))
-			throw FieldErrors({
-				email: {
-					message: "Discriminator must be a number.",
-					code: "DISCRIMINATOR_INVALID",
-				},
-			});
-		if (discrim <= 0 || discrim >= 10000)
-			throw FieldErrors({
-				email: {
-					message: "Discriminator must be a number.",
-					code: "DISCRIMINATOR_INVALID",
-				},
-			});
-		this.discriminator = discrim.toString().padStart(4, "0");
+	validate(update: boolean = false) {
+		// inserting or email provided in update
+		if (!update || this.email) {
+			this.email = adjustEmail(this.email);
+			if (!this.email)
+				throw FieldErrors({
+					email: { message: "Invalid email", code: "EMAIL_INVALID" },
+				});
+			if (!this.email.match(/([a-z\d.-]{3,})@([a-z\d.-]+).([a-z]{2,})/g))
+				throw FieldErrors({
+					email: { message: "Invalid email", code: "EMAIL_INVALID" },
+				});
+		}
 
-		if (BannedWords.find(this.username))
-			throw FieldErrors({
-				username: { message: "Bad username", code: "INVALID_USERNAME" },
-			});
+		// inserting or discrim provided
+		if (!update || this.discriminator) {
+			const discrim = Number(this.discriminator);
+			if (this.discriminator.length > 4)
+				throw FieldErrors({
+					email: {
+						message: "Discriminator cannot be more than 4 digits.",
+						code: "DISCRIMINATOR_INVALID",
+					},
+				});
+			if (isNaN(discrim))
+				throw FieldErrors({
+					email: {
+						message: "Discriminator must be a number.",
+						code: "DISCRIMINATOR_INVALID",
+					},
+				});
+			if (discrim <= 0 || discrim >= 10000)
+				throw FieldErrors({
+					email: {
+						message: "Discriminator must be a number.",
+						code: "DISCRIMINATOR_INVALID",
+					},
+				});
+			this.discriminator = discrim.toString().padStart(4, "0");
+		}
+
+		if (!update || this.username)
+			if (BannedWords.find(this.username))
+				throw FieldErrors({
+					username: { message: "Bad username", code: "INVALID_USERNAME" },
+				});
 	}
 
 	toPublicUser() {
@@ -369,7 +380,7 @@ export class User extends BaseClass {
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
-					await Member.addToGuild(user.id, guild).catch((e) => {});
+					await Member.addToGuild(user.id, guild).catch((e) => { });
 				}
 			}
 		});
@@ -436,7 +447,7 @@ export interface UserSettings {
 	disable_games_tab: boolean;
 	enable_tts_command: boolean;
 	explicit_content_filter: number;
-	friend_source_flags: { all: boolean };
+	friend_source_flags: { all: boolean; };
 	gateway_connected: boolean;
 	gif_auto_play: boolean;
 	// every top guild is displayed as a "folder"
