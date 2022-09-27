@@ -59,8 +59,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		? await Sticker.find({ where: { id: In(opts.sticker_ids) } })
 		: undefined;
 	const message = Message.create({
-		...opts,
 		id: Snowflake.generate(),
+		...opts,
 		sticker_items: stickers,
 		guild_id: channel.guild_id,
 		channel_id: opts.channel_id,
