@@ -10,6 +10,7 @@ import {
 	JoinTable,
 	ManyToMany,
 	ManyToOne,
+	Not,
 	PrimaryGeneratedColumn,
 	RelationId,
 } from "typeorm";
@@ -287,6 +288,19 @@ export class Member extends BaseClassWithoutId {
 			relations: [...PublicGuildRelations, "system_channel"],
 		});
 
+		const memberCount = await Member.count({ where: { guild_id } });
+		const memberPreview = await Member.find({
+			where: {
+				guild_id,
+				user: {
+					sessions: {
+						status: Not("invisible" as "invisible")	// lol typescript?
+					}
+				}
+			},
+			take: 10,
+		});
+
 		if (
 			await Member.count({
 				where: { id: user.id, guild: { id: guild_id } },
@@ -342,8 +356,8 @@ export class Member extends BaseClassWithoutId {
 				event: "GUILD_CREATE",
 				data: {
 					...guild,
-					members: [...guild.members, { ...member, user }],
-					member_count: (guild.member_count || 0) + 1,
+					members: [...memberPreview, { ...member, user }],
+					member_count: memberCount + 1,
 					guild_hashes: {},
 					guild_scheduled_events: [],
 					joined_at: member.joined_at,
