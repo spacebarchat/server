@@ -43,11 +43,11 @@ import { Webhook } from "./Webhook";
 export const PublicGuildRelations = [
 	"channels",
 	"emojis",
-	"members",
 	"roles",
 	"stickers",
 	"voice_states",
-	"members.user",
+	// "members",		// TODO: These are public, but all members should not be fetched.
+	// "members.user",
 ];
 
 @Entity("guilds")
