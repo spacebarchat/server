@@ -68,6 +68,7 @@ const doPatch = (content) => {
 
 const processFile = async (name) => {
 	const res = await fetch(`${BASE_URL}/assets/${name}.js`);
+	if (res.status !== 200) return [];
 	let text = await res.text();
 
 	text = doPatch(text);
@@ -105,6 +106,8 @@ const processFile = async (name) => {
 	let lastFinished = Date.now();
 	let previousFinish = Date.now();
 
+	let promises = [];
+
 	for (var i = 0; i < assets.length; i++) {
 		const asset = assets[i];
 
@@ -122,19 +125,24 @@ const processFile = async (name) => {
 		process.stdout.cursorTo(0);
 		process.stdout.write(
 			`Caching asset ${asset}. ` +
-				`${i}/${assets.length - 1} = ${Math.floor(
-					(i / (assets.length - 1)) * 100,
-				)}% ` +
-				`Finish at: ${new Date(
-					Date.now() + finishTime,
-				).toLocaleTimeString()}`,
+			`${i}/${assets.length - 1} = ${Math.floor(
+				(i / (assets.length - 1)) * 100,
+			)}% ` +
+			`Finish at: ${new Date(
+				Date.now() + finishTime,
+			).toLocaleTimeString()}`,
 		);
 
-		await processFile(asset);
+		promises.push(processFile(asset));
 
-		lastFinished = Date.now();
-		rates.push(lastFinished - previousFinish);
-		previousFinish = lastFinished;
+		if (promises.length > 100) {
+			const values = await Promise.all(promises);
+			assets.push(...values.flat());
+			promises = [];
+			lastFinished = Date.now();
+			rates.push(lastFinished - previousFinish);
+			previousFinish = lastFinished;
+		}
 	}
 
 	console.log(`\nDone`);
