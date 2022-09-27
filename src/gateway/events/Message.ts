@@ -25,7 +25,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 
 	if (this.encoding === "etf" && buffer instanceof Buffer)
 		data = erlpack.unpack(buffer);
-	else if (this.encoding === "json" && buffer instanceof Buffer) {
+	else if (this.encoding === "json" && buffer instanceof Buffer && buffer[0] !== 123) {	// bad check for "{"
 		if (this.inflate) {
 			try {
 				buffer = this.inflate.process(buffer) as any;
@@ -34,7 +34,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 			}
 		}
 		data = bigIntJson.parse(buffer as string);
-	} else if (typeof buffer == "string") {
+	} else if (typeof buffer == "string" || (buffer instanceof Buffer && buffer[0] == 123)) {
 		data = bigIntJson.parse(buffer as string);
 	} else return;
 
