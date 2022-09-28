@@ -3,6 +3,7 @@ import {
 	BaseEntity,
 	BeforeInsert,
 	BeforeUpdate,
+	DeepPartial,
 	FindOptionsWhere,
 	ObjectIdColumn,
 	PrimaryColumn,
@@ -66,7 +67,7 @@ export const PrimaryIdColumn = process.env.DATABASE?.startsWith("mongodb")
 
 export class BaseClass extends BaseClassWithoutId {
 	@PrimaryIdColumn()
-	id: string;
+	id: string = Snowflake.generate();
 
 	@BeforeUpdate()
 	@BeforeInsert()
