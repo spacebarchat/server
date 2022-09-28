@@ -364,6 +364,7 @@ export class Member extends BaseClassWithoutId {
 					presences: [],
 					stage_instances: [],
 					threads: [],
+					embedded_activities: [],
 				},
 				user_id,
 			} as GuildCreateEvent),
