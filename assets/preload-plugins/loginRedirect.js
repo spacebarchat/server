@@ -5,7 +5,7 @@ const redirectIfOnLogin = () => {
 	const path = window.location.pathname;
 	if (path == "/login" || path == "/register" || !localStorage.getItem("token")) {
 		window.location.pathname = "/login";
-		window.location.reload();
+		//window.location.reload();
 	}
 };
 
