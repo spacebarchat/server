@@ -21465,6 +21465,9 @@
             "premium_progress_bar_enabled": {
                 "type": "boolean"
             },
+            "discovery_splash": {
+                "type": "string"
+            },
             "name": {
                 "maxLength": 100,
                 "type": "string"
