@@ -49,22 +49,31 @@ router.patch(
 				"MANAGE_GUILD",
 			);
 
+		var guild = await Guild.findOneOrFail({
+			where: { id: guild_id },
+			relations: ["emojis", "roles", "stickers"],
+		});
+
 		// TODO: guild update check image
 
-		if (body.icon)
+		if (body.icon && body.icon != guild.icon)
 			body.icon = await handleFile(`/icons/${guild_id}`, body.icon);
-		if (body.banner)
+
+		if (body.banner && body.banner !== guild.banner)
 			body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
-		if (body.splash)
+
+		if (body.splash && body.splash !== guild.splash)
 			body.splash = await handleFile(
 				`/splashes/${guild_id}`,
 				body.splash,
 			);
 
-		var guild = await Guild.findOneOrFail({
-			where: { id: guild_id },
-			relations: ["emojis", "roles", "stickers"],
-		});
+		if (body.discovery_splash && body.discovery_splash !== guild.discovery_splash)
+			body.splash = await handleFile(
+				`/discovery-splashes/${guild_id}`,
+				body.discovery_splash,
+			);
+
 		// TODO: check if body ids are valid
 		guild.assign(body);
 
