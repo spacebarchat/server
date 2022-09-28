@@ -39,3 +39,7 @@ export * from "./VoiceVideoSchema";
 export * from "./IdentifySchema";
 export * from "./ActivitySchema";
 export * from "./LazyRequestSchema";
+export * from "./GuildUpdateSchema";
+export * from "./ChannelPermissionOverwriteSchema";
+export * from "./UserGuildSettingsSchema";
+export * from "./GatewayPayloadSchema"

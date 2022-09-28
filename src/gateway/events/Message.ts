@@ -1,23 +1,16 @@
-import { CLOSECODES, OPCODES } from "../util/Constants";
-import { WebSocket, Payload } from "@fosscord/gateway";
+import { WebSocket, Payload, CLOSECODES, OPCODES } from "@fosscord/gateway";
+import OPCodeHandlers from "../opcodes";
+import { check } from "../opcodes/instanceOf";
+import WS from "ws";
+import { PayloadSchema } from "@fosscord/util";
+import * as Sentry from "@sentry/node";
+import BigIntJson from "json-bigint";
+const bigIntJson = BigIntJson({ storeAsString: true });
+
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) {}
-import OPCodeHandlers from "../opcodes";
-import { Tuple } from "lambert-server";
-import { check } from "../opcodes/instanceOf";
-import WS from "ws";
-import BigIntJson from "json-bigint";
-import * as Sentry from "@sentry/node";
-const bigIntJson = BigIntJson({ storeAsString: true });
-
-const PayloadSchema = {
-	op: Number,
-	$d: new Tuple(Object, Number), // or number for heartbeat sequence
-	$s: Number,
-	$t: String,
-};
+} catch (error) { }
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
