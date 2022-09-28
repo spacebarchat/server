@@ -156,6 +156,7 @@ export interface GuildCreateEvent extends Event {
 		presences: never[];
 		stage_instances: never[];
 		threads: never[];
+		embedded_activities: never[];
 	};
 }
 
