@@ -1,5 +1,5 @@
-import { PrimaryColumn, Column, Entity } from "typeorm";
-import { BaseClassWithoutId } from "./BaseClass";
+import { Column, Entity } from "typeorm";
+import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 
 // TODO: categories:
 // [{
@@ -19,7 +19,7 @@ import { BaseClassWithoutId } from "./BaseClass";
 export class Categories extends BaseClassWithoutId {
 	// Not using snowflake
 
-	@PrimaryColumn()
+	@PrimaryIdColumn()
 	id: number;
 
 	@Column({ nullable: true })
