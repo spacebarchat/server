@@ -69,7 +69,7 @@ router.patch(
 			);
 
 		if (body.discovery_splash && body.discovery_splash !== guild.discovery_splash)
-			body.splash = await handleFile(
+			body.discovery_splash = await handleFile(
 				`/discovery-splashes/${guild_id}`,
 				body.discovery_splash,
 			);
