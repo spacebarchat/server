@@ -1,21 +1,13 @@
 import { Router, Response, Request } from "express";
 import {
 	Channel,
-	ChannelOverride,
 	Member,
-	UserGuildSettings,
+	OrmUtils,
+	UserGuildSettingsSchema,
 } from "@fosscord/util";
 import { route } from "@fosscord/api";
 
 const router = Router();
-
-// This sucks. I would use a DeepPartial, my own or typeorms, but they both generate inncorect schema
-export interface UserGuildSettingsSchema
-	extends Partial<Omit<UserGuildSettings, "channel_overrides">> {
-	channel_overrides: {
-		[channel_id: string]: Partial<ChannelOverride>;
-	};
-}
 
 // GET doesn't exist on discord.com
 router.get("/", route({}), async (req: Request, res: Response) => {
@@ -30,7 +22,7 @@ router.patch(
 	"/",
 	route({ body: "UserGuildSettingsSchema" }),
 	async (req: Request, res: Response) => {
-		const body = req.body as UserGuildSettings;
+		const body = req.body as UserGuildSettingsSchema;
 
 		if (body.channel_overrides) {
 			for (var channel in body.channel_overrides) {
@@ -40,9 +32,11 @@ router.patch(
 
 		const user = await Member.findOneOrFail({
 			where: { id: req.user_id, guild_id: req.params.guild_id },
+			select: ["settings"]
+
 		});
-		user.settings = { ...user.settings, ...body };
-		await user.save();
+		OrmUtils.mergeDeep(user.settings || {}, body);
+		Member.update({ id: req.user_id, guild_id: req.params.guild_id }, user);
 
 		res.json(user.settings);
 	},
