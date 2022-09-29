@@ -9,7 +9,6 @@ import {
 	getPermission,
 	getRights,
 	CHANNEL_MENTION,
-	Snowflake,
 	USER_MENTION,
 	ROLE_MENTION,
 	Role,
@@ -59,7 +58,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		? await Sticker.find({ where: { id: In(opts.sticker_ids) } })
 		: undefined;
 	const message = Message.create({
-		id: Snowflake.generate(),
 		...opts,
 		sticker_items: stickers,
 		guild_id: channel.guild_id,
@@ -148,6 +146,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	if (content) {
 		// TODO: explicit-only mentions
 		message.content = content.trim();
+		content = content.replace(/ *\`[^)]*\` */g, ""); // remove codeblocks
 		for (const [_, mention] of content.matchAll(CHANNEL_MENTION)) {
 			if (!mention_channel_ids.includes(mention))
 				mention_channel_ids.push(mention);
@@ -192,7 +191,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 // TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
-	var links = message.content?.match(LINK_REGEX);
+	const content = message.content?.replace(/ *\`[^)]*\` */g, "");	// remove markdown
+	var links = content?.match(LINK_REGEX);
 	if (!links) return;
 
 	const data = { ...message };
