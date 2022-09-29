@@ -64,7 +64,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		channel_id: opts.channel_id,
 		attachments: opts.attachments || [],
 		embeds: opts.embeds || [],
-		reactions: /*opts.reactions ||*/ [],
+		reactions: /*opts.reactions ||*/[],
 		type: opts.type ?? 0,
 	});
 
@@ -247,12 +247,12 @@ export async function postHandleMessage(message: Message) {
 				const width =
 					parseInt(
 						$('meta[property="og:image:width"]').attr("content") ||
-							"",
+						"",
 					) || undefined;
 				const height =
 					parseInt(
 						$('meta[property="og:image:height"]').attr("content") ||
-							"",
+						"",
 					) || undefined;
 
 				const url = $('meta[property="og:url"]').attr("content");
@@ -317,7 +317,7 @@ export async function postHandleMessage(message: Message) {
 					data.embeds.push(embed);
 				}
 			}
-		} catch (error) {}
+		} catch (error) { }
 	}
 
 	await Promise.all([
@@ -345,7 +345,7 @@ export async function sendMessage(opts: MessageOptions) {
 		} as MessageCreateEvent),
 	]);
 
-	postHandleMessage(message).catch((e) => {}); // no await as it should catch error non-blockingly
+	postHandleMessage(message).catch((e) => { }); // no await as it should catch error non-blockingly
 
 	return message;
 }

@@ -255,17 +255,22 @@ router.post(
 			);
 		}
 
-		const member = await Member.findOneOrFail({
-			where: { id: req.user_id },
-			relations: ["roles"],
-		});
-		member.roles = member.roles
-			.filter((role: Role) => {
-				return role.id !== role.guild_id;
-			})
-			.map((role: Role) => {
-				return role.id;
-			}) as any;
+		if (message.guild_id) {
+			// handleMessage will fetch the Member, but only if they are not guild owner.
+			// have to fetch ourselves otherwise.
+			if (!message.member) {
+				message.member = await Member.findOneOrFail({
+					where: { id: req.user_id, guild_id: message.guild_id },
+					relations: ["roles"]
+				});
+			}
+
+			//@ts-ignore
+			message.member.roles =
+				message.member.roles.
+					filter(x => x.id != x.guild_id)
+					.map(x => x.id);
+		}
 
 		let read_state = await ReadState.findOne({
 			where: { user_id: req.user_id, channel_id }
