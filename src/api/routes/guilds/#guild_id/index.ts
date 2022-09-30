@@ -44,7 +44,7 @@ router.patch(
 		const rights = await getRights(req.user_id);
 		const permission = await getPermission(req.user_id, guild_id);
 
-		if (!rights.has("MANAGE_GUILDS") || !permission.has("MANAGE_GUILD"))
+		if (!rights.has("SELF_EDIT_GUILDS") || !permission.has("MANAGE_GUILD"))
 			throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(
 				"MANAGE_GUILD",
 			);
