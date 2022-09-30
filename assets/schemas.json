@@ -597,7 +597,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -1203,7 +1202,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -1792,7 +1790,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -2382,7 +2379,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -3052,7 +3048,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -3637,7 +3632,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -4244,7 +4238,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -4829,7 +4822,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -5429,7 +5421,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -6032,7 +6023,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -6632,7 +6622,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -7220,7 +7209,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -7816,7 +7804,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -8404,7 +8391,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -8992,7 +8978,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -9576,7 +9561,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -10186,7 +10170,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -10775,7 +10758,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -11363,7 +11345,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -11966,7 +11947,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -12557,7 +12537,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -13148,7 +13127,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -13766,7 +13744,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -14355,7 +14332,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -14943,7 +14919,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -15535,7 +15510,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -16123,7 +16097,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -16708,7 +16681,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -17299,7 +17271,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -17922,7 +17893,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -18530,7 +18500,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -19193,7 +19162,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -19930,7 +19898,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -20506,7 +20473,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -21114,7 +21080,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -21766,7 +21731,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -22363,7 +22327,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -23000,7 +22963,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -23591,7 +23553,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -24206,7 +24167,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -24813,7 +24773,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -25427,7 +25386,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -26012,7 +25970,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -26609,7 +26566,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -27201,7 +27157,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -27798,7 +27753,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -28401,7 +28355,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -29010,7 +28963,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -29601,7 +29553,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -30195,7 +30146,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -30783,7 +30733,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -31368,7 +31317,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -31953,7 +31901,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
@@ -32715,7 +32662,6 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "afk",
                     "status"
                 ]
             },
