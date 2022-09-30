@@ -32,7 +32,7 @@ export class Rights extends BitField {
 	static FLAGS = {
 		OPERATOR: BitFlag(0), // has all rights
 		MANAGE_APPLICATIONS: BitFlag(1),
-		MANAGE_GUILDS: BitFlag(2),
+		MANAGE_GUILDS: BitFlag(2),	 // Manage all guilds instance-wide
 		MANAGE_MESSAGES: BitFlag(3), // Can't see other messages but delete/edit them in channels that they can see
 		MANAGE_RATE_LIMITS: BitFlag(4),
 		MANAGE_ROUTING: BitFlag(5), // can create custom message routes to any channel/guild
@@ -78,6 +78,7 @@ export class Rights extends BitField {
 		SEND_BACKDATED_EVENTS: BitFlag(42), // can send backdated events
 		USE_MASS_INVITES: BitFlag(43), // added per @xnacly's request — can accept mass invites
 		ACCEPT_INVITES: BitFlag(44), // added per @xnacly's request — can accept user-specific invites and DM requests
+		SELF_EDIT_GUILDS: BitFlag(45),	// Edit guilds you own or have permission to edit
 	};
 
 	any(permission: RightResolvable, checkOperator = true) {
