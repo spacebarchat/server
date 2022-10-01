@@ -20,7 +20,7 @@ router.post("/:code", route({ right: "USE_MASS_INVITES" }), async (req: Request,
 
 	if (features.includes("INTERNAL_EMPLOYEE_ONLY") && (public_flags & 1) !== 1)
 		throw new HTTPError("Only intended for the staff of this server.", 401);
-	if (features.includes("INVITES_CLOSED")) throw new HTTPError("Sorry, this guild has joins closed.", 403);
+	if (features.includes("INVITES_DISABLED")) throw new HTTPError("Sorry, this guild has joins closed.", 403);
 
 	const invite = await Invite.joinGuild(req.user_id, code);
 
