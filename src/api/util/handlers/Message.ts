@@ -24,27 +24,14 @@ import {
 	MessageCreateSchema,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import fetch from "node-fetch";
-import cheerio from "cheerio";
 import { In } from "typeorm";
+import { EmbedHandlers } from "@fosscord/api";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
 
 const LINK_REGEX =
 	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
-
-const DEFAULT_FETCH_OPTIONS: any = {
-	redirect: "follow",
-	follow: 1,
-	headers: {
-		"user-agent":
-			"Mozilla/5.0 (compatible; Fosscord/1.0; +https://github.com/fosscord/fosscord)",
-	},
-	// size: 1024 * 1024 * 5, 	// grabbed from config later
-	compress: true,
-	method: "GET",
-};
 
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	const channel = await Channel.findOneOrFail({
@@ -200,124 +187,24 @@ export async function postHandleMessage(message: Message) {
 
 	links = links.slice(0, 20) as RegExpMatchArray; // embed max 20 links — TODO: make this configurable with instance policies
 
-	const { endpointPublic, resizeWidthMax, resizeHeightMax } =
-		Config.get().cdn;
-
 	for (const link of links) {
+		let embed: Embed;
+		const url = new URL(link);
+
+		// bit gross, but whatever!
+		const { endpointPublic } = Config.get().cdn;
+		const handler = url.hostname == new URL(endpointPublic!).hostname ? EmbedHandlers["self"] : EmbedHandlers[url.hostname] || EmbedHandlers["default"];
+
 		try {
-			const request = await fetch(link, {
-				...DEFAULT_FETCH_OPTIONS,
-				size: Config.get().limits.message.maxEmbedDownloadSize,
-			});
+			const res = await handler(url);
+			if (!res) continue;
+			embed = res;
+		}
+		catch (e) {
+			continue;
+		}
 
-			let embed: Embed;
-
-			const type = request.headers.get("content-type");
-			if (type?.indexOf("image") == 0) {
-				embed = {
-					provider: {
-						url: link,
-						name: new URL(link).hostname,
-					},
-					image: {
-						// can't be bothered rn
-						proxy_url: `${endpointPublic}/external/resize/${encodeURIComponent(
-							link,
-						)}?width=500&height=400`,
-						url: link,
-						width: 500,
-						height: 400,
-					},
-				};
-				data.embeds.push(embed);
-			} else {
-				const text = await request.text();
-				const $ = cheerio.load(text);
-
-				const title = $('meta[property="og:title"]').attr("content");
-				const provider_name = $('meta[property="og:site_name"]').text();
-				const author_name = $('meta[property="article:author"]').attr(
-					"content",
-				);
-				const description =
-					$('meta[property="og:description"]').attr("content") ||
-					$('meta[property="description"]').attr("content");
-
-				const image = $('meta[property="og:image"]').attr("content");
-				const width =
-					parseInt(
-						$('meta[property="og:image:width"]').attr("content") ||
-						"",
-					) || undefined;
-				const height =
-					parseInt(
-						$('meta[property="og:image:height"]').attr("content") ||
-						"",
-					) || undefined;
-
-				const url = $('meta[property="og:url"]').attr("content");
-				// TODO: color
-				embed = {
-					provider: {
-						url: link,
-						name: provider_name,
-					},
-				};
-
-				const resizeWidth = Math.min(resizeWidthMax ?? 1, width ?? 100);
-				const resizeHeight = Math.min(
-					resizeHeightMax ?? 1,
-					height ?? 100,
-				);
-				if (author_name) embed.author = { name: author_name };
-				if (image)
-					embed.thumbnail = {
-						proxy_url: `${endpointPublic}/external/resize/${encodeURIComponent(
-							image,
-						)}?width=${resizeWidth}&height=${resizeHeight}`,
-						url: image,
-						width: width,
-						height: height,
-					};
-				if (title) embed.title = title;
-				if (url) embed.url = url;
-				if (description) embed.description = description;
-
-				const approvedProviders = [
-					"media4.giphy.com",
-					"c.tenor.com",
-					// todo: make configurable? don't really care tho
-				];
-
-				// very bad code below
-				// don't care lol
-				if (
-					embed?.thumbnail?.url &&
-					approvedProviders.indexOf(
-						new URL(embed.thumbnail.url).hostname,
-					) !== -1
-				) {
-					embed = {
-						provider: {
-							url: link,
-							name: new URL(link).hostname,
-						},
-						image: {
-							proxy_url: `${endpointPublic}/external/resize/${encodeURIComponent(
-								image!,
-							)}?width=${resizeWidth}&height=${resizeHeight}`,
-							url: image,
-							width: width,
-							height: height,
-						},
-					};
-				}
-
-				if (title || description) {
-					data.embeds.push(embed);
-				}
-			}
-		} catch (error) { }
+		data.embeds.push(embed);
 	}
 
 	await Promise.all([
