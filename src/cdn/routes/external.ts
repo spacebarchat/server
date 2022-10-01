@@ -77,6 +77,10 @@ router.get("/resize/:url", async (req: Request, res: Response) => {
 		throw new HTTPError("Couldn't fetch website");
 	}
 
+	if (response.headers.get("content-type")?.indexOf("image") === -1) {
+		throw new HTTPError("Content type is not image.");
+	}
+
 	const resizedBuffer = await sharp(buffer)
 		.resize(parseInt(width as string), parseInt(height as string), {
 			fit: "inside",
