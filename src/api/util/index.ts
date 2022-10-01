@@ -7,3 +7,4 @@ export * from "./handlers/route";
 export * from "./utility/String";
 export * from "./handlers/Voice";
 export * from "./utility/captcha";
+export * from "./utility/EmbedHandlers";
