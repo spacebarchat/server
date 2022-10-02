@@ -23,27 +23,27 @@ export const getProxyUrl = (url: URL, width: number, height: number) => {
 	return `${endpointPublic}/external/resize/${encodeURIComponent(url.href)}?width=${width}&height=${height}`;
 };
 
-export const getMetaDescriptions = async (text: string) => {
+const getMeta = ($: cheerio.CheerioAPI, name: string): string | undefined => {
+	let elem = $(`meta[property="${name}"]`);
+	if (!elem.length) elem = $(`meta[name="${name}"]`);
+	return elem.attr("content") || elem.text();
+}
+
+export const getMetaDescriptions = (text: string) => {
 	const $ = cheerio.load(text);
 
 	return {
-		title: $('meta[property="og:title"]').attr("content"),
-		provider_name: $('meta[property="og:site_name"]').text(),
-		author: $('meta[property="article:author"]').attr("content"),
-		description:
-			$('meta[property="og:description"]').attr("content") ||
-			$('meta[property="description"]').attr("content"),
-		image: $('meta[property="og:image"]').attr("content") || $(`meta[property="twitter:image"]`).attr("content"),
-		width: parseInt(
-			$('meta[property="og:image:width"]').attr("content") ||
-			"",
-		) || undefined,
-		height: parseInt(
-			$('meta[property="og:image:height"]').attr("content") ||
-			"",
-		) || undefined,
-		url: $('meta[property="og:url"]').attr("content"),
-		youtube_embed: $(`meta[property="og:video:secure_url"]`).attr("content"),
+		title: getMeta($, "og:title") || $("title").first().text(),
+		provider_name: getMeta($, "og:site_name"),
+		author: getMeta($, "article:author"),
+		description: getMeta($, "og:description") || getMeta($, "description"),
+		image: getMeta($, "og:image") || getMeta($, "twitter:image"),
+		image_fallback: $(`image`).attr("src"),
+		video_fallback: $(`video`).attr("src"),
+		width: parseInt(getMeta($, "og:image:width")!) || 0,
+		height: parseInt(getMeta($, "og:image:height")!) || 0,
+		url: getMeta($, "og:url"),
+		youtube_embed: getMeta($, "og:video:secure_url"),
 	};
 };
 
@@ -60,24 +60,43 @@ const doFetch = async (url: URL) => {
 };
 
 const genericImageHandler = async (url: URL): Promise<Embed | null> => {
-	const response = await doFetch(url);
-	if (!response) return null;
-	const metas = await getMetaDescriptions(await response.text());
+	const type = await fetch(url, {
+		...DEFAULT_FETCH_OPTIONS,
+		method: "HEAD",
+	});
 
-	if (!metas.width || !metas.height) {
+	let width, height, image;
+
+	if (type.headers.get("content-type")?.indexOf("image") !== -1) {
 		const result = await probe(url.href);
-		metas.width = result.width;
-		metas.height = result.height;
+		width = result.width;
+		height = result.height;
+		image = url.href;
 	}
+	else if (type.headers.get("content-type")?.indexOf("video") !== -1) {
+		// TODO
+		return null;
+	}
+	else {
+		// have to download the page, unfortunately
+		const response = await doFetch(url);
+		if (!response) return null;
+		const metas = getMetaDescriptions(await response.text());
+		width = metas.width;
+		height = metas.height;
+		image = metas.image || metas.image_fallback;
+	}
+
+	if (!width || !height || !image) return null;
 
 	return {
 		url: url.href,
 		type: EmbedType.image,
 		thumbnail: {
-			width: metas.width,
-			height: metas.height,
+			width: width,
+			height: height,
 			url: url.href,
-			proxy_url: getProxyUrl(new URL(metas.image || url.href), metas.width, metas.height),
+			proxy_url: getProxyUrl(new URL(image), width, height),
 		}
 	};
 };
@@ -85,27 +104,32 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>; } = {
 	// the url does not have a special handler
 	"default": async (url: URL) => {
+		const type = await fetch(url, {
+			...DEFAULT_FETCH_OPTIONS,
+			method: "HEAD",
+		});
+		if (type.headers.get("content-type")?.indexOf("image") !== -1)
+			return await genericImageHandler(url);
+
 		const response = await doFetch(url);
 		if (!response) return null;
 
-		if (response.headers.get("content-type")?.indexOf("image") !== -1) {
-			// this is an image
+		const metas = getMetaDescriptions(await response.text());
 
-			const size = imageSize(await response.buffer());
+		// TODO: handle video
 
-			return {
-				url: url.href,
-				type: EmbedType.image,
-				image: {
-					width: size.width,
-					height: size.height,
-					url: url.href,
-					proxy_url: getProxyUrl(url, size.width!, size.height!),
-				}
-			};
+		if (!metas.image) metas.image = metas.image_fallback;
+
+		if (metas.image && (!metas.width || !metas.height)) {
+			const result = await probe(metas.image);
+			metas.width = result.width;
+			metas.height = result.height;
 		}
 
-		const metas = await getMetaDescriptions(await response.text());
+		if (!metas.image && (!metas.title || !metas.description)) {
+			return null;
+		}
+
 		return {
 			url: url.href,
 			type: EmbedType.link,
@@ -114,7 +138,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 				width: metas.width,
 				height: metas.height,
 				url: metas.image,
-				proxy_url: getProxyUrl(new URL(metas.image!), metas.width!, metas.height!),
+				proxy_url: metas.image ? getProxyUrl(new URL(metas.image), metas.width!, metas.height!) : undefined,
 			},
 			description: metas.description,
 		};
@@ -132,7 +156,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 	"open.spotify.com": async (url: URL) => {
 		const response = await doFetch(url);
 		if (!response) return null;
-		const metas = await getMetaDescriptions(await response.text());
+		const metas = getMetaDescriptions(await response.text());
 
 		return {
 			url: url.href,
@@ -142,7 +166,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 			thumbnail: {
 				width: 640,
 				height: 640,
-				proxy_url: getProxyUrl(new URL(metas.image!), 640, 640),
+				proxy_url: metas.image ? getProxyUrl(new URL(metas.image!), 640, 640) : undefined,
 				url: metas.image,
 			},
 			provider: {
@@ -156,7 +180,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 	"www.pixiv.net": async (url: URL) => {
 		const response = await doFetch(url);
 		if (!response) return null;
-		const metas = await getMetaDescriptions(await response.text());
+		const metas = getMetaDescriptions(await response.text());
 
 		// TODO: doesn't show images. think it's a bug in the cdn
 		return {
@@ -168,7 +192,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 				width: metas.width,
 				height: metas.height,
 				url: url.href,
-				proxy_url: getProxyUrl(new URL(metas.image!), metas.width!, metas.height!),
+				proxy_url: metas.image ? getProxyUrl(new URL(metas.image!), metas.width!, metas.height!) : undefined,
 			},
 			provider: {
 				url: "https://pixiv.net",
@@ -180,7 +204,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 	"store.steampowered.com": async (url: URL) => {
 		const response = await doFetch(url);
 		if (!response) return null;
-		const metas = await getMetaDescriptions(await response.text());
+		const metas = getMetaDescriptions(await response.text());
 
 		return {
 			url: url.href,
@@ -192,7 +216,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 				width: 460,
 				height: 215,
 				url: metas.image,
-				proxy_url: getProxyUrl(new URL(metas.image!), 460, 215),
+				proxy_url: metas.image ? getProxyUrl(new URL(metas.image!), 460, 215) : undefined,
 			},
 			provider: {
 				url: "https://store.steampowered.com",
@@ -219,7 +243,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 	"www.youtube.com": async (url: URL): Promise<Embed | null> => {
 		const response = await doFetch(url);
 		if (!response) return null;
-		const metas = await getMetaDescriptions(await response.text());
+		const metas = getMetaDescriptions(await response.text());
 
 		return {
 			video: {
@@ -235,7 +259,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 				width: metas.width,
 				height: metas.height,
 				url: metas.image,
-				proxy_url: getProxyUrl(new URL(metas.image!), metas.width!, metas.height!),
+				proxy_url: metas.image ? getProxyUrl(new URL(metas.image!), metas.width!, metas.height!) : undefined,
 			},
 			provider: {
 				url: "https://www.youtube.com",
