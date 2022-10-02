@@ -2,7 +2,7 @@ import { Config, Embed, EmbedType } from "@fosscord/util";
 import fetch, { Response } from "node-fetch";
 import * as cheerio from "cheerio";
 import probe from "probe-image-size";
-import imageSize from "image-size";
+import crypto from "crypto";
 
 export const DEFAULT_FETCH_OPTIONS: any = {
 	redirect: "follow",
@@ -18,16 +18,28 @@ export const DEFAULT_FETCH_OPTIONS: any = {
 
 export const getProxyUrl = (url: URL, width: number, height: number) => {
 	const { endpointPublic, resizeWidthMax, resizeHeightMax } = Config.get().cdn;
+	const secret = Config.get().security.jwtSecret;	// maybe shouldn't use this?
 	width = Math.min(width || 500, resizeWidthMax || width);
 	height = Math.min(height || 500, resizeHeightMax || width);
-	return `${endpointPublic}/external/resize/${encodeURIComponent(url.href)}?width=${width}&height=${height}`;
+
+	let path = `${width}x${height}/${url.host}${url.pathname}`
+	
+	const hash = crypto.createHmac('sha1', secret)
+	.update(path)
+	.digest('base64')
+	.replace(/\+/g, '-').replace(/\//g, '_');
+	
+	// TODO: make configurable
+	return `https://media.understars.dev/${hash}/${path}`;
+
+	// return `${endpointPublic}/external/resize/${encodeURIComponent(url.href)}?width=${width}&height=${height}`;
 };
 
 const getMeta = ($: cheerio.CheerioAPI, name: string): string | undefined => {
 	let elem = $(`meta[property="${name}"]`);
 	if (!elem.length) elem = $(`meta[name="${name}"]`);
 	return elem.attr("content") || elem.text();
-}
+};
 
 export const getMetaDescriptions = (text: string) => {
 	const $ = cheerio.load(text);

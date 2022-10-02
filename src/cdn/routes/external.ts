@@ -58,6 +58,8 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 // this method is gross lol don't care
+// It's also no longer actually used on Slowcord's official server.
+// We actually use imagor now
 router.get("/resize/:url", async (req: Request, res: Response) => {
 	const url = decodeURIComponent(req.params.url);
 	const { width, height } = req.query;
