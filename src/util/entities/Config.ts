@@ -52,6 +52,7 @@ export interface ConfigValue {
 		endpointPrivate: string | null;
 		resizeHeightMax: number | null;
 		resizeWidthMax: number | null;
+		imagorServerUrl: string | null;
 	};
 	api: {
 		defaultVersion: string;
@@ -222,6 +223,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		endpointPublic: null,
 		resizeHeightMax: 1000,
 		resizeWidthMax: 1000,
+		imagorServerUrl: null,
 	},
 	api: {
 		defaultVersion: "9",
