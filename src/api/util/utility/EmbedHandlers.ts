@@ -17,22 +17,25 @@ export const DEFAULT_FETCH_OPTIONS: any = {
 };
 
 export const getProxyUrl = (url: URL, width: number, height: number) => {
-	const { endpointPublic, resizeWidthMax, resizeHeightMax } = Config.get().cdn;
+	const { endpointPublic, resizeWidthMax, resizeHeightMax, imagorServerUrl } = Config.get().cdn;
 	const secret = Config.get().security.jwtSecret;	// maybe shouldn't use this?
 	width = Math.min(width || 500, resizeWidthMax || width);
 	height = Math.min(height || 500, resizeHeightMax || width);
 
-	let path = `${width}x${height}/${url.host}${url.pathname}`
-	
-	const hash = crypto.createHmac('sha1', secret)
-	.update(path)
-	.digest('base64')
-	.replace(/\+/g, '-').replace(/\//g, '_');
-	
-	// TODO: make configurable
-	return `https://media.understars.dev/${hash}/${path}`;
+	// Imagor
+	if (imagorServerUrl) {
+		let path = `${width}x${height}/${url.host}${url.pathname}`;
 
-	// return `${endpointPublic}/external/resize/${encodeURIComponent(url.href)}?width=${width}&height=${height}`;
+		const hash = crypto.createHmac('sha1', secret)
+			.update(path)
+			.digest('base64')
+			.replace(/\+/g, '-').replace(/\//g, '_');
+
+		return `${imagorServerUrl}/${hash}/${path}`;
+	}
+
+	// Fosscord CDN resizer
+	return `${endpointPublic}/external/resize/${encodeURIComponent(url.href)}?width=${width}&height=${height}`;
 };
 
 const getMeta = ($: cheerio.CheerioAPI, name: string): string | undefined => {
