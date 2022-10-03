@@ -7,6 +7,7 @@ export * from "./Categories";
 export * from "./Channel";
 export * from "./Config";
 export * from "./ConnectedAccount";
+export * from "./EmbedCache";
 export * from "./Emoji";
 export * from "./Guild";
 export * from "./Invite";
