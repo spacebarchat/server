@@ -209,6 +209,9 @@ export interface ConfigValue {
 		traceSampleRate: number;
 		environment: string;
 	};
+	external: {
+		twitter: string | null;
+	}
 }
 
 export const DefaultConfigOptions: ConfigValue = {
@@ -418,4 +421,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		traceSampleRate: 1.0,
 		environment: hostname(),
 	},
+	external: {
+		twitter: null,
+	}
 };

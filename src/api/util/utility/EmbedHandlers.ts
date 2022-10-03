@@ -16,7 +16,7 @@ export const DEFAULT_FETCH_OPTIONS: any = {
 	method: "GET",
 };
 
-export const getProxyUrl = (url: URL, width: number, height: number) => {
+export const getProxyUrl = (url: URL, width: number, height: number): string => {
 	const { endpointPublic, resizeWidthMax, resizeHeightMax, imagorServerUrl } = Config.get().cdn;
 	const secret = Config.get().security.jwtSecret;	// maybe shouldn't use this?
 	width = Math.min(width || 500, resizeWidthMax || width);
@@ -116,7 +116,7 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 	};
 };
 
-export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>; } = {
+export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed[] | null>; } = {
 	// the url does not have a special handler
 	"default": async (url: URL) => {
 		const type = await fetch(url, {
@@ -168,6 +168,89 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 	// TODO: twitter, facebook
 	// have to use their APIs or something because they don't send the metas in initial html
 
+	"twitter.com": (url: URL) => { return EmbedHandlers["www.twitter.com"](url); },
+	"www.twitter.com": async (url: URL) => {
+		const token = Config.get().external.twitter;
+		if (!token) return null; // todo move to config
+
+		if (!url.href.includes("/status/")) return null;	// TODO;
+		const id = url.pathname.split("/")[3];	// super bad lol
+		if (!parseInt(id)) return null;
+		const endpointUrl = `https://api.twitter.com/2/tweets/${id}`
+			+ `?expansions=author_id,attachments.media_keys`
+			+ `&media.fields=url,width,height`
+			+ `&tweet.fields=created_at,public_metrics`
+			+ `&user.fields=profile_image_url`;
+
+
+		const response = await fetch(endpointUrl, {
+			...DEFAULT_FETCH_OPTIONS,
+			headers: {
+				authorization: `Bearer ${token}`,
+			}
+		});
+		const json = await response.json();
+		if (json.errors) return null;
+		const author = json.includes.users[0];
+		const text = json.data.text;
+		const created_at = new Date(json.data.created_at);
+		const metrics = json.data.public_metrics;
+		let media = json.includes.media?.filter((x: any) => x.type == "photo") as any[];	// TODO: video
+
+		const embed: Embed = {
+			type: EmbedType.rich,
+			url: `${url.origin}${url.pathname}`,
+			description: text,
+			author: {
+				url: `https://twitter.com/${author.username}`,
+				name: `${author.name} (@${author.username})`,
+				proxy_icon_url: getProxyUrl(new URL(author.profile_image_url), 400, 400),
+				icon_url: author.profile_image_url,
+			},
+			timestamp: created_at,
+			fields: [
+				{ inline: true, name: "Likes", value: metrics.like_count.toString() },
+				{ inline: true, name: "Retweet", value: metrics.retweet_count.toString() },
+			],
+			color: 1942002,
+			footer: {
+				text: "Twitter",
+				proxy_icon_url: getProxyUrl(new URL("https://abs.twimg.com/icons/apple-touch-icon-192x192.png"), 192, 192),
+				icon_url: "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
+			},
+			// Discord doesn't send this?
+			// provider: {
+			// 	name: "Twitter",
+			// 	url: "https://twitter.com"
+			// },
+		};
+
+		if (media) {
+			embed.image = {
+				width: media[0].width,
+				height: media[0].height,
+				url: media[0].url,
+				proxy_url: getProxyUrl(new URL(media[0].url), media[0].width, media[0].height)
+			};
+			media.shift();
+		}
+
+		return embed;
+
+		// TODO: Client won't merge these into a single embed, for some reason.
+		// return [embed, ...media.map((x: any) => ({
+		// 	// generate new embeds for each additional attachment
+		// 	type: EmbedType.rich,
+		// 	url: url.href,
+		// 	image: {
+		// 		width: x.width,
+		// 		height: x.height,
+		// 		url: x.url,
+		// 		proxy_url: getProxyUrl(new URL(x.url), x.width, x.height)
+		// 	}
+		// }))];
+	},
+
 	"open.spotify.com": async (url: URL) => {
 		const response = await doFetch(url);
 		if (!response) return null;
@@ -191,7 +274,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 		};
 	},
 
-	"pixiv.net": async (url: URL) => { return EmbedHandlers["www.pixiv.net"](url); },
+	"pixiv.net": (url: URL) => { return EmbedHandlers["www.pixiv.net"](url); },
 	"www.pixiv.net": async (url: URL) => {
 		const response = await doFetch(url);
 		if (!response) return null;
@@ -242,7 +325,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 		};
 	},
 
-	"reddit.com": async (url: URL) => { return EmbedHandlers["www.reddit.com"](url); },
+	"reddit.com": (url: URL) => { return EmbedHandlers["www.reddit.com"](url); },
 	"www.reddit.com": async (url: URL) => {
 		const res = await EmbedHandlers["default"](url);
 		return {
@@ -254,7 +337,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 		};
 	},
 
-	"youtube.com": async (url: URL) => { return EmbedHandlers["www.youtube.com"](url); },
+	"youtube.com": (url: URL) => { return EmbedHandlers["www.youtube.com"](url); },
 	"www.youtube.com": async (url: URL): Promise<Embed | null> => {
 		const response = await doFetch(url);
 		if (!response) return null;
@@ -304,4 +387,4 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | null>
 			}
 		};
 	},
-};
+};;
