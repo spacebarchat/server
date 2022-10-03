@@ -192,19 +192,21 @@ export async function postHandleMessage(message: Message) {
 		const url = new URL(link);
 
 		// bit gross, but whatever!
-		const { endpointPublic } = Config.get().cdn;
-		const handler = url.hostname == new URL(endpointPublic!).hostname ? EmbedHandlers["self"] : EmbedHandlers[url.hostname] || EmbedHandlers["default"];
+		const endpointPublic = Config.get().cdn.endpointPublic || "http://127.0.0.1";	// lol
+		const handler = url.hostname == new URL(endpointPublic).hostname ? EmbedHandlers["self"] : EmbedHandlers[url.hostname] || EmbedHandlers["default"];
 
 		try {
 			const res = await handler(url);
 			if (!res) continue;
-			embed = res;
+			// tried to use shorthand but types didn't like me L
+			if (Array.isArray(res))
+				data.embeds.push(...res)
+			else
+				data.embeds.push(res);
 		}
 		catch (e) {
 			continue;
 		}
-
-		data.embeds.push(embed);
 	}
 
 	await Promise.all([
