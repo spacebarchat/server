@@ -22,6 +22,7 @@ import {
 	Config,
 	Sticker,
 	MessageCreateSchema,
+	EmbedCache,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
@@ -187,27 +188,42 @@ export async function postHandleMessage(message: Message) {
 
 	links = links.slice(0, 20) as RegExpMatchArray; // embed max 20 links — TODO: make this configurable with instance policies
 
+	const cachePromises = [];
+
 	for (const link of links) {
-		let embed: Embed;
 		const url = new URL(link);
+
+		const cached = await EmbedCache.findOne({ where: { url: `${url.host}${url.pathname}` } });
+		if (cached) {
+			data.embeds.push(cached.embed);
+			continue;
+		}
 
 		// bit gross, but whatever!
 		const endpointPublic = Config.get().cdn.endpointPublic || "http://127.0.0.1";	// lol
 		const handler = url.hostname == new URL(endpointPublic).hostname ? EmbedHandlers["self"] : EmbedHandlers[url.hostname] || EmbedHandlers["default"];
 
 		try {
-			const res = await handler(url);
+			let res = await handler(url);
 			if (!res) continue;
 			// tried to use shorthand but types didn't like me L
-			if (Array.isArray(res))
-				data.embeds.push(...res)
-			else
-				data.embeds.push(res);
+			if (!Array.isArray(res)) res = [res];
+
+			for (var embed of res) {
+				var cache = EmbedCache.create({
+					url: `${url.host}${url.pathname}`,
+					embed: embed,
+				});
+				cachePromises.push(cache.save());
+				data.embeds.push(embed);
+			}
 		}
 		catch (e) {
 			continue;
 		}
 	}
+
+	if (!data.embeds) return;
 
 	await Promise.all([
 		emitEvent({
@@ -219,6 +235,7 @@ export async function postHandleMessage(message: Message) {
 			{ id: message.id, channel_id: message.channel_id },
 			{ embeds: data.embeds },
 		),
+		...cachePromises,
 	]);
 }
 
