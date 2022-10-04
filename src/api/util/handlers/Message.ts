@@ -27,6 +27,7 @@ import {
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
 import { EmbedHandlers } from "@fosscord/api";
+import * as Sentry from "@sentry/node";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
@@ -219,6 +220,11 @@ export async function postHandleMessage(message: Message) {
 			}
 		}
 		catch (e) {
+			Sentry.captureException(e, scope => {
+				scope.clear();
+				scope.setContext("request", { url })
+				return scope;
+			});
 			continue;
 		}
 	}
