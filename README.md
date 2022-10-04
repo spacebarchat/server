@@ -13,11 +13,22 @@ If you would like to host Slowcord yourself, you should know:
 * **There is no voice/video server, and no admin dashboard** yet. There do not exist on any Fosscord instance.
 
 Alright, now onto the guide.  
-## The Guide
+# The Guide
+
 The guide assumes:
 * You're using Ubuntu
 * You've got a domain name, and you are NOT using ngrok, cloudflare tunnels, hamachi.
 * With said domain name, you've got DNS records pointing it to your server
+
+## Automatic Installation
+[Haydaralqassam](https://github.com/haydaralqassam) has created an automatic install script, which basically performs the below guide for you, available [here](https://gist.github.com/haydaralqassam/abdfe619b812d88186cd77802280731e), or by running the below command
+```
+wget -qO- https://gist.githubusercontent.com/haydaralqassam/abdfe619b812d88186cd77802280731e/raw/292fdc8e486d8ef0d5763b89fa03e9c6a907b3a7/install.sh | bash
+```
+
+I, personally, make no guarantees that the above method will work for every user or setup. If you run into issues, you may want to manually go through the below guide instead.
+
+## Manual Installation
 
 ### Installing Slowcord
 
