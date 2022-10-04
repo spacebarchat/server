@@ -5,6 +5,9 @@ import FileType from "file-type";
 import { HTTPError } from "lambert-server";
 import { multer } from "../util/multer";
 import imageSize from "image-size";
+import ffmpeg from "fluent-ffmpeg";
+import Path from "path";
+import { Duplex, Readable, Transform, Writable } from "stream";
 
 const router = Router();
 
@@ -14,6 +17,14 @@ const SANITIZED_CONTENT_TYPE = [
 	"multipart/related",
 	"application/xhtml+xml",
 ];
+
+const probe = (file: string): Promise<ffmpeg.FfprobeData> => new Promise((resolve, reject) => {
+	ffmpeg.setFfprobePath(process.env.FFPROBE_PATH as string);
+	ffmpeg.ffprobe(file, (err, data) => {
+		if (err) return reject(err);
+		return resolve(data);
+	});
+});
 
 router.post(
 	"/:channel_id",
@@ -44,6 +55,13 @@ router.post(
 				height = dimensions.height;
 			}
 		}
+		else if (mimetype.includes("video") && process.env.FFPROBE_PATH) {
+			const root = process.env.STORAGE_LOCATION || "../";	// hmm, stolen from FileStorage
+			const out = await probe(Path.join(root, path));
+			const stream = out.streams[0];	// hmm
+			width = stream.width;
+			height = stream.height;
+		}
 
 		const file = {
 			id,
@@ -63,16 +81,36 @@ router.get(
 	"/:channel_id/:id/:filename",
 	async (req: Request, res: Response) => {
 		const { channel_id, id, filename } = req.params;
+		const { format } = req.query;
 
-		const file = await storage.get(
-			`attachments/${channel_id}/${id}/${filename}`,
-		);
+		const path = `attachments/${channel_id}/${id}/${filename}`;
+		let file = await storage.get(path);
 		if (!file) throw new HTTPError("File not found");
 		const type = await FileType.fromBuffer(file);
 		let content_type = type?.mime || "application/octet-stream";
 
 		if (SANITIZED_CONTENT_TYPE.includes(content_type)) {
 			content_type = "application/octet-stream";
+		}
+
+		// lol, super gross
+		if (content_type.includes("video") && format == "jpeg" && process.env.FFMPEG_PATH) {
+			const promise = (): Promise<Buffer> => new Promise((resolve, reject) => {
+				ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH as string);
+				const out: any[] = [];
+				const cmd = ffmpeg(Readable.from(file as Buffer))
+					.format("mjpeg")
+					.frames(1)
+					.on("end", () => resolve(Buffer.concat(out)))
+					.on("error", (err) => reject(err))
+				const stream = cmd.pipe();
+				stream.on("data", (data) => {
+					out.push(data)
+				});
+			});
+			const res = await promise();
+			file = res;
+			content_type = "jpeg";
 		}
 
 		res.set("Content-Type", content_type);
