@@ -53,7 +53,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 
 	try {
 		var ret = await OPCodeHandler.call(this, data);
-		// transaction.finish();
+		transaction.finish();
 		return ret;
 	} catch (error) {
 		Sentry.captureException(error);
