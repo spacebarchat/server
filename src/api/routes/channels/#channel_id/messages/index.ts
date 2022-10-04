@@ -201,6 +201,19 @@ router.post(
 			);
 		}
 
+		if (body.nonce) {
+			const existing = await Message.findOne({
+				where: {
+					nonce: body.nonce,
+					channel_id: channel.id,
+					author_id: req.user_id
+				}
+			});
+			if (existing) {
+				return res.json(existing);
+			}
+		}
+
 		const files = (req.files as Express.Multer.File[]) ?? [];
 		for (var currFile of files) {
 			try {
