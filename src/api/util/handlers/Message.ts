@@ -194,7 +194,7 @@ export async function postHandleMessage(message: Message) {
 	for (const link of links) {
 		const url = new URL(link);
 
-		const cached = await EmbedCache.findOne({ where: { url: `${url.host}${url.pathname}` } });
+		const cached = await EmbedCache.findOne({ where: { url: link } });
 		if (cached) {
 			data.embeds.push(cached.embed);
 			continue;
@@ -212,7 +212,7 @@ export async function postHandleMessage(message: Message) {
 
 			for (var embed of res) {
 				var cache = EmbedCache.create({
-					url: `${url.host}${url.pathname}`,
+					url: link,
 					embed: embed,
 				});
 				cachePromises.push(cache.save());
