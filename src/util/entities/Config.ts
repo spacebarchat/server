@@ -326,7 +326,7 @@ export const DefaultConfigOptions: ConfigValue = {
 		},
 		ipdataApiKey:
 			"eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9",
-		defaultRights: "30644591655936", // See util/scripts/rights.js
+		defaultRights: "30644591655940", // See `npm run generate:rights`
 	},
 	login: {
 		requireCaptcha: false,

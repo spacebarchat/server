@@ -7,7 +7,6 @@ console.log(`All rights:`, allRights);
 var discordLike = allRights;
 discordLike -= Rights.FLAGS.OPERATOR;
 discordLike -= Rights.FLAGS.MANAGE_APPLICATIONS;
-discordLike -= Rights.FLAGS.MANAGE_GUILDS;
 discordLike -= Rights.FLAGS.MANAGE_MESSAGES;
 discordLike -= Rights.FLAGS.MANAGE_RATE_LIMITS;
 discordLike -= Rights.FLAGS.MANAGE_ROUTING;
