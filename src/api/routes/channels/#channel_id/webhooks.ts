@@ -23,7 +23,7 @@ router.post("/", route({ body: "WebhookCreateSchema", permission: "MANAGE_WEBHOO
 
 	let { avatar, name } = req.body as { name: string; avatar?: string };
 	name = trimSpecial(name);
-	if (name === "clyde") throw new HTTPError("Invalid name", 400);
+	if (name.toLowerCase() === "clyde") throw new HTTPError("Invalid name", 400);
 
 	// TODO: save webhook in database and send response
 	res.json(new Webhook());

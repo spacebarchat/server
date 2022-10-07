@@ -11,7 +11,7 @@ export function BodyParser(opts?: OptionsJson) {
 		jsonParser(req, res, (err) => {
 			if (err) {
 				// TODO: different errors for body parser (request size limit, wrong body type, invalid body, ...)
-				return next(new HTTPError("Invalid Body", 400));
+				return next(new HTTPError(req.t("common:body.INVALID_BODY"), 400));
 			}
 			next();
 		});

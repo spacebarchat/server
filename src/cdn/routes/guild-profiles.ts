@@ -17,8 +17,9 @@ const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 const router = Router();
 
 router.post("/", multer.single("file"), async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
-	if (!req.file) throw new HTTPError("Missing file");
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
+	if (!req.file) throw new HTTPError(req.t("common:body.MISSING_FILE"));
 	const { buffer, mimetype, size, originalname, fieldname } = req.file;
 	const { guild_id, user_id } = req.params;
 
@@ -47,7 +48,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const path = `guilds/${guild_id}/users/${user_id}/avatars`;
 
 	const file = await storage.get(path);
-	if (!file) throw new HTTPError("not found", 404);
+	if (!file) throw new HTTPError(req.t("common:notfound.FILE"), 404);
 	const type = await FileType.fromBuffer(file);
 
 	res.set("Content-Type", type?.mime);
@@ -62,7 +63,7 @@ router.get("/:hash", async (req: Request, res: Response) => {
 	const path = `guilds/${guild_id}/users/${user_id}/avatars/${hash}`;
 
 	const file = await storage.get(path);
-	if (!file) throw new HTTPError("not found", 404);
+	if (!file) throw new HTTPError(req.t("common:notfound.FILE"), 404);
 	const type = await FileType.fromBuffer(file);
 
 	res.set("Content-Type", type?.mime);
@@ -72,7 +73,8 @@ router.get("/:hash", async (req: Request, res: Response) => {
 });
 
 router.delete("/:id", async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
+	if (req.headers.signature !== Config.get().security.requestSignature)
+		throw new HTTPError(req.t("common:body.INVALID_REQUEST_SIGNATURE"));
 	const { guild_id, user_id, id } = req.params;
 	const path = `guilds/${guild_id}/users/${user_id}/avatars/${id}`;
 

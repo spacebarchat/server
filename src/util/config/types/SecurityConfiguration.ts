@@ -17,4 +17,5 @@ export class SecurityConfiguration {
 	mfaBackupCodeCount: number = 10;
 	mfaBackupCodeBytes: number = 4;
 	statsWorldReadable: boolean = true;
+	defaultRegistrationTokenExpiration: number = 1000 * 60 * 60 * 24 * 7; //1 week
 }

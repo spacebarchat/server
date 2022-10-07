@@ -12,7 +12,6 @@ export class RegisterConfiguration {
 	allowGuests: boolean = true;
 	guestsRequireInvite: boolean = true;
 	allowNewRegistration: boolean = true;
-	allowMultipleAccounts: boolean = true;
 	blockProxies: boolean = true;
 	incrementingDiscriminators: boolean = false; // random otherwise
 	defaultRights: string = "0";

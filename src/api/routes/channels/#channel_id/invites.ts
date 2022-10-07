@@ -15,7 +15,7 @@ router.post(
 		isTextChannel(channel.type);
 
 		if (!channel.guild_id) {
-			throw new HTTPError("This channel doesn't exist", 404);
+			throw new HTTPError(req.t("common:notfound.CHANNEL"), 404);
 		}
 		const { guild_id } = channel;
 
@@ -46,7 +46,7 @@ router.get("/", route({ permission: "MANAGE_CHANNELS" }), async (req: Request, r
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 
 	if (!channel.guild_id) {
-		throw new HTTPError("This channel doesn't exist", 404);
+		throw new HTTPError(req.t("common:notfound.CHANNEL"), 404);
 	}
 	const { guild_id } = channel;
 

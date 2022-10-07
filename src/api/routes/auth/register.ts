@@ -1,6 +1,22 @@
-import { getIpAdress, IPAnalysis, isProxy, route, verifyCaptcha } from "@fosscord/api";
-import { adjustEmail, Config, FieldErrors, generateToken, HTTPError, Invite, RegisterSchema, User } from "@fosscord/util";
+import { route } from "@fosscord/api";
+import {
+	adjustEmail,
+	Config,
+	FieldErrors,
+	generateToken,
+	getIpAdress,
+	HTTPError,
+	Invite,
+	IPAnalysis,
+	isProxy,
+	RegisterSchema,
+	User,
+	ValidRegistrationToken,
+	verifyCaptcha
+} from "@fosscord/util";
 import { Request, Response, Router } from "express";
+import { red, yellow } from "picocolors";
+import { LessThan, MoreThan } from "typeorm";
 
 let bcrypt: any;
 try {
@@ -14,17 +30,28 @@ const router: Router = Router();
 
 router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Response) => {
 	const body = req.body as RegisterSchema;
-	const { register, security } = Config.get();
+	const { register, security, limits } = Config.get();
 	const ip = getIpAdress(req);
 
 	// email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
 	let email = adjustEmail(body.email);
 
-	// check if registration is allowed
-	if (!register.allowNewRegistration) {
-		throw FieldErrors({
-			email: { code: "REGISTRATION_DISABLED", message: req.t("auth:register.REGISTRATION_DISABLED") }
-		});
+	//check if referrer starts with any valid registration token
+	//!! bypasses captcha and registration disabling !!//
+	let validToken = false;
+	if (req.get("Referrer") && req.get("Referrer")?.includes("token=")) {
+		let token = req.get("Referrer")?.split("token=")[1].split("&")[0];
+		if (token) {
+			await ValidRegistrationToken.delete({ expires_at: LessThan(new Date()) });
+			let registrationToken = await ValidRegistrationToken.findOne({ where: { token: token, expires_at: MoreThan(new Date()) } });
+			if (registrationToken) {
+				console.log(yellow(`[REGISTER] Registration token ${token} used for registration!`));
+				await ValidRegistrationToken.delete(token);
+				validToken = true;
+			} else {
+				console.log(yellow(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`));
+			}
+		}
 	}
 
 	// check if the user agreed to the Terms of Service
@@ -34,22 +61,7 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		});
 	}
 
-	if (register.disabled) {
-		throw FieldErrors({
-			email: {
-				code: "DISABLED",
-				message: "registration is disabled on this instance"
-			}
-		});
-	}
-
-	if (!register.allowGuests) {
-		throw FieldErrors({
-			email: { code: "GUESTS_DISABLED", message: req.t("auth:register.GUESTS_DISABLED") }
-		});
-	}
-
-	if (register.requireCaptcha && security.captcha.enabled) {
+	if (register.requireCaptcha && security.captcha.enabled && !validToken) {
 		const { sitekey, service } = security.captcha;
 		if (!body.captcha_key) {
 			return res?.status(400).json({
@@ -69,24 +81,24 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		}
 	}
 
-	if (!register.allowMultipleAccounts) {
-		// TODO: check if fingerprint was eligible generated
-		const exists = await User.findOne({ where: { fingerprints: body.fingerprint }, select: ["id"] });
-
-		if (exists) {
-			throw FieldErrors({
-				email: {
-					code: "EMAIL_ALREADY_REGISTERED",
-					message: req.t("auth:register.EMAIL_ALREADY_REGISTERED")
-				}
-			});
-		}
+	// check if registration is allowed
+	if (!register.allowNewRegistration && !validToken) {
+		throw FieldErrors({
+			email: { code: "REGISTRATION_DISABLED", message: req.t("auth:register.REGISTRATION_DISABLED") }
+		});
 	}
 
 	if (register.blockProxies) {
-		if (isProxy(await IPAnalysis(ip))) {
-			console.log(`proxy ${ip} blocked from registration`);
-			throw new HTTPError("Your IP is blocked from registration");
+		let data;
+		try {
+			data = await IPAnalysis(ip);
+		} catch (e: any) {
+			console.warn(red(`[REGISTER]: Failed to analyze IP ${ip}: failed to contact api.ipdata.co!`), e.message);
+		}
+
+		if (data && isProxy(data)) {
+			console.log(yellow(`[REGISTER] Proxy ${ip} blocked from registration!`));
+			throw new HTTPError(req.t("auth:register.IP_BLOCKED"));
 		}
 	}
 
@@ -94,15 +106,10 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 	// TODO: check password strength
 
 	if (email) {
-		// replace all dots and chars after +, if its a gmail.com email
-		if (!email) {
-			throw FieldErrors({ email: { code: "INVALID_EMAIL", message: req?.t("auth:register.INVALID_EMAIL") } });
-		}
-
 		// check if there is already an account with this email
 		const exists = await User.findOne({ where: { email: email } });
 
-		if (exists) {
+		if (exists && !register.disabled) {
 			throw FieldErrors({
 				email: {
 					code: "EMAIL_ALREADY_REGISTERED",
@@ -151,6 +158,46 @@ router.post("/", route({ body: "RegisterSchema" }), async (req: Request, res: Re
 		throw FieldErrors({
 			email: { code: "INVITE_ONLY", message: req.t("auth:register.INVITE_ONLY") }
 		});
+	}
+
+	if (
+		!validToken &&
+		limits.absoluteRate.register.enabled &&
+		(await await User.count({ where: { created_at: MoreThan(new Date(Date.now() - limits.absoluteRate.register.window)) } })) >=
+			limits.absoluteRate.register.limit
+	) {
+		console.log(
+			yellow(
+				`[REGISTER] Global register rate limit exceeded for ${getIpAdress(req)}: ${
+					process.env.LOG_SENSITIVE ? req.body.email : "<email redacted>"
+				}, ${req.body.username}, ${req.body.invite ?? "No invite given"}`
+			)
+		);
+		let oldest = await User.findOne({
+			where: { created_at: MoreThan(new Date(Date.now() - limits.absoluteRate.register.window)) },
+			order: { created_at: "ASC" }
+		});
+		if (!oldest) {
+			console.warn(
+				red(
+					`[REGISTER/WARN] Global rate limits exceeded, but no oldest user found. This should not happen. Did you misconfigure the limits?`
+				)
+			);
+		} else {
+			let retryAfterSec = Math.ceil(
+				(oldest!.created_at.getTime() - new Date(Date.now() - limits.absoluteRate.register.window).getTime()) / 1000
+			);
+			return res
+				.status(429)
+				.set("X-RateLimit-Limit", `${limits.absoluteRate.register.limit}`)
+				.set("X-RateLimit-Remaining", "0")
+				.set("X-RateLimit-Reset", `${(oldest!.created_at.getTime() + limits.absoluteRate.register.window) / 1000}`)
+				.set("X-RateLimit-Reset-After", `${retryAfterSec}`)
+				.set("X-RateLimit-Global", `true`)
+				.set("Retry-After", `${retryAfterSec}`)
+				.set("X-RateLimit-Bucket", `register`)
+				.send({ message: req.t("auth:register.TOO_MANY_REGISTRATIONS"), retry_after: retryAfterSec, global: true });
+		}
 	}
 
 	const user = await User.register({ ...body, req });

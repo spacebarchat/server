@@ -1,4 +1,4 @@
-import { random } from "@fosscord/api";
+import { random } from "@fosscord/util";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";

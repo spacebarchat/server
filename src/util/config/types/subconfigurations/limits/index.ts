@@ -1,4 +1,5 @@
 export * from "./ChannelLimits";
+export * from "./GlobalRateLimits";
 export * from "./GuildLimits";
 export * from "./MessageLimits";
 export * from "./RateLimits";

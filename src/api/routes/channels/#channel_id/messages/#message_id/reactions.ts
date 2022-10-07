@@ -63,7 +63,7 @@ router.delete("/:emoji", route({ permission: "MANAGE_MESSAGES" }), async (req: R
 	const message = await Message.findOneOrFail({ where: { id: message_id, channel_id } });
 
 	const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
-	if (!already_added) throw new HTTPError("Reaction not found", 404);
+	if (!already_added) throw new HTTPError(req.t("common:notfound.REACTION"), 404);
 	message.reactions.remove(already_added);
 
 	await Promise.all([
@@ -89,7 +89,7 @@ router.get("/:emoji", route({ permission: "VIEW_CHANNEL" }), async (req: Request
 
 	const message = await Message.findOneOrFail({ where: { id: message_id, channel_id } });
 	const reaction = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
-	if (!reaction) throw new HTTPError("Reaction not found", 404);
+	if (!reaction) throw new HTTPError(req.t("common:notfound.REACTION"), 404);
 
 	const users = await User.find({
 		where: {
@@ -163,7 +163,7 @@ router.delete("/:emoji/:user_id", route({}), async (req: Request, res: Response)
 	}
 
 	const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
-	if (!already_added || !already_added.user_ids.includes(user_id)) throw new HTTPError("Reaction not found", 404);
+	if (!already_added || !already_added.user_ids.includes(user_id)) throw new HTTPError(req.t("common:notfound.REACTION"), 404);
 
 	already_added.count--;
 
