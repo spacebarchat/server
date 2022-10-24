@@ -63,6 +63,23 @@ const doPatch = (content) => {
 		'e.exports = "/assets/',
 	);
 
+	// app download links
+	content = content.replaceAll(
+		"https://play.google.com/store/apps/details?id=com.discord",
+		"https://slowcord.understars.dev/api/download?platform=android",
+	);
+
+	content = content.replaceAll(
+		"https://itunes.apple.com/app/discord/id985746746",
+		"https://slowcord.understars.dev/api/download?platform=ios"
+	)
+
+	// TODO change public test build link
+	// content = content.replaceAll(
+	// 	"https://discord.com/download#ptb-card",
+	//	""
+	// )
+
 	return content;
 };
 
