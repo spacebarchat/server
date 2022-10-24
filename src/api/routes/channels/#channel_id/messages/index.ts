@@ -15,6 +15,8 @@ import {
 	Role,
 	MessageCreateSchema,
 	ReadState,
+	BannedWords,
+	DiscordApiErrors,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { handleMessage, postHandleMessage, route } from "@fosscord/api";
@@ -189,6 +191,10 @@ router.post(
 		const { channel_id } = req.params;
 		var body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
+
+		if (body.content)
+			if (BannedWords.find(body.content))
+				throw DiscordApiErrors.AUTOMODERATOR_BLOCK;
 
 		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
