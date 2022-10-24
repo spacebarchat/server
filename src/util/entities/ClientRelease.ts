@@ -7,19 +7,16 @@ export class Release extends BaseClass {
 	name: string;
 
 	@Column()
-	pub_date: string;
+	pub_date: Date;
 
 	@Column()
 	url: string;
 
 	@Column()
-	deb_url: string;
+	platform: string;
 
 	@Column()
-	osx_url: string;
-
-	@Column()
-	win_url: string;
+	enabled: boolean;
 
 	@Column({ nullable: true })
 	notes?: string;

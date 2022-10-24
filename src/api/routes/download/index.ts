@@ -1,12 +1,16 @@
 import { Router, Response, Request } from "express";
 import { route } from "@fosscord/api";
-import { Config, FieldErrors, Release } from "@fosscord/util";
+import { FieldErrors, Release } from "@fosscord/util";
 
 const router = Router();
 
+/*
+	TODO: Putting the download route in /routes/download.ts doesn't register the route, for some reason
+	But putting it here *does*
+*/
+
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const { client } = Config.get();
-	const platform = req.query.platform;
+	const { platform } = req.query;
 
 	if (!platform) throw FieldErrors({
 		platform: {
@@ -23,12 +27,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		order: { pub_date: "DESC" }
 	});
 
-	res.json({
-		name: release.name,
-		pub_date: release.pub_date,
-		url: release.url,
-		notes: release.notes,
-	});
+	res.redirect(release.url);
 });
 
 export default router;
