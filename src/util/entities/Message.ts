@@ -5,8 +5,6 @@ import { Channel } from "./Channel";
 import { InteractionType } from "../interfaces/Interaction";
 import { Application } from "./Application";
 import {
-	BeforeInsert,
-	BeforeUpdate,
 	Column,
 	CreateDateColumn,
 	Entity,
@@ -23,8 +21,6 @@ import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
-import { BannedWords } from "../util";
-import { HTTPError } from "lambert-server";
 
 export enum MessageType {
 	DEFAULT = 0,
@@ -206,18 +202,6 @@ export class Message extends BaseClass {
 
 	@Column({ type: "simple-json", nullable: true })
 	components?: MessageComponent[];
-
-	@BeforeUpdate()
-	@BeforeInsert()
-	validate() {
-		if (this.content) {
-			if (BannedWords.find(this.content))
-				throw new HTTPError(
-					"Message was blocked by automatic moderation",
-					200000,
-				);
-		}
-	}
 }
 
 export interface MessageComponent {

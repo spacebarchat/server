@@ -12,6 +12,8 @@ import {
 	Snowflake,
 	uploadFile,
 	MessageCreateSchema,
+	BannedWords,
+	DiscordApiErrors,
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import multer from "multer";
@@ -41,6 +43,10 @@ router.patch(
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id } = req.params;
 		var body = req.body as MessageCreateSchema;
+
+		if (body.content)
+			if (BannedWords.find(body.content))
+				throw DiscordApiErrors.AUTOMODERATOR_BLOCK;
 
 		const message = await Message.findOneOrFail({
 			where: { id: message_id, channel_id },
@@ -178,7 +184,7 @@ router.put(
 			channel.save(),
 		]);
 
-		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) => { }); // no await as it shouldnt block the message send function and silently catch error
 
 		return res.json(message);
 	},

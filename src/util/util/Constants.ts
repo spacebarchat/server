@@ -973,6 +973,10 @@ export const DiscordApiErrors = {
 		undefined,
 		["5"],
 	),
+	AUTOMODERATOR_BLOCK: new ApiError(
+		"Message was blocked by automatic moderation",
+		200000,
+	),
 
 	//Other errors
 	UNKNOWN_VOICE_STATE: new ApiError("Unknown Voice State", 10065, 404),
