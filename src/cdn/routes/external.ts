@@ -74,10 +74,13 @@ router.get("/resize/:url", async (req: Request, res: Response) => {
 	let buffer, response;
 	try {
 		response = await fetch(url, DEFAULT_FETCH_OPTIONS);
+		if (response.status !== 200) throw "e";		// lol super gross
 		buffer = await response.buffer();
 	} catch (e) {
 		throw new HTTPError("Couldn't fetch website");
 	}
+
+	if (buffer.length == 0) throw new HTTPError("Website response was empty.");
 
 	if (response.headers.get("content-type")?.indexOf("image") === -1) {
 		throw new HTTPError("Content type is not image.");
