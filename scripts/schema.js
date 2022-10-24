@@ -47,7 +47,10 @@ function modify(obj) {
 }
 
 function main() {
-	const program = TJS.programFromConfig("tsconfig.json");
+	const program = TJS.programFromConfig(
+		"tsconfig.json",
+		walk(path.join(__dirname, "..", "src", "util", "schemas"))
+	);
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 

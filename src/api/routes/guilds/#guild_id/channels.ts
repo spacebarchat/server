@@ -4,6 +4,7 @@ import {
 	ChannelUpdateEvent,
 	emitEvent,
 	ChannelModifySchema,
+	ChannelReorderSchema,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
@@ -32,13 +33,6 @@ router.post(
 		res.status(201).json(channel);
 	},
 );
-
-export type ChannelReorderSchema = {
-	id: string;
-	position?: number;
-	lock_permissions?: boolean;
-	parent_id?: string;
-}[];
 
 router.patch(
 	"/",
