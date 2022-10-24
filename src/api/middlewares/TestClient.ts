@@ -13,7 +13,7 @@ export default function TestClient(app: Application) {
 	const agent = new ProxyAgent();
 	const assetCache = new Map<
 		string,
-		{ response: FetchResponse; buffer: Buffer }
+		{ response: FetchResponse; buffer: Buffer; }
 	>();
 	const indexHTML = fs.readFileSync(
 		path.join(ASSET_FOLDER_PATH, "client_test", "index.html"),
@@ -76,13 +76,7 @@ export default function TestClient(app: Application) {
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "cache")));
 
 	app.get("/assets/:file", async (req: Request, res: Response) => {
-		if (!hasWarnedAboutCache) {
-			hasWarnedAboutCache = true;
-			if (req.params.file.includes(".js"))
-				console.warn(
-					`[TestClient] Cache miss for file ${req.params.file}! Use 'npm run generate:client' to cache and patch.`,
-				);
-		}
+		if (req.params.file.includes(".map")) return res.status(404);
 
 		delete req.headers.host;
 		var response: FetchResponse;
@@ -123,6 +117,16 @@ export default function TestClient(app: Application) {
 			res.set(name, value);
 		});
 		assetCache.set(req.params.file, { buffer, response });
+
+		if (response.status == 200) {
+			// if (!hasWarnedAboutCache) {
+			hasWarnedAboutCache = true;
+			console.warn(
+				`[TestClient] Cache miss for file ${req.params.file}! Use 'npm run generate:client' to cache and patch.`,
+			);
+			await fs.promises.appendFile(path.join(ASSET_FOLDER_PATH, "cacheMisses"), req.params.file + "\n");
+			// }
+		}
 
 		return res.send(buffer);
 	});
