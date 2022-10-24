@@ -165,22 +165,22 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 	"c.tenor.com": genericImageHandler,
 	"media.tenor.com": genericImageHandler,
 
-	// TODO: twitter, facebook
+	// TODO: facebook
 	// have to use their APIs or something because they don't send the metas in initial html
 
 	"twitter.com": (url: URL) => { return EmbedHandlers["www.twitter.com"](url); },
 	"www.twitter.com": async (url: URL) => {
 		const token = Config.get().external.twitter;
-		if (!token) return null; // todo move to config
+		if (!token) return null;
 
 		if (!url.href.includes("/status/")) return null;	// TODO;
 		const id = url.pathname.split("/")[3];	// super bad lol
 		if (!parseInt(id)) return null;
-		const endpointUrl = `https://api.twitter.com/2/tweets/${id}`
-			+ `?expansions=author_id,attachments.media_keys`
-			+ `&media.fields=url,width,height`
-			+ `&tweet.fields=created_at,public_metrics`
-			+ `&user.fields=profile_image_url`;
+		const endpointUrl = `https://api.twitter.com/2/tweets/${id}` +
+			`?expansions=author_id,attachments.media_keys` +
+			 `&media.fields=url,width,height` +
+			 `&tweet.fields=created_at,public_metrics` +
+			 `&user.fields=profile_image_url`;
 
 
 		const response = await fetch(endpointUrl, {
@@ -225,7 +225,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 			// },
 		};
 
-		if (media) {
+		if (media.length > 0) {
 			embed.image = {
 				width: media[0].width,
 				height: media[0].height,
