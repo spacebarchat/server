@@ -13,7 +13,7 @@ export const BannedWords = {
 			words = [];
 			return [];
 		}
-		words = file.trim().split("\n");
+		words = file.trim().split("\r").join("").split("\n");
 		return words;
 	},
 
