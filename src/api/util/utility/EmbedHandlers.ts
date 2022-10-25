@@ -225,7 +225,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 			// },
 		};
 
-		if (media.length > 0) {
+		if (media && media.length > 0) {
 			embed.image = {
 				width: media[0].width,
 				height: media[0].height,
