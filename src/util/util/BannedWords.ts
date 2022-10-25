@@ -22,6 +22,9 @@ export const BannedWords = {
 
 	find: (val: string) => {
 		InvisibleCharacters.forEach(x => val = val.replaceAll(x, ""));
-		return words.some((x) => val.indexOf(x) != -1);
+		var normal = words.some((x) => val.indexOf(x) != -1);
+		val = val.split("").reverse().join("");
+		var rtlOverride = words.some((x) => val.indexOf(x) != -1);
+		return normal || rtlOverride;
 	},
 };
