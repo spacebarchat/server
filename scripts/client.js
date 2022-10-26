@@ -113,6 +113,11 @@ const doPatch = (content) => {
 
 	content = content.replaceAll("status.discord.com", "status.understars.dev");
 
+	content = content.replaceAll(
+		"delete window.localStorage",
+		"console.log('Prevented deletion of localStorage')"
+	);
+
 	return content;
 };
 
