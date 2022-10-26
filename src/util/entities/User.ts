@@ -221,21 +221,21 @@ export class User extends BaseClass {
 			const discrim = Number(this.discriminator);
 			if (this.discriminator.length > 4)
 				throw FieldErrors({
-					email: {
+					discriminator: {
 						message: "Discriminator cannot be more than 4 digits.",
 						code: "DISCRIMINATOR_INVALID",
 					},
 				});
 			if (isNaN(discrim))
 				throw FieldErrors({
-					email: {
+					discriminator: {
 						message: "Discriminator must be a number.",
 						code: "DISCRIMINATOR_INVALID",
 					},
 				});
 			if (discrim <= 0 || discrim >= 10000)
 				throw FieldErrors({
-					email: {
+					discriminator: {
 						message: "Discriminator must be a number.",
 						code: "DISCRIMINATOR_INVALID",
 					},
