@@ -9,7 +9,8 @@
 		"setup": "npm run build && npm run generate:schema",
 		"generate:rights": "node scripts/rights.js",
 		"generate:schema": "node scripts/schema.js",
-		"generate:client": "node scripts/client.js"
+		"generate:client": "node scripts/client.js",
+		"generate:changelog": "node scripts/changelog.js"
 	},
 	"main": "dist/bundle/index.js",
 	"types": "src/bundle/index.ts",

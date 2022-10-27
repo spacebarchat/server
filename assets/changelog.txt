@@ -1,0 +1,13 @@
+---changelog---
+date: "2022-10-27"
+locale: "en-US"
+revision: 1
+---
+Changelogs now work! {added marginTop}
+======================
+
+In the future, they'll be sent out like this, as well as in the default guild.
+If you aren't in the default guild, you're missing out.
+We talk mostly about Slowcord itself, and its the first place you'll find out about new features and bug fixes being worked on.
+Be sure to join it, with
+https://slowcord.understars.dev/invite/slowcord
