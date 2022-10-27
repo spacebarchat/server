@@ -1,0 +1,18 @@
+/* hide premium references */
+a[href="/store"],
+div[aria-controls="slowcord-premium-tab"],
+div[aria-controls="premium-guild-boost-tab"],
+div[aria-controls="subscriptions-tab"],
+div[aria-controls="library-inventory-tab"],
+div[aria-controls="billing-tab"],
+div[aria-label="User Settings"] div.header-2Kx1US:nth-child(8), /* billing settings header */
+div[aria-label="User Settings"] div.separator-2wx7h6:nth-child(7), /* billing settings separator */
+button[aria-label="Send a gift"],
+div#guild-header-popout-premium-subscribe,
+#guild-header-popout div.separator-1So4YB:nth-child(2),
+div[aria-controls="guild_premium-tab"],
+div#stickers-tab .upsellContainer-22N_CL,
+div#stickers-tab .divider-wz_a_k,
+div.separator-2wx7h6:nth-child(20) {
+	display: none !important;
+}
