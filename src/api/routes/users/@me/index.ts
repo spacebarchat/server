@@ -130,6 +130,7 @@ router.patch(
 		}
 
 		user.assign(body);
+		user.validate();
 		await user.save();
 
 		// @ts-ignore

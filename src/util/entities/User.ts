@@ -196,15 +196,15 @@ export class User extends BaseClass {
 	@Column({ type: "simple-json", select: false })
 	extended_settings: string;
 
-	@BeforeUpdate()
-	_update_validator() { this.validate(true); }
+	// @BeforeUpdate()
+	// _update_validator() { this.validate(true); }
 
-	@BeforeInsert()
-	_insert_validator() { this.validate(false); }
+	// @BeforeInsert()
+	// _insert_validator() { this.validate(false); }
 
-	validate(update: boolean = false) {
+	validate(/*update: boolean = false*/) {
 		// inserting or email provided in update
-		if (!update || this.email) {
+		if (/*!update || */this.email) {
 			this.email = adjustEmail(this.email);
 			if (!this.email)
 				throw FieldErrors({
@@ -217,7 +217,7 @@ export class User extends BaseClass {
 		}
 
 		// inserting or discrim provided
-		if (!update || this.discriminator) {
+		if (/*!update ||*/ this.discriminator) {
 			const discrim = Number(this.discriminator);
 			if (this.discriminator.length > 4)
 				throw FieldErrors({
@@ -243,7 +243,7 @@ export class User extends BaseClass {
 			this.discriminator = discrim.toString().padStart(4, "0");
 		}
 
-		if (!update || this.username)
+		if (/*!update ||*/ this.username)
 			if (BannedWords.find(this.username))
 				throw FieldErrors({
 					username: { message: "Bad username", code: "INVALID_USERNAME" },
@@ -375,6 +375,7 @@ export class User extends BaseClass {
 			fingerprints: [],
 		});
 
+		user.validate();
 		await user.save();
 
 		setImmediate(async () => {
