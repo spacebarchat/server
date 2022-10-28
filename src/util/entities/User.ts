@@ -453,10 +453,10 @@ export interface UserSettings {
 	gif_auto_play: boolean;
 	// every top guild is displayed as a "folder"
 	guild_folders: {
-		color: number;
+		color?: number;
 		guild_ids: string[];
-		id: number;
-		name: string;
+		id?: number;
+		name?: string;
 	}[];
 	guild_positions: string[]; // guild ids ordered by position
 	inline_attachment_media: boolean;
