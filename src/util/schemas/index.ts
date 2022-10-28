@@ -45,3 +45,4 @@ export * from "./UserGuildSettingsSchema";
 export * from "./GatewayPayloadSchema";
 export * from "./RolePositionUpdateSchema";
 export * from "./ChannelReorderSchema";
+export * from "./UserSettingsSchema";
