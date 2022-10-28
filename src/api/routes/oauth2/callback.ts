@@ -32,7 +32,7 @@ router.get("/:type", route({}), async (req: Request, res: Response) => {
 
 	const token = await generateToken(user.id);
 
-	return { token };
+	return res.json({ token })
 });
 
 export default router;
