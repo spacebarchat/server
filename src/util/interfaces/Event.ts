@@ -1,19 +1,26 @@
-import { PublicUser, User, UserSettings } from "../entities/User";
-import { Channel } from "../entities/Channel";
-import { Guild } from "../entities/Guild";
-import { Member, PublicMember, UserGuildSettings } from "../entities/Member";
-import { Emoji } from "../entities/Emoji";
-import { Role } from "../entities/Role";
-import { Invite } from "../entities/Invite";
-import { Message, PartialEmoji } from "../entities/Message";
-import { VoiceState } from "../entities/VoiceState";
-import { ApplicationCommand } from "../entities/Application";
-import { Interaction } from "./Interaction";
-import { ConnectedAccount } from "../entities/ConnectedAccount";
-import { Relationship, RelationshipType } from "../entities/Relationship";
-import { Presence } from "./Presence";
-import { Sticker } from "..";
-import { Activity, Status } from ".";
+import {
+	RelationshipType,
+	ConnectedAccount,
+	Interaction,
+	ApplicationCommand,
+	VoiceState,
+	Message,
+	PartialEmoji,
+	Invite,
+	Role,
+	Emoji,
+	PublicMember,
+	UserGuildSettings,
+	Guild,
+	Channel,
+	PublicUser,
+	User,
+	Sticker,
+	Activity,
+	Status,
+	Presence,
+	UserSettings,
+} from "@fosscord/util";
 
 export interface Event {
 	guild_id?: string;
@@ -73,9 +80,9 @@ export interface ReadyEventData {
 		number,
 		null,
 		number,
-		[[number, { e: number; s: number }[]]],
+		[[number, { e: number; s: number; }[]]],
 		[number, [[number, [number, number]]]],
-		{ b: number; k: bigint[] }[],
+		{ b: number; k: bigint[]; }[],
 	][];
 	guild_join_requests?: any[]; // ? what is this? this is new
 	shard?: [number, number];
@@ -473,7 +480,7 @@ export interface SessionsReplace extends Event {
 export interface GuildMemberListUpdate extends Event {
 	event: "GUILD_MEMBER_LIST_UPDATE";
 	data: {
-		groups: { id: string; count: number }[];
+		groups: { id: string; count: number; }[];
 		guild_id: string;
 		id: string;
 		member_count: number;
@@ -481,8 +488,8 @@ export interface GuildMemberListUpdate extends Event {
 		ops: {
 			index: number;
 			item: {
-				member?: PublicMember & { presence: Presence };
-				group?: { id: string; count: number }[];
+				member?: PublicMember & { presence: Presence; };
+				group?: { id: string; count: number; }[];
 			};
 		}[];
 	};

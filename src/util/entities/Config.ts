@@ -211,7 +211,12 @@ export interface ConfigValue {
 	};
 	external: {
 		twitter: string | null;
-	}
+		discord: {
+			id: string | null;
+			secret: string | null;
+			redirect: string | null;
+		};
+	};
 }
 
 export const DefaultConfigOptions: ConfigValue = {
@@ -423,5 +428,10 @@ export const DefaultConfigOptions: ConfigValue = {
 	},
 	external: {
 		twitter: null,
+		discord: {
+			id: null,
+			secret: null,
+			redirect: null,
+		}
 	}
 };

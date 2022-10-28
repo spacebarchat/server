@@ -25,6 +25,8 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/track",
 	// Public policy pages
 	"/policies/instance",
+	// Oauth callback
+	"/oauth2/callback",
 	// Asset delivery
 	/\/guilds\/\d+\/widget\.(json|png)/,
 ];
