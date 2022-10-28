@@ -470,7 +470,7 @@ export interface UserSettings {
 	show_current_game: boolean;
 	status: "online" | "offline" | "dnd" | "idle" | "invisible";
 	stream_notifications_enabled: boolean;
-	theme: "dark" | "white"; // dark
+	theme: "dark" | "light"; // dark
 	timezone_offset: number; // e.g -60
 	banner_color: string | null;
 	friend_discovery_flags: number;
