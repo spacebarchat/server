@@ -38,30 +38,15 @@
 			HTML_TIMESTAMP: Date.now(),
 			ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
 		};
-		// GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
-		// TODO: remote auth
-		// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
 		window.localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
 		window.localStorage.setItem(
 			"DeveloperOptionsStore",
 			`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
 		);
-
-		/*
-		// Not required because slowcord has its own login server
-		setInterval(() => {
-			var token = JSON.parse(localStorage.getItem("token"));
-			if (token) {
-				var logincss = document.querySelector('#logincss'),
-				canRemove = logincss ? logincss: "";
-				if(canRemove !== "") {
-				document.querySelector("#logincss").remove();
-				canRemove = "";
-				}
-			}
-		}, 1000)
-		*/
 	</script>
+
+	<!-- fast connect -->
+	<script>!function () { if (null != window.WebSocket) { if (function (n) { try { var e = localStorage.getItem(n); return null == e ? null : JSON.parse(e); } catch (n) { return null; } }("token") && !window.__OVERLAY__) { var n = null != window.DiscordNative || null != window.require ? "etf" : "json", e = window.GLOBAL_ENV.GATEWAY_ENDPOINT + "/?encoding=" + n + "&v=" + window.GLOBAL_ENV.API_VERSION + "&compress=zlib-stream"; console.log("[FAST CONNECT] connecting to: " + e); var o = new WebSocket(e); o.binaryType = "arraybuffer"; var t = Date.now(), i = { open: !1, identify: !1, gateway: e, messages: [] }; o.onopen = function () { console.log("[FAST CONNECT] connected in " + (Date.now() - t) + "ms"), i.open = !0; }, o.onclose = o.onerror = function () { window._ws = null; }, o.onmessage = function (n) { i.messages.push(n); }, window._ws = { ws: o, state: i }; } } }();</script>
 
 	<!-- preload plugin marker -->
 </head>
