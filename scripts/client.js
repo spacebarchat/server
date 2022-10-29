@@ -112,6 +112,7 @@ const doPatch = (content) => {
 	// )
 
 	content = content.replaceAll("status.discord.com", "status.understars.dev");
+	content = content.replaceAll("discordstatus.com", "status.understars.dev");
 
 	content = content.replaceAll(
 		"delete window.localStorage",
@@ -167,7 +168,7 @@ const processFile = async (name) => {
 
 	process.stdout.moveCursor(0, 1);
 
-	const CACHE_MISSES = (await fs.readFile(path.join(CACHE_PATH, "..", "cacheMisses"))).toString().split("\n");
+	const CACHE_MISSES = (await fs.readFile(path.join(CACHE_PATH, "..", "cacheMisses"))).toString().split("\r").join("").split("\n");
 	while (CACHE_MISSES.length > 0) {
 		const asset = CACHE_MISSES.shift();
 		process.stdout.clearLine(0);
