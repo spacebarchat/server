@@ -42,22 +42,25 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		return;
 	}
 
-	const transaction = Sentry.startTransaction({
+	const transaction = data.op != 1 ? Sentry.startTransaction({
 		op: OPCODES[data.op],
 		name: `GATEWAY ${OPCODES[data.op]}`,
 		data: {
 			...data.d,
 			token: data?.d?.token ? "[Redacted]" : undefined,
 		},
-	});
+	}) : undefined;
 
 	try {
 		var ret = await OPCodeHandler.call(this, data);
-		transaction.finish();
+		transaction?.finish();
 		return ret;
 	} catch (error) {
-		Sentry.captureException(error);
-		transaction.finish();
+		Sentry.withScope((scope) => {
+			scope.setSpan(transaction);
+			Sentry.captureException(error);
+		});
+		transaction?.finish();
 		console.error(`Error: Op ${data.op}`, error);
 		// if (!this.CLOSED && this.CLOSING)
 		return this.close(CLOSECODES.Unknown_error);
