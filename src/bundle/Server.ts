@@ -10,6 +10,7 @@ import { green, bold, yellow } from "picocolors";
 import { Config, initDatabase, BannedWords } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
+import * as Integrations from "@sentry/integrations";
 
 const app = express();
 const server = http.createServer();
@@ -73,6 +74,9 @@ async function main() {
 				new Sentry.Integrations.Http({ tracing: true }),
 				new Tracing.Integrations.Express({ app }),
 				new Tracing.Integrations.Mysql(),
+				new Integrations.RewriteFrames({
+					root: __dirname,
+				}),
 			],
 			tracesSampleRate: Config.get().sentry.traceSampleRate,
 			environment: Config.get().sentry.environment,
