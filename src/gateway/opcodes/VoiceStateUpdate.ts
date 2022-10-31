@@ -12,8 +12,12 @@ import {
 	VoiceStateUpdateEvent,
 	VoiceStateUpdateSchema,
 } from "@fosscord/util";
+
 // TODO: check if a voice server is setup
-// Notice: Bot users respect the voice channel's user limit, if set. When the voice channel is full, you will not receive the Voice State Update or Voice Server Update events in response to your own Voice State Update. Having MANAGE_CHANNELS permission bypasses this limit and allows you to join regardless of the channel being full or not.
+
+// Notice: Bot users respect the voice channel's user limit, if set.
+// When the voice channel is full, you will not receive the Voice State Update or Voice Server Update events in response to your own Voice State Update.
+// Having MANAGE_CHANNELS permission bypasses this limit and allows you to join regardless of the channel being full or not.
 
 export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	check.call(this, VoiceStateUpdateSchema, data.d);
