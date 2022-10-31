@@ -1,3 +1,4 @@
+require("module-alias/register");
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
