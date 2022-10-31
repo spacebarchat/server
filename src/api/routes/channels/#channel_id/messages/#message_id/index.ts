@@ -82,7 +82,7 @@ router.patch(
 		});
 
 		await Promise.all([
-			new_message!.save(),
+			new_message.save(),
 			await emitEvent({
 				event: "MESSAGE_UPDATE",
 				channel_id,
@@ -90,9 +90,9 @@ router.patch(
 			} as MessageUpdateEvent),
 		]);
 
-		postHandleMessage(message);
+		postHandleMessage(new_message);
 
-		return res.json(message);
+		return res.json(new_message);
 	},
 );
 
