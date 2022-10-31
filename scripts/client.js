@@ -119,6 +119,12 @@ const doPatch = (content) => {
 		"console.log('Prevented deletion of localStorage')"
 	);
 
+	// fast identify
+	content = content.replaceAll(
+		"e.isFastConnect=t;t?e._doFastConnectIdentify():e._doResumeOrIdentify()",
+		"e.isFastConnect=t; if (t !== undefined) e._doResumeOrIdentify();"
+	);
+
 	return content;
 };
 
