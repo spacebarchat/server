@@ -817,27 +817,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -1368,27 +1347,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -1902,27 +1860,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -2437,27 +2374,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -3052,27 +2968,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -3582,27 +3477,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -4134,27 +4008,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -4664,27 +4517,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -5209,27 +5041,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -5757,27 +5568,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -6302,27 +6092,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -6835,27 +6604,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -7376,27 +7124,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -7909,27 +7636,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -8442,27 +8148,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -8971,27 +8656,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -9526,27 +9190,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -10060,27 +9703,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -10593,27 +10215,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -11141,27 +10742,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -11677,27 +11257,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -12213,27 +11772,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -12776,27 +12314,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -13310,27 +12827,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -13843,27 +13339,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -14380,27 +13855,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -14913,27 +14367,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -15443,27 +14876,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -15979,27 +15391,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -16547,27 +15938,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -17100,27 +16470,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -17708,27 +17057,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -17860,6 +17188,9 @@
                         "type": "integer"
                     },
                     "useruser_guild_settings_version": {
+                        "type": "integer"
+                    },
+                    "private_channels_version": {
                         "type": "integer"
                     }
                 },
@@ -18390,27 +17721,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -18943,27 +18253,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -19540,27 +18829,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -20082,27 +19350,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -20661,27 +19908,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -21198,27 +20424,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -21740,27 +20945,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -21768,12 +20952,6 @@
     "UserSettingsSchema": {
         "type": "object",
         "properties": {
-            "guild_folders": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Partial<{color:number;guild_ids:string[];id:number;name:string;}>"
-                }
-            },
             "afk_timeout": {
                 "type": "integer"
             },
@@ -21853,6 +21031,33 @@
             "gif_auto_play": {
                 "type": "boolean"
             },
+            "guild_folders": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "color": {
+                            "type": "integer"
+                        },
+                        "guild_ids": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "id": {
+                            "type": "integer"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "guild_ids"
+                    ]
+                }
+            },
             "guild_positions": {
                 "type": "array",
                 "items": {
@@ -21905,7 +21110,7 @@
             "theme": {
                 "enum": [
                     "dark",
-                    "white"
+                    "light"
                 ],
                 "type": "string"
             },
@@ -22423,27 +21628,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -22944,27 +22128,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -23477,27 +22640,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -24007,27 +23149,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -24537,27 +23658,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "Partial<{color:number;guild_ids:string[];id:number;name:string;}>": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"

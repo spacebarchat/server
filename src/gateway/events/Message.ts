@@ -53,11 +53,16 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 
 	try {
 		var ret = await OPCodeHandler.call(this, data);
-		transaction?.finish();
+		Sentry.withScope((scope) => {
+			scope.setSpan(transaction);
+			scope.setUser({ id: this.user_id });
+			transaction?.finish();
+		});
 		return ret;
 	} catch (error) {
 		Sentry.withScope((scope) => {
 			scope.setSpan(transaction);
+			if (this.user_id) scope.setUser({ id: this.user_id });
 			Sentry.captureException(error);
 		});
 		transaction?.finish();
