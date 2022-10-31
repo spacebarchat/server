@@ -16,20 +16,24 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
 	var data: Payload;
 
-	if (this.encoding === "etf" && buffer instanceof Buffer)
-		data = erlpack.unpack(buffer);
-	else if (this.encoding === "json" && buffer instanceof Buffer && buffer[0] !== 123) {	// bad check for "{"
+	if (
+		(buffer instanceof Buffer && buffer[0] === 123) ||
+		(typeof buffer === "string")
+	) {
+		data = bigIntJson.parse(buffer.toString());
+	}
+	else if (this.encoding === "json" && buffer instanceof Buffer) {
 		if (this.inflate) {
-			try {
-				buffer = this.inflate.process(buffer) as any;
-			} catch {
-				buffer = buffer.toString() as any;
-			}
+			try { buffer = this.inflate.process(buffer) as any; }
+			catch { buffer = buffer.toString() as any; }
 		}
 		data = bigIntJson.parse(buffer as string);
-	} else if (typeof buffer == "string" || (buffer instanceof Buffer && buffer[0] == 123)) {
-		data = bigIntJson.parse(buffer as string);
-	} else return;
+	}
+	else if (this.encoding === "etf" && buffer instanceof Buffer) {
+		try { data = erlpack.unpack(buffer); }
+		catch {	return this.close(CLOSECODES.Decode_error);	}
+	}
+	else return this.close(CLOSECODES.Decode_error);
 
 	check.call(this, PayloadSchema, data);
 
