@@ -74,15 +74,16 @@ export class FosscordServer extends Server {
 			path.join(__dirname, "routes", "/"),
 		);
 
+		// 404 is not an error in express, so this should not be an error middleware
+		// this is a fine place to put the 404 handler because its after we register the routes
+		// and since its not an error middleware, our error handler below still works.
 		api.use(
 			"*",
-			(error: any, req: Request, res: Response, next: NextFunction) => {
-				if (error) return next(error);
+			(req: Request, res: Response, next: NextFunction) => {
 				res.status(404).json({
 					message: "404 endpoint not found",
 					code: 0,
 				});
-				next();
 			},
 		);
 
