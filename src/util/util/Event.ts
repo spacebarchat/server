@@ -66,7 +66,7 @@ export async function listenEvent(
 	opts?: ListenEventOpts,
 ) {
 	if (RabbitMQ.connection) {
-		return rabbitListen(
+		return await rabbitListen(
 			// @ts-ignore
 			opts?.channel || RabbitMQ.channel,
 			event,
@@ -74,7 +74,7 @@ export async function listenEvent(
 			{ acknowledge: opts?.acknowledge },
 		);
 	} else if (process.env.EVENT_TRANSMISSION === "process") {
-		const cancel = () => {
+		const cancel = async () => {
 			process.removeListener("message", listener);
 			process.setMaxListeners(process.getMaxListeners() - 1);
 		};
@@ -92,7 +92,7 @@ export async function listenEvent(
 		return cancel;
 	} else {
 		const listener = (opts: any) => callback({ ...opts, cancel });
-		const cancel = () => {
+		const cancel = async () => {
 			events.removeListener(event, listener);
 			events.setMaxListeners(events.getMaxListeners() - 1);
 		};
@@ -115,13 +115,13 @@ async function rabbitListen(
 		autoDelete: true,
 	});
 
-	const cancel = () => {
-		channel.cancel(q.queue);
-		channel.unbindQueue(q.queue, id, "");
+	const cancel = async () => {
+		await channel.cancel(q.queue);
+		await channel.unbindQueue(q.queue, id, "");
 	};
 
-	channel.bindQueue(q.queue, id, "");
-	channel.consume(
+	await channel.bindQueue(q.queue, id, "");
+	await channel.consume(
 		q.queue,
 		(opts) => {
 			if (!opts) return;
