@@ -148,13 +148,13 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 // TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
-	let links = message.content?.match(LINK_REGEX);
-	if (!links) return;
+	const matches = message.content?.match(LINK_REGEX);
+	if (!matches) return;
 
 	const data = { ...message };
 	data.embeds = data.embeds.filter((x) => x.type !== "link");
 
-	links = links.slice(0, 20); // embed max 20 links — TODO: make this configurable with instance policies
+	const links = matches.slice(0, 20); // embed max 20 links — TODO: make this configurable with instance policies
 
 	for (const link of links) {
 		try {
