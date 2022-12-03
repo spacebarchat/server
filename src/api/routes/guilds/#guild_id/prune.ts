@@ -27,12 +27,12 @@ export const inactiveMembers = async (
 				last_message_id: LessThan(minId.toString()),
 			},
 			{
+				guild_id,
 				last_message_id: IsNull(),
 			},
 		],
 		relations: ["roles"],
 	});
-	console.log(members);
 	if (!members.length) return [];
 
 	//I'm sure I can do this in the above db query ( and it would probably be better to do so ), but oh well.
