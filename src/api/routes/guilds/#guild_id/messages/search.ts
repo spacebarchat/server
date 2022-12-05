@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
-import { getPermission, FieldErrors, Message } from "@fosscord/util";
+import { getPermission, FieldErrors, Message, Channel } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { FindManyOptions, Like } from "typeorm";
+import { FindManyOptions, In, Like } from "typeorm";
 
 const router: Router = Router();
 
@@ -38,7 +38,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const permissions = await getPermission(
 		req.user_id,
 		req.params.guild_id,
-		channel_id as string,
+		channel_id as string | undefined,
 	);
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY"))
@@ -70,6 +70,20 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	};
 	//@ts-ignore
 	if (channel_id) query.where!.channel = { id: channel_id };
+	else {
+		// get all channel IDs that this user can access
+		const channels = await Channel.find({ where: { guild_id: req.params.guild_id }, select: ["id"] });
+		const ids = [];
+
+		for (var channel of channels) {
+			const perm = await getPermission(req.user_id, req.params.guild_id, channel.id);
+			if (!perm.has("VIEW_CHANNEL") || !perm.has("READ_MESSAGE_HISTORY")) continue;
+			ids.push(channel.id);
+		}
+
+		//@ts-ignore
+		query.where!.channel = { id: In(ids) };
+	}
 	//@ts-ignore
 	if (author_id) query.where!.author = { id: author_id };
 	//@ts-ignore
