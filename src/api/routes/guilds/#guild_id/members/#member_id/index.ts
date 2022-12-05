@@ -109,10 +109,10 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 });
 
 router.delete("/", route({}), async (req: Request, res: Response) => {
-	const permission = await getPermission(req.user_id);
-	const rights = await getRights(req.user_id);
 	const { guild_id, member_id } = req.params;
-	if (member_id !== "@me" || member_id === req.user_id) {
+	const permission = await getPermission(req.user_id, guild_id);
+	const rights = await getRights(req.user_id);
+	if (member_id === "@me" || member_id === req.user_id) {
 		// TODO: unless force-joined
 		rights.hasThrow("SELF_LEAVE_GROUPS");
 	} else {
