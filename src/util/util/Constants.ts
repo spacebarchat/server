@@ -1043,6 +1043,11 @@ export const FosscordApiErrors = {
 		45006,
 		501,
 	),
+	FEATURE_IS_IMMUTABLE : new ApiError(
+		"The feature ({}) cannot be edited.",
+		45007,
+		403,
+	),
 	MISSING_RIGHTS: new ApiError(
 		"You lack rights to perform that action ({})",
 		50013,
