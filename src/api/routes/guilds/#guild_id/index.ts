@@ -9,6 +9,7 @@ import {
 	handleFile,
 	Member,
 	GuildUpdateSchema,
+	FosscordApiErrors,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
@@ -73,6 +74,27 @@ router.patch(
 				`/discovery-splashes/${guild_id}`,
 				body.discovery_splash,
 			);
+
+		if (body.features) {
+			const diff = guild.features.filter(x => !body.features?.includes(x))
+				.concat(body.features.filter(x => !guild.features.includes(x)));
+
+			// TODO move these
+			const MUTABLE_FEATURES = [
+				"COMMUNITY",
+				"INVITES_DISABLED",
+				"DISCOVERABLE",
+			];
+
+			for (var feature of diff) {
+				if (MUTABLE_FEATURES.includes(feature)) continue;
+
+				throw FosscordApiErrors.FEATURE_IS_IMMUTABLE.withParams(feature);
+			}
+
+			// for some reason, they don't update in the assign.
+			guild.features = body.features;
+		}
 
 		// TODO: check if body ids are valid
 		guild.assign(body);
