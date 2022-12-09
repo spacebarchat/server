@@ -69,6 +69,7 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 		avatar: user.avatar,
 		accent_color: user.accent_color,
 		banner: user.banner,
+		avatar_decoration: user.avatar_decoration,
 		bio: req.user_bot ? null : user.bio,
 		bot: user.bot
 	};
@@ -76,13 +77,16 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 	const userProfile = {
 		bio: req.user_bot ? null : user.bio,
 		accent_color: user.accent_color,
-		banner: user.banner
+		banner: user.banner,
+		pronouns: user.pronouns,
+		theme_colors: JSON.parse(user.theme_colors) || [],
 	};
 
 	const guildMemberDto = guild_member
 		? {
 				avatar: guild_member.avatar,
 				banner: guild_member.banner,
+				avatar_decoration: user.avatar_decoration,
 				bio: req.user_bot ? null : guild_member.bio,
 				communication_disabled_until: guild_member.communication_disabled_until,
 				deaf: guild_member.deaf,
@@ -102,12 +106,17 @@ router.get("/", route({ test: { response: { body: "UserProfileResponse" } } }), 
 		accent_color: null,
 		banner: guild_member?.banner || null,
 		bio: guild_member?.bio || "",
+		pronouns: user.pronouns || "",
+		theme_colors: JSON.parse(user.theme_colors) || [],
 		guild_id
 	};
+
 	res.json({
 		connected_accounts: user.connected_accounts,
 		premium_guild_since: premium_guild_since, // TODO
 		premium_since: user.premium_since, // TODO
+		premium_type: user.premium_type, // TODO
+		profile_themes_experiment_bucket: 4,
 		mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
 		user: userDto,
 		user_profile: userProfile,
@@ -120,6 +129,9 @@ router.patch("/", route({ body: "UserProfileModifySchema" }), async (req: Reques
 	const body = req.body as UserProfileModifySchema;
 
 	if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
+
+	if (body.theme_colors) body.theme_colors = JSON.stringify(body.theme_colors)
+
 	let user = await User.findOneOrFail({ where: { id: req.user_id }, select: [...PrivateUserProjection, "data"] });
 
 	user = OrmUtils.mergeDeep(user, body);
@@ -138,7 +150,9 @@ router.patch("/", route({ body: "UserProfileModifySchema" }), async (req: Reques
 	res.json({
 		accent_color: user.accent_color,
 		bio: user.bio,
-		banner: user.banner
+		banner: user.banner,
+		pronouns: user.pronouns,
+		theme_colors: JSON.parse(user.theme_colors)
 	});
 });
 

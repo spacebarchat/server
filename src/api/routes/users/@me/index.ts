@@ -34,6 +34,8 @@ router.patch("/", route({ body: "UserModifySchema" }), async (req: Request, res:
 
 	if (body.avatar) body.avatar = await handleFile(`/avatars/${req.user_id}`, body.avatar as string);
 	if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
+	if (body.avatar_decoration) body.avatar_decoration = await handleFile(`/avatar-decorations/${req.user_id}`, body.avatar_decoration as string);
+
 	let user = await User.findOneOrFail({ where: { id: req.user_id }, select: [...PrivateUserProjection, "data"] });
 
 	if (body.password) {

@@ -37,11 +37,14 @@ export const IdentifySchema = {
 	$guild_subscriptions: Boolean,
 	$capabilities: Number,
 	$client_state: {
+		$guild_versions: Object,
 		$guild_hashes: Object,
 		$highest_last_message_id: String,
 		$read_state_version: Number,
 		$user_guild_settings_version: Number,
-		$user_settings_version: undefined
+		$user_settings_version: Number,
+		$private_channels_version: String,
+		$api_code_version: Number
 	},
 	$v: Number,
 	$version: Number
@@ -79,11 +82,14 @@ export interface IdentifySchema {
 	guild_subscriptions?: boolean;
 	capabilities?: number;
 	client_state?: {
+		guild_versions?: any;
 		guild_hashes?: any;
 		highest_last_message_id?: string;
 		read_state_version?: number;
 		user_guild_settings_version?: number;
 		user_settings_version?: number;
+		private_channels_version?: string;
+		api_code_version?: number;
 	};
 	v?: number;
 }

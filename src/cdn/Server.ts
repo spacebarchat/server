@@ -48,6 +48,9 @@ export class CDNServer extends Server {
 		this.app.use("/banners/", avatarsRoute);
 		this.log("verbose", "[Server] Route /banners registered");
 
+		this.app.use("/avatar-decorations/", avatarsRoute);
+		this.log("verbose", "[Server] Route /avatar-decorations registered");
+
 		this.app.use("/splashes/", avatarsRoute);
 		this.log("verbose", "[Server] Route /splashes registered");
 

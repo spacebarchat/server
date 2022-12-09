@@ -12,12 +12,16 @@ export enum PublicUserEnum {
 	discriminator,
 	id,
 	public_flags,
+	premium_type,
 	avatar,
 	accent_color,
 	banner,
 	bio,
 	bot,
-	premium_since
+	premium_since,
+	pronouns,
+	avatar_decoration,
+	theme_colors,
 }
 export type PublicUserKeys = keyof typeof PublicUserEnum;
 
@@ -77,6 +81,9 @@ export class User extends BaseClass {
 	@Column({ nullable: true })
 	banner?: string; // hash of the user banner
 
+	@Column({ nullable: true })
+	avatar_decoration?: string; // hash of the user avatar
+
 	@Column({ nullable: true, select: false })
 	phone?: string; // phone number of the user
 
@@ -97,6 +104,12 @@ export class User extends BaseClass {
 
 	@Column({ nullable: true })
 	bio: string; // short description of the user (max 190 chars -> should be configurable)
+
+	@Column({ nullable: true })
+	pronouns: string; // pronouns
+
+	@Column({ nullable: true })
+	theme_colors: string; // profile themes
 
 	@Column()
 	system: boolean = false; // shouldn't be used, the api sends this field type true, if the generated message comes from a system generated author

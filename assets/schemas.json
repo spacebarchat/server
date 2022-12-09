@@ -1,29 +1,4 @@
 {
-    "RouteResponse": {
-        "type": "object",
-        "properties": {
-            "status": {
-                "type": "integer"
-            },
-            "body": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "headers": {
-                "$ref": "#/definitions/Record<string,string>"
-            }
-        },
-        "additionalProperties": false,
-        "definitions": {
-            "Record<string,string>": {
-                "type": "object",
-                "additionalProperties": false
-            }
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "hcaptchaResponse": {
         "type": "object",
         "properties": {
@@ -856,6 +831,7 @@
             "client_state": {
                 "type": "object",
                 "properties": {
+                    "guild_versions": {},
                     "guild_hashes": {},
                     "highest_last_message_id": {
                         "type": "string"
@@ -867,6 +843,12 @@
                         "type": "integer"
                     },
                     "user_settings_version": {
+                        "type": "integer"
+                    },
+                    "private_channels_version": {
+                        "type": "string"
+                    },
+                    "api_code_version": {
                         "type": "integer"
                     }
                 },
@@ -1032,6 +1014,33 @@
                         "type": "boolean"
                     },
                     "flags": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "sync_id": {
+                        "type": "string"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "context_uri": {
+                                "type": "string"
+                            },
+                            "album_id": {
+                                "type": "string"
+                            },
+                            "artist_ids": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "session_id": {
                         "type": "string"
                     }
                 },
@@ -1749,6 +1758,9 @@
             },
             "email": {
                 "type": "string"
+            },
+            "avatar_decoration": {
+                "type": "string"
             }
         },
         "additionalProperties": false,
@@ -1767,6 +1779,15 @@
                 ]
             },
             "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "pronouns": {
+                "type": "string"
+            },
+            "theme_colors": {
                 "type": [
                     "null",
                     "string"
@@ -2223,6 +2244,33 @@
                         "type": "boolean"
                     },
                     "flags": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "sync_id": {
+                        "type": "string"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "context_uri": {
+                                "type": "string"
+                            },
+                            "album_id": {
+                                "type": "string"
+                            },
+                            "artist_ids": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "session_id": {
                         "type": "string"
                     }
                 },

@@ -51,7 +51,7 @@ router.patch("/", route({ body: "VanityUrlSchema", permission: "MANAGE_GUILD" })
 		channel_id: id
 	}).save();
 
-	return res.json({ where: { code } });
+	return res.json({ code: code, uses: 0 });
 });
 
 export default router;

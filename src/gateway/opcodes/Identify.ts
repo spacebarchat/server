@@ -162,9 +162,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			discriminator: related_user.discriminator,
 			id: related_user.id,
 			public_flags: related_user.public_flags,
+			premium_type: related_user.premium_type,
 			avatar: related_user.avatar,
 			bot: related_user.bot,
 			bio: related_user.bio,
+			pronouns: related_user.pronouns,
+			theme_colors: related_user.theme_colors,
 			premium_since: user.premium_since
 		};
 		users.push(public_related_user);
@@ -218,6 +221,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		accent_color: user.accent_color || 0,
 		banner: user.banner,
 		bio: user.bio,
+		pronouns: user.pronouns,
+		theme_colors: user.theme_colors,
 		premium_since: user.premium_since
 	};
 
