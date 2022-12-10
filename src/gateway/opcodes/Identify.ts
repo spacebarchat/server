@@ -234,10 +234,33 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// @ts-ignore
 		guilds: guilds.map((x) => {
 			// @ts-ignore
-			x.guild_hashes = {}; // @ts-ignore
-			x.guild_scheduled_events = []; // @ts-ignore
-			x.threads = [];
-			return x;
+			let guild = {};
+
+			// @ts-ignore
+			guild.properties = JSON.parse(JSON.stringify(x)); // @ts-ignore
+
+			guild.data_mode = "full"; // @ts-ignore
+			guild.guild_scheduled_events = []; // @ts-ignore
+			guild.threads = []; // @ts-ignore
+			guild.application_command_counts = {}; // @ts-ignore
+			guild.stage_instances = []; // @ts-ignore
+			guild.version = "1670661435611"; // @ts-ignore
+
+			guild.large = Boolean(guild.properties.large); // @ts-ignore
+			guild.lazy = Boolean(guild.properties.large); // @ts-ignore
+
+			guild.member_count = guild.properties.member_count // @ts-ignore
+			guild.members = guild.properties.members // @ts-ignore
+
+			guild.emojis = guild.properties.emojis // @ts-ignore
+			guild.stickers = guild.properties.stickers // @ts-ignore
+
+			guild.id = guild.properties.id // @ts-ignore
+			guild.joined_at = guild.properties.joined_at // @ts-ignore
+			guild.channels = guild.properties.channels // @ts-ignore
+			guild.roles = guild.properties.roles // @ts-ignore
+
+			return guild;
 		}),
 		guild_experiments: [], // TODO
 		geo_ordered_rtc_regions: [], // TODO

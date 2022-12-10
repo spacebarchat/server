@@ -190,10 +190,10 @@ export class Guild extends BaseClass {
 	preferred_locale?: string;
 
 	@Column({ nullable: true })
-	premium_subscription_count?: number;
+	premium_tier?: number; // crowd premium level
 
 	@Column({ nullable: true })
-	premium_tier?: number; // crowd premium level
+	premium_subscription_count?: number;
 
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.public_updates_channel)

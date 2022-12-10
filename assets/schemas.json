@@ -1788,9 +1788,19 @@
                 "type": "string"
             },
             "theme_colors": {
-                "type": [
-                    "null",
-                    "string"
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    }
                 ]
             }
         },

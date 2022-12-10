@@ -3,5 +3,5 @@ export interface UserProfileModifySchema {
 	accent_color?: number | null;
 	banner?: string | null;
 	pronouns?: string;
-	theme_colors?: string | null;
+	theme_colors?: string | null  | number[];
 }
