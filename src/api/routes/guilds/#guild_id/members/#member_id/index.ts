@@ -48,13 +48,13 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 
 	await member.save();
 
-	member.roles = member.roles.filter((x) => x.id !== everyone.id);
+	console.log(everyone)
 
 	// do not use promise.all as we have to first write to db before emitting the event to catch errors
 	await emitEvent({
 		event: "GUILD_MEMBER_UPDATE",
-		guild_id,
-		data: { ...member, roles: member.roles.map((x) => x.id) }
+		guild_id, // @ts-ignore
+		data: { ...member, roles: member.roles.filter((x) => x != everyone.id) as string[] }
 	} as GuildMemberUpdateEvent);
 
 	res.json(member);

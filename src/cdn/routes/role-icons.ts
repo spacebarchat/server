@@ -28,7 +28,7 @@ router.post("/:role_id", multer.single("file"), async (req: Request, res: Respon
 	const type = await FileType.fromBuffer(buffer);
 	if (!type || !ALLOWED_MIME_TYPES.includes(type.mime)) throw new HTTPError("Invalid file type");
 
-	const path = `role-icons/${role_id}/${hash}.png`;
+	const path = `role-icons/${role_id}/${hash}.webp`;
 	const endpoint = Config.get().cdn.endpointPublic || "http://localhost:3003";
 
 	await storage.set(path, buffer);

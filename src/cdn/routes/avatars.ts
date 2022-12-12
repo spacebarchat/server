@@ -30,9 +30,11 @@ router.post("/:user_id", multer.single("file"), async (req: Request, res: Respon
 	if (ANIMATED_MIME_TYPES.includes(type.mime)) hash = `a_${hash}`; // animated icons have a_ infront of the hash
 
 	const path = `avatars/${user_id}/${hash}`;
+	const path2 = `avatars/${user_id}/${hash}.webp`;
 	const endpoint = Config.get().cdn.endpointPublic || "http://localhost:3003";
 
 	await storage.set(path, buffer);
+	await storage.set(path2, buffer);
 
 	return res.json({
 		id: hash,

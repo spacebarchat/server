@@ -4,6 +4,7 @@ import { Server, ServerOptions } from "lambert-server";
 import morgan from "morgan";
 import path from "path";
 import { red } from "picocolors";
+import cookieParser from "cookie-parser";
 import { Authentication, CORS } from "./middlewares/";
 import { BodyParser } from "./middlewares/BodyParser";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
@@ -42,7 +43,7 @@ export class FosscordServer extends Server {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
+						let skip: any = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
 						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
 						return skip;
 					}
@@ -52,6 +53,7 @@ export class FosscordServer extends Server {
 
 		this.app.use(CORS);
 		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
+		this.app.use(cookieParser());
 
 		const app = this.app;
 		const api = Router(); // @ts-ignore
@@ -74,7 +76,7 @@ export class FosscordServer extends Server {
 
 		this.app = app;
 
-		//app.use("/__development", )
+		app.use("/__development", api);
 		//app.use("/__internals", )
 		app.use("/api/v6", api);
 		app.use("/api/v7", api);

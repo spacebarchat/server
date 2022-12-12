@@ -630,6 +630,12 @@
             "description": {
                 "type": "string"
             },
+            "discovery_splash": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
             "features": {
                 "type": "array",
                 "items": {
@@ -660,6 +666,9 @@
             "preferred_locale": {
                 "type": "string"
             },
+            "rules_channel_id": {
+                "type": "string"
+            },
             "premium_progress_bar_enabled": {
                 "type": "boolean"
             },
@@ -676,9 +685,6 @@
                 "type": "string"
             },
             "system_channel_id": {
-                "type": "string"
-            },
-            "rules_channel_id": {
                 "type": "string"
             }
         },

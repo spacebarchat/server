@@ -5,6 +5,7 @@ export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels" | 
 	banner?: string | null;
 	splash?: string | null;
 	description?: string;
+	discovery_splash?: string | null;
 	features?: string[];
 	verification_level?: number;
 	default_message_notifications?: number;
@@ -14,5 +15,6 @@ export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels" | 
 	afk_timeout?: number;
 	afk_channel_id?: string;
 	preferred_locale?: string;
+	rules_channel_id?: string;
 	premium_progress_bar_enabled?: boolean;
 }

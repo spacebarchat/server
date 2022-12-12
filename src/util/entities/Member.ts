@@ -178,6 +178,8 @@ export class Member extends BaseClassWithoutId {
 				guild_id
 			} as GuildMemberUpdateEvent)
 		]);
+
+		console.log(member.roles)
 	}
 
 	static async removeRole(user_id: string, guild_id: string, role_id: string) {
