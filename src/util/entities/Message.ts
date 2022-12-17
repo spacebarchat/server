@@ -111,10 +111,7 @@ export class Message extends BaseClass {
 	@ManyToOne(() => Application)
 	application?: Application;
 
-	@Column({
-		nullable: true,
-		type: process.env.PRODUCTION ? "longtext" : undefined,
-	})
+	@Column({ nullable: true })
 	content?: string;
 
 	@Column()
