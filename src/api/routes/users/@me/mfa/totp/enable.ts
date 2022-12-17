@@ -23,9 +23,6 @@ router.post(
 			select: ["data", "email"],
 		});
 
-		if (user.email == "demo@maddy.k.vu")
-			throw new HTTPError("Demo user, sorry", 400);
-
 		// TODO: Are guests allowed to enable 2fa?
 		if (user.data.hash) {
 			if (!(await bcrypt.compare(body.password, user.data.hash))) {
