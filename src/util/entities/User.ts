@@ -195,15 +195,9 @@ export class User extends BaseClass {
 	@Column({ type: "simple-json", select: false })
 	extended_settings: string;
 
-	// @BeforeUpdate()
-	// _update_validator() { this.validate(true); }
-
-	// @BeforeInsert()
-	// _insert_validator() { this.validate(false); }
-
-	validate(/*update: boolean = false*/) {
-		// inserting or email provided in update
-		if (/*!update || */this.email) {
+	// TODO: I don't like this method?
+	validate() {
+		if (this.email) {
 			this.email = adjustEmail(this.email);
 			if (!this.email)
 				throw FieldErrors({
@@ -215,8 +209,7 @@ export class User extends BaseClass {
 				});
 		}
 
-		// inserting or discrim provided
-		if (/*!update ||*/ this.discriminator) {
+		if (this.discriminator) {
 			const discrim = Number(this.discriminator);
 			if (this.discriminator.length > 4)
 				throw FieldErrors({
