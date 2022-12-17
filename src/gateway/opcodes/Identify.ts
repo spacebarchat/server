@@ -37,6 +37,7 @@ import { Recipient } from "@fosscord/util";
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	clearTimeout(this.readyTimeout);
+	// TODO: is this needed now that we use `json-bigint`?
 	if (typeof data.d?.client_state?.highest_last_message_id === "number")
 		data.d.client_state.highest_last_message_id += "";
 	check.call(this, IdentifySchema, data.d);

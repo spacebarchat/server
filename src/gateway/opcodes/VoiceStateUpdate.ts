@@ -62,7 +62,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		});
 	}
 
-	// 'Fix' for this one voice state error
+	// 'Fix' for this one voice state error. TODO: Find out why this is sent
 	if (!voiceState.guild_id) return;
 
 	//TODO the member should only have these properties: hoisted_role, deaf, joined_at, mute, roles, user
