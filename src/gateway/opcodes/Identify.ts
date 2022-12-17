@@ -312,5 +312,5 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	await setupListener.call(this);
 
-	console.log(`${this.ipAddress} identified as ${d.user.id}`);
+	// console.log(`${this.ipAddress} identified as ${d.user.id}`);
 }
