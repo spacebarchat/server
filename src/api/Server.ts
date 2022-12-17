@@ -1,7 +1,7 @@
 import "missing-native-js-functions";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
-import { BannedWords, Config, initDatabase, initEvent } from "@fosscord/util";
+import { Config, initDatabase, initEvent } from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import { Router, Request, Response, NextFunction } from "express";
@@ -38,7 +38,6 @@ export class FosscordServer extends Server {
 		await Config.init();
 		await initEvent();
 		await initInstance();
-		await BannedWords.init();
 
 		let logRequests = process.env["LOG_REQUESTS"] != undefined;
 		if (logRequests) {

@@ -16,7 +16,6 @@ import {
 	FieldErrors,
 	Snowflake,
 	trimSpecial,
-	BannedWords,
 	adjustEmail,
 } from "..";
 import { Member, Session } from ".";
@@ -242,12 +241,6 @@ export class User extends BaseClass {
 				});
 			this.discriminator = discrim.toString().padStart(4, "0");
 		}
-
-		if (/*!update ||*/ this.username)
-			if (BannedWords.find(this.username))
-				throw FieldErrors({
-					username: { message: "Bad username", code: "INVALID_USERNAME" },
-				});
 	}
 
 	toPublicUser() {

@@ -15,7 +15,7 @@ import {
 	RelationId,
 } from "typeorm";
 import { Guild } from "./Guild";
-import { Config, emitEvent, BannedWords, FieldErrors } from "../util";
+import { Config, emitEvent, FieldErrors } from "../util";
 import {
 	GuildCreateEvent,
 	GuildDeleteEvent,
@@ -126,10 +126,6 @@ export class Member extends BaseClassWithoutId {
 		if (this.nick) {
 			this.nick = this.nick.split("\n").join("");
 			this.nick = this.nick.split("\t").join("");
-			if (BannedWords.find(this.nick))
-				throw FieldErrors({
-					nick: { message: "Bad nickname", code: "INVALID_NICKNAME" },
-				});
 		}
 	}
 
