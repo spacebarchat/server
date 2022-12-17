@@ -1,3 +1,21 @@
+/*
+	This file downloads a ( mostly ) complete discord.com web client for testing,
+	and performs some basic patching:
+	* Replaces all mentions of "Server" -> "Guild"
+	* Replaces "Discord" -> `INSTANCE_NAME` variable
+	* "Nitro" -> "Premium"
+	* Prevents `localStorage` deletion ( for `plugins`/`preload-plugins` )
+	* Adds `fast-identify` support ( TODO: add documentation )
+
+	This script can only download javascript client files.
+	It cannot download images, sounds, video, etc.
+	For that, a `cacheMisses` file in `fosscord-server/assets` is used.
+	After running the server for a while, uncached assets will be appended to that file
+	and downloaded after the next run of this script.
+
+	TODO: Make this configurable easily.
+*/
+
 const path = require("path");
 const fetch = require("node-fetch");
 const http = require('http');
@@ -13,7 +31,7 @@ const agent = (_parsedURL) => _parsedURL.protocol == 'http:' ? httpAgent : https
 const CACHE_PATH = path.join(__dirname, "..", "assets", "cache");
 const BASE_URL = "https://discord.com";
 
-const INSTANCE_NAME = "Slowcord";
+const INSTANCE_NAME = "Fosscord";
 
 // Manual for now
 const INDEX_SCRIPTS = [
@@ -95,15 +113,15 @@ const doPatch = (content) => {
 	);
 
 	// app download links
-	content = content.replaceAll(
-		"https://play.google.com/store/apps/details?id=com.discord",
-		"https://slowcord.understars.dev/api/download?platform=android",
-	);
+	// content = content.replaceAll(
+	// 	"https://play.google.com/store/apps/details?id=com.discord",
+	// 	"https://slowcord.understars.dev/api/download?platform=android",
+	// );
 
-	content = content.replaceAll(
-		"https://itunes.apple.com/app/discord/id985746746",
-		"https://slowcord.understars.dev/api/download?platform=ios"
-	);
+	// content = content.replaceAll(
+	// 	"https://itunes.apple.com/app/discord/id985746746",
+	// 	"https://slowcord.understars.dev/api/download?platform=ios"
+	// );
 
 	// TODO change public test build link
 	// content = content.replaceAll(
@@ -111,9 +129,11 @@ const doPatch = (content) => {
 	//	""
 	// )
 
-	content = content.replaceAll("status.discord.com", "status.understars.dev");
-	content = content.replaceAll("discordstatus.com", "status.understars.dev");
+	// TODO: Easy config for this
+	// content = content.replaceAll("status.discord.com", "status.understars.dev");
+	// content = content.replaceAll("discordstatus.com", "status.understars.dev");
 
+	// Stop client from deleting `localStorage` global. Makes `plugins` and `preload-plugins` less annoying.
 	content = content.replaceAll(
 		"delete window.localStorage",
 		"console.log('Prevented deletion of localStorage')"

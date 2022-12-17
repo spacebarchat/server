@@ -1,13 +1,10 @@
 ---changelog---
-date: "2022-10-27"
+date: "2022-12-17"
 locale: "en-US"
 revision: 1
 ---
-Changelogs now work! {added marginTop}
+This is an example changelog. {added marginTop}
 ======================
 
-In the future, they'll be sent out like this, as well as in the default guild.
-If you aren't in the default guild, you're missing out.
-We talk mostly about Slowcord itself, and its the first place you'll find out about new features and bug fixes being worked on.
-Be sure to join it, with
-https://slowcord.understars.dev/invite/slowcord
+This is a template changelog file.
+You can use the `npm run generate:changelog` script to attach a new version of this changelog to your current client cache.

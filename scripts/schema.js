@@ -1,5 +1,7 @@
-// https://mermade.github.io/openapi-gui/#
-// https://editor.swagger.io/
+/*
+	Regenerates the `fosscord-server/assets/schemas.json` file, used for API/Gateway input validation.
+*/
+
 const path = require("path");
 const fs = require("fs");
 const TJS = require("typescript-json-schema");
