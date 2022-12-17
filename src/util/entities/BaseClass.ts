@@ -71,7 +71,7 @@ export class BaseClass extends BaseClassWithoutId {
 
 	@BeforeUpdate()
 	@BeforeInsert()
-	do_validate() {
+	_do_validate() {
 		if (!this.id) this.id = Snowflake.generate();
 	}
 }
