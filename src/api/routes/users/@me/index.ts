@@ -36,9 +36,6 @@ router.patch(
 			select: [...PrivateUserProjection, "data"],
 		});
 
-		if (user.email == "demo@maddy.k.vu")
-			throw new HTTPError("Demo user, sorry", 400);
-
 		if (body.avatar)
 			body.avatar = await handleFile(
 				`/avatars/${req.user_id}`,
