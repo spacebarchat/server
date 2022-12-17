@@ -31,35 +31,6 @@ async function main() {
 	await initDatabase();
 	await Config.init();
 	await BannedWords.init();
-	// // only set endpointPublic, if not already set
-	// await Config.set({
-	// 	cdn: {
-	// 		endpointClient: "${location.host}",
-	// 		endpointPrivate: `http://localhost:${port}`,
-	// 	},
-	// 	gateway: {
-	// 		endpointClient:
-	// 			'${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}',
-	// 		endpointPrivate: `ws://localhost:${port}`,
-	// 		...(!Config.get().gateway.endpointPublic && {
-	// 			endpointPublic: `ws://localhost:${port}`,
-	// 		}),
-	// 	},
-	// 	regions: {
-	// 		default: "fosscord",
-	// 		useDefaultAsOptimal: true,
-	// 		available: [
-	// 			{
-	// 				id: "fosscord",
-	// 				name: "Fosscord",
-	// 				endpoint: "slowcord.maddy.k.vu:3004",
-	// 				vip: false,
-	// 				custom: false,
-	// 				deprecated: false,
-	// 			},
-	// 		],
-	// 	},
-	// } as any);
 
 	//Sentry
 	if (Config.get().sentry.enabled) {
