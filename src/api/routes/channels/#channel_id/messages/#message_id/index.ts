@@ -12,7 +12,6 @@ import {
 	Snowflake,
 	uploadFile,
 	MessageCreateSchema,
-	BannedWords,
 	DiscordApiErrors,
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
@@ -43,10 +42,6 @@ router.patch(
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id } = req.params;
 		var body = req.body as MessageCreateSchema;
-
-		if (body.content)
-			if (BannedWords.find(body.content))
-				throw DiscordApiErrors.AUTOMODERATOR_BLOCK;
 
 		const message = await Message.findOneOrFail({
 			where: { id: message_id, channel_id },

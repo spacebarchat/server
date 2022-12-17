@@ -1,7 +1,7 @@
 import "missing-native-js-functions";
 import dotenv from "dotenv";
 dotenv.config();
-import { BannedWords, closeDatabase, Config, initDatabase, initEvent } from "@fosscord/util";
+import { closeDatabase, Config, initDatabase, initEvent } from "@fosscord/util";
 import ws from "ws";
 import { Connection } from "./events/Connection";
 import http from "http";
@@ -50,7 +50,6 @@ export class Server {
 		await initDatabase();
 		await Config.init();
 		await initEvent();
-		await BannedWords.init();
 		if (!this.server.listening) {
 			this.server.listen(this.port);
 			console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
