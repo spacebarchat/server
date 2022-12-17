@@ -16,10 +16,8 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
 	var data: Payload;
 
-	if (
-		(buffer instanceof Buffer && buffer[0] === 123) ||
-		(typeof buffer === "string")
-	) {
+	if ((buffer instanceof Buffer && buffer[0] === 123) ||
+		(typeof buffer === "string")) {
 		data = bigIntJson.parse(buffer.toString());
 	}
 	else if (this.encoding === "json" && buffer instanceof Buffer) {
