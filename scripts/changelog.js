@@ -1,3 +1,13 @@
+/*
+	Changelogs are baked inside the discord.com web client.
+	To change them, we simply need to update the changelog in a specific file of the client.
+	For v134842, thats 9c4b2d313c6e1c864e89.js, but it'll be different for every version.
+	To find which file the changelog is stored in your client, simply grep for the changelog text given by the client,
+	and update the `CHANGELOG_SCRIPT` variable to use that instead.
+
+	This grabs the new changelog from `fosscord-server/assets/changelog.txt`
+*/
+
 const fetch = require("node-fetch");
 const fs = require("fs/promises");
 const path = require("path");

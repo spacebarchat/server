@@ -1,3 +1,11 @@
+/*
+	This file is used to patch client version 134842 ( and probably a lot more ) to send additional info when using webrtc.
+	If you want to use it, throw it into the `preload-plugins` folder.
+	TODO: Make it so this file is not required for webrtc.
+	
+	Do note that webrtc, as of 17/12/2022, is not implemented yet in fosscord/fosscord-server.
+*/
+
 (this.webpackChunkdiscord_app = this.webpackChunkdiscord_app || []).push([
 	[[228974]],
 	{

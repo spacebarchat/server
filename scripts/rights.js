@@ -1,3 +1,7 @@
+/*
+	Calculates a discord.com-like rights value.
+*/
+
 require("module-alias/register");
 const { Rights } = require("..");
 

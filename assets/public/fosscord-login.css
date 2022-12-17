@@ -1,12 +1,12 @@
 /* replace tos acceptance popup */
 #app-mount > div:nth-child(7) > div > div > div.tooltipContent-bqVLWK {
-    visibility: hidden;
+	visibility: hidden;
 }
-#app-mount > div:nth-child(7) > div > div > div.tooltipContent-bqVLWK::after{
-    visibility: visible;
-    display: block;
-    content: "You need to agree to this instance's rules to continue";
-    margin-top: -32px;
+#app-mount > div:nth-child(7) > div > div > div.tooltipContent-bqVLWK::after {
+	visibility: visible;
+	display: block;
+	content: "You need to agree to this instance's rules to continue";
+	margin-top: -32px;
 }
 /* replace login header */
 #app-mount > div.app-1q1i1E > div > div > div > div > form > div > div > div.mainLoginContainer-1ddwnR > h3 {
@@ -14,7 +14,7 @@
 }
 h3.title-jXR8lp.marginBottom8-AtZOdT.base-1x0h_U.size24-RIRrxO::after {
 	margin-top: -32px;
-	content: "Welcome to Slowcord!";
+	content: "Welcome to Fosscord!";
 	visibility: visible;
 	display: block;
 }
@@ -62,22 +62,7 @@ h3.title-jXR8lp.marginBottom8-AtZOdT.base-1x0h_U.size24-RIRrxO::after {
 	margin-top: -16px;
 }
 
-/* funny styling */
-.wrapper-6URcxg {
-	justify-content: flex-start !important;
-
-	background: url("/assets/background.png");
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-}
-
-.authBoxExpanded-2jqaBe,
-.authBox-hW6HRx {
-	width: max(40vw, 500px) !important;
-	height: 100vh !important;
-	padding: 100px !important;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-radius: 0 !important;
+/* shrink login box to same size as register */
+.authBoxExpanded-2jqaBe {
+	width: 480px !important;
 }
