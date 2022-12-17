@@ -17,7 +17,7 @@ export const DEFAULT_FETCH_OPTIONS: any = {
 };
 
 export const getProxyUrl = (url: URL, width: number, height: number): string => {
-	const { endpointPublic, resizeWidthMax, resizeHeightMax, imagorServerUrl } = Config.get().cdn;
+	const { resizeWidthMax, resizeHeightMax, imagorServerUrl } = Config.get().cdn;
 	const secret = Config.get().security.jwtSecret;	// maybe shouldn't use this?
 	width = Math.min(width || 500, resizeWidthMax || width);
 	height = Math.min(height || 500, resizeHeightMax || width);
@@ -34,8 +34,9 @@ export const getProxyUrl = (url: URL, width: number, height: number): string => 
 		return `${imagorServerUrl}/${hash}/${path}`;
 	}
 
-	// Fosscord CDN resizer
-	return `${endpointPublic}/external/resize/${encodeURIComponent(url.href)}?width=${width}&height=${height}`;
+	// TODO: Imagor documentation
+	console.log("Imagor has not been set up correctly. docs.fosscord.com/set/up/a/page/about/this");
+	return "";
 };
 
 const getMeta = ($: cheerio.CheerioAPI, name: string): string | undefined => {

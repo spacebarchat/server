@@ -83,7 +83,6 @@
 		"picocolors": "^1.0.0",
 		"probe-image-size": "^7.2.3",
 		"proxy-agent": "^5.0.0",
-		"sharp": "^0.31.0",
 		"sqlite3": "^5.1.1",
 		"typeorm": "^0.3.10",
 		"typescript-json-schema": "^0.50.1",
