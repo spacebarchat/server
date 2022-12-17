@@ -16,7 +16,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
 	var data: Payload;
 
-	if ((buffer instanceof Buffer && buffer[0] === 123) ||
+	if ((buffer instanceof Buffer && buffer[0] === 123) ||	// ASCII 123 = `{`. Bad check for JSON
 		(typeof buffer === "string")) {
 		data = bigIntJson.parse(buffer.toString());
 	}
