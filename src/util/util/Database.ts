@@ -12,12 +12,14 @@ var dbConnection: DataSource | undefined;
 let dbConnectionString =
 	process.env.DATABASE || path.join(process.cwd(), "database.db");
 
+// Gets the existing database connection
 export function getDatabase(): DataSource | null {
 	// if (!dbConnection) throw new Error("Tried to get database before it was initialised");
 	if (!dbConnection) return null;
 	return dbConnection;
 }
 
+// Called once on server start
 export async function initDatabase(): Promise<DataSource> {
 	if (dbConnection) return dbConnection;
 
@@ -36,7 +38,7 @@ export async function initDatabase(): Promise<DataSource> {
 	}
 
 	const dataSource = new DataSource({
-		//@ts-ignore
+		//@ts-ignore type 'string' is not 'mysql' | 'sqlite' | 'mariadb' | etc etc
 		type,
 		charset: "utf8mb4",
 		url: isSqlite ? undefined : dbConnectionString,
@@ -47,49 +49,12 @@ export async function initDatabase(): Promise<DataSource> {
 		bigNumberStrings: false,
 		supportBigNumbers: true,
 		name: "default",
+		// TODO migrations
 		// migrations: [path.join(__dirname, "..", "migrations", "*.js")],
 	});
 
 	dbConnection = await dataSource.initialize();
 
-	// // @ts-ignore
-	// promise = createConnection({
-	// 	type,
-	// 	charset: 'utf8mb4',
-	// 	url: isSqlite ? undefined : dbConnectionString,
-	// 	database: isSqlite ? dbConnectionString : undefined,
-	// 	// @ts-ignore
-	// 	entities: Object.values(Models).filter((x) => x?.constructor?.name !== "Object" && x?.name),
-	// 	synchronize: type !== "mongodb",
-	// 	logging: false,
-	// 	// cache: { // cache is used only by query builder and entity manager
-	// 	// duration: 1000 * 30,
-	// 	// type: "redis",
-	// 	// options: {
-	// 	// host: "localhost",
-	// 	// port: 6379,
-	// 	// },
-	// 	// },
-	// 	bigNumberStrings: false,
-	// 	supportBigNumbers: true,
-	// 	name: "default",
-	// 	migrations: [path.join(__dirname, "..", "migrations", "*.js")],
-	// });
-
-	// // run migrations, and if it is a new fresh database, set it to the last migration
-	// if (dbConnection.migrations.length) {
-	// 	if (!(await Migration.findOne({ }))) {
-	// 		let i = 0;
-
-	// 		await Migration.insert(
-	// 			dbConnection.migrations.map((x) => ({
-	// 				id: i++,
-	// 				name: x.name,
-	// 				timestamp: Date.now(),
-	// 			}))
-	// 		);
-	// 	}
-	// }
 	await dbConnection.runMigrations();
 	console.log(`[Database] ${green("connected")}`);
 
