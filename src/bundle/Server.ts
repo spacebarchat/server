@@ -54,12 +54,14 @@ async function main() {
 
 		Sentry.addGlobalEventProcessor((event, hint) => {
 			if (event.transaction) {
+				// Rewrite things that look like IDs to `:id` for sentry
 				event.transaction = event.transaction
 					.split("/")
 					.map((x) => (!parseInt(x) ? x : ":id"))
 					.join("/");
 			}
 
+			// TODO: does this even do anything?
 			delete event.request?.cookies;
 			if (event.request?.headers) {
 				delete event.request.headers["X-Real-Ip"];
@@ -70,16 +72,11 @@ async function main() {
 
 			if (event.breadcrumbs) {
 				event.breadcrumbs = event.breadcrumbs.filter((x) => {
+					// Filter breadcrumbs that we don't care about
 					if (x.message?.includes("identified as")) return false;
 					if (x.message?.includes("[WebSocket] closed")) return false;
-					if (
-						x.message?.includes(
-							"Got Resume -> cancel not implemented",
-						)
-					)
-						return false;
-					if (x.message?.includes("[Gateway] New connection from"))
-						return false;
+					if (x.message?.includes("Got Resume -> cancel not implemented")) return false;
+					if (x.message?.includes("[Gateway] New connection from")) return false;
 
 					return true;
 				});
