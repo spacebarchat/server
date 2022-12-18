@@ -1,169 +1,139 @@
-import express, { Request, Response, Application } from "express";
+import express, { Application } from "express";
 import fs from "fs";
 import path from "path";
-import fetch, { Response as FetchResponse } from "node-fetch";
+import fetch, { Response as FetchResponse, Headers } from "node-fetch";
 import ProxyAgent from "proxy-agent";
 import { Config } from "@fosscord/util";
 
 const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "assets");
 
-let hasWarnedAboutCache = false;
-
 export default function TestClient(app: Application) {
-	const agent = new ProxyAgent();
-	const assetCache = new Map<
-		string,
-		{ response: FetchResponse; buffer: Buffer; }
-	>();
-	const indexHTML = fs.readFileSync(
-		path.join(ASSET_FOLDER_PATH, "client_test", "index.html"),
-		{ encoding: "utf8" },
-	);
-
-	var html = indexHTML;
-	const CDN_ENDPOINT = (
-		Config.get().cdn.endpointClient ||
-		Config.get()?.cdn.endpointPublic ||
-		process.env.CDN ||
-		""
-	).replace(/(https?)?(:\/\/?)/g, "");
-	const GATEWAY_ENDPOINT =
-		Config.get().gateway.endpointClient ||
-		Config.get()?.gateway.endpointPublic ||
-		process.env.GATEWAY ||
-		"";
-
-	if (CDN_ENDPOINT) {
-		html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${CDN_ENDPOINT}\`,`);
-	}
-	if (GATEWAY_ENDPOINT) {
-		html = html.replace(
-			/GATEWAY_ENDPOINT: .+/,
-			`GATEWAY_ENDPOINT: \`${GATEWAY_ENDPOINT}\`,`,
-		);
-	}
-	// inline plugins
-	var files = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "preload-plugins"));
-	var plugins = "";
-	files.forEach((x) => {
-		if (x.endsWith(".js"))
-			plugins += `<script>${fs.readFileSync(
-				path.join(ASSET_FOLDER_PATH, "preload-plugins", x),
-			)}</script>\n`;
-	});
-	html = html.replaceAll("<!-- preload plugin marker -->", plugins);
-
-	// plugins
-	files = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "plugins"));
-	plugins = "";
-	files.forEach((x) => {
-		if (x.endsWith(".js"))
-			plugins += `<script src='/assets/plugins/${x}'></script>\n`;
-	});
-	html = html.replaceAll("<!-- plugin marker -->", plugins);
-	//preload plugins
-	files = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "preload-plugins"));
-	plugins = "";
-	files.forEach((x) => {
-		if (x.endsWith(".js"))
-			plugins += `<script>${fs.readFileSync(
-				path.join(ASSET_FOLDER_PATH, "preload-plugins", x),
-			)}</script>\n`;
-	});
-	html = html.replaceAll("<!-- preload plugin marker -->", plugins);
-
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "public")));
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "cache")));
 
-	app.get("/assets/:file", async (req: Request, res: Response) => {
-		if (req.params.file.includes(".map")) return res.status(404);
+	// Test client is disabled, so don't need to run any more. Above should probably be moved somewhere?
+	if (!Config.get().client.useTestClient) return;
 
+	const agent = new ProxyAgent();
+
+	let html = fs.readFileSync(path.join(ASSET_FOLDER_PATH, "client_test", "index.html"), { encoding: "utf-8" });
+
+	html = applyEnv(html);	// update window.GLOBAL_ENV according to config
+	
+	html = applyPlugins(html);	// inject our plugins
+	app.use("/assets/plugins", express.static(path.join(ASSET_FOLDER_PATH, "plugins")));
+	app.use("/assets/inline-plugins", express.static(path.join(ASSET_FOLDER_PATH, "inline-plugins")));
+
+	// Asset memory cache
+	const assetCache = new Map<string, { response: FetchResponse; buffer: Buffer; }>();
+
+	// Fetches uncached ( on disk ) assets from discord.com and stores them in memory cache. 
+	app.get("/assets/:file", async (req, res) => {
 		delete req.headers.host;
-		var response: FetchResponse;
-		var buffer: Buffer;
+
+		if (req.params.file.endsWith(".map")) return res.status(404);
+		
+		let response: FetchResponse;
+		let buffer: Buffer;
 		const cache = assetCache.get(req.params.file);
 		if (!cache) {
-			response = await fetch(
-				`https://discord.com/assets/${req.params.file}`,
-				{
-					agent,
-					// @ts-ignore
-					headers: {
-						...req.headers,
-					},
-				},
-			);
+			response = await fetch(`https://discord.com/assets/${req.params.file}`, {
+				agent,
+				headers: { ...req.headers as { [key: string]: string; } },
+			});
 			buffer = await response.buffer();
-		} else {
+		}
+		else {
 			response = cache.response;
 			buffer = cache.buffer;
 		}
 
-		response.headers.forEach((value, name) => {
-			if (
-				[
-					"content-length",
-					"content-security-policy",
-					"strict-transport-security",
-					"set-cookie",
-					"transfer-encoding",
-					"expect-ct",
-					"access-control-allow-origin",
-					"content-encoding",
-				].includes(name.toLowerCase())
-			) {
-				return;
-			}
-			res.set(name, value);
+		[
+			"content-length",
+			"content-security-policy",
+			"strict-transport-security",
+			"set-cookie",
+			"transfer-encoding",
+			"expect-ct",
+			"access-control-allow-origin",
+			"content-encoding"
+		].forEach(headerName => {
+			response.headers.delete(headerName);
 		});
+		response.headers.forEach((value, name) => res.set(name, value));
+
 		assetCache.set(req.params.file, { buffer, response });
 
+		// TODO: I don't like this. Figure out a way to get client cacher to download *all* assets.
 		if (response.status == 200) {
-			// if (!hasWarnedAboutCache) {
-			hasWarnedAboutCache = true;
-			console.warn(
-				`[TestClient] Cache miss for file ${req.params.file}! Use 'npm run generate:client' to cache and patch.`,
-			);
+			console.warn(`[TestClient] Cache miss for file ${req.params.file}! Use 'npm run generate:client' to cache and patch.`);
 			await fs.promises.appendFile(path.join(ASSET_FOLDER_PATH, "cacheMisses"), req.params.file + "\n");
-			// }
 		}
 
 		return res.send(buffer);
 	});
-	app.get("/developers*", (req: Request, res: Response) => {
-		const { useTestClient } = Config.get().client;
-		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
+
+	// Instead of our generated html, send developers.html for developers endpoint
+	app.get("/developers*", (req, res) => {
+		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);	// 24 hours
 		res.set("content-type", "text/html");
-
-		if (!useTestClient)
-			return res.send(
-				"Test client is disabled on this instance. Use a stand-alone client to connect this instance.",
-			);
-
-		res.send(
-			fs.readFileSync(
-				path.join(ASSET_FOLDER_PATH, "client_test", "developers.html"),
-				{ encoding: "utf8" },
-			),
-		);
+		res.send(fs.readFileSync(path.join(ASSET_FOLDER_PATH, "client_test", "developers.html"), { encoding: "utf-8" }));
 	});
-	app.get("*", (req: Request, res: Response) => {
-		const { useTestClient } = Config.get().client;
-		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);
+
+	// Send our generated index.html for all routes.
+	app.get("*", (req, res) => {
+		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);	// 24 hours
 		res.set("content-type", "text/html");
 
-		if (req.url.startsWith("/api") || req.url.startsWith("/__development"))
-			return;
+		if (req.url.startsWith("/api") || req.url.startsWith("/__development")) return;
 
-		if (!useTestClient)
-			return res.send(
-				"Test client is disabled on this instance. Use a stand-alone client to connect this instance.",
-			);
-		if (req.url.startsWith("/invite"))
-			return res.send(
-				html.replace("9b2b7f0632acd0c5e781", "9f24f709a3de09b67c49"),
-			);
-
-		res.send(html);
+		return res.send(html);
 	});
 }
+
+// Apply gateway/cdn endpoint values from config to index.html.
+const applyEnv = (html: string): string => {
+	const config = Config.get();
+
+	const cdn = (config.cdn.endpointClient || config.cdn.endpointPublic || process.env.CDN || "")
+		.replace(/(https?)?(:\/\/?)/g, "");
+
+	const gateway = (config.gateway.endpointClient || config.gateway.endpointPublic || process.env.GATEWAY || "");
+
+	if (cdn)
+		html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${cdn}\`,`);
+
+	if (gateway)
+		html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${gateway}\`,`);
+
+	return html;
+};
+
+// Injects inline, preload, and standard plugins into index.html.
+const applyPlugins = (html: string): string => {
+	// Inline plugins. Injected as <script src="/assets/inline-plugins/name.js"> into head.
+	const inlineFiles = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "inline-plugins"));
+	const inline = inlineFiles
+		.filter(x => x.endsWith(".js"))
+		.map(x => `<script src="/assets/inline-plugins/${x}"></script>`)
+		.join("\n");
+	html = html.replace("<!-- inline plugin marker -->", inline);
+
+	// Preload plugins. Text content of each plugin is injected into head.
+	const preloadFiles = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "preload-plugins"));
+	const preload = preloadFiles
+		.filter(x => x.endsWith(".js"))
+		.map(x => `<script>${fs.readFileSync(path.join(ASSET_FOLDER_PATH, "preload-plugins", x))}</script>`)
+		.join("\n");
+	html = html.replace("<!-- preload plugin marker -->", preload);
+
+	// Normal plugins. Injected as <script src="/assets/plugins/name.js"> into body.
+	const pluginFiles = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "plugins"));
+	const plugins = pluginFiles
+		.filter(x => x.endsWith(".js"))
+		.map(x => `<script src="/assets/plugins/${x}"></script>`)
+		.join("\n");
+	html = html.replace("<!-- plugin marker -->", plugins);
+
+	return html;
+};
