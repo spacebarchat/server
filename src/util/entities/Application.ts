@@ -37,6 +37,7 @@ export class Application extends BaseClass {
 	@ManyToOne(() => User)
 	owner: User;
 	
+	// TODO: enum this? https://discord.com/developers/docs/resources/application#application-object-application-flags
 	@Column()
 	flags: number = 0;
 	

@@ -22,6 +22,7 @@ export const ajv = new Ajv({
 	messages: true,
 	strict: true,
 	strictRequired: true,
+	allowUnionTypes: true,
 });
 
 addFormats(ajv);

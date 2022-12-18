@@ -46,3 +46,6 @@ export * from "./GatewayPayloadSchema";
 export * from "./RolePositionUpdateSchema";
 export * from "./ChannelReorderSchema";
 export * from "./UserSettingsSchema";
+export * from "./BotModifySchema";
+export * from "./ApplicationModifySchema";
+export * from "./ApplicationCreateSchema";
