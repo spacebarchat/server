@@ -1,8 +1,6 @@
 import path from "path";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import * as Models from "../entities";
-import { Migration } from "../entities/Migration";
 import { yellow, green, red } from "picocolors";
 
 // UUID extension option is only supported with postgres
@@ -44,13 +42,12 @@ export async function initDatabase(): Promise<DataSource> {
 		url: isSqlite ? undefined : dbConnectionString,
 		database: isSqlite ? dbConnectionString : undefined,
 		entities: ["dist/util/entities/*.js"],
-		synchronize: type !== "mongodb",
+		synchronize: false,
 		logging: false,
 		bigNumberStrings: false,
 		supportBigNumbers: true,
 		name: "default",
-		// TODO migrations
-		// migrations: [path.join(__dirname, "..", "migrations", "*.js")],
+		migrations: ["dist/util/migrations/*.js"],
 	});
 
 	dbConnection = await dataSource.initialize();

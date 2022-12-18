@@ -3,7 +3,6 @@ import {
 	BaseEntity,
 	BeforeInsert,
 	BeforeUpdate,
-	DeepPartial,
 	FindOptionsWhere,
 	ObjectIdColumn,
 	PrimaryColumn,

@@ -10,6 +10,7 @@
 		"start:gateway": "node dist/gateway/start.js",
 		"build": "tsc -p .",
 		"setup": "npm run build && npm run generate:schema",
+		"generate:db": "node scripts/syncronise.js",
 		"generate:rights": "node scripts/rights.js",
 		"generate:schema": "node scripts/schema.js",
 		"generate:client": "node scripts/client.js",

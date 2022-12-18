@@ -2,9 +2,7 @@ import { Column, Entity } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import crypto from "crypto";
 import { Snowflake } from "../util/Snowflake";
-import { SessionsReplace } from "..";
 import { hostname } from "os";
-import { Rights } from "../util/Rights";
 
 @Entity("config")
 export class ConfigEntity extends BaseClassWithoutId {
