@@ -40,7 +40,7 @@ router.post(
 
 		const invite = await Invite.create({
 			code: random(),
-			temporary: req.body.temporary,
+			temporary: req.body.temporary || true,
 			uses: 0,
 			max_uses: req.body.max_uses,
 			max_age: req.body.max_age,

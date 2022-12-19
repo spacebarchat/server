@@ -169,6 +169,12 @@ export class Channel extends BaseClass {
 	})
 	webhooks?: Webhook[];
 
+	@Column()
+	flags: number = 0;
+
+	@Column()
+	default_thread_rate_limit_per_user: number = 0;
+
 	// TODO: DM channel
 	static async createChannel(
 		channel: Partial<Channel>,
