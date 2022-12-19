@@ -1,11 +1,9 @@
 import { DateOfBirthConfiguration, EmailConfiguration, PasswordConfiguration } from ".";
 
 export class RegisterConfiguration {
-    //classes
     email: EmailConfiguration = new EmailConfiguration();
     dateOfBirth: DateOfBirthConfiguration = new DateOfBirthConfiguration();
     password: PasswordConfiguration = new PasswordConfiguration();
-    //base types
     disabled: boolean = false;
     requireCaptcha: boolean = true;
     requireInvite: boolean = false;
@@ -14,5 +12,5 @@ export class RegisterConfiguration {
     allowMultipleAccounts: boolean = true;
     blockProxies: boolean = true;
     incrementingDiscriminators: boolean = false; // random otherwise
-    defaultRights: string = "0";
+    defaultRights: string = "30644591655940";	// See `npm run generate:rights`
 }

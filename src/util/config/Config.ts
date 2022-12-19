@@ -1,8 +1,28 @@
-import { ApiConfiguration, ClientConfiguration, DefaultsConfiguration, EndpointConfiguration, GeneralConfiguration, GifConfiguration, GuildConfiguration, KafkaConfiguration, LimitsConfiguration, LoginConfiguration, MetricsConfiguration, RabbitMQConfiguration, RegionConfiguration, RegisterConfiguration, SecurityConfiguration, SentryConfiguration, TemplateConfiguration } from "../config";
+import {
+	ApiConfiguration,
+	CdnConfiguration,
+	ClientConfiguration,
+	DefaultsConfiguration,
+	EndpointConfiguration,
+	ExternalTokensConfiguration,
+	GeneralConfiguration,
+	GifConfiguration,
+	GuildConfiguration,
+	KafkaConfiguration,
+	LimitsConfiguration,
+	LoginConfiguration,
+	MetricsConfiguration,
+	RabbitMQConfiguration,
+	RegionConfiguration,
+	RegisterConfiguration,
+	SecurityConfiguration,
+	SentryConfiguration,
+	TemplateConfiguration
+} from "../config";
 
 export class ConfigValue {
 	gateway: EndpointConfiguration = new EndpointConfiguration();
-	cdn: EndpointConfiguration = new EndpointConfiguration();
+	cdn: CdnConfiguration = new CdnConfiguration();
 	api: ApiConfiguration = new ApiConfiguration();
 	general: GeneralConfiguration = new GeneralConfiguration();
 	limits: LimitsConfiguration = new LimitsConfiguration();
@@ -19,4 +39,5 @@ export class ConfigValue {
 	metrics: MetricsConfiguration = new MetricsConfiguration();
 	sentry: SentryConfiguration = new SentryConfiguration();
 	defaults: DefaultsConfiguration = new DefaultsConfiguration();
+	external: ExternalTokensConfiguration = new ExternalTokensConfiguration();
 }

@@ -18,7 +18,7 @@ export const DEFAULT_FETCH_OPTIONS: any = {
 
 export const getProxyUrl = (url: URL, width: number, height: number): string => {
 	const { resizeWidthMax, resizeHeightMax, imagorServerUrl } = Config.get().cdn;
-	const secret = Config.get().security.jwtSecret;	// maybe shouldn't use this?
+	const secret = Config.get().security.requestSignature;
 	width = Math.min(width || 500, resizeWidthMax || width);
 	height = Math.min(height || 500, resizeHeightMax || width);
 

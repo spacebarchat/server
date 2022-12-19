@@ -344,7 +344,7 @@ export class User extends BaseClass {
 			disabled: false,
 			deleted: false,
 			email: email,
-			rights: Config.get().security.defaultRights,
+			rights: Config.get().register.defaultRights,
 			nsfw_allowed: true, // TODO: depending on age
 			public_flags: 0,
 			flags: "0", // TODO: generate
