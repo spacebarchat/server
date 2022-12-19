@@ -39,6 +39,7 @@ export const ActivitySchema = {
 			$instance: Boolean,
 			$flags: String,
 
+			// Spotify and other rich presence data
 			$id: String,
 			$sync_id: String,
 			$metadata: {
