@@ -30,11 +30,27 @@ router.post(
 		const { register, security, limits } = Config.get();
 		const ip = getIpAdress(req);
 
+		// Reg tokens
+		// They're a one time use token that bypasses registration limits ( rates, disabled reg, etc )
+		let regTokenUsed = false;
+		if (req.get("Referrer") && req.get("Referrer")?.includes("token=")) {	// eg theyre on https://staging.fosscord.com/register?token=whatever
+			const token = req.get("Referrer")!.split("token=")[1].split("&")[0];
+			if (token) {
+				const regToken = await ValidRegistrationToken.findOne({ where: { token, expires_at: MoreThan(new Date()), } });
+				await ValidRegistrationToken.delete({ token });
+				regTokenUsed = true;
+				console.log(`[REGISTER] Registration token ${token} used for registration!`);
+			}
+			else {
+				console.log(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`);
+			}
+		}
+
 		// email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
 		let email = adjustEmail(body.email);
 
 		// check if registration is allowed
-		if (!register.allowNewRegistration) {
+		if (!regTokenUsed && !register.allowNewRegistration) {
 			throw FieldErrors({
 				email: {
 					code: "REGISTRATION_DISABLED",
@@ -53,7 +69,7 @@ router.post(
 			});
 		}
 
-		if (register.disabled) {
+		if (!regTokenUsed && register.disabled) {
 			throw FieldErrors({
 				email: {
 					code: "DISABLED",
@@ -62,7 +78,7 @@ router.post(
 			});
 		}
 
-		if (register.requireCaptcha && security.captcha.enabled) {
+		if (!regTokenUsed && register.requireCaptcha && security.captcha.enabled) {
 			const { sitekey, service } = security.captcha;
 			if (!body.captcha_key) {
 				return res?.status(400).json({
@@ -82,7 +98,7 @@ router.post(
 			}
 		}
 
-		if (!register.allowMultipleAccounts) {
+		if (!regTokenUsed && !register.allowMultipleAccounts) {
 			// TODO: check if fingerprint was eligible generated
 			const exists = await User.findOne({
 				where: { fingerprints: body.fingerprint },
@@ -101,7 +117,7 @@ router.post(
 			}
 		}
 
-		if (register.blockProxies) {
+		if (!regTokenUsed && register.blockProxies) {
 			if (isProxy(await IPAnalysis(ip))) {
 				console.log(`proxy ${ip} blocked from registration`);
 				throw new HTTPError("Your IP is blocked from registration");
@@ -187,6 +203,7 @@ router.post(
 		}
 
 		if (
+			!regTokenUsed &&
 			!body.invite &&
 			(register.requireInvite ||
 				(register.guestsRequireInvite && !register.email))
@@ -198,22 +215,6 @@ router.post(
 					message: req.t("auth:register.INVITE_ONLY"),
 				},
 			});
-		}
-
-		// Reg tokens
-		// They're a one time use token that bypasses registration rate limiter
-		let regTokenUsed = false;
-		if (req.get("Referrer")?.includes("token=")) {	// eg theyre on https://staging.fosscord.com/register?token=whatever
-			const token = req.get("Referrer")!.split("token=")[1].split("&")[0];
-			if (token) {
-				const regToken = await ValidRegistrationToken.findOne({ where: { token, expires_at: MoreThan(new Date()), } });
-				await ValidRegistrationToken.delete({ token });
-				regTokenUsed = true;
-				console.log(`[REGISTER] Registration token ${token} used for registration!`);
-			}
-			else {
-				console.log(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`);
-			}
 		}
 
 		if (
