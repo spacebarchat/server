@@ -8,6 +8,7 @@ import { User } from "./User";
 export enum WebhookType {
 	Incoming = 1,
 	ChannelFollower = 2,
+	Application = 3,
 }
 
 @Entity("webhooks")
