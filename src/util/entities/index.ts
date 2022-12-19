@@ -32,3 +32,4 @@ export * from "./ClientRelease";
 export * from "./BackupCodes";
 export * from "./Note";
 export * from "./UserSettings";
+export * from "./ValidRegistrationTokens";
