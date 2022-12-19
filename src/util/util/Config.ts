@@ -14,12 +14,16 @@ var pairs: ConfigEntity[];
 export const Config = {
 	init: async function init() {
 		if (config) return config;
-		console.log('[Config] Loading configuration...')
+		console.log('[Config] Loading configuration...');
 		pairs = await ConfigEntity.find();
 		config = pairsToConfig(pairs);
 		// TODO: this overwrites existing config values with defaults.
 		// we actually want to extend the object with new keys instead.
 		// config = (config || {}).merge(new ConfigValue());
+		// Object.assign(config, new ConfigValue());
+
+		// If a config doesn't exist, create it.
+		if (Object.keys(config).length == 0) config = new ConfigValue();
 
 		if (process.env.CONFIG_PATH) {
 			console.log(`[Config] Using config path from environment rather than database.`);
