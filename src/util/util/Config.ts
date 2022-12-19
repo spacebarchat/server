@@ -17,7 +17,9 @@ export const Config = {
 		console.log('[Config] Loading configuration...')
 		pairs = await ConfigEntity.find();
 		config = pairsToConfig(pairs);
-		config = (config || {}).merge(new ConfigValue());
+		// TODO: this overwrites existing config values with defaults.
+		// we actually want to extend the object with new keys instead.
+		// config = (config || {}).merge(new ConfigValue());
 
 		if (process.env.CONFIG_PATH) {
 			console.log(`[Config] Using config path from environment rather than database.`);
