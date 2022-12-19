@@ -6,3 +6,4 @@ export * from "./entities/index";
 export * from "./dtos/index";
 export * from "./schemas";
 export * from "./imports";
+export * from "./config"
