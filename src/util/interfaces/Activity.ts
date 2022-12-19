@@ -34,6 +34,7 @@ export interface Activity {
 	instance?: boolean;
 	flags: string; // activity flags OR d together, describes what the payload includes
 
+	// Spotify and other rich presence data
 	id?: string;
 	sync_id?: string;
 	metadata?: {
