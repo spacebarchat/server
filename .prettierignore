@@ -1,3 +1,5 @@
 assets
 dist
 node_modules
+.github
+.vscode
