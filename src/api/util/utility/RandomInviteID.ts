@@ -1,4 +1,8 @@
 import { Snowflake } from "@fosscord/util";
+import crypto from "crypto";
+
+// TODO: 'random'? seriously? who named this?
+// And why is this even here? Just use cryto.randomBytes?
 
 export function random(length = 6) {
 	// Declare all characters
@@ -8,7 +12,7 @@ export function random(length = 6) {
 	// Pick characers randomly
 	let str = "";
 	for (let i = 0; i < length; i++) {
-		str += chars.charAt(Math.floor(Math.random() * chars.length));
+		str += chars.charAt(Math.floor(crypto.randomInt(chars.length)));
 	}
 
 	return str;

@@ -7,6 +7,7 @@ import {
 	User,
 	adjustEmail,
 	RegisterSchema,
+	ValidRegistrationToken,
 } from "@fosscord/util";
 import {
 	route,
@@ -17,7 +18,7 @@ import {
 } from "@fosscord/api";
 import bcrypt from "bcrypt";
 import { HTTPError } from "lambert-server";
-import { MoreThan } from "typeorm";
+import { LessThan, MoreThan } from "typeorm";
 
 const router: Router = Router();
 
@@ -199,7 +200,24 @@ router.post(
 			});
 		}
 
+		// Reg tokens
+		// They're a one time use token that bypasses registration rate limiter
+		let regTokenUsed = false;
+		if (req.get("Referrer")?.includes("token=")) {	// eg theyre on https://staging.fosscord.com/register?token=whatever
+			const token = req.get("Referrer")!.split("token=")[1].split("&")[0];
+			if (token) {
+				const regToken = await ValidRegistrationToken.findOne({ where: { token, expires_at: MoreThan(new Date()), } });
+				await ValidRegistrationToken.delete({ token });
+				regTokenUsed = true;
+				console.log(`[REGISTER] Registration token ${token} used for registration!`);
+			}
+			else {
+				console.log(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`);
+			}
+		}
+
 		if (
+			!regTokenUsed &&
 			limits.absoluteRate.register.enabled &&
 			(await User.count({ where: { created_at: MoreThan(new Date(Date.now() - limits.absoluteRate.register.window)) } }))
 			>= limits.absoluteRate.register.limit
