@@ -29,6 +29,7 @@ import { Role } from "./Role";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Ban, PublicGuildRelations } from ".";
 import { DiscordApiErrors } from "../util/Constants";
+import { ReadyGuildDTO } from "../dtos";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
 	"id",
@@ -363,7 +364,7 @@ export class Member extends BaseClassWithoutId {
 			emitEvent({
 				event: "GUILD_CREATE",
 				data: {
-					...guild,
+					...new ReadyGuildDTO(guild).toJSON(),
 					members: [...memberPreview, { ...member, user }],
 					member_count: memberCount + 1,
 					guild_hashes: {},
@@ -373,6 +374,7 @@ export class Member extends BaseClassWithoutId {
 					stage_instances: [],
 					threads: [],
 					embedded_activities: [],
+					voice_states: guild.voice_states
 				},
 				user_id,
 			} as GuildCreateEvent),
