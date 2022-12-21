@@ -36,16 +36,19 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 	const permission = await getPermission(req.user_id, guild_id);
 	const everyone = await Role.findOneOrFail({ where: { guild_id: guild_id, name: "@everyone", position: 0 } });
 
-	if (body.roles) {
+	if (body.avatar) body.avatar = await handleFile(`/guilds/${guild_id}/users/${member_id}/avatars`, body.avatar as string);
+
+	member.assign(body);
+
+	if ('roles' in body) {
 		permission.hasThrow("MANAGE_ROLES");
+
+		body.roles = body.roles || [];
+		body.roles.filter(x => !!x);
 
 		if (body.roles.indexOf(everyone.id) === -1) body.roles.push(everyone.id);
 		member.roles = body.roles.map((x) => Role.create({ id: x })); // foreign key constraint will fail if role doesn't exist
 	}
-
-	if (body.avatar) body.avatar = await handleFile(`/guilds/${guild_id}/users/${member_id}/avatars`, body.avatar as string);
-
-	member.assign(body);
 
 	await member.save();
 
