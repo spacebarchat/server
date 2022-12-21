@@ -20,6 +20,7 @@ import {
 	Status,
 	Presence,
 	UserSettings,
+	IReadyGuildDTO,
 } from "@fosscord/util";
 
 export interface Event {
@@ -62,7 +63,7 @@ export interface ReadyEventData {
 	};
 	private_channels: Channel[]; // this will be empty for bots
 	session_id: string; // resuming
-	guilds: Guild[];
+	guilds: IReadyGuildDTO[];
 	analytics_token?: string;
 	connected_accounts?: ConnectedAccount[];
 	consents?: {
@@ -155,7 +156,7 @@ export interface ChannelRecipientRemoveEvent extends Event {
 
 export interface GuildCreateEvent extends Event {
 	event: "GUILD_CREATE";
-	data: Guild & {
+	data: IReadyGuildDTO & {
 		joined_at: Date;
 		// TODO: add them to guild
 		guild_scheduled_events: never[];

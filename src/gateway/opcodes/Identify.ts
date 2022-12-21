@@ -22,6 +22,8 @@ import {
 	IdentifySchema,
 	DefaultUserGuildSettings,
 	UserGuildSettings,
+	ReadyGuildDTO,
+	Guild,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
@@ -255,17 +257,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	};
 
 	const d: ReadyEventData = {
-		v: 8,
+		v: 9,
 		application: { id: application?.id ?? '', flags: application?.flags ?? 0 }, //TODO: check this code!
 		user: privateUser,
 		user_settings: user.settings,
 		// @ts-ignore
 		guilds: guilds.map((x) => {
-			// @ts-ignore
-			x.guild_hashes = {}; // @ts-ignore
-			x.guild_scheduled_events = []; // @ts-ignore
-			x.threads = [];
-			return x;
+			return {
+				...new ReadyGuildDTO(x as Guild & { joined_at: Date }).toJSON(),
+				guild_hashes: {},
+				joined_at: x.joined_at
+			};
 		}),
 		guild_experiments: [], // TODO
 		geo_ordered_rtc_regions: [], // TODO
@@ -298,8 +300,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		merged_members: merged_members,
 		// shard // TODO: only for user sharding
 		sessions: [], // TODO:
-		presences: [], // TODO:
-		tutorial: null,
 	};
 
 	// TODO: send real proper data structure
