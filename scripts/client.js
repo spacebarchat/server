@@ -35,10 +35,10 @@ const INSTANCE_NAME = "Fosscord";
 
 // Manual for now
 const INDEX_SCRIPTS = [
-	"83ace7450e110d16319e", // 50
-	"e02290aaa8dac5d195c2", // 1
-	"4f3b3c576b879a5f75d1", // 0?
-	"699456246fdfe7589855", // ~4500.
+	"b456855ec667950dcf68", // 50
+	"cfb9efe961b2bf3647bc", // 1
+	"f98a039261c37f892cbf", // 0?
+	"4470c87bb13810847db0", // ~4500.
 ];
 
 const doPatch = (content) => {
