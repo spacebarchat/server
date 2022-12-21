@@ -306,7 +306,7 @@ export class Guild extends BaseClass {
 			afk_timeout: 300,
 			default_message_notifications: 1, // defaults effect: setting the push default at mentions-only will save a lot
 			explicit_content_filter: 0,
-			features: Config.get().guild.defaultFeatures,
+			features: Config.get().guild.defaultFeatures || [],
 			primary_category_id: undefined,
 			id: guild_id,
 			max_members: 250000,
