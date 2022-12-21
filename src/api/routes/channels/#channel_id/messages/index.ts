@@ -247,7 +247,7 @@ router.post(
 					Attachment.create({ ...file, proxy_url: file.url }),
 				);
 			} catch (error) {
-				return res.status(400).json(error);
+				return res.status(400).json({ message: error!.toString() })
 			}
 		}
 
