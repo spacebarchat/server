@@ -11,6 +11,12 @@ export default function TestClient(app: Application) {
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "public")));
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "cache")));
 
+	app.get("*", (req, res, next) => {
+		if (Config.get().client.useTestClient) return next();
+		
+		return res.redirect("/api/ping")
+	})
+
 	// Test client is disabled, so don't need to run any more. Above should probably be moved somewhere?
 	if (!Config.get().client.useTestClient) return;
 
