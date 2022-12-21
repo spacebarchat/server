@@ -16,7 +16,7 @@ const CACHE_PATH = path.join(__dirname, "..", "assets", "cache");
 const CHANGELOG_PATH = path.join(__dirname, "..", "assets", "changelog.txt");
 const BASE_URL = "https://discord.com";
 
-const CHANGELOG_SCRIPT = "9c4b2d313c6e1c864e89.js";
+const CHANGELOG_SCRIPT = "4ec0b5948572d31df88b.js";
 
 (async () => {
 	const res = await fetch(`${BASE_URL}/assets/${CHANGELOG_SCRIPT}`);
@@ -28,7 +28,7 @@ const CHANGELOG_SCRIPT = "9c4b2d313c6e1c864e89.js";
 		.replaceAll("\n", "\\n")
 		.replaceAll("\'", "\\'");
 
-	const index = text.indexOf("e.exports='---changelog---") + 11;
+	const index = text.indexOf("t.exports='---changelog---") + 11;
 	const endIndex = text.indexOf("'\n", index);	// hmm
 
 	await fs.writeFile(
