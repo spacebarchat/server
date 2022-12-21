@@ -44,6 +44,8 @@ export const IdentifySchema = {
 		$user_settings_version: undefined,
 		$useruser_guild_settings_version: undefined,
 		$private_channels_version: Number,
+		$guild_versions: Object,
+		$api_code_version: Number,
 	},
 	$clientState: {
 		$guildHashes: Object,
@@ -51,6 +53,8 @@ export const IdentifySchema = {
 		$readStateVersion: Number,
 		$useruserGuildSettingsVersion: undefined,
 		$userGuildSettingsVersion: undefined,
+		$guildVersions: Object,
+		$apiCodeVersion: Number,
 	},
 	$v: Number,
 	$version: Number,
@@ -96,6 +100,8 @@ export interface IdentifySchema {
 		user_settings_version?: number;
 		useruser_guild_settings_version?: number;
 		private_channels_version?: number;
+		guild_versions?: any;
+		api_code_version?: number;
 	};
 	clientState?: {
 		guildHashes?: any;
@@ -103,6 +109,8 @@ export interface IdentifySchema {
 		readStateVersion?: number;
 		userGuildSettingsVersion?: number;
 		useruserGuildSettingsVersion?: number;
+		guildVersions?: any;
+		apiCodeVersion?: number;
 	};
 	v?: number;
 }
