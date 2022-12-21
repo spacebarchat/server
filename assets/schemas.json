@@ -10863,6 +10863,10 @@
                     },
                     "private_channels_version": {
                         "type": "integer"
+                    },
+                    "guild_versions": {},
+                    "api_code_version": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false
@@ -10884,6 +10888,10 @@
                         "type": "integer"
                     },
                     "useruserGuildSettingsVersion": {
+                        "type": "integer"
+                    },
+                    "guildVersions": {},
+                    "apiCodeVersion": {
                         "type": "integer"
                     }
                 },

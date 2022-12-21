@@ -24,7 +24,7 @@
 			INVITE_HOST: `${location.hostname}/invite`,
 			GUILD_TEMPLATE_HOST: "${location.host}/template",
 			GIFT_CODE_HOST: "${location.hostname}/gift",
-			RELEASE_CHANNEL: "stable",
+			RELEASE_CHANNEL: "canary",
 			MARKETING_ENDPOINT: "//discord.com",
 			BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
 			STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
@@ -33,7 +33,7 @@
 			ACTIVITY_APPLICATION_HOST: "discordsays.com",
 			PROJECT_ENV: "production",
 			REMOTE_AUTH_ENDPOINT: "//localhost:3020",
-			SENTRY_TAGS: { buildId: "75e36d9", buildType: "normal" },
+			SENTRY_TAGS: { buildId: "d5b97e42230075cb9634c419c0cf4d2f8f9ada53", buildType: "normal" },
 			MIGRATION_SOURCE_ORIGIN: "https://${location.hostname}",
 			MIGRATION_DESTINATION_ORIGIN: "https://${location.hostname}",
 			HTML_TIMESTAMP: Date.now(),
@@ -42,7 +42,7 @@
 		window.localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
 		window.localStorage.setItem(
 			"DeveloperOptionsStore",
-			`{"trace":false,"canary":false,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
+			`{"trace":false,"canary":true,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
 		);
 	</script>
 
@@ -128,10 +128,10 @@
 
 <body>
 	<div id="app-mount"></div>
-	<script src="/assets/83ace7450e110d16319e.js"></script>
-	<script src="/assets/e02290aaa8dac5d195c2.js"></script>
-	<script src="/assets/4f3b3c576b879a5f75d1.js"></script>
-	<script src="/assets/699456246fdfe7589855.js"></script>
+	<script src="/assets/b456855ec667950dcf68.js"></script>
+	<script src="/assets/cfb9efe961b2bf3647bc.js"></script>
+	<script src="/assets/f98a039261c37f892cbf.js"></script>
+	<script src="/assets/4470c87bb13810847db0.js"></script>
 	<!-- plugin marker -->
 </body>
 
