@@ -11,21 +11,21 @@ export default function TestClient(app: Application) {
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "public")));
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "cache")));
 
-	app.get("*", (req, res, next) => {
-		if (Config.get().client.useTestClient) return next();
-		
-		return res.redirect("/api/ping")
-	})
-
 	// Test client is disabled, so don't need to run any more. Above should probably be moved somewhere?
-	if (!Config.get().client.useTestClient) return;
+	if (!Config.get().client.useTestClient) {
+		app.get("*", (req, res) => {
+			return res.redirect("/api/ping");
+		});
+
+		return;
+	}
 
 	const agent = new ProxyAgent();
 
 	let html = fs.readFileSync(path.join(ASSET_FOLDER_PATH, "client_test", "index.html"), { encoding: "utf-8" });
 
 	html = applyEnv(html);	// update window.GLOBAL_ENV according to config
-	
+
 	html = applyPlugins(html);	// inject our plugins
 	app.use("/assets/plugins", express.static(path.join(ASSET_FOLDER_PATH, "plugins")));
 	app.use("/assets/inline-plugins", express.static(path.join(ASSET_FOLDER_PATH, "inline-plugins")));
@@ -38,7 +38,7 @@ export default function TestClient(app: Application) {
 		delete req.headers.host;
 
 		if (req.params.file.endsWith(".map")) return res.status(404);
-		
+
 		let response: FetchResponse;
 		let buffer: Buffer;
 		const cache = assetCache.get(req.params.file);

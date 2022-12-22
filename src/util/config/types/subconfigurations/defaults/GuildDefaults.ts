@@ -4,5 +4,4 @@ export class GuildDefaults {
     afkTimeout: number = 300;
     defaultMessageNotifications: number = 1;
     explicitContentFilter: number = 0;
-    test: number = 123;
 }
