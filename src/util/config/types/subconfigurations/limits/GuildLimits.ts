@@ -4,5 +4,4 @@ export class GuildLimits {
     maxMembers: number = 25000000;
     maxChannels: number = 65535;
     maxChannelsInCategory: number = 65535;
-    hideOfflineMember: number = 3;
 }
