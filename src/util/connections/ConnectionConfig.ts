@@ -21,7 +21,6 @@ export const ConnectionConfig = {
 	set: function set(val: Partial<any>) {
 		if (!config || !val) return;
 		config = val.merge(config);
-		console.debug("config", config); // TODO: if no more issues with sql, remove this or find the reason why it's happening
 
 		return applyConfig(config);
 	},

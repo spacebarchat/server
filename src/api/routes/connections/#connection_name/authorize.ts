@@ -6,7 +6,7 @@ import { route } from "../../../util";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const { connection_id: connection_name } = req.params;
+	const { connection_name } = req.params;
 	const connection = ConnectionStore.connections.get(connection_name);
 	if (!connection)
 		throw FieldErrors({

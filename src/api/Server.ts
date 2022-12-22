@@ -13,6 +13,7 @@ import morgan from "morgan";
 import { initInstance } from "./util/handlers/Instance";
 import { registerRoutes } from "@fosscord/util";
 import { red } from "picocolors";
+import { ConnectionConfig, ConnectionLoader } from "../util/connections";
 
 export interface FosscordServerOptions extends ServerOptions { }
 
@@ -37,6 +38,7 @@ export class FosscordServer extends Server {
 		await initDatabase();
 		await Config.init();
 		await initEvent();
+		await ConnectionConfig.init();
 		await initInstance();
 
 		let logRequests = process.env["LOG_REQUESTS"] != undefined;
@@ -98,6 +100,8 @@ export class FosscordServer extends Server {
 
 		this.app.use(ErrorHandler);
 		TestClient(this.app);
+
+		ConnectionLoader.loadConnections();
 
 		if (logRequests)
 			console.log(

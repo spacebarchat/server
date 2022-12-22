@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { ConnectedAccount } from "../entities";
 import { OrmUtils } from "../imports";
-import { ConnectionCallbackSchema } from "../schemas";
+import { ConnectedAccountSchema, ConnectionCallbackSchema } from "../schemas";
 import { DiscordApiErrors } from "../util";
 
 export default abstract class Connection {
@@ -54,7 +54,7 @@ export default abstract class Connection {
 		this.states.delete(state);
 	}
 
-	async createConnection(data: any): Promise<void> {
+	async createConnection(data: ConnectedAccountSchema): Promise<void> {
 		const ca = OrmUtils.mergeDeep(new ConnectedAccount(), data);
 		await ca.save();
 	}

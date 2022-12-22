@@ -23,7 +23,6 @@ export class ConnectionLoader {
 
 		dirs.forEach(async (x) => {
 			let modPath = path.resolve(path.join(root, x));
-			console.log(`Loading connection: ${modPath}`);
 			const mod = new (require(modPath).default)() as Connection;
 			ConnectionStore.connections.set(mod.id, mod);
 
@@ -55,11 +54,13 @@ export class ConnectionLoader {
 			console.log(
 				`[ConnectionConfig/WARN] ${id} tried to set config=null!`,
 			);
-		await ConnectionConfig.set({
+
+		const a = {
 			[id]: OrmUtils.mergeDeep(
 				ConnectionLoader.getConnectionConfig(id) || {},
 				config,
 			),
-		});
+		};
+		await ConnectionConfig.set(a);
 	}
 }
