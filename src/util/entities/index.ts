@@ -33,3 +33,4 @@ export * from "./BackupCodes";
 export * from "./Note";
 export * from "./UserSettings";
 export * from "./ValidRegistrationTokens";
+export * from "./ConnectionConfigEntity";
