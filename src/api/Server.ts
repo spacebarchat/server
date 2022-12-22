@@ -25,6 +25,8 @@ import {
 	registerRoutes,
 	Sentry,
 	WebAuthn,
+	ConnectionConfig,
+	ConnectionLoader
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
@@ -64,6 +66,7 @@ export class FosscordServer extends Server {
 		await Config.init();
 		await initEvent();
 		await Email.init();
+		await ConnectionConfig.init();
 		await initInstance();
 		await Sentry.init(this.app);
 		WebAuthn.init();
@@ -129,6 +132,8 @@ export class FosscordServer extends Server {
 		this.app.use(ErrorHandler);
 
 		Sentry.errorHandler(this.app);
+
+		ConnectionLoader.loadConnections();
 
 		if (logRequests)
 			console.log(

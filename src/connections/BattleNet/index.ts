@@ -118,15 +118,10 @@ export default class BattleNetConnection extends Connection {
 		if (exists) return false;
 		await this.createConnection({
 			user_id: userId,
-			external_id: userInfo.id,
+			external_id: userInfo.id.toString(),
 			friend_sync: params.friend_sync,
 			name: userInfo.battletag,
-			revoked: false,
-			show_activity: false,
 			type: this.id,
-			verified: true,
-			visibility: 0,
-			integrations: [],
 		});
 		return true;
 	}

@@ -40,39 +40,39 @@ export class ConnectedAccount extends BaseClass {
 	})
 	user: User;
 
-	@Column({ select: false })
-	access_token: string;
+	@Column({ select: false, nullable: true })
+	access_token?: string;
 
 	@Column({ select: false })
-	friend_sync: boolean = false;
+	friend_sync?: boolean = false;
 
 	@Column()
 	name: string;
 
 	@Column({ select: false })
-	revoked: boolean = false;
+	revoked?: boolean = false;
 
 	@Column({ select: false })
-	show_activity: boolean = true;
+	show_activity?: boolean = true;
 
 	@Column()
 	type: string;
 
 	@Column()
-	verified: boolean;
+	verified?: boolean = true;
 
 	@Column({ select: false })
-	visibility: boolean = true;
+	visibility?: number = 0;
 
 	@Column({ type: "simple-array" })
-	integrations: string[];
+	integrations?: string[] = [];
 
-	@Column({ type: "simple-json", name: "metadata" })
-	metadata_: any;
-
-	@Column()
-	metadata_visibility: boolean = true;
+	@Column({ type: "simple-json", name: "metadata", nullable: true })
+	metadata_?: any;
 
 	@Column()
-	two_way_link: boolean = false;
+	metadata_visibility?: number = 0;
+
+	@Column()
+	two_way_link?: boolean = false;
 }
