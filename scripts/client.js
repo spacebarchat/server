@@ -135,6 +135,9 @@ const doPatch = (content) => {
 		"e.isFastConnect=t; if (t !== undefined) e._doResumeOrIdentify();"
 	);
 
+	// disable qr code login
+	content = content.replaceAll(/\w\?\(\d,\w\.jsx\)\(\w*\,{authTokenCallback:this\.handleAuthToken}\):null/g, "null");
+
 	return content;
 };
 
