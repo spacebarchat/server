@@ -27,6 +27,9 @@ export type PublicConnectedAccount = Pick<
 
 @Entity("connected_accounts")
 export class ConnectedAccount extends BaseClass {
+	@Column()
+	external_id: string;
+
 	@Column({ nullable: true })
 	@RelationId((account: ConnectedAccount) => account.user)
 	user_id: string;
@@ -41,16 +44,16 @@ export class ConnectedAccount extends BaseClass {
 	access_token: string;
 
 	@Column({ select: false })
-	friend_sync: boolean;
+	friend_sync: boolean = false;
 
 	@Column()
 	name: string;
 
 	@Column({ select: false })
-	revoked: boolean;
+	revoked: boolean = false;
 
 	@Column({ select: false })
-	show_activity: boolean;
+	show_activity: boolean = true;
 
 	@Column()
 	type: string;
@@ -59,5 +62,17 @@ export class ConnectedAccount extends BaseClass {
 	verified: boolean;
 
 	@Column({ select: false })
-	visibility: number;
+	visibility: boolean = true;
+
+	@Column({ type: "simple-array" })
+	integrations: string[];
+
+	@Column({ type: "simple-json", name: "metadata" })
+	metadata_: any;
+
+	@Column()
+	metadata_visibility: boolean = true;
+
+	@Column()
+	two_way_link: boolean = false;
 }

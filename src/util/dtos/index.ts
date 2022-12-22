@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+export * from "./ConnectedAccountDTO";
 export * from "./DmChannelDTO";
 export * from "./ReadyGuildDTO";
 export * from "./UserDTO";

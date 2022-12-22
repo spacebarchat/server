@@ -43,6 +43,7 @@ import {
 	ReadyGuildDTO,
 	Guild,
 	UserTokenData,
+	ConnectedAccount,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
@@ -78,7 +79,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	this.user_id = decoded.id;
 	const session_id = this.session_id;
 
-	const [user, read_states, members, recipients, session, application] =
+	const [user, read_states, members, recipients, session, application, connected_accounts] =
 		await Promise.all([
 			User.findOneOrFail({
 				where: { id: this.user_id },
@@ -123,6 +124,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				activities: [],
 			}).save(),
 			Application.findOne({ where: { id: this.user_id } }),
+			ConnectedAccount.find({ where: { user_id: this.user_id } })
 		]);
 
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
@@ -304,7 +306,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		private_channels: channels,
 		session_id: session_id,
 		analytics_token: "", // TODO
-		connected_accounts: [], // TODO
+		connected_accounts,
 		consents: {
 			personalization: {
 				consented: false, // TODO
