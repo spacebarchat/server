@@ -39,7 +39,8 @@ router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, re
 		permission.hasThrow("MANAGE_ROLES");
 
 		if (body.roles.indexOf(everyone.id) === -1) body.roles.push(everyone.id);
-		member.roles = body.roles.map((x) => OrmUtils.mergeDeep(new Role(), { id: x })); // foreign key constraint will fail if role doesn't exist
+		// member.roles = body.roles.map((x) => OrmUtils.mergeDeep(new Role(), { id: x })); // foreign key constraint will fail if role doesn't exist
+		body.roles = body.roles.map((x) => OrmUtils.mergeDeep(new Role(), { id: x }));
 	}
 
 	if (body.avatar) body.avatar = await handleFile(`/guilds/${guild_id}/users/${member_id}/avatars`, body.avatar as string);
