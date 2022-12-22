@@ -32,10 +32,12 @@ export class ConnectedAccountDTO {
 		this.show_activity = connectedAccount.show_activity;
 		this.type = connectedAccount.type;
 		this.verified = connectedAccount.verified;
-		this.visibility = connectedAccount.visibility;
+		this.visibility = +(connectedAccount.visibility || false);
 		this.integrations = connectedAccount.integrations;
 		this.metadata_ = connectedAccount.metadata_;
-		this.metadata_visibility = connectedAccount.metadata_visibility;
+		this.metadata_visibility = +(
+			connectedAccount.metadata_visibility || false
+		);
 		this.two_way_link = connectedAccount.two_way_link;
 	}
 }

@@ -28,6 +28,7 @@ export * from "./ClientRelease";
 export * from "./Config";
 export * from "./ConnectedAccount";
 export * from "./ConnectionConfigEntity";
+export * from "./ConnectionUpdateSchema";
 export * from "./EmbedCache";
 export * from "./Emoji";
 export * from "./Encryption";
