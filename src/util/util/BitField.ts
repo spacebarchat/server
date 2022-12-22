@@ -136,12 +136,22 @@ export class BitField {
 	static resolve(bit: BitFieldResolvable = BigInt(0)): bigint {
 		// @ts-ignore
 		const FLAGS = this.FLAGS || this.constructor?.FLAGS;
+
+		if (typeof bit === "string") {
+			if (typeof FLAGS[bit] !== "undefined")
+				return FLAGS[bit];
+			else
+				bit = BigInt(bit);
+		}
+
 		if (
 			(typeof bit === "number" || typeof bit === "bigint") &&
 			bit >= BigInt(0)
 		)
 			return BigInt(bit);
+
 		if (bit instanceof BitField) return bit.bitfield;
+
 		if (Array.isArray(bit)) {
 			// @ts-ignore
 			const resolve = this.constructor?.resolve || this.resolve;
@@ -149,8 +159,7 @@ export class BitField {
 				.map((p) => resolve.call(this, p))
 				.reduce((prev, p) => BigInt(prev) | BigInt(p), BigInt(0));
 		}
-		if (typeof bit === "string" && typeof FLAGS[bit] !== "undefined")
-			return FLAGS[bit];
+
 		throw new RangeError("BITFIELD_INVALID: " + bit);
 	}
 }
