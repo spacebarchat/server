@@ -1,6 +1,5 @@
+import { ConnectionStore, FieldErrors } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { FieldErrors } from "../../../../util";
-import { ConnectionStore } from "../../../../util/connections";
 import { route } from "../../../util";
 
 const router = Router();

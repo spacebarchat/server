@@ -1,10 +1,6 @@
 import { route } from "@fosscord/api";
+import { ConnectedAccount, DiscordApiErrors, OrmUtils } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import {
-	ConnectedAccount,
-	DiscordApiErrors,
-	OrmUtils,
-} from "../../../../../../../util";
 const router = Router();
 
 // TODO: connection update schema

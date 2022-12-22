@@ -1,10 +1,10 @@
-import { Request, Response, Router } from "express";
 import {
 	ConnectionCallbackSchema,
+	ConnectionStore,
 	emitEvent,
 	FieldErrors,
-} from "../../../../util";
-import { ConnectionStore } from "../../../../util/connections";
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import { route } from "../../../util";
 
 const router = Router();

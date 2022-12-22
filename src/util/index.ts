@@ -1,9 +1,10 @@
 import "reflect-metadata";
 
-export * from "./util/index";
-export * from "./interfaces/index";
-export * from "./entities/index";
+export * from "./config";
+export * from "./connections/index";
 export * from "./dtos/index";
-export * from "./schemas";
+export * from "./entities/index";
 export * from "./imports";
-export * from "./config"
+export * from "./interfaces/index";
+export * from "./schemas";
+export * from "./util/index";
