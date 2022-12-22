@@ -1,7 +1,7 @@
 import { RouteRateLimit, RateLimitOptions } from ".";
 
 export class RateLimits {
-	disabled: boolean = true;
+	enabled: boolean = false;
 	ip: Omit<RateLimitOptions, "bot_count"> = {
 		count: 500,
 		window: 5
