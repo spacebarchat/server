@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { Config, ConnectionCallbackSchema, DiscordApiErrors } from "../../util";
+import { Config, ConnectedAccount, ConnectionCallbackSchema, DiscordApiErrors } from "../../util";
 import Connection from "../../util/connections/Connection";
 import { ConnectionLoader } from "../../util/connections/ConnectionLoader";
 import { BattleNetSettings } from "./BattleNetSettings";
@@ -46,8 +46,7 @@ export default class BattleNetConnection extends Connection {
 		// TODO: probably shouldn't rely on cdn as this could be different from what we actually want. we should have an api endpoint setting.
 		url.searchParams.append(
 			"redirect_uri",
-			`${
-				Config.get().cdn.endpointPrivate || "http://localhost:3001"
+			`${Config.get().cdn.endpointPrivate || "http://localhost:3001"
 			}/connections/${this.id}/callback`,
 		);
 		url.searchParams.append("scope", this.scopes.join(" "));
@@ -75,9 +74,8 @@ export default class BattleNetConnection extends Connection {
 				code: code,
 				client_id: this.settings.clientId!,
 				client_secret: this.settings.clientSecret!,
-				redirect_uri: `${
-					Config.get().cdn.endpointPrivate || "http://localhost:3001"
-				}/connections/${this.id}/callback`,
+				redirect_uri: `${Config.get().cdn.endpointPrivate || "http://localhost:3001"
+					}/connections/${this.id}/callback`,
 			}),
 		})
 			.then((res) => res.json())
@@ -108,21 +106,21 @@ export default class BattleNetConnection extends Connection {
 			});
 	}
 
-	async handleCallback(params: ConnectionCallbackSchema): Promise<boolean> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const userId = this.getUserId(params.state);
 		const token = await this.exchangeCode(params.state, params.code!);
 		const userInfo = await this.getUser(token);
 
 		const exists = await this.hasConnection(userId, userInfo.id.toString());
 
-		if (exists) return false;
-		await this.createConnection({
+		if (exists) return null;
+		
+		return await this.createConnection({
 			user_id: userId,
 			external_id: userInfo.id.toString(),
 			friend_sync: params.friend_sync,
 			name: userInfo.battletag,
 			type: this.id,
 		});
-		return true;
 	}
 }

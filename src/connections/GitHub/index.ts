@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { Config, ConnectionCallbackSchema, DiscordApiErrors } from "../../util";
+import { Config, ConnectedAccount, ConnectionCallbackSchema, DiscordApiErrors } from "../../util";
 import Connection from "../../util/connections/Connection";
 import { ConnectionLoader } from "../../util/connections/ConnectionLoader";
 import { GitHubSettings } from "./GitHubSettings";
@@ -89,21 +89,21 @@ export default class GitHubConnection extends Connection {
 		}).then((res) => res.json());
 	}
 
-	async handleCallback(params: ConnectionCallbackSchema): Promise<boolean> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const userId = this.getUserId(params.state);
 		const token = await this.exchangeCode(params.state, params.code!);
 		const userInfo = await this.getUser(token);
 
 		const exists = await this.hasConnection(userId, userInfo.id.toString());
 
-		if (exists) return false;
-		await this.createConnection({
+		if (exists) return null;
+
+		return await this.createConnection({
 			user_id: userId,
 			external_id: userInfo.id.toString(),
 			friend_sync: params.friend_sync,
 			name: userInfo.name,
 			type: this.id,
 		});
-		return true;
 	}
 }

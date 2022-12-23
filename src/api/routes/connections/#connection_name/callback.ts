@@ -1,11 +1,11 @@
-import { Request, Response, Router } from "express";
+import { route } from "@fosscord/api";
 import {
 	ConnectionCallbackSchema,
+	ConnectionStore,
 	emitEvent,
 	FieldErrors,
-} from "../../../../util";
-import { ConnectionStore } from "../../../../util/connections";
-import { route } from "../../../util";
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -36,15 +36,16 @@ router.post(
 
 		const body = req.body as ConnectionCallbackSchema;
 		const userId = connection.getUserId(body.state);
-		const emit = await connection.handleCallback(body);
+		const connectedAccnt = await connection.handleCallback(body);
 
 		// whether we should emit a connections update event, only used when a connection doesnt already exist
-		if (emit)
+		if (connectedAccnt)
 			emitEvent({
 				event: "USER_CONNECTIONS_UPDATE",
-				data: {},
+				data: connectedAccnt,
 				user_id: userId,
 			});
+
 		res.sendStatus(204);
 	},
 );
