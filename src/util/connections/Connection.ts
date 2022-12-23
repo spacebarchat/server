@@ -21,7 +21,7 @@ export default abstract class Connection {
 	 * Processes the callback
 	 * @param args Callback arguments
 	 */
-	abstract handleCallback(params: ConnectionCallbackSchema): Promise<boolean>;
+	abstract handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null>;
 
 	/**
 	 * Gets a user id from state
@@ -54,9 +54,10 @@ export default abstract class Connection {
 		this.states.delete(state);
 	}
 
-	async createConnection(data: ConnectedAccountSchema): Promise<void> {
-		const ca = OrmUtils.mergeDeep(new ConnectedAccount(), data);
+	async createConnection(data: ConnectedAccountSchema): Promise<ConnectedAccount> {
+		const ca = ConnectedAccount.create({ ...data });
 		await ca.save();
+		return ca;
 	}
 
 	async hasConnection(userId: string, externalId: string): Promise<boolean> {
