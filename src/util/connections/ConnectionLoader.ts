@@ -34,9 +34,11 @@ export class ConnectionLoader {
 	public static getConnectionConfig(id: string, defaults?: any): any {
 		let cfg = ConnectionConfig.get()[id];
 		if (defaults) {
-			if (cfg) cfg = OrmUtils.mergeDeep(defaults, cfg);
-			else cfg = defaults;
-			this.setConnectionConfig(id, cfg);
+			if (cfg) cfg = Object.assign({}, defaults, cfg);
+			else {
+				cfg = defaults;
+				this.setConnectionConfig(id, cfg);
+			}
 		}
 
 		if (!cfg)
@@ -55,12 +57,8 @@ export class ConnectionLoader {
 				`[ConnectionConfig/WARN] ${id} tried to set config=null!`,
 			);
 
-		const a = {
-			[id]: OrmUtils.mergeDeep(
-				ConnectionLoader.getConnectionConfig(id) || {},
-				config,
-			),
-		};
-		await ConnectionConfig.set(a);
+		await ConnectionConfig.set({
+			[id]: Object.assign(config, (ConnectionLoader.getConnectionConfig(id) || {}))
+		});
 	}
 }
