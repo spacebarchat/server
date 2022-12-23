@@ -32,6 +32,7 @@ export * from "./ChannelReorderSchema";
 export * from "./CodesVerificationSchema";
 export * from "./ConnectedAccountSchema";
 export * from "./ConnectionCallbackSchema";
+export * from "./ConnectionUpdateSchema";
 export * from "./DmChannelCreateSchema";
 export * from "./EmojiCreateSchema";
 export * from "./EmojiModifySchema";
