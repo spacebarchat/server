@@ -20,6 +20,7 @@ interface OAuthTokenResponse {
 interface UserResponse {
 	id: string;
 	username: string;
+	discriminator: string;
 	avatar_url: string | null;
 }
 
@@ -119,7 +120,7 @@ export default class DiscordConnection extends Connection {
 			user_id: userId,
 			external_id: userInfo.id,
 			friend_sync: params.friend_sync,
-			name: userInfo.username,
+			name: `${userInfo.username}#${userInfo.discriminator}`,
 			type: this.id,
 		});
 	}
