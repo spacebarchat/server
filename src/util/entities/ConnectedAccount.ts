@@ -42,7 +42,7 @@ export class ConnectedAccount extends BaseClass {
 	verified?: boolean = true;
 
 	@Column({ select: false })
-	visibility?: boolean = false;
+	visibility?: number = 0;
 
 	@Column({ type: "simple-array" })
 	integrations?: string[] = [];
@@ -51,7 +51,7 @@ export class ConnectedAccount extends BaseClass {
 	metadata_?: any;
 
 	@Column()
-	metadata_visibility?: boolean = false;
+	metadata_visibility?: number = 0;
 
 	@Column()
 	two_way_link?: boolean = false;
