@@ -60,4 +60,5 @@ export * from "./BotModifySchema";
 export * from "./ApplicationModifySchema";
 export * from "./ApplicationCreateSchema";
 export * from "./ConnectionCallbackSchema";
-export * from "./ConnectedAccountSchema"
+export * from "./ConnectedAccountSchema";
+export * from "./ConnectionUpdateSchema";
