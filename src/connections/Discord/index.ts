@@ -1,11 +1,11 @@
-import fetch from "node-fetch";
 import {
 	Config,
 	ConnectedAccount,
 	ConnectionCallbackSchema,
-	DiscordApiErrors,
 	ConnectionLoader,
+	DiscordApiErrors,
 } from "@fosscord/util";
+import fetch from "node-fetch";
 import Connection from "../../util/connections/Connection";
 import { DiscordSettings } from "./DiscordSettings";
 
@@ -25,8 +25,8 @@ interface UserResponse {
 
 export default class DiscordConnection extends Connection {
 	public readonly id = "discord";
-	public readonly authorizeUrl = "https://discord.com/oauth2/authorize";
-	public readonly tokenUrl = "https://discord.com/oauth2/token";
+	public readonly authorizeUrl = "https://discord.com/api/oauth2/authorize";
+	public readonly tokenUrl = "https://discord.com/api/oauth2/token";
 	public readonly userInfoUrl = "https://discord.com/api/users/@me";
 	public readonly scopes = ["identify"];
 	settings: DiscordSettings = new DiscordSettings();
@@ -52,31 +52,37 @@ export default class DiscordConnection extends Connection {
 		// TODO: probably shouldn't rely on cdn as this could be different from what we actually want. we should have an api endpoint setting.
 		url.searchParams.append(
 			"redirect_uri",
-			`${Config.get().cdn.endpointPrivate || "http://localhost:3001"
+			`${
+				Config.get().cdn.endpointPrivate || "http://localhost:3001"
 			}/connections/${this.id}/callback`,
 		);
 
 		return url.toString();
 	}
 
-	getTokenUrl(code: string): string {
-		const url = new URL(this.tokenUrl);
-		url.searchParams.append("client_id", this.settings.clientId!);
-		url.searchParams.append("client_secret", this.settings.clientSecret!);
-		url.searchParams.append("grant_type", "authorization_code");
-		url.searchParams.append("code", code);
-		return url.toString();
+	getTokenUrl(): string {
+		return this.tokenUrl;
 	}
 
 	async exchangeCode(state: string, code: string): Promise<string> {
 		this.validateState(state);
-		const url = this.getTokenUrl(code);
+		const url = this.getTokenUrl();
 
 		return fetch(url, {
 			method: "POST",
 			headers: {
 				Accept: "application/json",
+				"Content-Type": "application/x-www-form-urlencoded",
 			},
+			body: new URLSearchParams({
+				client_id: this.settings.clientId!,
+				client_secret: this.settings.clientSecret!,
+				grant_type: "authorization_code",
+				code: code,
+				redirect_uri: `${
+					Config.get().cdn.endpointPrivate || "http://localhost:3001"
+				}/connections/${this.id}/callback`,
+			}),
 		})
 			.then((res) => res.json())
 			.then((res: OAuthTokenResponse) => res.access_token)
@@ -98,7 +104,9 @@ export default class DiscordConnection extends Connection {
 		}).then((res) => res.json());
 	}
 
-	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
+	async handleCallback(
+		params: ConnectionCallbackSchema,
+	): Promise<ConnectedAccount | null> {
 		const userId = this.getUserId(params.state);
 		const token = await this.exchangeCode(params.state, params.code!);
 		const userInfo = await this.getUser(token);
@@ -113,6 +121,6 @@ export default class DiscordConnection extends Connection {
 			friend_sync: params.friend_sync,
 			name: userInfo.username,
 			type: this.id,
-		})
+		});
 	}
 }
