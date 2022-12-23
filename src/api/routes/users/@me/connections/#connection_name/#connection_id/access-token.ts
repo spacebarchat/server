@@ -15,8 +15,8 @@ const router = Router();
 // spotify is disabled here because it cant be used
 const ALLOWED_CONNECTIONS = ["twitch", "youtube"];
 
+// NOTE: this route has not been extensively tested, as the required connections are not implemented as of writing
 router.get("/", route({}), async (req: Request, res: Response) => {
-	// TODO: get the current access token or refresh it if it's expired
 	const { connection_name, connection_id } = req.params;
 
 	const connection = ConnectionStore.connections.get(connection_id);
