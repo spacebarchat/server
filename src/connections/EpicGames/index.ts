@@ -7,7 +7,7 @@ import {
 } from "@fosscord/util";
 import fetch from "node-fetch";
 import Connection from "../../util/connections/Connection";
-import { GitHubSettings } from "./GitHubSettings";
+import { EpicGamesSettings } from "./EpicGamesSettings";
 
 interface OAuthTokenResponse {
 	access_token: string;
@@ -17,25 +17,35 @@ interface OAuthTokenResponse {
 	expires_in?: number;
 }
 
-interface UserResponse {
-	login: string;
-	id: number;
-	name: string;
+export interface UserResponse {
+	accountId: string;
+	displayName: string;
+	preferredLanguage: string;
 }
 
-export default class GitHubConnection extends Connection {
-	public readonly id = "github";
-	public readonly authorizeUrl = "https://github.com/login/oauth/authorize";
-	public readonly tokenUrl = "https://github.com/login/oauth/access_token";
-	public readonly userInfoUrl = "https://api.github.com/user";
-	public readonly scopes = ["read:user"];
-	settings: GitHubSettings = new GitHubSettings();
+export interface EpicTokenResponse extends OAuthTokenResponse {
+	expires_at: string;
+	refresh_expires_in: number;
+	refresh_expires_at: string;
+	account_id: string;
+	client_id: string;
+	application_id: string;
+}
+
+export default class EpicGamesConnection extends Connection {
+	public readonly id = "epicgames";
+	public readonly authorizeUrl = "https://www.epicgames.com/id/authorize";
+	public readonly tokenUrl = "https://api.epicgames.dev/epic/oauth/v1/token";
+	public readonly userInfoUrl =
+		"https://api.epicgames.dev/epic/id/v1/accounts";
+	public readonly scopes = ["basic profile"];
+	settings: EpicGamesSettings = new EpicGamesSettings();
 
 	init(): void {
 		this.settings = ConnectionLoader.getConnectionConfig(
 			this.id,
 			this.settings,
-		) as GitHubSettings;
+		) as EpicGamesSettings;
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -50,32 +60,37 @@ export default class GitHubConnection extends Connection {
 				Config.get().cdn.endpointPrivate || "http://localhost:3001"
 			}/connections/${this.id}/callback`,
 		);
+		url.searchParams.append("response_type", "code");
 		url.searchParams.append("scope", this.scopes.join(" "));
 		url.searchParams.append("state", state);
 		return url.toString();
 	}
 
-	getTokenUrl(code: string): string {
-		const url = new URL(this.tokenUrl);
-		url.searchParams.append("client_id", this.settings.clientId!);
-		url.searchParams.append("client_secret", this.settings.clientSecret!);
-		url.searchParams.append("code", code);
-		return url.toString();
+	getTokenUrl(): string {
+		return this.tokenUrl;
 	}
 
 	async exchangeCode(state: string, code: string): Promise<string> {
 		this.validateState(state);
 
-		const url = this.getTokenUrl(code);
+		const url = this.getTokenUrl();
 
 		return fetch(url.toString(), {
 			method: "POST",
 			headers: {
 				Accept: "application/json",
+				Authorization: `Basic ${Buffer.from(
+					`${this.settings.clientId}:${this.settings.clientSecret}`,
+				).toString("base64")}`,
+				"Content-Type": "application/x-www-form-urlencoded",
 			},
+			body: new URLSearchParams({
+				grant_type: "authorization_code",
+				code,
+			}),
 		})
 			.then((res) => res.json())
-			.then((res: OAuthTokenResponse) => res.access_token)
+			.then((res: EpicTokenResponse) => res.access_token)
 			.catch((e) => {
 				console.error(
 					`Error exchanging token for ${this.id} connection: ${e}`,
@@ -84,8 +99,12 @@ export default class GitHubConnection extends Connection {
 			});
 	}
 
-	async getUser(token: string): Promise<UserResponse> {
+	async getUser(token: string): Promise<UserResponse[]> {
+		const { sub } = JSON.parse(
+			Buffer.from(token.split(".")[1], "base64").toString("utf8"),
+		);
 		const url = new URL(this.userInfoUrl);
+		url.searchParams.append("accountId", sub);
 		return fetch(url.toString(), {
 			method: "GET",
 			headers: {
@@ -101,15 +120,15 @@ export default class GitHubConnection extends Connection {
 		const token = await this.exchangeCode(params.state, params.code!);
 		const userInfo = await this.getUser(token);
 
-		const exists = await this.hasConnection(userId, userInfo.id.toString());
+		const exists = await this.hasConnection(userId, userInfo[0].accountId);
 
 		if (exists) return null;
 
 		return await this.createConnection({
 			user_id: userId,
-			external_id: userInfo.id.toString(),
+			external_id: userInfo[0].accountId,
 			friend_sync: params.friend_sync,
-			name: userInfo.name,
+			name: userInfo[0].displayName,
 			type: this.id,
 		});
 	}
