@@ -7,7 +7,7 @@ import {
 } from "@fosscord/util";
 import fetch from "node-fetch";
 import Connection from "../../util/connections/Connection";
-import { GitHubSettings } from "./GitHubSettings";
+import { FacebookSettings } from "./FacebookSettings";
 
 interface OAuthTokenResponse {
 	access_token: string;
@@ -17,25 +17,35 @@ interface OAuthTokenResponse {
 	expires_in?: number;
 }
 
-interface UserResponse {
-	login: string;
-	id: number;
-	name: string;
+export interface FacebookErrorResponse {
+	error: {
+		message: string;
+		type: string;
+		code: number;
+		fbtrace_id: string;
+	};
 }
 
-export default class GitHubConnection extends Connection {
-	public readonly id = "github";
-	public readonly authorizeUrl = "https://github.com/login/oauth/authorize";
-	public readonly tokenUrl = "https://github.com/login/oauth/access_token";
-	public readonly userInfoUrl = "https://api.github.com/user";
-	public readonly scopes = ["read:user"];
-	settings: GitHubSettings = new GitHubSettings();
+interface UserResponse {
+	name: string;
+	id: string;
+}
+
+export default class FacebookConnection extends Connection {
+	public readonly id = "facebook";
+	public readonly authorizeUrl =
+		"https://www.facebook.com/v14.0/dialog/oauth";
+	public readonly tokenUrl =
+		"https://graph.facebook.com/v14.0/oauth/access_token";
+	public readonly userInfoUrl = "https://graph.facebook.com/v14.0/me";
+	public readonly scopes = ["public_profile"];
+	settings: FacebookSettings = new FacebookSettings();
 
 	init(): void {
 		this.settings = ConnectionLoader.getConnectionConfig(
 			this.id,
 			this.settings,
-		) as GitHubSettings;
+		) as FacebookSettings;
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -50,8 +60,10 @@ export default class GitHubConnection extends Connection {
 				Config.get().cdn.endpointPrivate || "http://localhost:3001"
 			}/connections/${this.id}/callback`,
 		);
-		url.searchParams.append("scope", this.scopes.join(" "));
 		url.searchParams.append("state", state);
+		url.searchParams.append("response_type", "code");
+		url.searchParams.append("scope", this.scopes.join(" "));
+		url.searchParams.append("display", "popup");
 		return url.toString();
 	}
 
@@ -60,6 +72,12 @@ export default class GitHubConnection extends Connection {
 		url.searchParams.append("client_id", this.settings.clientId!);
 		url.searchParams.append("client_secret", this.settings.clientSecret!);
 		url.searchParams.append("code", code);
+		url.searchParams.append(
+			"redirect_uri",
+			`${
+				Config.get().cdn.endpointPrivate || "http://localhost:3001"
+			}/connections/${this.id}/callback`,
+		);
 		return url.toString();
 	}
 
@@ -69,13 +87,16 @@ export default class GitHubConnection extends Connection {
 		const url = this.getTokenUrl(code);
 
 		return fetch(url.toString(), {
-			method: "POST",
+			method: "GET",
 			headers: {
 				Accept: "application/json",
 			},
 		})
 			.then((res) => res.json())
-			.then((res: OAuthTokenResponse) => res.access_token)
+			.then((res: OAuthTokenResponse & FacebookErrorResponse) => {
+				if (res.error) throw new Error(res.error.message);
+				return res.access_token;
+			})
 			.catch((e) => {
 				console.error(
 					`Error exchanging token for ${this.id} connection: ${e}`,
@@ -91,7 +112,12 @@ export default class GitHubConnection extends Connection {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
-		}).then((res) => res.json());
+		})
+			.then((res) => res.json())
+			.then((res: UserResponse & FacebookErrorResponse) => {
+				if (res.error) throw new Error(res.error.message);
+				return res;
+			});
 	}
 
 	async handleCallback(
@@ -101,13 +127,13 @@ export default class GitHubConnection extends Connection {
 		const token = await this.exchangeCode(params.state, params.code!);
 		const userInfo = await this.getUser(token);
 
-		const exists = await this.hasConnection(userId, userInfo.id.toString());
+		const exists = await this.hasConnection(userId, userInfo.id);
 
 		if (exists) return null;
 
 		return await this.createConnection({
 			user_id: userId,
-			external_id: userInfo.id.toString(),
+			external_id: userInfo.id,
 			friend_sync: params.friend_sync,
 			name: userInfo.name,
 			type: this.id,

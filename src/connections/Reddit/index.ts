@@ -7,7 +7,7 @@ import {
 } from "@fosscord/util";
 import fetch from "node-fetch";
 import Connection from "../../util/connections/Connection";
-import { GitHubSettings } from "./GitHubSettings";
+import { RedditSettings } from "./RedditSettings";
 
 interface OAuthTokenResponse {
 	access_token: string;
@@ -17,25 +17,37 @@ interface OAuthTokenResponse {
 	expires_in?: number;
 }
 
-interface UserResponse {
-	login: string;
-	id: number;
+export interface UserResponse {
+	verified: boolean;
+	coins: number;
+	id: string;
+	is_mod: boolean;
+	has_verified_email: boolean;
+	total_karma: number;
 	name: string;
+	created: number;
+	gold_creddits: number;
+	created_utc: number;
 }
 
-export default class GitHubConnection extends Connection {
-	public readonly id = "github";
-	public readonly authorizeUrl = "https://github.com/login/oauth/authorize";
-	public readonly tokenUrl = "https://github.com/login/oauth/access_token";
-	public readonly userInfoUrl = "https://api.github.com/user";
-	public readonly scopes = ["read:user"];
-	settings: GitHubSettings = new GitHubSettings();
+export interface ErrorResponse {
+	message: string;
+	error: number;
+}
+
+export default class RedditConnection extends Connection {
+	public readonly id = "reddit";
+	public readonly authorizeUrl = "https://www.reddit.com/api/v1/authorize";
+	public readonly tokenUrl = "https://www.reddit.com/api/v1/access_token";
+	public readonly userInfoUrl = "https://oauth.reddit.com/api/v1/me";
+	public readonly scopes = ["identity"];
+	settings: RedditSettings = new RedditSettings();
 
 	init(): void {
 		this.settings = ConnectionLoader.getConnectionConfig(
 			this.id,
 			this.settings,
-		) as GitHubSettings;
+		) as RedditSettings;
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -50,29 +62,37 @@ export default class GitHubConnection extends Connection {
 				Config.get().cdn.endpointPrivate || "http://localhost:3001"
 			}/connections/${this.id}/callback`,
 		);
+		url.searchParams.append("response_type", "code");
 		url.searchParams.append("scope", this.scopes.join(" "));
 		url.searchParams.append("state", state);
 		return url.toString();
 	}
 
-	getTokenUrl(code: string): string {
-		const url = new URL(this.tokenUrl);
-		url.searchParams.append("client_id", this.settings.clientId!);
-		url.searchParams.append("client_secret", this.settings.clientSecret!);
-		url.searchParams.append("code", code);
-		return url.toString();
+	getTokenUrl(): string {
+		return this.tokenUrl;
 	}
 
 	async exchangeCode(state: string, code: string): Promise<string> {
 		this.validateState(state);
 
-		const url = this.getTokenUrl(code);
+		const url = this.getTokenUrl();
 
 		return fetch(url.toString(), {
 			method: "POST",
 			headers: {
 				Accept: "application/json",
+				Authorization: `Basic ${Buffer.from(
+					`${this.settings.clientId}:${this.settings.clientSecret}`,
+				).toString("base64")}`,
+				"Content-Type": "application/x-www-form-urlencoded",
 			},
+			body: new URLSearchParams({
+				grant_type: "authorization_code",
+				code: code,
+				redirect_uri: `${
+					Config.get().cdn.endpointPrivate || "http://localhost:3001"
+				}/connections/${this.id}/callback`,
+			}),
 		})
 			.then((res) => res.json())
 			.then((res: OAuthTokenResponse) => res.access_token)
@@ -105,11 +125,15 @@ export default class GitHubConnection extends Connection {
 
 		if (exists) return null;
 
+		// TODO: connection metadata
+
 		return await this.createConnection({
+			access_token: token,
 			user_id: userId,
 			external_id: userInfo.id.toString(),
 			friend_sync: params.friend_sync,
 			name: userInfo.name,
+			verified: userInfo.has_verified_email,
 			type: this.id,
 		});
 	}

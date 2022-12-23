@@ -7,7 +7,7 @@ import {
 } from "@fosscord/util";
 import fetch from "node-fetch";
 import Connection from "../../util/connections/Connection";
-import { GitHubSettings } from "./GitHubSettings";
+import { SpotifySettings } from "./SpotifySettings";
 
 interface OAuthTokenResponse {
 	access_token: string;
@@ -17,25 +17,41 @@ interface OAuthTokenResponse {
 	expires_in?: number;
 }
 
-interface UserResponse {
-	login: string;
-	id: number;
-	name: string;
+export interface UserResponse {
+	display_name: string;
+	id: string;
 }
 
-export default class GitHubConnection extends Connection {
-	public readonly id = "github";
-	public readonly authorizeUrl = "https://github.com/login/oauth/authorize";
-	public readonly tokenUrl = "https://github.com/login/oauth/access_token";
-	public readonly userInfoUrl = "https://api.github.com/user";
-	public readonly scopes = ["read:user"];
-	settings: GitHubSettings = new GitHubSettings();
+export interface TokenErrorResponse {
+	error: string;
+	error_description: string;
+}
+
+export interface ErrorResponse {
+	error: {
+		status: number;
+		message: string;
+	};
+}
+
+export default class SpotifyConnection extends Connection {
+	public readonly id = "spotify";
+	public readonly authorizeUrl = "https://accounts.spotify.com/authorize";
+	public readonly tokenUrl = "https://accounts.spotify.com/api/token";
+	public readonly userInfoUrl = "https://api.spotify.com/v1/me";
+	public readonly scopes = [
+		"user-read-private",
+		"user-read-playback-state",
+		"user-modify-playback-state",
+		"user-read-currently-playing",
+	];
+	settings: SpotifySettings = new SpotifySettings();
 
 	init(): void {
 		this.settings = ConnectionLoader.getConnectionConfig(
 			this.id,
 			this.settings,
-		) as GitHubSettings;
+		) as SpotifySettings;
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -50,32 +66,43 @@ export default class GitHubConnection extends Connection {
 				Config.get().cdn.endpointPrivate || "http://localhost:3001"
 			}/connections/${this.id}/callback`,
 		);
+		url.searchParams.append("response_type", "code");
 		url.searchParams.append("scope", this.scopes.join(" "));
 		url.searchParams.append("state", state);
 		return url.toString();
 	}
 
-	getTokenUrl(code: string): string {
-		const url = new URL(this.tokenUrl);
-		url.searchParams.append("client_id", this.settings.clientId!);
-		url.searchParams.append("client_secret", this.settings.clientSecret!);
-		url.searchParams.append("code", code);
-		return url.toString();
+	getTokenUrl(): string {
+		return this.tokenUrl;
 	}
 
 	async exchangeCode(state: string, code: string): Promise<string> {
 		this.validateState(state);
 
-		const url = this.getTokenUrl(code);
+		const url = this.getTokenUrl();
 
 		return fetch(url.toString(), {
 			method: "POST",
 			headers: {
 				Accept: "application/json",
+				"Content-Type": "application/x-www-form-urlencoded",
+				Authorization: `Basic ${Buffer.from(
+					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
+				).toString("base64")}`,
 			},
+			body: new URLSearchParams({
+				grant_type: "authorization_code",
+				code: code,
+				redirect_uri: `${
+					Config.get().cdn.endpointPrivate || "http://localhost:3001"
+				}/connections/${this.id}/callback`,
+			}),
 		})
 			.then((res) => res.json())
-			.then((res: OAuthTokenResponse) => res.access_token)
+			.then((res: OAuthTokenResponse & TokenErrorResponse) => {
+				if (res.error) throw new Error(res.error_description);
+				return res.access_token;
+			})
 			.catch((e) => {
 				console.error(
 					`Error exchanging token for ${this.id} connection: ${e}`,
@@ -91,7 +118,12 @@ export default class GitHubConnection extends Connection {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
-		}).then((res) => res.json());
+		})
+			.then((res) => res.json())
+			.then((res: UserResponse & ErrorResponse) => {
+				if (res.error) throw new Error(res.error.message);
+				return res;
+			});
 	}
 
 	async handleCallback(
@@ -101,15 +133,15 @@ export default class GitHubConnection extends Connection {
 		const token = await this.exchangeCode(params.state, params.code!);
 		const userInfo = await this.getUser(token);
 
-		const exists = await this.hasConnection(userId, userInfo.id.toString());
+		const exists = await this.hasConnection(userId, userInfo.id);
 
 		if (exists) return null;
 
 		return await this.createConnection({
 			user_id: userId,
-			external_id: userInfo.id.toString(),
+			external_id: userInfo.id,
 			friend_sync: params.friend_sync,
-			name: userInfo.name,
+			name: userInfo.display_name,
 			type: this.id,
 		});
 	}
