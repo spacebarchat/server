@@ -1,6 +1,7 @@
 import {
 	Config,
 	ConnectedAccount,
+	ConnectedAccountCommonOAuthTokenResponse,
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
@@ -8,14 +9,6 @@ import {
 import fetch from "node-fetch";
 import Connection from "../../util/connections/Connection";
 import { DiscordSettings } from "./DiscordSettings";
-
-interface OAuthTokenResponse {
-	access_token: string;
-	token_type: string;
-	scope: string;
-	refresh_token?: string;
-	expires_in?: number;
-}
 
 interface UserResponse {
 	id: string;
@@ -65,7 +58,10 @@ export default class DiscordConnection extends Connection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(state: string, code: string): Promise<string> {
+	async exchangeCode(
+		state: string,
+		code: string,
+	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 		const url = this.getTokenUrl();
 
@@ -86,7 +82,6 @@ export default class DiscordConnection extends Connection {
 			}),
 		})
 			.then((res) => res.json())
-			.then((res: OAuthTokenResponse) => res.access_token)
 			.catch((e) => {
 				console.error(
 					`Error exchanging token for ${this.id} connection: ${e}`,
@@ -109,8 +104,8 @@ export default class DiscordConnection extends Connection {
 		params: ConnectionCallbackSchema,
 	): Promise<ConnectedAccount | null> {
 		const userId = this.getUserId(params.state);
-		const token = await this.exchangeCode(params.state, params.code!);
-		const userInfo = await this.getUser(token);
+		const tokenData = await this.exchangeCode(params.state, params.code!);
+		const userInfo = await this.getUser(tokenData.access_token);
 
 		const exists = await this.hasConnection(userId, userInfo.id);
 

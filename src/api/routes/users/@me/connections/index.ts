@@ -17,7 +17,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			"visibility",
 			"show_activity",
 			"revoked",
-			"access_token",
+			"token_data",
 			"friend_sync",
 			"integrations",
 		],

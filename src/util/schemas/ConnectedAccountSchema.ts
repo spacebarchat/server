@@ -1,7 +1,9 @@
+import { ConnectedAccountTokenData } from "../interfaces";
+
 export interface ConnectedAccountSchema {
 	external_id: string;
 	user_id: string;
-	access_token?: string;
+	token_data?: ConnectedAccountTokenData;
 	friend_sync?: boolean;
 	name: string;
 	revoked?: boolean;

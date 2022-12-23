@@ -1,9 +1,11 @@
 import crypto from "crypto";
 import { ConnectedAccount } from "../entities";
-import { OrmUtils } from "../imports";
 import { ConnectedAccountSchema, ConnectionCallbackSchema } from "../schemas";
 import { DiscordApiErrors } from "../util";
 
+/**
+ * A connection that can be used to connect to an external service.
+ */
 export default abstract class Connection {
 	id: string;
 	settings: { enabled: boolean };
@@ -21,7 +23,9 @@ export default abstract class Connection {
 	 * Processes the callback
 	 * @param args Callback arguments
 	 */
-	abstract handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null>;
+	abstract handleCallback(
+		params: ConnectionCallbackSchema,
+	): Promise<ConnectedAccount | null>;
 
 	/**
 	 * Gets a user id from state
@@ -54,12 +58,25 @@ export default abstract class Connection {
 		this.states.delete(state);
 	}
 
-	async createConnection(data: ConnectedAccountSchema): Promise<ConnectedAccount> {
+	/**
+	 * Creates a Connected Account in the database.
+	 * @param data connected account data
+	 * @returns the new connected account
+	 */
+	async createConnection(
+		data: ConnectedAccountSchema,
+	): Promise<ConnectedAccount> {
 		const ca = ConnectedAccount.create({ ...data });
 		await ca.save();
 		return ca;
 	}
 
+	/**
+	 * Checks if a user has an exist connected account for the given extenal id.
+	 * @param userId the user id
+	 * @param externalId the connection id to find
+	 * @returns
+	 */
 	async hasConnection(userId: string, externalId: string): Promise<boolean> {
 		const existing = await ConnectedAccount.findOne({
 			where: {

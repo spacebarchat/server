@@ -1,21 +1,14 @@
 import {
 	Config,
 	ConnectedAccount,
+	ConnectedAccountCommonOAuthTokenResponse,
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@fosscord/util";
 import fetch from "node-fetch";
-import Connection from "../../util/connections/Connection";
+import RefreshableConnection from "../../util/connections/RefreshableConnection";
 import { SpotifySettings } from "./SpotifySettings";
-
-interface OAuthTokenResponse {
-	access_token: string;
-	token_type: string;
-	scope: string;
-	refresh_token?: string;
-	expires_in?: number;
-}
 
 export interface UserResponse {
 	display_name: string;
@@ -34,7 +27,7 @@ export interface ErrorResponse {
 	};
 }
 
-export default class SpotifyConnection extends Connection {
+export default class SpotifyConnection extends RefreshableConnection {
 	public readonly id = "spotify";
 	public readonly authorizeUrl = "https://accounts.spotify.com/authorize";
 	public readonly tokenUrl = "https://accounts.spotify.com/api/token";
@@ -48,6 +41,11 @@ export default class SpotifyConnection extends Connection {
 	settings: SpotifySettings = new SpotifySettings();
 
 	init(): void {
+		/**
+		 * The way Discord shows the currently playing song is by using Spotifys partner API. This is obviously not possible for us.
+		 * So to prevent spamming the spotify api we disable the ability to refresh.
+		 */
+		this.refreshEnabled = false;
 		this.settings = ConnectionLoader.getConnectionConfig(
 			this.id,
 			this.settings,
@@ -76,7 +74,10 @@ export default class SpotifyConnection extends Connection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(state: string, code: string): Promise<string> {
+	async exchangeCode(
+		state: string,
+		code: string,
+	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -99,13 +100,56 @@ export default class SpotifyConnection extends Connection {
 			}),
 		})
 			.then((res) => res.json())
-			.then((res: OAuthTokenResponse & TokenErrorResponse) => {
-				if (res.error) throw new Error(res.error_description);
-				return res.access_token;
-			})
+			.then(
+				(
+					res: ConnectedAccountCommonOAuthTokenResponse &
+						TokenErrorResponse,
+				) => {
+					if (res.error) throw new Error(res.error_description);
+					return res;
+				},
+			)
 			.catch((e) => {
 				console.error(
 					`Error exchanging token for ${this.id} connection: ${e}`,
+				);
+				throw DiscordApiErrors.INVALID_OAUTH_TOKEN;
+			});
+	}
+
+	async refreshToken(connectedAccount: ConnectedAccount) {
+		if (!connectedAccount.token_data?.refresh_token)
+			throw new Error("No refresh token available.");
+		const refresh_token = connectedAccount.token_data.refresh_token;
+		const url = this.getTokenUrl();
+
+		return fetch(url.toString(), {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/x-www-form-urlencoded",
+				Authorization: `Basic ${Buffer.from(
+					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
+				).toString("base64")}`,
+			},
+			body: new URLSearchParams({
+				grant_type: "refresh_token",
+				refresh_token,
+			}),
+		})
+			.then((res) => res.json())
+			.then(
+				(
+					res: ConnectedAccountCommonOAuthTokenResponse &
+						TokenErrorResponse,
+				) => {
+					if (res.error) throw new Error(res.error_description);
+					return res;
+				},
+			)
+			.catch((e) => {
+				console.error(
+					`Error refreshing token for ${this.id} connection: ${e}`,
 				);
 				throw DiscordApiErrors.INVALID_OAUTH_TOKEN;
 			});
@@ -130,14 +174,15 @@ export default class SpotifyConnection extends Connection {
 		params: ConnectionCallbackSchema,
 	): Promise<ConnectedAccount | null> {
 		const userId = this.getUserId(params.state);
-		const token = await this.exchangeCode(params.state, params.code!);
-		const userInfo = await this.getUser(token);
+		const tokenData = await this.exchangeCode(params.state, params.code!);
+		const userInfo = await this.getUser(tokenData.access_token);
 
 		const exists = await this.hasConnection(userId, userInfo.id);
 
 		if (exists) return null;
 
 		return await this.createConnection({
+			token_data: tokenData,
 			user_id: userId,
 			external_id: userInfo.id,
 			friend_sync: params.friend_sync,

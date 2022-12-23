@@ -23,8 +23,8 @@ export class ConnectedAccountDTO {
 		this.id = connectedAccount.external_id;
 		this.user_id = connectedAccount.user_id;
 		this.access_token =
-			connectedAccount.access_token && with_token
-				? connectedAccount.access_token
+			connectedAccount.token_data && with_token
+				? connectedAccount.token_data.access_token
 				: undefined;
 		this.friend_sync = connectedAccount.friend_sync;
 		this.name = connectedAccount.name;
