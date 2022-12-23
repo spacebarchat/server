@@ -1,10 +1,6 @@
 import { route } from "@fosscord/api";
+import { ConnectedAccount, DiscordApiErrors } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import {
-	ConnectedAccount,
-	DiscordApiErrors,
-	OrmUtils,
-} from "../../../../../../../util";
 const router = Router();
 
 // TODO: connection update schema
@@ -35,7 +31,7 @@ router.patch(
 
 		if (!connection) return DiscordApiErrors.UNKNOWN_CONNECTION;
 		// TODO: do we need to do anything if the connection is revoked?
-		OrmUtils.mergeDeep(connection, req.body);
+		connection.assign(req.body);
 		await ConnectedAccount.update(
 			{
 				user_id: req.user_id,
