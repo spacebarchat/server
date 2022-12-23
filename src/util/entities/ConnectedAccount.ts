@@ -17,6 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { ConnectedAccountTokenData } from "../interfaces";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -39,9 +40,6 @@ export class ConnectedAccount extends BaseClass {
 		onDelete: "CASCADE",
 	})
 	user: User;
-
-	@Column({ select: false, nullable: true })
-	access_token?: string;
 
 	@Column({ select: false })
 	friend_sync?: boolean = false;
@@ -75,4 +73,7 @@ export class ConnectedAccount extends BaseClass {
 
 	@Column()
 	two_way_link?: boolean = false;
+
+	@Column({ select: false, nullable: true, type: "simple-json" })
+	token_data?: ConnectedAccountTokenData;
 }

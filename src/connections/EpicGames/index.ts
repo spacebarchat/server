@@ -1,6 +1,7 @@
 import {
 	Config,
 	ConnectedAccount,
+	ConnectedAccountCommonOAuthTokenResponse,
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
@@ -9,21 +10,14 @@ import fetch from "node-fetch";
 import Connection from "../../util/connections/Connection";
 import { EpicGamesSettings } from "./EpicGamesSettings";
 
-interface OAuthTokenResponse {
-	access_token: string;
-	token_type: string;
-	scope: string;
-	refresh_token?: string;
-	expires_in?: number;
-}
-
 export interface UserResponse {
 	accountId: string;
 	displayName: string;
 	preferredLanguage: string;
 }
 
-export interface EpicTokenResponse extends OAuthTokenResponse {
+export interface EpicTokenResponse
+	extends ConnectedAccountCommonOAuthTokenResponse {
 	expires_at: string;
 	refresh_expires_in: number;
 	refresh_expires_at: string;
@@ -70,7 +64,10 @@ export default class EpicGamesConnection extends Connection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(state: string, code: string): Promise<string> {
+	async exchangeCode(
+		state: string,
+		code: string,
+	): Promise<EpicTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -90,7 +87,6 @@ export default class EpicGamesConnection extends Connection {
 			}),
 		})
 			.then((res) => res.json())
-			.then((res: EpicTokenResponse) => res.access_token)
 			.catch((e) => {
 				console.error(
 					`Error exchanging token for ${this.id} connection: ${e}`,
@@ -117,8 +113,8 @@ export default class EpicGamesConnection extends Connection {
 		params: ConnectionCallbackSchema,
 	): Promise<ConnectedAccount | null> {
 		const userId = this.getUserId(params.state);
-		const token = await this.exchangeCode(params.state, params.code!);
-		const userInfo = await this.getUser(token);
+		const tokenData = await this.exchangeCode(params.state, params.code!);
+		const userInfo = await this.getUser(tokenData.access_token);
 
 		const exists = await this.hasConnection(userId, userInfo[0].accountId);
 
