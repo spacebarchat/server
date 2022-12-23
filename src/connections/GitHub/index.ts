@@ -109,7 +109,7 @@ export default class GitHubConnection extends Connection {
 			user_id: userId,
 			external_id: userInfo.id.toString(),
 			friend_sync: params.friend_sync,
-			name: userInfo.name,
+			name: userInfo.login,
 			type: this.id,
 		});
 	}
