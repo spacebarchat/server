@@ -22,7 +22,8 @@ export const ConnectionConfig = {
 		if (!config || !val) return;
 		config = val.merge(config);
 
-		return applyConfig(config);
+		// return applyConfig(config);
+		return applyConfig(val);
 	},
 };
 
