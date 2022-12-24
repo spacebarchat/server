@@ -59,3 +59,4 @@ export * from "./UserSettingsSchema";
 export * from "./BotModifySchema";
 export * from "./ApplicationModifySchema";
 export * from "./ApplicationCreateSchema";
+export * from "./ApplicationAuthorizeSchema";
