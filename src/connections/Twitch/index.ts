@@ -8,40 +8,41 @@ import {
 	DiscordApiErrors,
 } from "@fosscord/util";
 import fetch from "node-fetch";
-import Connection from "../../util/connections/Connection";
-import { RedditSettings } from "./RedditSettings";
+import RefreshableConnection from "../../util/connections/RefreshableConnection";
+import { TwitchSettings } from "./TwitchSettings";
 
-export interface UserResponse {
-	verified: boolean;
-	coins: number;
-	id: string;
-	is_mod: boolean;
-	has_verified_email: boolean;
-	total_karma: number;
-	name: string;
-	created: number;
-	gold_creddits: number;
-	created_utc: number;
+interface TwitchConnectionUserResponse {
+	data: {
+		id: string;
+		login: string;
+		display_name: string;
+		type: string;
+		broadcaster_type: string;
+		description: string;
+		profile_image_url: string;
+		offline_image_url: string;
+		view_count: number;
+		created_at: string;
+	}[];
 }
 
-export interface ErrorResponse {
-	message: string;
-	error: number;
-}
-
-export default class RedditConnection extends Connection {
-	public readonly id = "reddit";
-	public readonly authorizeUrl = "https://www.reddit.com/api/v1/authorize";
-	public readonly tokenUrl = "https://www.reddit.com/api/v1/access_token";
-	public readonly userInfoUrl = "https://oauth.reddit.com/api/v1/me";
-	public readonly scopes = ["identity"];
-	settings: RedditSettings = new RedditSettings();
+export default class TwitchConnection extends RefreshableConnection {
+	public readonly id = "twitch";
+	public readonly authorizeUrl = "https://id.twitch.tv/oauth2/authorize";
+	public readonly tokenUrl = "https://id.twitch.tv/oauth2/token";
+	public readonly userInfoUrl = "https://api.twitch.tv/helix/users";
+	public readonly scopes = [
+		"channel_subscriptions",
+		"channel_check_subscription",
+		"channel:read:subscriptions",
+	];
+	settings: TwitchSettings = new TwitchSettings();
 
 	init(): void {
 		this.settings = ConnectionLoader.getConnectionConfig(
 			this.id,
 			this.settings,
-		) as RedditSettings;
+		) as TwitchSettings;
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -78,14 +79,13 @@ export default class RedditConnection extends Connection {
 			method: "POST",
 			headers: {
 				Accept: "application/json",
-				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId}:${this.settings.clientSecret}`,
-				).toString("base64")}`,
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams({
 				grant_type: "authorization_code",
 				code: code,
+				client_id: this.settings.clientId!,
+				client_secret: this.settings.clientSecret!,
 				redirect_uri: `${
 					Config.get().cdn.endpointPrivate || "http://localhost:3001"
 				}/connections/${this.id}/callback`,
@@ -93,7 +93,7 @@ export default class RedditConnection extends Connection {
 		})
 			.then((res) => {
 				if (!res.ok) {
-					throw new ApiError("Failed to code", 0, 400);
+					throw new ApiError("Failed to exchange code", 0, 400);
 				}
 
 				return res.json();
@@ -106,12 +106,56 @@ export default class RedditConnection extends Connection {
 			});
 	}
 
-	async getUser(token: string): Promise<UserResponse> {
+	async refreshToken(
+		connectedAccount: ConnectedAccount,
+	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+		if (!connectedAccount.token_data?.refresh_token)
+			throw new Error("No refresh token available.");
+		const refresh_token = connectedAccount.token_data.refresh_token;
+
+		const url = this.getTokenUrl();
+
+		return fetch(url.toString(), {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			body: new URLSearchParams({
+				grant_type: "refresh_token",
+				client_id: this.settings.clientId!,
+				client_secret: this.settings.clientSecret!,
+				refresh_token: refresh_token,
+			}),
+		})
+			.then(async (res) => {
+				if ([400, 401].includes(res.status)) {
+					// assume the token was revoked
+					await connectedAccount.revoke();
+					return DiscordApiErrors.CONNECTION_REVOKED;
+				}
+				// otherwise throw a general error
+				if (!res.ok) {
+					throw new ApiError("Failed to refresh token", 0, 400);
+				}
+
+				return await res.json();
+			})
+			.catch((e) => {
+				console.error(
+					`Error refreshing token for ${this.id} connection: ${e}`,
+				);
+				throw DiscordApiErrors.GENERAL_ERROR;
+			});
+	}
+
+	async getUser(token: string): Promise<TwitchConnectionUserResponse> {
 		const url = new URL(this.userInfoUrl);
 		return fetch(url.toString(), {
 			method: "GET",
 			headers: {
 				Authorization: `Bearer ${token}`,
+				"Client-Id": this.settings.clientId!,
 			},
 		})
 			.then((res) => {
@@ -136,18 +180,16 @@ export default class RedditConnection extends Connection {
 		const tokenData = await this.exchangeCode(params.state, params.code!);
 		const userInfo = await this.getUser(tokenData.access_token);
 
-		const exists = await this.hasConnection(userId, userInfo.id.toString());
+		const exists = await this.hasConnection(userId, userInfo.data[0].id);
 
 		if (exists) return null;
 
-		// TODO: connection metadata
-
 		return await this.createConnection({
+			token_data: { ...tokenData, fetched_at: Date.now() },
 			user_id: userId,
-			external_id: userInfo.id.toString(),
+			external_id: userInfo.data[0].id,
 			friend_sync: params.friend_sync,
-			name: userInfo.name,
-			verified: userInfo.has_verified_email,
+			name: userInfo.data[0].display_name,
 			type: this.id,
 		});
 	}

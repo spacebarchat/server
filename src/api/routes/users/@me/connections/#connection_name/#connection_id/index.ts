@@ -1,5 +1,10 @@
 import { route } from "@fosscord/api";
-import { ConnectedAccount, DiscordApiErrors, emitEvent, ConnectionUpdateSchema } from "@fosscord/util";
+import {
+	ConnectedAccount,
+	ConnectionUpdateSchema,
+	DiscordApiErrors,
+	emitEvent
+} from "@fosscord/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 
@@ -35,6 +40,8 @@ router.patch(
 
 		//@ts-ignore For some reason the client sends this as a boolean, even tho docs say its a number?
 		if (typeof body.visibility === "boolean") body.visibility = body.visibility ? 1 : 0;
+		//@ts-ignore For some reason the client sends this as a boolean, even tho docs say its a number?
+		if (typeof body.show_activity === "boolean") body.show_activity = body.show_activity ? 1 : 0;
 
 		connection.assign(req.body);
 
@@ -58,7 +65,7 @@ router.delete("/", route({}), async (req: Request, res: Response) => {
 			user_id: req.user_id,
 			external_id: connection_id,
 			type: connection_name,
-		}
+		},
 	});
 
 	await Promise.all([
@@ -67,7 +74,7 @@ router.delete("/", route({}), async (req: Request, res: Response) => {
 			event: "USER_CONNECTIONS_UPDATE",
 			data: account,
 			user_id: req.user_id,
-		})
+		}),
 	]);
 
 	return res.sendStatus(200);

@@ -19,7 +19,7 @@ const ALLOWED_CONNECTIONS = ["twitch", "youtube"];
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { connection_name, connection_id } = req.params;
 
-	const connection = ConnectionStore.connections.get(connection_id);
+	const connection = ConnectionStore.connections.get(connection_name);
 
 	if (!ALLOWED_CONNECTIONS.includes(connection_name) || !connection)
 		throw FieldErrors({
@@ -41,7 +41,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const connectedAccount = await ConnectedAccount.findOne({
 		where: {
 			type: connection_name,
-			id: connection_id,
+			external_id: connection_id,
 			user_id: req.user_id,
 		},
 		select: [
@@ -64,14 +64,12 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		throw new ApiError("No token data", 0, 400);
 
 	let access_token = connectedAccount.token_data.access_token;
-	const { expires_at, expires_in } = connectedAccount.token_data;
+	const { expires_at, expires_in, fetched_at } = connectedAccount.token_data;
 
-	if (expires_at && expires_at < Date.now()) {
-		if (!(connection instanceof RefreshableConnection))
-			throw new ApiError("Access token expired", 0, 400);
-		const tokenData = await connection.refresh(connectedAccount);
-		access_token = tokenData.access_token;
-	} else if (expires_in && expires_in < Date.now()) {
+	if (
+		(expires_at && expires_at < Date.now()) ||
+		(expires_in && fetched_at + expires_in * 1000 < Date.now())
+	) {
 		if (!(connection instanceof RefreshableConnection))
 			throw new ApiError("Access token expired", 0, 400);
 		const tokenData = await connection.refresh(connectedAccount);

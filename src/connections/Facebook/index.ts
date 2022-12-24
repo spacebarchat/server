@@ -1,4 +1,5 @@
 import {
+	ApiError,
 	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
@@ -88,7 +89,13 @@ export default class FacebookConnection extends Connection {
 				Accept: "application/json",
 			},
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (!res.ok) {
+					throw new ApiError("Failed to exchange code", 0, 400);
+				}
+
+				return res.json();
+			})
 			.then(
 				(
 					res: ConnectedAccountCommonOAuthTokenResponse &
@@ -102,7 +109,7 @@ export default class FacebookConnection extends Connection {
 				console.error(
 					`Error exchanging token for ${this.id} connection: ${e}`,
 				);
-				throw DiscordApiErrors.INVALID_OAUTH_TOKEN;
+				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
@@ -114,10 +121,22 @@ export default class FacebookConnection extends Connection {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (!res.ok) {
+					throw new ApiError("Failed to fetch user", 0, 400);
+				}
+
+				return res.json();
+			})
 			.then((res: UserResponse & FacebookErrorResponse) => {
 				if (res.error) throw new Error(res.error.message);
 				return res;
+			})
+			.catch((e) => {
+				console.error(
+					`Error fetching user for ${this.id} connection: ${e}`,
+				);
+				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 

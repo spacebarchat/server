@@ -51,7 +51,7 @@ export class ConnectedAccount extends BaseClass {
 	revoked?: boolean = false;
 
 	@Column({ select: false })
-	show_activity?: boolean = true;
+	show_activity?: number = 0;
 
 	@Column()
 	type: string;
@@ -75,5 +75,11 @@ export class ConnectedAccount extends BaseClass {
 	two_way_link?: boolean = false;
 
 	@Column({ select: false, nullable: true, type: "simple-json" })
-	token_data?: ConnectedAccountTokenData;
+	token_data?: ConnectedAccountTokenData | null;
+
+	async revoke() {
+		this.revoked = true;
+		this.token_data = null;
+		await this.save();
+	}
 }

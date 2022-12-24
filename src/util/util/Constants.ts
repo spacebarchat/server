@@ -787,6 +787,11 @@ export const DiscordApiErrors = {
 		40006,
 	),
 	USER_BANNED: new ApiError("The user is banned from this guild", 40007),
+	CONNECTION_REVOKED: new ApiError(
+		"The connection has been revoked",
+		40012,
+		400,
+	),
 	TARGET_USER_IS_NOT_CONNECTED_TO_VOICE: new ApiError(
 		"Target user is not connected to voice",
 		40032,

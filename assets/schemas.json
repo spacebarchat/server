@@ -36,6 +36,33 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ConnectedAccountCommonOAuthTokenResponse": {
+        "type": "object",
+        "properties": {
+            "access_token": {
+                "type": "string"
+            },
+            "token_type": {
+                "type": "string"
+            },
+            "scope": {
+                "type": "string"
+            },
+            "refresh_token": {
+                "type": "string"
+            },
+            "expires_in": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "access_token",
+            "scope",
+            "token_type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "SMTPConnection.CustomAuthenticationResponse": {
         "type": "object",
         "properties": {
@@ -418,6 +445,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -1021,6 +1079,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -1623,6 +1712,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -2220,6 +2340,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -2799,8 +2950,8 @@
             "user_id": {
                 "type": "string"
             },
-            "access_token": {
-                "type": "string"
+            "token_data": {
+                "$ref": "#/definitions/ConnectedAccountTokenData"
             },
             "friend_sync": {
                 "type": "boolean"
@@ -2812,7 +2963,7 @@
                 "type": "boolean"
             },
             "show_activity": {
-                "type": "boolean"
+                "type": "integer"
             },
             "type": {
                 "type": "string"
@@ -2852,6 +3003,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -3455,6 +3637,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -4030,6 +4243,9 @@
         "properties": {
             "visibility": {
                 "type": "boolean"
+            },
+            "show_activity": {
+                "type": "boolean"
             }
         },
         "additionalProperties": false,
@@ -4041,6 +4257,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -4637,6 +4884,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -5243,6 +5521,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -5836,6 +6145,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -6428,6 +6768,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -7041,6 +7412,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -7636,6 +8038,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -8293,6 +8726,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -8907,6 +9371,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -9663,6 +10158,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -10273,6 +10799,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -10889,6 +11446,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -11494,6 +12082,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -12107,6 +12726,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -12709,6 +13359,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -13298,6 +13979,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -14000,6 +14712,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -14698,6 +15441,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -15290,6 +16064,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -15892,6 +16697,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -16486,6 +17322,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -17079,6 +17946,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -17703,6 +18601,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -18297,6 +19226,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -18889,6 +19849,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -19498,6 +20489,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -20094,6 +21116,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -20766,6 +21819,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -21358,6 +22442,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -21952,6 +23067,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -22541,6 +23687,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -23137,6 +24314,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -23744,6 +24952,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -24333,6 +25572,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -24973,6 +26243,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -25598,6 +26899,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -26212,6 +27544,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -26917,6 +28280,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -27505,6 +28899,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -28134,6 +29559,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -28746,6 +30202,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -29415,6 +30902,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -30004,6 +31522,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -30603,6 +32152,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -31190,6 +32770,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -31785,6 +33396,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -32378,6 +34020,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -32973,6 +34646,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -33553,6 +35257,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -34147,6 +35882,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -34737,6 +36503,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -35326,6 +37123,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -35922,6 +37750,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
