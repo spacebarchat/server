@@ -61,7 +61,7 @@ export class Guild extends BaseClass {
 	afk_channel?: Channel;
 
 	@Column({ nullable: true })
-	afk_timeout?: number;
+	afk_timeout?: number = Config.get().defaults.guild.afkTimeout;
 
 	// * commented out -> use owner instead
 	// application id of the guild creator if it is bot-created
@@ -79,7 +79,7 @@ export class Guild extends BaseClass {
 	banner?: string;
 
 	@Column({ nullable: true })
-	default_message_notifications?: number;
+	default_message_notifications?: number = Config.get().defaults.guild.defaultMessageNotifications;
 
 	@Column({ nullable: true })
 	description?: string;
@@ -88,10 +88,10 @@ export class Guild extends BaseClass {
 	discovery_splash?: string;
 
 	@Column({ nullable: true })
-	explicit_content_filter?: number;
+	explicit_content_filter?: number = Config.get().defaults.guild.explicitContentFilter;
 
 	@Column({ type: "simple-array" })
-	features: string[]; //TODO use enum
+	features: string[] = Config.get().guild.defaultFeatures || []; //TODO use enum
 	//TODO: https://discord.com/developers/docs/resources/guild#guild-object-guild-features
 
 	@Column({ nullable: true })
@@ -100,17 +100,17 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	icon?: string;
 
-	@Column({ nullable: true })
-	large?: boolean;
+	@Column()
+	large?: boolean = false;
 
 	@Column({ nullable: true })
-	max_members?: number; // e.g. default 100.000
+	max_members?: number = Config.get().limits.guild.maxMembers;
 
 	@Column({ nullable: true })
-	max_presences?: number;
+	max_presences?: number = Config.get().defaults.guild.maxPresences;
 
 	@Column({ nullable: true })
-	max_video_channel_users?: number;
+	max_video_channel_users?: number = Config.get().defaults.guild.maxVideoChannelUsers;
 
 	@Column({ nullable: true })
 	member_count?: number;
@@ -208,7 +208,7 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	premium_subscription_count?: number;
 
-	@Column({ nullable: true })
+	@Column()
 	premium_tier?: number; // crowd premium level
 
 	@Column({ nullable: true })
@@ -228,7 +228,7 @@ export class Guild extends BaseClass {
 	rules_channel?: string;
 
 	@Column({ nullable: true })
-	region?: string;
+	region?: string = Config.get().regions.default;
 
 	@Column({ nullable: true })
 	splash?: string;
@@ -244,8 +244,8 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	system_channel_flags?: number;
 
-	@Column({ nullable: true })
-	unavailable?: boolean;
+	@Column()
+	unavailable: boolean = false;
 
 	@Column({ nullable: true })
 	verification_level?: number;
@@ -270,14 +270,14 @@ export class Guild extends BaseClass {
 	@ManyToOne(() => Channel)
 	widget_channel?: Channel;
 
-	@Column({ nullable: true })
-	widget_enabled?: boolean;
+	@Column()
+	widget_enabled: boolean = true;
 
 	@Column({ nullable: true })
 	nsfw_level?: number;
 
 	@Column()
-	nsfw: boolean;
+	nsfw: boolean = false;
 
 	// TODO: nested guilds
 	@Column({ nullable: true })
@@ -288,7 +288,7 @@ export class Guild extends BaseClass {
 
 	//new guild settings, 11/08/2022:
 	@Column({ nullable: true })
-	premium_progress_bar_enabled: boolean;
+	premium_progress_bar_enabled: boolean = false;
 
 	static async createGuild(body: {
 		name?: string;
@@ -299,19 +299,10 @@ export class Guild extends BaseClass {
 		const guild_id = Snowflake.generate();
 
 		const guild = await Guild.create({
+			id: guild_id,
 			name: body.name || "Fosscord",
 			icon: await handleFile(`/icons/${guild_id}`, body.icon as string),
-			region: Config.get().regions.default,
 			owner_id: body.owner_id, // TODO: need to figure out a way for ownerless guilds and multiply-owned guilds
-			afk_timeout: 300,
-			default_message_notifications: 1, // defaults effect: setting the push default at mentions-only will save a lot
-			explicit_content_filter: 0,
-			features: Config.get().guild.defaultFeatures || [],
-			primary_category_id: undefined,
-			id: guild_id,
-			max_members: 250000,
-			max_presences: 250000,
-			max_video_channel_users: 200,
 			presence_count: 0,
 			member_count: 0, // will automatically be increased by addMember()
 			mfa_level: 0,
@@ -319,8 +310,6 @@ export class Guild extends BaseClass {
 			premium_subscription_count: 0,
 			premium_tier: 0,
 			system_channel_flags: 4, // defaults effect: suppress the setup tips to save performance
-			unavailable: false,
-			nsfw: false,
 			nsfw_level: 0,
 			verification_level: 0,
 			welcome_screen: {
@@ -328,7 +317,6 @@ export class Guild extends BaseClass {
 				description: "Fill in your description",
 				welcome_channels: [],
 			},
-			widget_enabled: true, // NB: don't set it as false to prevent artificial restrictions
 		}).save();
 
 		// we have to create the role _after_ the guild because else we would get a "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" error

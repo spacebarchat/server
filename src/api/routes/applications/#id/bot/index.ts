@@ -15,6 +15,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 	const user = await User.register({
 		username: app.name,
 		password: undefined,
+		id: app.id,
 		req,
 	});
 
@@ -29,7 +30,9 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 
 	await app.save();
 
-	res.send().status(204);
+	res.send({
+		token: await generateToken(user.id)
+	}).status(204);
 });
 
 router.post("/reset", route({}), async (req: Request, res: Response) => {

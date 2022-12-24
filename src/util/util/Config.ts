@@ -39,6 +39,15 @@ export const Config = {
 		return this.set(config);
 	},
 	get: function get() {
+		if (!config) {
+			// If we haven't initialised the config yet, return default config.
+			// Typeorm instantiates each entity once when initising database,
+			// which means when we use config values as default values in entity classes,
+			// the config isn't initialised yet and would throw an error about the config being undefined.
+
+			return new ConfigValue();
+		}
+
 		return config;
 	},
 	set: function set(val: Partial<ConfigValue>) {

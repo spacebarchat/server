@@ -306,12 +306,14 @@ export class User extends BaseClass {
 		username,
 		password,
 		date_of_birth,
+		id,
 		req,
 	}: {
 		username: string;
 		password?: string;
 		email?: string;
 		date_of_birth?: Date; // "2000-04-03"
+		id?: string,
 		req?: any;
 	}) {
 		// trim special uf8 control characters -> Backspace, Newline, ...
@@ -334,10 +336,14 @@ export class User extends BaseClass {
 		const language =
 			req.language === "en" ? "en-US" : req.language || "en-US";
 
+		const settings = UserSettings.create({
+			locale: language,
+		})
+
 		const user = User.create({
 			username: username,
 			discriminator,
-			id: Snowflake.generate(),
+			id: id || Snowflake.generate(),
 			email: email,
 			rights: Config.get().register.defaultRights,
 			data: {
@@ -348,12 +354,14 @@ export class User extends BaseClass {
 			premium_type: Config.get().defaults.user.premium_type,
 			premium: Config.get().defaults.user.premium,
 			verified: Config.get().defaults.user.verified,
-			settings: { ...new UserSettings(), locale: language }
+			settings: settings,
 		});
 
 		user.validate();
-		await user.save();
-		await user.settings.save();
+		await Promise.all([
+			user.save(),
+			settings.save(),
+		])
 
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
