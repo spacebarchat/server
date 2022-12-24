@@ -1,3 +1,4 @@
+import { route } from "@fosscord/api";
 import {
 	ConnectionCallbackSchema,
 	ConnectionStore,
@@ -5,7 +6,6 @@ import {
 	FieldErrors,
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
 
 const router = Router();
 
@@ -42,10 +42,10 @@ router.post(
 		if (connectedAccnt)
 			emitEvent({
 				event: "USER_CONNECTIONS_UPDATE",
-				data: connectedAccnt,
+				data: { ...connectedAccnt, token_data: undefined },
 				user_id: userId,
 			});
-			
+
 		res.sendStatus(204);
 	},
 );
