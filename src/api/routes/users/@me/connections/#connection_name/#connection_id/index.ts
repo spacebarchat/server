@@ -1,5 +1,5 @@
 import { route } from "@fosscord/api";
-import { ConnectedAccount, DiscordApiErrors, emitEvent } from "@fosscord/util";
+import { ConnectedAccount, DiscordApiErrors, emitEvent, ConnectionUpdateSchema } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 
@@ -9,6 +9,7 @@ router.patch(
 	route({ body: "ConnectionUpdateSchema" }),
 	async (req: Request, res: Response) => {
 		const { connection_name, connection_id } = req.params;
+		const body = req.body as ConnectionUpdateSchema;
 
 		const connection = await ConnectedAccount.findOne({
 			where: {
@@ -31,7 +32,12 @@ router.patch(
 
 		if (!connection) return DiscordApiErrors.UNKNOWN_CONNECTION;
 		// TODO: do we need to do anything if the connection is revoked?
+
+		//@ts-ignore For some reason the client sends this as a boolean, even tho docs say its a number?
+		if (typeof body.visibility === "boolean") body.visibility = body.visibility ? 1 : 0;
+
 		connection.assign(req.body);
+
 		await ConnectedAccount.update(
 			{
 				user_id: req.user_id,
