@@ -58,8 +58,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		],
 	});
 	if (!connectedAccount) throw DiscordApiErrors.UNKNOWN_CONNECTION;
-	if (connectedAccount.revoked)
-		throw new ApiError("Connection revoked", 0, 400);
+	if (connectedAccount.revoked) throw DiscordApiErrors.CONNECTION_REVOKED;
 	if (!connectedAccount.token_data)
 		throw new ApiError("No token data", 0, 400);
 
