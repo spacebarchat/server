@@ -334,11 +334,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -939,11 +943,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -1544,11 +1552,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -2144,11 +2156,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -2719,7 +2735,7 @@
                 "type": "boolean"
             },
             "show_activity": {
-                "type": "boolean"
+                "type": "integer"
             },
             "type": {
                 "type": "string"
@@ -2780,11 +2796,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -3385,11 +3405,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -3943,6 +3967,9 @@
         "properties": {
             "visibility": {
                 "type": "boolean"
+            },
+            "show_activity": {
+                "type": "boolean"
             }
         },
         "additionalProperties": false,
@@ -3975,11 +4002,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -4574,11 +4605,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -5182,11 +5217,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -5778,11 +5817,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -6393,11 +6436,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -6992,11 +7039,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -7651,11 +7702,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -8269,11 +8324,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -9025,11 +9084,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -9639,11 +9702,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -10255,11 +10322,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -10864,11 +10935,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -11463,11 +11538,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -12068,11 +12147,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -12661,11 +12744,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -13339,11 +13426,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -13935,11 +14026,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -14539,11 +14634,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -15136,11 +15235,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -15762,11 +15865,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -16359,11 +16466,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -16955,11 +17066,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -17566,11 +17681,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -18166,11 +18285,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -18840,11 +18963,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -19436,11 +19563,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -20032,11 +20163,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -20625,11 +20760,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -21224,11 +21363,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -21833,11 +21976,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -22475,11 +22622,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -23101,11 +23252,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -23703,11 +23858,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -24451,11 +24610,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -25043,11 +25206,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -25674,11 +25841,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -26290,11 +26461,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -26961,11 +27136,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -27558,11 +27737,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -28155,11 +28338,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -28762,11 +28949,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -29346,11 +29537,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -29942,11 +30137,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -30535,11 +30734,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {
@@ -31128,11 +31331,15 @@
                     },
                     "expires_at": {
                         "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "access_token"
+                    "access_token",
+                    "fetched_at"
                 ]
             },
             "ChannelModifySchema": {

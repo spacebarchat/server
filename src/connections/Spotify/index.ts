@@ -1,4 +1,5 @@
 import {
+	ApiError,
 	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
@@ -99,21 +100,28 @@ export default class SpotifyConnection extends RefreshableConnection {
 				}/connections/${this.id}/callback`,
 			}),
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (!res.ok) {
+					throw new ApiError("Failed to refresh token", 0, 400);
+				}
+
+				return res.json();
+			})
 			.then(
 				(
 					res: ConnectedAccountCommonOAuthTokenResponse &
 						TokenErrorResponse,
 				) => {
-					if (res.error) throw new Error(res.error_description);
+					if (res.error)
+						throw new ApiError(res.error_description, 0, 400);
 					return res;
 				},
 			)
 			.catch((e) => {
 				console.error(
-					`Error exchanging token for ${this.id} connection: ${e}`,
+					`Error exchanging code for ${this.id} connection: ${e}`,
 				);
-				throw DiscordApiErrors.INVALID_OAUTH_TOKEN;
+				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
@@ -137,13 +145,26 @@ export default class SpotifyConnection extends RefreshableConnection {
 				refresh_token,
 			}),
 		})
-			.then((res) => res.json())
+			.then(async (res) => {
+				if ([400, 401].includes(res.status)) {
+					// assume the token was revoked
+					await connectedAccount.revoke();
+					return DiscordApiErrors.CONNECTION_REVOKED;
+				}
+				// otherwise throw a general error
+				if (!res.ok) {
+					throw new ApiError("Failed to refresh token", 0, 400);
+				}
+
+				return await res.json();
+			})
 			.then(
 				(
 					res: ConnectedAccountCommonOAuthTokenResponse &
 						TokenErrorResponse,
 				) => {
-					if (res.error) throw new Error(res.error_description);
+					if (res.error)
+						throw new ApiError(res.error_description, 0, 400);
 					return res;
 				},
 			)
@@ -151,7 +172,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 				console.error(
 					`Error refreshing token for ${this.id} connection: ${e}`,
 				);
-				throw DiscordApiErrors.INVALID_OAUTH_TOKEN;
+				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
@@ -163,10 +184,22 @@ export default class SpotifyConnection extends RefreshableConnection {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (!res.ok) {
+					throw new ApiError("Failed to fetch user", 0, 400);
+				}
+
+				return res.json();
+			})
 			.then((res: UserResponse & ErrorResponse) => {
 				if (res.error) throw new Error(res.error.message);
 				return res;
+			})
+			.catch((e) => {
+				console.error(
+					`Error fetching user for ${this.id} connection: ${e}`,
+				);
+				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
@@ -182,7 +215,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 		if (exists) return null;
 
 		return await this.createConnection({
-			token_data: tokenData,
+			token_data: { ...tokenData, fetched_at: Date.now() },
 			user_id: userId,
 			external_id: userInfo.id,
 			friend_sync: params.friend_sync,

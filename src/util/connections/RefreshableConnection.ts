@@ -23,7 +23,7 @@ export default abstract class RefreshableConnection extends Connection {
 		connectedAccount: ConnectedAccount,
 	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		const tokenData = await this.refreshToken(connectedAccount);
-		connectedAccount.token_data = tokenData;
+		connectedAccount.token_data = { ...tokenData, fetched_at: Date.now() };
 		await connectedAccount.save();
 		return tokenData;
 	}

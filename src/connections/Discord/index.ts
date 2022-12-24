@@ -1,4 +1,5 @@
 import {
+	ApiError,
 	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
@@ -81,12 +82,18 @@ export default class DiscordConnection extends Connection {
 				}/connections/${this.id}/callback`,
 			}),
 		})
-			.then((res) => res.json())
+			.then((res) => {
+				if (!res.ok) {
+					throw new ApiError("Failed to exchange token", 0, 400);
+				}
+
+				return res.json();
+			})
 			.catch((e) => {
 				console.error(
 					`Error exchanging token for ${this.id} connection: ${e}`,
 				);
-				throw DiscordApiErrors.INVALID_OAUTH_TOKEN;
+				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
@@ -97,7 +104,20 @@ export default class DiscordConnection extends Connection {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
-		}).then((res) => res.json());
+		})
+			.then((res) => {
+				if (!res.ok) {
+					throw new ApiError("Failed to fetch user", 0, 400);
+				}
+
+				return res.json();
+			})
+			.catch((e) => {
+				console.error(
+					`Error fetching user for ${this.id} connection: ${e}`,
+				);
+				throw DiscordApiErrors.GENERAL_ERROR;
+			});
 	}
 
 	async handleCallback(

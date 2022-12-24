@@ -7,7 +7,7 @@ export class ConnectedAccountDTO {
 	friend_sync?: boolean;
 	name: string;
 	revoked?: boolean;
-	show_activity?: boolean;
+	show_activity?: number;
 	type: string;
 	verified?: boolean;
 	visibility?: number;
