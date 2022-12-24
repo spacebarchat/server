@@ -42,7 +42,7 @@ router.post(
 		if (connectedAccnt)
 			emitEvent({
 				event: "USER_CONNECTIONS_UPDATE",
-				data: connectedAccnt,
+				data: { ...connectedAccnt, token_data: undefined },
 				user_id: userId,
 			});
 
