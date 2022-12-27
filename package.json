@@ -14,7 +14,8 @@
 		"generate:rights": "node scripts/rights.js",
 		"generate:schema": "node scripts/schema.js",
 		"generate:client": "node scripts/client.js",
-		"generate:changelog": "node scripts/changelog.js"
+		"generate:changelog": "node scripts/changelog.js",
+		"generate:migration": "node node_modules/typeorm/cli.js migration:generate -d dist/util/util/Datasource.js"
 	},
 	"main": "dist/bundle/index.js",
 	"types": "src/bundle/index.ts",
