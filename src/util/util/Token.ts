@@ -7,6 +7,7 @@ export const JWTOptions: VerifyOptions = { algorithms: ["HS256"] };
 export function checkToken(token: string, jwtSecret: string): Promise<any> {
 	return new Promise((res, rej) => {
 		token = token.replace("Bot ", "");
+		token = token.replace("Bearer ", "");
 		/**
 		in fosscord, even with instances that have bot distinction; we won't enforce "Bot" prefix,
 		as we don't really have separate pathways for bots 
