@@ -33,6 +33,8 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	}
 	else return this.close(CLOSECODES.Decode_error);
 
+	if (process.env.WS_VERBOSE) console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
+
 	check.call(this, PayloadSchema, data);
 
 	// @ts-ignore
