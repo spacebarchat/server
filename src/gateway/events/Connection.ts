@@ -12,7 +12,7 @@ import { Config } from "@fosscord/util";
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) {}
+} catch (error) { }
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -38,6 +38,20 @@ export async function Connection(
 		// console.log(
 		// 	`[Gateway] New connection from ${socket.ipAddress}, total ${this.clients.size}`,
 		// );
+
+		if (process.env.WS_LOGEVENTS)
+			[
+				"close",
+				"error",
+				"upgrade",
+				//"message",
+				"open",
+				"ping",
+				"pong",
+				"unexpected-response"
+			].forEach((x) => {
+				socket.on(x, (y) => console.log(x, y));
+			});
 
 		const { searchParams } = new URL(`http://localhost${request.url}`);
 		// @ts-ignore
