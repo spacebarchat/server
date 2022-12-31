@@ -34,6 +34,9 @@ export enum PublicUserEnum {
 	bio,
 	bot,
 	premium_since,
+	premium_type,
+	theme_colors,
+	pronouns,
 }
 export type PublicUserKeys = keyof typeof PublicUserEnum;
 
@@ -87,6 +90,12 @@ export class User extends BaseClass {
 
 	@Column({ nullable: true })
 	banner?: string; // hash of the user banner
+
+	@Column({ nullable: true, type: "simple-array" })
+	theme_colors?: number[];	// TODO: Separate `User` and `UserProfile` models
+
+	@Column({ nullable: true })
+	pronouns?: string;
 
 	@Column({ nullable: true, select: false })
 	phone?: string; // phone number of the user
@@ -351,7 +360,7 @@ export class User extends BaseClass {
 				valid_tokens_since: new Date(),
 			},
 			extended_settings: "{}",
-			premium_type: Config.get().defaults.user.premium_type,
+			premium_type: Config.get().defaults.user.premiumType,
 			premium: Config.get().defaults.user.premium,
 			verified: Config.get().defaults.user.verified,
 			settings: settings,

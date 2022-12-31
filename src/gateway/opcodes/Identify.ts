@@ -198,6 +198,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			bot: related_user.bot,
 			bio: related_user.bio,
 			premium_since: user.premium_since,
+			premium_type: user.premium_type,
 			accent_color: related_user.accent_color,
 		};
 		users.push(public_related_user);
