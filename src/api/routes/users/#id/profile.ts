@@ -92,7 +92,9 @@ router.get(
 	const userProfile = {
 		bio: req.user_bot ? null : user.bio,
 		accent_color: user.accent_color,
-		banner: user.banner
+		banner: user.banner,
+		pronouns: user.pronouns,
+		theme_colors: user.theme_colors,
 	};
 
 	const guildMemberDto = guild_member
@@ -126,6 +128,8 @@ router.get(
 		premium_since: user.premium_since, // TODO
 		mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
 		user: userDto,
+		premium_type: user.premium_type,
+		profile_themes_experiment_bucket: 4,	// TODO: This doesn't make it available, for some reason?
 		user_profile: userProfile,
 		guild_member: guild_id && guildMemberDto,
 		guild_member_profile: guild_id && guildMemberProfile
@@ -154,7 +158,9 @@ router.patch("/", route({ body: "UserProfileModifySchema" }), async (req: Reques
 	res.json({
 		accent_color: user.accent_color,
 		bio: user.bio,
-		banner: user.banner
+		banner: user.banner,
+		theme_colors: user.theme_colors,
+		pronouns: user.pronouns,
 	});
 });
 
