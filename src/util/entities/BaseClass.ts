@@ -1,3 +1,4 @@
+import "missing-native-js-functions";
 import "reflect-metadata";
 import {
 	BaseEntity,
@@ -8,9 +9,8 @@ import {
 	PrimaryColumn,
 } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
-import "missing-native-js-functions";
-import { getDatabase } from "..";
-import { OrmUtils } from "@fosscord/util";
+import { getDatabase } from "../util/Database";
+import { OrmUtils } from "../imports/OrmUtils";
 
 export class BaseClassWithoutId extends BaseEntity {
 	private get construct(): any {
