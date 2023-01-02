@@ -1,7 +1,7 @@
-import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { yellow, green, red } from "picocolors";
 import { DataSourceOptions, DatabaseType } from "./Datasource";
+import { ConfigEntity } from "@fosscord/util";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -24,7 +24,16 @@ export async function initDatabase(): Promise<DataSource> {
 
 	dbConnection = await DataSourceOptions.initialize();
 
-	await dbConnection.runMigrations();
+	// Crude way of detecting if the migrations table exists.
+	const dbExists = async () => { try { await ConfigEntity.count(); return true; } catch (e) { return false; } };
+	if (!await dbExists()) {
+		console.log("[Database] This appears to be a fresh database. Synchronising.");
+		await dbConnection.synchronize();
+	}
+	else {
+		await dbConnection.runMigrations();
+	}
+
 	console.log(`[Database] ${green("connected")}`);
 
 	return dbConnection;

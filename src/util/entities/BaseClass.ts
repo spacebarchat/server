@@ -1,5 +1,3 @@
-import "missing-native-js-functions";
-import "reflect-metadata";
 import {
 	BaseEntity,
 	BeforeInsert,

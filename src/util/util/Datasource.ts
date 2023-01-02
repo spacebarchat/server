@@ -1,10 +1,8 @@
-import * as Models from "../entities";
-import { BaseClass, BaseClassWithoutId } from "../entities";
+import { BaseClass, BaseClassWithoutId } from "../entities/BaseClass";
 import { config } from "dotenv";
 import path from "path";
 import { DataSource, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { red } from "picocolors";
-import fs from "fs";
 
 // For typeorm cli
 if (!process.env) {
@@ -27,16 +25,13 @@ if (isSqlite) {
 	);
 }
 
-const MIGRATIONS_PATH = path.join(__dirname, "..", "migrations", type);
 if (!process.env.DB_SYNC) {
-	if (!fs.existsSync(MIGRATIONS_PATH)) {
-		console.log("[Database]" + red(`Engine '${type}' not supported. ` +
-			`To bypass, set DB_SYNC=true in your env. https://docs.fosscord.com/setup/server/configuration/env/`));
+	const supported = ["mysql", "mariadb", "postgres", "sqlite"];
+	if (!supported.includes(type)) {
+		console.log("[Database]" + red(` We don't have migrations for DB type '${type}'` +
+			` To ignore, set DB_SYNC=true in your env. https://docs.fosscord.com/setup/server/configuration/env/`));
 		process.exit();
 	}
-}
-else {
-
 }
 
 function shouldIncludeEntity(name: string): boolean {
@@ -49,9 +44,10 @@ const dataSource = new DataSource({
 	charset: "utf8mb4",
 	url: isSqlite ? undefined : dbConnectionString,
 	database: isSqlite ? dbConnectionString : undefined,
+	entities: ["dist/util/entities/*.js"],
 	//@ts-ignore
-	entities: Object.values(Models).filter((x) => x.constructor.name == "Function" && shouldIncludeEntity(x.name)),
-	synchronize: false,
+	// entities: Object.values(Models).filter((x) => x.constructor.name == "Function" && shouldIncludeEntity(x.name)),
+	synchronize: !!process.env.DB_SYNC,
 	logging: false,
 	bigNumberStrings: false,
 	supportBigNumbers: true,
