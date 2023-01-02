@@ -118,7 +118,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				member: {
 					...member,
 					roles,
-					user: { ...member.user, sessions: undefined },
+					user: member.user.toPublicUser(),
 					presence: {
 						...session,
 						activities: session?.activities || [],
