@@ -4,10 +4,11 @@ const path = require("path");
 (async () => {
 	DataSourceOptions.setOptions({
 		logging: true,
-		migrations: [path.join(__dirname, "scripts", "stagingMigration", DatabaseType, "*.js")]
+		migrations: [path.join(process.cwd(), "scripts", "stagingMigration", DatabaseType, "*.js")]
 	});
 
 	const dbConnection = await DataSourceOptions.initialize();
 	await dbConnection.runMigrations();
+	await dbConnection.destroy();
 	console.log("migration done");
 })();

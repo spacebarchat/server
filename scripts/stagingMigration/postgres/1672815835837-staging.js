@@ -49,7 +49,6 @@ module.exports = class staging1672815835837 {
 		await queryRunner.query(`UPDATE users SET mfa_enabled = false WHERE mfa_enabled IS NULL`);
 		await queryRunner.query(`ALTER TABLE users ALTER COLUMN mfa_enabled SET NOT NULL`);
         await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "FK_0c14beb78d8c5ccba66072adbc7" FOREIGN KEY ("settingsIndex") REFERENCES "user_settings"("index") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-    
     }
 
     async down(queryRunner) {
