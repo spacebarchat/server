@@ -1,12 +1,41 @@
 import { DataSource } from "typeorm";
 import { yellow, green, red } from "picocolors";
-import { DataSourceOptions, DatabaseType } from "./Datasource";
-import { ConfigEntity } from "@fosscord/util";
+import { ConfigEntity } from "../entities/Config";
+import { config } from "dotenv";
+import path from "path";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
 
 var dbConnection: DataSource | undefined;
+
+// For typeorm cli
+if (!process.env) {
+	config();
+}
+
+let dbConnectionString =
+	process.env.DATABASE || path.join(process.cwd(), "database.db");
+
+const DatabaseType = dbConnectionString.includes("://")
+	? dbConnectionString.split(":")[0]?.replace("+srv", "")
+	: "sqlite";
+const isSqlite = DatabaseType.includes("sqlite");
+
+const DataSourceOptions = new DataSource({
+	//@ts-ignore type 'string' is not 'mysql' | 'sqlite' | 'mariadb' | etc etc
+	type: DatabaseType,
+	charset: "utf8mb4",
+	url: isSqlite ? undefined : dbConnectionString,
+	database: isSqlite ? dbConnectionString : undefined,
+	entities: ["dist/util/entities/*.js"],
+	synchronize: !!process.env.DB_SYNC,
+	logging: false,
+	bigNumberStrings: false,
+	supportBigNumbers: true,
+	name: "default",
+	migrations: [path.join(__dirname, "..", "migrations", DatabaseType, "*.js")],
+});
 
 
 // Gets the existing database connection
@@ -19,6 +48,23 @@ export function getDatabase(): DataSource | null {
 // Called once on server start
 export async function initDatabase(): Promise<DataSource> {
 	if (dbConnection) return dbConnection;
+
+	if (isSqlite) {
+		console.log(
+			`[Database] ${red(
+				`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`,
+			)}`,
+		);
+	}
+
+	if (!process.env.DB_SYNC) {
+		const supported = ["mysql", "mariadb", "postgres", "sqlite"];
+		if (!supported.includes(DatabaseType)) {
+			console.log("[Database]" + red(` We don't have migrations for DB type '${DatabaseType}'` +
+				` To ignore, set DB_SYNC=true in your env. https://docs.fosscord.com/setup/server/configuration/env/`));
+			process.exit();
+		}
+	}
 
 	console.log(`[Database] ${yellow(`connecting to ${DatabaseType} db`)}`);
 
@@ -39,7 +85,7 @@ export async function initDatabase(): Promise<DataSource> {
 	return dbConnection;
 }
 
-export { dbConnection };
+export { dbConnection, DataSourceOptions };
 
 export function closeDatabase() {
 	dbConnection?.destroy();
