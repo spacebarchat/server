@@ -34,7 +34,7 @@ const DataSourceOptions = new DataSource({
 	bigNumberStrings: false,
 	supportBigNumbers: true,
 	name: "default",
-	migrations: [path.join(__dirname, "..", "migrations", DatabaseType, "*.js")],
+	migrations: [path.join(__dirname, "..", "migration", DatabaseType, "*.js")],
 });
 
 
@@ -85,7 +85,7 @@ export async function initDatabase(): Promise<DataSource> {
 	return dbConnection;
 }
 
-export { dbConnection, DataSourceOptions };
+export { dbConnection, DataSourceOptions, DatabaseType };
 
 export function closeDatabase() {
 	dbConnection?.destroy();
