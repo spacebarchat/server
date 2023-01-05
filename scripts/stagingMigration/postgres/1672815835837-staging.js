@@ -24,7 +24,9 @@ module.exports = class staging1672815835837 {
         await queryRunner.query(`ALTER TABLE "client_release" ADD "pub_date" TIMESTAMP NOT NULL`);
 		await queryRunner.query(`UPDATE channels SET nsfw = false WHERE nsfw IS NULL`);
         await queryRunner.query(`ALTER TABLE "channels" ALTER COLUMN "nsfw" SET NOT NULL`);
+		await queryRunner.query(`UPDATE channels SET flags = 0 WHERE flags IS NULL`);
         await queryRunner.query(`ALTER TABLE "channels" ALTER COLUMN "flags" SET NOT NULL`);
+		await queryRunner.query(`UPDATE channels SET default_thread_rate_limit_per_user = 0 WHERE default_thread_rate_limit_per_user IS NULL`);
         await queryRunner.query(`ALTER TABLE "channels" ALTER COLUMN "default_thread_rate_limit_per_user" SET NOT NULL`);
         await queryRunner.query(`ALTER TABLE "user_settings" DROP CONSTRAINT IF EXISTS "PK_e81f8bb92802737337d35c00981"`);
         await queryRunner.query(`ALTER TABLE "user_settings" DROP COLUMN IF EXISTS "index"`);
