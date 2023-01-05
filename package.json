@@ -63,7 +63,7 @@
 		"ajv-formats": "2.1.1",
 		"amqplib": "^0.10.3",
 		"bcrypt": "^5.0.1",
-		"body-parser": "^1.20.1",
+		"body-parser": "1.20.1",
 		"cheerio": "^1.0.0-rc.12",
 		"cookie-parser": "^1.4.6",
 		"dotenv": "^16.0.2",

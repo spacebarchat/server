@@ -12064,6 +12064,22 @@
             },
             "bio": {
                 "type": "string"
+            },
+            "pronouns": {
+                "type": "string"
+            },
+            "theme_colors": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ],
+                "minItems": 2,
+                "maxItems": 2
             }
         },
         "additionalProperties": false,
@@ -19567,6 +19583,22 @@
                     "null",
                     "string"
                 ]
+            },
+            "pronouns": {
+                "type": "string"
+            },
+            "theme_colors": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ],
+                "minItems": 2,
+                "maxItems": 2
             }
         },
         "additionalProperties": false,
