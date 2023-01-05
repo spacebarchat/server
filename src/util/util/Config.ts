@@ -14,7 +14,7 @@ var pairs: ConfigEntity[];
 export const Config = {
 	init: async function init() {
 		if (config) return config;
-		console.log('[Config] Loading configuration...');
+		console.log("[Config] Loading configuration...");
 		pairs = await ConfigEntity.find();
 		config = pairsToConfig(pairs);
 		// TODO: this overwrites existing config values with defaults.
@@ -26,15 +26,18 @@ export const Config = {
 		if (Object.keys(config).length == 0) config = new ConfigValue();
 
 		if (process.env.CONFIG_PATH) {
-			console.log(`[Config] Using config path from environment rather than database.`);
+			console.log(
+				`[Config] Using config path from environment rather than database.`,
+			);
 			try {
-				const overrideConfig = JSON.parse(fs.readFileSync(overridePath, { encoding: "utf8" }));
+				const overrideConfig = JSON.parse(
+					fs.readFileSync(overridePath, { encoding: "utf8" }),
+				);
 				config = overrideConfig.merge(config);
 			} catch (error) {
 				fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
 			}
 		}
-
 
 		return this.set(config);
 	},

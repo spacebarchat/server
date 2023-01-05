@@ -5,7 +5,7 @@ import {
 	emitEvent,
 	Member,
 	Role,
-	ChannelPermissionOverwriteSchema
+	ChannelPermissionOverwriteSchema,
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";

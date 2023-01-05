@@ -89,79 +89,94 @@ router.get(
 			bot: user.bot,
 		};
 
-	const userProfile = {
-		bio: req.user_bot ? null : user.bio,
-		accent_color: user.accent_color,
-		banner: user.banner,
-		pronouns: user.pronouns,
-		theme_colors: user.theme_colors,
-	};
+		const userProfile = {
+			bio: req.user_bot ? null : user.bio,
+			accent_color: user.accent_color,
+			banner: user.banner,
+			pronouns: user.pronouns,
+			theme_colors: user.theme_colors,
+		};
 
-	const guildMemberDto = guild_member
-		? {
-				avatar: guild_member.avatar,
-				banner: guild_member.banner,
-				bio: req.user_bot ? null : guild_member.bio,
-				communication_disabled_until: guild_member.communication_disabled_until,
-				deaf: guild_member.deaf,
-				flags: user.flags,
-				is_pending: guild_member.pending,
-				pending: guild_member.pending, // why is this here twice, discord?
-				joined_at: guild_member.joined_at,
-				mute: guild_member.mute,
-				nick: guild_member.nick,
-				premium_since: guild_member.premium_since,
-				roles: guild_member.roles.map((x) => x.id).filter((id) => id != guild_id),
-				user: userDto
-		  }
-		: undefined;
+		const guildMemberDto = guild_member
+			? {
+					avatar: guild_member.avatar,
+					banner: guild_member.banner,
+					bio: req.user_bot ? null : guild_member.bio,
+					communication_disabled_until:
+						guild_member.communication_disabled_until,
+					deaf: guild_member.deaf,
+					flags: user.flags,
+					is_pending: guild_member.pending,
+					pending: guild_member.pending, // why is this here twice, discord?
+					joined_at: guild_member.joined_at,
+					mute: guild_member.mute,
+					nick: guild_member.nick,
+					premium_since: guild_member.premium_since,
+					roles: guild_member.roles
+						.map((x) => x.id)
+						.filter((id) => id != guild_id),
+					user: userDto,
+			  }
+			: undefined;
 
-	const guildMemberProfile = {
-		accent_color: null,
-		banner: guild_member?.banner || null,
-		bio: guild_member?.bio || "",
-		guild_id
-	};
-	res.json({
-		connected_accounts: user.connected_accounts,
-		premium_guild_since: premium_guild_since, // TODO
-		premium_since: user.premium_since, // TODO
-		mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
-		user: userDto,
-		premium_type: user.premium_type,
-		profile_themes_experiment_bucket: 4,	// TODO: This doesn't make it available, for some reason?
-		user_profile: userProfile,
-		guild_member: guild_id && guildMemberDto,
-		guild_member_profile: guild_id && guildMemberProfile
-	});
-});
+		const guildMemberProfile = {
+			accent_color: null,
+			banner: guild_member?.banner || null,
+			bio: guild_member?.bio || "",
+			guild_id,
+		};
+		res.json({
+			connected_accounts: user.connected_accounts,
+			premium_guild_since: premium_guild_since, // TODO
+			premium_since: user.premium_since, // TODO
+			mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
+			user: userDto,
+			premium_type: user.premium_type,
+			profile_themes_experiment_bucket: 4, // TODO: This doesn't make it available, for some reason?
+			user_profile: userProfile,
+			guild_member: guild_id && guildMemberDto,
+			guild_member_profile: guild_id && guildMemberProfile,
+		});
+	},
+);
 
-router.patch("/", route({ body: "UserProfileModifySchema" }), async (req: Request, res: Response) => {
-	const body = req.body as UserProfileModifySchema;
+router.patch(
+	"/",
+	route({ body: "UserProfileModifySchema" }),
+	async (req: Request, res: Response) => {
+		const body = req.body as UserProfileModifySchema;
 
-	if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
-	let user = await User.findOneOrFail({ where: { id: req.user_id }, select: [...PrivateUserProjection, "data"] });
+		if (body.banner)
+			body.banner = await handleFile(
+				`/banners/${req.user_id}`,
+				body.banner as string,
+			);
+		let user = await User.findOneOrFail({
+			where: { id: req.user_id },
+			select: [...PrivateUserProjection, "data"],
+		});
 
-	user.assign(body);
-	await user.save();
+		user.assign(body);
+		await user.save();
 
-	// @ts-ignore
-	delete user.data;
+		// @ts-ignore
+		delete user.data;
 
-	// TODO: send update member list event in gateway
-	await emitEvent({
-		event: "USER_UPDATE",
-		user_id: req.user_id,
-		data: user
-	} as UserUpdateEvent);
+		// TODO: send update member list event in gateway
+		await emitEvent({
+			event: "USER_UPDATE",
+			user_id: req.user_id,
+			data: user,
+		} as UserUpdateEvent);
 
-	res.json({
-		accent_color: user.accent_color,
-		bio: user.bio,
-		banner: user.banner,
-		theme_colors: user.theme_colors,
-		pronouns: user.pronouns,
-	});
-});
+		res.json({
+			accent_color: user.accent_color,
+			bio: user.bio,
+			banner: user.banner,
+			theme_colors: user.theme_colors,
+			pronouns: user.pronouns,
+		});
+	},
+);
 
 export default router;

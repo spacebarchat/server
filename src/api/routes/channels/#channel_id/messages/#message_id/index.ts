@@ -179,7 +179,7 @@ router.put(
 			channel.save(),
 		]);
 
-		postHandleMessage(message).catch((e) => { }); // no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
 
 		return res.json(message);
 	},

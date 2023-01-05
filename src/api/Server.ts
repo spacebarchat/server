@@ -14,7 +14,7 @@ import { initInstance } from "./util/handlers/Instance";
 import { registerRoutes } from "@fosscord/util";
 import { red } from "picocolors";
 
-export interface FosscordServerOptions extends ServerOptions { }
+export interface FosscordServerOptions extends ServerOptions {}
 
 declare global {
 	namespace Express {
@@ -76,15 +76,12 @@ export class FosscordServer extends Server {
 		// 404 is not an error in express, so this should not be an error middleware
 		// this is a fine place to put the 404 handler because its after we register the routes
 		// and since its not an error middleware, our error handler below still works.
-		api.use(
-			"*",
-			(req: Request, res: Response, next: NextFunction) => {
-				res.status(404).json({
-					message: "404 endpoint not found",
-					code: 0,
-				});
-			},
-		);
+		api.use("*", (req: Request, res: Response, next: NextFunction) => {
+			res.status(404).json({
+				message: "404 endpoint not found",
+				code: 0,
+			});
+		});
 
 		this.app = app;
 

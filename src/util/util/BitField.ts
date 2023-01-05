@@ -138,10 +138,8 @@ export class BitField {
 		const FLAGS = this.FLAGS || this.constructor?.FLAGS;
 
 		if (typeof bit === "string") {
-			if (typeof FLAGS[bit] !== "undefined")
-				return FLAGS[bit];
-			else
-				bit = BigInt(bit);
+			if (typeof FLAGS[bit] !== "undefined") return FLAGS[bit];
+			else bit = BigInt(bit);
 		}
 
 		if (

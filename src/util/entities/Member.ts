@@ -125,9 +125,9 @@ export class Member extends BaseClassWithoutId {
 
 	@Column()
 	bio: string;
-	
+
 	@Column({ nullable: true, type: "simple-array" })
-	theme_colors?: number[];	// TODO: Separate `User` and `UserProfile` models
+	theme_colors?: number[]; // TODO: Separate `User` and `UserProfile` models
 
 	@Column({ nullable: true })
 	pronouns?: string;
@@ -309,9 +309,9 @@ export class Member extends BaseClassWithoutId {
 				guild_id,
 				user: {
 					sessions: {
-						status: Not("invisible" as "invisible")	// lol typescript?
-					}
-				}
+						status: Not("invisible" as "invisible"), // lol typescript?
+					},
+				},
 			},
 			take: 10,
 		});
@@ -380,7 +380,7 @@ export class Member extends BaseClassWithoutId {
 					stage_instances: [],
 					threads: [],
 					embedded_activities: [],
-					voice_states: guild.voice_states
+					voice_states: guild.voice_states,
 				},
 				user_id,
 			} as GuildCreateEvent),

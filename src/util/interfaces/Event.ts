@@ -81,9 +81,9 @@ export interface ReadyEventData {
 		number,
 		null,
 		number,
-		[[number, { e: number; s: number; }[]]],
+		[[number, { e: number; s: number }[]]],
 		[number, [[number, [number, number]]]],
-		{ b: number; k: bigint[]; }[],
+		{ b: number; k: bigint[] }[],
 	][];
 	guild_join_requests?: any[]; // ? what is this? this is new
 	shard?: [number, number];
@@ -481,7 +481,7 @@ export interface SessionsReplace extends Event {
 export interface GuildMemberListUpdate extends Event {
 	event: "GUILD_MEMBER_LIST_UPDATE";
 	data: {
-		groups: { id: string; count: number; }[];
+		groups: { id: string; count: number }[];
 		guild_id: string;
 		id: string;
 		member_count: number;
@@ -489,8 +489,8 @@ export interface GuildMemberListUpdate extends Event {
 		ops: {
 			index: number;
 			item: {
-				member?: PublicMember & { presence: Presence; };
-				group?: { id: string; count: number; }[];
+				member?: PublicMember & { presence: Presence };
+				group?: { id: string; count: number }[];
 			};
 		}[];
 	};

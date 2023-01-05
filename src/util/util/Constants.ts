@@ -1043,7 +1043,7 @@ export const FosscordApiErrors = {
 		45006,
 		501,
 	),
-	FEATURE_IS_IMMUTABLE : new ApiError(
+	FEATURE_IS_IMMUTABLE: new ApiError(
 		"The feature ({}) cannot be edited.",
 		45007,
 		403,

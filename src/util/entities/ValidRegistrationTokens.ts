@@ -4,7 +4,7 @@ import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
 export class ValidRegistrationToken extends BaseEntity {
 	@PrimaryColumn()
 	token: string;
-	
+
 	@Column()
 	created_at: Date = new Date();
 

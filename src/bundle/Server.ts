@@ -75,8 +75,14 @@ async function main() {
 					// Filter breadcrumbs that we don't care about
 					if (x.message?.includes("identified as")) return false;
 					if (x.message?.includes("[WebSocket] closed")) return false;
-					if (x.message?.includes("Got Resume -> cancel not implemented")) return false;
-					if (x.message?.includes("[Gateway] New connection from")) return false;
+					if (
+						x.message?.includes(
+							"Got Resume -> cancel not implemented",
+						)
+					)
+						return false;
+					if (x.message?.includes("[Gateway] New connection from"))
+						return false;
 
 					return true;
 				});

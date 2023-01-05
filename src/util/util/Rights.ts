@@ -32,7 +32,7 @@ export class Rights extends BitField {
 	static FLAGS = {
 		OPERATOR: BitFlag(0), // has all rights
 		MANAGE_APPLICATIONS: BitFlag(1),
-		MANAGE_GUILDS: BitFlag(2),	 // Manage all guilds instance-wide
+		MANAGE_GUILDS: BitFlag(2), // Manage all guilds instance-wide
 		MANAGE_MESSAGES: BitFlag(3), // Can't see other messages but delete/edit them in channels that they can see
 		MANAGE_RATE_LIMITS: BitFlag(4),
 		MANAGE_ROUTING: BitFlag(5), // can create custom message routes to any channel/guild
@@ -81,7 +81,7 @@ export class Rights extends BitField {
 		SELF_EDIT_FLAGS: BitFlag(45), // can modify own flags
 		EDIT_FLAGS: BitFlag(46), // can set others' flags
 		MANAGE_GROUPS: BitFlag(47), // can manage others' groups
-		VIEW_SERVER_STATS: BitFlag(48) // added per @chrischrome's request — can view server stats)
+		VIEW_SERVER_STATS: BitFlag(48), // added per @chrischrome's request — can view server stats)
 	};
 
 	any(permission: RightResolvable, checkOperator = true) {
