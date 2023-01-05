@@ -12,7 +12,7 @@ import { Config } from "@fosscord/util";
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) { }
+} catch (error) {}
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -48,7 +48,7 @@ export async function Connection(
 				"open",
 				"ping",
 				"pong",
-				"unexpected-response"
+				"unexpected-response",
 			].forEach((x) => {
 				socket.on(x, (y) => console.log(x, y));
 			});

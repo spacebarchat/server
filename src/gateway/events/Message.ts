@@ -10,30 +10,36 @@ const bigIntJson = BigIntJson({ storeAsString: true });
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) { }
+} catch (error) {}
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
 	var data: Payload;
 
-	if ((buffer instanceof Buffer && buffer[0] === 123) ||	// ASCII 123 = `{`. Bad check for JSON
-		(typeof buffer === "string")) {
+	if (
+		(buffer instanceof Buffer && buffer[0] === 123) || // ASCII 123 = `{`. Bad check for JSON
+		typeof buffer === "string"
+	) {
 		data = bigIntJson.parse(buffer.toString());
-	}
-	else if (this.encoding === "json" && buffer instanceof Buffer) {
+	} else if (this.encoding === "json" && buffer instanceof Buffer) {
 		if (this.inflate) {
-			try { buffer = this.inflate.process(buffer) as any; }
-			catch { buffer = buffer.toString() as any; }
+			try {
+				buffer = this.inflate.process(buffer) as any;
+			} catch {
+				buffer = buffer.toString() as any;
+			}
 		}
 		data = bigIntJson.parse(buffer as string);
-	}
-	else if (this.encoding === "etf" && buffer instanceof Buffer) {
-		try { data = erlpack.unpack(buffer); }
-		catch {	return this.close(CLOSECODES.Decode_error);	}
-	}
-	else return this.close(CLOSECODES.Decode_error);
+	} else if (this.encoding === "etf" && buffer instanceof Buffer) {
+		try {
+			data = erlpack.unpack(buffer);
+		} catch {
+			return this.close(CLOSECODES.Decode_error);
+		}
+	} else return this.close(CLOSECODES.Decode_error);
 
-	if (process.env.WS_VERBOSE) console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
+	if (process.env.WS_VERBOSE)
+		console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
 
 	check.call(this, PayloadSchema, data);
 
@@ -46,14 +52,17 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		return;
 	}
 
-	const transaction = data.op != 1 ? Sentry.startTransaction({
-		op: OPCODES[data.op],
-		name: `GATEWAY ${OPCODES[data.op]}`,
-		data: {
-			...data.d,
-			token: data?.d?.token ? "[Redacted]" : undefined,
-		},
-	}) : undefined;
+	const transaction =
+		data.op != 1
+			? Sentry.startTransaction({
+					op: OPCODES[data.op],
+					name: `GATEWAY ${OPCODES[data.op]}`,
+					data: {
+						...data.d,
+						token: data?.d?.token ? "[Redacted]" : undefined,
+					},
+			  })
+			: undefined;
 
 	try {
 		var ret = await OPCodeHandler.call(this, data);

@@ -259,7 +259,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const d: ReadyEventData = {
 		v: 9,
-		application: { id: application?.id ?? '', flags: application?.flags ?? 0 }, //TODO: check this code!
+		application: {
+			id: application?.id ?? "",
+			flags: application?.flags ?? 0,
+		}, //TODO: check this code!
 		user: privateUser,
 		user_settings: user.settings,
 		// @ts-ignore
@@ -267,7 +270,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			return {
 				...new ReadyGuildDTO(x as Guild & { joined_at: Date }).toJSON(),
 				guild_hashes: {},
-				joined_at: x.joined_at
+				joined_at: x.joined_at,
 			};
 		}),
 		guild_experiments: [], // TODO

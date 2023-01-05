@@ -53,7 +53,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		channel_id: opts.channel_id,
 		attachments: opts.attachments || [],
 		embeds: opts.embeds || [],
-		reactions: /*opts.reactions ||*/[],
+		reactions: /*opts.reactions ||*/ [],
 		type: opts.type ?? 0,
 	});
 
@@ -180,7 +180,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 // TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
-	const content = message.content?.replace(/ *\`[^)]*\` */g, "");	// remove markdown
+	const content = message.content?.replace(/ *\`[^)]*\` */g, ""); // remove markdown
 	var links = content?.match(LINK_REGEX);
 	if (!links) return;
 
@@ -201,8 +201,12 @@ export async function postHandleMessage(message: Message) {
 		}
 
 		// bit gross, but whatever!
-		const endpointPublic = Config.get().cdn.endpointPublic || "http://127.0.0.1";	// lol
-		const handler = url.hostname == new URL(endpointPublic).hostname ? EmbedHandlers["self"] : EmbedHandlers[url.hostname] || EmbedHandlers["default"];
+		const endpointPublic =
+			Config.get().cdn.endpointPublic || "http://127.0.0.1"; // lol
+		const handler =
+			url.hostname == new URL(endpointPublic).hostname
+				? EmbedHandlers["self"]
+				: EmbedHandlers[url.hostname] || EmbedHandlers["default"];
 
 		try {
 			let res = await handler(url);
@@ -218,11 +222,10 @@ export async function postHandleMessage(message: Message) {
 				cachePromises.push(cache.save());
 				data.embeds.push(embed);
 			}
-		}
-		catch (e) {
-			Sentry.captureException(e, scope => {
+		} catch (e) {
+			Sentry.captureException(e, (scope) => {
 				scope.clear();
-				scope.setContext("request", { url })
+				scope.setContext("request", { url });
 				return scope;
 			});
 			continue;
@@ -257,7 +260,7 @@ export async function sendMessage(opts: MessageOptions) {
 		} as MessageCreateEvent),
 	]);
 
-	postHandleMessage(message).catch((e) => { }); // no await as it should catch error non-blockingly
+	postHandleMessage(message).catch((e) => {}); // no await as it should catch error non-blockingly
 
 	return message;
 }

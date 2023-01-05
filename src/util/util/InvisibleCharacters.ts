@@ -1,7 +1,7 @@
 // List from https://invisible-characters.com/
 export const InvisibleCharacters = [
 	"\u{9}", //Tab
-	'\u{c}',			//Form feed
+	"\u{c}", //Form feed
 	//'\u{20}',			//Space	//categories can have spaces in them
 	"\u{ad}", //Soft hyphen
 	//"\u{34f}", //Combining grapheme joiner

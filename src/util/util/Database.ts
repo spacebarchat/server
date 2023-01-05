@@ -37,7 +37,6 @@ const DataSourceOptions = new DataSource({
 	migrations: [path.join(__dirname, "..", "migration", DatabaseType, "*.js")],
 });
 
-
 // Gets the existing database connection
 export function getDatabase(): DataSource | null {
 	// if (!dbConnection) throw new Error("Tried to get database before it was initialised");
@@ -60,8 +59,13 @@ export async function initDatabase(): Promise<DataSource> {
 	if (!process.env.DB_SYNC) {
 		const supported = ["mysql", "mariadb", "postgres", "sqlite"];
 		if (!supported.includes(DatabaseType)) {
-			console.log("[Database]" + red(` We don't have migrations for DB type '${DatabaseType}'` +
-				` To ignore, set DB_SYNC=true in your env. https://docs.fosscord.com/setup/server/configuration/env/`));
+			console.log(
+				"[Database]" +
+					red(
+						` We don't have migrations for DB type '${DatabaseType}'` +
+							` To ignore, set DB_SYNC=true in your env. https://docs.fosscord.com/setup/server/configuration/env/`,
+					),
+			);
 			process.exit();
 		}
 	}
@@ -71,12 +75,20 @@ export async function initDatabase(): Promise<DataSource> {
 	dbConnection = await DataSourceOptions.initialize();
 
 	// Crude way of detecting if the migrations table exists.
-	const dbExists = async () => { try { await ConfigEntity.count(); return true; } catch (e) { return false; } };
-	if (!await dbExists()) {
-		console.log("[Database] This appears to be a fresh database. Synchronising.");
+	const dbExists = async () => {
+		try {
+			await ConfigEntity.count();
+			return true;
+		} catch (e) {
+			return false;
+		}
+	};
+	if (!(await dbExists())) {
+		console.log(
+			"[Database] This appears to be a fresh database. Synchronising.",
+		);
 		await dbConnection.synchronize();
-	}
-	else {
+	} else {
 		await dbConnection.runMigrations();
 	}
 

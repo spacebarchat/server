@@ -79,7 +79,8 @@ export class Guild extends BaseClass {
 	banner?: string;
 
 	@Column({ nullable: true })
-	default_message_notifications?: number = Config.get().defaults.guild.defaultMessageNotifications;
+	default_message_notifications?: number =
+		Config.get().defaults.guild.defaultMessageNotifications;
 
 	@Column({ nullable: true })
 	description?: string;
@@ -88,7 +89,8 @@ export class Guild extends BaseClass {
 	discovery_splash?: string;
 
 	@Column({ nullable: true })
-	explicit_content_filter?: number = Config.get().defaults.guild.explicitContentFilter;
+	explicit_content_filter?: number =
+		Config.get().defaults.guild.explicitContentFilter;
 
 	@Column({ type: "simple-array" })
 	features: string[] = Config.get().guild.defaultFeatures || []; //TODO use enum
@@ -110,7 +112,8 @@ export class Guild extends BaseClass {
 	max_presences?: number = Config.get().defaults.guild.maxPresences;
 
 	@Column({ nullable: true })
-	max_video_channel_users?: number = Config.get().defaults.guild.maxVideoChannelUsers;
+	max_video_channel_users?: number =
+		Config.get().defaults.guild.maxVideoChannelUsers;
 
 	@Column({ nullable: true })
 	member_count?: number;

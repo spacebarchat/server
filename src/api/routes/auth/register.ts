@@ -33,16 +33,22 @@ router.post(
 		// Reg tokens
 		// They're a one time use token that bypasses registration limits ( rates, disabled reg, etc )
 		let regTokenUsed = false;
-		if (req.get("Referrer") && req.get("Referrer")?.includes("token=")) {	// eg theyre on https://staging.fosscord.com/register?token=whatever
+		if (req.get("Referrer") && req.get("Referrer")?.includes("token=")) {
+			// eg theyre on https://staging.fosscord.com/register?token=whatever
 			const token = req.get("Referrer")!.split("token=")[1].split("&")[0];
 			if (token) {
-				const regToken = await ValidRegistrationToken.findOne({ where: { token, expires_at: MoreThan(new Date()), } });
+				const regToken = await ValidRegistrationToken.findOne({
+					where: { token, expires_at: MoreThan(new Date()) },
+				});
 				await ValidRegistrationToken.delete({ token });
 				regTokenUsed = true;
-				console.log(`[REGISTER] Registration token ${token} used for registration!`);
-			}
-			else {
-				console.log(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`);
+				console.log(
+					`[REGISTER] Registration token ${token} used for registration!`,
+				);
+			} else {
+				console.log(
+					`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`,
+				);
 			}
 		}
 
@@ -78,7 +84,11 @@ router.post(
 			});
 		}
 
-		if (!regTokenUsed && register.requireCaptcha && security.captcha.enabled) {
+		if (
+			!regTokenUsed &&
+			register.requireCaptcha &&
+			security.captcha.enabled
+		) {
 			const { sitekey, service } = security.captcha;
 			if (!body.captcha_key) {
 				return res?.status(400).json({
@@ -220,14 +230,26 @@ router.post(
 		if (
 			!regTokenUsed &&
 			limits.absoluteRate.register.enabled &&
-			(await User.count({ where: { created_at: MoreThan(new Date(Date.now() - limits.absoluteRate.register.window)) } }))
-			>= limits.absoluteRate.register.limit
+			(await User.count({
+				where: {
+					created_at: MoreThan(
+						new Date(
+							Date.now() - limits.absoluteRate.register.window,
+						),
+					),
+				},
+			})) >= limits.absoluteRate.register.limit
 		) {
 			console.log(
-				`Global register ratelimit exceeded for ${getIpAdress(req)}, ${req.body.username}, ${req.body.invite || "No invite given"}`
+				`Global register ratelimit exceeded for ${getIpAdress(req)}, ${
+					req.body.username
+				}, ${req.body.invite || "No invite given"}`,
 			);
 			throw FieldErrors({
-				email: { code: "TOO_MANY_REGISTRATIONS", message: req.t("auth:register.TOO_MANY_REGISTRATIONS") }
+				email: {
+					code: "TOO_MANY_REGISTRATIONS",
+					message: req.t("auth:register.TOO_MANY_REGISTRATIONS"),
+				},
 			});
 		}
 

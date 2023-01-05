@@ -16,8 +16,13 @@ export const DEFAULT_FETCH_OPTIONS: any = {
 	method: "GET",
 };
 
-export const getProxyUrl = (url: URL, width: number, height: number): string => {
-	const { resizeWidthMax, resizeHeightMax, imagorServerUrl } = Config.get().cdn;
+export const getProxyUrl = (
+	url: URL,
+	width: number,
+	height: number,
+): string => {
+	const { resizeWidthMax, resizeHeightMax, imagorServerUrl } =
+		Config.get().cdn;
 	const secret = Config.get().security.requestSignature;
 	width = Math.min(width || 500, resizeWidthMax || width);
 	height = Math.min(height || 500, resizeHeightMax || width);
@@ -26,16 +31,20 @@ export const getProxyUrl = (url: URL, width: number, height: number): string => 
 	if (imagorServerUrl) {
 		let path = `${width}x${height}/${url.host}${url.pathname}`;
 
-		const hash = crypto.createHmac('sha1', secret)
+		const hash = crypto
+			.createHmac("sha1", secret)
 			.update(path)
-			.digest('base64')
-			.replace(/\+/g, '-').replace(/\//g, '_');
+			.digest("base64")
+			.replace(/\+/g, "-")
+			.replace(/\//g, "_");
 
 		return `${imagorServerUrl}/${hash}/${path}`;
 	}
 
 	// TODO: Imagor documentation
-	console.log("Imagor has not been set up correctly. docs.fosscord.com/set/up/a/page/about/this");
+	console.log(
+		"Imagor has not been set up correctly. docs.fosscord.com/set/up/a/page/about/this",
+	);
 	return "";
 };
 
@@ -69,8 +78,7 @@ const doFetch = async (url: URL) => {
 			...DEFAULT_FETCH_OPTIONS,
 			size: Config.get().limits.message.maxEmbedDownloadSize,
 		});
-	}
-	catch (e) {
+	} catch (e) {
 		return null;
 	}
 };
@@ -88,12 +96,10 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 		width = result.width;
 		height = result.height;
 		image = url.href;
-	}
-	else if (type.headers.get("content-type")?.indexOf("video") !== -1) {
+	} else if (type.headers.get("content-type")?.indexOf("video") !== -1) {
 		// TODO
 		return null;
-	}
-	else {
+	} else {
 		// have to download the page, unfortunately
 		const response = await doFetch(url);
 		if (!response) return null;
@@ -113,13 +119,15 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 			height: height,
 			url: url.href,
 			proxy_url: getProxyUrl(new URL(image), width, height),
-		}
+		},
 	};
 };
 
-export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed[] | null>; } = {
+export const EmbedHandlers: {
+	[key: string]: (url: URL) => Promise<Embed | Embed[] | null>;
+} = {
 	// the url does not have a special handler
-	"default": async (url: URL) => {
+	default: async (url: URL) => {
 		const type = await fetch(url, {
 			...DEFAULT_FETCH_OPTIONS,
 			method: "HEAD",
@@ -154,7 +162,13 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 				width: metas.width,
 				height: metas.height,
 				url: metas.image,
-				proxy_url: metas.image ? getProxyUrl(new URL(metas.image), metas.width!, metas.height!) : undefined,
+				proxy_url: metas.image
+					? getProxyUrl(
+							new URL(metas.image),
+							metas.width!,
+							metas.height!,
+					  )
+					: undefined,
 			},
 			description: metas.description,
 		};
@@ -169,26 +183,28 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 	// TODO: facebook
 	// have to use their APIs or something because they don't send the metas in initial html
 
-	"twitter.com": (url: URL) => { return EmbedHandlers["www.twitter.com"](url); },
+	"twitter.com": (url: URL) => {
+		return EmbedHandlers["www.twitter.com"](url);
+	},
 	"www.twitter.com": async (url: URL) => {
 		const token = Config.get().external.twitter;
 		if (!token) return null;
 
-		if (!url.href.includes("/status/")) return null;	// TODO;
-		const id = url.pathname.split("/")[3];	// super bad lol
+		if (!url.href.includes("/status/")) return null; // TODO;
+		const id = url.pathname.split("/")[3]; // super bad lol
 		if (!parseInt(id)) return null;
-		const endpointUrl = `https://api.twitter.com/2/tweets/${id}` +
+		const endpointUrl =
+			`https://api.twitter.com/2/tweets/${id}` +
 			`?expansions=author_id,attachments.media_keys` +
-			 `&media.fields=url,width,height` +
-			 `&tweet.fields=created_at,public_metrics` +
-			 `&user.fields=profile_image_url`;
-
+			`&media.fields=url,width,height` +
+			`&tweet.fields=created_at,public_metrics` +
+			`&user.fields=profile_image_url`;
 
 		const response = await fetch(endpointUrl, {
 			...DEFAULT_FETCH_OPTIONS,
 			headers: {
 				authorization: `Bearer ${token}`,
-			}
+			},
 		});
 		const json = await response.json();
 		if (json.errors) return null;
@@ -196,7 +212,9 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 		const text = json.data.text;
 		const created_at = new Date(json.data.created_at);
 		const metrics = json.data.public_metrics;
-		let media = json.includes.media?.filter((x: any) => x.type == "photo") as any[];	// TODO: video
+		let media = json.includes.media?.filter(
+			(x: any) => x.type == "photo",
+		) as any[]; // TODO: video
 
 		const embed: Embed = {
 			type: EmbedType.rich,
@@ -205,19 +223,38 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 			author: {
 				url: `https://twitter.com/${author.username}`,
 				name: `${author.name} (@${author.username})`,
-				proxy_icon_url: getProxyUrl(new URL(author.profile_image_url), 400, 400),
+				proxy_icon_url: getProxyUrl(
+					new URL(author.profile_image_url),
+					400,
+					400,
+				),
 				icon_url: author.profile_image_url,
 			},
 			timestamp: created_at,
 			fields: [
-				{ inline: true, name: "Likes", value: metrics.like_count.toString() },
-				{ inline: true, name: "Retweet", value: metrics.retweet_count.toString() },
+				{
+					inline: true,
+					name: "Likes",
+					value: metrics.like_count.toString(),
+				},
+				{
+					inline: true,
+					name: "Retweet",
+					value: metrics.retweet_count.toString(),
+				},
 			],
 			color: 1942002,
 			footer: {
 				text: "Twitter",
-				proxy_icon_url: getProxyUrl(new URL("https://abs.twimg.com/icons/apple-touch-icon-192x192.png"), 192, 192),
-				icon_url: "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
+				proxy_icon_url: getProxyUrl(
+					new URL(
+						"https://abs.twimg.com/icons/apple-touch-icon-192x192.png",
+					),
+					192,
+					192,
+				),
+				icon_url:
+					"https://abs.twimg.com/icons/apple-touch-icon-192x192.png",
 			},
 			// Discord doesn't send this?
 			// provider: {
@@ -231,7 +268,11 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 				width: media[0].width,
 				height: media[0].height,
 				url: media[0].url,
-				proxy_url: getProxyUrl(new URL(media[0].url), media[0].width, media[0].height)
+				proxy_url: getProxyUrl(
+					new URL(media[0].url),
+					media[0].width,
+					media[0].height,
+				),
 			};
 			media.shift();
 		}
@@ -265,17 +306,21 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 			thumbnail: {
 				width: 640,
 				height: 640,
-				proxy_url: metas.image ? getProxyUrl(new URL(metas.image!), 640, 640) : undefined,
+				proxy_url: metas.image
+					? getProxyUrl(new URL(metas.image!), 640, 640)
+					: undefined,
 				url: metas.image,
 			},
 			provider: {
 				url: "https://spotify.com",
 				name: "Spotify",
-			}
+			},
 		};
 	},
 
-	"pixiv.net": (url: URL) => { return EmbedHandlers["www.pixiv.net"](url); },
+	"pixiv.net": (url: URL) => {
+		return EmbedHandlers["www.pixiv.net"](url);
+	},
 	"www.pixiv.net": async (url: URL) => {
 		const response = await doFetch(url);
 		if (!response) return null;
@@ -291,12 +336,18 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 				width: metas.width,
 				height: metas.height,
 				url: url.href,
-				proxy_url: metas.image ? getProxyUrl(new URL(metas.image!), metas.width!, metas.height!) : undefined,
+				proxy_url: metas.image
+					? getProxyUrl(
+							new URL(metas.image!),
+							metas.width!,
+							metas.height!,
+					  )
+					: undefined,
 			},
 			provider: {
 				url: "https://pixiv.net",
-				name: "Pixiv"
-			}
+				name: "Pixiv",
+			},
 		};
 	},
 
@@ -310,35 +361,42 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 			type: EmbedType.rich,
 			title: metas.title,
 			description: metas.description,
-			image: {	// TODO: meant to be thumbnail.
+			image: {
+				// TODO: meant to be thumbnail.
 				// isn't this standard across all of steam?
 				width: 460,
 				height: 215,
 				url: metas.image,
-				proxy_url: metas.image ? getProxyUrl(new URL(metas.image!), 460, 215) : undefined,
+				proxy_url: metas.image
+					? getProxyUrl(new URL(metas.image!), 460, 215)
+					: undefined,
 			},
 			provider: {
 				url: "https://store.steampowered.com",
-				name: "Steam"
+				name: "Steam",
 			},
 			// TODO: fields for release date
 			// TODO: Video
 		};
 	},
 
-	"reddit.com": (url: URL) => { return EmbedHandlers["www.reddit.com"](url); },
+	"reddit.com": (url: URL) => {
+		return EmbedHandlers["www.reddit.com"](url);
+	},
 	"www.reddit.com": async (url: URL) => {
 		const res = await EmbedHandlers["default"](url);
 		return {
 			...res,
 			color: 16777215,
 			provider: {
-				name: "reddit"
-			}
+				name: "reddit",
+			},
 		};
 	},
 
-	"youtube.com": (url: URL) => { return EmbedHandlers["www.youtube.com"](url); },
+	"youtube.com": (url: URL) => {
+		return EmbedHandlers["www.youtube.com"](url);
+	},
 	"www.youtube.com": async (url: URL): Promise<Embed | null> => {
 		const response = await doFetch(url);
 		if (!response) return null;
@@ -358,7 +416,13 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 				width: metas.width,
 				height: metas.height,
 				url: metas.image,
-				proxy_url: metas.image ? getProxyUrl(new URL(metas.image!), metas.width!, metas.height!) : undefined,
+				proxy_url: metas.image
+					? getProxyUrl(
+							new URL(metas.image!),
+							metas.width!,
+							metas.height!,
+					  )
+					: undefined,
 			},
 			provider: {
 				url: "https://www.youtube.com",
@@ -369,12 +433,12 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 			author: {
 				name: metas.author,
 				// TODO: author channel url
-			}
+			},
 		};
 	},
 
 	// the url is an image from this instance
-	"self": async (url: URL): Promise<Embed | null> => {
+	self: async (url: URL): Promise<Embed | null> => {
 		const result = await probe(url.href);
 
 		return {
@@ -385,7 +449,7 @@ export const EmbedHandlers: { [key: string]: (url: URL) => Promise<Embed | Embed
 				height: result.height,
 				url: url.href,
 				proxy_url: url.href,
-			}
+			},
 		};
 	},
-};;
+};

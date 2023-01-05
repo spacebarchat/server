@@ -56,7 +56,7 @@ export class CDNServer extends Server {
 
 		this.app.use("/splashes/", avatarsRoute);
 		this.log("verbose", "[Server] Route /splashes registered");
-		
+
 		this.app.use("/discovery-splashes/", avatarsRoute);
 		this.log("verbose", "[Server] Route /discovery-splashes registered");
 
@@ -75,10 +75,16 @@ export class CDNServer extends Server {
 		this.app.use("/channel-icons/", avatarsRoute);
 		this.log("verbose", "[Server] Route /channel-icons registered");
 
-		this.app.use("/guilds/:guild_id/users/:user_id/avatars", guildProfilesRoute);
+		this.app.use(
+			"/guilds/:guild_id/users/:user_id/avatars",
+			guildProfilesRoute,
+		);
 		this.log("verbose", "[Server] Route /guilds/avatars registered");
 
-		this.app.use("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
+		this.app.use(
+			"/guilds/:guild_id/users/:user_id/banners",
+			guildProfilesRoute,
+		);
 		this.log("verbose", "[Server] Route /guilds/banners registered");
 
 		return super.start();

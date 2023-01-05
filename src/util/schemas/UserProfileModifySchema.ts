@@ -5,7 +5,7 @@ export interface UserProfileModifySchema {
 	pronouns?: string;
 
 	/*
-	* @items.type integer
-	*/
-	theme_colors?: [number, number]
+	 * @items.type integer
+	 */
+	theme_colors?: [number, number];
 }

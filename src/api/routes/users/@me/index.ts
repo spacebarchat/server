@@ -98,7 +98,7 @@ router.patch(
 			}
 			user.data.hash = await bcrypt.hash(body.new_password, 12);
 			user.data.valid_tokens_since = new Date();
-			newToken = await generateToken(user.id) as string;
+			newToken = (await generateToken(user.id)) as string;
 		}
 
 		if (body.username) {

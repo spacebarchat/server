@@ -61,9 +61,13 @@ router.post(
 		await Promise.all([
 			role.save(),
 			// Move all existing roles up one position, to accommodate the new role
-			Role.createQueryBuilder('roles')
-				.where({ guild: { id: guild_id }, name: Not("@everyone"), id: Not(role.id) })
-				.update({ position: () => 'position + 1' })
+			Role.createQueryBuilder("roles")
+				.where({
+					guild: { id: guild_id },
+					name: Not("@everyone"),
+					id: Not(role.id),
+				})
+				.update({ position: () => "position + 1" })
 				.execute(),
 			emitEvent({
 				event: "GUILD_ROLE_CREATE",

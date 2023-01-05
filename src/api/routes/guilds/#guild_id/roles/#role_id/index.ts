@@ -63,12 +63,14 @@ router.patch(
 			);
 		else body.icon = undefined;
 
-		const role = await Role.findOneOrFail({ where: { id: role_id, guild: { id: guild_id } } });
+		const role = await Role.findOneOrFail({
+			where: { id: role_id, guild: { id: guild_id } },
+		});
 		role.assign({
 			...body,
 			permissions: String(
-				req.permission!.bitfield & BigInt(body.permissions || "0")
-			)
+				req.permission!.bitfield & BigInt(body.permissions || "0"),
+			),
 		});
 
 		await Promise.all([

@@ -15,13 +15,7 @@ import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
 import { UserSettings } from "./UserSettings";
 import { Session } from "./Session";
-import {
-	Config,
-	FieldErrors,
-	Snowflake,
-	trimSpecial,
-	adjustEmail,
-} from "..";
+import { Config, FieldErrors, Snowflake, trimSpecial, adjustEmail } from "..";
 
 export enum PublicUserEnum {
 	username,
@@ -68,7 +62,7 @@ export const PrivateUserProjection = [
 // Private user data that should never get sent to the client
 export type PublicUser = Pick<User, PublicUserKeys>;
 
-export interface UserPublic extends Pick<User, PublicUserKeys> { }
+export interface UserPublic extends Pick<User, PublicUserKeys> {}
 
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
@@ -92,7 +86,7 @@ export class User extends BaseClass {
 	banner?: string; // hash of the user banner
 
 	@Column({ nullable: true, type: "simple-array" })
-	theme_colors?: number[];	// TODO: Separate `User` and `UserProfile` models
+	theme_colors?: number[]; // TODO: Separate `User` and `UserProfile` models
 
 	@Column({ nullable: true })
 	pronouns?: string;
@@ -140,7 +134,7 @@ export class User extends BaseClass {
 	premium_since: Date = new Date(); // premium date
 
 	@Column({ select: false })
-	verified: boolean = true;	// email is verified
+	verified: boolean = true; // email is verified
 
 	@Column()
 	disabled: boolean = false; // if the account is disabled
@@ -203,7 +197,7 @@ export class User extends BaseClass {
 	@OneToOne(() => UserSettings, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		eager: false
+		eager: false,
 	})
 	@JoinColumn()
 	settings: UserSettings;
@@ -270,7 +264,9 @@ export class User extends BaseClass {
 		});
 	}
 
-	public static async generateDiscriminator(username: string): Promise<string | undefined> {
+	public static async generateDiscriminator(
+		username: string,
+	): Promise<string | undefined> {
 		if (Config.get().register.incrementingDiscriminators) {
 			// discriminator will be incrementally generated
 
@@ -322,7 +318,7 @@ export class User extends BaseClass {
 		password?: string;
 		email?: string;
 		date_of_birth?: Date; // "2000-04-03"
-		id?: string,
+		id?: string;
 		req?: any;
 	}) {
 		// trim special uf8 control characters -> Backspace, Newline, ...
@@ -347,7 +343,7 @@ export class User extends BaseClass {
 
 		const settings = UserSettings.create({
 			locale: language,
-		})
+		});
 
 		const user = User.create({
 			username: username,
@@ -367,15 +363,12 @@ export class User extends BaseClass {
 		});
 
 		user.validate();
-		await Promise.all([
-			user.save(),
-			settings.save(),
-		])
+		await Promise.all([user.save(), settings.save()]);
 
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
-					await Member.addToGuild(user.id, guild).catch((e) => { });
+					await Member.addToGuild(user.id, guild).catch((e) => {});
 				}
 			}
 		});
