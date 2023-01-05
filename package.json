@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "A Fosscord server written in Node.js",
 	"scripts": {
+		"prepare": "husky install",
 		"postinstall": "npx patch-package",
 		"start": "node dist/bundle/start.js",
 		"start:api": "node dist/api/start.js",
@@ -51,7 +52,9 @@
 		"@types/sharp": "^0.31.0",
 		"@types/ws": "^8.5.3",
 		"express": "^4.18.1",
+		"husky": "^8.0.0",
 		"prettier": "^2.7.1",
+		"pretty-quick": "^3.1.3",
 		"typescript": "^4.8.3"
 	},
 	"dependencies": {
