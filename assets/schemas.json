@@ -20282,44 +20282,6 @@
             },
             "timezone_offset": {
                 "type": "integer"
-            },
-            "assign": {
-                "type": "object",
-                "additionalProperties": false
-            },
-            "toJSON": {
-                "type": "object",
-                "additionalProperties": false
-            },
-            "hasId": {
-                "description": "Checks if entity has an id.\nIf entity composite compose ids, it will check them all.",
-                "type": "object",
-                "additionalProperties": false
-            },
-            "save": {
-                "description": "Saves current entity in the database.\nIf entity does not exist in the database then inserts, otherwise updates.",
-                "type": "object",
-                "additionalProperties": false
-            },
-            "remove": {
-                "description": "Removes current entity from the database.",
-                "type": "object",
-                "additionalProperties": false
-            },
-            "softRemove": {
-                "description": "Records the delete date of current entity.",
-                "type": "object",
-                "additionalProperties": false
-            },
-            "recover": {
-                "description": "Recovers a given entity in the database.",
-                "type": "object",
-                "additionalProperties": false
-            },
-            "reload": {
-                "description": "Reloads entity data from the database.",
-                "type": "object",
-                "additionalProperties": false
             }
         },
         "additionalProperties": false,
