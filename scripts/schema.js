@@ -71,6 +71,24 @@ function main() {
 		const part = TJS.generateSchema(program, name, settings, [], generator);
 		if (!part) continue;
 
+		// this is a hack. want some want to check if its a @column, instead
+		if (part.properties)
+			Object.keys(part.properties)
+				.filter((key) =>
+					[
+						// BaseClass methods
+						"toJSON",
+						"hasId",
+						"save",
+						"remove",
+						"softRemove",
+						"recover",
+						"reload",
+						"assign",
+					].includes(key),
+				)
+				.forEach((key) => delete part.properties[key]);
+
 		definitions = { ...definitions, [name]: { ...part } };
 	}
 
