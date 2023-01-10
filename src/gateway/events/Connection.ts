@@ -35,6 +35,9 @@ export async function Connection(
 		socket.on("close", Close);
 		// @ts-ignore
 		socket.on("message", Message);
+
+		socket.on("error", (err) => console.error("[Gateway]", err));
+
 		// console.log(
 		// 	`[Gateway] New connection from ${socket.ipAddress}, total ${this.clients.size}`,
 		// );
