@@ -33,9 +33,17 @@ router.get(
 			transaction: false,
 		});
 
-		if (req.query.plain)
-			return res.send(tokens.map((x) => x.token).join("\n"));
+		const ret = req.query.include_url
+			? tokens.map(
+					(x) =>
+						`${Config.get().general.frontPage}/register?token=${
+							x.token
+						}`,
+			  )
+			: tokens.map((x) => x.token);
 
-		return res.json({ tokens: tokens.map((x) => x.token) });
+		if (req.query.plain) return res.send(ret.join("\n"));
+
+		return res.json({ tokens: ret });
 	},
 );
