@@ -1,7 +1,7 @@
 import "missing-native-js-functions";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
-import { Config, initDatabase, initEvent } from "@fosscord/util";
+import { Config, initDatabase, initEvent, Sentry } from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import { Router, Request, Response, NextFunction } from "express";
@@ -38,6 +38,7 @@ export class FosscordServer extends Server {
 		await Config.init();
 		await initEvent();
 		await initInstance();
+		await Sentry.init(this.app);
 
 		let logRequests = process.env["LOG_REQUESTS"] != undefined;
 		if (logRequests) {
@@ -95,6 +96,8 @@ export class FosscordServer extends Server {
 
 		this.app.use(ErrorHandler);
 		TestClient(this.app);
+
+		Sentry.errorHandler(this.app);
 
 		if (logRequests)
 			console.log(

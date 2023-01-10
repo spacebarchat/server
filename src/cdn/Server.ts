@@ -1,5 +1,5 @@
 import { Server, ServerOptions } from "lambert-server";
-import { Config, initDatabase, registerRoutes } from "@fosscord/util";
+import { Config, initDatabase, registerRoutes, Sentry } from "@fosscord/util";
 import path from "path";
 import avatarsRoute from "./routes/avatars";
 import guildProfilesRoute from "./routes/guild-profiles";
@@ -18,6 +18,8 @@ export class CDNServer extends Server {
 	async start() {
 		await initDatabase();
 		await Config.init();
+		await Sentry.init(this.app);
+
 		this.app.use((req, res, next) => {
 			res.set("Access-Control-Allow-Origin", "*");
 			// TODO: use better CSP policy
@@ -86,6 +88,8 @@ export class CDNServer extends Server {
 			guildProfilesRoute,
 		);
 		this.log("verbose", "[Server] Route /guilds/banners registered");
+
+		Sentry.errorHandler(this.app);
 
 		return super.start();
 	}
