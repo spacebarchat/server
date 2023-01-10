@@ -22,6 +22,7 @@ const gateway = new Gateway.Server({ server, port, production });
 process.on("SIGTERM", async () => {
 	console.log("Shutting down due to SIGTERM");
 	server.close();
+	Sentry.close();
 });
 
 async function main() {
