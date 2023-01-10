@@ -40,6 +40,7 @@ export * from "./TotpDisableSchema";
 export * from "./TotpEnableSchema";
 export * from "./VoiceIdentifySchema";
 export * from "./TotpSchema";
+export * from "./UserDeleteSchema";
 export * from "./UserModifySchema";
 export * from "./UserProfileModifySchema";
 export * from "./UserSettingsSchema";
