@@ -1,5 +1,5 @@
 import { Server, ServerOptions } from "lambert-server";
-import { Config, initDatabase, registerRoutes } from "@fosscord/util";
+import { Config, initDatabase, registerRoutes, Sentry } from "@fosscord/util";
 import path from "path";
 import avatarsRoute from "./routes/avatars";
 import guildProfilesRoute from "./routes/guild-profiles";
@@ -18,6 +18,8 @@ export class CDNServer extends Server {
 	async start() {
 		await initDatabase();
 		await Config.init();
+		await Sentry.init(this.app);
+
 		this.app.use((req, res, next) => {
 			res.set("Access-Control-Allow-Origin", "*");
 			// TODO: use better CSP policy
@@ -56,7 +58,7 @@ export class CDNServer extends Server {
 
 		this.app.use("/splashes/", avatarsRoute);
 		this.log("verbose", "[Server] Route /splashes registered");
-		
+
 		this.app.use("/discovery-splashes/", avatarsRoute);
 		this.log("verbose", "[Server] Route /discovery-splashes registered");
 
@@ -75,11 +77,19 @@ export class CDNServer extends Server {
 		this.app.use("/channel-icons/", avatarsRoute);
 		this.log("verbose", "[Server] Route /channel-icons registered");
 
-		this.app.use("/guilds/:guild_id/users/:user_id/avatars", guildProfilesRoute);
+		this.app.use(
+			"/guilds/:guild_id/users/:user_id/avatars",
+			guildProfilesRoute,
+		);
 		this.log("verbose", "[Server] Route /guilds/avatars registered");
 
-		this.app.use("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
+		this.app.use(
+			"/guilds/:guild_id/users/:user_id/banners",
+			guildProfilesRoute,
+		);
 		this.log("verbose", "[Server] Route /guilds/banners registered");
+
+		Sentry.errorHandler(this.app);
 
 		return super.start();
 	}

@@ -1,7 +1,7 @@
 import "missing-native-js-functions";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
-import { Config, initDatabase, initEvent } from "@fosscord/util";
+import { Config, initDatabase, initEvent, Sentry } from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import { Router, Request, Response, NextFunction } from "express";
@@ -15,7 +15,7 @@ import { registerRoutes } from "@fosscord/util";
 import { red } from "picocolors";
 import { ConnectionConfig, ConnectionLoader } from "../util/connections";
 
-export interface FosscordServerOptions extends ServerOptions { }
+export interface FosscordServerOptions extends ServerOptions {}
 
 declare global {
 	namespace Express {
@@ -40,6 +40,7 @@ export class FosscordServer extends Server {
 		await initEvent();
 		await ConnectionConfig.init();
 		await initInstance();
+		await Sentry.init(this.app);
 
 		let logRequests = process.env["LOG_REQUESTS"] != undefined;
 		if (logRequests) {
@@ -78,15 +79,12 @@ export class FosscordServer extends Server {
 		// 404 is not an error in express, so this should not be an error middleware
 		// this is a fine place to put the 404 handler because its after we register the routes
 		// and since its not an error middleware, our error handler below still works.
-		api.use(
-			"*",
-			(req: Request, res: Response, next: NextFunction) => {
-				res.status(404).json({
-					message: "404 endpoint not found",
-					code: 0,
-				});
-			},
-		);
+		api.use("*", (req: Request, res: Response, next: NextFunction) => {
+			res.status(404).json({
+				message: "404 endpoint not found",
+				code: 0,
+			});
+		});
 
 		this.app = app;
 
@@ -102,6 +100,7 @@ export class FosscordServer extends Server {
 		TestClient(this.app);
 
 		ConnectionLoader.loadConnections();
+		Sentry.errorHandler(this.app);
 
 		if (logRequests)
 			console.log(

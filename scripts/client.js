@@ -331,27 +331,27 @@ const processFile = async (name) => {
 
 	process.stdout.moveCursor(0, 1);
 
-	// var existing = await fs.readdir(CACHE_PATH);
-	// while (existing.length > 0) {
-	// 	var file = existing.shift();
+	var existing = await fs.readdir(CACHE_PATH);
+	while (existing.length > 0) {
+		var file = existing.shift();
 
-	// 	process.stdout.clearLine(0);
-	// 	process.stdout.cursorTo(0);
-	// 	process.stdout.write(
-	// 		`Patching existing ${file}. Remaining: ${existing.length}.`,
-	// 	);
+		process.stdout.clearLine(0);
+		process.stdout.cursorTo(0);
+		process.stdout.write(
+			`Patching existing ${file}. Remaining: ${existing.length}.`,
+		);
 
-	// 	var text = await fs.readFile(path.join(CACHE_PATH, file));
-	// 	if (file.includes(".js") || file.includes(".css")) {
-	// 		text = doPatch(text.toString());
-	// 		await fs.writeFile(path.join(CACHE_PATH, file), text.toString());
-	// 		assets.push(
-	// 			...[...new Set(text.match(/\"[A-Fa-f0-9]{20}\"/g))].map((x) =>
-	// 				x.replaceAll('"', ""),
-	// 			),
-	// 		);
-	// 	}
-	// }
+		var text = await fs.readFile(path.join(CACHE_PATH, file));
+		if (file.includes(".js") || file.includes(".css")) {
+			text = doPatch(text.toString());
+			await fs.writeFile(path.join(CACHE_PATH, file), text.toString());
+			assets.push(
+				...[...new Set(text.match(/\"[A-Fa-f0-9]{20}\"/g))].map((x) =>
+					x.replaceAll('"', ""),
+				),
+			);
+		}
+	}
 
 	process.stdout.moveCursor(0, 1);
 

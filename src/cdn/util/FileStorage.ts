@@ -35,7 +35,8 @@ export class FileStorage implements Storage {
 
 	async set(path: string, value: any) {
 		path = getPath(path);
-		if (!fs.existsSync(dirname(path))) fs.mkdirSync(dirname(path), { recursive: true });
+		if (!fs.existsSync(dirname(path)))
+			fs.mkdirSync(dirname(path), { recursive: true });
 
 		value = Readable.from(value);
 		const cleaned_file = fs.createWriteStream(path);

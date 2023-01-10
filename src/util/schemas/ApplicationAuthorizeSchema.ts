@@ -3,5 +3,5 @@ export interface ApplicationAuthorizeSchema {
 	guild_id: string;
 	permissions: string;
 	captcha_key?: string;
-	code?: string;	// 2fa code
+	code?: string; // 2fa code
 }

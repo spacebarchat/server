@@ -27,42 +27,56 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	return res.json(member);
 });
 
-router.patch("/", route({ body: "MemberChangeSchema" }), async (req: Request, res: Response) => {
-	let { guild_id, member_id } = req.params;
-	if (member_id === "@me") member_id = req.user_id;
-	const body = req.body as MemberChangeSchema;
+router.patch(
+	"/",
+	route({ body: "MemberChangeSchema" }),
+	async (req: Request, res: Response) => {
+		let { guild_id, member_id } = req.params;
+		if (member_id === "@me") member_id = req.user_id;
+		const body = req.body as MemberChangeSchema;
 
-	let member = await Member.findOneOrFail({ where: { id: member_id, guild_id }, relations: ["roles", "user"] });
-	const permission = await getPermission(req.user_id, guild_id);
-	const everyone = await Role.findOneOrFail({ where: { guild_id: guild_id, name: "@everyone", position: 0 } });
+		let member = await Member.findOneOrFail({
+			where: { id: member_id, guild_id },
+			relations: ["roles", "user"],
+		});
+		const permission = await getPermission(req.user_id, guild_id);
+		const everyone = await Role.findOneOrFail({
+			where: { guild_id: guild_id, name: "@everyone", position: 0 },
+		});
 
-	if (body.avatar) body.avatar = await handleFile(`/guilds/${guild_id}/users/${member_id}/avatars`, body.avatar as string);
+		if (body.avatar)
+			body.avatar = await handleFile(
+				`/guilds/${guild_id}/users/${member_id}/avatars`,
+				body.avatar as string,
+			);
 
-	member.assign(body);
+		member.assign(body);
 
-	if ('roles' in body) {
-		permission.hasThrow("MANAGE_ROLES");
+		if ("roles" in body) {
+			permission.hasThrow("MANAGE_ROLES");
 
-		body.roles = body.roles || [];
-		body.roles.filter(x => !!x);
+			body.roles = body.roles || [];
+			body.roles.filter((x) => !!x);
 
-		if (body.roles.indexOf(everyone.id) === -1) body.roles.push(everyone.id);
-		member.roles = body.roles.map((x) => Role.create({ id: x })); // foreign key constraint will fail if role doesn't exist
-	}
+			if (body.roles.indexOf(everyone.id) === -1)
+				body.roles.push(everyone.id);
+			member.roles = body.roles.map((x) => Role.create({ id: x })); // foreign key constraint will fail if role doesn't exist
+		}
 
-	await member.save();
+		await member.save();
 
-	member.roles = member.roles.filter((x) => x.id !== everyone.id);
+		member.roles = member.roles.filter((x) => x.id !== everyone.id);
 
-	// do not use promise.all as we have to first write to db before emitting the event to catch errors
-	await emitEvent({
-		event: "GUILD_MEMBER_UPDATE",
-		guild_id,
-		data: { ...member, roles: member.roles.map((x) => x.id) }
-	} as GuildMemberUpdateEvent);
+		// do not use promise.all as we have to first write to db before emitting the event to catch errors
+		await emitEvent({
+			event: "GUILD_MEMBER_UPDATE",
+			guild_id,
+			data: { ...member, roles: member.roles.map((x) => x.id) },
+		} as GuildMemberUpdateEvent);
 
-	res.json(member);
-});
+		res.json(member);
+	},
+);
 
 router.put("/", route({}), async (req: Request, res: Response) => {
 	// TODO: Lurker mode

@@ -60,54 +60,61 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const session_id = genSessionId();
 	this.session_id = session_id; //Set the session of the WebSocket object
 
-	const [user, read_states, members, recipients, session, application, connected_accounts] =
-		await Promise.all([
-			User.findOneOrFail({
-				where: { id: this.user_id },
-				relations: ["relationships", "relationships.to", "settings"],
-				select: [...PrivateUserProjection, "relationships"],
-			}),
-			ReadState.find({ where: { user_id: this.user_id } }),
-			Member.find({
-				where: { id: this.user_id },
-				select: MemberPrivateProjection,
-				relations: [
-					"guild",
-					"guild.channels",
-					"guild.emojis",
-					"guild.emojis.user",
-					"guild.roles",
-					"guild.stickers",
-					"user",
-					"roles",
-				],
-			}),
-			Recipient.find({
-				where: { user_id: this.user_id, closed: false },
-				relations: [
-					"channel",
-					"channel.recipients",
-					"channel.recipients.user",
-				],
-				// TODO: public user selection
-			}),
-			// save the session and delete it when the websocket is closed
-			Session.create({
-				user_id: this.user_id,
-				session_id: session_id,
-				// TODO: check if status is only one of: online, dnd, offline, idle
-				status: identify.presence?.status || "offline", //does the session always start as online?
-				client_info: {
-					//TODO read from identity
-					client: "desktop",
-					os: identify.properties?.os,
-					version: 0,
-				},
-				activities: [],
-			}).save(),
-			Application.findOne({ where: { id: this.user_id } }),
-			ConnectedAccount.find({ where: { user_id: this.user_id } })
-		]);
+	const [
+		user,
+		read_states,
+		members,
+		recipients,
+		session,
+		application,
+		connected_accounts,
+	] = await Promise.all([
+		User.findOneOrFail({
+			where: { id: this.user_id },
+			relations: ["relationships", "relationships.to", "settings"],
+			select: [...PrivateUserProjection, "relationships"],
+		}),
+		ReadState.find({ where: { user_id: this.user_id } }),
+		Member.find({
+			where: { id: this.user_id },
+			select: MemberPrivateProjection,
+			relations: [
+				"guild",
+				"guild.channels",
+				"guild.emojis",
+				"guild.emojis.user",
+				"guild.roles",
+				"guild.stickers",
+				"user",
+				"roles",
+			],
+		}),
+		Recipient.find({
+			where: { user_id: this.user_id, closed: false },
+			relations: [
+				"channel",
+				"channel.recipients",
+				"channel.recipients.user",
+			],
+			// TODO: public user selection
+		}),
+		// save the session and delete it when the websocket is closed
+		Session.create({
+			user_id: this.user_id,
+			session_id: session_id,
+			// TODO: check if status is only one of: online, dnd, offline, idle
+			status: identify.presence?.status || "offline", //does the session always start as online?
+			client_info: {
+				//TODO read from identity
+				client: "desktop",
+				os: identify.properties?.os,
+				version: 0,
+			},
+			activities: [],
+		}).save(),
+		Application.findOne({ where: { id: this.user_id } }),
+		ConnectedAccount.find({ where: { user_id: this.user_id } }),
+	]);
 
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 	if (!user.settings) {
@@ -177,10 +184,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	})) as any as UserGuildSettings[];
 
 	const channels = recipients.map((x) => {
-		// @ts-ignore
-		x.channel.recipients = x.channel.recipients?.map((x) => x.user);
 		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
-		users = users.concat(x.channel.recipients as unknown as User[]);
+		users = users.concat(
+			x.channel.recipients?.map((x) => x.user.toPublicUser()) || [],
+		);
+		// users = users.concat(x.channel.recipients);
 		if (x.channel.isDm()) {
 			x.channel.recipients = x.channel.recipients!.filter(
 				(x) => x.id !== this.user_id,
@@ -200,6 +208,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			bot: related_user.bot,
 			bio: related_user.bio,
 			premium_since: user.premium_since,
+			premium_type: user.premium_type,
 			accent_color: related_user.accent_color,
 		};
 		users.push(public_related_user);
@@ -260,7 +269,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const d: ReadyEventData = {
 		v: 9,
-		application: { id: application?.id ?? '', flags: application?.flags ?? 0 }, //TODO: check this code!
+		application: {
+			id: application?.id ?? "",
+			flags: application?.flags ?? 0,
+		}, //TODO: check this code!
 		user: privateUser,
 		user_settings: user.settings,
 		// @ts-ignore
@@ -268,7 +280,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			return {
 				...new ReadyGuildDTO(x as Guild & { joined_at: Date }).toJSON(),
 				guild_hashes: {},
-				joined_at: x.joined_at
+				joined_at: x.joined_at,
 			};
 		}),
 		guild_experiments: [], // TODO

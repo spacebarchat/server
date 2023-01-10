@@ -69,15 +69,21 @@ router.patch(
 				body.splash,
 			);
 
-		if (body.discovery_splash && body.discovery_splash !== guild.discovery_splash)
+		if (
+			body.discovery_splash &&
+			body.discovery_splash !== guild.discovery_splash
+		)
 			body.discovery_splash = await handleFile(
 				`/discovery-splashes/${guild_id}`,
 				body.discovery_splash,
 			);
 
 		if (body.features) {
-			const diff = guild.features.filter(x => !body.features?.includes(x))
-				.concat(body.features.filter(x => !guild.features.includes(x)));
+			const diff = guild.features
+				.filter((x) => !body.features?.includes(x))
+				.concat(
+					body.features.filter((x) => !guild.features.includes(x)),
+				);
 
 			// TODO move these
 			const MUTABLE_FEATURES = [
@@ -89,7 +95,9 @@ router.patch(
 			for (var feature of diff) {
 				if (MUTABLE_FEATURES.includes(feature)) continue;
 
-				throw FosscordApiErrors.FEATURE_IS_IMMUTABLE.withParams(feature);
+				throw FosscordApiErrors.FEATURE_IS_IMMUTABLE.withParams(
+					feature,
+				);
 			}
 
 			// for some reason, they don't update in the assign.

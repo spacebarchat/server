@@ -1,6 +1,15 @@
 import { Router, Response, Request } from "express";
 import { route } from "@fosscord/api";
-import { Channel, Config, handleFile, trimSpecial, User, Webhook, WebhookCreateSchema, WebhookType } from "@fosscord/util";
+import {
+	Channel,
+	Config,
+	handleFile,
+	trimSpecial,
+	User,
+	Webhook,
+	WebhookCreateSchema,
+	WebhookType,
+} from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { isTextChannel } from "./messages/index";
 import { DiscordApiErrors } from "@fosscord/util";
@@ -38,8 +47,7 @@ router.post(
 		if (name === "clyde") throw new HTTPError("Invalid name", 400);
 		if (name === "Fosscord Ghost") throw new HTTPError("Invalid name", 400);
 
-		if (avatar)
-			avatar = await handleFile(`/avatars/${channel_id}`, avatar);
+		if (avatar) avatar = await handleFile(`/avatars/${channel_id}`, avatar);
 
 		const hook = Webhook.create({
 			type: WebhookType.Incoming,

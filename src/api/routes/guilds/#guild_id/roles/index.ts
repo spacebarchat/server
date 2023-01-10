@@ -10,8 +10,10 @@ import {
 	DiscordApiErrors,
 	RoleModifySchema,
 	RolePositionUpdateSchema,
+	Snowflake,
 } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Not } from "typeorm";
 
 const router: Router = Router();
 
@@ -40,7 +42,7 @@ router.post(
 
 		const role = Role.create({
 			// values before ...body are default and can be overriden
-			position: 0,
+			position: 1,
 			hoist: false,
 			color: 0,
 			mentionable: false,
@@ -53,10 +55,20 @@ router.post(
 			tags: undefined,
 			icon: undefined,
 			unicode_emoji: undefined,
+			id: Snowflake.generate(),
 		});
 
 		await Promise.all([
 			role.save(),
+			// Move all existing roles up one position, to accommodate the new role
+			Role.createQueryBuilder("roles")
+				.where({
+					guild: { id: guild_id },
+					name: Not("@everyone"),
+					id: Not(role.id),
+				})
+				.update({ position: () => "position + 1" })
+				.execute(),
 			emitEvent({
 				event: "GUILD_ROLE_CREATE",
 				guild_id,

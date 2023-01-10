@@ -21,7 +21,7 @@ router.patch(
 
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id, bot: false },
-			relations: ["settings"]
+			relations: ["settings"],
 		});
 
 		user.settings.assign(body);

@@ -22,18 +22,30 @@ export default function TestClient(app: Application) {
 
 	const agent = new ProxyAgent();
 
-	let html = fs.readFileSync(path.join(ASSET_FOLDER_PATH, "client_test", "index.html"), { encoding: "utf-8" });
+	let html = fs.readFileSync(
+		path.join(ASSET_FOLDER_PATH, "client_test", "index.html"),
+		{ encoding: "utf-8" },
+	);
 
-	html = applyEnv(html);	// update window.GLOBAL_ENV according to config
+	html = applyEnv(html); // update window.GLOBAL_ENV according to config
 
-	html = applyPlugins(html);	// inject our plugins
-	app.use("/assets/plugins", express.static(path.join(ASSET_FOLDER_PATH, "plugins")));
-	app.use("/assets/inline-plugins", express.static(path.join(ASSET_FOLDER_PATH, "inline-plugins")));
+	html = applyPlugins(html); // inject our plugins
+	app.use(
+		"/assets/plugins",
+		express.static(path.join(ASSET_FOLDER_PATH, "plugins")),
+	);
+	app.use(
+		"/assets/inline-plugins",
+		express.static(path.join(ASSET_FOLDER_PATH, "inline-plugins")),
+	);
 
 	// Asset memory cache
-	const assetCache = new Map<string, { response: FetchResponse; buffer: Buffer; }>();
+	const assetCache = new Map<
+		string,
+		{ response: FetchResponse; buffer: Buffer }
+	>();
 
-	// Fetches uncached ( on disk ) assets from discord.com and stores them in memory cache. 
+	// Fetches uncached ( on disk ) assets from discord.com and stores them in memory cache.
 	app.get("/assets/:file", async (req, res) => {
 		delete req.headers.host;
 
@@ -43,13 +55,15 @@ export default function TestClient(app: Application) {
 		let buffer: Buffer;
 		const cache = assetCache.get(req.params.file);
 		if (!cache) {
-			response = await fetch(`https://discord.com/assets/${req.params.file}`, {
-				agent,
-				headers: { ...req.headers as { [key: string]: string; } },
-			});
+			response = await fetch(
+				`https://discord.com/assets/${req.params.file}`,
+				{
+					agent,
+					headers: { ...(req.headers as { [key: string]: string }) },
+				},
+			);
 			buffer = await response.buffer();
-		}
-		else {
+		} else {
 			response = cache.response;
 			buffer = cache.buffer;
 		}
@@ -62,8 +76,8 @@ export default function TestClient(app: Application) {
 			"transfer-encoding",
 			"expect-ct",
 			"access-control-allow-origin",
-			"content-encoding"
-		].forEach(headerName => {
+			"content-encoding",
+		].forEach((headerName) => {
 			response.headers.delete(headerName);
 		});
 		response.headers.forEach((value, name) => res.set(name, value));
@@ -72,8 +86,13 @@ export default function TestClient(app: Application) {
 
 		// TODO: I don't like this. Figure out a way to get client cacher to download *all* assets.
 		if (response.status == 200) {
-			console.warn(`[TestClient] Cache miss for file ${req.params.file}! Use 'npm run generate:client' to cache and patch.`);
-			await fs.promises.appendFile(path.join(ASSET_FOLDER_PATH, "cacheMisses"), req.params.file + "\n");
+			console.warn(
+				`[TestClient] Cache miss for file ${req.params.file}! Use 'npm run generate:client' to cache and patch.`,
+			);
+			await fs.promises.appendFile(
+				path.join(ASSET_FOLDER_PATH, "cacheMisses"),
+				req.params.file + "\n",
+			);
 		}
 
 		return res.send(buffer);
@@ -81,17 +100,23 @@ export default function TestClient(app: Application) {
 
 	// Instead of our generated html, send developers.html for developers endpoint
 	app.get("/developers*", (req, res) => {
-		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);	// 24 hours
+		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24); // 24 hours
 		res.set("content-type", "text/html");
-		res.send(fs.readFileSync(path.join(ASSET_FOLDER_PATH, "client_test", "developers.html"), { encoding: "utf-8" }));
+		res.send(
+			fs.readFileSync(
+				path.join(ASSET_FOLDER_PATH, "client_test", "developers.html"),
+				{ encoding: "utf-8" },
+			),
+		);
 	});
 
 	// Send our generated index.html for all routes.
 	app.get("*", (req, res) => {
-		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24);	// 24 hours
+		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24); // 24 hours
 		res.set("content-type", "text/html");
 
-		if (req.url.startsWith("/api") || req.url.startsWith("/__development")) return;
+		if (req.url.startsWith("/api") || req.url.startsWith("/__development"))
+			return;
 
 		return res.send(html);
 	});
@@ -101,16 +126,26 @@ export default function TestClient(app: Application) {
 const applyEnv = (html: string): string => {
 	const config = Config.get();
 
-	const cdn = (config.cdn.endpointClient || config.cdn.endpointPublic || process.env.CDN || "")
-		.replace(/(https?)?(:\/\/?)/g, "");
+	const cdn = (
+		config.cdn.endpointClient ||
+		config.cdn.endpointPublic ||
+		process.env.CDN ||
+		""
+	).replace(/(https?)?(:\/\/?)/g, "");
 
-	const gateway = (config.gateway.endpointClient || config.gateway.endpointPublic || process.env.GATEWAY || "");
+	const gateway =
+		config.gateway.endpointClient ||
+		config.gateway.endpointPublic ||
+		process.env.GATEWAY ||
+		"";
 
-	if (cdn)
-		html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${cdn}\`,`);
+	if (cdn) html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${cdn}\`,`);
 
 	if (gateway)
-		html = html.replace(/GATEWAY_ENDPOINT: .+/, `GATEWAY_ENDPOINT: \`${gateway}\`,`);
+		html = html.replace(
+			/GATEWAY_ENDPOINT: .+/,
+			`GATEWAY_ENDPOINT: \`${gateway}\`,`,
+		);
 
 	return html;
 };
@@ -118,26 +153,35 @@ const applyEnv = (html: string): string => {
 // Injects inline, preload, and standard plugins into index.html.
 const applyPlugins = (html: string): string => {
 	// Inline plugins. Injected as <script src="/assets/inline-plugins/name.js"> into head.
-	const inlineFiles = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "inline-plugins"));
+	const inlineFiles = fs.readdirSync(
+		path.join(ASSET_FOLDER_PATH, "inline-plugins"),
+	);
 	const inline = inlineFiles
-		.filter(x => x.endsWith(".js"))
-		.map(x => `<script src="/assets/inline-plugins/${x}"></script>`)
+		.filter((x) => x.endsWith(".js"))
+		.map((x) => `<script src="/assets/inline-plugins/${x}"></script>`)
 		.join("\n");
 	html = html.replace("<!-- inline plugin marker -->", inline);
 
 	// Preload plugins. Text content of each plugin is injected into head.
-	const preloadFiles = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "preload-plugins"));
+	const preloadFiles = fs.readdirSync(
+		path.join(ASSET_FOLDER_PATH, "preload-plugins"),
+	);
 	const preload = preloadFiles
-		.filter(x => x.endsWith(".js"))
-		.map(x => `<script>${fs.readFileSync(path.join(ASSET_FOLDER_PATH, "preload-plugins", x))}</script>`)
+		.filter((x) => x.endsWith(".js"))
+		.map(
+			(x) =>
+				`<script>${fs.readFileSync(
+					path.join(ASSET_FOLDER_PATH, "preload-plugins", x),
+				)}</script>`,
+		)
 		.join("\n");
 	html = html.replace("<!-- preload plugin marker -->", preload);
 
 	// Normal plugins. Injected as <script src="/assets/plugins/name.js"> into body.
 	const pluginFiles = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "plugins"));
 	const plugins = pluginFiles
-		.filter(x => x.endsWith(".js"))
-		.map(x => `<script src="/assets/plugins/${x}"></script>`)
+		.filter((x) => x.endsWith(".js"))
+		.map((x) => `<script src="/assets/plugins/${x}"></script>`)
 		.join("\n");
 	html = html.replace("<!-- plugin marker -->", plugins);
 

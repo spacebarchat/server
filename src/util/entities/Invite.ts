@@ -1,10 +1,4 @@
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	RelationId,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { Member } from "./Member";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -62,7 +56,7 @@ export class Invite extends BaseClassWithoutId {
 
 	@JoinColumn({ name: "inviter_id" })
 	@ManyToOne(() => User, {
-		onDelete: "CASCADE"
+		onDelete: "CASCADE",
 	})
 	inviter: User;
 

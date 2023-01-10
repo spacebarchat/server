@@ -118,7 +118,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				member: {
 					...member,
 					roles,
-					user: { ...member.user, sessions: undefined },
+					user: member.user.toPublicUser(),
 					presence: {
 						...session,
 						activities: session?.activities || [],
@@ -159,7 +159,11 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		groups,
 		range,
 		members: items
-			.map((x) => ("member" in x ? { ...x.member, settings: undefined } : undefined))
+			.map((x) =>
+				"member" in x
+					? { ...x.member, settings: undefined }
+					: undefined,
+			)
 			.filter((x) => !!x),
 	};
 }

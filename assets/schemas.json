@@ -26,6 +26,43 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "TransportMakeRequestResponse": {
+        "type": "object",
+        "properties": {
+            "statusCode": {
+                "type": "integer"
+            },
+            "headers": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "properties": {
+                    "x-sentry-rate-limits": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "retry-after": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    }
+                },
+                "required": [
+                    "retry-after",
+                    "x-sentry-rate-limits"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ApplicationCreateSchema": {
         "type": "object",
         "properties": {
@@ -11506,6 +11543,22 @@
             },
             "bio": {
                 "type": "string"
+            },
+            "pronouns": {
+                "type": "string"
+            },
+            "theme_colors": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ],
+                "minItems": 2,
+                "maxItems": 2
             }
         },
         "additionalProperties": false,
@@ -23826,6 +23879,22 @@
                     "null",
                     "string"
                 ]
+            },
+            "pronouns": {
+                "type": "string"
+            },
+            "theme_colors": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ],
+                "minItems": 2,
+                "maxItems": 2
             }
         },
         "additionalProperties": false,
@@ -24540,44 +24609,6 @@
             },
             "timezone_offset": {
                 "type": "integer"
-            },
-            "assign": {
-                "type": "object",
-                "additionalProperties": false
-            },
-            "toJSON": {
-                "type": "object",
-                "additionalProperties": false
-            },
-            "hasId": {
-                "description": "Checks if entity has an id.\nIf entity composite compose ids, it will check them all.",
-                "type": "object",
-                "additionalProperties": false
-            },
-            "save": {
-                "description": "Saves current entity in the database.\nIf entity does not exist in the database then inserts, otherwise updates.",
-                "type": "object",
-                "additionalProperties": false
-            },
-            "remove": {
-                "description": "Removes current entity from the database.",
-                "type": "object",
-                "additionalProperties": false
-            },
-            "softRemove": {
-                "description": "Records the delete date of current entity.",
-                "type": "object",
-                "additionalProperties": false
-            },
-            "recover": {
-                "description": "Recovers a given entity in the database.",
-                "type": "object",
-                "additionalProperties": false
-            },
-            "reload": {
-                "description": "Reloads entity data from the database.",
-                "type": "object",
-                "additionalProperties": false
             }
         },
         "additionalProperties": false,

@@ -63,10 +63,11 @@ router.patch(
 			);
 		else body.icon = undefined;
 
-		const role = Role.create({
+		const role = await Role.findOneOrFail({
+			where: { id: role_id, guild: { id: guild_id } },
+		});
+		role.assign({
 			...body,
-			id: role_id,
-			guild_id,
 			permissions: String(
 				req.permission!.bitfield & BigInt(body.permissions || "0"),
 			),

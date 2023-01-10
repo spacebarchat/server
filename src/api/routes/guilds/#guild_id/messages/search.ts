@@ -72,12 +72,20 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	if (channel_id) query.where!.channel = { id: channel_id };
 	else {
 		// get all channel IDs that this user can access
-		const channels = await Channel.find({ where: { guild_id: req.params.guild_id }, select: ["id"] });
+		const channels = await Channel.find({
+			where: { guild_id: req.params.guild_id },
+			select: ["id"],
+		});
 		const ids = [];
 
 		for (var channel of channels) {
-			const perm = await getPermission(req.user_id, req.params.guild_id, channel.id);
-			if (!perm.has("VIEW_CHANNEL") || !perm.has("READ_MESSAGE_HISTORY")) continue;
+			const perm = await getPermission(
+				req.user_id,
+				req.params.guild_id,
+				channel.id,
+			);
+			if (!perm.has("VIEW_CHANNEL") || !perm.has("READ_MESSAGE_HISTORY"))
+				continue;
 			ids.push(channel.id);
 		}
 

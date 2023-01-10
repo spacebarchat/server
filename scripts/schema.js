@@ -51,7 +51,7 @@ function modify(obj) {
 function main() {
 	const program = TJS.programFromConfig(
 		path.join(__dirname, "..", "tsconfig.json"),
-		walk(path.join(__dirname, "..", "src", "util", "schemas"))
+		walk(path.join(__dirname, "..", "src", "util", "schemas")),
 	);
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
@@ -70,6 +70,24 @@ function main() {
 	for (const name of schemas) {
 		const part = TJS.generateSchema(program, name, settings, [], generator);
 		if (!part) continue;
+
+		// this is a hack. want some want to check if its a @column, instead
+		if (part.properties)
+			Object.keys(part.properties)
+				.filter((key) =>
+					[
+						// BaseClass methods
+						"toJSON",
+						"hasId",
+						"save",
+						"remove",
+						"softRemove",
+						"recover",
+						"reload",
+						"assign",
+					].includes(key),
+				)
+				.forEach((key) => delete part.properties[key]);
 
 		definitions = { ...definitions, [name]: { ...part } };
 	}

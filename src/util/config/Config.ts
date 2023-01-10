@@ -17,7 +17,7 @@ import {
 	RegisterConfiguration,
 	SecurityConfiguration,
 	SentryConfiguration,
-	TemplateConfiguration
+	TemplateConfiguration,
 } from "../config";
 
 export class ConfigValue {

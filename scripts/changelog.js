@@ -26,13 +26,13 @@ const CHANGELOG_SCRIPT = "4ec0b5948572d31df88b.js";
 		.toString()
 		.replaceAll("\r", "")
 		.replaceAll("\n", "\\n")
-		.replaceAll("\'", "\\'");
+		.replaceAll("'", "\\'");
 
 	const index = text.indexOf("t.exports='---changelog---") + 11;
-	const endIndex = text.indexOf("'\n", index);	// hmm
+	const endIndex = text.indexOf("'\n", index); // hmm
 
 	await fs.writeFile(
 		path.join(CACHE_PATH, CHANGELOG_SCRIPT),
-		text.substring(0, index) + newChangelogText + text.substring(endIndex)
+		text.substring(0, index) + newChangelogText + text.substring(endIndex),
 	);
 })();

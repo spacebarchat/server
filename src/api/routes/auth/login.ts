@@ -46,7 +46,7 @@ router.post(
 		}
 
 		const user = await User.findOneOrFail({
-			where: [{ phone: login }, { email: login }],
+			where: [{ phone: login }, { email: email }],
 			select: [
 				"data",
 				"id",

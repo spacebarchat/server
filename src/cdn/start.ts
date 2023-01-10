@@ -1,6 +1,5 @@
 require("module-alias/register");
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 import { CDNServer } from "./Server";
 const server = new CDNServer({ port: Number(process.env.PORT) || 3003 });

@@ -21,7 +21,12 @@ import {
 	Rights,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { handleMessage, postHandleMessage, route, getIpAdress } from "@fosscord/api";
+import {
+	handleMessage,
+	postHandleMessage,
+	route,
+	getIpAdress,
+} from "@fosscord/api";
 import multer from "multer";
 import { yellow } from "picocolors";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
@@ -80,7 +85,7 @@ router.get("/", async (req: Request, res: Response) => {
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	var query: FindManyOptions<Message> & { where: { id?: any; }; } = {
+	var query: FindManyOptions<Message> & { where: { id?: any } } = {
 		order: { timestamp: "DESC" },
 		take: limit,
 		where: { channel_id },
@@ -138,8 +143,9 @@ router.get("/", async (req: Request, res: Response) => {
 				const uri = y.proxy_url.startsWith("http")
 					? y.proxy_url
 					: `https://example.org${y.proxy_url}`;
-				y.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname
-					}`;
+				y.proxy_url = `${endpoint == null ? "" : endpoint}${
+					new URL(uri).pathname
+				}`;
 			});
 
 			/**
@@ -211,8 +217,8 @@ router.post(
 				where: {
 					nonce: body.nonce,
 					channel_id: channel.id,
-					author_id: req.user_id
-				}
+					author_id: req.user_id,
+				},
 			});
 			if (existing) {
 				return res.json(existing);
@@ -225,13 +231,21 @@ router.post(
 				const count = await Message.count({
 					where: {
 						channel_id,
-						timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window))
-					}
+						timestamp: MoreThan(
+							new Date(
+								Date.now() -
+									limits.absoluteRate.sendMessage.window,
+							),
+						),
+					},
 				});
 
 				if (count >= limits.absoluteRate.sendMessage.limit)
 					throw FieldErrors({
-						channel_id: { code: "TOO_MANY_MESSAGES", message: req.t("common:toomany.MESSAGE") }
+						channel_id: {
+							code: "TOO_MANY_MESSAGES",
+							message: req.t("common:toomany.MESSAGE"),
+						},
 					});
 			}
 		}
@@ -247,7 +261,7 @@ router.post(
 					Attachment.create({ ...file, proxy_url: file.url }),
 				);
 			} catch (error) {
-				return res.status(400).json({ message: error!.toString() })
+				return res.status(400).json({ message: error!.toString() });
 			}
 		}
 
@@ -296,19 +310,18 @@ router.post(
 			if (!message.member) {
 				message.member = await Member.findOneOrFail({
 					where: { id: req.user_id, guild_id: message.guild_id },
-					relations: ["roles"]
+					relations: ["roles"],
 				});
 			}
 
 			//@ts-ignore
-			message.member.roles =
-				message.member.roles.
-					filter(x => x.id != x.guild_id)
-					.map(x => x.id);
+			message.member.roles = message.member.roles
+				.filter((x) => x.id != x.guild_id)
+				.map((x) => x.id);
 		}
 
 		let read_state = await ReadState.findOne({
-			where: { user_id: req.user_id, channel_id }
+			where: { user_id: req.user_id, channel_id },
 		});
 		if (!read_state)
 			read_state = ReadState.create({ user_id: req.user_id, channel_id });
@@ -324,14 +337,14 @@ router.post(
 			} as MessageCreateEvent),
 			message.guild_id
 				? Member.update(
-					{ id: req.user_id, guild_id: message.guild_id },
-					{ last_message_id: message.id },
-				)
+						{ id: req.user_id, guild_id: message.guild_id },
+						{ last_message_id: message.id },
+				  )
 				: null,
 			channel.save(),
 		]);
 
-		postHandleMessage(message).catch((e) => { }); // no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
 
 		return res.json(message);
 	},
