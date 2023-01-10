@@ -99,4 +99,8 @@ export const Sentry = {
 			res.end(res.sentry + "\n");
 		});
 	},
+
+	close: () => {
+		SentryNode.close();
+	},
 };
