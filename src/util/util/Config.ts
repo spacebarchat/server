@@ -1,5 +1,5 @@
 import { ConfigEntity } from "../entities/Config";
-import fs from "fs";
+import fs from "fs/promises";
 import { ConfigValue } from "../config";
 
 // TODO: yaml instead of json
@@ -31,11 +31,11 @@ export const Config = {
 			);
 			try {
 				const overrideConfig = JSON.parse(
-					fs.readFileSync(overridePath, { encoding: "utf8" }),
+					await fs.readFile(overridePath, { encoding: "utf8" }),
 				);
 				config = overrideConfig.merge(config);
 			} catch (error) {
-				fs.writeFileSync(overridePath, JSON.stringify(config, null, 4));
+				await fs.writeFile(overridePath, JSON.stringify(config, null, 4));
 			}
 		}
 
