@@ -111,7 +111,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 			var session: Session | undefined = sessions.first();
 
 			if (session?.status == "offline") {
-				session.status = member.user.settings.status || "online";
+				session.status = member?.user?.settings?.status || "online";
 			}
 
 			const item = {
