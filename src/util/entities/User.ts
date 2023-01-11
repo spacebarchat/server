@@ -101,10 +101,10 @@ export class User extends BaseClass {
 	mobile: boolean = false; // if the user has mobile app installed
 
 	@Column()
-	premium: boolean = false; // if user bought individual premium
+	premium: boolean = Config.get().defaults.user.premium; // if user bought individual premium
 
 	@Column()
-	premium_type: number = 0; // individual premium level
+	premium_type: number = Config.get().defaults.user.premiumType; // individual premium level
 
 	@Column()
 	bot: boolean = false; // if user is bot
@@ -131,10 +131,10 @@ export class User extends BaseClass {
 	created_at: Date = new Date(); // registration date
 
 	@Column({ nullable: true })
-	premium_since: Date = new Date(); // premium date
+	premium_since: Date; // premium date
 
 	@Column({ select: false })
-	verified: boolean = true; // email is verified
+	verified: boolean = Config.get().defaults.user.verified; // email is verified
 
 	@Column()
 	disabled: boolean = false; // if the account is disabled
@@ -158,7 +158,7 @@ export class User extends BaseClass {
 	premium_usage_flags: number = 0;
 
 	@Column({ type: "bigint" })
-	rights: string; // Rights
+	rights: string = Config.get().register.defaultRights;
 
 	@OneToMany(() => Session, (session: Session) => session.user)
 	sessions: Session[];
@@ -350,15 +350,14 @@ export class User extends BaseClass {
 			discriminator,
 			id: id || Snowflake.generate(),
 			email: email,
-			rights: Config.get().register.defaultRights,
 			data: {
 				hash: password,
 				valid_tokens_since: new Date(),
 			},
 			extended_settings: "{}",
-			premium_type: Config.get().defaults.user.premiumType,
-			premium: Config.get().defaults.user.premium,
-			verified: Config.get().defaults.user.verified,
+			premium_since: Config.get().defaults.user.premium
+				? new Date()
+				: undefined,
 			settings: settings,
 		});
 
