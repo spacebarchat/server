@@ -6,7 +6,7 @@ import { PayloadSchema } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import BigIntJson from "json-bigint";
 import path from "path";
-import fs from "fs";
+import fs from "fs/promises";
 const bigIntJson = BigIntJson({ storeAsString: true });
 
 var erlpack: any;
@@ -44,12 +44,12 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
 	if (process.env.WS_DUMP) {
 		if (this.session_id) {
-			fs.mkdirSync(path.join("dump", this.session_id), { recursive: true });
-			fs.writeFileSync(path.join("dump", this.session_id, `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
+			await fs.mkdir(path.join("dump", this.session_id), { recursive: true });
+			await fs.writeFile(path.join("dump", this.session_id, `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
 		}
 		else {
-			fs.mkdirSync(path.join("dump", "unknown"), { recursive: true });
-			fs.writeFileSync(path.join("dump", "unknown", `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
+			await fs.mkdir(path.join("dump", "unknown"), { recursive: true });
+			await fs.writeFile(path.join("dump", "unknown", `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
 			console.log("Unknown session id, dumping to unknown folder");
 		}
 	}
