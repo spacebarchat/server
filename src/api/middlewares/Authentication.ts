@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { checkToken, Config, Rights } from "@fosscord/util";
+import * as Sentry from "@sentry/node";
 
 export const NO_AUTHORIZATION_ROUTES = [
 	// Authentication routes
@@ -63,6 +64,8 @@ export async function Authentication(
 	if (!req.headers.authorization)
 		return next(new HTTPError("Missing Authorization Header", 401));
 
+	Sentry.setUser({ id: req.user_id });
+	
 	try {
 		const { jwtSecret } = Config.get().security;
 
