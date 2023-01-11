@@ -5,6 +5,8 @@ import WS from "ws";
 import { PayloadSchema } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import BigIntJson from "json-bigint";
+import path from "path";
+import fs from "fs";
 const bigIntJson = BigIntJson({ storeAsString: true });
 
 var erlpack: any;
@@ -40,6 +42,10 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 
 	if (process.env.WS_VERBOSE)
 		console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
+	if (process.env.WS_DUMP) {
+		fs.mkdirSync(path.join("dump", this.session_id), { recursive: true });
+		fs.writeFileSync(path.join("dump", this.session_id, `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
+	}
 
 	check.call(this, PayloadSchema, data);
 
