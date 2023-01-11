@@ -13,8 +13,16 @@ import path from "path";
 export function Send(socket: WebSocket, data: Payload) {
 	if (process.env.WS_VERBOSE) console.log(`[Websocket] Outgoing message: ${JSON.stringify(data)}`);
 	if (process.env.WS_DUMP) {
-		fs.mkdirSync(path.join("dump", socket.session_id), { recursive: true });
-		fs.writeFileSync(path.join("dump", socket.session_id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
+		if(socket.session_id) {
+			fs.mkdirSync(path.join("dump", socket.session_id), { recursive: true });
+			fs.writeFileSync(path.join("dump", socket.session_id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
+		}
+		else {
+			fs.mkdirSync(path.join("dump", "unknown"), { recursive: true });
+			fs.writeFileSync(path.join("dump", "unknown", `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
+			console.log("Unknown session ID, dumping to unknown folder!");
+		}
+		
 	}
 	let buffer: Buffer | string;
 	if (socket.encoding === "etf") buffer = erlpack.pack(data);

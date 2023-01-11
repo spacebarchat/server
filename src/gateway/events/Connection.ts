@@ -1,5 +1,5 @@
 import WS from "ws";
-import { WebSocket } from "@fosscord/gateway";
+import { genSessionId, WebSocket } from "@fosscord/gateway";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { setHeartbeat } from "../util/Heartbeat";
@@ -30,6 +30,10 @@ export async function Connection(
 
 	socket.ipAddress = ipAddress;
 
+
+	const session_id = genSessionId();
+	socket.session_id = session_id; //Set the session of the WebSocket object
+	
 	try {
 		// @ts-ignore
 		socket.on("close", Close);
