@@ -30,10 +30,10 @@ export async function Connection(
 
 	socket.ipAddress = ipAddress;
 
-
+	//Create session ID when the connection is opened. This allows gateway dump to group the initial websocket messages with the rest of the conversation.
 	const session_id = genSessionId();
 	socket.session_id = session_id; //Set the session of the WebSocket object
-	
+
 	try {
 		// @ts-ignore
 		socket.on("close", Close);
