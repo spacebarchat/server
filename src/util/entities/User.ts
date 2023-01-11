@@ -158,7 +158,7 @@ export class User extends BaseClass {
 	premium_usage_flags: number = 0;
 
 	@Column({ type: "bigint" })
-	rights: string = Config.get().register.defaultRights;
+	rights: string;
 
 	@OneToMany(() => Session, (session: Session) => session.user)
 	sessions: Session[];
@@ -359,6 +359,7 @@ export class User extends BaseClass {
 				? new Date()
 				: undefined,
 			settings: settings,
+			rights: Config.get().register.defaultRights,
 		});
 
 		user.validate();
