@@ -15,8 +15,7 @@ router.post(
 	"/",
 	route({ right: "MANAGE_USERS" }),
 	async (req: Request, res: Response) => {
-		const body = req.body as UserDeleteSchema;
-
+		
 		let user = await User.findOneOrFail({
 			where: { id: req.params.id },
 			select: [...PrivateUserProjection, "data"],
