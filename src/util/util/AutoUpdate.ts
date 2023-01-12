@@ -60,7 +60,7 @@ async function download(url: string, dir: string) {
 		const response = await fetch(url, { agent });
 		const buffer = await response.buffer();
 		const tempDir = await fs.mkdtemp("fosscord");
-		fs.writeFile(path.join(tempDir, "Fosscord.zip"), buffer);
+		await fs.writeFile(path.join(tempDir, "Fosscord.zip"), buffer);
 	} catch (error) {
 		console.error(`[Auto Update] download failed`, error);
 	}
