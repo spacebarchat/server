@@ -7,23 +7,27 @@ try {
 	);
 }
 import { Payload, WebSocket } from "@fosscord/gateway";
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 
 export function Send(socket: WebSocket, data: Payload) {
-	if (process.env.WS_VERBOSE) console.log(`[Websocket] Outgoing message: ${JSON.stringify(data)}`);
+	if (process.env.WS_VERBOSE)
+		console.log(`[Websocket] Outgoing message: ${JSON.stringify(data)}`);
+
 	if (process.env.WS_DUMP) {
-		if(socket.session_id) {
-			fs.mkdirSync(path.join("dump", socket.session_id), { recursive: true });
-			fs.writeFileSync(path.join("dump", socket.session_id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
-		}
-		else {
-			fs.mkdirSync(path.join("dump", "unknown"), { recursive: true });
-			fs.writeFileSync(path.join("dump", "unknown", `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
-			console.log("Unknown session ID, dumping to unknown folder!");
-		}
-		
+		const id = socket.session_id || "unknown";
+
+		(async () => {
+			await fs.mkdir(path.join("dump", id), {
+				recursive: true,
+			});
+			await fs.writeFile(
+				path.join("dump", id, `${Date.now()}.out.json`),
+				JSON.stringify(data, null, 2),
+			);
+		})();
 	}
+
 	let buffer: Buffer | string;
 	if (socket.encoding === "etf") buffer = erlpack.pack(data);
 	// TODO: encode circular object

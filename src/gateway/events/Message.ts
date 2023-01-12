@@ -12,7 +12,7 @@ const bigIntJson = BigIntJson({ storeAsString: true });
 var erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) { }
+} catch (error) {}
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
@@ -42,16 +42,20 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 
 	if (process.env.WS_VERBOSE)
 		console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
+
 	if (process.env.WS_DUMP) {
-		if (this.session_id) {
-			await fs.mkdir(path.join("dump", this.session_id), { recursive: true });
-			await fs.writeFile(path.join("dump", this.session_id, `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
-		}
-		else {
-			await fs.mkdir(path.join("dump", "unknown"), { recursive: true });
-			await fs.writeFile(path.join("dump", "unknown", `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
-			console.log("Unknown session id, dumping to unknown folder");
-		}
+		const id = this.session_id || "unknown";
+
+		await fs.mkdir(path.join("dump", this.session_id), { recursive: true });
+		await fs.writeFile(
+			path.join("dump", this.session_id, `${Date.now()}.in.json`),
+			JSON.stringify(data, null, 2),
+		);
+
+		if (!this.session_id)
+			console.log(
+				"[Gateway] Unknown session id, dumping to unknown folder",
+			);
 	}
 
 	check.call(this, PayloadSchema, data);
@@ -68,13 +72,13 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	const transaction =
 		data.op != 1
 			? Sentry.startTransaction({
-				op: OPCODES[data.op],
-				name: `GATEWAY ${OPCODES[data.op]}`,
-				data: {
-					...data.d,
-					token: data?.d?.token ? "[Redacted]" : undefined,
-				},
-			})
+					op: OPCODES[data.op],
+					name: `GATEWAY ${OPCODES[data.op]}`,
+					data: {
+						...data.d,
+						token: data?.d?.token ? "[Redacted]" : undefined,
+					},
+			  })
 			: undefined;
 
 	try {
