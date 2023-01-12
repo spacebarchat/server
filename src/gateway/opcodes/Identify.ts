@@ -55,9 +55,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = decoded.id;
-
-	const session_id = genSessionId();
-	this.session_id = session_id; //Set the session of the WebSocket object
+	let session_id = this.session_id;
 
 	const [user, read_states, members, recipients, session, application] =
 		await Promise.all([

@@ -1,5 +1,5 @@
 import WS from "ws";
-import { WebSocket } from "@fosscord/gateway";
+import { genSessionId, WebSocket } from "@fosscord/gateway";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { setHeartbeat } from "../util/Heartbeat";
@@ -29,6 +29,10 @@ export async function Connection(
 		: request.socket.remoteAddress;
 
 	socket.ipAddress = ipAddress;
+
+	//Create session ID when the connection is opened. This allows gateway dump to group the initial websocket messages with the rest of the conversation.
+	const session_id = genSessionId();
+	socket.session_id = session_id; //Set the session of the WebSocket object
 
 	try {
 		// @ts-ignore
