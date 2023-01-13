@@ -36,7 +36,7 @@ export class Template extends BaseClass {
 	source_guild_id: string;
 
 	@JoinColumn({ name: "source_guild_id" })
-	@ManyToOne(() => Guild)
+	@ManyToOne(() => Guild, { onDelete: "CASCADE" })
 	source_guild: Guild;
 
 	@Column({ type: "simple-json" })
