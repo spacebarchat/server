@@ -1,5 +1,4 @@
 import {
-	ApiError,
 	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
@@ -7,7 +6,7 @@ import {
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@fosscord/util";
-import fetch from "node-fetch";
+import wretch from "wretch";
 import RefreshableConnection from "../../util/connections/RefreshableConnection";
 import { SpotifySettings } from "./SpotifySettings";
 
@@ -83,122 +82,78 @@ export default class SpotifyConnection extends RefreshableConnection {
 
 		const url = this.getTokenUrl();
 
-		return fetch(url.toString(), {
-			method: "POST",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
 					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
 				).toString("base64")}`,
-			},
-			body: new URLSearchParams({
-				grant_type: "authorization_code",
-				code: code,
-				redirect_uri: `${
-					Config.get().cdn.endpointPrivate || "http://localhost:3001"
-				}/connections/${this.id}/callback`,
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to refresh token", 0, 400);
-				}
-
-				return res.json();
 			})
-			.then(
-				(
-					res: ConnectedAccountCommonOAuthTokenResponse &
-						TokenErrorResponse,
-				) => {
-					if (res.error)
-						throw new ApiError(res.error_description, 0, 400);
-					return res;
-				},
+			.body(
+				new URLSearchParams({
+					grant_type: "authorization_code",
+					code: code,
+					redirect_uri: `${
+						Config.get().cdn.endpointPrivate ||
+						"http://localhost:3001"
+					}/connections/${this.id}/callback`,
+				}),
 			)
+			.post()
+			.json<ConnectedAccountCommonOAuthTokenResponse>()
 			.catch((e) => {
-				console.error(
-					`Error exchanging code for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
-	async refreshToken(connectedAccount: ConnectedAccount) {
+	async refreshToken(
+		connectedAccount: ConnectedAccount,
+	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		if (!connectedAccount.token_data?.refresh_token)
 			throw new Error("No refresh token available.");
 		const refresh_token = connectedAccount.token_data.refresh_token;
 		const url = this.getTokenUrl();
 
-		return fetch(url.toString(), {
-			method: "POST",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
 					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
 				).toString("base64")}`,
-			},
-			body: new URLSearchParams({
-				grant_type: "refresh_token",
-				refresh_token,
-			}),
-		})
-			.then(async (res) => {
-				if ([400, 401].includes(res.status)) {
-					// assume the token was revoked
-					await connectedAccount.revoke();
-					return DiscordApiErrors.CONNECTION_REVOKED;
-				}
-				// otherwise throw a general error
-				if (!res.ok) {
-					throw new ApiError("Failed to refresh token", 0, 400);
-				}
-
-				return await res.json();
 			})
-			.then(
-				(
-					res: ConnectedAccountCommonOAuthTokenResponse &
-						TokenErrorResponse,
-				) => {
-					if (res.error)
-						throw new ApiError(res.error_description, 0, 400);
-					return res;
-				},
+			.body(
+				new URLSearchParams({
+					grant_type: "refresh_token",
+					refresh_token,
+				}),
 			)
+			.post()
+			.unauthorized(async () => {
+				// assume the token was revoked
+				await connectedAccount.revoke();
+				return DiscordApiErrors.CONNECTION_REVOKED;
+			})
+			.json<ConnectedAccountCommonOAuthTokenResponse>()
 			.catch((e) => {
-				console.error(
-					`Error refreshing token for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
 	async getUser(token: string): Promise<UserResponse> {
 		const url = new URL(this.userInfoUrl);
-		return fetch(url.toString(), {
-			method: "GET",
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to fetch user", 0, 400);
-				}
 
-				return res.json();
+		return wretch(url.toString())
+			.headers({
+				Authorization: `Bearer ${token}`,
 			})
-			.then((res: UserResponse & ErrorResponse) => {
-				if (res.error) throw new Error(res.error.message);
-				return res;
-			})
+			.get()
+			.json<UserResponse>()
 			.catch((e) => {
-				console.error(
-					`Error fetching user for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}

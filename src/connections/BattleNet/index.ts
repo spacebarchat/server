@@ -1,5 +1,4 @@
 import {
-	ApiError,
 	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
@@ -7,7 +6,7 @@ import {
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@fosscord/util";
-import fetch from "node-fetch";
+import wretch from "wretch";
 import Connection from "../../util/connections/Connection";
 import { BattleNetSettings } from "./BattleNetSettings";
 
@@ -67,68 +66,40 @@ export default class BattleNetConnection extends Connection {
 
 		const url = this.getTokenUrl();
 
-		return fetch(url.toString(), {
-			method: "POST",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Accept: "application/json",
-			},
-			body: new URLSearchParams({
-				grant_type: "authorization_code",
-				code: code,
-				client_id: this.settings.clientId!,
-				client_secret: this.settings.clientSecret!,
-				redirect_uri: `${
-					Config.get().cdn.endpointPrivate || "http://localhost:3001"
-				}/connections/${this.id}/callback`,
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to exchange code", 0, 400);
-				}
-
-				return res.json();
 			})
-			.then(
-				(
-					res: ConnectedAccountCommonOAuthTokenResponse &
-						BattleNetErrorResponse,
-				) => {
-					if (res.error) throw new Error(res.error_description);
-					return res;
-				},
+			.body(
+				new URLSearchParams({
+					grant_type: "authorization_code",
+					code: code,
+					client_id: this.settings.clientId!,
+					client_secret: this.settings.clientSecret!,
+					redirect_uri: `${
+						Config.get().cdn.endpointPrivate ||
+						"http://localhost:3001"
+					}/connections/${this.id}/callback`,
+				}),
 			)
+			.post()
+			.json<ConnectedAccountCommonOAuthTokenResponse>()
 			.catch((e) => {
-				console.error(
-					`Error exchanging token for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
 	async getUser(token: string): Promise<BattleNetConnectionUser> {
 		const url = new URL(this.userInfoUrl);
-		return fetch(url.toString(), {
-			method: "GET",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Authorization: `Bearer ${token}`,
-			},
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to fetch user", 0, 400);
-				}
-
-				return res.json();
 			})
-			.then((res: BattleNetConnectionUser & BattleNetErrorResponse) => {
-				if (res.error) throw new Error(res.error_description);
-				return res;
-			})
+			.get()
+			.json<BattleNetConnectionUser>()
 			.catch((e) => {
-				console.error(
-					`Error fetching user for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}

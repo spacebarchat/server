@@ -1,5 +1,4 @@
 import {
-	ApiError,
 	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
@@ -7,7 +6,7 @@ import {
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@fosscord/util";
-import fetch from "node-fetch";
+import wretch from "wretch";
 import RefreshableConnection from "../../util/connections/RefreshableConnection";
 import { TwitchSettings } from "./TwitchSettings";
 
@@ -75,33 +74,27 @@ export default class TwitchConnection extends RefreshableConnection {
 
 		const url = this.getTokenUrl();
 
-		return fetch(url.toString(), {
-			method: "POST",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
-			},
-			body: new URLSearchParams({
-				grant_type: "authorization_code",
-				code: code,
-				client_id: this.settings.clientId!,
-				client_secret: this.settings.clientSecret!,
-				redirect_uri: `${
-					Config.get().cdn.endpointPrivate || "http://localhost:3001"
-				}/connections/${this.id}/callback`,
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to exchange code", 0, 400);
-				}
-
-				return res.json();
 			})
+			.body(
+				new URLSearchParams({
+					grant_type: "authorization_code",
+					code: code,
+					client_id: this.settings.clientId!,
+					client_secret: this.settings.clientSecret!,
+					redirect_uri: `${
+						Config.get().cdn.endpointPrivate ||
+						"http://localhost:3001"
+					}/connections/${this.id}/callback`,
+				}),
+			)
+			.post()
+			.json<ConnectedAccountCommonOAuthTokenResponse>()
 			.catch((e) => {
-				console.error(
-					`Error exchanging code for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
@@ -115,60 +108,44 @@ export default class TwitchConnection extends RefreshableConnection {
 
 		const url = this.getTokenUrl();
 
-		return fetch(url.toString(), {
-			method: "POST",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
-			},
-			body: new URLSearchParams({
-				grant_type: "refresh_token",
-				client_id: this.settings.clientId!,
-				client_secret: this.settings.clientSecret!,
-				refresh_token: refresh_token,
-			}),
-		})
-			.then(async (res) => {
-				if ([400, 401].includes(res.status)) {
-					// assume the token was revoked
-					await connectedAccount.revoke();
-					return DiscordApiErrors.CONNECTION_REVOKED;
-				}
-				// otherwise throw a general error
-				if (!res.ok) {
-					throw new ApiError("Failed to refresh token", 0, 400);
-				}
-
-				return await res.json();
 			})
+			.body(
+				new URLSearchParams({
+					grant_type: "refresh_token",
+					client_id: this.settings.clientId!,
+					client_secret: this.settings.clientSecret!,
+					refresh_token: refresh_token,
+				}),
+			)
+			.post()
+			.unauthorized(async () => {
+				// assume the token was revoked
+				await connectedAccount.revoke();
+				return DiscordApiErrors.CONNECTION_REVOKED;
+			})
+			.json<ConnectedAccountCommonOAuthTokenResponse>()
 			.catch((e) => {
-				console.error(
-					`Error refreshing token for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
 	async getUser(token: string): Promise<TwitchConnectionUserResponse> {
 		const url = new URL(this.userInfoUrl);
-		return fetch(url.toString(), {
-			method: "GET",
-			headers: {
+
+		return wretch(url.toString())
+			.headers({
 				Authorization: `Bearer ${token}`,
 				"Client-Id": this.settings.clientId!,
-			},
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to fetch user", 0, 400);
-				}
-
-				return res.json();
 			})
+			.get()
+			.json<TwitchConnectionUserResponse>()
 			.catch((e) => {
-				console.error(
-					`Error fetching user for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}

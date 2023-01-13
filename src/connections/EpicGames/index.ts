@@ -1,5 +1,4 @@
 import {
-	ApiError,
 	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
@@ -7,7 +6,7 @@ import {
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@fosscord/util";
-import fetch from "node-fetch";
+import wretch from "wretch";
 import Connection from "../../util/connections/Connection";
 import { EpicGamesSettings } from "./EpicGamesSettings";
 
@@ -73,31 +72,24 @@ export default class EpicGamesConnection extends Connection {
 
 		const url = this.getTokenUrl();
 
-		return fetch(url.toString(), {
-			method: "POST",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Accept: "application/json",
 				Authorization: `Basic ${Buffer.from(
 					`${this.settings.clientId}:${this.settings.clientSecret}`,
 				).toString("base64")}`,
 				"Content-Type": "application/x-www-form-urlencoded",
-			},
-			body: new URLSearchParams({
-				grant_type: "authorization_code",
-				code,
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to exchange code", 0, 400);
-				}
-
-				return res.json();
 			})
+			.body(
+				new URLSearchParams({
+					grant_type: "authorization_code",
+					code,
+				}),
+			)
+			.post()
+			.json<EpicTokenResponse>()
 			.catch((e) => {
-				console.error(
-					`Error exchanging token for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
@@ -108,23 +100,15 @@ export default class EpicGamesConnection extends Connection {
 		);
 		const url = new URL(this.userInfoUrl);
 		url.searchParams.append("accountId", sub);
-		return fetch(url.toString(), {
-			method: "GET",
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to fetch user", 0, 400);
-				}
 
-				return res.json();
+		return wretch(url.toString())
+			.headers({
+				Authorization: `Bearer ${token}`,
 			})
+			.get()
+			.json<UserResponse[]>()
 			.catch((e) => {
-				console.error(
-					`Error fetching user for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
