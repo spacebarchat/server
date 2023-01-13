@@ -198,17 +198,15 @@ const processFile = async (name) => {
 	while (INDEX_SCRIPTS.length > 0) {
 		const asset = INDEX_SCRIPTS.shift();
 
-		process.stdout.clearLine(0);
-		process.stdout.cursorTo(0);
 		process.stdout.write(
-			`Scraping asset ${asset}. Remaining: ${INDEX_SCRIPTS.length}`,
+			`Scraping asset ${asset}. Remaining: ${INDEX_SCRIPTS.length}      \r`,
 		);
 
 		const newAssets = await processFile(asset);
 		assets.push(...newAssets);
 	}
 
-	process.stdout.moveCursor(0, 1);
+	console.log();
 
 	const CACHE_MISSES = (
 		await fs.readFile(path.join(CACHE_PATH, "..", "cacheMisses"))
@@ -219,10 +217,9 @@ const processFile = async (name) => {
 		.split("\n");
 	while (CACHE_MISSES.length > 0) {
 		const asset = CACHE_MISSES.shift();
-		process.stdout.clearLine(0);
-		process.stdout.cursorTo(0);
+
 		process.stdout.write(
-			`Scraping cache misses ${asset}. Remaining: ${CACHE_MISSES.length}`,
+			`Scraping cache misses ${asset}. Remaining: ${CACHE_MISSES.length}      \r`,
 		);
 
 		if (existsSync(path.join(CACHE_PATH, `${asset}`))) {
@@ -239,10 +236,8 @@ const processFile = async (name) => {
 	while (existing.length > 0) {
 		var file = existing.shift();
 
-		process.stdout.clearLine(0);
-		process.stdout.cursorTo(0);
 		process.stdout.write(
-			`Patching existing ${file}. Remaining: ${existing.length}.`,
+			`Patching existing ${file}. Remaining: ${existing.length}.      \r`,
 		);
 
 		var text = await fs.readFile(path.join(CACHE_PATH, file));
@@ -257,7 +252,7 @@ const processFile = async (name) => {
 		}
 	}
 
-	process.stdout.moveCursor(0, 1);
+	console.log();
 
 	let rates = [];
 	let lastFinished = Date.now();
@@ -278,8 +273,6 @@ const processFile = async (name) => {
 			: 1;
 		const finishTime = averageRate * (assets.length - i);
 
-		process.stdout.clearLine(0);
-		process.stdout.cursorTo(0);
 		process.stdout.write(
 			`Caching asset ${asset}. ` +
 				`${i}/${assets.length - 1} = ${Math.floor(
@@ -289,6 +282,8 @@ const processFile = async (name) => {
 			// 	Date.now() + finishTime,
 			// ).toLocaleTimeString()}`,
 		);
+		//not adding to the previous mess, incase the finish time is added back or something
+		process.stdout.write("      \r");
 
 		promises.push(processFile(asset));
 		// await processFile(asset);
