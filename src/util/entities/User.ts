@@ -101,10 +101,10 @@ export class User extends BaseClass {
 	mobile: boolean = false; // if the user has mobile app installed
 
 	@Column()
-	premium: boolean = Config.get().defaults.user.premium; // if user bought individual premium
+	premium: boolean = Config.get().defaults.user.premium ?? false; // if user bought individual premium
 
 	@Column()
-	premium_type: number = Config.get().defaults.user.premiumType; // individual premium level
+	premium_type: number = Config.get().defaults.user.premiumType ?? 0; // individual premium level
 
 	@Column()
 	bot: boolean = false; // if user is bot
@@ -134,7 +134,7 @@ export class User extends BaseClass {
 	premium_since: Date; // premium date
 
 	@Column({ select: false })
-	verified: boolean = Config.get().defaults.user.verified; // email is verified
+	verified: boolean = Config.get().defaults.user.verified ?? true; // email is verified
 
 	@Column()
 	disabled: boolean = false; // if the account is disabled
