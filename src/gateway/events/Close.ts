@@ -18,6 +18,9 @@ export async function Close(this: WebSocket, code: number, reason: string) {
 
 	if (this.session_id) {
 		await Session.delete({ session_id: this.session_id });
+	}
+
+	if (this.user_id) {
 		const sessions = await Session.find({
 			where: { user_id: this.user_id },
 			select: PrivateSessionProjection,
