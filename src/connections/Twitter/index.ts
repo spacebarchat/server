@@ -1,5 +1,4 @@
 import {
-	ApiError,
 	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
@@ -7,7 +6,7 @@ import {
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@fosscord/util";
-import fetch from "node-fetch";
+import wretch from "wretch";
 import RefreshableConnection from "../../util/connections/RefreshableConnection";
 import { TwitterSettings } from "./TwitterSettings";
 
@@ -77,45 +76,30 @@ export default class TwitterConnection extends RefreshableConnection {
 
 		const url = this.getTokenUrl();
 
-		return fetch(url.toString(), {
-			method: "POST",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
 					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
 				).toString("base64")}`,
-			},
-			body: new URLSearchParams({
-				grant_type: "authorization_code",
-				code: code,
-				client_id: this.settings.clientId!,
-				redirect_uri: `${
-					Config.get().cdn.endpointPrivate || "http://localhost:3001"
-				}/connections/${this.id}/callback`,
-				code_verifier: "challenge", // TODO: properly use PKCE challenge
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to exchange code", 0, 400);
-				}
-
-				return res.json();
 			})
-			.then(
-				(
-					res: ConnectedAccountCommonOAuthTokenResponse &
-						TwitterErrorResponse,
-				) => {
-					if (res.error) throw new Error(res.error_description);
-					return res;
-				},
+			.body(
+				new URLSearchParams({
+					grant_type: "authorization_code",
+					code: code,
+					client_id: this.settings.clientId!,
+					redirect_uri: `${
+						Config.get().cdn.endpointPrivate ||
+						"http://localhost:3001"
+					}/connections/${this.id}/callback`,
+					code_verifier: "challenge", // TODO: properly use PKCE challenge
+				}),
 			)
+			.post()
+			.json<ConnectedAccountCommonOAuthTokenResponse>()
 			.catch((e) => {
-				console.error(
-					`Error exchanging code for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
@@ -129,72 +113,44 @@ export default class TwitterConnection extends RefreshableConnection {
 
 		const url = this.getTokenUrl();
 
-		return fetch(url.toString(), {
-			method: "POST",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
 					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
 				).toString("base64")}`,
-			},
-			body: new URLSearchParams({
-				grant_type: "refresh_token",
-				refresh_token,
-				client_id: this.settings.clientId!,
-				redirect_uri: `${
-					Config.get().cdn.endpointPrivate || "http://localhost:3001"
-				}/connections/${this.id}/callback`,
-				code_verifier: "challenge", // TODO: properly use PKCE challenge
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to exchange code", 0, 400);
-				}
-
-				return res.json();
 			})
-			.then(
-				(
-					res: ConnectedAccountCommonOAuthTokenResponse &
-						TwitterErrorResponse,
-				) => {
-					if (res.error) throw new Error(res.error_description);
-					return res;
-				},
+			.body(
+				new URLSearchParams({
+					grant_type: "refresh_token",
+					refresh_token,
+					client_id: this.settings.clientId!,
+					redirect_uri: `${
+						Config.get().cdn.endpointPrivate ||
+						"http://localhost:3001"
+					}/connections/${this.id}/callback`,
+					code_verifier: "challenge", // TODO: properly use PKCE challenge
+				}),
 			)
+			.post()
+			.json<ConnectedAccountCommonOAuthTokenResponse>()
 			.catch((e) => {
-				console.error(
-					`Error exchanging code for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
 	async getUser(token: string): Promise<TwitterUserResponse> {
 		const url = new URL(this.userInfoUrl);
-		return fetch(url.toString(), {
-			method: "GET",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Authorization: `Bearer ${token}`,
-			},
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to fetch user", 0, 400);
-				}
-
-				return res.json();
 			})
-			.then((res: TwitterUserResponse & TwitterErrorResponse) => {
-				if (res.error) throw new Error(res.error_description);
-				return res;
-			})
+			.get()
+			.json<TwitterUserResponse>()
 			.catch((e) => {
-				console.error(
-					`Error fetching user for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}

@@ -1,5 +1,4 @@
 import {
-	ApiError,
 	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
@@ -7,7 +6,7 @@ import {
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@fosscord/util";
-import fetch from "node-fetch";
+import wretch from "wretch";
 import Connection from "../../util/connections/Connection";
 import { XboxSettings } from "./XboxSettings";
 
@@ -76,36 +75,28 @@ export default class XboxConnection extends Connection {
 	}
 
 	async getUserToken(token: string): Promise<string> {
-		return fetch(this.userAuthUrl, {
-			method: "POST",
-			headers: {
+		return wretch(this.userAuthUrl)
+			.headers({
 				"x-xbl-contract-version": "3",
 				"Content-Type": "application/json",
 				Accept: "application/json",
-			},
-			body: JSON.stringify({
-				RelyingParty: "http://auth.xboxlive.com",
-				TokenType: "JWT",
-				Properties: {
-					AuthMethod: "RPS",
-					SiteName: "user.auth.xboxlive.com",
-					RpsTicket: `d=${token}`,
-				},
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to get user token", 0, 400);
-				}
-
-				return res.json();
 			})
-			.then((res) => res.Token)
+			.body(
+				JSON.stringify({
+					RelyingParty: "http://auth.xboxlive.com",
+					TokenType: "JWT",
+					Properties: {
+						AuthMethod: "RPS",
+						SiteName: "user.auth.xboxlive.com",
+						RpsTicket: `d=${token}`,
+					},
+				}),
+			)
+			.post()
+			.json((res: XboxUserResponse) => res.Token)
 			.catch((e) => {
-				console.error(
-					`Error getting user token for ${this.id} connection: ${e}`,
-				);
-				throw DiscordApiErrors.INVALID_OAUTH_TOKEN;
+				console.error(e);
+				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
@@ -117,82 +108,57 @@ export default class XboxConnection extends Connection {
 
 		const url = this.getTokenUrl();
 
-		return fetch(url.toString(), {
-			method: "POST",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
 					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
 				).toString("base64")}`,
-			},
-			body: new URLSearchParams({
-				grant_type: "authorization_code",
-				code: code,
-				client_id: this.settings.clientId!,
-				redirect_uri: `${
-					Config.get().cdn.endpointPrivate || "http://localhost:3001"
-				}/connections/${this.id}/callback`,
-				scope: this.scopes.join(" "),
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to exchange code", 0, 400);
-				}
-
-				return res.json();
 			})
-			.then(
-				(
-					res: ConnectedAccountCommonOAuthTokenResponse &
-						XboxErrorResponse,
-				) => {
-					if (res.error) throw new Error(res.error_description);
-					return res;
-				},
+			.body(
+				new URLSearchParams({
+					grant_type: "authorization_code",
+					code: code,
+					client_id: this.settings.clientId!,
+					redirect_uri: `${
+						Config.get().cdn.endpointPrivate ||
+						"http://localhost:3001"
+					}/connections/${this.id}/callback`,
+					scope: this.scopes.join(" "),
+				}),
 			)
+			.post()
+			.json<ConnectedAccountCommonOAuthTokenResponse>()
 			.catch((e) => {
-				console.error(
-					`Error exchanging code for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
 	async getUser(token: string): Promise<XboxUserResponse> {
 		const url = new URL(this.userInfoUrl);
-		return fetch(url.toString(), {
-			method: "POST",
-			headers: {
+
+		return wretch(url.toString())
+			.headers({
 				"x-xbl-contract-version": "3",
 				"Content-Type": "application/json",
 				Accept: "application/json",
-			},
-			body: JSON.stringify({
-				RelyingParty: "http://xboxlive.com",
-				TokenType: "JWT",
-				Properties: {
-					UserTokens: [token],
-					SandboxId: "RETAIL",
-				},
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to fetch user", 0, 400);
-				}
-
-				return res.json();
 			})
-			.then((res: XboxUserResponse & XboxErrorResponse) => {
-				if (res.error) throw new Error(res.error_description);
-				return res;
-			})
+			.body(
+				JSON.stringify({
+					RelyingParty: "http://xboxlive.com",
+					TokenType: "JWT",
+					Properties: {
+						UserTokens: [token],
+						SandboxId: "RETAIL",
+					},
+				}),
+			)
+			.post()
+			.json<XboxUserResponse>()
 			.catch((e) => {
-				console.error(
-					`Error fetching user for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}

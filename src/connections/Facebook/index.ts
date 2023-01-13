@@ -1,5 +1,4 @@
 import {
-	ApiError,
 	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
@@ -7,7 +6,7 @@ import {
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@fosscord/util";
-import fetch from "node-fetch";
+import wretch from "wretch";
 import Connection from "../../util/connections/Connection";
 import { FacebookSettings } from "./FacebookSettings";
 
@@ -83,59 +82,29 @@ export default class FacebookConnection extends Connection {
 
 		const url = this.getTokenUrl(code);
 
-		return fetch(url.toString(), {
-			method: "GET",
-			headers: {
+		return wretch(url.toString())
+			.headers({
 				Accept: "application/json",
-			},
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to exchange code", 0, 400);
-				}
-
-				return res.json();
 			})
-			.then(
-				(
-					res: ConnectedAccountCommonOAuthTokenResponse &
-						FacebookErrorResponse,
-				) => {
-					if (res.error) throw new Error(res.error.message);
-					return res;
-				},
-			)
+			.get()
+			.json<ConnectedAccountCommonOAuthTokenResponse>()
 			.catch((e) => {
-				console.error(
-					`Error exchanging token for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
 
 	async getUser(token: string): Promise<UserResponse> {
 		const url = new URL(this.userInfoUrl);
-		return fetch(url.toString(), {
-			method: "GET",
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		})
-			.then((res) => {
-				if (!res.ok) {
-					throw new ApiError("Failed to fetch user", 0, 400);
-				}
 
-				return res.json();
+		return wretch(url.toString())
+			.headers({
+				Authorization: `Bearer ${token}`,
 			})
-			.then((res: UserResponse & FacebookErrorResponse) => {
-				if (res.error) throw new Error(res.error.message);
-				return res;
-			})
+			.get()
+			.json<UserResponse>()
 			.catch((e) => {
-				console.error(
-					`Error fetching user for ${this.id} connection: ${e}`,
-				);
+				console.error(e);
 				throw DiscordApiErrors.GENERAL_ERROR;
 			});
 	}
