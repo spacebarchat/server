@@ -230,7 +230,7 @@ const processFile = async (name) => {
 		assets.push(...newAssets);
 	}
 
-	process.stdout.moveCursor(0, 1);
+	console.log();
 
 	var existing = await fs.readdir(CACHE_PATH);
 	while (existing.length > 0) {
