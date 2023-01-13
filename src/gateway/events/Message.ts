@@ -46,9 +46,9 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	if (process.env.WS_DUMP) {
 		const id = this.session_id || "unknown";
 
-		await fs.mkdir(path.join("dump", this.session_id), { recursive: true });
+		await fs.mkdir(path.join("dump", id), { recursive: true });
 		await fs.writeFile(
-			path.join("dump", this.session_id, `${Date.now()}.in.json`),
+			path.join("dump", id, `${Date.now()}.in.json`),
 			JSON.stringify(data, null, 2),
 		);
 
