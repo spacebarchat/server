@@ -28,7 +28,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	if (!guild.widget_enabled) throw new HTTPError("Widget Disabled", 404);
 
 	// Fetch existing widget invite for widget channel
-	var invite = await Invite.findOne({
+	let invite = await Invite.findOne({
 		where: { channel_id: guild.widget_channel_id },
 	});
 

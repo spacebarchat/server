@@ -3,7 +3,7 @@ import "missing-native-js-functions";
 import { BitFieldResolvable, BitFlag } from "./BitField";
 import { User } from "../entities";
 
-var HTTPError: any;
+let HTTPError: any;
 
 try {
 	HTTPError = require("lambert-server").HTTPError;

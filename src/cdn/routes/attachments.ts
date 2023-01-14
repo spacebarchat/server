@@ -35,8 +35,8 @@ router.post(
 			Config.get()?.cdn.endpointPublic || "http://localhost:3003";
 
 		await storage.set(path, buffer);
-		var width;
-		var height;
+		let width;
+		let height;
 		if (mimetype.includes("image")) {
 			const dimensions = imageSize(buffer);
 			if (dimensions) {

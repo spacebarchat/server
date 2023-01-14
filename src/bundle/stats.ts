@@ -28,7 +28,7 @@ export function initStats() {
 	// 		osu.mem.info(),
 	// 		osu.netstat.inOut(),
 	// 	]);
-	// 	var networkUsage = "";
+	// 	let networkUsage = "";
 	// 	if (typeof network === "object") {
 	// 		networkUsage = `| [Network]: in ${network.total.inputMb}mb | out ${network.total.outputMb}mb`;
 	// 	}

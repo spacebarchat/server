@@ -33,7 +33,7 @@ router.post(
 			});
 		}
 
-		var codes: BackupCode[];
+		let codes: BackupCode[];
 		if (regenerate) {
 			await BackupCode.update(
 				{ user: { id: req.user_id } },

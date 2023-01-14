@@ -4,7 +4,7 @@ const WebSocket = require("ws");
 const endpoint = process.env.GATEWAY || "ws://localhost:3001";
 const connections = Number(process.env.CONNECTIONS) || 50;
 const token = process.env.TOKEN;
-var cores = 1;
+let cores = 1;
 try {
 	cores = Number(process.env.THREADS) || os.cpus().length;
 } catch {

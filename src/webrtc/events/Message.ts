@@ -12,7 +12,7 @@ const PayloadSchema = {
 
 export async function onMessage(this: WebSocket, buffer: Buffer) {
 	try {
-		var data: Payload = JSON.parse(buffer.toString());
+		let data: Payload = JSON.parse(buffer.toString());
 		if (data.op !== VoiceOPCodes.IDENTIFY && !this.user_id)
 			return this.close(CLOSECODES.Not_authenticated);
 

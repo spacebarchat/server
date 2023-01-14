@@ -25,7 +25,7 @@ router.put(
 		const { channel_id, overwrite_id } = req.params;
 		const body = req.body as ChannelPermissionOverwriteSchema;
 
-		var channel = await Channel.findOneOrFail({
+		let channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
 		});
 		if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
@@ -39,7 +39,7 @@ router.put(
 		} else throw new HTTPError("type not supported", 501);
 
 		//@ts-ignore
-		var overwrite: ChannelPermissionOverwrite =
+		let overwrite: ChannelPermissionOverwrite =
 			channel.permission_overwrites?.find((x) => x.id === overwrite_id);
 		if (!overwrite) {
 			// @ts-ignore

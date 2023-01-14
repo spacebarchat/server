@@ -232,15 +232,15 @@ const processFile = async (name) => {
 
 	console.log();
 
-	var existing = await fs.readdir(CACHE_PATH);
+	let existing = await fs.readdir(CACHE_PATH);
 	while (existing.length > 0) {
-		var file = existing.shift();
+		let file = existing.shift();
 
 		process.stdout.write(
 			`Patching existing ${file}. Remaining: ${existing.length}.      \r`,
 		);
 
-		var text = await fs.readFile(path.join(CACHE_PATH, file));
+		let text = await fs.readFile(path.join(CACHE_PATH, file));
 		if (file.includes(".js") || file.includes(".css")) {
 			text = doPatch(text.toString());
 			await fs.writeFile(path.join(CACHE_PATH, file), text.toString());
@@ -260,7 +260,7 @@ const processFile = async (name) => {
 
 	let promises = [];
 
-	for (var i = 0; i < assets.length; i++) {
+	for (let i = 0; i < assets.length; i++) {
 		const asset = assets[i];
 
 		if (existsSync(path.join(CACHE_PATH, `${asset}.js`))) {

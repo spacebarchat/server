@@ -91,19 +91,19 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 		// TODO: join others by controller
 	}
 
-	var guild = await Guild.findOneOrFail({
+	let guild = await Guild.findOneOrFail({
 		where: { id: guild_id },
 	});
 
-	var emoji = await Emoji.find({
+	let emoji = await Emoji.find({
 		where: { guild_id: guild_id },
 	});
 
-	var roles = await Role.find({
+	let roles = await Role.find({
 		where: { guild_id: guild_id },
 	});
 
-	var stickers = await Sticker.find({
+	let stickers = await Sticker.find({
 		where: { guild_id: guild_id },
 	});
 

@@ -8,7 +8,7 @@ const { Rights } = require("..");
 const allRights = new Rights(1).bitfield;
 console.log(`All rights:`, allRights);
 
-var discordLike = allRights;
+let discordLike = allRights;
 discordLike -= Rights.FLAGS.OPERATOR;
 discordLike -= Rights.FLAGS.MANAGE_APPLICATIONS;
 discordLike -= Rights.FLAGS.MANAGE_MESSAGES;

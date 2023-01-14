@@ -20,7 +20,7 @@ router.post(
 
 		const user = await User.findOneOrFail({ where: { id: req.user_id } });
 
-		var codes: BackupCode[];
+		let codes: BackupCode[];
 		if (regenerate) {
 			await BackupCode.update(
 				{ user: { id: req.user_id } },

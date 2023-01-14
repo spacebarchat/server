@@ -41,7 +41,7 @@ const Excluded = [
 ];
 
 function modify(obj) {
-	for (var k in obj) {
+	for (let k in obj) {
 		if (typeof obj[k] === "object" && obj[k] !== null) {
 			modify(obj[k]);
 		}
@@ -65,7 +65,7 @@ function main() {
 		);
 	console.log(schemas);
 
-	var definitions = {};
+	let definitions = {};
 
 	for (const name of schemas) {
 		const part = TJS.generateSchema(program, name, settings, [], generator);
@@ -100,11 +100,11 @@ function main() {
 main();
 
 function walk(dir) {
-	var results = [];
-	var list = fs.readdirSync(dir);
+	let results = [];
+	let list = fs.readdirSync(dir);
 	list.forEach(function (file) {
 		file = dir + "/" + file;
-		var stat = fs.statSync(file);
+		let stat = fs.statSync(file);
 		if (stat && stat.isDirectory()) {
 			/* Recurse into a subdirectory */
 			results = results.concat(walk(file));

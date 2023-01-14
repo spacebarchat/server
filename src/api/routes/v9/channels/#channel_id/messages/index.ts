@@ -51,7 +51,7 @@ router.get("/", async (req: Request, res: Response) => {
 	if (limit < 1 || limit > 100)
 		throw new HTTPError("limit must be between 1 and 100", 422);
 
-	var halfLimit = Math.floor(limit / 2);
+	let halfLimit = Math.floor(limit / 2);
 
 	const permissions = await getPermission(
 		req.user_id,
@@ -61,7 +61,7 @@ router.get("/", async (req: Request, res: Response) => {
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	var query: FindManyOptions<Message> & { where: { id?: any } } = {
+	let query: FindManyOptions<Message> & { where: { id?: any } } = {
 		order: { timestamp: "DESC" },
 		take: limit,
 		where: { channel_id },
@@ -129,7 +129,7 @@ router.get("/", async (req: Request, res: Response) => {
 			which causes erorrs when, say, the `application` property is `null`.
 			**/
 
-			// for (var curr in x) {
+			// for (let curr in x) {
 			// 	if (x[curr] === null)
 			// 		delete x[curr];
 			// }
@@ -174,7 +174,7 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
-		var body = req.body as MessageCreateSchema;
+		let body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
 
 		const channel = await Channel.findOneOrFail({
@@ -202,7 +202,7 @@ router.post(
 		}
 
 		if (!req.rights.has(Rights.FLAGS.BYPASS_RATE_LIMITS)) {
-			var limits = Config.get().limits;
+			let limits = Config.get().limits;
 			if (limits.absoluteRate.register.enabled) {
 				const count = await Message.count({
 					where: {
@@ -227,7 +227,7 @@ router.post(
 		}
 
 		const files = (req.files as Express.Multer.File[]) ?? [];
-		for (var currFile of files) {
+		for (let currFile of files) {
 			try {
 				const file = await uploadFile(
 					`/attachments/${channel.id}`,

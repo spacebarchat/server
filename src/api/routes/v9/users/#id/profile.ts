@@ -35,8 +35,8 @@ router.get(
 			relations: ["connected_accounts"],
 		});
 
-		var mutual_guilds: object[] = [];
-		var premium_guild_since;
+		let mutual_guilds: object[] = [];
+		let premium_guild_since;
 
 		if (with_mutual_guilds == "true") {
 			const requested_member = await Member.find({

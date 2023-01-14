@@ -201,7 +201,7 @@ export class Channel extends BaseClass {
 				!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") &&
 				channel.name
 			) {
-				for (var character of InvisibleCharacters)
+				for (let character of InvisibleCharacters)
 					if (channel.name.includes(character))
 						throw new HTTPError(
 							"Channel name cannot include invalid characters",

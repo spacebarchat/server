@@ -355,9 +355,9 @@ export class Guild extends BaseClass {
 		for (const channel of body.channels?.sort((a, b) =>
 			a.parent_id ? 1 : -1,
 		)) {
-			var id = ids.get(channel.id) || Snowflake.generate();
+			let id = ids.get(channel.id) || Snowflake.generate();
 
-			var parent_id = ids.get(channel.parent_id);
+			let parent_id = ids.get(channel.parent_id);
 
 			await Channel.createChannel(
 				{ ...channel, guild_id, id, parent_id },

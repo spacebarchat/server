@@ -41,7 +41,7 @@ router.patch(
 	}),
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id } = req.params;
-		var body = req.body as MessageCreateSchema;
+		let body = req.body as MessageCreateSchema;
 
 		const message = await Message.findOneOrFail({
 			where: { id: message_id, channel_id },
@@ -109,7 +109,7 @@ router.put(
 	}),
 	async (req: Request, res: Response) => {
 		const { channel_id, message_id } = req.params;
-		var body = req.body as MessageCreateSchema;
+		let body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
 
 		const rights = await getRights(req.user_id);

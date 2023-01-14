@@ -11,7 +11,7 @@ export const PublicIP = process.env.PUBLIC_IP || "127.0.0.1";
 
 try {
 	const range = process.env.WEBRTC_PORT_RANGE || "4000";
-	var ports = range.split("-");
+	let ports = range.split("-");
 	const min = Number(ports[0]);
 	const max = Number(ports[1]);
 

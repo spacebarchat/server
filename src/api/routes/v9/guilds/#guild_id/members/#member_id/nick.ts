@@ -8,8 +8,8 @@ router.patch(
 	"/",
 	route({ body: "MemberNickChangeSchema" }),
 	async (req: Request, res: Response) => {
-		var { guild_id, member_id } = req.params;
-		var permissionString: PermissionResolvable = "MANAGE_NICKNAMES";
+		let { guild_id, member_id } = req.params;
+		let permissionString: PermissionResolvable = "MANAGE_NICKNAMES";
 		if (member_id === "@me") {
 			member_id = req.user_id;
 			permissionString = "CHANGE_NICKNAME";

@@ -15,7 +15,7 @@ const specification = JSON.parse(
 );
 
 function combineSchemas(schemas) {
-	var definitions = {};
+	let definitions = {};
 
 	for (const name in schemas) {
 		definitions = {

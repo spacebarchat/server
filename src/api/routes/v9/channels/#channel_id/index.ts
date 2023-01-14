@@ -74,7 +74,7 @@ router.patch(
 	"/",
 	route({ body: "ChannelModifySchema", permission: "MANAGE_CHANNELS" }),
 	async (req: Request, res: Response) => {
-		var payload = req.body as ChannelModifySchema;
+		let payload = req.body as ChannelModifySchema;
 		const { channel_id } = req.params;
 		if (payload.icon)
 			payload.icon = await handleFile(

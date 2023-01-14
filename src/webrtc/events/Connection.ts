@@ -5,7 +5,7 @@ import WS from "ws";
 import { VoiceOPCodes } from "../util";
 import { onClose } from "./Close";
 import { onMessage } from "./Message";
-var erlpack: any;
+let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}

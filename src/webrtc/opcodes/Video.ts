@@ -14,7 +14,7 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 
 	const id = "stream" + this.user_id;
 
-	var stream = this.client.in.stream!;
+	let stream = this.client.in.stream!;
 	if (!stream) {
 		stream = this.client.transport!.createIncomingStream(
 			// @ts-ignore
@@ -88,7 +88,7 @@ function attachTrack(
 	);
 	outTrack.attachTo(track);
 	this.client.out.stream!.addTrack(outTrack);
-	var ssrcs = this.client.out.tracks.get(user_id)!;
+	let ssrcs = this.client.out.tracks.get(user_id)!;
 	if (!ssrcs)
 		ssrcs = this.client.out.tracks
 			.set(user_id, { audio_ssrc: 0, rtx_ssrc: 0, video_ssrc: 0 })
@@ -116,7 +116,7 @@ function handleSSRC(this: WebSocket, type: "audio" | "video", ssrcs: SSRCs) {
 	const transport = this.client.transport!;
 
 	const id = type + ssrcs.media;
-	var track = stream.getTrack(id);
+	let track = stream.getTrack(id);
 	if (!track) {
 		console.log("createIncomingStreamTrack", id);
 		track = transport.createIncomingStreamTrack(type, { id, ssrcs });

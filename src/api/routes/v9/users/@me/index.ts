@@ -37,7 +37,7 @@ router.patch(
 		});
 
 		// Populated on password change
-		var newToken: string | undefined;
+		let newToken: string | undefined;
 
 		if (body.avatar)
 			body.avatar = await handleFile(
@@ -102,7 +102,7 @@ router.patch(
 		}
 
 		if (body.username) {
-			var check_username = body?.username?.replace(/\s/g, "");
+			let check_username = body?.username?.replace(/\s/g, "");
 			if (!check_username) {
 				throw FieldErrors({
 					username: {

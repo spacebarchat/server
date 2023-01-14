@@ -26,7 +26,7 @@ const TemplateGuildProjection: (keyof Guild)[] = [
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	var templates = await Template.find({
+	let templates = await Template.find({
 		where: { source_guild_id: guild_id },
 	});
 

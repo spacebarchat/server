@@ -87,10 +87,10 @@ export class Snowflake {
 
 	static generateWorkerProcess() {
 		// worker process - returns a number
-		var time = BigInt(Date.now() - Snowflake.EPOCH) << BigInt(22);
-		var worker = Snowflake.workerId << 17n;
-		var process = Snowflake.processId << 12n;
-		var increment = Snowflake.INCREMENT++;
+		let time = BigInt(Date.now() - Snowflake.EPOCH) << BigInt(22);
+		let worker = Snowflake.workerId << 17n;
+		let process = Snowflake.processId << 12n;
+		let increment = Snowflake.INCREMENT++;
 		return BigInt(time | worker | process | increment);
 	}
 

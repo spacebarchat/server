@@ -50,7 +50,7 @@ router.post(
 
 		// TODO: send the deletion event bite-by-bite to prevent client stress
 
-		var query: FindManyOptions<Message> & { where: { id?: any } } = {
+		let query: FindManyOptions<Message> & { where: { id?: any } } = {
 			order: { id: "ASC" },
 			// take: limit,
 			where: {

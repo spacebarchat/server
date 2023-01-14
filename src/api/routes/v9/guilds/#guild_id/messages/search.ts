@@ -44,7 +44,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	if (!permissions.has("READ_MESSAGE_HISTORY"))
 		return res.json({ messages: [], total_results: 0 });
 
-	var query: FindManyOptions<Message> = {
+	let query: FindManyOptions<Message> = {
 		order: {
 			timestamp: sort_order
 				? (sort_order.toUpperCase() as "ASC" | "DESC")
@@ -78,7 +78,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		});
 		const ids = [];
 
-		for (var channel of channels) {
+		for (let channel of channels) {
 			const perm = await getPermission(
 				req.user_id,
 				req.params.guild_id,

@@ -45,7 +45,7 @@ export class FosscordServer extends Server {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						var skip = !(
+						let skip = !(
 							process.env["LOG_REQUESTS"]?.includes(
 								res.statusCode.toString(),
 							) ?? false
