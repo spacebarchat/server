@@ -5,7 +5,7 @@ import { Config } from "@fosscord/util";
 const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	const { general } = Config.get();
+	const { general, api, cdn, gateway } = Config.get();
 	res.send({
 		ping: "pong!",
 		instance: {
@@ -19,6 +19,12 @@ router.get("/", route({}), (req: Request, res: Response) => {
 
 			frontPage: general.frontPage,
 			tosPage: general.tosPage,
+			endpoints: {
+				defaultApiVersion: api.defaultVersion ?? 9,
+				apiEndpoint: api.endpointPublic ?? "/api",
+				cdnEndpoint: cdn.endpointPublic ?? "/",
+				gatewayEndpoint: gateway.endpointPublic ?? "/",
+			},
 		},
 	});
 });
