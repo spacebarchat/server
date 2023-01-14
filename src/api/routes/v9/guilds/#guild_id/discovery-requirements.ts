@@ -1,5 +1,3 @@
-import { Guild, Config } from "@fosscord/util";
-
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 

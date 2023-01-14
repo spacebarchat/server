@@ -24,16 +24,14 @@ import {
 	UserGuildSettings,
 	ReadyGuildDTO,
 	Guild,
+	Recipient,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
-import { genSessionId } from "../util/SessionUtils";
 import { setupListener } from "../listener/listener";
 // import experiments from "./experiments.json";
 const experiments: any = [];
 import { check } from "./instanceOf";
-import { Recipient } from "@fosscord/util";
-
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
 // TODO: check if already identified
@@ -50,11 +48,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	try {
 		const { jwtSecret } = Config.get().security;
 		let { decoded } = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
+		this.user_id = decoded.id;
 	} catch (error) {
 		console.error("invalid token", error);
 		return this.close(CLOSECODES.Authentication_failed);
 	}
-	this.user_id = decoded.id;
 	let session_id = this.session_id;
 
 	const [user, read_states, members, recipients, session, application] =

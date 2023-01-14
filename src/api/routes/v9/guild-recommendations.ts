@@ -10,7 +10,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const { limit, personalization_disabled } = req.query;
 	let showAllGuilds = Config.get().guild.discovery.showAllGuilds;
 
-	const genLoadId = (size: Number) =>
+	const genLoadId = (size: number) =>
 		[...Array(size)]
 			.map(() => Math.floor(Math.random() * 16).toString(16))
 			.join("");

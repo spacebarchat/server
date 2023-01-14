@@ -1,4 +1,4 @@
-import { getPermission, Member } from "@fosscord/util";
+import { Member } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
 

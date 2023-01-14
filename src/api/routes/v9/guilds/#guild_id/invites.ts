@@ -1,4 +1,4 @@
-import { getPermission, Invite, PublicInviteRelation } from "@fosscord/util";
+import { Invite, PublicInviteRelation } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
 

@@ -9,9 +9,6 @@ import {
 	Member,
 	Permissions,
 	User,
-	getRights,
-	Rights,
-	MemberPrivateProjection,
 } from "@fosscord/util";
 const router = Router();
 

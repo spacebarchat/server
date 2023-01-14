@@ -7,10 +7,10 @@ import {
 	emitEvent,
 	Relationship,
 	Config,
+	DiscordApiErrors,
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
-import { DiscordApiErrors } from "@fosscord/util";
 import { route } from "@fosscord/api";
 
 const router = Router();

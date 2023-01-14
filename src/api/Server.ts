@@ -1,7 +1,13 @@
 import "missing-native-js-functions";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
-import { Config, initDatabase, initEvent, Sentry } from "@fosscord/util";
+import {
+	Config,
+	initDatabase,
+	initEvent,
+	Sentry,
+	registerRoutes,
+} from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import { Router, Request, Response, NextFunction } from "express";
@@ -11,7 +17,6 @@ import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
 import morgan from "morgan";
 import { initInstance } from "./util/handlers/Instance";
-import { registerRoutes } from "@fosscord/util";
 import { red } from "picocolors";
 
 export interface FosscordServerOptions extends ServerOptions {}

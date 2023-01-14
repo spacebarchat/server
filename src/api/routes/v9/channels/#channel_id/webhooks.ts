@@ -9,9 +9,9 @@ import {
 	Webhook,
 	WebhookCreateSchema,
 	WebhookType,
+	DiscordApiErrors,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { DiscordApiErrors } from "@fosscord/util";
 import crypto from "crypto";
 
 const router: Router = Router();
