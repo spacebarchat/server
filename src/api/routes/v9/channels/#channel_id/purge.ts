@@ -1,6 +1,6 @@
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
-import { isTextChannel } from "./messages";
+import { isTextChannel } from "../../../v0/channels/#channel_id/messages";
 import { FindManyOptions, Between, Not } from "typeorm";
 import {
 	Channel,

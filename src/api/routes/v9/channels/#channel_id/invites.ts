@@ -11,7 +11,7 @@ import {
 	Guild,
 	PublicInviteRelation,
 } from "@fosscord/util";
-import { isTextChannel } from "./messages";
+import { isTextChannel } from "../../../v0/channels/#channel_id/messages";
 
 const router: Router = Router();
 

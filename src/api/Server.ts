@@ -88,11 +88,7 @@ export class FosscordServer extends Server {
 
 		//app.use("/__development", )
 		//app.use("/__internals", )
-		app.use("/api/v6", api);
-		app.use("/api/v7", api);
-		app.use("/api/v8", api);
-		app.use("/api/v9", api);
-		app.use("/api", api); // allow unversioned requests
+		app.use("/api", api); //versioning happens based on route folder name
 
 		this.app.use(ErrorHandler);
 		TestClient(this.app);

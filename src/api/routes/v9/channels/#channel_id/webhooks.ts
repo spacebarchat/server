@@ -11,16 +11,11 @@ import {
 	WebhookType,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { isTextChannel } from "./messages/index";
+import { isTextChannel } from "../../../v0/channels/#channel_id/messages/index";
 import { DiscordApiErrors } from "@fosscord/util";
 import crypto from "crypto";
 
 const router: Router = Router();
-
-//TODO: implement webhooks
-router.get("/", route({}), async (req: Request, res: Response) => {
-	res.json([]);
-});
 
 // TODO: use Image Data Type for avatar instead of String
 router.post(
