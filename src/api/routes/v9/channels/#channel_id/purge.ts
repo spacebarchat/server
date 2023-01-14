@@ -1,6 +1,5 @@
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
-import { isTextChannel } from "../../../v0/channels/#channel_id/messages";
 import { FindManyOptions, Between, Not } from "typeorm";
 import {
 	Channel,
@@ -34,7 +33,7 @@ router.post(
 
 		if (!channel.guild_id)
 			throw new HTTPError("Can't purge dm channels", 400);
-		isTextChannel(channel.type);
+		channel.isTextChannel();
 
 		const rights = await getRights(req.user_id);
 		if (!rights.has("MANAGE_MESSAGES")) {

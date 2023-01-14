@@ -11,7 +11,6 @@ import {
 	WebhookType,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import { isTextChannel } from "../../../v0/channels/#channel_id/messages/index";
 import { DiscordApiErrors } from "@fosscord/util";
 import crypto from "crypto";
 
@@ -27,7 +26,7 @@ router.post(
 			where: { id: channel_id },
 		});
 
-		isTextChannel(channel.type);
+		channel.isTextChannel();
 		if (!channel.guild_id) throw new HTTPError("Not a guild channel", 400);
 
 		const webhook_count = await Webhook.count({ where: { channel_id } });

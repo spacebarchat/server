@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
-import { random } from "@fosscord/api";
+import { route, random } from "@fosscord/api";
 import {
 	Channel,
 	Invite,
@@ -11,7 +10,6 @@ import {
 	Guild,
 	PublicInviteRelation,
 } from "@fosscord/util";
-import { isTextChannel } from "../../../v0/channels/#channel_id/messages";
 
 const router: Router = Router();
 
@@ -29,7 +27,7 @@ router.post(
 			where: { id: channel_id },
 			select: ["id", "name", "type", "guild_id"],
 		});
-		isTextChannel(channel.type);
+		channel.isTextChannel();
 
 		if (!channel.guild_id) {
 			throw new HTTPError("This channel doesn't exist", 404);

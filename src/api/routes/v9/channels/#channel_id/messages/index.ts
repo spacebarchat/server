@@ -36,30 +36,6 @@ const router: Router = Router();
 
 export default router;
 
-export function isTextChannel(type: ChannelType): boolean {
-	switch (type) {
-		case ChannelType.GUILD_STORE:
-		case ChannelType.GUILD_VOICE:
-		case ChannelType.GUILD_STAGE_VOICE:
-		case ChannelType.GUILD_CATEGORY:
-		case ChannelType.GUILD_FORUM:
-		case ChannelType.DIRECTORY:
-			throw new HTTPError("not a text channel", 400);
-		case ChannelType.DM:
-		case ChannelType.GROUP_DM:
-		case ChannelType.GUILD_NEWS:
-		case ChannelType.GUILD_NEWS_THREAD:
-		case ChannelType.GUILD_PUBLIC_THREAD:
-		case ChannelType.GUILD_PRIVATE_THREAD:
-		case ChannelType.GUILD_TEXT:
-		case ChannelType.ENCRYPTED:
-		case ChannelType.ENCRYPTED_THREAD:
-			return true;
-		default:
-			throw new HTTPError("unimplemented", 400);
-	}
-}
-
 // https://discord.com/developers/docs/resources/channel#create-message
 // get messages
 router.get("/", async (req: Request, res: Response) => {
@@ -67,7 +43,7 @@ router.get("/", async (req: Request, res: Response) => {
 	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 	if (!channel) throw new HTTPError("Channel not found", 404);
 
-	isTextChannel(channel.type);
+	channel.isTextChannel();
 	const around = req.query.around ? `${req.query.around}` : undefined;
 	const before = req.query.before ? `${req.query.before}` : undefined;
 	const after = req.query.after ? `${req.query.after}` : undefined;
