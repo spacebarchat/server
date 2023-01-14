@@ -35,3 +35,5 @@ router.post(
 		res.sendStatus(204);
 	},
 );
+
+export default router;
