@@ -43,7 +43,7 @@ export const getProxyUrl = (
 
 	// TODO: Imagor documentation
 	console.log(
-		"Imagor has not been set up correctly. docs.fosscord.com/set/up/a/page/about/this",
+		"Imagor has not been set up correctly. https://docs.fosscord.com/setup/server/configuration/imagor/",
 	);
 	return "";
 };
