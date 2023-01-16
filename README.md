@@ -23,8 +23,6 @@ This repository contains:
 -   [HTTP CDN Server](/src/cdn)
 -   [Utility and Database Models](/src/util)
 
-## [Resources](https://docs.fosscord.com/resources/)
+## [Contributing](https://docs.fosscord.com/contributing/)
 
--   [Contributing](https://docs.fosscord.com/contributing/server/)
-
-## [Setup](https://docs.fosscord.com/server/setup/)
+## [Setup](https://docs.fosscord.com/setup/server/)

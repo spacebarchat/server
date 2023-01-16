@@ -223,6 +223,7 @@ export async function postHandleMessage(message: Message) {
 				data.embeds.push(embed);
 			}
 		} catch (e) {
+			console.error(`[Embeds] Error while generating embed`, e);
 			Sentry.captureException(e, (scope) => {
 				scope.clear();
 				scope.setContext("request", { url });

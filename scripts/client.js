@@ -65,6 +65,12 @@ const doPatch = (content) => {
 	//content = content.replaceAll(/DiscordTag/g, "FosscordTag");
 	content = content.replaceAll(/\*Discord\*/g, `*${INSTANCE_NAME}*`);
 
+	// Replace window title
+	content = content.replaceAll(
+		":c.base;",
+		`:(c.base == 'Discord' ? '${INSTANCE_NAME}' : c.base);`,
+	);
+
 	//server -> guild
 	const serverVariations = [
 		['"Server"', '"Guild"'],
@@ -186,6 +192,12 @@ const processFile = async (name) => {
 	);
 };
 
+const print = (x) => {
+	process.stdout.write(
+		`${x}${" ".repeat(process.stdout.columns - x.length)}\r`,
+	);
+};
+
 (async () => {
 	const start = Date.now();
 
@@ -198,9 +210,7 @@ const processFile = async (name) => {
 	while (INDEX_SCRIPTS.length > 0) {
 		const asset = INDEX_SCRIPTS.shift();
 
-		process.stdout.write(
-			`Scraping asset ${asset}. Remaining: ${INDEX_SCRIPTS.length}      \r`,
-		);
+		print(`Scraping asset ${asset}. Remaining: ${INDEX_SCRIPTS.length}`);
 
 		const newAssets = await processFile(asset);
 		assets.push(...newAssets);
@@ -218,8 +228,8 @@ const processFile = async (name) => {
 	while (CACHE_MISSES.length > 0) {
 		const asset = CACHE_MISSES.shift();
 
-		process.stdout.write(
-			`Scraping cache misses ${asset}. Remaining: ${CACHE_MISSES.length}      \r`,
+		print(
+			`Scraping cache misses ${asset}. Remaining: ${CACHE_MISSES.length}`,
 		);
 
 		if (existsSync(path.join(CACHE_PATH, `${asset}`))) {
@@ -236,9 +246,7 @@ const processFile = async (name) => {
 	while (existing.length > 0) {
 		var file = existing.shift();
 
-		process.stdout.write(
-			`Patching existing ${file}. Remaining: ${existing.length}.      \r`,
-		);
+		print(`Patching existing ${file}. Remaining: ${existing.length}.`);
 
 		var text = await fs.readFile(path.join(CACHE_PATH, file));
 		if (file.includes(".js") || file.includes(".css")) {
@@ -273,7 +281,7 @@ const processFile = async (name) => {
 			: 1;
 		const finishTime = averageRate * (assets.length - i);
 
-		process.stdout.write(
+		print(
 			`Caching asset ${asset}. ` +
 				`${i}/${assets.length - 1} = ${Math.floor(
 					(i / (assets.length - 1)) * 100,
@@ -282,8 +290,6 @@ const processFile = async (name) => {
 			// 	Date.now() + finishTime,
 			// ).toLocaleTimeString()}`,
 		);
-		//not adding to the previous mess, incase the finish time is added back or something
-		process.stdout.write("      \r");
 
 		promises.push(processFile(asset));
 		// await processFile(asset);
