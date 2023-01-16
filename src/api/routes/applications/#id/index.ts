@@ -71,8 +71,6 @@ router.post("/delete", route({}), async (req: Request, res: Response) => {
 	)
 		throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
-	if (app.bot) await User.delete({ id: app.bot.id });
-
 	await Application.delete({ id: app.id });
 
 	res.send().status(200);
