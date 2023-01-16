@@ -41,7 +41,7 @@ export class Application extends BaseClass {
 	verify_key: string;
 
 	@JoinColumn({ name: "owner_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, { onDelete: "CASCADE" })
 	owner: User;
 
 	// TODO: enum this? https://discord.com/developers/docs/resources/application#application-object-application-flags
@@ -76,7 +76,7 @@ export class Application extends BaseClass {
 	discovery_eligibility_flags: number = 2240;
 
 	@JoinColumn({ name: "bot_user_id" })
-	@OneToOne(() => User)
+	@OneToOne(() => User, { onDelete: "CASCADE" })
 	bot?: User;
 
 	@Column({ type: "simple-array", nullable: true })
