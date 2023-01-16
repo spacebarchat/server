@@ -5,6 +5,7 @@
 const path = require("path");
 const fs = require("fs");
 const TJS = require("typescript-json-schema");
+const walk = require("./util/walk");
 const schemaPath = path.join(__dirname, "..", "assets", "schemas.json");
 
 const settings = {
@@ -98,20 +99,3 @@ function main() {
 }
 
 main();
-
-function walk(dir) {
-	var results = [];
-	var list = fs.readdirSync(dir);
-	list.forEach(function (file) {
-		file = dir + "/" + file;
-		var stat = fs.statSync(file);
-		if (stat && stat.isDirectory()) {
-			/* Recurse into a subdirectory */
-			results = results.concat(walk(file));
-		} else {
-			if (!file.endsWith(".ts")) return;
-			results.push(file);
-		}
-	});
-	return results;
-}
