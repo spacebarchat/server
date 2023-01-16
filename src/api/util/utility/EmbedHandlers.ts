@@ -3,6 +3,7 @@ import fetch, { Response } from "node-fetch";
 import * as cheerio from "cheerio";
 import probe from "probe-image-size";
 import crypto from "crypto";
+import { yellow } from "picocolors";
 
 export const DEFAULT_FETCH_OPTIONS: any = {
 	redirect: "follow",
@@ -15,6 +16,8 @@ export const DEFAULT_FETCH_OPTIONS: any = {
 	compress: true,
 	method: "GET",
 };
+
+let hasWarnedAboutImagor = false;
 
 export const getProxyUrl = (
 	url: URL,
@@ -41,11 +44,17 @@ export const getProxyUrl = (
 		return `${imagorServerUrl}/${hash}/${path}`;
 	}
 
-	// TODO: Imagor documentation
-	console.log(
-		"Imagor has not been set up correctly. https://docs.fosscord.com/setup/server/configuration/imagor/",
-	);
-	return "";
+	if (!hasWarnedAboutImagor) {
+		hasWarnedAboutImagor = true;
+		console.log(
+			"[Embeds]",
+			yellow(
+				"Imagor has not been set up correctly. https://docs.fosscord.com/setup/server/configuration/imagor/",
+			),
+		);
+	}
+
+	return url.toString();
 };
 
 const getMeta = ($: cheerio.CheerioAPI, name: string): string | undefined => {
