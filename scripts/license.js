@@ -46,7 +46,7 @@ const addToDir = (dir) => {
 	const files = walk(dir, Object.keys(languageCommentStrings));
 
 	for (let path of files) {
-		const file = fs.readFileSync(path).toString();
+		const file = fs.readFileSync(path).toString().split("\r").join("");
 		const fileType = path.slice(path.lastIndexOf(".") + 1);
 		const commentStrings = languageCommentStrings[fileType];
 		if (!commentStrings) continue;
