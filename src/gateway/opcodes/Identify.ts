@@ -141,11 +141,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	}) as PublicMember[][];
 	let guilds = members.map((x) => ({ ...x.guild, joined_at: x.joined_at }));
 
-	const pendingGuilds: typeof guilds = [];
+	const pending_guilds: typeof guilds = [];
 	// @ts-ignore
 	guilds = guilds.map((guild) => {
 		if (user.bot) {
-			pendingGuilds.push(guild);
+			pending_guilds.push(guild);
 			return { id: guild.id, unavailable: true };
 		}
 
@@ -308,7 +308,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	});
 
 	await Promise.all(
-		pendingGuilds.map((guild) =>
+		pending_guilds.map((guild) =>
 			Send(this, {
 				op: OPCODES.Dispatch,
 				t: EVENTEnum.GuildCreate,
