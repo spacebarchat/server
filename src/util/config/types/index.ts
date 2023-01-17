@@ -34,5 +34,6 @@ export * from "./RegionConfiguration";
 export * from "./RegisterConfiguration";
 export * from "./SecurityConfiguration";
 export * from "./SentryConfiguration";
-export * from "./TemplateConfiguration";
+export * from "./SMTPConfiguration";
 export * from "./subconfigurations";
+export * from "./TemplateConfiguration";

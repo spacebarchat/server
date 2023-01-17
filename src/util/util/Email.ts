@@ -41,3 +41,34 @@ export function adjustEmail(email?: string): string | undefined {
 
 	return email;
 }
+
+export const Email: {
+	transporter: Transporter | null;
+	init: () => Promise<void>;
+} = {
+	transporter: null,
+	init: async function () {
+		const { host, port, secure, username, password } = Config.get().smtp;
+		if (!host || !port || !secure || !username || !password) return;
+		console.log(`[SMTP] connect: ${host}`);
+		this.transporter = nodemailer.createTransport({
+			host,
+			port,
+			secure,
+			auth: {
+				user: username,
+				pass: password,
+			},
+		});
+
+		await this.transporter.verify((error, _) => {
+			if (error) {
+				console.error(`[SMTP] error: ${error}`);
+				this.transporter?.close();
+				this.transporter = null;
+				return;
+			}
+			console.log(`[SMTP] Ready`);
+		});
+	},
+};

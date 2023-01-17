@@ -19,7 +19,7 @@
 import "missing-native-js-functions";
 import { Server, ServerOptions } from "lambert-server";
 import { Authentication, CORS } from "./middlewares/";
-import { Config, initDatabase, initEvent, Sentry } from "@fosscord/util";
+import { Config, Email, initDatabase, initEvent, Sentry } from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
 import { Router, Request, Response, NextFunction } from "express";
@@ -55,6 +55,7 @@ export class FosscordServer extends Server {
 		await initDatabase();
 		await Config.init();
 		await initEvent();
+		await Email.init();
 		await initInstance();
 		await Sentry.init(this.app);
 
