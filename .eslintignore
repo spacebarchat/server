@@ -1,0 +1,9 @@
+node_modules
+dist
+README.md
+COPYING
+src/webrtc
+assets/cache
+assets/client_test
+assets/locales
+assets/public

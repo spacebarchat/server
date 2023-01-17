@@ -1,0 +1,10 @@
+{
+	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint"],
+	"root": true,
+	"rules": {
+		"no-mixed-spaces-and-tabs": "off",
+		"@typescript-eslint/no-inferrable-types": "off" // Required by typeorm
+	}
+}
