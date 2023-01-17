@@ -68,8 +68,8 @@ router.post(
 		const {
 			enabled,
 			allowTemplateCreation,
-			allowDiscordTemplates,
-			allowRaws,
+			// allowDiscordTemplates,
+			// allowRaws,
 		} = Config.get().templates;
 		if (!enabled)
 			return res
@@ -103,7 +103,7 @@ router.post(
 
 		const guild_id = Snowflake.generate();
 
-		const [guild, role] = await Promise.all([
+		const [guild] = await Promise.all([
 			Guild.create({
 				...body,
 				...template.serialized_source_guild,

@@ -1,6 +1,4 @@
 import {
-	BeforeInsert,
-	BeforeUpdate,
 	Column,
 	Entity,
 	FindOneOptions,
@@ -16,6 +14,7 @@ import { Member } from "./Member";
 import { UserSettings } from "./UserSettings";
 import { Session } from "./Session";
 import { Config, FieldErrors, Snowflake, trimSpecial, adjustEmail } from "..";
+import { Request } from "express";
 
 export enum PublicUserEnum {
 	username,
@@ -62,7 +61,7 @@ export const PrivateUserProjection = [
 // Private user data that should never get sent to the client
 export type PublicUser = Pick<User, PublicUserKeys>;
 
-export type UserPublic = Pick<User, PublicUserKeys>
+export type UserPublic = Pick<User, PublicUserKeys>;
 
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
@@ -248,6 +247,7 @@ export class User extends BaseClass {
 	}
 
 	toPublicUser() {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const user: any = {};
 		PublicUserProjection.forEach((x) => {
 			user[x] = this[x];
@@ -259,6 +259,7 @@ export class User extends BaseClass {
 		return await User.findOneOrFail({
 			where: { id: user_id },
 			...opts,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			//@ts-ignore
 			select: [...PublicUserProjection, ...(opts?.select || [])], // TODO: fix
 		});
@@ -310,7 +311,6 @@ export class User extends BaseClass {
 		email,
 		username,
 		password,
-		date_of_birth,
 		id,
 		req,
 	}: {
@@ -319,7 +319,7 @@ export class User extends BaseClass {
 		email?: string;
 		date_of_birth?: Date; // "2000-04-03"
 		id?: string;
-		req?: any;
+		req?: Request;
 	}) {
 		// trim special uf8 control characters -> Backspace, Newline, ...
 		username = trimSpecial(username);
@@ -330,7 +330,8 @@ export class User extends BaseClass {
 			throw FieldErrors({
 				username: {
 					code: "USERNAME_TOO_MANY_USERS",
-					message: req.t("auth:register.USERNAME_TOO_MANY_USERS"),
+					message:
+						req?.t("auth:register.USERNAME_TOO_MANY_USERS") || "",
 				},
 			});
 		}
@@ -339,7 +340,7 @@ export class User extends BaseClass {
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 		const language =
-			req.language === "en" ? "en-US" : req.language || "en-US";
+			req?.language === "en" ? "en-US" : req?.language || "en-US";
 
 		const settings = UserSettings.create({
 			locale: language,
@@ -368,7 +369,9 @@ export class User extends BaseClass {
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
-					await Member.addToGuild(user.id, guild).catch((e) => {});
+					await Member.addToGuild(user.id, guild).catch((e) =>
+						console.error("[Autojoin]", e),
+					);
 				}
 			}
 		});

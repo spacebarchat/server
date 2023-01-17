@@ -2,10 +2,8 @@ import {
 	Column,
 	Entity,
 	JoinColumn,
-	ManyToMany,
 	ManyToOne,
 	OneToMany,
-	OneToOne,
 	RelationId,
 } from "typeorm";
 import { Config, handleFile, Snowflake } from "..";
@@ -352,7 +350,7 @@ export class Guild extends BaseClass {
 			}
 		});
 
-		for (const channel of body.channels?.sort((a, b) =>
+		for (const channel of body.channels.sort((a) =>
 			a.parent_id ? 1 : -1,
 		)) {
 			const id = ids.get(channel.id) || Snowflake.generate();

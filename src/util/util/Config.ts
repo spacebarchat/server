@@ -66,6 +66,8 @@ export const Config = {
 };
 
 function applyConfig(val: ConfigValue) {
+	// TODO: typings
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async function apply(obj: any, key = ""): Promise<any> {
 		if (typeof obj === "object" && obj !== null)
 			return Promise.all(
@@ -89,6 +91,8 @@ function applyConfig(val: ConfigValue) {
 }
 
 function pairsToConfig(pairs: ConfigEntity[]) {
+	// TODO: typings
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const value: any = {};
 
 	pairs.forEach((p) => {

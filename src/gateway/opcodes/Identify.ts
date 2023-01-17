@@ -24,19 +24,21 @@ import {
 	UserGuildSettings,
 	ReadyGuildDTO,
 	Guild,
+	UserTokenData,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
-import { genSessionId } from "../util/SessionUtils";
 import { setupListener } from "../listener/listener";
 // import experiments from "./experiments.json";
-const experiments: any = [];
+const experiments: unknown[] = [];
 import { check } from "./instanceOf";
 import { Recipient } from "@fosscord/util";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
 // TODO: check if already identified
+
+// TODO: Refactor identify ( and lazyrequest, tbh )
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	clearTimeout(this.readyTimeout);
@@ -47,9 +49,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const identify: IdentifySchema = data.d;
 
+	let decoded: UserTokenData["decoded"];
 	try {
 		const { jwtSecret } = Config.get().security;
-		var { decoded } = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
+		decoded = (await checkToken(identify.token, jwtSecret)).decoded; // will throw an error if invalid
 	} catch (error) {
 		console.error("invalid token", error);
 		return this.close(CLOSECODES.Authentication_failed);
@@ -139,18 +142,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			},
 		];
 	}) as PublicMember[][];
-	let guilds = members.map((x) => ({ ...x.guild, joined_at: x.joined_at }));
+	// TODO: This type is bad.
+	let guilds: Partial<Guild>[] = members.map((x) => ({
+		...x.guild,
+		joined_at: x.joined_at,
+	}));
 
 	const pending_guilds: typeof guilds = [];
-	// @ts-ignore
-	guilds = guilds.map((guild) => {
-		if (user.bot) {
+	if (user.bot)
+		guilds = guilds.map((guild) => {
 			pending_guilds.push(guild);
 			return { id: guild.id, unavailable: true };
-		}
-
-		return guild;
-	});
+		});
 
 	// TODO: Rewrite this. Perhaps a DTO?
 	const user_guild_settings_entries = members.map((x) => ({
@@ -163,17 +166,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			...y[1],
 			channel_id: y[0],
 		})),
-	})) as any as UserGuildSettings[];
+	})) as unknown as UserGuildSettings[];
 
 	const channels = recipients.map((x) => {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		//@ts-ignore
-		x.channel.recipients = x.channel.recipients?.map((x) =>
+		x.channel.recipients = x.channel.recipients.map((x) =>
 			x.user.toPublicUser(),
 		);
 		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
 		users = users.concat(x.channel.recipients as unknown as User[]);
 		if (x.channel.isDm()) {
-			x.channel.recipients = x.channel.recipients!.filter(
+			x.channel.recipients = x.channel.recipients?.filter(
 				(x) => x.id !== this.user_id,
 			);
 		}
@@ -219,7 +223,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		} as PresenceUpdateEvent);
 	});
 
-	read_states.forEach((s: any) => {
+	read_states.forEach((s: Partial<ReadState>) => {
 		s.id = s.channel_id;
 		delete s.user_id;
 		delete s.channel_id;
@@ -258,10 +262,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}, //TODO: check this code!
 		user: privateUser,
 		user_settings: user.settings,
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		guilds: guilds.map((x) => {
+		guilds: guilds.map((x: Guild & { joined_at: Date }) => {
 			return {
-				...new ReadyGuildDTO(x as Guild & { joined_at: Date }).toJSON(),
+				...new ReadyGuildDTO(x).toJSON(),
 				guild_hashes: {},
 				joined_at: x.joined_at,
 			};
@@ -290,6 +295,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		},
 		country_code: user.settings.locale,
 		friend_suggestion_count: 0, // TODO
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?

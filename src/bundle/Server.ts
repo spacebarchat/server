@@ -6,7 +6,7 @@ import * as Api from "@fosscord/api";
 import * as Gateway from "@fosscord/gateway";
 import { CDNServer } from "@fosscord/cdn";
 import express from "express";
-import { green, bold, yellow } from "picocolors";
+import { green, bold } from "picocolors";
 import { Config, initDatabase, Sentry } from "@fosscord/util";
 
 const app = express();

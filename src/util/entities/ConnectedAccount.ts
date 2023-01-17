@@ -2,7 +2,10 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
-export type PublicConnectedAccount = Pick<ConnectedAccount, "name" | "type" | "verified">
+export type PublicConnectedAccount = Pick<
+	ConnectedAccount,
+	"name" | "type" | "verified"
+>;
 
 @Entity("connected_accounts")
 export class ConnectedAccount extends BaseClass {

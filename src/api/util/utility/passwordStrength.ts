@@ -5,7 +5,7 @@ const reNUMBER = /[0-9]/g;
 const reUPPERCASELETTER = /[A-Z]/g;
 const reSYMBOLS = /[A-Z,a-z,0-9]/g;
 
-const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored in db
+// const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored in db
 /*
  * https://en.wikipedia.org/wiki/Password_policy
  * password must meet following criteria, to be perfect:

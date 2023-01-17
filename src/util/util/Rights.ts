@@ -2,14 +2,7 @@ import { BitField } from "./BitField";
 import "missing-native-js-functions";
 import { BitFieldResolvable, BitFlag } from "./BitField";
 import { User } from "../entities";
-
-let HTTPError: any;
-
-try {
-	HTTPError = require("lambert-server").HTTPError;
-} catch (e) {
-	HTTPError = Error;
-}
+import { HTTPError } from "lambert-server";
 
 export type RightResolvable =
 	| bigint
@@ -100,7 +93,6 @@ export class Rights extends BitField {
 
 	hasThrow(permission: RightResolvable) {
 		if (this.has(permission)) return true;
-		// @ts-ignore
 		throw new HTTPError(
 			`You are missing the following rights ${permission}`,
 			403,

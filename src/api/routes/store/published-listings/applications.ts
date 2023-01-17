@@ -5,7 +5,7 @@ const router: Router = Router();
 
 router.get("/:id", route({}), async (req: Request, res: Response) => {
 	//TODO
-	const id = req.params.id;
+	// const id = req.params.id;
 	res.json({
 		id: "",
 		summary: "",

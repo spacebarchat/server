@@ -5,7 +5,7 @@ export interface IReadyGuildDTO {
 	channels: Channel[];
 	data_mode: string; // what is this
 	emojis: Emoji[];
-	guild_scheduled_events: any[];
+	guild_scheduled_events: unknown[]; // TODO
 	id: string;
 	large: boolean | undefined;
 	lazy: boolean;
@@ -39,12 +39,12 @@ export interface IReadyGuildDTO {
 		max_video_channel_users: number | undefined;
 		max_members: number | undefined;
 		nsfw_level: number | undefined;
-		hub_type?: any | null; // ????
+		hub_type?: unknown | null; // ????
 	};
 	roles: Role[];
-	stage_instances: any[];
+	stage_instances: unknown[];
 	stickers: Sticker[];
-	threads: any[];
+	threads: unknown[];
 	version: string;
 }
 
@@ -53,7 +53,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 	channels: Channel[];
 	data_mode: string; // what is this
 	emojis: Emoji[];
-	guild_scheduled_events: any[];
+	guild_scheduled_events: unknown[];
 	id: string;
 	large: boolean | undefined;
 	lazy: boolean;
@@ -87,12 +87,12 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 		max_video_channel_users: number | undefined;
 		max_members: number | undefined;
 		nsfw_level: number | undefined;
-		hub_type?: any | null; // ????
+		hub_type?: unknown | null; // ????
 	};
 	roles: Role[];
-	stage_instances: any[];
+	stage_instances: unknown[];
 	stickers: Sticker[];
-	threads: any[];
+	threads: unknown[];
 	version: string;
 
 	constructor(guild: Guild) {

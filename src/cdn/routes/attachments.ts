@@ -23,7 +23,7 @@ router.post(
 			throw new HTTPError("Invalid request signature");
 		if (!req.file) throw new HTTPError("file missing");
 
-		const { buffer, mimetype, size, originalname, fieldname } = req.file;
+		const { buffer, mimetype, size, originalname } = req.file;
 		const { channel_id } = req.params;
 		const filename = originalname
 			.replaceAll(" ", "_")
@@ -63,7 +63,7 @@ router.get(
 	"/:channel_id/:id/:filename",
 	async (req: Request, res: Response) => {
 		const { channel_id, id, filename } = req.params;
-		const { format } = req.query;
+		// const { format } = req.query;
 
 		const path = `attachments/${channel_id}/${id}/${filename}`;
 		const file = await storage.get(path);

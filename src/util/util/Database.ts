@@ -23,6 +23,7 @@ const DatabaseType = dbConnectionString.includes("://")
 const isSqlite = DatabaseType.includes("sqlite");
 
 const DataSourceOptions = new DataSource({
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore type 'string' is not 'mysql' | 'sqlite' | 'mariadb' | etc etc
 	type: DatabaseType,
 	charset: "utf8mb4",

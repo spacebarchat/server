@@ -24,7 +24,7 @@ router.post(
 
 		const backup = await BackupCode.findOne({ where: { code: body.code } });
 		if (!backup) {
-			const ret = verifyToken(user.totp_secret!, body.code);
+			const ret = verifyToken(user.totp_secret || "", body.code);
 			if (!ret || ret.delta != 0)
 				throw new HTTPError(
 					req.t("auth:login.INVALID_TOTP_CODE"),

@@ -17,7 +17,6 @@ import {
 	Snowflake,
 	trimSpecial,
 	InvisibleCharacters,
-	ChannelTypes,
 } from "../util";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import { Recipient } from "./Recipient";
@@ -219,7 +218,7 @@ export class Channel extends BaseClass {
 							403,
 						);
 
-					if (channel.name.match(/\-\-+/g))
+					if (channel.name.match(/--+/g))
 						throw new HTTPError(
 							"Channel name cannot include multiple adjacent dashes.",
 							403,
@@ -327,7 +326,8 @@ export class Channel extends BaseClass {
 		});
 
 		for (const ur of userRecipients) {
-			const re = ur.channel.recipients!.map((r) => r.user_id);
+			if (!ur.channel.recipients) continue;
+			const re = ur.channel.recipients.map((r) => r.user_id);
 			if (re.length === channelRecipients.length) {
 				if (containsAll(re, channelRecipients)) {
 					if (channel == null) {
@@ -362,8 +362,8 @@ export class Channel extends BaseClass {
 
 		const channel_dto = await DmChannelDTO.from(channel);
 
-		if (type === ChannelType.GROUP_DM) {
-			for (const recipient of channel.recipients!) {
+		if (type === ChannelType.GROUP_DM && channel.recipients) {
+			for (const recipient of channel.recipients) {
 				await emitEvent({
 					event: "CHANNEL_CREATE",
 					data: channel_dto.excludedRecipients([recipient.user_id]),

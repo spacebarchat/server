@@ -1,5 +1,10 @@
 import { Embed } from "@fosscord/util";
 
+type Attachment = {
+	id: string;
+	filename: string;
+};
+
 export interface MessageCreateSchema {
 	type?: number;
 	content?: string;
@@ -23,11 +28,11 @@ export interface MessageCreateSchema {
 		fail_if_not_exists?: boolean;
 	};
 	payload_json?: string;
-	file?: any;
+	file?: { filename: string };
 	/**
 	TODO: we should create an interface for attachments
 	TODO: OpenWAAO<-->attachment-style metadata conversion
 	**/
-	attachments?: any[];
+	attachments?: Attachment[];
 	sticker_ids?: string[];
 }

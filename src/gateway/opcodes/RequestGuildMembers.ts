@@ -1,5 +1,5 @@
-import { Payload, WebSocket } from "@fosscord/gateway";
+import { WebSocket } from "@fosscord/gateway";
 
-export function onRequestGuildMembers(this: WebSocket, data: Payload) {
+export function onRequestGuildMembers(this: WebSocket) {
 	// return this.close(CLOSECODES.Unknown_error);
 }

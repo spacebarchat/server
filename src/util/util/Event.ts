@@ -37,6 +37,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 export async function initEvent() {
 	await RabbitMQ.init(); // does nothing if rabbitmq is not setup
 	if (RabbitMQ.connection) {
+		// empty on purpose?
 	} else {
 		// use event emitter
 		// use process messages
@@ -44,9 +45,9 @@ export async function initEvent() {
 }
 
 export interface EventOpts extends Event {
-	acknowledge?: Function;
+	acknowledge?: () => unknown;
 	channel?: Channel;
-	cancel: Function;
+	cancel: (id?: string) => unknown;
 }
 
 export interface ListenEventOpts {
@@ -62,17 +63,18 @@ export interface ProcessEvent {
 
 export async function listenEvent(
 	event: string,
-	callback: (event: EventOpts) => any,
+	callback: (event: EventOpts) => unknown,
 	opts?: ListenEventOpts,
 ) {
 	if (RabbitMQ.connection) {
-		return await rabbitListen(
-			// @ts-ignore
-			opts?.channel || RabbitMQ.channel,
-			event,
-			callback,
-			{ acknowledge: opts?.acknowledge },
-		);
+		const channel = opts?.channel || RabbitMQ.channel;
+		if (!channel)
+			throw new Error(
+				"[Events] An event was sent without an associated channel",
+			);
+		return await rabbitListen(channel, event, callback, {
+			acknowledge: opts?.acknowledge,
+		});
 	} else if (process.env.EVENT_TRANSMISSION === "process") {
 		const cancel = async () => {
 			process.removeListener("message", listener);
@@ -85,13 +87,13 @@ export async function listenEvent(
 				callback({ ...msg.event, cancel });
 		};
 
-		//@ts-ignore apparently theres no function addListener with this signature
-		process.addListener("message", listener);
+		// TODO: assert the type is correct?
+		process.addListener("message", (msg) => listener(msg as ProcessEvent));
 		process.setMaxListeners(process.getMaxListeners() + 1);
 
 		return cancel;
 	} else {
-		const listener = (opts: any) => callback({ ...opts, cancel });
+		const listener = (opts: EventOpts) => callback({ ...opts, cancel });
 		const cancel = async () => {
 			events.removeListener(event, listener);
 			events.setMaxListeners(events.getMaxListeners() - 1);
@@ -106,7 +108,7 @@ export async function listenEvent(
 async function rabbitListen(
 	channel: Channel,
 	id: string,
-	callback: (event: EventOpts) => any,
+	callback: (event: EventOpts) => unknown,
 	opts?: { acknowledge?: boolean },
 ) {
 	await channel.assertExchange(id, "fanout", { durable: false });

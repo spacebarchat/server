@@ -155,8 +155,8 @@ export interface AuditLogChangeValue {
 	explicit_content_filter?: number;
 	default_message_notifications?: number;
 	vanity_url_code?: string;
-	$add?: {}[];
-	$remove?: {}[];
+	$add?: object[]; // TODO: These types are bad.
+	$remove?: object[];
 	prune_delete_days?: number;
 	widget_enabled?: boolean;
 	widget_channel_id?: string;

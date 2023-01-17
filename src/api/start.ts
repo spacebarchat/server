@@ -23,7 +23,7 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
 		cluster.fork();
 	}
 
-	cluster.on("exit", (worker, code, signal) => {
+	cluster.on("exit", (worker) => {
 		console.log(`worker ${worker.process.pid} died, restart worker`);
 		cluster.fork();
 	});
@@ -33,6 +33,7 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
 	const server = new FosscordServer({ port });
 	server.start().catch(console.error);
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	global.server = server;
 }

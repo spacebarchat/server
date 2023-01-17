@@ -10,14 +10,7 @@ import {
 import { BitField } from "./BitField";
 import "missing-native-js-functions";
 import { BitFieldResolvable, BitFlag } from "./BitField";
-
-let HTTPError: any;
-
-try {
-	HTTPError = require("lambert-server").HTTPError;
-} catch (e) {
-	HTTPError = Error;
-}
+import { HTTPError } from "lambert-server";
 
 export type PermissionResolvable =
 	| bigint
@@ -29,7 +22,7 @@ export type PermissionResolvable =
 type PermissionString = keyof typeof Permissions.FLAGS;
 
 // BigInt doesn't have a bit limit (https://stackoverflow.com/questions/53335545/whats-the-biggest-bigint-value-in-js-as-per-spec)
-const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(64); // 27 permission bits left for discord to add new ones
+// const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(64); // 27 permission bits left for discord to add new ones
 
 export class Permissions extends BitField {
 	cache: PermissionCache = {};
@@ -112,7 +105,6 @@ export class Permissions extends BitField {
 	 */
 	hasThrow(permission: PermissionResolvable) {
 		if (this.has(permission) && this.has("VIEW_CHANNEL")) return true;
-		// @ts-ignore
 		throw new HTTPError(
 			`You are missing the following permissions ${permission}`,
 			403,
@@ -256,7 +248,6 @@ export async function getPermission(
 				"permission_overwrites",
 				"owner_id",
 				"guild_id",
-				// @ts-ignore
 				...(opts.channel_select || []),
 			],
 		});
@@ -266,12 +257,7 @@ export async function getPermission(
 	if (guild_id) {
 		guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
-			select: [
-				"id",
-				"owner_id",
-				// @ts-ignore
-				...(opts.guild_select || []),
-			],
+			select: ["id", "owner_id", ...(opts.guild_select || [])],
 			relations: opts.guild_relations,
 		});
 		if (guild.owner_id === user_id)
@@ -283,14 +269,13 @@ export async function getPermission(
 			// select: [
 			// "id",		// TODO: Bug in typeorm? adding these selects breaks the query.
 			// "roles",
-			// @ts-ignore
 			// ...(opts.member_select || []),
 			// ],
 		});
 	}
 
-	let recipient_ids: any = channel?.recipients?.map((x) => x.user_id);
-	if (!recipient_ids?.length) recipient_ids = null;
+	let recipient_ids = channel?.recipients?.map((x) => x.user_id);
+	if (!recipient_ids?.length) recipient_ids = undefined;
 
 	// TODO: remove guild.roles and convert recipient_ids to recipients
 	const permission = Permissions.finalPermission({

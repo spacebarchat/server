@@ -1,14 +1,4 @@
-import {
-	Channel,
-	emitEvent,
-	GuildDeleteEvent,
-	Guild,
-	Member,
-	Message,
-	Role,
-	Invite,
-	Emoji,
-} from "@fosscord/util";
+import { emitEvent, GuildDeleteEvent, Guild } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";

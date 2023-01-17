@@ -65,7 +65,7 @@ export async function Authentication(
 		return next(new HTTPError("Missing Authorization Header", 401));
 
 	Sentry.setUser({ id: req.user_id });
-	
+
 	try {
 		const { jwtSecret } = Config.get().security;
 

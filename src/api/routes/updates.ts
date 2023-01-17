@@ -1,11 +1,10 @@
 import { Router, Response, Request } from "express";
 import { route } from "@fosscord/api";
-import { Config, FieldErrors, Release } from "@fosscord/util";
+import { FieldErrors, Release } from "@fosscord/util";
 
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const { client } = Config.get();
 	const platform = req.query.platform;
 
 	if (!platform)

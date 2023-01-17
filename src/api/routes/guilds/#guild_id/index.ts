@@ -29,10 +29,10 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			401,
 		);
 
-	// @ts-ignore
-	guild.joined_at = member?.joined_at;
-
-	return res.send(guild);
+	return res.send({
+		...guild,
+		joined_at: member?.joined_at,
+	});
 });
 
 router.patch(

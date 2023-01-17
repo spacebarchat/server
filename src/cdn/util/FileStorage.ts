@@ -33,15 +33,15 @@ export class FileStorage implements Storage {
 		}
 	}
 
-	async set(path: string, value: any) {
+	async set(path: string, value: Buffer) {
 		path = getPath(path);
 		if (!fs.existsSync(dirname(path)))
 			fs.mkdirSync(dirname(path), { recursive: true });
 
-		value = Readable.from(value);
+		const ret = Readable.from(value);
 		const cleaned_file = fs.createWriteStream(path);
 
-		return value.pipe(new ExifTransformer()).pipe(cleaned_file);
+		ret.pipe(new ExifTransformer()).pipe(cleaned_file);
 	}
 
 	async delete(path: string) {

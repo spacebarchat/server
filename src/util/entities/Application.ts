@@ -1,13 +1,5 @@
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	OneToOne,
-	RelationId,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
 import { Team } from "./Team";
 import { User } from "./User";
 
@@ -26,7 +18,7 @@ export class Application extends BaseClass {
 	summary: string = "";
 
 	@Column({ type: "simple-json", nullable: true })
-	type?: any;
+	type?: object; // TODO: this type is bad
 
 	@Column()
 	hook: boolean = true;
@@ -158,6 +150,6 @@ export interface ApplicationCommandInteractionData {
 
 export interface ApplicationCommandInteractionDataOption {
 	name: string;
-	value?: any;
+	value?: unknown;
 	options?: ApplicationCommandInteractionDataOption[];
 }

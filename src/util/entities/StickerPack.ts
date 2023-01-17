@@ -4,7 +4,6 @@ import {
 	JoinColumn,
 	ManyToOne,
 	OneToMany,
-	OneToOne,
 	RelationId,
 } from "typeorm";
 import { Sticker } from ".";

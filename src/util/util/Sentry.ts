@@ -42,7 +42,7 @@ export const Sentry = {
 			environment,
 		});
 
-		SentryNode.addGlobalEventProcessor((event, hint) => {
+		SentryNode.addGlobalEventProcessor((event) => {
 			if (event.transaction) {
 				// Rewrite things that look like IDs to `:id` for sentry
 				event.transaction = event.transaction
@@ -94,6 +94,8 @@ export const Sentry = {
 		errorHandlersUsed = true;
 
 		app.use(SentryNode.Handlers.errorHandler());
+		// The typings for this are broken?
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 		app.use(function onError(err: any, req: any, res: any, next: any) {
 			res.statusCode = 500;
 			res.end(res.sentry + "\n");

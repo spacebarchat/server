@@ -6,7 +6,8 @@ import { Config } from "./Config";
 
 export async function uploadFile(
 	path: string,
-	file?: Express.Multer.File,
+	// These are the only props we use, don't need to enforce the full type.
+	file?: Pick<Express.Multer.File, "mimetype" | "originalname" | "buffer">,
 ): Promise<Attachment> {
 	if (!file?.buffer) throw new HTTPError("Missing file in body");
 
@@ -42,7 +43,6 @@ export async function handleFile(
 		const mimetype = body.split(":")[1].split(";")[0];
 		const buffer = Buffer.from(body.split(",")[1], "base64");
 
-		// @ts-ignore
 		const { id } = await uploadFile(path, {
 			buffer,
 			mimetype,

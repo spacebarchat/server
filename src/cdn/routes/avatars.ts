@@ -30,7 +30,7 @@ router.post(
 		if (req.headers.signature !== Config.get().security.requestSignature)
 			throw new HTTPError("Invalid request signature");
 		if (!req.file) throw new HTTPError("Missing file");
-		const { buffer, mimetype, size, originalname, fieldname } = req.file;
+		const { buffer, size } = req.file;
 		const { user_id } = req.params;
 
 		let hash = crypto
@@ -74,7 +74,8 @@ router.get("/:user_id", async (req: Request, res: Response) => {
 });
 
 export const getAvatar = async (req: Request, res: Response) => {
-	let { user_id, hash } = req.params;
+	const { user_id } = req.params;
+	let { hash } = req.params;
 	hash = hash.split(".")[0]; // remove .file extension
 	const path = `avatars/${user_id}/${hash}`;
 

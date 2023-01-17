@@ -14,7 +14,7 @@ import { initInstance } from "./util/handlers/Instance";
 import { registerRoutes } from "@fosscord/util";
 import { red } from "picocolors";
 
-export type FosscordServerOptions = ServerOptions
+export type FosscordServerOptions = ServerOptions;
 
 declare global {
 	namespace Express {

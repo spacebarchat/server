@@ -1,3 +1,3 @@
 import { ChannelPermissionOverwrite } from "@fosscord/util";
 
-export type ChannelPermissionOverwriteSchema = ChannelPermissionOverwrite
+export type ChannelPermissionOverwriteSchema = ChannelPermissionOverwrite;

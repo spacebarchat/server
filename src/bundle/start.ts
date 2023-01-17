@@ -11,14 +11,15 @@ import { execSync } from "child_process";
 
 const cores = process.env.THREADS ? parseInt(process.env.THREADS) : 1;
 
-if (cluster.isPrimary) {
-	function getCommitOrFail() {
-		try {
-			return execSync("git rev-parse HEAD").toString().trim();
-		} catch (e) {
-			return null;
-		}
+function getCommitOrFail() {
+	try {
+		return execSync("git rev-parse HEAD").toString().trim();
+	} catch (e) {
+		return null;
 	}
+}
+
+if (cluster.isPrimary) {
 	const commit = getCommitOrFail();
 
 	console.log(
@@ -70,7 +71,7 @@ Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 			}, delay);
 		}
 
-		cluster.on("message", (sender: Worker, message: any) => {
+		cluster.on("message", (sender: Worker, message) => {
 			for (const id in cluster.workers) {
 				const worker = cluster.workers[id];
 				if (worker === sender || !worker) continue;
@@ -78,7 +79,7 @@ Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 			}
 		});
 
-		cluster.on("exit", (worker: any, code: any, signal: any) => {
+		cluster.on("exit", (worker) => {
 			console.log(
 				`[Worker] ${red(
 					`died with PID: ${worker.process.pid} , restarting ...`,

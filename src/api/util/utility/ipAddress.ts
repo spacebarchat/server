@@ -67,7 +67,7 @@ export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 
 	return (
 		await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)
-	).json() as any; // TODO: types
+	).json();
 }
 
 export function isProxy(data: typeof exampleData) {
@@ -79,7 +79,10 @@ export function isProxy(data: typeof exampleData) {
 }
 
 export function getIpAdress(req: Request): string {
+	// TODO: express can do this (trustProxies: true)?
+
 	return (
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		req.headers[Config.get().security.forwadedFor] ||
 		req.socket.remoteAddress

@@ -24,7 +24,7 @@ export class FieldError extends Error {
 	constructor(
 		public code: string | number,
 		public message: string,
-		public errors?: any,
+		public errors?: object, // TODO: I don't like this typing.
 	) {
 		super(message);
 	}

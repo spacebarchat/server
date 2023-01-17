@@ -1,4 +1,4 @@
-let erlpack: any;
+let erlpack: { pack: (data: Payload) => Buffer };
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {
@@ -45,7 +45,7 @@ export function Send(socket: WebSocket, data: Payload) {
 			return;
 		}
 
-		socket.send(buffer, (err: any) => {
+		socket.send(buffer, (err) => {
 			if (err) return rej(err);
 			return res(null);
 		});

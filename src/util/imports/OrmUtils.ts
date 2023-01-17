@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 //source: https://github.com/typeorm/typeorm/blob/master/src/util/OrmUtils.ts
 export class OrmUtils {
 	// Checks if it's an object made by Object.create(null), {} or new Object()
-	private static isPlainObject(item: any) {
+	private static isPlainObject(item: unknown) {
 		if (item === null || item === undefined) {
 			return false;
 		}

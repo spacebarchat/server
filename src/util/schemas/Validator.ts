@@ -27,7 +27,7 @@ export const ajv = new Ajv({
 
 addFormats(ajv);
 
-export function validateSchema<G>(schema: string, data: G): G {
+export function validateSchema<G extends object>(schema: string, data: G): G {
 	const valid = ajv.validate(schema, normalizeBody(data));
 	if (!valid) throw ajv.errors;
 	return data;
@@ -37,13 +37,13 @@ export function validateSchema<G>(schema: string, data: G): G {
 // this removes null values as ajv doesn't treat them as undefined
 // normalizeBody allows to handle circular structures without issues
 // taken from https://github.com/serverless/serverless/blob/master/lib/classes/ConfigSchemaHandler/index.js#L30 (MIT license)
-export const normalizeBody = (body: any = {}) => {
+export const normalizeBody = (body: object = {}) => {
 	const normalizedObjectsSet = new WeakSet();
-	const normalizeObject = (object: any) => {
+	const normalizeObject = (object: object) => {
 		if (normalizedObjectsSet.has(object)) return;
 		normalizedObjectsSet.add(object);
 		if (Array.isArray(object)) {
-			for (const [index, value] of object.entries()) {
+			for (const [, value] of object.entries()) {
 				if (typeof value === "object") normalizeObject(value);
 			}
 		} else {
@@ -57,6 +57,8 @@ export const normalizeBody = (body: any = {}) => {
 						key === "discovery_splash"
 					)
 						continue;
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					//@ts-ignore
 					delete object[key];
 				} else if (typeof value === "object") {
 					normalizeObject(value);

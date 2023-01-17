@@ -8,7 +8,6 @@ import {
 } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
-import { Message } from "./Message";
 import { User } from "./User";
 
 // for read receipts

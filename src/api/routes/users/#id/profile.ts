@@ -1,11 +1,9 @@
 import { Router, Request, Response } from "express";
 import {
 	PublicConnectedAccount,
-	PublicUser,
 	User,
 	UserPublic,
 	Member,
-	Guild,
 	UserProfileModifySchema,
 	handleFile,
 	PrivateUserProjection,
