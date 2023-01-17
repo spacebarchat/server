@@ -39,12 +39,8 @@ export default function rateLimit(opts: {
 	error?: boolean;
 	success?: boolean;
 	onlyIp?: boolean;
-}): any {
-	return async (
-		req: Request,
-		res: Response,
-		next: NextFunction,
-	): Promise<any> => {
+}) {
+	return async (req: Request, res: Response, next: NextFunction) => {
 		// exempt user? if so, immediately short circuit
 		if (req.user_id) {
 			const rights = await getRights(req.user_id);

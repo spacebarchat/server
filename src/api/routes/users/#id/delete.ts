@@ -5,7 +5,6 @@ import {
 	PrivateUserProjection,
 	User,
 	UserDeleteEvent,
-	UserDeleteSchema,
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 
@@ -15,7 +14,7 @@ router.post(
 	"/",
 	route({ right: "MANAGE_USERS" }),
 	async (req: Request, res: Response) => {
-		const user = await User.findOneOrFail({
+		await User.findOneOrFail({
 			where: { id: req.params.id },
 			select: [...PrivateUserProjection, "data"],
 		});

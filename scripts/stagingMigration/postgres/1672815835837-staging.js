@@ -130,22 +130,14 @@ module.exports = class staging1672815835837 {
 		await queryRunner.query(
 			`ALTER TABLE "members" ADD "premium_since" bigint`,
 		);
-		await queryRunner.query(
-			`ALTER TABLE members ADD theme_colors text`
-		);
-		await queryRunner.query(
-			`ALTER TABLE members ADD pronouns varchar`
-		);
+		await queryRunner.query(`ALTER TABLE members ADD theme_colors text`);
+		await queryRunner.query(`ALTER TABLE members ADD pronouns varchar`);
 		await queryRunner.query(`UPDATE users SET bio = '' WHERE bio IS NULL`);
 		await queryRunner.query(
 			`ALTER TABLE users ALTER COLUMN bio SET NOT NULL`,
 		);
-		await queryRunner.query(
-			`ALTER TABLE users ADD theme_colors text`
-		);
-		await queryRunner.query(
-			`ALTER TABLE users ADD pronouns varchar`
-		);
+		await queryRunner.query(`ALTER TABLE users ADD theme_colors text`);
+		await queryRunner.query(`ALTER TABLE users ADD pronouns varchar`);
 		await queryRunner.query(
 			`UPDATE users SET mfa_enabled = false WHERE mfa_enabled IS NULL`,
 		);
@@ -157,5 +149,5 @@ module.exports = class staging1672815835837 {
 		);
 	}
 
-	async down(queryRunner) { }
+	async down(queryRunner) {}
 };

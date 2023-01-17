@@ -1,12 +1,5 @@
 import { Request, Response, Router } from "express";
-import {
-	Config,
-	Permissions,
-	Guild,
-	Invite,
-	Channel,
-	Member,
-} from "@fosscord/util";
+import { Permissions, Guild, Invite, Channel, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { random, route } from "@fosscord/api";
 
@@ -52,7 +45,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	}
 
 	// Fetch voice channels, and the @everyone permissions object
-	const channels = [] as any[];
+	const channels: { id: string; name: string; position: number }[] = [];
 
 	(
 		await Channel.find({
@@ -70,8 +63,8 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		) {
 			channels.push({
 				id: doc.id,
-				name: doc.name,
-				position: doc.position,
+				name: doc.name ?? "Unknown channel",
+				position: doc.position ?? 0,
 			});
 		}
 	});

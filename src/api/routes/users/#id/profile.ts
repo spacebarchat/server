@@ -157,6 +157,7 @@ router.patch(
 		user.assign(body);
 		await user.save();
 
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		delete user.data;
 

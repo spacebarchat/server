@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import fs from "fs";
 import path from "path";
-import fetch, { Response as FetchResponse, Headers } from "node-fetch";
+import fetch, { Response as FetchResponse } from "node-fetch";
 import ProxyAgent from "proxy-agent";
 import { Config } from "@fosscord/util";
 

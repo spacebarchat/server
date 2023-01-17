@@ -23,7 +23,7 @@ router.put("/:user_id", route({}), async (req: Request, res: Response) => {
 
 	if (channel.type !== ChannelType.GROUP_DM) {
 		const recipients = [
-			...channel.recipients!.map((r) => r.user_id),
+			...(channel.recipients?.map((r) => r.user_id) || []),
 			user_id,
 		].unique();
 
@@ -33,11 +33,11 @@ router.put("/:user_id", route({}), async (req: Request, res: Response) => {
 		);
 		return res.status(201).json(new_channel);
 	} else {
-		if (channel.recipients!.map((r) => r.user_id).includes(user_id)) {
+		if (channel.recipients?.map((r) => r.user_id).includes(user_id)) {
 			throw DiscordApiErrors.INVALID_RECIPIENT; //TODO is this the right error?
 		}
 
-		channel.recipients!.push(
+		channel.recipients?.push(
 			Recipient.create({ channel_id: channel_id, user_id: user_id }),
 		);
 		await channel.save();
@@ -77,7 +77,7 @@ router.delete("/:user_id", route({}), async (req: Request, res: Response) => {
 	)
 		throw DiscordApiErrors.MISSING_PERMISSIONS;
 
-	if (!channel.recipients!.map((r) => r.user_id).includes(user_id)) {
+	if (!channel.recipients?.map((r) => r.user_id).includes(user_id)) {
 		throw DiscordApiErrors.INVALID_RECIPIENT; //TODO is this the right error?
 	}
 

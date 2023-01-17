@@ -15,8 +15,9 @@ router.patch(
 	"/:member_id",
 	route({ body: "MemberChangeProfileSchema" }),
 	async (req: Request, res: Response) => {
-		let { guild_id, member_id } = req.params;
-		if (member_id === "@me") member_id = req.user_id;
+		const { guild_id } = req.params;
+		// const member_id =
+		// 	req.params.member_id === "@me" ? req.user_id : req.params.member_id;
 		const body = req.body as MemberChangeProfileSchema;
 
 		let member = await Member.findOneOrFail({

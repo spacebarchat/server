@@ -18,7 +18,7 @@ import {
 } from "@fosscord/api";
 import bcrypt from "bcrypt";
 import { HTTPError } from "lambert-server";
-import { LessThan, MoreThan } from "typeorm";
+import { MoreThan } from "typeorm";
 
 const router: Router = Router();
 
@@ -35,12 +35,12 @@ router.post(
 		let regTokenUsed = false;
 		if (req.get("Referrer") && req.get("Referrer")?.includes("token=")) {
 			// eg theyre on https://staging.fosscord.com/register?token=whatever
-			const token = req.get("Referrer")!.split("token=")[1].split("&")[0];
+			const token = req.get("Referrer")?.split("token=")[1].split("&")[0];
 			if (token) {
-				const regToken = await ValidRegistrationToken.findOne({
+				const regToken = await ValidRegistrationToken.findOneOrFail({
 					where: { token, expires_at: MoreThan(new Date()) },
 				});
-				await ValidRegistrationToken.delete({ token });
+				await regToken.remove();
 				regTokenUsed = true;
 				console.log(
 					`[REGISTER] Registration token ${token} used for registration!`,

@@ -50,7 +50,7 @@ router.patch(
 						400,
 					);
 
-				const opts: any = {};
+				const opts: Partial<Channel> = {};
 				if (x.position != null) opts.position = x.position;
 
 				if (x.parent_id) {

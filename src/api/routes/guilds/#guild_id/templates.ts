@@ -42,9 +42,9 @@ router.post(
 			where: { id: guild_id },
 			select: TemplateGuildProjection,
 		});
-		const exists = await Template.findOneOrFail({
+		const exists = await Template.findOne({
 			where: { id: guild_id },
-		}).catch((e) => {});
+		});
 		if (exists) throw new HTTPError("Template already exists", 400);
 
 		const template = await Template.create({

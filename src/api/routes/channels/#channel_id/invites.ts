@@ -68,7 +68,6 @@ router.get(
 	"/",
 	route({ permission: "MANAGE_CHANNELS" }),
 	async (req: Request, res: Response) => {
-		const { user_id } = req;
 		const { channel_id } = req.params;
 		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },

@@ -9,8 +9,8 @@ router.post(
 	"/",
 	route({ body: "TotpSchema" }),
 	async (req: Request, res: Response) => {
-		const { code, ticket, gift_code_sku_id, login_source } =
-			req.body as TotpSchema;
+		// const { code, ticket, gift_code_sku_id, login_source } =
+		const { code, ticket } = req.body as TotpSchema;
 
 		const user = await User.findOneOrFail({
 			where: {
@@ -29,7 +29,7 @@ router.post(
 		});
 
 		if (!backup) {
-			const ret = verifyToken(user.totp_secret!, code);
+			const ret = verifyToken(user.totp_secret || "", code);
 			if (!ret || ret.delta != 0)
 				throw new HTTPError(
 					req.t("auth:login.INVALID_TOTP_CODE"),

@@ -31,8 +31,9 @@ router.patch(
 	"/",
 	route({ body: "MemberChangeSchema" }),
 	async (req: Request, res: Response) => {
-		let { guild_id, member_id } = req.params;
-		if (member_id === "@me") member_id = req.user_id;
+		const { guild_id } = req.params;
+		const member_id =
+			req.params.member_id === "@me" ? req.user_id : req.params.member_id;
 		const body = req.body as MemberChangeSchema;
 
 		const member = await Member.findOneOrFail({
@@ -83,7 +84,8 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 
 	const rights = await getRights(req.user_id);
 
-	let { guild_id, member_id } = req.params;
+	const { guild_id } = req.params;
+	let { member_id } = req.params;
 	if (member_id === "@me") {
 		member_id = req.user_id;
 		rights.hasThrow("JOIN_GUILDS");

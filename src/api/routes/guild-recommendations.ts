@@ -7,7 +7,8 @@ import { Like } from "typeorm";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const { limit, personalization_disabled } = req.query;
+	// const { limit, personalization_disabled } = req.query;
+	const { limit } = req.query;
 	const showAllGuilds = Config.get().guild.discovery.showAllGuilds;
 
 	const genLoadId = (size: number) =>

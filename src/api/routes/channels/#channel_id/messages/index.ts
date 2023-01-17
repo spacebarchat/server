@@ -13,23 +13,16 @@ import {
 	Snowflake,
 	uploadFile,
 	Member,
-	Role,
 	MessageCreateSchema,
 	ReadState,
-	DiscordApiErrors,
-	getRights,
 	Rights,
+	Reaction,
+	User,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
-import {
-	handleMessage,
-	postHandleMessage,
-	route,
-	getIpAdress,
-} from "@fosscord/api";
+import { handleMessage, postHandleMessage, route } from "@fosscord/api";
 import multer from "multer";
-import { yellow } from "picocolors";
-import { FindManyOptions, LessThan, MoreThan } from "typeorm";
+import { FindManyOptions, FindOperator, LessThan, MoreThan } from "typeorm";
 import { URL } from "url";
 
 const router: Router = Router();
@@ -85,7 +78,9 @@ router.get("/", async (req: Request, res: Response) => {
 	permissions.hasThrow("VIEW_CHANNEL");
 	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	const query: FindManyOptions<Message> & { where: { id?: any } } = {
+	const query: FindManyOptions<Message> & {
+		where: { id?: FindOperator<string> | FindOperator<string>[] };
+	} = {
 		order: { timestamp: "DESC" },
 		take: limit,
 		where: { channel_id },
@@ -122,23 +117,21 @@ router.get("/", async (req: Request, res: Response) => {
 	const endpoint = Config.get().cdn.endpointPublic;
 
 	return res.json(
-		messages.map((x: any) => {
-			(x.reactions || []).forEach((x: any) => {
-				// @ts-ignore
-				if ((x.user_ids || []).includes(req.user_id)) x.me = true;
-				// @ts-ignore
-				delete x.user_ids;
+		messages.map((x: Partial<Message>) => {
+			(x.reactions || []).forEach((y: Partial<Reaction>) => {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				//@ts-ignore
+				if ((y.user_ids || []).includes(req.user_id)) y.me = true;
+				delete y.user_ids;
 			});
-			// @ts-ignore
 			if (!x.author)
-				x.author = {
+				x.author = User.create({
 					id: "4",
 					discriminator: "0000",
 					username: "Fosscord Ghost",
-					public_flags: "0",
-					avatar: null,
-				};
-			x.attachments?.forEach((y: any) => {
+					public_flags: 0,
+				});
+			x.attachments?.forEach((y: Attachment) => {
 				// dynamically set attachment proxy_url in case the endpoint changed
 				const uri = y.proxy_url.startsWith("http")
 					? y.proxy_url
@@ -150,7 +143,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 			/**
 			Some clients ( discord.js ) only check if a property exists within the response,
-			which causes erorrs when, say, the `application` property is `null`.
+			which causes errors when, say, the `application` property is `null`.
 			**/
 
 			// for (var curr in x) {
@@ -261,7 +254,7 @@ router.post(
 					Attachment.create({ ...file, proxy_url: file.url }),
 				);
 			} catch (error) {
-				return res.status(400).json({ message: error!.toString() });
+				return res.status(400).json({ message: error?.toString() });
 			}
 		}
 
@@ -286,7 +279,7 @@ router.post(
 
 			// Only one recipients should be closed here, since in group DMs the recipient is deleted not closed
 			await Promise.all(
-				channel.recipients!.map((recipient) => {
+				channel.recipients?.map((recipient) => {
 					if (recipient.closed) {
 						recipient.closed = false;
 						return Promise.all([
@@ -300,7 +293,7 @@ router.post(
 							}),
 						]);
 					}
-				}),
+				}) || [],
 			);
 		}
 
@@ -314,6 +307,7 @@ router.post(
 				});
 			}
 
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			//@ts-ignore
 			message.member.roles = message.member.roles
 				.filter((x) => x.id != x.guild_id)
@@ -344,7 +338,10 @@ router.post(
 			channel.save(),
 		]);
 
-		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
+		// no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) =>
+			console.error("[Message] post-message handler failed", e),
+		);
 
 		return res.json(message);
 	},

@@ -56,7 +56,7 @@ router.post(
 				"totp_secret",
 				"mfa_enabled",
 			],
-		}).catch((e) => {
+		}).catch(() => {
 			throw FieldErrors({
 				login: {
 					message: req.t("auth:login.INVALID_LOGIN"),

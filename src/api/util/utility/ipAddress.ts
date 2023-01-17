@@ -89,7 +89,11 @@ export function getIpAdress(req: Request): string {
 	);
 }
 
-export function distanceBetweenLocations(loc1: any, loc2: any): number {
+type Location = { latitude: number; longitude: number };
+export function distanceBetweenLocations(
+	loc1: Location,
+	loc2: Location,
+): number {
 	return distanceBetweenCoords(
 		loc1.latitude,
 		loc1.longitude,

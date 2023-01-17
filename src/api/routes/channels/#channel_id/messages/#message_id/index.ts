@@ -12,7 +12,6 @@ import {
 	Snowflake,
 	uploadFile,
 	MessageCreateSchema,
-	DiscordApiErrors,
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import multer from "multer";
@@ -67,6 +66,7 @@ router.patch(
 		const new_message = await handleMessage({
 			...message,
 			// TODO: should message_reference be overridable?
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			message_reference: message.message_reference,
 			...body,
@@ -179,7 +179,10 @@ router.put(
 			channel.save(),
 		]);
 
-		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
+		// no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) =>
+			console.error("[Message] post-message handler failed", e),
+		);
 
 		return res.json(message);
 	},

@@ -1,10 +1,9 @@
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 import { isTextChannel } from "./messages";
-import { FindManyOptions, Between, Not } from "typeorm";
+import { FindManyOptions, Between, Not, FindOperator } from "typeorm";
 import {
 	Channel,
-	Config,
 	emitEvent,
 	getPermission,
 	getRights,
@@ -51,7 +50,9 @@ router.post(
 
 		// TODO: send the deletion event bite-by-bite to prevent client stress
 
-		const query: FindManyOptions<Message> & { where: { id?: any } } = {
+		const query: FindManyOptions<Message> & {
+			where: { id?: FindOperator<string> };
+		} = {
 			order: { id: "ASC" },
 			// take: limit,
 			where: {
@@ -75,7 +76,6 @@ router.post(
 		};
 
 		const messages = await Message.find(query);
-		const endpoint = Config.get().cdn.endpointPublic;
 
 		if (messages.length == 0) {
 			res.sendStatus(304);
