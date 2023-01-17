@@ -31,7 +31,7 @@ import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
 import { UserSettings } from "./UserSettings";
 import { Session } from "./Session";
-import { Config, FieldErrors, Snowflake, trimSpecial, adjustEmail } from "..";
+import { Config, FieldErrors, Snowflake, trimSpecial, adjustEmail, Email, generateToken } from "..";
 import { Request } from "express";
 import { SecurityKey } from "./SecurityKey";
 
@@ -383,6 +383,30 @@ export class User extends BaseClass {
 
 		user.validate();
 		await Promise.all([user.save(), settings.save()]);
+		// send verification email
+		if (Email.transporter && email) {
+			const token = (await generateToken(user.id, email)) as string;
+			const link = `http://localhost:3001/verify#token=${token}`;
+			const message = {
+				from:
+					Config.get().general.correspondenceEmail ||
+					"noreply@localhost",
+				to: email,
+				subject: `Verify Email Address for ${
+					Config.get().general.instanceName
+				}`,
+				html: `Please verify your email address by clicking the following link: <a href="${link}">Verify Email</a>`,
+			};
+
+			await Email.transporter
+				.sendMail(message)
+				.then((info) => {
+					console.log("Message sent: %s", info.messageId);
+				})
+				.catch((e) => {
+					console.error(`Failed to send email to ${email}: ${e}`);
+				});
+		}
 
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
