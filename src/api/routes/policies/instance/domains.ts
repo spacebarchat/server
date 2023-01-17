@@ -12,7 +12,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		gateway:
 			gateway.endpointPublic ||
 			process.env.GATEWAY ||
-			"ws://localhost:3002",
+			"ws://localhost:3001",
 	};
 
 	res.json(IdentityForm);
