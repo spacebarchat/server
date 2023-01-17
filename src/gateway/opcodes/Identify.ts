@@ -159,18 +159,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	}) as PublicMember[][];
 	let guilds = members.map((x) => ({ ...x.guild, joined_at: x.joined_at }));
 
+	const pending_guilds: typeof guilds = [];
 	// @ts-ignore
 	guilds = guilds.map((guild) => {
 		if (user.bot) {
-			setTimeout(() => {
-				var promise = Send(this, {
-					op: OPCODES.Dispatch,
-					t: EVENTEnum.GuildCreate,
-					s: this.sequence++,
-					d: guild,
-				});
-				if (promise) promise.catch(console.error);
-			}, 500);
+			pending_guilds.push(guild);
 			return { id: guild.id, unavailable: true };
 		}
 
@@ -331,6 +324,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		s: this.sequence++,
 		d,
 	});
+
+	await Promise.all(
+		pending_guilds.map((guild) =>
+			Send(this, {
+				op: OPCODES.Dispatch,
+				t: EVENTEnum.GuildCreate,
+				s: this.sequence++,
+				d: guild,
+			})?.catch(console.error),
+		),
+	);
 
 	//TODO send READY_SUPPLEMENTAL
 	//TODO send GUILD_MEMBER_LIST_UPDATE
