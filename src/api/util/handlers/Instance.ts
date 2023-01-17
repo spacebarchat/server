@@ -9,7 +9,7 @@ export async function initInstance() {
 	const { autoJoin } = Config.get().guild;
 
 	if (autoJoin.enabled && !autoJoin.guilds?.length) {
-		let guild = await Guild.findOne({ where: {}, select: ["id"] });
+		const guild = await Guild.findOne({ where: {}, select: ["id"] });
 		if (guild) {
 			// @ts-ignore
 			await Config.set({ guild: { autoJoin: { guilds: [guild.id] } } });

@@ -63,7 +63,7 @@ Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 		// Fork workers.
 		for (let i = 0; i < cores; i++) {
 			// Delay each worker start if using sqlite database to prevent locking it
-			let delay = process.env.DATABASE?.includes("://") ? 0 : i * 1000;
+			const delay = process.env.DATABASE?.includes("://") ? 0 : i * 1000;
 			setTimeout(() => {
 				cluster.fork();
 				console.log(`[Process] worker ${cyan(i)} started.`);

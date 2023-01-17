@@ -6,7 +6,7 @@ import crypto from "crypto";
 
 export function random(length = 6) {
 	// Declare all characters
-	let chars =
+	const chars =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	// Pick characers randomly
@@ -20,14 +20,14 @@ export function random(length = 6) {
 
 export function snowflakeBasedInvite() {
 	// Declare all characters
-	let chars =
+	const chars =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	let base = BigInt(chars.length);
+	const base = BigInt(chars.length);
 	let snowflake = Snowflake.generateWorkerProcess();
 
 	// snowflakes hold ~10.75 characters worth of entropy;
 	// safe to generate a 8-char invite out of them
-	let str = "";
+	const str = "";
 	for (let i = 0; i < 10; i++) {
 		str.concat(chars.charAt(Number(snowflake % base)));
 		snowflake = snowflake / base;

@@ -102,7 +102,7 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 
-		let pins = await Message.find({
+		const pins = await Message.find({
 			where: { channel_id: channel_id, pinned: true },
 		});
 

@@ -23,8 +23,8 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 
-		let bans = await Ban.find({ where: { guild_id: guild_id } });
-		let promisesToAwait: object[] = [];
+		const bans = await Ban.find({ where: { guild_id: guild_id } });
+		const promisesToAwait: object[] = [];
 		const bansObj: object[] = [];
 
 		bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
@@ -168,7 +168,7 @@ router.delete(
 	async (req: Request, res: Response) => {
 		const { guild_id, user_id } = req.params;
 
-		let ban = await Ban.findOneOrFail({
+		const ban = await Ban.findOneOrFail({
 			where: { guild_id: guild_id, user_id: user_id },
 		});
 

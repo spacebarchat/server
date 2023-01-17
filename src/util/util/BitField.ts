@@ -5,7 +5,7 @@
 
 export type BitFieldResolvable =
 	| number
-	| BigInt
+	| bigint
 	| BitField
 	| string
 	| BitFieldResolvable[];

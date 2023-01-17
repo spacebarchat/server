@@ -10,7 +10,7 @@ import ExifTransformer from "exif-be-gone";
 function getPath(path: string) {
 	// STORAGE_LOCATION has a default value in start.ts
 	const root = process.env.STORAGE_LOCATION || "../";
-	var filename = join(root, path);
+	const filename = join(root, path);
 
 	if (path.indexOf("\0") !== -1 || !filename.startsWith(root))
 		throw new Error("invalid path");

@@ -201,7 +201,7 @@ export class Channel extends BaseClass {
 				!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") &&
 				channel.name
 			) {
-				for (var character of InvisibleCharacters)
+				for (const character of InvisibleCharacters)
 					if (channel.name.includes(character))
 						throw new HTTPError(
 							"Channel name cannot include invalid characters",
@@ -326,8 +326,8 @@ export class Channel extends BaseClass {
 			relations: ["channel", "channel.recipients"],
 		});
 
-		for (let ur of userRecipients) {
-			let re = ur.channel.recipients!.map((r) => r.user_id);
+		for (const ur of userRecipients) {
+			const re = ur.channel.recipients!.map((r) => r.user_id);
 			if (re.length === channelRecipients.length) {
 				if (containsAll(re, channelRecipients)) {
 					if (channel == null) {
@@ -363,7 +363,7 @@ export class Channel extends BaseClass {
 		const channel_dto = await DmChannelDTO.from(channel);
 
 		if (type === ChannelType.GROUP_DM) {
-			for (let recipient of channel.recipients!) {
+			for (const recipient of channel.recipients!) {
 				await emitEvent({
 					event: "CHANNEL_CREATE",
 					data: channel_dto.excludedRecipients([recipient.user_id]),

@@ -18,7 +18,7 @@ router.get(
 	"/",
 	route({ test: { response: { body: "UserRelationsResponse" } } }),
 	async (req: Request, res: Response) => {
-		var mutual_relations: object[] = [];
+		const mutual_relations: object[] = [];
 		const requested_relations = await User.findOneOrFail({
 			where: { id: req.params.id },
 			relations: ["relationships"],
@@ -35,7 +35,7 @@ router.get(
 					rmem.type === 1 &&
 					rmem.to_id !== req.user_id
 				) {
-					var relation_user = await User.getPublicUser(rmem.to_id);
+					const relation_user = await User.getPublicUser(rmem.to_id);
 
 					mutual_relations.push({
 						id: relation_user.id,

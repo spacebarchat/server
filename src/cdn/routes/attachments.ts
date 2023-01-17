@@ -35,8 +35,8 @@ router.post(
 			Config.get()?.cdn.endpointPublic || "http://localhost:3003";
 
 		await storage.set(path, buffer);
-		var width;
-		var height;
+		let width;
+		let height;
 		if (mimetype.includes("image")) {
 			const dimensions = imageSize(buffer);
 			if (dimensions) {
@@ -66,7 +66,7 @@ router.get(
 		const { format } = req.query;
 
 		const path = `attachments/${channel_id}/${id}/${filename}`;
-		let file = await storage.get(path);
+		const file = await storage.get(path);
 		if (!file) throw new HTTPError("File not found");
 		const type = await FileType.fromBuffer(file);
 		let content_type = type?.mime || "application/octet-stream";

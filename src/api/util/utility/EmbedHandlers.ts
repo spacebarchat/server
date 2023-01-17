@@ -32,7 +32,7 @@ export const getProxyUrl = (
 
 	// Imagor
 	if (imagorServerUrl) {
-		let path = `${width}x${height}/${url.host}${url.pathname}`;
+		const path = `${width}x${height}/${url.host}${url.pathname}`;
 
 		const hash = crypto
 			.createHmac("sha1", secret)
@@ -221,7 +221,7 @@ export const EmbedHandlers: {
 		const text = json.data.text;
 		const created_at = new Date(json.data.created_at);
 		const metrics = json.data.public_metrics;
-		let media = json.includes.media?.filter(
+		const media = json.includes.media?.filter(
 			(x: any) => x.type == "photo",
 		) as any[]; // TODO: video
 

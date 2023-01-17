@@ -16,7 +16,7 @@ router.post(
 	route({ right: "MANAGE_USERS" }),
 	async (req: Request, res: Response) => {
 		
-		let user = await User.findOneOrFail({
+		const user = await User.findOneOrFail({
 			where: { id: req.params.id },
 			select: [...PrivateUserProjection, "data"],
 		});

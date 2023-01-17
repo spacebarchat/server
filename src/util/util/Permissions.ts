@@ -11,7 +11,7 @@ import { BitField } from "./BitField";
 import "missing-native-js-functions";
 import { BitFieldResolvable, BitFlag } from "./BitField";
 
-var HTTPError: any;
+let HTTPError: any;
 
 try {
 	HTTPError = require("lambert-server").HTTPError;
@@ -175,11 +175,11 @@ export class Permissions extends BitField {
 	}) {
 		if (user.id === "0") return new Permissions("ADMINISTRATOR"); // system user id
 
-		let roles = guild.roles.filter((x) => user.roles.includes(x.id));
+		const roles = guild.roles.filter((x) => user.roles.includes(x.id));
 		let permission = Permissions.rolePermission(roles);
 
 		if (channel?.overwrites) {
-			let overwrites = channel.overwrites.filter((x) => {
+			const overwrites = channel.overwrites.filter((x) => {
 				if (x.type === 0 && user.roles.includes(x.id)) return true;
 				if (x.type === 1 && x.id == user.id) return true;
 				return false;
@@ -242,9 +242,9 @@ export async function getPermission(
 	} = {},
 ) {
 	if (!user_id) throw new HTTPError("User not found");
-	var channel: Channel | undefined;
-	var member: Member | undefined;
-	var guild: Guild | undefined;
+	let channel: Channel | undefined;
+	let member: Member | undefined;
+	let guild: Guild | undefined;
 
 	if (channel_id) {
 		channel = await Channel.findOneOrFail({
@@ -293,7 +293,7 @@ export async function getPermission(
 	if (!recipient_ids?.length) recipient_ids = null;
 
 	// TODO: remove guild.roles and convert recipient_ids to recipients
-	var permission = Permissions.finalPermission({
+	const permission = Permissions.finalPermission({
 		user: {
 			id: user_id,
 			roles: member?.roles.map((x) => x.id) || [],

@@ -10,7 +10,7 @@ import {
 const router: Router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	let results = await Application.find({
+	const results = await Application.find({
 		where: { owner: { id: req.user_id } },
 		relations: ["owner", "bot"],
 	});

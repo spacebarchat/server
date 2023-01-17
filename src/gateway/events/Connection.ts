@@ -9,7 +9,7 @@ import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "url";
 import { Config } from "@fosscord/util";
-var erlpack: any;
+let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}

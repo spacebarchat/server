@@ -108,7 +108,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 					(a.activities.length - b.activities.length) * 2
 				);
 			});
-			var session: Session | undefined = sessions.first();
+			const session: Session | undefined = sessions.first();
 
 			if (session?.status == "offline") {
 				session.status = member?.user?.settings?.status || "online";

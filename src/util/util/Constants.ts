@@ -1107,7 +1107,7 @@ export const MembershipStates = ["INSERTED", "INVITED", "ACCEPTED"];
 export const WebhookTypes = ["Custom", "Incoming", "Channel Follower"];
 
 function keyMirror(arr: string[]) {
-	let tmp = Object.create(null);
+	const tmp = Object.create(null);
 	for (const value of arr) tmp[value] = value;
 	return tmp;
 }

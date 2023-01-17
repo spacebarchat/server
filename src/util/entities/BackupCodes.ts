@@ -20,7 +20,7 @@ export class BackupCode extends BaseClass {
 }
 
 export function generateMfaBackupCodes(user_id: string) {
-	let backup_codes: BackupCode[] = [];
+	const backup_codes: BackupCode[] = [];
 	for (let i = 0; i < 10; i++) {
 		const code = BackupCode.create({
 			user: { id: user_id },

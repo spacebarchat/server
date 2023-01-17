@@ -53,7 +53,7 @@ router.post(
 		}
 
 		// email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
-		let email = adjustEmail(body.email);
+		const email = adjustEmail(body.email);
 
 		// check if registration is allowed
 		if (!regTokenUsed && !register.allowNewRegistration) {

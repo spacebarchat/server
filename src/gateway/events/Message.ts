@@ -9,14 +9,14 @@ import path from "path";
 import fs from "fs/promises";
 const bigIntJson = BigIntJson({ storeAsString: true });
 
-var erlpack: any;
+let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {}
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
-	var data: Payload;
+	let data: Payload;
 
 	if (
 		(buffer instanceof Buffer && buffer[0] === 123) || // ASCII 123 = `{`. Bad check for JSON
@@ -82,7 +82,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 			: undefined;
 
 	try {
-		var ret = await OPCodeHandler.call(this, data);
+		const ret = await OPCodeHandler.call(this, data);
 		Sentry.withScope((scope) => {
 			scope.setSpan(transaction);
 			scope.setUser({ id: this.user_id });

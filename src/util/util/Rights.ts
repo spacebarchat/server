@@ -3,7 +3,7 @@ import "missing-native-js-functions";
 import { BitFieldResolvable, BitFlag } from "./BitField";
 import { User } from "../entities";
 
-var HTTPError: any;
+let HTTPError: any;
 
 try {
 	HTTPError = require("lambert-server").HTTPError;
@@ -119,6 +119,6 @@ export async function getRights(
 		in_behalf?: (keyof User)[];
 	} = {} **/
 ) {
-	let user = await User.findOneOrFail({ where: { id: user_id } });
+	const user = await User.findOneOrFail({ where: { id: user_id } });
 	return new Rights(user.rights);
 }

@@ -46,8 +46,8 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 });
 
 router.post("/reset", route({}), async (req: Request, res: Response) => {
-	let bot = await User.findOneOrFail({ where: { id: req.params.id } });
-	let owner = await User.findOneOrFail({ where: { id: req.user_id } });
+	const bot = await User.findOneOrFail({ where: { id: req.params.id } });
+	const owner = await User.findOneOrFail({ where: { id: req.user_id } });
 
 	if (owner.id != req.user_id)
 		throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
@@ -62,7 +62,7 @@ router.post("/reset", route({}), async (req: Request, res: Response) => {
 
 	await bot.save();
 
-	let token = await generateToken(bot.id);
+	const token = await generateToken(bot.id);
 
 	res.json({ token }).status(200);
 });

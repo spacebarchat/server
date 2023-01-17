@@ -18,7 +18,7 @@ export function enableAutoUpdate(opts: {
 	downloadType?: "zip";
 }) {
 	if (!opts.checkInterval) return;
-	var interval = 1000 * 60 * 60 * 24;
+	const interval = 1000 * 60 * 60 * 24;
 	if (typeof opts.checkInterval === "number")
 		opts.checkInterval = 1000 * interval;
 

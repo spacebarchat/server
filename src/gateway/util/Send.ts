@@ -1,4 +1,4 @@
-var erlpack: any;
+let erlpack: any;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
 } catch (error) {

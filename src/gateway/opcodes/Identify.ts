@@ -55,7 +55,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = decoded.id;
-	let session_id = this.session_id;
+	const session_id = this.session_id;
 
 	const [user, read_states, members, recipients, session, application] =
 		await Promise.all([
@@ -127,7 +127,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			return this.close(CLOSECODES.Invalid_shard);
 		}
 	}
-	var users: PublicUser[] = [];
+	let users: PublicUser[] = [];
 
 	const merged_members = members.map((x: Member) => {
 		return [
@@ -180,7 +180,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return x.channel;
 	});
 
-	for (let relation of user.relationships) {
+	for (const relation of user.relationships) {
 		const related_user = relation.to;
 		const public_related_user = {
 			username: related_user.username,

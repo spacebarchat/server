@@ -25,7 +25,7 @@ router.patch(
 		const body = req.body as UserGuildSettingsSchema;
 
 		if (body.channel_overrides) {
-			for (var channel in body.channel_overrides) {
+			for (const channel in body.channel_overrides) {
 				Channel.findOneOrFail({ where: { id: channel } });
 			}
 		}

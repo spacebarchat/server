@@ -7,14 +7,14 @@ import path from "path";
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
 
-var dbConnection: DataSource | undefined;
+let dbConnection: DataSource | undefined;
 
 // For typeorm cli
 if (!process.env) {
 	config();
 }
 
-let dbConnectionString =
+const dbConnectionString =
 	process.env.DATABASE || path.join(process.cwd(), "database.db");
 
 const DatabaseType = dbConnectionString.includes("://")

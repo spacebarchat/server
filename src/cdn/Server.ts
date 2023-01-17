@@ -6,7 +6,7 @@ import guildProfilesRoute from "./routes/guild-profiles";
 import iconsRoute from "./routes/role-icons";
 import bodyParser from "body-parser";
 
-export interface CDNServerOptions extends ServerOptions {}
+export type CDNServerOptions = ServerOptions
 
 export class CDNServer extends Server {
 	public declare options: CDNServerOptions;

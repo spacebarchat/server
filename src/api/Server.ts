@@ -14,7 +14,7 @@ import { initInstance } from "./util/handlers/Instance";
 import { registerRoutes } from "@fosscord/util";
 import { red } from "picocolors";
 
-export interface FosscordServerOptions extends ServerOptions {}
+export type FosscordServerOptions = ServerOptions
 
 declare global {
 	namespace Express {
@@ -40,12 +40,12 @@ export class FosscordServer extends Server {
 		await initInstance();
 		await Sentry.init(this.app);
 
-		let logRequests = process.env["LOG_REQUESTS"] != undefined;
+		const logRequests = process.env["LOG_REQUESTS"] != undefined;
 		if (logRequests) {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						var skip = !(
+						let skip = !(
 							process.env["LOG_REQUESTS"]?.includes(
 								res.statusCode.toString(),
 							) ?? false

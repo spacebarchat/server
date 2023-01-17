@@ -16,7 +16,7 @@ export const Sentry = {
 			Config.get().sentry;
 		if (!enabled) return;
 
-		if (!!SentryNode.getCurrentHub().getClient()) return; // we've already initialised sentry
+		if (SentryNode.getCurrentHub().getClient()) return; // we've already initialised sentry
 
 		console.log("[Sentry] Enabling sentry...");
 

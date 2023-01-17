@@ -18,7 +18,7 @@ const router = Router();
 // discord prefixes this route with /delete instead of using the delete method
 // docs are wrong https://discord.com/developers/docs/resources/guild#delete-guild
 router.post("/", route({}), async (req: Request, res: Response) => {
-	var { guild_id } = req.params;
+	const { guild_id } = req.params;
 
 	const guild = await Guild.findOneOrFail({
 		where: { id: guild_id },

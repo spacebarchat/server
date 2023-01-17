@@ -33,7 +33,7 @@ router.post(
 		const { buffer, mimetype, size, originalname, fieldname } = req.file;
 		const { user_id } = req.params;
 
-		var hash = crypto
+		let hash = crypto
 			.createHash("md5")
 			.update(Snowflake.generate())
 			.digest("hex");
@@ -59,7 +59,7 @@ router.post(
 );
 
 router.get("/:user_id", async (req: Request, res: Response) => {
-	var { user_id } = req.params;
+	let { user_id } = req.params;
 	user_id = user_id.split(".")[0]; // remove .file extension
 	const path = `avatars/${user_id}`;
 
@@ -74,7 +74,7 @@ router.get("/:user_id", async (req: Request, res: Response) => {
 });
 
 export const getAvatar = async (req: Request, res: Response) => {
-	var { user_id, hash } = req.params;
+	let { user_id, hash } = req.params;
 	hash = hash.split(".")[0]; // remove .file extension
 	const path = `avatars/${user_id}/${hash}`;
 

@@ -6,8 +6,8 @@ import { ConfigValue } from "../config";
 // TODO: yaml instead of json
 const overridePath = process.env.CONFIG_PATH ?? "";
 
-var config: ConfigValue;
-var pairs: ConfigEntity[];
+let config: ConfigValue;
+let pairs: ConfigEntity[];
 
 // TODO: use events to inform about config updates
 // Config keys are separated with _
@@ -89,7 +89,7 @@ function applyConfig(val: ConfigValue) {
 }
 
 function pairsToConfig(pairs: ConfigEntity[]) {
-	var value: any = {};
+	const value: any = {};
 
 	pairs.forEach((p) => {
 		const keys = p.key.split("_");

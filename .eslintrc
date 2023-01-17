@@ -5,6 +5,7 @@
 	"root": true,
 	"rules": {
 		"no-mixed-spaces-and-tabs": "off",
-		"@typescript-eslint/no-inferrable-types": "off" // Required by typeorm
+		"@typescript-eslint/no-inferrable-types": "off", // Required by typeorm
+		"@typescript-eslint/no-var-requires": "off" // Sometimes requred by typeorm to resolve circular deps
 	}
 }

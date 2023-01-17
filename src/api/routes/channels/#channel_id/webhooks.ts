@@ -40,7 +40,7 @@ router.post(
 		if (webhook_count > maxWebhooks)
 			throw DiscordApiErrors.MAXIMUM_WEBHOOKS.withParams(maxWebhooks);
 
-		var { avatar, name } = req.body as WebhookCreateSchema;
+		let { avatar, name } = req.body as WebhookCreateSchema;
 		name = trimSpecial(name);
 
 		// TODO: move this

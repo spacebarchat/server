@@ -62,7 +62,7 @@ export const PrivateUserProjection = [
 // Private user data that should never get sent to the client
 export type PublicUser = Pick<User, PublicUserKeys>;
 
-export interface UserPublic extends Pick<User, PublicUserKeys> {}
+export type UserPublic = Pick<User, PublicUserKeys>
 
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;

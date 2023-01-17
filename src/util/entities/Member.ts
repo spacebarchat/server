@@ -309,7 +309,7 @@ export class Member extends BaseClassWithoutId {
 				guild_id,
 				user: {
 					sessions: {
-						status: Not("invisible" as "invisible"), // lol typescript?
+						status: Not("invisible" as const), // lol typescript?
 					},
 				},
 			},
