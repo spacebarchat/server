@@ -22,76 +22,53 @@ import { Request } from "express";
 import fetch from "node-fetch";
 
 const exampleData = {
-	ip: "",
-	is_eu: true,
-	city: "",
-	region: "",
-	region_code: "",
-	country_name: "",
-	country_code: "",
-	continent_name: "",
-	continent_code: "",
-	latitude: 0,
-	longitude: 0,
-	postal: "",
-	calling_code: "",
-	flag: "",
-	emoji_flag: "",
-	emoji_unicode: "",
-	asn: {
-		asn: "",
-		name: "",
-		domain: "",
-		route: "",
-		type: "isp",
-	},
-	languages: [
-		{
-			name: "",
-			native: "",
-		},
-	],
-	currency: {
-		name: "",
-		code: "",
-		symbol: "",
-		native: "",
-		plural: "",
-	},
-	time_zone: {
-		name: "",
-		abbr: "",
-		offset: "",
-		is_dst: true,
-		current_time: "",
-	},
-	threat: {
-		is_tor: false,
-		is_proxy: false,
-		is_anonymous: false,
-		is_known_attacker: false,
-		is_known_abuser: false,
-		is_threat: false,
-		is_bogon: false,
-	},
-	count: 0,
-	status: 200,
+	status: "success",
+	result: "0",
+	queryIP: "",
+	queryFlags: null,
+	queryOFlags: null,
+	queryFormat: "json",
+	contact: "",
 };
 
 //TODO add function that support both ip and domain names
 export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
-	const { ipdataApiKey } = Config.get().security;
-	if (!ipdataApiKey) return { ...exampleData, ip };
-
+	const { getipinfoEmail } = Config.get().security;
+	if (!getipinfoEmail) return { ...exampleData, queryIP: ip };
+	// This next bit is a hot mess, but hey, it beats rate limiting
+	if (
+		ip.startsWith("127.") ||
+		ip.startsWith("10.") ||
+		ip.startsWith("192.168.") ||
+		ip.startsWith("172.16.") ||
+		ip.startsWith("172.17.") ||
+		ip.startsWith("172.18.") ||
+		ip.startsWith("172.19.") ||
+		ip.startsWith("172.20.") ||
+		ip.startsWith("172.21.") ||
+		ip.startsWith("172.22.") ||
+		ip.startsWith("172.23.") ||
+		ip.startsWith("172.24.") ||
+		ip.startsWith("172.25.") ||
+		ip.startsWith("172.26.") ||
+		ip.startsWith("172.27.") ||
+		ip.startsWith("172.28.") ||
+		ip.startsWith("172.29.") ||
+		ip.startsWith("172.30.") ||
+		ip.startsWith("172.31.")
+	)
+		return { ...exampleData, queryIP: ip };
 	return (
-		await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)
+		await fetch(
+			`http://check.getipintel.net/check.php?ip=${ip}&contact=${getipinfoEmail}&format=json`,
+		)
 	).json() as any; // TODO: types
 }
 
 export function isProxy(data: typeof exampleData) {
-	if (!data || !data.asn || !data.threat) return false;
-	if (data.asn.type !== "isp") return true;
-	if (Object.values(data.threat).some((x) => x)) return true;
+	if (process.env.NODE_ENV === "development")
+		console.log(`IP Analysis: ${JSON.stringify(data)}`);
+	if (data.result.toNumber() > 0.9) return true;
 
 	return false;
 }
