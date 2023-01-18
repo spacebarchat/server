@@ -24,7 +24,7 @@ const router = Router();
 router.get("/", route({}), async (req: Request, res: Response) => {
 	//TODO
 	//Note: It's most likely related to legal. At the moment Discord hasn't finished this too
-	const country_code = (await IPAnalysis(getIpAdress(req))).Country; // Commented this out, not even sure if/when this is gonna get used
+	const country_code = (await IPAnalysis(getIpAdress(req))).Country;
 	res.json({
 		consent_required: false,
 		country_code: country_code,

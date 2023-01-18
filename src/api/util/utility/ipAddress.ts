@@ -32,36 +32,26 @@ const exampleData = {
 	Country: "",
 };
 
+function isPrivateIP(ip: string) {
+	var parts = ip.split(".");
+	return (
+		parts[0] === "10" ||
+		(parts[0] === "172" &&
+			parseInt(parts[1], 10) >= 16 &&
+			parseInt(parts[1], 10) <= 31) ||
+		(parts[0] === "192" && parts[1] === "168")
+	);
+}
+
 //TODO add function that support both ip and domain names
 export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
-	const { getipinfoEmail } = Config.get().security;
-	if (!getipinfoEmail) return { ...exampleData, queryIP: ip };
+	const { correspondenceEmail } = Config.get().general;
+	if (!correspondenceEmail) return { ...exampleData, queryIP: ip };
 	// This next bit is a hot mess, but hey, it beats rate limiting
-	if (
-		ip.startsWith("127.") ||
-		ip.startsWith("10.") ||
-		ip.startsWith("192.168.") ||
-		ip.startsWith("172.16.") ||
-		ip.startsWith("172.17.") ||
-		ip.startsWith("172.18.") ||
-		ip.startsWith("172.19.") ||
-		ip.startsWith("172.20.") ||
-		ip.startsWith("172.21.") ||
-		ip.startsWith("172.22.") ||
-		ip.startsWith("172.23.") ||
-		ip.startsWith("172.24.") ||
-		ip.startsWith("172.25.") ||
-		ip.startsWith("172.26.") ||
-		ip.startsWith("172.27.") ||
-		ip.startsWith("172.28.") ||
-		ip.startsWith("172.29.") ||
-		ip.startsWith("172.30.") ||
-		ip.startsWith("172.31.")
-	)
-		return { ...exampleData, queryIP: ip };
+	if (isPrivateIP(ip)) return { ...exampleData, queryIP: ip };
 	return (
 		await fetch(
-			`http://check.getipintel.net/check.php?ip=${ip}&contact=${getipinfoEmail}&format=json&oflags=c`,
+			`http://check.getipintel.net/check.php?ip=${ip}&contact=${correspondenceEmail}&format=json&oflags=c`,
 		)
 	).json() as any; // TODO: types
 }
