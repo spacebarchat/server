@@ -29,6 +29,7 @@ const exampleData = {
 	queryOFlags: null,
 	queryFormat: "json",
 	contact: "",
+	Country: "",
 };
 
 //TODO add function that support both ip and domain names
@@ -60,7 +61,7 @@ export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 		return { ...exampleData, queryIP: ip };
 	return (
 		await fetch(
-			`http://check.getipintel.net/check.php?ip=${ip}&contact=${getipinfoEmail}&format=json`,
+			`http://check.getipintel.net/check.php?ip=${ip}&contact=${getipinfoEmail}&format=json&oflags=c`,
 		)
 	).json() as any; // TODO: types
 }
