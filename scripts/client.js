@@ -34,6 +34,7 @@
 	TODO: Make this configurable easily.
 */
 
+require("dotenv/config");
 const path = require("path");
 const fetch = require("node-fetch");
 const http = require("http");
@@ -51,6 +52,7 @@ const CACHE_PATH = path.join(__dirname, "..", "assets", "cache");
 const BASE_URL = "https://discord.com";
 
 const INSTANCE_NAME = "Fosscord";
+const ONLY_CACHE_JS = process.env.ONLY_CACHE_JS ? true : false;
 
 // Manual for now
 const INDEX_SCRIPTS = [
@@ -58,6 +60,15 @@ const INDEX_SCRIPTS = [
 	"cfb9efe961b2bf3647bc", // 1
 	"f98a039261c37f892cbf", // 0?
 	"4470c87bb13810847db0", // ~4500.
+
+	// also fetch other assets from index, as they aren't cached
+	"40532.f4ff6c4a39fa78f07880.css",
+	"b21a783b953e52485dcb.worker.js",
+	"2bbea887c6d07e427a1d.worker.js",
+	"0ec5df6d78ff7a5cc7c8.worker.js",
+	"05422eb499ddf5616e44a52c4f1063ae.woff2",
+	"77f603cc7860fcb784e6ef9320a4a9c2.woff2",
+	"e689380400b1f2d2c6320a823a1ab079.svg",
 ];
 
 const doPatch = (content) => {
@@ -181,12 +192,9 @@ const doPatch = (content) => {
 };
 
 const processFile = async (name) => {
-	const res = await fetch(
-		`${BASE_URL}/assets/${name}${name.includes(".") ? "" : ".js"}`,
-		{
-			agent,
-		},
-	);
+	const url = `${BASE_URL}/assets/${name}${name.includes(".") ? "" : ".js"}`;
+	if (ONLY_CACHE_JS && !url.endsWith(".js")) return [];
+	const res = await fetch(url, { agent });
 	if (res.status !== 200) {
 		return [];
 	}
@@ -205,15 +213,20 @@ const processFile = async (name) => {
 		text,
 	);
 
-	return [...new Set(text.match(/\"[A-Fa-f0-9]{20}\"/g))].map((x) =>
-		x.replaceAll('"', ""),
+	var additional = [];
+	additional.push(...new Set(text.match(/\"[A-Fa-f0-9]{20}\"/g)));
+	additional.push(
+		...[
+			...new Set(text.matchAll(/\.exports=.\..\+\"(.*?\..{0,5})\"/g)),
+		].map((x) => x[1]),
 	);
+
+	return additional.map((x) => x.replaceAll('"', ""));
 };
 
 const print = (x) => {
-	process.stdout.write(
-		`${x}${" ".repeat(process.stdout.columns - x.length)}\r`,
-	);
+	var repeat = process.stdout.columns - x.length;
+	process.stdout.write(`${x}${" ".repeat(Math.max(0, repeat))}\r`);
 };
 
 (async () => {
@@ -270,11 +283,17 @@ const print = (x) => {
 		if (file.includes(".js") || file.includes(".css")) {
 			text = doPatch(text.toString());
 			await fs.writeFile(path.join(CACHE_PATH, file), text.toString());
-			assets.push(
-				...[...new Set(text.match(/\"[A-Fa-f0-9]{20}\"/g))].map((x) =>
-					x.replaceAll('"', ""),
-				),
+
+			var additional = [];
+			additional.push(...new Set(text.match(/\"[A-Fa-f0-9]{20}\"/g)));
+			additional.push(
+				...[
+					...new Set(
+						text.matchAll(/\.exports=.\..\+\"(.*?\..{0,5})\"/g),
+					),
+				].map((x) => x[1]),
 			);
+			assets.push(additional.map((x) => x.replaceAll('"', "")));
 		}
 	}
 
