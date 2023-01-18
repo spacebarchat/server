@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 const { MigrationInterface, QueryRunner } = require("typeorm");
 
 module.exports = class staging1672815835837 {
@@ -130,22 +148,14 @@ module.exports = class staging1672815835837 {
 		await queryRunner.query(
 			`ALTER TABLE "members" ADD "premium_since" bigint`,
 		);
-		await queryRunner.query(
-			`ALTER TABLE members ADD theme_colors text`
-		);
-		await queryRunner.query(
-			`ALTER TABLE members ADD pronouns varchar`
-		);
+		await queryRunner.query(`ALTER TABLE members ADD theme_colors text`);
+		await queryRunner.query(`ALTER TABLE members ADD pronouns varchar`);
 		await queryRunner.query(`UPDATE users SET bio = '' WHERE bio IS NULL`);
 		await queryRunner.query(
 			`ALTER TABLE users ALTER COLUMN bio SET NOT NULL`,
 		);
-		await queryRunner.query(
-			`ALTER TABLE users ADD theme_colors text`
-		);
-		await queryRunner.query(
-			`ALTER TABLE users ADD pronouns varchar`
-		);
+		await queryRunner.query(`ALTER TABLE users ADD theme_colors text`);
+		await queryRunner.query(`ALTER TABLE users ADD pronouns varchar`);
 		await queryRunner.query(
 			`UPDATE users SET mfa_enabled = false WHERE mfa_enabled IS NULL`,
 		);
@@ -157,5 +167,5 @@ module.exports = class staging1672815835837 {
 		);
 	}
 
-	async down(queryRunner) { }
+	async down(queryRunner) {}
 };
