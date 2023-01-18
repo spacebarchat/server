@@ -1,5 +1,7 @@
+// source: https://github.com/typeorm/typeorm/blob/master/src/util/OrmUtils.ts
+// Copyright (c) 2015-2022 TypeORM. http://typeorm.github.io
 /* eslint-disable @typescript-eslint/no-explicit-any */
-//source: https://github.com/typeorm/typeorm/blob/master/src/util/OrmUtils.ts
+// @fc-license-skip
 export class OrmUtils {
 	// Checks if it's an object made by Object.create(null), {} or new Object()
 	private static isPlainObject(item: unknown) {
