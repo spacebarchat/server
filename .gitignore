@@ -8,6 +8,7 @@ files/
 assets/cache
 .env
 config.json
+assets/cacheMisses
 
 .vscode/settings.json
 
