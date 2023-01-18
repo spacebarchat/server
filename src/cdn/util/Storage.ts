@@ -19,8 +19,7 @@
 import { FileStorage } from "./FileStorage";
 import path from "path";
 import fs from "fs";
-import { bgCyan, black } from "picocolors";
-import { S3 } from "@aws-sdk/client-s3";
+import { S3 } from "aws-sdk";
 import { S3Storage } from "./S3Storage";
 process.cwd();
 

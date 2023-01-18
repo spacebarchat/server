@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { S3 } from "@aws-sdk/client-s3";
+import { S3 } from "aws-sdk";
 import { Readable } from "stream";
 import { Storage } from "./Storage";
 
@@ -43,19 +43,23 @@ export class S3Storage implements Storage {
 	}
 
 	async set(path: string, data: Buffer): Promise<void> {
-		await this.client.putObject({
-			Bucket: this.bucket,
-			Key: `${this.bucketBasePath}${path}`,
-			Body: data,
-		});
+		await this.client
+			.putObject({
+				Bucket: this.bucket,
+				Key: `${this.bucketBasePath}${path}`,
+				Body: data,
+			})
+			.promise();
 	}
 
 	async get(path: string): Promise<Buffer | null> {
 		try {
-			const s3Object = await this.client.getObject({
-				Bucket: this.bucket,
-				Key: `${this.bucketBasePath ?? ""}${path}`,
-			});
+			const s3Object = await this.client
+				.getObject({
+					Bucket: this.bucket,
+					Key: `${this.bucketBasePath ?? ""}${path}`,
+				})
+				.promise();
 
 			if (!s3Object.Body) return null;
 
@@ -70,9 +74,11 @@ export class S3Storage implements Storage {
 	}
 
 	async delete(path: string): Promise<void> {
-		await this.client.deleteObject({
-			Bucket: this.bucket,
-			Key: `${this.bucketBasePath}${path}`,
-		});
+		await this.client
+			.deleteObject({
+				Bucket: this.bucket,
+				Key: `${this.bucketBasePath}${path}`,
+			})
+			.promise();
 	}
 }
