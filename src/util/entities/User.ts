@@ -390,28 +390,17 @@ export class User extends BaseClass {
 
 		user.validate();
 		await Promise.all([user.save(), settings.save()]);
-		// send verification email
-		if (Email.transporter && email) {
-			const token = (await generateToken(user.id, email)) as string;
-			const link = `http://localhost:3001/verify#token=${token}`;
-			const message = {
-				from:
-					Config.get().general.correspondenceEmail ||
-					"noreply@localhost",
-				to: email,
-				subject: `Verify Email Address for ${
-					Config.get().general.instanceName
-				}`,
-				html: `Please verify your email address by clicking the following link: <a href="${link}">Verify Email</a>`,
-			};
 
-			await Email.transporter
-				.sendMail(message)
+		// send verification email if users aren't verified by default and we have an email
+		if (!Config.get().defaults.user.verified && email) {
+			await Email.sendVerificationEmail(user.id, email)
 				.then((info) => {
 					console.log("Message sent: %s", info.messageId);
 				})
 				.catch((e) => {
-					console.error(`Failed to send email to ${email}: ${e}`);
+					console.error(
+						`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`,
+					);
 				});
 		}
 

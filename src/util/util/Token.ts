@@ -53,6 +53,30 @@ export function checkToken(token: string, jwtSecret: string): Promise<any> {
 	});
 }
 
+/**
+ * Puyodead1 (1/19/2023): I made a copy of this function because I didn't want to break anything with the other one.
+ * this version of the function doesn't use select, so we can update the user. with select causes constraint errors.
+ */
+export function verifyTokenEmailVerification(
+	token: string,
+	jwtSecret: string,
+): Promise<{ decoded: any; user: User }> {
+	return new Promise((res, rej) => {
+		jwt.verify(token, jwtSecret, JWTOptions, async (err, decoded: any) => {
+			if (err || !decoded) return rej("Invalid Token");
+
+			const user = await User.findOne({
+				where: { id: decoded.id },
+			});
+			if (!user) return rej("Invalid Token");
+			if (user.disabled) return rej("User disabled");
+			if (user.deleted) return rej("User not found");
+
+			return res({ decoded, user });
+		});
+	});
+}
+
 export function verifyToken(
 	token: string,
 	jwtSecret: string,
