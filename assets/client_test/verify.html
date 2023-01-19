@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html class="theme-dark" data-theme="dark">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" name="viewport" />
+
+	<link rel="stylesheet" href="/assets/40532.bb53efb11e3ed4046082.css" integrity="" />
+	<link rel="icon" href="/assets/847541504914fd33810e70a0ea73177e.ico" />
+	<title>Fosscord Test Client Developer Portal</title>
+	<meta charset="utf-8" data-react-helmet="true" />
+</head>
+
+<body>
+	<div id="app-mount"></div>
+	<script>
+		window.__OVERLAY__ = /overlay/.test(location.pathname);
+		window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
+		window.GLOBAL_ENV = {
+			API_ENDPOINT: "/api",
+			API_VERSION: 9,
+			GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}`,
+			WEBAPP_ENDPOINT: "",
+			CDN_HOST: `${location.hostname}`,
+			ASSET_ENDPOINT: "",
+			MEDIA_PROXY_ENDPOINT: "https://media.discordapp.net",
+			WIDGET_ENDPOINT: `//${location.host}/widget`,
+			INVITE_HOST: `${location.hostname}/invite`,
+			GUILD_TEMPLATE_HOST: "${location.host}/template",
+			GIFT_CODE_HOST: "${location.hostname}/gift",
+			RELEASE_CHANNEL: "canary",
+			MARKETING_ENDPOINT: "//discord.com",
+			BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
+			STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
+			NETWORKING_ENDPOINT: "//router.discordapp.net",
+			RTC_LATENCY_ENDPOINT: "//${location.hostname}/rtc",
+			ACTIVITY_APPLICATION_HOST: "discordsays.com",
+			PROJECT_ENV: "production",
+			REMOTE_AUTH_ENDPOINT: "//localhost:3020",
+			SENTRY_TAGS: { buildId: "d5b97e42230075cb9634c419c0cf4d2f8f9ada53", buildType: "normal" },
+			MIGRATION_SOURCE_ORIGIN: "https://${location.hostname}",
+			MIGRATION_DESTINATION_ORIGIN: "https://${location.hostname}",
+			HTML_TIMESTAMP: Date.now(),
+			ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
+		};
+		window.localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
+		window.localStorage.setItem(
+			"DeveloperOptionsStore",
+			`{"trace":false,"canary":true,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
+		);
+	</script>
+	<script src="/assets/33329b5e3fc4ba0db663.js"></script>
+	<script src="/assets/c31f5155b71da969ec04.js"></script>
+	<script src="/assets/bba695569f6557775f9c.js"></script>
+	<script src="/assets/867449841939756f0ab0.js"></script>
+</body>
+
+</html>

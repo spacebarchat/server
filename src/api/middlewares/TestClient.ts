@@ -116,16 +116,22 @@ export default function TestClient(app: Application) {
 		return res.send(buffer);
 	});
 
-	// Instead of our generated html, send developers.html for developers endpoint
-	app.get("/developers*", (req, res) => {
-		res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24); // 24 hours
-		res.set("content-type", "text/html");
-		res.send(
-			fs.readFileSync(
-				path.join(ASSET_FOLDER_PATH, "client_test", "developers.html"),
-				{ encoding: "utf-8" },
-			),
-		);
+	["developers", "verify"].forEach((route) => {
+		// These routes are separate apps.
+		app.get(`/${route}*`, (req, res) => {
+			res.set("Cache-Control", "public, max-age=" + 60 * 60 * 24); // 24 hours
+			res.set("content-type", "text/html");
+			res.send(
+				fs.readFileSync(
+					path.join(
+						ASSET_FOLDER_PATH,
+						"client_test",
+						`${route}.html`,
+					),
+					{ encoding: "utf-8" },
+				),
+			);
+		});
 	});
 
 	// Send our generated index.html for all routes.
