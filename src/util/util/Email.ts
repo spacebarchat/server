@@ -16,6 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import nodemailer, { Transporter } from "nodemailer";
+import { Config } from "./Config";
+import { generateToken } from "./Token";
+
 export const EMAIL_REGEX =
 	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -47,6 +51,7 @@ export function adjustEmail(email?: string): string | undefined {
 export const Email: {
 	transporter: Transporter | null;
 	init: () => Promise<void>;
+	sendVerificationEmail: (id: string, email: string) => Promise<any>;
 } = {
 	transporter: null,
 	init: async function () {
@@ -72,5 +77,26 @@ export const Email: {
 			}
 			console.log(`[SMTP] Ready`);
 		});
+	},
+	sendVerificationEmail: async function (
+		id: string,
+		email: string,
+	): Promise<any> {
+		if (!this.transporter) return;
+		const token = (await generateToken(id, email)) as string;
+		const instanceUrl =
+			Config.get().general.frontPage || "http://localhost:3001";
+		const link = `${instanceUrl}/verify#token=${token}`;
+		const message = {
+			from:
+				Config.get().general.correspondenceEmail || "noreply@localhost",
+			to: email,
+			subject: `Verify Email Address for ${
+				Config.get().general.instanceName
+			}`,
+			html: `Please verify your email address by clicking the following link: <a href="${link}">Verify Email</a>`,
+		};
+
+		return this.transporter.sendMail(message);
 	},
 };
