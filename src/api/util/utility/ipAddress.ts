@@ -22,14 +22,35 @@ import { Request } from "express";
 import fetch from "node-fetch";
 
 const exampleData = {
-	status: "success",
-	result: "0",
-	queryIP: "",
-	queryFlags: null,
-	queryOFlags: null,
-	queryFormat: "json",
-	contact: "",
-	Country: "",
+	getipintel: {
+		status: "success",
+		result: "0",
+		queryIP: "",
+		queryFlags: null,
+		queryOFlags: null,
+		queryFormat: "json",
+		contact: "",
+		Country: "",
+	},
+	abuseipdb: {
+		data: {
+			ipAddress: "",
+			isPublic: true,
+			ipVersion: 4,
+			isWhitelisted: null,
+			abuseConfidenceScore: 0,
+			countryCode: "US",
+			countryName: "United States of America",
+			usageType: "Fixed Line ISP",
+			isp: "N/A",
+			domain: "",
+			hostnames: [],
+			totalReports: 0,
+			numDistinctUsers: 0,
+			lastReportedAt: null,
+			reports: [],
+		},
+	},
 };
 
 function isPrivateIP(ip: string) {
@@ -44,22 +65,65 @@ function isPrivateIP(ip: string) {
 }
 
 //TODO add function that support both ip and domain names
+/* // Old Function
 export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 	const { correspondenceEmail } = Config.get().general;
 	if (!correspondenceEmail) return { ...exampleData, queryIP: ip };
 	// This next bit is a hot mess, but hey, it beats rate limiting
-	if (isPrivateIP(ip)) return { ...exampleData, queryIP: ip };
+	if (isPrivateIP(ip)) return { ...exampleData, getipintel[]: ip };
+	stuff = await fetch(
+		`http://check.getipintel.net/check.php?ip=${ip}&contact=${correspondenceEmail}&format=json&oflags=c`,
+	)
 	return (
-		await fetch(
-			`http://check.getipintel.net/check.php?ip=${ip}&contact=${correspondenceEmail}&format=json&oflags=c`,
-		)
 	).json() as any; // TODO: types
+}*/
+
+export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
+	// Get abuseipdb config
+	const { abuseIpDbEnabled, apiKey, usageTypeList, usageTypeBlacklist } =
+		Config.get().security.abuseIpDb;
+	// Get getipintel config
+	const { getIpIntelEnabled, email } = Config.get().security.getIpIntel;
+	var response = {
+		...exampleData,
+		getipintel: { ...exampleData.getipintel, queryIP: ip },
+		abuseipdb: { data: { ...exampleData.abuseipdb.data, ipAddress: ip } },
+	};
+	if (abuseIpDbEnabled) {
+		const abuseipdb = await fetch(
+			`https://api.abuseipdb.com/api/v2/check?ipAddress=${ip}`,
+			{
+				headers: {
+					Accept: "application/json",
+					Key: apiKey as any,
+				},
+			},
+		).then((res) => res.json());
+		response.abuseipdb = abuseipdb;
+	}
+
+	if (getIpIntelEnabled) {
+		const getipintel = await fetch(
+			`http://check.getipintel.net/check.php?ip=${ip}&contact=${email}&format=json&oflags=c`,
+		).then((res) => res.json());
+		response.getipintel = getipintel;
+	}
+	return response as any; // TODO: types
 }
 
 export function isProxy(data: typeof exampleData) {
+	const { usageTypeList, usageTypeBlacklist } =
+		Config.get().security.abuseIpDb;
 	if (process.env.NODE_ENV === "development")
-		console.log(`IP Analysis: ${JSON.stringify(data)}`);
-	if (data.result.toNumber() > 0.9) return true;
+		console.log(`IP Analysis:\n${JSON.stringify(data, null, 2)}`);
+	if (data.getipintel.result.toNumber() > 0.9) return true;
+	if (data.abuseipdb.data.abuseConfidenceScore > 90) return true;
+	// usageTypeBlacklist is a boolean that determines if the list is a blacklist or whitelist
+	if (usageTypeBlacklist) {
+		if (usageTypeList.includes(data.abuseipdb.data.usageType)) return true;
+	} else {
+		if (!usageTypeList.includes(data.abuseipdb.data.usageType)) return true;
+	}
 
 	return false;
 }

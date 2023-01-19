@@ -18,3 +18,5 @@
 
 export * from "./Captcha";
 export * from "./TwoFactor";
+export * from "./AbuseIpDb";
+export * from "./GetIPIntel";

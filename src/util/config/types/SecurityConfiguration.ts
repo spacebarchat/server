@@ -17,7 +17,12 @@
 */
 
 import crypto from "crypto";
-import { CaptchaConfiguration, TwoFactorConfiguration } from ".";
+import {
+	CaptchaConfiguration,
+	TwoFactorConfiguration,
+	GetIPIntel,
+	AbuseIpDb,
+} from ".";
 
 export class SecurityConfiguration {
 	captcha: CaptchaConfiguration = new CaptchaConfiguration();
@@ -32,4 +37,6 @@ export class SecurityConfiguration {
 	mfaBackupCodeCount: number = 10;
 	statsWorldReadable: boolean = true;
 	defaultRegistrationTokenExpiration: number = 1000 * 60 * 60 * 24 * 7; //1 week
+	getIpIntel = new GetIPIntel();
+	abuseIpDb = new AbuseIpDb();
 }
