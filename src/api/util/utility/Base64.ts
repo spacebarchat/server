@@ -64,3 +64,14 @@ export const bton = (base64: string) => {
 
 	return sign ? -number : number;
 };
+
+// Rory - 20/01/2023 - Add utility functions to aid with identification of file types in emojis
+export const toByteArray = (str: string) => {
+	let binary_string = atob(str);
+	let len = binary_string.length;
+	let bytes = new Uint8Array(len);
+	for (let i = 0; i < len; i++) {
+		bytes[i] = binary_string.charCodeAt(i);
+	}
+	return bytes;
+};

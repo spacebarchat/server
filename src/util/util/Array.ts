@@ -19,3 +19,23 @@
 export function containsAll(arr: any[], target: any[]) {
 	return target.every((v) => arr.includes(v));
 }
+
+// Rory - 20/01/2023 - Add utility functions to aid with identification of file types in emojis
+export function arrayBufferMatchesArr(
+	haystack: Uint8Array,
+	needle: number[],
+	offset: number,
+) {
+	return arrayBufferMatches(haystack, new Uint8Array(needle), 0);
+}
+
+export function arrayBufferMatches(
+	haystack: Uint8Array,
+	needle: Uint8Array,
+	offset: number,
+) {
+	for (let i = 0; i < needle.length; i++) {
+		if (haystack[i + offset] !== needle[i]) return false;
+	}
+	return true;
+}

@@ -29,8 +29,9 @@ import {
 	User,
 	EmojiCreateSchema,
 	EmojiModifySchema,
+	arrayBufferMatchesArr,
 } from "@fosscord/util";
-import { route } from "@fosscord/api";
+import { route, toByteArray } from "@fosscord/api";
 
 const router = Router();
 
@@ -85,6 +86,27 @@ router.post(
 		const user = await User.findOneOrFail({ where: { id: req.user_id } });
 		body.image = (await handleFile(`/emojis/${id}`, body.image)) as string;
 
+		// Rory - 20/01/2023 - Check for animated emojis
+		let animated = false;
+		let buffer = toByteArray(body.image);
+		if (
+			arrayBufferMatchesArr(
+				buffer,
+				[0x47, 0x49, 0x46, 0x38, 0x39, 0x61],
+				0,
+			)
+		)
+			animated = true; //gif87
+		if (
+			arrayBufferMatchesArr(
+				buffer,
+				[0x47, 0x49, 0x46, 0x38, 0x37, 0x61],
+				0,
+			)
+		)
+			animated = true; //gif89
+		// TODO: identify more formats
+
 		const emoji = await Emoji.create({
 			id: id,
 			guild_id: guild_id,
@@ -92,7 +114,7 @@ router.post(
 			require_colons: body.require_colons ?? undefined, // schema allows nulls, db does not
 			user: user,
 			managed: false,
-			animated: false, // TODO: Add support animated emojis
+			animated,
 			available: true,
 			roles: [],
 		}).save();
