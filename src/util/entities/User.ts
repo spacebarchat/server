@@ -113,67 +113,67 @@ export class User extends BaseClass {
 	phone?: string; // phone number of the user
 
 	@Column({ select: false })
-	desktop: boolean = false; // if the user has desktop app installed
+	desktop: boolean; // if the user has desktop app installed
 
 	@Column({ select: false })
-	mobile: boolean = false; // if the user has mobile app installed
+	mobile: boolean; // if the user has mobile app installed
 
 	@Column()
-	premium: boolean = Config.get().defaults.user.premium ?? false; // if user bought individual premium
+	premium: boolean; // if user bought individual premium
 
 	@Column()
-	premium_type: number = Config.get().defaults.user.premiumType ?? 0; // individual premium level
+	premium_type: number; // individual premium level
 
 	@Column()
-	bot: boolean = false; // if user is bot
+	bot: boolean; // if user is bot
 
 	@Column()
-	bio: string = ""; // short description of the user (max 190 chars -> should be configurable)
+	bio: string; // short description of the user (max 190 chars -> should be configurable)
 
 	@Column()
 	system: boolean = false; // shouldn't be used, the api sends this field type true, if the generated message comes from a system generated author
 
 	@Column({ select: false })
-	nsfw_allowed: boolean = true; // if the user can do age-restricted actions (NSFW channels/guilds/commands) // TODO: depending on age
+	nsfw_allowed: boolean; // if the user can do age-restricted actions (NSFW channels/guilds/commands) // TODO: depending on age
 
 	@Column({ select: false })
-	mfa_enabled: boolean = false; // if multi factor authentication is enabled
+	mfa_enabled: boolean; // if multi factor authentication is enabled
 
 	@Column({ select: false, nullable: true })
-	totp_secret?: string = "";
+	totp_secret?: string;
 
 	@Column({ nullable: true, select: false })
-	totp_last_ticket?: string = "";
+	totp_last_ticket?: string;
 
 	@Column()
-	created_at: Date = new Date(); // registration date
+	created_at: Date; // registration date
 
 	@Column({ nullable: true })
 	premium_since: Date; // premium date
 
 	@Column({ select: false })
-	verified: boolean = Config.get().defaults.user.verified ?? true; // email is verified
+	verified: boolean; // email is verified
 
 	@Column()
-	disabled: boolean = false; // if the account is disabled
+	disabled: boolean; // if the account is disabled
 
 	@Column()
-	deleted: boolean = false; // if the user was deleted
+	deleted: boolean; // if the user was deleted
 
 	@Column({ nullable: true, select: false })
 	email?: string; // email of the user
 
 	@Column()
-	flags: string = "0"; // UserFlags // TODO: generate
+	flags: string; // UserFlags // TODO: generate
 
 	@Column()
-	public_flags: number = 0;
+	public_flags: number;
 
 	@Column()
-	purchased_flags: number = 0;
+	purchased_flags: number;
 
 	@Column()
-	premium_usage_flags: number = 0;
+	premium_usage_flags: number;
 
 	@Column({ type: "bigint" })
 	rights: string;
@@ -363,6 +363,7 @@ export class User extends BaseClass {
 			locale: language,
 		});
 
+		// Rory - 2023-01-19 - Move defaults to create function
 		const user = User.create({
 			username: username,
 			discriminator,
@@ -378,6 +379,30 @@ export class User extends BaseClass {
 				: undefined,
 			settings: settings,
 			rights: Config.get().register.defaultRights,
+			premium: Config.get().defaults.user.premium ?? false,
+			premium_type:
+				Config.get().defaults.user.premiumType ??
+				Config.get().defaults.user.premium
+					? 2
+					: 0 ?? 0,
+			verified: Config.get().defaults.user.verified ?? true,
+
+			//statics
+			system: false,
+			nsfw_allowed: true,
+			totp_secret: "",
+			totp_last_ticket: "",
+			bio: "",
+			bot: false,
+			desktop: false,
+			mobile: false,
+			created_at: new Date(),
+			disabled: false,
+			deleted: false,
+			flags: "0",
+			public_flags: 0,
+			purchased_flags: 0,
+			premium_usage_flags: 0,
 		});
 
 		user.validate();
