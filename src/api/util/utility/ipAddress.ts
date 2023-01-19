@@ -20,40 +20,77 @@ import { Config } from "@fosscord/util";
 import { Request } from "express";
 // use ipdata package instead of simple fetch because of integrated caching
 import fetch from "node-fetch";
+import { Timestamp } from "typeorm";
 
-const exampleData = {
-	getipintel: {
-		status: "success",
-		result: "0",
-		queryIP: "",
-		queryFlags: null,
-		queryOFlags: null,
-		queryFormat: "json",
-		contact: "",
-		Country: "",
-	},
-	abuseipdb: {
-		data: {
-			ipAddress: "",
-			isPublic: true,
-			ipVersion: 4,
-			isWhitelisted: null,
-			abuseConfidenceScore: 0,
-			countryCode: "US",
-			countryName: "United States of America",
-			usageType: "Fixed Line ISP",
-			isp: "N/A",
-			domain: "",
-			hostnames: [],
-			totalReports: 0,
-			numDistinctUsers: 0,
-			lastReportedAt: null,
-			reports: [],
-		},
+type GetIPIntelResponse = {
+	status: "success" | "error";
+	result: string;
+	queryIP: string;
+	queryFlags: string | null;
+	queryOFlags: string | null;
+	queryFormat: "json";
+	contact: string;
+	Country?: string;
+};
+
+const GetIPIntelFallback = {
+	status: "success",
+	result: "0",
+	queryIP: "",
+	queryFlags: null,
+	queryOFlags: null,
+	queryFormat: "json",
+	contact: "",
+	Country: "US",
+};
+
+type AbuseIPDBResponse = {
+	data: {
+		ipAddress: string;
+		isPublic: boolean;
+		ipVersion: 4 | 6;
+		isWhitelisted: boolean | null;
+		abuseConfidenceScore: number;
+		countryCode: string | null;
+		countryName: string | null;
+		usageType: string;
+		isp: string;
+		domain: string;
+		hostnames: string[];
+		totalReports: number;
+		numDistinctUsers: number;
+		lastReportedAt: string | Date | null;
+		reports: object[];
+	};
+};
+
+const AbuseIPDBFallback = {
+	data: {
+		ipAddress: "",
+		isPublic: true,
+		ipVersion: 4,
+		isWhitelisted: false,
+		abuseConfidenceScore: 0,
+		countryCode: "US",
+		countryName: "United States of America",
+		usageType: "Fixed Line ISP",
+		isp: "Fosscord",
+		domain: "fosscord.com",
+		hostnames: [],
+		totalReports: 0,
+		numDistinctUsers: 0,
+		lastReportedAt: null,
+		reports: [],
 	},
 };
 
+type IPAnalysisResponse = {
+	getipintel: GetIPIntelResponse;
+	abuseipdb: AbuseIPDBResponse;
+};
+
 function isPrivateIP(ip: string) {
+	if (ip === "::ffff:127.0.0.1") return true;
 	var parts = ip.split(".");
 	return (
 		parts[0] === "10" ||
@@ -65,30 +102,18 @@ function isPrivateIP(ip: string) {
 }
 
 //TODO add function that support both ip and domain names
-/* // Old Function
-export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
-	const { correspondenceEmail } = Config.get().general;
-	if (!correspondenceEmail) return { ...exampleData, queryIP: ip };
-	// This next bit is a hot mess, but hey, it beats rate limiting
-	if (isPrivateIP(ip)) return { ...exampleData, getipintel[]: ip };
-	stuff = await fetch(
-		`http://check.getipintel.net/check.php?ip=${ip}&contact=${correspondenceEmail}&format=json&oflags=c`,
-	)
-	return (
-	).json() as any; // TODO: types
-}*/
 
-export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
-	// Get abuseipdb config
+export async function IPAnalysis(ip: string): Promise<IPAnalysisResponse> {
 	const { abuseIpDbEnabled, apiKey, usageTypeList, usageTypeBlacklist } =
 		Config.get().security.abuseIpDb;
-	// Get getipintel config
 	const { getIpIntelEnabled, email } = Config.get().security.getIpIntel;
 	var response = {
-		...exampleData,
-		getipintel: { ...exampleData.getipintel, queryIP: ip },
-		abuseipdb: { data: { ...exampleData.abuseipdb.data, ipAddress: ip } },
+		getipintel: { ...GetIPIntelFallback, queryIP: ip },
+		abuseipdb: { data: { ...AbuseIPDBFallback.data, ipAddress: ip } },
 	};
+
+	if (isPrivateIP(ip)) return response as IPAnalysisResponse;
+
 	if (abuseIpDbEnabled) {
 		const abuseipdb = await fetch(
 			`https://api.abuseipdb.com/api/v2/check?ipAddress=${ip}`,
@@ -108,17 +133,16 @@ export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 		).then((res) => res.json());
 		response.getipintel = getipintel;
 	}
-	return response as any; // TODO: types
+	return response as IPAnalysisResponse;
 }
 
-export function isProxy(data: typeof exampleData) {
+export function isProxy(data: IPAnalysisResponse) {
 	const { usageTypeList, usageTypeBlacklist } =
 		Config.get().security.abuseIpDb;
 	if (process.env.NODE_ENV === "development")
 		console.log(`IP Analysis:\n${JSON.stringify(data, null, 2)}`);
 	if (data.getipintel.result.toNumber() > 0.9) return true;
 	if (data.abuseipdb.data.abuseConfidenceScore > 90) return true;
-	// usageTypeBlacklist is a boolean that determines if the list is a blacklist or whitelist
 	if (usageTypeBlacklist) {
 		if (usageTypeList.includes(data.abuseipdb.data.usageType)) return true;
 	} else {
