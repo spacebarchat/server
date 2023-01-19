@@ -17,6 +17,6 @@
 */
 
 export interface BanCreateSchema {
-	delete_message_days?: string;
+	delete_message_seconds?: string;
 	reason?: string;
 }
