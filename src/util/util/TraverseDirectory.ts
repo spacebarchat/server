@@ -22,7 +22,7 @@ import { Server, traverseDirectory } from "lambert-server";
 const extension =
 	Symbol.for("ts-node.register.instance") in process ? "ts" : "js";
 
-const DEFAULT_FILTER = new RegExp("^([^.].*)(?<!\.d).(" + extension + ")$");
+const DEFAULT_FILTER = new RegExp("^([^.].*)(?<!\\.d).(" + extension + ")$");
 
 export function registerRoutes(server: Server, root: string) {
 	return traverseDirectory(
