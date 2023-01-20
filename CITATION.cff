@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "Fosscord would be proud to be seen in research. If you want to use it, please cite it like:"
+authors:
+- family-names: "Scheit"
+  given-names: "Samuel"
+- given-names: "Rory"
+- family-names: "Güney"
+  given-names: "Erkin Alp"
+- family-names: "Cookman"
+  given-names: "Christopher"
+title: "Fosscord Server"
+version: alpha
+url: "https://github.com/fosscord/fosscord-server"
