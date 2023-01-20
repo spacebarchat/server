@@ -36,6 +36,34 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "SMTPConnection.CustomAuthenticationResponse": {
+        "type": "object",
+        "properties": {
+            "command": {
+                "type": "string"
+            },
+            "response": {
+                "type": "string"
+            },
+            "status": {
+                "type": "integer"
+            },
+            "text": {
+                "type": "string"
+            },
+            "code": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "command",
+            "response",
+            "status",
+            "text"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "TransportMakeRequestResponse": {
         "type": "object",
         "properties": {
@@ -32875,7 +32903,6 @@
         },
         "additionalProperties": false,
         "required": [
-            "captcha_key",
             "token"
         ],
         "definitions": {
