@@ -36,7 +36,7 @@ export function enableAutoUpdate(opts: {
 	downloadType?: "zip";
 }) {
 	if (!opts.checkInterval) return;
-	var interval = 1000 * 60 * 60 * 24;
+	const interval = 1000 * 60 * 60 * 24;
 	if (typeof opts.checkInterval === "number")
 		opts.checkInterval = 1000 * interval;
 
@@ -70,6 +70,7 @@ export function enableAutoUpdate(opts: {
 	});
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function download(url: string, dir: string) {
 	try {
 		// TODO: use file stream instead of buffer (to prevent crash because of high memory usage for big files)
@@ -99,7 +100,7 @@ async function getLatestVersion(url: string) {
 	try {
 		const agent = new ProxyAgent();
 		const response = await fetch(url, { agent });
-		const content = (await response.json()) as any; // TODO: types
+		const content = await response.json();
 		return content.version;
 	} catch (error) {
 		throw new Error("[Auto update] check failed for " + url);

@@ -22,11 +22,6 @@ import { FieldErrors, Release } from "@fosscord/util";
 
 const router = Router();
 
-/*
-	TODO: Putting the download route in /routes/download.ts doesn't register the route, for some reason
-	But putting it here *does*
-*/
-
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { platform } = req.query;
 

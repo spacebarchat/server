@@ -6,7 +6,7 @@
 
 export type BitFieldResolvable =
 	| number
-	| BigInt
+	| bigint
 	| BitField
 	| string
 	| BitFieldResolvable[];
@@ -135,6 +135,7 @@ export class BitField {
 	 * @returns {number}
 	 */
 	static resolve(bit: BitFieldResolvable = BigInt(0)): bigint {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		const FLAGS = this.FLAGS || this.constructor?.FLAGS;
 
@@ -152,6 +153,7 @@ export class BitField {
 		if (bit instanceof BitField) return bit.bitfield;
 
 		if (Array.isArray(bit)) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			const resolve = this.constructor?.resolve || this.resolve;
 			return bit

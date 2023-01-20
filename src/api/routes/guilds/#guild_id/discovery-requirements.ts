@@ -16,8 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Guild, Config } from "@fosscord/util";
-
 import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 

@@ -175,7 +175,7 @@ async function updateRelationship(
 		select: userProjection,
 	});
 
-	var relationship = user.relationships.find((x) => x.to_id === id);
+	let relationship = user.relationships.find((x) => x.to_id === id);
 	const friendRequest = friend.relationships.find(
 		(x) => x.to_id === req.user_id,
 	);
@@ -219,13 +219,13 @@ async function updateRelationship(
 	if (user.relationships.length >= maxFriends)
 		throw DiscordApiErrors.MAXIMUM_FRIENDS.withParams(maxFriends);
 
-	var incoming_relationship = Relationship.create({
+	let incoming_relationship = Relationship.create({
 		nickname: undefined,
 		type: RelationshipType.incoming,
 		to: user,
 		from: friend,
 	});
-	var outgoing_relationship = Relationship.create({
+	let outgoing_relationship = Relationship.create({
 		nickname: undefined,
 		type: RelationshipType.outgoing,
 		to: friend,

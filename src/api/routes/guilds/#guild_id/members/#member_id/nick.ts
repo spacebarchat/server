@@ -26,12 +26,12 @@ router.patch(
 	"/",
 	route({ body: "MemberNickChangeSchema" }),
 	async (req: Request, res: Response) => {
-		var { guild_id, member_id } = req.params;
-		var permissionString: PermissionResolvable = "MANAGE_NICKNAMES";
-		if (member_id === "@me") {
-			member_id = req.user_id;
-			permissionString = "CHANGE_NICKNAME";
-		}
+		const { guild_id } = req.params;
+		let permissionString: PermissionResolvable = "MANAGE_NICKNAMES";
+		const member_id =
+			req.params.member_id === "@me"
+				? ((permissionString = "CHANGE_NICKNAME"), req.user_id)
+				: req.params.member_id;
 
 		const perms = await getPermission(req.user_id, guild_id);
 		perms.hasThrow(permissionString);

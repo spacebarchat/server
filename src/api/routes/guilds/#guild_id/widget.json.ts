@@ -17,14 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import {
-	Config,
-	Permissions,
-	Guild,
-	Invite,
-	Channel,
-	Member,
-} from "@fosscord/util";
+import { Permissions, Guild, Invite, Channel, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { random, route } from "@fosscord/api";
 
@@ -46,7 +39,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	if (!guild.widget_enabled) throw new HTTPError("Widget Disabled", 404);
 
 	// Fetch existing widget invite for widget channel
-	var invite = await Invite.findOne({
+	let invite = await Invite.findOne({
 		where: { channel_id: guild.widget_channel_id },
 	});
 
@@ -70,7 +63,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	}
 
 	// Fetch voice channels, and the @everyone permissions object
-	const channels = [] as any[];
+	const channels: { id: string; name: string; position: number }[] = [];
 
 	(
 		await Channel.find({
@@ -88,15 +81,15 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		) {
 			channels.push({
 				id: doc.id,
-				name: doc.name,
-				position: doc.position,
+				name: doc.name ?? "Unknown channel",
+				position: doc.position ?? 0,
 			});
 		}
 	});
 
 	// Fetch members
 	// TODO: Understand how Discord's max 100 random member sample works, and apply to here (see top of this file)
-	let members = await Member.find({ where: { guild_id: guild_id } });
+	const members = await Member.find({ where: { guild_id: guild_id } });
 
 	// Construct object to respond with
 	const data = {

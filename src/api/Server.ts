@@ -22,7 +22,7 @@ import { Authentication, CORS } from "./middlewares/";
 import { Config, initDatabase, initEvent, Sentry } from "@fosscord/util";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { BodyParser } from "./middlewares/BodyParser";
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response } from "express";
 import path from "path";
 import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
@@ -32,12 +32,12 @@ import { initInstance } from "./util/handlers/Instance";
 import { registerRoutes } from "@fosscord/util";
 import { red } from "picocolors";
 
-export interface FosscordServerOptions extends ServerOptions {}
+export type FosscordServerOptions = ServerOptions;
 
 declare global {
+	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		interface Request {
-			// @ts-ignore
 			server: FosscordServer;
 		}
 	}
@@ -47,6 +47,7 @@ export class FosscordServer extends Server {
 	public declare options: FosscordServerOptions;
 
 	constructor(opts?: Partial<FosscordServerOptions>) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		super({ ...opts, errorHandler: false, jsonBody: false });
 	}
@@ -58,12 +59,12 @@ export class FosscordServer extends Server {
 		await initInstance();
 		await Sentry.init(this.app);
 
-		let logRequests = process.env["LOG_REQUESTS"] != undefined;
+		const logRequests = process.env["LOG_REQUESTS"] != undefined;
 		if (logRequests) {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						var skip = !(
+						let skip = !(
 							process.env["LOG_REQUESTS"]?.includes(
 								res.statusCode.toString(),
 							) ?? false
@@ -80,7 +81,9 @@ export class FosscordServer extends Server {
 		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
 
 		const app = this.app;
-		const api = Router(); // @ts-ignore
+		const api = Router();
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
 		this.app = api;
 
 		api.use(Authentication);
@@ -95,7 +98,7 @@ export class FosscordServer extends Server {
 		// 404 is not an error in express, so this should not be an error middleware
 		// this is a fine place to put the 404 handler because its after we register the routes
 		// and since its not an error middleware, our error handler below still works.
-		api.use("*", (req: Request, res: Response, next: NextFunction) => {
+		api.use("*", (req: Request, res: Response) => {
 			res.status(404).json({
 				message: "404 endpoint not found",
 				code: 0,

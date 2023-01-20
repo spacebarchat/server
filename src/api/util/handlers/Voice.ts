@@ -31,7 +31,7 @@ export async function getVoiceRegions(ipAddress: string, vip: boolean) {
 
 		let min = Number.POSITIVE_INFINITY;
 
-		for (let ar of availableRegions) {
+		for (const ar of availableRegions) {
 			//TODO the endpoint location should be saved in the database if not already present to prevent IPAnalysis call
 			const dist = distanceBetweenLocations(
 				clientIpAnalysis,

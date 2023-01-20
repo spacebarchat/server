@@ -41,7 +41,7 @@ router.post(
 			throw new HTTPError("Invalid request signature");
 		if (!req.file) throw new HTTPError("file missing");
 
-		const { buffer, mimetype, size, originalname, fieldname } = req.file;
+		const { buffer, mimetype, size, originalname } = req.file;
 		const { channel_id } = req.params;
 		const filename = originalname
 			.replaceAll(" ", "_")
@@ -53,8 +53,8 @@ router.post(
 			Config.get()?.cdn.endpointPublic || "http://localhost:3003";
 
 		await storage.set(path, buffer);
-		var width;
-		var height;
+		let width;
+		let height;
 		if (mimetype.includes("image")) {
 			const dimensions = imageSize(buffer);
 			if (dimensions) {
@@ -81,10 +81,10 @@ router.get(
 	"/:channel_id/:id/:filename",
 	async (req: Request, res: Response) => {
 		const { channel_id, id, filename } = req.params;
-		const { format } = req.query;
+		// const { format } = req.query;
 
 		const path = `attachments/${channel_id}/${id}/${filename}`;
-		let file = await storage.get(path);
+		const file = await storage.get(path);
 		if (!file) throw new HTTPError("File not found");
 		const type = await FileType.fromBuffer(file);
 		let content_type = type?.mime || "application/octet-stream";

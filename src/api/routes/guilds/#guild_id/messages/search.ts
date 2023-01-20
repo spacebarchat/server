@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
 import { getPermission, FieldErrors, Message, Channel } from "@fosscord/util";
@@ -28,10 +30,10 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const {
 		channel_id,
 		content,
-		include_nsfw, // TODO
+		// include_nsfw, // TODO
 		offset,
 		sort_order,
-		sort_by, // TODO: Handle 'relevance'
+		// sort_by, // TODO: Handle 'relevance'
 		limit,
 		author_id,
 	} = req.query;
@@ -62,7 +64,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	if (!permissions.has("READ_MESSAGE_HISTORY"))
 		return res.json({ messages: [], total_results: 0 });
 
-	var query: FindManyOptions<Message> = {
+	const query: FindManyOptions<Message> = {
 		order: {
 			timestamp: sort_order
 				? (sort_order.toUpperCase() as "ASC" | "DESC")
@@ -87,7 +89,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		skip: offset ? Number(offset) : 0,
 	};
 	//@ts-ignore
-	if (channel_id) query.where!.channel = { id: channel_id };
+	if (channel_id) query.where.channel = { id: channel_id };
 	else {
 		// get all channel IDs that this user can access
 		const channels = await Channel.find({
@@ -96,7 +98,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		});
 		const ids = [];
 
-		for (var channel of channels) {
+		for (const channel of channels) {
 			const perm = await getPermission(
 				req.user_id,
 				req.params.guild_id,
@@ -108,12 +110,12 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		}
 
 		//@ts-ignore
-		query.where!.channel = { id: In(ids) };
+		query.where.channel = { id: In(ids) };
 	}
 	//@ts-ignore
-	if (author_id) query.where!.author = { id: author_id };
+	if (author_id) query.where.author = { id: author_id };
 	//@ts-ignore
-	if (content) query.where!.content = Like(`%${content}%`);
+	if (content) query.where.content = Like(`%${content}%`);
 
 	const messages: Message[] = await Message.find(query);
 

@@ -20,7 +20,6 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { User } from ".";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
-import { Role } from "./Role";
 
 @Entity("emojis")
 export class Emoji extends BaseClass {

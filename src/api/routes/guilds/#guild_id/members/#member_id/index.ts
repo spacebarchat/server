@@ -49,11 +49,12 @@ router.patch(
 	"/",
 	route({ body: "MemberChangeSchema" }),
 	async (req: Request, res: Response) => {
-		let { guild_id, member_id } = req.params;
-		if (member_id === "@me") member_id = req.user_id;
+		const { guild_id } = req.params;
+		const member_id =
+			req.params.member_id === "@me" ? req.user_id : req.params.member_id;
 		const body = req.body as MemberChangeSchema;
 
-		let member = await Member.findOneOrFail({
+		const member = await Member.findOneOrFail({
 			where: { id: member_id, guild_id },
 			relations: ["roles", "user"],
 		});
@@ -101,7 +102,8 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 
 	const rights = await getRights(req.user_id);
 
-	let { guild_id, member_id } = req.params;
+	const { guild_id } = req.params;
+	let { member_id } = req.params;
 	if (member_id === "@me") {
 		member_id = req.user_id;
 		rights.hasThrow("JOIN_GUILDS");
@@ -109,19 +111,19 @@ router.put("/", route({}), async (req: Request, res: Response) => {
 		// TODO: join others by controller
 	}
 
-	var guild = await Guild.findOneOrFail({
+	const guild = await Guild.findOneOrFail({
 		where: { id: guild_id },
 	});
 
-	var emoji = await Emoji.find({
+	const emoji = await Emoji.find({
 		where: { guild_id: guild_id },
 	});
 
-	var roles = await Role.find({
+	const roles = await Role.find({
 		where: { guild_id: guild_id },
 	});
 
-	var stickers = await Sticker.find({
+	const stickers = await Sticker.find({
 		where: { guild_id: guild_id },
 	});
 

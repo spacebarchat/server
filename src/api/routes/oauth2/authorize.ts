@@ -27,16 +27,14 @@ import {
 	Member,
 	Permissions,
 	User,
-	getRights,
-	Rights,
-	MemberPrivateProjection,
 } from "@fosscord/util";
 const router = Router();
 
 // TODO: scopes, other oauth types
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const { client_id, scope, response_type, redirect_url } = req.query;
+	// const { client_id, scope, response_type, redirect_url } = req.query;
+	const { client_id } = req.query;
 
 	const app = await Application.findOne({
 		where: {
@@ -68,6 +66,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			},
 		},
 		relations: ["guild", "roles"],
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		//@ts-ignore
 		// prettier-ignore
 		select: ["guild.id", "guild.name", "guild.icon", "guild.mfa_level", "guild.owner_id", "roles.id"],
@@ -139,7 +138,8 @@ router.post(
 	route({ body: "ApplicationAuthorizeSchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as ApplicationAuthorizeSchema;
-		const { client_id, scope, response_type, redirect_url } = req.query;
+		// const { client_id, scope, response_type, redirect_url } = req.query;
+		const { client_id } = req.query;
 
 		// TODO: captcha verification
 		// TODO: MFA verification
@@ -153,7 +153,7 @@ router.post(
 		// getPermission cache won't exist if we're owner
 		if (
 			Object.keys(perms.cache || {}).length > 0 &&
-			perms.cache.member!.user.bot
+			perms.cache.member?.user.bot
 		)
 			throw DiscordApiErrors.UNAUTHORIZED;
 		perms.hasThrow("MANAGE_GUILD");

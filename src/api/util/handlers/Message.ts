@@ -51,7 +51,7 @@ const allow_empty = false;
 // TODO: embed gifs/videos/images
 
 const LINK_REGEX =
-	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
+	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
 
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	const channel = await Channel.findOneOrFail({
@@ -129,7 +129,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		}
 		/** Q: should be checked if the referenced message exists? ANSWER: NO
 		 otherwise backfilling won't work **/
-		// @ts-ignore
 		message.type = MessageType.REPLY;
 	}
 
@@ -144,29 +143,29 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 
-	var content = opts.content;
-	var mention_channel_ids = [] as string[];
-	var mention_role_ids = [] as string[];
-	var mention_user_ids = [] as string[];
-	var mention_everyone = false;
+	let content = opts.content;
+	const mention_channel_ids = [] as string[];
+	const mention_role_ids = [] as string[];
+	const mention_user_ids = [] as string[];
+	let mention_everyone = false;
 
 	if (content) {
 		// TODO: explicit-only mentions
 		message.content = content.trim();
-		content = content.replace(/ *\`[^)]*\` */g, ""); // remove codeblocks
-		for (const [_, mention] of content.matchAll(CHANNEL_MENTION)) {
+		content = content.replace(/ *`[^)]*` */g, ""); // remove codeblocks
+		for (const [, mention] of content.matchAll(CHANNEL_MENTION)) {
 			if (!mention_channel_ids.includes(mention))
 				mention_channel_ids.push(mention);
 		}
 
-		for (const [_, mention] of content.matchAll(USER_MENTION)) {
+		for (const [, mention] of content.matchAll(USER_MENTION)) {
 			if (!mention_user_ids.includes(mention))
 				mention_user_ids.push(mention);
 		}
 
 		await Promise.all(
 			Array.from(content.matchAll(ROLE_MENTION)).map(
-				async ([_, mention]) => {
+				async ([, mention]) => {
 					const role = await Role.findOneOrFail({
 						where: { id: mention, guild_id: channel.guild_id },
 					});
@@ -198,8 +197,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 // TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
-	const content = message.content?.replace(/ *\`[^)]*\` */g, ""); // remove markdown
-	var links = content?.match(LINK_REGEX);
+	const content = message.content?.replace(/ *`[^)]*` */g, ""); // remove markdown
+	let links = content?.match(LINK_REGEX);
 	if (!links) return;
 
 	const data = { ...message };
@@ -232,8 +231,8 @@ export async function postHandleMessage(message: Message) {
 			// tried to use shorthand but types didn't like me L
 			if (!Array.isArray(res)) res = [res];
 
-			for (var embed of res) {
-				var cache = EmbedCache.create({
+			for (const embed of res) {
+				const cache = EmbedCache.create({
 					url: link,
 					embed: embed,
 				});
@@ -279,7 +278,10 @@ export async function sendMessage(opts: MessageOptions) {
 		} as MessageCreateEvent),
 	]);
 
-	postHandleMessage(message).catch((e) => {}); // no await as it should catch error non-blockingly
+	// no await as it should catch error non-blockingly
+	postHandleMessage(message).catch((e) =>
+		console.error("[Message] post-message handler failed", e),
+	);
 
 	return message;
 }

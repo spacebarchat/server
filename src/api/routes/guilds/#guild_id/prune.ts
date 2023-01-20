@@ -29,16 +29,16 @@ export const inactiveMembers = async (
 	days: number,
 	roles: string[] = [],
 ) => {
-	var date = new Date();
+	const date = new Date();
 	date.setDate(date.getDate() - days);
 	//Snowflake should have `generateFromTime` method? Or similar?
-	var minId = BigInt(date.valueOf() - Snowflake.EPOCH) << BigInt(22);
+	const minId = BigInt(date.valueOf() - Snowflake.EPOCH) << BigInt(22);
 
 	/**
 	idea: ability to customise the cutoff variable
 	possible candidates: public read receipt, last presence, last VC leave
 	**/
-	var members = await Member.find({
+	let members = await Member.find({
 		where: [
 			{
 				guild_id,
@@ -83,7 +83,7 @@ export const inactiveMembers = async (
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const days = parseInt(req.query.days as string);
 
-	var roles = req.query.include_roles;
+	let roles = req.query.include_roles;
 	if (typeof roles === "string") roles = [roles]; //express will return array otherwise
 
 	const members = await inactiveMembers(
@@ -102,7 +102,7 @@ router.post(
 	async (req: Request, res: Response) => {
 		const days = parseInt(req.body.days);
 
-		var roles = req.query.include_roles;
+		let roles = req.query.include_roles;
 		if (typeof roles === "string") roles = [roles];
 
 		const { guild_id } = req.params;

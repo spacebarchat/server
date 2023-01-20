@@ -41,8 +41,8 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 
-		let bans = await Ban.find({ where: { guild_id: guild_id } });
-		let promisesToAwait: object[] = [];
+		const bans = await Ban.find({ where: { guild_id: guild_id } });
+		const promisesToAwait: object[] = [];
 		const bansObj: object[] = [];
 
 		bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
@@ -104,14 +104,14 @@ router.put(
 
 		if (
 			req.user_id === banned_user_id &&
-			banned_user_id === req.permission!.cache.guild?.owner_id
+			banned_user_id === req.permission?.cache.guild?.owner_id
 		)
 			throw new HTTPError(
 				"You are the guild owner, hence can't ban yourself",
 				403,
 			);
 
-		if (req.permission!.cache.guild?.owner_id === banned_user_id)
+		if (req.permission?.cache.guild?.owner_id === banned_user_id)
 			throw new HTTPError("You can't ban the owner", 400);
 
 		const banned_user = await User.getPublicUser(banned_user_id);
@@ -149,7 +149,7 @@ router.put(
 
 		const banned_user = await User.getPublicUser(req.params.user_id);
 
-		if (req.permission!.cache.guild?.owner_id === req.params.user_id)
+		if (req.permission?.cache.guild?.owner_id === req.params.user_id)
 			throw new HTTPError(
 				"You are the guild owner, hence can't ban yourself",
 				403,
@@ -186,7 +186,7 @@ router.delete(
 	async (req: Request, res: Response) => {
 		const { guild_id, user_id } = req.params;
 
-		let ban = await Ban.findOneOrFail({
+		const ban = await Ban.findOneOrFail({
 			where: { guild_id: guild_id, user_id: user_id },
 		});
 

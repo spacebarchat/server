@@ -21,7 +21,7 @@ import { AllowedMentions, Embed } from "../entities/Message";
 export interface Interaction {
 	id: string;
 	type: InteractionType;
-	data?: {};
+	data?: object; // TODO typing
 	guild_id: string;
 	channel_id: string;
 	member_id: string;

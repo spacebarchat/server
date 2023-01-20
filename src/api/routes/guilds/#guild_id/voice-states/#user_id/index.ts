@@ -37,8 +37,9 @@ router.patch(
 	route({ body: "VoiceStateUpdateSchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as VoiceStateUpdateSchema;
-		var { guild_id, user_id } = req.params;
-		if (user_id === "@me") user_id = req.user_id;
+		const { guild_id } = req.params;
+		const user_id =
+			req.params.user_id === "@me" ? req.user_id : req.params.user_id;
 
 		const perms = await getPermission(
 			req.user_id,

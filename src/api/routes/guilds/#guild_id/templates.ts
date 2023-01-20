@@ -44,7 +44,7 @@ const TemplateGuildProjection: (keyof Guild)[] = [
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
 
-	var templates = await Template.find({
+	const templates = await Template.find({
 		where: { source_guild_id: guild_id },
 	});
 
@@ -60,9 +60,9 @@ router.post(
 			where: { id: guild_id },
 			select: TemplateGuildProjection,
 		});
-		const exists = await Template.findOneOrFail({
+		const exists = await Template.findOne({
 			where: { id: guild_id },
-		}).catch((e) => {});
+		});
 		if (exists) throw new HTTPError("Template already exists", 400);
 
 		const template = await Template.create({

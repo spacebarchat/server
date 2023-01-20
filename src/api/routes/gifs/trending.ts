@@ -25,7 +25,57 @@ import { HTTPError } from "lambert-server";
 
 const router = Router();
 
-export function parseGifResult(result: any) {
+// TODO: Move somewhere else
+enum TENOR_GIF_TYPES {
+	gif,
+	mediumgif,
+	tinygif,
+	nanogif,
+	mp4,
+	loopedmp4,
+	tinymp4,
+	nanomp4,
+	webm,
+	tinywebm,
+	nanowebm,
+}
+
+type TENOR_MEDIA = {
+	preview: string;
+	url: string;
+	dims: number[];
+	size: number;
+};
+
+type TENOR_GIF = {
+	created: number;
+	hasaudio: boolean;
+	id: string;
+	media: { [type in keyof typeof TENOR_GIF_TYPES]: TENOR_MEDIA }[];
+	tags: string[];
+	title: string;
+	itemurl: string;
+	hascaption: boolean;
+	url: string;
+};
+
+type TENOR_CATEGORY = {
+	searchterm: string;
+	path: string;
+	image: string;
+	name: string;
+};
+
+type TENOR_CATEGORIES_RESULTS = {
+	tags: TENOR_CATEGORY[];
+};
+
+type TENOR_TRENDING_RESULTS = {
+	next: string;
+	results: TENOR_GIF[];
+};
+
+export function parseGifResult(result: TENOR_GIF) {
 	return {
 		id: result.id,
 		title: result.title,
@@ -50,7 +100,8 @@ export function getGifApiKey() {
 router.get("/", route({}), async (req: Request, res: Response) => {
 	// TODO: Custom providers
 	// TODO: return gifs as mp4
-	const { media_format, locale } = req.query;
+	// const { media_format, locale } = req.query;
+	const { locale } = req.query;
 
 	const apiKey = getGifApiKey();
 
@@ -75,11 +126,11 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		),
 	]);
 
-	const { tags } = (await responseSource.json()) as any; // TODO: types
-	const { results } = (await trendGifSource.json()) as any; //TODO: types;
+	const { tags } = (await responseSource.json()) as TENOR_CATEGORIES_RESULTS;
+	const { results } = (await trendGifSource.json()) as TENOR_TRENDING_RESULTS;
 
 	res.json({
-		categories: tags.map((x: any) => ({
+		categories: tags.map((x) => ({
 			name: x.searchterm,
 			src: x.image,
 		})),

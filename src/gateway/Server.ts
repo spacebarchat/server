@@ -56,7 +56,6 @@ export class Server {
 		}
 
 		this.server.on("upgrade", (request, socket, head) => {
-			// @ts-ignore
 			this.ws.handleUpgrade(request, socket, head, (socket) => {
 				this.ws.emit("connection", socket, request);
 			});

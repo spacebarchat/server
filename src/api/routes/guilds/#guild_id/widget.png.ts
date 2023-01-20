@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Request, Response, Router } from "express";
 import { Guild } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
@@ -161,8 +163,7 @@ async function drawIcon(
 	scale: number,
 	icon: string,
 ) {
-	// @ts-ignore
-	const img = new require("canvas").Image();
+	const img = new (require("canvas").Image)();
 	img.src = icon;
 
 	// Do some canvas clipping magic!

@@ -29,7 +29,7 @@ import { getDatabase } from "../util/Database";
 import { OrmUtils } from "../imports/OrmUtils";
 
 export class BaseClassWithoutId extends BaseEntity {
-	private get construct(): any {
+	private get construct() {
 		return this.constructor;
 	}
 
@@ -37,19 +37,24 @@ export class BaseClassWithoutId extends BaseEntity {
 		return getDatabase()?.getMetadata(this.construct);
 	}
 
-	assign(props: any) {
+	assign(props: object) {
 		OrmUtils.mergeDeep(this, props);
 		return this;
 	}
 
+	// TODO: fix eslint
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	toJSON(): any {
 		return Object.fromEntries(
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/no-non-null-assertion
 			this.metadata!.columns // @ts-ignore
 				.map((x) => [x.propertyName, this[x.propertyName]])
 				.concat(
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore
 					this.metadata.relations.map((x) => [
 						x.propertyName,
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 						// @ts-ignore
 						this[x.propertyName],
 					]),

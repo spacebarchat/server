@@ -18,6 +18,8 @@
 
 import { ActivitySchema } from "@fosscord/util";
 
+// TODO: Need a way to allow camalCase and pascal_case without just duplicating the schema
+
 export const IdentifySchema = {
 	token: String,
 	$intents: BigInt, // discord uses a Integer for bitfields we use bigints tho. | instanceOf will automatically convert the Number to a BigInt
@@ -98,7 +100,7 @@ export interface IdentifySchema {
 		referring_domain_current?: string;
 		release_channel?: "stable" | "dev" | "ptb" | "canary";
 		client_build_number?: number;
-		client_event_source?: any;
+		client_event_source?: string;
 		client_version?: string;
 		system_locale?: string;
 	};
@@ -111,23 +113,23 @@ export interface IdentifySchema {
 	guild_subscriptions?: boolean;
 	capabilities?: number;
 	client_state?: {
-		guild_hashes?: any;
+		guild_hashes?: unknown;
 		highest_last_message_id?: string | number;
 		read_state_version?: number;
 		user_guild_settings_version?: number;
 		user_settings_version?: number;
 		useruser_guild_settings_version?: number;
 		private_channels_version?: number;
-		guild_versions?: any;
+		guild_versions?: unknown;
 		api_code_version?: number;
 	};
 	clientState?: {
-		guildHashes?: any;
+		guildHashes?: unknown;
 		highestLastMessageId?: string | number;
 		readStateVersion?: number;
 		userGuildSettingsVersion?: number;
 		useruserGuildSettingsVersion?: number;
-		guildVersions?: any;
+		guildVersions?: unknown;
 		apiCodeVersion?: number;
 	};
 	v?: number;

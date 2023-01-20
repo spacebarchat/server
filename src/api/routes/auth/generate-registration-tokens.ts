@@ -32,7 +32,7 @@ router.get(
 			? parseInt(req.query.length as string)
 			: 255;
 
-		let tokens: ValidRegistrationToken[] = [];
+		const tokens: ValidRegistrationToken[] = [];
 
 		for (let i = 0; i < count; i++) {
 			const token = ValidRegistrationToken.create({

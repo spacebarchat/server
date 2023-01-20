@@ -43,7 +43,7 @@ router.put(
 		const { channel_id, overwrite_id } = req.params;
 		const body = req.body as ChannelPermissionOverwriteSchema;
 
-		var channel = await Channel.findOneOrFail({
+		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
 		});
 		if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
@@ -56,22 +56,24 @@ router.put(
 				throw new HTTPError("user not found", 404);
 		} else throw new HTTPError("type not supported", 501);
 
-		//@ts-ignore
-		var overwrite: ChannelPermissionOverwrite =
+		let overwrite: ChannelPermissionOverwrite | undefined =
 			channel.permission_overwrites?.find((x) => x.id === overwrite_id);
 		if (!overwrite) {
-			// @ts-ignore
 			overwrite = {
 				id: overwrite_id,
 				type: body.type,
+				allow: "0",
+				deny: "0",
 			};
-			channel.permission_overwrites!.push(overwrite);
+			channel.permission_overwrites?.push(overwrite);
 		}
 		overwrite.allow = String(
-			req.permission!.bitfield & (BigInt(body.allow) || BigInt("0")),
+			(req.permission?.bitfield || 0n) &
+				(BigInt(body.allow) || BigInt("0")),
 		);
 		overwrite.deny = String(
-			req.permission!.bitfield & (BigInt(body.deny) || BigInt("0")),
+			(req.permission?.bitfield || 0n) &
+				(BigInt(body.deny) || BigInt("0")),
 		);
 
 		await Promise.all([
@@ -99,7 +101,7 @@ router.delete(
 		});
 		if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
-		channel.permission_overwrites = channel.permission_overwrites!.filter(
+		channel.permission_overwrites = channel.permission_overwrites?.filter(
 			(x) => x.id === overwrite_id,
 		);
 

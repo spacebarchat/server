@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import * as cluster from "cluster";
 
@@ -87,10 +88,10 @@ export class Snowflake {
 
 	static generateWorkerProcess() {
 		// worker process - returns a number
-		var time = BigInt(Date.now() - Snowflake.EPOCH) << BigInt(22);
-		var worker = Snowflake.workerId << 17n;
-		var process = Snowflake.processId << 12n;
-		var increment = Snowflake.INCREMENT++;
+		const time = BigInt(Date.now() - Snowflake.EPOCH) << BigInt(22);
+		const worker = Snowflake.workerId << 17n;
+		const process = Snowflake.processId << 12n;
+		const increment = Snowflake.INCREMENT++;
 		return BigInt(time | worker | process | increment);
 	}
 
