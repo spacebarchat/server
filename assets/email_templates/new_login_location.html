@@ -4,108 +4,108 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
 		<title>Verify {instanceName} Login from New Location</title>
 
 		<style>
 			* {
 				font-size: 16px;
 				line-height: 24px;
-			}
-			body {
-				color: white;
 				font-family: Arial, Helvetica, sans-serif;
-				background-color: #202225;
 			}
-			.btn {
-				font-size: 15px;
-				border: none;
-				border-radius: 3px;
-				text-decoration: none;
+			p {
 				color: white;
-				cursor: pointer;
-				padding: 15px 19px;
-				background-color: #ff5f00;
-				border-radius: 5px;
-				box-shadow: 0 0 10px rgba(255, 61, 0, 0.1);
 			}
-			.btn:hover {
-				background-color: hsl(22.4, 80%, 50%);
-			}
-			.btn:active {
-				background-color: hsl(22.4, 60%, 50%);
+			.ExternalClass {
+				width: 100%;
 			}
 		</style>
 	</head>
 	<body>
-		<img
-			src="https://raw.githubusercontent.com/fosscord/fosscord/master/assets-rebrand/svg/Fosscord-Wordmark-Orange.svg"
-			alt="Branding"
-			style="
-				width: 100%;
-				max-width: 200px;
-				margin: 0 auto;
-				display: block;
-				padding: 20px;
-			"
-		/>
-		<div
-			style="
-				width: 100%;
-				max-width: 500px;
-				margin: 0 auto;
-				padding: 40px 50px;
-				background-color: rgba(50, 53, 59, 1);
-				border-radius: 5px;
-			"
-		>
-			<p
+		<div style="background-color: #202225;">
+			<img
+				src="https://raw.githubusercontent.com/fosscord/fosscord/master/assets-rebrand/svg/Fosscord-Wordmark-Orange.svg"
+				alt="Branding"
 				style="
-					font-weight: 600;
-					font-size: 20px;
-					letter-spacing: 0.27px;
-					line-height: 24px;
+					width: 100%;
+					max-width: 200px;
+					margin: 0 auto;
+					display: block;
+					padding: 20px;
+				"
+			/>
+			<div
+				style="
+					width: 100%;
+					max-width: 500px;
+					margin: 0 auto;
+					padding: 40px 50px;
+					background-color: #32353b;
+					border-radius: 5px;
 				"
 			>
-				Hey {username},
-			</p>
-			<p>
-				It looks like someone tried to log into your {instanceName}
-				account from a new location. If this is you, follow the link
-				below to authorize logging in from this location on your
-				account. If this isn't you, we suggest changing your password as
-				soon as possible.
-			</p>
-			<p>
-				<strong>IP Address:</strong> {ip}
-				<br />
-				<strong>Location:</strong> {location}
-			</p>
-			<div>
-				<div
+				<p
 					style="
-						display: flex;
-						justify-content: center;
-						padding-bottom: 10px;
+						font-weight: 600;
+						font-size: 20px;
+						letter-spacing: 0.27px;
+						line-height: 24px;
 					"
 				>
-					<a class="btn" href="{verifyUrl}" target="_blank"
-						>Verify Login</a
+					Hey {userUsername},
+				</p>
+				<p>
+					It looks like someone tried to log into your {instanceName}
+					account from a new location. If this is you, follow the link
+					below to authorize logging in from this location on your
+					account. If this isn't you, we suggest changing your
+					password as soon as possible.
+				</p>
+				<p>
+					<strong>IP Address:</strong> {ipAddress}
+					<br />
+					<strong>Location:</strong> {locationCity}, {locationRegion},
+					{locationCountryName}
+				</p>
+				<div>
+					<div
+						style="
+							text-align: center;
+							justify-content: center;
+							padding-bottom: 10px;
+						"
 					>
-				</div>
-				<hr />
-				<div
-					style="
-						display: flex;
-						justify-content: center;
-						flex-direction: column;
-						text-align: center;
-					"
-				>
-					<p>
-						Alternatively, you can directly paste this link into
-						your browser:
-					</p>
-					<a href="{verifyUrl}" target="_blank">{verifyUrl}</a>
+						<a
+							href="{verifyUrl}"
+							target="_blank"
+							style="
+								font-size: 15px;
+								border: none;
+								border-radius: 3px;
+								text-decoration: none;
+								color: white;
+								cursor: pointer;
+								padding: 15px 19px;
+								background-color: #ff5f00;
+								border-radius: 5px;
+							"
+							>Verify Login</a
+						>
+					</div>
+					<hr />
+					<div
+						style="
+							text-align: center;
+							justify-content: center;
+							padding-bottom: 10px;
+						"
+					>
+						<p>
+							Alternatively, you can directly paste this link into
+							your browser:
+						</p>
+						<a href="{verifyUrl}" target="_blank">{verifyUrl}</a>
+					</div>
 				</div>
 			</div>
 		</div>
