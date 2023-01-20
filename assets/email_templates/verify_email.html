@@ -4,103 +4,97 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
 		<title>Verify Email Address for {instanceName}</title>
 
 		<style>
 			* {
 				font-size: 16px;
 				line-height: 24px;
-			}
-			body {
-				color: white;
 				font-family: Arial, Helvetica, sans-serif;
-				background-color: #202225;
 			}
-			.btn {
-				font-size: 15px;
-				border: none;
-				border-radius: 3px;
-				text-decoration: none;
+			p {
 				color: white;
-				cursor: pointer;
-				padding: 15px 19px;
-				background-color: #ff5f00;
-				border-radius: 5px;
-				box-shadow: 0 0 10px rgba(255, 61, 0, 0.1);
 			}
-			.btn:hover {
-				background-color: hsl(22.4, 80%, 50%);
-			}
-			.btn:active {
-				background-color: hsl(22.4, 60%, 50%);
+			.ExternalClass {
+				width: 100%;
 			}
 		</style>
 	</head>
 	<body>
-		<img
-			src="https://raw.githubusercontent.com/fosscord/fosscord/master/assets-rebrand/svg/Fosscord-Wordmark-Orange.svg"
-			alt="Branding"
-			style="
-				width: 100%;
-				max-width: 200px;
-				margin: 0 auto;
-				display: block;
-				padding: 20px;
-			"
-		/>
-		<div
-			style="
-				width: 100%;
-				max-width: 500px;
-				margin: 0 auto;
-				padding: 40px 50px;
-				background-color: rgba(50, 53, 59, 1);
-				border-radius: 5px;
-			"
-		>
-			<p
+		<div style="background-color: #202225;">
+			<img
+				src="https://raw.githubusercontent.com/fosscord/fosscord/master/assets-rebrand/svg/Fosscord-Wordmark-Orange.svg"
+				alt="Branding"
 				style="
-					font-weight: 600;
-					font-size: 20px;
-					letter-spacing: 0.27px;
-					line-height: 24px;
+					width: 100%;
+					max-width: 200px;
+					margin: 0 auto;
+					display: block;
+					padding: 20px;
+				"
+			/>
+			<div
+				style="
+					width: 100%;
+					max-width: 500px;
+					margin: 0 auto;
+					padding: 40px 50px;
+					background-color: #32353b;
+					border-radius: 5px;
 				"
 			>
-				Hey {username},
-			</p>
-			<p>
-				Thanks for registering for an account on {instanceName}! Before
-				we get started, we just need to confirm that this is you. Click
-				below to verify your email address:
-			</p>
-			<div>
-				<div
+				<p
 					style="
-						display: flex;
-						justify-content: center;
-						padding-bottom: 10px;
+						font-weight: 600;
+						font-size: 20px;
+						letter-spacing: 0.27px;
+						line-height: 24px;
 					"
 				>
-					<a class="btn" href="{verificationUrl}" target="_blank"
-						>Verify Email</a
+					Hey {userUsername},
+				</p>
+				<p>
+					Thanks for registering for an account on {instanceName}!
+					Before we get started, we just need to confirm that this is
+					you. Click below to verify your email address:
+				</p>
+				<div>
+					<div
+						style="
+							text-align: center;
+							justify-content: center;
+							padding-bottom: 10px;
+						"
 					>
-				</div>
-				<hr />
-				<div
-					style="
-						display: flex;
-						justify-content: center;
-						flex-direction: column;
-						text-align: center;
-					"
-				>
-					<p>
-						Alternatively, you can directly paste this link into
-						your browser:
-					</p>
-					<a href="{verificationUrl}" target="_blank"
-						>{verificationUrl}</a
-					>
+						<a
+							class="btn"
+							href="{emailVerificationUrl}"
+							target="_blank"
+							style="
+								font-size: 15px;
+								border: none;
+								border-radius: 3px;
+								text-decoration: none;
+								color: white;
+								cursor: pointer;
+								padding: 15px 19px;
+								background-color: #ff5f00;
+								border-radius: 5px;
+							"
+							>Verify Email</a
+						>
+					</div>
+					<hr />
+					<div style="text-align: center">
+						<p>
+							Alternatively, you can directly paste this link into
+							your browser:
+						</p>
+						<a href="{emailVerificationUrl}" target="_blank"
+							>{emailVerificationUrl}</a
+						>
+					</div>
 				</div>
 			</div>
 		</div>
