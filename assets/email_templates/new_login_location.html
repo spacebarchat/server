@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Verify Email Address for {instanceName}</title>
+		<title>Verify {instanceName} Login from New Location</title>
 
 		<style>
 			* {
@@ -69,9 +69,16 @@
 				Hey {username},
 			</p>
 			<p>
-				Thanks for registering for an account on {instanceName}! Before
-				we get started, we just need to confirm that this is you. Click
-				below to verify your email address:
+				It looks like someone tried to log into your {instanceName}
+				account from a new location. If this is you, follow the link
+				below to authorize logging in from this location on your
+				account. If this isn't you, we suggest changing your password as
+				soon as possible.
+			</p>
+			<p>
+				<strong>IP Address:</strong> {ip}
+				<br />
+				<strong>Location:</strong> {location}
 			</p>
 			<div>
 				<div
@@ -81,8 +88,8 @@
 						padding-bottom: 10px;
 					"
 				>
-					<a class="btn" href="{verificationUrl}" target="_blank"
-						>Verify Email</a
+					<a class="btn" href="{verifyUrl}" target="_blank"
+						>Verify Login</a
 					>
 				</div>
 				<hr />
@@ -98,9 +105,7 @@
 						Alternatively, you can directly paste this link into
 						your browser:
 					</p>
-					<a href="{verificationUrl}" target="_blank"
-						>{verificationUrl}</a
-					>
+					<a href="{verifyUrl}" target="_blank">{verifyUrl}</a>
 				</div>
 			</div>
 		</div>
