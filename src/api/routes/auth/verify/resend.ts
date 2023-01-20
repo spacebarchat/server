@@ -33,7 +33,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		throw new HTTPError("User does not have an email address", 400);
 	}
 
-	await Email.sendVerificationEmail(req.user_id, user.email)
+	await Email.sendVerificationEmail(user, user.email)
 		.then((info) => {
 			console.log("Message sent: %s", info.messageId);
 			return res.sendStatus(204);
