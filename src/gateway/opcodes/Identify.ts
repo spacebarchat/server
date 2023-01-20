@@ -93,7 +93,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					"guild",
 					"guild.channels",
 					"guild.emojis",
-					"guild.emojis.user",
 					"guild.roles",
 					"guild.stickers",
 					"user",

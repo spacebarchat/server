@@ -55,7 +55,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.patch(
 	"/",
-	route({ body: "GuildUpdateSchema" }),
+	route({ body: "GuildUpdateSchema", permission: "MANAGE_GUILD" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as GuildUpdateSchema;
 		const { guild_id } = req.params;

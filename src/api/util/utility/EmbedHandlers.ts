@@ -420,7 +420,9 @@ export const EmbedHandlers: {
 			},
 		};
 	},
-
+	"youtu.be": (url: URL) => {
+		return EmbedHandlers["www.youtube.com"](url);
+	},
 	"youtube.com": (url: URL) => {
 		return EmbedHandlers["www.youtube.com"](url);
 	},
