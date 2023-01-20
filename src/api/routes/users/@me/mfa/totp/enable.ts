@@ -57,7 +57,7 @@ router.post(
 		if (verifyToken(body.secret, body.code)?.delta != 0)
 			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
-		let backup_codes = generateMfaBackupCodes(req.user_id);
+		const backup_codes = generateMfaBackupCodes(req.user_id);
 		await Promise.all(backup_codes.map((x) => x.save()));
 		await User.update(
 			{ id: req.user_id },

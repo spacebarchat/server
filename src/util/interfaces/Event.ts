@@ -39,6 +39,7 @@ import {
 	Presence,
 	UserSettings,
 	IReadyGuildDTO,
+	ReadState,
 } from "@fosscord/util";
 
 export interface Event {
@@ -47,6 +48,7 @@ export interface Event {
 	channel_id?: string;
 	created_at?: Date;
 	event: EVENT;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	data?: any;
 }
 
@@ -103,12 +105,12 @@ export interface ReadyEventData {
 		[number, [[number, [number, number]]]],
 		{ b: number; k: bigint[] }[],
 	][];
-	guild_join_requests?: any[]; // ? what is this? this is new
+	guild_join_requests?: unknown[]; // ? what is this? this is new
 	shard?: [number, number];
 	user_settings?: UserSettings;
 	relationships?: PublicRelationship[]; // TODO
 	read_state: {
-		entries: any[]; // TODO
+		entries: ReadState[]; // TODO
 		partial: boolean;
 		version: number;
 	};
@@ -124,7 +126,7 @@ export interface ReadyEventData {
 	merged_members?: PublicMember[][];
 	// probably all users who the user is in contact with
 	users?: PublicUser[];
-	sessions: any[];
+	sessions: unknown[];
 }
 
 export interface ReadyEvent extends Event {
@@ -178,7 +180,7 @@ export interface GuildCreateEvent extends Event {
 		joined_at: Date;
 		// TODO: add them to guild
 		guild_scheduled_events: never[];
-		guild_hashes: {};
+		guild_hashes: unknown;
 		presences: never[];
 		stage_instances: never[];
 		threads: never[];
@@ -408,7 +410,7 @@ export interface TypingStartEvent extends Event {
 
 export interface UserUpdateEvent extends Event {
 	event: "USER_UPDATE";
-	data: User;
+	data: Omit<User, "data">;
 }
 
 export interface UserDeleteEvent extends Event {

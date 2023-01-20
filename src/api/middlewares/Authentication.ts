@@ -54,11 +54,12 @@ export const API_PREFIX = /^\/api(\/v\d+)?/;
 export const API_PREFIX_TRAILING_SLASH = /^\/api(\/v\d+)?\//;
 
 declare global {
+	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		interface Request {
 			user_id: string;
 			user_bot: boolean;
-			token: string;
+			token: { id: string; iat: number };
 			rights: Rights;
 		}
 	}
@@ -87,7 +88,7 @@ export async function Authentication(
 	try {
 		const { jwtSecret } = Config.get().security;
 
-		const { decoded, user }: any = await checkToken(
+		const { decoded, user } = await checkToken(
 			req.headers.authorization,
 			jwtSecret,
 		);
@@ -97,7 +98,8 @@ export async function Authentication(
 		req.user_bot = user.bot;
 		req.rights = new Rights(Number(user.rights));
 		return next();
-	} catch (error: any) {
-		return next(new HTTPError(error?.toString(), 400));
+	} catch (error) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		return next(new HTTPError(error!.toString(), 400));
 	}
 }

@@ -18,7 +18,6 @@
 
 import { Router, Request, Response } from "express";
 import {
-	Role,
 	Guild,
 	Config,
 	getRights,
@@ -52,6 +51,7 @@ router.post(
 
 		const { autoJoin } = Config.get().guild;
 		if (autoJoin.enabled && !autoJoin.guilds?.length) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			await Config.set({ guild: { autoJoin: { guilds: [guild.id] } } });
 		}

@@ -42,7 +42,7 @@ type RateLimit = {
 	expires_at: Date;
 };
 
-let Cache = new Map<string, RateLimit>();
+const Cache = new Map<string, RateLimit>();
 const EventRateLimit = "RATELIMIT";
 
 export default function rateLimit(opts: {
@@ -57,12 +57,8 @@ export default function rateLimit(opts: {
 	error?: boolean;
 	success?: boolean;
 	onlyIp?: boolean;
-}): any {
-	return async (
-		req: Request,
-		res: Response,
-		next: NextFunction,
-	): Promise<any> => {
+}) {
+	return async (req: Request, res: Response, next: NextFunction) => {
 		// exempt user? if so, immediately short circuit
 		if (req.user_id) {
 			const rights = await getRights(req.user_id);
@@ -85,7 +81,7 @@ export default function rateLimit(opts: {
 		)
 			max_hits = opts.MODIFY;
 
-		let offender = Cache.get(executor_id + bucket_id);
+		const offender = Cache.get(executor_id + bucket_id);
 
 		if (offender) {
 			let reset = offender.expires_at.getTime();

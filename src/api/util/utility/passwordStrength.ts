@@ -23,7 +23,7 @@ const reNUMBER = /[0-9]/g;
 const reUPPERCASELETTER = /[A-Z]/g;
 const reSYMBOLS = /[A-Z,a-z,0-9]/g;
 
-const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored in db
+// const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored in db
 /*
  * https://en.wikipedia.org/wiki/Password_policy
  * password must meet following criteria, to be perfect:
@@ -38,7 +38,7 @@ const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored
 export function checkPassword(password: string): number {
 	const { minLength, minNumbers, minUpperCase, minSymbols } =
 		Config.get().register.password;
-	var strength = 0;
+	let strength = 0;
 
 	// checks for total password len
 	if (password.length >= minLength - 1) {
@@ -68,13 +68,13 @@ export function checkPassword(password: string): number {
 		strength = 0;
 	}
 
-	let entropyMap: { [key: string]: number } = {};
+	const entropyMap: { [key: string]: number } = {};
 	for (let i = 0; i < password.length; i++) {
 		if (entropyMap[password[i]]) entropyMap[password[i]]++;
 		else entropyMap[password[i]] = 1;
 	}
 
-	let entropies = Object.values(entropyMap);
+	const entropies = Object.values(entropyMap);
 
 	entropies.map((x) => x / entropyMap.length);
 	strength +=

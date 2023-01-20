@@ -32,7 +32,7 @@ function registerPath(file, method, prefix, path, ...args) {
 	const sourceFile = file.replace("/dist/", "/src/").replace(".js", ".ts");
 	const opts = args.find((x) => typeof x === "object");
 	if (opts) {
-		routes.set(urlPath + "|" + method, opts); // @ts-ignore
+		routes.set(urlPath + "|" + method, opts);
 		opts.file = sourceFile;
 		// console.log(method, urlPath, opts);
 	} else {
@@ -46,7 +46,6 @@ function routeOptions(opts) {
 	return opts;
 }
 
-// @ts-ignore
 RouteUtility.route = routeOptions;
 
 express.Router = (opts) => {

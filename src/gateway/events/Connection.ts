@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import WS from "ws";
 import { genSessionId, WebSocket } from "@fosscord/gateway";
 import { Send } from "../util/Send";
@@ -27,10 +28,12 @@ import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "url";
 import { Config } from "@fosscord/util";
-var erlpack: any;
+let erlpack: unknown;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) {}
+} catch (error) {
+	/* empty */
+}
 
 // TODO: check rate limit
 // TODO: specify rate limit in config

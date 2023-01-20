@@ -55,7 +55,7 @@ router.patch(
 		});
 
 		// Populated on password change
-		var newToken: string | undefined;
+		let newToken: string | undefined;
 
 		if (body.avatar)
 			body.avatar = await handleFile(
@@ -120,7 +120,7 @@ router.patch(
 		}
 
 		if (body.username) {
-			var check_username = body?.username?.replace(/\s/g, "");
+			const check_username = body?.username?.replace(/\s/g, "");
 			if (!check_username) {
 				throw FieldErrors({
 					username: {
@@ -153,7 +153,8 @@ router.patch(
 		user.validate();
 		await user.save();
 
-		// @ts-ignore
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		//@ts-ignore
 		delete user.data;
 
 		// TODO: send update member list event in gateway

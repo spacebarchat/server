@@ -18,6 +18,6 @@
 
 export class GifConfiguration {
 	enabled: boolean = true;
-	provider: "tenor" = "tenor"; // more coming soon
+	provider = "tenor" as const; // more coming soon
 	apiKey?: string = "LIVDSRZULELA";
 }

@@ -19,11 +19,9 @@
 import { Router, Request, Response } from "express";
 import {
 	PublicConnectedAccount,
-	PublicUser,
 	User,
 	UserPublic,
 	Member,
-	Guild,
 	UserProfileModifySchema,
 	handleFile,
 	PrivateUserProjection,
@@ -53,8 +51,8 @@ router.get(
 			relations: ["connected_accounts"],
 		});
 
-		var mutual_guilds: object[] = [];
-		var premium_guild_since;
+		const mutual_guilds: object[] = [];
+		let premium_guild_since;
 
 		if (with_mutual_guilds == "true") {
 			const requested_member = await Member.find({
@@ -169,7 +167,7 @@ router.patch(
 				`/banners/${req.user_id}`,
 				body.banner as string,
 			);
-		let user = await User.findOneOrFail({
+		const user = await User.findOneOrFail({
 			where: { id: req.user_id },
 			select: [...PrivateUserProjection, "data"],
 		});
@@ -177,6 +175,7 @@ router.patch(
 		user.assign(body);
 		await user.save();
 
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		delete user.data;
 

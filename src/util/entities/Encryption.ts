@@ -16,32 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	OneToMany,
-	RelationId,
-} from "typeorm";
+import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
-import { PublicUserProjection, User } from "./User";
-import { HTTPError } from "lambert-server";
-import {
-	containsAll,
-	emitEvent,
-	getPermission,
-	Snowflake,
-	trimSpecial,
-	InvisibleCharacters,
-} from "../util";
-import { BitField, BitFieldResolvable, BitFlag } from "../util/BitField";
-import { Recipient } from "./Recipient";
-import { Message } from "./Message";
-import { ReadState } from "./ReadState";
-import { Invite } from "./Invite";
-import { DmChannelDTO } from "../dtos";
 
 @Entity("security_settings")
 export class SecuritySettings extends BaseClass {

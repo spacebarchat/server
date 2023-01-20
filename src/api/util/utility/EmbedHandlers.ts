@@ -17,13 +17,13 @@
 */
 
 import { Config, Embed, EmbedType } from "@fosscord/util";
-import fetch, { Response } from "node-fetch";
+import fetch, { RequestInit } from "node-fetch";
 import * as cheerio from "cheerio";
 import probe from "probe-image-size";
 import crypto from "crypto";
 import { yellow } from "picocolors";
 
-export const DEFAULT_FETCH_OPTIONS: any = {
+export const DEFAULT_FETCH_OPTIONS: RequestInit = {
 	redirect: "follow",
 	follow: 1,
 	headers: {
@@ -50,7 +50,7 @@ export const getProxyUrl = (
 
 	// Imagor
 	if (imagorServerUrl) {
-		let path = `${width}x${height}/${url.host}${url.pathname}`;
+		const path = `${width}x${height}/${url.host}${url.pathname}`;
 
 		const hash = crypto
 			.createHmac("sha1", secret)
@@ -92,8 +92,8 @@ export const getMetaDescriptions = (text: string) => {
 		image: getMeta($, "og:image") || getMeta($, "twitter:image"),
 		image_fallback: $(`image`).attr("src"),
 		video_fallback: $(`video`).attr("src"),
-		width: parseInt(getMeta($, "og:image:width")!) || 0,
-		height: parseInt(getMeta($, "og:image:height")!) || 0,
+		width: parseInt(getMeta($, "og:image:width") || "0"),
+		height: parseInt(getMeta($, "og:image:height") || "0"),
 		url: getMeta($, "og:url"),
 		youtube_embed: getMeta($, "og:video:secure_url"),
 	};
@@ -192,8 +192,8 @@ export const EmbedHandlers: {
 				proxy_url: metas.image
 					? getProxyUrl(
 							new URL(metas.image),
-							metas.width!,
-							metas.height!,
+							metas.width,
+							metas.height,
 					  )
 					: undefined,
 			},
@@ -239,9 +239,9 @@ export const EmbedHandlers: {
 		const text = json.data.text;
 		const created_at = new Date(json.data.created_at);
 		const metrics = json.data.public_metrics;
-		let media = json.includes.media?.filter(
-			(x: any) => x.type == "photo",
-		) as any[]; // TODO: video
+		const media = json.includes.media?.filter(
+			(x: { type: string }) => x.type == "photo",
+		);
 
 		const embed: Embed = {
 			type: EmbedType.rich,
@@ -334,7 +334,7 @@ export const EmbedHandlers: {
 				width: 640,
 				height: 640,
 				proxy_url: metas.image
-					? getProxyUrl(new URL(metas.image!), 640, 640)
+					? getProxyUrl(new URL(metas.image), 640, 640)
 					: undefined,
 				url: metas.image,
 			},
@@ -365,9 +365,9 @@ export const EmbedHandlers: {
 				url: url.href,
 				proxy_url: metas.image
 					? getProxyUrl(
-							new URL(metas.image!),
-							metas.width!,
-							metas.height!,
+							new URL(metas.image),
+							metas.width,
+							metas.height,
 					  )
 					: undefined,
 			},
@@ -395,7 +395,7 @@ export const EmbedHandlers: {
 				height: 215,
 				url: metas.image,
 				proxy_url: metas.image
-					? getProxyUrl(new URL(metas.image!), 460, 215)
+					? getProxyUrl(new URL(metas.image), 460, 215)
 					: undefined,
 			},
 			provider: {
@@ -436,7 +436,7 @@ export const EmbedHandlers: {
 				// TODO: does this adjust with aspect ratio?
 				width: metas.width,
 				height: metas.height,
-				url: metas.youtube_embed!,
+				url: metas.youtube_embed,
 			},
 			url: url.href,
 			type: EmbedType.video,
@@ -447,9 +447,9 @@ export const EmbedHandlers: {
 				url: metas.image,
 				proxy_url: metas.image
 					? getProxyUrl(
-							new URL(metas.image!),
-							metas.width!,
-							metas.height!,
+							new URL(metas.image),
+							metas.width,
+							metas.height,
 					  )
 					: undefined,
 			},

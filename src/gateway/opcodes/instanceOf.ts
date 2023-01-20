@@ -20,7 +20,7 @@ import { instanceOf } from "lambert-server";
 import { WebSocket } from "@fosscord/gateway";
 import { CLOSECODES } from "../util/Constants";
 
-export function check(this: WebSocket, schema: any, data: any) {
+export function check(this: WebSocket, schema: unknown, data: unknown) {
 	try {
 		const error = instanceOf(schema, data, { path: "body" });
 		if (error !== true) {

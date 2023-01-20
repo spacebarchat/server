@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 import crypto from "crypto";
@@ -38,7 +38,7 @@ export class BackupCode extends BaseClass {
 }
 
 export function generateMfaBackupCodes(user_id: string) {
-	let backup_codes: BackupCode[] = [];
+	const backup_codes: BackupCode[] = [];
 	for (let i = 0; i < 10; i++) {
 		const code = BackupCode.create({
 			user: { id: user_id },

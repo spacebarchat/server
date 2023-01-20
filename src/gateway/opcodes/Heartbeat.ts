@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, WebSocket } from "@fosscord/gateway";
+import { WebSocket } from "@fosscord/gateway";
 import { setHeartbeat } from "../util/Heartbeat";
 import { Send } from "../util/Send";
 
-export async function onHeartbeat(this: WebSocket, data: Payload) {
+export async function onHeartbeat(this: WebSocket) {
 	// TODO: validate payload
 
 	setHeartbeat(this);

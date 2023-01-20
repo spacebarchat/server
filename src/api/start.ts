@@ -26,7 +26,7 @@ config();
 import { FosscordServer } from "./Server";
 import cluster from "cluster";
 import os from "os";
-var cores = 1;
+let cores = 1;
 try {
 	cores = Number(process.env.THREADS) || os.cpus().length;
 } catch {
@@ -41,16 +41,17 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
 		cluster.fork();
 	}
 
-	cluster.on("exit", (worker, code, signal) => {
+	cluster.on("exit", (worker) => {
 		console.log(`worker ${worker.process.pid} died, restart worker`);
 		cluster.fork();
 	});
 } else {
-	var port = Number(process.env.PORT) || 3001;
+	const port = Number(process.env.PORT) || 3001;
 
 	const server = new FosscordServer({ port });
 	server.start().catch(console.error);
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	global.server = server;
 }

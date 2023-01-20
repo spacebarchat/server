@@ -68,7 +68,8 @@ router.post(
 			guild_id: guild_id,
 			managed: false,
 			permissions: String(
-				req.permission!.bitfield & BigInt(body.permissions || "0"),
+				(req.permission?.bitfield || 0n) &
+					BigInt(body.permissions || "0"),
 			),
 			tags: undefined,
 			icon: undefined,

@@ -25,10 +25,11 @@ import { Like } from "typeorm";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const { limit, personalization_disabled } = req.query;
-	var showAllGuilds = Config.get().guild.discovery.showAllGuilds;
+	// const { limit, personalization_disabled } = req.query;
+	const { limit } = req.query;
+	const showAllGuilds = Config.get().guild.discovery.showAllGuilds;
 
-	const genLoadId = (size: Number) =>
+	const genLoadId = (size: number) =>
 		[...Array(size)]
 			.map(() => Math.floor(Math.random() * 16).toString(16))
 			.join("");

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getPermission, Invite, PublicInviteRelation } from "@fosscord/util";
+import { Invite, PublicInviteRelation } from "@fosscord/util";
 import { route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
 

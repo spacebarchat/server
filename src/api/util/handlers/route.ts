@@ -34,6 +34,8 @@ import { NextFunction, Request, Response } from "express";
 import { AnyValidateFunction } from "ajv/dist/core";
 
 declare global {
+	// TODO: fix this
+	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		interface Request {
 			permission?: Permissions;
@@ -53,7 +55,7 @@ export interface RouteOptions {
 	body?: `${string}Schema`; // typescript interface name
 	test?: {
 		response?: RouteResponse;
-		body?: any;
+		body?: unknown;
 		path?: string;
 		event?: EVENT | EVENT[];
 		headers?: Record<string, string>;
@@ -61,7 +63,7 @@ export interface RouteOptions {
 }
 
 export function route(opts: RouteOptions) {
-	var validate: AnyValidateFunction<any> | undefined;
+	let validate: AnyValidateFunction | undefined;
 	if (opts.body) {
 		validate = ajv.getSchema(opts.body);
 		if (!validate) throw new Error(`Body schema ${opts.body} not found`);

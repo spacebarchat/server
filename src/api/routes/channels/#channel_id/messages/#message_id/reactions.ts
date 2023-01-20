@@ -165,13 +165,13 @@ router.put(
 				x.emoji.name === emoji.name,
 		);
 
-		if (!already_added) req.permission!.hasThrow("ADD_REACTIONS");
+		if (!already_added) req.permission?.hasThrow("ADD_REACTIONS");
 
 		if (emoji.id) {
 			const external_emoji = await Emoji.findOneOrFail({
 				where: { id: emoji.id },
 			});
-			if (!already_added) req.permission!.hasThrow("USE_EXTERNAL_EMOJIS");
+			if (!already_added) req.permission?.hasThrow("USE_EXTERNAL_EMOJIS");
 			emoji.animated = external_emoji.animated;
 			emoji.name = external_emoji.name;
 		}
@@ -214,7 +214,8 @@ router.delete(
 	"/:emoji/:user_id",
 	route({}),
 	async (req: Request, res: Response) => {
-		var { message_id, channel_id, user_id } = req.params;
+		let { user_id } = req.params;
+		const { message_id, channel_id } = req.params;
 
 		const emoji = getEmoji(req.params.emoji);
 

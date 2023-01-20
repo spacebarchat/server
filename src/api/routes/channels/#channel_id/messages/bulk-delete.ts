@@ -50,7 +50,7 @@ router.post(
 		const rights = await getRights(req.user_id);
 		rights.hasThrow("SELF_DELETE_MESSAGES");
 
-		let superuser = rights.has("MANAGE_MESSAGES");
+		const superuser = rights.has("MANAGE_MESSAGES");
 		const permission = await getPermission(
 			req.user_id,
 			channel?.guild_id,

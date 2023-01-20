@@ -41,7 +41,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		},
 	);
 
-	const { results } = (await response.json()) as any; // TODO: types
+	const { results } = await response.json();
 
 	res.json(results.map(parseGifResult)).status(200);
 });

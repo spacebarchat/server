@@ -47,10 +47,10 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			401,
 		);
 
-	// @ts-ignore
-	guild.joined_at = member?.joined_at;
-
-	return res.send(guild);
+	return res.send({
+		...guild,
+		joined_at: member?.joined_at,
+	});
 });
 
 router.patch(
@@ -68,7 +68,7 @@ router.patch(
 				"MANAGE_GUILDS",
 			);
 
-		var guild = await Guild.findOneOrFail({
+		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
 			relations: ["emojis", "roles", "stickers"],
 		});
@@ -110,7 +110,7 @@ router.patch(
 				"DISCOVERABLE",
 			];
 
-			for (var feature of diff) {
+			for (const feature of diff) {
 				if (MUTABLE_FEATURES.includes(feature)) continue;
 
 				throw FosscordApiErrors.FEATURE_IS_IMMUTABLE.withParams(

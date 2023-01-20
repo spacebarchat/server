@@ -27,14 +27,16 @@ import path from "path";
 import fs from "fs/promises";
 const bigIntJson = BigIntJson({ storeAsString: true });
 
-var erlpack: any;
+let erlpack: { unpack: (buffer: Buffer) => Payload };
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) {}
+} catch (error) {
+	/* empty */
+}
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
-	var data: Payload;
+	let data: Payload;
 
 	if (
 		(buffer instanceof Buffer && buffer[0] === 123) || // ASCII 123 = `{`. Bad check for JSON
@@ -44,9 +46,9 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	} else if (this.encoding === "json" && buffer instanceof Buffer) {
 		if (this.inflate) {
 			try {
-				buffer = this.inflate.process(buffer) as any;
+				buffer = this.inflate.process(buffer);
 			} catch {
-				buffer = buffer.toString() as any;
+				buffer = buffer.toString();
 			}
 		}
 		data = bigIntJson.parse(buffer as string);
@@ -78,7 +80,6 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 
 	check.call(this, PayloadSchema, data);
 
-	// @ts-ignore
 	const OPCodeHandler = OPCodeHandlers[data.op];
 	if (!OPCodeHandler) {
 		console.error("[Gateway] Unkown opcode " + data.op);
@@ -100,7 +101,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 			: undefined;
 
 	try {
-		var ret = await OPCodeHandler.call(this, data);
+		const ret = await OPCodeHandler.call(this, data);
 		Sentry.withScope((scope) => {
 			scope.setSpan(transaction);
 			scope.setUser({ id: this.user_id });

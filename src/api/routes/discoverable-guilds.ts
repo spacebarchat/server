@@ -26,8 +26,8 @@ const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { offset, limit, categories } = req.query;
-	var showAllGuilds = Config.get().guild.discovery.showAllGuilds;
-	var configLimit = Config.get().guild.discovery.limit;
+	const showAllGuilds = Config.get().guild.discovery.showAllGuilds;
+	const configLimit = Config.get().guild.discovery.limit;
 	let guilds;
 	if (categories == undefined) {
 		guilds = showAllGuilds

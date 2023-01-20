@@ -16,17 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	Channel,
-	emitEvent,
-	GuildDeleteEvent,
-	Guild,
-	Member,
-	Message,
-	Role,
-	Invite,
-	Emoji,
-} from "@fosscord/util";
+import { emitEvent, GuildDeleteEvent, Guild } from "@fosscord/util";
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
@@ -36,7 +26,7 @@ const router = Router();
 // discord prefixes this route with /delete instead of using the delete method
 // docs are wrong https://discord.com/developers/docs/resources/guild#delete-guild
 router.post("/", route({}), async (req: Request, res: Response) => {
-	var { guild_id } = req.params;
+	const { guild_id } = req.params;
 
 	const guild = await Guild.findOneOrFail({
 		where: { id: guild_id },

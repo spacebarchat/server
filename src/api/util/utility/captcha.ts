@@ -47,7 +47,10 @@ export async function verifyCaptcha(response: string, ip?: string) {
 	const { security } = Config.get();
 	const { service, secret, sitekey } = security.captcha;
 
-	if (!service) throw new Error("Cannot verify captcha without service");
+	if (!service || !secret || !sitekey)
+		throw new Error(
+			"CAPTCHA is not configured correctly. https://docs.fosscord.com/setup/server/security/captcha/",
+		);
 
 	const res = await fetch(verifyEndpoints[service], {
 		method: "POST",
@@ -56,9 +59,9 @@ export async function verifyCaptcha(response: string, ip?: string) {
 		},
 		body:
 			`response=${encodeURIComponent(response)}` +
-			`&secret=${encodeURIComponent(secret!)}` +
-			`&sitekey=${encodeURIComponent(sitekey!)}` +
-			(ip ? `&remoteip=${encodeURIComponent(ip!)}` : ""),
+			`&secret=${encodeURIComponent(secret)}` +
+			`&sitekey=${encodeURIComponent(sitekey)}` +
+			(ip ? `&remoteip=${encodeURIComponent(ip)}` : ""),
 	});
 
 	return (await res.json()) as hcaptchaResponse | recaptchaResponse;

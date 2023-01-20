@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
+import { Router } from "express";
 const router: Router = Router();
 // TODO:
 
