@@ -55,7 +55,7 @@ router.post(
 
 		const webhook_count = await Webhook.count({ where: { channel_id } });
 		const { maxWebhooks } = Config.get().limits.channel;
-		if (maxWebhooks && (webhook_count > maxWebhooks))
+		if (maxWebhooks && webhook_count > maxWebhooks)
 			throw DiscordApiErrors.MAXIMUM_WEBHOOKS.withParams(maxWebhooks);
 
 		let { avatar, name } = req.body as WebhookCreateSchema;
