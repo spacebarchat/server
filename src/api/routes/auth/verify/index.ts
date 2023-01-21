@@ -17,11 +17,7 @@
 */
 
 import { route, verifyCaptcha } from "@fosscord/api";
-import {
-	Config,
-	FieldErrors,
-	verifyTokenEmailVerification,
-} from "@fosscord/util";
+import { checkToken, Config, FieldErrors } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 const router = Router();
@@ -47,10 +43,7 @@ router.post(
 		try {
 			const { jwtSecret } = Config.get().security;
 
-			const { decoded, user } = await verifyTokenEmailVerification(
-				token,
-				jwtSecret,
-			);
+			const { decoded, user } = await checkToken(token, jwtSecret);
 
 			// toksn should last for 24 hours from the time they were issued
 			if (new Date().getTime() > decoded.iat * 1000 + 86400 * 1000) {
@@ -71,8 +64,8 @@ router.post(
 			// TODO: invalidate token after use?
 
 			return res.send(user);
-		} catch (error: any) {
-			throw new HTTPError(error?.toString(), 400);
+		} catch (error) {
+			throw new HTTPError((error as Error).toString(), 400);
 		}
 	},
 );

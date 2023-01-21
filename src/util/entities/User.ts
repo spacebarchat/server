@@ -31,7 +31,14 @@ import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
 import { UserSettings } from "./UserSettings";
 import { Session } from "./Session";
-import { Config, FieldErrors, Snowflake, trimSpecial, adjustEmail, Email, generateToken } from "..";
+import {
+	Config,
+	FieldErrors,
+	Snowflake,
+	trimSpecial,
+	adjustEmail,
+	Email,
+} from "..";
 import { Request } from "express";
 import { SecurityKey } from "./SecurityKey";
 
