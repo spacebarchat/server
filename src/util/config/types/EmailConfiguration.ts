@@ -18,6 +18,7 @@
 
 import {
 	MailGunConfiguration,
+	MailJetConfiguration,
 	SMTPConfiguration,
 } from "./subconfigurations/email";
 
@@ -25,4 +26,5 @@ export class EmailConfiguration {
 	provider: string | null = null;
 	smtp: SMTPConfiguration = new SMTPConfiguration();
 	mailgun: MailGunConfiguration = new MailGunConfiguration();
+	mailjet: MailJetConfiguration = new MailJetConfiguration();
 }
