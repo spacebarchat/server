@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * from "./MailGun";
-export * from "./MailJet";
-export * from "./SMTP";
+export class MailJetConfiguration {
+	apiKey: string | null = null;
+	apiSecret: string | null = null;
+}

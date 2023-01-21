@@ -116,6 +116,7 @@
 	"optionalDependencies": {
 		"erlpack": "^0.1.4",
 		"sqlite3": "^5.1.4",
-		"nodemailer-mailgun-transport": "^2.1.5"
+		"nodemailer-mailgun-transport": "^2.1.5",
+		"nodemailer-mailjet-transport": "^1.0.4"
 	}
 }
