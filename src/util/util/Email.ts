@@ -50,11 +50,111 @@ export function adjustEmail(email?: string): string | undefined {
 	return email;
 }
 
+const transporters = {
+	smtp: async function () {
+		// get configuration
+		const { host, port, secure, username, password } =
+			Config.get().email.smtp;
+
+		// ensure all required configuration values are set
+		if (!host || !port || !secure || !username || !password)
+			return console.error(
+				"[Email] SMTP has not been configured correctly.",
+			);
+
+		// construct the transporter
+		const transporter = nodemailer.createTransport({
+			host,
+			port,
+			secure,
+			auth: {
+				user: username,
+				pass: password,
+			},
+		});
+
+		// verify connection configuration
+		const verified = await transporter.verify().catch((err) => {
+			console.error("[Email] SMTP verification failed:", err);
+			return;
+		});
+
+		// if verification failed, return void and don't set transporter
+		if (!verified) return;
+
+		return transporter;
+	},
+	mailgun: async function () {
+		// get configuration
+		const { apiKey, domain } = Config.get().email.mailgun;
+
+		// ensure all required configuration values are set
+		if (!apiKey || !domain)
+			return console.error(
+				"[Email] Mailgun has not been configured correctly.",
+			);
+
+		let mg;
+		try {
+			// try to import the transporter package
+			mg = require("nodemailer-mailgun-transport");
+		} catch {
+			// if the package is not installed, log an error and return void so we don't set the transporter
+			console.error(
+				"[Email] Mailgun transport is not installed. Please run `npm install nodemailer-mailgun-transport --save-optional` to install it.",
+			);
+			return;
+		}
+
+		// create the transporter configuration object
+		const auth = {
+			auth: {
+				api_key: apiKey,
+				domain: domain,
+			},
+		};
+
+		// create the transporter and return it
+		return nodemailer.createTransport(mg(auth));
+	},
+	mailjet: async function () {
+		// get configuration
+		const { apiKey, apiSecret } = Config.get().email.mailjet;
+
+		// ensure all required configuration values are set
+		if (!apiKey || !apiSecret)
+			return console.error(
+				"[Email] Mailjet has not been configured correctly.",
+			);
+
+		let mj;
+		try {
+			// try to import the transporter package
+			mj = require("nodemailer-mailjet-transport");
+		} catch {
+			// if the package is not installed, log an error and return void so we don't set the transporter
+			console.error(
+				"[Email] Mailjet transport is not installed. Please run `npm install nodemailer-mailjet-transport --save-optional` to install it.",
+			);
+			return;
+		}
+
+		// create the transporter configuration object
+		const auth = {
+			auth: {
+				apiKey: apiKey,
+				apiSecret: apiSecret,
+			},
+		};
+
+		// create the transporter and return it
+		return nodemailer.createTransport(mj(auth));
+	},
+};
+
 export const Email: {
 	transporter: Transporter | null;
 	init: () => Promise<void>;
-	initSMTP: () => Promise<void>;
-	initMailgun: () => Promise<void>;
 	generateVerificationLink: (id: string, email: string) => Promise<string>;
 	sendVerificationEmail: (user: User, email: string) => Promise<any>;
 	doReplacements: (
@@ -75,64 +175,15 @@ export const Email: {
 		const { provider } = Config.get().email;
 		if (!provider) return;
 
-		if (provider === "smtp") await this.initSMTP();
-		else if (provider === "mailgun") await this.initMailgun();
-		else throw new Error(`Unknown email provider: ${provider}`);
-	},
-	initSMTP: async function () {
-		const { host, port, secure, username, password } =
-			Config.get().email.smtp;
-		if (!host || !port || !secure || !username || !password)
-			return console.error(
-				"[Email] SMTP has not been configured correctly.",
-			);
-
-		console.log(`[Email] Initializing SMTP transport: ${host}`);
-		this.transporter = nodemailer.createTransport({
-			host,
-			port,
-			secure,
-			auth: {
-				user: username,
-				pass: password,
-			},
-		});
-
-		await this.transporter.verify((error, _) => {
-			if (error) {
-				console.error(`[Email] SMTP error: ${error}`);
-				this.transporter?.close();
-				this.transporter = null;
-				return;
-			}
-			console.log(`[Email] Ready`);
-		});
-	},
-	initMailgun: async function () {
-		const { apiKey, domain } = Config.get().email.mailgun;
-		if (!apiKey || !domain)
-			return console.error(
-				"[Email] Mailgun has not been configured correctly.",
-			);
-
-		try {
-			const mg = require("nodemailer-mailgun-transport");
-			const auth = {
-				auth: {
-					api_key: apiKey,
-					domain: domain,
-				},
-			};
-
-			console.log(`[Email] Initializing Mailgun transport...`);
-			this.transporter = nodemailer.createTransport(mg(auth));
-			console.log(`[Email] Ready`);
-		} catch {
-			console.error(
-				"[Email] Mailgun transport is not installed. Please run `npm install nodemailer-mailgun-transport --save` to install it.",
-			);
-			return;
-		}
+		const transporterFn =
+			transporters[provider as keyof typeof transporters];
+		if (!transporterFn)
+			return console.error(`[Email] Invalid provider: ${provider}`);
+		console.log(`[Email] Initializing ${provider} transport...`);
+		const transporter = await transporterFn();
+		if (!transporter) return;
+		this.transporter = transporter;
+		console.log(`[Email] ${provider} transport initialized.`);
 	},
 	/**
 	 * Replaces all placeholders in an email template with the correct values
@@ -212,6 +263,7 @@ export const Email: {
 			user.id,
 			email,
 		);
+
 		// load the email template
 		const rawTemplate = fs.readFileSync(
 			path.join(
@@ -221,13 +273,14 @@ export const Email: {
 			),
 			{ encoding: "utf-8" },
 		);
+
 		// replace email template placeholders
 		const html = this.doReplacements(rawTemplate, user, verificationLink);
 
 		// extract the title from the email template to use as the email subject
 		const subject = html.match(/<title>(.*)<\/title>/)?.[1] || "";
 
-		// // construct the email
+		// construct the email
 		const message = {
 			from:
 				Config.get().general.correspondenceEmail || "noreply@localhost",
@@ -236,7 +289,7 @@ export const Email: {
 			html,
 		};
 
-		// // send the email
+		// send the email
 		return this.transporter.sendMail(message);
 	},
 };
