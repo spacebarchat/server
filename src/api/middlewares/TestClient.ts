@@ -25,6 +25,8 @@ import { Config } from "@fosscord/util";
 
 const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "assets");
 
+let HAS_SHOWN_CACHE_WARNING = false;
+
 export default function TestClient(app: Application) {
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "public")));
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "cache")));
@@ -102,14 +104,10 @@ export default function TestClient(app: Application) {
 
 		assetCache.set(req.params.file, { buffer, response });
 
-		// TODO: I don't like this. Figure out a way to get client cacher to download *all* assets.
-		if (response.status == 200) {
+		if (response.status == 200 && !HAS_SHOWN_CACHE_WARNING) {
+			HAS_SHOWN_CACHE_WARNING = true;
 			console.warn(
 				`[TestClient] Cache miss for file ${req.params.file}! Use 'npm run generate:client' to cache and patch.`,
-			);
-			await fs.promises.appendFile(
-				path.join(ASSET_FOLDER_PATH, "cacheMisses"),
-				req.params.file + "\n",
 			);
 		}
 
