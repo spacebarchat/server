@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export class SMTPConfiguration {
+export class EmailConfiguration {
 	host: string | null = null;
 	port: number | null = null;
 	secure: boolean | null = null;

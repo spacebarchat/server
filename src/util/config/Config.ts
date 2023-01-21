@@ -21,6 +21,7 @@ import {
 	CdnConfiguration,
 	ClientConfiguration,
 	DefaultsConfiguration,
+	EmailConfiguration,
 	EndpointConfiguration,
 	ExternalTokensConfiguration,
 	GeneralConfiguration,
@@ -35,7 +36,6 @@ import {
 	RegisterConfiguration,
 	SecurityConfiguration,
 	SentryConfiguration,
-	SMTPConfiguration,
 	TemplateConfiguration,
 } from "../config";
 
@@ -59,5 +59,5 @@ export class ConfigValue {
 	sentry: SentryConfiguration = new SentryConfiguration();
 	defaults: DefaultsConfiguration = new DefaultsConfiguration();
 	external: ExternalTokensConfiguration = new ExternalTokensConfiguration();
-	smtp: SMTPConfiguration = new SMTPConfiguration();
+	email: EmailConfiguration = new EmailConfiguration();
 }
