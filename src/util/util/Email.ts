@@ -18,7 +18,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import nodemailer, { Transporter } from "nodemailer";
+import nodemailer, { SentMessageInfo, Transporter } from "nodemailer";
 import { User } from "../entities";
 import { Config } from "./Config";
 import { generateToken } from "./Token";
@@ -158,7 +158,10 @@ export const Email: {
 	transporter: Transporter | null;
 	init: () => Promise<void>;
 	generateVerificationLink: (id: string, email: string) => Promise<string>;
-	sendVerificationEmail: (user: User, email: string) => Promise<any>;
+	sendVerificationEmail: (
+		user: User,
+		email: string,
+	) => Promise<SentMessageInfo>;
 	doReplacements: (
 		template: string,
 		user: User,
@@ -254,10 +257,7 @@ export const Email: {
 		const link = `${instanceUrl}/verify#token=${token}`;
 		return link;
 	},
-	sendVerificationEmail: async function (
-		user: User,
-		email: string,
-	): Promise<any> {
+	sendVerificationEmail: async function (user: User, email: string) {
 		if (!this.transporter) return;
 
 		// generate a verification link for the user
