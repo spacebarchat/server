@@ -18,12 +18,13 @@
 
 import {
 	DateOfBirthConfiguration,
-	EmailConfiguration,
 	PasswordConfiguration,
+	RegistrationEmailConfiguration,
 } from ".";
 
 export class RegisterConfiguration {
-	email: EmailConfiguration = new EmailConfiguration();
+	email: RegistrationEmailConfiguration =
+		new RegistrationEmailConfiguration();
 	dateOfBirth: DateOfBirthConfiguration = new DateOfBirthConfiguration();
 	password: PasswordConfiguration = new PasswordConfiguration();
 	disabled: boolean = false;
