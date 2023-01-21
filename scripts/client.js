@@ -190,7 +190,9 @@ const doPatch = (content) => {
 
 const print = (x, printover = true) => {
 	var repeat = process.stdout.columns - x.length;
-	process.stdout.write(`${x}${" ".repeat(Math.max(0, repeat))}${printover ? "\r" : "\n"}`);
+	process.stdout.write(
+		`${x}${" ".repeat(Math.max(0, repeat))}${printover ? "\r" : "\n"}`,
+	);
 };
 
 const processFile = async (asset) => {
@@ -205,7 +207,11 @@ const processFile = async (asset) => {
 		return [];
 	}
 
-	if (asset.includes(".") && !asset.includes(".js") && !asset.includes(".css")) {
+	if (
+		asset.includes(".") &&
+		!asset.includes(".js") &&
+		!asset.includes(".css")
+	) {
 		await fs.writeFile(path.join(CACHE_PATH, asset), await res.buffer());
 		return [];
 	}
@@ -217,11 +223,13 @@ const processFile = async (asset) => {
 
 	let ret = new Set([
 		...(text.match(/"[A-Fa-f0-9]{20}"/g) ?? []), // These are generally JS assets
-		...[...text.matchAll(/\.exports=.\..\+"(.*?\..{0,5})"/g)].map((x) => x[1]), // anything that looks like e.exports="filename.ext"
-		...[...text.matchAll(/\/assets\/(.*?\.[a-z]{0,5})/g)].map(x => x[1])	// commonly matches `background: url(/assets/blah.svg)`
+		...[...text.matchAll(/\.exports=.\..\+"(.*?\..{0,5})"/g)].map(
+			(x) => x[1],
+		), // anything that looks like e.exports="filename.ext"
+		...[...text.matchAll(/\/assets\/(.*?\.[a-z]{0,5})/g)].map((x) => x[1]), // commonly matches `background: url(/assets/blah.svg)`
 	]);
 
-	return [...ret].map(x => x.replaceAll('"', ""));
+	return [...ret].map((x) => x.replaceAll('"', ""));
 };
 
 (async () => {
