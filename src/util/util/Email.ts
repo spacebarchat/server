@@ -53,6 +53,8 @@ export function adjustEmail(email?: string): string | undefined {
 export const Email: {
 	transporter: Transporter | null;
 	init: () => Promise<void>;
+	initSMTP: () => Promise<void>;
+	initMailgun: () => Promise<void>;
 	generateVerificationLink: (id: string, email: string) => Promise<string>;
 	sendVerificationEmail: (user: User, email: string) => Promise<any>;
 	doReplacements: (
@@ -70,9 +72,22 @@ export const Email: {
 } = {
 	transporter: null,
 	init: async function () {
-		const { host, port, secure, username, password } = Config.get().smtp;
-		if (!host || !port || !secure || !username || !password) return;
-		console.log(`[SMTP] connect: ${host}`);
+		const { provider } = Config.get().email;
+		if (!provider) return;
+
+		if (provider === "smtp") await this.initSMTP();
+		else if (provider === "mailgun") await this.initMailgun();
+		else throw new Error(`Unknown email provider: ${provider}`);
+	},
+	initSMTP: async function () {
+		const { host, port, secure, username, password } =
+			Config.get().email.smtp;
+		if (!host || !port || !secure || !username || !password)
+			return console.error(
+				"[Email] SMTP has not been configured correctly.",
+			);
+
+		console.log(`[Email] Initializing SMTP transport: ${host}`);
 		this.transporter = nodemailer.createTransport({
 			host,
 			port,
@@ -85,13 +100,39 @@ export const Email: {
 
 		await this.transporter.verify((error, _) => {
 			if (error) {
-				console.error(`[SMTP] error: ${error}`);
+				console.error(`[Email] SMTP error: ${error}`);
 				this.transporter?.close();
 				this.transporter = null;
 				return;
 			}
-			console.log(`[SMTP] Ready`);
+			console.log(`[Email] Ready`);
 		});
+	},
+	initMailgun: async function () {
+		const { apiKey, domain } = Config.get().email.mailgun;
+		if (!apiKey || !domain)
+			return console.error(
+				"[Email] Mailgun has not been configured correctly.",
+			);
+
+		try {
+			const mg = require("nodemailer-mailgun-transport");
+			const auth = {
+				auth: {
+					api_key: apiKey,
+					domain: domain,
+				},
+			};
+
+			console.log(`[Email] Initializing Mailgun transport...`);
+			this.transporter = nodemailer.createTransport(mg(auth));
+			console.log(`[Email] Ready`);
+		} catch {
+			console.error(
+				"[Email] Mailgun transport is not installed. Please run `npm install nodemailer-mailgun-transport --save` to install it.",
+			);
+			return;
+		}
 	},
 	/**
 	 * Replaces all placeholders in an email template with the correct values

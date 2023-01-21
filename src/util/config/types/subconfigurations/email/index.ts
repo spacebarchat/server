@@ -16,13 +16,5 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	MailGunConfiguration,
-	SMTPConfiguration,
-} from "./subconfigurations/email";
-
-export class EmailConfiguration {
-	provider: string | null = null;
-	smtp: SMTPConfiguration = new SMTPConfiguration();
-	mailgun: MailGunConfiguration = new MailGunConfiguration();
-}
+export * from "./MailGun";
+export * from "./SMTP";
