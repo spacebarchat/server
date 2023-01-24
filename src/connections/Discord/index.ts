@@ -17,7 +17,6 @@
 */
 
 import {
-	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
 	ConnectionCallbackSchema,
@@ -63,14 +62,7 @@ export default class DiscordConnection extends Connection {
 		url.searchParams.append("response_type", "code");
 		// controls whether, on repeated authorizations, the consent screen is shown
 		url.searchParams.append("consent", "none");
-
-		// TODO: probably shouldn't rely on cdn as this could be different from what we actually want. we should have an api endpoint setting.
-		url.searchParams.append(
-			"redirect_uri",
-			`${
-				Config.get().cdn.endpointPrivate || "http://localhost:3001"
-			}/connections/${this.id}/callback`,
-		);
+		url.searchParams.append("redirect_uri", this.getRedirectUri());
 
 		return url.toString();
 	}
@@ -102,10 +94,7 @@ export default class DiscordConnection extends Connection {
 					client_secret: this.settings.clientSecret,
 					grant_type: "authorization_code",
 					code: code,
-					redirect_uri: `${
-						Config.get().cdn.endpointPrivate ||
-						"http://localhost:3001"
-					}/connections/${this.id}/callback`,
+					redirect_uri: this.getRedirectUri(),
 				}),
 			)
 			.post()

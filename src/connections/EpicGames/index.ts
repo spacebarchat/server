@@ -17,7 +17,6 @@
 */
 
 import {
-	Config,
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
 	ConnectionCallbackSchema,
@@ -68,13 +67,7 @@ export default class EpicGamesConnection extends Connection {
 		const url = new URL(this.authorizeUrl);
 
 		url.searchParams.append("client_id", this.settings.clientId);
-		// TODO: probably shouldn't rely on cdn as this could be different from what we actually want. we should have an api endpoint setting.
-		url.searchParams.append(
-			"redirect_uri",
-			`${
-				Config.get().cdn.endpointPrivate || "http://localhost:3001"
-			}/connections/${this.id}/callback`,
-		);
+		url.searchParams.append("redirect_uri", this.getRedirectUri());
 		url.searchParams.append("response_type", "code");
 		url.searchParams.append("scope", this.scopes.join(" "));
 		url.searchParams.append("state", state);
