@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { ConnectedAccount } from "../entities";
 import { ConnectedAccountSchema, ConnectionCallbackSchema } from "../schemas";
-import { DiscordApiErrors } from "../util";
+import { Config, DiscordApiErrors } from "../util";
 
 /**
  * A connection that can be used to connect to an external service.
@@ -18,6 +18,16 @@ export default abstract class Connection {
 	 * @param args
 	 */
 	abstract getAuthorizationUrl(userId: string): string;
+
+	/**
+	 * Returns the redirect_uri for a connection type
+	 * @returns redirect_uri for this connection
+	 */
+	getRedirectUri() {
+		const endpointPublic =
+			Config.get().api.endpointPublic ?? "http://localhost:3001";
+		return `${endpointPublic}/connections/${this.id}/callback`;
+	}
 
 	/**
 	 * Processes the callback

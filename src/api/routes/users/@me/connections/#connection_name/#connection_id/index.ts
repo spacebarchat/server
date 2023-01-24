@@ -3,7 +3,7 @@ import {
 	ConnectedAccount,
 	ConnectionUpdateSchema,
 	DiscordApiErrors,
-	emitEvent
+	emitEvent,
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 const router = Router();
@@ -38,10 +38,12 @@ router.patch(
 		if (!connection) return DiscordApiErrors.UNKNOWN_CONNECTION;
 		// TODO: do we need to do anything if the connection is revoked?
 
-		//@ts-ignore For some reason the client sends this as a boolean, even tho docs say its a number?
-		if (typeof body.visibility === "boolean") body.visibility = body.visibility ? 1 : 0;
-		//@ts-ignore For some reason the client sends this as a boolean, even tho docs say its a number?
-		if (typeof body.show_activity === "boolean") body.show_activity = body.show_activity ? 1 : 0;
+		if (typeof body.visibility === "boolean")
+			//@ts-expect-error For some reason the client sends this as a boolean, even tho docs say its a number?
+			body.visibility = body.visibility ? 1 : 0;
+		if (typeof body.show_activity === "boolean")
+			//@ts-expect-error For some reason the client sends this as a boolean, even tho docs say its a number?
+			body.show_activity = body.show_activity ? 1 : 0;
 
 		connection.assign(req.body);
 
