@@ -19,3 +19,6 @@ build
 *.tmp
 tmp/
 dump/
+
+pnpm-lock.yaml
+yarn.lock
