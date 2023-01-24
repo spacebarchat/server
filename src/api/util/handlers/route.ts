@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import {
 	ajv,
 	DiscordApiErrors,
@@ -16,6 +34,8 @@ import { NextFunction, Request, Response } from "express";
 import { AnyValidateFunction } from "ajv/dist/core";
 
 declare global {
+	// TODO: fix this
+	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		interface Request {
 			permission?: Permissions;
@@ -35,7 +55,7 @@ export interface RouteOptions {
 	body?: `${string}Schema`; // typescript interface name
 	test?: {
 		response?: RouteResponse;
-		body?: any;
+		body?: unknown;
 		path?: string;
 		event?: EVENT | EVENT[];
 		headers?: Record<string, string>;
@@ -43,7 +63,7 @@ export interface RouteOptions {
 }
 
 export function route(opts: RouteOptions) {
-	var validate: AnyValidateFunction<any> | undefined;
+	let validate: AnyValidateFunction | undefined;
 	if (opts.body) {
 		validate = ajv.getSchema(opts.body);
 		if (!validate) throw new Error(`Body schema ${opts.body} not found`);

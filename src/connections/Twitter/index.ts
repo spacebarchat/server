@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import {
 	Config,
 	ConnectedAccount,
@@ -23,10 +41,10 @@ interface TwitterUserResponse {
 	};
 }
 
-interface TwitterErrorResponse {
-	error: string;
-	error_description: string;
-}
+// interface TwitterErrorResponse {
+// 	error: string;
+// 	error_description: string;
+// }
 
 export default class TwitterConnection extends RefreshableConnection {
 	public readonly id = "twitter";
@@ -45,10 +63,13 @@ export default class TwitterConnection extends RefreshableConnection {
 	}
 
 	getAuthorizationUrl(userId: string): string {
+		if (!this.settings.clientId)
+			throw new Error("Connection clientId must not be null");
+
 		const state = this.createState(userId);
 		const url = new URL(this.authorizeUrl);
 
-		url.searchParams.append("client_id", this.settings.clientId!);
+		url.searchParams.append("client_id", this.settings.clientId);
 		// TODO: probably shouldn't rely on cdn as this could be different from what we actually want. we should have an api endpoint setting.
 		url.searchParams.append(
 			"redirect_uri",
@@ -72,8 +93,12 @@ export default class TwitterConnection extends RefreshableConnection {
 		state: string,
 		code: string,
 	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
-		this.validateState(state);
+		if (!this.settings.clientId)
+			throw new Error("Connection clientId must not be null");
+		if (!this.settings.clientSecret)
+			throw new Error("Connection clientSecret must not be null");
 
+		this.validateState(state);
 		const url = this.getTokenUrl();
 
 		return wretch(url.toString())
@@ -81,14 +106,14 @@ export default class TwitterConnection extends RefreshableConnection {
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
+					`${this.settings.clientId}:${this.settings.clientSecret}`,
 				).toString("base64")}`,
 			})
 			.body(
 				new URLSearchParams({
 					grant_type: "authorization_code",
 					code: code,
-					client_id: this.settings.clientId!,
+					client_id: this.settings.clientId,
 					redirect_uri: `${
 						Config.get().cdn.endpointPrivate ||
 						"http://localhost:3001"
@@ -107,25 +132,29 @@ export default class TwitterConnection extends RefreshableConnection {
 	async refreshToken(
 		connectedAccount: ConnectedAccount,
 	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+		if (!this.settings.clientId)
+			throw new Error("Connection clientId must not be null");
+		if (!this.settings.clientSecret)
+			throw new Error("Connection clientSecret must not be null");
+
 		if (!connectedAccount.token_data?.refresh_token)
 			throw new Error("No refresh token available.");
 		const refresh_token = connectedAccount.token_data.refresh_token;
 
 		const url = this.getTokenUrl();
-
 		return wretch(url.toString())
 			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
+					`${this.settings.clientId}:${this.settings.clientSecret}`,
 				).toString("base64")}`,
 			})
 			.body(
 				new URLSearchParams({
 					grant_type: "refresh_token",
 					refresh_token,
-					client_id: this.settings.clientId!,
+					client_id: this.settings.clientId,
 					redirect_uri: `${
 						Config.get().cdn.endpointPrivate ||
 						"http://localhost:3001"
@@ -158,8 +187,10 @@ export default class TwitterConnection extends RefreshableConnection {
 	async handleCallback(
 		params: ConnectionCallbackSchema,
 	): Promise<ConnectedAccount | null> {
+		if (!params.code)
+			throw new Error("OAuth code is required for this connection");
 		const userId = this.getUserId(params.state);
-		const tokenData = await this.exchangeCode(params.state, params.code!);
+		const tokenData = await this.exchangeCode(params.state, params.code);
 		const userInfo = await this.getUser(tokenData.access_token);
 
 		const exists = await this.hasConnection(userId, userInfo.data.id);

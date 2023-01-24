@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Config, Snowflake } from "@fosscord/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
@@ -27,7 +45,7 @@ router.post("/", multer.single("file"), async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature)
 		throw new HTTPError("Invalid request signature");
 	if (!req.file) throw new HTTPError("Missing file");
-	const { buffer, mimetype, size, originalname, fieldname } = req.file;
+	const { buffer, size } = req.file;
 	const { guild_id, user_id } = req.params;
 
 	let hash = crypto
@@ -54,7 +72,8 @@ router.post("/", multer.single("file"), async (req: Request, res: Response) => {
 });
 
 router.get("/", async (req: Request, res: Response) => {
-	let { guild_id, user_id } = req.params;
+	const { guild_id } = req.params;
+	let { user_id } = req.params;
 	user_id = user_id.split(".")[0]; // remove .file extension
 	const path = `guilds/${guild_id}/users/${user_id}/avatars`;
 
@@ -69,7 +88,8 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 router.get("/:hash", async (req: Request, res: Response) => {
-	let { guild_id, user_id, hash } = req.params;
+	const { guild_id, user_id } = req.params;
+	let { hash } = req.params;
 	hash = hash.split(".")[0]; // remove .file extension
 	const path = `guilds/${guild_id}/users/${user_id}/avatars/${hash}`;
 

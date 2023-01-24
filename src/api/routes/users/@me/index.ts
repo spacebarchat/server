@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Router, Request, Response } from "express";
 import {
 	User,
@@ -37,7 +55,7 @@ router.patch(
 		});
 
 		// Populated on password change
-		var newToken: string | undefined;
+		let newToken: string | undefined;
 
 		if (body.avatar)
 			body.avatar = await handleFile(
@@ -102,7 +120,7 @@ router.patch(
 		}
 
 		if (body.username) {
-			var check_username = body?.username?.replace(/\s/g, "");
+			const check_username = body?.username?.replace(/\s/g, "");
 			if (!check_username) {
 				throw FieldErrors({
 					username: {
@@ -135,7 +153,8 @@ router.patch(
 		user.validate();
 		await user.save();
 
-		// @ts-ignore
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		//@ts-ignore
 		delete user.data;
 
 		// TODO: send update member list event in gateway

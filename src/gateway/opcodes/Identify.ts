@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { WebSocket, Payload } from "@fosscord/gateway";
 import {
 	checkToken,
@@ -25,19 +43,21 @@ import {
 	ReadyGuildDTO,
 	Guild,
 	ConnectedAccount,
+	UserTokenData,
 } from "@fosscord/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
-import { genSessionId } from "../util/SessionUtils";
 import { setupListener } from "../listener/listener";
 // import experiments from "./experiments.json";
-const experiments: any = [];
+const experiments: unknown[] = [];
 import { check } from "./instanceOf";
 import { Recipient } from "@fosscord/util";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
 // TODO: check if already identified
+
+// TODO: Refactor identify ( and lazyrequest, tbh )
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	clearTimeout(this.readyTimeout);
@@ -48,17 +68,16 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const identify: IdentifySchema = data.d;
 
+	let decoded: UserTokenData["decoded"];
 	try {
 		const { jwtSecret } = Config.get().security;
-		var { decoded } = await checkToken(identify.token, jwtSecret); // will throw an error if invalid
+		decoded = (await checkToken(identify.token, jwtSecret)).decoded; // will throw an error if invalid
 	} catch (error) {
 		console.error("invalid token", error);
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = decoded.id;
-
-	const session_id = genSessionId();
-	this.session_id = session_id; //Set the session of the WebSocket object
+	const session_id = this.session_id;
 
 	const [
 		user,
@@ -82,7 +101,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				"guild",
 				"guild.channels",
 				"guild.emojis",
-				"guild.emojis.user",
 				"guild.roles",
 				"guild.stickers",
 				"user",
@@ -138,7 +156,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			return this.close(CLOSECODES.Invalid_shard);
 		}
 	}
-	var users: PublicUser[] = [];
+	let users: PublicUser[] = [];
 
 	const merged_members = members.map((x: Member) => {
 		return [
@@ -150,25 +168,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			},
 		];
 	}) as PublicMember[][];
-	let guilds = members.map((x) => ({ ...x.guild, joined_at: x.joined_at }));
+	// TODO: This type is bad.
+	let guilds: Partial<Guild>[] = members.map((x) => ({
+		...x.guild,
+		joined_at: x.joined_at,
+	}));
 
-	// @ts-ignore
-	guilds = guilds.map((guild) => {
-		if (user.bot) {
-			setTimeout(() => {
-				var promise = Send(this, {
-					op: OPCODES.Dispatch,
-					t: EVENTEnum.GuildCreate,
-					s: this.sequence++,
-					d: guild,
-				});
-				if (promise) promise.catch(console.error);
-			}, 500);
+	const pending_guilds: typeof guilds = [];
+	if (user.bot)
+		guilds = guilds.map((guild) => {
+			pending_guilds.push(guild);
 			return { id: guild.id, unavailable: true };
-		}
-
-		return guild;
-	});
+		});
 
 	// TODO: Rewrite this. Perhaps a DTO?
 	const user_guild_settings_entries = members.map((x) => ({
@@ -181,23 +192,25 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			...y[1],
 			channel_id: y[0],
 		})),
-	})) as any as UserGuildSettings[];
+	})) as unknown as UserGuildSettings[];
 
 	const channels = recipients.map((x) => {
-		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
-		users = users.concat(
-			x.channel.recipients?.map((x) => x.user.toPublicUser()) || [],
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		//@ts-ignore
+		x.channel.recipients = x.channel.recipients.map((x) =>
+			x.user.toPublicUser(),
 		);
-		// users = users.concat(x.channel.recipients);
+		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
+		users = users.concat(x.channel.recipients as unknown as User[]);
 		if (x.channel.isDm()) {
-			x.channel.recipients = x.channel.recipients!.filter(
+			x.channel.recipients = x.channel.recipients?.filter(
 				(x) => x.id !== this.user_id,
 			);
 		}
 		return x.channel;
 	});
 
-	for (let relation of user.relationships) {
+	for (const relation of user.relationships) {
 		const related_user = relation.to;
 		const public_related_user = {
 			username: related_user.username,
@@ -236,7 +249,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		} as PresenceUpdateEvent);
 	});
 
-	read_states.forEach((s: any) => {
+	read_states.forEach((s: Partial<ReadState>) => {
 		s.id = s.channel_id;
 		delete s.user_id;
 		delete s.channel_id;
@@ -275,10 +288,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}, //TODO: check this code!
 		user: privateUser,
 		user_settings: user.settings,
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		guilds: guilds.map((x) => {
+		guilds: guilds.map((x: Guild & { joined_at: Date }) => {
 			return {
-				...new ReadyGuildDTO(x as Guild & { joined_at: Date }).toJSON(),
+				...new ReadyGuildDTO(x).toJSON(),
 				guild_hashes: {},
 				joined_at: x.joined_at,
 			};
@@ -307,6 +321,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		},
 		country_code: user.settings.locale,
 		friend_suggestion_count: 0, // TODO
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		experiments: experiments, // TODO
 		guild_join_requests: [], // TODO what is this?
@@ -323,6 +338,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		s: this.sequence++,
 		d,
 	});
+
+	await Promise.all(
+		pending_guilds.map((guild) =>
+			Send(this, {
+				op: OPCODES.Dispatch,
+				t: EVENTEnum.GuildCreate,
+				s: this.sequence++,
+				d: guild,
+			})?.catch(console.error),
+		),
+	);
 
 	//TODO send READY_SUPPLEMENTAL
 	//TODO send GUILD_MEMBER_LIST_UPDATE

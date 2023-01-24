@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { route, random } from "@fosscord/api";
 import { Config, ValidRegistrationToken } from "@fosscord/util";
 import { Request, Response, Router } from "express";
@@ -14,7 +32,7 @@ router.get(
 			? parseInt(req.query.length as string)
 			: 255;
 
-		let tokens: ValidRegistrationToken[] = [];
+		const tokens: ValidRegistrationToken[] = [];
 
 		for (let i = 0; i < count; i++) {
 			const token = ValidRegistrationToken.create({
@@ -33,9 +51,17 @@ router.get(
 			transaction: false,
 		});
 
-		if (req.query.plain)
-			return res.send(tokens.map((x) => x.token).join("\n"));
+		const ret = req.query.include_url
+			? tokens.map(
+					(x) =>
+						`${Config.get().general.frontPage}/register?token=${
+							x.token
+						}`,
+			  )
+			: tokens.map((x) => x.token);
 
-		return res.json({ tokens: tokens.map((x) => x.token) });
+		if (req.query.plain) return res.send(ret.join("\n"));
+
+		return res.json({ tokens: ret });
 	},
 );

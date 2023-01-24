@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Request, Response, Router } from "express";
 import {
 	DiscordApiErrors,
@@ -29,15 +47,15 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			401,
 		);
 
-	// @ts-ignore
-	guild.joined_at = member?.joined_at;
-
-	return res.send(guild);
+	return res.send({
+		...guild,
+		joined_at: member?.joined_at,
+	});
 });
 
 router.patch(
 	"/",
-	route({ body: "GuildUpdateSchema" }),
+	route({ body: "GuildUpdateSchema", permission: "MANAGE_GUILD" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as GuildUpdateSchema;
 		const { guild_id } = req.params;
@@ -50,7 +68,7 @@ router.patch(
 				"MANAGE_GUILDS",
 			);
 
-		var guild = await Guild.findOneOrFail({
+		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
 			relations: ["emojis", "roles", "stickers"],
 		});
@@ -92,7 +110,7 @@ router.patch(
 				"DISCOVERABLE",
 			];
 
-			for (var feature of diff) {
+			for (const feature of diff) {
 				if (MUTABLE_FEATURES.includes(feature)) continue;
 
 				throw FosscordApiErrors.FEATURE_IS_IMMUTABLE.withParams(

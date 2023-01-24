@@ -1,5 +1,23 @@
 /*
-	This file downloads a ( mostly ) complete discord.com web client for testing,
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/*
+	This file downloads a complete discord.com web client for testing,
 	and performs some basic patching:
 	* Replaces all mentions of "Server" -> "Guild"
 	* Replaces "Discord" -> `INSTANCE_NAME` variable
@@ -7,15 +25,12 @@
 	* Prevents `localStorage` deletion ( for `plugins`/`preload-plugins` )
 	* Adds `fast-identify` support ( TODO: add documentation )
 
-	This script can only download javascript client files.
-	It cannot download images, sounds, video, etc.
-	For that, a `cacheMisses` file in `fosscord-server/assets` is used.
-	After running the server for a while, uncached assets will be appended to that file
-	and downloaded after the next run of this script.
-
 	TODO: Make this configurable easily.
 */
 
+/*eslint-env node*/
+
+require("dotenv/config");
 const path = require("path");
 const fetch = require("node-fetch");
 const http = require("http");
@@ -32,7 +47,8 @@ const agent = (_parsedURL) =>
 const CACHE_PATH = path.join(__dirname, "..", "assets", "cache");
 const BASE_URL = "https://discord.com";
 
-const INSTANCE_NAME = "Fosscord";
+const INSTANCE_NAME = process.env.CLIENT_PATCH_INSTANCE_NAME ?? "Fosscord";
+const ONLY_CACHE_JS = process.env.ONLY_CACHE_JS ? true : false;
 
 // Manual for now
 const INDEX_SCRIPTS = [
@@ -40,6 +56,16 @@ const INDEX_SCRIPTS = [
 	"cfb9efe961b2bf3647bc", // 1
 	"f98a039261c37f892cbf", // 0?
 	"4470c87bb13810847db0", // ~4500.
+
+	// also fetch other assets from index, as we don't have a way to dl old indexes
+	"40532.f4ff6c4a39fa78f07880.css",
+	"b21a783b953e52485dcb.worker.js",
+	"2bbea887c6d07e427a1d.worker.js",
+	"0ec5df6d78ff7a5cc7c8.worker.js",
+	"625ccb6efce655a7d928.worker.js",
+	"05422eb499ddf5616e44a52c4f1063ae.woff2",
+	"77f603cc7860fcb784e6ef9320a4a9c2.woff2",
+	"e689380400b1f2d2c6320a823a1ab079.svg",
 ];
 
 const splice = (a, b, index) => {
@@ -54,7 +80,7 @@ const doPatch = (content) => {
 	content = content.replaceAll(/ Nitro/g, " Premium");
 	content = content.replaceAll(/\[Nitro\]/g, "[Premium]");
 	content = content.replaceAll(/\*Nitro\*/g, "*Premium*");
-	content = content.replaceAll(/\"Nitro \. /g, '"Premium. ');
+	content = content.replaceAll(/"Nitro \. /g, '"Premium. ');
 
 	//remove discord references
 	content = content.replaceAll(/ Discord /g, ` ${INSTANCE_NAME} `);
@@ -68,6 +94,12 @@ const doPatch = (content) => {
 	content = content.replaceAll(/Discord's/g, `${INSTANCE_NAME}'s`);
 	//content = content.replaceAll(/DiscordTag/g, "FosscordTag");
 	content = content.replaceAll(/\*Discord\*/g, `*${INSTANCE_NAME}*`);
+
+	// Replace window title
+	content = content.replaceAll(
+		":c.base;",
+		`:(c.base == 'Discord' ? '${INSTANCE_NAME}' : c.base);`,
+	);
 
 	//server -> guild
 	const serverVariations = [
@@ -153,7 +185,7 @@ const doPatch = (content) => {
 
 	// disable qr code login
 	content = content.replaceAll(
-		/\w\?\(\d,\w\.jsx\)\(\w*\,{authTokenCallback:this\.handleAuthToken}\):null/g,
+		/\w\?\(\d,\w\.jsx\)\(\w*,{authTokenCallback:this\.handleAuthToken}\):null/g,
 		"null",
 	);
 
@@ -252,152 +284,77 @@ const doPatch = (content) => {
 	return content;
 };
 
-const processFile = async (name) => {
-	const res = await fetch(
-		`${BASE_URL}/assets/${name}${name.includes(".") ? "" : ".js"}`,
-		{
-			agent,
-		},
+const print = (x, printover = true) => {
+	var repeat = process.stdout.columns - x.length;
+	process.stdout.write(
+		`${x}${" ".repeat(Math.max(0, repeat))}${printover ? "\r" : "\n"}`,
 	);
+};
+
+const processFile = async (asset) => {
+	// The asset name may not include the file extension. Usually if it doesn't, it's js though.
+	asset = `${asset}${asset.includes(".") ? "" : ".js"}`;
+	if (ONLY_CACHE_JS && !asset.endsWith(".js")) return [];
+
+	const url = `${BASE_URL}/assets/${asset}`;
+	const res = await fetch(url, { agent });
 	if (res.status !== 200) {
+		print(`${res.status} on ${asset}`, false);
 		return [];
 	}
 
-	if (name.includes(".") && !name.includes(".js") && !name.includes(".css")) {
-		await fs.writeFile(path.join(CACHE_PATH, name), await res.buffer());
+	if (
+		asset.includes(".") &&
+		!asset.includes(".js") &&
+		!asset.includes(".css")
+	) {
+		await fs.writeFile(path.join(CACHE_PATH, asset), await res.buffer());
 		return [];
 	}
 
 	let text = await res.text();
-
 	text = doPatch(text);
 
-	await fs.writeFile(
-		path.join(CACHE_PATH, `${name}${name.includes(".") ? "" : ".js"}`),
-		text,
-	);
+	await fs.writeFile(path.join(CACHE_PATH, asset), text);
 
-	return [...new Set(text.match(/\"[A-Fa-f0-9]{20}\"/g))].map((x) =>
-		x.replaceAll('"', ""),
-	);
+	let ret = new Set([
+		// These are generally JS assets
+		...(text.match(/"[A-Fa-f0-9]{20}"/g) ?? []),
+
+		// anything that looks like e.exports="filename.ext"
+		...[...text.matchAll(/\.exports=.\..\+"(.*?\..{0,5})"/g)].map(
+			(x) => x[1],
+		),
+
+		// commonly matches `background: url(/assets/blah.svg)`
+		...[...text.matchAll(/\/assets\/([a-zA-Z0-9]*?\.[a-z0-9]{0,5})/g)].map(
+			(x) => x[1],
+		),
+	]);
+
+	return [...ret].map((x) => x.replaceAll('"', ""));
 };
 
 (async () => {
-	const start = Date.now();
+	if (!existsSync(CACHE_PATH))
+		await fs.mkdir(CACHE_PATH, { recursive: true });
 
-	// console.log("Deleting previous cache");
-	// await fs.rm(CACHE_PATH, { recursive: true });
-	if (!existsSync(CACHE_PATH)) await fs.mkdir(CACHE_PATH);
-
-	const assets = [];
-
-	while (INDEX_SCRIPTS.length > 0) {
-		const asset = INDEX_SCRIPTS.shift();
-
-		process.stdout.clearLine(0);
-		process.stdout.cursorTo(0);
-		process.stdout.write(
-			`Scraping asset ${asset}. Remaining: ${INDEX_SCRIPTS.length}`,
-		);
-
-		const newAssets = await processFile(asset);
-		assets.push(...newAssets);
-	}
-
-	process.stdout.moveCursor(0, 1);
-
-	const CACHE_MISSES = (
-		await fs.readFile(path.join(CACHE_PATH, "..", "cacheMisses"))
-	)
-		.toString()
-		.split("\r")
-		.join("")
-		.split("\n");
-	while (CACHE_MISSES.length > 0) {
-		const asset = CACHE_MISSES.shift();
-		process.stdout.clearLine(0);
-		process.stdout.cursorTo(0);
-		process.stdout.write(
-			`Scraping cache misses ${asset}. Remaining: ${CACHE_MISSES.length}`,
-		);
-
-		if (existsSync(path.join(CACHE_PATH, `${asset}`))) {
-			continue;
-		}
-
-		const newAssets = await processFile(asset);
-		assets.push(...newAssets);
-	}
-
-	process.stdout.moveCursor(0, 1);
-
-	var existing = await fs.readdir(CACHE_PATH);
-	while (existing.length > 0) {
-		var file = existing.shift();
-
-		process.stdout.clearLine(0);
-		process.stdout.cursorTo(0);
-		process.stdout.write(
-			`Patching existing ${file}. Remaining: ${existing.length}.`,
-		);
-
-		var text = await fs.readFile(path.join(CACHE_PATH, file));
-		if (file.includes(".js") || file.includes(".css")) {
-			text = doPatch(text.toString());
-			await fs.writeFile(path.join(CACHE_PATH, file), text.toString());
-			assets.push(
-				...[...new Set(text.match(/\"[A-Fa-f0-9]{20}\"/g))].map((x) =>
-					x.replaceAll('"', ""),
-				),
-			);
-		}
-	}
-
-	process.stdout.moveCursor(0, 1);
-
-	let rates = [];
-	let lastFinished = Date.now();
-	let previousFinish = Date.now();
-
+	// Use a set to remove dupes for us
+	const assets = new Set(INDEX_SCRIPTS);
 	let promises = [];
 
-	for (var i = 0; i < assets.length; i++) {
-		const asset = assets[i];
-
-		if (existsSync(path.join(CACHE_PATH, `${asset}.js`))) {
-			continue;
-		}
-
-		while (rates.length > 50) rates.shift();
-		const averageRate = rates.length
-			? rates.reduce((prev, curr) => prev + curr) / rates.length
-			: 1;
-		const finishTime = averageRate * (assets.length - i);
-
-		process.stdout.clearLine(0);
-		process.stdout.cursorTo(0);
-		process.stdout.write(
-			`Caching asset ${asset}. ` +
-				`${i}/${assets.length - 1} = ${Math.floor(
-					(i / (assets.length - 1)) * 100,
-				)}% `,
-			// + `Finish at: ${new Date(
-			// 	Date.now() + finishTime,
-			// ).toLocaleTimeString()}`,
-		);
+	let index = 0;
+	for (let asset of assets) {
+		index += 1;
+		print(`Scraping asset ${asset}. Remaining: ${assets.size - index}`);
 
 		promises.push(processFile(asset));
-		// await processFile(asset);
-
-		if (promises.length > 100) {
+		if (promises.length > 100 || index == assets.size) {
 			const values = await Promise.all(promises);
-			assets.push(...values.flat());
 			promises = [];
-			lastFinished = Date.now();
-			rates.push(lastFinished - previousFinish);
-			previousFinish = lastFinished;
+			values.flat().forEach((x) => assets.add(x));
 		}
 	}
 
-	console.log(`\nDone`);
+	console.log("done");
 })();

@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Config } from "@fosscord/util";
 import { Request } from "express";
 // use ipdata package instead of simple fetch because of integrated caching
@@ -67,7 +85,7 @@ export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 
 	return (
 		await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)
-	).json() as any; // TODO: types
+	).json();
 }
 
 export function isProxy(data: typeof exampleData) {
@@ -79,14 +97,21 @@ export function isProxy(data: typeof exampleData) {
 }
 
 export function getIpAdress(req: Request): string {
+	// TODO: express can do this (trustProxies: true)?
+
 	return (
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		req.headers[Config.get().security.forwadedFor] ||
 		req.socket.remoteAddress
 	);
 }
 
-export function distanceBetweenLocations(loc1: any, loc2: any): number {
+type Location = { latitude: number; longitude: number };
+export function distanceBetweenLocations(
+	loc1: Location,
+	loc2: Location,
+): number {
 	return distanceBetweenCoords(
 		loc1.latitude,
 		loc1.longitude,

@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Router, Response, Request } from "express";
 import { Config, Snowflake } from "@fosscord/util";
 import { storage } from "../util/Storage";
@@ -30,10 +48,10 @@ router.post(
 		if (req.headers.signature !== Config.get().security.requestSignature)
 			throw new HTTPError("Invalid request signature");
 		if (!req.file) throw new HTTPError("Missing file");
-		const { buffer, mimetype, size, originalname, fieldname } = req.file;
+		const { buffer, size } = req.file;
 		const { role_id } = req.params;
 
-		var hash = crypto
+		const hash = crypto
 			.createHash("md5")
 			.update(Snowflake.generate())
 			.digest("hex");
@@ -58,7 +76,7 @@ router.post(
 );
 
 router.get("/:role_id", async (req: Request, res: Response) => {
-	var { role_id } = req.params;
+	const { role_id } = req.params;
 	//role_id = role_id.split(".")[0]; // remove .file extension
 	const path = `role-icons/${role_id}`;
 
@@ -73,7 +91,7 @@ router.get("/:role_id", async (req: Request, res: Response) => {
 });
 
 router.get("/:role_id/:hash", async (req: Request, res: Response) => {
-	var { role_id, hash } = req.params;
+	const { role_id, hash } = req.params;
 	//hash = hash.split(".")[0]; // remove .file extension
 	const path = `role-icons/${role_id}/${hash}`;
 

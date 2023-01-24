@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Config } from "@fosscord/util";
 import "missing-native-js-functions";
 
@@ -5,7 +23,7 @@ const reNUMBER = /[0-9]/g;
 const reUPPERCASELETTER = /[A-Z]/g;
 const reSYMBOLS = /[A-Z,a-z,0-9]/g;
 
-const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored in db
+// const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored in db
 /*
  * https://en.wikipedia.org/wiki/Password_policy
  * password must meet following criteria, to be perfect:
@@ -20,7 +38,7 @@ const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored
 export function checkPassword(password: string): number {
 	const { minLength, minNumbers, minUpperCase, minSymbols } =
 		Config.get().register.password;
-	var strength = 0;
+	let strength = 0;
 
 	// checks for total password len
 	if (password.length >= minLength - 1) {
@@ -50,13 +68,13 @@ export function checkPassword(password: string): number {
 		strength = 0;
 	}
 
-	let entropyMap: { [key: string]: number } = {};
+	const entropyMap: { [key: string]: number } = {};
 	for (let i = 0; i < password.length; i++) {
 		if (entropyMap[password[i]]) entropyMap[password[i]]++;
 		else entropyMap[password[i]] = 1;
 	}
 
-	let entropies = Object.values(entropyMap);
+	const entropies = Object.values(entropyMap);
 
 	entropies.map((x) => x / entropyMap.length);
 	strength +=

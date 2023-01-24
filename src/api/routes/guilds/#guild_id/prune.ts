@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Router, Request, Response } from "express";
 import { Guild, Member, Snowflake } from "@fosscord/util";
 import { LessThan, IsNull } from "typeorm";
@@ -11,16 +29,16 @@ export const inactiveMembers = async (
 	days: number,
 	roles: string[] = [],
 ) => {
-	var date = new Date();
+	const date = new Date();
 	date.setDate(date.getDate() - days);
 	//Snowflake should have `generateFromTime` method? Or similar?
-	var minId = BigInt(date.valueOf() - Snowflake.EPOCH) << BigInt(22);
+	const minId = BigInt(date.valueOf() - Snowflake.EPOCH) << BigInt(22);
 
 	/**
 	idea: ability to customise the cutoff variable
 	possible candidates: public read receipt, last presence, last VC leave
 	**/
-	var members = await Member.find({
+	let members = await Member.find({
 		where: [
 			{
 				guild_id,
@@ -65,7 +83,7 @@ export const inactiveMembers = async (
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const days = parseInt(req.query.days as string);
 
-	var roles = req.query.include_roles;
+	let roles = req.query.include_roles;
 	if (typeof roles === "string") roles = [roles]; //express will return array otherwise
 
 	const members = await inactiveMembers(
@@ -84,7 +102,7 @@ router.post(
 	async (req: Request, res: Response) => {
 		const days = parseInt(req.body.days);
 
-		var roles = req.query.include_roles;
+		let roles = req.query.include_roles;
 		if (typeof roles === "string") roles = [roles];
 
 		const { guild_id } = req.params;

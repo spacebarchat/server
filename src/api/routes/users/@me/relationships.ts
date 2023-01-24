@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import {
 	RelationshipAddEvent,
 	User,
@@ -157,7 +175,7 @@ async function updateRelationship(
 		select: userProjection,
 	});
 
-	var relationship = user.relationships.find((x) => x.to_id === id);
+	let relationship = user.relationships.find((x) => x.to_id === id);
 	const friendRequest = friend.relationships.find(
 		(x) => x.to_id === req.user_id,
 	);
@@ -201,13 +219,13 @@ async function updateRelationship(
 	if (user.relationships.length >= maxFriends)
 		throw DiscordApiErrors.MAXIMUM_FRIENDS.withParams(maxFriends);
 
-	var incoming_relationship = Relationship.create({
+	let incoming_relationship = Relationship.create({
 		nickname: undefined,
 		type: RelationshipType.incoming,
 		to: user,
 		from: friend,
 	});
-	var outgoing_relationship = Relationship.create({
+	let outgoing_relationship = Relationship.create({
 		nickname: undefined,
 		type: RelationshipType.outgoing,
 		to: friend,

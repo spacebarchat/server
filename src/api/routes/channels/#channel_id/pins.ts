@@ -1,15 +1,31 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import {
 	Channel,
 	ChannelPinsUpdateEvent,
 	Config,
 	emitEvent,
-	getPermission,
 	Message,
 	MessageUpdateEvent,
 	DiscordApiErrors,
 } from "@fosscord/util";
 import { Router, Request, Response } from "express";
-import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
 
 const router: Router = Router();
@@ -25,7 +41,7 @@ router.put(
 		});
 
 		// * in dm channels anyone can pin messages -> only check for guilds
-		if (message.guild_id) req.permission!.hasThrow("MANAGE_MESSAGES");
+		if (message.guild_id) req.permission?.hasThrow("MANAGE_MESSAGES");
 
 		const pinned_count = await Message.count({
 			where: { channel: { id: channel_id }, pinned: true },
@@ -65,7 +81,7 @@ router.delete(
 		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
 		});
-		if (channel.guild_id) req.permission!.hasThrow("MANAGE_MESSAGES");
+		if (channel.guild_id) req.permission?.hasThrow("MANAGE_MESSAGES");
 
 		const message = await Message.findOneOrFail({
 			where: { id: message_id },
@@ -102,7 +118,7 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 
-		let pins = await Message.find({
+		const pins = await Message.find({
 			where: { channel_id: channel_id, pinned: true },
 		});
 

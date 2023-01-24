@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import fs from "fs";
@@ -27,7 +45,7 @@ export const ajv = new Ajv({
 
 addFormats(ajv);
 
-export function validateSchema<G>(schema: string, data: G): G {
+export function validateSchema<G extends object>(schema: string, data: G): G {
 	const valid = ajv.validate(schema, normalizeBody(data));
 	if (!valid) throw ajv.errors;
 	return data;
@@ -37,13 +55,13 @@ export function validateSchema<G>(schema: string, data: G): G {
 // this removes null values as ajv doesn't treat them as undefined
 // normalizeBody allows to handle circular structures without issues
 // taken from https://github.com/serverless/serverless/blob/master/lib/classes/ConfigSchemaHandler/index.js#L30 (MIT license)
-export const normalizeBody = (body: any = {}) => {
+export const normalizeBody = (body: object = {}) => {
 	const normalizedObjectsSet = new WeakSet();
-	const normalizeObject = (object: any) => {
+	const normalizeObject = (object: object) => {
 		if (normalizedObjectsSet.has(object)) return;
 		normalizedObjectsSet.add(object);
 		if (Array.isArray(object)) {
-			for (const [index, value] of object.entries()) {
+			for (const [, value] of object.entries()) {
 				if (typeof value === "object") normalizeObject(value);
 			}
 		} else {
@@ -57,6 +75,8 @@ export const normalizeBody = (body: any = {}) => {
 						key === "discovery_splash"
 					)
 						continue;
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					//@ts-ignore
 					delete object[key];
 				} else if (typeof value === "object") {
 					normalizeObject(value);

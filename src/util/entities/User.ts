@@ -1,6 +1,22 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import {
-	BeforeInsert,
-	BeforeUpdate,
 	Column,
 	Entity,
 	FindOneOptions,
@@ -16,6 +32,7 @@ import { Member } from "./Member";
 import { UserSettings } from "./UserSettings";
 import { Session } from "./Session";
 import { Config, FieldErrors, Snowflake, trimSpecial, adjustEmail } from "..";
+import { Request } from "express";
 
 export enum PublicUserEnum {
 	username,
@@ -62,7 +79,7 @@ export const PrivateUserProjection = [
 // Private user data that should never get sent to the client
 export type PublicUser = Pick<User, PublicUserKeys>;
 
-export interface UserPublic extends Pick<User, PublicUserKeys> {}
+export type UserPublic = Pick<User, PublicUserKeys>;
 
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
@@ -101,10 +118,10 @@ export class User extends BaseClass {
 	mobile: boolean = false; // if the user has mobile app installed
 
 	@Column()
-	premium: boolean = false; // if user bought individual premium
+	premium: boolean = Config.get().defaults.user.premium ?? false; // if user bought individual premium
 
 	@Column()
-	premium_type: number = 0; // individual premium level
+	premium_type: number = Config.get().defaults.user.premiumType ?? 0; // individual premium level
 
 	@Column()
 	bot: boolean = false; // if user is bot
@@ -131,10 +148,10 @@ export class User extends BaseClass {
 	created_at: Date = new Date(); // registration date
 
 	@Column({ nullable: true })
-	premium_since: Date = new Date(); // premium date
+	premium_since: Date; // premium date
 
 	@Column({ select: false })
-	verified: boolean = true; // email is verified
+	verified: boolean = Config.get().defaults.user.verified ?? true; // email is verified
 
 	@Column()
 	disabled: boolean = false; // if the account is disabled
@@ -158,7 +175,7 @@ export class User extends BaseClass {
 	premium_usage_flags: number = 0;
 
 	@Column({ type: "bigint" })
-	rights: string; // Rights
+	rights: string;
 
 	@OneToMany(() => Session, (session: Session) => session.user)
 	sessions: Session[];
@@ -248,6 +265,7 @@ export class User extends BaseClass {
 	}
 
 	toPublicUser() {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const user: any = {};
 		PublicUserProjection.forEach((x) => {
 			user[x] = this[x];
@@ -259,6 +277,7 @@ export class User extends BaseClass {
 		return await User.findOneOrFail({
 			where: { id: user_id },
 			...opts,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			//@ts-ignore
 			select: [...PublicUserProjection, ...(opts?.select || [])], // TODO: fix
 		});
@@ -310,7 +329,6 @@ export class User extends BaseClass {
 		email,
 		username,
 		password,
-		date_of_birth,
 		id,
 		req,
 	}: {
@@ -319,7 +337,7 @@ export class User extends BaseClass {
 		email?: string;
 		date_of_birth?: Date; // "2000-04-03"
 		id?: string;
-		req?: any;
+		req?: Request;
 	}) {
 		// trim special uf8 control characters -> Backspace, Newline, ...
 		username = trimSpecial(username);
@@ -330,7 +348,8 @@ export class User extends BaseClass {
 			throw FieldErrors({
 				username: {
 					code: "USERNAME_TOO_MANY_USERS",
-					message: req.t("auth:register.USERNAME_TOO_MANY_USERS"),
+					message:
+						req?.t("auth:register.USERNAME_TOO_MANY_USERS") || "",
 				},
 			});
 		}
@@ -339,7 +358,7 @@ export class User extends BaseClass {
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 		const language =
-			req.language === "en" ? "en-US" : req.language || "en-US";
+			req?.language === "en" ? "en-US" : req?.language || "en-US";
 
 		const settings = UserSettings.create({
 			locale: language,
@@ -350,16 +369,16 @@ export class User extends BaseClass {
 			discriminator,
 			id: id || Snowflake.generate(),
 			email: email,
-			rights: Config.get().register.defaultRights,
 			data: {
 				hash: password,
 				valid_tokens_since: new Date(),
 			},
 			extended_settings: "{}",
-			premium_type: Config.get().defaults.user.premiumType,
-			premium: Config.get().defaults.user.premium,
-			verified: Config.get().defaults.user.verified,
+			premium_since: Config.get().defaults.user.premium
+				? new Date()
+				: undefined,
 			settings: settings,
+			rights: Config.get().register.defaultRights,
 		});
 
 		user.validate();
@@ -368,7 +387,9 @@ export class User extends BaseClass {
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
-					await Member.addToGuild(user.id, guild).catch((e) => {});
+					await Member.addToGuild(user.id, guild).catch((e) =>
+						console.error("[Autojoin]", e),
+					);
 				}
 			}
 		});

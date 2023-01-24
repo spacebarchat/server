@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import {
 	getDatabase,
 	getPermission,
@@ -28,24 +46,25 @@ async function getMembers(guild_id: string, range: [number, number]) {
 
 	let members: Member[] = [];
 	try {
-		members = await getDatabase()!
-			.getRepository(Member)
-			.createQueryBuilder("member")
-			.where("member.guild_id = :guild_id", { guild_id })
-			.leftJoinAndSelect("member.roles", "role")
-			.leftJoinAndSelect("member.user", "user")
-			.leftJoinAndSelect("user.sessions", "session")
-			.addSelect("user.settings")
-			.addSelect(
-				"CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
-				"_status",
-			)
-			.orderBy("role.position", "DESC")
-			.addOrderBy("_status", "DESC")
-			.addOrderBy("user.username", "ASC")
-			.offset(Number(range[0]) || 0)
-			.limit(Number(range[1]) || 100)
-			.getMany();
+		members =
+			(await getDatabase()
+				?.getRepository(Member)
+				.createQueryBuilder("member")
+				.where("member.guild_id = :guild_id", { guild_id })
+				.leftJoinAndSelect("member.roles", "role")
+				.leftJoinAndSelect("member.user", "user")
+				.leftJoinAndSelect("user.sessions", "session")
+				.addSelect("user.settings")
+				.addSelect(
+					"CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
+					"_status",
+				)
+				.orderBy("role.position", "DESC")
+				.addOrderBy("_status", "DESC")
+				.addOrderBy("user.username", "ASC")
+				.offset(Number(range[0]) || 0)
+				.limit(Number(range[1]) || 100)
+				.getMany()) ?? [];
 	} catch (e) {
 		console.error(`LazyRequest`, e);
 	}
@@ -59,7 +78,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		};
 	}
 
-	const groups = [] as any[];
+	const groups = [];
 	const items = [];
 	const member_roles = members
 		.map((m) => m.roles)
@@ -75,10 +94,9 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	const offlineItems = [];
 
 	for (const role of member_roles) {
-		// @ts-ignore
-		const [role_members, other_members]: Member[][] = partition(
+		const [role_members, other_members] = partition(
 			members,
-			(m: Member) => m.roles.find((r) => r.id === role.id),
+			(m: Member) => !!m.roles.find((r) => r.id === role.id),
 		);
 		const group = {
 			count: role_members.length,
@@ -108,10 +126,10 @@ async function getMembers(guild_id: string, range: [number, number]) {
 					(a.activities.length - b.activities.length) * 2
 				);
 			});
-			var session: Session | undefined = sessions.first();
+			const session: Session | undefined = sessions.first();
 
 			if (session?.status == "offline") {
-				session.status = member.user.settings.status || "online";
+				session.status = member?.user?.settings?.status || "online";
 			}
 
 			const item = {
@@ -171,7 +189,9 @@ async function getMembers(guild_id: string, range: [number, number]) {
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	// TODO: check data
 	check.call(this, LazyRequestSchema, d);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { guild_id, typing, channels, activities } = d as LazyRequestSchema;
+	if (!channels) throw new Error("Must provide channel ranges");
 
 	const channel_id = Object.keys(channels || {}).first();
 	if (!channel_id) return;
@@ -179,7 +199,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const permissions = await getPermission(this.user_id, guild_id, channel_id);
 	permissions.hasThrow("VIEW_CHANNEL");
 
-	const ranges = channels![channel_id];
+	const ranges = channels[channel_id];
 	if (!Array.isArray(ranges)) throw new Error("Not a valid Array");
 
 	const member_count = await Member.count({ where: { guild_id } });
@@ -226,15 +246,10 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	});
 }
 
-function partition<T>(array: T[], isValid: Function) {
-	// @ts-ignore
-	return array.reduce(
-		// @ts-ignore
-		([pass, fail], elem) => {
-			return isValid(elem)
-				? [[...pass, elem], fail]
-				: [pass, [...fail, elem]];
-		},
-		[[], []],
-	);
+/* https://stackoverflow.com/a/50636286 */
+function partition<T>(array: T[], filter: (elem: T) => boolean) {
+	const pass: T[] = [],
+		fail: T[] = [];
+	array.forEach((e) => (filter(e) ? pass : fail).push(e));
+	return [pass, fail];
 }

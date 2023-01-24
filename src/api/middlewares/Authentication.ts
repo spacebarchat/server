@@ -1,6 +1,25 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { checkToken, Config, Rights } from "@fosscord/util";
+import * as Sentry from "@sentry/node";
 
 export const NO_AUTHORIZATION_ROUTES = [
 	// Authentication routes
@@ -30,18 +49,19 @@ export const NO_AUTHORIZATION_ROUTES = [
 	// Asset delivery
 	/\/guilds\/\d+\/widget\.(json|png)/,
 	// Connections
-	/\/connections\/\w+\/callback/
+	/\/connections\/\w+\/callback/,
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;
 export const API_PREFIX_TRAILING_SLASH = /^\/api(\/v\d+)?\//;
 
 declare global {
+	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		interface Request {
 			user_id: string;
 			user_bot: boolean;
-			token: string;
+			token: { id: string; iat: number };
 			rights: Rights;
 		}
 	}
@@ -65,10 +85,12 @@ export async function Authentication(
 	if (!req.headers.authorization)
 		return next(new HTTPError("Missing Authorization Header", 401));
 
+	Sentry.setUser({ id: req.user_id });
+
 	try {
 		const { jwtSecret } = Config.get().security;
 
-		const { decoded, user }: any = await checkToken(
+		const { decoded, user } = await checkToken(
 			req.headers.authorization,
 			jwtSecret,
 		);
@@ -78,7 +100,8 @@ export async function Authentication(
 		req.user_bot = user.bot;
 		req.rights = new Rights(Number(user.rights));
 		return next();
-	} catch (error: any) {
-		return next(new HTTPError(error?.toString(), 400));
+	} catch (error) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		return next(new HTTPError(error!.toString(), 400));
 	}
 }

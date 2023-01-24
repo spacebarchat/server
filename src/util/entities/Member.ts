@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { PublicUser, User } from "./User";
 import { Message } from "./Message";
 import {
@@ -15,7 +33,7 @@ import {
 	RelationId,
 } from "typeorm";
 import { Guild } from "./Guild";
-import { Config, emitEvent, FieldErrors } from "../util";
+import { Config, emitEvent } from "../util";
 import {
 	GuildCreateEvent,
 	GuildDeleteEvent,
@@ -194,12 +212,16 @@ export class Member extends BaseClassWithoutId {
 	}
 
 	static async addRole(user_id: string, guild_id: string, role_id: string) {
-		const [member, role] = await Promise.all([
+		const [member] = await Promise.all([
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
-				//@ts-ignore
-				select: ["index", "roles.id"], // TODO fix type
+				select: {
+					index: true,
+					roles: {
+						id: true,
+					},
+				},
 			}),
 			Role.findOneOrFail({
 				where: { id: role_id, guild_id },
@@ -231,8 +253,12 @@ export class Member extends BaseClassWithoutId {
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
 				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
-				//@ts-ignore
-				select: ["roles.id", "index"], // TODO: fix type
+				select: {
+					index: true,
+					roles: {
+						id: true,
+					},
+				},
 			}),
 			await Role.findOneOrFail({ where: { id: role_id, guild_id } }),
 		]);
@@ -309,7 +335,7 @@ export class Member extends BaseClassWithoutId {
 				guild_id,
 				user: {
 					sessions: {
-						status: Not("invisible" as "invisible"), // lol typescript?
+						status: Not("invisible" as const), // lol typescript?
 					},
 				},
 			},
@@ -488,8 +514,7 @@ export const PublicMemberProjection: PublicMemberKeys[] = [
 	"premium_since",
 ];
 
-// @ts-ignore
-export type PublicMember = Pick<Member, Omit<PublicMemberKeys, "roles">> & {
+export type PublicMember = Omit<Pick<Member, PublicMemberKeys>, "roles"> & {
 	user: PublicUser;
 	roles: string[]; // only role ids not objects
 };

@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { DataSource } from "typeorm";
 import { yellow, green, red } from "picocolors";
 import { ConfigEntity } from "../entities/Config";
@@ -7,14 +25,14 @@ import path from "path";
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
 
-var dbConnection: DataSource | undefined;
+let dbConnection: DataSource | undefined;
 
 // For typeorm cli
 if (!process.env) {
 	config();
 }
 
-let dbConnectionString =
+const dbConnectionString =
 	process.env.DATABASE || path.join(process.cwd(), "database.db");
 
 const DatabaseType = dbConnectionString.includes("://")
@@ -23,6 +41,7 @@ const DatabaseType = dbConnectionString.includes("://")
 const isSqlite = DatabaseType.includes("sqlite");
 
 const DataSourceOptions = new DataSource({
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore type 'string' is not 'mysql' | 'sqlite' | 'mariadb' | etc etc
 	type: DatabaseType,
 	charset: "utf8mb4",

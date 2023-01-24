@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import {
 	getPermission,
 	Permissions,
@@ -61,7 +79,10 @@ export async function setupListener(this: WebSocket) {
 	const guilds = members.map((x) => x.guild);
 	const dm_channels = recipients.map((x) => x.channel);
 
-	const opts: { acknowledge: boolean; channel?: AMQChannel } = {
+	const opts: {
+		acknowledge: boolean;
+		channel?: AMQChannel & { queues?: unknown };
+	} = {
 		acknowledge: true,
 	};
 	this.listen_options = opts;
@@ -69,7 +90,6 @@ export async function setupListener(this: WebSocket) {
 
 	if (RabbitMQ.connection) {
 		opts.channel = await RabbitMQ.connection.createChannel();
-		// @ts-ignore
 		opts.channel.queues = {};
 	}
 
@@ -95,7 +115,7 @@ export async function setupListener(this: WebSocket) {
 		guild.channels.forEach(async (channel) => {
 			if (
 				permission
-					.overwriteChannel(channel.permission_overwrites!)
+					.overwriteChannel(channel.permission_overwrites ?? [])
 					.has("VIEW_CHANNEL")
 			) {
 				this.events[channel.id] = await listenEvent(
@@ -110,7 +130,7 @@ export async function setupListener(this: WebSocket) {
 	this.once("close", () => {
 		if (opts.channel) opts.channel.close();
 		else {
-			Object.values(this.events).forEach((x) => x());
+			Object.values(this.events).forEach((x) => x?.());
 			Object.values(this.member_events).forEach((x) => x());
 		}
 	});
@@ -119,7 +139,7 @@ export async function setupListener(this: WebSocket) {
 // TODO: only subscribe for events that are in the connection intents
 async function consume(this: WebSocket, opts: EventOpts) {
 	const { data, event } = opts;
-	let id = data.id as string;
+	const id = data.id as string;
 	const permission = this.permissions[id] || new Permissions("ADMINISTRATOR"); // default permission for dm
 
 	const consumer = consume.bind(this);
@@ -132,6 +152,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		case "GUILD_MEMBER_REMOVE":
 			this.member_events[data.user.id]?.();
 			delete this.member_events[data.user.id];
+			break;
 		case "GUILD_MEMBER_ADD":
 			if (this.member_events[data.user.id]) break; // already subscribed
 			this.member_events[data.user.id] = await listenEvent(
@@ -140,7 +161,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 				this.listen_options,
 			);
 			break;
-		case "GUILD_MEMBER_REMOVE":
+		case "GUILD_MEMBER_UPDATE":
 			if (!this.member_events[data.user.id]) break;
 			this.member_events[data.user.id]();
 			break;
@@ -170,9 +191,8 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		case "GUILD_CREATE":
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
 			break;
-		case "CHANNEL_UPDATE":
+		case "CHANNEL_UPDATE": {
 			const exists = this.events[id];
-			// @ts-ignore
 			if (
 				permission
 					.overwriteChannel(data.permission_overwrites)
@@ -186,6 +206,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 				delete this.events[id];
 			}
 			break;
+		}
 	}
 
 	// permission checking
@@ -200,8 +221,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			break;
 		case "GUILD_MEMBER_ADD":
 		case "GUILD_MEMBER_REMOVE":
-		case "GUILD_MEMBER_UPDATE":
-		// only send them, if the user subscribed for this part of the member list, or is a bot
+		case "GUILD_MEMBER_UPDATE": // only send them, if the user subscribed for this part of the member list, or is a bot
 		case "PRESENCE_UPDATE": // exception if user is friend
 			break;
 		case "GUILD_BAN_ADD":

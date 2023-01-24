@@ -1,11 +1,31 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import express, { Application } from "express";
 import fs from "fs";
 import path from "path";
-import fetch, { Response as FetchResponse, Headers } from "node-fetch";
+import fetch, { Response as FetchResponse } from "node-fetch";
 import ProxyAgent from "proxy-agent";
 import { Config } from "@fosscord/util";
 
 const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "assets");
+
+let HAS_SHOWN_CACHE_WARNING = false;
 
 export default function TestClient(app: Application) {
 	app.use("/assets", express.static(path.join(ASSET_FOLDER_PATH, "public")));
@@ -84,14 +104,10 @@ export default function TestClient(app: Application) {
 
 		assetCache.set(req.params.file, { buffer, response });
 
-		// TODO: I don't like this. Figure out a way to get client cacher to download *all* assets.
-		if (response.status == 200) {
+		if (response.status == 200 && !HAS_SHOWN_CACHE_WARNING) {
+			HAS_SHOWN_CACHE_WARNING = true;
 			console.warn(
 				`[TestClient] Cache miss for file ${req.params.file}! Use 'npm run generate:client' to cache and patch.`,
-			);
-			await fs.promises.appendFile(
-				path.join(ASSET_FOLDER_PATH, "cacheMisses"),
-				req.params.file + "\n",
 			);
 		}
 

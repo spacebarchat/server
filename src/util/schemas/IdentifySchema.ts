@@ -1,4 +1,24 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { ActivitySchema } from "@fosscord/util";
+
+// TODO: Need a way to allow camalCase and pascal_case without just duplicating the schema
 
 export const IdentifySchema = {
 	token: String,
@@ -80,7 +100,7 @@ export interface IdentifySchema {
 		referring_domain_current?: string;
 		release_channel?: "stable" | "dev" | "ptb" | "canary";
 		client_build_number?: number;
-		client_event_source?: any;
+		client_event_source?: string;
 		client_version?: string;
 		system_locale?: string;
 	};
@@ -93,23 +113,23 @@ export interface IdentifySchema {
 	guild_subscriptions?: boolean;
 	capabilities?: number;
 	client_state?: {
-		guild_hashes?: any;
+		guild_hashes?: unknown;
 		highest_last_message_id?: string | number;
 		read_state_version?: number;
 		user_guild_settings_version?: number;
 		user_settings_version?: number;
 		useruser_guild_settings_version?: number;
 		private_channels_version?: number;
-		guild_versions?: any;
+		guild_versions?: unknown;
 		api_code_version?: number;
 	};
 	clientState?: {
-		guildHashes?: any;
+		guildHashes?: unknown;
 		highestLastMessageId?: string | number;
 		readStateVersion?: number;
 		userGuildSettingsVersion?: number;
 		useruserGuildSettingsVersion?: number;
-		guildVersions?: any;
+		guildVersions?: unknown;
 		apiCodeVersion?: number;
 	};
 	v?: number;

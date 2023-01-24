@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import {
 	Column,
 	Entity,
@@ -17,7 +35,6 @@ import {
 	Snowflake,
 	trimSpecial,
 	InvisibleCharacters,
-	ChannelTypes,
 } from "../util";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import { Recipient } from "./Recipient";
@@ -201,7 +218,7 @@ export class Channel extends BaseClass {
 				!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") &&
 				channel.name
 			) {
-				for (var character of InvisibleCharacters)
+				for (const character of InvisibleCharacters)
 					if (channel.name.includes(character))
 						throw new HTTPError(
 							"Channel name cannot include invalid characters",
@@ -219,7 +236,7 @@ export class Channel extends BaseClass {
 							403,
 						);
 
-					if (channel.name.match(/\-\-+/g))
+					if (channel.name.match(/--+/g))
 						throw new HTTPError(
 							"Channel name cannot include multiple adjacent dashes.",
 							403,
@@ -326,8 +343,9 @@ export class Channel extends BaseClass {
 			relations: ["channel", "channel.recipients"],
 		});
 
-		for (let ur of userRecipients) {
-			let re = ur.channel.recipients!.map((r) => r.user_id);
+		for (const ur of userRecipients) {
+			if (!ur.channel.recipients) continue;
+			const re = ur.channel.recipients.map((r) => r.user_id);
 			if (re.length === channelRecipients.length) {
 				if (containsAll(re, channelRecipients)) {
 					if (channel == null) {
@@ -362,8 +380,8 @@ export class Channel extends BaseClass {
 
 		const channel_dto = await DmChannelDTO.from(channel);
 
-		if (type === ChannelType.GROUP_DM) {
-			for (let recipient of channel.recipients!) {
+		if (type === ChannelType.GROUP_DM && channel.recipients) {
+			for (const recipient of channel.recipients) {
 				await emitEvent({
 					event: "CHANNEL_CREATE",
 					data: channel_dto.excludedRecipients([recipient.user_id]),

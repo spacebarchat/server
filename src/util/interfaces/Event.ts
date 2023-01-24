@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import {
 	RelationshipType,
 	ConnectedAccount,
@@ -21,6 +39,7 @@ import {
 	Presence,
 	UserSettings,
 	IReadyGuildDTO,
+	ReadState,
 } from "@fosscord/util";
 
 export interface Event {
@@ -29,6 +48,7 @@ export interface Event {
 	channel_id?: string;
 	created_at?: Date;
 	event: EVENT;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	data?: any;
 }
 
@@ -85,12 +105,12 @@ export interface ReadyEventData {
 		[number, [[number, [number, number]]]],
 		{ b: number; k: bigint[] }[],
 	][];
-	guild_join_requests?: any[]; // ? what is this? this is new
+	guild_join_requests?: unknown[]; // ? what is this? this is new
 	shard?: [number, number];
 	user_settings?: UserSettings;
 	relationships?: PublicRelationship[]; // TODO
 	read_state: {
-		entries: any[]; // TODO
+		entries: ReadState[]; // TODO
 		partial: boolean;
 		version: number;
 	};
@@ -106,7 +126,7 @@ export interface ReadyEventData {
 	merged_members?: PublicMember[][];
 	// probably all users who the user is in contact with
 	users?: PublicUser[];
-	sessions: any[];
+	sessions: unknown[];
 }
 
 export interface ReadyEvent extends Event {
@@ -160,7 +180,7 @@ export interface GuildCreateEvent extends Event {
 		joined_at: Date;
 		// TODO: add them to guild
 		guild_scheduled_events: never[];
-		guild_hashes: {};
+		guild_hashes: unknown;
 		presences: never[];
 		stage_instances: never[];
 		threads: never[];
@@ -390,7 +410,14 @@ export interface TypingStartEvent extends Event {
 
 export interface UserUpdateEvent extends Event {
 	event: "USER_UPDATE";
-	data: User;
+	data: Omit<User, "data">;
+}
+
+export interface UserDeleteEvent extends Event {
+	event: "USER_DELETE";
+	data: {
+		user_id: string;
+	};
 }
 
 export interface UserConnectionsUpdateEvent extends Event {
@@ -538,6 +565,7 @@ export type EventData =
 	| TypingStartEvent
 	| UserUpdateEvent
 	| UserConnectionsUpdateEvent
+	| UserDeleteEvent
 	| VoiceStateUpdateEvent
 	| VoiceServerUpdateEvent
 	| WebhooksUpdateEvent
@@ -589,6 +617,7 @@ export enum EVENTEnum {
 	TypingStart = "TYPING_START",
 	UserUpdate = "USER_UPDATE",
 	UserConnectionsUpdate = "USER_CONNECTIONS_UPDATE",
+	UserDelete = "USER_DELETE",
 	WebhooksUpdate = "WEBHOOKS_UPDATE",
 	InteractionCreate = "INTERACTION_CREATE",
 	VoiceStateUpdate = "VOICE_STATE_UPDATE",
@@ -640,6 +669,7 @@ export type EVENT =
 	| "TYPING_START"
 	| "USER_UPDATE"
 	| "USER_CONNECTIONS_UPDATE"
+	| "USER_DELETE"
 	| "USER_NOTE_UPDATE"
 	| "WEBHOOKS_UPDATE"
 	| "INTERACTION_CREATE"

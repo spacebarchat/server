@@ -1,5 +1,24 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import WS from "ws";
-import { WebSocket } from "@fosscord/gateway";
+import { genSessionId, WebSocket } from "@fosscord/gateway";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { setHeartbeat } from "../util/Heartbeat";
@@ -9,10 +28,12 @@ import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "url";
 import { Config } from "@fosscord/util";
-var erlpack: any;
+let erlpack: unknown;
 try {
 	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) {}
+} catch (error) {
+	/* empty */
+}
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -29,6 +50,10 @@ export async function Connection(
 		: request.socket.remoteAddress;
 
 	socket.ipAddress = ipAddress;
+
+	//Create session ID when the connection is opened. This allows gateway dump to group the initial websocket messages with the rest of the conversation.
+	const session_id = genSessionId();
+	socket.session_id = session_id; //Set the session of the WebSocket object
 
 	try {
 		// @ts-ignore

@@ -1,12 +1,23 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Request, Response, Router } from "express";
-import {
-	Config,
-	Permissions,
-	Guild,
-	Invite,
-	Channel,
-	Member,
-} from "@fosscord/util";
+import { Permissions, Guild, Invite, Channel, Member } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { random, route } from "@fosscord/api";
 
@@ -28,7 +39,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	if (!guild.widget_enabled) throw new HTTPError("Widget Disabled", 404);
 
 	// Fetch existing widget invite for widget channel
-	var invite = await Invite.findOne({
+	let invite = await Invite.findOne({
 		where: { channel_id: guild.widget_channel_id },
 	});
 
@@ -52,7 +63,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	}
 
 	// Fetch voice channels, and the @everyone permissions object
-	const channels = [] as any[];
+	const channels: { id: string; name: string; position: number }[] = [];
 
 	(
 		await Channel.find({
@@ -70,15 +81,15 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		) {
 			channels.push({
 				id: doc.id,
-				name: doc.name,
-				position: doc.position,
+				name: doc.name ?? "Unknown channel",
+				position: doc.position ?? 0,
 			});
 		}
 	});
 
 	// Fetch members
 	// TODO: Understand how Discord's max 100 random member sample works, and apply to here (see top of this file)
-	let members = await Member.find({ where: { guild_id: guild_id } });
+	const members = await Member.find({ where: { guild_id: guild_id } });
 
 	// Construct object to respond with
 	const data = {

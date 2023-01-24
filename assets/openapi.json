@@ -6813,6 +6813,43 @@
                     "-"
                 ]
             }
+        },
+        "/users/": {
+            "get": {
+                "x-right-required": "MANAGE_USERS",
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/{id}/delete/": {
+            "post": {
+                "x-right-required": "MANAGE_USERS",
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "id"
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            }
         }
     }
 }

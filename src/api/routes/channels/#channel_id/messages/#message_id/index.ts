@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import {
 	Attachment,
 	Channel,
@@ -12,7 +30,6 @@ import {
 	Snowflake,
 	uploadFile,
 	MessageCreateSchema,
-	DiscordApiErrors,
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import multer from "multer";
@@ -41,7 +58,7 @@ router.patch(
 	}),
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id } = req.params;
-		var body = req.body as MessageCreateSchema;
+		let body = req.body as MessageCreateSchema;
 
 		const message = await Message.findOneOrFail({
 			where: { id: message_id, channel_id },
@@ -67,6 +84,7 @@ router.patch(
 		const new_message = await handleMessage({
 			...message,
 			// TODO: should message_reference be overridable?
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			message_reference: message.message_reference,
 			...body,
@@ -109,7 +127,7 @@ router.put(
 	}),
 	async (req: Request, res: Response) => {
 		const { channel_id, message_id } = req.params;
-		var body = req.body as MessageCreateSchema;
+		const body = req.body as MessageCreateSchema;
 		const attachments: Attachment[] = [];
 
 		const rights = await getRights(req.user_id);
@@ -153,7 +171,7 @@ router.put(
 
 		const embeds = body.embeds || [];
 		if (body.embed) embeds.push(body.embed);
-		let message = await handleMessage({
+		const message = await handleMessage({
 			...body,
 			type: 0,
 			pinned: false,
@@ -179,7 +197,10 @@ router.put(
 			channel.save(),
 		]);
 
-		postHandleMessage(message).catch((e) => {}); // no await as it shouldnt block the message send function and silently catch error
+		// no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) =>
+			console.error("[Message] post-message handler failed", e),
+		);
 
 		return res.json(message);
 	},

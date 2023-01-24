@@ -1,9 +1,27 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { route } from "@fosscord/api";
 import {
 	ConnectedAccount,
 	ConnectionUpdateSchema,
 	DiscordApiErrors,
-	emitEvent
+	emitEvent,
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 const router = Router();
@@ -38,10 +56,14 @@ router.patch(
 		if (!connection) return DiscordApiErrors.UNKNOWN_CONNECTION;
 		// TODO: do we need to do anything if the connection is revoked?
 
-		//@ts-ignore For some reason the client sends this as a boolean, even tho docs say its a number?
-		if (typeof body.visibility === "boolean") body.visibility = body.visibility ? 1 : 0;
-		//@ts-ignore For some reason the client sends this as a boolean, even tho docs say its a number?
-		if (typeof body.show_activity === "boolean") body.show_activity = body.show_activity ? 1 : 0;
+		if (typeof body.visibility === "boolean")
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			//@ts-ignore For some reason the client sends this as a boolean, even tho docs say its a number?
+			body.visibility = body.visibility ? 1 : 0;
+		if (typeof body.show_activity === "boolean")
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			//@ts-ignore see above
+			body.show_activity = body.show_activity ? 1 : 0;
 
 		connection.assign(req.body);
 

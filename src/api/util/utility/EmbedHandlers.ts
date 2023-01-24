@@ -1,10 +1,29 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Config, Embed, EmbedType } from "@fosscord/util";
-import fetch, { Response } from "node-fetch";
+import fetch, { RequestInit } from "node-fetch";
 import * as cheerio from "cheerio";
 import probe from "probe-image-size";
 import crypto from "crypto";
+import { yellow } from "picocolors";
 
-export const DEFAULT_FETCH_OPTIONS: any = {
+export const DEFAULT_FETCH_OPTIONS: RequestInit = {
 	redirect: "follow",
 	follow: 1,
 	headers: {
@@ -15,6 +34,8 @@ export const DEFAULT_FETCH_OPTIONS: any = {
 	compress: true,
 	method: "GET",
 };
+
+let hasWarnedAboutImagor = false;
 
 export const getProxyUrl = (
 	url: URL,
@@ -29,7 +50,7 @@ export const getProxyUrl = (
 
 	// Imagor
 	if (imagorServerUrl) {
-		let path = `${width}x${height}/${url.host}${url.pathname}`;
+		const path = `${width}x${height}/${url.host}${url.pathname}`;
 
 		const hash = crypto
 			.createHmac("sha1", secret)
@@ -41,11 +62,17 @@ export const getProxyUrl = (
 		return `${imagorServerUrl}/${hash}/${path}`;
 	}
 
-	// TODO: Imagor documentation
-	console.log(
-		"Imagor has not been set up correctly. docs.fosscord.com/set/up/a/page/about/this",
-	);
-	return "";
+	if (!hasWarnedAboutImagor) {
+		hasWarnedAboutImagor = true;
+		console.log(
+			"[Embeds]",
+			yellow(
+				"Imagor has not been set up correctly. https://docs.fosscord.com/setup/server/configuration/imagor/",
+			),
+		);
+	}
+
+	return url.toString();
 };
 
 const getMeta = ($: cheerio.CheerioAPI, name: string): string | undefined => {
@@ -65,8 +92,8 @@ export const getMetaDescriptions = (text: string) => {
 		image: getMeta($, "og:image") || getMeta($, "twitter:image"),
 		image_fallback: $(`image`).attr("src"),
 		video_fallback: $(`video`).attr("src"),
-		width: parseInt(getMeta($, "og:image:width")!) || 0,
-		height: parseInt(getMeta($, "og:image:height")!) || 0,
+		width: parseInt(getMeta($, "og:image:width") || "0"),
+		height: parseInt(getMeta($, "og:image:height") || "0"),
 		url: getMeta($, "og:url"),
 		youtube_embed: getMeta($, "og:video:secure_url"),
 	};
@@ -165,8 +192,8 @@ export const EmbedHandlers: {
 				proxy_url: metas.image
 					? getProxyUrl(
 							new URL(metas.image),
-							metas.width!,
-							metas.height!,
+							metas.width,
+							metas.height,
 					  )
 					: undefined,
 			},
@@ -212,9 +239,9 @@ export const EmbedHandlers: {
 		const text = json.data.text;
 		const created_at = new Date(json.data.created_at);
 		const metrics = json.data.public_metrics;
-		let media = json.includes.media?.filter(
-			(x: any) => x.type == "photo",
-		) as any[]; // TODO: video
+		const media = json.includes.media?.filter(
+			(x: { type: string }) => x.type == "photo",
+		);
 
 		const embed: Embed = {
 			type: EmbedType.rich,
@@ -307,7 +334,7 @@ export const EmbedHandlers: {
 				width: 640,
 				height: 640,
 				proxy_url: metas.image
-					? getProxyUrl(new URL(metas.image!), 640, 640)
+					? getProxyUrl(new URL(metas.image), 640, 640)
 					: undefined,
 				url: metas.image,
 			},
@@ -338,9 +365,9 @@ export const EmbedHandlers: {
 				url: url.href,
 				proxy_url: metas.image
 					? getProxyUrl(
-							new URL(metas.image!),
-							metas.width!,
-							metas.height!,
+							new URL(metas.image),
+							metas.width,
+							metas.height,
 					  )
 					: undefined,
 			},
@@ -368,7 +395,7 @@ export const EmbedHandlers: {
 				height: 215,
 				url: metas.image,
 				proxy_url: metas.image
-					? getProxyUrl(new URL(metas.image!), 460, 215)
+					? getProxyUrl(new URL(metas.image), 460, 215)
 					: undefined,
 			},
 			provider: {
@@ -393,7 +420,9 @@ export const EmbedHandlers: {
 			},
 		};
 	},
-
+	"youtu.be": (url: URL) => {
+		return EmbedHandlers["www.youtube.com"](url);
+	},
 	"youtube.com": (url: URL) => {
 		return EmbedHandlers["www.youtube.com"](url);
 	},
@@ -407,7 +436,7 @@ export const EmbedHandlers: {
 				// TODO: does this adjust with aspect ratio?
 				width: metas.width,
 				height: metas.height,
-				url: metas.youtube_embed!,
+				url: metas.youtube_embed,
 			},
 			url: url.href,
 			type: EmbedType.video,
@@ -418,9 +447,9 @@ export const EmbedHandlers: {
 				url: metas.image,
 				proxy_url: metas.image
 					? getProxyUrl(
-							new URL(metas.image!),
-							metas.width!,
-							metas.height!,
+							new URL(metas.image),
+							metas.width,
+							metas.height,
 					  )
 					: undefined,
 			},

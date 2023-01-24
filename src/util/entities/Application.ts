@@ -1,13 +1,23 @@
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	OneToOne,
-	RelationId,
-} from "typeorm";
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
 import { Team } from "./Team";
 import { User } from "./User";
 
@@ -26,7 +36,7 @@ export class Application extends BaseClass {
 	summary: string = "";
 
 	@Column({ type: "simple-json", nullable: true })
-	type?: any;
+	type?: object; // TODO: this type is bad
 
 	@Column()
 	hook: boolean = true;
@@ -41,7 +51,7 @@ export class Application extends BaseClass {
 	verify_key: string;
 
 	@JoinColumn({ name: "owner_id" })
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, { onDelete: "CASCADE" })
 	owner: User;
 
 	// TODO: enum this? https://discord.com/developers/docs/resources/application#application-object-application-flags
@@ -76,7 +86,7 @@ export class Application extends BaseClass {
 	discovery_eligibility_flags: number = 2240;
 
 	@JoinColumn({ name: "bot_user_id" })
-	@OneToOne(() => User)
+	@OneToOne(() => User, { onDelete: "CASCADE" })
 	bot?: User;
 
 	@Column({ type: "simple-array", nullable: true })
@@ -158,6 +168,6 @@ export interface ApplicationCommandInteractionData {
 
 export interface ApplicationCommandInteractionDataOption {
 	name: string;
-	value?: any;
+	value?: unknown;
 	options?: ApplicationCommandInteractionDataOption[];
 }

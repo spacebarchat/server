@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
 import {
@@ -46,8 +64,8 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 });
 
 router.post("/reset", route({}), async (req: Request, res: Response) => {
-	let bot = await User.findOneOrFail({ where: { id: req.params.id } });
-	let owner = await User.findOneOrFail({ where: { id: req.user_id } });
+	const bot = await User.findOneOrFail({ where: { id: req.params.id } });
+	const owner = await User.findOneOrFail({ where: { id: req.user_id } });
 
 	if (owner.id != req.user_id)
 		throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
@@ -62,7 +80,7 @@ router.post("/reset", route({}), async (req: Request, res: Response) => {
 
 	await bot.save();
 
-	let token = await generateToken(bot.id);
+	const token = await generateToken(bot.id);
 
 	res.json({ token }).status(200);
 });

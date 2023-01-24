@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { getIpAdress } from "@fosscord/api";
 import { Config, getRights, listenEvent } from "@fosscord/util";
 import { NextFunction, Request, Response, Router } from "express";
@@ -24,7 +42,7 @@ type RateLimit = {
 	expires_at: Date;
 };
 
-let Cache = new Map<string, RateLimit>();
+const Cache = new Map<string, RateLimit>();
 const EventRateLimit = "RATELIMIT";
 
 export default function rateLimit(opts: {
@@ -39,12 +57,8 @@ export default function rateLimit(opts: {
 	error?: boolean;
 	success?: boolean;
 	onlyIp?: boolean;
-}): any {
-	return async (
-		req: Request,
-		res: Response,
-		next: NextFunction,
-	): Promise<any> => {
+}) {
+	return async (req: Request, res: Response, next: NextFunction) => {
 		// exempt user? if so, immediately short circuit
 		if (req.user_id) {
 			const rights = await getRights(req.user_id);
@@ -67,7 +81,7 @@ export default function rateLimit(opts: {
 		)
 			max_hits = opts.MODIFY;
 
-		let offender = Cache.get(executor_id + bucket_id);
+		const offender = Cache.get(executor_id + bucket_id);
 
 		if (offender) {
 			let reset = offender.expires_at.getTime();

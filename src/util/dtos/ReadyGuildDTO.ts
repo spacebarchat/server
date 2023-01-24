@@ -1,3 +1,21 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { Channel, Emoji, Guild, Member, Role, Sticker } from "../entities";
 
 export interface IReadyGuildDTO {
@@ -5,7 +23,7 @@ export interface IReadyGuildDTO {
 	channels: Channel[];
 	data_mode: string; // what is this
 	emojis: Emoji[];
-	guild_scheduled_events: any[];
+	guild_scheduled_events: unknown[]; // TODO
 	id: string;
 	large: boolean | undefined;
 	lazy: boolean;
@@ -39,12 +57,12 @@ export interface IReadyGuildDTO {
 		max_video_channel_users: number | undefined;
 		max_members: number | undefined;
 		nsfw_level: number | undefined;
-		hub_type?: any | null; // ????
+		hub_type?: unknown | null; // ????
 	};
 	roles: Role[];
-	stage_instances: any[];
+	stage_instances: unknown[];
 	stickers: Sticker[];
-	threads: any[];
+	threads: unknown[];
 	version: string;
 }
 
@@ -53,7 +71,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 	channels: Channel[];
 	data_mode: string; // what is this
 	emojis: Emoji[];
-	guild_scheduled_events: any[];
+	guild_scheduled_events: unknown[];
 	id: string;
 	large: boolean | undefined;
 	lazy: boolean;
@@ -87,12 +105,12 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 		max_video_channel_users: number | undefined;
 		max_members: number | undefined;
 		nsfw_level: number | undefined;
-		hub_type?: any | null; // ????
+		hub_type?: unknown | null; // ????
 	};
 	roles: Role[];
-	stage_instances: any[];
+	stage_instances: unknown[];
 	stickers: Sticker[];
-	threads: any[];
+	threads: unknown[];
 	version: string;
 
 	constructor(guild: Guild) {

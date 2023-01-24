@@ -1,11 +1,29 @@
+/*
+	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 export interface LazyRequestSchema {
 	guild_id: string;
 	channels?: Record<string, [number, number][]>;
 	activities?: boolean;
 	threads?: boolean;
 	typing?: true;
-	members?: any[];
-	thread_member_lists?: any[];
+	members?: unknown[];
+	thread_member_lists?: unknown[];
 }
 
 export const LazyRequestSchema = {
@@ -14,6 +32,6 @@ export const LazyRequestSchema = {
 	$channels: Object,
 	$typing: Boolean,
 	$threads: Boolean,
-	$members: [] as any[],
-	$thread_member_lists: [] as any[],
+	$members: [] as unknown[],
+	$thread_member_lists: [] as unknown[],
 };
