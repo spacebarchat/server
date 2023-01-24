@@ -37,6 +37,7 @@ const http = require("http");
 const https = require("https");
 const fs = require("fs/promises");
 const { existsSync } = require("fs");
+const crypto = require("crypto");
 
 // https://stackoverflow.com/a/62500224
 const httpAgent = new http.Agent({ keepAlive: true });
@@ -70,6 +71,100 @@ const INDEX_SCRIPTS = [
 
 const splice = (a, b, index) => {
 	return a.substring(0, index) + b + a.substring(index);
+};
+
+const addConnection = (content, type, colour, exportId) => {
+	const nameHash = crypto.createHash("md5").update(type).digest("hex");
+	content = content.replaceAll(
+		',941009:(e,t,n)=>{e.exports=n.p+"a13305254c45311c90333469714eedca.png"}',
+		`,941009:(e,t,n)=>{e.exports=n.p+"a13305254c45311c90333469714eedca.png"},${exportId}:(e,t,n)=>{e.exports=n.p+"${nameHash}.png"}`,
+	);
+
+	const CONNECTION_LIST_REGEX = /\[{type:\w*\.\w*\.\w*.*,enabled:!0\}\]/gs;
+	let connectionList = content.match(CONNECTION_LIST_REGEX);
+	if (connectionList) {
+		connectionList = connectionList[0];
+		let lolConnection = connectionList.match(
+			/,{type:.*LEAGUE_OF_LEGENDS.*,enabled:!0}/g,
+		)[0];
+
+		lolConnection = lolConnection.replaceAll(
+			"LEAGUE_OF_LEGENDS",
+			type.toUpperCase().replaceAll(" ", "_"),
+		);
+		lolConnection = lolConnection.replaceAll("League of Legends", type);
+		lolConnection = lolConnection.replaceAll(
+			".LOL",
+			`.${type.toUpperCase()}`,
+		);
+		const iconMatches = lolConnection.matchAll(/\w\((\d*)\)/g);
+		for (const m of iconMatches) {
+			const fn = m[0];
+			const id = m[1];
+			const newFn = fn.replaceAll(id, exportId);
+			lolConnection = lolConnection.replaceAll(fn, newFn);
+		}
+		// append to the end of the connection list
+		connectionList =
+			connectionList.substring(0, connectionList.length - 1) +
+			lolConnection +
+			connectionList.substring(connectionList.length - 1);
+
+		// now replace the connection list with the new one
+		content = content.replaceAll(CONNECTION_LIST_REGEX, connectionList);
+	}
+
+	// add the connection color
+	let colorMatch = content.match(
+		/,\w\(\w,\w\.\w\.CRUNCHYROLL,"var\(--crunchyroll\)"\)/g,
+	);
+	if (colorMatch) {
+		colorMatch = colorMatch[0];
+		const colorInjectionIndex =
+			content.indexOf(colorMatch) + colorMatch.length;
+		colorMatch = colorMatch.replaceAll("CRUNCHYROLL", type.toUpperCase());
+		colorMatch = colorMatch.replaceAll("crunchyroll", type.toLowerCase());
+		content = splice(content, colorMatch, colorInjectionIndex);
+	}
+
+	// add the connection name
+	let nameMatch = content.match(/;\w\.CRUNCHYROLL="crunchyroll"/gs);
+	if (nameMatch) {
+		nameMatch = nameMatch[0];
+		const nameInjectionIndex =
+			content.indexOf(nameMatch) + nameMatch.length;
+		nameMatch = nameMatch.replaceAll("CRUNCHYROLL", type.toUpperCase());
+		nameMatch = nameMatch.replaceAll("crunchyroll", type.toLowerCase());
+		content = splice(content, nameMatch, nameInjectionIndex);
+	}
+
+	// add connection color 2
+	let colorMatch2 = content.match(
+		/(?<=}}\)),\w\(\w,\w\.CRUNCHYROLL.*}}\)(?=,\w\()/g,
+	);
+	if (colorMatch2) {
+		colorMatch2 = colorMatch2[0];
+		const colorInjectionIndex2 =
+			content.indexOf(colorMatch2) + colorMatch2.length;
+		colorMatch2 = colorMatch2.replaceAll("CRUNCHYROLL", type.toUpperCase());
+		const innerContent = colorMatch2.match(/{.*}/g)[0];
+		const newInnerContent = `{hex:"${colour}",hsl:{h:235,s:.85,l:.65,a:1}}`;
+		colorMatch2 = colorMatch2.replaceAll(innerContent, newInnerContent);
+		content = splice(content, colorMatch2, colorInjectionIndex2);
+	}
+
+	// connection color 3
+	content = content.replaceAll(
+		',CRUNCHYROLL:"#f78b24"',
+		`,CRUNCHYROLL:"#f78b24",${type.toUpperCase()}:"${colour}"`,
+	);
+
+	// connection color 4
+	content = content.replaceAll(
+		',CRUNCHYROLL:"hsl(29, calc(var(--saturation-factor, 1) * 93%), 55.5%)"',
+		`,CRUNCHYROLL:"hsl(29, calc(var(--saturation-factor, 1) * 93%), 55.5%)",${type.toUpperCase()}:"hsl(235, calc(var(--saturation-factor, 1) * 85%), 65%)"`,
+	);
+	return content;
 };
 
 const doPatch = (content) => {
@@ -189,97 +284,8 @@ const doPatch = (content) => {
 		"null",
 	);
 
-	// add logo for discord connection
-	content = content.replaceAll(
-		',941009:(e,t,n)=>{e.exports=n.p+"a13305254c45311c90333469714eedca.png"}',
-		',941009:(e,t,n)=>{e.exports=n.p+"a13305254c45311c90333469714eedca.png"},9410010:(e,t,n)=>{e.exports=n.p+"847541504914fd33810e70a0ea73177e.png"}',
-	);
-
-	// add the discord connection object
-	const CONNECTION_LIST_REGEX = /\[{type:\w*\.\w*\.\w*.*,enabled:\!0\}\]/gs;
-	let connectionList = content.match(CONNECTION_LIST_REGEX);
-	if (connectionList) {
-		connectionList = connectionList[0];
-		let lolConnection = connectionList.match(
-			/,{type:.*LEAGUE_OF_LEGENDS.*,enabled:!0}/g,
-		)[0];
-
-		lolConnection = lolConnection.replaceAll(
-			"LEAGUE_OF_LEGENDS",
-			"DISCORD",
-		);
-		lolConnection = lolConnection.replaceAll(
-			"League of Legends",
-			"Discord",
-		);
-		lolConnection = lolConnection.replaceAll(".LOL", ".DISCORD");
-		const iconMatches = lolConnection.matchAll(/\w\((\d*)\)/g);
-		for (const m of iconMatches) {
-			const fn = m[0];
-			const id = m[1];
-			const newFn = fn.replaceAll(id, "9410010");
-			lolConnection = lolConnection.replaceAll(fn, newFn);
-		}
-		// append to the end of the connection list
-		connectionList =
-			connectionList.substring(0, connectionList.length - 1) +
-			lolConnection +
-			connectionList.substring(connectionList.length - 1);
-
-		// now replace the connection list with the new one
-		content = content.replaceAll(CONNECTION_LIST_REGEX, connectionList);
-	}
-
-	// add the connection color
-	let colorMatch = content.match(
-		/,\w\(\w,\w\.\w\.CRUNCHYROLL,"var\(--crunchyroll\)"\)/g,
-	);
-	if (colorMatch) {
-		colorMatch = colorMatch[0];
-		const colorInjectionIndex =
-			content.indexOf(colorMatch) + colorMatch.length;
-		colorMatch = colorMatch.replaceAll("CRUNCHYROLL", "DISCORD");
-		colorMatch = colorMatch.replaceAll("crunchyroll", "discord");
-		content = splice(content, colorMatch, colorInjectionIndex);
-	}
-
-	// add the connection name
-	let nameMatch = content.match(/;\w\.CRUNCHYROLL="crunchyroll"/gs);
-	if (nameMatch) {
-		nameMatch = nameMatch[0];
-		const nameInjectionIndex =
-			content.indexOf(nameMatch) + nameMatch.length;
-		nameMatch = nameMatch.replaceAll("CRUNCHYROLL", "DISCORD");
-		nameMatch = nameMatch.replaceAll("crunchyroll", "discord");
-		content = splice(content, nameMatch, nameInjectionIndex);
-	}
-
-	// add connection color 2
-	let colorMatch2 = content.match(
-		/(?<=}}\)),\w\(\w,\w\.CRUNCHYROLL.*}}\)(?=,\w\()/g,
-	);
-	if (colorMatch2) {
-		colorMatch2 = colorMatch2[0];
-		const colorInjectionIndex2 =
-			content.indexOf(colorMatch2) + colorMatch2.length;
-		colorMatch2 = colorMatch2.replaceAll("CRUNCHYROLL", "DISCORD");
-		const innerContent = colorMatch2.match(/{.*}/g)[0];
-		const newInnerContent = '{hex:"#5865f2",hsl:{h:235,s:.85,l:.65,a:1}}';
-		colorMatch2 = colorMatch2.replaceAll(innerContent, newInnerContent);
-		content = splice(content, colorMatch2, colorInjectionIndex2);
-	}
-
-	// connection color 3
-	content = content.replaceAll(
-		',CRUNCHYROLL:"#f78b24"',
-		',CRUNCHYROLL:"#f78b24",DISCORD:"#5865f2"',
-	);
-
-	// connection color 4
-	content = content.replaceAll(
-		',CRUNCHYROLL:"hsl(29, calc(var(--saturation-factor, 1) * 93%), 55.5%)"',
-		',CRUNCHYROLL:"hsl(29, calc(var(--saturation-factor, 1) * 93%), 55.5%)",DISCORD:"hsl(235, calc(var(--saturation-factor, 1) * 85%), 65%)"',
-	);
+	content = addConnection(content, "Discord", "#5865f2", "9410010");
+	// content = addConnection(content, "Fosscord", "#5865f2", "9410011"); // TODO: instance picker for app
 
 	return content;
 };
@@ -356,5 +362,5 @@ const processFile = async (asset) => {
 		}
 	}
 
-	console.log("done");
+	print("done");
 })();
