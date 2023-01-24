@@ -18,8 +18,9 @@
 
 import { ConfigEntity } from "../entities/Config";
 import fs from "fs/promises";
-import syncFs from "fs";
+import { existsSync } from "fs";
 import { ConfigValue } from "../config";
+import { OrmUtils } from "..";
 
 // TODO: yaml instead of json
 const overridePath = process.env.CONFIG_PATH ?? "";
@@ -34,32 +35,24 @@ export const Config = {
 	init: async function init() {
 		if (config) return config;
 		console.log("[Config] Loading configuration...");
-		pairs = await ConfigEntity.find();
-		config = pairsToConfig(pairs);
-		// TODO: this overwrites existing config values with defaults.
-		// we actually want to extend the object with new keys instead.
-		// config = (config || {}).merge(new ConfigValue());
-		// Object.assign(config, new ConfigValue());
+		if (!process.env.CONFIG_PATH) {
+			pairs = await ConfigEntity.find();
+			config = pairsToConfig(pairs);
+		} else {
+			console.log(`[Config] Using CONFIG_PATH rather than database`);
+			if (existsSync(process.env.CONFIG_PATH)) {
+				const file = JSON.parse(
+					(await fs.readFile(process.env.CONFIG_PATH)).toString(),
+				);
+				config = file;
+			} else config = new ConfigValue();
+			pairs = generatePairs(config);
+		}
 
 		// If a config doesn't exist, create it.
 		if (Object.keys(config).length == 0) config = new ConfigValue();
 
-		if (process.env.CONFIG_PATH) {
-			console.log(
-				`[Config] Using config path from environment rather than database.`,
-			);
-			try {
-				const overrideConfig = JSON.parse(
-					await fs.readFile(overridePath, { encoding: "utf8" }),
-				);
-				config = overrideConfig.merge(config);
-			} catch (error) {
-				await fs.writeFile(
-					overridePath,
-					JSON.stringify(config, null, 4),
-				);
-			}
-		}
+		config = OrmUtils.mergeDeep({}, { ...new ConfigValue() }, config);
 
 		return this.set(config);
 	},
@@ -83,29 +76,31 @@ export const Config = {
 	},
 };
 
-function applyConfig(val: ConfigValue) {
-	// TODO: typings
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	async function apply(obj: any, key = ""): Promise<any> {
-		if (typeof obj === "object" && obj !== null)
-			return Promise.all(
-				Object.keys(obj).map((k) =>
-					apply(obj[k], key ? `${key}_${k}` : k),
-				),
-			);
-
-		let pair = pairs.find((x) => x.key === key);
-		if (!pair) pair = new ConfigEntity();
-
-		pair.key = key;
-		pair.value = obj;
-		return pair.save();
+// TODO: better types
+const generatePairs = (obj: object | null, key = ""): ConfigEntity[] => {
+	if (typeof obj == "object" && obj != null) {
+		return Object.keys(obj)
+			.map((k) =>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				generatePairs((obj as any)[k], key ? `${key}_${k}` : k),
+			)
+			.flat();
 	}
 
-	if (process.env.CONFIG_PATH)
-		syncFs.writeFileSync(overridePath, JSON.stringify(val, null, 4));
+	const ret = new ConfigEntity();
+	ret.key = key;
+	ret.value = obj;
+	return [ret];
+};
 
-	return apply(val);
+async function applyConfig(val: ConfigValue) {
+	if (process.env.CONFIG_PATH)
+		await fs.writeFile(overridePath, JSON.stringify(val, null, 4));
+	else {
+		const pairs = generatePairs(val);
+		await Promise.all(pairs.map((pair) => pair.save()));
+	}
+	return val;
 }
 
 function pairsToConfig(pairs: ConfigEntity[]) {
