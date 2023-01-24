@@ -222,13 +222,18 @@ const processFile = async (asset) => {
 	await fs.writeFile(path.join(CACHE_PATH, asset), text);
 
 	let ret = new Set([
-		...(text.match(/"[A-Fa-f0-9]{20}"/g) ?? []), // These are generally JS assets
+		// These are generally JS assets
+		...(text.match(/"[A-Fa-f0-9]{20}"/g) ?? []),
+
+		// anything that looks like e.exports="filename.ext"
 		...[...text.matchAll(/\.exports=.\..\+"(.*?\..{0,5})"/g)].map(
 			(x) => x[1],
-		), // anything that looks like e.exports="filename.ext"
-		...[...text.matchAll(/\/assets\/(.*?\.[a-z0-9]{0,5})/g)].map(
+		),
+
+		// commonly matches `background: url(/assets/blah.svg)`
+		...[...text.matchAll(/\/assets\/([a-zA-Z0-9]*?\.[a-z0-9]{0,5})/g)].map(
 			(x) => x[1],
-		), // commonly matches `background: url(/assets/blah.svg)`
+		),
 	]);
 
 	return [...ret].map((x) => x.replaceAll('"', ""));
