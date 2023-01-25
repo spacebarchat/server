@@ -23,6 +23,6 @@ export class CdnConfiguration extends EndpointConfiguration {
 	resizeWidthMax: number = 1000;
 	imagorServerUrl: string | null = null;
 
-	endpointPublic: string | null = "http://localhost:3001";
-	endpointPrivate: string | null = "http://localhost:3001";
+	endpointPublic: string | null = null;
+	endpointPrivate: string | null = null;
 }
