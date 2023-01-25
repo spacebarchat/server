@@ -62,7 +62,7 @@ router.post(
 
 		const path = `role-icons/${role_id}/${hash}.png`;
 		const endpoint =
-			Config.get().cdn.endpointPublic || "http://localhost:3003";
+			Config.get().cdn.endpointPublic || "http://localhost:3001";
 
 		await storage.set(path, buffer);
 
