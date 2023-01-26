@@ -33,6 +33,7 @@ import { UserSettings } from "./UserSettings";
 import { Session } from "./Session";
 import { Config, FieldErrors, Snowflake, trimSpecial, adjustEmail } from "..";
 import { Request } from "express";
+import { SecurityKey } from "./SecurityKey";
 
 export enum PublicUserEnum {
 	username,
@@ -138,6 +139,9 @@ export class User extends BaseClass {
 	@Column({ select: false })
 	mfa_enabled: boolean = false; // if multi factor authentication is enabled
 
+	@Column({ select: false, default: false })
+	webauthn_enabled: boolean = false; // if webauthn multi factor authentication is enabled
+
 	@Column({ select: false, nullable: true })
 	totp_secret?: string = "";
 
@@ -222,6 +226,9 @@ export class User extends BaseClass {
 	// workaround to prevent fossord-unaware clients from deleting settings not used by them
 	@Column({ type: "simple-json", select: false })
 	extended_settings: string = "{}";
+
+	@OneToMany(() => SecurityKey, (key: SecurityKey) => key.user)
+	security_keys: SecurityKey[];
 
 	// TODO: I don't like this method?
 	validate() {
