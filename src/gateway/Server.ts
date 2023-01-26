@@ -82,7 +82,11 @@ export class Server {
 	}
 
 	async stop() {
-		closeDatabase();
-		this.server.close();
+		this.ws.clients.forEach((x) => x.close());
+		this.ws.close(() => {
+			this.server.close(() => {
+				closeDatabase();
+			});
+		});
 	}
 }
