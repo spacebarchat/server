@@ -79,3 +79,4 @@ export * from "./BotModifySchema";
 export * from "./ApplicationModifySchema";
 export * from "./ApplicationCreateSchema";
 export * from "./ApplicationAuthorizeSchema";
+export * from "./AckBulkSchema";

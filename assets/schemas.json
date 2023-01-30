@@ -1,4 +1,41 @@
 {
+    "AckBulkSchema": {
+        "type": "object",
+        "properties": {
+            "read_states": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "channel_id": {
+                                "type": "string"
+                            },
+                            "message_id": {
+                                "type": "string"
+                            },
+                            "read_state_type": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "channel_id",
+                            "message_id",
+                            "read_state_type"
+                        ]
+                    }
+                ],
+                "minItems": 1,
+                "maxItems": 1
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "read_states"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "TransportMakeRequestResponse": {
         "type": "object",
         "properties": {
@@ -2724,11 +2761,37 @@
             "payload_json": {
                 "type": "string"
             },
-            "file": {},
+            "file": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "filename"
+                ]
+            },
             "attachments": {
                 "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
                 "type": "array",
-                "items": {}
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "filename": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "filename",
+                        "id"
+                    ]
+                }
             },
             "sticker_ids": {
                 "type": "array",
@@ -4450,6 +4513,9 @@
     "BanCreateSchema": {
         "type": "object",
         "properties": {
+            "delete_message_seconds": {
+                "type": "string"
+            },
             "delete_message_days": {
                 "type": "string"
             },
@@ -10832,7 +10898,9 @@
                     "client_build_number": {
                         "type": "integer"
                     },
-                    "client_event_source": {},
+                    "client_event_source": {
+                        "type": "string"
+                    },
                     "client_version": {
                         "type": "string"
                     },

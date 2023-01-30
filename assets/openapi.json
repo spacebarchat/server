@@ -903,11 +903,37 @@
                     "payload_json": {
                         "type": "string"
                     },
-                    "file": {},
+                    "file": {
+                        "type": "object",
+                        "properties": {
+                            "filename": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "filename"
+                        ]
+                    },
                     "attachments": {
                         "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
                         "type": "array",
-                        "items": {}
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "filename": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "filename",
+                                "id"
+                            ]
+                        }
                     },
                     "sticker_ids": {
                         "type": "array",
@@ -962,6 +988,9 @@
             "BanCreateSchema": {
                 "type": "object",
                 "properties": {
+                    "delete_message_seconds": {
+                        "type": "string"
+                    },
                     "delete_message_days": {
                         "type": "string"
                     },
@@ -1237,7 +1266,9 @@
                             "client_build_number": {
                                 "type": "integer"
                             },
-                            "client_event_source": {},
+                            "client_event_source": {
+                                "type": "string"
+                            },
                             "client_version": {
                                 "type": "string"
                             },
@@ -2284,6 +2315,87 @@
                 "required": [
                     "days"
                 ]
+            },
+            "AckBulkSchema": {
+                "type": "object",
+                "properties": {
+                    "read_states": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "channel_id": {
+                                        "type": "string"
+                                    },
+                                    "message_id": {
+                                        "type": "string"
+                                    },
+                                    "read_state_type": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "channel_id",
+                                    "message_id",
+                                    "read_state_type"
+                                ]
+                            }
+                        ],
+                        "minItems": 1,
+                        "maxItems": 1
+                    }
+                },
+                "required": [
+                    "read_states"
+                ]
+            },
+            "TransportMakeRequestResponse": {
+                "type": "object",
+                "properties": {
+                    "statusCode": {
+                        "type": "integer"
+                    },
+                    "headers": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "properties": {
+                            "x-sentry-rate-limits": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "retry-after": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "retry-after",
+                            "x-sentry-rate-limits"
+                        ]
+                    }
+                }
+            },
+            "UserDeleteSchema": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "user_id"
+                ]
             }
         }
     },
@@ -2377,6 +2489,9 @@
         },
         {
             "name": "-"
+        },
+        {
+            "name": "read-states"
         }
     ],
     "paths": {
@@ -4912,7 +5027,8 @@
                 ],
                 "tags": [
                     "guilds"
-                ]
+                ],
+                "x-permission-required": "MANAGE_GUILD"
             }
         },
         "/guilds/{guild_id}/emojis/": {
@@ -6848,6 +6964,28 @@
                 ],
                 "tags": [
                     "users"
+                ]
+            }
+        },
+        "/read-states/ack-bulk/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AckBulkSchema"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "read-states"
                 ]
             }
         }
