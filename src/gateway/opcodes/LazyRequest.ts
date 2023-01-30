@@ -197,6 +197,17 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	};
 }
 
+async function subscribeToMemberEvents(this: WebSocket, user_id: string) {
+	if (this.events[user_id]) return false; // already subscribed as friend
+	if (this.member_events[user_id]) return false; // already subscribed in member list
+	this.member_events[user_id] = await listenEvent(
+		user_id,
+		handlePresenceUpdate.bind(this),
+		this.listen_options,
+	);
+	return true;
+}
+
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	// TODO: check data
 	check.call(this, LazyRequestSchema, d);
@@ -209,6 +220,16 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 
 		await Promise.all([
 			members.map(async (x) => {
+				if (!x) return;
+				const didSubscribe = await subscribeToMemberEvents.call(
+					this,
+					x,
+				);
+				if (!didSubscribe) return;
+
+				// if we didn't subscribe just now, this is a new subscription
+				// and we should send a PRESENCE_UPDATE immediately
+
 				const sessions = await Session.find({ where: { user_id: x } });
 				const session = getMostRelevantSession(sessions);
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -251,14 +272,8 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 
 	ops.forEach((op) => {
 		op.members.forEach(async (member) => {
-			if (!member) return;
-			if (this.events[member.user.id]) return; // already subscribed as friend
-			if (this.member_events[member.user.id]) return; // already subscribed in member list
-			this.member_events[member.user.id] = await listenEvent(
-				member.user.id,
-				handlePresenceUpdate.bind(this),
-				this.listen_options,
-			);
+			if (!member?.user.id) return;
+			return subscribeToMemberEvents.call(this, member.user.id);
 		});
 	});
 
