@@ -1,4 +1,41 @@
 {
+    "AckBulkSchema": {
+        "type": "object",
+        "properties": {
+            "read_states": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "channel_id": {
+                                "type": "string"
+                            },
+                            "message_id": {
+                                "type": "string"
+                            },
+                            "read_state_type": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "channel_id",
+                            "message_id",
+                            "read_state_type"
+                        ]
+                    }
+                ],
+                "minItems": 1,
+                "maxItems": 1
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "read_states"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "TransportMakeRequestResponse": {
         "type": "object",
         "properties": {

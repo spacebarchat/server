@@ -2316,6 +2316,41 @@
                     "days"
                 ]
             },
+            "AckBulkSchema": {
+                "type": "object",
+                "properties": {
+                    "read_states": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "channel_id": {
+                                        "type": "string"
+                                    },
+                                    "message_id": {
+                                        "type": "string"
+                                    },
+                                    "read_state_type": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "channel_id",
+                                    "message_id",
+                                    "read_state_type"
+                                ]
+                            }
+                        ],
+                        "minItems": 1,
+                        "maxItems": 1
+                    }
+                },
+                "required": [
+                    "read_states"
+                ]
+            },
             "TransportMakeRequestResponse": {
                 "type": "object",
                 "properties": {
@@ -7028,6 +7063,78 @@
                 },
                 "tags": [
                     "read-states"
+                ]
+            }
+        },
+        "/users/@me/mfa/webauthn/credentials/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebAuthnPostSchema"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/@me/mfa/webauthn/credentials/{key_id}/": {
+            "delete": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "key_id"
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/auth/mfa/webauthn/": {
+            "post": {
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebAuthnTotpSchema"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
                 ]
             }
         }
