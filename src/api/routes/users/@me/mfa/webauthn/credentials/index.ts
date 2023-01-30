@@ -23,7 +23,6 @@ import {
 	FieldErrors,
 	GenerateWebAuthnCredentialsSchema,
 	generateWebAuthnTicket,
-	OrmUtils,
 	SecurityKey,
 	User,
 	verifyWebAuthnToken,
@@ -174,7 +173,7 @@ router.post(
 			const counter = authnrData.get("counter");
 			const publicKey = authnrData.get("credentialPublicKeyPem");
 
-			const securityKey = OrmUtils.mergeDeep(new SecurityKey(), {
+			const securityKey = SecurityKey.create({
 				name,
 				counter,
 				public_key: publicKey,
@@ -189,10 +188,7 @@ router.post(
 				id: securityKey.id,
 			});
 		} else {
-			console.error("wrong schema?");
-			console.log("req body", req.body);
-			// TODO: proper validation errors?
-			throw DiscordApiErrors.GENERAL_ERROR;
+			throw DiscordApiErrors.INVALID_AUTHENTICATION_TOKEN;
 		}
 	},
 );
