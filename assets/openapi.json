@@ -2386,6 +2386,28 @@
                     }
                 }
             },
+            "Partial<GenerateWebAuthnCredentialsSchema>": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Partial<CreateWebAuthnCredentialSchema>": {
+                "type": "object",
+                "properties": {
+                    "credential": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "ticket": {
+                        "type": "string"
+                    }
+                }
+            },
             "UserDeleteSchema": {
                 "type": "object",
                 "properties": {
@@ -2395,6 +2417,61 @@
                 },
                 "required": [
                     "user_id"
+                ]
+            },
+            "GenerateWebAuthnCredentialsSchema": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "password"
+                ]
+            },
+            "CreateWebAuthnCredentialSchema": {
+                "type": "object",
+                "properties": {
+                    "credential": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "ticket": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "credential",
+                    "name",
+                    "ticket"
+                ]
+            },
+            "WebAuthnPostSchema": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/Partial<GenerateWebAuthnCredentialsSchema>"
+                    },
+                    {
+                        "$ref": "#/components/schemas/Partial<CreateWebAuthnCredentialSchema>"
+                    }
+                ]
+            },
+            "WebAuthnTotpSchema": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "ticket": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "ticket"
                 ]
             }
         }
@@ -6986,6 +7063,78 @@
                 },
                 "tags": [
                     "read-states"
+                ]
+            }
+        },
+        "/users/@me/mfa/webauthn/credentials/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebAuthnPostSchema"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/@me/mfa/webauthn/credentials/{key_id}/": {
+            "delete": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "key_id"
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/auth/mfa/webauthn/": {
+            "post": {
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebAuthnTotpSchema"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
                 ]
             }
         }

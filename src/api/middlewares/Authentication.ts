@@ -27,6 +27,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/auth/register",
 	"/auth/location-metadata",
 	"/auth/mfa/totp",
+	"/auth/mfa/webauthn",
 	// Routes with a seperate auth system
 	"/webhooks/",
 	// Public information endpoints

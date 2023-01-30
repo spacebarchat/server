@@ -16,27 +16,31 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * from "./ApiError";
-export * from "./BitField";
-export * from "./Token";
-//export * from "./Categories";
-export * from "./cdn";
-export * from "./Config";
-export * from "./Constants";
-export * from "./Database";
-export * from "./Email";
-export * from "./Event";
-export * from "./FieldError";
-export * from "./Intents";
-export * from "./MessageFlags";
-export * from "./Permissions";
-export * from "./RabbitMQ";
-export * from "./Regex";
-export * from "./Rights";
-export * from "./Snowflake";
-export * from "./String";
-export * from "./Array";
-export * from "./TraverseDirectory";
-export * from "./InvisibleCharacters";
-export * from "./Sentry";
-export * from "./WebAuthn";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { BaseClass } from "./BaseClass";
+import { User } from "./User";
+
+@Entity("security_keys")
+export class SecurityKey extends BaseClass {
+	@Column({ nullable: true })
+	@RelationId((key: SecurityKey) => key.user)
+	user_id: string;
+
+	@JoinColumn({ name: "user_id" })
+	@ManyToOne(() => User, {
+		onDelete: "CASCADE",
+	})
+	user: User;
+
+	@Column()
+	key_id: string;
+
+	@Column()
+	public_key: string;
+
+	@Column()
+	counter: number;
+
+	@Column()
+	name: string;
+}

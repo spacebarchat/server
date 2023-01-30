@@ -16,27 +16,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * from "./ApiError";
-export * from "./BitField";
-export * from "./Token";
-//export * from "./Categories";
-export * from "./cdn";
-export * from "./Config";
-export * from "./Constants";
-export * from "./Database";
-export * from "./Email";
-export * from "./Event";
-export * from "./FieldError";
-export * from "./Intents";
-export * from "./MessageFlags";
-export * from "./Permissions";
-export * from "./RabbitMQ";
-export * from "./Regex";
-export * from "./Rights";
-export * from "./Snowflake";
-export * from "./String";
-export * from "./Array";
-export * from "./TraverseDirectory";
-export * from "./InvisibleCharacters";
-export * from "./Sentry";
-export * from "./WebAuthn";
+// FIXME: better naming
+export interface GenerateWebAuthnCredentialsSchema {
+	password: string;
+}
+
+// FIXME: better naming
+export interface CreateWebAuthnCredentialSchema {
+	credential: string;
+	name: string;
+	ticket: string;
+}
+
+export type WebAuthnPostSchema = Partial<
+	GenerateWebAuthnCredentialsSchema | CreateWebAuthnCredentialSchema
+>;
+
+export interface WebAuthnTotpSchema {
+	code: string;
+	ticket: string;
+}
