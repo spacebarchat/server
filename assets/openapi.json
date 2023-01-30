@@ -903,11 +903,37 @@
                     "payload_json": {
                         "type": "string"
                     },
-                    "file": {},
+                    "file": {
+                        "type": "object",
+                        "properties": {
+                            "filename": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "filename"
+                        ]
+                    },
                     "attachments": {
                         "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
                         "type": "array",
-                        "items": {}
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "filename": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "filename",
+                                "id"
+                            ]
+                        }
                     },
                     "sticker_ids": {
                         "type": "array",
@@ -962,6 +988,9 @@
             "BanCreateSchema": {
                 "type": "object",
                 "properties": {
+                    "delete_message_seconds": {
+                        "type": "string"
+                    },
                     "delete_message_days": {
                         "type": "string"
                     },
@@ -1237,7 +1266,9 @@
                             "client_build_number": {
                                 "type": "integer"
                             },
-                            "client_event_source": {},
+                            "client_event_source": {
+                                "type": "string"
+                            },
                             "client_version": {
                                 "type": "string"
                             },
@@ -2284,6 +2315,129 @@
                 "required": [
                     "days"
                 ]
+            },
+            "TransportMakeRequestResponse": {
+                "type": "object",
+                "properties": {
+                    "statusCode": {
+                        "type": "integer"
+                    },
+                    "headers": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "properties": {
+                            "x-sentry-rate-limits": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "retry-after": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "retry-after",
+                            "x-sentry-rate-limits"
+                        ]
+                    }
+                }
+            },
+            "Partial<GenerateWebAuthnCredentialsSchema>": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Partial<CreateWebAuthnCredentialSchema>": {
+                "type": "object",
+                "properties": {
+                    "credential": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "ticket": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserDeleteSchema": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "user_id"
+                ]
+            },
+            "GenerateWebAuthnCredentialsSchema": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "password"
+                ]
+            },
+            "CreateWebAuthnCredentialSchema": {
+                "type": "object",
+                "properties": {
+                    "credential": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "ticket": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "credential",
+                    "name",
+                    "ticket"
+                ]
+            },
+            "WebAuthnPostSchema": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/Partial<GenerateWebAuthnCredentialsSchema>"
+                    },
+                    {
+                        "$ref": "#/components/schemas/Partial<CreateWebAuthnCredentialSchema>"
+                    }
+                ]
+            },
+            "WebAuthnTotpSchema": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "ticket": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "ticket"
+                ]
             }
         }
     },
@@ -2377,6 +2531,9 @@
         },
         {
             "name": "-"
+        },
+        {
+            "name": "read-states"
         }
     ],
     "paths": {
@@ -4912,7 +5069,8 @@
                 ],
                 "tags": [
                     "guilds"
-                ]
+                ],
+                "x-permission-required": "MANAGE_GUILD"
             }
         },
         "/guilds/{guild_id}/emojis/": {
@@ -6848,6 +7006,28 @@
                 ],
                 "tags": [
                     "users"
+                ]
+            }
+        },
+        "/read-states/ack-bulk/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AckBulkSchema"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "read-states"
                 ]
             }
         }

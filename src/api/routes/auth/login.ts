@@ -16,18 +16,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
-import { route, getIpAdress, verifyCaptcha } from "@fosscord/api";
-import bcrypt from "bcrypt";
+import { getIpAdress, route, verifyCaptcha } from "@fosscord/api";
 import {
-	Config,
-	User,
-	generateToken,
 	adjustEmail,
+	Config,
 	FieldErrors,
+	generateToken,
+	generateWebAuthnTicket,
 	LoginSchema,
+	User,
+	WebAuthn,
 } from "@fosscord/util";
+import bcrypt from "bcrypt";
 import crypto from "crypto";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 export default router;
@@ -73,7 +75,10 @@ router.post(
 				"settings",
 				"totp_secret",
 				"mfa_enabled",
+				"webauthn_enabled",
+				"security_keys",
 			],
+			relations: ["security_keys"],
 		}).catch(() => {
 			throw FieldErrors({
 				login: {
@@ -116,7 +121,7 @@ router.post(
 			});
 		}
 
-		if (user.mfa_enabled) {
+		if (user.mfa_enabled && !user.webauthn_enabled) {
 			// TODO: This is not a discord.com ticket. I'm not sure what it is but I'm lazy
 			const ticket = crypto.randomBytes(40).toString("hex");
 
@@ -127,6 +132,40 @@ router.post(
 				mfa: true,
 				sms: false, // TODO
 				token: null,
+			});
+		}
+
+		if (user.mfa_enabled && user.webauthn_enabled) {
+			if (!WebAuthn.fido2) {
+				// TODO: I did this for typescript and I can't use !
+				throw new Error("WebAuthn not enabled");
+			}
+
+			const options = await WebAuthn.fido2.assertionOptions();
+			const challenge = JSON.stringify({
+				publicKey: {
+					...options,
+					challenge: Buffer.from(options.challenge).toString(
+						"base64",
+					),
+					allowCredentials: user.security_keys.map((x) => ({
+						id: x.key_id,
+						type: "public-key",
+					})),
+					transports: ["usb", "ble", "nfc"],
+					timeout: 60000,
+				},
+			});
+
+			const ticket = await generateWebAuthnTicket(challenge);
+			await User.update({ id: user.id }, { totp_last_ticket: ticket });
+
+			return res.json({
+				ticket: ticket,
+				mfa: true,
+				sms: false, // TODO
+				token: null,
+				webauthn: challenge,
 			});
 		}
 
@@ -146,6 +185,9 @@ router.post(
 
  * MFA required:
  * @returns {"token": null, "mfa": true, "sms": true, "ticket": "SOME TICKET JWT TOKEN"}
+
+ * WebAuthn MFA required:
+ * @returns {"token": null, "mfa": true, "webauthn": true, "sms": true, "ticket": "SOME TICKET JWT TOKEN"}
 
  * Captcha required:
  * @returns {"captcha_key": ["captcha-required"], "captcha_sitekey": null, "captcha_service": "recaptcha"}
