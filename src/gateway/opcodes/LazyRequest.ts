@@ -213,7 +213,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 				const session = getMostRelevantSession(sessions);
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
-				if (session.status == "unknown") session.status = "online";
+				if (session?.status == "unknown") session.status = "online";
 				const user = (await User.getPublicUser(x)).toPublicUser(); // why is this needed?
 
 				return Send(this, {
