@@ -22,7 +22,7 @@ export interface LazyRequestSchema {
 	activities?: boolean;
 	threads?: boolean;
 	typing?: true;
-	members?: unknown[];
+	members?: string[];
 	thread_member_lists?: unknown[];
 }
 
@@ -32,6 +32,6 @@ export const LazyRequestSchema = {
 	$channels: Object,
 	$typing: Boolean,
 	$threads: Boolean,
-	$members: [] as unknown[],
+	$members: [] as string[],
 	$thread_member_lists: [] as unknown[],
 };

@@ -24,6 +24,8 @@ import {
 	Role,
 	Session,
 	LazyRequestSchema,
+	User,
+	Presence,
 } from "@fosscord/util";
 import {
 	WebSocket,
@@ -37,6 +39,26 @@ import { check } from "./instanceOf";
 // TODO: only show roles/members that have access to this channel
 // TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online
 // TODO: rewrite typeorm
+
+const getMostRelevantSession = (sessions: Session[]) => {
+	const statusMap = {
+		online: 0,
+		idle: 1,
+		dnd: 2,
+		invisible: 3,
+		offline: 4,
+	};
+	// sort sessions by relevance
+	sessions = sessions.sort((a, b) => {
+		return (
+			statusMap[a.status] -
+			statusMap[b.status] +
+			(a.activities.length - b.activities.length) * 2
+		);
+	});
+
+	return sessions.first();
+};
 
 async function getMembers(guild_id: string, range: [number, number]) {
 	if (!Array.isArray(range) || range.length !== 2) {
@@ -111,24 +133,13 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				.filter((x: Role) => x.id !== guild_id)
 				.map((x: Role) => x.id);
 
-			const statusMap = {
-				online: 0,
-				idle: 1,
-				dnd: 2,
-				invisible: 3,
-				offline: 4,
-			};
-			// sort sessions by relevance
-			const sessions = member.user.sessions.sort((a, b) => {
-				return (
-					statusMap[a.status] -
-					statusMap[b.status] +
-					(a.activities.length - b.activities.length) * 2
-				);
-			});
-			const session: Session | undefined = sessions.first();
+			const session: Session | undefined = getMostRelevantSession(
+				member.user.sessions,
+			);
 
-			if (session?.status == "offline") {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			if (session?.status == "unknown") {
 				session.status = member?.user?.settings?.status || "online";
 			}
 
@@ -190,7 +201,38 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	// TODO: check data
 	check.call(this, LazyRequestSchema, d);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { guild_id, typing, channels, activities } = d as LazyRequestSchema;
+	const { guild_id, typing, channels, activities, members } =
+		d as LazyRequestSchema;
+
+	if (members) {
+		// Client has requested a PRESENCE_UPDATE for specific member
+
+		await Promise.all([
+			members.map(async (x) => {
+				const sessions = await Session.find({ where: { user_id: x } });
+				const session = getMostRelevantSession(sessions);
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				if (session.status == "unknown") session.status = "online";
+				const user = (await User.getPublicUser(x)).toPublicUser(); // why is this needed?
+
+				return Send(this, {
+					op: OPCODES.Dispatch,
+					s: this.sequence++,
+					t: "PRESENCE_UPDATE",
+					d: {
+						user: user,
+						activities: session?.activities || [],
+						client_status: session?.client_info,
+						status: session?.status || "offline",
+					} as Presence,
+				});
+			}),
+		]);
+
+		if (!channels) return;
+	}
+
 	if (!channels) throw new Error("Must provide channel ranges");
 
 	const channel_id = Object.keys(channels || {}).first();
