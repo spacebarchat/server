@@ -16,14 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-let erlpack: { pack: (data: Payload) => Buffer };
-try {
-	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) {
-	console.log(
-		"Missing @yukikaze-bot/erlpack, electron-based desktop clients designed for discord.com will not be able to connect!",
-	);
-}
+import erlpack from "erlpack";
 import { Payload, WebSocket } from "@fosscord/gateway";
 import fs from "fs/promises";
 import path from "path";

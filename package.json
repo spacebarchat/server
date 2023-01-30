@@ -76,6 +76,7 @@
 		"cheerio": "^1.0.0-rc.12",
 		"cookie-parser": "^1.4.6",
 		"dotenv": "^16.0.2",
+		"erlpack": "^0.1.4",
 		"exif-be-gone": "^1.3.1",
 		"fast-zlib": "^2.0.1",
 		"file-type": "16.5",
@@ -104,9 +105,6 @@
 		"typeorm": "^0.3.10",
 		"typescript-json-schema": "^0.50.1",
 		"ws": "^8.9.0"
-	},
-	"optionalDependencies": {
-		"@yukikaze-bot/erlpack": "^1.0.1"
 	},
 	"_moduleAliases": {
 		"@fosscord/api": "dist/api",

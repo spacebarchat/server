@@ -24,15 +24,9 @@ import { PayloadSchema } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import BigIntJson from "json-bigint";
 import path from "path";
+import erlpack from "erlpack";
 import fs from "fs/promises";
 const bigIntJson = BigIntJson({ storeAsString: true });
-
-let erlpack: { unpack: (buffer: Buffer) => Payload };
-try {
-	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) {
-	/* empty */
-}
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
