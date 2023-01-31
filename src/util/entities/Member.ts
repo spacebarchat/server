@@ -413,7 +413,7 @@ export class Member extends BaseClassWithoutId {
 		]);
 
 		if (guild.system_channel_id) {
-			// send welcome message
+			// Send a welcome message
 			const message = Message.create({
 				type: 7,
 				guild_id: guild.id,
@@ -425,6 +425,10 @@ export class Member extends BaseClassWithoutId {
 				embeds: [],
 				sticker_items: [],
 				edited_timestamp: undefined,
+				mentions: [],
+				mention_channels: [],
+				mention_roles: [],
+				mention_everyone: false,
 			});
 			await Promise.all([
 				message.save(),
