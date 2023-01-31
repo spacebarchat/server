@@ -110,7 +110,7 @@ export async function initDatabase(): Promise<DataSource> {
 		await dbConnection.runMigrations();
 	}
 
-	console.log(`[Database] ${green("connected")}`);
+	console.log(`[Database] ${green("Connected")}`);
 
 	return dbConnection;
 }
