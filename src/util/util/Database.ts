@@ -36,7 +36,7 @@ const dbConnectionString =
 	process.env.DATABASE || path.join(process.cwd(), "database.db");
 
 const DatabaseType = dbConnectionString.includes("://")
-	? dbConnectionString.split(":")[0]?.replace("+srv", "")?.replace("postgres", "postgresql")
+	? dbConnectionString.split(":")[0]?.replace("+srv", "")
 	: "sqlite";
 const isSqlite = DatabaseType.includes("sqlite");
 
@@ -103,7 +103,9 @@ export async function initDatabase(): Promise<DataSource> {
 		}
 	};
 	if (!(await dbExists())) {
-		console.log("[Database] This appears to be a fresh database. Synchronising.");
+		console.log(
+			"[Database] This appears to be a fresh database. Synchronising.",
+		);
 		await dbConnection.synchronize();
 	} else {
 		console.log("[Database] Applying missing migrations, if any.");
