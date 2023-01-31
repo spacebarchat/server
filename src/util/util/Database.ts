@@ -89,7 +89,7 @@ export async function initDatabase(): Promise<DataSource> {
 		}
 	}
 
-	console.log(`[Database] ${yellow(`connecting to ${DatabaseType} db`)}`);
+	console.log(`[Database] ${yellow(`Connecting to ${DatabaseType} db`)}`);
 
 	dbConnection = await DataSourceOptions.initialize();
 
@@ -103,11 +103,10 @@ export async function initDatabase(): Promise<DataSource> {
 		}
 	};
 	if (!(await dbExists())) {
-		console.log(
-			"[Database] This appears to be a fresh database. Synchronising.",
-		);
+		console.log("[Database] This appears to be a fresh database. Synchronising.");
 		await dbConnection.synchronize();
 	} else {
+		console.log("[Database] Applying missing migrations, if any.");
 		await dbConnection.runMigrations();
 	}
 
