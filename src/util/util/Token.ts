@@ -27,9 +27,34 @@ export type UserTokenData = {
 	decoded: { id: string; iat: number };
 };
 
+async function checkEmailToken(
+	decoded: jwt.JwtPayload,
+): Promise<UserTokenData> {
+	// eslint-disable-next-line no-async-promise-executor
+	return new Promise(async (res, rej) => {
+		if (!decoded.iat) return rej("Invalid Token"); // will never happen, just for typings.
+
+		const user = await User.findOne({
+			where: {
+				email: decoded.email,
+			},
+		});
+
+		if (!user) return rej("Invalid Token");
+
+		if (new Date().getTime() > decoded.iat * 1000 + 86400 * 1000)
+			return rej("Invalid Token");
+
+		// Using as here because we assert `id` and `iat` are in decoded.
+		// TS just doesn't want to assume its there, though.
+		return res({ decoded, user } as UserTokenData);
+	});
+}
+
 export function checkToken(
 	token: string,
 	jwtSecret: string,
+	isEmailVerification = false,
 ): Promise<UserTokenData> {
 	return new Promise((res, rej) => {
 		token = token.replace("Bot ", "");
@@ -47,6 +72,8 @@ export function checkToken(
 				!decoded.iat
 			)
 				return rej("Invalid Token"); // will never happen, just for typings.
+
+			if (isEmailVerification) return res(checkEmailToken(decoded));
 
 			const user = await User.findOne({
 				where: { id: decoded.id },
