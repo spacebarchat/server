@@ -77,6 +77,7 @@ router.post(
 				"mfa_enabled",
 				"webauthn_enabled",
 				"security_keys",
+				"verified",
 			],
 			relations: ["security_keys"],
 		}).catch(() => {
