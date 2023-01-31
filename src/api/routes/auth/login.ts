@@ -102,6 +102,17 @@ router.post(
 			});
 		}
 
+		// return an error for unverified accounts if verification is required
+		if (config.login.requireVerification && !user.verified) {
+			throw FieldErrors({
+				login: {
+					code: "ACCOUNT_LOGIN_VERIFICATION_EMAIL",
+					message:
+						"Email verification is required, please check your email.",
+				},
+			});
+		}
+
 		if (user.mfa_enabled && !user.webauthn_enabled) {
 			// TODO: This is not a discord.com ticket. I'm not sure what it is but I'm lazy
 			const ticket = crypto.randomBytes(40).toString("hex");

@@ -17,7 +17,7 @@
 */
 
 import { route, verifyCaptcha } from "@fosscord/api";
-import { checkToken, Config, FieldErrors } from "@fosscord/util";
+import { checkToken, Config, FieldErrors, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 const router = Router();
@@ -57,11 +57,7 @@ router.post(
 
 			if (user.verified) return res.send(user);
 
-			// verify email
-			user.verified = true;
-			await user.save();
-
-			// TODO: invalidate token after use?
+			await User.update({ id: user.id }, { verified: true });
 
 			return res.send(user);
 		} catch (error) {
