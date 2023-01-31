@@ -88,25 +88,6 @@ router.post(
 			});
 		});
 
-		if (undelete) {
-			// undelete refers to un'disable' here
-			if (user.disabled)
-				await User.update({ id: user.id }, { disabled: false });
-			if (user.deleted)
-				await User.update({ id: user.id }, { deleted: false });
-		} else {
-			if (user.deleted)
-				return res.status(400).json({
-					message: "This account is scheduled for deletion.",
-					code: 20011,
-				});
-			if (user.disabled)
-				return res.status(400).json({
-					message: req.t("auth:login.ACCOUNT_DISABLED"),
-					code: 20013,
-				});
-		}
-
 		// the salt is saved in the password refer to bcrypt docs
 		const same_password = await bcrypt.compare(
 			password,
@@ -167,6 +148,25 @@ router.post(
 				token: null,
 				webauthn: challenge,
 			});
+		}
+
+		if (undelete) {
+			// undelete refers to un'disable' here
+			if (user.disabled)
+				await User.update({ id: user.id }, { disabled: false });
+			if (user.deleted)
+				await User.update({ id: user.id }, { deleted: false });
+		} else {
+			if (user.deleted)
+				return res.status(400).json({
+					message: "This account is scheduled for deletion.",
+					code: 20011,
+				});
+			if (user.disabled)
+				return res.status(400).json({
+					message: req.t("auth:login.ACCOUNT_DISABLED"),
+					code: 20013,
+				});
 		}
 
 		const token = await generateToken(user.id);
