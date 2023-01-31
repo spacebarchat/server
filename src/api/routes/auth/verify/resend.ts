@@ -22,28 +22,32 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 const router = Router();
 
-router.post("/", route({}), async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({
-		where: { id: req.user_id },
-		select: ["username", "email"],
-	});
-
-	if (!user.email) {
-		// TODO: whats the proper error response for this?
-		throw new HTTPError("User does not have an email address", 400);
-	}
-
-	await Email.sendVerificationEmail(user, user.email)
-		.then((info) => {
-			console.log("Message sent: %s", info.messageId);
-			return res.sendStatus(204);
-		})
-		.catch((e) => {
-			console.error(
-				`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`,
-			);
-			throw new HTTPError("Failed to send verification email", 500);
+router.post(
+	"/",
+	route({ right: "RESEND_VERIFICATION_EMAIL" }),
+	async (req: Request, res: Response) => {
+		const user = await User.findOneOrFail({
+			where: { id: req.user_id },
+			select: ["username", "email"],
 		});
-});
+
+		if (!user.email) {
+			// TODO: whats the proper error response for this?
+			throw new HTTPError("User does not have an email address", 400);
+		}
+
+		await Email.sendVerificationEmail(user, user.email)
+			.then((info) => {
+				console.log("Message sent: %s", info.messageId);
+				return res.sendStatus(204);
+			})
+			.catch((e) => {
+				console.error(
+					`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`,
+				);
+				throw new HTTPError("Failed to send verification email", 500);
+			});
+	},
+);
 
 export default router;
