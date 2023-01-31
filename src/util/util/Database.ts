@@ -36,7 +36,7 @@ const dbConnectionString =
 	process.env.DATABASE || path.join(process.cwd(), "database.db");
 
 const DatabaseType = dbConnectionString.includes("://")
-	? dbConnectionString.split(":")[0]?.replace("+srv", "")
+	? dbConnectionString.split(":")[0]?.replace("+srv", "")?.replace("postgres", "postgresql")
 	: "sqlite";
 const isSqlite = DatabaseType.includes("sqlite");
 
