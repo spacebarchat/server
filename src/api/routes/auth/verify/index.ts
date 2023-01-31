@@ -17,10 +17,20 @@
 */
 
 import { route, verifyCaptcha } from "@fosscord/api";
-import { checkToken, Config, FieldErrors, User } from "@fosscord/util";
+import { checkToken, Config, generateToken, User } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 const router = Router();
+
+async function getToken(user: User) {
+	const token = await generateToken(user.id);
+
+	// Notice this will have a different token structure, than discord
+	// Discord header is just the user id as string, which is not possible with npm-jsonwebtoken package
+	// https://user-images.githubusercontent.com/6506416/81051916-dd8c9900-8ec2-11ea-8794-daf12d6f31f0.png
+
+	return { token };
+}
 
 router.post(
 	"/",
@@ -43,23 +53,13 @@ router.post(
 		try {
 			const { jwtSecret } = Config.get().security;
 
-			const { decoded, user } = await checkToken(token, jwtSecret);
+			const { user } = await checkToken(token, jwtSecret, true);
 
-			// toksn should last for 24 hours from the time they were issued
-			if (new Date().getTime() > decoded.iat * 1000 + 86400 * 1000) {
-				throw FieldErrors({
-					token: {
-						code: "TOKEN_INVALID",
-						message: "Invalid token", // TODO: add translation
-					},
-				});
-			}
-
-			if (user.verified) return res.send(user);
+			if (user.verified) return res.json(await getToken(user));
 
 			await User.update({ id: user.id }, { verified: true });
 
-			return res.send(user);
+			return res.json(await getToken(user));
 		} catch (error) {
 			throw new HTTPError((error as Error).toString(), 400);
 		}
