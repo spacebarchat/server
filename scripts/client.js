@@ -260,5 +260,5 @@ const processFile = async (asset) => {
 		}
 	}
 
-	console.log("done");
+	print("done");
 })();
