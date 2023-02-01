@@ -23,7 +23,6 @@ import WS from "ws";
 import { VoiceOPCodes } from "../util";
 import { onClose } from "./Close";
 import { onMessage } from "./Message";
-import erlpack from "erlpack";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config

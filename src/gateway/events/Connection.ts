@@ -28,7 +28,14 @@ import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "url";
 import { Config } from "@fosscord/util";
-import erlpack from "erlpack";
+
+import type ErlpackType from "erlpack";
+let erlpack: typeof ErlpackType | null = null;
+try {
+	erlpack = require("erlpack") as typeof ErlpackType;
+} catch (e) {
+	// empty
+}
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -79,12 +86,11 @@ export async function Connection(
 		const { searchParams } = new URL(`http://localhost${request.url}`);
 		// @ts-ignore
 		socket.encoding = searchParams.get("encoding") || "json";
-		if (!["json", "etf"].includes(socket.encoding)) {
-			if (socket.encoding === "etf" && erlpack) {
-				throw new Error("Erlpack is not installed: 'npm i erlpack'");
-			}
+		if (!["json", "etf"].includes(socket.encoding))
 			return socket.close(CLOSECODES.Decode_error);
-		}
+
+		if (socket.encoding === "etf" && erlpack)
+			throw new Error("Erlpack is not installed: 'npm i erlpack'");
 
 		socket.version = Number(searchParams.get("version")) || 8;
 		if (socket.version != 8)

@@ -24,9 +24,16 @@ import { PayloadSchema } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import BigIntJson from "json-bigint";
 import path from "path";
-import erlpack from "erlpack";
 import fs from "fs/promises";
 const bigIntJson = BigIntJson({ storeAsString: true });
+
+import type ErlpackType from "erlpack";
+let erlpack: typeof ErlpackType | null = null;
+try {
+	erlpack = require("erlpack") as typeof ErlpackType;
+} catch (e) {
+	// empty
+}
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
 	// TODO: compression
@@ -46,7 +53,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 			}
 		}
 		data = bigIntJson.parse(buffer as string);
-	} else if (this.encoding === "etf" && buffer instanceof Buffer) {
+	} else if (this.encoding === "etf" && buffer instanceof Buffer && erlpack) {
 		try {
 			data = erlpack.unpack(buffer);
 		} catch {
