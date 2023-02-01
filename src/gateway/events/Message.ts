@@ -20,18 +20,18 @@ import { WebSocket, Payload, CLOSECODES, OPCODES } from "@fosscord/gateway";
 import OPCodeHandlers from "../opcodes";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";
-import { PayloadSchema } from "@fosscord/util";
+import { PayloadSchema, ErlpackType } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import BigIntJson from "json-bigint";
 import path from "path";
 import fs from "fs/promises";
 const bigIntJson = BigIntJson({ storeAsString: true });
 
-let erlpack: { unpack: (buffer: Buffer) => Payload };
+let erlpack: ErlpackType | null = null;
 try {
-	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) {
-	/* empty */
+	erlpack = require("erlpack") as ErlpackType;
+} catch (e) {
+	// empty
 }
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
@@ -52,7 +52,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 			}
 		}
 		data = bigIntJson.parse(buffer as string);
-	} else if (this.encoding === "etf" && buffer instanceof Buffer) {
+	} else if (this.encoding === "etf" && buffer instanceof Buffer && erlpack) {
 		try {
 			data = erlpack.unpack(buffer);
 		} catch {
