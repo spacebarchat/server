@@ -27,12 +27,11 @@ import { Close } from "./Close";
 import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "url";
-import { Config } from "@fosscord/util";
+import { Config, ErlpackType } from "@fosscord/util";
 
-import type ErlpackType from "erlpack";
-let erlpack: typeof ErlpackType | null = null;
+let erlpack: ErlpackType | null = null;
 try {
-	erlpack = require("erlpack") as typeof ErlpackType;
+	erlpack = require("erlpack") as ErlpackType;
 } catch (e) {
 	// empty
 }

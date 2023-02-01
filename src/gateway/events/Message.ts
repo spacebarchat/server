@@ -20,17 +20,16 @@ import { WebSocket, Payload, CLOSECODES, OPCODES } from "@fosscord/gateway";
 import OPCodeHandlers from "../opcodes";
 import { check } from "../opcodes/instanceOf";
 import WS from "ws";
-import { PayloadSchema } from "@fosscord/util";
+import { PayloadSchema, ErlpackType } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
 import BigIntJson from "json-bigint";
 import path from "path";
 import fs from "fs/promises";
 const bigIntJson = BigIntJson({ storeAsString: true });
 
-import type ErlpackType from "erlpack";
-let erlpack: typeof ErlpackType | null = null;
+let erlpack: ErlpackType | null = null;
 try {
-	erlpack = require("erlpack") as typeof ErlpackType;
+	erlpack = require("erlpack") as ErlpackType;
 } catch (e) {
 	// empty
 }

@@ -20,10 +20,10 @@ import { Payload, WebSocket } from "@fosscord/gateway";
 import fs from "fs/promises";
 import path from "path";
 
-import type ErlpackType from "erlpack";
-let erlpack: typeof ErlpackType | null = null;
+import type { ErlpackType } from "@fosscord/util";
+let erlpack: ErlpackType | null = null;
 try {
-	erlpack = require("erlpack") as typeof ErlpackType;
+	erlpack = require("erlpack") as ErlpackType;
 } catch (e) {
 	// empty
 }
