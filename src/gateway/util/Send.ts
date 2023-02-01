@@ -16,17 +16,17 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-let erlpack: { pack: (data: Payload) => Buffer };
-try {
-	erlpack = require("@yukikaze-bot/erlpack");
-} catch (error) {
-	console.log(
-		"Missing @yukikaze-bot/erlpack, electron-based desktop clients designed for discord.com will not be able to connect!",
-	);
-}
 import { Payload, WebSocket } from "@fosscord/gateway";
 import fs from "fs/promises";
 import path from "path";
+
+import type { ErlpackType } from "@fosscord/util";
+let erlpack: ErlpackType | null = null;
+try {
+	erlpack = require("erlpack") as ErlpackType;
+} catch (e) {
+	// empty
+}
 
 export function Send(socket: WebSocket, data: Payload) {
 	if (process.env.WS_VERBOSE)
@@ -47,7 +47,7 @@ export function Send(socket: WebSocket, data: Payload) {
 	}
 
 	let buffer: Buffer | string;
-	if (socket.encoding === "etf") buffer = erlpack.pack(data);
+	if (socket.encoding === "etf" && erlpack) buffer = erlpack.pack(data);
 	// TODO: encode circular object
 	else if (socket.encoding === "json") buffer = JSON.stringify(data);
 	else return;
