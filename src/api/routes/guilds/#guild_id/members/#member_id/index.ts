@@ -63,6 +63,15 @@ router.patch(
 			where: { guild_id: guild_id, name: "@everyone", position: 0 },
 		});
 
+		if ("nick" in body) {
+			permission.hasThrow("MANAGE_NICKNAMES");
+		}
+
+		if (("bio" in body || "avatar" in body) && member_id != "@me") {
+			const rights = await getRights(req.user_id);
+			rights.hasThrow("MANAGE_USERS");
+		}
+
 		if (body.avatar)
 			body.avatar = await handleFile(
 				`/guilds/${guild_id}/users/${member_id}/avatars`,
@@ -71,6 +80,8 @@ router.patch(
 
 		member.assign(body);
 
+		// must do this after the assign because the body roles array
+		// is string[] not Role[]
 		if ("roles" in body) {
 			permission.hasThrow("MANAGE_ROLES");
 
@@ -79,7 +90,8 @@ router.patch(
 
 			if (body.roles.indexOf(everyone.id) === -1)
 				body.roles.push(everyone.id);
-			member.roles = body.roles.map((x) => Role.create({ id: x })); // foreign key constraint will fail if role doesn't exist
+			// foreign key constraint will fail if role doesn't exist
+			member.roles = body.roles.map((x) => Role.create({ id: x }));
 		}
 
 		await member.save();
