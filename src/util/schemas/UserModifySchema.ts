@@ -33,5 +33,9 @@ export interface UserModifySchema {
 	new_password?: string;
 	code?: string;
 	email?: string;
+	/**
+	 * @minLength 4
+	 * @maxLength 4
+	 */
 	discriminator?: string;
 }

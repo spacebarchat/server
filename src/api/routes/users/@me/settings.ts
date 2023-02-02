@@ -44,9 +44,9 @@ router.patch(
 
 		user.settings.assign(body);
 
-		user.settings.save();
+		await user.settings.save();
 
-		res.json(user.settings);
+		res.json({ ...user.settings, index: undefined });
 	},
 );
 

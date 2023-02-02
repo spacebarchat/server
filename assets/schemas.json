@@ -8424,7 +8424,9 @@
             },
             "members": {
                 "type": "array",
-                "items": {}
+                "items": {
+                    "type": "string"
+                }
             },
             "thread_member_lists": {
                 "type": "array",
@@ -21846,6 +21848,8 @@
                 "type": "string"
             },
             "discriminator": {
+                "minLength": 4,
+                "maxLength": 4,
                 "type": "string"
             }
         },
@@ -23047,9 +23051,6 @@
     "UserSettingsSchema": {
         "type": "object",
         "properties": {
-            "index": {
-                "type": "string"
-            },
             "afk_timeout": {
                 "type": "integer"
             },

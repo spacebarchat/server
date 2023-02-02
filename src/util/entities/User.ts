@@ -246,27 +246,20 @@ export class User extends BaseClass {
 
 		if (this.discriminator) {
 			const discrim = Number(this.discriminator);
-			if (this.discriminator.length > 4)
-				throw FieldErrors({
-					discriminator: {
-						message: "Discriminator cannot be more than 4 digits.",
-						code: "DISCRIMINATOR_INVALID",
-					},
-				});
-			if (isNaN(discrim))
-				throw FieldErrors({
-					discriminator: {
-						message: "Discriminator must be a number.",
-						code: "DISCRIMINATOR_INVALID",
-					},
-				});
-			if (discrim <= 0 || discrim >= 10000)
+			if (
+				isNaN(discrim) ||
+				!(typeof discrim == "number") ||
+				!Number.isInteger(discrim) ||
+				discrim <= 0 ||
+				discrim >= 10000
+			)
 				throw FieldErrors({
 					discriminator: {
 						message: "Discriminator must be a number.",
 						code: "DISCRIMINATOR_INVALID",
 					},
 				});
+
 			this.discriminator = discrim.toString().padStart(4, "0");
 		}
 	}
