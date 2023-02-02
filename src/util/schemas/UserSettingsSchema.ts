@@ -18,4 +18,4 @@
 
 import { UserSettings } from "@fosscord/util";
 
-export type UserSettingsSchema = Partial<UserSettings>;
+export type UserSettingsSchema = Omit<Partial<UserSettings>, "index">;
