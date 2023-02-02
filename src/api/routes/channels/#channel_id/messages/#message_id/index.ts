@@ -81,6 +81,10 @@ router.patch(
 			}
 		} else rights.hasThrow("SELF_EDIT_MESSAGES");
 
+		// The permision should obviously not allow editing the message type
+		// But for people with the right, does this make sense?
+		if (body.type) rights.hasThrow("MANAGE_MESSAGES");
+
 		const new_message = await handleMessage({
 			...message,
 			// TODO: should message_reference be overridable?
@@ -105,7 +109,28 @@ router.patch(
 
 		postHandleMessage(new_message);
 
-		return res.json(new_message);
+		// TODO: a DTO?
+		return res.json({
+			id: new_message.id,
+			type: new_message.type,
+			content: new_message.content,
+			channel_id: new_message.channel_id,
+			author: new_message.author?.toPublicUser(),
+			attachments: new_message.attachments,
+			embeds: new_message.embeds,
+			mentions: new_message.embeds,
+			mention_roles: new_message.mention_roles,
+			mention_everyone: new_message.mention_everyone,
+			pinned: new_message.pinned,
+			tts: new_message.tts,
+			timestamp: new_message.timestamp,
+			edited_timestamp: new_message.edited_timestamp,
+			flags: new_message.flags,
+			components: new_message.components,
+
+			// these are not in the Discord.com response
+			mention_channels: new_message.mention_channels,
+		});
 	},
 );
 
