@@ -129,6 +129,16 @@ router.patch(
 					},
 				});
 			}
+
+			const { maxUsername } = Config.get().limits.user;
+			if (check_username.length > maxUsername) {
+				throw FieldErrors({
+					username: {
+						code: "USERNAME_INVALID",
+						message: `Username must be less than ${maxUsername} in length`,
+					},
+				});
+			}
 		}
 
 		if (body.discriminator) {
