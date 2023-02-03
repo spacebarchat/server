@@ -34,5 +34,5 @@ export class RegisterConfiguration {
 	allowMultipleAccounts: boolean = true;
 	blockProxies: boolean = true;
 	incrementingDiscriminators: boolean = false; // random otherwise
-	defaultRights: string = "30644591655940"; // See `npm run generate:rights`
+	defaultRights: string = "312119568366592"; // See `npm run generate:rights`
 }
