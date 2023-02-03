@@ -181,7 +181,10 @@ router.post(
 				key_id: keyId,
 			});
 
-			await securityKey.save();
+			await Promise.all([
+				securityKey.save(),
+				User.update({ id: req.user_id }, { webauthn_enabled: true }),
+			]);
 
 			return res.json({
 				name,
