@@ -64,19 +64,22 @@ router.post(
 		await User.update({ id: user.id }, { totp_last_ticket: "" });
 
 		const clientAttestationResponse = JSON.parse(code);
-		const securityKey = await SecurityKey.findOneOrFail({
-			where: {
-				user_id: req.user_id,
-				key_id: clientAttestationResponse.rawId,
-			},
-		});
 
 		if (!clientAttestationResponse.rawId)
 			throw new HTTPError("Missing rawId", 400);
 
 		clientAttestationResponse.rawId = toArrayBuffer(
-			Buffer.from(clientAttestationResponse.rawId, "base64"),
+			Buffer.from(clientAttestationResponse.rawId, "base64url"),
 		);
+
+		const securityKey = await SecurityKey.findOneOrFail({
+			where: {
+				key_id: Buffer.from(
+					clientAttestationResponse.rawId,
+					"base64url",
+				).toString("base64"),
+			},
+		});
 
 		const assertionExpectations: ExpectedAssertionResult = JSON.parse(
 			Buffer.from(
