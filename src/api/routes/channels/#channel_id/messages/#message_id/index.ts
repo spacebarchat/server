@@ -30,6 +30,7 @@ import {
 	Snowflake,
 	uploadFile,
 	MessageCreateSchema,
+	MessageEditSchema,
 } from "@fosscord/util";
 import { Router, Response, Request } from "express";
 import multer from "multer";
@@ -52,13 +53,13 @@ const messageUpload = multer({
 router.patch(
 	"/",
 	route({
-		body: "MessageCreateSchema",
+		body: "MessageEditSchema",
 		permission: "SEND_MESSAGES",
 		right: "SEND_MESSAGES",
 	}),
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id } = req.params;
-		let body = req.body as MessageCreateSchema;
+		let body = req.body as MessageEditSchema;
 
 		const message = await Message.findOneOrFail({
 			where: { id: message_id, channel_id },
@@ -80,10 +81,6 @@ router.patch(
 				// guild admins can only suppress embeds of other messages, no such restriction imposed to instance-wide admins
 			}
 		} else rights.hasThrow("SELF_EDIT_MESSAGES");
-
-		// The permision should obviously not allow editing the message type
-		// But for people with the right, does this make sense?
-		if (body.type) rights.hasThrow("MANAGE_MESSAGES");
 
 		const new_message = await handleMessage({
 			...message,
