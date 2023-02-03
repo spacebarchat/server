@@ -87,3 +87,4 @@ export * from "./AckBulkSchema";
 export * from "./WebAuthnSchema";
 export * from "./WebhookCreateSchema";
 export * from "./WidgetModifySchema";
+export * from "./MessageEditSchema";
