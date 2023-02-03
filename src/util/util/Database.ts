@@ -48,7 +48,7 @@ const DataSourceOptions = new DataSource({
 	charset: "utf8mb4",
 	url: isSqlite ? undefined : dbConnectionString,
 	database: isSqlite ? dbConnectionString : undefined,
-	entities: ["dist/util/entities/*.js"],
+	entities: [path.join(__dirname, "..", "entities", "*.js")],
 	synchronize: !!process.env.DB_SYNC,
 	logging: false,
 	bigNumberStrings: false,
