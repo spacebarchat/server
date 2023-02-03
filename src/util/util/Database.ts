@@ -18,6 +18,7 @@
 
 import { DataSource } from "typeorm";
 import { yellow, green, red } from "picocolors";
+import { Migration } from "../entities/Migration";
 import { ConfigEntity } from "../entities/Config";
 import { config } from "dotenv";
 import path from "path";
@@ -107,6 +108,17 @@ export async function initDatabase(): Promise<DataSource> {
 			"[Database] This appears to be a fresh database. Synchronising.",
 		);
 		await dbConnection.synchronize();
+
+		// On next start, typeorm will try to run all the migrations again from beginning.
+		// Manually insert every current migration to prevent this:
+		await Promise.all(
+			dbConnection.migrations.map((migration) =>
+				Migration.insert({
+					name: migration.name,
+					timestamp: Date.now(),
+				}),
+			),
+		);
 	} else {
 		console.log("[Database] Applying missing migrations, if any.");
 		await dbConnection.runMigrations();
