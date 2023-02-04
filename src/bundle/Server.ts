@@ -23,6 +23,7 @@ import http from "http";
 import * as Api from "@fosscord/api";
 import * as Gateway from "@fosscord/gateway";
 import { CDNServer } from "@fosscord/cdn";
+import * as Webrtc from "@fosscord/webrtc";
 import express from "express";
 import { green, bold } from "picocolors";
 import { Config, initDatabase, Sentry } from "@fosscord/util";
@@ -36,12 +37,14 @@ server.on("request", app);
 const api = new Api.FosscordServer({ server, port, production, app });
 const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
+const webrtc = new Webrtc.Server({ port: 3004, production });
 
 process.on("SIGTERM", async () => {
 	console.log("Shutting down due to SIGTERM");
 	await gateway.stop();
 	await cdn.stop();
 	await api.stop();
+	await webrtc.stop();
 	server.close();
 	Sentry.close();
 });
@@ -52,7 +55,12 @@ async function main() {
 	await Sentry.init(app);
 
 	server.listen(port);
-	await Promise.all([api.start(), cdn.start(), gateway.start()]);
+	await Promise.all([
+		api.start(),
+		cdn.start(),
+		gateway.start(),
+		webrtc.start(),
+	]);
 
 	Sentry.errorHandler(app);
 

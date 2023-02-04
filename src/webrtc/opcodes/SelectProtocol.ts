@@ -19,24 +19,28 @@
 import { Payload, Send, WebSocket } from "@fosscord/gateway";
 import { SelectProtocolSchema, validateSchema } from "@fosscord/util";
 import { endpoint, PublicIP, VoiceOPCodes } from "@fosscord/webrtc";
-import SemanticSDP, { MediaInfo, SDPInfo } from "semantic-sdp";
+import SemanticSDP, { MediaInfo } from "semantic-sdp";
+import DefaultSDP from "./sdp.json";
 
 export async function onSelectProtocol(this: WebSocket, payload: Payload) {
-	if (!this.client) return;
+	if (!this.webrtcClient) return;
 
 	const data = validateSchema(
 		"SelectProtocolSchema",
 		payload.d,
 	) as SelectProtocolSchema;
 
-	const offer = SemanticSDP.SDPInfo.parse("m=audio\n" + data.sdp!);
-	this.client.sdp!.setICE(offer.getICE());
-	this.client.sdp!.setDTLS(offer.getDTLS());
+	const offer = SemanticSDP.SDPInfo.parse("m=audio\n" + data.sdp);
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	//@ts-ignore
+	offer.getMedias()[0].type = "audio"; // this is bad, but answer.toString() fails otherwise
+	this.webrtcClient.sdp.setICE(offer.getICE());
+	this.webrtcClient.sdp.setDTLS(offer.getDTLS());
 
-	const transport = endpoint.createTransport(this.client.sdp!);
-	this.client.transport = transport;
-	transport.setRemoteProperties(this.client.sdp!);
-	transport.setLocalProperties(this.client.sdp!);
+	const transport = endpoint.createTransport(this.webrtcClient.sdp);
+	this.webrtcClient.transport = transport;
+	transport.setRemoteProperties(this.webrtcClient.sdp);
+	transport.setLocalProperties(this.webrtcClient.sdp);
 
 	const dtls = transport.getLocalDTLSInfo();
 	const ice = transport.getLocalICEInfo();
@@ -45,21 +49,66 @@ export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 	const candidates = transport.getLocalCandidates();
 	const candidate = candidates[0];
 
-	const answer =
-		`m=audio ${port} ICE/SDP` +
-		`a=fingerprint:${fingerprint}` +
-		`c=IN IP4 ${PublicIP}` +
-		`a=rtcp:${port}` +
-		`a=ice-ufrag:${ice.getUfrag()}` +
-		`a=ice-pwd:${ice.getPwd()}` +
-		`a=fingerprint:${fingerprint}` +
-		`a=candidate:1 1 ${candidate.getTransport()} ${candidate.getFoundation()} ${candidate.getAddress()} ${candidate.getPort()} typ host`;
+	// discord answer
+	/*
+		m=audio 50026 ICE/SDP\n
+		a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87\n
+		c=IN IP4 66.22.206.174\n
+		a=rtcp:50026\n
+		a=ice-ufrag:XxnE\n
+		a=ice-pwd:GLQatPT3Q9dCZVVgVf3J1F\n
+		a=fingerprint:sha-256 4A:79:94:16:44:3F:BD:05:41:5A:C7:20:F3:12:54:70:00:73:5D:33:00:2D:2C:80:9B:39:E1:9F:2D:A7:49:87\n
+		a=candidate:1 1 UDP 4261412862 66.22.206.174 50026 typ host\n
+	*/
+
+	const answer = offer.answer({
+		dtls: dtls,
+		ice: ice,
+		candidates: endpoint.getLocalCandidates(),
+		capabilities: {
+			audio: {
+				codecs: ["opus"],
+				rtx: true,
+				rtcpfbs: [{ id: "transport-cc" }],
+				extensions: [
+					"urn:ietf:params:rtp-hdrext:ssrc-audio-level",
+					"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time",
+					"http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01",
+					"urn:ietf:params:rtp-hdrext:sdes:mid",
+				],
+			},
+		},
+	});
+
+	// the Video handler creates streams but we need streams now so idk
+	for (const offered of offer.getStreams().values()) {
+		const incomingStream = transport.createIncomingStream(offered);
+		const outgoingStream = transport.createOutgoingStream({
+			audio: true,
+		});
+		outgoingStream.attachTo(incomingStream);
+		this.webrtcClient.in.stream = incomingStream;
+		this.webrtcClient.out.stream = outgoingStream;
+
+		const info = outgoingStream.getStreamInfo();
+		answer.addStream(info);
+	}
+
+	// const answer =
+	// 	`m=audio ${port} ICE/SDP\n` +
+	// 	`a=fingerprint:${fingerprint}\n` +
+	// 	`c=IN IP4 ${PublicIP}\n` +
+	// 	`a=rtcp:${port}\n` +
+	// 	`a=ice-ufrag:${ice.getUfrag()}\n` +
+	// 	`a=ice-pwd:${ice.getPwd()}\n` +
+	// 	`a=fingerprint:${fingerprint}\n` +
+	// 	`a=candidate:1 1 ${candidate.getTransport()} ${candidate.getFoundation()} ${candidate.getAddress()} ${candidate.getPort()} typ host\n`;
 
 	await Send(this, {
 		op: VoiceOPCodes.SELECT_PROTOCOL_ACK,
 		d: {
 			video_codec: "H264",
-			sdp: answer,
+			sdp: answer.toString(),
 			media_session_id: this.session_id,
 			audio_codec: "opus",
 		},

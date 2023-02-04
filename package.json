@@ -109,10 +109,13 @@
 		"@fosscord/api": "dist/api",
 		"@fosscord/cdn": "dist/cdn",
 		"@fosscord/gateway": "dist/gateway",
-		"@fosscord/util": "dist/util"
+		"@fosscord/util": "dist/util",
+		"@fosscord/webrtc": "dist/webrtc"
 	},
 	"optionalDependencies": {
 		"erlpack": "^0.1.4",
+		"medooze-media-server": "^0.129.9",
+		"semantic-sdp": "^3.25.1",
 		"sqlite3": "^5.1.4"
 	}
 }

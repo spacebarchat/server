@@ -19,6 +19,7 @@
 import { closeDatabase, Config, initDatabase, initEvent } from "@fosscord/util";
 import dotenv from "dotenv";
 import http from "http";
+import MediaServer from "medooze-media-server";
 import ws from "ws";
 import { Connection } from "./events/Connection";
 dotenv.config();
@@ -77,6 +78,7 @@ export class Server {
 
 	async stop() {
 		closeDatabase();
+		MediaServer.terminate();
 		this.server.close();
 	}
 }
