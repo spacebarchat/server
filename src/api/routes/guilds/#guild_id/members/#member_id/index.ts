@@ -65,9 +65,19 @@ router.patch(
 
 		if ("nick" in body) {
 			permission.hasThrow("MANAGE_NICKNAMES");
+
+			if (!body.nick) {
+				delete body.nick;
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				//@ts-ignore shut up
+				member.nick = null; // remove the nickname
+			}
 		}
 
-		if (("bio" in body || "avatar" in body) && member_id != "@me") {
+		if (
+			("bio" in body || "avatar" in body) &&
+			req.params.member_id != "@me"
+		) {
 			const rights = await getRights(req.user_id);
 			rights.hasThrow("MANAGE_USERS");
 		}
