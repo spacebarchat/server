@@ -19,6 +19,7 @@
 import { Payload, Send, WebSocket } from "@fosscord/gateway";
 import { SelectProtocolSchema, validateSchema } from "@fosscord/util";
 import { endpoint, PublicIP, VoiceOPCodes } from "@fosscord/webrtc";
+import MediaServer from "medooze-media-server";
 import SemanticSDP, { MediaInfo } from "semantic-sdp";
 import DefaultSDP from "./sdp.json";
 
@@ -61,48 +62,15 @@ export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 		a=candidate:1 1 UDP 4261412862 66.22.206.174 50026 typ host\n
 	*/
 
-	const answer = offer.answer({
-		dtls: dtls,
-		ice: ice,
-		candidates: endpoint.getLocalCandidates(),
-		capabilities: {
-			audio: {
-				codecs: ["opus"],
-				rtx: true,
-				rtcpfbs: [{ id: "transport-cc" }],
-				extensions: [
-					"urn:ietf:params:rtp-hdrext:ssrc-audio-level",
-					"http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time",
-					"http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01",
-					"urn:ietf:params:rtp-hdrext:sdes:mid",
-				],
-			},
-		},
-	});
-
-	// the Video handler creates streams but we need streams now so idk
-	for (const offered of offer.getStreams().values()) {
-		const incomingStream = transport.createIncomingStream(offered);
-		const outgoingStream = transport.createOutgoingStream({
-			audio: true,
-		});
-		outgoingStream.attachTo(incomingStream);
-		this.webrtcClient.in.stream = incomingStream;
-		this.webrtcClient.out.stream = outgoingStream;
-
-		const info = outgoingStream.getStreamInfo();
-		answer.addStream(info);
-	}
-
-	// const answer =
-	// 	`m=audio ${port} ICE/SDP\n` +
-	// 	`a=fingerprint:${fingerprint}\n` +
-	// 	`c=IN IP4 ${PublicIP}\n` +
-	// 	`a=rtcp:${port}\n` +
-	// 	`a=ice-ufrag:${ice.getUfrag()}\n` +
-	// 	`a=ice-pwd:${ice.getPwd()}\n` +
-	// 	`a=fingerprint:${fingerprint}\n` +
-	// 	`a=candidate:1 1 ${candidate.getTransport()} ${candidate.getFoundation()} ${candidate.getAddress()} ${candidate.getPort()} typ host\n`;
+	const answer =
+		`m=audio ${port} ICE/SDP\n` +
+		`a=fingerprint:${fingerprint}\n` +
+		`c=IN IP4 ${PublicIP}\n` +
+		`a=rtcp:${port}\n` +
+		`a=ice-ufrag:${ice.getUfrag()}\n` +
+		`a=ice-pwd:${ice.getPwd()}\n` +
+		`a=fingerprint:${fingerprint}\n` +
+		`a=candidate:1 1 ${candidate.getTransport()} ${candidate.getFoundation()} ${candidate.getAddress()} ${candidate.getPort()} typ host\n`;
 
 	await Send(this, {
 		op: VoiceOPCodes.SELECT_PROTOCOL_ACK,

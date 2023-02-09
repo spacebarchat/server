@@ -73,14 +73,14 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		op: VoiceOPCodes.READY,
 		d: {
 			streams: [
-				{
-					type: "video",
-					ssrc: this.webrtcClient.in.video_ssrc + 1,
-					rtx_ssrc: this.webrtcClient.in.video_ssrc + 2,
-					rid: "100",
-					quality: 100,
-					active: false,
-				},
+				// {
+				// 	type: "video",
+				// 	ssrc: this.webrtcClient.in.video_ssrc + 1,
+				// 	rtx_ssrc: this.webrtcClient.in.video_ssrc + 2,
+				// 	rid: "100",
+				// 	quality: 100,
+				// 	active: false,
+				// },
 			],
 			ssrc: this.webrtcClient.in.audio_ssrc,
 			port: endpoint.getLocalPort(),
