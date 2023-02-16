@@ -88,7 +88,7 @@ export async function Connection(
 		if (!["json", "etf"].includes(socket.encoding))
 			return socket.close(CLOSECODES.Decode_error);
 
-		if (socket.encoding === "etf" && erlpack)
+		if (socket.encoding === "etf" && !erlpack)
 			throw new Error("Erlpack is not installed: 'npm i erlpack'");
 
 		socket.version = Number(searchParams.get("version")) || 8;
