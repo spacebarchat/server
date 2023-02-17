@@ -18,20 +18,20 @@
 
 import { Request, Response, Router } from "express";
 import FileType from "file-type";
-import fs from "fs";
+import fs from "fs/promises";
 import { HTTPError } from "lambert-server";
 import { join } from "path";
 
 const router = Router();
 
-function getFile(path: string) {
+async function getFile(path: string) {
 	try {
-		return fs.readFileSync(path);
+		return fs.readFile(path);
 	} catch (error) {
 		try {
-			const files = fs.readdirSync(path);
+			const files = await fs.readdir(path);
 			if (!files.length) return null;
-			return fs.readFileSync(join(path, files[0]));
+			return fs.readFile(join(path, files[0]));
 		} catch (error) {
 			return null;
 		}
@@ -43,7 +43,7 @@ router.get("/avatars/:id", async (req: Request, res: Response) => {
 	id = id.split(".")[0]; // remove .file extension
 	const path = join(process.cwd(), "assets", "default-avatars", `${id}.png`);
 
-	const file = getFile(path);
+	const file = await getFile(path);
 	if (!file) throw new HTTPError("not found", 404);
 	const type = await FileType.fromBuffer(file);
 
