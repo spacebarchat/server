@@ -11,6 +11,7 @@ config.json
 assets/cacheMisses
 
 .vscode/settings.json
+.idea/
 
 build
 
