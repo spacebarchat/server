@@ -217,6 +217,8 @@ export class Message extends BaseClass {
 
 	@Column({ type: "simple-json", nullable: true })
 	components?: MessageComponent[];
+
+	ephemeral?: boolean;
 }
 
 export interface MessageComponent {

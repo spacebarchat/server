@@ -289,7 +289,7 @@ router.post(
 			edited_timestamp: undefined,
 			timestamp: new Date(),
 		});
-
+		if (message.id == "0") return res.json(message); // Don't handle cancelled messages.
 		channel.last_message_id = message.id;
 
 		if (channel.isDm()) {

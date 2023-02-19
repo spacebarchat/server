@@ -40,18 +40,40 @@ import {
 	Config,
 	Sticker,
 	MessageCreateSchema,
-	EmbedCache,
+	EmbedCache, MessageOptions,
 } from "@fosscord/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
 import { EmbedHandlers } from "@fosscord/api";
 import * as Sentry from "@sentry/node";
+import { MessageInterceptResult } from "@fosscord/util/message_interceptors/IMessageInterceptor";
+import { PluralCommandInterceptor } from "../../../util/message_interceptors/plural_tooling/PluralCommandInterceptor";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
 
 const LINK_REGEX =
 	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
+
+const interceptors = [new PluralCommandInterceptor()];
+
+async function runMessageInterceptors(ctx: { message: Message, opts: MessageOptions }): Promise<MessageInterceptResult> {
+	const result = new MessageInterceptResult();
+	result.cancel = false;
+	result.message = ctx.message;
+	for (const interceptorsKey in interceptors) {
+		const interceptor = interceptors[interceptorsKey];
+		const interceptorResult = await interceptor.execute(ctx);
+
+		result.message = interceptorResult.message;
+		if (interceptorResult.cancel) {
+			result.cancel = true;
+			break;
+		}
+	}
+
+	return result;
+}
 
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	const channel = await Channel.findOneOrFail({
@@ -192,11 +214,22 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 	// TODO: check and put it all in the body
 
+	// root@Rory - 2023-02-18 - Add message interceptors, for use in dev/plurality, might be useful for plugins too.
+	let interceptMessageResult: MessageInterceptResult = await runMessageInterceptors({
+		opts,
+		message,
+	});
+	if(interceptMessageResult.cancel) {
+		message.id = "0"; //identify as cancelled message, as to prevent it from being distributed
+		return message;
+	}
+
 	return message;
 }
 
 // TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
+	if (message.id == "0") return; // don't handle cancelled messages
 	const content = message.content?.replace(/ *`[^)]*` */g, ""); // remove markdown
 	let links = content?.match(LINK_REGEX);
 	if (!links) return;
@@ -268,7 +301,7 @@ export async function postHandleMessage(message: Message) {
 
 export async function sendMessage(opts: MessageOptions) {
 	const message = await handleMessage({ ...opts, timestamp: new Date() });
-
+	if (message.id == "0") return; // don't handle cancelled messages
 	await Promise.all([
 		Message.insert(message),
 		emitEvent({
@@ -284,18 +317,4 @@ export async function sendMessage(opts: MessageOptions) {
 	);
 
 	return message;
-}
-
-interface MessageOptions extends MessageCreateSchema {
-	id?: string;
-	type?: MessageType;
-	pinned?: boolean;
-	author_id?: string;
-	webhook_id?: string;
-	application_id?: string;
-	embeds?: Embed[];
-	channel_id?: string;
-	attachments?: Attachment[];
-	edited_timestamp?: Date;
-	timestamp?: Date;
 }
