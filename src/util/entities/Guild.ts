@@ -309,6 +309,8 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	premium_progress_bar_enabled: boolean = false;
 
+	presences: any;
+
 	static async createGuild(body: {
 		name?: string;
 		icon?: string | null;

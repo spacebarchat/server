@@ -95,6 +95,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					"guild.emojis",
 					"guild.roles",
 					"guild.stickers",
+					"guild.members", //root@Rory - 19/02/2023 - required for DSharpPlus
+					"guild.members.user", //root@Rory - 19/02/2023 - required for DSharpPlus
 					"user",
 					"roles",
 				],
@@ -163,6 +165,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	let guilds: Partial<Guild>[] = members.map((x) => ({
 		...x.guild,
 		joined_at: x.joined_at,
+		presences: [], //root@Rory - 19/02/2023 - required for DSharpPlus
 	}));
 
 	const pending_guilds: typeof guilds = [];
