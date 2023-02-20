@@ -30,14 +30,15 @@ export class PluralCommandInterceptor implements IMessageInterceptor {
             } as MessageDeleteEvent);*/
             //result.message.flags = String((BigInt(ctx.message.flags ?? "0")) | MessageTypes.);
             // @ts-ignore
-            result.message.ephemeral = true;
-            result.message.content += ' (ephemeral?)';
-            /*await emitEvent({
+            result.message.content += ' (ephemeral, interceptor: PluralCommandInterceptor)';
+            //prevent sending via gateway and storing:
+            result.message.id = "0"; // this is implied by `result.cancel = true`, we're setting it for the following emitEvent
+            await emitEvent({
                 event: "MESSAGE_CREATE",
                 //channel_id: ctx.opts.channel_id,
                 user_id: ctx.opts.author_id,
-                data: ctx.message.toJSON(),
-            } as MessageCreateEvent);*/
+                data: result.message.toJSON(),
+            } as MessageCreateEvent);
         }
 
         return result;

@@ -219,6 +219,8 @@ export class Message extends BaseClass {
 	components?: MessageComponent[];
 
 	ephemeral?: boolean;
+
+	intercepted?: boolean = false;
 }
 
 export interface MessageComponent {
