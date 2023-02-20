@@ -26,7 +26,7 @@ import {
 	MessageUpdateEvent,
 	getPermission,
 	getRights,
-	CHANNEL_MENTION,
+	//CHANNEL_MENTION,
 	USER_MENTION,
 	ROLE_MENTION,
 	Role,
@@ -144,7 +144,9 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	}
 
 	let content = opts.content;
-	const mention_channel_ids = [] as string[];
+
+	// root@Rory - 20/02/2023 - This breaks channel mentions in test client. We're not sure this was used in older clients.
+	//const mention_channel_ids = [] as string[];
 	const mention_role_ids = [] as string[];
 	const mention_user_ids = [] as string[];
 	let mention_everyone = false;
@@ -153,10 +155,11 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		// TODO: explicit-only mentions
 		message.content = content.trim();
 		content = content.replace(/ *`[^)]*` */g, ""); // remove codeblocks
-		for (const [, mention] of content.matchAll(CHANNEL_MENTION)) {
+		// root@Rory - 20/02/2023 - This breaks channel mentions in test client. We're not sure this was used in older clients.
+		/*for (const [, mention] of content.matchAll(CHANNEL_MENTION)) {
 			if (!mention_channel_ids.includes(mention))
 				mention_channel_ids.push(mention);
-		}
+		}*/
 
 		for (const [, mention] of content.matchAll(USER_MENTION)) {
 			if (!mention_user_ids.includes(mention))
@@ -183,9 +186,10 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		}
 	}
 
-	message.mention_channels = mention_channel_ids.map((x) =>
+	// root@Rory - 20/02/2023 - This breaks channel mentions in test client. We're not sure this was used in older clients.
+	/*message.mention_channels = mention_channel_ids.map((x) =>
 		Channel.create({ id: x }),
-	);
+	);*/
 	message.mention_roles = mention_role_ids.map((x) => Role.create({ id: x }));
 	message.mentions = mention_user_ids.map((x) => User.create({ id: x }));
 	message.mention_everyone = mention_everyone;
