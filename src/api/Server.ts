@@ -23,6 +23,7 @@ import {
 	Config,
 	initDatabase,
 	initEvent,
+	JSONReplacer,
 	Sentry,
 	WebAuthn,
 } from "@fosscord/util";
@@ -84,24 +85,7 @@ export class FosscordServer extends Server {
 			);
 		}
 
-		// Discord.com sends ISO strings with +00:00 extension, not Z
-		// This causes issues with Python bot libs
-		this.app.set(
-			"json replacer",
-			function (
-				this: { [key: string]: unknown },
-				key: string,
-				value: unknown,
-			) {
-				if (this[key] instanceof Date) {
-					return (this[key] as Date)
-						.toISOString()
-						.replace("Z", "+00:00");
-				}
-
-				return value;
-			},
-		);
+		this.app.set("json replacer", JSONReplacer);
 
 		this.app.use(CORS);
 		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
