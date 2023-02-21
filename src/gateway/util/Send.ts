@@ -20,13 +20,28 @@ import { Payload, WebSocket } from "@fosscord/gateway";
 import fs from "fs/promises";
 import path from "path";
 
-import type { ErlpackType } from "@fosscord/util";
+import { ErlpackType, JSONReplacer } from "@fosscord/util";
 let erlpack: ErlpackType | null = null;
 try {
 	erlpack = require("erlpack") as ErlpackType;
 } catch (e) {
 	// empty
 }
+
+// don't care
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const recurseJsonReplace = (json: any) => {
+	for (const key in json) {
+		// eslint-disable-next-line no-prototype-builtins
+		if (!json.hasOwnProperty(key)) continue;
+
+		json[key] = JSONReplacer.call(json, key, json[key]);
+
+		if (typeof json[key] == "object" && json[key] !== null)
+			json[key] = recurseJsonReplace(json[key]);
+	}
+	return json;
+};
 
 export function Send(socket: WebSocket, data: Payload) {
 	if (process.env.WS_VERBOSE)
@@ -47,9 +62,14 @@ export function Send(socket: WebSocket, data: Payload) {
 	}
 
 	let buffer: Buffer | string;
-	if (socket.encoding === "etf" && erlpack) buffer = erlpack.pack(data);
+	if (socket.encoding === "etf" && erlpack) {
+		// Erlpack doesn't like Date objects, encodes them as {}
+		data = recurseJsonReplace(data);
+		buffer = erlpack.pack(data);
+	}
 	// TODO: encode circular object
-	else if (socket.encoding === "json") buffer = JSON.stringify(data);
+	else if (socket.encoding === "json")
+		buffer = JSON.stringify(data, JSONReplacer);
 	else return;
 	// TODO: compression
 	if (socket.deflate) {
