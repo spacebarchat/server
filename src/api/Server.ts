@@ -23,6 +23,7 @@ import {
 	Config,
 	initDatabase,
 	initEvent,
+	JSONReplacer,
 	Sentry,
 	WebAuthn,
 } from "@fosscord/util";
@@ -83,6 +84,8 @@ export class FosscordServer extends Server {
 				}),
 			);
 		}
+
+		this.app.set("json replacer", JSONReplacer);
 
 		this.app.use(CORS);
 		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
