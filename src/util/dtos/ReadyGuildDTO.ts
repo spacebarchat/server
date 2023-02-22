@@ -128,7 +128,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 		this.lazy = true; // ??????????
 		this.member_count = guild.member_count;
 		this.members = guild.members;
-		this.premium_subscription_count = guild.premium_subscription_count;
+		this.premium_subscription_count = 14;
 		this.properties = {
 			name: guild.name,
 			description: guild.description,
@@ -147,7 +147,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 			default_message_notifications: guild.default_message_notifications,
 			mfa_level: guild.mfa_level,
 			vanity_url_code: null, // ?????
-			premium_tier: guild.premium_tier,
+			premium_tier: 3,
 			premium_progress_bar_enabled: guild.premium_progress_bar_enabled,
 			system_channel_flags: guild.system_channel_flags,
 			discovery_splash: guild.discovery_splash,
