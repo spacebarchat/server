@@ -201,7 +201,20 @@ const processFile = async (asset) => {
 	if (ONLY_CACHE_JS && !asset.endsWith(".js")) return [];
 
 	const url = `${BASE_URL}/assets/${asset}`;
-	const res = await fetch(url, { agent });
+	let res,
+		tries = 5;
+	do {
+		try {
+			res = await fetch(url, { agent });
+		} catch (e) {
+			await new Promise((resolve) => setTimeout(resolve, 100));
+			print(
+				`Failed to fetch ${url} : ${e.message} ( tries remaining: ${tries} )`,
+				false,
+			);
+			if (--tries <= 0) throw e;
+		}
+	} while (!res);
 	if (res.status !== 200) {
 		print(`${res.status} on ${asset}`, false);
 		return [];
