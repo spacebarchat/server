@@ -56,6 +56,7 @@ export class Server {
 		}
 
 		this.server.on("upgrade", (request, socket, head) => {
+			if (request.url?.includes("voice")) return;
 			this.ws.handleUpgrade(request, socket, head, (socket) => {
 				this.ws.emit("connection", socket, request);
 			});
@@ -77,7 +78,14 @@ export class Server {
 
 		if (!this.server.listening) {
 			this.server.listen(this.port);
-			console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
+			console.log(
+				`[Gateway] online on ` +
+					process.env.PROTOCOL +
+					"://" +
+					process.env.HOSTNAME +
+					":" +
+					process.env.PORT,
+			);
 		}
 	}
 

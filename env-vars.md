@@ -13,3 +13,7 @@
 | STORAGE_PROVIDER | "s3" or "file" | CDN storage provider                                            |
 | STORAGE_BUCKET   | string         | S3 bucket name                                                  |
 | STORAGE_REGION   | string         | S3 storage region                                               |
+| WEBRTC_PORT_RANGE| min-max        | Minimum and maximum port for the WebRTC server                  |
+| HOSTNAME         | string         | IP Address or Hostname (only used for WebRTC to work properly)  |
+| WS_PROTOCOL      | string         | ws -OR- wss                                                     |
+| PROTOCOL         | string         | http -OR- https                                                 |

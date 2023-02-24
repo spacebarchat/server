@@ -37,7 +37,7 @@ server.on("request", app);
 const api = new Api.FosscordServer({ server, port, production, app });
 const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
-const webrtc = new Webrtc.Server({ port: 3004, production });
+const webrtc = new Webrtc.Server({ server, port, production });
 
 process.on("SIGTERM", async () => {
 	console.log("Shutting down due to SIGTERM");

@@ -25,10 +25,10 @@ import MediaServer, {
 import SemanticSDP from "semantic-sdp";
 MediaServer.enableLog(true);
 
-export const PublicIP = process.env.PUBLIC_IP || "127.0.0.1";
+export const PublicIP = process.env.HOSTNAME || "0.0.0.0";
 
 try {
-	const range = process.env.WEBRTC_PORT_RANGE || "4000-5000";
+	const range = process.env.WEBRTC_PORT_RANGE || "1024-65535";
 	const ports = range.split("-");
 	const min = Number(ports[0]);
 	const max = Number(ports[1]);

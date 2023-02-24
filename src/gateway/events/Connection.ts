@@ -82,7 +82,14 @@ export async function Connection(
 				socket.on(x, (y) => console.log(x, y));
 			});
 
-		const { searchParams } = new URL(`http://localhost${request.url}`);
+		const { searchParams } = new URL(
+			process.env.PROTOCOL +
+				"://" +
+				process.env.HOSTNAME +
+				":" +
+				process.env.PORT +
+				request.url,
+		);
 		// @ts-ignore
 		socket.encoding = searchParams.get("encoding") || "json";
 		if (!["json", "etf"].includes(socket.encoding))

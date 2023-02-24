@@ -62,7 +62,11 @@ router.post(
 
 		const path = `role-icons/${role_id}/${hash}.png`;
 		const endpoint =
-			Config.get().cdn.endpointPublic || "http://localhost:3001";
+			process.env.PROTOCOL +
+				"://" +
+				process.env.HOSTNAME +
+				":" +
+				process.env.PORT || "http://0.0.0.0:3001";
 
 		await storage.set(path, buffer);
 

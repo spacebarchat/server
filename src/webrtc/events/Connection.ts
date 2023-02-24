@@ -53,7 +53,14 @@ export async function Connection(
 			});
 		}
 
-		const { searchParams } = new URL(`http://localhost${request.url}`);
+		const { searchParams } = new URL(
+			process.env.PROTOCOL +
+				"://" +
+				process.env.HOSTNAME +
+				":" +
+				process.env.PORT +
+				request.url,
+		);
 
 		socket.encoding = "json";
 		socket.version = Number(searchParams.get("v")) || 5;

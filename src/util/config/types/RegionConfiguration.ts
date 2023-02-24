@@ -25,7 +25,8 @@ export class RegionConfiguration {
 		{
 			id: "fosscord",
 			name: "Fosscord",
-			endpoint: "127.0.0.1:3004",
+			endpoint:
+				process.env.HOSTNAME + ":" + process.env.PORT || "0.0.0.0:3001",
 			vip: false,
 			custom: false,
 			deprecated: false,

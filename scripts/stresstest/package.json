@@ -11,7 +11,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"figlet": "^1.5.2",
-		"node-fetch": "^2.6.6",
+		"node-fetch": "^2.6.9",
 		"request": "^2.88.2"
 	}
 }

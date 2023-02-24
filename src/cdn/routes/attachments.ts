@@ -50,7 +50,11 @@ router.post(
 		const path = `attachments/${channel_id}/${id}/${filename}`;
 
 		const endpoint =
-			Config.get()?.cdn.endpointPublic || "http://localhost:3001";
+			process.env.PROTOCOL +
+				"://" +
+				process.env.HOSTNAME +
+				":" +
+				process.env.PORT || "http://0.0.0.0:3001";
 
 		await storage.set(path, buffer);
 		let width;

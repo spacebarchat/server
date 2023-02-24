@@ -37,7 +37,12 @@ const options: RouteOptions = {
 router.get("/", route(options), (req: Request, res: Response) => {
 	const { endpointPublic } = Config.get().gateway;
 	res.json({
-		url: endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
+		url:
+			process.env.WS_PROTOCOL +
+				"://" +
+				process.env.HOSTNAME +
+				":" +
+				process.env.PORT || "ws://0.0.0.0:3001",
 	});
 });
 

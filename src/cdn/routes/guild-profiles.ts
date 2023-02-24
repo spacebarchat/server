@@ -59,7 +59,12 @@ router.post("/", multer.single("file"), async (req: Request, res: Response) => {
 	if (ANIMATED_MIME_TYPES.includes(type.mime)) hash = `a_${hash}`; // animated icons have a_ infront of the hash
 
 	const path = `guilds/${guild_id}/users/${user_id}/avatars/${hash}`;
-	const endpoint = Config.get().cdn.endpointPublic || "http://localhost:3001";
+	const endpoint =
+		process.env.PROTOCOL +
+			"://" +
+			process.env.HOSTNAME +
+			":" +
+			process.env.PORT || "http://0.0.0.0:3001";
 
 	await storage.set(path, buffer);
 

@@ -36,7 +36,12 @@ export async function uploadFile(
 	});
 
 	const response = await fetch(
-		`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`,
+		process.env.PROTOCOL +
+			"://" +
+			process.env.HOSTNAME +
+			":" +
+			process.env.PORT +
+			path,
 		{
 			headers: {
 				signature: Config.get().security.requestSignature,
@@ -75,7 +80,12 @@ export async function handleFile(
 
 export async function deleteFile(path: string) {
 	const response = await fetch(
-		`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`,
+		process.env.PROTOCOL +
+			"://" +
+			process.env.HOSTNAME +
+			":" +
+			process.env.PORT +
+			path,
 		{
 			headers: {
 				signature: Config.get().security.requestSignature,

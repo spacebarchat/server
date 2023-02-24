@@ -132,7 +132,12 @@ router.get("/", async (req: Request, res: Response) => {
 	}
 
 	const messages = await Message.find(query);
-	const endpoint = Config.get().cdn.endpointPublic;
+	const endpoint =
+		process.env.PROTOCOL +
+			"://" +
+			process.env.HOSTNAME +
+			":" +
+			process.env.PORT || "http://0.0.0.0:3001";
 
 	return res.json(
 		messages.map((x: Partial<Message>) => {

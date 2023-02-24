@@ -111,8 +111,7 @@
 		"@fosscord/api": "dist/api",
 		"@fosscord/cdn": "dist/cdn",
 		"@fosscord/gateway": "dist/gateway",
-		"@fosscord/util": "dist/util",
-		"@fosscord/webrtc": "dist/webrtc"
+		"@fosscord/util": "dist/util"
 	},
 	"optionalDependencies": {
 		"erlpack": "^0.1.4",

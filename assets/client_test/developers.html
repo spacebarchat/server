@@ -5,39 +5,142 @@
 	<meta charset="utf-8" />
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" name="viewport" />
 
-	<link rel="stylesheet" href="/assets/532.5ee4b893e126424a925a.css" integrity="" />
-	<link rel="icon" href="/assets/847541504914fd33810e70a0ea73177e.ico" />
+	<link rel="stylesheetdev" href="/assets/fosscord-dev.css" />
+	<link id="logindevcss" rel="stylesheet" href="/assets/fosscord-login-dev.css" />
+	<link id="customdevcss" rel="stylesheet" href="/assets/user-dev.css" />
+	
+	<link rel="stylesheet" href="/assets/532.7fbd5147ee8b816c530d.css" integrity="" />
 	<title>Fosscord Test Client Developer Portal</title>
 	<meta charset="utf-8" data-react-helmet="true" />
+	<!-- dev-inline plugin marker -->
+	<!-- dev-preload plugin marker -->
 </head>
 
 <body>
 	<div id="app-mount"></div>
 	<script>
+		FOSSCORD_HOST = location.hostname+":"+location.port;
+		if (location.protocol == "http:" && location.port == "80") { 
+		delete FOSSCORD_HOST; 
+		FOSSCORD_HOST = location.hostname; 
+		}
+		if (location.protocol === "https:" && location.port === "443") {
+		delete FOSSCORD_HOST; 
+		FOSSCORD_HOST = location.hostname; 
+		}
 		window.GLOBAL_ENV = {
+			API_ENDPOINT: "//"+FOSSCORD_HOST+"/api",
 			API_VERSION: 9,
-			API_ENDPOINT: "/api",
-			WEBAPP_ENDPOINT: "",
-			CDN_HOST: `${location.host}`, // TODO: make this file auto populate from config?
-
-			BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
-			STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
-			MARKETING_ENDPOINT: "//discord.com",
-			RELEASE_CHANNEL: "canary",
-			ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
+			GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}`+FOSSCORD_HOST,
+			WEBAPP_ENDPOINT: "//"+FOSSCORD_HOST,
+			CDN_HOST: FOSSCORD_HOST,
+			ASSET_ENDPOINT: "//"+FOSSCORD_HOST,
+			MEDIA_PROXY_ENDPOINT: "//"+FOSSCORD_HOST+"/media", // TODO: Fix and add actual media proxy endpoint, does it even exist in fosscord yet? 02/23/2023 MM/DD/YYYY
+			WIDGET_ENDPOINT: "//"+FOSSCORD_HOST+"/widget", // TODO: Same for Media and widget
+			INVITE_HOST: FOSSCORD_HOST+"/invite",
+			GUILD_TEMPLATE_HOST: FOSSCORD_HOST+"/new",
+			GIFT_CODE_HOST: FOSSCORD_HOST+"/gift", // TODO: Fake FOSSCORD Premium
+			RELEASE_CHANNEL: "canary", // i wish this was "fosscord" instead of "canary" or other.
+			MARKETING_ENDPOINT: "//"+FOSSCORD_HOST,
+			BRAINTREE_KEY: "", // TODO replace with own.
+			STRIPE_KEY: "", // TODO replace with own.
+			NETWORKING_ENDPOINT: "//"+FOSSCORD_HOST+"/router", // TODO: Same for MEDIA, WIDGET, and NETWORK
+			RTC_LATENCY_ENDPOINT: "//"+FOSSCORD_HOST+"/rtc", // TODO: Same as above + RTC
+			ACTIVITY_APPLICATION_HOST: FOSSCORD_HOST+"/says", // Simon says: It's not discordsays, its fosscordsays
+			PROJECT_ENV: "production",
+			REMOTE_AUTH_ENDPOINT: "//"+FOSSCORD_HOST+"/rag", // TODO: RAG is REMOTE_AUTH_ENDPOINT in short, but same as RTC and NETWORKING_ENDPOINT
+			SENTRY_TAGS: { buildId: "d5b97e42230075cb9634c419c0cf4d2f8f9ada53", buildType: "normal" }, // Fosscord commit id instead? 
+			MIGRATION_SOURCE_ORIGIN: location.protocol+"//"+FOSSCORD_HOST, 
+			MIGRATION_DESTINATION_ORIGIN: location.protocol+"//"+FOSSCORD_HOST,
+			HTML_TIMESTAMP: Date.now(),
+			ALGOLIA_KEY: "" // TODO replace with own.
 		};
-		GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
-		// TODO: remote auth
-		// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
-		localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
 		localStorage.setItem(
 			"DeveloperOptionsStore",
 			`{"trace":false,"canary":true,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
 		);
 	</script>
-	<script src="/assets/1cebe9b2b9ed8283ce52.js" integrity=""></script>
-	<script src="/assets/b48be57bceaf40c221ac.js" integrity=""></script>
-	<script src="/assets/b6e25718b296713dc29d.js" integrity=""></script>
+	
+	<!-- fast connect -->
+	<!-- <script>!function () { if (null != window.WebSocket) { if (function (n) { try { var e = localStorage.getItem(n); return null == e ? null : JSON.parse(e); } catch (n) { return null; } }("token") && !window.__OVERLAY__) { var n = null != window.DiscordNative || null != window.require ? "etf" : "json", e = window.GLOBAL_ENV.GATEWAY_ENDPOINT + "/?encoding=" + n + "&v=" + window.GLOBAL_ENV.API_VERSION + "&compress=zlib-stream"; console.log("[FAST CONNECT] connecting to: " + e); var o = new WebSocket(e); o.binaryType = "arraybuffer"; var t = Date.now(), i = { open: !1, identify: !1, gateway: e, messages: [] }; o.onopen = function () { console.log("[FAST CONNECT] connected in " + (Date.now() - t) + "ms"), i.open = !0; }, o.onclose = o.onerror = function () { window._ws = null; }, o.onmessage = function (n) { i.messages.push(n); }, window._ws = { ws: o, state: i }; } } }();</script> -->
+
+	<!-- fast identify -->
+	<script>
+		(() => {
+			if (window.WebSocket == null) return;
+			if (window.__OVERLAY__) return;
+
+			const getStorage = (key) => {
+				try {
+					return JSON.parse(localStorage.getItem(key));
+				}
+				catch (e) {
+					return undefined;
+				}
+			};
+
+			const token = getStorage("token");
+			if (!token) return;
+
+			const encoding = window.DiscordNative != null || window.require != null ? "etf" : "json";
+			const url = window.GLOBAL_ENV.GATEWAY_ENDPOINT +
+				"/?encoding=" +
+				encoding +
+				"&v=" +
+				window.GLOBAL_ENV.API_VERSION +
+				"&compress=zlib-stream";
+
+			console.log("[FAST IDENTIFY] connecting to:", url);
+
+			const socket = new WebSocket(url);
+			socket.binaryType = "arraybuffer";
+			const start = Date.now();
+			const state = { open: false, identity: false, gateway: url, messages: [] };
+
+			socket.onopen = function () {
+				console.log(`[FAST IDENTIFY] connected in ${Date.now() - start}ms`);
+				state.open = true;
+
+				console.log("[FAST IDENTIFY] Sending payload");
+				state.identity = true;
+				const payload = {
+					op: 2,
+					d: {
+						token: token,
+						capabilities: 509,
+						properties: {
+							...(getStorage("deviceProperties") || {}),
+							browser_user_agent: navigator.userAgent,
+						},
+						compress: false,
+						presence: {
+							status: getStorage("UserSettingsStore")?.status || "online",
+							since: 0,
+							activities: [],
+							afk: false,
+						},
+					}
+				};
+				socket.send(JSON.stringify(payload));
+			};
+
+			socket.onclose = socket.onerror = (e) => {
+				console.log("[FAST IDENTIFY] Failed", e);
+				window._ws = null;
+			};
+
+			socket.onmessage = (message) => {
+				state.messages.push(message);
+			};
+
+			window._ws = { ws: socket, state };
+		})();
+	</script>
+
+	<script src="/assets/4f91987a7b38426ef720.js" integrity=""></script>
+	<script src="/assets/abf9b56982d2eacb4e8e.js" integrity=""></script>
+	<script src="/assets/3ecba7af535756b7d6fd.js" integrity=""></script>
+	<!-- dev-plugin marker -->
 </body>
 
 </html>

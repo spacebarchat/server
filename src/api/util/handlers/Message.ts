@@ -223,7 +223,11 @@ export async function postHandleMessage(message: Message) {
 
 		// bit gross, but whatever!
 		const endpointPublic =
-			Config.get().cdn.endpointPublic || "http://127.0.0.1"; // lol
+			process.env.PROTOCOL +
+				"://" +
+				process.env.HOSTNAME +
+				":" +
+				process.env.PORT || "http://0.0.0.0:3001";
 		const handler =
 			url.hostname == new URL(endpointPublic).hostname
 				? EmbedHandlers["self"]

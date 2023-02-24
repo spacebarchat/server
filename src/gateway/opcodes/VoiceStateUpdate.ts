@@ -100,7 +100,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	voiceState.session_id = this.session_id;
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { id, ...newObj } = voiceState;
+	const { id, token, ...newObj } = voiceState;
 
 	await Promise.all([
 		voiceState.save(),
@@ -131,9 +131,11 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		await emitEvent({
 			event: "VOICE_SERVER_UPDATE",
 			data: {
-				token: voiceState.token,
+				token: token,
 				guild_id: voiceState.guild_id,
-				endpoint: guildRegion.endpoint,
+				endpoint:
+					process.env.HOSTNAME + ":" + process.env.PORT + "/voice" ||
+					"0.0.0.0:3001/voice",
 			},
 			user_id: this.user_id,
 		} as VoiceServerUpdateEvent);

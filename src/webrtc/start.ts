@@ -23,7 +23,7 @@ import { config } from "dotenv";
 import { Server } from "./Server";
 config();
 
-const port = Number(process.env.PORT) || 3004;
+const port = Number(process.env.PORT) || 3001;
 
 const server = new Server({
 	port,
