@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export class LoginConfiguration {
-	requireCaptcha: boolean = false;
-	requireVerification: boolean = false;
-}
+export * from "./MailGun";
+export * from "./MailJet";
+export * from "./SMTP";

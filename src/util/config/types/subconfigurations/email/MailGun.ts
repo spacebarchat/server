@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export class LoginConfiguration {
-	requireCaptcha: boolean = false;
-	requireVerification: boolean = false;
+export class MailGunConfiguration {
+	apiKey: string | null = null;
+	domain: string | null = null;
 }

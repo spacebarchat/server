@@ -16,28 +16,29 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import "missing-native-js-functions";
-import { Server, ServerOptions } from "lambert-server";
-import { Authentication, CORS } from "./middlewares/";
 import {
 	Config,
+	Email,
 	initDatabase,
 	initEvent,
 	JSONReplacer,
+	registerRoutes,
 	Sentry,
 	WebAuthn,
 } from "@fosscord/util";
-import { ErrorHandler } from "./middlewares/ErrorHandler";
-import { BodyParser } from "./middlewares/BodyParser";
-import { Router, Request, Response } from "express";
+import { Request, Response, Router } from "express";
+import { Server, ServerOptions } from "lambert-server";
+import "missing-native-js-functions";
+import morgan from "morgan";
 import path from "path";
+import { red } from "picocolors";
+import { Authentication, CORS } from "./middlewares/";
+import { BodyParser } from "./middlewares/BodyParser";
+import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { initRateLimits } from "./middlewares/RateLimit";
 import TestClient from "./middlewares/TestClient";
 import { initTranslation } from "./middlewares/Translation";
-import morgan from "morgan";
 import { initInstance } from "./util/handlers/Instance";
-import { registerRoutes } from "@fosscord/util";
-import { red } from "picocolors";
 
 export type FosscordServerOptions = ServerOptions;
 
@@ -63,6 +64,7 @@ export class FosscordServer extends Server {
 		await initDatabase();
 		await Config.init();
 		await initEvent();
+		await Email.init();
 		await initInstance();
 		await Sentry.init(this.app);
 		WebAuthn.init();

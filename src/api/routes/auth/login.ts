@@ -77,6 +77,7 @@ router.post(
 				"mfa_enabled",
 				"webauthn_enabled",
 				"security_keys",
+				"verified",
 			],
 			relations: ["security_keys"],
 		}).catch(() => {
@@ -98,6 +99,17 @@ router.post(
 				password: {
 					message: req.t("auth:login.INVALID_PASSWORD"),
 					code: "INVALID_PASSWORD",
+				},
+			});
+		}
+
+		// return an error for unverified accounts if verification is required
+		if (config.login.requireVerification && !user.verified) {
+			throw FieldErrors({
+				login: {
+					code: "ACCOUNT_LOGIN_VERIFICATION_EMAIL",
+					message:
+						"Email verification is required, please check your email.",
 				},
 			});
 		}

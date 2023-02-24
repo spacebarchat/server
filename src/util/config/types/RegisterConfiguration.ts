@@ -18,12 +18,13 @@
 
 import {
 	DateOfBirthConfiguration,
-	EmailConfiguration,
 	PasswordConfiguration,
+	RegistrationEmailConfiguration,
 } from ".";
 
 export class RegisterConfiguration {
-	email: EmailConfiguration = new EmailConfiguration();
+	email: RegistrationEmailConfiguration =
+		new RegistrationEmailConfiguration();
 	dateOfBirth: DateOfBirthConfiguration = new DateOfBirthConfiguration();
 	password: PasswordConfiguration = new PasswordConfiguration();
 	disabled: boolean = false;
@@ -34,5 +35,5 @@ export class RegisterConfiguration {
 	allowMultipleAccounts: boolean = true;
 	blockProxies: boolean = true;
 	incrementingDiscriminators: boolean = false; // random otherwise
-	defaultRights: string = "312119568366592"; // See `npm run generate:rights`
+	defaultRights: string = "875069521787904"; // See `npm run generate:rights`
 }

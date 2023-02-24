@@ -278,6 +278,17 @@ router.post(
 			await Invite.joinGuild(user.id, body.invite);
 		}
 
+		// return an error for unverified accounts if verification is required
+		if (Config.get().login.requireVerification && !user.verified) {
+			throw FieldErrors({
+				login: {
+					code: "ACCOUNT_LOGIN_VERIFICATION_EMAIL",
+					message:
+						"Email verification is required, please check your email.",
+				},
+			});
+		}
+
 		return res.json({ token: await generateToken(user.id) });
 	},
 );
