@@ -16,7 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export class LoginConfiguration {
-	requireCaptcha: boolean = false;
-	requireVerification: boolean = false;
+export class SMTPConfiguration {
+	host: string | null = null;
+	port: number | null = null;
+	secure: boolean | null = null;
+	username: string | null = null;
+	password: string | null = null;
 }

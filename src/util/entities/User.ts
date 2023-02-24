@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Request } from "express";
 import {
 	Column,
 	Entity,
@@ -24,16 +25,22 @@ import {
 	OneToMany,
 	OneToOne,
 } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import {
+	adjustEmail,
+	Config,
+	Email,
+	FieldErrors,
+	Snowflake,
+	trimSpecial,
+} from "..";
 import { BitField } from "../util/BitField";
-import { Relationship } from "./Relationship";
+import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
-import { UserSettings } from "./UserSettings";
-import { Session } from "./Session";
-import { Config, FieldErrors, Snowflake, trimSpecial, adjustEmail } from "..";
-import { Request } from "express";
+import { Relationship } from "./Relationship";
 import { SecurityKey } from "./SecurityKey";
+import { Session } from "./Session";
+import { UserSettings } from "./UserSettings";
 
 export enum PublicUserEnum {
 	username,
@@ -383,6 +390,15 @@ export class User extends BaseClass {
 
 		user.validate();
 		await Promise.all([user.save(), settings.save()]);
+
+		// send verification email if users aren't verified by default and we have an email
+		if (!Config.get().defaults.user.verified && email) {
+			await Email.sendVerifyEmail(user, email).catch((e) => {
+				console.error(
+					`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`,
+				);
+			});
+		}
 
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {

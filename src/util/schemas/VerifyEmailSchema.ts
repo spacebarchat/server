@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export class LoginConfiguration {
-	requireCaptcha: boolean = false;
-	requireVerification: boolean = false;
+export interface VerifyEmailSchema {
+	captcha_key?: string | null;
+	token: string;
 }
