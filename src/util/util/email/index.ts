@@ -27,7 +27,14 @@ import MailJet from "./transports/MailJet";
 import SendGrid from "./transports/SendGrid";
 import SMTP from "./transports/SMTP";
 
-const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "assets");
+const ASSET_FOLDER_PATH = path.join(
+	__dirname,
+	"..",
+	"..",
+	"..",
+	"..",
+	"assets",
+);
 export const EMAIL_REGEX =
 	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -141,7 +148,7 @@ export const Email: {
 		// loop through all replacements and replace them in the template
 		for (const [key, value] of Object.values(replacements)) {
 			if (!value) continue;
-			template = template.replace(key as string, value);
+			template = template.replaceAll(key as string, value);
 		}
 
 		return template;
