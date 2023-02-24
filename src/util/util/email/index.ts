@@ -18,10 +18,14 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import nodemailer, { SentMessageInfo, Transporter } from "nodemailer";
-import { User } from "../entities";
-import { Config } from "./Config";
-import { generateToken } from "./Token";
+import { SentMessageInfo, Transporter } from "nodemailer";
+import { User } from "../../entities";
+import { Config } from "../Config";
+import { generateToken } from "../Token";
+import MailGun from "./transports/MailGun";
+import MailJet from "./transports/MailJet";
+import SendGrid from "./transports/SendGrid";
+import SMTP from "./transports/SMTP";
 
 const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "assets");
 export const EMAIL_REGEX =
@@ -53,144 +57,12 @@ export function adjustEmail(email?: string): string | undefined {
 }
 
 const transporters: {
-	[key: string]: () => Promise<nodemailer.Transporter<unknown> | void>;
+	[key: string]: () => Promise<Transporter<unknown> | void>;
 } = {
-	smtp: async function () {
-		// get configuration
-		const { host, port, secure, username, password } =
-			Config.get().email.smtp;
-
-		// ensure all required configuration values are set
-		if (!host || !port || secure === null || !username || !password)
-			return console.error(
-				"[Email] SMTP has not been configured correctly.",
-			);
-
-		if (!Config.get().general.correspondenceEmail)
-			return console.error(
-				"[Email] Correspondence email has not been configured! This is used as the sender email address.",
-			);
-
-		// construct the transporter
-		const transporter = nodemailer.createTransport({
-			host,
-			port,
-			secure,
-			auth: {
-				user: username,
-				pass: password,
-			},
-		});
-
-		// verify connection configuration
-		const verified = await transporter.verify().catch((err) => {
-			console.error("[Email] SMTP verification failed:", err);
-			return;
-		});
-
-		// if verification failed, return void and don't set transporter
-		if (!verified) return;
-
-		return transporter;
-	},
-	mailgun: async function () {
-		// get configuration
-		const { apiKey, domain } = Config.get().email.mailgun;
-
-		// ensure all required configuration values are set
-		if (!apiKey || !domain)
-			return console.error(
-				"[Email] Mailgun has not been configured correctly.",
-			);
-
-		let mg;
-		try {
-			// try to import the transporter package
-			mg = require("nodemailer-mailgun-transport");
-		} catch {
-			// if the package is not installed, log an error and return void so we don't set the transporter
-			console.error(
-				"[Email] Mailgun transport is not installed. Please run `npm install nodemailer-mailgun-transport --save-optional` to install it.",
-			);
-			return;
-		}
-
-		// create the transporter configuration object
-		const auth = {
-			auth: {
-				api_key: apiKey,
-				domain: domain,
-			},
-		};
-
-		// create the transporter and return it
-		return nodemailer.createTransport(mg(auth));
-	},
-	mailjet: async function () {
-		// get configuration
-		const { apiKey, apiSecret } = Config.get().email.mailjet;
-
-		// ensure all required configuration values are set
-		if (!apiKey || !apiSecret)
-			return console.error(
-				"[Email] Mailjet has not been configured correctly.",
-			);
-
-		let mj;
-		try {
-			// try to import the transporter package
-			mj = require("nodemailer-mailjet-transport");
-		} catch {
-			// if the package is not installed, log an error and return void so we don't set the transporter
-			console.error(
-				"[Email] Mailjet transport is not installed. Please run `npm install n0script22/nodemailer-mailjet-transport --save-optional` to install it.",
-			);
-			return;
-		}
-
-		// create the transporter configuration object
-		const auth = {
-			auth: {
-				apiKey: apiKey,
-				apiSecret: apiSecret,
-			},
-		};
-
-		// create the transporter and return it
-		return nodemailer.createTransport(mj(auth));
-	},
-	sendgrid: async function () {
-		// get configuration
-		const { apiKey } = Config.get().email.sendgrid;
-
-		// ensure all required configuration values are set
-		if (!apiKey)
-			return console.error(
-				"[Email] SendGrid has not been configured correctly.",
-			);
-
-		let sg;
-		try {
-			// try to import the transporter package
-			sg = require("nodemailer-sendgrid-transport");
-		} catch {
-			// if the package is not installed, log an error and return void so we don't set the transporter
-			console.error(
-				"[Email] SendGrid transport is not installed. Please run `npm install Maria-Golomb/nodemailer-sendgrid-transport --save-optional` to install it.",
-			);
-			return;
-		}
-
-		// create the transporter configuration object
-		const auth = {
-			auth: {
-				api_key: apiKey,
-			},
-		};
-
-		// create the transporter and return it
-		return nodemailer.createTransport(sg(auth));
-	},
+	smtp: SMTP,
+	mailgun: MailGun,
+	mailjet: MailJet,
+	sendgrid: SendGrid,
 };
 
 export const Email: {
