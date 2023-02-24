@@ -320,6 +320,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		merged_members: merged_members,
 		// shard // TODO: only for user sharding
 		sessions: [], // TODO:
+
+		// lol hack whatever
+		required_action:
+			Config.get().login.requireVerification && !user.verified
+				? "REQUIRE_VERIFIED_EMAIL"
+				: undefined,
 	};
 
 	// TODO: send real proper data structure
