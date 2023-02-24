@@ -250,40 +250,26 @@ export const Email: {
 		},
 	) {
 		const { instanceName } = Config.get().general;
-		template = template.replaceAll("{instanceName}", instanceName);
-		template = template.replaceAll("{userUsername}", user.username);
-		template = template.replaceAll(
-			"{userDiscriminator}",
-			user.discriminator,
-		);
-		template = template.replaceAll("{userId}", user.id);
-		if (user.phone)
-			template = template.replaceAll(
-				"{phoneNumber}",
-				user.phone.slice(-4),
-			);
-		if (user.email)
-			template = template.replaceAll("{userEmail}", user.email);
 
-		// template specific replacements
-		if (emailVerificationUrl)
-			template = template.replaceAll(
-				"{emailVerificationUrl}",
-				emailVerificationUrl,
-			);
-		if (passwordResetUrl)
-			template = template.replaceAll(
-				"{passwordResetUrl}",
-				passwordResetUrl,
-			);
-		if (ipInfo) {
-			template = template.replaceAll("{ipAddress}", ipInfo.ip);
-			template = template.replaceAll("{locationCity}", ipInfo.city);
-			template = template.replaceAll("{locationRegion}", ipInfo.region);
-			template = template.replaceAll(
-				"{locationCountryName}",
-				ipInfo.country_name,
-			);
+		const replacements = [
+			["{instanceName}", instanceName],
+			["{userUsername}", user.username],
+			["{userDiscriminator}", user.discriminator],
+			["{userId}", user.id],
+			["{phoneNumber}", user.phone?.slice(-4)],
+			["{userEmail}", user.email],
+			["{emailVerificationUrl}", emailVerificationUrl],
+			["{passwordResetUrl}", passwordResetUrl],
+			["{ipAddress}", ipInfo?.ip],
+			["{locationCity}", ipInfo?.city],
+			["{locationRegion}", ipInfo?.region],
+			["{locationCountryName}", ipInfo?.country_name],
+		];
+
+		// loop through all replacements and replace them in the template
+		for (const [key, value] of Object.values(replacements)) {
+			if (!value) continue;
+			template = template.replace(key as string, value);
 		}
 
 		return template;
