@@ -29,6 +29,8 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/auth/mfa/totp",
 	"/auth/mfa/webauthn",
 	"/auth/verify",
+	"/auth/forgot",
+	"/auth/reset",
 	// Routes with a seperate auth system
 	"/webhooks/",
 	// Public information endpoints

@@ -30,6 +30,7 @@ export * from "./KafkaConfiguration";
 export * from "./LimitConfigurations";
 export * from "./LoginConfiguration";
 export * from "./MetricsConfiguration";
+export * from "./PasswordResetConfiguration";
 export * from "./RabbitMQConfiguration";
 export * from "./RegionConfiguration";
 export * from "./RegisterConfiguration";

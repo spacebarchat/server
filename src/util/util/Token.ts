@@ -38,6 +38,15 @@ async function checkEmailToken(
 			where: {
 				email: decoded.email,
 			},
+			select: [
+				"email",
+				"id",
+				"verified",
+				"deleted",
+				"disabled",
+				"username",
+				"data",
+			],
 		});
 
 		if (!user) return rej("Invalid Token");

@@ -36,7 +36,7 @@ router.post(
 			throw new HTTPError("User does not have an email address", 400);
 		}
 
-		await Email.sendVerificationEmail(user, user.email)
+		await Email.sendVerifyEmail(user, user.email)
 			.then(() => {
 				return res.sendStatus(204);
 			})
