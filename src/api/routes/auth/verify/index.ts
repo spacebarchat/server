@@ -45,7 +45,7 @@ router.post(
 
 		const config = Config.get();
 
-		if (config.register.requireCaptcha) {
+		if (config.register.requireCaptcha && config.security.captcha.enabled) {
 			const { sitekey, service } = config.security.captcha;
 
 			if (!captcha_key) {
