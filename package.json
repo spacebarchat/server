@@ -115,9 +115,11 @@
 	},
 	"optionalDependencies": {
 		"erlpack": "^0.1.4",
+		"medooze-media-server": "^0.129.9",
 		"nodemailer-mailgun-transport": "^2.1.5",
 		"nodemailer-mailjet-transport": "github:n0script22/nodemailer-mailjet-transport",
 		"nodemailer-sendgrid-transport": "github:Maria-Golomb/nodemailer-sendgrid-transport",
+		"semantic-sdp": "^3.25.1",
 		"sqlite3": "^5.1.4"
 	}
 }
