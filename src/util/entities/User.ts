@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Request } from "express";
 import {
 	Column,
 	Entity,
@@ -24,23 +25,22 @@ import {
 	OneToMany,
 	OneToOne,
 } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { BitField } from "../util/BitField";
-import { Relationship } from "./Relationship";
-import { ConnectedAccount } from "./ConnectedAccount";
-import { Member } from "./Member";
-import { UserSettings } from "./UserSettings";
-import { Session } from "./Session";
 import {
+	adjustEmail,
 	Config,
+	Email,
 	FieldErrors,
 	Snowflake,
 	trimSpecial,
-	adjustEmail,
-	Email,
 } from "..";
-import { Request } from "express";
+import { BitField } from "../util/BitField";
+import { BaseClass } from "./BaseClass";
+import { ConnectedAccount } from "./ConnectedAccount";
+import { Member } from "./Member";
+import { Relationship } from "./Relationship";
 import { SecurityKey } from "./SecurityKey";
+import { Session } from "./Session";
+import { UserSettings } from "./UserSettings";
 
 export enum PublicUserEnum {
 	username,
@@ -393,15 +393,11 @@ export class User extends BaseClass {
 
 		// send verification email if users aren't verified by default and we have an email
 		if (!Config.get().defaults.user.verified && email) {
-			await Email.sendVerificationEmail(user, email)
-				.then((info) => {
-					console.log("Message sent: %s", info.messageId);
-				})
-				.catch((e) => {
-					console.error(
-						`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`,
-					);
-				});
+			await Email.sendVerificationEmail(user, email).catch((e) => {
+				console.error(
+					`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`,
+				);
+			});
 		}
 
 		setImmediate(async () => {
