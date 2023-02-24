@@ -16,10 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route, verifyCaptcha } from "@fosscord/api";
-import { checkToken, Config, generateToken, User } from "@fosscord/util";
+import { getIpAdress, route, verifyCaptcha } from "@fosscord/api";
+import {
+	checkToken,
+	Config,
+	FieldErrors,
+	generateToken,
+	User,
+} from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
 const router = Router();
 
 async function getToken(user: User) {
@@ -38,9 +43,21 @@ router.post(
 	async (req: Request, res: Response) => {
 		const { captcha_key, token } = req.body;
 
-		if (captcha_key) {
-			const { sitekey, service } = Config.get().security.captcha;
-			const verify = await verifyCaptcha(captcha_key);
+		const config = Config.get();
+
+		if (config.register.requireCaptcha) {
+			const { sitekey, service } = config.security.captcha;
+
+			if (!captcha_key) {
+				return res.status(400).json({
+					captcha_key: ["captcha-required"],
+					captcha_sitekey: sitekey,
+					captcha_service: service,
+				});
+			}
+
+			const ip = getIpAdress(req);
+			const verify = await verifyCaptcha(captcha_key, ip);
 			if (!verify.success) {
 				return res.status(400).json({
 					captcha_key: verify["error-codes"],
@@ -50,19 +67,26 @@ router.post(
 			}
 		}
 
+		const { jwtSecret } = Config.get().security;
+		let user;
+
 		try {
-			const { jwtSecret } = Config.get().security;
-
-			const { user } = await checkToken(token, jwtSecret, true);
-
-			if (user.verified) return res.json(await getToken(user));
-
-			await User.update({ id: user.id }, { verified: true });
-
-			return res.json(await getToken(user));
-		} catch (error) {
-			throw new HTTPError((error as Error).toString(), 400);
+			const userTokenData = await checkToken(token, jwtSecret, true);
+			user = userTokenData.user;
+		} catch {
+			throw FieldErrors({
+				password: {
+					message: req.t("auth:password_reset.INVALID_TOKEN"),
+					code: "INVALID_TOKEN",
+				},
+			});
 		}
+
+		if (user.verified) return res.json(await getToken(user));
+
+		await User.update({ id: user.id }, { verified: true });
+
+		return res.json(await getToken(user));
 	},
 );
 
