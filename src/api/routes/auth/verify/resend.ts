@@ -37,8 +37,7 @@ router.post(
 		}
 
 		await Email.sendVerificationEmail(user, user.email)
-			.then((info) => {
-				console.log("Message sent: %s", info.messageId);
+			.then(() => {
 				return res.sendStatus(204);
 			})
 			.catch((e) => {
