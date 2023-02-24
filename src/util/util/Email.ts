@@ -52,7 +52,9 @@ export function adjustEmail(email?: string): string | undefined {
 	// return email;
 }
 
-const transporters = {
+const transporters: {
+	[key: string]: () => Promise<nodemailer.Transporter<unknown> | void>;
+} = {
 	smtp: async function () {
 		// get configuration
 		const { host, port, secure, username, password } =
@@ -223,8 +225,7 @@ export const Email: {
 		const { provider } = Config.get().email;
 		if (!provider) return;
 
-		const transporterFn =
-			transporters[provider as keyof typeof transporters];
+		const transporterFn = transporters[provider];
 		if (!transporterFn)
 			return console.error(`[Email] Invalid provider: ${provider}`);
 		console.log(`[Email] Initializing ${provider} transport...`);
@@ -346,7 +347,7 @@ export const Email: {
 		const link = await this.generateLink("reset", user.id, email);
 
 		// load the email template
-		const rawTemplate = fs.readFileSync(
+		const rawTemplate = await fs.promises.readFile(
 			path.join(
 				ASSET_FOLDER_PATH,
 				"email_templates",
@@ -380,7 +381,7 @@ export const Email: {
 		if (!this.transporter) return;
 
 		// load the email template
-		const rawTemplate = fs.readFileSync(
+		const rawTemplate = await fs.promises.readFile(
 			path.join(
 				ASSET_FOLDER_PATH,
 				"email_templates",
