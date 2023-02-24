@@ -64,6 +64,11 @@ const transporters = {
 				"[Email] SMTP has not been configured correctly.",
 			);
 
+		if (!Config.get().general.correspondenceEmail)
+			return console.error(
+				"[Email] Correspondence email has not been configured! This is used as the sender email address.",
+			);
+
 		// construct the transporter
 		const transporter = nodemailer.createTransport({
 			host,
