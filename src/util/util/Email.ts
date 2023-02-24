@@ -59,7 +59,7 @@ const transporters = {
 			Config.get().email.smtp;
 
 		// ensure all required configuration values are set
-		if (!host || !port || !secure || !username || !password)
+		if (!host || !port || secure === null || !username || !password)
 			return console.error(
 				"[Email] SMTP has not been configured correctly.",
 			);
