@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export class LoginConfiguration {
-	requireCaptcha: boolean = false;
-	requireVerification: boolean = false;
+export class SendGridConfiguration {
+	apiKey: string | null = null;
 }
