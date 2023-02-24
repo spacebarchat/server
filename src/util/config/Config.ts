@@ -31,6 +31,7 @@ import {
 	LimitsConfiguration,
 	LoginConfiguration,
 	MetricsConfiguration,
+	PasswordResetConfiguration,
 	RabbitMQConfiguration,
 	RegionConfiguration,
 	RegisterConfiguration,
@@ -60,4 +61,6 @@ export class ConfigValue {
 	defaults: DefaultsConfiguration = new DefaultsConfiguration();
 	external: ExternalTokensConfiguration = new ExternalTokensConfiguration();
 	email: EmailConfiguration = new EmailConfiguration();
+	password_reset: PasswordResetConfiguration =
+		new PasswordResetConfiguration();
 }

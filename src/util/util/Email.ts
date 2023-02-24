@@ -194,8 +194,14 @@ const transporters = {
 export const Email: {
 	transporter: Transporter | null;
 	init: () => Promise<void>;
-	generateVerificationLink: (id: string, email: string) => Promise<string>;
-	sendVerificationEmail: (
+	generateLink: (
+		type: "verify" | "reset",
+		id: string,
+		email: string,
+	) => Promise<string>;
+	sendVerifyEmail: (user: User, email: string) => Promise<SentMessageInfo>;
+	sendResetPassword: (user: User, email: string) => Promise<SentMessageInfo>;
+	sendPasswordChanged: (
 		user: User,
 		email: string,
 	) => Promise<SentMessageInfo>;
@@ -231,10 +237,10 @@ export const Email: {
 	 * Replaces all placeholders in an email template with the correct values
 	 */
 	doReplacements: function (
-		template: string,
-		user: User,
-		emailVerificationUrl?: string,
-		passwordResetUrl?: string,
+		template,
+		user,
+		emailVerificationUrl?,
+		passwordResetUrl?,
 		ipInfo?: {
 			ip: string;
 			city: string;
@@ -285,23 +291,22 @@ export const Email: {
 	 *
 	 * @param id user id
 	 * @param email user email
-	 * @returns a verification link for the user
 	 */
-	generateVerificationLink: async function (id: string, email: string) {
+	generateLink: async function (type, id, email) {
 		const token = (await generateToken(id, email)) as string;
 		const instanceUrl =
 			Config.get().general.frontPage || "http://localhost:3001";
-		const link = `${instanceUrl}/verify#token=${token}`;
+		const link = `${instanceUrl}/${type}#token=${token}`;
 		return link;
 	},
-	sendVerificationEmail: async function (user: User, email: string) {
+	/**
+	 * Sends an email to the user with a link to verify their email address
+	 */
+	sendVerifyEmail: async function (user, email) {
 		if (!this.transporter) return;
 
 		// generate a verification link for the user
-		const verificationLink = await this.generateVerificationLink(
-			user.id,
-			email,
-		);
+		const link = await this.generateLink("verify", user.id, email);
 
 		// load the email template
 		const rawTemplate = fs.readFileSync(
@@ -314,7 +319,78 @@ export const Email: {
 		);
 
 		// replace email template placeholders
-		const html = this.doReplacements(rawTemplate, user, verificationLink);
+		const html = this.doReplacements(rawTemplate, user, link);
+
+		// extract the title from the email template to use as the email subject
+		const subject = html.match(/<title>(.*)<\/title>/)?.[1] || "";
+
+		// construct the email
+		const message = {
+			from:
+				Config.get().general.correspondenceEmail || "noreply@localhost",
+			to: email,
+			subject,
+			html,
+		};
+
+		// send the email
+		return this.transporter.sendMail(message);
+	},
+	/**
+	 * Sends an email to the user with a link to reset their password
+	 */
+	sendResetPassword: async function (user, email) {
+		if (!this.transporter) return;
+
+		// generate a password reset link for the user
+		const link = await this.generateLink("reset", user.id, email);
+
+		// load the email template
+		const rawTemplate = fs.readFileSync(
+			path.join(
+				ASSET_FOLDER_PATH,
+				"email_templates",
+				"password_reset_request.html",
+			),
+			{ encoding: "utf-8" },
+		);
+
+		// replace email template placeholders
+		const html = this.doReplacements(rawTemplate, user, undefined, link);
+
+		// extract the title from the email template to use as the email subject
+		const subject = html.match(/<title>(.*)<\/title>/)?.[1] || "";
+
+		// construct the email
+		const message = {
+			from:
+				Config.get().general.correspondenceEmail || "noreply@localhost",
+			to: email,
+			subject,
+			html,
+		};
+
+		// send the email
+		return this.transporter.sendMail(message);
+	},
+	/**
+	 * Sends an email to the user notifying them that their password has been changed
+	 */
+	sendPasswordChanged: async function (user, email) {
+		if (!this.transporter) return;
+
+		// load the email template
+		const rawTemplate = fs.readFileSync(
+			path.join(
+				ASSET_FOLDER_PATH,
+				"email_templates",
+				"password_changed.html",
+			),
+			{ encoding: "utf-8" },
+		);
+
+		// replace email template placeholders
+		const html = this.doReplacements(rawTemplate, user);
 
 		// extract the title from the email template to use as the email subject
 		const subject = html.match(/<title>(.*)<\/title>/)?.[1] || "";

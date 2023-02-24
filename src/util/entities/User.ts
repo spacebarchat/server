@@ -393,7 +393,7 @@ export class User extends BaseClass {
 
 		// send verification email if users aren't verified by default and we have an email
 		if (!Config.get().defaults.user.verified && email) {
-			await Email.sendVerificationEmail(user, email).catch((e) => {
+			await Email.sendVerifyEmail(user, email).catch((e) => {
 				console.error(
 					`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`,
 				);
