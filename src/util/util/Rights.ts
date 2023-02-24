@@ -93,6 +93,7 @@ export class Rights extends BitField {
 		EDIT_FLAGS: BitFlag(46), // can set others' flags
 		MANAGE_GROUPS: BitFlag(47), // can manage others' groups
 		VIEW_SERVER_STATS: BitFlag(48), // added per @chrischrome's request — can view server stats)
+		RESEND_VERIFICATION_EMAIL: BitFlag(49), // can resend verification emails (/auth/verify/resend)
 	};
 
 	any(permission: RightResolvable, checkOperator = true) {

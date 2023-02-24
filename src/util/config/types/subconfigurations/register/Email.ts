@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export class EmailConfiguration {
+export class RegistrationEmailConfiguration {
 	required: boolean = false;
 	allowlist: boolean = false;
 	blocklist: boolean = true;

@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "lambert-server";
 import { checkToken, Config, Rights } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
+import { NextFunction, Request, Response } from "express";
+import { HTTPError } from "lambert-server";
 
 export const NO_AUTHORIZATION_ROUTES = [
 	// Authentication routes
@@ -28,6 +28,9 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/auth/location-metadata",
 	"/auth/mfa/totp",
 	"/auth/mfa/webauthn",
+	"/auth/verify",
+	"/auth/forgot",
+	"/auth/reset",
 	// Routes with a seperate auth system
 	"/webhooks/",
 	// Public information endpoints
