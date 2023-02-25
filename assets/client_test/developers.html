@@ -14,22 +14,27 @@
 <body>
 	<div id="app-mount"></div>
 	<script>
+		FOSSCORD_HOST = location.hostname+":"+location.port;
+		if (location.protocol == "http:" && location.port == "80") { 
+		delete FOSSCORD_HOST; 
+		FOSSCORD_HOST = location.hostname; 
+		}
+		if (location.protocol === "https:" && location.port === "443") {
+		delete FOSSCORD_HOST; 
+		FOSSCORD_HOST = location.hostname; 
+		}
 		window.GLOBAL_ENV = {
 			API_VERSION: 9,
-			API_ENDPOINT: "/api",
-			WEBAPP_ENDPOINT: "",
-			CDN_HOST: `${location.host}`, // TODO: make this file auto populate from config?
+			API_ENDPOINT: "//"+FOSSCORD_HOST+"/api",
+			WEBAPP_ENDPOINT: "//"+FOSSCORD_HOST,
+			CDN_HOST: FOSSCORD_HOST,
 
-			BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
-			STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
-			MARKETING_ENDPOINT: "//discord.com",
+			BRAINTREE_KEY: "", // TODO replace with own.
+			STRIPE_KEY: "", // TODO replace with own.
+			MARKETING_ENDPOINT: "//"+FOSSCORD_HOST,
 			RELEASE_CHANNEL: "canary",
-			ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
+			ALGOLIA_KEY: "" // TODO replace with own.
 		};
-		GLOBAL_ENV.MEDIA_PROXY_ENDPOINT = location.protocol + "//" + GLOBAL_ENV.CDN_HOST;
-		// TODO: remote auth
-		// window.GLOBAL_ENV.REMOTE_AUTH_ENDPOINT = window.GLOBAL_ENV.GATEWAY_ENDPOINT.replace(/wss?:/, "");
-		localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
 		localStorage.setItem(
 			"DeveloperOptionsStore",
 			`{"trace":false,"canary":true,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
