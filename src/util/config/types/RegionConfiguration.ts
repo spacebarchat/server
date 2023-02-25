@@ -25,7 +25,7 @@ export class RegionConfiguration {
 		{
 			id: "fosscord",
 			name: "Fosscord",
-			endpoint: "127.0.0.1:3004",
+			endpoint: "localhost:3004",
 			vip: false,
 			custom: false,
 			deprecated: false,
