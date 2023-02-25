@@ -13,3 +13,5 @@
 | STORAGE_PROVIDER | "s3" or "file" | CDN storage provider                                            |
 | STORAGE_BUCKET   | string         | S3 bucket name                                                  |
 | STORAGE_REGION   | string         | S3 storage region                                               |
+| PUBLIC_IP        | string         | Public IP Address or Hostname for WebRTC                        |
+| WEBRTC_PORT_RANGE| string         | WebRTC Port range                                               |
