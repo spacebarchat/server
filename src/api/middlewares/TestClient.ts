@@ -47,8 +47,6 @@ export default function TestClient(app: Application) {
 		{ encoding: "utf-8" },
 	);
 
-	html = applyEnv(html); // update window.GLOBAL_ENV according to config
-
 	html = applyPlugins(html); // inject our plugins
 	app.use(
 		"/assets/plugins",
@@ -137,34 +135,6 @@ export default function TestClient(app: Application) {
 		return res.send(html);
 	});
 }
-
-// Apply gateway/cdn endpoint values from config to index.html.
-const applyEnv = (html: string): string => {
-	const config = Config.get();
-
-	const cdn = (
-		config.cdn.endpointClient ||
-		config.cdn.endpointPublic ||
-		process.env.CDN ||
-		""
-	).replace(/(https?)?(:\/\/?)/g, "");
-
-	const gateway =
-		config.gateway.endpointClient ||
-		config.gateway.endpointPublic ||
-		process.env.GATEWAY ||
-		"";
-
-	if (cdn) html = html.replace(/CDN_HOST: .+/, `CDN_HOST: \`${cdn}\`,`);
-
-	if (gateway)
-		html = html.replace(
-			/GATEWAY_ENDPOINT: .+/,
-			`GATEWAY_ENDPOINT: \`${gateway}\`,`,
-		);
-
-	return html;
-};
 
 // Injects inline, preload, and standard plugins into index.html.
 const applyPlugins = (html: string): string => {
