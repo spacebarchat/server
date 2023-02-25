@@ -19,7 +19,7 @@ router.post(
 		const config = Config.get();
 
 		if (
-			config.password_reset.requireCaptcha &&
+			config.passwordReset.requireCaptcha &&
 			config.security.captcha.enabled
 		) {
 			const { sitekey, service } = config.security.captcha;
