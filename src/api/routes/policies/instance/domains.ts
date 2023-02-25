@@ -25,11 +25,11 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const { cdn, gateway, api } = Config.get();
 
 	const IdentityForm = {
-		cdn: cdn.endpointPublic || process.env.CDN || "http://localhost:3001",
+		cdn: cdn.endpointPublic || process.env.CDN || "http://127.0.0.1:3001",
 		gateway:
 			gateway.endpointPublic ||
 			process.env.GATEWAY ||
-			"ws://localhost:3001",
+			"ws://127.0.0.1:3001",
 		defaultApiVersion: api.defaultVersion ?? 9,
 		apiEndpoint: api.endpointPublic ?? "/api",
 	};

@@ -19,7 +19,7 @@
 require("dotenv").config();
 const cluster = require("cluster");
 const WebSocket = require("ws");
-const endpoint = process.env.GATEWAY || "ws://localhost:3001";
+const endpoint = process.env.GATEWAY || "ws://127.0.0.1:3001";
 const connections = Number(process.env.CONNECTIONS) || 50;
 const token = process.env.TOKEN;
 var cores = 1;

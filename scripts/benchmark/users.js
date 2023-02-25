@@ -19,7 +19,7 @@
 require("dotenv").config();
 const fetch = require("node-fetch");
 const count = Number(process.env.COUNT) || 50;
-const endpoint = process.env.API || "http://localhost:3001";
+const endpoint = process.env.API || "http://127.0.0.1:3001";
 
 async function main() {
 	for (let i = 0; i < count; i++) {
