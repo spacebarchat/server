@@ -51,6 +51,7 @@
 		"@types/node": "^18.7.20",
 		"@types/node-fetch": "^2.6.2",
 		"@types/node-os-utils": "^1.3.0",
+		"@types/nodemailer": "^6.4.7",
 		"@types/probe-image-size": "^7.2.0",
 		"@types/sharp": "^0.31.0",
 		"@types/ws": "^8.5.3",
@@ -95,6 +96,7 @@
 		"node-2fa": "^2.0.3",
 		"node-fetch": "^2.6.7",
 		"node-os-utils": "^1.3.7",
+		"nodemailer": "^6.9.0",
 		"picocolors": "^1.0.0",
 		"probe-image-size": "^7.2.3",
 		"proxy-agent": "^5.0.0",
@@ -115,6 +117,9 @@
 	"optionalDependencies": {
 		"erlpack": "^0.1.4",
 		"medooze-media-server": "^0.129.9",
+		"nodemailer-mailgun-transport": "^2.1.5",
+		"nodemailer-mailjet-transport": "github:n0script22/nodemailer-mailjet-transport",
+		"nodemailer-sendgrid-transport": "github:Maria-Golomb/nodemailer-sendgrid-transport",
 		"semantic-sdp": "^3.25.1",
 		"sqlite3": "^5.1.4"
 	}
