@@ -12,34 +12,42 @@
 	<script>
 		window.__OVERLAY__ = /overlay/.test(location.pathname);
 		window.__BILLING_STANDALONE__ = /^\/billing/.test(location.pathname);
+		FOSSCORD_HOST = location.hostname+":"+location.port;
+		if (location.protocol == "http:" && location.port == "80") { 
+		delete FOSSCORD_HOST; 
+		FOSSCORD_HOST = location.hostname; 
+		}
+		if (location.protocol === "https:" && location.port === "443") {
+		delete FOSSCORD_HOST; 
+		FOSSCORD_HOST = location.hostname; 
+		}
 		window.GLOBAL_ENV = {
-			API_ENDPOINT: "/api",
+			API_ENDPOINT: "//"+FOSSCORD_HOST+"/api",
 			API_VERSION: 9,
-			GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}${location.host}`,
-			WEBAPP_ENDPOINT: "",
-			CDN_HOST: `${location.host}`,
-			ASSET_ENDPOINT: "",
-			MEDIA_PROXY_ENDPOINT: `${location.host}/media`,
-			WIDGET_ENDPOINT: `//${location.host}/widget`,
-			INVITE_HOST: `${location.host}/invite`,
-			GUILD_TEMPLATE_HOST: "${location.host}/template",
-			GIFT_CODE_HOST: `${location.host}/gift`,
-			RELEASE_CHANNEL: "canary",
-			MARKETING_ENDPOINT: "//discord.com",
-			BRAINTREE_KEY: "production_5st77rrc_49pp2rp4phym7387",
-			STRIPE_KEY: "pk_live_CUQtlpQUF0vufWpnpUmQvcdi",
-			NETWORKING_ENDPOINT: "//router.discordapp.net",
-			RTC_LATENCY_ENDPOINT: `//${location.host}/rtc`,
-			ACTIVITY_APPLICATION_HOST: "discordsays.com",
+			GATEWAY_ENDPOINT: `${location.protocol === "https:" ? "wss://" : "ws://"}`+FOSSCORD_HOST,
+			WEBAPP_ENDPOINT: "//"+FOSSCORD_HOST,
+			CDN_HOST: FOSSCORD_HOST,
+			ASSET_ENDPOINT: "//"+FOSSCORD_HOST,
+			MEDIA_PROXY_ENDPOINT: "//"+FOSSCORD_HOST+"/media", // TODO: Fix and add actual media proxy endpoint, does it even exist in fosscord yet? 02/23/2023 MM/DD/YYYY
+			WIDGET_ENDPOINT: "//"+FOSSCORD_HOST+"/widget", // TODO: Same for Media and widget
+			INVITE_HOST: FOSSCORD_HOST+"/invite",
+			GUILD_TEMPLATE_HOST: FOSSCORD_HOST+"/new",
+			GIFT_CODE_HOST: FOSSCORD_HOST+"/gift", // TODO: Fake FOSSCORD Premium
+			RELEASE_CHANNEL: "canary", // i wish this was "fosscord" instead of "canary" or other.
+			MARKETING_ENDPOINT: "//"+FOSSCORD_HOST,
+			BRAINTREE_KEY: "", // TODO replace with own.
+			STRIPE_KEY: "", // TODO replace with own.
+			NETWORKING_ENDPOINT: "//"+FOSSCORD_HOST+"/router", // TODO: Same for MEDIA, WIDGET, and NETWORK
+			RTC_LATENCY_ENDPOINT: "//"+FOSSCORD_HOST+"/rtc", // TODO: Same as above + RTC
+			ACTIVITY_APPLICATION_HOST: FOSSCORD_HOST+"/says", // Simon says: It's not discordsays, its fosscordsays
 			PROJECT_ENV: "production",
-			REMOTE_AUTH_ENDPOINT: "//localhost:3020",
-			SENTRY_TAGS: { buildId: "d5b97e42230075cb9634c419c0cf4d2f8f9ada53", buildType: "normal" },
-			MIGRATION_SOURCE_ORIGIN: `https://${location.host}`,
-			MIGRATION_DESTINATION_ORIGIN: `https://${location.host}`,
+			REMOTE_AUTH_ENDPOINT: "//"+FOSSCORD_HOST+"/rag", // TODO: RAG is REMOTE_AUTH_ENDPOINT in short, but same as RTC and NETWORKING_ENDPOINT
+			SENTRY_TAGS: { buildId: "d5b97e42230075cb9634c419c0cf4d2f8f9ada53", buildType: "normal" }, // Fosscord commit id instead? 
+			MIGRATION_SOURCE_ORIGIN: location.protocol+"//"+FOSSCORD_HOST, 
+			MIGRATION_DESTINATION_ORIGIN: location.protocol+"//"+FOSSCORD_HOST,
 			HTML_TIMESTAMP: Date.now(),
-			ALGOLIA_KEY: "aca0d7082e4e63af5ba5917d5e96bed0"
+			ALGOLIA_KEY: "" // TODO replace with own.
 		};
-		window.localStorage.setItem("gatewayURL", window.GLOBAL_ENV.GATEWAY_ENDPOINT);
 		window.localStorage.setItem(
 			"DeveloperOptionsStore",
 			`{"trace":false,"canary":true,"logGatewayEvents":true,"logOverlayEvents":true,"logAnalyticsEvents":true,"sourceMapsEnabled":false,"axeEnabled":false}`
