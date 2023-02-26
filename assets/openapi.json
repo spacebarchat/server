@@ -1402,7 +1402,9 @@
                     },
                     "members": {
                         "type": "array",
-                        "items": {}
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     "thread_member_lists": {
                         "type": "array",
@@ -1562,6 +1564,8 @@
                         "type": "string"
                     },
                     "discriminator": {
+                        "minLength": 4,
+                        "maxLength": 4,
                         "type": "string"
                     }
                 }
@@ -1739,9 +1743,6 @@
             "UserSettingsSchema": {
                 "type": "object",
                 "properties": {
-                    "index": {
-                        "type": "string"
-                    },
                     "afk_timeout": {
                         "type": "integer"
                     },
@@ -2472,6 +2473,195 @@
                 "required": [
                     "code",
                     "ticket"
+                ]
+            },
+            "SMTPConnection.CustomAuthenticationResponse": {
+                "type": "object",
+                "properties": {
+                    "command": {
+                        "type": "string"
+                    },
+                    "response": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "text": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "command",
+                    "response",
+                    "status",
+                    "text"
+                ]
+            },
+            "ForgotPasswordSchema": {
+                "type": "object",
+                "properties": {
+                    "login": {
+                        "type": "string"
+                    },
+                    "captcha_key": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "login"
+                ]
+            },
+            "MessageEditSchema": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "type": "object",
+                        "properties": {
+                            "filename": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "filename"
+                        ]
+                    },
+                    "embed": {
+                        "$ref": "#/components/schemas/Embed"
+                    },
+                    "flags": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "nonce": {
+                        "type": "string"
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "tts": {
+                        "type": "boolean"
+                    },
+                    "embeds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Embed"
+                        }
+                    },
+                    "allowed_mentions": {
+                        "type": "object",
+                        "properties": {
+                            "parse": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "roles": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "replied_user": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "message_reference": {
+                        "type": "object",
+                        "properties": {
+                            "message_id": {
+                                "type": "string"
+                            },
+                            "channel_id": {
+                                "type": "string"
+                            },
+                            "guild_id": {
+                                "type": "string"
+                            },
+                            "fail_if_not_exists": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "channel_id",
+                            "message_id"
+                        ]
+                    },
+                    "payload_json": {
+                        "type": "string"
+                    },
+                    "attachments": {
+                        "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "filename": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "filename",
+                                "id"
+                            ]
+                        }
+                    },
+                    "sticker_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "PasswordResetSchema": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "password",
+                    "token"
+                ]
+            },
+            "VerifyEmailSchema": {
+                "type": "object",
+                "properties": {
+                    "captcha_key": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "token"
                 ]
             }
         }
@@ -6301,7 +6491,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/MessageCreateSchema"
+                                "$ref": "#/components/schemas/MessageEditSchema"
                             }
                         }
                     }
@@ -7129,6 +7319,65 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/WebAuthnTotpSchema"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/auth/verify/resend/": {
+            "post": {
+                "x-right-required": "RESEND_VERIFICATION_EMAIL",
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/auth/verify/": {
+            "post": {
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VerifyEmailSchema"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/auth/reset/": {
+            "post": {
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PasswordResetSchema"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/auth/forgot/": {
+            "post": {
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ForgotPasswordSchema"
                             }
                         }
                     }
