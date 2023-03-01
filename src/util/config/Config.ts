@@ -19,7 +19,6 @@
 import {
 	ApiConfiguration,
 	CdnConfiguration,
-	ClientConfiguration,
 	DefaultsConfiguration,
 	EmailConfiguration,
 	EndpointConfiguration,
@@ -55,7 +54,6 @@ export class ConfigValue {
 	rabbitmq: RabbitMQConfiguration = new RabbitMQConfiguration();
 	kafka: KafkaConfiguration = new KafkaConfiguration();
 	templates: TemplateConfiguration = new TemplateConfiguration();
-	client: ClientConfiguration = new ClientConfiguration();
 	metrics: MetricsConfiguration = new MetricsConfiguration();
 	sentry: SentryConfiguration = new SentryConfiguration();
 	defaults: DefaultsConfiguration = new DefaultsConfiguration();
