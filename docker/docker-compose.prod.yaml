@@ -11,6 +11,7 @@ services:
       - fosscord-storage:/exec/persistent/storage
     environment:
       DATABASE: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}
+      THREADS: ${THREADS}
       STORAGE_PROVIDER: "file"
       STORAGE_LOCATION: "/exec/persistent/storage/"
       PORT: "3001"
