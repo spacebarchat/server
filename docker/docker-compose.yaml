@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  fosscord:
+    build: .
+    ports:
+      - "3001:3001"
+    volumes:
+      - fosscord-database:/exec/persistent/database/
+      - fosscord-storage:/exec/persistent/storage
+    environment:
+      DATABASE: "/exec/persistent/database/database.db"
+      STORAGE_PROVIDER: "file"
+      STORAGE_LOCATION: "/exec/persistent/storage/"
+      PORT: "3001"
+volumes:
+  fosscord-database:
+  fosscord-storage:
