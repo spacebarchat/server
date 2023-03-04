@@ -1,0 +1,56 @@
+version: "3.9"
+services:
+  fosscord:
+    build:
+      context: .
+      dockerfile: Dockerfile-prod
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      - fosscord-storage:/exec/persistent/storage
+    environment:
+      DATABASE: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}
+      STORAGE_PROVIDER: "file"
+      STORAGE_LOCATION: "/exec/persistent/storage/"
+      PORT: "3001"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DATABASE} -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    restart: always
+    environment:
+      - NGINX_HOST=${NGINX_HOST}
+      - MAIL_CERTBOT=${MAIL_CERTBOT}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - nginx-ssl:/etc/letsencrypt/live/
+      - nginx-site:/etc/nginx/sites-enabled/
+    depends_on: 
+      - fosscord
+volumes:
+  fosscord-storage:
+  db:
+  nginx-ssl:
+  nginx-site:
