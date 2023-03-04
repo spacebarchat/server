@@ -7,8 +7,6 @@ services:
     restart: always
     ports:
       - "3001:3001"
-    volumes:
-      - fosscord-storage:/exec/persistent/storage
     environment:
       DATABASE: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}
       STORAGE_PROVIDER: s3
