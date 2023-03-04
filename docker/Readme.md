@@ -12,7 +12,6 @@ Set the following environment variables in your environment (adapt POSTGRES_USER
 `export POSTGRES_USER=postgres`
 `export POSTGRES_PASSWORD=postgres`
 `export POSTGRES_DATABASE=fosscord`
-`export THREADS=1`
 
 This clones the master banch into a docker builder and run a build before starting it.
 To run it you need docker and docker-compose
