@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  fosscord:
+    build:
+      context: .
+      dockerfile: Dockerfile-prod
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      - fosscord-storage:/exec/persistent/storage
+    environment:
+      DATABASE: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}
+      STORAGE_PROVIDER: s3
+      STORAGE_LOCATION: ${S3_BUCKET}
+      STORAGE_BUCKET: ${S3_BUCKET_NAME}
+      STORAGE_REGION: ${S3_BUCKET_REGION}
+      PORT: "3001"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DATABASE} -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  db:
