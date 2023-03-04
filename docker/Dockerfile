@@ -10,11 +10,9 @@ From node:16-alpine
 EXPOSE 3001
 WORKDIR exec
 RUN mkdir -p persistent/database ; mkdir -p persistent/storage
-RUN apk add --update git
-RUN adduser -D fosscord
-RUN npm install sqlite3 --save
+RUN apk add --update git ; npm install sqlite3 --save
 COPY --from=builder /devel/fosscord-server/ . 
-RUN chown fosscord:fosscord -R .
+RUN adduser -D fosscord ; chown fosscord:fosscord -R .
 
 USER fosscord
 
