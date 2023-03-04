@@ -7,7 +7,7 @@ To run it you need docker and docker-compose
 
 # prod environment
 
-Set the following environment variables in your environment (adapt POSTGRES_USER, POSTGRES_PASSWORD and THREADS (but with more then 1 i got an error at the moment)):
+Set the following environment variables in your environment (adapt POSTGRES_USER, POSTGRES_PASSWORD):
 
 `export POSTGRES_USER=postgres`
 `export POSTGRES_PASSWORD=postgres`
