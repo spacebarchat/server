@@ -27,10 +27,22 @@ jobs:
  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push
+        name: Build and push with postgressql
         uses: docker/build-push-action@v4
         with:
           context: "{{defaultContext}}:docker"
           file: Dockerfile-prod
           push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: user/fosscord:latest-postgressql
+      -
+        name: Build and push with sqlite
+        uses: docker/build-push-action@v4
+        with:
+          context: "{{defaultContext}}:docker"
+          file: Dockerfile
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: user/fosscord:latest-sqlite
