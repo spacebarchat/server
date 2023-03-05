@@ -1,0 +1,21 @@
+name: Build fosscord docker image
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: cd docker ; docker build . --file Dockerfile --tag fosscord:latest-sqlite
+    - name: Build the Docker image
+      run: cd docker ; docker build . --file docker-compose.prod.yaml --tag fosscord:latest-postgressql
+    - name: Build the Docker image
+      run: cd docker ; docker build . --file docker-compose.prod.s3.yaml --tag fosscord:latest-s3
