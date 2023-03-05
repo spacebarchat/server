@@ -3,3 +3,4 @@ dist
 node_modules
 .github
 .vscode
+docker
