@@ -13,9 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
+    - name: Build the Docker image for dev environment
       run: cd docker ; docker build . --file Dockerfile --tag fosscord:latest-sqlite
-    - name: Build the Docker image
-      run: cd docker ; docker build . --file docker-compose.prod.yaml --tag fosscord:latest-postgressql
-    - name: Build the Docker image
-      run: cd docker ; docker build . --file docker-compose.prod.s3.yaml --tag fosscord:latest-s3
+    - name: Build the Docker image for production environment with postgressql
+      run: cd docker ; docker build . --file Dockerfile-prod --tag fosscord:latest-postgressql
