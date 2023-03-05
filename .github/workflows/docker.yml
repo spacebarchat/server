@@ -30,5 +30,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v4
         with:
+          context: "{{defaultContext}}:docker"
+          file: Dockerfile-prod
           push: false
-          tags: user/app:latest
+          tags: user/fosscord:latest-postgressql
