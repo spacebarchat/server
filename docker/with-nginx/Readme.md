@@ -1,4 +1,4 @@
-# fosscord-docker-with-nginx
+# fosscord-docker-with-nginx this is in experimental state!
 
 
 # prod environment with local file storage
