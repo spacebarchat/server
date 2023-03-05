@@ -46,6 +46,7 @@ services:
       - "443:443"
     volumes:
       - nginx-ssl:/etc/letsencrypt/live/
+      - nginx-ssl-archive:/etc/letsencrypt/archive
       - nginx-site:/etc/nginx/sites-enabled/
     depends_on: 
       - fosscord
@@ -54,3 +55,4 @@ volumes:
   db:
   nginx-ssl:
   nginx-site:
+  nginx-ssl-archive:
