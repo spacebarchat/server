@@ -10,9 +10,9 @@ services:
     environment:
       DATABASE: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}
       STORAGE_PROVIDER: s3
-      STORAGE_LOCATION: ${S3_BUCKET}
-      STORAGE_BUCKET: ${S3_BUCKET_NAME}
-      STORAGE_REGION: ${S3_BUCKET_REGION}
+      STORAGE_LOCATION: ${S3_BUCKET:?err}
+      STORAGE_BUCKET: ${S3_BUCKET_NAME:?err}
+      STORAGE_REGION: ${S3_BUCKET_REGION:?err}
       PORT: "3001"
     depends_on:
       db:

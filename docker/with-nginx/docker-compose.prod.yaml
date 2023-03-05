@@ -21,9 +21,9 @@ services:
     image: postgres:15-alpine
     restart: always
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DATABASE}
+      - POSTGRES_USER=${POSTGRES_USER:?err}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?err}
+      - POSTGRES_DB=${POSTGRES_DATABASE:?err}
     ports:
       - '5432:5432'
     volumes: 
@@ -39,8 +39,8 @@ services:
       dockerfile: Dockerfile-nginx
     restart: always
     environment:
-      - NGINX_HOST=${NGINX_HOST}
-      - MAIL_CERTBOT=${MAIL_CERTBOT}
+      - NGINX_HOST=${NGINX_HOST:?err}
+      - MAIL_CERTBOT=${MAIL_CERTBOT:?err}
     ports:
       - "80:80"
       - "443:443"
