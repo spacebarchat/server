@@ -33,8 +33,6 @@ jobs:
           context: "{{defaultContext}}:docker"
           file: Dockerfile-prod
           push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           tags: user/fosscord:latest-postgressql
       -
         name: Build and push with sqlite
@@ -43,6 +41,4 @@ jobs:
           context: "{{defaultContext}}:docker"
           file: Dockerfile
           push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           tags: user/fosscord:latest-sqlite
