@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-prod
-    restart: always
+    restart: unless-stopped
     ports:
       - "3001:3001"
     volumes:
@@ -19,7 +19,7 @@ services:
         condition: service_healthy
   db:
     image: postgres:15-alpine
-    restart: always
+    restart: unless-stopped
     environment:
       - POSTGRES_USER=${POSTGRES_USER:?err}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?err}
@@ -37,7 +37,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-nginx
-    restart: always
+    restart: unless-stopped
     environment:
       - NGINX_HOST=${NGINX_HOST:?err}
       - MAIL_CERTBOT=${MAIL_CERTBOT:?err}
