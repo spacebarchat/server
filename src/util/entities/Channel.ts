@@ -482,3 +482,10 @@ export enum ChannelPermissionOverwriteType {
 	member = 1,
 	group = 2,
 }
+
+export interface DMChannel extends Omit<Channel, "type" | "recipients"> {
+	type: ChannelType.DM | ChannelType.GROUP_DM;
+	recipients: Recipient[];
+
+	// TODO: probably more props
+}

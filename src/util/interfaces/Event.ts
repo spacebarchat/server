@@ -40,6 +40,9 @@ import {
 	UserSettings,
 	IReadyGuildDTO,
 	ReadState,
+	UserPrivate,
+	ReadyUserGuildSettingsEntries,
+	ReadyPrivateChannel,
 } from "@fosscord/util";
 
 export interface Event {
@@ -68,20 +71,8 @@ export interface PublicRelationship {
 
 export interface ReadyEventData {
 	v: number;
-	user: PublicUser & {
-		mobile: boolean;
-		desktop: boolean;
-		email: string | undefined;
-		flags: string;
-		mfa_enabled: boolean;
-		nsfw_allowed: boolean;
-		phone: string | undefined;
-		premium: boolean;
-		premium_type: number;
-		verified: boolean;
-		bot: boolean;
-	};
-	private_channels: Channel[]; // this will be empty for bots
+	user: UserPrivate;
+	private_channels: ReadyPrivateChannel[]; // this will be empty for bots
 	session_id: string; // resuming
 	guilds: IReadyGuildDTO[];
 	analytics_token?: string;
@@ -115,7 +106,7 @@ export interface ReadyEventData {
 		version: number;
 	};
 	user_guild_settings?: {
-		entries: UserGuildSettings[];
+		entries: ReadyUserGuildSettingsEntries[];
 		version: number;
 		partial: boolean;
 	};
@@ -127,6 +118,16 @@ export interface ReadyEventData {
 	// probably all users who the user is in contact with
 	users?: PublicUser[];
 	sessions: unknown[];
+	api_code_version: number;
+	tutorial: number | null;
+	resume_gateway_url: string;
+	session_type: string;
+	required_action?:
+		| "REQUIRE_VERIFIED_EMAIL"
+		| "REQUIRE_VERIFIED_PHONE"
+		| "REQUIRE_CAPTCHA" // TODO: allow these to be triggered
+		| "TOS_UPDATE_ACKNOWLEDGMENT"
+		| "AGREEMENTS";
 }
 
 export interface ReadyEvent extends Event {

@@ -16,7 +16,46 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Channel, Emoji, Guild, Member, Role, Sticker } from "../entities";
+import {
+	Channel,
+	ChannelOverride,
+	ChannelType,
+	Emoji,
+	Guild,
+	Member,
+	PublicUser,
+	Role,
+	Sticker,
+	UserGuildSettings,
+} from "../entities";
+
+// TODO: this is not the best place for this type
+export type ReadyUserGuildSettingsEntries = Omit<
+	UserGuildSettings,
+	"channel_overrides"
+> & {
+	channel_overrides: (ChannelOverride & { channel_id: string })[];
+};
+
+// TODO: probably should move somewhere else
+export interface ReadyPrivateChannel {
+	id: string;
+	flags: number;
+	is_spam: boolean;
+	last_message_id?: string;
+	recipients: PublicUser[];
+	type: ChannelType.DM | ChannelType.GROUP_DM;
+}
+
+export type GuildOrUnavailable =
+	| { id: string; unavailable: boolean }
+	| (Guild & { joined_at?: Date; unavailable: boolean });
+
+const guildIsAvailable = (
+	guild: GuildOrUnavailable,
+): guild is Guild & { joined_at: Date; unavailable: false } => {
+	return guild.unavailable == false;
+};
 
 export interface IReadyGuildDTO {
 	application_command_counts?: { 1: number; 2: number; 3: number }; // ????????????
@@ -64,6 +103,8 @@ export interface IReadyGuildDTO {
 	stickers: Sticker[];
 	threads: unknown[];
 	version: string;
+	guild_hashes: unknown;
+	unavailable: boolean;
 }
 
 export class ReadyGuildDTO implements IReadyGuildDTO {
@@ -112,8 +153,17 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 	stickers: Sticker[];
 	threads: unknown[];
 	version: string;
+	guild_hashes: unknown;
+	unavailable: boolean;
+	joined_at: Date;
 
-	constructor(guild: Guild) {
+	constructor(guild: GuildOrUnavailable) {
+		if (!guildIsAvailable(guild)) {
+			this.id = guild.id;
+			this.unavailable = true;
+			return;
+		}
+
 		this.application_command_counts = {
 			1: 5,
 			2: 2,
@@ -163,6 +213,8 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 		this.stickers = guild.stickers;
 		this.threads = [];
 		this.version = "1"; // ??????
+		this.guild_hashes = {};
+		this.joined_at = guild.joined_at;
 	}
 
 	toJSON() {

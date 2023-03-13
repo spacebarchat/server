@@ -280,6 +280,15 @@ export class User extends BaseClass {
 		return user as PublicUser;
 	}
 
+	toPrivateUser() {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const user: any = {};
+		PrivateUserProjection.forEach((x) => {
+			user[x] = this[x];
+		});
+		return user as UserPrivate;
+	}
+
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {
 		return await User.findOneOrFail({
 			where: { id: user_id },
