@@ -1,23 +1,23 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
-	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-	
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
-	
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+ * Copyright (C) 2023 Fosscord and Fosscord Contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 import { DataSource } from "typeorm";
-import { yellow, green, red } from "picocolors";
+import { green, red, yellow } from "picocolors";
 import { Migration } from "../entities/Migration";
 import { ConfigEntity } from "../entities/Config";
 import { config } from "dotenv";
@@ -50,7 +50,7 @@ const DataSourceOptions = new DataSource({
 	database: isSqlite ? dbConnectionString : undefined,
 	entities: [path.join(__dirname, "..", "entities", "*.js")],
 	synchronize: !!process.env.DB_SYNC,
-	logging: false,
+	logging: !!process.env.DB_LOG,
 	bigNumberStrings: false,
 	supportBigNumbers: true,
 	name: "default",

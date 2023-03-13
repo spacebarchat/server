@@ -1,0 +1,10 @@
+<component name="CopyrightManager">
+  <settings default="Fosscord">
+    <module2copyright>
+      <element module="Project Files" copyright="Fosscord" />
+    </module2copyright>
+    <LanguageOptions name="JavaScript">
+      <option name="fileTypeOverride" value="3" />
+    </LanguageOptions>
+  </settings>
+</component>

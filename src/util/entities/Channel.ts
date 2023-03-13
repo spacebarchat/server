@@ -1,20 +1,20 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
-	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-	
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
-	
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+ * Copyright (C) 2023 Fosscord and Fosscord Contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 import {
 	Column,
@@ -32,9 +32,9 @@ import {
 	containsAll,
 	emitEvent,
 	getPermission,
+	InvisibleCharacters,
 	Snowflake,
 	trimSpecial,
-	InvisibleCharacters,
 } from "../util";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import { Recipient } from "./Recipient";
@@ -193,6 +193,9 @@ export class Channel extends BaseClass {
 	default_thread_rate_limit_per_user: number = 0;
 
 	// TODO: DM channel
+	@Column({ default: false })
+	indexable: boolean;
+
 	static async createChannel(
 		channel: Partial<Channel>,
 		user_id: string = "0",
@@ -325,11 +328,11 @@ export class Channel extends BaseClass {
 		// TODO: check config for max number of recipients
 		/** if you want to disallow note to self channels, uncomment the conditional below
 
-		const otherRecipientsUsers = await User.find({ where: recipients.map((x) => ({ id: x })) });
-		if (otherRecipientsUsers.length !== recipients.length) {
+         const otherRecipientsUsers = await User.find({ where: recipients.map((x) => ({ id: x })) });
+         if (otherRecipientsUsers.length !== recipients.length) {
 			throw new HTTPError("Recipient/s not found");
 		}
-		**/
+         **/
 
 		const type =
 			recipients.length > 1 ? ChannelType.GROUP_DM : ChannelType.DM;

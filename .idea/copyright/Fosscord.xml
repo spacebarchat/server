@@ -1,0 +1,8 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="allowReplaceRegexp" value="Fosscord: A FOSS" />
+    <option name="keyword" value="(Copyright|@fc-license-skip)" />
+    <option name="notice" value="Fosscord: A FOSS re-implementation and extension of the Discord.com backend.&#10;Copyright (C) &amp;#36;originalComment.match(&quot;Copyright \(c\) (\d+)&quot;, 1, &quot;-&quot;, &quot;&amp;#36;today.year&quot;)&amp;#36;today.year Fosscord and Fosscord Contributors&#10;&#10;This program is free software: you can redistribute it and/or modify&#10;it under the terms of the GNU Affero General Public License as published&#10;by the Free Software Foundation, either version 3 of the License, or&#10;(at your option) any later version.&#10;&#10;This program is distributed in the hope that it will be useful,&#10;but WITHOUT ANY WARRANTY; without even the implied warranty of&#10;MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&#10;GNU Affero General Public License for more details.&#10;&#10;You should have received a copy of the GNU Affero General Public License&#10;along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;." />
+    <option name="myName" value="Fosscord" />
+  </copyright>
+</component>
