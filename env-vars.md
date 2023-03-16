@@ -9,7 +9,7 @@
 | WS_LOGEVENTS     | boolean        | If set, log websocket events from gateway                       |
 | CDN              | string         | Lowest priority value for public CDN annoucements               |
 | GATEWAY          | string         | Lowest priority value for public gateway annoucements           |
-| STORAGE_LOCATION | string         | CDN storage location. File path or S3 bucktet                   |
+| STORAGE_LOCATION | string         | CDN storage location. File path or S3 bucket           |
 | STORAGE_PROVIDER | "s3" or "file" | CDN storage provider                                            |
 | STORAGE_BUCKET   | string         | S3 bucket name                                                  |
 | STORAGE_REGION   | string         | S3 storage region                                               |
