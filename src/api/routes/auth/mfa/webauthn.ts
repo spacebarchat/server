@@ -54,7 +54,8 @@ router.post(
 			where: {
 				totp_last_ticket: ticket,
 			},
-			select: ["id", "settings"],
+			select: ["id"],
+			relations: ["settings"],
 		});
 
 		const ret = await verifyWebAuthnToken(ticket);

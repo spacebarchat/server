@@ -89,11 +89,11 @@ router.post(
 				"id",
 				"disabled",
 				"deleted",
-				"settings",
 				"totp_secret",
 				"mfa_enabled",
 				"username",
 			],
+			relations: ["settings"],
 		});
 
 		if (isGenerateSchema(req.body)) {

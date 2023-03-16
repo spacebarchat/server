@@ -72,14 +72,13 @@ router.post(
 				"id",
 				"disabled",
 				"deleted",
-				"settings",
 				"totp_secret",
 				"mfa_enabled",
 				"webauthn_enabled",
 				"security_keys",
 				"verified",
 			],
-			relations: ["security_keys"],
+			relations: ["security_keys", "settings"],
 		}).catch(() => {
 			throw FieldErrors({
 				login: {
@@ -187,7 +186,7 @@ router.post(
 		// Discord header is just the user id as string, which is not possible with npm-jsonwebtoken package
 		// https://user-images.githubusercontent.com/6506416/81051916-dd8c9900-8ec2-11ea-8794-daf12d6f31f0.png
 
-		res.json({ token, settings: user.settings });
+		res.json({ token, settings: { ...user.settings, index: undefined } });
 	},
 );
 
