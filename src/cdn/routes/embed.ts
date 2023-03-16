@@ -23,12 +23,12 @@ import { HTTPError } from "lambert-server";
 import { join } from "path";
 
 const defaultAvatarHashMap = new Map([
-	["0", "1f0bfc0865d324c2587920a7d80c609b"],
-	["1", "c09a43a372ba81e3018c3151d4ed4773"],
-	["2", "7c8f476123d28d103efe381543274c25"],
-	["3", "6f26ddd1bf59740c536d2274bb834a05"],
-	["4", "3c6ccb83716d1e4fb91d3082f6b21d77"],
-	["5", "4c1b599b1ef5b9f1874fdb9933f3e03b"],
+	["0", "823a3de61c4dc2415cc4dbc38fca4299"],
+	["1", "e56a89224be0b2b1f7c04eca975be468"],
+	["2", "0c8138dcc0dfe2689cdd73f7952c2475"],
+	["3", "5ac2728593bb455250d11b848a0c36c6"],
+	["4", "addd2f3268df46459e1d6012ad8e75bd"],
+	["5", "c4e0c8300fa491d94acfd2a1fb26cea8"],
 ]);
 
 const router = Router();
