@@ -36,9 +36,17 @@ if (!process.env) {
 const dbConnectionString =
 	process.env.DATABASE || path.join(process.cwd(), "database.db");
 
-const DatabaseType = dbConnectionString.includes("://")
+let DatabaseType = dbConnectionString.includes("://")
 	? dbConnectionString.split(":")[0]?.replace("+srv", "")
 	: "sqlite";
+
+if (DatabaseType === "sqlite") {
+	try {
+		require("better-sqlite3");
+		DatabaseType = "better-sqlite3";
+		// eslint-disable-next-line no-empty
+	} catch (error) {}
+}
 const isSqlite = DatabaseType.includes("sqlite");
 
 const DataSourceOptions = new DataSource({
@@ -55,6 +63,7 @@ const DataSourceOptions = new DataSource({
 	supportBigNumbers: true,
 	name: "default",
 	migrations: [path.join(__dirname, "..", "migration", DatabaseType, "*.js")],
+	cache: true,
 });
 
 // Gets the existing database connection
@@ -77,7 +86,13 @@ export async function initDatabase(): Promise<DataSource> {
 	}
 
 	if (!process.env.DB_SYNC) {
-		const supported = ["mysql", "mariadb", "postgres", "sqlite"];
+		const supported = [
+			"mysql",
+			"mariadb",
+			"postgres",
+			"sqlite",
+			"better-sqlite3",
+		];
 		if (!supported.includes(DatabaseType)) {
 			console.log(
 				"[Database]" +
