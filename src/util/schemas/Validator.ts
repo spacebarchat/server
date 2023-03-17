@@ -43,7 +43,7 @@ export const ajv = new Ajv({
 	allowUnionTypes: true,
 });
 
-addFormats(ajv);
+addFormats(ajv as never);
 
 export function validateSchema<G extends object>(schema: string, data: G): G {
 	const valid = ajv.validate(schema, normalizeBody(data));
