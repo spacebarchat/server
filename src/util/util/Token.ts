@@ -19,6 +19,7 @@
 import jwt, { VerifyOptions } from "jsonwebtoken";
 import { Config } from "./Config";
 import { User } from "../entities";
+import { KeyObject } from "crypto";
 
 export const JWTOptions: VerifyOptions = { algorithms: ["HS256"] };
 
@@ -62,7 +63,7 @@ async function checkEmailToken(
 
 export function checkToken(
 	token: string,
-	jwtSecret: string,
+	jwtSecret: string | KeyObject,
 	isEmailVerification = false,
 ): Promise<UserTokenData> {
 	return new Promise((res, rej) => {
