@@ -57,13 +57,14 @@ export async function initTranslation(router: Router) {
 	});
 
 	router.use((req, res, next) => {
+		let lng = "en";
+		if (req.headers["accept-language"]) {
+			lng = req.headers["accept-language"].split(",")[0];
+		}
+		req.language = lng;
+
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		req.t = (key: string | string[], options?: any) => {
-			let lng = "en";
-			if (req.headers["accept-language"]) {
-				lng = req.headers["accept-language"].split(",")[0];
-			}
-			req.language = lng;
 			return i18next.t(key, {
 				...options,
 				lng,
