@@ -63,7 +63,6 @@ const DataSourceOptions = new DataSource({
 	supportBigNumbers: true,
 	name: "default",
 	migrations: [path.join(__dirname, "..", "migration", DatabaseType, "*.js")],
-	cache: true,
 });
 
 // Gets the existing database connection
