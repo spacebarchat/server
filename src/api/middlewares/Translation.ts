@@ -18,10 +18,19 @@
 
 import fs from "fs";
 import path from "path";
-import i18next from "i18next";
-import i18nextMiddleware from "i18next-http-middleware";
+import i18next, { TFunction } from "i18next";
 import i18nextBackend from "i18next-fs-backend";
 import { Router } from "express";
+
+declare global {
+	// eslint-disable-next-line @typescript-eslint/no-namespace
+	namespace Express {
+		interface Request {
+			t: TFunction;
+			language?: string;
+		}
+	}
+}
 
 const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "assets");
 
@@ -34,21 +43,32 @@ export async function initTranslation(router: Router) {
 		.filter((x) => x.endsWith(".json"))
 		.map((x) => x.slice(0, x.length - 5));
 
-	await i18next
-		.use(i18nextBackend)
-		.use(i18nextMiddleware.LanguageDetector)
-		.init({
-			preload: languages,
-			// debug: true,
-			fallbackLng: "en",
-			ns,
-			backend: {
-				loadPath:
-					path.join(ASSET_FOLDER_PATH, "locales") +
-					"/{{lng}}/{{ns}}.json",
-			},
-			load: "all",
-		});
+	await i18next.use(i18nextBackend).init({
+		preload: languages,
+		// debug: true,
+		fallbackLng: "en",
+		ns,
+		backend: {
+			loadPath:
+				path.join(ASSET_FOLDER_PATH, "locales") +
+				"/{{lng}}/{{ns}}.json",
+		},
+		load: "all",
+	});
 
-	router.use(i18nextMiddleware.handle(i18next, {}));
+	router.use((req, res, next) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		req.t = (key: string | string[], options?: any) => {
+			let lng = "en";
+			if (req.headers["accept-language"]) {
+				lng = req.headers["accept-language"].split(",")[0];
+			}
+			req.language = lng;
+			return i18next.t(key, {
+				...options,
+				lng,
+			});
+		};
+		next();
+	});
 }
