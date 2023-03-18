@@ -51,7 +51,7 @@ const DataSourceOptions = new DataSource({
 	database: isSqlite ? dbConnectionString : undefined,
 	entities: [path.join(__dirname, "..", "entities", "*.js")],
 	synchronize: !!process.env.DB_SYNC,
-	logging: false,
+	logging: process.env["DB_LOGGING"] === "true",
 	bigNumberStrings: false,
 	supportBigNumbers: true,
 	name: "default",
