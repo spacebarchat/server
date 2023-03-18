@@ -38,8 +38,11 @@ export class LocalCache extends Map<string, BaseEntityWithId> implements Cache {
 	}
 
 	set(key: string, value: BaseEntityWithId): this {
+		if (this.has(key)) {
+			this.update(key, value);
+			return this;
+		}
 		this.last_access.set(key, Date.now());
-		if (this.has(key)) this.update(key, value);
 		return super.set(key, value as never);
 	}
 
