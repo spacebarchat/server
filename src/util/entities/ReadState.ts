@@ -24,7 +24,7 @@ import {
 	ManyToOne,
 	RelationId,
 } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { Channel } from "./Channel";
 import { User } from "./User";
 
@@ -34,7 +34,7 @@ import { User } from "./User";
 
 @Entity("read_states")
 @Index(["channel_id", "user_id"], { unique: true })
-export class ReadState extends BaseClass {
+export class ReadState extends EntityCache {
 	@Column()
 	@RelationId((read_state: ReadState) => read_state.channel)
 	channel_id: string;

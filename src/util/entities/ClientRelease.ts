@@ -17,10 +17,10 @@
 */
 
 import { Column, Entity } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 
 @Entity("client_release")
-export class Release extends BaseClass {
+export class Release extends EntityCache {
 	@Column()
 	name: string;
 

@@ -17,11 +17,11 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { User } from "./User";
 
 @Entity("security_keys")
-export class SecurityKey extends BaseClass {
+export class SecurityKey extends EntityCache {
 	@Column({ nullable: true })
 	@RelationId((key: SecurityKey) => key.user)
 	user_id: string;

@@ -24,12 +24,12 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { TeamMember } from "./TeamMember";
 import { User } from "./User";
 
 @Entity("teams")
-export class Team extends BaseClass {
+export class Team extends EntityCache {
 	@Column({ nullable: true })
 	icon?: string;
 

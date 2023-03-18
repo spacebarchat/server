@@ -34,7 +34,7 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
@@ -70,7 +70,7 @@ export enum MessageType {
 
 @Entity("messages")
 @Index(["channel_id", "id"], { unique: true })
-export class Message extends BaseClass {
+export class Message extends EntityCache {
 	@Column({ nullable: true })
 	@RelationId((message: Message) => message.channel)
 	@Index()

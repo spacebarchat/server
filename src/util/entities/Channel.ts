@@ -24,7 +24,7 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { Guild } from "./Guild";
 import { PublicUserProjection, User } from "./User";
 import { HTTPError } from "lambert-server";
@@ -70,7 +70,7 @@ export enum ChannelType {
 }
 
 @Entity("channels")
-export class Channel extends BaseClass {
+export class Channel extends EntityCache {
 	@Column()
 	created_at: Date;
 
