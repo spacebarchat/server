@@ -126,10 +126,6 @@ export class FosscordServer extends Server {
 		app.use("/api/v9", api);
 		app.use("/api", api); // allow unversioned requests
 
-		try {
-			require("./middlewares/TestClient").default(this.app);
-			// eslint-disable-next-line no-empty
-		} catch (error) {}
 		this.app.use(ErrorHandler);
 
 		Sentry.errorHandler(this.app);
