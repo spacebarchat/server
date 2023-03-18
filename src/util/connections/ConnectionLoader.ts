@@ -6,7 +6,7 @@ import { ConnectionConfig } from "./ConnectionConfig";
 import { ConnectionStore } from "./ConnectionStore";
 
 const root = "dist/connections";
-let connectionsLoaded = false;
+const connectionsLoaded = false;
 
 export class ConnectionLoader {
 	public static async loadConnections() {
@@ -22,7 +22,7 @@ export class ConnectionLoader {
 		});
 
 		dirs.forEach(async (x) => {
-			let modPath = path.resolve(path.join(root, x));
+			const modPath = path.resolve(path.join(root, x));
 			const mod = new (require(modPath).default)() as Connection;
 			ConnectionStore.connections.set(mod.id, mod);
 
@@ -58,7 +58,10 @@ export class ConnectionLoader {
 			);
 
 		await ConnectionConfig.set({
-			[id]: Object.assign(config, (ConnectionLoader.getConnectionConfig(id) || {}))
+			[id]: Object.assign(
+				config,
+				ConnectionLoader.getConnectionConfig(id) || {},
+			),
 		});
 	}
 }

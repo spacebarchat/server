@@ -54,7 +54,7 @@ function applyConfig(val: any) {
 }
 
 function pairsToConfig(pairs: ConnectionConfigEntity[]) {
-	let value: any = {};
+	const value: any = {};
 
 	pairs.forEach((p) => {
 		const keys = p.key.split("_");
