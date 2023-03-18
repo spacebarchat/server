@@ -87,7 +87,7 @@ export function checkToken(
 
 			const user = await User.findOne({
 				where: { id: decoded.id },
-				select: ["data", "bot", "disabled", "deleted", "rights"],
+				select: ["id", "data", "bot", "disabled", "deleted", "rights"],
 			});
 
 			if (!user) return rej("Invalid Token");

@@ -39,6 +39,7 @@ const TemplateGuildProjection: (keyof Guild)[] = [
 	"system_channel_id",
 	"system_channel_flags",
 	"icon",
+	"id",
 ];
 
 router.get("/", route({}), async (req: Request, res: Response) => {
