@@ -127,10 +127,10 @@ export async function initDatabase(): Promise<DataSource> {
 		// Manually insert every current migration to prevent this:
 		await Promise.all(
 			dbConnection.migrations.map((migration) =>
-				Migration.insert({
+				Migration.create({
 					name: migration.name,
 					timestamp: Date.now(),
-				}),
+				}).save(),
 			),
 		);
 	} else {
