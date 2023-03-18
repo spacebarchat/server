@@ -26,7 +26,7 @@ import {
 	Sentry,
 	WebAuthn,
 	ConnectionConfig,
-	ConnectionLoader
+	ConnectionLoader,
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";

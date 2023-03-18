@@ -53,7 +53,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	// Asset delivery
 	/\/guilds\/\d+\/widget\.(json|png)/,
 	// Connections
-	/\/connections\/\w+\/callback/
+	/\/connections\/\w+\/callback/,
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;
