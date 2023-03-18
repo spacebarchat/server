@@ -36,17 +36,10 @@ if (!process.env) {
 const dbConnectionString =
 	process.env.DATABASE || path.join(process.cwd(), "database.db");
 
-let DatabaseType = dbConnectionString.includes("://")
+const DatabaseType = dbConnectionString.includes("://")
 	? dbConnectionString.split(":")[0]?.replace("+srv", "")
-	: "sqlite";
+	: "better-sqlite";
 
-if (DatabaseType === "sqlite") {
-	try {
-		require("better-sqlite3");
-		DatabaseType = "better-sqlite3";
-		// eslint-disable-next-line no-empty
-	} catch (error) {}
-}
 const isSqlite = DatabaseType.includes("sqlite");
 
 const DataSourceOptions = new DataSource({
