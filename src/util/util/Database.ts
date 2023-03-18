@@ -38,7 +38,7 @@ const dbConnectionString =
 
 const DatabaseType = dbConnectionString.includes("://")
 	? dbConnectionString.split(":")[0]?.replace("+srv", "")
-	: "better-sqlite";
+	: "better-sqlite3";
 
 const isSqlite = DatabaseType.includes("sqlite");
 
