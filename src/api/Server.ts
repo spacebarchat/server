@@ -38,6 +38,15 @@ import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { initRateLimits } from "./middlewares/RateLimit";
 import { initTranslation } from "./middlewares/Translation";
 import { initInstance } from "./util/handlers/Instance";
+import express from "express";
+
+const PUBLIC_ASSETS_FOLDER = path.join(
+	__dirname,
+	"..",
+	"..",
+	"assets",
+	"public",
+);
 
 export type FosscordServerOptions = ServerOptions;
 
@@ -125,6 +134,8 @@ export class FosscordServer extends Server {
 		app.use("/api/v8", api);
 		app.use("/api/v9", api);
 		app.use("/api", api); // allow unversioned requests
+
+		app.get("/", express.static(PUBLIC_ASSETS_FOLDER));
 
 		this.app.use(ErrorHandler);
 
