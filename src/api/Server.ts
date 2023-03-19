@@ -135,7 +135,9 @@ export class FosscordServer extends Server {
 		app.use("/api/v9", api);
 		app.use("/api", api); // allow unversioned requests
 
-		app.get("/", express.static(PUBLIC_ASSETS_FOLDER));
+		app.get("/", (req, res) =>
+			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "index.html")),
+		);
 
 		this.app.use(ErrorHandler);
 
