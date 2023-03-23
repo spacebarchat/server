@@ -16,18 +16,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@fosscord/api";
 import {
 	Channel,
 	ChannelDeleteEvent,
+	ChannelModifySchema,
 	ChannelType,
 	ChannelUpdateEvent,
 	emitEvent,
-	Recipient,
 	handleFile,
-	ChannelModifySchema,
+	Recipient,
 } from "@fosscord/util";
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
 
 const router: Router = Router();
 // TODO: delete channel
@@ -35,7 +35,15 @@ const router: Router = Router();
 
 router.get(
 	"/",
-	route({ permission: "VIEW_CHANNEL" }),
+	route({
+		permission: "VIEW_CHANNEL",
+		responses: {
+			200: {
+				body: "Channel",
+			},
+			404: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 
@@ -49,7 +57,15 @@ router.get(
 
 router.delete(
 	"/",
-	route({ permission: "MANAGE_CHANNELS" }),
+	route({
+		permission: "MANAGE_CHANNELS",
+		responses: {
+			200: {
+				body: "Channel",
+			},
+			404: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 
@@ -90,7 +106,19 @@ router.delete(
 
 router.patch(
 	"/",
-	route({ body: "ChannelModifySchema", permission: "MANAGE_CHANNELS" }),
+	route({
+		body: "ChannelModifySchema",
+		permission: "MANAGE_CHANNELS",
+		responses: {
+			200: {
+				body: "Channel",
+			},
+			404: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const payload = req.body as ChannelModifySchema;
 		const { channel_id } = req.params;

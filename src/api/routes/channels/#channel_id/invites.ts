@@ -16,19 +16,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
-import { random } from "@fosscord/api";
+import { random, route } from "@fosscord/api";
 import {
 	Channel,
+	emitEvent,
+	Guild,
 	Invite,
 	InviteCreateEvent,
-	emitEvent,
-	User,
-	Guild,
 	PublicInviteRelation,
+	User,
 } from "@fosscord/util";
+import { Request, Response, Router } from "express";
+import { HTTPError } from "lambert-server";
 import { isTextChannel } from "./messages";
 
 const router: Router = Router();
@@ -39,6 +38,15 @@ router.post(
 		body: "InviteCreateSchema",
 		permission: "CREATE_INSTANT_INVITE",
 		right: "CREATE_INVITES",
+		responses: {
+			201: {
+				body: "Invite",
+			},
+			404: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
 	}),
 	async (req: Request, res: Response) => {
 		const { user_id } = req;
@@ -84,7 +92,15 @@ router.post(
 
 router.get(
 	"/",
-	route({ permission: "MANAGE_CHANNELS" }),
+	route({
+		permission: "MANAGE_CHANNELS",
+		responses: {
+			200: {
+				body: "ChannelInvitesResponse",
+			},
+			404: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 		const channel = await Channel.findOneOrFail({

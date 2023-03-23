@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
+import { handleMessage, postHandleMessage, route } from "@fosscord/api";
 import {
 	Attachment,
 	Channel,
@@ -26,19 +26,19 @@ import {
 	emitEvent,
 	FieldErrors,
 	getPermission,
+	Member,
 	Message,
 	MessageCreateEvent,
-	Snowflake,
-	uploadFile,
-	Member,
 	MessageCreateSchema,
+	Reaction,
 	ReadState,
 	Rights,
-	Reaction,
+	Snowflake,
+	uploadFile,
 	User,
 } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { handleMessage, postHandleMessage, route } from "@fosscord/api";
 import multer from "multer";
 import { FindManyOptions, FindOperator, LessThan, MoreThan } from "typeorm";
 import { URL } from "url";
@@ -73,106 +73,123 @@ export function isTextChannel(type: ChannelType): boolean {
 
 // https://discord.com/developers/docs/resources/channel#create-message
 // get messages
-router.get("/", async (req: Request, res: Response) => {
-	const channel_id = req.params.channel_id;
-	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
-	if (!channel) throw new HTTPError("Channel not found", 404);
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "ChannelMessagesResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {},
+			404: {},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const channel_id = req.params.channel_id;
+		const channel = await Channel.findOneOrFail({
+			where: { id: channel_id },
+		});
+		if (!channel) throw new HTTPError("Channel not found", 404);
 
-	isTextChannel(channel.type);
-	const around = req.query.around ? `${req.query.around}` : undefined;
-	const before = req.query.before ? `${req.query.before}` : undefined;
-	const after = req.query.after ? `${req.query.after}` : undefined;
-	const limit = Number(req.query.limit) || 50;
-	if (limit < 1 || limit > 100)
-		throw new HTTPError("limit must be between 1 and 100", 422);
+		isTextChannel(channel.type);
+		const around = req.query.around ? `${req.query.around}` : undefined;
+		const before = req.query.before ? `${req.query.before}` : undefined;
+		const after = req.query.after ? `${req.query.after}` : undefined;
+		const limit = Number(req.query.limit) || 50;
+		if (limit < 1 || limit > 100)
+			throw new HTTPError("limit must be between 1 and 100", 422);
 
-	const halfLimit = Math.floor(limit / 2);
+		const halfLimit = Math.floor(limit / 2);
 
-	const permissions = await getPermission(
-		req.user_id,
-		channel.guild_id,
-		channel_id,
-	);
-	permissions.hasThrow("VIEW_CHANNEL");
-	if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
+		const permissions = await getPermission(
+			req.user_id,
+			channel.guild_id,
+			channel_id,
+		);
+		permissions.hasThrow("VIEW_CHANNEL");
+		if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
-	const query: FindManyOptions<Message> & {
-		where: { id?: FindOperator<string> | FindOperator<string>[] };
-	} = {
-		order: { timestamp: "DESC" },
-		take: limit,
-		where: { channel_id },
-		relations: [
-			"author",
-			"webhook",
-			"application",
-			"mentions",
-			"mention_roles",
-			"mention_channels",
-			"sticker_items",
-			"attachments",
-		],
-	};
+		const query: FindManyOptions<Message> & {
+			where: { id?: FindOperator<string> | FindOperator<string>[] };
+		} = {
+			order: { timestamp: "DESC" },
+			take: limit,
+			where: { channel_id },
+			relations: [
+				"author",
+				"webhook",
+				"application",
+				"mentions",
+				"mention_roles",
+				"mention_channels",
+				"sticker_items",
+				"attachments",
+			],
+		};
 
-	if (after) {
-		if (BigInt(after) > BigInt(Snowflake.generate()))
-			return res.status(422);
-		query.where.id = MoreThan(after);
-	} else if (before) {
-		if (BigInt(before) < BigInt(req.params.channel_id))
-			return res.status(422);
-		query.where.id = LessThan(before);
-	} else if (around) {
-		query.where.id = [
-			MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
-			LessThan((BigInt(around) + BigInt(halfLimit)).toString()),
-		];
+		if (after) {
+			if (BigInt(after) > BigInt(Snowflake.generate()))
+				return res.status(422);
+			query.where.id = MoreThan(after);
+		} else if (before) {
+			if (BigInt(before) < BigInt(req.params.channel_id))
+				return res.status(422);
+			query.where.id = LessThan(before);
+		} else if (around) {
+			query.where.id = [
+				MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
+				LessThan((BigInt(around) + BigInt(halfLimit)).toString()),
+			];
 
-		return res.json([]); // TODO: fix around
-	}
+			return res.json([]); // TODO: fix around
+		}
 
-	const messages = await Message.find(query);
-	const endpoint = Config.get().cdn.endpointPublic;
+		const messages = await Message.find(query);
+		const endpoint = Config.get().cdn.endpointPublic;
 
-	return res.json(
-		messages.map((x: Partial<Message>) => {
-			(x.reactions || []).forEach((y: Partial<Reaction>) => {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				//@ts-ignore
-				if ((y.user_ids || []).includes(req.user_id)) y.me = true;
-				delete y.user_ids;
-			});
-			if (!x.author)
-				x.author = User.create({
-					id: "4",
-					discriminator: "0000",
-					username: "Fosscord Ghost",
-					public_flags: 0,
+		return res.json(
+			messages.map((x: Partial<Message>) => {
+				(x.reactions || []).forEach((y: Partial<Reaction>) => {
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					//@ts-ignore
+					if ((y.user_ids || []).includes(req.user_id)) y.me = true;
+					delete y.user_ids;
 				});
-			x.attachments?.forEach((y: Attachment) => {
-				// dynamically set attachment proxy_url in case the endpoint changed
-				const uri = y.proxy_url.startsWith("http")
-					? y.proxy_url
-					: `https://example.org${y.proxy_url}`;
-				y.proxy_url = `${endpoint == null ? "" : endpoint}${
-					new URL(uri).pathname
-				}`;
-			});
+				if (!x.author)
+					x.author = User.create({
+						id: "4",
+						discriminator: "0000",
+						username: "Fosscord Ghost",
+						public_flags: 0,
+					});
+				x.attachments?.forEach((y: Attachment) => {
+					// dynamically set attachment proxy_url in case the endpoint changed
+					const uri = y.proxy_url.startsWith("http")
+						? y.proxy_url
+						: `https://example.org${y.proxy_url}`;
+					y.proxy_url = `${endpoint == null ? "" : endpoint}${
+						new URL(uri).pathname
+					}`;
+				});
 
-			/**
+				/**
 			Some clients ( discord.js ) only check if a property exists within the response,
 			which causes errors when, say, the `application` property is `null`.
 			**/
 
-			// for (var curr in x) {
-			// 	if (x[curr] === null)
-			// 		delete x[curr];
-			// }
+				// for (var curr in x) {
+				// 	if (x[curr] === null)
+				// 		delete x[curr];
+				// }
 
-			return x;
-		}),
-	);
-});
+				return x;
+			}),
+		);
+	},
+);
 
 // TODO: config max upload size
 const messageUpload = multer({
@@ -206,6 +223,16 @@ router.post(
 		body: "MessageCreateSchema",
 		permission: "SEND_MESSAGES",
 		right: "SEND_MESSAGES",
+		responses: {
+			200: {
+				body: "Message",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {},
+			404: {},
+		},
 	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;

@@ -16,23 +16,33 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@fosscord/api";
 import {
 	Channel,
 	ChannelPinsUpdateEvent,
 	Config,
+	DiscordApiErrors,
 	emitEvent,
 	Message,
 	MessageUpdateEvent,
-	DiscordApiErrors,
 } from "@fosscord/util";
-import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
 router.put(
 	"/:message_id",
-	route({ permission: "VIEW_CHANNEL" }),
+	route({
+		permission: "VIEW_CHANNEL",
+		responses: {
+			204: {},
+			403: {},
+			404: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id, message_id } = req.params;
 
@@ -74,7 +84,17 @@ router.put(
 
 router.delete(
 	"/:message_id",
-	route({ permission: "VIEW_CHANNEL" }),
+	route({
+		permission: "VIEW_CHANNEL",
+		responses: {
+			204: {},
+			403: {},
+			404: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id, message_id } = req.params;
 
@@ -114,7 +134,17 @@ router.delete(
 
 router.get(
 	"/",
-	route({ permission: ["READ_MESSAGE_HISTORY"] }),
+	route({
+		permission: ["READ_MESSAGE_HISTORY"],
+		responses: {
+			200: {
+				body: "ChannelPinsResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 

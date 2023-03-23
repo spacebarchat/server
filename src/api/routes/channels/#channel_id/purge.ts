@@ -16,10 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
-import { isTextChannel } from "./messages";
-import { FindManyOptions, Between, Not, FindOperator } from "typeorm";
 import {
 	Channel,
 	emitEvent,
@@ -29,7 +26,10 @@ import {
 	MessageDeleteBulkEvent,
 	PurgeSchema,
 } from "@fosscord/util";
-import { Router, Response, Request } from "express";
+import { Request, Response, Router } from "express";
+import { HTTPError } from "lambert-server";
+import { Between, FindManyOptions, FindOperator, Not } from "typeorm";
+import { isTextChannel } from "./messages";
 
 const router: Router = Router();
 
@@ -42,6 +42,14 @@ router.post(
 	"/",
 	route({
 		/*body: "PurgeSchema",*/
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {},
+			403: {},
+		},
 	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;

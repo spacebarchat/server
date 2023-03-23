@@ -19,13 +19,13 @@
 import {
 	Channel,
 	ChannelPermissionOverwrite,
+	ChannelPermissionOverwriteSchema,
 	ChannelUpdateEvent,
 	emitEvent,
 	Member,
 	Role,
-	ChannelPermissionOverwriteSchema,
 } from "@fosscord/util";
-import { Router, Response, Request } from "express";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
 import { route } from "@fosscord/api";
@@ -38,6 +38,12 @@ router.put(
 	route({
 		body: "ChannelPermissionOverwriteSchema",
 		permission: "MANAGE_ROLES",
+		responses: {
+			204: {},
+			404: {},
+			501: {},
+			400: { body: "APIErrorResponse" },
+		},
 	}),
 	async (req: Request, res: Response) => {
 		const { channel_id, overwrite_id } = req.params;
@@ -92,7 +98,7 @@ router.put(
 // TODO: check permission hierarchy
 router.delete(
 	"/:overwrite_id",
-	route({ permission: "MANAGE_ROLES" }),
+	route({ permission: "MANAGE_ROLES", responses: { 204: {}, 404: {} } }),
 	async (req: Request, res: Response) => {
 		const { channel_id, overwrite_id } = req.params;
 
