@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@fosscord/api";
 import { Config } from "@fosscord/util";
-import { Router, Response, Request } from "express";
-import { route, RouteOptions } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -26,19 +26,21 @@ export interface GatewayResponse {
 	url: string;
 }
 
-const options: RouteOptions = {
-	test: {
-		response: {
-			body: "GatewayResponse",
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "GatewayResponse",
+			},
 		},
+	}),
+	(req: Request, res: Response) => {
+		const { endpointPublic } = Config.get().gateway;
+		res.json({
+			url: endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
+		});
 	},
-};
-
-router.get("/", route(options), (req: Request, res: Response) => {
-	const { endpointPublic } = Config.get().gateway;
-	res.json({
-		url: endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
-	});
-});
+);
 
 export default router;
