@@ -63,7 +63,7 @@ router.post(
 
 		return res.json({
 			token: await generateToken(user.id),
-			user_settings: user.settings,
+			settings: { ...user.settings, index: undefined },
 		});
 	},
 );
