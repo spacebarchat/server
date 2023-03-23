@@ -16,25 +16,31 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@spacebar/api";
 import { Config } from "@spacebar/util";
-import { Router, Response, Request } from "express";
-import { route, RouteOptions } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
-const options: RouteOptions = {
-	test: {
-		response: {
-			body: "GatewayResponse",
-		},
-	},
-};
+export interface GatewayResponse {
+	url: string;
+}
 
-router.get("/", route(options), (req: Request, res: Response) => {
-	const { endpointPublic } = Config.get().gateway;
-	res.json({
-		url: endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
-	});
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "GatewayResponse",
+			},
+		},
+	}),
+	(req: Request, res: Response) => {
+		const { endpointPublic } = Config.get().gateway;
+		res.json({
+			url: endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
+		});
+	},
+);
 
 export default router;
