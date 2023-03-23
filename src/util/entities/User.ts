@@ -111,7 +111,7 @@ export class User extends BaseClass {
 	banner?: string; // hash of the user banner
 
 	@Column({ nullable: true, type: "simple-array" })
-	theme_colors?: number[]; // TODO: Separate `User` and `UserProfile` models
+	theme_colors?: [number, number]; // TODO: Separate `User` and `UserProfile` models
 
 	@Column({ nullable: true })
 	pronouns?: string;

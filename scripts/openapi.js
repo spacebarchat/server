@@ -85,13 +85,15 @@ function apiRoutes() {
 		.map((x) => ({ name: x }));
 
 	specification.components = specification.components || {};
-	specification.components.securitySchemes = {
-		bearer: {
-			type: "http",
-			scheme: "bearer",
-			description: "Bearer/Bot prefixes are not required.",
+	specification.components.securitySchemes = [
+		{
+			bearer: {
+				type: "http",
+				scheme: "bearer",
+				description: "Bearer/Bot prefixes are not required.",
+			},
 		},
-	};
+	];
 
 	routes.forEach((route, pathAndMethod) => {
 		const [p, method] = pathAndMethod.split("|");
@@ -109,7 +111,7 @@ function apiRoutes() {
 				return x.test(path);
 			})
 		) {
-			obj.security = [{ bearer: true }];
+			obj.security = [{ bearer: [] }];
 		}
 
 		if (route.body) {

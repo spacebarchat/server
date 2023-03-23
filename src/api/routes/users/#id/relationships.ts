@@ -22,16 +22,6 @@ import { route } from "@fosscord/api";
 
 const router: Router = Router();
 
-export interface UserRelationsResponse {
-	object: {
-		id?: string;
-		username?: string;
-		avatar?: string;
-		discriminator?: string;
-		public_flags?: number;
-	};
-}
-
 router.get(
 	"/",
 	route({ test: { response: { body: "UserRelationsResponse" } } }),

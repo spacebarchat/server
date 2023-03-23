@@ -20,13 +20,15 @@
         }
     },
     "components": {
-        "securitySchemes": {
-            "bearer": {
-                "type": "http",
-                "scheme": "bearer",
-                "description": "Bearer/Bot prefixes are not required."
+        "securitySchemes": [
+            {
+                "bearer": {
+                    "type": "http",
+                    "scheme": "bearer",
+                    "description": "Bearer/Bot prefixes are not required."
+                }
             }
-        },
+        ],
         "schemas": {
             "SelectProtocolSchema": {
                 "type": "object",
@@ -1762,14 +1764,8 @@
                         "type": "boolean"
                     },
                     "custom_status": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/CustomStatus"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
+                        "nullable": true,
+                        "$ref": "#/components/schemas/CustomStatus"
                     },
                     "default_guilds_restricted": {
                         "type": "boolean"
@@ -2108,14 +2104,8 @@
                         "type": "boolean"
                     },
                     "mute_config": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/MuteConfig"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
+                        "nullable": true,
+                        "$ref": "#/components/schemas/MuteConfig"
                     },
                     "muted": {
                         "type": "boolean"
@@ -2663,6 +2653,193 @@
                 "required": [
                     "token"
                 ]
+            },
+            "UserPublic": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "premium_type",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "PublicConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "name",
+                    "type",
+                    "verified"
+                ]
+            },
+            "UserRelationsResponse": {
+                "type": "object",
+                "properties": {
+                    "object": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "username": {
+                                "type": "string"
+                            },
+                            "avatar": {
+                                "type": "string"
+                            },
+                            "discriminator": {
+                                "type": "string"
+                            },
+                            "public_flags": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "required": [
+                    "object"
+                ]
+            },
+            "GatewayResponse": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "url"
+                ]
+            },
+            "GatewayBotResponse": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "shards": {
+                        "type": "integer"
+                    },
+                    "session_start_limit": {
+                        "type": "object",
+                        "properties": {
+                            "total": {
+                                "type": "integer"
+                            },
+                            "remaining": {
+                                "type": "integer"
+                            },
+                            "reset_after": {
+                                "type": "integer"
+                            },
+                            "max_concurrency": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "max_concurrency",
+                            "remaining",
+                            "reset_after",
+                            "total"
+                        ]
+                    }
+                },
+                "required": [
+                    "session_start_limit",
+                    "shards",
+                    "url"
+                ]
+            },
+            "UserProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/UserPublic"
+                    },
+                    "connected_accounts": {
+                        "$ref": "#/components/schemas/PublicConnectedAccount"
+                    },
+                    "premium_guild_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "connected_accounts",
+                    "user"
+                ]
             }
         }
     },
@@ -2766,7 +2943,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -2778,7 +2955,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -2788,7 +2965,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -2810,7 +2987,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -2820,7 +2997,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -2842,7 +3019,7 @@
             "put": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -2873,7 +3050,7 @@
             "delete": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -2896,7 +3073,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -2917,7 +3094,7 @@
             "put": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -2940,7 +3117,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -2962,7 +3139,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -2984,7 +3161,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -3006,7 +3183,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -3028,7 +3205,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3040,7 +3217,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3050,7 +3227,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -3072,7 +3249,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3084,7 +3261,7 @@
             "delete": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3107,7 +3284,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3119,7 +3296,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3140,7 +3317,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -3173,7 +3350,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3185,7 +3362,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3197,7 +3374,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3209,7 +3386,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3221,7 +3398,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3233,7 +3410,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3245,7 +3422,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3255,7 +3432,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -3277,7 +3454,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3289,7 +3466,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3301,7 +3478,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3313,7 +3490,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3336,7 +3513,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3348,7 +3525,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3360,7 +3537,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3372,7 +3549,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "responses": {
@@ -3407,7 +3584,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "responses": {
@@ -3440,7 +3617,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -3473,7 +3650,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3510,7 +3687,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3522,7 +3699,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3545,7 +3722,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3568,7 +3745,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3591,7 +3768,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3615,7 +3792,7 @@
                 "x-right-required": "OPERATOR",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3627,7 +3804,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3650,7 +3827,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3662,7 +3839,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3681,7 +3858,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3693,7 +3870,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3733,7 +3910,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3756,7 +3933,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3768,7 +3945,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3780,7 +3957,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -3790,7 +3967,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -3812,7 +3989,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3834,7 +4011,7 @@
                 "x-right-required": "USE_MASS_INVITES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3855,7 +4032,7 @@
             "delete": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3878,7 +4055,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3899,7 +4076,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -3933,7 +4110,7 @@
                 "x-right-required": "CREATE_GUILDS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -3955,7 +4132,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -3978,7 +4155,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4001,7 +4178,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4023,7 +4200,7 @@
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4056,7 +4233,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4078,7 +4255,7 @@
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4111,7 +4288,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4134,7 +4311,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4177,7 +4354,7 @@
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4199,7 +4376,7 @@
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4232,7 +4409,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4254,7 +4431,7 @@
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4288,7 +4465,7 @@
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4319,7 +4496,7 @@
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4350,7 +4527,7 @@
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4392,7 +4569,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4414,7 +4591,7 @@
                 "x-permission-required": "MANAGE_EMOJIS_AND_STICKERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4447,7 +4624,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4478,7 +4655,7 @@
                 "x-permission-required": "MANAGE_EMOJIS_AND_STICKERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4519,7 +4696,7 @@
                 "x-permission-required": "MANAGE_EMOJIS_AND_STICKERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4551,7 +4728,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4573,7 +4750,7 @@
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4604,7 +4781,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4637,7 +4814,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4668,7 +4845,7 @@
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4699,7 +4876,7 @@
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4741,7 +4918,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4764,7 +4941,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4787,7 +4964,7 @@
                 "x-permission-required": "KICK_MEMBERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4810,7 +4987,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -4852,7 +5029,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4875,7 +5052,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4898,7 +5075,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4922,7 +5099,7 @@
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -4962,7 +5139,7 @@
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5003,7 +5180,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -5045,7 +5222,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5075,7 +5252,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -5115,7 +5292,7 @@
             "put": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5145,7 +5322,7 @@
             "delete": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5177,7 +5354,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5201,7 +5378,7 @@
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5224,7 +5401,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5247,7 +5424,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5268,7 +5445,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -5302,7 +5479,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5324,7 +5501,7 @@
                 "x-permission-required": "MANAGE_EMOJIS_AND_STICKERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -5357,7 +5534,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5388,7 +5565,7 @@
                 "x-permission-required": "MANAGE_EMOJIS_AND_STICKERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -5429,7 +5606,7 @@
                 "x-permission-required": "MANAGE_EMOJIS_AND_STICKERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5461,7 +5638,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5484,7 +5661,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5507,7 +5684,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5529,7 +5706,7 @@
                 "x-permission-required": "MANAGE_CHANNELS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -5561,7 +5738,7 @@
                 "x-permission-required": "MANAGE_CHANNELS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -5595,7 +5772,7 @@
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5619,7 +5796,7 @@
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5652,7 +5829,7 @@
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -5693,7 +5870,7 @@
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5725,7 +5902,7 @@
             "put": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -5758,7 +5935,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5781,7 +5958,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -5793,7 +5970,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -5805,7 +5982,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -5817,7 +5994,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -5881,7 +6058,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -5893,7 +6070,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -5906,7 +6083,7 @@
                 "x-permission-required": "MANAGE_WEBHOOKS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -5937,7 +6114,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5961,7 +6138,7 @@
                 "x-permission-required": "SEND_MESSAGES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -5984,7 +6161,7 @@
             "put": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6014,7 +6191,7 @@
             "delete": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6046,7 +6223,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6070,7 +6247,7 @@
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6101,7 +6278,7 @@
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6136,7 +6313,7 @@
                 ],
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6160,7 +6337,7 @@
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -6201,7 +6378,7 @@
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6233,7 +6410,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -6267,7 +6444,7 @@
                 "x-permission-required": "MANAGE_MESSAGES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6300,7 +6477,7 @@
                 "x-permission-required": "MANAGE_MESSAGES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6340,7 +6517,7 @@
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6383,7 +6560,7 @@
                 "x-permission-required": "READ_MESSAGE_HISTORY",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6431,7 +6608,7 @@
             "delete": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6483,7 +6660,7 @@
                 "x-permission-required": "SEND_MESSAGES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -6525,7 +6702,7 @@
                 "x-permission-required": "SEND_MESSAGES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -6566,7 +6743,7 @@
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6596,7 +6773,7 @@
             "delete": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6629,7 +6806,7 @@
                 "x-permission-required": "MANAGE_MESSAGES",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6661,7 +6838,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -6705,7 +6882,7 @@
                 "x-permission-required": "CREATE_INSTANT_INVITE",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -6737,7 +6914,7 @@
                 "x-permission-required": "MANAGE_CHANNELS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6761,7 +6938,7 @@
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6783,7 +6960,7 @@
                 "x-permission-required": "MANAGE_CHANNELS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -6805,7 +6982,7 @@
                 "x-permission-required": "MANAGE_CHANNELS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -6894,7 +7071,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -6931,7 +7108,7 @@
                 "x-right-required": "OPERATOR",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -6943,7 +7120,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -6953,7 +7130,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -6975,7 +7152,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -6987,7 +7164,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -7010,7 +7187,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -7031,7 +7208,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -7064,7 +7241,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -7087,7 +7264,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -7110,7 +7287,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -7131,7 +7308,7 @@
             "patch": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -7164,7 +7341,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -7215,7 +7392,7 @@
                 "x-right-required": "MANAGE_USERS",
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [
@@ -7238,7 +7415,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -7260,7 +7437,7 @@
             "get": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "tags": [
@@ -7270,7 +7447,7 @@
             "post": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "requestBody": {
@@ -7292,7 +7469,7 @@
             "delete": {
                 "security": [
                     {
-                        "bearer": true
+                        "bearer": []
                     }
                 ],
                 "parameters": [

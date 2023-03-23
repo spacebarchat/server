@@ -76,3 +76,7 @@ export * from "./VoiceVideoSchema";
 export * from "./WebAuthnSchema";
 export * from "./WebhookCreateSchema";
 export * from "./WidgetModifySchema";
+export * from "./UserRelationsResponse";
+export * from "./GatewayResponse";
+export * from "./GatewayBotResponse";
+export * from "./UserProfileResponse";

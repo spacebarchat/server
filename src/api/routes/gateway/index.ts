@@ -22,10 +22,6 @@ import { route, RouteOptions } from "@fosscord/api";
 
 const router = Router();
 
-export interface GatewayResponse {
-	url: string;
-}
-
 const options: RouteOptions = {
 	test: {
 		response: {
