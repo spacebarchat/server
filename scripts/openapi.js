@@ -123,36 +123,37 @@ function apiRoutes() {
 			}.merge(obj.requestBody);
 		}
 
-		if (route.test?.response) {
-			const status = route.test.response.status || 200;
-			let schema = {
-				allOf: [
-					{
-						$ref: `#/components/schemas/${route.test.response.body}`,
-					},
-					{
-						example: route.test.body,
-					},
-				],
-			};
-			if (!route.test.body) schema = schema.allOf[0];
+		if (route.responses) {
+			for (const [k, v] of Object.entries(route.responses)) {
+				let schema = {
+					allOf: [
+						{
+							$ref: `#/components/schemas/${v.body}`,
+						},
+						{
+							example: v.body,
+						},
+					],
+				};
+				if (!v.body) schema = schema.allOf[0];
 
-			obj.responses = {
-				[status]: {
-					...(route.test.response.body
-						? {
-								description:
-									obj?.responses?.[status]?.description || "",
-								content: {
-									"application/json": {
-										schema: schema,
+				obj.responses = {
+					[k]: {
+						...(v.body
+							? {
+									description:
+										obj?.responses?.[k]?.description || "",
+									content: {
+										"application/json": {
+											schema: schema,
+										},
 									},
-								},
-						  }
-						: {}),
-				},
-			}.merge(obj.responses);
-			delete obj.responses.default;
+							  }
+							: {}),
+					},
+				}.merge(obj.responses);
+				delete obj.responses.default;
+			}
 		}
 		if (p.includes(":")) {
 			obj.parameters = p.match(/:\w+/g)?.map((x) => ({

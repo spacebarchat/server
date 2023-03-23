@@ -16,15 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
-import { FieldErrors, User, BackupCodesChallengeSchema } from "@fosscord/util";
+import { BackupCodesChallengeSchema, FieldErrors, User } from "@fosscord/util";
 import bcrypt from "bcrypt";
+import { Request, Response, Router } from "express";
 const router = Router();
 
 router.post(
 	"/",
-	route({ body: "BackupCodesChallengeSchema" }),
+	route({
+		body: "BackupCodesChallengeSchema",
+		responses: {
+			200: { body: "BackupCodesChallengeResponse" },
+			400: { body: "APIErrorResponse" },
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { password } = req.body as BackupCodesChallengeSchema;
 

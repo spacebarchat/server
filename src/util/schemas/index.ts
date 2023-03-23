@@ -55,6 +55,7 @@ export * from "./PurgeSchema";
 export * from "./RegisterSchema";
 export * from "./RelationshipPostSchema";
 export * from "./RelationshipPutSchema";
+export * from "./responses";
 export * from "./RoleModifySchema";
 export * from "./RolePositionUpdateSchema";
 export * from "./SelectProtocolSchema";

@@ -37,9 +37,20 @@ async function getToken(user: User) {
 	return { token };
 }
 
+// TODO: the response interface also returns settings, but this route doesn't actually return that.
 router.post(
 	"/",
-	route({ body: "VerifyEmailSchema" }),
+	route({
+		body: "VerifyEmailSchema",
+		responses: {
+			200: {
+				body: "TokenResponse",
+			},
+			400: {
+				body: "APIErrorOrCaptchaResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { captcha_key, token } = req.body;
 

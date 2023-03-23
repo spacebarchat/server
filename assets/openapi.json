@@ -2663,6 +2663,366 @@
                 "required": [
                     "token"
                 ]
+            },
+            "UserSettings": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "string"
+                    },
+                    "afk_timeout": {
+                        "type": "integer",
+                        "default": 3600
+                    },
+                    "allow_accessibility_detection": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "animate_emoji": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "animate_stickers": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "contact_sync_enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "convert_emoticons": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "custom_status": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/CustomStatus"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "default": null
+                    },
+                    "default_guilds_restricted": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "detect_platform_accounts": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "developer_mode": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "disable_games_tab": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "enable_tts_command": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "explicit_content_filter": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "friend_source_flags": {
+                        "$ref": "#/components/schemas/FriendSourceFlags"
+                    },
+                    "gateway_connected": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "gif_auto_play": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "guild_folders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GuildFolder"
+                        },
+                        "default": []
+                    },
+                    "guild_positions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
+                    "inline_attachment_media": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "inline_embed_media": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "locale": {
+                        "type": "string",
+                        "default": "en-US"
+                    },
+                    "message_display_compact": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "native_phone_integration_enabled": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "render_embeds": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "render_reactions": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "restricted_guilds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
+                    "show_current_game": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "status": {
+                        "enum": [
+                            "dnd",
+                            "idle",
+                            "invisible",
+                            "offline",
+                            "online"
+                        ],
+                        "type": "string",
+                        "default": "online"
+                    },
+                    "stream_notifications_enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "theme": {
+                        "enum": [
+                            "dark",
+                            "light"
+                        ],
+                        "type": "string",
+                        "default": "dark"
+                    },
+                    "timezone_offset": {
+                        "type": "integer",
+                        "default": 0
+                    }
+                },
+                "required": [
+                    "afk_timeout",
+                    "allow_accessibility_detection",
+                    "animate_emoji",
+                    "animate_stickers",
+                    "contact_sync_enabled",
+                    "convert_emoticons",
+                    "custom_status",
+                    "default_guilds_restricted",
+                    "detect_platform_accounts",
+                    "developer_mode",
+                    "disable_games_tab",
+                    "enable_tts_command",
+                    "explicit_content_filter",
+                    "friend_source_flags",
+                    "gateway_connected",
+                    "gif_auto_play",
+                    "guild_folders",
+                    "guild_positions",
+                    "index",
+                    "inline_attachment_media",
+                    "inline_embed_media",
+                    "locale",
+                    "message_display_compact",
+                    "native_phone_integration_enabled",
+                    "render_embeds",
+                    "render_reactions",
+                    "restricted_guilds",
+                    "show_current_game",
+                    "status",
+                    "stream_notifications_enabled",
+                    "theme",
+                    "timezone_offset"
+                ]
+            },
+            "TokenResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "settings": {
+                        "$ref": "#/components/schemas/UserSettings"
+                    }
+                },
+                "required": [
+                    "settings",
+                    "token"
+                ]
+            },
+            "APIErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                                "_errors": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "string"
+                                            },
+                                            "code": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "additionalProperties": false,
+                                        "required": [
+                                            "code",
+                                            "message"
+                                        ]
+                                    }
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "_errors"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "code",
+                    "errors",
+                    "message"
+                ]
+            },
+            "CaptchaRequiredResponse": {
+                "type": "object",
+                "properties": {
+                    "captcha_key": {
+                        "type": "string"
+                    },
+                    "captcha_sitekey": {
+                        "type": "string"
+                    },
+                    "captcha_service": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "captcha_key",
+                    "captcha_service",
+                    "captcha_sitekey"
+                ]
+            },
+            "LoginErrorResponse": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/APIErrorResponse"
+                    },
+                    {
+                        "$ref": "#/components/schemas/CaptchaRequiredResponse"
+                    }
+                ]
+            },
+            "APIErrorOrCaptchaResponse": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/APIErrorResponse"
+                    },
+                    {
+                        "$ref": "#/components/schemas/CaptchaRequiredResponse"
+                    }
+                ]
+            },
+            "BackupCodesChallengeResponse": {
+                "type": "object",
+                "properties": {
+                    "nonce": {
+                        "type": "string"
+                    },
+                    "regenerate_nonce": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "nonce",
+                    "regenerate_nonce"
+                ]
+            },
+            "GenerateRegistrationTokensResponse": {
+                "type": "object",
+                "properties": {
+                    "tokens": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "tokens"
+                ]
+            },
+            "LocationMetadataResponse": {
+                "type": "object",
+                "properties": {
+                    "consent_required": {
+                        "type": "boolean"
+                    },
+                    "country_code": {
+                        "type": "string"
+                    },
+                    "promotional_email_opt_in": {
+                        "type": "object",
+                        "properties": {
+                            "required": {
+                                "type": "boolean",
+                                "enum": [
+                                    true
+                                ]
+                            },
+                            "pre_checked": {
+                                "type": "boolean",
+                                "enum": [
+                                    false
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "pre_checked",
+                            "required"
+                        ]
+                    }
+                },
+                "required": [
+                    "consent_required",
+                    "country_code",
+                    "promotional_email_opt_in"
+                ]
             }
         }
     },
@@ -2759,6 +3119,9 @@
         },
         {
             "name": "read-states"
+        },
+        {
+            "name": "connections"
         }
     ],
     "paths": {
@@ -6853,7 +7216,43 @@
                 },
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BackupCodesChallengeResponse"
+                                        },
+                                        {
+                                            "example": "BackupCodesChallengeResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/auth/register/": {
@@ -6870,7 +7269,43 @@
                 },
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/TokenResponse"
+                                        },
+                                        {
+                                            "example": "TokenResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorOrCaptchaResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorOrCaptchaResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/auth/mfa/totp/": {
@@ -6887,7 +7322,43 @@
                 },
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/TokenResponse"
+                                        },
+                                        {
+                                            "example": "TokenResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/auth/logout/": {
@@ -6899,7 +7370,10 @@
                 ],
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "204": {}
+                }
             }
         },
         "/auth/login/": {
@@ -6916,14 +7390,69 @@
                 },
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/TokenResponse"
+                                        },
+                                        {
+                                            "example": "TokenResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorOrCaptchaResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorOrCaptchaResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/auth/location-metadata/": {
             "get": {
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/LocationMetadataResponse"
+                                        },
+                                        {
+                                            "example": "LocationMetadataResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/auth/generate-registration-tokens/": {
@@ -6936,7 +7465,26 @@
                 ],
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/GenerateRegistrationTokensResponse"
+                                        },
+                                        {
+                                            "example": "GenerateRegistrationTokensResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/applications/": {
@@ -7325,7 +7873,43 @@
                 },
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/TokenResponse"
+                                        },
+                                        {
+                                            "example": "TokenResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/auth/verify/resend/": {
@@ -7333,7 +7917,12 @@
                 "x-right-required": "RESEND_VERIFICATION_EMAIL",
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "204": {},
+                    "400": {},
+                    "500": {}
+                }
             }
         },
         "/auth/verify/": {
@@ -7350,7 +7939,43 @@
                 },
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/TokenResponse"
+                                        },
+                                        {
+                                            "example": "TokenResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorOrCaptchaResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorOrCaptchaResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/auth/reset/": {
@@ -7367,7 +7992,43 @@
                 },
                 "tags": [
                     "auth"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/TokenResponse"
+                                        },
+                                        {
+                                            "example": "TokenResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorOrCaptchaResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorOrCaptchaResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/auth/forgot/": {
@@ -7384,6 +8045,235 @@
                 },
                 "tags": [
                     "auth"
+                ],
+                "responses": {
+                    "204": {},
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/@me/connections/{connection_name}/{connection_id}/": {
+            "patch": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConnectionUpdateSchema"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "connection_name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "connection_name"
+                    },
+                    {
+                        "name": "connection_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "connection_id"
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "connection_name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "connection_name"
+                    },
+                    {
+                        "name": "connection_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "connection_id"
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/@me/connections/{connection_name}/{connection_id}/access-token/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "connection_name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "connection_name"
+                    },
+                    {
+                        "name": "connection_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "connection_id"
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/connections/{connection_name}/callback/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConnectionCallbackSchema"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "connection_name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "connection_name"
+                    }
+                ],
+                "tags": [
+                    "connections"
+                ]
+            }
+        },
+        "/connections/{connection_name}/authorize/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "connection_name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "connection_name"
+                    }
+                ],
+                "tags": [
+                    "connections"
+                ]
+            }
+        },
+        "/connections/{connection_name}/{connection_id}/refresh/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": true
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "connection_name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "connection_name"
+                    },
+                    {
+                        "name": "connection_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "connection_id"
+                    }
+                ],
+                "tags": [
+                    "connections"
                 ]
             }
         }

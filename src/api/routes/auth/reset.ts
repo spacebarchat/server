@@ -13,9 +13,20 @@ import { Request, Response, Router } from "express";
 
 const router = Router();
 
+// TODO: the response interface also returns settings, but this route doesn't actually return that.
 router.post(
 	"/",
-	route({ body: "PasswordResetSchema" }),
+	route({
+		body: "PasswordResetSchema",
+		responses: {
+			200: {
+				body: "TokenResponse",
+			},
+			400: {
+				body: "APIErrorOrCaptchaResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { password, token } = req.body as PasswordResetSchema;
 
