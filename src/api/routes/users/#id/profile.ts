@@ -16,32 +16,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
+import { route } from "@fosscord/api";
 import {
-	PublicConnectedAccount,
-	User,
-	UserPublic,
-	Member,
-	UserProfileModifySchema,
-	handleFile,
-	PrivateUserProjection,
 	emitEvent,
+	handleFile,
+	Member,
+	PrivateUserProjection,
+	User,
+	UserProfileModifySchema,
 	UserUpdateEvent,
 } from "@fosscord/util";
-import { route } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-export interface UserProfileResponse {
-	user: UserPublic;
-	connected_accounts: PublicConnectedAccount;
-	premium_guild_since?: Date;
-	premium_since?: Date;
-}
-
 router.get(
 	"/",
-	route({ test: { response: { body: "UserProfileResponse" } } }),
+	route({ responses: { 200: { body: "UserProfileResponse" } } }),
 	async (req: Request, res: Response) => {
 		if (req.params.id === "@me") req.params.id = req.user_id;
 

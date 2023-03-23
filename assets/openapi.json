@@ -5326,6 +5326,186 @@
                 "items": {
                     "$ref": "#/components/schemas/Message"
                 }
+            },
+            "GatewayBotResponse": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "shards": {
+                        "type": "integer"
+                    },
+                    "session_start_limit": {
+                        "type": "object",
+                        "properties": {
+                            "total": {
+                                "type": "integer"
+                            },
+                            "remaining": {
+                                "type": "integer"
+                            },
+                            "reset_after": {
+                                "type": "integer"
+                            },
+                            "max_concurrency": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "max_concurrency",
+                            "remaining",
+                            "reset_after",
+                            "total"
+                        ]
+                    }
+                },
+                "required": [
+                    "session_start_limit",
+                    "shards",
+                    "url"
+                ]
+            },
+            "GatewayResponse": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "url"
+                ]
+            },
+            "UserRelationsResponse": {
+                "type": "object",
+                "properties": {
+                    "object": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "username": {
+                                "type": "string"
+                            },
+                            "avatar": {
+                                "type": "string"
+                            },
+                            "discriminator": {
+                                "type": "string"
+                            },
+                            "public_flags": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "required": [
+                    "object"
+                ]
+            },
+            "UserPublic": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "premium_type",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "PublicConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "name",
+                    "type",
+                    "verified"
+                ]
+            },
+            "UserProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/UserPublic"
+                    },
+                    "connected_accounts": {
+                        "$ref": "#/components/schemas/PublicConnectedAccount"
+                    },
+                    "premium_guild_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "connected_accounts",
+                    "user"
+                ]
             }
         }
     },
@@ -6047,7 +6227,15 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserRelationsResponse"
+                                    "$ref": "#/components/schemas/UserRelationsResponse",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/UserRelationsResponse"
+                                        },
+                                        {
+                                            "example": "UserRelationsResponse"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -6082,7 +6270,15 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserProfileResponse"
+                                    "$ref": "#/components/schemas/UserProfileResponse",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/UserProfileResponse"
+                                        },
+                                        {
+                                            "example": "UserProfileResponse"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -11334,198 +11530,6 @@
                         }
                     }
                 }
-            }
-        },
-        "/users/@me/connections/{connection_name}/{connection_id}/": {
-            "patch": {
-                "security": [
-                    {
-                        "bearer": true
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ConnectionUpdateSchema"
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "connection_name",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "connection_name"
-                    },
-                    {
-                        "name": "connection_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "connection_id"
-                    }
-                ],
-                "tags": [
-                    "users"
-                ]
-            },
-            "delete": {
-                "security": [
-                    {
-                        "bearer": true
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "connection_name",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "connection_name"
-                    },
-                    {
-                        "name": "connection_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "connection_id"
-                    }
-                ],
-                "tags": [
-                    "users"
-                ]
-            }
-        },
-        "/users/@me/connections/{connection_name}/{connection_id}/access-token/": {
-            "get": {
-                "security": [
-                    {
-                        "bearer": true
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "connection_name",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "connection_name"
-                    },
-                    {
-                        "name": "connection_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "connection_id"
-                    }
-                ],
-                "tags": [
-                    "users"
-                ]
-            }
-        },
-        "/connections/{connection_name}/callback/": {
-            "post": {
-                "security": [
-                    {
-                        "bearer": true
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ConnectionCallbackSchema"
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "connection_name",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "connection_name"
-                    }
-                ],
-                "tags": [
-                    "connections"
-                ]
-            }
-        },
-        "/connections/{connection_name}/authorize/": {
-            "get": {
-                "security": [
-                    {
-                        "bearer": true
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "connection_name",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "connection_name"
-                    }
-                ],
-                "tags": [
-                    "connections"
-                ]
-            }
-        },
-        "/connections/{connection_name}/{connection_id}/refresh/": {
-            "post": {
-                "security": [
-                    {
-                        "bearer": true
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "connection_name",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "connection_name"
-                    },
-                    {
-                        "name": "connection_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "connection_id"
-                    }
-                ],
-                "tags": [
-                    "connections"
-                ]
             }
         }
     }

@@ -22,10 +22,6 @@ import { Request, Response, Router } from "express";
 
 const router = Router();
 
-export interface GatewayResponse {
-	url: string;
-}
-
 router.get(
 	"/",
 	route({

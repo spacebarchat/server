@@ -16,25 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import { User } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { User } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-export interface UserRelationsResponse {
-	object: {
-		id?: string;
-		username?: string;
-		avatar?: string;
-		discriminator?: string;
-		public_flags?: number;
-	};
-}
-
 router.get(
 	"/",
-	route({ test: { response: { body: "UserRelationsResponse" } } }),
+	route({ responses: { 200: { body: "UserRelationsResponse" } } }),
 	async (req: Request, res: Response) => {
 		const mutual_relations: object[] = [];
 		const requested_relations = await User.findOneOrFail({
