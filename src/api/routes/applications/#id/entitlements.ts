@@ -16,15 +16,25 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
 import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
-router.get("/", route({}), (req: Request, res: Response) => {
-	// TODO:
-	//const { exclude_consumed } = req.query;
-	res.status(200).send([]);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "ApplicationEntitlementsResponse",
+			},
+		},
+	}),
+	(req: Request, res: Response) => {
+		// TODO:
+		//const { exclude_consumed } = req.query;
+		res.status(200).send([]);
+	},
+);
 
 export default router;
