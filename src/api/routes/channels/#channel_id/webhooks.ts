@@ -16,34 +16,56 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
 import { route } from "@spacebar/api";
 import {
 	Channel,
 	Config,
-	handleFile,
-	trimSpecial,
+	DiscordApiErrors,
 	User,
 	Webhook,
 	WebhookCreateSchema,
 	WebhookType,
+	handleFile,
+	trimSpecial,
 } from "@spacebar/util";
+import crypto from "crypto";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { isTextChannel } from "./messages/index";
-import { DiscordApiErrors } from "@spacebar/util";
-import crypto from "crypto";
 
 const router: Router = Router();
 
 //TODO: implement webhooks
-router.get("/", route({}), async (req: Request, res: Response) => {
-	res.json([]);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "ChannelWebhooksResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		res.json([]);
+	},
+);
 
 // TODO: use Image Data Type for avatar instead of String
 router.post(
 	"/",
-	route({ body: "WebhookCreateSchema", permission: "MANAGE_WEBHOOKS" }),
+	route({
+		body: "WebhookCreateSchema",
+		permission: "MANAGE_WEBHOOKS",
+		responses: {
+			200: {
+				body: "WebhookCreateResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const channel_id = req.params.channel_id;
 		const channel = await Channel.findOneOrFail({

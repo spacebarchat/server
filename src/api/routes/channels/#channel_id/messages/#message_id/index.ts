@@ -19,24 +19,23 @@
 import {
 	Attachment,
 	Channel,
-	emitEvent,
-	SpacebarApiErrors,
-	getPermission,
-	getRights,
 	Message,
 	MessageCreateEvent,
+	MessageCreateSchema,
 	MessageDeleteEvent,
+	MessageEditSchema,
 	MessageUpdateEvent,
 	Snowflake,
+	SpacebarApiErrors,
+	emitEvent,
+	getPermission,
+	getRights,
 	uploadFile,
-	MessageCreateSchema,
-	MessageEditSchema,
 } from "@spacebar/util";
-import { Router, Response, Request } from "express";
-import multer from "multer";
-import { route } from "@spacebar/api";
-import { handleMessage, postHandleMessage } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import multer from "multer";
+import { handleMessage, postHandleMessage, route } from "../../../../../util";
 
 const router = Router();
 // TODO: message content/embed string length limit
@@ -56,6 +55,16 @@ router.patch(
 		body: "MessageEditSchema",
 		permission: "SEND_MESSAGES",
 		right: "SEND_MESSAGES",
+		responses: {
+			200: {
+				body: "Message",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {},
+			404: {},
+		},
 	}),
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id } = req.params;
@@ -146,6 +155,16 @@ router.put(
 		body: "MessageCreateSchema",
 		permission: "SEND_MESSAGES",
 		right: "SEND_BACKDATED_EVENTS",
+		responses: {
+			200: {
+				body: "Message",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {},
+			404: {},
+		},
 	}),
 	async (req: Request, res: Response) => {
 		const { channel_id, message_id } = req.params;
@@ -230,7 +249,19 @@ router.put(
 
 router.get(
 	"/",
-	route({ permission: "VIEW_CHANNEL" }),
+	route({
+		permission: "VIEW_CHANNEL",
+		responses: {
+			200: {
+				body: "Message",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {},
+			404: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id } = req.params;
 
@@ -252,38 +283,54 @@ router.get(
 	},
 );
 
-router.delete("/", route({}), async (req: Request, res: Response) => {
-	const { message_id, channel_id } = req.params;
-
-	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
-	const message = await Message.findOneOrFail({ where: { id: message_id } });
-
-	const rights = await getRights(req.user_id);
-
-	if (message.author_id !== req.user_id) {
-		if (!rights.has("MANAGE_MESSAGES")) {
-			const permission = await getPermission(
-				req.user_id,
-				channel.guild_id,
-				channel_id,
-			);
-			permission.hasThrow("MANAGE_MESSAGES");
-		}
-	} else rights.hasThrow("SELF_DELETE_MESSAGES");
-
-	await Message.delete({ id: message_id });
-
-	await emitEvent({
-		event: "MESSAGE_DELETE",
-		channel_id,
-		data: {
-			id: message_id,
-			channel_id,
-			guild_id: channel.guild_id,
+router.delete(
+	"/",
+	route({
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {},
 		},
-	} as MessageDeleteEvent);
+	}),
+	async (req: Request, res: Response) => {
+		const { message_id, channel_id } = req.params;
 
-	res.sendStatus(204);
-});
+		const channel = await Channel.findOneOrFail({
+			where: { id: channel_id },
+		});
+		const message = await Message.findOneOrFail({
+			where: { id: message_id },
+		});
+
+		const rights = await getRights(req.user_id);
+
+		if (message.author_id !== req.user_id) {
+			if (!rights.has("MANAGE_MESSAGES")) {
+				const permission = await getPermission(
+					req.user_id,
+					channel.guild_id,
+					channel_id,
+				);
+				permission.hasThrow("MANAGE_MESSAGES");
+			}
+		} else rights.hasThrow("SELF_DELETE_MESSAGES");
+
+		await Message.delete({ id: message_id });
+
+		await emitEvent({
+			event: "MESSAGE_DELETE",
+			channel_id,
+			data: {
+				id: message_id,
+				channel_id,
+				guild_id: channel.guild_id,
+			},
+		} as MessageDeleteEvent);
+
+		res.sendStatus(204);
+	},
+);
 
 export default router;

@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@spacebar/api";
 import {
 	emitEvent,
 	getPermission,
@@ -23,7 +24,6 @@ import {
 	ReadState,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
 
 const router = Router();
 
@@ -33,7 +33,13 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ body: "MessageAcknowledgeSchema" }),
+	route({
+		body: "MessageAcknowledgeSchema",
+		responses: {
+			200: {},
+			403: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id, message_id } = req.params;
 
