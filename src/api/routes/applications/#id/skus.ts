@@ -16,13 +16,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
 import { route } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	res.json([]).status(200);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "ApplicationSkusResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		res.json([]).status(200);
+	},
+);
 
 export default router;

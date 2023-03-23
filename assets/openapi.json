@@ -3023,6 +3023,639 @@
                     "country_code",
                     "promotional_email_opt_in"
                 ]
+            },
+            "Application": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "default": ""
+                    },
+                    "type": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": true
+                    },
+                    "hook": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "bot_public": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "bot_require_code_grant": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "verify_key": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "redirect_uris": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
+                    "rpc_application_state": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "store_application_state": {
+                        "type": "integer",
+                        "default": 1
+                    },
+                    "verification_state": {
+                        "type": "integer",
+                        "default": 1
+                    },
+                    "interactions_endpoint_url": {
+                        "type": "string"
+                    },
+                    "integration_public": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "integration_require_code_grant": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "discoverability_state": {
+                        "type": "integer",
+                        "default": 1
+                    },
+                    "discovery_eligibility_flags": {
+                        "type": "integer",
+                        "default": 2240
+                    },
+                    "bot": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "cover_image": {
+                        "type": "string"
+                    },
+                    "install_params": {
+                        "type": "object",
+                        "properties": {
+                            "scopes": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "permissions": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "permissions",
+                            "scopes"
+                        ]
+                    },
+                    "terms_of_service_url": {
+                        "type": "string"
+                    },
+                    "privacy_policy_url": {
+                        "type": "string"
+                    },
+                    "team": {
+                        "$ref": "#/components/schemas/Team"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "description",
+                    "discoverability_state",
+                    "discovery_eligibility_flags",
+                    "flags",
+                    "hook",
+                    "id",
+                    "integration_public",
+                    "integration_require_code_grant",
+                    "name",
+                    "owner",
+                    "redirect_uris",
+                    "rpc_application_state",
+                    "store_application_state",
+                    "summary",
+                    "verification_state",
+                    "verify_key"
+                ]
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "desktop": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "mobile": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "premium": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "bot": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "bio": {
+                        "type": "string",
+                        "default": ""
+                    },
+                    "system": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "nsfw_allowed": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "mfa_enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "webauthn_enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "totp_secret": {
+                        "type": "string",
+                        "default": ""
+                    },
+                    "totp_last_ticket": {
+                        "type": "string",
+                        "default": ""
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "disabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "deleted": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "type": "string",
+                        "default": "0"
+                    },
+                    "public_flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "purchased_flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "premium_usage_flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "rights": {
+                        "type": "string"
+                    },
+                    "sessions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Session"
+                        }
+                    },
+                    "relationships": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Relationship"
+                        }
+                    },
+                    "connected_accounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ConnectedAccount"
+                        }
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "valid_tokens_since": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "hash": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "valid_tokens_since"
+                        ]
+                    },
+                    "fingerprints": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
+                    "settings": {
+                        "$ref": "#/components/schemas/UserSettings"
+                    },
+                    "extended_settings": {
+                        "type": "string",
+                        "default": "{}"
+                    },
+                    "security_keys": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SecurityKey"
+                        }
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "connected_accounts",
+                    "created_at",
+                    "data",
+                    "deleted",
+                    "desktop",
+                    "disabled",
+                    "discriminator",
+                    "extended_settings",
+                    "fingerprints",
+                    "flags",
+                    "id",
+                    "mfa_enabled",
+                    "mobile",
+                    "nsfw_allowed",
+                    "premium",
+                    "premium_since",
+                    "premium_type",
+                    "premium_usage_flags",
+                    "public_flags",
+                    "purchased_flags",
+                    "relationships",
+                    "rights",
+                    "security_keys",
+                    "sessions",
+                    "settings",
+                    "system",
+                    "username",
+                    "verified",
+                    "webauthn_enabled"
+                ]
+            },
+            "Session": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "session_id": {
+                        "type": "string"
+                    },
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Activity"
+                        }
+                    },
+                    "client_info": {
+                        "type": "object",
+                        "properties": {
+                            "client": {
+                                "type": "string"
+                            },
+                            "os": {
+                                "type": "string"
+                            },
+                            "version": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "client",
+                            "os",
+                            "version"
+                        ]
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/Status"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "activities",
+                    "client_info",
+                    "id",
+                    "session_id",
+                    "status",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "Relationship": {
+                "type": "object",
+                "properties": {
+                    "from_id": {
+                        "type": "string"
+                    },
+                    "from": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "to_id": {
+                        "type": "string"
+                    },
+                    "to": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "nickname": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RelationshipType"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "from",
+                    "from_id",
+                    "id",
+                    "to",
+                    "to_id",
+                    "type"
+                ]
+            },
+            "RelationshipType": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "type": "number"
+            },
+            "ConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "friend_sync": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "revoked": {
+                        "type": "boolean"
+                    },
+                    "show_activity": {
+                        "type": "boolean"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "visibility": {
+                        "type": "integer"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "access_token",
+                    "friend_sync",
+                    "id",
+                    "name",
+                    "revoked",
+                    "show_activity",
+                    "type",
+                    "user",
+                    "user_id",
+                    "verified",
+                    "visibility"
+                ]
+            },
+            "SecurityKey": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "key_id": {
+                        "type": "string"
+                    },
+                    "public_key": {
+                        "type": "string"
+                    },
+                    "counter": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "counter",
+                    "id",
+                    "key_id",
+                    "name",
+                    "public_key",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "Team": {
+                "type": "object",
+                "properties": {
+                    "icon": {
+                        "type": "string"
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TeamMember"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "owner_user_id": {
+                        "type": "string"
+                    },
+                    "owner_user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "members",
+                    "name",
+                    "owner_user",
+                    "owner_user_id"
+                ]
+            },
+            "TeamMember": {
+                "type": "object",
+                "properties": {
+                    "membership_state": {
+                        "$ref": "#/components/schemas/TeamMemberState"
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "team_id": {
+                        "type": "string"
+                    },
+                    "team": {
+                        "$ref": "#/components/schemas/Team"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "membership_state",
+                    "permissions",
+                    "team",
+                    "team_id",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "TeamMemberState": {
+                "enum": [
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
+            "ApplicationDetectableResponse": {
+                "type": "array",
+                "items": {}
+            },
+            "ApplicationEntitlementsResponse": {
+                "type": "array",
+                "items": {}
+            },
+            "ApplicationSkusResponse": {
+                "type": "array",
+                "items": {}
+            },
+            "ApplicationsResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Application"
+                }
             }
         }
     },
@@ -7496,7 +8129,26 @@
                 ],
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ApplicationsResponse"
+                                        },
+                                        {
+                                            "example": "ApplicationsResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             },
             "post": {
                 "security": [
@@ -7516,7 +8168,26 @@
                 },
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Application"
+                                        },
+                                        {
+                                            "example": "Application"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/applications/detectable/": {
@@ -7528,7 +8199,26 @@
                 ],
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ApplicationDetectableResponse"
+                                        },
+                                        {
+                                            "example": "ApplicationDetectableResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/applications/{id}/skus/": {
@@ -7551,7 +8241,26 @@
                 ],
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ApplicationSkusResponse"
+                                        },
+                                        {
+                                            "example": "ApplicationSkusResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/applications/{id}/": {
@@ -7574,7 +8283,43 @@
                 ],
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Application"
+                                        },
+                                        {
+                                            "example": "Application"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             },
             "patch": {
                 "security": [
@@ -7605,7 +8350,43 @@
                 ],
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Application"
+                                        },
+                                        {
+                                            "example": "Application"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/applications/{id}/delete": {
@@ -7628,7 +8409,27 @@
                 ],
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/applications/{id}/entitlements/": {
@@ -7651,7 +8452,26 @@
                 ],
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ApplicationEntitlementsResponse"
+                                        },
+                                        {
+                                            "example": "ApplicationEntitlementsResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/applications/{id}/bot/": {
@@ -7674,7 +8494,43 @@
                 ],
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/TokenResponse"
+                                        },
+                                        {
+                                            "example": "TokenResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             },
             "patch": {
                 "security": [
@@ -7705,7 +8561,43 @@
                 ],
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Application"
+                                        },
+                                        {
+                                            "example": "Application"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/applications/{id}/bot/reset": {
@@ -7728,7 +8620,43 @@
                 ],
                 "tags": [
                     "applications"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/TokenResponse"
+                                        },
+                                        {
+                                            "example": "TokenResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/APIErrorResponse"
+                                        },
+                                        {
+                                            "example": "APIErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/-/readyz/": {

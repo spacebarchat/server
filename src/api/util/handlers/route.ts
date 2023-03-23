@@ -55,7 +55,8 @@ export interface RouteOptions {
 	body?: `${string}Schema`; // typescript interface name
 	responses?: {
 		[status: number]: {
-			body?: `${string}Response`;
+			// body?: `${string}Response`;
+			body?: string;
 		};
 	};
 	test?: {
