@@ -24,7 +24,14 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ right: "RESEND_VERIFICATION_EMAIL" }),
+	route({
+		right: "RESEND_VERIFICATION_EMAIL",
+		responses: {
+			204: {},
+			400: {},
+			500: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id },

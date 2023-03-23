@@ -30,7 +30,18 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ body: "ForgotPasswordSchema" }),
+	route({
+		body: "ForgotPasswordSchema",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			500: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { login, captcha_key } = req.body as ForgotPasswordSchema;
 

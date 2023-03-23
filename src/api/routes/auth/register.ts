@@ -42,7 +42,13 @@ const router: Router = Router();
 
 router.post(
 	"/",
-	route({ body: "RegisterSchema" }),
+	route({
+		body: "RegisterSchema",
+		responses: {
+			200: { body: "TokenResponse" },
+			400: { body: "APIErrorOrCaptchaResponse" },
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as RegisterSchema;
 		const { register, security, limits } = Config.get();

@@ -17,21 +17,21 @@
 */
 
 import {
-	ajv,
 	DiscordApiErrors,
 	EVENT,
 	FieldErrors,
-	SpacebarApiErrors,
-	getPermission,
-	getRights,
-	normalizeBody,
 	PermissionResolvable,
 	Permissions,
 	RightResolvable,
 	Rights,
+	SpacebarApiErrors,
+	ajv,
+	getPermission,
+	getRights,
+	normalizeBody,
 } from "@spacebar/util";
-import { NextFunction, Request, Response } from "express";
 import { AnyValidateFunction } from "ajv/dist/core";
+import { NextFunction, Request, Response } from "express";
 
 declare global {
 	// TODO: fix this
@@ -53,6 +53,11 @@ export interface RouteOptions {
 	permission?: PermissionResolvable;
 	right?: RightResolvable;
 	body?: `${string}Schema`; // typescript interface name
+	responses?: {
+		[status: number]: {
+			body?: `${string}Response`;
+		};
+	};
 	test?: {
 		response?: RouteResponse;
 		body?: unknown;

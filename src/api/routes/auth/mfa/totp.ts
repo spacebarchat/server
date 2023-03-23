@@ -16,16 +16,26 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
-import { BackupCode, generateToken, User, TotpSchema } from "@spacebar/util";
-import { verifyToken } from "node-2fa";
+import { BackupCode, TotpSchema, User, generateToken } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { verifyToken } from "node-2fa";
 const router = Router();
 
 router.post(
 	"/",
-	route({ body: "TotpSchema" }),
+	route({
+		body: "TotpSchema",
+		responses: {
+			200: {
+				body: "TokenResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		// const { code, ticket, gift_code_sku_id, login_source } =
 		const { code, ticket } = req.body as TotpSchema;

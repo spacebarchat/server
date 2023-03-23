@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route, random } from "@spacebar/api";
+import { random, route } from "@spacebar/api";
 import { Config, ValidRegistrationToken } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
@@ -25,7 +25,10 @@ export default router;
 
 router.get(
 	"/",
-	route({ right: "OPERATOR" }),
+	route({
+		right: "OPERATOR",
+		responses: { 200: { body: "GenerateRegistrationTokensResponse" } },
+	}),
 	async (req: Request, res: Response) => {
 		const count = req.query.count ? parseInt(req.query.count as string) : 1;
 		const length = req.query.length
