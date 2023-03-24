@@ -16,21 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
 import {
-	Member,
+	emitEvent,
+	Emoji,
 	getPermission,
 	getRights,
-	Role,
-	GuildMemberUpdateEvent,
-	emitEvent,
-	Sticker,
-	Emoji,
 	Guild,
+	GuildMemberUpdateEvent,
 	handleFile,
+	Member,
 	MemberChangeSchema,
+	Role,
+	Sticker,
 } from "@spacebar/util";
-import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -47,7 +47,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.patch(
 	"/",
-	route({ body: "MemberChangeSchema" }),
+	route({ requestBody: "MemberChangeSchema" }),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const member_id =

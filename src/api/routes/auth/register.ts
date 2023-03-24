@@ -16,25 +16,25 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
 import {
-	Config,
-	generateToken,
-	Invite,
-	FieldErrors,
-	User,
-	adjustEmail,
-	RegisterSchema,
-	ValidRegistrationToken,
-} from "@spacebar/util";
-import {
-	route,
-	getIpAdress,
 	IPAnalysis,
+	getIpAdress,
 	isProxy,
+	route,
 	verifyCaptcha,
 } from "@spacebar/api";
+import {
+	Config,
+	FieldErrors,
+	Invite,
+	RegisterSchema,
+	User,
+	ValidRegistrationToken,
+	adjustEmail,
+	generateToken,
+} from "@spacebar/util";
 import bcrypt from "bcrypt";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
 
@@ -43,7 +43,7 @@ const router: Router = Router();
 router.post(
 	"/",
 	route({
-		body: "RegisterSchema",
+		requestBody: "RegisterSchema",
 		responses: {
 			200: { body: "TokenResponse" },
 			400: { body: "APIErrorOrCaptchaResponse" },

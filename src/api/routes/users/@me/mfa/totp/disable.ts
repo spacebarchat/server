@@ -16,22 +16,22 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
-import { verifyToken } from "node-2fa";
-import { HTTPError } from "lambert-server";
 import {
-	User,
-	generateToken,
 	BackupCode,
 	TotpDisableSchema,
+	User,
+	generateToken,
 } from "@spacebar/util";
+import { Request, Response, Router } from "express";
+import { HTTPError } from "lambert-server";
+import { verifyToken } from "node-2fa";
 
 const router = Router();
 
 router.post(
 	"/",
-	route({ body: "TotpDisableSchema" }),
+	route({ requestBody: "TotpDisableSchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as TotpDisableSchema;
 

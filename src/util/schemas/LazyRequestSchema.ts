@@ -18,7 +18,9 @@
 
 export interface LazyRequestSchema {
 	guild_id: string;
-	channels?: Record<string, [number, number][]>;
+	channels?: {
+		[key: string]: [number, number][];
+	};
 	activities?: boolean;
 	threads?: boolean;
 	typing?: true;

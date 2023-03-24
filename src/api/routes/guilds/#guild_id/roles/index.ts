@@ -16,21 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
 import {
-	Role,
-	getPermission,
-	Member,
-	GuildRoleCreateEvent,
-	GuildRoleUpdateEvent,
-	emitEvent,
 	Config,
 	DiscordApiErrors,
+	emitEvent,
+	getPermission,
+	GuildRoleCreateEvent,
+	GuildRoleUpdateEvent,
+	Member,
+	Role,
 	RoleModifySchema,
 	RolePositionUpdateSchema,
 	Snowflake,
 } from "@spacebar/util";
-import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 import { Not } from "typeorm";
 
 const router: Router = Router();
@@ -47,7 +47,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.post(
 	"/",
-	route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" }),
+	route({ requestBody: "RoleModifySchema", permission: "MANAGE_ROLES" }),
 	async (req: Request, res: Response) => {
 		const guild_id = req.params.guild_id;
 		const body = req.body as RoleModifySchema;
@@ -104,7 +104,7 @@ router.post(
 
 router.patch(
 	"/",
-	route({ body: "RolePositionUpdateSchema" }),
+	route({ requestBody: "RolePositionUpdateSchema" }),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const body = req.body as RolePositionUpdateSchema;

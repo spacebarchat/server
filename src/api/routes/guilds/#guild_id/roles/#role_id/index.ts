@@ -16,17 +16,17 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
+import { route } from "@spacebar/api";
 import {
-	Role,
-	Member,
-	GuildRoleUpdateEvent,
-	GuildRoleDeleteEvent,
 	emitEvent,
+	GuildRoleDeleteEvent,
+	GuildRoleUpdateEvent,
 	handleFile,
+	Member,
+	Role,
 	RoleModifySchema,
 } from "@spacebar/util";
-import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
 const router = Router();
@@ -69,7 +69,7 @@ router.delete(
 
 router.patch(
 	"/",
-	route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" }),
+	route({ requestBody: "RoleModifySchema", permission: "MANAGE_ROLES" }),
 	async (req: Request, res: Response) => {
 		const { role_id, guild_id } = req.params;
 		const body = req.body as RoleModifySchema;

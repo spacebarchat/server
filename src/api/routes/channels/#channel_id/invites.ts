@@ -35,7 +35,7 @@ const router: Router = Router();
 router.post(
 	"/",
 	route({
-		body: "InviteCreateSchema",
+		requestBody: "InviteCreateSchema",
 		permission: "CREATE_INSTANT_INVITE",
 		right: "CREATE_INVITES",
 		responses: {

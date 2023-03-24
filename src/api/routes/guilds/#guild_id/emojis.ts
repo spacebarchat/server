@@ -16,21 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
+import { route } from "@spacebar/api";
 import {
 	Config,
 	DiscordApiErrors,
-	emitEvent,
 	Emoji,
+	EmojiCreateSchema,
+	EmojiModifySchema,
 	GuildEmojisUpdateEvent,
-	handleFile,
 	Member,
 	Snowflake,
 	User,
-	EmojiCreateSchema,
-	EmojiModifySchema,
+	emitEvent,
+	handleFile,
 } from "@spacebar/util";
-import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -63,7 +63,7 @@ router.get("/:emoji_id", route({}), async (req: Request, res: Response) => {
 router.post(
 	"/",
 	route({
-		body: "EmojiCreateSchema",
+		requestBody: "EmojiCreateSchema",
 		permission: "MANAGE_EMOJIS_AND_STICKERS",
 	}),
 	async (req: Request, res: Response) => {
@@ -113,7 +113,7 @@ router.post(
 router.patch(
 	"/:emoji_id",
 	route({
-		body: "EmojiModifySchema",
+		requestBody: "EmojiModifySchema",
 		permission: "MANAGE_EMOJIS_AND_STICKERS",
 	}),
 	async (req: Request, res: Response) => {

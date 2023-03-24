@@ -27,34 +27,46 @@ require("missing-native-js-functions");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
 const SchemaPath = path.join(__dirname, "..", "assets", "schemas.json");
-let schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
-
-for (var schema in schemas) {
-	const part = schemas[schema];
-	for (var key in part.properties) {
-		if (part.properties[key].anyOf) {
-			const nullIndex = part.properties[key].anyOf.findIndex(
-				(x) => x.type == "null",
-			);
-			if (nullIndex != -1) {
-				part.properties[key].nullable = true;
-				part.properties[key].anyOf.splice(nullIndex, 1);
-
-				if (part.properties[key].anyOf.length == 1) {
-					Object.assign(
-						part.properties[key],
-						part.properties[key].anyOf[0],
-					);
-					delete part.properties[key].anyOf;
-				}
-			}
-		}
-	}
-}
-
-const specification = JSON.parse(
-	fs.readFileSync(openapiPath, { encoding: "utf8" }),
-);
+const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
+// const specification = JSON.parse(
+// 	fs.readFileSync(openapiPath, { encoding: "utf8" }),
+// );
+let specification = {
+	openapi: "3.1.0",
+	info: {
+		title: "Fosscord Server",
+		description:
+			"Fosscord is a free open source selfhostable discord compatible chat, voice and video platform",
+		license: {
+			name: "AGPLV3",
+			url: "https://www.gnu.org/licenses/agpl-3.0.en.html",
+		},
+		version: "1.0.0",
+	},
+	externalDocs: {
+		description: "Fosscord Docs",
+		url: "https://docs.fosscord.com",
+	},
+	servers: [
+		{
+			url: "https://staging.fosscord.com/api/",
+			description: "Official Fosscord Instance",
+		},
+	],
+	components: {
+		securitySchemes: {
+			bearer: {
+				type: "http",
+				scheme: "bearer",
+				description: "Bearer/Bot prefixes are not required.",
+				bearerFormat: "JWT",
+				in: "header",
+			},
+		},
+	},
+	tags: [],
+	paths: {},
+};
 
 function combineSchemas(schemas) {
 	var definitions = {};
@@ -72,6 +84,11 @@ function combineSchemas(schemas) {
 	}
 
 	for (const key in definitions) {
+		const reg = new RegExp(/^[a-zA-Z0-9\.\-_]+$/, "gm");
+		if (!reg.test(key)) {
+			console.error(`Invalid schema name: ${key} (${reg.test(key)})`);
+			continue;
+		}
 		specification.components = specification.components || {};
 		specification.components.schemas =
 			specification.components.schemas || {};
@@ -102,30 +119,20 @@ function getTag(key) {
 function apiRoutes() {
 	const routes = getRouteDescriptions();
 
-	const tags = Array.from(routes.keys()).map((x) => getTag(x));
-	specification.tags = specification.tags || [];
-	specification.tags = [...specification.tags.map((x) => x.name), ...tags]
-		.unique()
-		.map((x) => ({ name: x }));
-
-	specification.components = specification.components || {};
-	specification.components.securitySchemes = {
-		bearer: {
-			type: "http",
-			scheme: "bearer",
-			description: "Bearer/Bot prefixes are not required.",
-		},
-	};
+	// populate tags
+	const tags = Array.from(routes.keys())
+		.map((x) => getTag(x))
+		.sort((a, b) => a.localeCompare(b));
+	specification.tags = tags.unique().map((x) => ({ name: x }));
 
 	routes.forEach((route, pathAndMethod) => {
 		const [p, method] = pathAndMethod.split("|");
 		const path = p.replace(/:(\w+)/g, "{$1}");
 
-		specification.paths = specification.paths || {};
 		let obj = specification.paths[path]?.[method] || {};
 		obj["x-right-required"] = route.right;
 		obj["x-permission-required"] = route.permission;
-		obj["x-fires-event"] = route.test?.event;
+		obj["x-fires-event"] = route.event;
 
 		if (
 			!NO_AUTHORIZATION_ROUTES.some((x) => {
@@ -136,12 +143,17 @@ function apiRoutes() {
 			obj.security = [{ bearer: [] }];
 		}
 
-		if (route.body) {
+		if (route.description) obj.description = route.description;
+		if (route.summary) obj.summary = route.summary;
+
+		if (route.requestBody) {
 			obj.requestBody = {
 				required: true,
 				content: {
 					"application/json": {
-						schema: { $ref: `#/components/schemas/${route.body}` },
+						schema: {
+							$ref: `#/components/schemas/${route.requestBody}`,
+						},
 					},
 				},
 			}.merge(obj.requestBody);
@@ -150,16 +162,9 @@ function apiRoutes() {
 		if (route.responses) {
 			for (const [k, v] of Object.entries(route.responses)) {
 				let schema = {
-					allOf: [
-						{
-							$ref: `#/components/schemas/${v.body}`,
-						},
-						{
-							example: v.body,
-						},
-					],
+					$ref: `#/components/schemas/${v.body}`,
 				};
-				if (!v.body) schema = schema.allOf[0];
+				// if (!v.body) schema = schema.allOf[0];
 
 				obj.responses = {
 					[k]: {
@@ -173,12 +178,16 @@ function apiRoutes() {
 										},
 									},
 							  }
-							: {}),
+							: {
+									description: "No description available",
+							  }),
 					},
 				}.merge(obj.responses);
 				delete obj.responses.default;
 			}
 		}
+
+		// handles path parameters
 		if (p.includes(":")) {
 			obj.parameters = p.match(/:\w+/g)?.map((x) => ({
 				name: x.replace(":", ""),
@@ -188,16 +197,17 @@ function apiRoutes() {
 				description: x.replace(":", ""),
 			}));
 		}
+
 		obj.tags = [...(obj.tags || []), getTag(p)].unique();
 
 		specification.paths[path] = {
-			...specification.paths[path],
 			[method]: obj,
 		};
 	});
 }
 
 function main() {
+	console.log("Generating OpenAPI Specification...");
 	combineSchemas(schemas);
 	apiRoutes();
 

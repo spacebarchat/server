@@ -16,16 +16,16 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
+import { route } from "@spacebar/api";
 import {
 	Channel,
-	ChannelUpdateEvent,
-	emitEvent,
 	ChannelModifySchema,
 	ChannelReorderSchema,
+	ChannelUpdateEvent,
+	emitEvent,
 } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { route } from "@spacebar/api";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
@@ -37,7 +37,10 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.post(
 	"/",
-	route({ body: "ChannelModifySchema", permission: "MANAGE_CHANNELS" }),
+	route({
+		requestBody: "ChannelModifySchema",
+		permission: "MANAGE_CHANNELS",
+	}),
 	async (req: Request, res: Response) => {
 		// creates a new guild channel https://discord.com/developers/docs/resources/guild#create-guild-channel
 		const { guild_id } = req.params;
@@ -54,7 +57,10 @@ router.post(
 
 router.patch(
 	"/",
-	route({ body: "ChannelReorderSchema", permission: "MANAGE_CHANNELS" }),
+	route({
+		requestBody: "ChannelReorderSchema",
+		permission: "MANAGE_CHANNELS",
+	}),
 	async (req: Request, res: Response) => {
 		// changes guild channel position
 		const { guild_id } = req.params;

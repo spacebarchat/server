@@ -16,21 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
 import {
 	DiscordApiErrors,
+	Guild,
+	GuildUpdateEvent,
+	GuildUpdateSchema,
+	Member,
+	SpacebarApiErrors,
 	emitEvent,
 	getPermission,
 	getRights,
-	Guild,
-	GuildUpdateEvent,
 	handleFile,
-	Member,
-	GuildUpdateSchema,
-	SpacebarApiErrors,
 } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { route } from "@spacebar/api";
 
 const router = Router();
 
@@ -55,7 +55,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.patch(
 	"/",
-	route({ body: "GuildUpdateSchema", permission: "MANAGE_GUILD" }),
+	route({ requestBody: "GuildUpdateSchema", permission: "MANAGE_GUILD" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as GuildUpdateSchema;
 		const { guild_id } = req.params;

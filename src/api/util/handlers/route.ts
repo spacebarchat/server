@@ -52,27 +52,31 @@ export type RouteResponse = {
 export interface RouteOptions {
 	permission?: PermissionResolvable;
 	right?: RightResolvable;
-	body?: `${string}Schema`; // typescript interface name
+	requestBody?: `${string}Schema`; // typescript interface name
 	responses?: {
 		[status: number]: {
 			// body?: `${string}Response`;
 			body?: string;
 		};
 	};
-	test?: {
-		response?: RouteResponse;
-		body?: unknown;
-		path?: string;
-		event?: EVENT | EVENT[];
-		headers?: Record<string, string>;
-	};
+	event?: EVENT | EVENT[];
+	summary?: string;
+	description?: string;
+	// test?: {
+	// 	response?: RouteResponse;
+	// 	body?: unknown;
+	// 	path?: string;
+	// 	event?: EVENT | EVENT[];
+	// 	headers?: Record<string, string>;
+	// };
 }
 
 export function route(opts: RouteOptions) {
 	let validate: AnyValidateFunction | undefined;
-	if (opts.body) {
-		validate = ajv.getSchema(opts.body);
-		if (!validate) throw new Error(`Body schema ${opts.body} not found`);
+	if (opts.requestBody) {
+		validate = ajv.getSchema(opts.requestBody);
+		if (!validate)
+			throw new Error(`Body schema ${opts.requestBody} not found`);
 	}
 
 	return async (req: Request, res: Response, next: NextFunction) => {

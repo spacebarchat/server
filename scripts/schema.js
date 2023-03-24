@@ -57,6 +57,8 @@ const Excluded = [
 	"PropertiesSchema",
 	"AsyncSchema",
 	"AnySchema",
+	"SMTPConnection.CustomAuthenticationResponse",
+	"TransportMakeRequestResponse",
 ];
 
 function modify(obj) {

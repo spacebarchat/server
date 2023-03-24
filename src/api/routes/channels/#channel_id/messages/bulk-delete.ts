@@ -39,7 +39,7 @@ export default router;
 router.post(
 	"/",
 	route({
-		body: "BulkDeleteSchema",
+		requestBody: "BulkDeleteSchema",
 		responses: {
 			204: {},
 			400: {

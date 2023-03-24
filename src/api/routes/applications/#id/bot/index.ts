@@ -114,7 +114,7 @@ router.post(
 router.patch(
 	"/",
 	route({
-		body: "BotModifySchema",
+		requestBody: "BotModifySchema",
 		responses: {
 			200: {
 				body: "Application",

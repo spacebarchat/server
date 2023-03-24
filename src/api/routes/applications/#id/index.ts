@@ -55,7 +55,7 @@ router.get(
 router.patch(
 	"/",
 	route({
-		body: "ApplicationModifySchema",
+		requestBody: "ApplicationModifySchema",
 		responses: {
 			200: {
 				body: "Application",

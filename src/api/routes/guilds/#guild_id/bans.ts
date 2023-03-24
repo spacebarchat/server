@@ -16,20 +16,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
+import { getIpAdress, route } from "@spacebar/api";
 import {
+	Ban,
+	BanModeratorSchema,
+	BanRegistrySchema,
 	DiscordApiErrors,
-	emitEvent,
 	GuildBanAddEvent,
 	GuildBanRemoveEvent,
-	Ban,
-	User,
 	Member,
-	BanRegistrySchema,
-	BanModeratorSchema,
+	User,
+	emitEvent,
 } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { getIpAdress, route } from "@spacebar/api";
 
 const router: Router = Router();
 
@@ -97,7 +97,7 @@ router.get(
 
 router.put(
 	"/:user_id",
-	route({ body: "BanCreateSchema", permission: "BAN_MEMBERS" }),
+	route({ requestBody: "BanCreateSchema", permission: "BAN_MEMBERS" }),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const banned_user_id = req.params.user_id;
@@ -143,7 +143,7 @@ router.put(
 
 router.put(
 	"/@me",
-	route({ body: "BanCreateSchema" }),
+	route({ requestBody: "BanCreateSchema" }),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 

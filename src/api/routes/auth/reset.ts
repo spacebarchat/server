@@ -35,7 +35,7 @@ const router = Router();
 router.post(
 	"/",
 	route({
-		body: "PasswordResetSchema",
+		requestBody: "PasswordResetSchema",
 		responses: {
 			200: {
 				body: "TokenResponse",

@@ -16,16 +16,16 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
 import {
 	BackupCode,
 	FieldErrors,
 	generateMfaBackupCodes,
-	User,
 	MfaCodesSchema,
+	User,
 } from "@spacebar/util";
 import bcrypt from "bcrypt";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -33,7 +33,7 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ body: "MfaCodesSchema" }),
+	route({ requestBody: "MfaCodesSchema" }),
 	async (req: Request, res: Response) => {
 		const { password, regenerate } = req.body as MfaCodesSchema;
 

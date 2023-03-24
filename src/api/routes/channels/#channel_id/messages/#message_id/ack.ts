@@ -34,7 +34,7 @@ const router = Router();
 router.post(
 	"/",
 	route({
-		body: "MessageAcknowledgeSchema",
+		requestBody: "MessageAcknowledgeSchema",
 		responses: {
 			200: {},
 			403: {},

@@ -29,7 +29,7 @@ const router = Router();
 // TODO: connection update schema
 router.patch(
 	"/",
-	route({ body: "ConnectionUpdateSchema" }),
+	route({ requestBody: "ConnectionUpdateSchema" }),
 	async (req: Request, res: Response) => {
 		const { connection_name, connection_id } = req.params;
 		const body = req.body as ConnectionUpdateSchema;

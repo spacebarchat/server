@@ -16,20 +16,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	RelationshipAddEvent,
-	User,
-	PublicUserProjection,
-	RelationshipType,
-	RelationshipRemoveEvent,
-	emitEvent,
-	Relationship,
-	Config,
-} from "@spacebar/util";
-import { Router, Response, Request } from "express";
-import { HTTPError } from "lambert-server";
-import { DiscordApiErrors } from "@spacebar/util";
 import { route } from "@spacebar/api";
+import {
+	Config,
+	DiscordApiErrors,
+	PublicUserProjection,
+	Relationship,
+	RelationshipAddEvent,
+	RelationshipRemoveEvent,
+	RelationshipType,
+	User,
+	emitEvent,
+} from "@spacebar/util";
+import { Request, Response, Router } from "express";
+import { HTTPError } from "lambert-server";
 
 const router = Router();
 
@@ -60,7 +60,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.put(
 	"/:id",
-	route({ body: "RelationshipPutSchema" }),
+	route({ requestBody: "RelationshipPutSchema" }),
 	async (req: Request, res: Response) => {
 		return await updateRelationship(
 			req,
@@ -77,7 +77,7 @@ router.put(
 
 router.post(
 	"/",
-	route({ body: "RelationshipPostSchema" }),
+	route({ requestBody: "RelationshipPostSchema" }),
 	async (req: Request, res: Response) => {
 		return await updateRelationship(
 			req,

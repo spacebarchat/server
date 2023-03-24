@@ -16,14 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
 import {
-	Recipient,
-	DmChannelDTO,
 	Channel,
 	DmChannelCreateSchema,
+	DmChannelDTO,
+	Recipient,
 } from "@spacebar/util";
-import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
@@ -41,7 +41,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.post(
 	"/",
-	route({ body: "DmChannelCreateSchema" }),
+	route({ requestBody: "DmChannelCreateSchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as DmChannelCreateSchema;
 		res.json(

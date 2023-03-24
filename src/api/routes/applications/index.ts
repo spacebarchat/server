@@ -48,7 +48,7 @@ router.get(
 router.post(
 	"/",
 	route({
-		body: "ApplicationCreateSchema",
+		requestBody: "ApplicationCreateSchema",
 		responses: {
 			200: {
 				body: "Application",
