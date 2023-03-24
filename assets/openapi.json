@@ -3260,6 +3260,45 @@
                     "user_id"
                 ]
             },
+            "TenorGifResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "src": {
+                        "type": "string"
+                    },
+                    "gif_src": {
+                        "type": "string"
+                    },
+                    "width": {
+                        "type": "integer"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "preview": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "gif_src",
+                    "height",
+                    "id",
+                    "preview",
+                    "src",
+                    "title",
+                    "url",
+                    "width"
+                ]
+            },
             "UserPublic": {
                 "type": "object",
                 "properties": {
@@ -4547,6 +4586,63 @@
                     "country_code",
                     "promotional_email_opt_in"
                 ]
+            },
+            "TenorTrendingResponse": {
+                "type": "object",
+                "properties": {
+                    "categories": {
+                        "type": "object",
+                        "properties": {
+                            "tags": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "searchterm": {
+                                            "type": "string"
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "image": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "image",
+                                        "name",
+                                        "path",
+                                        "searchterm"
+                                    ]
+                                }
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "tags"
+                        ]
+                    },
+                    "gifs": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TenorGifResponse"
+                        }
+                    }
+                },
+                "required": [
+                    "categories",
+                    "gifs"
+                ]
+            },
+            "TenorGifsResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/TenorGifResponse"
+                }
             },
             "TokenResponse": {
                 "type": "object",
@@ -8179,10 +8275,27 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TenorTrendingResponse"
+                                }
+                            }
+                        }
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Locale"
+                    }
+                ],
                 "tags": [
                     "gifs"
                 ]
@@ -8196,10 +8309,35 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TenorGifsResponse"
+                                }
+                            }
+                        }
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "media_format",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Media format"
+                    },
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Locale"
+                    }
+                ],
                 "tags": [
                     "gifs"
                 ]
@@ -8213,10 +8351,44 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TenorGifsResponse"
+                                }
+                            }
+                        }
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Search query"
+                    },
+                    {
+                        "name": "media_format",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Media format"
+                    },
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Locale"
+                    }
+                ],
                 "tags": [
                     "gifs"
                 ]

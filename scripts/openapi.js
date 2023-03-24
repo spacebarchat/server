@@ -202,6 +202,19 @@ function apiRoutes() {
 			}));
 		}
 
+		if (route.query) {
+			// map to array
+			const query = Object.entries(route.query).map(([k, v]) => ({
+				name: k,
+				in: "query",
+				required: v.required,
+				schema: { type: v.type },
+				description: v.description,
+			}));
+
+			obj.parameters = [...(obj.parameters || []), ...query];
+		}
+
 		obj.tags = [...(obj.tags || []), getTag(p)].unique();
 
 		specification.paths[path] = {

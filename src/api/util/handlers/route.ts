@@ -62,6 +62,14 @@ export interface RouteOptions {
 	event?: EVENT | EVENT[];
 	summary?: string;
 	description?: string;
+	query?: {
+		[key: string]: {
+			type: string;
+			required?: boolean;
+			description?: string;
+			values?: string[];
+		};
+	};
 	// test?: {
 	// 	response?: RouteResponse;
 	// 	body?: unknown;
