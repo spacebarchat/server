@@ -9651,6 +9651,24 @@
                         }
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "The number of registration tokens to generate. Defaults to 1."
+                    },
+                    {
+                        "name": "length",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "The length of each registration token. Defaults to 255."
+                    }
+                ],
                 "tags": [
                     "auth"
                 ]
