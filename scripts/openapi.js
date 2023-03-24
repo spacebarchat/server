@@ -164,7 +164,6 @@ function apiRoutes() {
 				let schema = {
 					$ref: `#/components/schemas/${v.body}`,
 				};
-				// if (!v.body) schema = schema.allOf[0];
 
 				obj.responses = {
 					[k]: {
@@ -183,8 +182,13 @@ function apiRoutes() {
 							  }),
 					},
 				}.merge(obj.responses);
-				delete obj.responses.default;
 			}
+		} else {
+			obj.responses = {
+				default: {
+					description: "No description available",
+				},
+			};
 		}
 
 		// handles path parameters
