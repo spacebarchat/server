@@ -5516,6 +5516,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "voice"
                 ]
@@ -5536,6 +5541,11 @@
                                 "$ref": "#/components/schemas/UserSettingsSchema"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
                     }
                 },
                 "tags": [
@@ -5560,6 +5570,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5572,6 +5587,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "id",
@@ -5595,6 +5615,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "id",
@@ -5628,6 +5653,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5640,6 +5670,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "key_id",
@@ -5673,6 +5708,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5693,6 +5733,11 @@
                                 "$ref": "#/components/schemas/TotpDisableSchema"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
                     }
                 },
                 "tags": [
@@ -5717,6 +5762,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5739,6 +5789,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5751,6 +5806,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5773,6 +5833,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5785,6 +5850,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5797,6 +5867,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -5820,6 +5895,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5840,6 +5920,11 @@
                                 "$ref": "#/components/schemas/UserGuildSettingsSchema"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
                     }
                 },
                 "parameters": [
@@ -5865,6 +5950,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5877,6 +5967,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5889,6 +5984,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5901,6 +6001,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5913,6 +6018,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5925,6 +6035,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5947,6 +6062,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5959,6 +6079,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5971,6 +6096,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5983,6 +6113,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -5995,6 +6130,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "app_id",
@@ -6018,6 +6158,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -6030,6 +6175,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -6042,6 +6192,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -6099,6 +6254,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "id",
@@ -6122,6 +6282,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "id",
@@ -6146,6 +6311,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "id",
@@ -6164,6 +6334,11 @@
         },
         "/updates/": {
             "get": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "updates"
                 ]
@@ -6171,6 +6346,11 @@
         },
         "/track/": {
             "post": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "track"
                 ]
@@ -6183,6 +6363,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "teams"
                 ]
@@ -6195,6 +6380,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "id",
@@ -6218,6 +6408,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "sku_id",
@@ -6241,6 +6436,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "id",
@@ -6264,6 +6464,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "id",
@@ -6288,6 +6493,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "stop"
                 ]
@@ -6300,6 +6510,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "sticker_id",
@@ -6323,6 +6538,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "sticker-packs"
                 ]
@@ -6335,6 +6555,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "stage-instances"
                 ]
@@ -6342,6 +6567,11 @@
         },
         "/science/": {
             "post": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "science"
                 ]
@@ -6354,6 +6584,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "scheduled-maintenances"
                 ]
@@ -6376,6 +6611,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "read-states"
                 ]
@@ -6388,6 +6628,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "policies"
                 ]
@@ -6395,6 +6640,11 @@
         },
         "/policies/instance/limits/": {
             "get": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "policies"
                 ]
@@ -6402,6 +6652,11 @@
         },
         "/policies/instance/": {
             "get": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "policies"
                 ]
@@ -6409,6 +6664,11 @@
         },
         "/policies/instance/domains/": {
             "get": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "policies"
                 ]
@@ -6416,6 +6676,11 @@
         },
         "/ping/": {
             "get": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "ping"
                 ]
@@ -6428,6 +6693,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -6451,6 +6721,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "outbound-promotions"
                 ]
@@ -6463,6 +6738,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "oauth2"
                 ]
@@ -6485,6 +6765,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "oauth2"
                 ]
@@ -6497,6 +6782,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "code",
@@ -6528,6 +6818,11 @@
                                 "$ref": "#/components/schemas/GuildTemplateCreateSchema"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
                     }
                 },
                 "parameters": [
@@ -6564,6 +6859,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "guilds"
                 ]
@@ -6576,6 +6876,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -6599,6 +6904,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -6631,6 +6941,11 @@
                                 "$ref": "#/components/schemas/WidgetModifySchema"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
                     }
                 },
                 "parameters": [
@@ -6667,6 +6982,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -6690,6 +7010,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -6721,6 +7046,11 @@
                                 "$ref": "#/components/schemas/VoiceStateUpdateSchema"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
                     }
                 },
                 "parameters": [
@@ -6766,6 +7096,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -6800,6 +7135,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -6832,6 +7172,11 @@
                                 "$ref": "#/components/schemas/TemplateModifySchema"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
                     }
                 },
                 "parameters": [
@@ -6877,6 +7222,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -6901,6 +7251,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -6943,6 +7298,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -6977,6 +7337,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7009,6 +7374,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7034,6 +7404,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7065,6 +7440,11 @@
                                 "$ref": "#/components/schemas/MemberChangeProfileSchema"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
                     }
                 },
                 "parameters": [
@@ -7099,6 +7479,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7122,6 +7507,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7145,6 +7535,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7169,6 +7564,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7220,6 +7620,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7252,6 +7657,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7284,6 +7694,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7308,6 +7723,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7331,6 +7751,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7363,6 +7788,11 @@
                                 "$ref": "#/components/schemas/GuildUpdateSchema"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
                     }
                 },
                 "parameters": [
@@ -7399,6 +7829,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7423,6 +7858,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7455,6 +7895,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7478,6 +7923,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7512,6 +7962,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7536,6 +7991,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7560,6 +8020,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7593,6 +8058,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7635,6 +8105,11 @@
                         }
                     }
                 },
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7658,6 +8133,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "parameters": [
                     {
                         "name": "guild_id",
@@ -7681,6 +8161,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "guild-recommendations"
                 ]
@@ -7693,6 +8178,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "gifs"
                 ]
@@ -7705,6 +8195,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "gifs"
                 ]
@@ -7717,6 +8212,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "gifs"
                 ]
@@ -7762,6 +8262,11 @@
         },
         "/experiments/": {
             "get": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "experiments"
                 ]
@@ -7769,6 +8274,11 @@
         },
         "/download/": {
             "get": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "download"
                 ]
@@ -7781,6 +8291,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "discovery"
                 ]
@@ -7793,6 +8308,11 @@
                         "bearer": true
                     }
                 ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "discoverable-guilds"
                 ]
@@ -9329,6 +9849,11 @@
         },
         "/-/readyz/": {
             "get": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "-"
                 ]
@@ -9336,6 +9861,11 @@
         },
         "/-/healthz/": {
             "get": {
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
                 "tags": [
                     "-"
                 ]
