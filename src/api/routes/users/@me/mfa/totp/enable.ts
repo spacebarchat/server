@@ -16,15 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import {
-	User,
-	generateToken,
-	generateMfaBackupCodes,
-	TotpEnableSchema,
-} from "@fosscord/util";
 import { route } from "@fosscord/api";
+import {
+	generateMfaBackupCodes,
+	generateToken,
+	TotpEnableSchema,
+	User,
+} from "@fosscord/util";
 import bcrypt from "bcrypt";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
 
@@ -32,7 +32,7 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ body: "TotpEnableSchema" }),
+	route({ requestBody: "TotpEnableSchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as TotpEnableSchema;
 

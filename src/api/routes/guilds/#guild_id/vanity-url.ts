@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@fosscord/api";
 import {
 	Channel,
 	ChannelType,
@@ -23,8 +24,7 @@ import {
 	Invite,
 	VanityUrlSchema,
 } from "@fosscord/util";
-import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
 const router = Router();
@@ -60,7 +60,7 @@ router.get(
 
 router.patch(
 	"/",
-	route({ body: "VanityUrlSchema", permission: "MANAGE_GUILD" }),
+	route({ requestBody: "VanityUrlSchema", permission: "MANAGE_GUILD" }),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const body = req.body as VanityUrlSchema;

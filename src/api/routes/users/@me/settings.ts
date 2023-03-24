@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
-import { User, UserSettingsSchema } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { User, UserSettingsSchema } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -32,7 +32,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.patch(
 	"/",
-	route({ body: "UserSettingsSchema" }),
+	route({ requestBody: "UserSettingsSchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as UserSettingsSchema;
 		if (body.locale === "en") body.locale = "en-US"; // fix discord client crash on unkown locale

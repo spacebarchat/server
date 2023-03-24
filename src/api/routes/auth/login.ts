@@ -37,7 +37,7 @@ export default router;
 router.post(
 	"/",
 	route({
-		body: "LoginSchema",
+		requestBody: "LoginSchema",
 		responses: {
 			200: {
 				body: "TokenResponse",

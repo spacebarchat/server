@@ -220,7 +220,7 @@ router.post(
 		next();
 	},
 	route({
-		body: "MessageCreateSchema",
+		requestBody: "MessageCreateSchema",
 		permission: "SEND_MESSAGES",
 		right: "SEND_MESSAGES",
 		responses: {

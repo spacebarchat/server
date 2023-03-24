@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
-import { Guild, Member, GuildUpdateWelcomeScreenSchema } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
+import { Guild, GuildUpdateWelcomeScreenSchema, Member } from "@fosscord/util";
+import { Request, Response, Router } from "express";
+import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
@@ -35,7 +35,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 router.patch(
 	"/",
 	route({
-		body: "GuildUpdateWelcomeScreenSchema",
+		requestBody: "GuildUpdateWelcomeScreenSchema",
 		permission: "MANAGE_GUILD",
 	}),
 	async (req: Request, res: Response) => {

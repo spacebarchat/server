@@ -41,7 +41,7 @@ async function getToken(user: User) {
 router.post(
 	"/",
 	route({
-		body: "VerifyEmailSchema",
+		requestBody: "VerifyEmailSchema",
 		responses: {
 			200: {
 				body: "TokenResponse",

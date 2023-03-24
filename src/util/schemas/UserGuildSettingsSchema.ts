@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { UserGuildSettings, ChannelOverride } from "@fosscord/util";
+import { ChannelOverride, UserGuildSettings } from "@fosscord/util";
 
 // This sucks. I would use a DeepPartial, my own or typeorms, but they both generate inncorect schema
 export interface UserGuildSettingsSchema
 	extends Partial<Omit<UserGuildSettings, "channel_overrides">> {
 	channel_overrides?: {
-		[channel_id: string]: Partial<ChannelOverride>;
+		[channel_id: string]: ChannelOverride;
 	};
 }

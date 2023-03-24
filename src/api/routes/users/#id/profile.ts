@@ -149,7 +149,7 @@ router.get(
 
 router.patch(
 	"/",
-	route({ body: "UserProfileModifySchema" }),
+	route({ requestBody: "UserProfileModifySchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as UserProfileModifySchema;
 

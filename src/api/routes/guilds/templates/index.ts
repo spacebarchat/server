@@ -16,18 +16,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
+import { route } from "@fosscord/api";
 import {
-	Template,
+	Config,
+	DiscordApiErrors,
 	Guild,
+	GuildTemplateCreateSchema,
+	Member,
 	Role,
 	Snowflake,
-	Config,
-	Member,
-	GuildTemplateCreateSchema,
+	Template,
 } from "@fosscord/util";
-import { route } from "@fosscord/api";
-import { DiscordApiErrors } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import fetch from "node-fetch";
 const router: Router = Router();
 
@@ -81,7 +81,7 @@ router.get("/:code", route({}), async (req: Request, res: Response) => {
 
 router.post(
 	"/:code",
-	route({ body: "GuildTemplateCreateSchema" }),
+	route({ requestBody: "GuildTemplateCreateSchema" }),
 	async (req: Request, res: Response) => {
 		const {
 			enabled,

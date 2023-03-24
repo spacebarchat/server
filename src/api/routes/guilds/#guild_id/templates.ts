@@ -16,11 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
+import { generateCode, route } from "@fosscord/api";
 import { Guild, Template } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
-import { generateCode } from "@fosscord/api";
 
 const router: Router = Router();
 
@@ -53,7 +52,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.post(
 	"/",
-	route({ body: "TemplateCreateSchema", permission: "MANAGE_GUILD" }),
+	route({ requestBody: "TemplateCreateSchema", permission: "MANAGE_GUILD" }),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const guild = await Guild.findOneOrFail({
@@ -115,7 +114,7 @@ router.put(
 
 router.patch(
 	"/:code",
-	route({ body: "TemplateModifySchema", permission: "MANAGE_GUILD" }),
+	route({ requestBody: "TemplateModifySchema", permission: "MANAGE_GUILD" }),
 	async (req: Request, res: Response) => {
 		const { code, guild_id } = req.params;
 		const { name, description } = req.body;

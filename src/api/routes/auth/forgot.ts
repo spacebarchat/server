@@ -13,7 +13,7 @@ const router = Router();
 router.post(
 	"/",
 	route({
-		body: "ForgotPasswordSchema",
+		requestBody: "ForgotPasswordSchema",
 		responses: {
 			204: {},
 			400: {

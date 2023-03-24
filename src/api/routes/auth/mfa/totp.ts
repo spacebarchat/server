@@ -26,7 +26,7 @@ const router = Router();
 router.post(
 	"/",
 	route({
-		body: "TotpSchema",
+		requestBody: "TotpSchema",
 		responses: {
 			200: {
 				body: "TokenResponse",

@@ -36,7 +36,7 @@ const router: Router = Router();
 router.put(
 	"/:overwrite_id",
 	route({
-		body: "ChannelPermissionOverwriteSchema",
+		requestBody: "ChannelPermissionOverwriteSchema",
 		permission: "MANAGE_ROLES",
 		responses: {
 			204: {},

@@ -31,7 +31,7 @@ const router = Router();
 
 router.patch(
 	"/:member_id",
-	route({ body: "MemberChangeProfileSchema" }),
+	route({ requestBody: "MemberChangeProfileSchema" }),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		// const member_id =

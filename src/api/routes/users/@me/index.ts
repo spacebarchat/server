@@ -16,21 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
+import { route } from "@fosscord/api";
 import {
-	User,
-	PrivateUserProjection,
-	emitEvent,
-	UserUpdateEvent,
-	handleFile,
-	FieldErrors,
 	adjustEmail,
 	Config,
-	UserModifySchema,
+	emitEvent,
+	FieldErrors,
 	generateToken,
+	handleFile,
+	PrivateUserProjection,
+	User,
+	UserModifySchema,
+	UserUpdateEvent,
 } from "@fosscord/util";
-import { route } from "@fosscord/api";
 import bcrypt from "bcrypt";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
@@ -45,7 +45,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.patch(
 	"/",
-	route({ body: "UserModifySchema" }),
+	route({ requestBody: "UserModifySchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as UserModifySchema;
 

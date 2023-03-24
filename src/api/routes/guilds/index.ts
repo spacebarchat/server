@@ -16,16 +16,16 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import {
-	Guild,
-	Config,
-	getRights,
-	Member,
-	DiscordApiErrors,
-	GuildCreateSchema,
-} from "@fosscord/util";
 import { route } from "@fosscord/api";
+import {
+	Config,
+	DiscordApiErrors,
+	getRights,
+	Guild,
+	GuildCreateSchema,
+	Member,
+} from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
@@ -33,7 +33,7 @@ const router: Router = Router();
 
 router.post(
 	"/",
-	route({ body: "GuildCreateSchema", right: "CREATE_GUILDS" }),
+	route({ requestBody: "GuildCreateSchema", right: "CREATE_GUILDS" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as GuildCreateSchema;
 

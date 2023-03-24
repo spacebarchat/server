@@ -52,7 +52,7 @@ const messageUpload = multer({
 router.patch(
 	"/",
 	route({
-		body: "MessageEditSchema",
+		requestBody: "MessageEditSchema",
 		permission: "SEND_MESSAGES",
 		right: "SEND_MESSAGES",
 		responses: {
@@ -152,7 +152,7 @@ router.put(
 		next();
 	},
 	route({
-		body: "MessageCreateSchema",
+		requestBody: "MessageCreateSchema",
 		permission: "SEND_MESSAGES",
 		right: "SEND_BACKDATED_EVENTS",
 		responses: {

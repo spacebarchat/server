@@ -16,21 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@fosscord/api";
 import {
 	emitEvent,
 	GuildStickersUpdateEvent,
 	Member,
+	ModifyGuildStickerSchema,
 	Snowflake,
 	Sticker,
 	StickerFormatType,
 	StickerType,
 	uploadFile,
-	ModifyGuildStickerSchema,
 } from "@fosscord/util";
-import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
-import multer from "multer";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import multer from "multer";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
@@ -54,7 +54,7 @@ router.post(
 	bodyParser,
 	route({
 		permission: "MANAGE_EMOJIS_AND_STICKERS",
-		body: "ModifyGuildStickerSchema",
+		requestBody: "ModifyGuildStickerSchema",
 	}),
 	async (req: Request, res: Response) => {
 		if (!req.file) throw new HTTPError("missing file");
@@ -110,7 +110,7 @@ router.get("/:sticker_id", route({}), async (req: Request, res: Response) => {
 router.patch(
 	"/:sticker_id",
 	route({
-		body: "ModifyGuildStickerSchema",
+		requestBody: "ModifyGuildStickerSchema",
 		permission: "MANAGE_EMOJIS_AND_STICKERS",
 	}),
 	async (req: Request, res: Response) => {

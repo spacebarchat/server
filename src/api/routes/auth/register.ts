@@ -16,25 +16,25 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
 import {
-	Config,
-	generateToken,
-	Invite,
-	FieldErrors,
-	User,
-	adjustEmail,
-	RegisterSchema,
-	ValidRegistrationToken,
-} from "@fosscord/util";
-import {
-	route,
 	getIpAdress,
 	IPAnalysis,
 	isProxy,
+	route,
 	verifyCaptcha,
 } from "@fosscord/api";
+import {
+	adjustEmail,
+	Config,
+	FieldErrors,
+	generateToken,
+	Invite,
+	RegisterSchema,
+	User,
+	ValidRegistrationToken,
+} from "@fosscord/util";
 import bcrypt from "bcrypt";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
 
@@ -43,7 +43,7 @@ const router: Router = Router();
 router.post(
 	"/",
 	route({
-		body: "RegisterSchema",
+		requestBody: "RegisterSchema",
 		responses: {
 			200: { body: "TokenResponse" },
 			400: { body: "APIErrorOrCaptchaResponse" },

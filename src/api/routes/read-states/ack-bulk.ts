@@ -16,14 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import { AckBulkSchema, ReadState } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 const router = Router();
 
 router.post(
 	"/",
-	route({ body: "AckBulkSchema" }),
+	route({ requestBody: "AckBulkSchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as AckBulkSchema;
 

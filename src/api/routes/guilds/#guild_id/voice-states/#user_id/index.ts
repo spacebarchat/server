@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@fosscord/api";
 import {
 	Channel,
 	ChannelType,
@@ -26,7 +27,6 @@ import {
 	VoiceStateUpdateEvent,
 	VoiceStateUpdateSchema,
 } from "@fosscord/util";
-import { route } from "@fosscord/api";
 import { Request, Response, Router } from "express";
 
 const router = Router();
@@ -34,7 +34,7 @@ const router = Router();
 
 router.patch(
 	"/",
-	route({ body: "VoiceStateUpdateSchema" }),
+	route({ requestBody: "VoiceStateUpdateSchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as VoiceStateUpdateSchema;
 		const { guild_id } = req.params;

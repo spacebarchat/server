@@ -16,21 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import {
 	BackupCode,
-	generateMfaBackupCodes,
-	User,
 	CodesVerificationSchema,
 	DiscordApiErrors,
+	generateMfaBackupCodes,
+	User,
 } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
 router.post(
 	"/",
-	route({ body: "CodesVerificationSchema" }),
+	route({ requestBody: "CodesVerificationSchema" }),
 	async (req: Request, res: Response) => {
 		// const { key, nonce, regenerate } = req.body as CodesVerificationSchema;
 		const { regenerate } = req.body as CodesVerificationSchema;

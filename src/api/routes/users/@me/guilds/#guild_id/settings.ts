@@ -16,14 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
+import { route } from "@fosscord/api";
 import {
 	Channel,
 	Member,
 	OrmUtils,
 	UserGuildSettingsSchema,
 } from "@fosscord/util";
-import { route } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -38,7 +38,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.patch(
 	"/",
-	route({ body: "UserGuildSettingsSchema" }),
+	route({ requestBody: "UserGuildSettingsSchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as UserGuildSettingsSchema;
 
