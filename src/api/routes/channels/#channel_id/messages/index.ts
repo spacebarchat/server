@@ -76,6 +76,22 @@ export function isTextChannel(type: ChannelType): boolean {
 router.get(
 	"/",
 	route({
+		query: {
+			around: {
+				type: "string",
+			},
+			before: {
+				type: "string",
+			},
+			after: {
+				type: "string",
+			},
+			limit: {
+				type: "number",
+				description:
+					"max number of messages to return (1-100). defaults to 50",
+			},
+		},
 		responses: {
 			200: {
 				body: "ChannelMessagesResponse",

@@ -26,6 +26,18 @@ export default router;
 router.get(
 	"/",
 	route({
+		query: {
+			count: {
+				type: "number",
+				description:
+					"The number of registration tokens to generate. Defaults to 1.",
+			},
+			length: {
+				type: "number",
+				description:
+					"The length of each registration token. Defaults to 255.",
+			},
+		},
 		right: "OPERATOR",
 		responses: { 200: { body: "GenerateRegistrationTokensResponse" } },
 	}),
