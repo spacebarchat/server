@@ -13,6 +13,7 @@ export * from "./GatewayBotResponse";
 export * from "./GatewayResponse";
 export * from "./GenerateRegistrationTokensResponse";
 export * from "./LocationMetadataResponse";
+export * from "./Tenor";
 export * from "./TokenResponse";
 export * from "./UserProfileResponse";
 export * from "./UserRelationsResponse";
