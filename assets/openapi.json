@@ -3262,6 +3262,29 @@
                     "welcome_channels"
                 ]
             },
+            "Categories": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "localizations": {
+                        "type": "string"
+                    },
+                    "is_primary": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "is_primary",
+                    "localizations",
+                    "name"
+                ]
+            },
             "GuildMessagesSearchMessage": {
                 "type": "object",
                 "properties": {
@@ -4966,6 +4989,38 @@
                     "$ref": "#/components/schemas/Webhook"
                 }
             },
+            "DiscoverableGuildsResponse": {
+                "type": "object",
+                "properties": {
+                    "total": {
+                        "type": "integer"
+                    },
+                    "guilds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Guild"
+                        }
+                    },
+                    "offset": {
+                        "type": "integer"
+                    },
+                    "limit": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "guilds",
+                    "limit",
+                    "offset",
+                    "total"
+                ]
+            },
+            "DiscoveryCategoriesResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Categories"
+                }
+            },
             "GatewayBotResponse": {
                 "type": "object",
                 "properties": {
@@ -5291,6 +5346,24 @@
                     "purged"
                 ]
             },
+            "GuildRecommendationsResponse": {
+                "type": "object",
+                "properties": {
+                    "recommended_guilds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Guild"
+                        }
+                    },
+                    "load_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "load_id",
+                    "recommended_guilds"
+                ]
+            },
             "GuildResponse": {
                 "type": "object",
                 "properties": {
@@ -5482,6 +5555,79 @@
                     "cdn",
                     "defaultApiVersion",
                     "gateway"
+                ]
+            },
+            "InstancePingResponse": {
+                "type": "object",
+                "properties": {
+                    "ping": {
+                        "type": "string",
+                        "enum": [
+                            "pong!"
+                        ]
+                    },
+                    "instance": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "image": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "correspondenceEmail": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "correspondenceUserID": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "frontPage": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "tosPage": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "correspondenceEmail",
+                            "correspondenceUserID",
+                            "description",
+                            "frontPage",
+                            "id",
+                            "image",
+                            "name",
+                            "tosPage"
+                        ]
+                    }
+                },
+                "required": [
+                    "instance",
+                    "ping"
                 ]
             },
             "InstanceStatsResponse": {
@@ -5733,6 +5879,30 @@
                 "required": [
                     "backup_codes",
                     "token"
+                ]
+            },
+            "UpdatesResponse": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "pub_date": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "name",
+                    "notes",
+                    "pub_date",
+                    "url"
                 ]
             },
             "UserNoteResponse": {
@@ -8160,8 +8330,35 @@
         "/updates/": {
             "get": {
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdatesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -8319,8 +8516,18 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "200": {
                         "description": "No description available"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -8407,7 +8614,7 @@
         "/science/": {
             "post": {
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
                     }
                 },
@@ -8564,8 +8771,15 @@
         "/ping/": {
             "get": {
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InstancePingResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -10825,8 +11039,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildRecommendationsResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -11014,8 +11235,18 @@
         "/download/": {
             "get": {
                 "responses": {
-                    "default": {
+                    "302": {
                         "description": "No description available"
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -11031,8 +11262,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DiscoveryCategoriesResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -11048,8 +11286,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DiscoverableGuildsResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [

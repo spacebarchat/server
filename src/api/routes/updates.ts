@@ -16,37 +16,53 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
 import { route } from "@fosscord/api";
 import { FieldErrors, Release } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const platform = req.query.platform;
-
-	if (!platform)
-		throw FieldErrors({
-			platform: {
-				code: "BASE_TYPE_REQUIRED",
-				message: req.t("common:field.BASE_TYPE_REQUIRED"),
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "UpdatesResponse",
 			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const platform = req.query.platform;
+
+		if (!platform)
+			throw FieldErrors({
+				platform: {
+					code: "BASE_TYPE_REQUIRED",
+					message: req.t("common:field.BASE_TYPE_REQUIRED"),
+				},
+			});
+
+		const release = await Release.findOneOrFail({
+			where: {
+				enabled: true,
+				platform: platform as string,
+			},
+			order: { pub_date: "DESC" },
 		});
 
-	const release = await Release.findOneOrFail({
-		where: {
-			enabled: true,
-			platform: platform as string,
-		},
-		order: { pub_date: "DESC" },
-	});
-
-	res.json({
-		name: release.name,
-		pub_date: release.pub_date,
-		url: release.url,
-		notes: release.notes,
-	});
-});
+		res.json({
+			name: release.name,
+			pub_date: release.pub_date,
+			url: release.url,
+			notes: release.notes,
+		});
+	},
+);
 
 export default router;

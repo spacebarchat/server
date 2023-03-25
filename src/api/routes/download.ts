@@ -16,32 +16,43 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
 import { route } from "@fosscord/api";
 import { FieldErrors, Release } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { platform } = req.query;
-
-	if (!platform)
-		throw FieldErrors({
-			platform: {
-				code: "BASE_TYPE_REQUIRED",
-				message: req.t("common:field.BASE_TYPE_REQUIRED"),
+router.get(
+	"/",
+	route({
+		responses: {
+			302: {},
+			404: {
+				body: "APIErrorResponse",
 			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { platform } = req.query;
+
+		if (!platform)
+			throw FieldErrors({
+				platform: {
+					code: "BASE_TYPE_REQUIRED",
+					message: req.t("common:field.BASE_TYPE_REQUIRED"),
+				},
+			});
+
+		const release = await Release.findOneOrFail({
+			where: {
+				enabled: true,
+				platform: platform as string,
+			},
+			order: { pub_date: "DESC" },
 		});
 
-	const release = await Release.findOneOrFail({
-		where: {
-			enabled: true,
-			platform: platform as string,
-		},
-		order: { pub_date: "DESC" },
-	});
-
-	res.redirect(release.url);
-});
+		res.redirect(release.url);
+	},
+);
 
 export default router;
