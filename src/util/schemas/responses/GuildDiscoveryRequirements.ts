@@ -1,4 +1,4 @@
-export interface GuildDiscoveryRequirements {
+export interface GuildDiscoveryRequirementsResponse {
 	uild_id: string;
 	safe_environment: boolean;
 	healthy: boolean;
