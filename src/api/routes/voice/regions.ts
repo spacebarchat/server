@@ -16,14 +16,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import { getIpAdress, route } from "@fosscord/api";
-import { getVoiceRegions } from "@fosscord/api";
+import { getIpAdress, getVoiceRegions, route } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	res.json(await getVoiceRegions(getIpAdress(req), true)); //vip true?
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "GuildVoiceRegionsResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		res.json(await getVoiceRegions(getIpAdress(req), true)); //vip true?
+	},
+);
 
 export default router;
