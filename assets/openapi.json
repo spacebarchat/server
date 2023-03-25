@@ -3740,6 +3740,33 @@
                     "width"
                 ]
             },
+            "BackupCode": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "consumed": {
+                        "type": "boolean"
+                    },
+                    "expired": {
+                        "type": "boolean"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "consumed",
+                    "expired",
+                    "id",
+                    "user"
+                ]
+            },
             "PublicConnectedAccount": {
                 "type": "object",
                 "properties": {
@@ -5679,6 +5706,35 @@
                     "token"
                 ]
             },
+            "TokenOnlyResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "token"
+                ]
+            },
+            "TokenWithBackupCodesResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "backup_codes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BackupCode"
+                        }
+                    }
+                },
+                "required": [
+                    "backup_codes",
+                    "token"
+                ]
+            },
             "UserNoteResponse": {
                 "type": "object",
                 "properties": {
@@ -5984,28 +6040,24 @@
                 }
             },
             "UserBackupCodesResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/BackupCode"
+                }
+            },
+            "WebAuthnCreateResponse": {
                 "type": "object",
                 "properties": {
-                    "expired": {},
-                    "user": {
-                        "$ref": "#/components/schemas/User"
-                    },
-                    "code": {
+                    "name": {
                         "type": "string"
-                    },
-                    "consumed": {
-                        "type": "boolean"
                     },
                     "id": {
                         "type": "string"
                     }
                 },
                 "required": [
-                    "code",
-                    "consumed",
-                    "expired",
                     "id",
-                    "user"
+                    "name"
                 ]
             },
             "WebhookCreateResponse": {
@@ -7145,8 +7197,25 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WebAuthnCreateResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -7162,7 +7231,7 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
                     }
                 },
@@ -7200,8 +7269,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenWithBackupCodesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -7227,8 +7323,25 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenOnlyResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -7524,8 +7637,28 @@
                     }
                 },
                 "responses": {
-                    "default": {
+                    "200": {
                         "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -11845,7 +11978,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TokenResponse"
+                                    "$ref": "#/components/schemas/TokenOnlyResponse"
                                 }
                             }
                         }
@@ -11884,7 +12017,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TokenResponse"
+                                    "$ref": "#/components/schemas/TokenOnlyResponse"
                                 }
                             }
                         }

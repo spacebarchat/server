@@ -32,7 +32,20 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ requestBody: "TotpEnableSchema" }),
+	route({
+		requestBody: "TotpEnableSchema",
+		responses: {
+			200: {
+				body: "TokenWithBackupCodesResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as TotpEnableSchema;
 

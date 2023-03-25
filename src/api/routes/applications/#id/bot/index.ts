@@ -35,8 +35,8 @@ router.post(
 	"/",
 	route({
 		responses: {
-			200: {
-				body: "TokenResponse",
+			204: {
+				body: "TokenOnlyResponse",
 			},
 			400: {
 				body: "APIErrorResponse",

@@ -1,5 +1,5 @@
 import { DmChannelDTO } from "../../dtos";
-import { Guild, PrivateUser, PublicUser, User } from "../../entities";
+import { BackupCode, Guild, PrivateUser, PublicUser } from "../../entities";
 
 export type PublicUserResponse = PublicUser;
 export type PrivateUserResponse = PrivateUser;
@@ -12,11 +12,4 @@ export type UserGuildsResponse = Guild[];
 
 export type UserChannelsResponse = DmChannelDTO[];
 
-export interface UserBackupCodesResponse {
-	expired: unknown;
-	user: User;
-	code: string;
-	consumed: boolean;
-	id: string;
-}
-[];
+export type UserBackupCodesResponse = BackupCode[];
