@@ -16,35 +16,64 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
+import { route } from "@fosscord/api";
 import {
 	emitEvent,
 	getPermission,
 	Guild,
 	Invite,
 	InviteDeleteEvent,
-	User,
 	PublicInviteRelation,
+	User,
 } from "@fosscord/util";
-import { route } from "@fosscord/api";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
-router.get("/:code", route({}), async (req: Request, res: Response) => {
-	const { code } = req.params;
+router.get(
+	"/:code",
+	route({
+		responses: {
+			"200": {
+				body: "Invite",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { code } = req.params;
 
-	const invite = await Invite.findOneOrFail({
-		where: { code },
-		relations: PublicInviteRelation,
-	});
+		const invite = await Invite.findOneOrFail({
+			where: { code },
+			relations: PublicInviteRelation,
+		});
 
-	res.status(200).send(invite);
-});
+		res.status(200).send(invite);
+	},
+);
 
 router.post(
 	"/:code",
-	route({ right: "USE_MASS_INVITES" }),
+	route({
+		right: "USE_MASS_INVITES",
+		responses: {
+			"200": {
+				body: "Invite",
+			},
+			401: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { code } = req.params;
 		const { guild_id } = await Invite.findOneOrFail({
@@ -75,33 +104,56 @@ router.post(
 );
 
 // * cant use permission of route() function because path doesn't have guild_id/channel_id
-router.delete("/:code", route({}), async (req: Request, res: Response) => {
-	const { code } = req.params;
-	const invite = await Invite.findOneOrFail({ where: { code } });
-	const { guild_id, channel_id } = invite;
+router.delete(
+	"/:code",
+	route({
+		responses: {
+			"200": {
+				body: "Invite",
+			},
+			401: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { code } = req.params;
+		const invite = await Invite.findOneOrFail({ where: { code } });
+		const { guild_id, channel_id } = invite;
 
-	const permission = await getPermission(req.user_id, guild_id, channel_id);
-
-	if (!permission.has("MANAGE_GUILD") && !permission.has("MANAGE_CHANNELS"))
-		throw new HTTPError(
-			"You missing the MANAGE_GUILD or MANAGE_CHANNELS permission",
-			401,
+		const permission = await getPermission(
+			req.user_id,
+			guild_id,
+			channel_id,
 		);
 
-	await Promise.all([
-		Invite.delete({ code }),
-		emitEvent({
-			event: "INVITE_DELETE",
-			guild_id: guild_id,
-			data: {
-				channel_id: channel_id,
-				guild_id: guild_id,
-				code: code,
-			},
-		} as InviteDeleteEvent),
-	]);
+		if (
+			!permission.has("MANAGE_GUILD") &&
+			!permission.has("MANAGE_CHANNELS")
+		)
+			throw new HTTPError(
+				"You missing the MANAGE_GUILD or MANAGE_CHANNELS permission",
+				401,
+			);
 
-	res.json({ invite: invite });
-});
+		await Promise.all([
+			Invite.delete({ code }),
+			emitEvent({
+				event: "INVITE_DELETE",
+				guild_id: guild_id,
+				data: {
+					channel_id: channel_id,
+					guild_id: guild_id,
+					code: code,
+				},
+			} as InviteDeleteEvent),
+		]);
+
+		res.json({ invite: invite });
+	},
+);
 
 export default router;
