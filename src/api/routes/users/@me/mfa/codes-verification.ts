@@ -30,7 +30,20 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ requestBody: "CodesVerificationSchema" }),
+	route({
+		requestBody: "CodesVerificationSchema",
+		responses: {
+			200: {
+				body: "UserBackupCodesResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		// const { key, nonce, regenerate } = req.body as CodesVerificationSchema;
 		const { regenerate } = req.body as CodesVerificationSchema;

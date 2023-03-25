@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PublicConnectedAccount, UserPublic } from "..";
+import { PublicConnectedAccount, PublicUserResponse } from "..";
 
 export interface UserProfileResponse {
-	user: UserPublic;
+	user: PublicUserResponse;
 	connected_accounts: PublicConnectedAccount;
 	premium_guild_since?: Date;
 	premium_since?: Date;

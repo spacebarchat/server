@@ -16,16 +16,26 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import { User } from "@spacebar/util";
 import { route } from "@spacebar/api";
+import { User } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { id } = req.params;
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "PublicUserResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
 
-	res.json(await User.getPublicUser(id));
-});
+		res.json(await User.getPublicUser(id));
+	},
+);
 
 export default router;

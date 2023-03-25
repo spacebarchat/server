@@ -24,7 +24,14 @@ const router: Router = Router();
 
 router.get(
 	"/",
-	route({ responses: { 200: { body: "UserRelationsResponse" } } }),
+	route({
+		responses: {
+			200: { body: "UserRelationsResponse" },
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const mutual_relations: object[] = [];
 		const requested_relations = await User.findOneOrFail({

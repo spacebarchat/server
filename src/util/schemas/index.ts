@@ -69,6 +69,7 @@ export * from "./TotpSchema";
 export * from "./UserDeleteSchema";
 export * from "./UserGuildSettingsSchema";
 export * from "./UserModifySchema";
+export * from "./UserNoteUpdateSchema";
 export * from "./UserProfileModifySchema";
 export * from "./UserSettingsSchema";
 export * from "./Validator";

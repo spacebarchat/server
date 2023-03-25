@@ -1,7 +1,7 @@
-import { PublicConnectedAccount, UserPublic } from "../../entities";
+import { PublicConnectedAccount, PublicUser } from "../../entities";
 
 export interface UserProfileResponse {
-	user: UserPublic;
+	user: PublicUser;
 	connected_accounts: PublicConnectedAccount;
 	premium_guild_since?: Date;
 	premium_since?: Date;

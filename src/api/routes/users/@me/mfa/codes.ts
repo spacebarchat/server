@@ -33,7 +33,23 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ requestBody: "MfaCodesSchema" }),
+	route({
+		requestBody: "MfaCodesSchema",
+		deprecated: true,
+		description:
+			"This route is replaced with users/@me/mfa/codes-verification in newer clients",
+		responses: {
+			200: {
+				body: "UserBackupCodesResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { password, regenerate } = req.body as MfaCodesSchema;
 
