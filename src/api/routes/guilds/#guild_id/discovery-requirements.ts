@@ -26,7 +26,7 @@ router.get(
 	route({
 		responses: {
 			200: {
-				body: "GuildDiscoveryRequirements",
+				body: "GuildDiscoveryRequirementsResponse",
 			},
 		},
 	}),

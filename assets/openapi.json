@@ -4830,6 +4830,96 @@
                     "id"
                 ]
             },
+            "GuildDiscoveryRequirementsResponse": {
+                "type": "object",
+                "properties": {
+                    "uild_id": {
+                        "type": "string"
+                    },
+                    "safe_environment": {
+                        "type": "boolean"
+                    },
+                    "healthy": {
+                        "type": "boolean"
+                    },
+                    "health_score_pending": {
+                        "type": "boolean"
+                    },
+                    "size": {
+                        "type": "boolean"
+                    },
+                    "nsfw_properties": {},
+                    "protected": {
+                        "type": "boolean"
+                    },
+                    "sufficient": {
+                        "type": "boolean"
+                    },
+                    "sufficient_without_grace_period": {
+                        "type": "boolean"
+                    },
+                    "valid_rules_channel": {
+                        "type": "boolean"
+                    },
+                    "retention_healthy": {
+                        "type": "boolean"
+                    },
+                    "engagement_healthy": {
+                        "type": "boolean"
+                    },
+                    "age": {
+                        "type": "boolean"
+                    },
+                    "minimum_age": {
+                        "type": "integer"
+                    },
+                    "health_score": {
+                        "type": "object",
+                        "properties": {
+                            "avg_nonnew_participators": {
+                                "type": "integer"
+                            },
+                            "avg_nonnew_communicators": {
+                                "type": "integer"
+                            },
+                            "num_intentful_joiners": {
+                                "type": "integer"
+                            },
+                            "perc_ret_w1_intentful": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "avg_nonnew_communicators",
+                            "avg_nonnew_participators",
+                            "num_intentful_joiners",
+                            "perc_ret_w1_intentful"
+                        ]
+                    },
+                    "minimum_size": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "age",
+                    "engagement_healthy",
+                    "health_score",
+                    "health_score_pending",
+                    "healthy",
+                    "minimum_age",
+                    "minimum_size",
+                    "nsfw_properties",
+                    "protected",
+                    "retention_healthy",
+                    "safe_environment",
+                    "size",
+                    "sufficient",
+                    "sufficient_without_grace_period",
+                    "uild_id",
+                    "valid_rules_channel"
+                ]
+            },
             "GuildEmojisResponse": {
                 "type": "array",
                 "items": {
@@ -9103,7 +9193,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GuildDiscoveryRequirements"
+                                    "$ref": "#/components/schemas/GuildDiscoveryRequirementsResponse"
                                 }
                             }
                         }
