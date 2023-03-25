@@ -21,7 +21,6 @@ import {
 	Config,
 	DiscordApiErrors,
 	emitEvent,
-	getPermission,
 	GuildRoleCreateEvent,
 	GuildRoleUpdateEvent,
 	Member,
@@ -47,7 +46,21 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.post(
 	"/",
-	route({ requestBody: "RoleModifySchema", permission: "MANAGE_ROLES" }),
+	route({
+		requestBody: "RoleModifySchema",
+		permission: "MANAGE_ROLES",
+		responses: {
+			200: {
+				body: "Role",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const guild_id = req.params.guild_id;
 		const body = req.body as RoleModifySchema;
@@ -104,13 +117,24 @@ router.post(
 
 router.patch(
 	"/",
-	route({ requestBody: "RolePositionUpdateSchema" }),
+	route({
+		requestBody: "RolePositionUpdateSchema",
+		permission: "MANAGE_ROLES",
+		responses: {
+			200: {
+				body: "GuildRolesResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const body = req.body as RolePositionUpdateSchema;
-
-		const perms = await getPermission(req.user_id, guild_id);
-		perms.hasThrow("MANAGE_ROLES");
 
 		await Promise.all(
 			body.map(async (x) =>

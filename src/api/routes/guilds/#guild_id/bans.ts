@@ -37,7 +37,17 @@ const router: Router = Router();
 
 router.get(
 	"/",
-	route({ permission: "BAN_MEMBERS" }),
+	route({
+		permission: "BAN_MEMBERS",
+		responses: {
+			200: {
+				body: "GuildBansResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 
@@ -73,7 +83,20 @@ router.get(
 
 router.get(
 	"/:user",
-	route({ permission: "BAN_MEMBERS" }),
+	route({
+		permission: "BAN_MEMBERS",
+		responses: {
+			200: {
+				body: "BanModeratorSchema",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const user_id = req.params.ban;
@@ -97,7 +120,21 @@ router.get(
 
 router.put(
 	"/:user_id",
-	route({ requestBody: "BanCreateSchema", permission: "BAN_MEMBERS" }),
+	route({
+		requestBody: "BanCreateSchema",
+		permission: "BAN_MEMBERS",
+		responses: {
+			200: {
+				body: "Ban",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const banned_user_id = req.params.user_id;
@@ -143,7 +180,20 @@ router.put(
 
 router.put(
 	"/@me",
-	route({ requestBody: "BanCreateSchema" }),
+	route({
+		requestBody: "BanCreateSchema",
+		responses: {
+			200: {
+				body: "Ban",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 
@@ -182,7 +232,18 @@ router.put(
 
 router.delete(
 	"/:user_id",
-	route({ permission: "BAN_MEMBERS" }),
+	route({
+		permission: "BAN_MEMBERS",
+		responses: {
+			204: {},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id, user_id } = req.params;
 

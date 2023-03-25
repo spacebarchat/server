@@ -1861,46 +1861,7 @@
                         "type": "integer"
                     },
                     "welcome_screen": {
-                        "type": "object",
-                        "properties": {
-                            "enabled": {
-                                "type": "boolean"
-                            },
-                            "description": {
-                                "type": "string"
-                            },
-                            "welcome_channels": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "description": {
-                                            "type": "string"
-                                        },
-                                        "emoji_id": {
-                                            "type": "string"
-                                        },
-                                        "emoji_name": {
-                                            "type": "string"
-                                        },
-                                        "channel_id": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "channel_id",
-                                        "description"
-                                    ]
-                                }
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "description",
-                            "enabled",
-                            "welcome_channels"
-                        ]
+                        "$ref": "#/components/schemas/GuildWelcomeScreen"
                     },
                     "widget_channel_id": {
                         "type": "string"
@@ -3260,6 +3221,266 @@
                     "user_id"
                 ]
             },
+            "GuildWelcomeScreen": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "welcome_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string"
+                                },
+                                "emoji_id": {
+                                    "type": "string"
+                                },
+                                "emoji_name": {
+                                    "type": "string"
+                                },
+                                "channel_id": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "channel_id",
+                                "description"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "description",
+                    "enabled",
+                    "welcome_channels"
+                ]
+            },
+            "GuildMessagesSearchMessage": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/MessageType"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "author": {
+                        "$ref": "#/components/schemas/PublicUser"
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Attachment_1"
+                        }
+                    },
+                    "embeds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Embed"
+                        }
+                    },
+                    "mentions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PublicUser"
+                        }
+                    },
+                    "mention_roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "pinned": {
+                        "type": "boolean"
+                    },
+                    "mention_everyone": {
+                        "type": "boolean"
+                    },
+                    "tts": {
+                        "type": "boolean"
+                    },
+                    "timestamp": {
+                        "type": "string"
+                    },
+                    "edited_timestamp": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "hit": {
+                        "type": "boolean",
+                        "enum": [
+                            true
+                        ]
+                    }
+                },
+                "required": [
+                    "attachments",
+                    "author",
+                    "channel_id",
+                    "components",
+                    "edited_timestamp",
+                    "embeds",
+                    "flags",
+                    "hit",
+                    "id",
+                    "mention_roles",
+                    "mentions",
+                    "pinned",
+                    "timestamp",
+                    "tts",
+                    "type"
+                ]
+            },
+            "PublicUser": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "premium_type",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "GuildVanityUrl": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "uses": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "code",
+                    "uses"
+                ]
+            },
+            "GuildVanityUrlNoInvite": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "null"
+                    }
+                },
+                "required": [
+                    "code"
+                ]
+            },
+            "GuildVoiceRegion": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "custom": {
+                        "type": "boolean"
+                    },
+                    "deprecated": {
+                        "type": "boolean"
+                    },
+                    "optimal": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "custom",
+                    "deprecated",
+                    "id",
+                    "name",
+                    "optimal"
+                ]
+            },
+            "ClientStatus": {
+                "type": "object",
+                "properties": {
+                    "desktop": {
+                        "type": "string"
+                    },
+                    "mobile": {
+                        "type": "string"
+                    },
+                    "web": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Snowflake": {
+                "description": "A container for useful snowflake-related methods.",
+                "type": "object"
+            },
             "TenorGifResponse": {
                 "type": "object",
                 "properties": {
@@ -4549,6 +4770,294 @@
                     "tokens"
                 ]
             },
+            "GuildBansResponse": {
+                "type": "object",
+                "properties": {
+                    "reason": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "username": {
+                                "type": "string"
+                            },
+                            "discriminator": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "avatar": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "public_flags": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "avatar",
+                            "discriminator",
+                            "id",
+                            "public_flags",
+                            "username"
+                        ]
+                    }
+                },
+                "required": [
+                    "reason",
+                    "user"
+                ]
+            },
+            "GuildChannelsResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Channel"
+                }
+            },
+            "GuildCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id"
+                ]
+            },
+            "GuildEmojisResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Emoji"
+                }
+            },
+            "GuildInvitesResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Invite"
+                }
+            },
+            "GuildMembersResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Member"
+                }
+            },
+            "GuildMessagesSearchResponse": {
+                "type": "object",
+                "properties": {
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GuildMessagesSearchMessage"
+                        }
+                    },
+                    "total_results": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "messages",
+                    "total_results"
+                ]
+            },
+            "GuildPruneResponse": {
+                "type": "object",
+                "properties": {
+                    "pruned": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "pruned"
+                ]
+            },
+            "GuildPurgeResponse": {
+                "type": "object",
+                "properties": {
+                    "purged": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "purged"
+                ]
+            },
+            "GuildResponse": {
+                "type": "object",
+                "properties": {
+                    "joined_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "joined_at"
+                ]
+            },
+            "GuildRolesResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Role"
+                }
+            },
+            "GuildStickersResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Sticker"
+                }
+            },
+            "GuildTemplatesResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Template"
+                }
+            },
+            "GuildVanityUrlResponse": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/GuildVanityUrl"
+                    },
+                    {
+                        "$ref": "#/components/schemas/GuildVanityUrlNoInvite"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GuildVanityUrl"
+                        }
+                    }
+                ]
+            },
+            "GuildVanityUrlCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code"
+                ]
+            },
+            "GuildVoiceRegionsResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/GuildVoiceRegion"
+                }
+            },
+            "GuildWidgetJsonResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "instant_invite": {
+                        "type": "string"
+                    },
+                    "channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "position": {
+                                    "type": "integer"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "id",
+                                "name",
+                                "position"
+                            ]
+                        }
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "username": {
+                                    "type": "string"
+                                },
+                                "discriminator": {
+                                    "type": "string"
+                                },
+                                "avatar": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                },
+                                "status": {
+                                    "$ref": "#/components/schemas/ClientStatus"
+                                },
+                                "avatar_url": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "avatar",
+                                "avatar_url",
+                                "discriminator",
+                                "id",
+                                "status",
+                                "username"
+                            ]
+                        }
+                    },
+                    "presence_count": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "channels",
+                    "id",
+                    "instant_invite",
+                    "members",
+                    "name",
+                    "presence_count"
+                ]
+            },
+            "GuildWidgetSettingsResponse": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "channel_id": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Snowflake"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "channel_id",
+                    "enabled"
+                ]
+            },
             "LocationMetadataResponse": {
                 "type": "object",
                 "properties": {
@@ -4585,6 +5094,38 @@
                     "consent_required",
                     "country_code",
                     "promotional_email_opt_in"
+                ]
+            },
+            "MemberJoinGuildResponse": {
+                "type": "object",
+                "properties": {
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "emojis": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Emoji"
+                        }
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "stickers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Sticker"
+                        }
+                    }
+                },
+                "required": [
+                    "emojis",
+                    "guild",
+                    "roles",
+                    "stickers"
                 ]
             },
             "TenorTrendingResponse": {
@@ -6956,8 +7497,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildCreateResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -6973,8 +7541,28 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "200": {
                         "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7001,8 +7589,25 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildWidgetJsonResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7040,8 +7645,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WidgetModifySchema"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7079,8 +7711,28 @@
                     }
                 },
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7145,8 +7797,38 @@
                     }
                 },
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7193,8 +7875,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildVanityUrlCreateResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7232,8 +7941,45 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Template"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7271,8 +8017,25 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Template"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7319,8 +8082,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Sticker"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7348,8 +8138,18 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7379,6 +8179,7 @@
         },
         "/guilds/{guild_id}/roles/": {
             "patch": {
+                "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
                         "bearer": true
@@ -7395,8 +8196,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildRolesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7434,8 +8262,45 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Role"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7471,8 +8336,25 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildVoiceRegionsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7501,8 +8383,25 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildPurgeResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7539,8 +8438,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Member"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7604,8 +8530,35 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildMessagesSearchResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7632,8 +8585,25 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildMembersResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7645,6 +8615,21 @@
                             "type": "string"
                         },
                         "description": "guild_id"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "max number of members to return (1-1000). default 1"
+                    },
+                    {
+                        "name": "after",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "tags": [
@@ -7661,7 +8646,10 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
+                        "description": "No description available"
+                    },
+                    "403": {
                         "description": "No description available"
                     }
                 },
@@ -7717,8 +8705,28 @@
                     }
                 },
                 "responses": {
-                    "default": {
+                    "200": {
                         "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7754,8 +8762,18 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7791,8 +8809,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7820,8 +8845,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildInvitesResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7887,8 +8919,45 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildUpdateSchema"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7926,8 +8995,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Emoji"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7955,8 +9051,18 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7992,8 +9098,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildDiscoveryRequirements"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -8020,8 +9133,28 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -8059,8 +9192,28 @@
                     }
                 },
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -8088,8 +9241,25 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuildBansResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -8117,8 +9287,35 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BanModeratorSchema"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -8155,8 +9352,28 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -8202,8 +9419,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Ban"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [

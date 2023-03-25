@@ -18,11 +18,11 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Request, Response, Router } from "express";
-import { Guild } from "@fosscord/util";
-import { HTTPError } from "lambert-server";
 import { route } from "@fosscord/api";
+import { Guild } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 import fs from "fs";
+import { HTTPError } from "lambert-server";
 import path from "path";
 
 const router: Router = Router();
@@ -31,130 +31,178 @@ const router: Router = Router();
 
 // https://discord.com/developers/docs/resources/guild#get-guild-widget-image
 // TODO: Cache the response
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id } = req.params;
 
-	const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
-	if (!guild.widget_enabled) throw new HTTPError("Unknown Guild", 404);
+		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
+		if (!guild.widget_enabled) throw new HTTPError("Unknown Guild", 404);
 
-	// Fetch guild information
-	const icon = guild.icon;
-	const name = guild.name;
-	const presence = guild.presence_count + " ONLINE";
+		// Fetch guild information
+		const icon = guild.icon;
+		const name = guild.name;
+		const presence = guild.presence_count + " ONLINE";
 
-	// Fetch parameter
-	const style = req.query.style?.toString() || "shield";
-	if (
-		!["shield", "banner1", "banner2", "banner3", "banner4"].includes(style)
-	) {
-		throw new HTTPError(
-			"Value must be one of ('shield', 'banner1', 'banner2', 'banner3', 'banner4').",
-			400,
-		);
-	}
-
-	// Setup canvas
-	const { createCanvas } = require("canvas");
-	const { loadImage } = require("canvas");
-	const sizeOf = require("image-size");
-
-	// TODO: Widget style templates need Fosscord branding
-	const source = path.join(
-		__dirname,
-		"..",
-		"..",
-		"..",
-		"..",
-		"..",
-		"assets",
-		"widget",
-		`${style}.png`,
-	);
-	if (!fs.existsSync(source)) {
-		throw new HTTPError("Widget template does not exist.", 400);
-	}
-
-	// Create base template image for parameter
-	const { width, height } = await sizeOf(source);
-	const canvas = createCanvas(width, height);
-	const ctx = canvas.getContext("2d");
-	const template = await loadImage(source);
-	ctx.drawImage(template, 0, 0);
-
-	// Add the guild specific information to the template asset image
-	switch (style) {
-		case "shield":
-			ctx.textAlign = "center";
-			await drawText(
-				ctx,
-				73,
-				13,
-				"#FFFFFF",
-				"thin 10px Verdana",
-				presence,
-			);
-			break;
-		case "banner1":
-			if (icon) await drawIcon(ctx, 20, 27, 50, icon);
-			await drawText(ctx, 83, 51, "#FFFFFF", "12px Verdana", name, 22);
-			await drawText(
-				ctx,
-				83,
-				66,
-				"#C9D2F0FF",
-				"thin 11px Verdana",
-				presence,
-			);
-			break;
-		case "banner2":
-			if (icon) await drawIcon(ctx, 13, 19, 36, icon);
-			await drawText(ctx, 62, 34, "#FFFFFF", "12px Verdana", name, 15);
-			await drawText(
-				ctx,
-				62,
-				49,
-				"#C9D2F0FF",
-				"thin 11px Verdana",
-				presence,
-			);
-			break;
-		case "banner3":
-			if (icon) await drawIcon(ctx, 20, 20, 50, icon);
-			await drawText(ctx, 83, 44, "#FFFFFF", "12px Verdana", name, 27);
-			await drawText(
-				ctx,
-				83,
-				58,
-				"#C9D2F0FF",
-				"thin 11px Verdana",
-				presence,
-			);
-			break;
-		case "banner4":
-			if (icon) await drawIcon(ctx, 21, 136, 50, icon);
-			await drawText(ctx, 84, 156, "#FFFFFF", "13px Verdana", name, 27);
-			await drawText(
-				ctx,
-				84,
-				171,
-				"#C9D2F0FF",
-				"thin 12px Verdana",
-				presence,
-			);
-			break;
-		default:
+		// Fetch parameter
+		const style = req.query.style?.toString() || "shield";
+		if (
+			!["shield", "banner1", "banner2", "banner3", "banner4"].includes(
+				style,
+			)
+		) {
 			throw new HTTPError(
 				"Value must be one of ('shield', 'banner1', 'banner2', 'banner3', 'banner4').",
 				400,
 			);
-	}
+		}
 
-	// Return final image
-	const buffer = canvas.toBuffer("image/png");
-	res.set("Content-Type", "image/png");
-	res.set("Cache-Control", "public, max-age=3600");
-	return res.send(buffer);
-});
+		// Setup canvas
+		const { createCanvas } = require("canvas");
+		const { loadImage } = require("canvas");
+		const sizeOf = require("image-size");
+
+		// TODO: Widget style templates need Fosscord branding
+		const source = path.join(
+			__dirname,
+			"..",
+			"..",
+			"..",
+			"..",
+			"..",
+			"assets",
+			"widget",
+			`${style}.png`,
+		);
+		if (!fs.existsSync(source)) {
+			throw new HTTPError("Widget template does not exist.", 400);
+		}
+
+		// Create base template image for parameter
+		const { width, height } = await sizeOf(source);
+		const canvas = createCanvas(width, height);
+		const ctx = canvas.getContext("2d");
+		const template = await loadImage(source);
+		ctx.drawImage(template, 0, 0);
+
+		// Add the guild specific information to the template asset image
+		switch (style) {
+			case "shield":
+				ctx.textAlign = "center";
+				await drawText(
+					ctx,
+					73,
+					13,
+					"#FFFFFF",
+					"thin 10px Verdana",
+					presence,
+				);
+				break;
+			case "banner1":
+				if (icon) await drawIcon(ctx, 20, 27, 50, icon);
+				await drawText(
+					ctx,
+					83,
+					51,
+					"#FFFFFF",
+					"12px Verdana",
+					name,
+					22,
+				);
+				await drawText(
+					ctx,
+					83,
+					66,
+					"#C9D2F0FF",
+					"thin 11px Verdana",
+					presence,
+				);
+				break;
+			case "banner2":
+				if (icon) await drawIcon(ctx, 13, 19, 36, icon);
+				await drawText(
+					ctx,
+					62,
+					34,
+					"#FFFFFF",
+					"12px Verdana",
+					name,
+					15,
+				);
+				await drawText(
+					ctx,
+					62,
+					49,
+					"#C9D2F0FF",
+					"thin 11px Verdana",
+					presence,
+				);
+				break;
+			case "banner3":
+				if (icon) await drawIcon(ctx, 20, 20, 50, icon);
+				await drawText(
+					ctx,
+					83,
+					44,
+					"#FFFFFF",
+					"12px Verdana",
+					name,
+					27,
+				);
+				await drawText(
+					ctx,
+					83,
+					58,
+					"#C9D2F0FF",
+					"thin 11px Verdana",
+					presence,
+				);
+				break;
+			case "banner4":
+				if (icon) await drawIcon(ctx, 21, 136, 50, icon);
+				await drawText(
+					ctx,
+					84,
+					156,
+					"#FFFFFF",
+					"13px Verdana",
+					name,
+					27,
+				);
+				await drawText(
+					ctx,
+					84,
+					171,
+					"#C9D2F0FF",
+					"thin 12px Verdana",
+					presence,
+				);
+				break;
+			default:
+				throw new HTTPError(
+					"Value must be one of ('shield', 'banner1', 'banner2', 'banner3', 'banner4').",
+					400,
+				);
+		}
+
+		// Return final image
+		const buffer = canvas.toBuffer("image/png");
+		res.set("Content-Type", "image/png");
+		res.set("Cache-Control", "public, max-age=3600");
+		return res.send(buffer);
+	},
+);
 
 async function drawIcon(
 	canvas: any,

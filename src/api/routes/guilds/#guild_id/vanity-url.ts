@@ -33,7 +33,20 @@ const InviteRegex = /\W/g;
 
 router.get(
 	"/",
-	route({ permission: "MANAGE_GUILD" }),
+	route({
+		permission: "MANAGE_GUILD",
+		responses: {
+			200: {
+				body: "GuildVanityUrlResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
@@ -60,7 +73,21 @@ router.get(
 
 router.patch(
 	"/",
-	route({ requestBody: "VanityUrlSchema", permission: "MANAGE_GUILD" }),
+	route({
+		requestBody: "VanityUrlSchema",
+		permission: "MANAGE_GUILD",
+		responses: {
+			200: {
+				body: "GuildVanityUrlCreateResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const body = req.body as VanityUrlSchema;

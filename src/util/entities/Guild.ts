@@ -24,7 +24,7 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { Config, handleFile, Snowflake } from "..";
+import { Config, GuildWelcomeScreen, handleFile, Snowflake } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -270,16 +270,7 @@ export class Guild extends BaseClass {
 	verification_level?: number;
 
 	@Column({ type: "simple-json" })
-	welcome_screen: {
-		enabled: boolean;
-		description: string;
-		welcome_channels: {
-			description: string;
-			emoji_id?: string;
-			emoji_name?: string;
-			channel_id: string;
-		}[];
-	};
+	welcome_screen: GuildWelcomeScreen;
 
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.widget_channel)

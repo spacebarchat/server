@@ -34,7 +34,21 @@ const router = Router();
 
 router.patch(
 	"/",
-	route({ requestBody: "VoiceStateUpdateSchema" }),
+	route({
+		requestBody: "VoiceStateUpdateSchema",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as VoiceStateUpdateSchema;
 		const { guild_id } = req.params;
