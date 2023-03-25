@@ -23,7 +23,15 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ requestBody: "AckBulkSchema" }),
+	route({
+		requestBody: "AckBulkSchema",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as AckBulkSchema;
 
