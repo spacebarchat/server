@@ -31,6 +31,7 @@ export * from "./GuildWidgetJsonResponse";
 export * from "./GuildWidgetSettingsResponse";
 export * from "./LocationMetadataResponse";
 export * from "./MemberJoinGuildResponse";
+export * from "./OAuthAuthorizeResponse";
 export * from "./Tenor";
 export * from "./TokenResponse";
 export * from "./UserProfileResponse";
