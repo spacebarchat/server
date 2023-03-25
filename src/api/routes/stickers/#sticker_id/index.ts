@@ -16,15 +16,25 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Sticker } from "@fosscord/util";
-import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
+import { Sticker } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 const router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { sticker_id } = req.params;
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "Sticker",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { sticker_id } = req.params;
 
-	res.json(await Sticker.find({ where: { id: sticker_id } }));
-});
+		res.json(await Sticker.find({ where: { id: sticker_id } }));
+	},
+);
 
 export default router;
