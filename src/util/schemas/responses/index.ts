@@ -36,6 +36,7 @@ export * from "./LimitsConfigurationResponse";
 export * from "./LocationMetadataResponse";
 export * from "./MemberJoinGuildResponse";
 export * from "./OAuthAuthorizeResponse";
+export * from "./StickerPacksResponse";
 export * from "./Tenor";
 export * from "./TokenResponse";
 export * from "./UserProfileResponse";
