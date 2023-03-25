@@ -16,24 +16,34 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Categories } from "@spacebar/util";
-import { Router, Response, Request } from "express";
 import { route } from "@spacebar/api";
+import { Categories } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
-router.get("/categories", route({}), async (req: Request, res: Response) => {
-	// TODO:
-	// Get locale instead
+router.get(
+	"/categories",
+	route({
+		responses: {
+			200: {
+				body: "DiscoveryCategoriesResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		// TODO:
+		// Get locale instead
 
-	// const { locale, primary_only } = req.query;
-	const { primary_only } = req.query;
+		// const { locale, primary_only } = req.query;
+		const { primary_only } = req.query;
 
-	const out = primary_only
-		? await Categories.find()
-		: await Categories.find({ where: { is_primary: true } });
+		const out = primary_only
+			? await Categories.find()
+			: await Categories.find({ where: { is_primary: true } });
 
-	res.send(out);
-});
+		res.send(out);
+	},
+);
 
 export default router;
