@@ -26292,8 +26292,14 @@
                 "type": "boolean"
             },
             "mute_config": {
-                "nullable": true,
-                "$ref": "#/definitions/MuteConfig"
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/MuteConfig"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
             },
             "muted": {
                 "type": "boolean"
@@ -28417,8 +28423,14 @@
                 "type": "boolean"
             },
             "custom_status": {
-                "nullable": true,
-                "$ref": "#/definitions/CustomStatus"
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/CustomStatus"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
             },
             "default_guilds_restricted": {
                 "type": "boolean"

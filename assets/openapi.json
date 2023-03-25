@@ -20,15 +20,13 @@
         }
     },
     "components": {
-        "securitySchemes": [
-            {
-                "bearer": {
-                    "type": "http",
-                    "scheme": "bearer",
-                    "description": "Bearer/Bot prefixes are not required."
-                }
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "scheme": "bearer",
+                "description": "Bearer/Bot prefixes are not required."
             }
-        ],
+        },
         "schemas": {
             "SelectProtocolSchema": {
                 "type": "object",

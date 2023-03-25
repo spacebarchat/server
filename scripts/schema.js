@@ -20,6 +20,8 @@
 	Regenerates the `fosscord-server/assets/schemas.json` file, used for API/Gateway input validation.
 */
 
+/* eslint-env node */
+
 const path = require("path");
 const fs = require("fs");
 const TJS = require("typescript-json-schema");
@@ -110,23 +112,23 @@ function main() {
 					continue;
 				}
 
-				if (part.properties[key].anyOf) {
-					const nullIndex = part.properties[key].anyOf.findIndex(
-						(x) => x.type == "null",
-					);
-					if (nullIndex != -1) {
-						part.properties[key].nullable = true;
-						part.properties[key].anyOf.splice(nullIndex, 1);
+				// if (part.properties[key].anyOf) {
+				// 	const nullIndex = part.properties[key].anyOf.findIndex(
+				// 		(x) => x.type == "null",
+				// 	);
+				// 	if (nullIndex != -1) {
+				// 		part.properties[key].nullable = true;
+				// 		part.properties[key].anyOf.splice(nullIndex, 1);
 
-						if (part.properties[key].anyOf.length == 1) {
-							Object.assign(
-								part.properties[key],
-								part.properties[key].anyOf[0],
-							);
-							delete part.properties[key].anyOf;
-						}
-					}
-				}
+				// 		if (part.properties[key].anyOf.length == 1) {
+				// 			Object.assign(
+				// 				part.properties[key],
+				// 				part.properties[key].anyOf[0],
+				// 			);
+				// 			delete part.properties[key].anyOf;
+				// 		}
+				// 	}
+				// }
 			}
 		}
 
