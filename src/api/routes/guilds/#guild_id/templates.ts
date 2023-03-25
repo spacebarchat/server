@@ -40,19 +40,46 @@ const TemplateGuildProjection: (keyof Guild)[] = [
 	"icon",
 ];
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "GuildTemplatesResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id } = req.params;
 
-	const templates = await Template.find({
-		where: { source_guild_id: guild_id },
-	});
+		const templates = await Template.find({
+			where: { source_guild_id: guild_id },
+		});
 
-	return res.json(templates);
-});
+		return res.json(templates);
+	},
+);
 
 router.post(
 	"/",
-	route({ requestBody: "TemplateCreateSchema", permission: "MANAGE_GUILD" }),
+	route({
+		requestBody: "TemplateCreateSchema",
+		permission: "MANAGE_GUILD",
+		responses: {
+			200: {
+				body: "Template",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const guild = await Guild.findOneOrFail({
@@ -80,7 +107,13 @@ router.post(
 
 router.delete(
 	"/:code",
-	route({ permission: "MANAGE_GUILD" }),
+	route({
+		permission: "MANAGE_GUILD",
+		responses: {
+			200: { body: "Template" },
+			403: { body: "APIErrorResponse" },
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { code, guild_id } = req.params;
 
@@ -95,7 +128,13 @@ router.delete(
 
 router.put(
 	"/:code",
-	route({ permission: "MANAGE_GUILD" }),
+	route({
+		permission: "MANAGE_GUILD",
+		responses: {
+			200: { body: "Template" },
+			403: { body: "APIErrorResponse" },
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { code, guild_id } = req.params;
 		const guild = await Guild.findOneOrFail({
@@ -114,7 +153,14 @@ router.put(
 
 router.patch(
 	"/:code",
-	route({ requestBody: "TemplateModifySchema", permission: "MANAGE_GUILD" }),
+	route({
+		requestBody: "TemplateModifySchema",
+		permission: "MANAGE_GUILD",
+		responses: {
+			200: { body: "Template" },
+			403: { body: "APIErrorResponse" },
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { code, guild_id } = req.params;
 		const { name, description } = req.body;

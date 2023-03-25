@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import { Guild, Member, Snowflake } from "@spacebar/util";
-import { LessThan, IsNull } from "typeorm";
 import { route } from "@spacebar/api";
+import { Guild, Member, Snowflake } from "@spacebar/util";
+import { Request, Response, Router } from "express";
+import { IsNull, LessThan } from "typeorm";
 const router = Router();
 
 //Returns all inactive members, respecting role hierarchy
@@ -80,25 +80,46 @@ export const inactiveMembers = async (
 	return members;
 };
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const days = parseInt(req.query.days as string);
+router.get(
+	"/",
+	route({
+		responses: {
+			"200": {
+				body: "GuildPruneResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const days = parseInt(req.query.days as string);
 
-	let roles = req.query.include_roles;
-	if (typeof roles === "string") roles = [roles]; //express will return array otherwise
+		let roles = req.query.include_roles;
+		if (typeof roles === "string") roles = [roles]; //express will return array otherwise
 
-	const members = await inactiveMembers(
-		req.params.guild_id,
-		req.user_id,
-		days,
-		roles as string[],
-	);
+		const members = await inactiveMembers(
+			req.params.guild_id,
+			req.user_id,
+			days,
+			roles as string[],
+		);
 
-	res.send({ pruned: members.length });
-});
+		res.send({ pruned: members.length });
+	},
+);
 
 router.post(
 	"/",
-	route({ permission: "KICK_MEMBERS", right: "KICK_BAN_MEMBERS" }),
+	route({
+		permission: "KICK_MEMBERS",
+		right: "KICK_BAN_MEMBERS",
+		responses: {
+			200: {
+				body: "GuildPurgeResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const days = parseInt(req.body.days);
 

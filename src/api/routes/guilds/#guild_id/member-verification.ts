@@ -16,17 +16,27 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 const router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	// TODO: member verification
+router.get(
+	"/",
+	route({
+		responses: {
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		// TODO: member verification
 
-	res.status(404).json({
-		message: "Unknown Guild Member Verification Form",
-		code: 10068,
-	});
-});
+		res.status(404).json({
+			message: "Unknown Guild Member Verification Form",
+			code: 10068,
+		});
+	},
+);
 
 export default router;

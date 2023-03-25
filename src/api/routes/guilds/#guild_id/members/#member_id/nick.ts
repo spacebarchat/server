@@ -24,7 +24,18 @@ const router = Router();
 
 router.patch(
 	"/",
-	route({ requestBody: "MemberNickChangeSchema" }),
+	route({
+		requestBody: "MemberNickChangeSchema",
+		responses: {
+			200: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		let permissionString: PermissionResolvable = "MANAGE_NICKNAMES";

@@ -31,53 +31,72 @@ import { Request, Response, Router } from "express";
 import fetch from "node-fetch";
 const router: Router = Router();
 
-router.get("/:code", route({}), async (req: Request, res: Response) => {
-	const { allowDiscordTemplates, allowRaws, enabled } =
-		Config.get().templates;
-	if (!enabled)
-		res.json({
-			code: 403,
-			message: "Template creation & usage is disabled on this instance.",
-		}).sendStatus(403);
-
-	const { code } = req.params;
-
-	if (code.startsWith("discord:")) {
-		if (!allowDiscordTemplates)
-			return res
-				.json({
-					code: 403,
-					message:
-						"Discord templates cannot be used on this instance.",
-				})
-				.sendStatus(403);
-		const discordTemplateID = code.split("discord:", 2)[1];
-
-		const discordTemplateData = await fetch(
-			`https://discord.com/api/v9/guilds/templates/${discordTemplateID}`,
-			{
-				method: "get",
-				headers: { "Content-Type": "application/json" },
+router.get(
+	"/:code",
+	route({
+		responses: {
+			200: {
+				body: "GuildTemplate",
 			},
-		);
-		return res.json(await discordTemplateData.json());
-	}
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { allowDiscordTemplates, allowRaws, enabled } =
+			Config.get().templates;
+		if (!enabled)
+			res.json({
+				code: 403,
+				message:
+					"Template creation & usage is disabled on this instance.",
+			}).sendStatus(403);
 
-	if (code.startsWith("external:")) {
-		if (!allowRaws)
-			return res
-				.json({
-					code: 403,
-					message: "Importing raws is disabled on this instance.",
-				})
-				.sendStatus(403);
+		const { code } = req.params;
 
-		return res.json(code.split("external:", 2)[1]);
-	}
+		if (code.startsWith("discord:")) {
+			if (!allowDiscordTemplates)
+				return res
+					.json({
+						code: 403,
+						message:
+							"Discord templates cannot be used on this instance.",
+					})
+					.sendStatus(403);
+			const discordTemplateID = code.split("discord:", 2)[1];
 
-	const template = await Template.findOneOrFail({ where: { code: code } });
-	res.json(template);
-});
+			const discordTemplateData = await fetch(
+				`https://discord.com/api/v9/guilds/templates/${discordTemplateID}`,
+				{
+					method: "get",
+					headers: { "Content-Type": "application/json" },
+				},
+			);
+			return res.json(await discordTemplateData.json());
+		}
+
+		if (code.startsWith("external:")) {
+			if (!allowRaws)
+				return res
+					.json({
+						code: 403,
+						message: "Importing raws is disabled on this instance.",
+					})
+					.sendStatus(403);
+
+			return res.json(code.split("external:", 2)[1]);
+		}
+
+		const template = await Template.findOneOrFail({
+			where: { code: code },
+		});
+		res.json(template);
+	},
+);
 
 router.post(
 	"/:code",

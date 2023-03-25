@@ -33,7 +33,21 @@ const router: Router = Router();
 
 router.post(
 	"/",
-	route({ requestBody: "GuildCreateSchema", right: "CREATE_GUILDS" }),
+	route({
+		requestBody: "GuildCreateSchema",
+		right: "CREATE_GUILDS",
+		responses: {
+			201: {
+				body: "GuildCreateResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as GuildCreateSchema;
 

@@ -23,21 +23,48 @@ import { Request, Response, Router } from "express";
 const router: Router = Router();
 
 // https://discord.com/developers/docs/resources/guild#get-guild-widget-settings
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "GuildWidgetSettingsResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id } = req.params;
 
-	const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
+		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
 
-	return res.json({
-		enabled: guild.widget_enabled || false,
-		channel_id: guild.widget_channel_id || null,
-	});
-});
+		return res.json({
+			enabled: guild.widget_enabled || false,
+			channel_id: guild.widget_channel_id || null,
+		});
+	},
+);
 
 // https://discord.com/developers/docs/resources/guild#modify-guild-widget
 router.patch(
 	"/",
-	route({ requestBody: "WidgetModifySchema", permission: "MANAGE_GUILD" }),
+	route({
+		requestBody: "WidgetModifySchema",
+		permission: "MANAGE_GUILD",
+		responses: {
+			200: {
+				body: "WidgetModifySchema",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as WidgetModifySchema;
 		const { guild_id } = req.params;
