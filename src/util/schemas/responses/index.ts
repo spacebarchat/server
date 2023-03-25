@@ -44,4 +44,5 @@ export * from "./UserProfileResponse";
 export * from "./UserRelationshipsResponse";
 export * from "./UserRelationsResponse";
 export * from "./UserResponse";
+export * from "./WebAuthnCreateResponse";
 export * from "./WebhookCreateResponse";
