@@ -27,21 +27,40 @@ import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const recipients = await Recipient.find({
-		where: { user_id: req.user_id, closed: false },
-		relations: ["channel", "channel.recipients"],
-	});
-	res.json(
-		await Promise.all(
-			recipients.map((r) => DmChannelDTO.from(r.channel, [req.user_id])),
-		),
-	);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "UserChannelsResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const recipients = await Recipient.find({
+			where: { user_id: req.user_id, closed: false },
+			relations: ["channel", "channel.recipients"],
+		});
+		res.json(
+			await Promise.all(
+				recipients.map((r) =>
+					DmChannelDTO.from(r.channel, [req.user_id]),
+				),
+			),
+		);
+	},
+);
 
 router.post(
 	"/",
-	route({ requestBody: "DmChannelCreateSchema" }),
+	route({
+		requestBody: "DmChannelCreateSchema",
+		responses: {
+			200: {
+				body: "DmChannelDTO",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as DmChannelCreateSchema;
 		res.json(

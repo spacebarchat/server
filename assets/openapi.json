@@ -3740,64 +3740,6 @@
                     "width"
                 ]
             },
-            "UserPublic": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "premium_since": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "accent_color": {
-                        "type": "integer"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "premium_type": {
-                        "type": "integer"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "bio",
-                    "bot",
-                    "discriminator",
-                    "id",
-                    "premium_since",
-                    "premium_type",
-                    "public_flags",
-                    "username"
-                ]
-            },
             "PublicConnectedAccount": {
                 "type": "object",
                 "properties": {
@@ -3815,6 +3757,78 @@
                     "name",
                     "type",
                     "verified"
+                ]
+            },
+            "DmChannelDTO": {
+                "type": "object",
+                "properties": {
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "last_message_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "origin_channel_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "owner_id": {
+                        "type": "string"
+                    },
+                    "recipients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MinimalPublicUserDTO"
+                        }
+                    },
+                    "type": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "icon",
+                    "id",
+                    "last_message_id",
+                    "name",
+                    "origin_channel_id",
+                    "recipients",
+                    "type"
+                ]
+            },
+            "MinimalPublicUserDTO": {
+                "type": "object",
+                "properties": {
+                    "avatar": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "username": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "discriminator",
+                    "id",
+                    "public_flags",
+                    "username"
                 ]
             },
             "GenerateWebAuthnCredentialsSchema": {
@@ -5665,11 +5679,30 @@
                     "token"
                 ]
             },
+            "UserNoteResponse": {
+                "type": "object",
+                "properties": {
+                    "note": {
+                        "type": "string"
+                    },
+                    "note_user_id": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "note",
+                    "note_user_id",
+                    "user_id"
+                ]
+            },
             "UserProfileResponse": {
                 "type": "object",
                 "properties": {
                     "user": {
-                        "$ref": "#/components/schemas/UserPublic"
+                        "$ref": "#/components/schemas/PublicUser"
                     },
                     "connected_accounts": {
                         "$ref": "#/components/schemas/PublicConnectedAccount"
@@ -5685,6 +5718,29 @@
                 },
                 "required": [
                     "connected_accounts",
+                    "user"
+                ]
+            },
+            "UserRelationshipsResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RelationshipType"
+                    },
+                    "nickname": {
+                        "type": "null"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/PublicUser"
+                    }
+                },
+                "required": [
+                    "id",
+                    "nickname",
+                    "type",
                     "user"
                 ]
             },
@@ -5715,6 +5771,241 @@
                 },
                 "required": [
                     "object"
+                ]
+            },
+            "PublicUserResponse": {
+                "$ref": "#/components/schemas/PublicUser"
+            },
+            "PrivateUserResponse": {
+                "type": "object",
+                "properties": {
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "type": "string"
+                    },
+                    "mfa_enabled": {
+                        "type": "boolean"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "nsfw_allowed": {
+                        "type": "boolean"
+                    },
+                    "premium": {
+                        "type": "boolean"
+                    },
+                    "purchased_flags": {
+                        "type": "integer"
+                    },
+                    "premium_usage_flags": {
+                        "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "disabled",
+                    "discriminator",
+                    "flags",
+                    "id",
+                    "mfa_enabled",
+                    "nsfw_allowed",
+                    "premium",
+                    "premium_since",
+                    "premium_type",
+                    "premium_usage_flags",
+                    "public_flags",
+                    "purchased_flags",
+                    "username",
+                    "verified"
+                ]
+            },
+            "UserUpdateResponse": {
+                "type": "object",
+                "properties": {
+                    "newToken": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "type": "string"
+                    },
+                    "mfa_enabled": {
+                        "type": "boolean"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "nsfw_allowed": {
+                        "type": "boolean"
+                    },
+                    "premium": {
+                        "type": "boolean"
+                    },
+                    "purchased_flags": {
+                        "type": "integer"
+                    },
+                    "premium_usage_flags": {
+                        "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "disabled",
+                    "discriminator",
+                    "flags",
+                    "id",
+                    "mfa_enabled",
+                    "nsfw_allowed",
+                    "premium",
+                    "premium_since",
+                    "premium_type",
+                    "premium_usage_flags",
+                    "public_flags",
+                    "purchased_flags",
+                    "username",
+                    "verified"
+                ]
+            },
+            "UserGuildsResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Guild"
+                }
+            },
+            "UserChannelsResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/DmChannelDTO"
+                }
+            },
+            "UserBackupCodesResponse": {
+                "type": "object",
+                "properties": {
+                    "expired": {},
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "consumed": {
+                        "type": "boolean"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "consumed",
+                    "expired",
+                    "id",
+                    "user"
                 ]
             },
             "WebhookCreateResponse": {
@@ -6061,6 +6352,17 @@
                         "type": "string"
                     }
                 }
+            },
+            "UserNoteUpdateSchema": {
+                "type": "object",
+                "properties": {
+                    "note": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "note"
+                ]
             },
             "UserProfileModifySchema": {
                 "type": "object",
@@ -6646,8 +6948,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserSettings"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -6673,8 +7002,28 @@
                     }
                 },
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -6690,8 +7039,28 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -6717,9 +7086,29 @@
                         "bearer": true
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserNoteUpdateSchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -6854,6 +7243,8 @@
                         "bearer": true
                     }
                 ],
+                "description": "This route is replaced with users/@me/mfa/codes-verification in newer clients",
+                "deprecated": true,
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -6865,8 +7256,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserBackupCodesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -6892,8 +7310,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserBackupCodesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -6936,8 +7381,35 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserUpdateResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -6953,8 +7425,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserGuildsResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -6970,8 +7449,28 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7087,8 +7586,28 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -7121,8 +7640,28 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -7165,8 +7704,15 @@
                     }
                 },
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DmChannelDTO"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -7321,6 +7867,16 @@
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7385,8 +7941,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PublicUserResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -7414,8 +7977,28 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -10777,7 +11360,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserPublic"
+                                    "$ref": "#/components/schemas/PublicUser"
                                 }
                             }
                         }

@@ -34,18 +34,41 @@ import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	res.json(
-		await User.findOne({
-			select: PrivateUserProjection,
-			where: { id: req.user_id },
-		}),
-	);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "PrivateUserResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		res.json(
+			await User.findOne({
+				select: PrivateUserProjection,
+				where: { id: req.user_id },
+			}),
+		);
+	},
+);
 
 router.patch(
 	"/",
-	route({ requestBody: "UserModifySchema" }),
+	route({
+		requestBody: "UserModifySchema",
+		responses: {
+			200: {
+				body: "UserUpdateResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as UserModifySchema;
 

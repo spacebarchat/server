@@ -30,7 +30,18 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ right: "MANAGE_USERS" }),
+	route({
+		right: "MANAGE_USERS",
+		responses: {
+			204: {},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		await User.findOneOrFail({
 			where: { id: req.params.id },

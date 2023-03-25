@@ -145,6 +145,7 @@ function apiRoutes() {
 
 		if (route.description) obj.description = route.description;
 		if (route.summary) obj.summary = route.summary;
+		if (route.deprecated) obj.deprecated = route.deprecated;
 
 		if (route.requestBody) {
 			obj.requestBody = {

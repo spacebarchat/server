@@ -16,41 +16,58 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import { Member, User } from "@fosscord/util";
 import { route } from "@fosscord/api";
+import { Member, User } from "@fosscord/util";
 import bcrypt from "bcrypt";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
 const router = Router();
 
-router.post("/", route({}), async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({
-		where: { id: req.user_id },
-		select: ["data"],
-	}); //User object
-	let correctpass = true;
+router.post(
+	"/",
+	route({
+		responses: {
+			204: {},
+			401: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const user = await User.findOneOrFail({
+			where: { id: req.user_id },
+			select: ["data"],
+		}); //User object
+		let correctpass = true;
 
-	if (user.data.hash) {
-		// guest accounts can delete accounts without password
-		correctpass = await bcrypt.compare(req.body.password, user.data.hash);
-		if (!correctpass) {
-			throw new HTTPError(req.t("auth:login.INVALID_PASSWORD"));
+		if (user.data.hash) {
+			// guest accounts can delete accounts without password
+			correctpass = await bcrypt.compare(
+				req.body.password,
+				user.data.hash,
+			);
+			if (!correctpass) {
+				throw new HTTPError(req.t("auth:login.INVALID_PASSWORD"));
+			}
 		}
-	}
 
-	// TODO: decrement guild member count
+		// TODO: decrement guild member count
 
-	if (correctpass) {
-		await Promise.all([
-			User.delete({ id: req.user_id }),
-			Member.delete({ id: req.user_id }),
-		]);
+		if (correctpass) {
+			await Promise.all([
+				User.delete({ id: req.user_id }),
+				Member.delete({ id: req.user_id }),
+			]);
 
-		res.sendStatus(204);
-	} else {
-		res.sendStatus(401);
-	}
-});
+			res.sendStatus(204);
+		} else {
+			res.sendStatus(401);
+		}
+	},
+);
 
 export default router;

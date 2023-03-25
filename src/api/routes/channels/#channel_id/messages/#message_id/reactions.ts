@@ -143,7 +143,7 @@ router.get(
 		permission: "VIEW_CHANNEL",
 		responses: {
 			200: {
-				body: "UserPublic",
+				body: "PublicUser",
 			},
 			400: {
 				body: "APIErrorResponse",

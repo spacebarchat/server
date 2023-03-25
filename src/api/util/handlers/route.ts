@@ -70,6 +70,7 @@ export interface RouteOptions {
 			values?: string[];
 		};
 	};
+	deprecated?: boolean;
 	// test?: {
 	// 	response?: RouteResponse;
 	// 	body?: unknown;
