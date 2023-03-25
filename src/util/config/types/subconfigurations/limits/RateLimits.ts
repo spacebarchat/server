@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { RouteRateLimit, RateLimitOptions } from ".";
+import { RateLimitOptions, RouteRateLimit } from ".";
 
 export class RateLimits {
 	enabled: boolean = false;
-	ip: Omit<RateLimitOptions, "bot_count"> = {
+	ip: RateLimitOptions = {
 		count: 500,
 		window: 5,
 	};
