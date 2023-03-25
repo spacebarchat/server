@@ -3481,6 +3481,226 @@
                 "description": "A container for useful snowflake-related methods.",
                 "type": "object"
             },
+            "UserLimits": {
+                "type": "object",
+                "properties": {
+                    "maxGuilds": {
+                        "type": "integer",
+                        "default": 1048576
+                    },
+                    "maxUsername": {
+                        "type": "integer",
+                        "default": 32
+                    },
+                    "maxFriends": {
+                        "type": "integer",
+                        "default": 5000
+                    }
+                },
+                "required": [
+                    "maxFriends",
+                    "maxGuilds",
+                    "maxUsername"
+                ]
+            },
+            "GuildLimits": {
+                "type": "object",
+                "properties": {
+                    "maxRoles": {
+                        "type": "integer",
+                        "default": 1000
+                    },
+                    "maxEmojis": {
+                        "type": "integer",
+                        "default": 2000
+                    },
+                    "maxMembers": {
+                        "type": "integer",
+                        "default": 25000000
+                    },
+                    "maxChannels": {
+                        "type": "integer",
+                        "default": 65535
+                    },
+                    "maxChannelsInCategory": {
+                        "type": "integer",
+                        "default": 65535
+                    }
+                },
+                "required": [
+                    "maxChannels",
+                    "maxChannelsInCategory",
+                    "maxEmojis",
+                    "maxMembers",
+                    "maxRoles"
+                ]
+            },
+            "MessageLimits": {
+                "type": "object",
+                "properties": {
+                    "maxCharacters": {
+                        "type": "integer",
+                        "default": 1048576
+                    },
+                    "maxTTSCharacters": {
+                        "type": "integer",
+                        "default": 160
+                    },
+                    "maxReactions": {
+                        "type": "integer",
+                        "default": 2048
+                    },
+                    "maxAttachmentSize": {
+                        "type": "integer",
+                        "default": 1073741824
+                    },
+                    "maxBulkDelete": {
+                        "type": "integer",
+                        "default": 1000
+                    },
+                    "maxEmbedDownloadSize": {
+                        "type": "integer",
+                        "default": 5242880
+                    }
+                },
+                "required": [
+                    "maxAttachmentSize",
+                    "maxBulkDelete",
+                    "maxCharacters",
+                    "maxEmbedDownloadSize",
+                    "maxReactions",
+                    "maxTTSCharacters"
+                ]
+            },
+            "ChannelLimits": {
+                "type": "object",
+                "properties": {
+                    "maxPins": {
+                        "type": "integer",
+                        "default": 500
+                    },
+                    "maxTopic": {
+                        "type": "integer",
+                        "default": 1024
+                    },
+                    "maxWebhooks": {
+                        "type": "integer",
+                        "default": 100
+                    }
+                },
+                "required": [
+                    "maxPins",
+                    "maxTopic",
+                    "maxWebhooks"
+                ]
+            },
+            "RateLimits": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "ip": {
+                        "$ref": "#/components/schemas/RateLimitOptions"
+                    },
+                    "global": {
+                        "$ref": "#/components/schemas/RateLimitOptions"
+                    },
+                    "error": {
+                        "$ref": "#/components/schemas/RateLimitOptions"
+                    },
+                    "routes": {
+                        "$ref": "#/components/schemas/RouteRateLimit"
+                    }
+                },
+                "required": [
+                    "enabled",
+                    "error",
+                    "global",
+                    "ip",
+                    "routes"
+                ]
+            },
+            "RateLimitOptions": {
+                "type": "object",
+                "properties": {
+                    "bot": {
+                        "type": "integer"
+                    },
+                    "count": {
+                        "type": "integer"
+                    },
+                    "window": {
+                        "type": "integer"
+                    },
+                    "onyIp": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "count",
+                    "window"
+                ]
+            },
+            "RouteRateLimit": {
+                "type": "object",
+                "properties": {
+                    "guild": {
+                        "$ref": "#/components/schemas/RateLimitOptions"
+                    },
+                    "webhook": {
+                        "$ref": "#/components/schemas/RateLimitOptions"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/RateLimitOptions"
+                    },
+                    "auth": {}
+                },
+                "required": [
+                    "auth",
+                    "channel",
+                    "guild",
+                    "webhook"
+                ]
+            },
+            "GlobalRateLimits": {
+                "type": "object",
+                "properties": {
+                    "register": {
+                        "$ref": "#/components/schemas/GlobalRateLimit"
+                    },
+                    "sendMessage": {
+                        "$ref": "#/components/schemas/GlobalRateLimit"
+                    }
+                },
+                "required": [
+                    "register",
+                    "sendMessage"
+                ]
+            },
+            "GlobalRateLimit": {
+                "type": "object",
+                "properties": {
+                    "limit": {
+                        "type": "integer",
+                        "default": 100
+                    },
+                    "window": {
+                        "type": "integer",
+                        "default": 3600000
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                },
+                "required": [
+                    "enabled",
+                    "limit",
+                    "window"
+                ]
+            },
             "TenorGifResponse": {
                 "type": "object",
                 "properties": {
@@ -4756,6 +4976,58 @@
                     "url"
                 ]
             },
+            "GeneralConfigurationResponse": {
+                "type": "object",
+                "properties": {
+                    "instanceName": {
+                        "type": "string",
+                        "default": "Fosscord Instance"
+                    },
+                    "instanceDescription": {
+                        "type": "string",
+                        "default": "This is a Fosscord instance made in the pre-release days",
+                        "nullable": true
+                    },
+                    "frontPage": {
+                        "type": "string",
+                        "default": null,
+                        "nullable": true
+                    },
+                    "tosPage": {
+                        "type": "string",
+                        "default": null,
+                        "nullable": true
+                    },
+                    "correspondenceEmail": {
+                        "type": "string",
+                        "default": null,
+                        "nullable": true
+                    },
+                    "correspondenceUserID": {
+                        "type": "string",
+                        "default": null,
+                        "nullable": true
+                    },
+                    "image": {
+                        "type": "string",
+                        "default": null,
+                        "nullable": true
+                    },
+                    "instanceId": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "correspondenceEmail",
+                    "correspondenceUserID",
+                    "frontPage",
+                    "image",
+                    "instanceDescription",
+                    "instanceId",
+                    "instanceName",
+                    "tosPage"
+                ]
+            },
             "GenerateRegistrationTokensResponse": {
                 "type": "object",
                 "properties": {
@@ -5146,6 +5418,92 @@
                 "required": [
                     "channel_id",
                     "enabled"
+                ]
+            },
+            "InstanceDomainsResponse": {
+                "type": "object",
+                "properties": {
+                    "cdn": {
+                        "type": "string"
+                    },
+                    "gateway": {
+                        "type": "string"
+                    },
+                    "defaultApiVersion": {
+                        "type": "string"
+                    },
+                    "apiEndpoint": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "apiEndpoint",
+                    "cdn",
+                    "defaultApiVersion",
+                    "gateway"
+                ]
+            },
+            "InstanceStatsResponse": {
+                "type": "object",
+                "properties": {
+                    "counts": {
+                        "type": "object",
+                        "properties": {
+                            "user": {
+                                "type": "integer"
+                            },
+                            "guild": {
+                                "type": "integer"
+                            },
+                            "message": {
+                                "type": "integer"
+                            },
+                            "members": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "guild",
+                            "members",
+                            "message",
+                            "user"
+                        ]
+                    }
+                },
+                "required": [
+                    "counts"
+                ]
+            },
+            "LimitsConfigurationResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/UserLimits"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/GuildLimits"
+                    },
+                    "message": {
+                        "$ref": "#/components/schemas/MessageLimits"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/ChannelLimits"
+                    },
+                    "rate": {
+                        "$ref": "#/components/schemas/RateLimits"
+                    },
+                    "absoluteRate": {
+                        "$ref": "#/components/schemas/GlobalRateLimits"
+                    }
+                },
+                "required": [
+                    "absoluteRate",
+                    "channel",
+                    "guild",
+                    "message",
+                    "rate",
+                    "user"
                 ]
             },
             "LocationMetadataResponse": {
@@ -7367,8 +7725,25 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InstanceStatsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -7379,8 +7754,15 @@
         "/policies/instance/limits/": {
             "get": {
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LimitsConfigurationResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -7391,8 +7773,15 @@
         "/policies/instance/": {
             "get": {
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GeneralConfigurationResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -7403,8 +7792,15 @@
         "/policies/instance/domains/": {
             "get": {
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InstanceDomainsResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [

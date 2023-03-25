@@ -16,14 +16,24 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@fosscord/api";
 import { Config } from "@fosscord/util";
+import { Request, Response, Router } from "express";
 const router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { limits } = Config.get();
-	res.json(limits);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "LimitsConfigurationResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { limits } = Config.get();
+		res.json(limits);
+	},
+);
 
 export default router;
