@@ -19,7 +19,12 @@
 export interface LazyRequestSchema {
 	guild_id: string;
 	channels?: {
-		[key: string]: [number, number][];
+		/**
+		 * @items.type integer
+		 * @minItems 2
+		 * @maxItems 2
+		 */
+		[key: string]: number[][]; // puyo: changed from [number, number] because it breaks openapi
 	};
 	activities?: boolean;
 	threads?: boolean;
