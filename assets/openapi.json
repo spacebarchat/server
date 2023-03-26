@@ -3903,6 +3903,83 @@
                     "ticket"
                 ]
             },
+            "TokenResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "settings": {
+                        "$ref": "#/components/schemas/UserSettings"
+                    }
+                },
+                "required": [
+                    "settings",
+                    "token"
+                ]
+            },
+            "MFAResponse": {
+                "type": "object",
+                "properties": {
+                    "ticket": {
+                        "type": "string"
+                    },
+                    "mfa": {
+                        "type": "boolean",
+                        "enum": [
+                            true
+                        ]
+                    },
+                    "sms": {
+                        "type": "boolean",
+                        "enum": [
+                            false
+                        ]
+                    },
+                    "token": {
+                        "type": "null"
+                    }
+                },
+                "required": [
+                    "mfa",
+                    "sms",
+                    "ticket",
+                    "token"
+                ]
+            },
+            "WebAuthnResponse": {
+                "type": "object",
+                "properties": {
+                    "webauthn": {
+                        "type": "string"
+                    },
+                    "ticket": {
+                        "type": "string"
+                    },
+                    "mfa": {
+                        "type": "boolean",
+                        "enum": [
+                            true
+                        ]
+                    },
+                    "sms": {
+                        "type": "boolean",
+                        "enum": [
+                            false
+                        ]
+                    },
+                    "token": {
+                        "type": "null"
+                    }
+                },
+                "required": [
+                    "mfa",
+                    "sms",
+                    "ticket",
+                    "token",
+                    "webauthn"
+                ]
+            },
             "ChannelPermissionOverwriteSchema": {
                 "type": "object",
                 "properties": {
@@ -5812,21 +5889,6 @@
                     "$ref": "#/components/schemas/TenorGifResponse"
                 }
             },
-            "TokenResponse": {
-                "type": "object",
-                "properties": {
-                    "token": {
-                        "type": "string"
-                    },
-                    "settings": {
-                        "$ref": "#/components/schemas/UserSettings"
-                    }
-                },
-                "required": [
-                    "settings",
-                    "token"
-                ]
-            },
             "TokenOnlyResponse": {
                 "type": "object",
                 "properties": {
@@ -6962,6 +7024,19 @@
                 },
                 "required": [
                     "messages"
+                ]
+            },
+            "LoginResponse": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/TokenResponse"
+                    },
+                    {
+                        "$ref": "#/components/schemas/MFAResponse"
+                    },
+                    {
+                        "$ref": "#/components/schemas/WebAuthnResponse"
+                    }
                 ]
             },
             "MemberNickChangeSchema": {
@@ -12373,7 +12448,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TokenResponse"
+                                    "$ref": "#/components/schemas/LoginResponse"
                                 }
                             }
                         }

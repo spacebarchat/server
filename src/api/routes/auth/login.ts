@@ -40,7 +40,7 @@ router.post(
 		requestBody: "LoginSchema",
 		responses: {
 			200: {
-				body: "TokenResponse",
+				body: "LoginResponse",
 			},
 			400: {
 				body: "APIErrorOrCaptchaResponse",
