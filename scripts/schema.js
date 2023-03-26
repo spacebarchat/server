@@ -135,7 +135,7 @@ function main() {
 		definitions = { ...definitions, [name]: { ...part } };
 	}
 
-	modify(definitions);
+	// modify(definitions);
 
 	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
 }

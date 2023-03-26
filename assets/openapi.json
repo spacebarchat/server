@@ -35,30 +35,26 @@
                 "properties": {
                     "read_states": {
                         "type": "array",
-                        "items": [
-                            {
-                                "type": "object",
-                                "properties": {
-                                    "channel_id": {
-                                        "type": "string"
-                                    },
-                                    "message_id": {
-                                        "type": "string"
-                                    },
-                                    "read_state_type": {
-                                        "type": "integer"
-                                    }
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "channel_id": {
+                                    "type": "string"
                                 },
-                                "additionalProperties": false,
-                                "required": [
-                                    "channel_id",
-                                    "message_id",
-                                    "read_state_type"
-                                ]
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
+                                "message_id": {
+                                    "type": "string"
+                                },
+                                "read_state_type": {
+                                    "type": "integer"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "channel_id",
+                                "message_id",
+                                "read_state_type"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -515,13 +511,9 @@
                             },
                             "size": {
                                 "type": "array",
-                                "items": [
-                                    {
-                                        "type": "integer"
-                                    }
-                                ],
-                                "minItems": 1,
-                                "maxItems": 1
+                                "items": {
+                                    "type": "integer"
+                                }
                             }
                         },
                         "additionalProperties": false
@@ -4474,17 +4466,12 @@
                         "type": "integer"
                     },
                     "shard": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "number"
-                            },
-                            {
-                                "type": "number"
-                            }
-                        ],
                         "minItems": 2,
-                        "maxItems": 2
+                        "maxItems": 2,
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        }
                     },
                     "guild_subscriptions": {
                         "type": "boolean"
@@ -4603,16 +4590,9 @@
                             "type": "array",
                             "items": {
                                 "type": "array",
-                                "items": [
-                                    {
-                                        "type": "integer"
-                                    },
-                                    {
-                                        "type": "integer"
-                                    }
-                                ],
-                                "minItems": 2,
-                                "maxItems": 2
+                                "items": {
+                                    "type": "integer"
+                                }
                             }
                         }
                     },
@@ -4687,17 +4667,12 @@
                         "type": "string"
                     },
                     "theme_colors": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "integer"
-                            }
-                        ],
                         "minItems": 2,
-                        "maxItems": 2
+                        "maxItems": 2,
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 }
             },
@@ -5472,17 +5447,12 @@
                         "type": "string"
                     },
                     "theme_colors": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "integer"
-                            }
-                        ],
                         "minItems": 2,
-                        "maxItems": 2
+                        "maxItems": 2,
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 }
             },
