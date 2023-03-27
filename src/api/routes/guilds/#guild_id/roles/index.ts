@@ -122,7 +122,7 @@ router.patch(
 		permission: "MANAGE_ROLES",
 		responses: {
 			200: {
-				body: "GuildRolesResponse",
+				body: "APIRoleArray",
 			},
 			400: {
 				body: "APIErrorResponse",

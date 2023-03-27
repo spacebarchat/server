@@ -94,7 +94,7 @@ router.get(
 		},
 		responses: {
 			200: {
-				body: "ChannelMessagesResponse",
+				body: "APIMessageArray",
 			},
 			400: {
 				body: "APIErrorResponse",

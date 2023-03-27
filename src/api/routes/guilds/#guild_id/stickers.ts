@@ -38,7 +38,7 @@ router.get(
 	route({
 		responses: {
 			200: {
-				body: "GuildStickersResponse",
+				body: "APIStickerArray",
 			},
 			403: {
 				body: "APIErrorResponse",

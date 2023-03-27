@@ -5002,7 +5002,7 @@
                 "type": "array",
                 "items": {}
             },
-            "ApplicationsResponse": {
+            "APIApplicationArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Application"
@@ -5023,19 +5023,19 @@
                     "regenerate_nonce"
                 ]
             },
-            "ChannelInvitesResponse": {
+            "APIInviteArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Invite"
                 }
             },
-            "ChannelPinsResponse": {
+            "APIMessageArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Message"
                 }
             },
-            "ChannelWebhooksResponse": {
+            "APIWebhookArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Webhook"
@@ -5067,7 +5067,7 @@
                     "total"
                 ]
             },
-            "DiscoveryCategoriesResponse": {
+            "APIDiscoveryCategoryArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Categories"
@@ -5124,7 +5124,7 @@
                     "url"
                 ]
             },
-            "GeneralConfigurationResponse": {
+            "APIGeneralConfiguration": {
                 "type": "object",
                 "properties": {
                     "instanceName": {
@@ -5233,7 +5233,7 @@
                     "user"
                 ]
             },
-            "GuildChannelsResponse": {
+            "APIChannelArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Channel"
@@ -5340,19 +5340,19 @@
                     "valid_rules_channel"
                 ]
             },
-            "GuildEmojisResponse": {
+            "APIEmojiArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Emoji"
                 }
             },
-            "GuildInvitesResponse": {
+            "APIInviteArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Invite"
                 }
             },
-            "GuildMembersResponse": {
+            "APIMemberArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Member"
@@ -5427,19 +5427,19 @@
                     "joined_at"
                 ]
             },
-            "GuildRolesResponse": {
+            "APIRoleArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Role"
                 }
             },
-            "GuildStickersResponse": {
+            "APIStickerArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Sticker"
                 }
             },
-            "GuildTemplatesResponse": {
+            "APITemplateArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Template"
@@ -5472,7 +5472,7 @@
                     "code"
                 ]
             },
-            "GuildVoiceRegionsResponse": {
+            "APIGuildVoiceRegion": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/GuildVoiceRegion"
@@ -5714,7 +5714,7 @@
                     "counts"
                 ]
             },
-            "LimitsConfigurationResponse": {
+            "APILimitsConfiguration": {
                 "type": "object",
                 "properties": {
                     "user": {
@@ -5826,7 +5826,7 @@
                     "location"
                 ]
             },
-            "StickerPacksResponse": {
+            "APIStickerPackArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/StickerPack"
@@ -6036,10 +6036,10 @@
                     "object"
                 ]
             },
-            "PublicUserResponse": {
+            "APIPublicUser": {
                 "$ref": "#/components/schemas/PublicUser"
             },
-            "PrivateUserResponse": {
+            "APIPrivateUser": {
                 "type": "object",
                 "properties": {
                     "verified": {
@@ -6234,19 +6234,19 @@
                     "verified"
                 ]
             },
-            "UserGuildsResponse": {
+            "APIGuildArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Guild"
                 }
             },
-            "UserChannelsResponse": {
+            "APIDMChannelArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/DmChannelDTO"
                 }
             },
-            "UserBackupCodesResponse": {
+            "APIBackupCodeArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/BackupCode"
@@ -7061,7 +7061,7 @@
                     "days"
                 ]
             },
-            "ChannelMessagesResponse": {
+            "APIMessageArray": {
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Message"
@@ -7193,7 +7193,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GuildVoiceRegionsResponse"
+                                    "$ref": "#/components/schemas/APIGuildVoiceRegion"
                                 }
                             }
                         }
@@ -7596,7 +7596,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserBackupCodesResponse"
+                                    "$ref": "#/components/schemas/APIBackupCodeArray"
                                 }
                             }
                         }
@@ -7650,7 +7650,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserBackupCodesResponse"
+                                    "$ref": "#/components/schemas/APIBackupCodeArray"
                                 }
                             }
                         }
@@ -7765,7 +7765,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserGuildsResponse"
+                                    "$ref": "#/components/schemas/APIGuildArray"
                                 }
                             }
                         }
@@ -8301,7 +8301,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PublicUserResponse"
+                                    "$ref": "#/components/schemas/APIPublicUser"
                                 }
                             }
                         }
@@ -8628,7 +8628,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/StickerPacksResponse"
+                                    "$ref": "#/components/schemas/APIStickerPackArray"
                                 }
                             }
                         }
@@ -8764,7 +8764,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/LimitsConfigurationResponse"
+                                    "$ref": "#/components/schemas/APILimitsConfiguration"
                                 }
                             }
                         }
@@ -8783,7 +8783,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GeneralConfigurationResponse"
+                                    "$ref": "#/components/schemas/APIGeneralConfiguration"
                                 }
                             }
                         }
@@ -9783,7 +9783,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GuildRolesResponse"
+                                    "$ref": "#/components/schemas/APIRoleArray"
                                 }
                             }
                         }
@@ -9923,7 +9923,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GuildVoiceRegionsResponse"
+                                    "$ref": "#/components/schemas/APIGuildVoiceRegion"
                                 }
                             }
                         }
@@ -10172,7 +10172,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GuildMembersResponse"
+                                    "$ref": "#/components/schemas/APIMemberArray"
                                 }
                             }
                         }
@@ -10432,7 +10432,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GuildInvitesResponse"
+                                    "$ref": "#/components/schemas/APIInviteArray"
                                 }
                             }
                         }
@@ -11312,7 +11312,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/DiscoveryCategoriesResponse"
+                                    "$ref": "#/components/schemas/APIDiscoveryCategoryArray"
                                 }
                             }
                         }
@@ -11595,7 +11595,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ChannelPinsResponse"
+                                    "$ref": "#/components/schemas/APIMessageArray"
                                 }
                             }
                         }
@@ -12076,7 +12076,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ChannelInvitesResponse"
+                                    "$ref": "#/components/schemas/APIInviteArray"
                                 }
                             }
                         }

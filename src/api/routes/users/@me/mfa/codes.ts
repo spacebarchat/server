@@ -40,7 +40,7 @@ router.post(
 			"This route is replaced with users/@me/mfa/codes-verification in newer clients",
 		responses: {
 			200: {
-				body: "UserBackupCodesResponse",
+				body: "APIBackupCodeArray",
 			},
 			400: {
 				body: "APIErrorResponse",
