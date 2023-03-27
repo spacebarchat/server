@@ -96,7 +96,7 @@ router.get(
 		permission: "MANAGE_CHANNELS",
 		responses: {
 			200: {
-				body: "ChannelInvitesResponse",
+				body: "APIInviteArray",
 			},
 			404: {},
 		},

@@ -33,7 +33,7 @@ router.get(
 	route({
 		responses: {
 			201: {
-				body: "GuildChannelsResponse",
+				body: "APIChannelArray",
 			},
 		},
 	}),

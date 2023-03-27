@@ -42,7 +42,7 @@ router.get(
 		},
 		responses: {
 			200: {
-				body: "GuildMembersResponse",
+				body: "APIMemberArray",
 			},
 			403: {
 				body: "APIErrorResponse",

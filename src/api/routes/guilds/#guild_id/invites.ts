@@ -28,7 +28,7 @@ router.get(
 		permission: "MANAGE_GUILD",
 		responses: {
 			200: {
-				body: "GuildInvitesResponse",
+				body: "APIInviteArray",
 			},
 		},
 	}),

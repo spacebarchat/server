@@ -41,7 +41,7 @@ router.get(
 	route({
 		responses: {
 			200: {
-				body: "ChannelWebhooksResponse",
+				body: "APIWebhookArray",
 			},
 		},
 	}),

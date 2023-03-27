@@ -34,7 +34,7 @@ router.post(
 		requestBody: "CodesVerificationSchema",
 		responses: {
 			200: {
-				body: "UserBackupCodesResponse",
+				body: "APIBackupCodeArray",
 			},
 			400: {
 				body: "APIErrorResponse",

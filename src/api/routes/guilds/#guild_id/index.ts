@@ -39,7 +39,7 @@ router.get(
 	route({
 		responses: {
 			"200": {
-				body: "GuildResponse",
+				body: "GuildWithJoinedAt",
 			},
 			401: {
 				body: "APIErrorResponse",
