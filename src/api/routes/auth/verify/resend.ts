@@ -28,8 +28,12 @@ router.post(
 		right: "RESEND_VERIFICATION_EMAIL",
 		responses: {
 			204: {},
-			400: {},
-			500: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			500: {
+				body: "APIErrorResponse",
+			},
 		},
 	}),
 	async (req: Request, res: Response) => {

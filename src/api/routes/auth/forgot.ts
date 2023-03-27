@@ -17,7 +17,7 @@ router.post(
 		responses: {
 			204: {},
 			400: {
-				body: "APIErrorResponse",
+				body: "APIErrorOrCaptchaResponse",
 			},
 			500: {
 				body: "APIErrorResponse",
