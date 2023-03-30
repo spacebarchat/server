@@ -18,7 +18,7 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { Application } from "./Application";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { User } from "./User";
@@ -30,7 +30,7 @@ export enum WebhookType {
 }
 
 @Entity("webhooks")
-export class Webhook extends BaseClass {
+export class Webhook extends EntityCache {
 	@Column({ type: "int" })
 	type: WebhookType;
 

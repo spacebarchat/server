@@ -18,11 +18,11 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { User } from ".";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { Guild } from "./Guild";
 
 @Entity("emojis")
-export class Emoji extends BaseClass {
+export class Emoji extends EntityCache {
 	@Column()
 	animated: boolean;
 

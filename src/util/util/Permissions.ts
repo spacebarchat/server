@@ -257,23 +257,26 @@ export async function getPermission(
 	}
 
 	if (guild_id) {
-		guild = await Guild.findOneOrFail({
-			where: { id: guild_id },
-			select: ["id", "owner_id", ...(opts.guild_select || [])],
-			relations: opts.guild_relations,
-		});
+		const result = await Promise.all([
+			Guild.findOneOrFail({
+				where: { id: guild_id },
+				select: ["id", "owner_id", ...(opts.guild_select || [])],
+				relations: opts.guild_relations,
+			}),
+			Member.findOneOrFail({
+				where: { guild_id, id: user_id },
+				relations: ["roles", ...(opts.member_relations || [])],
+				// select: [
+				// "id",		// TODO: Bug in typeorm? adding these selects breaks the query.
+				// "roles",
+				// ...(opts.member_select || []),
+				// ],
+			}),
+		]);
+		guild = result[0];
+		member = result[1];
 		if (guild.owner_id === user_id)
 			return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
-
-		member = await Member.findOneOrFail({
-			where: { guild_id, id: user_id },
-			relations: ["roles", ...(opts.member_relations || [])],
-			// select: [
-			// "id",		// TODO: Bug in typeorm? adding these selects breaks the query.
-			// "roles",
-			// ...(opts.member_select || []),
-			// ],
-		});
 	}
 
 	let recipient_ids = channel?.recipients?.map((x) => x.user_id);

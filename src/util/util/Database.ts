@@ -38,7 +38,8 @@ const dbConnectionString =
 
 const DatabaseType = dbConnectionString.includes("://")
 	? dbConnectionString.split(":")[0]?.replace("+srv", "")
-	: "sqlite";
+	: "better-sqlite3";
+
 const isSqlite = DatabaseType.includes("sqlite");
 
 const DataSourceOptions = new DataSource({
@@ -50,7 +51,7 @@ const DataSourceOptions = new DataSource({
 	database: isSqlite ? dbConnectionString : undefined,
 	entities: [path.join(__dirname, "..", "entities", "*.js")],
 	synchronize: !!process.env.DB_SYNC,
-	logging: false,
+	logging: process.env["DB_LOGGING"] === "true",
 	bigNumberStrings: false,
 	supportBigNumbers: true,
 	name: "default",
@@ -77,7 +78,13 @@ export async function initDatabase(): Promise<DataSource> {
 	}
 
 	if (!process.env.DB_SYNC) {
-		const supported = ["mysql", "mariadb", "postgres", "sqlite"];
+		const supported = [
+			"mysql",
+			"mariadb",
+			"postgres",
+			"sqlite",
+			"better-sqlite3",
+		];
 		if (!supported.includes(DatabaseType)) {
 			console.log(
 				"[Database]" +
@@ -113,10 +120,10 @@ export async function initDatabase(): Promise<DataSource> {
 		// Manually insert every current migration to prevent this:
 		await Promise.all(
 			dbConnection.migrations.map((migration) =>
-				Migration.insert({
+				Migration.create({
 					name: migration.name,
 					timestamp: Date.now(),
-				}),
+				}).save(),
 			),
 		);
 	} else {

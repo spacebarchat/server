@@ -9,6 +9,10 @@ assets/cache
 .env
 config.json
 assets/cacheMisses
+assets/client_test
+scripts/client.js
+src/api/middlewares/TestClient.ts
+yarn.lock
 
 .vscode/settings.json
 

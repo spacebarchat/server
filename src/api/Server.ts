@@ -32,7 +32,7 @@ import "missing-native-js-functions";
 import morgan from "morgan";
 import path from "path";
 import { red } from "picocolors";
-import { Authentication, CORS } from "./middlewares/";
+import { CORS, initAuthentication } from "./middlewares/";
 import { BodyParser } from "./middlewares/BodyParser";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { initRateLimits } from "./middlewares/RateLimit";
@@ -106,7 +106,7 @@ export class FosscordServer extends Server {
 		// @ts-ignore
 		this.app = api;
 
-		api.use(Authentication);
+		initAuthentication(api);
 		await initRateLimits(api);
 		await initTranslation(api);
 

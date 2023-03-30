@@ -17,12 +17,12 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { Guild } from "./Guild";
 import { User } from "./User";
 
 @Entity("templates")
-export class Template extends BaseClass {
+export class Template extends EntityCache {
 	@Column({ unique: true })
 	code: string;
 

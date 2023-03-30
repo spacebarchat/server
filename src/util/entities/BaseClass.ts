@@ -25,16 +25,12 @@ import {
 	PrimaryColumn,
 } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
-import { getDatabase } from "../util/Database";
 import { OrmUtils } from "../imports/OrmUtils";
+import { getDatabase } from "../util";
 
 export class BaseClassWithoutId extends BaseEntity {
-	private get construct() {
-		return this.constructor;
-	}
-
-	private get metadata() {
-		return getDatabase()?.getMetadata(this.construct);
+	public get metadata() {
+		return getDatabase()?.getMetadata(this.constructor);
 	}
 
 	assign(props: object) {
@@ -61,8 +57,23 @@ export class BaseClassWithoutId extends BaseEntity {
 				),
 		);
 	}
+}
 
-	static increment<T extends BaseClass>(
+export const PrimaryIdColumn = process.env.DATABASE?.startsWith("mongodb")
+	? ObjectIdColumn
+	: PrimaryColumn;
+
+export class BaseClassWithId extends BaseClassWithoutId {
+	@PrimaryIdColumn()
+	id: string = Snowflake.generate();
+
+	@BeforeUpdate()
+	@BeforeInsert()
+	_do_validate() {
+		if (!this.id) this.id = Snowflake.generate();
+	}
+
+	static increment<T extends BaseClassWithId>(
 		conditions: FindOptionsWhere<T>,
 		propertyPath: string,
 		value: number | string,
@@ -71,27 +82,12 @@ export class BaseClassWithoutId extends BaseEntity {
 		return repository.increment(conditions, propertyPath, value);
 	}
 
-	static decrement<T extends BaseClass>(
+	static decrement<T extends BaseClassWithId>(
 		conditions: FindOptionsWhere<T>,
 		propertyPath: string,
 		value: number | string,
 	) {
 		const repository = this.getRepository();
 		return repository.decrement(conditions, propertyPath, value);
-	}
-}
-
-export const PrimaryIdColumn = process.env.DATABASE?.startsWith("mongodb")
-	? ObjectIdColumn
-	: PrimaryColumn;
-
-export class BaseClass extends BaseClassWithoutId {
-	@PrimaryIdColumn()
-	id: string = Snowflake.generate();
-
-	@BeforeUpdate()
-	@BeforeInsert()
-	_do_validate() {
-		if (!this.id) this.id = Snowflake.generate();
 	}
 }

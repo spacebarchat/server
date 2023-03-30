@@ -18,7 +18,7 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { User } from "./User";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { Guild } from "./Guild";
 
 export enum StickerType {
@@ -34,7 +34,7 @@ export enum StickerFormatType {
 }
 
 @Entity("stickers")
-export class Sticker extends BaseClass {
+export class Sticker extends EntityCache {
 	@Column()
 	name: string;
 

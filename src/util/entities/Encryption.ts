@@ -17,10 +17,10 @@
 */
 
 import { Column, Entity } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 
 @Entity("security_settings")
-export class SecuritySettings extends BaseClass {
+export class SecuritySettings extends EntityCache {
 	@Column({ nullable: true })
 	guild_id: string;
 

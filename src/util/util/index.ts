@@ -24,7 +24,7 @@ export * from "./cdn";
 export * from "./Config";
 export * from "./Constants";
 export * from "./Database";
-export * from "./email";
+export * from "./email/index";
 export * from "./Event";
 export * from "./FieldError";
 export * from "./Intents";

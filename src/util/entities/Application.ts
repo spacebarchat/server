@@ -17,12 +17,12 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { Team } from "./Team";
 import { User } from "./User";
 
 @Entity("applications")
-export class Application extends BaseClass {
+export class Application extends EntityCache {
 	@Column()
 	name: string;
 

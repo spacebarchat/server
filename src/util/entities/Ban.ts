@@ -17,12 +17,12 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { BaseClass } from "./BaseClass";
+import { EntityCache } from "../cache";
 import { Guild } from "./Guild";
 import { User } from "./User";
 
 @Entity("bans")
-export class Ban extends BaseClass {
+export class Ban extends EntityCache {
 	@Column({ nullable: true })
 	@RelationId((ban: Ban) => ban.user)
 	user_id: string;

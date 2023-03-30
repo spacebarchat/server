@@ -17,6 +17,7 @@
 */
 
 export * from "./ApiConfiguration";
+export * from "./CacheConfiguration";
 export * from "./CdnConfiguration";
 export * from "./DefaultsConfiguration";
 export * from "./EmailConfiguration";
