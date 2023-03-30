@@ -1,4 +1,4 @@
-Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
+Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 Copyright (C) 2023 Fosscord and Fosscord Contributors
 
 This program is free software: you can redistribute it and/or modify
