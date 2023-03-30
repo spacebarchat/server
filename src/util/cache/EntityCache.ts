@@ -24,7 +24,7 @@ import {
 } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { BaseClassWithId } from "../entities/BaseClass";
-import { Config, getDatabase } from "../util";
+import { Config, getDatabase, RabbitMQ } from "../util";
 import { CacheManager } from "./Cache";
 
 function getObjectKeysAsArray(obj?: Record<string, any>) {
@@ -52,7 +52,9 @@ class BaseEntityCache extends BaseClassWithId {
 
 	static useDataSource(dataSource: DataSource | null) {
 		super.useDataSource(dataSource);
-		this.cacheEnabled = Config.get().cache.enabled ?? true;
+		const isMultiThreaded =
+			process.env.EVENT_TRANSMISSION === "process" || RabbitMQ.connection;
+		this.cacheEnabled = Config.get().cache.enabled ?? !isMultiThreaded;
 		if (Config.get().cache.redis) return; // TODO: Redis cache
 		if (!this.cacheEnabled) return;
 		this.cache = new CacheManager();
