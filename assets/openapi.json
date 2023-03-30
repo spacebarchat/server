@@ -2,17 +2,17 @@
     "openapi": "3.0.0",
     "servers": [
         {
-            "url": "https://staging.fosscord.com/api/",
-            "description": "Official Fosscord Instance"
+            "url": "https://staging.spacebar.chat/api/",
+            "description": "Official Spacebar Instance"
         }
     ],
     "info": {
-        "description": "Fosscord is a free open source selfhostable discord compatible chat, voice and video platform",
+        "description": "Spacebar is a free open source selfhostable discord compatible chat, voice and video platform",
         "version": "1.0.0",
-        "title": "Fosscord HTTP API Routes",
+        "title": "Spacebar HTTP API Routes",
         "termsOfService": "",
         "contact": {
-            "name": "Fosscord"
+            "name": "Spacebar"
         },
         "license": {
             "name": "AGPLV3",
