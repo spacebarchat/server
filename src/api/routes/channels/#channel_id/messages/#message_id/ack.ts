@@ -21,9 +21,9 @@ import {
 	getPermission,
 	MessageAckEvent,
 	ReadState,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 
 const router = Router();
 

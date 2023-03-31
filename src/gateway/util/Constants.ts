@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// import { VoiceOPCodes } from "@fosscord/webrtc";
+// import { VoiceOPCodes } from "@spacebar/webrtc";
 
 export enum OPCODES {
 	Dispatch = 0,

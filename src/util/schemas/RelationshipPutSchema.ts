@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { RelationshipType } from "@fosscord/util";
+import { RelationshipType } from "@spacebar/util";
 
 export interface RelationshipPutSchema {
 	type?: RelationshipType;

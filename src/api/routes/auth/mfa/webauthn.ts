@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	generateToken,
 	SecurityKey,
@@ -24,7 +24,7 @@ import {
 	verifyWebAuthnToken,
 	WebAuthn,
 	WebAuthnTotpSchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ExpectedAssertionResult } from "fido2-lib";
 import { HTTPError } from "lambert-server";

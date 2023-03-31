@@ -25,8 +25,8 @@ import {
 	InviteDeleteEvent,
 	User,
 	PublicInviteRelation,
-} from "@fosscord/util";
-import { route } from "@fosscord/api";
+} from "@spacebar/util";
+import { route } from "@spacebar/api";
 import { HTTPError } from "lambert-server";
 
 const router: Router = Router();

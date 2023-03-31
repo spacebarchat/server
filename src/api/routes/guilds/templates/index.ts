@@ -25,9 +25,9 @@ import {
 	Config,
 	Member,
 	GuildTemplateCreateSchema,
-} from "@fosscord/util";
-import { route } from "@fosscord/api";
-import { DiscordApiErrors } from "@fosscord/util";
+} from "@spacebar/util";
+import { route } from "@spacebar/api";
+import { DiscordApiErrors } from "@spacebar/util";
 import fetch from "node-fetch";
 const router: Router = Router();
 

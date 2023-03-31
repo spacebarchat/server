@@ -17,14 +17,14 @@
 */
 
 import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	BackupCode,
 	FieldErrors,
 	generateMfaBackupCodes,
 	User,
 	MfaCodesSchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import bcrypt from "bcrypt";
 
 const router = Router();

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config } from "@fosscord/util";
+import { Config } from "@spacebar/util";
 import { distanceBetweenLocations, IPAnalysis } from "../utility/ipAddress";
 
 export async function getVoiceRegions(ipAddress: string, vip: boolean) {

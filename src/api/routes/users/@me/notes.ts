@@ -17,8 +17,8 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
-import { User, Note, emitEvent, Snowflake } from "@fosscord/util";
+import { route } from "@spacebar/api";
+import { User, Note, emitEvent, Snowflake } from "@spacebar/util";
 
 const router: Router = Router();
 

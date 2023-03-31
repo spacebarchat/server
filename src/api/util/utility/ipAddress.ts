@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config } from "@fosscord/util";
+import { Config } from "@spacebar/util";
 import { Request } from "express";
 // use ipdata package instead of simple fetch because of integrated caching
 import fetch from "node-fetch";

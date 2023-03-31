@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, WebSocket } from "@fosscord/gateway";
+import { Payload, WebSocket } from "@spacebar/gateway";
 import fs from "fs/promises";
 import path from "path";
 
-import { ErlpackType, JSONReplacer } from "@fosscord/util";
+import { ErlpackType, JSONReplacer } from "@spacebar/util";
 let erlpack: ErlpackType | null = null;
 try {
 	erlpack = require("erlpack") as ErlpackType;

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * from "@fosscord/api";
-export * from "@fosscord/util";
-export * from "@fosscord/gateway";
-export * from "@fosscord/cdn";
+export * from "@spacebar/api";
+export * from "@spacebar/util";
+export * from "@spacebar/gateway";
+export * from "@spacebar/cdn";

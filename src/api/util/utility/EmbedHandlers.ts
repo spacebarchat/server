@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, Embed, EmbedType } from "@fosscord/util";
+import { Config, Embed, EmbedType } from "@spacebar/util";
 import fetch, { RequestInit } from "node-fetch";
 import * as cheerio from "cheerio";
 import probe from "probe-image-size";
@@ -28,7 +28,7 @@ export const DEFAULT_FETCH_OPTIONS: RequestInit = {
 	follow: 1,
 	headers: {
 		"user-agent":
-			"Mozilla/5.0 (compatible; Fosscord/1.0; +https://github.com/fosscord/fosscord)",
+			"Mozilla/5.0 (compatible; Spacebar/1.0; +https://github.com/spacebarchat/server)",
 	},
 	// size: 1024 * 1024 * 5, 	// grabbed from config later
 	compress: true,
@@ -67,7 +67,7 @@ export const getProxyUrl = (
 		console.log(
 			"[Embeds]",
 			yellow(
-				"Imagor has not been set up correctly. https://docs.fosscord.com/setup/server/configuration/imagor/",
+				"Imagor has not been set up correctly. https://docs.spacebar.chat/setup/server/configuration/imagor/",
 			),
 		);
 	}

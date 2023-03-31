@@ -18,8 +18,8 @@
 
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
-import { random } from "@fosscord/api";
+import { route } from "@spacebar/api";
+import { random } from "@spacebar/api";
 import {
 	Channel,
 	Invite,
@@ -28,7 +28,7 @@ import {
 	User,
 	Guild,
 	PublicInviteRelation,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { isTextChannel } from "./messages";
 
 const router: Router = Router();

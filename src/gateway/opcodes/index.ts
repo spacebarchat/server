@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket, Payload } from "@fosscord/gateway";
+import { WebSocket, Payload } from "@spacebar/gateway";
 import { onHeartbeat } from "./Heartbeat";
 import { onIdentify } from "./Identify";
 import { onLazyRequest } from "./LazyRequest";

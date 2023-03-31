@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket } from "@fosscord/gateway";
+import { WebSocket } from "@spacebar/gateway";
 import {
 	emitEvent,
 	PresenceUpdateEvent,
@@ -24,7 +24,7 @@ import {
 	Session,
 	SessionsReplace,
 	User,
-} from "@fosscord/util";
+} from "@spacebar/util";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
 	console.log("[WebSocket] closed", code, reason.toString());

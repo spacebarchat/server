@@ -17,8 +17,8 @@
 */
 
 import { Request, Response, Router } from "express";
-import { Guild, WidgetModifySchema } from "@fosscord/util";
-import { route } from "@fosscord/api";
+import { Guild, WidgetModifySchema } from "@spacebar/util";
+import { route } from "@spacebar/api";
 
 const router: Router = Router();
 

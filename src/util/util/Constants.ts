@@ -1001,9 +1001,9 @@ export const DiscordApiErrors = {
 };
 
 /**
- * An error encountered while performing an API request (Fosscord only). Here are the potential errors:
+ * An error encountered while performing an API request (Spacebar only). Here are the potential errors:
  */
-export const FosscordApiErrors = {
+export const SpacebarApiErrors = {
 	MANUALLY_TRIGGERED_ERROR: new ApiError(
 		"This is an artificial error",
 		1,
@@ -1101,7 +1101,7 @@ export const FosscordApiErrors = {
  * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
  * * ALL
  * * MENTIONS
- * * MUTED (Fosscord extension)
+ * * MUTED (Spacebar extension)
  * @typedef {string} DefaultMessageNotifications
  */
 export const DefaultMessageNotifications = ["ALL", "MENTIONS", "MUTED"];
@@ -1110,7 +1110,7 @@ export const DefaultMessageNotifications = ["ALL", "MENTIONS", "MUTED"];
  * The value set for a team members's membership state:
  * * INVITED
  * * ACCEPTED
- * * INSERTED (Fosscord extension)
+ * * INSERTED (Spacebar extension)
  * @typedef {string} MembershipStates
  */
 export const MembershipStates = ["INSERTED", "INVITED", "ACCEPTED"];
@@ -1119,7 +1119,7 @@ export const MembershipStates = ["INSERTED", "INVITED", "ACCEPTED"];
  * The value set for a webhook's type:
  * * Incoming
  * * Channel Follower
- * * Custom (Fosscord extension)
+ * * Custom (Spacebar extension)
  * @typedef {string} WebhookTypes
  */
 export const WebhookTypes = ["Custom", "Incoming", "Channel Follower"];

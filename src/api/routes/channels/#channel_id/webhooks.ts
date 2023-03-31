@@ -17,7 +17,7 @@
 */
 
 import { Router, Response, Request } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	Channel,
 	Config,
@@ -27,10 +27,10 @@ import {
 	Webhook,
 	WebhookCreateSchema,
 	WebhookType,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { isTextChannel } from "./messages/index";
-import { DiscordApiErrors } from "@fosscord/util";
+import { DiscordApiErrors } from "@spacebar/util";
 import crypto from "crypto";
 
 const router: Router = Router();
@@ -63,7 +63,7 @@ router.post(
 
 		// TODO: move this
 		if (name === "clyde") throw new HTTPError("Invalid name", 400);
-		if (name === "Fosscord Ghost") throw new HTTPError("Invalid name", 400);
+		if (name === "Spacebar Ghost") throw new HTTPError("Invalid name", 400);
 
 		if (avatar) avatar = await handleFile(`/avatars/${channel_id}`, avatar);
 

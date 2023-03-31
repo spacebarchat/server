@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Sticker } from "@fosscord/util";
+import { Sticker } from "@spacebar/util";
 import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {

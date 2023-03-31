@@ -18,7 +18,7 @@
 
 import { Request } from "express";
 import { ntob } from "./Base64";
-import { FieldErrors } from "@fosscord/util";
+import { FieldErrors } from "@spacebar/util";
 
 export function checkLength(
 	str: string,

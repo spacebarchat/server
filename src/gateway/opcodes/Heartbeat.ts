@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket } from "@fosscord/gateway";
+import { WebSocket } from "@spacebar/gateway";
 import { setHeartbeat } from "../util/Heartbeat";
 import { Send } from "../util/Send";
 

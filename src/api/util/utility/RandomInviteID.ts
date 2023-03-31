@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Snowflake } from "@fosscord/util";
+import { Snowflake } from "@spacebar/util";
 import crypto from "crypto";
 
 // TODO: 'random'? seriously? who named this?

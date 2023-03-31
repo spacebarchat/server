@@ -20,7 +20,7 @@ import {
 	Attachment,
 	Channel,
 	emitEvent,
-	FosscordApiErrors,
+	SpacebarApiErrors,
 	getPermission,
 	getRights,
 	Message,
@@ -31,11 +31,11 @@ import {
 	uploadFile,
 	MessageCreateSchema,
 	MessageEditSchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Router, Response, Request } from "express";
 import multer from "multer";
-import { route } from "@fosscord/api";
-import { handleMessage, postHandleMessage } from "@fosscord/api";
+import { route } from "@spacebar/api";
+import { handleMessage, postHandleMessage } from "@spacebar/api";
 import { HTTPError } from "lambert-server";
 
 const router = Router();
@@ -163,14 +163,14 @@ router.put(
 		const snowflake = Snowflake.deconstruct(message_id);
 		if (Date.now() < snowflake.timestamp) {
 			// message is in the future
-			throw FosscordApiErrors.CANNOT_BACKFILL_TO_THE_FUTURE;
+			throw SpacebarApiErrors.CANNOT_BACKFILL_TO_THE_FUTURE;
 		}
 
 		const exists = await Message.findOne({
 			where: { id: message_id, channel_id: channel_id },
 		});
 		if (exists) {
-			throw FosscordApiErrors.CANNOT_REPLACE_BY_BACKFILL;
+			throw SpacebarApiErrors.CANNOT_REPLACE_BY_BACKFILL;
 		}
 
 		if (req.file) {

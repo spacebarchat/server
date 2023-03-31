@@ -25,6 +25,8 @@
 	it doesn't break the below, thus we're left with this :sob:
 */
 
+/* eslint-env node */
+
 require("module-alias/register");
 require("dotenv").config();
 const { initDatabase } = require("..");

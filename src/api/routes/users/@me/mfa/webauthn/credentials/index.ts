@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	CreateWebAuthnCredentialSchema,
 	DiscordApiErrors,
@@ -28,7 +28,7 @@ import {
 	verifyWebAuthnToken,
 	WebAuthn,
 	WebAuthnPostSchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { ExpectedAttestationResult } from "fido2-lib";

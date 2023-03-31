@@ -17,7 +17,7 @@
 */
 
 /*
-	Regenerates the `fosscord-server/assets/schemas.json` file, used for API/Gateway input validation.
+	Regenerates the `spacebarchat/server/assets/schemas.json` file, used for API/Gateway input validation.
 */
 
 /* eslint-env node */

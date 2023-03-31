@@ -19,7 +19,7 @@
 import { Router, Response, Request } from "express";
 import fetch from "node-fetch";
 import ProxyAgent from "proxy-agent";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import { getGifApiKey, parseGifResult } from "./trending";
 
 const router = Router();

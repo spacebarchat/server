@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Guild, Config } from "@fosscord/util";
+import { Guild, Config } from "@spacebar/util";
 
 import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import { Like } from "typeorm";
 
 const router = Router();

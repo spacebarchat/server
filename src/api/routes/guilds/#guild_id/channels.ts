@@ -23,9 +23,9 @@ import {
 	emitEvent,
 	ChannelModifySchema,
 	ChannelReorderSchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {

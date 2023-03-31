@@ -16,6 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { UserSettings } from "@fosscord/util";
+import { UserSettings } from "@spacebar/util";
 
 export type UserSettingsSchema = Omit<Partial<UserSettings>, "index">;

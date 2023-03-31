@@ -30,8 +30,8 @@ import {
 	PartialEmoji,
 	PublicUserProjection,
 	User,
-} from "@fosscord/util";
-import { route } from "@fosscord/api";
+} from "@spacebar/util";
+import { route } from "@spacebar/api";
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";

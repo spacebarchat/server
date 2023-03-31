@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route, random } from "@fosscord/api";
-import { Config, ValidRegistrationToken } from "@fosscord/util";
+import { route, random } from "@spacebar/api";
+import { Config, ValidRegistrationToken } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router();

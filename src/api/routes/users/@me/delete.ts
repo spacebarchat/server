@@ -17,8 +17,8 @@
 */
 
 import { Router, Request, Response } from "express";
-import { Member, User } from "@fosscord/util";
-import { route } from "@fosscord/api";
+import { Member, User } from "@spacebar/util";
+import { route } from "@spacebar/api";
 import bcrypt from "bcrypt";
 import { HTTPError } from "lambert-server";
 

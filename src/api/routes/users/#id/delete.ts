@@ -16,14 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	emitEvent,
 	Member,
 	PrivateUserProjection,
 	User,
 	UserDeleteEvent,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();

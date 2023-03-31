@@ -17,8 +17,8 @@
 */
 
 import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
-import { BackupCode, generateToken, User, TotpSchema } from "@fosscord/util";
+import { route } from "@spacebar/api";
+import { BackupCode, generateToken, User, TotpSchema } from "@spacebar/util";
 import { verifyToken } from "node-2fa";
 import { HTTPError } from "lambert-server";
 const router = Router();

@@ -9,9 +9,9 @@ export class MessageFlags extends BitField {
 		CROSSPOSTED: BigInt(1) << BigInt(0),
 		IS_CROSSPOST: BigInt(1) << BigInt(1),
 		SUPPRESS_EMBEDS: BigInt(1) << BigInt(2),
-		// SOURCE_MESSAGE_DELETED: BigInt(1) << BigInt(3), // fosscord will delete them from destination too, making this redundant
+		// SOURCE_MESSAGE_DELETED: BigInt(1) << BigInt(3), // spacebar will delete them from destination too, making this redundant
 		URGENT: BigInt(1) << BigInt(4),
-		// HAS_THREAD: BigInt(1) << BigInt(5) // does not apply to fosscord due to infrastructural differences
+		// HAS_THREAD: BigInt(1) << BigInt(5) // does not apply to spacebar due to infrastructural differences
 		PRIVATE_ROUTE: BigInt(1) << BigInt(6), // it that has been routed to only some of the users that can see the channel
 		INTERACTION_WAIT: BigInt(1) << BigInt(7), // discord.com calls this LOADING
 		// FAILED_TO_MENTION_SOME_ROLES_IN_THREAD: BigInt(1) << BigInt(8)

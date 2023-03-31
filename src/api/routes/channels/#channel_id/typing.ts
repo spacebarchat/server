@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Channel, emitEvent, Member, TypingStartEvent } from "@fosscord/util";
-import { route } from "@fosscord/api";
+import { Channel, emitEvent, Member, TypingStartEvent } from "@spacebar/util";
+import { route } from "@spacebar/api";
 import { Router, Request, Response } from "express";
 
 const router: Router = Router();

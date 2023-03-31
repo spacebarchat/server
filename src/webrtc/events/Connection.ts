@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, Send, setHeartbeat, WebSocket } from "@fosscord/gateway";
+import { CLOSECODES, Send, setHeartbeat, WebSocket } from "@spacebar/gateway";
 import { IncomingMessage } from "http";
 import { URL } from "url";
 import WS from "ws";

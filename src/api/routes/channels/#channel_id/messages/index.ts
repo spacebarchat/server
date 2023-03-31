@@ -36,9 +36,9 @@ import {
 	Rights,
 	Reaction,
 	User,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { HTTPError } from "lambert-server";
-import { handleMessage, postHandleMessage, route } from "@fosscord/api";
+import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import multer from "multer";
 import { FindManyOptions, FindOperator, LessThan, MoreThan } from "typeorm";
 import { URL } from "url";
@@ -146,7 +146,7 @@ router.get("/", async (req: Request, res: Response) => {
 				x.author = User.create({
 					id: "4",
 					discriminator: "0000",
-					username: "Fosscord Ghost",
+					username: "Spacebar Ghost",
 					public_flags: 0,
 				});
 			x.attachments?.forEach((y: Attachment) => {

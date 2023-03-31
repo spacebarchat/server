@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { closeDatabase, Config, initDatabase, initEvent } from "@fosscord/util";
+import { closeDatabase, Config, initDatabase, initEvent } from "@spacebar/util";
 import dotenv from "dotenv";
 import http from "http";
 import ws from "ws";

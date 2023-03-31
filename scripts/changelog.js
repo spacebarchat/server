@@ -23,8 +23,10 @@
 	To find which file the changelog is stored in your client, simply grep for the changelog text given by the client,
 	and update the `CHANGELOG_SCRIPT` variable to use that instead.
 
-	This grabs the new changelog from `fosscord-server/assets/changelog.txt`
+	This grabs the new changelog from `spacebarchat/server/assets/changelog.txt`
 */
+
+/* eslint-env node */
 
 const fetch = require("node-fetch");
 const fs = require("fs/promises");

@@ -17,8 +17,8 @@
 */
 
 import { Router, Response, Request } from "express";
-import { route } from "@fosscord/api";
-import { FieldErrors, Release } from "@fosscord/util";
+import { route } from "@spacebar/api";
+import { FieldErrors, Release } from "@spacebar/util";
 
 const router = Router();
 

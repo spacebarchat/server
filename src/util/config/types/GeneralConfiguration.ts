@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Snowflake } from "@fosscord/util";
+import { Snowflake } from "@spacebar/util";
 
 export class GeneralConfiguration {
-	instanceName: string = "Fosscord Instance";
+	instanceName: string = "Spacebar Instance";
 	instanceDescription: string | null =
-		"This is a Fosscord instance made in the pre-release days";
+		"This is a Spacebar instance made in the pre-release days";
 	frontPage: string | null = null;
 	tosPage: string | null = null;
 	correspondenceEmail: string | null = null;

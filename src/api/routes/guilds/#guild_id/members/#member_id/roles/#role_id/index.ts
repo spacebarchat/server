@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Member } from "@fosscord/util";
-import { route } from "@fosscord/api";
+import { Member } from "@spacebar/util";
+import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 
 const router = Router();

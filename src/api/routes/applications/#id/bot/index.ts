@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	Application,
 	generateToken,
@@ -25,7 +25,7 @@ import {
 	BotModifySchema,
 	handleFile,
 	DiscordApiErrors,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
 

@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* eslint-env node */
+
 const fetch = require("node-fetch");
 const fs = require("fs");
 var config = require("../../config.json");
@@ -36,7 +38,7 @@ async function generate() {
 	var body = {
 		fingerprint: "805826570869932034.wR8vi8lGlFBJerErO9LG5NViJFw",
 		email: mail,
-		username: "Fosscord Stress Test",
+		username: "Spacebar Stress Test",
 		password: password,
 		invite: config.invite,
 		consent: true,

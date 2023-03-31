@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config } from "@fosscord/util";
+import { Config } from "@spacebar/util";
 import fetch from "node-fetch";
 
 export interface hcaptchaResponse {
@@ -49,7 +49,7 @@ export async function verifyCaptcha(response: string, ip?: string) {
 
 	if (!service || !secret || !sitekey)
 		throw new Error(
-			"CAPTCHA is not configured correctly. https://docs.fosscord.com/setup/server/security/captcha/",
+			"CAPTCHA is not configured correctly. https://docs.spacebar.chat/setup/server/security/captcha/",
 		);
 
 	const res = await fetch(verifyEndpoints[service], {

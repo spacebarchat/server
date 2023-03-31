@@ -16,13 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* eslint-env node */
+
 const register = require("./src/register");
 const login = require("./src/login/index");
 const config = require("./config.json");
 const figlet = require("figlet");
 const sendMessage = require("./src/message/send");
 const fs = require("fs");
-figlet("Fosscord Stress Test :)", function (err, data) {
+figlet("Spacebar Stress Test :)", function (err, data) {
 	if (err) {
 		console.log("Something went wrong...");
 		console.dir(err);

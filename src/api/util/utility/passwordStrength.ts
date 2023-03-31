@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config } from "@fosscord/util";
+import { Config } from "@spacebar/util";
 import "missing-native-js-functions";
 
 const reNUMBER = /[0-9]/g;

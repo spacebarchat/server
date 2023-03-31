@@ -27,13 +27,13 @@ import {
 	EVENTEnum,
 	Relationship,
 	RelationshipType,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
-import { WebSocket } from "@fosscord/gateway";
+import { WebSocket } from "@spacebar/gateway";
 import "missing-native-js-functions";
 import { Channel as AMQChannel } from "amqplib";
-import { Recipient } from "@fosscord/util";
+import { Recipient } from "@spacebar/util";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent

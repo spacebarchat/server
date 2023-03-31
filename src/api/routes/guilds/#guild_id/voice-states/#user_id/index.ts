@@ -25,8 +25,8 @@ import {
 	VoiceState,
 	VoiceStateUpdateEvent,
 	VoiceStateUpdateSchema,
-} from "@fosscord/util";
-import { route } from "@fosscord/api";
+} from "@spacebar/util";
+import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 
 const router = Router();

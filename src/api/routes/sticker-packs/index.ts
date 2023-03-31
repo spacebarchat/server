@@ -17,8 +17,8 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
-import { StickerPack } from "@fosscord/util";
+import { route } from "@spacebar/api";
+import { StickerPack } from "@spacebar/util";
 
 const router: Router = Router();
 

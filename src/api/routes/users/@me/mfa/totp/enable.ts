@@ -22,8 +22,8 @@ import {
 	generateToken,
 	generateMfaBackupCodes,
 	TotpEnableSchema,
-} from "@fosscord/util";
-import { route } from "@fosscord/api";
+} from "@spacebar/util";
+import { route } from "@spacebar/api";
 import bcrypt from "bcrypt";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, route, verifyCaptcha } from "@fosscord/api";
+import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
 import {
 	adjustEmail,
 	Config,
@@ -26,7 +26,7 @@ import {
 	LoginSchema,
 	User,
 	WebAuthn,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";

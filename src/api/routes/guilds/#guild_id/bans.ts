@@ -27,9 +27,9 @@ import {
 	Member,
 	BanRegistrySchema,
 	BanModeratorSchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { HTTPError } from "lambert-server";
-import { getIpAdress, route } from "@fosscord/api";
+import { getIpAdress, route } from "@spacebar/api";
 
 const router: Router = Router();
 

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, Send, WebSocket } from "@fosscord/gateway";
+import { Payload, Send, WebSocket } from "@spacebar/gateway";
 import { VoiceOPCodes } from "../util";
 
 export async function onBackendVersion(this: WebSocket, data: Payload) {

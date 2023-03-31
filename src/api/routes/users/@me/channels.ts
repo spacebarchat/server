@@ -22,8 +22,8 @@ import {
 	DmChannelDTO,
 	Channel,
 	DmChannelCreateSchema,
-} from "@fosscord/util";
-import { route } from "@fosscord/api";
+} from "@spacebar/util";
+import { route } from "@spacebar/api";
 
 const router: Router = Router();
 

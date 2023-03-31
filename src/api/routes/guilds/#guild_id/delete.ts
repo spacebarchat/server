@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { emitEvent, GuildDeleteEvent, Guild } from "@fosscord/util";
+import { emitEvent, GuildDeleteEvent, Guild } from "@spacebar/util";
 import { Router, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 
 const router = Router();
 

@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Guild } from "@fosscord/util";
+import { Guild } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { getVoiceRegions, route, getIpAdress } from "@fosscord/api";
+import { getVoiceRegions, route, getIpAdress } from "@spacebar/api";
 
 const router = Router();
 

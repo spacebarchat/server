@@ -26,14 +26,14 @@ import {
 	LazyRequestSchema,
 	User,
 	Presence,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import {
 	WebSocket,
 	Payload,
 	handlePresenceUpdate,
 	OPCODES,
 	Send,
-} from "@fosscord/gateway";
+} from "@spacebar/gateway";
 import { check } from "./instanceOf";
 
 // TODO: only show roles/members that have access to this channel

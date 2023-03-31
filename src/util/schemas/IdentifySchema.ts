@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ActivitySchema } from "@fosscord/util";
+import { ActivitySchema } from "@spacebar/util";
 
 // TODO: Need a way to allow camalCase and pascal_case without just duplicating the schema
 

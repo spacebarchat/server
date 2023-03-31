@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { GuildCreateSchema } from "@fosscord/util";
+import { GuildCreateSchema } from "@spacebar/util";
 
 export interface GuildUpdateSchema
 	extends Omit<GuildCreateSchema, "channels" | "name"> {

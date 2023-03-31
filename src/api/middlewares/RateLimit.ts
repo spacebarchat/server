@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress } from "@fosscord/api";
-import { Config, getRights, listenEvent } from "@fosscord/util";
+import { getIpAdress } from "@spacebar/api";
+import { Config, getRights, listenEvent } from "@spacebar/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
@@ -27,7 +27,7 @@ import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
 /*
 ? bucket limit? Max actions/sec per bucket?
-(ANSWER: a small fosscord instance might not need a complex rate limiting system)
+(ANSWER: a small spacebar instance might not need a complex rate limiting system)
 TODO: delay database requests to include multiple queries
 TODO: different for methods (GET/POST)
 > IP addresses that make too many invalid HTTP requests are automatically and temporarily restricted from accessing the Discord API. Currently, this limit is 10,000 per 10 minutes. An invalid request is one that results in 401, 403, or 429 statuses.

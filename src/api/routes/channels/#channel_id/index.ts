@@ -25,9 +25,9 @@ import {
 	Recipient,
 	handleFile,
 	ChannelModifySchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 
 const router: Router = Router();
 // TODO: delete channel

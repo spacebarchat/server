@@ -25,7 +25,7 @@ import {
 	registerRoutes,
 	Sentry,
 	WebAuthn,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
 import "missing-native-js-functions";
@@ -38,7 +38,6 @@ import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { initRateLimits } from "./middlewares/RateLimit";
 import { initTranslation } from "./middlewares/Translation";
 import { initInstance } from "./util/handlers/Instance";
-import express from "express";
 
 const PUBLIC_ASSETS_FOLDER = path.join(
 	__dirname,
@@ -48,21 +47,21 @@ const PUBLIC_ASSETS_FOLDER = path.join(
 	"public",
 );
 
-export type FosscordServerOptions = ServerOptions;
+export type SpacebarServerOptions = ServerOptions;
 
 declare global {
 	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		interface Request {
-			server: FosscordServer;
+			server: SpacebarServer;
 		}
 	}
 }
 
-export class FosscordServer extends Server {
-	public declare options: FosscordServerOptions;
+export class SpacebarServer extends Server {
+	public declare options: SpacebarServerOptions;
 
-	constructor(opts?: Partial<FosscordServerOptions>) {
+	constructor(opts?: Partial<SpacebarServerOptions>) {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		super({ ...opts, errorHandler: false, jsonBody: false });

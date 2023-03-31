@@ -20,12 +20,12 @@ process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
 import http from "http";
-import * as Api from "@fosscord/api";
-import * as Gateway from "@fosscord/gateway";
-import { CDNServer } from "@fosscord/cdn";
+import * as Api from "@spacebar/api";
+import * as Gateway from "@spacebar/gateway";
+import { CDNServer } from "@spacebar/cdn";
 import express from "express";
 import { green, bold } from "picocolors";
-import { Config, initDatabase, Sentry } from "@fosscord/util";
+import { Config, initDatabase, Sentry } from "@spacebar/util";
 
 const app = express();
 const server = http.createServer();
@@ -33,7 +33,7 @@ const port = Number(process.env.PORT) || 3001;
 const production = process.env.NODE_ENV == "development" ? false : true;
 server.on("request", app);
 
-const api = new Api.FosscordServer({ server, port, production, app });
+const api = new Api.SpacebarServer({ server, port, production, app });
 const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
 

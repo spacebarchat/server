@@ -5,13 +5,15 @@
 	Does not prepend is file contains @fc-license-skip
 */
 
+/* eslint-env node */
+
 const Path = require("path");
 const fs = require("fs");
 const walk = require("./util/walk");
 
-const FOSSCORD_SOURCE_DIR = Path.join(__dirname, "..", "src");
-const FOSSCORD_SCRIPTS_DIR = Path.join(__dirname);
-const FOSSCORD_LICENSE_PREAMBLE = fs
+const SPACEBAR_SOURCE_DIR = Path.join(__dirname, "..", "src");
+const SPACEBAR_SCRIPTS_DIR = Path.join(__dirname);
+const SPACEBAR_LICENSE_PREAMBLE = fs
 	.readFileSync(Path.join(__dirname, "util", "licensePreamble.txt"))
 	.toString()
 	.split("\r") // remove windows bs
@@ -37,7 +39,7 @@ const addToDir = (dir) => {
 		const preamble =
 			commentStrings[0] +
 			"\n" +
-			FOSSCORD_LICENSE_PREAMBLE +
+			SPACEBAR_LICENSE_PREAMBLE +
 			"\n" +
 			commentStrings[1];
 
@@ -56,5 +58,5 @@ const addToDir = (dir) => {
 	}
 };
 
-addToDir(FOSSCORD_SOURCE_DIR);
-addToDir(FOSSCORD_SCRIPTS_DIR);
+addToDir(SPACEBAR_SOURCE_DIR);
+addToDir(SPACEBAR_SCRIPTS_DIR);

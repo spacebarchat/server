@@ -28,8 +28,8 @@ import {
 	Config,
 	UserModifySchema,
 	generateToken,
-} from "@fosscord/util";
-import { route } from "@fosscord/api";
+} from "@spacebar/util";
+import { route } from "@spacebar/api";
 import bcrypt from "bcrypt";
 
 const router: Router = Router();

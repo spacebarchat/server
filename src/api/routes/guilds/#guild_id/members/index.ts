@@ -17,8 +17,8 @@
 */
 
 import { Request, Response, Router } from "express";
-import { Member, PublicMemberProjection } from "@fosscord/util";
-import { route } from "@fosscord/api";
+import { Member, PublicMemberProjection } from "@spacebar/util";
+import { route } from "@spacebar/api";
 import { MoreThan } from "typeorm";
 import { HTTPError } from "lambert-server";
 

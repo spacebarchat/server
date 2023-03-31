@@ -16,14 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket, Payload } from "@fosscord/gateway";
+import { WebSocket, Payload } from "@spacebar/gateway";
 import {
 	emitEvent,
 	PresenceUpdateEvent,
 	Session,
 	User,
 	ActivitySchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { check } from "./instanceOf";
 
 export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {

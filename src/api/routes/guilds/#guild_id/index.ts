@@ -27,10 +27,10 @@ import {
 	handleFile,
 	Member,
 	GuildUpdateSchema,
-	FosscordApiErrors,
-} from "@fosscord/util";
+	SpacebarApiErrors,
+} from "@spacebar/util";
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 
 const router = Router();
 
@@ -113,7 +113,7 @@ router.patch(
 			for (const feature of diff) {
 				if (MUTABLE_FEATURES.includes(feature)) continue;
 
-				throw FosscordApiErrors.FEATURE_IS_IMMUTABLE.withParams(
+				throw SpacebarApiErrors.FEATURE_IS_IMMUTABLE.withParams(
 					feature,
 				);
 			}

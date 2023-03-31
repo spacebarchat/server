@@ -16,13 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, Payload, Send, WebSocket } from "@fosscord/gateway";
+import { CLOSECODES, Payload, Send, WebSocket } from "@spacebar/gateway";
 import {
 	validateSchema,
 	VoiceIdentifySchema,
 	VoiceState,
-} from "@fosscord/util";
-import { endpoint, getClients, VoiceOPCodes, PublicIP } from "@fosscord/webrtc";
+} from "@spacebar/util";
+import { endpoint, getClients, VoiceOPCodes, PublicIP } from "@spacebar/webrtc";
 import SemanticSDP from "semantic-sdp";
 const defaultSDP = require("./sdp.json");
 

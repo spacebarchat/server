@@ -40,7 +40,7 @@ import {
 	UserSettings,
 	IReadyGuildDTO,
 	ReadState,
-} from "@fosscord/util";
+} from "@spacebar/util";
 
 export interface Event {
 	guild_id?: string;

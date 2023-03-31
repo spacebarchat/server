@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, Send, WebSocket } from "@fosscord/gateway";
+import { Payload, Send, WebSocket } from "@spacebar/gateway";
 import { getClients, VoiceOPCodes } from "../util";
 
 // {"speaking":1,"delay":5,"ssrc":2805246727}

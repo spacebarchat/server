@@ -69,7 +69,7 @@ export function checkToken(
 		token = token.replace("Bot ", "");
 		token = token.replace("Bearer ", "");
 		/**
-		in fosscord, even with instances that have bot distinction; we won't enforce "Bot" prefix,
+		in spacebar, even with instances that have bot distinction; we won't enforce "Bot" prefix,
 		as we don't really have separate pathways for bots 
 		**/
 

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Session } from "@fosscord/util";
+import { Session } from "@spacebar/util";
 
 export async function initInstance() {
 	// TODO: clean up database and delete tombstone data

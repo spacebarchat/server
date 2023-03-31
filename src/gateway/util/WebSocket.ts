@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Intents, ListenEventOpts, Permissions } from "@fosscord/util";
+import { Intents, ListenEventOpts, Permissions } from "@spacebar/util";
 import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
-// import { Client } from "@fosscord/webrtc";
+// import { Client } from "@spacebar/webrtc";
 
 export interface WebSocket extends WS {
 	version: number;

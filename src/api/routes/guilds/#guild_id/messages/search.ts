@@ -19,8 +19,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
-import { getPermission, FieldErrors, Message, Channel } from "@fosscord/util";
+import { route } from "@spacebar/api";
+import { getPermission, FieldErrors, Message, Channel } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { FindManyOptions, In, Like } from "typeorm";
 

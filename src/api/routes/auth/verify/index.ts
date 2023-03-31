@@ -16,14 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, route, verifyCaptcha } from "@fosscord/api";
+import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
 import {
 	checkToken,
 	Config,
 	FieldErrors,
 	generateToken,
 	User,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 

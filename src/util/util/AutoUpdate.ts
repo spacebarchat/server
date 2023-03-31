@@ -78,8 +78,8 @@ async function download(url: string, dir: string) {
 		const agent = new ProxyAgent();
 		const response = await fetch(url, { agent });
 		const buffer = await response.buffer();
-		const tempDir = await fs.mkdtemp("fosscord");
-		await fs.writeFile(path.join(tempDir, "Fosscord.zip"), buffer);
+		const tempDir = await fs.mkdtemp("spacebar");
+		await fs.writeFile(path.join(tempDir, "Spacebar.zip"), buffer);
 	} catch (error) {
 		console.error(`[Auto Update] download failed`, error);
 	}

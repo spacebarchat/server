@@ -17,7 +17,7 @@
 */
 
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import { isTextChannel } from "./messages";
 import { FindManyOptions, Between, Not, FindOperator } from "typeorm";
 import {
@@ -28,7 +28,7 @@ import {
 	Message,
 	MessageDeleteBulkEvent,
 	PurgeSchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Router, Response, Request } from "express";
 
 const router: Router = Router();

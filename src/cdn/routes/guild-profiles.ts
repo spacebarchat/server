@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, Snowflake } from "@fosscord/util";
+import { Config, Snowflake } from "@spacebar/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
 import FileType from "file-type";

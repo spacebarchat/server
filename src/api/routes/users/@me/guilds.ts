@@ -25,9 +25,9 @@ import {
 	GuildMemberRemoveEvent,
 	emitEvent,
 	Config,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 
 const router: Router = Router();
 

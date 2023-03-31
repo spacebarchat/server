@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, Payload, WebSocket } from "@fosscord/gateway";
+import { CLOSECODES, Payload, WebSocket } from "@spacebar/gateway";
 import { Tuple } from "lambert-server";
 import OPCodeHandlers from "../opcodes";
 import { VoiceOPCodes } from "../util";

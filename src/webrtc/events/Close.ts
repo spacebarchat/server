@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket } from "@fosscord/gateway";
-import { Session } from "@fosscord/util";
+import { WebSocket } from "@spacebar/gateway";
+import { Session } from "@spacebar/util";
 
 export async function onClose(this: WebSocket, code: number, reason: string) {
 	console.log("[WebRTC] closed", code, reason.toString());

@@ -29,8 +29,8 @@ import {
 	RoleModifySchema,
 	RolePositionUpdateSchema,
 	Snowflake,
-} from "@fosscord/util";
-import { route } from "@fosscord/api";
+} from "@spacebar/util";
+import { route } from "@spacebar/api";
 import { Not } from "typeorm";
 
 const router: Router = Router();

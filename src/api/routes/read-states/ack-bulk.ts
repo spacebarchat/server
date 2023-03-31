@@ -17,8 +17,8 @@
 */
 
 import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
-import { AckBulkSchema, ReadState } from "@fosscord/util";
+import { route } from "@spacebar/api";
+import { AckBulkSchema, ReadState } from "@spacebar/util";
 const router = Router();
 
 router.post(

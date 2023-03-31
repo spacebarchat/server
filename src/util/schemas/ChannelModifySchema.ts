@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChannelPermissionOverwriteType, ChannelType } from "@fosscord/util";
+import { ChannelPermissionOverwriteType, ChannelType } from "@spacebar/util";
 
 export interface ChannelModifySchema {
 	/**

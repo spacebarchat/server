@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Activity, Status } from "@fosscord/util";
+import { Activity, Status } from "@spacebar/util";
 
 export const ActivitySchema = {
 	$afk: Boolean,

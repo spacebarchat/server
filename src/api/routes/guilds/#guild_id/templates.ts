@@ -17,10 +17,10 @@
 */
 
 import { Request, Response, Router } from "express";
-import { Guild, Template } from "@fosscord/util";
+import { Guild, Template } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
-import { generateCode } from "@fosscord/api";
+import { route } from "@spacebar/api";
+import { generateCode } from "@spacebar/api";
 
 const router: Router = Router();
 

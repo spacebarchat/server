@@ -33,7 +33,8 @@ export function initStats() {
 	if (process.getuid && process.getuid() === 0) {
 		console.warn(
 			red(
-				`[Process] Warning fosscord is running as root, this highly discouraged and might expose your system vulnerable to attackers. Please run fosscord as a user without root privileges.`,
+				`[Process] Warning Spacebar is running as root, this highly discouraged and might expose your system vulnerable to attackers.` +
+					`Please run Spacebar as a user without root privileges.`,
 			),
 		);
 	}

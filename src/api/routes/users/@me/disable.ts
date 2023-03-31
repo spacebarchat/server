@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { User } from "@fosscord/util";
+import { User } from "@spacebar/util";
 import { Router, Response, Request } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import bcrypt from "bcrypt";
 
 const router = Router();

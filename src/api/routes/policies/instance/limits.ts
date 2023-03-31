@@ -17,8 +17,8 @@
 */
 
 import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
-import { Config } from "@fosscord/util";
+import { route } from "@spacebar/api";
+import { Config } from "@spacebar/util";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {

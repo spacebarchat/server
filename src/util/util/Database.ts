@@ -83,7 +83,7 @@ export async function initDatabase(): Promise<DataSource> {
 				"[Database]" +
 					red(
 						` We don't have migrations for DB type '${DatabaseType}'` +
-							` To ignore, set DB_SYNC=true in your env. https://docs.fosscord.com/setup/server/configuration/env/`,
+							` To ignore, set DB_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
 					),
 			);
 			process.exit();

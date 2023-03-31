@@ -17,8 +17,8 @@
 */
 
 import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
-import { FieldErrors, User, BackupCodesChallengeSchema } from "@fosscord/util";
+import { route } from "@spacebar/api";
+import { FieldErrors, User, BackupCodesChallengeSchema } from "@spacebar/util";
 import bcrypt from "bcrypt";
 const router = Router();
 

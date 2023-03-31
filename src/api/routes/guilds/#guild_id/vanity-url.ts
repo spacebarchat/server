@@ -22,9 +22,9 @@ import {
 	Guild,
 	Invite,
 	VanityUrlSchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import { HTTPError } from "lambert-server";
 
 const router = Router();

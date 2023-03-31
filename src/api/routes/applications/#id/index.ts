@@ -17,12 +17,12 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	Application,
 	DiscordApiErrors,
 	ApplicationModifySchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { verifyToken } from "node-2fa";
 import { HTTPError } from "lambert-server";
 

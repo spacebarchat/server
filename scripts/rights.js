@@ -20,6 +20,8 @@
 	Calculates a discord.com-like rights value.
 */
 
+/* eslint-env node */
+
 require("module-alias/register");
 const { Rights } = require("..");
 

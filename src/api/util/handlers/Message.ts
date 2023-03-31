@@ -41,10 +41,10 @@ import {
 	Sticker,
 	MessageCreateSchema,
 	EmbedCache,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
-import { EmbedHandlers } from "@fosscord/api";
+import { EmbedHandlers } from "@spacebar/api";
 import * as Sentry from "@sentry/node";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers

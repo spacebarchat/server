@@ -86,7 +86,7 @@ export class Invite extends BaseClassWithoutId {
 	@ManyToOne(() => User, {
 		onDelete: "CASCADE",
 	})
-	target_user?: string; // could be used for "User specific invites" https://github.com/fosscord/fosscord/issues/62
+	target_user?: string; // could be used for "User specific invites" https://github.com/spacebarchat/server/issues/326
 
 	@Column({ nullable: true })
 	target_user_type?: number;
