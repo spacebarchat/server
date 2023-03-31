@@ -24,7 +24,7 @@ import {
 	ManyToOne,
 	RelationId,
 } from "typeorm";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
 export enum RelationshipType {
@@ -36,7 +36,7 @@ export enum RelationshipType {
 
 @Entity("relationships")
 @Index(["from_id", "to_id"], { unique: true })
-export class Relationship extends EntityCache {
+export class Relationship extends BaseClass {
 	@Column({})
 	@RelationId((relationship: Relationship) => relationship.from)
 	from_id: string;

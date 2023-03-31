@@ -25,10 +25,10 @@ import {
 	RelationId,
 } from "typeorm";
 import { Sticker } from ".";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 
 @Entity("sticker_packs")
-export class StickerPack extends EntityCache {
+export class StickerPack extends BaseClass {
 	@Column()
 	name: string;
 

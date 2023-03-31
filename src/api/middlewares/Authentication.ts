@@ -18,9 +18,8 @@
 
 import { checkToken, Config, Rights } from "@fosscord/util";
 import * as Sentry from "@sentry/node";
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
-import { createSecretKey, KeyObject } from "crypto";
 
 export const NO_AUTHORIZATION_ROUTES = [
 	// Authentication routes
@@ -70,16 +69,6 @@ declare global {
 	}
 }
 
-let jwtPublicKey: KeyObject;
-
-// Initialize the jwt secret as a key object so it does not need to be regenerated for each request.
-export function initAuthentication(api: Router) {
-	jwtPublicKey = createSecretKey(
-		Buffer.from(Config.get().security.jwtSecret),
-	);
-	api.use(Authentication);
-}
-
 export async function Authentication(
 	req: Request,
 	res: Response,
@@ -101,9 +90,11 @@ export async function Authentication(
 	Sentry.setUser({ id: req.user_id });
 
 	try {
+		const { jwtSecret } = Config.get().security;
+
 		const { decoded, user } = await checkToken(
 			req.headers.authorization,
-			jwtPublicKey,
+			jwtSecret,
 		);
 
 		req.token = decoded;

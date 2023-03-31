@@ -52,17 +52,17 @@ router.put("/:id", route({}), async (req: Request, res: Response) => {
 				where: { owner: { id: owner.id }, target: { id: target.id } },
 			})
 		) {
-			await Note.update(
+			Note.update(
 				{ owner: { id: owner.id }, target: { id: target.id } },
 				{ owner, target, content: note },
 			);
 		} else {
-			await Note.create({
+			Note.insert({
 				id: Snowflake.generate(),
 				owner,
 				target,
 				content: note,
-			}).save();
+			});
 		}
 	} else {
 		await Note.delete({

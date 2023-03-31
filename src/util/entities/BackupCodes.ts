@@ -17,12 +17,12 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 import crypto from "crypto";
 
 @Entity("backup_codes")
-export class BackupCode extends EntityCache {
+export class BackupCode extends BaseClass {
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, { onDelete: "CASCADE" })
 	user: User;

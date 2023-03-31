@@ -17,12 +17,12 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
 @Entity("notes")
 @Unique(["owner", "target"])
-export class Note extends EntityCache {
+export class Note extends BaseClass {
 	@JoinColumn({ name: "owner_id" })
 	@ManyToOne(() => User, { onDelete: "CASCADE" })
 	owner: User;

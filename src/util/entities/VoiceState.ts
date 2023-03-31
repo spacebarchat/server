@@ -17,7 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { User } from "./User";
@@ -25,7 +25,7 @@ import { Member } from "./Member";
 
 //https://gist.github.com/vassjozsef/e482c65df6ee1facaace8b3c9ff66145#file-voice_state-ex
 @Entity("voice_states")
-export class VoiceState extends EntityCache {
+export class VoiceState extends BaseClass {
 	@Column({ nullable: true })
 	@RelationId((voice_state: VoiceState) => voice_state.guild)
 	guild_id: string;

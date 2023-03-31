@@ -17,7 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
 export enum TeamMemberState {
@@ -26,7 +26,7 @@ export enum TeamMemberState {
 }
 
 @Entity("team_members")
-export class TeamMember extends EntityCache {
+export class TeamMember extends BaseClass {
 	@Column({ type: "int" })
 	membership_state: TeamMemberState;
 

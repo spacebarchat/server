@@ -18,11 +18,11 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 
 @Entity("roles")
-export class Role extends EntityCache {
+export class Role extends BaseClass {
 	@Column({ nullable: true })
 	@RelationId((role: Role) => role.guild)
 	guild_id: string;

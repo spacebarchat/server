@@ -17,10 +17,10 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 
 @Entity("recipients")
-export class Recipient extends EntityCache {
+export class Recipient extends BaseClass {
 	@Column()
 	@RelationId((recipient: Recipient) => recipient.channel)
 	channel_id: string;

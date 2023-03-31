@@ -17,7 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
 export type PublicConnectedAccount = Pick<
@@ -26,7 +26,7 @@ export type PublicConnectedAccount = Pick<
 >;
 
 @Entity("connected_accounts")
-export class ConnectedAccount extends EntityCache {
+export class ConnectedAccount extends BaseClass {
 	@Column({ nullable: true })
 	@RelationId((account: ConnectedAccount) => account.user)
 	user_id: string;

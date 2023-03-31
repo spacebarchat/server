@@ -17,7 +17,7 @@
 */
 
 import { User } from "./User";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { Status } from "../interfaces/Status";
 import { Activity } from "../interfaces/Activity";
@@ -25,7 +25,7 @@ import { Activity } from "../interfaces/Activity";
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 
 @Entity("sessions")
-export class Session extends EntityCache {
+export class Session extends BaseClass {
 	@Column({ nullable: true })
 	@RelationId((session: Session) => session.user)
 	user_id: string;

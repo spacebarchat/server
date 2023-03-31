@@ -274,7 +274,7 @@ export async function sendMessage(opts: MessageOptions) {
 	const message = await handleMessage({ ...opts, timestamp: new Date() });
 
 	await Promise.all([
-		message.save(),
+		Message.insert(message),
 		emitEvent({
 			event: "MESSAGE_CREATE",
 			channel_id: opts.channel_id,

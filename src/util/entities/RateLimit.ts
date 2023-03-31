@@ -17,10 +17,10 @@
 */
 
 import { Column, Entity } from "typeorm";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 
 @Entity("rate_limits")
-export class RateLimit extends EntityCache {
+export class RateLimit extends BaseClass {
 	@Column() // no relation as it also
 	executor_id: string;
 

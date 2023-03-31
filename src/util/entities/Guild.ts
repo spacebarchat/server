@@ -26,7 +26,7 @@ import {
 } from "typeorm";
 import { Config, handleFile, Snowflake } from "..";
 import { Ban } from "./Ban";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Emoji } from "./Emoji";
 import { Invite } from "./Invite";
@@ -67,7 +67,7 @@ export const PublicGuildRelations = [
 ];
 
 @Entity("guilds")
-export class Guild extends EntityCache {
+export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.afk_channel)
 	afk_channel_id?: string;

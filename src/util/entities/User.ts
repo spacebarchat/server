@@ -34,7 +34,7 @@ import {
 	trimSpecial,
 } from "..";
 import { BitField } from "../util/BitField";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
 import { Relationship } from "./Relationship";
@@ -94,7 +94,7 @@ export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 }
 
 @Entity("users")
-export class User extends EntityCache {
+export class User extends BaseClass {
 	@Column()
 	username: string; // username max length 32, min 2 (should be configurable)
 

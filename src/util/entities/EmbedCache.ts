@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { Entity, Column } from "typeorm";
 import { Embed } from "./Message";
 
 @Entity("embed_cache")
-export class EmbedCache extends EntityCache {
+export class EmbedCache extends BaseClass {
 	@Column()
 	url: string;
 

@@ -17,7 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { EntityCache } from "../cache";
+import { BaseClass } from "./BaseClass";
 import { ChannelPermissionOverwrite } from "./Channel";
 import { User } from "./User";
 
@@ -112,7 +112,7 @@ export enum AuditLogEvents {
 }
 
 @Entity("audit_logs")
-export class AuditLog extends EntityCache {
+export class AuditLog extends BaseClass {
 	@JoinColumn({ name: "target_id" })
 	@ManyToOne(() => User)
 	target?: User;

@@ -25,11 +25,11 @@ import {
 	RelationId,
 } from "typeorm";
 import { URL } from "url";
-import { EntityCache } from "../cache";
 import { deleteFile } from "../util/cdn";
+import { BaseClass } from "./BaseClass";
 
 @Entity("attachments")
-export class Attachment extends EntityCache {
+export class Attachment extends BaseClass {
 	@Column()
 	filename: string; // name of file attached
 
