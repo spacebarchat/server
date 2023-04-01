@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -19,9 +19,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Request, Response, Router } from "express";
-import { Guild } from "@fosscord/util";
+import { Guild } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import fs from "fs";
 import path from "path";
 
@@ -58,7 +58,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const { loadImage } = require("canvas");
 	const sizeOf = require("image-size");
 
-	// TODO: Widget style templates need Fosscord branding
+	// TODO: Widget style templates need Spacebar branding
 	const source = path.join(
 		__dirname,
 		"..",

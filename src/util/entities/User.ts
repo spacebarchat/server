@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -111,7 +111,7 @@ export class User extends BaseClass {
 	banner?: string; // hash of the user banner
 
 	@Column({ nullable: true, type: "simple-array" })
-	theme_colors?: number[]; // TODO: Separate `User` and `UserProfile` models
+	theme_colors?: [number, number]; // TODO: Separate `User` and `UserProfile` models
 
 	@Column({ nullable: true })
 	pronouns?: string;

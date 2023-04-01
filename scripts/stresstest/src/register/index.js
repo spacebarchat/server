@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,6 +15,8 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+/* eslint-env node */
 
 const fetch = require("node-fetch");
 const fs = require("fs");
@@ -36,7 +38,7 @@ async function generate() {
 	var body = {
 		fingerprint: "805826570869932034.wR8vi8lGlFBJerErO9LG5NViJFw",
 		email: mail,
-		username: "Fosscord Stress Test",
+		username: "Spacebar Stress Test",
 		password: password,
 		invite: config.invite,
 		consent: true,

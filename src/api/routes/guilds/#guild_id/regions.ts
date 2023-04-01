@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Guild } from "@fosscord/util";
+import { Guild } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { getVoiceRegions, route, getIpAdress } from "@fosscord/api";
+import { getVoiceRegions, route, getIpAdress } from "@spacebar/api";
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -27,13 +27,13 @@ import {
 	EVENTEnum,
 	Relationship,
 	RelationshipType,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
-import { WebSocket } from "@fosscord/gateway";
+import { WebSocket } from "@spacebar/gateway";
 import "missing-native-js-functions";
 import { Channel as AMQChannel } from "amqplib";
-import { Recipient } from "@fosscord/util";
+import { Recipient } from "@spacebar/util";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent

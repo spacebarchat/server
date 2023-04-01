@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -17,8 +17,8 @@
 */
 
 import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
-import { BackupCode, generateToken, User, TotpSchema } from "@fosscord/util";
+import { route } from "@spacebar/api";
+import { BackupCode, generateToken, User, TotpSchema } from "@spacebar/util";
 import { verifyToken } from "node-2fa";
 import { HTTPError } from "lambert-server";
 const router = Router();
@@ -34,7 +34,8 @@ router.post(
 			where: {
 				totp_last_ticket: ticket,
 			},
-			select: ["id", "totp_secret", "settings"],
+			select: ["id", "totp_secret"],
+			relations: ["settings"],
 		});
 
 		const backup = await BackupCode.findOne({
@@ -62,7 +63,7 @@ router.post(
 
 		return res.json({
 			token: await generateToken(user.id),
-			user_settings: user.settings,
+			settings: { ...user.settings, index: undefined },
 		});
 	},
 );

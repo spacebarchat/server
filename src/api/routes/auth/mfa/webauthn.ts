@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	generateToken,
 	SecurityKey,
@@ -24,7 +24,7 @@ import {
 	verifyWebAuthnToken,
 	WebAuthn,
 	WebAuthnTotpSchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ExpectedAssertionResult } from "fido2-lib";
 import { HTTPError } from "lambert-server";
@@ -54,7 +54,8 @@ router.post(
 			where: {
 				totp_last_ticket: ticket,
 			},
-			select: ["id", "settings"],
+			select: ["id"],
+			relations: ["settings"],
 		});
 
 		const ret = await verifyWebAuthnToken(ticket);

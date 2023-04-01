@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -23,7 +23,7 @@ process.on("unhandledRejection", console.error);
 import "missing-native-js-functions";
 import { config } from "dotenv";
 config();
-import { FosscordServer } from "./Server";
+import { SpacebarServer } from "./Server";
 import cluster from "cluster";
 import os from "os";
 let cores = 1;
@@ -48,7 +48,7 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
 } else {
 	const port = Number(process.env.PORT) || 3001;
 
-	const server = new FosscordServer({ port });
+	const server = new SpacebarServer({ port });
 	server.start().catch(console.error);
 
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment

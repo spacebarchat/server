@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket } from "@fosscord/gateway";
+import { WebSocket } from "@spacebar/gateway";
 import {
 	emitEvent,
 	PresenceUpdateEvent,
@@ -24,7 +24,7 @@ import {
 	Session,
 	SessionsReplace,
 	User,
-} from "@fosscord/util";
+} from "@spacebar/util";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
 	console.log("[WebSocket] closed", code, reason.toString());

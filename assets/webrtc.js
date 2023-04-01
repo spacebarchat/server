@@ -3,7 +3,7 @@
 	If you want to use it, throw it into the `preload-plugins` folder.
 	TODO: Make it so this file is not required for webrtc.
 	
-	Do note that webrtc, as of 17/12/2022, is not implemented yet in fosscord/fosscord-server.
+	Do note that webrtc, as of 17/12/2022, is not implemented yet in spacebarchat/server.
 */
 
 (this.webpackChunkdiscord_app = this.webpackChunkdiscord_app || []).push([

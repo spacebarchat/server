@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -100,7 +100,7 @@ export enum AuditLogEvents {
 	POLICY_CREATE = 140,
 	POLICY_UPDATE = 141,
 	POLICY_DELETE = 142,
-	MESSAGE_BLOCKED_BY_POLICIES = 143, // in fosscord, blocked messages are stealth-dropped
+	MESSAGE_BLOCKED_BY_POLICIES = 143, // in spacebar, blocked messages are stealth-dropped
 	// instance policies affecting the guild
 	GUILD_AFFECTED_BY_POLICIES = 216,
 	// message moves
