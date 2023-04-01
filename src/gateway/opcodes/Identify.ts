@@ -249,21 +249,14 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	// Generate guilds list ( make them unavailable if user is bot )
 	const guilds: GuildOrUnavailable[] = members.map((member) => {
-		// Some Discord libraries do `'blah' in object` instead of
-		// checking if the type is correct
-		member.guild.roles.forEach((role) => {
-			for (const key in role) {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				//@ts-ignore
-				if (!role[key]) role[key] = undefined;
-			}
-		});
-
 		// filter guild channels we don't have permission to view
 		// TODO: check if this causes issues when the user is granted other roles?
 		member.guild.channels = member.guild.channels.filter((channel) => {
 			const perms = Permissions.finalPermission({
-				user: { id: member.id, roles: member.roles.map((x) => x.id) },
+				user: {
+					id: member.id,
+					roles: member.roles.map((x) => x.id),
+				},
 				guild: member.guild,
 				channel,
 			});
@@ -422,6 +415,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			Config.get().gateway.endpointPublic ||
 			"ws://127.0.0.1:3001",
 		session_type: "normal", // TODO
+		auth_session_id_hash: "", // TODO
 
 		// lol hack whatever
 		required_action:
