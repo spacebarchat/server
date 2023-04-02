@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConnectionConfigEntity } from "../entities/ConnectionConfigEntity";
 
 let config: any;
@@ -6,7 +7,7 @@ let pairs: ConnectionConfigEntity[];
 export const ConnectionConfig = {
 	init: async function init() {
 		if (config) return config;
-		console.log("[ConnectionConfig] Loading configuration...");
+		console.log("[Connections] Loading configuration...");
 		pairs = await ConnectionConfigEntity.find();
 		config = pairsToConfig(pairs);
 
@@ -44,7 +45,7 @@ function applyConfig(val: any) {
 		if (pair.value !== obj) {
 			pair.value = obj;
 			if (!pair.key || pair.key == null) {
-				console.log(`[ConnectionConfig] WARN: Empty key`);
+				console.log(`[Connections] WARN: Empty config key`);
 				console.log(pair);
 			} else return pair.save();
 		}

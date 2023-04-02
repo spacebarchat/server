@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { OrmUtils } from "../imports";
 import Connection from "./Connection";
 import { ConnectionConfig } from "./ConnectionConfig";
 import { ConnectionStore } from "./ConnectionStore";
@@ -27,10 +26,11 @@ export class ConnectionLoader {
 			ConnectionStore.connections.set(mod.id, mod);
 
 			mod.init();
-			console.log(`[Connections] Loaded connection '${mod.id}'`);
+			// console.log(`[Connections] Loaded connection '${mod.id}'`);
 		});
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public static getConnectionConfig(id: string, defaults?: any): any {
 		let cfg = ConnectionConfig.get()[id];
 		if (defaults) {
@@ -41,21 +41,22 @@ export class ConnectionLoader {
 			}
 		}
 
-		if (!cfg)
-			console.log(
-				`[ConnectionConfig/WARN] Getting connection settings for '${id}' returned null! (Did you forget to add settings?)`,
-			);
+		if (cfg?.enabled) console.log(`[Connections] ${id} enabled`);
+
+		// if (!cfg)
+		// 	console.log(
+		// 		`[ConnectionConfig/WARN] Getting connection settings for '${id}' returned null! (Did you forget to add settings?)`,
+		// 	);
 		return cfg;
 	}
 
 	public static async setConnectionConfig(
 		id: string,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		config: Partial<any>,
 	): Promise<void> {
 		if (!config)
-			console.log(
-				`[ConnectionConfig/WARN] ${id} tried to set config=null!`,
-			);
+			console.warn(`[Connections/WARN] ${id} tried to set config=null!`);
 
 		await ConnectionConfig.set({
 			[id]: Object.assign(
