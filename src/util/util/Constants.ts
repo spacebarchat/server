@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -578,6 +578,7 @@ export const DiscordApiErrors = {
 	UNKNOWN_EMOJI: new ApiError("Unknown emoji", 10014),
 	UNKNOWN_WEBHOOK: new ApiError("Unknown webhook", 10015),
 	UNKNOWN_WEBHOOK_SERVICE: new ApiError("Unknown webhook service", 10016),
+	UNKNOWN_CONNECTION: new ApiError("Unknown connection", 10017, 400),
 	UNKNOWN_SESSION: new ApiError("Unknown session", 10020),
 	UNKNOWN_BAN: new ApiError("Unknown ban", 10026),
 	UNKNOWN_SKU: new ApiError("Unknown SKU", 10027),
@@ -786,6 +787,11 @@ export const DiscordApiErrors = {
 		40006,
 	),
 	USER_BANNED: new ApiError("The user is banned from this guild", 40007),
+	CONNECTION_REVOKED: new ApiError(
+		"The connection has been revoked",
+		40012,
+		400,
+	),
 	TARGET_USER_IS_NOT_CONNECTED_TO_VOICE: new ApiError(
 		"Target user is not connected to voice",
 		40032,
@@ -1001,9 +1007,9 @@ export const DiscordApiErrors = {
 };
 
 /**
- * An error encountered while performing an API request (Fosscord only). Here are the potential errors:
+ * An error encountered while performing an API request (Spacebar only). Here are the potential errors:
  */
-export const FosscordApiErrors = {
+export const SpacebarApiErrors = {
 	MANUALLY_TRIGGERED_ERROR: new ApiError(
 		"This is an artificial error",
 		1,
@@ -1101,7 +1107,7 @@ export const FosscordApiErrors = {
  * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
  * * ALL
  * * MENTIONS
- * * MUTED (Fosscord extension)
+ * * MUTED (Spacebar extension)
  * @typedef {string} DefaultMessageNotifications
  */
 export const DefaultMessageNotifications = ["ALL", "MENTIONS", "MUTED"];
@@ -1110,7 +1116,7 @@ export const DefaultMessageNotifications = ["ALL", "MENTIONS", "MUTED"];
  * The value set for a team members's membership state:
  * * INVITED
  * * ACCEPTED
- * * INSERTED (Fosscord extension)
+ * * INSERTED (Spacebar extension)
  * @typedef {string} MembershipStates
  */
 export const MembershipStates = ["INSERTED", "INVITED", "ACCEPTED"];
@@ -1119,7 +1125,7 @@ export const MembershipStates = ["INSERTED", "INVITED", "ACCEPTED"];
  * The value set for a webhook's type:
  * * Incoming
  * * Channel Follower
- * * Custom (Fosscord extension)
+ * * Custom (Spacebar extension)
  * @typedef {string} WebhookTypes
  */
 export const WebhookTypes = ["Custom", "Incoming", "Channel Follower"];

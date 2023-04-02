@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -17,8 +17,10 @@
 */
 
 /*
-	Regenerates the `fosscord-server/assets/schemas.json` file, used for API/Gateway input validation.
+	Regenerates the `spacebarchat/server/assets/schemas.json` file, used for API/Gateway input validation.
 */
+
+/* eslint-env node */
 
 const path = require("path");
 const fs = require("fs");
@@ -91,9 +93,9 @@ function main() {
 		if (!part) continue;
 
 		// this is a hack. want some want to check if its a @column, instead
-		if (part.properties)
-			Object.keys(part.properties)
-				.filter((key) =>
+		if (part.properties) {
+			for (let key in part.properties) {
+				if (
 					[
 						// BaseClass methods
 						"toJSON",
@@ -104,9 +106,31 @@ function main() {
 						"recover",
 						"reload",
 						"assign",
-					].includes(key),
-				)
-				.forEach((key) => delete part.properties[key]);
+					].includes(key)
+				) {
+					delete part.properties[key];
+					continue;
+				}
+
+				// if (part.properties[key].anyOf) {
+				// 	const nullIndex = part.properties[key].anyOf.findIndex(
+				// 		(x) => x.type == "null",
+				// 	);
+				// 	if (nullIndex != -1) {
+				// 		part.properties[key].nullable = true;
+				// 		part.properties[key].anyOf.splice(nullIndex, 1);
+
+				// 		if (part.properties[key].anyOf.length == 1) {
+				// 			Object.assign(
+				// 				part.properties[key],
+				// 				part.properties[key].anyOf[0],
+				// 			);
+				// 			delete part.properties[key].anyOf;
+				// 		}
+				// 	}
+				// }
+			}
+		}
 
 		definitions = { ...definitions, [name]: { ...part } };
 	}

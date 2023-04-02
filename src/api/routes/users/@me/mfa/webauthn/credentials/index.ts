@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	CreateWebAuthnCredentialSchema,
 	DiscordApiErrors,
@@ -28,7 +28,7 @@ import {
 	verifyWebAuthnToken,
 	WebAuthn,
 	WebAuthnPostSchema,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { ExpectedAttestationResult } from "fido2-lib";
@@ -89,11 +89,11 @@ router.post(
 				"id",
 				"disabled",
 				"deleted",
-				"settings",
 				"totp_secret",
 				"mfa_enabled",
 				"username",
 			],
+			relations: ["settings"],
 		});
 
 		if (isGenerateSchema(req.body)) {

@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -21,7 +21,7 @@ import {
 	DiscordApiErrors,
 	EVENT,
 	FieldErrors,
-	FosscordApiErrors,
+	SpacebarApiErrors,
 	getPermission,
 	getRights,
 	normalizeBody,
@@ -29,7 +29,7 @@ import {
 	Permissions,
 	RightResolvable,
 	Rights,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { NextFunction, Request, Response } from "express";
 import { AnyValidateFunction } from "ajv/dist/core";
 
@@ -91,7 +91,7 @@ export function route(opts: RouteOptions) {
 			req.rights = await getRights(req.user_id);
 
 			if (!req.rights || !req.rights.has(required)) {
-				throw FosscordApiErrors.MISSING_RIGHTS.withParams(
+				throw SpacebarApiErrors.MISSING_RIGHTS.withParams(
 					opts.right as string,
 				);
 			}

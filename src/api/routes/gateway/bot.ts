@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,22 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config } from "@fosscord/util";
+import { Config } from "@spacebar/util";
 import { Router, Response, Request } from "express";
-import { route, RouteOptions } from "@fosscord/api";
+import { route, RouteOptions } from "@spacebar/api";
 
 const router = Router();
-
-export interface GatewayBotResponse {
-	url: string;
-	shards: number;
-	session_start_limit: {
-		total: number;
-		remaining: number;
-		reset_after: number;
-		max_concurrency: number;
-	};
-}
 
 const options: RouteOptions = {
 	test: {

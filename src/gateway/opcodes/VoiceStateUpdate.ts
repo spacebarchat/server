@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, WebSocket } from "@fosscord/gateway";
+import { Payload, WebSocket } from "@spacebar/gateway";
 import { genVoiceToken } from "../util/SessionUtils";
 import { check } from "./instanceOf";
 import {
@@ -29,7 +29,7 @@ import {
 	VoiceStateUpdateEvent,
 	VoiceStateUpdateSchema,
 	Region,
-} from "@fosscord/util";
+} from "@spacebar/util";
 // TODO: check if a voice server is setup
 
 // Notice: Bot users respect the voice channel's user limit, if set.

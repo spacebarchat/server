@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -319,7 +319,7 @@ export class Guild extends BaseClass {
 
 		const guild = await Guild.create({
 			id: guild_id,
-			name: body.name || "Fosscord",
+			name: body.name || "Spacebar",
 			icon: await handleFile(`/icons/${guild_id}`, body.icon as string),
 			owner_id: body.owner_id, // TODO: need to figure out a way for ownerless guilds and multiply-owned guilds
 			presence_count: 0,
@@ -346,7 +346,7 @@ export class Guild extends BaseClass {
 			color: 0,
 			hoist: false,
 			managed: false,
-			// NB: in Fosscord, every role will be non-managed, as we use user-groups instead of roles for managed groups
+			// NB: in Spacebar, every role will be non-managed, as we use user-groups instead of roles for managed groups
 			mentionable: false,
 			name: "@everyone",
 			permissions: String("2251804225"),

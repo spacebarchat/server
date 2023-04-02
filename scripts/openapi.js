@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* eslint-env node */
+
 require("module-alias/register");
 const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");
@@ -27,7 +29,31 @@ require("missing-native-js-functions");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
 const SchemaPath = path.join(__dirname, "..", "assets", "schemas.json");
-const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
+let schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
+
+for (var schema in schemas) {
+	const part = schemas[schema];
+	for (var key in part.properties) {
+		if (part.properties[key].anyOf) {
+			const nullIndex = part.properties[key].anyOf.findIndex(
+				(x) => x.type == "null",
+			);
+			if (nullIndex != -1) {
+				part.properties[key].nullable = true;
+				part.properties[key].anyOf.splice(nullIndex, 1);
+
+				if (part.properties[key].anyOf.length == 1) {
+					Object.assign(
+						part.properties[key],
+						part.properties[key].anyOf[0],
+					);
+					delete part.properties[key].anyOf;
+				}
+			}
+		}
+	}
+}
+
 const specification = JSON.parse(
 	fs.readFileSync(openapiPath, { encoding: "utf8" }),
 );
@@ -109,7 +135,7 @@ function apiRoutes() {
 				return x.test(path);
 			})
 		) {
-			obj.security = [{ bearer: true }];
+			obj.security = [{ bearer: [] }];
 		}
 
 		if (route.body) {

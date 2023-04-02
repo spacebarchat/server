@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -26,14 +26,14 @@ import {
 	adjustEmail,
 	RegisterSchema,
 	ValidRegistrationToken,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import {
 	route,
 	getIpAdress,
 	IPAnalysis,
 	isProxy,
 	verifyCaptcha,
-} from "@fosscord/api";
+} from "@spacebar/api";
 import bcrypt from "bcrypt";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
@@ -52,7 +52,7 @@ router.post(
 		// They're a one time use token that bypasses registration limits ( rates, disabled reg, etc )
 		let regTokenUsed = false;
 		if (req.get("Referrer") && req.get("Referrer")?.includes("token=")) {
-			// eg theyre on https://staging.fosscord.com/register?token=whatever
+			// eg theyre on https://staging.spacebar.chat/register?token=whatever
 			const token = req.get("Referrer")?.split("token=")[1].split("&")[0];
 			if (token) {
 				const regToken = await ValidRegistrationToken.findOneOrFail({

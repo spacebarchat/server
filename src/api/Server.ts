@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -25,7 +25,9 @@ import {
 	registerRoutes,
 	Sentry,
 	WebAuthn,
-} from "@fosscord/util";
+	ConnectionConfig,
+	ConnectionLoader,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
 import "missing-native-js-functions";
@@ -39,21 +41,29 @@ import { initRateLimits } from "./middlewares/RateLimit";
 import { initTranslation } from "./middlewares/Translation";
 import { initInstance } from "./util/handlers/Instance";
 
-export type FosscordServerOptions = ServerOptions;
+const PUBLIC_ASSETS_FOLDER = path.join(
+	__dirname,
+	"..",
+	"..",
+	"assets",
+	"public",
+);
+
+export type SpacebarServerOptions = ServerOptions;
 
 declare global {
 	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		interface Request {
-			server: FosscordServer;
+			server: SpacebarServer;
 		}
 	}
 }
 
-export class FosscordServer extends Server {
-	public declare options: FosscordServerOptions;
+export class SpacebarServer extends Server {
+	public declare options: SpacebarServerOptions;
 
-	constructor(opts?: Partial<FosscordServerOptions>) {
+	constructor(opts?: Partial<SpacebarServerOptions>) {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		super({ ...opts, errorHandler: false, jsonBody: false });
@@ -64,6 +74,7 @@ export class FosscordServer extends Server {
 		await Config.init();
 		await initEvent();
 		await Email.init();
+		await ConnectionConfig.init();
 		await initInstance();
 		await Sentry.init(this.app);
 		WebAuthn.init();
@@ -126,9 +137,15 @@ export class FosscordServer extends Server {
 		app.use("/api/v9", api);
 		app.use("/api", api); // allow unversioned requests
 
+		app.get("/", (req, res) =>
+			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "index.html")),
+		);
+
 		this.app.use(ErrorHandler);
 
 		Sentry.errorHandler(this.app);
+
+		ConnectionLoader.loadConnections();
 
 		if (logRequests)
 			console.log(

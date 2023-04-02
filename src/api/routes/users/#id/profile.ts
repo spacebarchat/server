@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -18,26 +18,17 @@
 
 import { Router, Request, Response } from "express";
 import {
-	PublicConnectedAccount,
 	User,
-	UserPublic,
 	Member,
 	UserProfileModifySchema,
 	handleFile,
 	PrivateUserProjection,
 	emitEvent,
 	UserUpdateEvent,
-} from "@fosscord/util";
-import { route } from "@fosscord/api";
+} from "@spacebar/util";
+import { route } from "@spacebar/api";
 
 const router: Router = Router();
-
-export interface UserProfileResponse {
-	user: UserPublic;
-	connected_accounts: PublicConnectedAccount;
-	premium_guild_since?: Date;
-	premium_since?: Date;
-}
 
 router.get(
 	"/",
@@ -142,7 +133,9 @@ router.get(
 			guild_id,
 		};
 		res.json({
-			connected_accounts: user.connected_accounts,
+			connected_accounts: user.connected_accounts.filter(
+				(x) => x.visibility != 0,
+			),
 			premium_guild_since: premium_guild_since, // TODO
 			premium_since: user.premium_since, // TODO
 			mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true

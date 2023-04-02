@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket, Payload } from "@fosscord/gateway";
+import { WebSocket, Payload } from "@spacebar/gateway";
 import {
 	checkToken,
 	Intents,
@@ -43,14 +43,15 @@ import {
 	ReadyGuildDTO,
 	Guild,
 	UserTokenData,
-} from "@fosscord/util";
+	ConnectedAccount,
+} from "@spacebar/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { setupListener } from "../listener/listener";
 // import experiments from "./experiments.json";
 const experiments: unknown[] = [];
 import { check } from "./instanceOf";
-import { Recipient } from "@fosscord/util";
+import { Recipient } from "@spacebar/util";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
@@ -78,52 +79,60 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	this.user_id = decoded.id;
 	const session_id = this.session_id;
 
-	const [user, read_states, members, recipients, session, application] =
-		await Promise.all([
-			User.findOneOrFail({
-				where: { id: this.user_id },
-				relations: ["relationships", "relationships.to", "settings"],
-				select: [...PrivateUserProjection, "relationships"],
-			}),
-			ReadState.find({ where: { user_id: this.user_id } }),
-			Member.find({
-				where: { id: this.user_id },
-				select: MemberPrivateProjection,
-				relations: [
-					"guild",
-					"guild.channels",
-					"guild.emojis",
-					"guild.roles",
-					"guild.stickers",
-					"user",
-					"roles",
-				],
-			}),
-			Recipient.find({
-				where: { user_id: this.user_id, closed: false },
-				relations: [
-					"channel",
-					"channel.recipients",
-					"channel.recipients.user",
-				],
-				// TODO: public user selection
-			}),
-			// save the session and delete it when the websocket is closed
-			Session.create({
-				user_id: this.user_id,
-				session_id: session_id,
-				// TODO: check if status is only one of: online, dnd, offline, idle
-				status: identify.presence?.status || "offline", //does the session always start as online?
-				client_info: {
-					//TODO read from identity
-					client: "desktop",
-					os: identify.properties?.os,
-					version: 0,
-				},
-				activities: [],
-			}).save(),
-			Application.findOne({ where: { id: this.user_id } }),
-		]);
+	const [
+		user,
+		read_states,
+		members,
+		recipients,
+		session,
+		application,
+		connected_accounts,
+	] = await Promise.all([
+		User.findOneOrFail({
+			where: { id: this.user_id },
+			relations: ["relationships", "relationships.to", "settings"],
+			select: [...PrivateUserProjection, "relationships"],
+		}),
+		ReadState.find({ where: { user_id: this.user_id } }),
+		Member.find({
+			where: { id: this.user_id },
+			select: MemberPrivateProjection,
+			relations: [
+				"guild",
+				"guild.channels",
+				"guild.emojis",
+				"guild.roles",
+				"guild.stickers",
+				"user",
+				"roles",
+			],
+		}),
+		Recipient.find({
+			where: { user_id: this.user_id, closed: false },
+			relations: [
+				"channel",
+				"channel.recipients",
+				"channel.recipients.user",
+			],
+			// TODO: public user selection
+		}),
+		// save the session and delete it when the websocket is closed
+		Session.create({
+			user_id: this.user_id,
+			session_id: session_id,
+			// TODO: check if status is only one of: online, dnd, offline, idle
+			status: identify.presence?.status || "offline", //does the session always start as online?
+			client_info: {
+				//TODO read from identity
+				client: "desktop",
+				os: identify.properties?.os,
+				version: 0,
+			},
+			activities: [],
+		}).save(),
+		Application.findOne({ where: { id: this.user_id } }),
+		ConnectedAccount.find({ where: { user_id: this.user_id } }),
+	]);
 
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 	if (!user.settings) {
@@ -304,7 +313,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		private_channels: channels,
 		session_id: session_id,
 		analytics_token: "", // TODO
-		connected_accounts: [], // TODO
+		connected_accounts,
 		consents: {
 			personalization: {
 				consented: false, // TODO
