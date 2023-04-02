@@ -4,7 +4,7 @@ import {
 	ConnectionUpdateSchema,
 	DiscordApiErrors,
 	emitEvent,
-} from "@spacevar/util";
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 
@@ -44,6 +44,9 @@ router.patch(
 		if (typeof body.show_activity === "boolean")
 			//@ts-expect-error For some reason the client sends this as a boolean, even tho docs say its a number?
 			body.show_activity = body.show_activity ? 1 : 0;
+		if (typeof body.metadata_visibility === "boolean")
+			//@ts-expect-error For some reason the client sends this as a boolean, even tho docs say its a number?
+			body.metadata_visibility = body.metadata_visibility ? 1 : 0;
 
 		connection.assign(req.body);
 
