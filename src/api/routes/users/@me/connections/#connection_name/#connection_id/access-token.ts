@@ -1,11 +1,11 @@
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	ApiError,
 	ConnectedAccount,
 	ConnectionStore,
 	DiscordApiErrors,
 	FieldErrors,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import RefreshableConnection from "../../../../../../../util/connections/RefreshableConnection";
 const router = Router();

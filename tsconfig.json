@@ -34,10 +34,10 @@
 		"moduleResolution": "node" /* Specify how TypeScript looks up a file from a given module specifier. */,
 		"baseUrl": "./src/",
 		"paths": {
-			"@fosscord/api*": ["./api"],
-			"@fosscord/gateway*": ["./gateway"],
-			"@fosscord/cdn*": ["./cdn"],
-			"@fosscord/util*": ["./util"]
+			"@spacebar/api*": ["./api"],
+			"@spacebar/gateway*": ["./gateway"],
+			"@spacebar/cdn*": ["./cdn"],
+			"@spacebar/util*": ["./util"]
 		} /* Specify a set of entries that re-map imports to additional lookup locations. */,
 		// "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
 		// "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */

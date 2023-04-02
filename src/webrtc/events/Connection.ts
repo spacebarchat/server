@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, Send, setHeartbeat, WebSocket } from "@fosscord/gateway";
+import { CLOSECODES, Send, setHeartbeat, WebSocket } from "@spacebar/gateway";
 import { IncomingMessage } from "http";
 import { URL } from "url";
 import WS from "ws";

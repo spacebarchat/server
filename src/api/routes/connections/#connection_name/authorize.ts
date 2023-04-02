@@ -1,4 +1,4 @@
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { ConnectionStore, FieldErrors } from "../../../../util";
 

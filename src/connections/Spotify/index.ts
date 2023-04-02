@@ -4,7 +4,7 @@ import {
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import wretch from "wretch";
 import RefreshableConnection from "../../util/connections/RefreshableConnection";
 import { SpotifySettings } from "./SpotifySettings";

@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -17,7 +17,7 @@
 */
 
 import { Router, Request, Response } from "express";
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	ApiError,
 	Application,
@@ -27,7 +27,7 @@ import {
 	Member,
 	Permissions,
 	User,
-} from "@fosscord/util";
+} from "@spacebar/util";
 const router = Router();
 
 // TODO: scopes, other oauth types

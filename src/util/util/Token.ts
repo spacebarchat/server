@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -69,7 +69,7 @@ export function checkToken(
 		token = token.replace("Bot ", "");
 		token = token.replace("Bearer ", "");
 		/**
-		in fosscord, even with instances that have bot distinction; we won't enforce "Bot" prefix,
+		in spacebar, even with instances that have bot distinction; we won't enforce "Bot" prefix,
 		as we don't really have separate pathways for bots 
 		**/
 

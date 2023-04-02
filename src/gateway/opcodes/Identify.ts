@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket, Payload } from "@fosscord/gateway";
+import { WebSocket, Payload } from "@spacebar/gateway";
 import {
 	checkToken,
 	Intents,
@@ -44,14 +44,14 @@ import {
 	Guild,
 	UserTokenData,
 	ConnectedAccount,
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { setupListener } from "../listener/listener";
 // import experiments from "./experiments.json";
 const experiments: unknown[] = [];
 import { check } from "./instanceOf";
-import { Recipient } from "@fosscord/util";
+import { Recipient } from "@spacebar/util";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config

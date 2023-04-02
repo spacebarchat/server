@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, Send, WebSocket } from "@fosscord/gateway";
-import { SelectProtocolSchema, validateSchema } from "@fosscord/util";
-import { endpoint, PublicIP, VoiceOPCodes } from "@fosscord/webrtc";
+import { Payload, Send, WebSocket } from "@spacebar/gateway";
+import { SelectProtocolSchema, validateSchema } from "@spacebar/util";
+import { endpoint, PublicIP, VoiceOPCodes } from "@spacebar/webrtc";
 import SemanticSDP, { MediaInfo, SDPInfo } from "semantic-sdp";
 
 export async function onSelectProtocol(this: WebSocket, payload: Payload) {

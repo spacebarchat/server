@@ -1,10 +1,10 @@
-import { route } from "@fosscord/api";
+import { route } from "@spacebar/api";
 import {
 	ConnectedAccount,
 	ConnectionUpdateSchema,
 	DiscordApiErrors,
 	emitEvent,
-} from "@fosscord/util";
+} from "@spacevar/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 

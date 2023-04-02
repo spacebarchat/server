@@ -1,6 +1,6 @@
 /*
-	Fosscord: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Fosscord and Fosscord Contributors
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -83,7 +83,7 @@ export async function initDatabase(): Promise<DataSource> {
 				"[Database]" +
 					red(
 						` We don't have migrations for DB type '${DatabaseType}'` +
-							` To ignore, set DB_SYNC=true in your env. https://docs.fosscord.com/setup/server/configuration/env/`,
+							` To ignore, set DB_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
 					),
 			);
 			process.exit();
