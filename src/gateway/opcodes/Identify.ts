@@ -389,15 +389,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		read_state: {
 			entries: read_states,
 			partial: false,
-			// TODO: what is this magic number?
-			// Isn't `version` referring to the number of changes since this obj was created?
-			// Why do we send this specific version?
-			version: 304128,
+			version: 0, // TODO
 		},
 		user_guild_settings: {
 			entries: user_guild_settings_entries,
 			partial: false,
-			version: 642, // TODO: see above
+			version: 0, // TODO
 		},
 		private_channels: channels,
 		session_id: this.session_id,
