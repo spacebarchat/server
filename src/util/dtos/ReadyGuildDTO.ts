@@ -97,6 +97,13 @@ export interface IReadyGuildDTO {
 		max_members: number | undefined;
 		nsfw_level: number | undefined;
 		hub_type?: unknown | null; // ????
+
+		home_header: null;	// TODO
+		latest_onboarding_question_id: null;	// TODO
+		safety_alerts_channel_id: null;	// TODO
+		max_stage_video_channel_users: 50;	// TODO
+		nsfw: boolean;
+		id: string;
 	};
 	roles: Role[];
 	stage_instances: unknown[];
@@ -147,6 +154,13 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 		max_members: number | undefined;
 		nsfw_level: number | undefined;
 		hub_type?: unknown | null; // ????
+
+		home_header: null;	// TODO
+		latest_onboarding_question_id: null;	// TODO
+		safety_alerts_channel_id: null;	// TODO
+		max_stage_video_channel_users: 50;	// TODO
+		nsfw: boolean;
+		id: string;
 	};
 	roles: Role[];
 	stage_instances: unknown[];
@@ -207,6 +221,13 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 			max_members: guild.max_members,
 			nsfw_level: guild.nsfw_level,
 			hub_type: null,
+
+			home_header: null,
+			id: guild.id,
+			latest_onboarding_question_id: null,
+			max_stage_video_channel_users: 50,	// TODO
+			nsfw: guild.nsfw,
+			safety_alerts_channel_id: null,
 		};
 		this.roles = guild.roles;
 		this.stage_instances = [];
