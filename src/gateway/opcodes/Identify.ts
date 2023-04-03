@@ -16,7 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket, Payload, setupListener } from "@spacebar/gateway";
+import {
+	WebSocket,
+	Payload,
+	setupListener,
+	Capabilities,
+	CLOSECODES,
+	OPCODES,
+	Send,
+} from "@spacebar/gateway";
 import {
 	checkToken,
 	Intents,
@@ -45,11 +53,9 @@ import {
 	Permissions,
 	DMChannel,
 	GuildOrUnavailable,
+	Recipient,
 } from "@spacebar/util";
-import { Send } from "../util/Send";
-import { CLOSECODES, OPCODES } from "../util/Constants";
 import { check } from "./instanceOf";
-import { Recipient } from "@spacebar/util";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
@@ -72,6 +78,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	// Check payload matches schema
 	check.call(this, IdentifySchema, data.d);
 	const identify: IdentifySchema = data.d;
+
+	this.capabilities = new Capabilities(identify.capabilities || 0);
 
 	// Check auth
 	// TODO: the checkToken call will fetch user, and then we have to refetch with different select
@@ -374,7 +382,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			: undefined,
 		user: user.toPrivateUser(),
 		user_settings: user.settings,
-		guilds: guilds.map((x) => new ReadyGuildDTO(x).toJSON()),
+		guilds: this.capabilities.has(Capabilities.FLAGS.CLIENT_STATE_V2)
+			? guilds.map((x) => new ReadyGuildDTO(x).toJSON())
+			: guilds,
 		relationships: user.relationships.map((x) => x.toPublicRelationship()),
 		read_state: {
 			entries: read_states,

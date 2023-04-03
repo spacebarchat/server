@@ -42,6 +42,7 @@ import {
 	UserPrivate,
 	ReadyUserGuildSettingsEntries,
 	ReadyPrivateChannel,
+	GuildOrUnavailable,
 } from "@spacebar/util";
 
 export interface Event {
@@ -73,7 +74,7 @@ export interface ReadyEventData {
 	user: UserPrivate;
 	private_channels: ReadyPrivateChannel[]; // this will be empty for bots
 	session_id: string; // resuming
-	guilds: IReadyGuildDTO[];
+	guilds: IReadyGuildDTO[] | GuildOrUnavailable[]; // depends on capability
 	analytics_token?: string;
 	connected_accounts?: ConnectedAccount[];
 	consents?: {
