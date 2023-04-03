@@ -22,7 +22,12 @@ import {
 	ChannelUpdateEvent,
 	emitEvent,
 	ChannelModifySchema,
-	GuildSplitAndMergeSchema,
+	ChannelReorderSchema,
+	Member,
+	Role,
+	Guild,
+	getRights,
+	Config,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@spacebar/api";
@@ -63,68 +68,11 @@ router.post(
 			owner_id: req.user_id,
 		});
 
-		// join all members of the old guild into the newly created one
+		// TODO: join all members of the old guild into the newly created one
 		
-		const members = await Member.find({
-		where: { guild.id, ...query },
-		select: PublicMemberProjection,
-		order: { id: "ASC" },
-		});
-
-		for (member in members) {
-			await Member.addToGuild(member.user.id, guild_new.id);
-		}
-		res.status(201).json({ id: guild.id });
-	},
-);
-
-router.patch(
-	"/",
-	route({ body: "ChannelReorderSchema", permission: "MANAGE_CHANNELS" }),
-	async (req: Request, res: Response) => {
-		// changes guild channel position
-		const { guild_id } = req.params;
-		const body = req.body as ChannelReorderSchema;
-
-		await Promise.all([
-			body.map(async (x) => {
-				if (x.position == null && !x.parent_id)
-					throw new HTTPError(
-						`You need to at least specify position or parent_id`,
-						400,
-					);
-
-				const opts: Partial<Channel> = {};
-				if (x.position != null) opts.position = x.position;
-
-				if (x.parent_id) {
-					opts.parent_id = x.parent_id;
-					const parent_channel = await Channel.findOneOrFail({
-						where: { id: x.parent_id, guild_id },
-						select: ["permission_overwrites"],
-					});
-					if (x.lock_permissions) {
-						opts.permission_overwrites =
-							parent_channel.permission_overwrites;
-					}
-				}
-
-				await Channel.update({ guild_id, id: x.id }, opts);
-				const channel = await Channel.findOneOrFail({
-					where: { guild_id, id: x.id },
-				});
-
-				await emitEvent({
-					event: "CHANNEL_UPDATE",
-					data: channel,
-					channel_id: x.id,
-					guild_id,
-				} as ChannelUpdateEvent);
-			}),
-		]);
-
-		res.sendStatus(204);
+		
 	},
 );
 
 export default router;
+
