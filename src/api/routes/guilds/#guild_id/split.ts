@@ -28,18 +28,22 @@ import {
 	Guild,
 	getRights,
 	Config,
+	PublicMemberProjection,
+	GuildCreateSchema,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@spacebar/api";
+import { getModeForResolutionAtIndex } from "typescript";
+
 const router = Router();
 
 router.post(
 	"/",
-	route({ body: "ChannelModifySchema", right: "CREATE_GUILDS" }),
+	route({ body: "GuildCreateSchema", right: "CREATE_GUILDS" }),
 	async (req: Request, res: Response) => {
 		// create a new guild with the channels that are in the guild
 	
-		const body = req.body as ChannelModifySchema;
+		const body = req.body as GuildCreateSchema;
 
 		const { maxGuilds } = Config.get().limits.user;
 		
@@ -53,24 +57,62 @@ router.post(
 		
 		if (guild.owner_id !== req.user_id)
 		throw new HTTPError("You are not the owner of this guild", 401);
-		
-		// remove channels from old guild
 
-		guild.channels = guild.channels.filter (item => !req.body.channels.includes(item));
-		
-		// create new guild's roles
-		
-		const roles = await Role.find({ where: { guild_id: guild.id } });
-		
+		/** 
+		 point of no return
+		 no permission errors may be thrown from here below
+		**/
+
+		// remove channels from old guild
+		guild.channels = guild.channels.filter (ch => !(body.channels?.includes(ch)));
+
+		/** 
+		create the guild we're placing the channels into
+		use the name and icon supplied by the request if it's supplied in the body
+		otherwise take them from the old guild 
+		**/
 		const guild_new = await Guild.createGuild({
 			...guild,
-			channels: req.body.channels,
+			name: body.name ? body.name : guild.name,
+			icon: body.icon ? body.icon: guild.icon,
+			channels: body.channels,
 			owner_id: req.user_id,
 		});
 
-		// TODO: join all members of the old guild into the newly created one
+		// copy general settings over to the new guild
+		guild_new.features = guild.features;
+		guild_new.preferred_locale = guild.preferred_locale;
+		guild_new.system_channel_flags = 4;
+		guild_new.mfa_level = guild.mfa_level;
+		guild_new.nsfw_level = guild.nsfw_level;
+
+		// TODO: trim parents from outside the guild to prevent possible client crashes
 		
+
+		// commit changes — the order is important to prevent authorisation conflicts
+		guild.save();
+		guild_new.save();
 		
+		// create new guild's roles
+		const roles = await Role.find({ where: { guild_id: guild.id } });
+
+		// join all members of the old guild into the newly created one		
+		const members  = await Member.find({
+			where: { guild_id: guild.id },
+			select: PublicMemberProjection,
+			order: { id: "ASC" },
+		});
+
+		members.forEach(async (x) => {await Member.addToGuild(x.user.id, guild_new.id);});
+
+		// assign new guild's roles along with all those roles
+		roles.filter(role => role.id != guild.id).forEach(role => {
+			const r = Role.create({...role, guild_id: guild_new.id});
+			members.forEach(async (u) => await Member.addRole(u.user.id, guild_new.id, r.id));
+		});
+		
+		return res.status(201).json(guild_new);
+
 	},
 );
 

@@ -1126,8 +1126,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -1845,8 +1844,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -2564,8 +2562,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -3278,8 +3275,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -4028,8 +4024,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -4747,8 +4742,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -4761,6 +4755,9 @@
                 "type": "boolean"
             },
             "show_activity": {
+                "type": "boolean"
+            },
+            "metadata_visibility": {
                 "type": "boolean"
             }
         },
@@ -5454,8 +5451,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -6167,8 +6163,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -6889,8 +6884,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -7599,8 +7593,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -8309,8 +8302,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -9038,8 +9030,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -9751,8 +9742,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -10524,8 +10514,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -11256,8 +11245,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -12045,6 +12033,91 @@
                     }
                 },
                 "additionalProperties": false
+            },
+            "UserPublic": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "premium_type",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "PublicConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "type"
+                ]
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -12687,6 +12760,91 @@
                     }
                 },
                 "additionalProperties": false
+            },
+            "UserPublic": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "premium_type",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "PublicConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "type"
+                ]
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -13333,6 +13491,91 @@
                     }
                 },
                 "additionalProperties": false
+            },
+            "UserPublic": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "premium_type",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "PublicConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "type"
+                ]
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -14053,8 +14296,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -14782,8 +15024,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -15501,8 +15742,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -16208,8 +16448,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -17026,8 +17265,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -17841,8 +18079,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -18551,8 +18788,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -19269,8 +19505,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -19980,8 +20215,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -20691,8 +20925,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -21431,8 +21664,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -22142,8 +22374,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -22852,8 +23083,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -23577,8 +23807,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -24291,8 +24520,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -25079,8 +25307,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -25789,8 +26016,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -26499,8 +26725,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -27206,8 +27431,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -27919,8 +28143,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -28642,8 +28865,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -29349,8 +29571,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -30105,8 +30326,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -30847,8 +31067,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -31579,8 +31798,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -32400,8 +32618,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -33106,8 +33323,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -33851,8 +34067,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -34581,8 +34796,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -35366,8 +35580,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -36073,8 +36286,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -36788,8 +37000,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -37493,8 +37704,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -38204,8 +38414,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -38915,8 +39124,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -39626,8 +39834,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -40351,8 +40558,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -41058,8 +41264,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -41794,8 +41999,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -42513,8 +42717,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -42530,6 +42733,37 @@
                     2
                 ],
                 "type": "number"
+            },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
             },
             "ChannelModifySchema": {
                 "type": "object",
@@ -43180,8 +43414,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -43210,6 +43443,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -43859,8 +44123,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -43886,6 +44149,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -44535,8 +44829,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -44562,6 +44855,37 @@
                 ],
                 "type": "number"
             },
+            "ConnectedAccountTokenData": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "fetched_at": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "access_token",
+                    "fetched_at"
+                ]
+            },
             "ChannelModifySchema": {
                 "type": "object",
                 "properties": {
@@ -45211,8 +45535,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
@@ -45924,8 +46247,7 @@
                 "additionalProperties": false,
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             }
         },
