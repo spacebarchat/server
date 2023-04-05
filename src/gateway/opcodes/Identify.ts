@@ -59,7 +59,6 @@ import { check } from "./instanceOf";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
-// TODO: check if already identified
 
 const getUserFromToken = async (token: string): Promise<string | null> => {
 	try {
@@ -73,6 +72,11 @@ const getUserFromToken = async (token: string): Promise<string | null> => {
 };
 
 export async function onIdentify(this: WebSocket, data: Payload) {
+	if (this.user_id) {
+		// we've already identified
+		return this.close(CLOSECODES.Already_authenticated);
+	}
+
 	clearTimeout(this.readyTimeout);
 
 	// Check payload matches schema
@@ -106,7 +110,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			this.shard_id < 0 ||
 			this.shard_count <= 0
 		) {
-			// TODO: why do we even care about this?
+			// TODO: why do we even care about this right now?
 			console.log(
 				`[Gateway] Invalid sharding from ${user_id}: ${identify.shard}`,
 			);
