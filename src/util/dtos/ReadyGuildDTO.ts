@@ -98,10 +98,10 @@ export interface IReadyGuildDTO {
 		nsfw_level: number | undefined;
 		hub_type?: unknown | null; // ????
 
-		home_header: null;	// TODO
-		latest_onboarding_question_id: null;	// TODO
-		safety_alerts_channel_id: null;	// TODO
-		max_stage_video_channel_users: 50;	// TODO
+		home_header: null; // TODO
+		latest_onboarding_question_id: null; // TODO
+		safety_alerts_channel_id: null; // TODO
+		max_stage_video_channel_users: 50; // TODO
 		nsfw: boolean;
 		id: string;
 	};
@@ -155,10 +155,10 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 		nsfw_level: number | undefined;
 		hub_type?: unknown | null; // ????
 
-		home_header: null;	// TODO
-		latest_onboarding_question_id: null;	// TODO
-		safety_alerts_channel_id: null;	// TODO
-		max_stage_video_channel_users: 50;	// TODO
+		home_header: null; // TODO
+		latest_onboarding_question_id: null; // TODO
+		safety_alerts_channel_id: null; // TODO
+		max_stage_video_channel_users: 50; // TODO
 		nsfw: boolean;
 		id: string;
 	};
@@ -225,7 +225,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 			home_header: null,
 			id: guild.id,
 			latest_onboarding_question_id: null,
-			max_stage_video_channel_users: 50,	// TODO
+			max_stage_video_channel_users: 50, // TODO
 			nsfw: guild.nsfw,
 			safety_alerts_channel_id: null,
 		};
