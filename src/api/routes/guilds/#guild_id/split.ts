@@ -30,10 +30,12 @@ import {
 	Config,
 	PublicMemberProjection,
 	GuildCreateSchema,
+	ChannelTypes,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { route } from "@spacebar/api";
 import { getModeForResolutionAtIndex } from "typescript";
+import { chmodSync } from "node:fs";
 
 const router = Router();
 
@@ -49,6 +51,8 @@ router.post(
 		
 		// splits are not subject to guild count limits
 		const rights = await getRights(req.user_id);
+		rights.hasThrow("SELF_EDIT_MESSAGES");
+		rights.hasThrow("SEND_MESSAGES");
 		
 		const guild = await Guild.findOneOrFail({
 		where: { id: req.params.guild_id },
@@ -86,8 +90,9 @@ router.post(
 		guild_new.mfa_level = guild.mfa_level;
 		guild_new.nsfw_level = guild.nsfw_level;
 
-		// TODO: trim parents from outside the guild to prevent possible client crashes
-		
+		// trim parents from outside the guild to prevent possible client crashes
+		const chs = body.channels?.filter(ch => body.channels?.map(par => par.id).includes(ch.parent_id));
+		chs?.forEach(x => x.parent_id = undefined);
 
 		// commit changes — the order is important to prevent authorisation conflicts
 		guild.save();
@@ -103,13 +108,18 @@ router.post(
 			order: { id: "ASC" },
 		});
 
-		members.forEach(async (x) => {await Member.addToGuild(x.user.id, guild_new.id);});
+		for (const u of members) {
+			await Member.addToGuild(u.user.id, guild_new.id);
+		}
 
 		// assign new guild's roles along with all those roles
-		roles.filter(role => role.id != guild.id).forEach(role => {
-			const r = Role.create({...role, guild_id: guild_new.id});
-			members.forEach(async (u) => await Member.addRole(u.user.id, guild_new.id, r.id));
-		});
+
+		const R = roles.filter(role => role.id != guild.id);
+
+		for (const role of R) {
+			const r = await Role.create({...role, guild_id: guild_new.id}).save();
+			for (const u of members) await Member.addRole(u.user.id, guild_new.id, r.id);
+		}
 		
 		return res.status(201).json(guild_new);
 
