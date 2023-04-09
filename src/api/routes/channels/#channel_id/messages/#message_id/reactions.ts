@@ -180,6 +180,7 @@ router.put(
 			if (already_added.user_ids.includes(req.user_id))
 				return res.sendStatus(204); // Do not throw an error ¯\_(ツ)_/¯ as discord also doesn't throw any error
 			already_added.count++;
+			already_added.user_ids.push(req.user_id);
 		} else
 			message.reactions.push({
 				count: 1,
@@ -247,6 +248,7 @@ router.delete(
 		already_added.count--;
 
 		if (already_added.count <= 0) message.reactions.remove(already_added);
+		else already_added.user_ids.splice(already_added.user_ids.indexOf(user_id), 1);
 
 		await message.save();
 
