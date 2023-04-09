@@ -260,9 +260,9 @@ export class Member extends BaseClassWithoutId {
 					},
 				},
 			}),
-			await Role.findOneOrFail({ where: { id: role_id, guild_id } }),
+			Role.findOneOrFail({ where: { id: role_id, guild_id } }),
 		]);
-		member.roles = member.roles.filter((x) => x.id == role_id);
+		member.roles = member.roles.filter((x) => x.id !== role_id);
 
 		await Promise.all([
 			member.save(),
