@@ -295,6 +295,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				...new ReadyGuildDTO(x).toJSON(),
 				guild_hashes: {},
 				joined_at: x.joined_at,
+				name: x.name,
+				icon: x.icon,
 			};
 		}),
 		guild_experiments: [], // TODO
