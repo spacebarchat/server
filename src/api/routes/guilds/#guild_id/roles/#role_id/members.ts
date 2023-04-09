@@ -46,7 +46,7 @@ router.patch(
         for (const member of members_to_remove) {
             Member.removeRole(member.id, guild_id, role_id);
         }
-		res.sendStatus(204);
+        res.sendStatus(204);
     }
 );
 
