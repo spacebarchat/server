@@ -19,6 +19,7 @@
 import { Request, Response, Router } from "express";
 import {
 	Member,
+	Permissions,
 	getPermission,
 	getRights,
 	Role,
@@ -42,7 +43,9 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		where: { id: member_id, guild_id },
 	});
 
-	return res.json(member);
+	const permission = await getPermission(member_id, guild_id);
+
+	return res.json({...member, permissions: Permissions.resolve(permission).toString()});
 });
 
 router.patch(
