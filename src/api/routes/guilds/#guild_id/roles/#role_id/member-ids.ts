@@ -23,16 +23,18 @@ import { route } from "@spacebar/api";
 const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-    const { guild_id, role_id } = req.params;
-    await Member.IsInGuildOrFail(req.user_id, guild_id);
-    const members = await Member.find({
-        select: ["id"],
-        relations: ["roles"],
-    });
-    const member_ids = members.filter((member) => {
-        return member.roles.map((role) => role.id).includes(role_id);
-    }).map((member) => member.id);
-    return res.json(member_ids);
+	const { guild_id, role_id } = req.params;
+	await Member.IsInGuildOrFail(req.user_id, guild_id);
+	const members = await Member.find({
+		select: ["id"],
+		relations: ["roles"],
+	});
+	const member_ids = members
+		.filter((member) => {
+			return member.roles.map((role) => role.id).includes(role_id);
+		})
+		.map((member) => member.id);
+	return res.json(member_ids);
 });
 
 export default router;
