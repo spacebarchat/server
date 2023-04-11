@@ -440,6 +440,15 @@ export class Member extends BaseClassWithoutId {
 			]);
 		}
 	}
+
+	toPublicMember() {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const member: any = {};
+		PublicMemberProjection.forEach((x) => {
+			member[x] = this[x];
+		});
+		return member as PublicMember;
+	}
 }
 
 export interface ChannelOverride {
