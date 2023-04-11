@@ -29,11 +29,12 @@ router.patch(
 		// Payload is JSON containing a list of member_ids, the new list of members to have the role
 		const { guild_id, role_id } = req.params;
 		const { member_ids } = req.body;
-		await Member.IsInGuildOrFail(req.user_id, guild_id);
+
 		const members = await Member.find({
 			where: { guild_id },
 			relations: ["roles"],
 		});
+
 		const members_to_add = members.filter((member) => {
 			return (
 				member_ids.includes(member.id) &&
@@ -46,12 +47,15 @@ router.patch(
 				member.roles.map((role) => role.id).includes(role_id)
 			);
 		});
+
 		for (const member of members_to_add) {
-			Member.addRole(member.id, guild_id, role_id);
+			await Member.addRole(member.id, guild_id, role_id);
 		}
+
 		for (const member of members_to_remove) {
-			Member.removeRole(member.id, guild_id, role_id);
+			await Member.removeRole(member.id, guild_id, role_id);
 		}
+
 		res.sendStatus(204);
 	},
 );
