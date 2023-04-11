@@ -248,7 +248,8 @@ router.delete(
 		already_added.count--;
 
 		if (already_added.count <= 0) message.reactions.remove(already_added);
-		else already_added.user_ids.splice(already_added.user_ids.indexOf(user_id), 1);
+		else
+			already_added.user_ids.splice(already_added.user_ids.indexOf(user_id), 1);
 
 		await message.save();
 
