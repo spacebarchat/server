@@ -17,7 +17,7 @@
 */
 
 import { Router, Request, Response } from "express";
-import { Member, partition } from "@spacebar/util";
+import { DiscordApiErrors, Member, partition } from "@spacebar/util";
 import { route } from "@spacebar/api";
 
 const router = Router();
@@ -29,6 +29,9 @@ router.patch(
 		// Payload is JSON containing a list of member_ids, the new list of members to have the role
 		const { guild_id, role_id } = req.params;
 		const { member_ids } = req.body;
+
+		// don't mess with @everyone
+		if (role_id == guild_id) throw DiscordApiErrors.INVALID_ROLE;
 
 		const members = await Member.find({
 			where: { guild_id },
