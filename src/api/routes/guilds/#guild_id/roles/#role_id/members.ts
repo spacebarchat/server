@@ -17,7 +17,7 @@
 */
 
 import { Router, Request, Response } from "express";
-import { Member } from "@spacebar/util";
+import { Member, partition } from "@spacebar/util";
 import { route } from "@spacebar/api";
 
 const router = Router();
@@ -35,26 +35,21 @@ router.patch(
 			relations: ["roles"],
 		});
 
-		const members_to_add = members.filter((member) => {
-			return (
+		const [add, remove] = partition(
+			members,
+			(member) =>
 				member_ids.includes(member.id) &&
-				!member.roles.map((role) => role.id).includes(role_id)
-			);
-		});
-		const members_to_remove = members.filter((member) => {
-			return (
-				!member_ids.includes(member.id) &&
-				member.roles.map((role) => role.id).includes(role_id)
-			);
-		});
+				!member.roles.map((role) => role.id).includes(role_id),
+		);
 
-		for (const member of members_to_add) {
-			await Member.addRole(member.id, guild_id, role_id);
-		}
-
-		for (const member of members_to_remove) {
-			await Member.removeRole(member.id, guild_id, role_id);
-		}
+		await Promise.all([
+			...add.map((member) =>
+				Member.addRole(member.id, guild_id, role_id),
+			),
+			...remove.map((member) =>
+				Member.removeRole(member.id, guild_id, role_id),
+			),
+		]);
 
 		res.sendStatus(204);
 	},
