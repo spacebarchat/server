@@ -16,16 +16,24 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove this function.
+import { Request, Response, Router } from "express";
+import { Role, Member } from "@spacebar/util";
+import { route } from "@spacebar/api";
+import {} from "typeorm";
 
-export function containsAll(arr: unknown[], target: unknown[]) {
-	return target.every((v) => arr.includes(v));
-}
+const router: Router = Router();
 
-/* https://stackoverflow.com/a/50636286 */
-export function partition<T>(array: T[], filter: (elem: T) => boolean) {
-	const pass: T[] = [],
-		fail: T[] = [];
-	array.forEach((e) => (filter(e) ? pass : fail).push(e));
-	return [pass, fail];
-}
+router.get("/", route({}), async (req: Request, res: Response) => {
+	const { guild_id } = req.params;
+	await Member.IsInGuildOrFail(req.user_id, guild_id);
+
+	const role_ids = await Role.find({ where: { guild_id }, select: ["id"] });
+	const counts: { [id: string]: number } = {};
+	for (const { id } of role_ids) {
+		counts[id] = await Member.count({ where: { roles: { id }, guild_id } });
+	}
+
+	return res.json(counts);
+});
+
+export default router;

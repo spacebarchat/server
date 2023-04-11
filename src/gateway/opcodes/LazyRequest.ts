@@ -26,6 +26,7 @@ import {
 	LazyRequestSchema,
 	User,
 	Presence,
+	partition,
 } from "@spacebar/util";
 import {
 	WebSocket,
@@ -301,12 +302,4 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 			groups,
 		},
 	});
-}
-
-/* https://stackoverflow.com/a/50636286 */
-function partition<T>(array: T[], filter: (elem: T) => boolean) {
-	const pass: T[] = [],
-		fail: T[] = [];
-	array.forEach((e) => (filter(e) ? pass : fail).push(e));
-	return [pass, fail];
 }

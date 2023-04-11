@@ -16,16 +16,27 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove this function.
+import { Router, Request, Response } from "express";
+import { Member } from "@spacebar/util";
+import { route } from "@spacebar/api";
 
-export function containsAll(arr: unknown[], target: unknown[]) {
-	return target.every((v) => arr.includes(v));
-}
+const router = Router();
 
-/* https://stackoverflow.com/a/50636286 */
-export function partition<T>(array: T[], filter: (elem: T) => boolean) {
-	const pass: T[] = [],
-		fail: T[] = [];
-	array.forEach((e) => (filter(e) ? pass : fail).push(e));
-	return [pass, fail];
-}
+router.get("/", route({}), async (req: Request, res: Response) => {
+	const { guild_id, role_id } = req.params;
+
+	// TODO: Is this route really not paginated?
+	const members = await Member.find({
+		select: ["id"],
+		where: {
+			roles: {
+				id: role_id,
+			},
+			guild_id,
+		},
+	});
+
+	return res.json(members.map((x) => x.id));
+});
+
+export default router;
