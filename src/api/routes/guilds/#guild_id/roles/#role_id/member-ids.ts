@@ -24,17 +24,19 @@ const router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id, role_id } = req.params;
-	await Member.IsInGuildOrFail(req.user_id, guild_id);
+
+	// TODO: Is this route really not paginated?
 	const members = await Member.find({
 		select: ["id"],
-		relations: ["roles"],
+		where: {
+			roles: {
+				id: role_id,
+			},
+			guild_id,
+		},
 	});
-	const member_ids = members
-		.filter((member) => {
-			return member.roles.map((role) => role.id).includes(role_id);
-		})
-		.map((member) => member.id);
-	return res.json(member_ids);
+
+	return res.json(members.map((x) => x.id));
 });
 
 export default router;
