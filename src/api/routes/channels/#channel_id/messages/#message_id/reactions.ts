@@ -28,6 +28,7 @@ import {
 	MessageReactionRemoveEmojiEvent,
 	MessageReactionRemoveEvent,
 	PartialEmoji,
+	PublicMemberProjection,
 	PublicUserProjection,
 	User,
 } from "@spacebar/util";
@@ -192,7 +193,12 @@ router.put(
 
 		const member =
 			channel.guild_id &&
-			(await Member.findOneOrFail({ where: { id: req.user_id } }));
+			(
+				await Member.findOneOrFail({
+					where: { id: req.user_id },
+					select: PublicMemberProjection,
+				})
+			).toPublicMember();
 
 		await emitEvent({
 			event: "MESSAGE_REACTION_ADD",
@@ -249,7 +255,10 @@ router.delete(
 
 		if (already_added.count <= 0) message.reactions.remove(already_added);
 		else
-			already_added.user_ids.splice(already_added.user_ids.indexOf(user_id), 1);
+			already_added.user_ids.splice(
+				already_added.user_ids.indexOf(user_id),
+				1,
+			);
 
 		await message.save();
 
