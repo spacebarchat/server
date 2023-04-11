@@ -42,6 +42,7 @@ router.patch(
 				!member.roles.map((role) => role.id).includes(role_id),
 		);
 
+		// TODO (erkin): have a bulk add/remove function that adds the roles in a single txn
 		await Promise.all([
 			...add.map((member) =>
 				Member.addRole(member.id, guild_id, role_id),
