@@ -16,8 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* eslint-env node */
-
 require("module-alias/register");
 const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");

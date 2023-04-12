@@ -5,8 +5,6 @@
 	Does not prepend is file contains @fc-license-skip
 */
 
-/* eslint-env node */
-
 const Path = require("path");
 const fs = require("fs");
 const walk = require("./util/walk");
