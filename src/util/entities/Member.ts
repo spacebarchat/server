@@ -330,17 +330,25 @@ export class Member extends BaseClassWithoutId {
 		});
 
 		const memberCount = await Member.count({ where: { guild_id } });
-		const memberPreview = await Member.find({
-			where: {
-				guild_id,
-				user: {
-					sessions: {
-						status: Not("invisible" as const), // lol typescript?
+
+		const memberPreview = (
+			await Member.find({
+				where: {
+					guild_id,
+					user: {
+						sessions: {
+							status: Not("invisible" as const), // lol typescript?
+						},
 					},
 				},
-			},
-			take: 10,
-		});
+				relations: ["user", "roles"],
+				take: 10,
+			})
+		).map((member) => ({
+			...member.toPublicMember(),
+			user: member.user.toPublicUser(),
+			roles: member.roles.map((x) => x.id),
+		}));
 
 		if (
 			await Member.count({
