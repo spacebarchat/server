@@ -73,9 +73,11 @@ export function isTextChannel(type: ChannelType): boolean {
 
 // https://discord.com/developers/docs/resources/channel#create-message
 // get messages
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	const channel_id = req.params.channel_id;
-	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
+	const channel = await Channel.findOneOrFail({
+		where: { id: channel_id },
+	});
 	if (!channel) throw new HTTPError("Channel not found", 404);
 
 	isTextChannel(channel.type);
