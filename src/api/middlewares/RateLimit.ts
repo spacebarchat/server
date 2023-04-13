@@ -82,6 +82,12 @@ export default function rateLimit(opts: {
 			max_hits = opts.MODIFY;
 
 		const offender = Cache.get(executor_id + bucket_id);
+		const global = bucket_id === "global";
+
+		res
+			.set("X-RateLimit-Limit", `${max_hits}`)
+			.set("X-RateLimit-Remaining", offender ? `${max_hits - offender.hits}` : `${max_hits}`)
+			.set("X-RateLimit-Global", `${global}`)
 
 		if (offender) {
 			let reset = offender.expires_at.getTime();
@@ -97,7 +103,6 @@ export default function rateLimit(opts: {
 			}
 
 			if (offender.blocked) {
-				const global = bucket_id === "global";
 				// each block violation pushes the expiry one full window further
 				reset += opts.window * 1000;
 				offender.expires_at = new Date(
@@ -112,11 +117,8 @@ export default function rateLimit(opts: {
 				return (
 					res
 						.status(429)
-						.set("X-RateLimit-Limit", `${max_hits}`)
-						.set("X-RateLimit-Remaining", "0")
 						.set("X-RateLimit-Reset", `${reset}`)
 						.set("X-RateLimit-Reset-After", `${resetAfterSec}`)
-						.set("X-RateLimit-Global", `${global}`)
 						.set("Retry-After", `${Math.ceil(resetAfterSec)}`)
 						.set("X-RateLimit-Bucket", `${bucket_id}`)
 						// TODO: error rate limit message translation
