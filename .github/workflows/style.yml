@@ -1,4 +1,4 @@
-name: Build
+name: Style
 
 on:
   push:
@@ -23,6 +23,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm run test --if-present
+    - run: npm i --only=dev
+    - run: npx eslint .
+    - run: npx prettier --check .

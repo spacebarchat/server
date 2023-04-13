@@ -16,7 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Channel, Emoji, Guild, Member, Role, Sticker } from "../entities";
+import {
+	Channel,
+	Emoji,
+	Guild,
+	PublicMember,
+	Role,
+	Sticker,
+} from "../entities";
 
 export interface IReadyGuildDTO {
 	application_command_counts?: { 1: number; 2: number; 3: number }; // ????????????
@@ -28,7 +35,7 @@ export interface IReadyGuildDTO {
 	large: boolean | undefined;
 	lazy: boolean;
 	member_count: number | undefined;
-	members: Member[];
+	members: PublicMember[];
 	premium_subscription_count: number | undefined;
 	properties: {
 		name: string;
@@ -76,7 +83,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 	large: boolean | undefined;
 	lazy: boolean;
 	member_count: number | undefined;
-	members: Member[];
+	members: PublicMember[];
 	premium_subscription_count: number | undefined;
 	properties: {
 		name: string;
@@ -127,7 +134,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 		this.large = guild.large;
 		this.lazy = true; // ??????????
 		this.member_count = guild.member_count;
-		this.members = guild.members;
+		this.members = guild.members?.map((x) => x.toPublicMember());
 		this.premium_subscription_count = guild.premium_subscription_count;
 		this.properties = {
 			name: guild.name,

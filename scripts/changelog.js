@@ -26,8 +26,6 @@
 	This grabs the new changelog from `spacebarchat/server/assets/changelog.txt`
 */
 
-/* eslint-env node */
-
 const fetch = require("node-fetch");
 const fs = require("fs/promises");
 const path = require("path");
