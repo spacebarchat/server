@@ -22,11 +22,11 @@ import {
 	ChannelType,
 	Emoji,
 	Guild,
-	Member,
 	PublicUser,
 	Role,
 	Sticker,
 	UserGuildSettings,
+	PublicMember,
 } from "../entities";
 
 // TODO: this is not the best place for this type
@@ -67,7 +67,7 @@ export interface IReadyGuildDTO {
 	large: boolean | undefined;
 	lazy: boolean;
 	member_count: number | undefined;
-	members: Member[];
+	members: PublicMember[];
 	premium_subscription_count: number | undefined;
 	properties: {
 		name: string;
@@ -124,7 +124,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 	large: boolean | undefined;
 	lazy: boolean;
 	member_count: number | undefined;
-	members: Member[];
+	members: PublicMember[];
 	premium_subscription_count: number | undefined;
 	properties: {
 		name: string;
@@ -191,7 +191,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 		this.large = guild.large;
 		this.lazy = true; // ??????????
 		this.member_count = guild.member_count;
-		this.members = guild.members;
+		this.members = guild.members?.map((x) => x.toPublicMember());
 		this.premium_subscription_count = guild.premium_subscription_count;
 		this.properties = {
 			name: guild.name,

@@ -31,7 +31,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			process.env.GATEWAY ||
 			"ws://localhost:3001",
 		defaultApiVersion: api.defaultVersion ?? 9,
-		apiEndpoint: api.endpointPublic ?? "/api",
+		apiEndpoint: api.endpointPublic ?? "http://localhost:3001/api/",
 	};
 
 	res.json(IdentityForm);

@@ -21,3 +21,11 @@
 export function containsAll(arr: unknown[], target: unknown[]) {
 	return target.every((v) => arr.includes(v));
 }
+
+/* https://stackoverflow.com/a/50636286 */
+export function partition<T>(array: T[], filter: (elem: T) => boolean) {
+	const pass: T[] = [],
+		fail: T[] = [];
+	array.forEach((e) => (filter(e) ? pass : fail).push(e));
+	return [pass, fail];
+}

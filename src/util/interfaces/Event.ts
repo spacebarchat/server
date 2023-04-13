@@ -422,6 +422,10 @@ export interface UserDeleteEvent extends Event {
 	};
 }
 
+export interface UserConnectionsUpdateEvent extends Event {
+	event: "USER_CONNECTIONS_UPDATE";
+}
+
 export interface VoiceStateUpdateEvent extends Event {
 	event: "VOICE_STATE_UPDATE";
 	data: VoiceState & {
@@ -563,6 +567,7 @@ export type EventData =
 	| TypingStartEvent
 	| UserUpdateEvent
 	| UserDeleteEvent
+	| UserConnectionsUpdateEvent
 	| VoiceStateUpdateEvent
 	| VoiceServerUpdateEvent
 	| WebhooksUpdateEvent
@@ -614,6 +619,7 @@ export enum EVENTEnum {
 	TypingStart = "TYPING_START",
 	UserUpdate = "USER_UPDATE",
 	UserDelete = "USER_DELETE",
+	UserConnectionsUpdate = "USER_CONNECTIONS_UPDATE",
 	WebhooksUpdate = "WEBHOOKS_UPDATE",
 	InteractionCreate = "INTERACTION_CREATE",
 	VoiceStateUpdate = "VOICE_STATE_UPDATE",
@@ -665,6 +671,7 @@ export type EVENT =
 	| "TYPING_START"
 	| "USER_UPDATE"
 	| "USER_DELETE"
+	| "USER_CONNECTIONS_UPDATE"
 	| "USER_NOTE_UPDATE"
 	| "WEBHOOKS_UPDATE"
 	| "INTERACTION_CREATE"

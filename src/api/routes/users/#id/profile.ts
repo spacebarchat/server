@@ -133,7 +133,9 @@ router.get(
 			guild_id,
 		};
 		res.json({
-			connected_accounts: user.connected_accounts,
+			connected_accounts: user.connected_accounts.filter(
+				(x) => x.visibility != 0,
+			),
 			premium_guild_since: premium_guild_since, // TODO
 			premium_since: user.premium_since, // TODO
 			mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true

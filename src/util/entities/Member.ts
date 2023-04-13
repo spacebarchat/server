@@ -260,9 +260,9 @@ export class Member extends BaseClassWithoutId {
 					},
 				},
 			}),
-			await Role.findOneOrFail({ where: { id: role_id, guild_id } }),
+			Role.findOneOrFail({ where: { id: role_id, guild_id } }),
 		]);
-		member.roles = member.roles.filter((x) => x.id == role_id);
+		member.roles = member.roles.filter((x) => x.id !== role_id);
 
 		await Promise.all([
 			member.save(),
@@ -330,17 +330,25 @@ export class Member extends BaseClassWithoutId {
 		});
 
 		const memberCount = await Member.count({ where: { guild_id } });
-		const memberPreview = await Member.find({
-			where: {
-				guild_id,
-				user: {
-					sessions: {
-						status: Not("invisible" as const), // lol typescript?
+
+		const memberPreview = (
+			await Member.find({
+				where: {
+					guild_id,
+					user: {
+						sessions: {
+							status: Not("invisible" as const), // lol typescript?
+						},
 					},
 				},
-			},
-			take: 10,
-		});
+				relations: ["user", "roles"],
+				take: 10,
+			})
+		).map((member) => ({
+			...member.toPublicMember(),
+			user: member.user.toPublicUser(),
+			roles: member.roles.map((x) => x.id),
+		}));
 
 		if (
 			await Member.count({
@@ -439,6 +447,15 @@ export class Member extends BaseClassWithoutId {
 				} as MessageCreateEvent),
 			]);
 		}
+	}
+
+	toPublicMember() {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const member: any = {};
+		PublicMemberProjection.forEach((x) => {
+			member[x] = this[x];
+		});
+		return member as PublicMember;
 	}
 }
 

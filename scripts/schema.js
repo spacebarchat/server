@@ -20,8 +20,6 @@
 	Regenerates the `spacebarchat/server/assets/schemas.json` file, used for API/Gateway input validation.
 */
 
-/* eslint-env node */
-
 const path = require("path");
 const fs = require("fs");
 const TJS = require("typescript-json-schema");

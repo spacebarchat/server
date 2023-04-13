@@ -17,6 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { ConnectedAccountTokenData } from "../interfaces";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -27,6 +28,9 @@ export type PublicConnectedAccount = Pick<
 
 @Entity("connected_accounts")
 export class ConnectedAccount extends BaseClass {
+	@Column()
+	external_id: string;
+
 	@Column({ nullable: true })
 	@RelationId((account: ConnectedAccount) => account.user)
 	user_id: string;
@@ -38,26 +42,44 @@ export class ConnectedAccount extends BaseClass {
 	user: User;
 
 	@Column({ select: false })
-	access_token: string;
-
-	@Column({ select: false })
-	friend_sync: boolean;
+	friend_sync?: boolean = false;
 
 	@Column()
 	name: string;
 
 	@Column({ select: false })
-	revoked: boolean;
+	revoked?: boolean = false;
 
 	@Column({ select: false })
-	show_activity: boolean;
+	show_activity?: number = 0;
 
 	@Column()
 	type: string;
 
 	@Column()
-	verified: boolean;
+	verified?: boolean = true;
 
 	@Column({ select: false })
-	visibility: number;
+	visibility?: number = 0;
+
+	@Column({ type: "simple-array" })
+	integrations?: string[] = [];
+
+	@Column({ type: "simple-json", name: "metadata", nullable: true })
+	metadata_?: any;
+
+	@Column()
+	metadata_visibility?: number = 0;
+
+	@Column()
+	two_way_link?: boolean = false;
+
+	@Column({ select: false, nullable: true, type: "simple-json" })
+	token_data?: ConnectedAccountTokenData | null;
+
+	async revoke() {
+		this.revoked = true;
+		this.token_data = null;
+		await this.save();
+	}
 }

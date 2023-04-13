@@ -578,6 +578,7 @@ export const DiscordApiErrors = {
 	UNKNOWN_EMOJI: new ApiError("Unknown emoji", 10014),
 	UNKNOWN_WEBHOOK: new ApiError("Unknown webhook", 10015),
 	UNKNOWN_WEBHOOK_SERVICE: new ApiError("Unknown webhook service", 10016),
+	UNKNOWN_CONNECTION: new ApiError("Unknown connection", 10017, 400),
 	UNKNOWN_SESSION: new ApiError("Unknown session", 10020),
 	UNKNOWN_BAN: new ApiError("Unknown ban", 10026),
 	UNKNOWN_SKU: new ApiError("Unknown SKU", 10027),
@@ -786,6 +787,11 @@ export const DiscordApiErrors = {
 		40006,
 	),
 	USER_BANNED: new ApiError("The user is banned from this guild", 40007),
+	CONNECTION_REVOKED: new ApiError(
+		"The connection has been revoked",
+		40012,
+		400,
+	),
 	TARGET_USER_IS_NOT_CONNECTED_TO_VOICE: new ApiError(
 		"Target user is not connected to voice",
 		40032,

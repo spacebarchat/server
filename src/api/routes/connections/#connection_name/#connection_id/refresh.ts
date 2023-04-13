@@ -16,14 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
+const router = Router();
 
-const router: Router = Router();
-
-router.get("/", route({}), async (req: Request, res: Response) => {
-	//TODO
-	res.json([]).status(200);
+router.post("/", route({}), async (req: Request, res: Response) => {
+	// TODO:
+	const { connection_name, connection_id } = req.params;
+	res.sendStatus(204);
 });
 
 export default router;
