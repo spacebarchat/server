@@ -61,6 +61,31 @@
                     "read_states"
                 ]
             },
+            "ConnectedAccountCommonOAuthTokenResponse": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "access_token",
+                    "scope",
+                    "token_type"
+                ]
+            },
             "ApplicationAuthorizeSchema": {
                 "type": "object",
                 "properties": {
@@ -830,6 +855,2881 @@
                     "credential",
                     "name",
                     "ticket"
+                ]
+            },
+            "APIErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                                "_errors": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "string"
+                                            },
+                                            "code": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "additionalProperties": false,
+                                        "required": [
+                                            "code",
+                                            "message"
+                                        ]
+                                    }
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "_errors"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "code",
+                    "errors",
+                    "message"
+                ]
+            },
+            "CaptchaRequiredResponse": {
+                "type": "object",
+                "properties": {
+                    "captcha_key": {
+                        "type": "string"
+                    },
+                    "captcha_sitekey": {
+                        "type": "string"
+                    },
+                    "captcha_service": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "captcha_key",
+                    "captcha_service",
+                    "captcha_sitekey"
+                ]
+            },
+            "Guild": {
+                "type": "object",
+                "properties": {
+                    "afk_channel_id": {
+                        "type": "string"
+                    },
+                    "afk_channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "afk_timeout": {
+                        "type": "integer"
+                    },
+                    "bans": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Ban"
+                        }
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "default_message_notifications": {
+                        "type": "integer"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "discovery_splash": {
+                        "type": "string"
+                    },
+                    "explicit_content_filter": {
+                        "type": "integer"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "primary_category_id": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "large": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "max_members": {
+                        "type": "integer"
+                    },
+                    "max_presences": {
+                        "type": "integer"
+                    },
+                    "max_video_channel_users": {
+                        "type": "integer"
+                    },
+                    "member_count": {
+                        "type": "integer"
+                    },
+                    "presence_count": {
+                        "type": "integer"
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Member"
+                        }
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "channels": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Channel"
+                        }
+                    },
+                    "template_id": {
+                        "type": "string"
+                    },
+                    "template": {
+                        "$ref": "#/components/schemas/Template"
+                    },
+                    "emojis": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Emoji"
+                        }
+                    },
+                    "stickers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Sticker"
+                        }
+                    },
+                    "invites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Invite"
+                        }
+                    },
+                    "voice_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VoiceState"
+                        }
+                    },
+                    "webhooks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Webhook"
+                        }
+                    },
+                    "mfa_level": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "owner_id": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "preferred_locale": {
+                        "type": "string"
+                    },
+                    "premium_subscription_count": {
+                        "type": "integer"
+                    },
+                    "premium_tier": {
+                        "type": "integer"
+                    },
+                    "public_updates_channel_id": {
+                        "type": "string"
+                    },
+                    "public_updates_channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "rules_channel_id": {
+                        "type": "string"
+                    },
+                    "rules_channel": {
+                        "type": "string"
+                    },
+                    "region": {
+                        "type": "string"
+                    },
+                    "splash": {
+                        "type": "string"
+                    },
+                    "system_channel_id": {
+                        "type": "string"
+                    },
+                    "system_channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "system_channel_flags": {
+                        "type": "integer"
+                    },
+                    "unavailable": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "verification_level": {
+                        "type": "integer"
+                    },
+                    "welcome_screen": {
+                        "$ref": "#/components/schemas/GuildWelcomeScreen"
+                    },
+                    "widget_channel_id": {
+                        "type": "string"
+                    },
+                    "widget_channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "widget_enabled": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "nsfw_level": {
+                        "type": "integer"
+                    },
+                    "nsfw": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "parent": {
+                        "type": "string"
+                    },
+                    "permissions": {
+                        "type": "integer"
+                    },
+                    "premium_progress_bar_enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "bans",
+                    "channels",
+                    "emojis",
+                    "features",
+                    "id",
+                    "invites",
+                    "members",
+                    "name",
+                    "nsfw",
+                    "premium_progress_bar_enabled",
+                    "public_updates_channel_id",
+                    "roles",
+                    "stickers",
+                    "template",
+                    "unavailable",
+                    "voice_states",
+                    "webhooks",
+                    "welcome_screen",
+                    "widget_enabled"
+                ]
+            },
+            "Channel": {
+                "type": "object",
+                "properties": {
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ChannelType"
+                    },
+                    "recipients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Recipient"
+                        }
+                    },
+                    "last_message_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "parent_id": {
+                        "type": "string"
+                    },
+                    "parent": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "owner_id": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "last_pin_timestamp": {
+                        "type": "integer"
+                    },
+                    "default_auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "permission_overwrites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ChannelPermissionOverwrite"
+                        }
+                    },
+                    "video_quality_mode": {
+                        "type": "integer"
+                    },
+                    "bitrate": {
+                        "type": "integer"
+                    },
+                    "user_limit": {
+                        "type": "integer"
+                    },
+                    "nsfw": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "topic": {
+                        "type": "string"
+                    },
+                    "invites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Invite"
+                        }
+                    },
+                    "retention_policy_id": {
+                        "type": "string"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Message"
+                        }
+                    },
+                    "voice_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VoiceState"
+                        }
+                    },
+                    "read_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReadState"
+                        }
+                    },
+                    "webhooks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Webhook"
+                        }
+                    },
+                    "flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "default_thread_rate_limit_per_user": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "default_thread_rate_limit_per_user",
+                    "flags",
+                    "guild",
+                    "id",
+                    "nsfw",
+                    "owner",
+                    "parent_id",
+                    "type"
+                ]
+            },
+            "ChannelType": {
+                "enum": [
+                    0,
+                    1,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    2,
+                    255,
+                    3,
+                    33,
+                    34,
+                    35,
+                    4,
+                    5,
+                    6,
+                    64,
+                    7,
+                    8,
+                    9
+                ],
+                "type": "number"
+            },
+            "Recipient": {
+                "type": "object",
+                "properties": {
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "closed": {
+                        "type": "boolean"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "channel",
+                    "channel_id",
+                    "closed",
+                    "id",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "desktop": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "mobile": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "premium": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "bot": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "bio": {
+                        "type": "string",
+                        "default": ""
+                    },
+                    "system": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "nsfw_allowed": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "mfa_enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "webauthn_enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "totp_secret": {
+                        "type": "string",
+                        "default": ""
+                    },
+                    "totp_last_ticket": {
+                        "type": "string",
+                        "default": ""
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "disabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "deleted": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "type": "string",
+                        "default": "0"
+                    },
+                    "public_flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "purchased_flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "premium_usage_flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "rights": {
+                        "type": "string"
+                    },
+                    "sessions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Session"
+                        }
+                    },
+                    "relationships": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Relationship"
+                        }
+                    },
+                    "connected_accounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ConnectedAccount"
+                        }
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "valid_tokens_since": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "hash": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "valid_tokens_since"
+                        ]
+                    },
+                    "fingerprints": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
+                    "settings": {
+                        "$ref": "#/components/schemas/UserSettings"
+                    },
+                    "extended_settings": {
+                        "type": "string",
+                        "default": "{}"
+                    },
+                    "security_keys": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SecurityKey"
+                        }
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "connected_accounts",
+                    "created_at",
+                    "data",
+                    "deleted",
+                    "desktop",
+                    "disabled",
+                    "discriminator",
+                    "extended_settings",
+                    "fingerprints",
+                    "flags",
+                    "id",
+                    "mfa_enabled",
+                    "mobile",
+                    "nsfw_allowed",
+                    "premium",
+                    "premium_since",
+                    "premium_type",
+                    "premium_usage_flags",
+                    "public_flags",
+                    "purchased_flags",
+                    "relationships",
+                    "rights",
+                    "security_keys",
+                    "sessions",
+                    "settings",
+                    "system",
+                    "username",
+                    "verified",
+                    "webauthn_enabled"
+                ]
+            },
+            "Session": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "session_id": {
+                        "type": "string"
+                    },
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Activity"
+                        }
+                    },
+                    "client_info": {
+                        "type": "object",
+                        "properties": {
+                            "client": {
+                                "type": "string"
+                            },
+                            "os": {
+                                "type": "string"
+                            },
+                            "version": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "client",
+                            "os",
+                            "version"
+                        ]
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/Status"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "activities",
+                    "client_info",
+                    "id",
+                    "session_id",
+                    "status",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "Relationship": {
+                "type": "object",
+                "properties": {
+                    "from_id": {
+                        "type": "string"
+                    },
+                    "from": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "to_id": {
+                        "type": "string"
+                    },
+                    "to": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "nickname": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RelationshipType"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "from",
+                    "from_id",
+                    "id",
+                    "to",
+                    "to_id",
+                    "type"
+                ]
+            },
+            "RelationshipType": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "type": "number"
+            },
+            "ConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "external_id": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "friend_sync": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "revoked": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "show_activity": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "visibility": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "integrations": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
+                    "metadata_": {},
+                    "metadata_visibility": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "two_way_link": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "token_data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ConnectedAccountTokenData"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "external_id",
+                    "id",
+                    "name",
+                    "type",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "UserSettings": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "string"
+                    },
+                    "afk_timeout": {
+                        "type": "integer",
+                        "default": 3600
+                    },
+                    "allow_accessibility_detection": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "animate_emoji": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "animate_stickers": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "contact_sync_enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "convert_emoticons": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "custom_status": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/CustomStatus"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "default": null
+                    },
+                    "default_guilds_restricted": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "detect_platform_accounts": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "developer_mode": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "disable_games_tab": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "enable_tts_command": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "explicit_content_filter": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "friend_source_flags": {
+                        "$ref": "#/components/schemas/FriendSourceFlags"
+                    },
+                    "gateway_connected": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "gif_auto_play": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "guild_folders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GuildFolder"
+                        },
+                        "default": []
+                    },
+                    "guild_positions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
+                    "inline_attachment_media": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "inline_embed_media": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "locale": {
+                        "type": "string",
+                        "default": "en-US"
+                    },
+                    "message_display_compact": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "native_phone_integration_enabled": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "render_embeds": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "render_reactions": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "restricted_guilds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
+                    "show_current_game": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "status": {
+                        "enum": [
+                            "dnd",
+                            "idle",
+                            "invisible",
+                            "offline",
+                            "online"
+                        ],
+                        "type": "string",
+                        "default": "online"
+                    },
+                    "stream_notifications_enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "theme": {
+                        "enum": [
+                            "dark",
+                            "light"
+                        ],
+                        "type": "string",
+                        "default": "dark"
+                    },
+                    "timezone_offset": {
+                        "type": "integer",
+                        "default": 0
+                    }
+                },
+                "required": [
+                    "afk_timeout",
+                    "allow_accessibility_detection",
+                    "animate_emoji",
+                    "animate_stickers",
+                    "contact_sync_enabled",
+                    "convert_emoticons",
+                    "custom_status",
+                    "default_guilds_restricted",
+                    "detect_platform_accounts",
+                    "developer_mode",
+                    "disable_games_tab",
+                    "enable_tts_command",
+                    "explicit_content_filter",
+                    "friend_source_flags",
+                    "gateway_connected",
+                    "gif_auto_play",
+                    "guild_folders",
+                    "guild_positions",
+                    "index",
+                    "inline_attachment_media",
+                    "inline_embed_media",
+                    "locale",
+                    "message_display_compact",
+                    "native_phone_integration_enabled",
+                    "render_embeds",
+                    "render_reactions",
+                    "restricted_guilds",
+                    "show_current_game",
+                    "status",
+                    "stream_notifications_enabled",
+                    "theme",
+                    "timezone_offset"
+                ]
+            },
+            "SecurityKey": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "key_id": {
+                        "type": "string"
+                    },
+                    "public_key": {
+                        "type": "string"
+                    },
+                    "counter": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "counter",
+                    "id",
+                    "key_id",
+                    "name",
+                    "public_key",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "ChannelPermissionOverwrite": {
+                "type": "object",
+                "properties": {
+                    "allow": {
+                        "type": "string"
+                    },
+                    "deny": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ChannelPermissionOverwriteType"
+                    }
+                },
+                "required": [
+                    "allow",
+                    "deny",
+                    "id",
+                    "type"
+                ]
+            },
+            "Invite": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "temporary": {
+                        "type": "boolean"
+                    },
+                    "uses": {
+                        "type": "integer"
+                    },
+                    "max_uses": {
+                        "type": "integer"
+                    },
+                    "max_age": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "inviter_id": {
+                        "type": "string"
+                    },
+                    "inviter": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "target_user_id": {
+                        "type": "string"
+                    },
+                    "target_user": {
+                        "type": "string"
+                    },
+                    "target_user_type": {
+                        "type": "integer"
+                    },
+                    "vanity_url": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "channel",
+                    "channel_id",
+                    "code",
+                    "created_at",
+                    "expires_at",
+                    "guild",
+                    "guild_id",
+                    "inviter",
+                    "max_age",
+                    "max_uses",
+                    "target_user_id",
+                    "temporary",
+                    "uses"
+                ]
+            },
+            "Message": {
+                "type": "object",
+                "properties": {
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "author_id": {
+                        "type": "string"
+                    },
+                    "author": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "member_id": {
+                        "type": "string"
+                    },
+                    "member": {
+                        "$ref": "#/components/schemas/Member"
+                    },
+                    "webhook_id": {
+                        "type": "string"
+                    },
+                    "webhook": {
+                        "$ref": "#/components/schemas/Webhook"
+                    },
+                    "application_id": {
+                        "type": "string"
+                    },
+                    "application": {
+                        "$ref": "#/components/schemas/Application"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "edited_timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "tts": {
+                        "type": "boolean"
+                    },
+                    "mention_everyone": {
+                        "type": "boolean"
+                    },
+                    "mentions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/User"
+                        }
+                    },
+                    "mention_roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "mention_channels": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Channel"
+                        }
+                    },
+                    "sticker_items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Sticker"
+                        }
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Attachment_1"
+                        }
+                    },
+                    "embeds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Embed"
+                        }
+                    },
+                    "reactions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Reaction"
+                        }
+                    },
+                    "nonce": {
+                        "type": "string"
+                    },
+                    "pinned": {
+                        "type": "boolean"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/MessageType"
+                    },
+                    "activity": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "integer"
+                            },
+                            "party_id": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "party_id",
+                            "type"
+                        ]
+                    },
+                    "flags": {
+                        "type": "string"
+                    },
+                    "message_reference": {
+                        "type": "object",
+                        "properties": {
+                            "message_id": {
+                                "type": "string"
+                            },
+                            "channel_id": {
+                                "type": "string"
+                            },
+                            "guild_id": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "message_id"
+                        ]
+                    },
+                    "referenced_message": {
+                        "$ref": "#/components/schemas/Message"
+                    },
+                    "interaction": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/components/schemas/InteractionType"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "id",
+                            "name",
+                            "type",
+                            "user_id"
+                        ]
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MessageComponent"
+                        }
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "channel",
+                    "embeds",
+                    "id",
+                    "mention_channels",
+                    "mention_roles",
+                    "mentions",
+                    "reactions",
+                    "timestamp",
+                    "type"
+                ]
+            },
+            "Member": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "nick": {
+                        "type": "string"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "joined_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_since": {
+                        "type": "integer"
+                    },
+                    "deaf": {
+                        "type": "boolean"
+                    },
+                    "mute": {
+                        "type": "boolean"
+                    },
+                    "pending": {
+                        "type": "boolean"
+                    },
+                    "settings": {
+                        "$ref": "#/components/schemas/UserGuildSettings"
+                    },
+                    "last_message_id": {
+                        "type": "string"
+                    },
+                    "joined_by": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "communication_disabled_until": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "avatar",
+                    "banner",
+                    "bio",
+                    "communication_disabled_until",
+                    "deaf",
+                    "guild",
+                    "guild_id",
+                    "id",
+                    "index",
+                    "joined_at",
+                    "joined_by",
+                    "mute",
+                    "pending",
+                    "roles",
+                    "settings",
+                    "user"
+                ]
+            },
+            "Role": {
+                "type": "object",
+                "properties": {
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "color": {
+                        "type": "integer"
+                    },
+                    "hoist": {
+                        "type": "boolean"
+                    },
+                    "managed": {
+                        "type": "boolean"
+                    },
+                    "mentionable": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "permissions": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "unicode_emoji": {
+                        "type": "string"
+                    },
+                    "tags": {
+                        "type": "object",
+                        "properties": {
+                            "bot_id": {
+                                "type": "string"
+                            },
+                            "integration_id": {
+                                "type": "string"
+                            },
+                            "premium_subscriber": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "color",
+                    "guild",
+                    "guild_id",
+                    "hoist",
+                    "id",
+                    "managed",
+                    "mentionable",
+                    "name",
+                    "permissions",
+                    "position"
+                ]
+            },
+            "UserGuildSettings": {
+                "type": "object",
+                "properties": {
+                    "channel_overrides": {
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "$ref": "#/components/schemas/ChannelOverride"
+                                }
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "message_notifications": {
+                        "type": "integer"
+                    },
+                    "mobile_push": {
+                        "type": "boolean"
+                    },
+                    "mute_config": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/MuteConfig"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "muted": {
+                        "type": "boolean"
+                    },
+                    "suppress_everyone": {
+                        "type": "boolean"
+                    },
+                    "suppress_roles": {
+                        "type": "boolean"
+                    },
+                    "version": {
+                        "type": "integer"
+                    },
+                    "guild_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "mute_scheduled_events": {
+                        "type": "boolean"
+                    },
+                    "hide_muted_channels": {
+                        "type": "boolean"
+                    },
+                    "notify_highlights": {
+                        "type": "number",
+                        "enum": [
+                            0
+                        ]
+                    }
+                },
+                "required": [
+                    "channel_overrides",
+                    "flags",
+                    "guild_id",
+                    "hide_muted_channels",
+                    "message_notifications",
+                    "mobile_push",
+                    "mute_config",
+                    "mute_scheduled_events",
+                    "muted",
+                    "notify_highlights",
+                    "suppress_everyone",
+                    "suppress_roles",
+                    "version"
+                ]
+            },
+            "Webhook": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/WebhookType"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "application_id": {
+                        "type": "string"
+                    },
+                    "application": {
+                        "$ref": "#/components/schemas/Application"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "source_guild_id": {
+                        "type": "string"
+                    },
+                    "source_guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "application",
+                    "application_id",
+                    "channel",
+                    "channel_id",
+                    "guild",
+                    "guild_id",
+                    "id",
+                    "source_guild",
+                    "source_guild_id",
+                    "type",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "WebhookType": {
+                "enum": [
+                    1,
+                    2,
+                    3
+                ],
+                "type": "number"
+            },
+            "Application": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "default": ""
+                    },
+                    "type": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": true
+                    },
+                    "hook": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "bot_public": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "bot_require_code_grant": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "verify_key": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "redirect_uris": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
+                    "rpc_application_state": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "store_application_state": {
+                        "type": "integer",
+                        "default": 1
+                    },
+                    "verification_state": {
+                        "type": "integer",
+                        "default": 1
+                    },
+                    "interactions_endpoint_url": {
+                        "type": "string"
+                    },
+                    "integration_public": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "integration_require_code_grant": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "discoverability_state": {
+                        "type": "integer",
+                        "default": 1
+                    },
+                    "discovery_eligibility_flags": {
+                        "type": "integer",
+                        "default": 2240
+                    },
+                    "bot": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "cover_image": {
+                        "type": "string"
+                    },
+                    "install_params": {
+                        "type": "object",
+                        "properties": {
+                            "scopes": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "permissions": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "permissions",
+                            "scopes"
+                        ]
+                    },
+                    "terms_of_service_url": {
+                        "type": "string"
+                    },
+                    "privacy_policy_url": {
+                        "type": "string"
+                    },
+                    "team": {
+                        "$ref": "#/components/schemas/Team"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "description",
+                    "discoverability_state",
+                    "discovery_eligibility_flags",
+                    "flags",
+                    "hook",
+                    "id",
+                    "integration_public",
+                    "integration_require_code_grant",
+                    "name",
+                    "owner",
+                    "redirect_uris",
+                    "rpc_application_state",
+                    "store_application_state",
+                    "summary",
+                    "verification_state",
+                    "verify_key"
+                ]
+            },
+            "Team": {
+                "type": "object",
+                "properties": {
+                    "icon": {
+                        "type": "string"
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TeamMember"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "owner_user_id": {
+                        "type": "string"
+                    },
+                    "owner_user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "members",
+                    "name",
+                    "owner_user",
+                    "owner_user_id"
+                ]
+            },
+            "TeamMember": {
+                "type": "object",
+                "properties": {
+                    "membership_state": {
+                        "$ref": "#/components/schemas/TeamMemberState"
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "team_id": {
+                        "type": "string"
+                    },
+                    "team": {
+                        "$ref": "#/components/schemas/Team"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "membership_state",
+                    "permissions",
+                    "team",
+                    "team_id",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "TeamMemberState": {
+                "enum": [
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
+            "Sticker": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    },
+                    "tags": {
+                        "type": "string"
+                    },
+                    "pack_id": {
+                        "type": "string"
+                    },
+                    "pack": {
+                        "$ref": "#/components/schemas/StickerPack"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/StickerType"
+                    },
+                    "format_type": {
+                        "$ref": "#/components/schemas/StickerFormatType"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "format_type",
+                    "id",
+                    "name",
+                    "pack",
+                    "type"
+                ]
+            },
+            "StickerPack": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "banner_asset_id": {
+                        "type": "string"
+                    },
+                    "stickers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Sticker"
+                        }
+                    },
+                    "cover_sticker_id": {
+                        "type": "string"
+                    },
+                    "cover_sticker": {
+                        "$ref": "#/components/schemas/Sticker"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "stickers"
+                ]
+            },
+            "StickerType": {
+                "enum": [
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
+            "StickerFormatType": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "type": "number"
+            },
+            "Attachment_1": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "integer"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "proxy_url": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "width": {
+                        "type": "integer"
+                    },
+                    "content_type": {
+                        "type": "string"
+                    },
+                    "message_id": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "$ref": "#/components/schemas/Message"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "filename",
+                    "id",
+                    "message",
+                    "message_id",
+                    "proxy_url",
+                    "size",
+                    "url"
+                ]
+            },
+            "Reaction": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "integer"
+                    },
+                    "emoji": {
+                        "$ref": "#/components/schemas/PartialEmoji"
+                    },
+                    "user_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "count",
+                    "emoji",
+                    "user_ids"
+                ]
+            },
+            "PartialEmoji": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "animated": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "MessageType": {
+                "enum": [
+                    0,
+                    1,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    19,
+                    2,
+                    20,
+                    255,
+                    3,
+                    4,
+                    41,
+                    42,
+                    43,
+                    5,
+                    50,
+                    6,
+                    63,
+                    7,
+                    8,
+                    9
+                ],
+                "type": "number"
+            },
+            "InteractionType": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number"
+            },
+            "MessageComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "integer"
+                    },
+                    "style": {
+                        "type": "integer"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "emoji": {
+                        "$ref": "#/components/schemas/PartialEmoji"
+                    },
+                    "custom_id": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MessageComponent"
+                        }
+                    }
+                },
+                "required": [
+                    "components",
+                    "type"
+                ]
+            },
+            "VoiceState": {
+                "type": "object",
+                "properties": {
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "member": {
+                        "$ref": "#/components/schemas/Member"
+                    },
+                    "session_id": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string"
+                    },
+                    "deaf": {
+                        "type": "boolean"
+                    },
+                    "mute": {
+                        "type": "boolean"
+                    },
+                    "self_deaf": {
+                        "type": "boolean"
+                    },
+                    "self_mute": {
+                        "type": "boolean"
+                    },
+                    "self_stream": {
+                        "type": "boolean"
+                    },
+                    "self_video": {
+                        "type": "boolean"
+                    },
+                    "suppress": {
+                        "type": "boolean"
+                    },
+                    "request_to_speak_timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "channel",
+                    "channel_id",
+                    "deaf",
+                    "guild_id",
+                    "id",
+                    "member",
+                    "mute",
+                    "self_deaf",
+                    "self_mute",
+                    "self_video",
+                    "session_id",
+                    "suppress",
+                    "token",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "ReadState": {
+                "type": "object",
+                "properties": {
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "last_message_id": {
+                        "type": "string"
+                    },
+                    "public_ack": {
+                        "type": "string"
+                    },
+                    "notifications_cursor": {
+                        "type": "string"
+                    },
+                    "last_pin_timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "mention_count": {
+                        "type": "integer"
+                    },
+                    "manual": {
+                        "type": "boolean"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "channel",
+                    "channel_id",
+                    "id",
+                    "last_message_id",
+                    "manual",
+                    "mention_count",
+                    "notifications_cursor",
+                    "public_ack",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "Ban": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "executor_id": {
+                        "type": "string"
+                    },
+                    "executor": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "ip": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "executor",
+                    "executor_id",
+                    "guild",
+                    "guild_id",
+                    "id",
+                    "ip",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "Template": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "usage_count": {
+                        "type": "integer"
+                    },
+                    "creator_id": {
+                        "type": "string"
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "source_guild_id": {
+                        "type": "string"
+                    },
+                    "source_guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "serialized_source_guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "created_at",
+                    "creator",
+                    "creator_id",
+                    "id",
+                    "name",
+                    "serialized_source_guild",
+                    "source_guild",
+                    "source_guild_id",
+                    "updated_at"
+                ]
+            },
+            "Emoji": {
+                "type": "object",
+                "properties": {
+                    "animated": {
+                        "type": "boolean"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "managed": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "require_colons": {
+                        "type": "boolean"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "groups": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "animated",
+                    "available",
+                    "groups",
+                    "guild",
+                    "guild_id",
+                    "id",
+                    "managed",
+                    "name",
+                    "require_colons",
+                    "roles",
+                    "user",
+                    "user_id"
+                ]
+            },
+            "GuildWelcomeScreen": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "welcome_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string"
+                                },
+                                "emoji_id": {
+                                    "type": "string"
+                                },
+                                "emoji_name": {
+                                    "type": "string"
+                                },
+                                "channel_id": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "channel_id",
+                                "description"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "description",
+                    "enabled",
+                    "welcome_channels"
+                ]
+            },
+            "GuildMessagesSearchMessage": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/MessageType"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "author": {
+                        "$ref": "#/components/schemas/PublicUser"
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Attachment_1"
+                        }
+                    },
+                    "embeds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Embed"
+                        }
+                    },
+                    "mentions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PublicUser"
+                        }
+                    },
+                    "mention_roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "pinned": {
+                        "type": "boolean"
+                    },
+                    "mention_everyone": {
+                        "type": "boolean"
+                    },
+                    "tts": {
+                        "type": "boolean"
+                    },
+                    "timestamp": {
+                        "type": "string"
+                    },
+                    "edited_timestamp": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "hit": {
+                        "type": "boolean",
+                        "enum": [
+                            true
+                        ]
+                    }
+                },
+                "required": [
+                    "attachments",
+                    "author",
+                    "channel_id",
+                    "components",
+                    "edited_timestamp",
+                    "embeds",
+                    "flags",
+                    "hit",
+                    "id",
+                    "mention_roles",
+                    "mentions",
+                    "pinned",
+                    "timestamp",
+                    "tts",
+                    "type"
+                ]
+            },
+            "PublicUser": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "premium_type",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "GuildVanityUrl": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "uses": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "code",
+                    "uses"
+                ]
+            },
+            "GuildVanityUrlNoInvite": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "null"
+                    }
+                },
+                "required": [
+                    "code"
+                ]
+            },
+            "ClientStatus": {
+                "type": "object",
+                "properties": {
+                    "desktop": {
+                        "type": "string"
+                    },
+                    "mobile": {
+                        "type": "string"
+                    },
+                    "web": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Snowflake": {
+                "description": "A container for useful snowflake-related methods.",
+                "type": "object"
+            },
+            "TenorGifResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "src": {
+                        "type": "string"
+                    },
+                    "gif_src": {
+                        "type": "string"
+                    },
+                    "width": {
+                        "type": "integer"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "preview": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "gif_src",
+                    "height",
+                    "id",
+                    "preview",
+                    "src",
+                    "title",
+                    "url",
+                    "width"
+                ]
+            },
+            "BackupCode": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "consumed": {
+                        "type": "boolean"
+                    },
+                    "expired": {
+                        "type": "boolean"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "consumed",
+                    "expired",
+                    "id",
+                    "user"
+                ]
+            },
+            "PublicConnectedAccount": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "name",
+                    "type"
+                ]
+            },
+            "TokenResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "settings": {
+                        "$ref": "#/components/schemas/UserSettings"
+                    }
+                },
+                "required": [
+                    "settings",
+                    "token"
+                ]
+            },
+            "MFAResponse": {
+                "type": "object",
+                "properties": {
+                    "ticket": {
+                        "type": "string"
+                    },
+                    "mfa": {
+                        "type": "boolean",
+                        "enum": [
+                            true
+                        ]
+                    },
+                    "sms": {
+                        "type": "boolean",
+                        "enum": [
+                            false
+                        ]
+                    },
+                    "token": {
+                        "type": "null"
+                    }
+                },
+                "required": [
+                    "mfa",
+                    "sms",
+                    "ticket",
+                    "token"
+                ]
+            },
+            "WebAuthnResponse": {
+                "type": "object",
+                "properties": {
+                    "webauthn": {
+                        "type": "string"
+                    },
+                    "ticket": {
+                        "type": "string"
+                    },
+                    "mfa": {
+                        "type": "boolean",
+                        "enum": [
+                            true
+                        ]
+                    },
+                    "sms": {
+                        "type": "boolean",
+                        "enum": [
+                            false
+                        ]
+                    },
+                    "token": {
+                        "type": "null"
+                    }
+                },
+                "required": [
+                    "mfa",
+                    "sms",
+                    "ticket",
+                    "token",
+                    "webauthn"
                 ]
             },
             "ChannelPermissionOverwriteSchema": {
@@ -2653,6 +5553,1020 @@
                     "enabled"
                 ]
             },
+            "APIErrorOrCaptchaResponse": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/APIErrorResponse"
+                    },
+                    {
+                        "$ref": "#/components/schemas/CaptchaRequiredResponse"
+                    }
+                ]
+            },
+            "BackupCodesChallengeResponse": {
+                "type": "object",
+                "properties": {
+                    "nonce": {
+                        "type": "string"
+                    },
+                    "regenerate_nonce": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "nonce",
+                    "regenerate_nonce"
+                ]
+            },
+            "DiscoverableGuildsResponse": {
+                "type": "object",
+                "properties": {
+                    "total": {
+                        "type": "integer"
+                    },
+                    "guilds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Guild"
+                        }
+                    },
+                    "offset": {
+                        "type": "integer"
+                    },
+                    "limit": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "guilds",
+                    "limit",
+                    "offset",
+                    "total"
+                ]
+            },
+            "GatewayBotResponse": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "shards": {
+                        "type": "integer"
+                    },
+                    "session_start_limit": {
+                        "type": "object",
+                        "properties": {
+                            "total": {
+                                "type": "integer"
+                            },
+                            "remaining": {
+                                "type": "integer"
+                            },
+                            "reset_after": {
+                                "type": "integer"
+                            },
+                            "max_concurrency": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "max_concurrency",
+                            "remaining",
+                            "reset_after",
+                            "total"
+                        ]
+                    }
+                },
+                "required": [
+                    "session_start_limit",
+                    "shards",
+                    "url"
+                ]
+            },
+            "GatewayResponse": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "url"
+                ]
+            },
+            "GenerateRegistrationTokensResponse": {
+                "type": "object",
+                "properties": {
+                    "tokens": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "tokens"
+                ]
+            },
+            "GuildBansResponse": {
+                "type": "object",
+                "properties": {
+                    "reason": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "username": {
+                                "type": "string"
+                            },
+                            "discriminator": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "avatar": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "public_flags": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "avatar",
+                            "discriminator",
+                            "id",
+                            "public_flags",
+                            "username"
+                        ]
+                    }
+                },
+                "required": [
+                    "reason",
+                    "user"
+                ]
+            },
+            "GuildCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id"
+                ]
+            },
+            "GuildDiscoveryRequirementsResponse": {
+                "type": "object",
+                "properties": {
+                    "uild_id": {
+                        "type": "string"
+                    },
+                    "safe_environment": {
+                        "type": "boolean"
+                    },
+                    "healthy": {
+                        "type": "boolean"
+                    },
+                    "health_score_pending": {
+                        "type": "boolean"
+                    },
+                    "size": {
+                        "type": "boolean"
+                    },
+                    "nsfw_properties": {},
+                    "protected": {
+                        "type": "boolean"
+                    },
+                    "sufficient": {
+                        "type": "boolean"
+                    },
+                    "sufficient_without_grace_period": {
+                        "type": "boolean"
+                    },
+                    "valid_rules_channel": {
+                        "type": "boolean"
+                    },
+                    "retention_healthy": {
+                        "type": "boolean"
+                    },
+                    "engagement_healthy": {
+                        "type": "boolean"
+                    },
+                    "age": {
+                        "type": "boolean"
+                    },
+                    "minimum_age": {
+                        "type": "integer"
+                    },
+                    "health_score": {
+                        "type": "object",
+                        "properties": {
+                            "avg_nonnew_participators": {
+                                "type": "integer"
+                            },
+                            "avg_nonnew_communicators": {
+                                "type": "integer"
+                            },
+                            "num_intentful_joiners": {
+                                "type": "integer"
+                            },
+                            "perc_ret_w1_intentful": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "avg_nonnew_communicators",
+                            "avg_nonnew_participators",
+                            "num_intentful_joiners",
+                            "perc_ret_w1_intentful"
+                        ]
+                    },
+                    "minimum_size": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "age",
+                    "engagement_healthy",
+                    "health_score",
+                    "health_score_pending",
+                    "healthy",
+                    "minimum_age",
+                    "minimum_size",
+                    "nsfw_properties",
+                    "protected",
+                    "retention_healthy",
+                    "safe_environment",
+                    "size",
+                    "sufficient",
+                    "sufficient_without_grace_period",
+                    "uild_id",
+                    "valid_rules_channel"
+                ]
+            },
+            "GuildMessagesSearchResponse": {
+                "type": "object",
+                "properties": {
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GuildMessagesSearchMessage"
+                        }
+                    },
+                    "total_results": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "messages",
+                    "total_results"
+                ]
+            },
+            "GuildPruneResponse": {
+                "type": "object",
+                "properties": {
+                    "pruned": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "pruned"
+                ]
+            },
+            "GuildPurgeResponse": {
+                "type": "object",
+                "properties": {
+                    "purged": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "purged"
+                ]
+            },
+            "GuildRecommendationsResponse": {
+                "type": "object",
+                "properties": {
+                    "recommended_guilds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Guild"
+                        }
+                    },
+                    "load_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "load_id",
+                    "recommended_guilds"
+                ]
+            },
+            "GuildVanityUrlResponse": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/GuildVanityUrl"
+                    },
+                    {
+                        "$ref": "#/components/schemas/GuildVanityUrlNoInvite"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GuildVanityUrl"
+                        }
+                    }
+                ]
+            },
+            "GuildVanityUrlCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code"
+                ]
+            },
+            "GuildWidgetJsonResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "instant_invite": {
+                        "type": "string"
+                    },
+                    "channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "position": {
+                                    "type": "integer"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "id",
+                                "name",
+                                "position"
+                            ]
+                        }
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "username": {
+                                    "type": "string"
+                                },
+                                "discriminator": {
+                                    "type": "string"
+                                },
+                                "avatar": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                },
+                                "status": {
+                                    "$ref": "#/components/schemas/ClientStatus"
+                                },
+                                "avatar_url": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "avatar",
+                                "avatar_url",
+                                "discriminator",
+                                "id",
+                                "status",
+                                "username"
+                            ]
+                        }
+                    },
+                    "presence_count": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "channels",
+                    "id",
+                    "instant_invite",
+                    "members",
+                    "name",
+                    "presence_count"
+                ]
+            },
+            "GuildWidgetSettingsResponse": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "channel_id": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Snowflake"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "channel_id",
+                    "enabled"
+                ]
+            },
+            "InstanceDomainsResponse": {
+                "type": "object",
+                "properties": {
+                    "cdn": {
+                        "type": "string"
+                    },
+                    "gateway": {
+                        "type": "string"
+                    },
+                    "defaultApiVersion": {
+                        "type": "string"
+                    },
+                    "apiEndpoint": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "apiEndpoint",
+                    "cdn",
+                    "defaultApiVersion",
+                    "gateway"
+                ]
+            },
+            "InstancePingResponse": {
+                "type": "object",
+                "properties": {
+                    "ping": {
+                        "type": "string",
+                        "enum": [
+                            "pong!"
+                        ]
+                    },
+                    "instance": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "image": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "correspondenceEmail": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "correspondenceUserID": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "frontPage": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "tosPage": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "correspondenceEmail",
+                            "correspondenceUserID",
+                            "description",
+                            "frontPage",
+                            "id",
+                            "image",
+                            "name",
+                            "tosPage"
+                        ]
+                    }
+                },
+                "required": [
+                    "instance",
+                    "ping"
+                ]
+            },
+            "InstanceStatsResponse": {
+                "type": "object",
+                "properties": {
+                    "counts": {
+                        "type": "object",
+                        "properties": {
+                            "user": {
+                                "type": "integer"
+                            },
+                            "guild": {
+                                "type": "integer"
+                            },
+                            "message": {
+                                "type": "integer"
+                            },
+                            "members": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "guild",
+                            "members",
+                            "message",
+                            "user"
+                        ]
+                    }
+                },
+                "required": [
+                    "counts"
+                ]
+            },
+            "LocationMetadataResponse": {
+                "type": "object",
+                "properties": {
+                    "consent_required": {
+                        "type": "boolean"
+                    },
+                    "country_code": {
+                        "type": "string"
+                    },
+                    "promotional_email_opt_in": {
+                        "type": "object",
+                        "properties": {
+                            "required": {
+                                "type": "boolean",
+                                "enum": [
+                                    true
+                                ]
+                            },
+                            "pre_checked": {
+                                "type": "boolean",
+                                "enum": [
+                                    false
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "pre_checked",
+                            "required"
+                        ]
+                    }
+                },
+                "required": [
+                    "consent_required",
+                    "country_code",
+                    "promotional_email_opt_in"
+                ]
+            },
+            "MemberJoinGuildResponse": {
+                "type": "object",
+                "properties": {
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "emojis": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Emoji"
+                        }
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "stickers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Sticker"
+                        }
+                    }
+                },
+                "required": [
+                    "emojis",
+                    "guild",
+                    "roles",
+                    "stickers"
+                ]
+            },
+            "OAuthAuthorizeResponse": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "location"
+                ]
+            },
+            "TenorTrendingResponse": {
+                "type": "object",
+                "properties": {
+                    "categories": {
+                        "type": "object",
+                        "properties": {
+                            "tags": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "searchterm": {
+                                            "type": "string"
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "image": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "image",
+                                        "name",
+                                        "path",
+                                        "searchterm"
+                                    ]
+                                }
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "tags"
+                        ]
+                    },
+                    "gifs": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TenorGifResponse"
+                        }
+                    }
+                },
+                "required": [
+                    "categories",
+                    "gifs"
+                ]
+            },
+            "TenorGifsResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/TenorGifResponse"
+                }
+            },
+            "TokenOnlyResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "token"
+                ]
+            },
+            "TokenWithBackupCodesResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "backup_codes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BackupCode"
+                        }
+                    }
+                },
+                "required": [
+                    "backup_codes",
+                    "token"
+                ]
+            },
+            "UserUpdateResponse": {
+                "type": "object",
+                "properties": {
+                    "newToken": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "type": "string"
+                    },
+                    "mfa_enabled": {
+                        "type": "boolean"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "nsfw_allowed": {
+                        "type": "boolean"
+                    },
+                    "premium": {
+                        "type": "boolean"
+                    },
+                    "purchased_flags": {
+                        "type": "integer"
+                    },
+                    "premium_usage_flags": {
+                        "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "disabled",
+                    "discriminator",
+                    "flags",
+                    "id",
+                    "mfa_enabled",
+                    "nsfw_allowed",
+                    "premium",
+                    "premium_since",
+                    "premium_type",
+                    "premium_usage_flags",
+                    "public_flags",
+                    "purchased_flags",
+                    "username",
+                    "verified"
+                ]
+            },
+            "ApplicationDetectableResponse": {
+                "type": "array",
+                "items": {}
+            },
+            "ApplicationEntitlementsResponse": {
+                "type": "array",
+                "items": {}
+            },
+            "ApplicationSkusResponse": {
+                "type": "array",
+                "items": {}
+            },
+            "UpdatesResponse": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "pub_date": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "name",
+                    "notes",
+                    "pub_date",
+                    "url"
+                ]
+            },
+            "UserNoteResponse": {
+                "type": "object",
+                "properties": {
+                    "note": {
+                        "type": "string"
+                    },
+                    "note_user_id": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "note",
+                    "note_user_id",
+                    "user_id"
+                ]
+            },
+            "UserProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/PublicUser"
+                    },
+                    "connected_accounts": {
+                        "$ref": "#/components/schemas/PublicConnectedAccount"
+                    },
+                    "premium_guild_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "connected_accounts",
+                    "user"
+                ]
+            },
+            "UserRelationshipsResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RelationshipType"
+                    },
+                    "nickname": {
+                        "type": "null"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/PublicUser"
+                    }
+                },
+                "required": [
+                    "id",
+                    "nickname",
+                    "type",
+                    "user"
+                ]
+            },
+            "UserRelationsResponse": {
+                "type": "object",
+                "properties": {
+                    "object": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "username": {
+                                "type": "string"
+                            },
+                            "avatar": {
+                                "type": "string"
+                            },
+                            "discriminator": {
+                                "type": "string"
+                            },
+                            "public_flags": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "required": [
+                    "object"
+                ]
+            },
+            "WebAuthnCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
+            "WebhookCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "hook": {
+                        "$ref": "#/components/schemas/Webhook"
+                    }
+                },
+                "required": [
+                    "hook",
+                    "user"
+                ]
+            },
             "BulkDeleteSchema": {
                 "type": "object",
                 "properties": {
@@ -2665,6 +6579,19 @@
                 },
                 "required": [
                     "messages"
+                ]
+            },
+            "LoginResponse": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/TokenResponse"
+                    },
+                    {
+                        "$ref": "#/components/schemas/MFAResponse"
+                    },
+                    {
+                        "$ref": "#/components/schemas/WebAuthnResponse"
+                    }
                 ]
             },
             "MemberNickChangeSchema": {
