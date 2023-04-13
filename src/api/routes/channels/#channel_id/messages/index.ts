@@ -23,9 +23,7 @@ import {
 	ChannelType,
 	Config,
 	DmChannelDTO,
-	emitEvent,
 	FieldErrors,
-	getPermission,
 	Member,
 	Message,
 	MessageCreateEvent,
@@ -34,8 +32,10 @@ import {
 	ReadState,
 	Rights,
 	Snowflake,
-	uploadFile,
 	User,
+	emitEvent,
+	getPermission,
+	uploadFile,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -178,7 +178,7 @@ router.get(
 					x.author = User.create({
 						id: "4",
 						discriminator: "0000",
-						username: "Fosscord Ghost",
+						username: "Spacebar Ghost",
 						public_flags: 0,
 					});
 				x.attachments?.forEach((y: Attachment) => {

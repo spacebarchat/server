@@ -34,9 +34,9 @@ const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 let specification = {
 	openapi: "3.1.0",
 	info: {
-		title: "Fosscord Server",
+		title: "Spacebar Server",
 		description:
-			"Fosscord is a free open source selfhostable discord compatible chat, voice and video platform",
+			"Spacebar is a free open source selfhostable discord compatible chat, voice and video platform",
 		license: {
 			name: "AGPLV3",
 			url: "https://www.gnu.org/licenses/agpl-3.0.en.html",
@@ -44,13 +44,13 @@ let specification = {
 		version: "1.0.0",
 	},
 	externalDocs: {
-		description: "Fosscord Docs",
-		url: "https://docs.fosscord.com",
+		description: "Spacebar Docs",
+		url: "https://docs.spacebar.chat",
 	},
 	servers: [
 		{
-			url: "https://staging.fosscord.com/api/",
-			description: "Official Fosscord Instance",
+			url: "https://old.server.spacebar.chat/api/",
+			description: "Official Spacebar Instance",
 		},
 	],
 	components: {
