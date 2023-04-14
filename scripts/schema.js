@@ -78,7 +78,6 @@ function main() {
 	if (!generator || !program) return;
 
 	let schemas = generator.getUserSymbols().filter((x) => {
-		console.log(x);
 		return (
 			(x.endsWith("Schema") ||
 				x.endsWith("Response") ||
@@ -86,7 +85,6 @@ function main() {
 			!Excluded.includes(x)
 		);
 	});
-	console.log(schemas);
 
 	var definitions = {};
 

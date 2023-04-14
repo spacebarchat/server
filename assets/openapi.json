@@ -960,7 +960,8 @@
                         "type": "array",
                         "items": {
                             "type": "string"
-                        }
+                        },
+                        "default": []
                     },
                     "primary_category_id": {
                         "type": "string"
@@ -7210,6 +7211,240 @@
                     "$ref": "#/components/schemas/Member"
                 }
             },
+            "APIGuildWithJoinedAt": {
+                "type": "object",
+                "properties": {
+                    "joined_at": {
+                        "type": "string"
+                    },
+                    "afk_channel_id": {
+                        "type": "string"
+                    },
+                    "afk_channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "afk_timeout": {
+                        "type": "integer"
+                    },
+                    "bans": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Ban"
+                        }
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "default_message_notifications": {
+                        "type": "integer"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "discovery_splash": {
+                        "type": "string"
+                    },
+                    "explicit_content_filter": {
+                        "type": "integer"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
+                    "primary_category_id": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "large": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "max_members": {
+                        "type": "integer"
+                    },
+                    "max_presences": {
+                        "type": "integer"
+                    },
+                    "max_video_channel_users": {
+                        "type": "integer"
+                    },
+                    "member_count": {
+                        "type": "integer"
+                    },
+                    "presence_count": {
+                        "type": "integer"
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Member"
+                        }
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "channels": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Channel"
+                        }
+                    },
+                    "template_id": {
+                        "type": "string"
+                    },
+                    "template": {
+                        "$ref": "#/components/schemas/Template"
+                    },
+                    "emojis": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Emoji"
+                        }
+                    },
+                    "stickers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Sticker"
+                        }
+                    },
+                    "invites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Invite"
+                        }
+                    },
+                    "voice_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VoiceState"
+                        }
+                    },
+                    "webhooks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Webhook"
+                        }
+                    },
+                    "mfa_level": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "owner_id": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "preferred_locale": {
+                        "type": "string"
+                    },
+                    "premium_subscription_count": {
+                        "type": "integer"
+                    },
+                    "premium_tier": {
+                        "type": "integer"
+                    },
+                    "public_updates_channel_id": {
+                        "type": "string"
+                    },
+                    "public_updates_channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "rules_channel_id": {
+                        "type": "string"
+                    },
+                    "rules_channel": {
+                        "type": "string"
+                    },
+                    "region": {
+                        "type": "string"
+                    },
+                    "splash": {
+                        "type": "string"
+                    },
+                    "system_channel_id": {
+                        "type": "string"
+                    },
+                    "system_channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "system_channel_flags": {
+                        "type": "integer"
+                    },
+                    "unavailable": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "verification_level": {
+                        "type": "integer"
+                    },
+                    "welcome_screen": {
+                        "$ref": "#/components/schemas/GuildWelcomeScreen"
+                    },
+                    "widget_channel_id": {
+                        "type": "string"
+                    },
+                    "widget_channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "widget_enabled": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "nsfw_level": {
+                        "type": "integer"
+                    },
+                    "nsfw": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "parent": {
+                        "type": "string"
+                    },
+                    "permissions": {
+                        "type": "integer"
+                    },
+                    "premium_progress_bar_enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "bans",
+                    "channels",
+                    "emojis",
+                    "features",
+                    "id",
+                    "invites",
+                    "joined_at",
+                    "members",
+                    "name",
+                    "nsfw",
+                    "premium_progress_bar_enabled",
+                    "public_updates_channel_id",
+                    "roles",
+                    "stickers",
+                    "template",
+                    "unavailable",
+                    "voice_states",
+                    "webhooks",
+                    "welcome_screen",
+                    "widget_enabled"
+                ]
+            },
             "APIRoleArray": {
                 "type": "array",
                 "items": {
@@ -9984,7 +10219,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GuildTemplate"
+                                    "$ref": "#/components/schemas/Template"
                                 }
                             }
                         }
@@ -12559,7 +12794,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GuildWithJoinedAt"
+                                    "$ref": "#/components/schemas/APIGuildWithJoinedAt"
                                 }
                             }
                         }
