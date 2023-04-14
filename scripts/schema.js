@@ -77,13 +77,15 @@ function main() {
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 
-	let schemas = generator
-		.getUserSymbols()
-		.filter(
-			(x) =>
-				(x.endsWith("Schema") || x.endsWith("Response")) &&
-				!Excluded.includes(x),
+	let schemas = generator.getUserSymbols().filter((x) => {
+		console.log(x);
+		return (
+			(x.endsWith("Schema") ||
+				x.endsWith("Response") ||
+				x.startsWith("API")) &&
+			!Excluded.includes(x)
 		);
+	});
 	console.log(schemas);
 
 	var definitions = {};
@@ -135,7 +137,7 @@ function main() {
 		definitions = { ...definitions, [name]: { ...part } };
 	}
 
-	// modify(definitions);
+	//modify(definitions);
 
 	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
 }

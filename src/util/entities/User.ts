@@ -26,11 +26,11 @@ import {
 	OneToOne,
 } from "typeorm";
 import {
-	adjustEmail,
 	Config,
 	Email,
 	FieldErrors,
 	Snowflake,
+	adjustEmail,
 	trimSpecial,
 } from "..";
 import { BitField } from "../util/BitField";
@@ -109,8 +109,10 @@ export class User extends BaseClass {
 	@Column({ nullable: true })
 	banner?: string; // hash of the user banner
 
+	// TODO: Separate `User` and `UserProfile` models
+	// puyo: changed from [number, number] because it breaks openapi
 	@Column({ nullable: true, type: "simple-array" })
-	theme_colors?: [number, number]; // TODO: Separate `User` and `UserProfile` models
+	theme_colors?: number[];
 
 	@Column({ nullable: true })
 	pronouns?: string;
