@@ -127,10 +127,10 @@ export class User extends BaseClass {
 	mobile: boolean = false; // if the user has mobile app installed
 
 	@Column()
-	premium: boolean = Config.get().defaults.user.premium ?? false; // if user bought individual premium
+	premium: boolean; // if user bought individual premium
 
 	@Column()
-	premium_type: number = Config.get().defaults.user.premiumType ?? 0; // individual premium level
+	premium_type: number; // individual premium level
 
 	@Column()
 	bot: boolean = false; // if user is bot
@@ -157,13 +157,13 @@ export class User extends BaseClass {
 	totp_last_ticket?: string = "";
 
 	@Column()
-	created_at: Date = new Date(); // registration date
+	created_at: Date; // registration date
 
 	@Column({ nullable: true })
 	premium_since: Date; // premium date
 
 	@Column({ select: false })
-	verified: boolean = Config.get().defaults.user.verified ?? true; // email is verified
+	verified: boolean; // email is verified
 
 	@Column()
 	disabled: boolean = false; // if the account is disabled
@@ -382,11 +382,16 @@ export class User extends BaseClass {
 				valid_tokens_since: new Date(),
 			},
 			extended_settings: "{}",
+			settings: settings,
+
 			premium_since: Config.get().defaults.user.premium
 				? new Date()
 				: undefined,
-			settings: settings,
 			rights: Config.get().register.defaultRights,
+			premium: Config.get().defaults.user.premium ?? false,
+			premium_type: Config.get().defaults.user.premiumType ?? 0,
+			verified: Config.get().defaults.user.verified ?? true,
+			created_at: new Date(),
 		});
 
 		user.validate();
