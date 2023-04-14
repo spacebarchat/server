@@ -84,7 +84,7 @@ function combineSchemas(schemas) {
 	}
 
 	for (const key in definitions) {
-		const reg = new RegExp(/^[a-zA-Z0-9\.\-_]+$/, "gm");
+		const reg = new RegExp(/^[a-zA-Z0-9.\-_]+$/, "gm");
 		if (!reg.test(key)) {
 			console.error(`Invalid schema name: ${key} (${reg.test(key)})`);
 			continue;
@@ -218,9 +218,12 @@ function apiRoutes() {
 
 		obj.tags = [...(obj.tags || []), getTag(p)].unique();
 
-		specification.paths[path] = {
-			[method]: obj,
-		};
+		specification.paths[path] = Object.assign(
+			specification.paths[path] || {},
+			{
+				[method]: obj,
+			},
+		);
 	});
 }
 
