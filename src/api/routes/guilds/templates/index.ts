@@ -36,7 +36,7 @@ router.get(
 	route({
 		responses: {
 			200: {
-				body: "GuildTemplate",
+				body: "Template",
 			},
 			403: {
 				body: "APIErrorResponse",

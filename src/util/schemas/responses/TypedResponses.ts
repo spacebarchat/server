@@ -69,7 +69,9 @@ export type APIEmojiArray = Emoji[];
 
 export type APIMemberArray = Member[];
 
-export type GuildWithJoinedAt = Guild & { joined_at: string };
+export interface APIGuildWithJoinedAt extends Guild {
+	joined_at: string;
+}
 
 export type APIRoleArray = Role[];
 
