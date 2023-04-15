@@ -105,7 +105,7 @@ router.post(
 	},
 );
 
-export function getStickerFormat(mime_type: string) {
+function getStickerFormat(mime_type: string) {
 	switch (mime_type) {
 		case "image/apng":
 			return StickerFormatType.APNG;

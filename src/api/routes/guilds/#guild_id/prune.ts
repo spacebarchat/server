@@ -23,7 +23,7 @@ import { IsNull, LessThan } from "typeorm";
 const router = Router();
 
 //Returns all inactive members, respecting role hierarchy
-export const inactiveMembers = async (
+const inactiveMembers = async (
 	guild_id: string,
 	user_id: string,
 	days: number,

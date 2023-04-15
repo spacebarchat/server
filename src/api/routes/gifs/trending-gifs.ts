@@ -17,11 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import { TenorMediaTypes } from "@spacebar/util";
+import { TenorMediaTypes, getGifApiKey, parseGifResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import fetch from "node-fetch";
 import ProxyAgent from "proxy-agent";
-import { getGifApiKey, parseGifResult } from "./trending";
 
 const router = Router();
 

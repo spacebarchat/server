@@ -482,3 +482,27 @@ export enum ChannelPermissionOverwriteType {
 	member = 1,
 	group = 2,
 }
+
+export function isTextChannel(type: ChannelType): boolean {
+	switch (type) {
+		case ChannelType.GUILD_STORE:
+		case ChannelType.GUILD_VOICE:
+		case ChannelType.GUILD_STAGE_VOICE:
+		case ChannelType.GUILD_CATEGORY:
+		case ChannelType.GUILD_FORUM:
+		case ChannelType.DIRECTORY:
+			throw new HTTPError("not a text channel", 400);
+		case ChannelType.DM:
+		case ChannelType.GROUP_DM:
+		case ChannelType.GUILD_NEWS:
+		case ChannelType.GUILD_NEWS_THREAD:
+		case ChannelType.GUILD_PUBLIC_THREAD:
+		case ChannelType.GUILD_PRIVATE_THREAD:
+		case ChannelType.GUILD_TEXT:
+		case ChannelType.ENCRYPTED:
+		case ChannelType.ENCRYPTED_THREAD:
+			return true;
+		default:
+			throw new HTTPError("unimplemented", 400);
+	}
+}

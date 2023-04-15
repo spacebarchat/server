@@ -27,11 +27,11 @@ import {
 	WebhookType,
 	handleFile,
 	trimSpecial,
+	isTextChannel,
 } from "@spacebar/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { isTextChannel } from "./messages/index";
 
 const router: Router = Router();
 
