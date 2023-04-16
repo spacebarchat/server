@@ -23,7 +23,7 @@
 const path = require("path");
 const fs = require("fs");
 const ts = require("typescript");
-const tsj = require("ts-json-schema-generator");
+const tsj = require("@stilic_dev/ts-json-schema-generator");
 const walk = require("./util/walk");
 
 // const settings = {
