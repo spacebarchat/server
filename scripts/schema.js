@@ -22,6 +22,7 @@
 
 const path = require("path");
 const fs = require("fs");
+const ts = require("typescript");
 const tsj = require("ts-json-schema-generator");
 const walk = require("./util/walk");
 
@@ -59,27 +60,31 @@ const walk = require("./util/walk");
 
 /** @type {import('ts-json-schema-generator/dist/src/Config').Config} */
 const config = {
-	path: path.join(__dirname, "..", "src", "util", "schemas", "**", "*.ts"),
-	tsconfig: path.join(__dirname, "..", "tsconfig.json"),
-	skipTypeCheck: true,
-	additionalProperties: false,
-	strictTuples: true,
-	discriminatorType: "open-api",
-	minify: true,
-	type: "*", // TODO: set specific types after parsing on the program
+  path: path.join(__dirname, "..", "src", "util", "schemas", "**", "*.ts"),
+  tsconfig: path.join(__dirname, "..", "tsconfig.json"),
+  skipTypeCheck: true,
+  strictTuples: true,
+  sortProps: false,
+  discriminatorType: "open-api",
+  type: "*", // TODO: set specific types after parsing on the program
 };
 
-const program = createProgram(config);
-const generator = new SchemaGenerator(
-	program,
-	createParser(program, config, (prs) => {
-		prs.addNodeParser(new MyConstructorParser());
-	}),
-	createFormatter(config),
-	config,
+const program = tsj.createProgram(config);
+const generator = new tsj.SchemaGenerator(
+  program,
+  tsj.createParser(program, config, (prs) => {
+    prs.addNodeParser({
+      supportsNode: (node) => {
+        return node.kind == ts.SyntaxKind.BigIntLiteral;
+      },
+      createType: (node, context, reference) => new tsj.NumberType(),
+    });
+  }),
+  tsj.createFormatter(config),
+  config
 );
 
-// fs.writeFile(path.join(__dirname, "..", "assets", "schemas.json"), JSON.stringify(generator.createSchema(config.type), null, 2), (err) => {
+fs.writeFile(path.join(__dirname, "..", "assets", "schemas.json"), JSON.stringify(generator.createSchema(config.type), null, 2), (err) => {
 //     if (err) throw err;
 // });
 
