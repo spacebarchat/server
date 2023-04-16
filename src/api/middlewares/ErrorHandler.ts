@@ -22,7 +22,7 @@ import { ApiError, FieldError } from "@spacebar/util";
 const EntityNotFoundErrorRegex = /"(\w+)"/;
 
 export function ErrorHandler(
-	error: Error,
+	error: Error & { type?: string },
 	req: Request,
 	res: Response,
 	next: NextFunction,
@@ -50,6 +50,11 @@ export function ErrorHandler(
 			code = Number(error.code);
 			message = error.message;
 			errors = error.errors;
+		} else if (error?.type == "entity.parse.failed") {
+			// body-parser failed
+			httpcode = 400;
+			code = 50109;
+			message = "The request body contains invalid JSON.";
 		} else {
 			console.error(
 				`[Error] ${code} ${req.url}\n`,
