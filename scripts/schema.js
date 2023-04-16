@@ -85,8 +85,8 @@ const generator = new tsj.SchemaGenerator(
 );
 
 fs.writeFile(path.join(__dirname, "..", "assets", "schemas.json"), JSON.stringify(generator.createSchema(config.type), null, 2), (err) => {
-//     if (err) throw err;
-// });
+    if (err) throw err;
+});
 
 // const program = TJS.programFromConfig(
 // 	path.join(__dirname, "..", "tsconfig.json"),
