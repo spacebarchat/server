@@ -77,7 +77,7 @@ const generator = new tsj.SchemaGenerator(
       supportsNode: (node) => {
         return node.kind == ts.SyntaxKind.BigIntLiteral;
       },
-      createType: (node, context, reference) => new tsj.NumberType(),
+      createType: (node, context, reference) => {return new tsj.NumberType();},
     });
   }),
   tsj.createFormatter(config),
