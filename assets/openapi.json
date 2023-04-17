@@ -4984,12 +4984,17 @@
                         "type": "string"
                     },
                     "theme_colors": {
-                        "minItems": 2,
-                        "maxItems": 2,
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
                         "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
+                        "minItems": 2,
+                        "maxItems": 2
                     }
                 }
             },
@@ -5764,12 +5769,17 @@
                         "type": "string"
                     },
                     "theme_colors": {
-                        "minItems": 2,
-                        "maxItems": 2,
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
                         "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
+                        "minItems": 2,
+                        "maxItems": 2
                     }
                 }
             },
