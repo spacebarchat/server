@@ -64,7 +64,6 @@ const config = {
 	tsconfig: path.join(__dirname, "..", "tsconfig.json"),
 	skipTypeCheck: true,
 	strictTuples: true,
-	sortProps: false,
 	discriminatorType: "open-api",
 	type: "*", // TODO: set specific types after parsing on the program
 };
