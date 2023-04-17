@@ -22,8 +22,7 @@ export interface UserProfileModifySchema {
 	banner?: string | null;
 	pronouns?: string;
 	/**
-	 * @minItems 2
-	 * @maxItems 2
+	 * @items.type integer
 	 */
-	theme_colors?: number[]; // puyo: changed from [number, number] because it breaks openapi
+	theme_colors?: [number, number];
 }
