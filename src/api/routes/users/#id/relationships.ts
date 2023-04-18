@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { User } from "@spacebar/util";
+import { User, UserRelationsResponse } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router();
@@ -33,7 +33,8 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const mutual_relations: object[] = [];
+		const mutual_relations: UserRelationsResponse = [];
+
 		const requested_relations = await User.findOneOrFail({
 			where: { id: req.params.id },
 			relations: ["relationships"],

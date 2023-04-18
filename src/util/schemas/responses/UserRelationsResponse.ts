@@ -1,9 +1,7 @@
-export interface UserRelationsResponse {
-	object: {
-		id?: string;
-		username?: string;
-		avatar?: string;
-		discriminator?: string;
-		public_flags?: number;
-	};
-}
+import { User } from "@spacebar/util";
+
+export type UserRelationsResponse = (Pick<User, "id"> &
+	Pick<User, "username"> &
+	Pick<User, "discriminator"> &
+	Pick<User, "avatar"> &
+	Pick<User, "public_flags">)[];
