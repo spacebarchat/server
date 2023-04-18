@@ -10,6 +10,7 @@
 		"start:cdn": "node dist/cdn/start.js",
 		"start:gateway": "node dist/gateway/start.js",
 		"build": "tsc -p .",
+		"test": "node scripts/test.js",
 		"lint": "eslint .",
 		"setup": "npm run build && npm run generate:schema",
 		"sync:db": "npm run build && node scripts/syncronise.js",

@@ -1,5 +1,5 @@
 diff --git a/node_modules/body-parser/lib/types/json.js b/node_modules/body-parser/lib/types/json.js
-index c2745be..7104cfa 100644
+index c2745be..17c2cfe 100644
 --- a/node_modules/body-parser/lib/types/json.js
 +++ b/node_modules/body-parser/lib/types/json.js
 @@ -18,6 +18,7 @@ var createError = require('http-errors')
@@ -28,3 +28,12 @@ index c2745be..7104cfa 100644
    } catch (e) {
      return normalizeJsonSyntaxError(e, {
        message: e.message.replace('#', char),
+@@ -216,7 +217,7 @@ function normalizeJsonSyntaxError (error, obj) {
+   }
+ 
+   // replace stack before message for Node.js 0.10 and below
+-  error.stack = obj.stack.replace(error.message, obj.message)
++  error.stack = obj.stack?.replace(error.message, obj.message)
+   error.message = obj.message
+ 
+   return error
