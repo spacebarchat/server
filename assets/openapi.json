@@ -2732,8 +2732,7 @@
                 },
                 "required": [
                     "name",
-                    "type",
-                    "verified"
+                    "type"
                 ]
             },
             "UserRelationsResponse": {
@@ -2978,6 +2977,9 @@
                         "type": "boolean"
                     },
                     "show_activity": {
+                        "type": "boolean"
+                    },
+                    "metadata_visibility": {
                         "type": "boolean"
                     }
                 }
@@ -4951,7 +4953,8 @@
                 ],
                 "tags": [
                     "guilds"
-                ]
+                ],
+                "x-permission-required": "MANAGE_ROLES"
             }
         },
         "/guilds/{guild_id}/roles/{role_id}/": {
@@ -7985,6 +7988,52 @@
                 ],
                 "tags": [
                     "connections"
+                ]
+            }
+        },
+        "/channels/{channel_id}/messages/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            },
+            "post": {
+                "x-right-required": "SEND_MESSAGES",
+                "x-permission-required": "SEND_MESSAGES",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
                 ]
             }
         }
