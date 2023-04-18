@@ -27,6 +27,7 @@ import {
 import { URL } from "url";
 import { deleteFile } from "../util/cdn";
 import { BaseClass } from "./BaseClass";
+import { Message } from "./Message";
 
 @Entity("attachments")
 export class Attachment extends BaseClass {
@@ -56,14 +57,10 @@ export class Attachment extends BaseClass {
 	message_id: string;
 
 	@JoinColumn({ name: "message_id" })
-	@ManyToOne(
-		() => require("./Message").Message,
-		(message: import("./Message").Message) => message.attachments,
-		{
-			onDelete: "CASCADE",
-		},
-	)
-	message: import("./Message").Message;
+	@ManyToOne(() => Message, (message: Message) => message.attachments, {
+		onDelete: "CASCADE",
+	})
+	message: Message;
 
 	@BeforeRemove()
 	onDelete() {

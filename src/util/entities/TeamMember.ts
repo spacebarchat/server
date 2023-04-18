@@ -19,6 +19,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
+import { Team } from "./Team";
 
 export enum TeamMemberState {
 	INVITED = 1,
@@ -38,14 +39,10 @@ export class TeamMember extends BaseClass {
 	team_id: string;
 
 	@JoinColumn({ name: "team_id" })
-	@ManyToOne(
-		() => require("./Team").Team,
-		(team: import("./Team").Team) => team.members,
-		{
-			onDelete: "CASCADE",
-		},
-	)
-	team: import("./Team").Team;
+	@ManyToOne(() => Team, (team: Team) => team.members, {
+		onDelete: "CASCADE",
+	})
+	team: Team;
 
 	@Column({ nullable: true })
 	@RelationId((member: TeamMember) => member.user)

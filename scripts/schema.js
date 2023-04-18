@@ -95,7 +95,7 @@ const generator = new tsj.SchemaGenerator(
 
 fs.writeFile(
 	path.join(__dirname, "..", "assets", "schemas.json"),
-	JSON.stringify(generator.createSchema(config.type), null, 2),
+	JSON.stringify(generator.createSchema(config.type).definitions, null, 2),
 	(err) => {
 		if (err) throw err;
 	},
