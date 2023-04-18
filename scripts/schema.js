@@ -60,7 +60,15 @@ const tsj = require("@stilic_dev/ts-json-schema-generator");
 
 /** @type {import('ts-json-schema-generator/dist/src/Config').Config} */
 const config = {
-	path: path.join(__dirname, "..", "src", "util", "schemas", "**", "{+(API)*,*+(Schema|Response)}.ts"),
+	path: path.join(
+		__dirname,
+		"..",
+		"src",
+		"util",
+		"schemas",
+		"**",
+		"{+(API)*,*+(Schema|Response)}.ts",
+	),
 	tsconfig: path.join(__dirname, "..", "tsconfig.json"),
 	skipTypeCheck: true,
 	strictTuples: true,
