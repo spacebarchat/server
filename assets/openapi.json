@@ -1,5 +1,6 @@
 {
     "openapi": "3.1.0",
+    "swagger": "2.0",
     "info": {
         "title": "Spacebar Server",
         "description": "Spacebar is a free open source selfhostable discord compatible chat, voice and video platform",

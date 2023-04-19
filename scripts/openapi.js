@@ -33,6 +33,7 @@ const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 // );
 let specification = {
 	openapi: "3.1.0",
+	swagger: "2.0",
 	info: {
 		title: "Spacebar Server",
 		description:
