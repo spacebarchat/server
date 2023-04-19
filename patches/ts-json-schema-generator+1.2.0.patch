@@ -1,0 +1,489 @@
+diff --git a/node_modules/ts-json-schema-generator/src/Config.ts b/node_modules/ts-json-schema-generator/src/Config.ts
+index a4c4498..29114d1 100644
+--- a/node_modules/ts-json-schema-generator/src/Config.ts
++++ b/node_modules/ts-json-schema-generator/src/Config.ts
+@@ -13,6 +13,7 @@ export interface Config {
+     encodeRefs?: boolean;
+     extraTags?: string[];
+     additionalProperties?: boolean;
++    discriminatorType?: "json-schema" | "open-api";
+ }
+ 
+ export const DEFAULT_CONFIG: Omit<Required<Config>, "path" | "type" | "schemaId" | "tsconfig"> = {
+@@ -26,4 +27,5 @@ export const DEFAULT_CONFIG: Omit<Required<Config>, "path" | "type" | "schemaId"
+     minify: false,
+     extraTags: [],
+     additionalProperties: false,
++    discriminatorType: "json-schema",
+ };
+diff --git a/node_modules/ts-json-schema-generator/src/Error/UnknownNodeError.ts b/node_modules/ts-json-schema-generator/src/Error/UnknownNodeError.ts
+index 03a062d..8fbd748 100644
+--- a/node_modules/ts-json-schema-generator/src/Error/UnknownNodeError.ts
++++ b/node_modules/ts-json-schema-generator/src/Error/UnknownNodeError.ts
+@@ -3,7 +3,11 @@ import { BaseError } from "./BaseError";
+ 
+ export class UnknownNodeError extends BaseError {
+     public constructor(private node: ts.Node, private reference?: ts.Node) {
+-        super(`Unknown node "${node.getFullText()}" of kind "${ts.SyntaxKind[node.kind]}"`);
++        super(
++            `Unknown node "${node.getSourceFile() ? node.getFullText() : "<unknown>"}" of kind "${
++                ts.SyntaxKind[node.kind]
++            }"`
++        );
+     }
+ 
+     public getNode(): ts.Node {
+diff --git a/node_modules/ts-json-schema-generator/src/NodeParser/EnumNodeParser.ts b/node_modules/ts-json-schema-generator/src/NodeParser/EnumNodeParser.ts
+index 0064f6f..b638e18 100644
+--- a/node_modules/ts-json-schema-generator/src/NodeParser/EnumNodeParser.ts
++++ b/node_modules/ts-json-schema-generator/src/NodeParser/EnumNodeParser.ts
+@@ -2,7 +2,7 @@ import ts from "typescript";
+ import { Context } from "../NodeParser";
+ import { SubNodeParser } from "../SubNodeParser";
+ import { BaseType } from "../Type/BaseType";
+-import { EnumType, EnumValue } from "../Type/EnumType";
++import { EnumMember, EnumType, EnumValue } from "../Type/EnumType";
+ import { isNodeHidden } from "../Utils/isHidden";
+ import { getKey } from "../Utils/nodeKey";
+ 
+@@ -13,13 +13,16 @@ export class EnumNodeParser implements SubNodeParser {
+         return node.kind === ts.SyntaxKind.EnumDeclaration || node.kind === ts.SyntaxKind.EnumMember;
+     }
+     public createType(node: ts.EnumDeclaration | ts.EnumMember, context: Context): BaseType {
+-        const members = node.kind === ts.SyntaxKind.EnumDeclaration ? node.members.slice() : [node];
+-
+         return new EnumType(
+             `enum-${getKey(node, context)}`,
+-            members
++            (node.kind === ts.SyntaxKind.EnumDeclaration ? node.members.slice() : [node])
+                 .filter((member: ts.EnumMember) => !isNodeHidden(member))
+-                .map((member, index) => this.getMemberValue(member, index))
++                .map((member, index) => {
++                    return {
++                        name: member.name.getText(),
++                        value: this.getMemberValue(member, index),
++                    } as EnumMember;
++                })
+         );
+     }
+ 
+diff --git a/node_modules/ts-json-schema-generator/src/NodeParser/IndexedAccessTypeNodeParser.ts b/node_modules/ts-json-schema-generator/src/NodeParser/IndexedAccessTypeNodeParser.ts
+index b1d09bb..6df772c 100644
+--- a/node_modules/ts-json-schema-generator/src/NodeParser/IndexedAccessTypeNodeParser.ts
++++ b/node_modules/ts-json-schema-generator/src/NodeParser/IndexedAccessTypeNodeParser.ts
+@@ -6,6 +6,7 @@ import { BaseType } from "../Type/BaseType";
+ import { LiteralType } from "../Type/LiteralType";
+ import { NeverType } from "../Type/NeverType";
+ import { NumberType } from "../Type/NumberType";
++import { ReferenceType } from "../Type/ReferenceType";
+ import { StringType } from "../Type/StringType";
+ import { TupleType } from "../Type/TupleType";
+ import { UnionType } from "../Type/UnionType";
+@@ -67,6 +68,9 @@ export class IndexedAccessTypeNodeParser implements SubNodeParser {
+                 if (type instanceof NumberType && objectType instanceof TupleType) {
+                     return new UnionType(objectType.getTypes());
+                 } else if (type instanceof LiteralType) {
++                    if (objectType instanceof ReferenceType) {
++                        return objectType;
++                    }
+                     throw new LogicError(`Invalid index "${type.getValue()}" in type "${objectType.getId()}"`);
+                 } else {
+                     throw new LogicError(`No additional properties in type "${objectType.getId()}"`);
+diff --git a/node_modules/ts-json-schema-generator/src/NodeParser/InterfaceAndClassNodeParser.ts b/node_modules/ts-json-schema-generator/src/NodeParser/InterfaceAndClassNodeParser.ts
+index 07114e8..b705b58 100644
+--- a/node_modules/ts-json-schema-generator/src/NodeParser/InterfaceAndClassNodeParser.ts
++++ b/node_modules/ts-json-schema-generator/src/NodeParser/InterfaceAndClassNodeParser.ts
+@@ -125,7 +125,7 @@ export class InterfaceAndClassNodeParser implements SubNodeParser {
+ 
+                 // Use the type checker if the member has no explicit type
+                 // Ignore members without an initializer. They have no useful type.
+-                if (memberType === undefined && member.initializer !== undefined) {
++                if (memberType === undefined && (member as ts.PropertyDeclaration)?.initializer !== undefined) {
+                     const type = this.typeChecker.getTypeAtLocation(member);
+                     memberType = this.typeChecker.typeToTypeNode(type, node, ts.NodeBuilderFlags.NoTruncation);
+                 }
+diff --git a/node_modules/ts-json-schema-generator/src/NodeParser/MappedTypeNodeParser.ts b/node_modules/ts-json-schema-generator/src/NodeParser/MappedTypeNodeParser.ts
+index ac9c786..c564f21 100644
+--- a/node_modules/ts-json-schema-generator/src/NodeParser/MappedTypeNodeParser.ts
++++ b/node_modules/ts-json-schema-generator/src/NodeParser/MappedTypeNodeParser.ts
+@@ -5,6 +5,7 @@ import { SubNodeParser } from "../SubNodeParser";
+ import { AnnotatedType } from "../Type/AnnotatedType";
+ import { ArrayType } from "../Type/ArrayType";
+ import { BaseType } from "../Type/BaseType";
++import { DefinitionType } from "../Type/DefinitionType";
+ import { EnumType, EnumValue } from "../Type/EnumType";
+ import { LiteralType } from "../Type/LiteralType";
+ import { NeverType } from "../Type/NeverType";
+@@ -57,8 +58,17 @@ export class MappedTypeNodeParser implements SubNodeParser {
+             const type = this.childNodeParser.createType(node.type!, context);
+             // const resultType = type instanceof NeverType ? new NeverType() : new ObjectType(id, [], [], type);
+             const resultType = new ObjectType(id, [], [], type);
+-            if (resultType && constraintType instanceof AnnotatedType) {
+-                const annotations = constraintType.getAnnotations();
++            if (resultType) {
++                let annotations;
++
++                if (constraintType instanceof AnnotatedType) {
++                    annotations = constraintType.getAnnotations();
++                } else if (constraintType instanceof DefinitionType) {
++                    const childType = constraintType.getType();
++                    if (childType instanceof AnnotatedType) {
++                        annotations = childType.getAnnotations();
++                    }
++                }
+                 if (annotations) {
+                     return new AnnotatedType(resultType, { propertyNames: annotations }, false);
+                 }
+diff --git a/node_modules/ts-json-schema-generator/src/NodeParser/TypeofNodeParser.ts b/node_modules/ts-json-schema-generator/src/NodeParser/TypeofNodeParser.ts
+index 8746a50..7f57feb 100644
+--- a/node_modules/ts-json-schema-generator/src/NodeParser/TypeofNodeParser.ts
++++ b/node_modules/ts-json-schema-generator/src/NodeParser/TypeofNodeParser.ts
+@@ -30,10 +30,11 @@ export class TypeofNodeParser implements SubNodeParser {
+             ts.isPropertySignature(valueDec) ||
+             ts.isPropertyDeclaration(valueDec)
+         ) {
++            let initializer: ts.Expression | undefined;
+             if (valueDec.type) {
+                 return this.childNodeParser.createType(valueDec.type, context);
+-            } else if (valueDec.initializer) {
+-                return this.childNodeParser.createType(valueDec.initializer, context);
++            } else if ((initializer = (valueDec as ts.VariableDeclaration | ts.PropertyDeclaration)?.initializer)) {
++                return this.childNodeParser.createType(initializer, context);
+             }
+         } else if (ts.isClassDeclaration(valueDec)) {
+             return this.childNodeParser.createType(valueDec, context);
+diff --git a/node_modules/ts-json-schema-generator/src/Type/EnumType.ts b/node_modules/ts-json-schema-generator/src/Type/EnumType.ts
+index 242d7fb..51717e5 100644
+--- a/node_modules/ts-json-schema-generator/src/Type/EnumType.ts
++++ b/node_modules/ts-json-schema-generator/src/Type/EnumType.ts
+@@ -4,20 +4,29 @@ import { NullType } from "./NullType";
+ 
+ export type EnumValue = string | boolean | number | null;
+ 
++export type EnumMember = {
++    name: string;
++    value: EnumValue;
++};
++
+ export class EnumType extends BaseType {
+     private types: BaseType[];
+ 
+-    public constructor(private id: string, private values: readonly EnumValue[]) {
++    public constructor(private id: string, private members: readonly EnumMember[]) {
+         super();
+-        this.types = values.map((value) => (value == null ? new NullType() : new LiteralType(value)));
++        this.types = members.map((member) => (member.value == null ? new NullType() : new LiteralType(member.value)));
+     }
+ 
+     public getId(): string {
+         return this.id;
+     }
+ 
++    public getMembers(): readonly EnumMember[] {
++        return this.members;
++    }
++
+     public getValues(): readonly EnumValue[] {
+-        return this.values;
++        return this.members.map((member) => member.value);
+     }
+ 
+     public getTypes(): BaseType[] {
+diff --git a/node_modules/ts-json-schema-generator/src/Type/ReferenceType.ts b/node_modules/ts-json-schema-generator/src/Type/ReferenceType.ts
+index 4d0cc54..925ca72 100644
+--- a/node_modules/ts-json-schema-generator/src/Type/ReferenceType.ts
++++ b/node_modules/ts-json-schema-generator/src/Type/ReferenceType.ts
+@@ -36,6 +36,10 @@ export class ReferenceType extends BaseType {
+         return this.type;
+     }
+ 
++    public hasType(): boolean {
++        return this.type != null;
++    }
++
+     public setType(type: BaseType): void {
+         this.type = type;
+         this.setId(type.getId());
+diff --git a/node_modules/ts-json-schema-generator/src/TypeFormatter/EnumTypeFormatter.ts b/node_modules/ts-json-schema-generator/src/TypeFormatter/EnumTypeFormatter.ts
+index d5c2e7e..4df23d9 100644
+--- a/node_modules/ts-json-schema-generator/src/TypeFormatter/EnumTypeFormatter.ts
++++ b/node_modules/ts-json-schema-generator/src/TypeFormatter/EnumTypeFormatter.ts
+@@ -10,16 +10,21 @@ export class EnumTypeFormatter implements SubTypeFormatter {
+         return type instanceof EnumType;
+     }
+     public getDefinition(type: EnumType): Definition {
+-        const values = uniqueArray(type.getValues());
+-        const types = uniqueArray(values.map(typeName));
++        const members = uniqueArray(type.getMembers());
++        const types = members.map((member) => typeName(member.value));
+ 
+         // NOTE: We want to use "const" when referencing an enum member.
+         // However, this formatter is used both for enum members and enum types,
+         // so the side effect is that an enum type that contains just a single
+         // value is represented as "const" too.
+-        return values.length === 1
+-            ? { type: types[0], const: values[0] }
+-            : { type: types.length === 1 ? types[0] : types, enum: values };
++        return members.length === 1
++            ? { type: types[0], const: [0] }
++            : {
++                  type: types.length === 1 ? types[0] : types,
++                  oneOf: members.map((member) => {
++                      return { title: member.name, const: member.value };
++                  }),
++              };
+     }
+     public getChildren(type: EnumType): BaseType[] {
+         return [];
+diff --git a/node_modules/ts-json-schema-generator/src/TypeFormatter/UnionTypeFormatter.ts b/node_modules/ts-json-schema-generator/src/TypeFormatter/UnionTypeFormatter.ts
+index 5f8cd79..ac932e0 100644
+--- a/node_modules/ts-json-schema-generator/src/TypeFormatter/UnionTypeFormatter.ts
++++ b/node_modules/ts-json-schema-generator/src/TypeFormatter/UnionTypeFormatter.ts
+@@ -10,70 +10,91 @@ import { derefType } from "../Utils/derefType";
+ import { getTypeByKey } from "../Utils/typeKeys";
+ import { uniqueArray } from "../Utils/uniqueArray";
+ 
++type DiscriminatorType = "json-schema" | "open-api";
++
+ export class UnionTypeFormatter implements SubTypeFormatter {
+-    public constructor(protected childTypeFormatter: TypeFormatter) {}
++    public constructor(protected childTypeFormatter: TypeFormatter, private discriminatorType?: DiscriminatorType) {}
+ 
+     public supportsType(type: UnionType): boolean {
+         return type instanceof UnionType;
+     }
+-    public getDefinition(type: UnionType): Definition {
+-        const definitions = type
++    private getTypeDefinitions(type: UnionType) {
++        return type
+             .getTypes()
+             .filter((item) => !(derefType(item) instanceof NeverType))
+             .map((item) => this.childTypeFormatter.getDefinition(item));
+-
++    }
++    private getJsonSchemaDiscriminatorDefinition(type: UnionType): Definition {
++        const definitions = this.getTypeDefinitions(type);
+         const discriminator = type.getDiscriminator();
+-        if (discriminator !== undefined) {
+-            const kindTypes = type
+-                .getTypes()
+-                .filter((item) => !(derefType(item) instanceof NeverType))
+-                .map((item) => getTypeByKey(item, new LiteralType(discriminator)));
++        if (!discriminator) throw new Error("discriminator is undefined");
++        const kindTypes = type
++            .getTypes()
++            .filter((item) => !(derefType(item) instanceof NeverType))
++            .map((item) => getTypeByKey(item, new LiteralType(discriminator)));
+ 
+-            const undefinedIndex = kindTypes.findIndex((item) => item === undefined);
++        const undefinedIndex = kindTypes.findIndex((item) => item === undefined);
+ 
+-            if (undefinedIndex != -1) {
+-                throw new Error(
+-                    `Cannot find discriminator keyword "${discriminator}" in type ${JSON.stringify(
+-                        type.getTypes()[undefinedIndex]
+-                    )}.`
+-                );
+-            }
++        if (undefinedIndex != -1) {
++            throw new Error(
++                `Cannot find discriminator keyword "${discriminator}" in type ${JSON.stringify(
++                    type.getTypes()[undefinedIndex]
++                )}.`
++            );
++        }
+ 
+-            const kindDefinitions = kindTypes.map((item) => this.childTypeFormatter.getDefinition(item as BaseType));
++        const kindDefinitions = kindTypes.map((item) => this.childTypeFormatter.getDefinition(item as BaseType));
+ 
+-            const allOf = [];
++        const allOf = [];
+ 
+-            for (let i = 0; i < definitions.length; i++) {
+-                allOf.push({
+-                    if: {
+-                        properties: { [discriminator]: kindDefinitions[i] },
+-                    },
+-                    then: definitions[i],
+-                });
+-            }
++        for (let i = 0; i < definitions.length; i++) {
++            allOf.push({
++                if: {
++                    properties: { [discriminator]: kindDefinitions[i] },
++                },
++                then: definitions[i],
++            });
++        }
+ 
+-            const kindValues = kindDefinitions
+-                .map((item) => item.const)
+-                .filter((item): item is string | number | boolean | null => item !== undefined);
+-
+-            const duplicates = kindValues.filter((item, index) => kindValues.indexOf(item) !== index);
+-            if (duplicates.length > 0) {
+-                throw new Error(
+-                    `Duplicate discriminator values: ${duplicates.join(", ")} in type ${JSON.stringify(
+-                        type.getName()
+-                    )}.`
+-                );
+-            }
++        const kindValues = kindDefinitions
++            .map((item) => item.const)
++            .filter((item): item is string | number | boolean | null => item !== undefined);
+ 
+-            const properties = {
+-                [discriminator]: {
+-                    enum: kindValues,
+-                },
+-            };
++        const duplicates = kindValues.filter((item, index) => kindValues.indexOf(item) !== index);
++        if (duplicates.length > 0) {
++            throw new Error(
++                `Duplicate discriminator values: ${duplicates.join(", ")} in type ${JSON.stringify(type.getName())}.`
++            );
++        }
++
++        const properties = {
++            [discriminator]: {
++                enum: kindValues,
++            },
++        };
+ 
+-            return { type: "object", properties, required: [discriminator], allOf };
++        return { type: "object", properties, required: [discriminator], allOf };
++    }
++    private getOpenApiDiscriminatorDefinition(type: UnionType): Definition {
++        const oneOf = this.getTypeDefinitions(type);
++        const discriminator = type.getDiscriminator();
++        if (!discriminator) throw new Error("discriminator is undefined");
++        return {
++            type: "object",
++            discriminator: { propertyName: discriminator },
++            required: [discriminator],
++            oneOf,
++        } as JSONSchema7;
++    }
++    public getDefinition(type: UnionType): Definition {
++        const discriminator = type.getDiscriminator();
++        if (discriminator !== undefined) {
++            if (this.discriminatorType === "open-api") return this.getOpenApiDiscriminatorDefinition(type);
++            return this.getJsonSchemaDiscriminatorDefinition(type);
+         }
+ 
++        const definitions = this.getTypeDefinitions(type);
++
+         // TODO: why is this not covered by LiteralUnionTypeFormatter?
+         // special case for string literals | string -> string
+         let stringType = true;
+diff --git a/node_modules/ts-json-schema-generator/src/Utils/derefType.ts b/node_modules/ts-json-schema-generator/src/Utils/derefType.ts
+index 1839502..e7b407c 100644
+--- a/node_modules/ts-json-schema-generator/src/Utils/derefType.ts
++++ b/node_modules/ts-json-schema-generator/src/Utils/derefType.ts
+@@ -4,13 +4,14 @@ import { BaseType } from "../Type/BaseType";
+ import { DefinitionType } from "../Type/DefinitionType";
+ import { ReferenceType } from "../Type/ReferenceType";
+ 
++/**
++ * Dereference the type as far as possible.
++ */
+ export function derefType(type: BaseType): BaseType {
+-    if (
+-        type instanceof ReferenceType ||
+-        type instanceof DefinitionType ||
+-        type instanceof AliasType ||
+-        type instanceof AnnotatedType
+-    ) {
++    if (type instanceof DefinitionType || type instanceof AliasType || type instanceof AnnotatedType) {
++        return derefType(type.getType());
++    }
++    if (type instanceof ReferenceType && type.hasType()) {
+         return derefType(type.getType());
+     }
+ 
+diff --git a/node_modules/ts-json-schema-generator/src/Utils/extractLiterals.ts b/node_modules/ts-json-schema-generator/src/Utils/extractLiterals.ts
+index 47df386..21d7401 100644
+--- a/node_modules/ts-json-schema-generator/src/Utils/extractLiterals.ts
++++ b/node_modules/ts-json-schema-generator/src/Utils/extractLiterals.ts
+@@ -2,6 +2,7 @@ import { UnknownTypeError } from "../Error/UnknownTypeError";
+ import { AliasType } from "../Type/AliasType";
+ import { BaseType } from "../Type/BaseType";
+ import { BooleanType } from "../Type/BooleanType";
++import { EnumType } from "../Type/EnumType";
+ import { LiteralType } from "../Type/LiteralType";
+ import { UnionType } from "../Type/UnionType";
+ 
+@@ -13,7 +14,7 @@ function* _extractLiterals(type: BaseType): Iterable<string> {
+         yield type.getValue().toString();
+         return;
+     }
+-    if (type instanceof UnionType) {
++    if (type instanceof UnionType || type instanceof EnumType) {
+         for (const t of type.getTypes()) {
+             yield* _extractLiterals(t);
+         }
+diff --git a/node_modules/ts-json-schema-generator/src/Utils/modifiers.ts b/node_modules/ts-json-schema-generator/src/Utils/modifiers.ts
+index f6583d0..cfb073f 100644
+--- a/node_modules/ts-json-schema-generator/src/Utils/modifiers.ts
++++ b/node_modules/ts-json-schema-generator/src/Utils/modifiers.ts
+@@ -7,7 +7,7 @@ import ts from "typescript";
+  * @param modifier - The modifier to look for.
+  * @return True if node has the modifier, false if not.
+  */
+-export function hasModifier(node: ts.Node, modifier: ts.SyntaxKind): boolean {
++export function hasModifier(node: ts.HasModifiers, modifier: ts.SyntaxKind): boolean {
+     const nodeModifiers = node.modifiers;
+     if (nodeModifiers == null) {
+         return false;
+@@ -22,7 +22,7 @@ export function hasModifier(node: ts.Node, modifier: ts.SyntaxKind): boolean {
+  * @param node - The node to check.
+  * @return True if node is public, false if not.
+  */
+-export function isPublic(node: ts.Node): boolean {
++export function isPublic(node: ts.HasModifiers): boolean {
+     return !(hasModifier(node, ts.SyntaxKind.PrivateKeyword) || hasModifier(node, ts.SyntaxKind.ProtectedKeyword));
+ }
+ 
+@@ -32,6 +32,6 @@ export function isPublic(node: ts.Node): boolean {
+  * @param node - The node to check.
+  * @return True if node is static, false if not.
+  */
+-export function isStatic(node: ts.Node): boolean {
++export function isStatic(node: ts.HasModifiers): boolean {
+     return hasModifier(node, ts.SyntaxKind.StaticKeyword);
+ }
+diff --git a/node_modules/ts-json-schema-generator/src/Utils/nodeKey.ts b/node_modules/ts-json-schema-generator/src/Utils/nodeKey.ts
+index 2b2923f..5eefa68 100644
+--- a/node_modules/ts-json-schema-generator/src/Utils/nodeKey.ts
++++ b/node_modules/ts-json-schema-generator/src/Utils/nodeKey.ts
+@@ -35,19 +35,22 @@ export function getKey(node: Node, context: Context): string {
+ 
+     while (node) {
+         const source = node.getSourceFile();
+-        const file = !source
+-            ? // TODO: Use better filename for unknown files (See #1386)
+-              "unresolved"
+-            : source.fileName.substring(process.cwd().length + 1).replace(/\//g, "_");
+ 
+-        ids.push(hash(file), node.pos, node.end);
++        // When the node has no source file, we need to prevent collisions  with other sourceless nodes.
++        // As they does not have any kind of reference to their parents, Math.random is the best we can
++        // do to make them unique
++        if (!source) {
++            ids.push(Math.random());
++        } else {
++            const filename = source.fileName.substring(process.cwd().length + 1).replace(/\//g, "_");
++            ids.push(hash(filename), node.pos, node.end);
++        }
+ 
+         node = node.parent;
+     }
+ 
+     const id = ids.join("-");
++    const args = context.getArguments();
+ 
+-    const argumentIds = context.getArguments().map((arg) => arg?.getId());
+-
+-    return argumentIds.length ? `${id}<${argumentIds.join(",")}>` : id;
++    return args.length ? `${id}<${args.map((arg) => arg.getId()).join(",")}>` : id;
+ }
