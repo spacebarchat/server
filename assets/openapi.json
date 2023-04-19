@@ -6238,23 +6238,23 @@
             "UserRelationsResponse": {
                 "type": "array",
                 "items": {
-                    "additionalProperties": false,
                     "type": "object",
+                    "additionalProperties": false,
                     "properties": {
-                        "id": {
-                            "type": "string"
+                        "public_flags": {
+                            "type": "number"
                         },
-                        "username": {
+                        "avatar": {
                             "type": "string"
                         },
                         "discriminator": {
                             "type": "string"
                         },
-                        "avatar": {
+                        "username": {
                             "type": "string"
                         },
-                        "public_flags": {
-                            "type": "integer"
+                        "id": {
+                            "type": "string"
                         }
                     },
                     "required": [
