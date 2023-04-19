@@ -6236,33 +6236,34 @@
                 ]
             },
             "UserRelationsResponse": {
-                "type": "object",
-                "properties": {
-                    "object": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "string"
-                            },
-                            "username": {
-                                "type": "string"
-                            },
-                            "avatar": {
-                                "type": "string"
-                            },
-                            "discriminator": {
-                                "type": "string"
-                            },
-                            "public_flags": {
-                                "type": "number"
-                            }
+                "type": "array",
+                "items": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
                         },
-                        "additionalProperties": false
-                    }
-                },
-                "required": [
-                    "object"
-                ]
+                        "username": {
+                            "type": "string"
+                        },
+                        "discriminator": {
+                            "type": "string"
+                        },
+                        "avatar": {
+                            "type": "string"
+                        },
+                        "public_flags": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "discriminator",
+                        "id",
+                        "public_flags",
+                        "username"
+                    ]
+                }
             },
             "WebAuthnCreateResponse": {
                 "type": "object",

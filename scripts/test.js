@@ -16,12 +16,35 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface UserRelationsResponse {
-	object: {
-		id?: string;
-		username?: string;
-		avatar?: string;
-		discriminator?: string;
-		public_flags?: number;
-	};
-}
+/*
+	Super simple script to check if the server starts at all, for use in gh actions.
+	Not a proper test framework by any means.
+*/
+
+const { spawn } = require("child_process");
+const path = require("path");
+
+const server = spawn("node", [
+	path.join(__dirname, "..", "dist", "bundle", "start.js"),
+]);
+
+server.stdout.on("data", (data) => {
+	process.stdout.write(data);
+
+	if (data.toString().toLowerCase().includes("listening")) {
+		// we good :)
+		console.log("we good");
+		process.exit();
+	}
+});
+
+server.stderr.on("data", (err) => {
+	process.stdout.write(err);
+	// we bad :(
+	process.kill(1);
+});
+
+server.on("close", (code) => {
+	console.log("closed with code", code);
+	process.exit(code);
+});
