@@ -311,29 +311,7 @@
     "additionalProperties": false
   },
   "ChannelType": {
-    "type": [
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number"
-    ],
+    "type": "number",
     "oneOf": [
       {
         "title": "GUILD_TEXT",
@@ -422,11 +400,7 @@
     ]
   },
   "ChannelPermissionOverwriteType": {
-    "type": [
-      "number",
-      "number",
-      "number"
-    ],
+    "type": "number",
     "oneOf": [
       {
         "title": "role",
@@ -1239,13 +1213,7 @@
     "additionalProperties": false
   },
   "ActivityType": {
-    "type": [
-      "number",
-      "number",
-      "number",
-      "number",
-      "number"
-    ],
+    "type": "number",
     "oneOf": [
       {
         "title": "GAME",
@@ -1669,14 +1637,7 @@
     "additionalProperties": false
   },
   "EmbedType": {
-    "type": [
-      "string",
-      "string",
-      "string",
-      "string",
-      "string",
-      "string"
-    ],
+    "type": "string",
     "oneOf": [
       {
         "title": "rich",
@@ -1983,12 +1944,7 @@
     "additionalProperties": false
   },
   "RelationshipType": {
-    "type": [
-      "number",
-      "number",
-      "number",
-      "number"
-    ],
+    "type": "number",
     "oneOf": [
       {
         "title": "outgoing",
@@ -4607,11 +4563,7 @@
     "additionalProperties": false
   },
   "WebhookType": {
-    "type": [
-      "number",
-      "number",
-      "number"
-    ],
+    "type": "number",
     "oneOf": [
       {
         "title": "Incoming",
@@ -4831,10 +4783,7 @@
     "additionalProperties": false
   },
   "TeamMemberState": {
-    "type": [
-      "number",
-      "number"
-    ],
+    "type": "number",
     "oneOf": [
       {
         "title": "INVITED",
@@ -4934,10 +4883,7 @@
     "additionalProperties": false
   },
   "StickerType": {
-    "type": [
-      "number",
-      "number"
-    ],
+    "type": "number",
     "oneOf": [
       {
         "title": "STANDARD",
@@ -4950,12 +4896,7 @@
     ]
   },
   "StickerFormatType": {
-    "type": [
-      "number",
-      "number",
-      "number",
-      "number"
-    ],
+    "type": "number",
     "oneOf": [
       {
         "title": "GIF",
@@ -5062,33 +5003,7 @@
     "additionalProperties": false
   },
   "MessageType": {
-    "type": [
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number",
-      "number"
-    ],
+    "type": "number",
     "oneOf": [
       {
         "title": "DEFAULT",
@@ -5193,11 +5108,7 @@
     ]
   },
   "InteractionType": {
-    "type": [
-      "number",
-      "number",
-      "number"
-    ],
+    "type": "number",
     "oneOf": [
       {
         "title": "SelfCommand",
