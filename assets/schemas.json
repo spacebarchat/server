@@ -227,7 +227,7 @@
         "maxLength": 100
       },
       "type": {
-        "$ref": "#/definitions/ChannelType"
+        "$ref": "#/components/schemas/ChannelType"
       },
       "topic": {
         "type": "string"
@@ -259,7 +259,7 @@
               "type": "string"
             },
             "type": {
-              "$ref": "#/definitions/ChannelPermissionOverwriteType"
+              "$ref": "#/components/schemas/ChannelPermissionOverwriteType"
             },
             "allow": {
               "type": "string"
@@ -417,7 +417,7 @@
     ]
   },
   "ChannelPermissionOverwriteSchema": {
-    "$ref": "#/definitions/ChannelPermissionOverwrite"
+    "$ref": "#/components/schemas/ChannelPermissionOverwrite"
   },
   "ChannelPermissionOverwrite": {
     "type": "object",
@@ -432,7 +432,7 @@
         "type": "string"
       },
       "type": {
-        "$ref": "#/definitions/ChannelPermissionOverwriteType"
+        "$ref": "#/components/schemas/ChannelPermissionOverwriteType"
       }
     },
     "required": [
@@ -496,7 +496,7 @@
         "type": "string"
       },
       "token_data": {
-        "$ref": "#/definitions/ConnectedAccountTokenData"
+        "$ref": "#/components/schemas/ConnectedAccountTokenData"
       },
       "friend_sync": {
         "type": "boolean"
@@ -705,7 +705,7 @@
       "channels": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/ChannelModifySchema"
+          "$ref": "#/components/schemas/ChannelModifySchema"
         }
       },
       "guild_template_code": {
@@ -932,7 +932,7 @@
         "type": "number"
       },
       "presence": {
-        "$ref": "#/definitions/ActivitySchema"
+        "$ref": "#/components/schemas/ActivitySchema"
       },
       "compress": {
         "type": "boolean"
@@ -1032,12 +1032,12 @@
         "type": "boolean"
       },
       "status": {
-        "$ref": "#/definitions/Status"
+        "$ref": "#/components/schemas/Status"
       },
       "activities": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Activity"
+          "$ref": "#/components/schemas/Activity"
         }
       },
       "since": {
@@ -1066,7 +1066,7 @@
         "type": "string"
       },
       "type": {
-        "$ref": "#/definitions/ActivityType"
+        "$ref": "#/components/schemas/ActivityType"
       },
       "url": {
         "type": "string"
@@ -1433,11 +1433,11 @@
       "embeds": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Embed"
+          "$ref": "#/components/schemas/Embed"
         }
       },
       "embed": {
-        "$ref": "#/definitions/Embed"
+        "$ref": "#/components/schemas/Embed"
       },
       "allowed_mentions": {
         "type": "object",
@@ -1539,7 +1539,7 @@
         "type": "string"
       },
       "type": {
-        "$ref": "#/definitions/EmbedType"
+        "$ref": "#/components/schemas/EmbedType"
       },
       "description": {
         "type": "string"
@@ -1573,13 +1573,13 @@
         "additionalProperties": false
       },
       "image": {
-        "$ref": "#/definitions/EmbedImage"
+        "$ref": "#/components/schemas/EmbedImage"
       },
       "thumbnail": {
-        "$ref": "#/definitions/EmbedImage"
+        "$ref": "#/components/schemas/EmbedImage"
       },
       "video": {
-        "$ref": "#/definitions/EmbedImage"
+        "$ref": "#/components/schemas/EmbedImage"
       },
       "provider": {
         "type": "object",
@@ -1704,11 +1704,11 @@
       "embeds": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Embed"
+          "$ref": "#/components/schemas/Embed"
         }
       },
       "embed": {
-        "$ref": "#/definitions/Embed"
+        "$ref": "#/components/schemas/Embed"
       },
       "allowed_mentions": {
         "type": "object",
@@ -1938,7 +1938,7 @@
     "type": "object",
     "properties": {
       "type": {
-        "$ref": "#/definitions/RelationshipType"
+        "$ref": "#/components/schemas/RelationshipType"
       }
     },
     "additionalProperties": false
@@ -2218,7 +2218,7 @@
       "mute_config": {
         "anyOf": [
           {
-            "$ref": "#/definitions/MuteConfig"
+            "$ref": "#/components/schemas/MuteConfig"
           },
           {
             "type": "null"
@@ -2259,7 +2259,7 @@
       "channel_overrides": {
         "type": "object",
         "additionalProperties": {
-          "$ref": "#/definitions/ChannelOverride"
+          "$ref": "#/components/schemas/ChannelOverride"
         }
       }
     },
@@ -2288,7 +2288,7 @@
         "type": "number"
       },
       "mute_config": {
-        "$ref": "#/definitions/MuteConfig"
+        "$ref": "#/components/schemas/MuteConfig"
       },
       "muted": {
         "type": "boolean"
@@ -2794,10 +2794,10 @@
   "WebAuthnPostSchema": {
     "anyOf": [
       {
-        "$ref": "#/definitions/GenerateWebAuthnCredentialsSchema"
+        "$ref": "#/components/schemas/GenerateWebAuthnCredentialsSchema"
       },
       {
-        "$ref": "#/definitions/CreateWebAuthnCredentialSchema"
+        "$ref": "#/components/schemas/CreateWebAuthnCredentialSchema"
       }
     ]
   },
@@ -2920,10 +2920,10 @@
   "APIErrorOrCaptchaResponse": {
     "anyOf": [
       {
-        "$ref": "#/definitions/CaptchaRequiredResponse"
+        "$ref": "#/components/schemas/CaptchaRequiredResponse"
       },
       {
-        "$ref": "#/definitions/APIErrorResponse"
+        "$ref": "#/components/schemas/APIErrorResponse"
       }
     ]
   },
@@ -2952,7 +2952,7 @@
       "guilds": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Guild"
+          "$ref": "#/components/schemas/Guild"
         }
       },
       "offset": {
@@ -2980,7 +2980,7 @@
         "type": "string"
       },
       "afk_channel": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "afk_timeout": {
         "type": "number"
@@ -2988,7 +2988,7 @@
       "bans": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Ban"
+          "$ref": "#/components/schemas/Ban"
         }
       },
       "banner": {
@@ -3039,55 +3039,55 @@
       "members": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Member"
+          "$ref": "#/components/schemas/Member"
         }
       },
       "roles": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Role"
+          "$ref": "#/components/schemas/Role"
         }
       },
       "channels": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Channel"
+          "$ref": "#/components/schemas/Channel"
         }
       },
       "template_id": {
         "type": "string"
       },
       "template": {
-        "$ref": "#/definitions/Template"
+        "$ref": "#/components/schemas/Template"
       },
       "emojis": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Emoji"
+          "$ref": "#/components/schemas/Emoji"
         }
       },
       "stickers": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Sticker"
+          "$ref": "#/components/schemas/Sticker"
         }
       },
       "invites": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Invite"
+          "$ref": "#/components/schemas/Invite"
         }
       },
       "voice_states": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/VoiceState"
+          "$ref": "#/components/schemas/VoiceState"
         }
       },
       "webhooks": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Webhook"
+          "$ref": "#/components/schemas/Webhook"
         }
       },
       "mfa_level": {
@@ -3100,7 +3100,7 @@
         "type": "string"
       },
       "owner": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "preferred_locale": {
         "type": "string"
@@ -3115,7 +3115,7 @@
         "type": "string"
       },
       "public_updates_channel": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "rules_channel_id": {
         "type": "string"
@@ -3133,7 +3133,7 @@
         "type": "string"
       },
       "system_channel": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "system_channel_flags": {
         "type": "number"
@@ -3145,13 +3145,13 @@
         "type": "number"
       },
       "welcome_screen": {
-        "$ref": "#/definitions/GuildWelcomeScreen"
+        "$ref": "#/components/schemas/GuildWelcomeScreen"
       },
       "widget_channel_id": {
         "type": "string"
       },
       "widget_channel": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "widget_enabled": {
         "type": "boolean"
@@ -3237,12 +3237,12 @@
         ]
       },
       "type": {
-        "$ref": "#/definitions/ChannelType"
+        "$ref": "#/components/schemas/ChannelType"
       },
       "recipients": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Recipient"
+          "$ref": "#/components/schemas/Recipient"
         }
       },
       "last_message_id": {
@@ -3252,19 +3252,19 @@
         "type": "string"
       },
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "parent_id": {
         "type": "string"
       },
       "parent": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "owner_id": {
         "type": "string"
       },
       "owner": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "last_pin_timestamp": {
         "type": "number"
@@ -3278,7 +3278,7 @@
       "permission_overwrites": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/ChannelPermissionOverwrite"
+          "$ref": "#/components/schemas/ChannelPermissionOverwrite"
         }
       },
       "video_quality_mode": {
@@ -3302,7 +3302,7 @@
       "invites": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Invite"
+          "$ref": "#/components/schemas/Invite"
         }
       },
       "retention_policy_id": {
@@ -3311,25 +3311,25 @@
       "messages": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Message"
+          "$ref": "#/components/schemas/Message"
         }
       },
       "voice_states": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/VoiceState"
+          "$ref": "#/components/schemas/VoiceState"
         }
       },
       "read_states": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/ReadState"
+          "$ref": "#/components/schemas/ReadState"
         }
       },
       "webhooks": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Webhook"
+          "$ref": "#/components/schemas/Webhook"
         }
       },
       "flags": {
@@ -3362,13 +3362,13 @@
         "type": "string"
       },
       "channel": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "user_id": {
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "closed": {
         "type": "boolean"
@@ -3491,19 +3491,19 @@
       "sessions": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Session"
+          "$ref": "#/components/schemas/Session"
         }
       },
       "relationships": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Relationship"
+          "$ref": "#/components/schemas/Relationship"
         }
       },
       "connected_accounts": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/ConnectedAccount"
+          "$ref": "#/components/schemas/ConnectedAccount"
         }
       },
       "data": {
@@ -3529,7 +3529,7 @@
         }
       },
       "settings": {
-        "$ref": "#/definitions/UserSettings"
+        "$ref": "#/components/schemas/UserSettings"
       },
       "extended_settings": {
         "type": "string"
@@ -3537,7 +3537,7 @@
       "security_keys": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/SecurityKey"
+          "$ref": "#/components/schemas/SecurityKey"
         }
       }
     },
@@ -3586,7 +3586,7 @@
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "session_id": {
         "type": "string"
@@ -3594,7 +3594,7 @@
       "activities": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Activity"
+          "$ref": "#/components/schemas/Activity"
         }
       },
       "client_info": {
@@ -3618,7 +3618,7 @@
         "additionalProperties": false
       },
       "status": {
-        "$ref": "#/definitions/Status"
+        "$ref": "#/components/schemas/Status"
       }
     },
     "required": [
@@ -3642,19 +3642,19 @@
         "type": "string"
       },
       "from": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "to_id": {
         "type": "string"
       },
       "to": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "nickname": {
         "type": "string"
       },
       "type": {
-        "$ref": "#/definitions/RelationshipType"
+        "$ref": "#/components/schemas/RelationshipType"
       }
     },
     "required": [
@@ -3680,7 +3680,7 @@
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "friend_sync": {
         "type": "boolean"
@@ -3719,7 +3719,7 @@
       "token_data": {
         "anyOf": [
           {
-            "$ref": "#/definitions/ConnectedAccountTokenData"
+            "$ref": "#/components/schemas/ConnectedAccountTokenData"
           },
           {
             "type": "null"
@@ -3958,7 +3958,7 @@
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "key_id": {
         "type": "string"
@@ -4014,19 +4014,19 @@
         "type": "string"
       },
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "channel_id": {
         "type": "string"
       },
       "channel": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "inviter_id": {
         "type": "string"
       },
       "inviter": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "target_user_id": {
         "type": "string"
@@ -4068,37 +4068,37 @@
         "type": "string"
       },
       "channel": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "guild_id": {
         "type": "string"
       },
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "author_id": {
         "type": "string"
       },
       "author": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "member_id": {
         "type": "string"
       },
       "member": {
-        "$ref": "#/definitions/Member"
+        "$ref": "#/components/schemas/Member"
       },
       "webhook_id": {
         "type": "string"
       },
       "webhook": {
-        "$ref": "#/definitions/Webhook"
+        "$ref": "#/components/schemas/Webhook"
       },
       "application_id": {
         "type": "string"
       },
       "application": {
-        "$ref": "#/definitions/Application"
+        "$ref": "#/components/schemas/Application"
       },
       "content": {
         "type": "string"
@@ -4120,43 +4120,43 @@
       "mentions": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/User"
+          "$ref": "#/components/schemas/User"
         }
       },
       "mention_roles": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Role"
+          "$ref": "#/components/schemas/Role"
         }
       },
       "mention_channels": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Channel"
+          "$ref": "#/components/schemas/Channel"
         }
       },
       "sticker_items": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Sticker"
+          "$ref": "#/components/schemas/Sticker"
         }
       },
       "attachments": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Attachment"
+          "$ref": "#/components/schemas/Attachment"
         }
       },
       "embeds": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Embed"
+          "$ref": "#/components/schemas/Embed"
         }
       },
       "reactions": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Reaction"
+          "$ref": "#/components/schemas/Reaction"
         }
       },
       "nonce": {
@@ -4166,7 +4166,7 @@
         "type": "boolean"
       },
       "type": {
-        "$ref": "#/definitions/MessageType"
+        "$ref": "#/components/schemas/MessageType"
       },
       "activity": {
         "type": "object",
@@ -4206,7 +4206,7 @@
         "additionalProperties": false
       },
       "referenced_message": {
-        "$ref": "#/definitions/Message"
+        "$ref": "#/components/schemas/Message"
       },
       "interaction": {
         "type": "object",
@@ -4215,7 +4215,7 @@
             "type": "string"
           },
           "type": {
-            "$ref": "#/definitions/InteractionType"
+            "$ref": "#/components/schemas/InteractionType"
           },
           "name": {
             "type": "string"
@@ -4235,7 +4235,7 @@
       "components": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/MessageComponent"
+          "$ref": "#/components/schemas/MessageComponent"
         }
       }
     },
@@ -4262,13 +4262,13 @@
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "guild_id": {
         "type": "string"
       },
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "nick": {
         "type": "string"
@@ -4276,7 +4276,7 @@
       "roles": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Role"
+          "$ref": "#/components/schemas/Role"
         }
       },
       "joined_at": {
@@ -4296,7 +4296,7 @@
         "type": "boolean"
       },
       "settings": {
-        "$ref": "#/definitions/UserGuildSettings"
+        "$ref": "#/components/schemas/UserGuildSettings"
       },
       "last_message_id": {
         "type": "string"
@@ -4357,7 +4357,7 @@
         "type": "string"
       },
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "color": {
         "type": "number"
@@ -4424,7 +4424,7 @@
           {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/definitions/ChannelOverride"
+              "$ref": "#/components/schemas/ChannelOverride"
             }
           },
           {
@@ -4441,7 +4441,7 @@
       "mute_config": {
         "anyOf": [
           {
-            "$ref": "#/definitions/MuteConfig"
+            "$ref": "#/components/schemas/MuteConfig"
           },
           {
             "type": "null"
@@ -4504,7 +4504,7 @@
         "type": "string"
       },
       "type": {
-        "$ref": "#/definitions/WebhookType"
+        "$ref": "#/components/schemas/WebhookType"
       },
       "name": {
         "type": "string"
@@ -4519,31 +4519,31 @@
         "type": "string"
       },
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "channel_id": {
         "type": "string"
       },
       "channel": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "application_id": {
         "type": "string"
       },
       "application": {
-        "$ref": "#/definitions/Application"
+        "$ref": "#/components/schemas/Application"
       },
       "user_id": {
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "source_guild_id": {
         "type": "string"
       },
       "source_guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       }
     },
     "required": [
@@ -4613,7 +4613,7 @@
         "type": "string"
       },
       "owner": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "flags": {
         "type": "number"
@@ -4649,7 +4649,7 @@
         "type": "number"
       },
       "bot": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "tags": {
         "type": "array",
@@ -4686,7 +4686,7 @@
         "type": "string"
       },
       "team": {
-        "$ref": "#/definitions/Team"
+        "$ref": "#/components/schemas/Team"
       }
     },
     "required": [
@@ -4721,7 +4721,7 @@
       "members": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/TeamMember"
+          "$ref": "#/components/schemas/TeamMember"
         }
       },
       "name": {
@@ -4731,7 +4731,7 @@
         "type": "string"
       },
       "owner_user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       }
     },
     "required": [
@@ -4750,7 +4750,7 @@
         "type": "string"
       },
       "membership_state": {
-        "$ref": "#/definitions/TeamMemberState"
+        "$ref": "#/components/schemas/TeamMemberState"
       },
       "permissions": {
         "type": "array",
@@ -4762,13 +4762,13 @@
         "type": "string"
       },
       "team": {
-        "$ref": "#/definitions/Team"
+        "$ref": "#/components/schemas/Team"
       },
       "user_id": {
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       }
     },
     "required": [
@@ -4817,25 +4817,25 @@
         "type": "string"
       },
       "pack": {
-        "$ref": "#/definitions/StickerPack"
+        "$ref": "#/components/schemas/StickerPack"
       },
       "guild_id": {
         "type": "string"
       },
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "user_id": {
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "type": {
-        "$ref": "#/definitions/StickerType"
+        "$ref": "#/components/schemas/StickerType"
       },
       "format_type": {
-        "$ref": "#/definitions/StickerFormatType"
+        "$ref": "#/components/schemas/StickerFormatType"
       }
     },
     "required": [
@@ -4865,14 +4865,14 @@
       "stickers": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Sticker"
+          "$ref": "#/components/schemas/Sticker"
         }
       },
       "cover_sticker_id": {
         "type": "string"
       },
       "cover_sticker": {
-        "$ref": "#/definitions/Sticker"
+        "$ref": "#/components/schemas/Sticker"
       }
     },
     "required": [
@@ -4947,7 +4947,7 @@
         "type": "string"
       },
       "message": {
-        "$ref": "#/definitions/Message"
+        "$ref": "#/components/schemas/Message"
       }
     },
     "required": [
@@ -4968,7 +4968,7 @@
         "type": "number"
       },
       "emoji": {
-        "$ref": "#/definitions/PartialEmoji"
+        "$ref": "#/components/schemas/PartialEmoji"
       },
       "user_ids": {
         "type": "array",
@@ -5137,7 +5137,7 @@
         "type": "string"
       },
       "emoji": {
-        "$ref": "#/definitions/PartialEmoji"
+        "$ref": "#/components/schemas/PartialEmoji"
       },
       "custom_id": {
         "type": "string"
@@ -5151,7 +5151,7 @@
       "components": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/MessageComponent"
+          "$ref": "#/components/schemas/MessageComponent"
         }
       }
     },
@@ -5171,22 +5171,22 @@
         "type": "string"
       },
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "channel_id": {
         "type": "string"
       },
       "channel": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "user_id": {
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "member": {
-        "$ref": "#/definitions/Member"
+        "$ref": "#/components/schemas/Member"
       },
       "session_id": {
         "type": "string"
@@ -5249,13 +5249,13 @@
         "type": "string"
       },
       "channel": {
-        "$ref": "#/definitions/Channel"
+        "$ref": "#/components/schemas/Channel"
       },
       "user_id": {
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "last_message_id": {
         "type": "string"
@@ -5301,19 +5301,19 @@
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "guild_id": {
         "type": "string"
       },
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "executor_id": {
         "type": "string"
       },
       "executor": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "ip": {
         "type": "string"
@@ -5356,7 +5356,7 @@
         "type": "string"
       },
       "creator": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "created_at": {
         "type": "string",
@@ -5370,10 +5370,10 @@
         "type": "string"
       },
       "source_guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "serialized_source_guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       }
     },
     "required": [
@@ -5406,13 +5406,13 @@
         "type": "string"
       },
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "user_id": {
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "managed": {
         "type": "boolean"
@@ -5625,7 +5625,7 @@
         "type": "string"
       },
       "type": {
-        "$ref": "#/definitions/MessageType"
+        "$ref": "#/components/schemas/MessageType"
       },
       "content": {
         "type": "string"
@@ -5634,30 +5634,30 @@
         "type": "string"
       },
       "author": {
-        "$ref": "#/definitions/PublicUser"
+        "$ref": "#/components/schemas/PublicUser"
       },
       "attachments": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Attachment"
+          "$ref": "#/components/schemas/Attachment"
         }
       },
       "embeds": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Embed"
+          "$ref": "#/components/schemas/Embed"
         }
       },
       "mentions": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/PublicUser"
+          "$ref": "#/components/schemas/PublicUser"
         }
       },
       "mention_roles": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Role"
+          "$ref": "#/components/schemas/Role"
         }
       },
       "pinned": {
@@ -5774,7 +5774,7 @@
       "messages": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/GuildMessagesSearchMessage"
+          "$ref": "#/components/schemas/GuildMessagesSearchMessage"
         }
       },
       "total_results": {
@@ -5817,7 +5817,7 @@
       "recommended_guilds": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Guild"
+          "$ref": "#/components/schemas/Guild"
         }
       },
       "load_id": {
@@ -5914,7 +5914,7 @@
               ]
             },
             "status": {
-              "$ref": "#/definitions/ClientStatus"
+              "$ref": "#/components/schemas/ClientStatus"
             },
             "avatar_url": {
               "type": "string"
@@ -5969,7 +5969,7 @@
       "channel_id": {
         "anyOf": [
           {
-            "$ref": "#/definitions/Snowflake"
+            "$ref": "#/components/schemas/Snowflake"
           },
           {
             "type": "null"
@@ -6156,24 +6156,24 @@
     "type": "object",
     "properties": {
       "guild": {
-        "$ref": "#/definitions/Guild"
+        "$ref": "#/components/schemas/Guild"
       },
       "emojis": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Emoji"
+          "$ref": "#/components/schemas/Emoji"
         }
       },
       "roles": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Role"
+          "$ref": "#/components/schemas/Role"
         }
       },
       "stickers": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/Sticker"
+          "$ref": "#/components/schemas/Sticker"
         }
       }
     },
@@ -6204,7 +6204,7 @@
         "type": "string"
       },
       "settings": {
-        "$ref": "#/definitions/UserSettings"
+        "$ref": "#/components/schemas/UserSettings"
       }
     },
     "required": [
@@ -6234,7 +6234,7 @@
       "backup_codes": {
         "type": "array",
         "items": {
-          "$ref": "#/definitions/BackupCode"
+          "$ref": "#/components/schemas/BackupCode"
         }
       }
     },
@@ -6251,7 +6251,7 @@
         "type": "string"
       },
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "code": {
         "type": "string"
@@ -6323,10 +6323,10 @@
     "type": "object",
     "properties": {
       "user": {
-        "$ref": "#/definitions/PublicUser"
+        "$ref": "#/components/schemas/PublicUser"
       },
       "connected_accounts": {
-        "$ref": "#/definitions/PublicConnectedAccount"
+        "$ref": "#/components/schemas/PublicConnectedAccount"
       },
       "premium_guild_since": {
         "type": "string",
@@ -6369,13 +6369,13 @@
         "type": "string"
       },
       "type": {
-        "$ref": "#/definitions/RelationshipType"
+        "$ref": "#/components/schemas/RelationshipType"
       },
       "nickname": {
         "type": "null"
       },
       "user": {
-        "$ref": "#/definitions/PublicUser"
+        "$ref": "#/components/schemas/PublicUser"
       }
     },
     "required": [
@@ -6436,10 +6436,10 @@
     "type": "object",
     "properties": {
       "user": {
-        "$ref": "#/definitions/User"
+        "$ref": "#/components/schemas/User"
       },
       "hook": {
-        "$ref": "#/definitions/Webhook"
+        "$ref": "#/components/schemas/Webhook"
       }
     },
     "required": [
@@ -6522,13 +6522,13 @@
   "LoginResponse": {
     "anyOf": [
       {
-        "$ref": "#/definitions/TokenResponse"
+        "$ref": "#/components/schemas/TokenResponse"
       },
       {
-        "$ref": "#/definitions/MFAResponse"
+        "$ref": "#/components/schemas/MFAResponse"
       },
       {
-        "$ref": "#/definitions/WebAuthnResponse"
+        "$ref": "#/components/schemas/WebAuthnResponse"
       }
     ]
   },

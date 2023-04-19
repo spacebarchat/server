@@ -234,9 +234,7 @@ function main() {
 
 	fs.writeFileSync(
 		openapiPath,
-		JSON.stringify(specification, null, 4)
-			.replaceAll("#/definitions", "#/components/schemas")
-			.replaceAll("bigint", "number"),
+		JSON.stringify(specification, null, 4).replaceAll("bigint", "number"),
 	);
 }
 
