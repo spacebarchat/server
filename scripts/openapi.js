@@ -33,6 +33,7 @@ const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 // );
 let specification = {
 	openapi: "3.1.0",
+	swagger: "2.0",
 	info: {
 		title: "Spacebar Server",
 		description:
@@ -234,9 +235,7 @@ function main() {
 
 	fs.writeFileSync(
 		openapiPath,
-		JSON.stringify(specification, null, 4)
-			.replaceAll("#/definitions", "#/components/schemas")
-			.replaceAll("bigint", "number"),
+		JSON.stringify(specification, null, 4).replaceAll("bigint", "number"),
 	);
 }
 

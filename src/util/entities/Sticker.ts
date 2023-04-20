@@ -20,6 +20,7 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { User } from "./User";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
+import { StickerPack } from "./StickerPack";
 
 export enum StickerType {
 	STANDARD = 1,
@@ -56,7 +57,7 @@ export class Sticker extends BaseClass {
 		onDelete: "CASCADE",
 		nullable: true,
 	})
-	pack: import("./StickerPack").StickerPack;
+	pack: StickerPack;
 
 	@Column({ nullable: true })
 	guild_id?: string;
