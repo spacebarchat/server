@@ -28,7 +28,7 @@ import {
 import {
 	adjustEmail,
 	Config,
-	Email,
+	Email, EMAIL_REGEX,
 	FieldErrors,
 	Snowflake,
 	trimSpecial,
@@ -41,6 +41,7 @@ import { Relationship } from "./Relationship";
 import { SecurityKey } from "./SecurityKey";
 import { Session } from "./Session";
 import { UserSettings } from "./UserSettings";
+
 
 export enum PublicUserEnum {
 	username,
@@ -245,7 +246,7 @@ export class User extends BaseClass {
 				throw FieldErrors({
 					email: { message: "Invalid email", code: "EMAIL_INVALID" },
 				});
-			if (!this.email.match(/([a-z\d.-]{3,})@([a-z\d.-]+).([a-z]{2,})/g))
+			if (!this.email.match(EMAIL_REGEX))
 				throw FieldErrors({
 					email: { message: "Invalid email", code: "EMAIL_INVALID" },
 				});
