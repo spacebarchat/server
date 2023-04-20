@@ -70,7 +70,6 @@ const config = {
 		"{+(API)*,*+(Schema|Response)}.ts",
 	),
 	tsconfig: path.join(__dirname, "..", "tsconfig.json"),
-	skipTypeCheck: true,
 	discriminatorType: "open-api",
 	type: "*", // TODO: set specific types after parsing on the program
 };
