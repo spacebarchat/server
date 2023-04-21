@@ -59,8 +59,16 @@ router.post(
 		select: ["owner_id"],
 		});
 		
+		// dangerous stuff - owners only
 		if (guild.owner_id !== req.user_id)
 		throw new HTTPError("You are not the owner of this guild", 401);
+				
+		/**
+		 partially addresses fishvap's concerns on buyout schemes
+		 by disallowing splitting away empty guilds
+		**/
+		if (!(body.channels) || (body.channels.length < 1))
+		throw new HTTPError("One or more channels required", 403);
 
 		/** 
 		 point of no return
