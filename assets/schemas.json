@@ -31926,6 +31926,9 @@
             },
             "timezone_offset": {
                 "type": "integer"
+            },
+            "view_nsfw_guilds": {
+                "type": "boolean"
             }
         },
         "additionalProperties": false,
