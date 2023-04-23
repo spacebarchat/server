@@ -126,6 +126,15 @@ export default function rateLimit(opts: {
 							global,
 						})
 				);
+			} else {
+				const remaining = max_hits - offender.hits;
+				res = res
+					.set("X-RateLimit-Limit", `${max_hits}`)
+					.set("X-RateLimit-Remaining", `${remaining}`)
+					.set("X-RateLimit-Reset", `${reset}`)
+					.set("X-RateLimit-Reset-After", `${resetAfterSec}`)
+					.set("X-RateLimit-Global", `${global}`)
+					.set("X-RateLimit-Bucket", `${bucket_id}`);
 			}
 		}
 
