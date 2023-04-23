@@ -116,6 +116,9 @@ export class UserSettings extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	timezone_offset: number = 0; // e.g -60
+
+	@Column({ nullable: true })
+	view_nsfw_guilds: boolean = false; // allow access to NSFW guilds from iOS devices
 }
 
 interface CustomStatus {
