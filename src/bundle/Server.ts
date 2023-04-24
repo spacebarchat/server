@@ -51,7 +51,9 @@ async function main() {
 	await Config.init();
 	await Sentry.init(app);
 
-	server.listen(port);
+	await new Promise((resolve) =>
+		server.listen({ port }, () => resolve(undefined)),
+	);
 	await Promise.all([api.start(), cdn.start(), gateway.start()]);
 
 	Sentry.errorHandler(app);
