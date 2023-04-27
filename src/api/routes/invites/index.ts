@@ -65,7 +65,7 @@ router.post(
 				"Only intended for the staff of this server.",
 				401,
 			);
-		if (features.includes("INVITES_CLOSED"))
+		if (features.includes("INVITES_DISABLED"))
 			throw new HTTPError("Sorry, this guild has joins closed.", 403);
 
 		const invite = await Invite.joinGuild(req.user_id, code);
