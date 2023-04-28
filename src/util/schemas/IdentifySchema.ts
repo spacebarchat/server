@@ -109,7 +109,11 @@ export interface IdentifySchema {
 	compress?: boolean;
 	large_threshold?: number;
 	largeThreshold?: number;
-	shard?: [bigint, bigint];
+	/**
+	 * @minItems 2
+	 * @maxItems 2
+	 */
+	shard?: bigint[]; // puyo: changed from [bigint, bigint] because it breaks openapi
 	guild_subscriptions?: boolean;
 	capabilities?: number;
 	client_state?: {

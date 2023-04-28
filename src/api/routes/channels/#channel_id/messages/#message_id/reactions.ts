@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@spacebar/api";
 import {
 	Channel,
 	emitEvent,
@@ -32,8 +33,7 @@ import {
 	PublicUserProjection,
 	User,
 } from "@spacebar/util";
-import { route } from "@spacebar/api";
-import { Router, Response, Request } from "express";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
 
@@ -57,7 +57,17 @@ function getEmoji(emoji: string): PartialEmoji {
 
 router.delete(
 	"/",
-	route({ permission: "MANAGE_MESSAGES" }),
+	route({
+		permission: "MANAGE_MESSAGES",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {},
+			403: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id } = req.params;
 
@@ -83,7 +93,17 @@ router.delete(
 
 router.delete(
 	"/:emoji",
-	route({ permission: "MANAGE_MESSAGES" }),
+	route({
+		permission: "MANAGE_MESSAGES",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {},
+			403: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id } = req.params;
 		const emoji = getEmoji(req.params.emoji);
@@ -120,7 +140,19 @@ router.delete(
 
 router.get(
 	"/:emoji",
-	route({ permission: "VIEW_CHANNEL" }),
+	route({
+		permission: "VIEW_CHANNEL",
+		responses: {
+			200: {
+				body: "PublicUser",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {},
+			403: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id } = req.params;
 		const emoji = getEmoji(req.params.emoji);
@@ -148,7 +180,18 @@ router.get(
 
 router.put(
 	"/:emoji/:user_id",
-	route({ permission: "READ_MESSAGE_HISTORY", right: "SELF_ADD_REACTIONS" }),
+	route({
+		permission: "READ_MESSAGE_HISTORY",
+		right: "SELF_ADD_REACTIONS",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {},
+			403: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { message_id, channel_id, user_id } = req.params;
 		if (user_id !== "@me") throw new HTTPError("Invalid user");
@@ -219,7 +262,16 @@ router.put(
 
 router.delete(
 	"/:emoji/:user_id",
-	route({}),
+	route({
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {},
+			403: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		let { user_id } = req.params;
 		const { message_id, channel_id } = req.params;

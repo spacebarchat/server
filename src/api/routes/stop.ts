@@ -16,14 +16,22 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
 router.post(
 	"/",
-	route({ right: "OPERATOR" }),
+	route({
+		right: "OPERATOR",
+		responses: {
+			200: {},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		console.log(`/stop was called by ${req.user_id} at ${new Date()}`);
 		res.sendStatus(200);

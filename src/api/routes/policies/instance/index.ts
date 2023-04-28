@@ -16,14 +16,24 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
 import { Config } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 const router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { general } = Config.get();
-	res.json(general);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "APIGeneralConfiguration",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { general } = Config.get();
+		res.json(general);
+	},
+);
 
 export default router;

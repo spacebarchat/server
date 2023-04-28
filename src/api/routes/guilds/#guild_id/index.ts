@@ -16,46 +16,79 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
 import {
 	DiscordApiErrors,
+	Guild,
+	GuildUpdateEvent,
+	GuildUpdateSchema,
+	Member,
+	SpacebarApiErrors,
 	emitEvent,
 	getPermission,
 	getRights,
-	Guild,
-	GuildUpdateEvent,
 	handleFile,
-	Member,
-	GuildUpdateSchema,
-	SpacebarApiErrors,
 } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { route } from "@spacebar/api";
 
 const router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
+router.get(
+	"/",
+	route({
+		responses: {
+			"200": {
+				body: "APIGuildWithJoinedAt",
+			},
+			401: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id } = req.params;
 
-	const [guild, member] = await Promise.all([
-		Guild.findOneOrFail({ where: { id: guild_id } }),
-		Member.findOne({ where: { guild_id: guild_id, id: req.user_id } }),
-	]);
-	if (!member)
-		throw new HTTPError(
-			"You are not a member of the guild you are trying to access",
-			401,
-		);
+		const [guild, member] = await Promise.all([
+			Guild.findOneOrFail({ where: { id: guild_id } }),
+			Member.findOne({ where: { guild_id: guild_id, id: req.user_id } }),
+		]);
+		if (!member)
+			throw new HTTPError(
+				"You are not a member of the guild you are trying to access",
+				401,
+			);
 
-	return res.send({
-		...guild,
-		joined_at: member?.joined_at,
-	});
-});
+		return res.send({
+			...guild,
+			joined_at: member?.joined_at,
+		});
+	},
+);
 
 router.patch(
 	"/",
-	route({ body: "GuildUpdateSchema", permission: "MANAGE_GUILD" }),
+	route({
+		requestBody: "GuildUpdateSchema",
+		permission: "MANAGE_GUILD",
+		responses: {
+			"200": {
+				body: "GuildUpdateSchema",
+			},
+			401: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as GuildUpdateSchema;
 		const { guild_id } = req.params;

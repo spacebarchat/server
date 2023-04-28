@@ -16,28 +16,45 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
 import {
 	Application,
 	ApplicationCreateSchema,
-	trimSpecial,
 	User,
+	trimSpecial,
 } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const results = await Application.find({
-		where: { owner: { id: req.user_id } },
-		relations: ["owner", "bot"],
-	});
-	res.json(results).status(200);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "APIApplicationArray",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const results = await Application.find({
+			where: { owner: { id: req.user_id } },
+			relations: ["owner", "bot"],
+		});
+		res.json(results).status(200);
+	},
+);
 
 router.post(
 	"/",
-	route({ body: "ApplicationCreateSchema" }),
+	route({
+		requestBody: "ApplicationCreateSchema",
+		responses: {
+			200: {
+				body: "Application",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as ApplicationCreateSchema;
 		const user = await User.findOneOrFail({ where: { id: req.user_id } });

@@ -16,15 +16,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Member } from "@spacebar/util";
 import { route } from "@spacebar/api";
+import { Member } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();
 
 router.delete(
 	"/",
-	route({ permission: "MANAGE_ROLES" }),
+	route({
+		permission: "MANAGE_ROLES",
+		responses: {
+			204: {},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id, role_id, member_id } = req.params;
 
@@ -35,7 +43,13 @@ router.delete(
 
 router.put(
 	"/",
-	route({ permission: "MANAGE_ROLES" }),
+	route({
+		permission: "MANAGE_ROLES",
+		responses: {
+			204: {},
+			403: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id, role_id, member_id } = req.params;
 

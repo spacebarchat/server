@@ -16,71 +16,99 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
-import { User, Note, emitEvent, Snowflake } from "@spacebar/util";
+import { Note, Snowflake, User, emitEvent } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-router.get("/:id", route({}), async (req: Request, res: Response) => {
-	const { id } = req.params;
-
-	const note = await Note.findOneOrFail({
-		where: {
-			owner: { id: req.user_id },
-			target: { id: id },
+router.get(
+	"/:id",
+	route({
+		responses: {
+			200: {
+				body: "UserNoteResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
 		},
-	});
+	}),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
 
-	return res.json({
-		note: note?.content,
-		note_user_id: id,
-		user_id: req.user_id,
-	});
-});
+		const note = await Note.findOneOrFail({
+			where: {
+				owner: { id: req.user_id },
+				target: { id: id },
+			},
+		});
 
-router.put("/:id", route({}), async (req: Request, res: Response) => {
-	const { id } = req.params;
-	const owner = await User.findOneOrFail({ where: { id: req.user_id } });
-	const target = await User.findOneOrFail({ where: { id: id } }); //if noted user does not exist throw
-	const { note } = req.body;
+		return res.json({
+			note: note?.content,
+			note_user_id: id,
+			user_id: req.user_id,
+		});
+	},
+);
 
-	if (note && note.length) {
-		// upsert a note
-		if (
-			await Note.findOne({
-				where: { owner: { id: owner.id }, target: { id: target.id } },
-			})
-		) {
-			Note.update(
-				{ owner: { id: owner.id }, target: { id: target.id } },
-				{ owner, target, content: note },
-			);
+router.put(
+	"/:id",
+	route({
+		requestBody: "UserNoteUpdateSchema",
+		responses: {
+			204: {},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+		const owner = await User.findOneOrFail({ where: { id: req.user_id } });
+		const target = await User.findOneOrFail({ where: { id: id } }); //if noted user does not exist throw
+		const { note } = req.body;
+
+		if (note && note.length) {
+			// upsert a note
+			if (
+				await Note.findOne({
+					where: {
+						owner: { id: owner.id },
+						target: { id: target.id },
+					},
+				})
+			) {
+				Note.update(
+					{ owner: { id: owner.id }, target: { id: target.id } },
+					{ owner, target, content: note },
+				);
+			} else {
+				Note.insert({
+					id: Snowflake.generate(),
+					owner,
+					target,
+					content: note,
+				});
+			}
 		} else {
-			Note.insert({
-				id: Snowflake.generate(),
-				owner,
-				target,
-				content: note,
+			await Note.delete({
+				owner: { id: owner.id },
+				target: { id: target.id },
 			});
 		}
-	} else {
-		await Note.delete({
-			owner: { id: owner.id },
-			target: { id: target.id },
+
+		await emitEvent({
+			event: "USER_NOTE_UPDATE",
+			data: {
+				note: note,
+				id: target.id,
+			},
+			user_id: owner.id,
 		});
-	}
 
-	await emitEvent({
-		event: "USER_NOTE_UPDATE",
-		data: {
-			note: note,
-			id: target.id,
-		},
-		user_id: owner.id,
-	});
-
-	return res.status(204);
-});
+		return res.status(204);
+	},
+);
 
 export default router;

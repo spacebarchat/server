@@ -36,7 +36,7 @@ export interface Activity {
 	};
 	party?: {
 		id?: string;
-		size?: [number]; // used to show the party's current and maximum size // TODO: array length 2
+		size?: number[]; // used to show the party's current and maximum size // TODO: array length 2
 	};
 	assets?: {
 		large_image?: string; // the id for a large asset of the activity, usually a snowflake

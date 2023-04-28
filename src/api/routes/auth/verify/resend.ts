@@ -24,7 +24,18 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ right: "RESEND_VERIFICATION_EMAIL" }),
+	route({
+		right: "RESEND_VERIFICATION_EMAIL",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			500: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id },

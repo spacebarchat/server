@@ -16,15 +16,26 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getPermission, Member, PermissionResolvable } from "@spacebar/util";
 import { route } from "@spacebar/api";
+import { getPermission, Member, PermissionResolvable } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();
 
 router.patch(
 	"/",
-	route({ body: "MemberNickChangeSchema" }),
+	route({
+		requestBody: "MemberNickChangeSchema",
+		responses: {
+			200: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		let permissionString: PermissionResolvable = "MANAGE_NICKNAMES";

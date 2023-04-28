@@ -73,7 +73,17 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
 router.post(
 	"/",
-	route({ body: "WebAuthnPostSchema" }),
+	route({
+		requestBody: "WebAuthnPostSchema",
+		responses: {
+			200: {
+				body: "WebAuthnCreateResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		if (!WebAuthn.fido2) {
 			// TODO: I did this for typescript and I can't use !

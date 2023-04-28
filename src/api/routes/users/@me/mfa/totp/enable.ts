@@ -16,15 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import {
-	User,
-	generateToken,
-	generateMfaBackupCodes,
-	TotpEnableSchema,
-} from "@spacebar/util";
 import { route } from "@spacebar/api";
+import {
+	TotpEnableSchema,
+	User,
+	generateMfaBackupCodes,
+	generateToken,
+} from "@spacebar/util";
 import bcrypt from "bcrypt";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
 
@@ -32,7 +32,20 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ body: "TotpEnableSchema" }),
+	route({
+		requestBody: "TotpEnableSchema",
+		responses: {
+			200: {
+				body: "TokenWithBackupCodesResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as TotpEnableSchema;
 

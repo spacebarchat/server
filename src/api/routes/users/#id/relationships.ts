@@ -16,17 +16,25 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import { User } from "@spacebar/util";
 import { route } from "@spacebar/api";
+import { User, UserRelationsResponse } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
 router.get(
 	"/",
-	route({ test: { response: { body: "UserRelationsResponse" } } }),
+	route({
+		responses: {
+			200: { body: "UserRelationsResponse" },
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
-		const mutual_relations: object[] = [];
+		const mutual_relations: UserRelationsResponse = [];
+
 		const requested_relations = await User.findOneOrFail({
 			where: { id: req.params.id },
 			relations: ["relationships"],
