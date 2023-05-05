@@ -123,6 +123,8 @@ router.get(
                     avatar: x.author?.avatar,
                     avatar_decoration: null,
                     discriminator: x.author?.discriminator,
+					global_name: x.author?.global_name,
+					display_name: x.author?.display_name,
                     public_flags: x.author?.public_flags,
                 },
                 attachments: x.attachments,

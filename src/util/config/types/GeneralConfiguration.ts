@@ -29,4 +29,5 @@ export class GeneralConfiguration {
     image: string | null = null;
     instanceId: string = Snowflake.generate();
     autoCreateBotUsers: boolean = false;
+	pomeloEnabled: boolean = false;
 }

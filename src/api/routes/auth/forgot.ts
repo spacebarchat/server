@@ -20,6 +20,7 @@ import { route, verifyCaptcha } from "@spacebar/api";
 import { Config, Email, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ForgotPasswordSchema } from "@spacebar/schemas";
+import { HTTPError } from "lambert-server*";
 const router = Router({ mergeParams: true });
 
 router.post(
@@ -66,11 +67,16 @@ router.post(
             select: { username: true, id: true, email: true },
         }).catch(() => {});
 
-        if (user && user.email) {
-            Email.sendResetPassword(user, user.email).catch((e) => {
-                console.error(`Failed to send password reset email to ${user.username}#${user.discriminator} (${user.id}): ${e}`);
-            });
-        }
+        if (user && user.email)
+            return await Email.sendResetPassword(user, user.email)
+                .then(() => {
+                    return res.sendStatus(204);
+                })
+                .catch((e) => {
+                    console.error(`Failed to send password reset email to ${user.handle}: ${e}`);
+                    throw new HTTPError("Failed to send password reset email", 500);
+                });
+        else throw new HTTPError("No user or email", 500);
     },
 );
 

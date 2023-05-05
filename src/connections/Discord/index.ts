@@ -25,6 +25,8 @@ interface UserResponse {
     id: string;
     username: string;
     discriminator: string;
+	global_name: string;
+	display_name?: string;
     avatar_url: string | null;
 }
 
@@ -113,6 +115,7 @@ export default class DiscordConnection extends Connection {
 
         if (exists) return null;
 
+		// TODO: pomelo
         return await this.createConnection({
             user_id: userId,
             external_id: userInfo.id,

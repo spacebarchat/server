@@ -29,6 +29,25 @@ import { Session } from "./Session";
 import { UserSettings } from "./UserSettings";
 import { ChannelType, PrivateUserProjection, PublicUser, PublicUserProjection, UserPrivate } from "@spacebar/schemas";
 
+export enum PublicUserEnum {
+	username,
+	global_name,
+	display_name,
+	discriminator,
+	id,
+	public_flags,
+	avatar,
+	accent_color,
+	banner,
+	bio,
+	bot,
+	premium_since,
+	premium_type,
+	theme_colors,
+	pronouns,
+}
+export type PublicUserKeys = keyof typeof PublicUserEnum;
+
 @Entity({
     name: "users",
 })
@@ -36,8 +55,14 @@ export class User extends BaseClass {
     @Column()
     username: string; // username max length 32, min 2 (should be configurable)
 
+	@Column({nullable: true})
+	global_name: string; // puyo: pomelo
+
+	@Column({nullable: true})
+	display_name?: string; // puyo: pomelo
+
     @Column()
-    discriminator: string; // opaque string: 4 digits on discord.com
+	discriminator: string; // opaque string: 4 digits on discord.com, 0 for pomelo
 
     @Column({ nullable: true })
     avatar?: string; // hash of the user avatar
@@ -245,6 +270,13 @@ export class User extends BaseClass {
         }
     }
 
+	public get handle(): string {
+		const {pomeloEnabled} = Config.get().general;
+
+		// if pomelo is enabled, global_name should be set
+		return pomeloEnabled ? this.global_name as string : `${this.username}#${this.discriminator}`;
+	}
+
     static async register({
         email,
         username,
@@ -261,19 +293,25 @@ export class User extends BaseClass {
         req?: Request;
         bot?: boolean;
     }) {
+		const {pomeloEnabled} = Config.get().general;
+
         // trim special uf8 control characters -> Backspace, Newline, ...
         username = trimSpecial(username);
 
-        const discriminator = await User.generateDiscriminator(username);
-        if (!discriminator) {
-            // We've failed to generate a valid and unused discriminator
-            throw FieldErrors({
-                username: {
-                    code: "USERNAME_TOO_MANY_USERS",
+		let discriminator: string | undefined;
+		if(pomeloEnabled) discriminator = "0";
+		else {
+			discriminator = await User.generateDiscriminator(username);
+			if (!discriminator) {
+				// We've failed to generate a valid and unused discriminator
+				throw FieldErrors({
+					username: {
+						code: "USERNAME_TOO_MANY_USERS",
                     message: req?.t("auth:register.USERNAME_TOO_MANY_USERS") || "",
-                },
-            });
-        }
+					},
+				});
+			}
+		}
 
         // TODO: save date_of_birth
         // apparently discord doesn't save the date of birth and just calculate if nsfw is allowed
@@ -286,6 +324,8 @@ export class User extends BaseClass {
 
         const user = User.create({
             username: username,
+			global_name: username, // TODO: convert to lowercase, strip special characters,etc???
+			// display_name: username, // TODO: how should we do this?
             discriminator,
             id: id || Snowflake.generate(),
             email: email,
@@ -310,7 +350,7 @@ export class User extends BaseClass {
         // send verification email if users aren't verified by default and we have an email
         if (!Config.get().defaults.user.verified && email) {
             await Email.sendVerifyEmail(user, email).catch((e) => {
-                console.error(`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`);
+				console.error(`Failed to send verification email to ${user.handle}: ${e}`);
             });
         }
 
