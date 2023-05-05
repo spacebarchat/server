@@ -73,7 +73,7 @@ router.post(
                     return res.sendStatus(204);
                 })
                 .catch((e) => {
-                    console.error(`Failed to send password reset email to ${user.handle}: ${e}`);
+                    console.error(`Failed to send password reset email to ${user.tag}: ${e}`);
                     throw new HTTPError("Failed to send password reset email", 500);
                 });
         else throw new HTTPError("No user or email", 500);

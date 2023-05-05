@@ -270,7 +270,7 @@ export class User extends BaseClass {
         }
     }
 
-	public get handle(): string {
+	public get tag(): string {
 		const { pomeloEnabled } = Config.get().general;
 
 		// if pomelo is enabled, global_name should be set
@@ -352,7 +352,7 @@ export class User extends BaseClass {
         // send verification email if users aren't verified by default and we have an email
         if (!Config.get().defaults.user.verified && email) {
             await Email.sendVerifyEmail(user, email).catch((e) => {
-				console.error(`Failed to send verification email to ${user.handle}: ${e}`);
+				console.error(`Failed to send verification email to ${user.tag}: ${e}`);
             });
         }
 
