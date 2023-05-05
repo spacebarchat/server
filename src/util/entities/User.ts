@@ -55,10 +55,10 @@ export class User extends BaseClass {
     @Column()
     username: string; // username max length 32, min 2 (should be configurable)
 
-	@Column({nullable: true})
+	@Column({ nullable: true })
 	global_name: string; // puyo: pomelo
 
-	@Column({nullable: true})
+	@Column({ nullable: true })
 	display_name?: string; // puyo: pomelo
 
     @Column()
@@ -271,10 +271,12 @@ export class User extends BaseClass {
     }
 
 	public get handle(): string {
-		const {pomeloEnabled} = Config.get().general;
+		const { pomeloEnabled } = Config.get().general;
 
 		// if pomelo is enabled, global_name should be set
-		return pomeloEnabled ? this.global_name as string : `${this.username}#${this.discriminator}`;
+		return pomeloEnabled
+			? (this.global_name as string)
+			: `${this.username}#${this.discriminator}`;
 	}
 
     static async register({
@@ -292,14 +294,14 @@ export class User extends BaseClass {
         id?: string;
         req?: Request;
         bot?: boolean;
-    }) {
-		const {pomeloEnabled} = Config.get().general;
+	}) {
+		const { pomeloEnabled } = Config.get().general;
 
         // trim special uf8 control characters -> Backspace, Newline, ...
         username = trimSpecial(username);
 
 		let discriminator: string | undefined;
-		if(pomeloEnabled) discriminator = "0";
+		if (pomeloEnabled) discriminator = "0";
 		else {
 			discriminator = await User.generateDiscriminator(username);
 			if (!discriminator) {
@@ -307,7 +309,7 @@ export class User extends BaseClass {
 				throw FieldErrors({
 					username: {
 						code: "USERNAME_TOO_MANY_USERS",
-                    message: req?.t("auth:register.USERNAME_TOO_MANY_USERS") || "",
+                        message: req?.t("auth:register.USERNAME_TOO_MANY_USERS") || "",
 					},
 				});
 			}
