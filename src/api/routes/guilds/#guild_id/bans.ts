@@ -61,6 +61,8 @@ router.get(
                 user: {
                     username: user.username,
                     discriminator: user.discriminator,
+					global_name: user.global_name,
+					display_name: user.display_name,
                     id: user.id,
                     avatar: user.avatar ?? null,
                     public_flags: user.public_flags,
