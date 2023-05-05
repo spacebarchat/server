@@ -89,6 +89,8 @@ router.get(
 				"username",
 				"avatar",
 				"discriminator",
+				"global_name",
+				"display_name",
 				"public_flags",
 			],
 		});
@@ -137,6 +139,8 @@ router.get(
 				avatar: user.avatar,
 				avatar_decoration: null, // TODO
 				discriminator: user.discriminator,
+				global_name: user.global_name,
+				display_name: user.display_name,
 				public_flags: user.public_flags,
 			},
 			application: {
@@ -159,6 +163,8 @@ router.get(
 				avatar: bot.avatar,
 				avatar_decoration: null, // TODO
 				discriminator: bot.discriminator,
+				global_name: bot.global_name,
+				display_name: bot.display_name,
 				public_flags: bot.public_flags,
 				bot: true,
 				approximated_guild_count: 0, // TODO

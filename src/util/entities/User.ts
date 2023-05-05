@@ -37,6 +37,8 @@ import { UserSettings } from "./UserSettings";
 
 export enum PublicUserEnum {
 	username,
+	global_name,
+	display_name,
 	discriminator,
 	id,
 	public_flags,
@@ -90,8 +92,14 @@ export class User extends BaseClass {
 	@Column()
 	username: string; // username max length 32, min 2 (should be configurable)
 
+	@Column({nullable: true})
+	global_name: string; // puyo: pomelo
+
+	@Column({nullable: true})
+	display_name?: string; // puyo: pomelo
+
 	@Column()
-	discriminator: string; // opaque string: 4 digits on discord.com
+	discriminator: string; // opaque string: 4 digits on discord.com, 0 for pomelo
 
 	@Column({ nullable: true })
 	avatar?: string; // hash of the user avatar
@@ -323,6 +331,13 @@ export class User extends BaseClass {
 		}
 	}
 
+	public get handle(): string {
+		const {pomeloEnabled} = Config.get().general;
+
+		// if pomelo is enabled, global_name should be set
+		return pomeloEnabled ? this.global_name as string : `${this.username}#${this.discriminator}`; 
+	}
+
 	static async register({
 		email,
 		username,
@@ -337,19 +352,25 @@ export class User extends BaseClass {
 		id?: string;
 		req?: Request;
 	}) {
+		const {pomeloEnabled} = Config.get().general;
+
 		// trim special uf8 control characters -> Backspace, Newline, ...
 		username = trimSpecial(username);
 
-		const discriminator = await User.generateDiscriminator(username);
-		if (!discriminator) {
-			// We've failed to generate a valid and unused discriminator
-			throw FieldErrors({
-				username: {
-					code: "USERNAME_TOO_MANY_USERS",
-					message:
-						req?.t("auth:register.USERNAME_TOO_MANY_USERS") || "",
-				},
-			});
+		let discriminator: string | undefined;
+		if(pomeloEnabled) discriminator = "0";
+		else {
+			discriminator = await User.generateDiscriminator(username);
+			if (!discriminator) {
+				// We've failed to generate a valid and unused discriminator
+				throw FieldErrors({
+					username: {
+						code: "USERNAME_TOO_MANY_USERS",
+						message:
+							req?.t("auth:register.USERNAME_TOO_MANY_USERS") || "",
+					},
+				});
+			}
 		}
 
 		// TODO: save date_of_birth
@@ -364,6 +385,8 @@ export class User extends BaseClass {
 
 		const user = User.create({
 			username: username,
+			global_name: username, // TODO: convert to lowercase, strip special characters,etc???
+			// display_name: username, // TODO: how should we do this?
 			discriminator,
 			id: id || Snowflake.generate(),
 			email: email,
@@ -391,7 +414,7 @@ export class User extends BaseClass {
 		if (!Config.get().defaults.user.verified && email) {
 			await Email.sendVerifyEmail(user, email).catch((e) => {
 				console.error(
-					`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`,
+					`Failed to send verification email to ${user.handle}: ${e}`,
 				);
 			});
 		}

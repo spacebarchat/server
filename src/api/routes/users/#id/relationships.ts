@@ -58,6 +58,8 @@ router.get(
 						username: relation_user.username,
 						avatar: relation_user.avatar,
 						discriminator: relation_user.discriminator,
+						global_name: relation_user.global_name,
+						display_name: relation_user.display_name,
 						public_flags: relation_user.public_flags,
 					});
 				}
