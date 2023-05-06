@@ -112,12 +112,10 @@ export const Email: {
 	) {
 		const { instanceName } = Config.get().general;
 
-		// TODO: pomelo: display_name should take precedence over username if pomelo is enabled. maybe we should use global_name as the username?
 		const replacements = [
 			["{instanceName}", instanceName],
 			["{userUsername}", user.username],
 			["{userGlobalName}", user.global_name],
-			["{userDisplayName}", user.display_name],
 			["{userDiscriminator}", user.discriminator],
 			["{userId}", user.id],
 			["{phoneNumber}", user.phone?.slice(-4)],

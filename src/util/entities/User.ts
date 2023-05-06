@@ -38,7 +38,6 @@ import { UserSettings } from "./UserSettings";
 export enum PublicUserEnum {
 	username,
 	global_name,
-	display_name,
 	discriminator,
 	id,
 	public_flags,
@@ -93,10 +92,7 @@ export class User extends BaseClass {
 	username: string; // username max length 32, min 2 (should be configurable)
 
 	@Column({ nullable: true })
-	global_name: string; // puyo: pomelo
-
-	@Column({ nullable: true })
-	display_name?: string; // puyo: pomelo
+	global_name?: string; // puyo: pomelo
 
 	@Column()
 	discriminator: string; // opaque string: 4 digits on discord.com, 0 for pomelo
@@ -388,8 +384,6 @@ export class User extends BaseClass {
 
 		const user = User.create({
 			username: username,
-			global_name: username, // TODO: convert to lowercase, strip special characters,etc???
-			// display_name: username, // TODO: how should we do this?
 			discriminator,
 			id: id || Snowflake.generate(),
 			email: email,
