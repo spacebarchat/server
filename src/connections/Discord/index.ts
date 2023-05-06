@@ -16,7 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConnectedAccount, ConnectedAccountCommonOAuthTokenResponse, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
+import {
+	Config,
+	ConnectedAccount,
+	ConnectedAccountCommonOAuthTokenResponse,
+	Connection,
+	ConnectionCallbackSchema,
+	ConnectionLoader,
+	DiscordApiErrors,
+} from "@spacebar/util";
 import wretch from "wretch";
 import { DiscordSettings } from "./DiscordSettings";
 import { ConnectionCallbackSchema } from "@spacebar/schemas";
@@ -25,8 +33,7 @@ interface UserResponse {
     id: string;
     username: string;
     discriminator: string;
-	global_name: string;
-	display_name?: string;
+	global_name: string | null;
     avatar_url: string | null;
 }
 
@@ -115,12 +122,14 @@ export default class DiscordConnection extends Connection {
 
         if (exists) return null;
 
-		// TODO: pomelo
+		const { pomeloEnabled } = Config.get().general;
         return await this.createConnection({
             user_id: userId,
             external_id: userInfo.id,
             friend_sync: params.friend_sync,
-            name: `${userInfo.username}#${userInfo.discriminator}`,
+			name: pomeloEnabled
+				? userInfo.username
+				: `${userInfo.username}#${userInfo.discriminator}`,
             type: this.id,
         });
     }

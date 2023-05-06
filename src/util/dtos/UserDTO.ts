@@ -19,21 +19,20 @@
 import { User } from "../entities";
 
 export class MinimalPublicUserDTO {
-	avatar?: string | null;
-	discriminator: string;
-	id: string;
-	public_flags: number;
-	username: string;
-    global_name: string;
-    display_name?: string;
+    id: string;
+    username: string;
+    global_name: string | null = null;
+    discriminator: string;
+    public_flags: number;
+    avatar?: string | null;
 
-	constructor(user: User) {
-		this.avatar = user.avatar;
-		this.discriminator = user.discriminator;
-		this.id = user.id;
-		this.public_flags = user.public_flags;
-		this.username = user.username;
-        this.global_name = user.global_name;
-        this.display_name = user.display_name;
-	}
+    constructor(user: User) {
+        this.id = user.id;
+        this.username = user.username;
+        this.discriminator = user.discriminator;
+        this.public_flags = user.public_flags;
+        this.avatar = user.avatar;
+
+        if (user.global_name) this.global_name = user.global_name;
+    }
 }
