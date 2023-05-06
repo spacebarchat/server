@@ -197,9 +197,8 @@ router.get(
                 x.author = User.create({
                     id: "4",
 					discriminator: pomeloEnabled ? "0" : "0000",
-                    username: "Spacebar Ghost",
-					global_name: "spacebarghost",
-					display_name: "Spacebar Ghost",
+					username: "spacebarghost",
+					global_name: "Spacebar Ghost",
                     public_flags: 0,
                 });
             x.attachments?.forEach((y: Attachment) => {

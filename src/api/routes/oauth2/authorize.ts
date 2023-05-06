@@ -75,7 +75,7 @@ router.get(
                 id: req.user_id,
                 bot: false,
             },
-            select: { id: true, username: true, avatar: true, discriminator: true, public_flags: true, global_name: true, display_name: true, public_flags: true },
+            select: { id: true, username: true, avatar: true, discriminator: true, public_flags: true, global_name: true, public_flags: true },
         });
 
         const guilds = await Member.find({
@@ -123,7 +123,6 @@ router.get(
                 avatar_decoration: null, // TODO
                 discriminator: user.discriminator,
                 global_name: user.global_name,
-                display_name: user.display_name,
                 public_flags: user.public_flags,
             },
             application: {
@@ -147,7 +146,6 @@ router.get(
                 avatar_decoration: null, // TODO
                 discriminator: bot.discriminator,
                 global_name: bot.global_name,
-                display_name: bot.display_name,
                 public_flags: bot.public_flags,
                 bot: true,
                 approximated_guild_count: 0, // TODO
