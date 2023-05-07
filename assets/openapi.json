@@ -5994,6 +5994,9 @@
                     },
                     "suppress": {
                         "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "integer"
                     }
                 },
                 "required": [
@@ -7190,9 +7193,14 @@
                     },
                     "instanceId": {
                         "type": "string"
+                    },
+                    "autoCreateBotUsers": {
+                        "type": "boolean",
+                        "default": false
                     }
                 },
                 "required": [
+                    "autoCreateBotUsers",
                     "correspondenceEmail",
                     "correspondenceUserID",
                     "frontPage",

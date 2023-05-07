@@ -20,6 +20,7 @@ import { route } from "@spacebar/api";
 import {
 	Application,
 	ApplicationCreateSchema,
+	Config,
 	User,
 	trimSpecial,
 } from "@spacebar/util";
@@ -67,6 +68,26 @@ router.post(
 			verify_key: "IMPLEMENTME",
 			flags: 0,
 		});
+
+		// april 14, 2023: discord made bot users be automatically added to all new apps
+		const { autoCreateBotUsers } = Config.get().general;
+		if (autoCreateBotUsers) {
+			const user = await User.register({
+				username: app.name,
+				password: undefined,
+				id: app.id,
+				req,
+			});
+
+			user.id = app.id;
+			user.premium_since = new Date();
+			user.bot = true;
+
+			await user.save();
+
+			// flags is NaN here?
+			app.assign({ bot: user, flags: app.flags || 0 });
+		}
 
 		await app.save();
 
