@@ -4824,6 +4824,9 @@
                             "guild_versions": {},
                             "api_code_version": {
                                 "type": "integer"
+                            },
+                            "initial_guild_id": {
+                                "type": "string"
                             }
                         },
                         "additionalProperties": false
@@ -4850,6 +4853,9 @@
                             "guildVersions": {},
                             "apiCodeVersion": {
                                 "type": "integer"
+                            },
+                            "initialGuildId": {
+                                "type": "string"
                             }
                         },
                         "additionalProperties": false
@@ -5994,6 +6000,9 @@
                     },
                     "suppress": {
                         "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "integer"
                     }
                 },
                 "required": [
