@@ -18,7 +18,6 @@
 
 export * from "./ApiError";
 export * from "./Array";
-export * from "./Application";
 export * from "./BitField";
 //export * from "./Categories";
 export * from "./cdn";
@@ -43,3 +42,4 @@ export * from "./Token";
 export * from "./TraverseDirectory";
 export * from "./WebAuthn";
 export * from "./Gifs";
+export * from "./Application";
