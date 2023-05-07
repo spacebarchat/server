@@ -22,6 +22,7 @@ import {
 	ApplicationCreateSchema,
 	Config,
 	User,
+	createAppBotUser,
 	trimSpecial,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
@@ -72,24 +73,8 @@ router.post(
 		// april 14, 2023: discord made bot users be automatically added to all new apps
 		const { autoCreateBotUsers } = Config.get().general;
 		if (autoCreateBotUsers) {
-			const user = await User.register({
-				username: app.name,
-				password: undefined,
-				id: app.id,
-				req,
-			});
-
-			user.id = app.id;
-			user.premium_since = new Date();
-			user.bot = true;
-
-			await user.save();
-
-			// flags is NaN here?
-			app.assign({ bot: user, flags: app.flags || 0 });
-		}
-
-		await app.save();
+			await createAppBotUser(app, req);
+		} else await app.save();
 
 		res.json(app);
 	},
