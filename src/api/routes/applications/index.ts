@@ -20,7 +20,9 @@ import { route } from "@spacebar/api";
 import {
 	Application,
 	ApplicationCreateSchema,
+	Config,
 	User,
+	createAppBotUser,
 	trimSpecial,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
@@ -68,7 +70,11 @@ router.post(
 			flags: 0,
 		});
 
-		await app.save();
+		// april 14, 2023: discord made bot users be automatically added to all new apps
+		const { autoCreateBotUsers } = Config.get().general;
+		if (autoCreateBotUsers) {
+			await createAppBotUser(app, req);
+		} else await app.save();
 
 		res.json(app);
 	},

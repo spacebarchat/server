@@ -7199,9 +7199,14 @@
                     },
                     "instanceId": {
                         "type": "string"
+                    },
+                    "autoCreateBotUsers": {
+                        "type": "boolean",
+                        "default": false
                     }
                 },
                 "required": [
+                    "autoCreateBotUsers",
                     "correspondenceEmail",
                     "correspondenceUserID",
                     "frontPage",

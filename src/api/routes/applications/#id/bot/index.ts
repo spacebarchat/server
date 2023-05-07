@@ -22,6 +22,7 @@ import {
 	BotModifySchema,
 	DiscordApiErrors,
 	User,
+	createAppBotUser,
 	generateToken,
 	handleFile,
 } from "@spacebar/util";
@@ -52,23 +53,7 @@ router.post(
 		if (app.owner.id != req.user_id)
 			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-		const user = await User.register({
-			username: app.name,
-			password: undefined,
-			id: app.id,
-			req,
-		});
-
-		user.id = app.id;
-		user.premium_since = new Date();
-		user.bot = true;
-
-		await user.save();
-
-		// flags is NaN here?
-		app.assign({ bot: user, flags: app.flags || 0 });
-
-		await app.save();
+		const user = await createAppBotUser(app, req);
 
 		res.send({
 			token: await generateToken(user.id),
