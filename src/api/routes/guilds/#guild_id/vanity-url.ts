@@ -107,6 +107,12 @@ router.patch(
 			where: { guild_id, type: ChannelType.GUILD_TEXT },
 		});
 
+		if (!guild.features.includes("ALIASABLE_NAMES")) {
+			await Invite.update({ guild_id }, {
+				code: code
+			});
+		}
+
 		await Invite.create({
 			vanity_url: true,
 			code: code,
