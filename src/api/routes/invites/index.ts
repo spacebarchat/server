@@ -18,6 +18,7 @@
 
 import { route } from "@spacebar/api";
 import {
+	DiscordApiErrors,
 	emitEvent,
 	getPermission,
 	Guild,
@@ -75,6 +76,8 @@ router.post(
 		},
 	}),
 	async (req: Request, res: Response) => {
+		if (req.user_bot) throw DiscordApiErrors.BOT_PROHIBITED_ENDPOINT;
+
 		const { code } = req.params;
 		const { guild_id } = await Invite.findOneOrFail({
 			where: { code: code },
