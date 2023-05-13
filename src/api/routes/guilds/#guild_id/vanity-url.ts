@@ -108,9 +108,14 @@ router.patch(
 		});
 
 		if (!guild.features.includes("ALIASABLE_NAMES")) {
-			await Invite.update({ guild_id }, {
-				code: code
-			});
+			await Invite.update(
+				{ guild_id },
+				{
+					code: code,
+				},
+			);
+
+			return res.json({ code });
 		}
 
 		await Invite.create({
