@@ -16,23 +16,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import {
-	User,
-	Member,
-	UserProfileModifySchema,
-	handleFile,
-	PrivateUserProjection,
-	emitEvent,
-	UserUpdateEvent,
-} from "@spacebar/util";
 import { route } from "@spacebar/api";
+import {
+	Member,
+	PrivateUserProjection,
+	User,
+	UserProfileModifySchema,
+	UserUpdateEvent,
+	emitEvent,
+	handleFile,
+} from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
 router.get(
 	"/",
-	route({ test: { response: { body: "UserProfileResponse" } } }),
+	route({ responses: { 200: { body: "UserProfileResponse" } } }),
 	async (req: Request, res: Response) => {
 		if (req.params.id === "@me") req.params.id = req.user_id;
 
@@ -151,7 +151,7 @@ router.get(
 
 router.patch(
 	"/",
-	route({ body: "UserProfileModifySchema" }),
+	route({ requestBody: "UserProfileModifySchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as UserProfileModifySchema;
 

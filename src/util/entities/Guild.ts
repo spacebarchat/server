@@ -24,7 +24,7 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { Config, handleFile, Snowflake } from "..";
+import { Config, GuildWelcomeScreen, handleFile, Snowflake } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -77,7 +77,7 @@ export class Guild extends BaseClass {
 	afk_channel?: Channel;
 
 	@Column({ nullable: true })
-	afk_timeout?: number = Config.get().defaults.guild.afkTimeout;
+	afk_timeout?: number;
 
 	// * commented out -> use owner instead
 	// application id of the guild creator if it is bot-created
@@ -95,8 +95,7 @@ export class Guild extends BaseClass {
 	banner?: string;
 
 	@Column({ nullable: true })
-	default_message_notifications?: number =
-		Config.get().defaults.guild.defaultMessageNotifications;
+	default_message_notifications?: number;
 
 	@Column({ nullable: true })
 	description?: string;
@@ -105,11 +104,10 @@ export class Guild extends BaseClass {
 	discovery_splash?: string;
 
 	@Column({ nullable: true })
-	explicit_content_filter?: number =
-		Config.get().defaults.guild.explicitContentFilter;
+	explicit_content_filter?: number;
 
 	@Column({ type: "simple-array" })
-	features: string[] = Config.get().guild.defaultFeatures || []; //TODO use enum
+	features: string[] = []; //TODO use enum
 	//TODO: https://discord.com/developers/docs/resources/guild#guild-object-guild-features
 
 	@Column({ nullable: true })
@@ -122,14 +120,13 @@ export class Guild extends BaseClass {
 	large?: boolean = false;
 
 	@Column({ nullable: true })
-	max_members?: number = Config.get().limits.guild.maxMembers;
+	max_members?: number;
 
 	@Column({ nullable: true })
-	max_presences?: number = Config.get().defaults.guild.maxPresences;
+	max_presences?: number;
 
 	@Column({ nullable: true })
-	max_video_channel_users?: number =
-		Config.get().defaults.guild.maxVideoChannelUsers;
+	max_video_channel_users?: number;
 
 	@Column({ nullable: true })
 	member_count?: number;
@@ -247,7 +244,7 @@ export class Guild extends BaseClass {
 	rules_channel?: string;
 
 	@Column({ nullable: true })
-	region?: string = Config.get().regions.default;
+	region?: string;
 
 	@Column({ nullable: true })
 	splash?: string;
@@ -270,16 +267,7 @@ export class Guild extends BaseClass {
 	verification_level?: number;
 
 	@Column({ type: "simple-json" })
-	welcome_screen: {
-		enabled: boolean;
-		description: string;
-		welcome_channels: {
-			description: string;
-			emoji_id?: string;
-			emoji_name?: string;
-			channel_id: string;
-		}[];
-	};
+	welcome_screen: GuildWelcomeScreen;
 
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.widget_channel)
@@ -336,6 +324,18 @@ export class Guild extends BaseClass {
 				description: "Fill in your description",
 				welcome_channels: [],
 			},
+
+			afk_timeout: Config.get().defaults.guild.afkTimeout,
+			default_message_notifications:
+				Config.get().defaults.guild.defaultMessageNotifications,
+			explicit_content_filter:
+				Config.get().defaults.guild.explicitContentFilter,
+			features: Config.get().guild.defaultFeatures,
+			max_members: Config.get().limits.guild.maxMembers,
+			max_presences: Config.get().defaults.guild.maxPresences,
+			max_video_channel_users:
+				Config.get().defaults.guild.maxVideoChannelUsers,
+			region: Config.get().regions.default,
 		}).save();
 
 		// we have to create the role _after_ the guild because else we would get a "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" error

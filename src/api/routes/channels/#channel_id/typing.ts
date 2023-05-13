@@ -16,15 +16,22 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Channel, emitEvent, Member, TypingStartEvent } from "@spacebar/util";
 import { route } from "@spacebar/api";
-import { Router, Request, Response } from "express";
+import { Channel, emitEvent, Member, TypingStartEvent } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
 router.post(
 	"/",
-	route({ permission: "SEND_MESSAGES" }),
+	route({
+		permission: "SEND_MESSAGES",
+		responses: {
+			204: {},
+			404: {},
+			403: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 		const user_id = req.user_id;

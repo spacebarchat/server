@@ -16,28 +16,47 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
 import {
 	Application,
 	ApplicationCreateSchema,
-	trimSpecial,
+	Config,
 	User,
+	createAppBotUser,
+	trimSpecial,
 } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const results = await Application.find({
-		where: { owner: { id: req.user_id } },
-		relations: ["owner", "bot"],
-	});
-	res.json(results).status(200);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "APIApplicationArray",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const results = await Application.find({
+			where: { owner: { id: req.user_id } },
+			relations: ["owner", "bot"],
+		});
+		res.json(results).status(200);
+	},
+);
 
 router.post(
 	"/",
-	route({ body: "ApplicationCreateSchema" }),
+	route({
+		requestBody: "ApplicationCreateSchema",
+		responses: {
+			200: {
+				body: "Application",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as ApplicationCreateSchema;
 		const user = await User.findOneOrFail({ where: { id: req.user_id } });
@@ -51,7 +70,11 @@ router.post(
 			flags: 0,
 		});
 
-		await app.save();
+		// april 14, 2023: discord made bot users be automatically added to all new apps
+		const { autoCreateBotUsers } = Config.get().general;
+		if (autoCreateBotUsers) {
+			await createAppBotUser(app, req);
+		} else await app.save();
 
 		res.json(app);
 	},

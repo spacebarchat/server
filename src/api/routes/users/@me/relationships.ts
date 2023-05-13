@@ -16,20 +16,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	RelationshipAddEvent,
-	User,
-	PublicUserProjection,
-	RelationshipType,
-	RelationshipRemoveEvent,
-	emitEvent,
-	Relationship,
-	Config,
-} from "@spacebar/util";
-import { Router, Response, Request } from "express";
-import { HTTPError } from "lambert-server";
-import { DiscordApiErrors } from "@spacebar/util";
 import { route } from "@spacebar/api";
+import {
+	Config,
+	DiscordApiErrors,
+	PublicUserProjection,
+	Relationship,
+	RelationshipAddEvent,
+	RelationshipRemoveEvent,
+	RelationshipType,
+	User,
+	emitEvent,
+} from "@spacebar/util";
+import { Request, Response, Router } from "express";
+import { HTTPError } from "lambert-server";
 
 const router = Router();
 
@@ -38,29 +38,53 @@ const userProjection: (keyof User)[] = [
 	...PublicUserProjection,
 ];
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const user = await User.findOneOrFail({
-		where: { id: req.user_id },
-		relations: ["relationships", "relationships.to"],
-		select: ["id", "relationships"],
-	});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "UserRelationshipsResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const user = await User.findOneOrFail({
+			where: { id: req.user_id },
+			relations: ["relationships", "relationships.to"],
+			select: ["id", "relationships"],
+		});
 
-	//TODO DTO
-	const related_users = user.relationships.map((r) => {
-		return {
-			id: r.to.id,
-			type: r.type,
-			nickname: null,
-			user: r.to.toPublicUser(),
-		};
-	});
+		//TODO DTO
+		const related_users = user.relationships.map((r) => {
+			return {
+				id: r.to.id,
+				type: r.type,
+				nickname: null,
+				user: r.to.toPublicUser(),
+			};
+		});
 
-	return res.json(related_users);
-});
+		return res.json(related_users);
+	},
+);
 
 router.put(
 	"/:id",
-	route({ body: "RelationshipPutSchema" }),
+	route({
+		requestBody: "RelationshipPutSchema",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		return await updateRelationship(
 			req,
@@ -77,7 +101,18 @@ router.put(
 
 router.post(
 	"/",
-	route({ body: "RelationshipPostSchema" }),
+	route({
+		requestBody: "RelationshipPostSchema",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		return await updateRelationship(
 			req,
@@ -98,64 +133,78 @@ router.post(
 	},
 );
 
-router.delete("/:id", route({}), async (req: Request, res: Response) => {
-	const { id } = req.params;
-	if (id === req.user_id)
-		throw new HTTPError("You can't remove yourself as a friend");
+router.delete(
+	"/:id",
+	route({
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+		if (id === req.user_id)
+			throw new HTTPError("You can't remove yourself as a friend");
 
-	const user = await User.findOneOrFail({
-		where: { id: req.user_id },
-		select: userProjection,
-		relations: ["relationships"],
-	});
-	const friend = await User.findOneOrFail({
-		where: { id: id },
-		select: userProjection,
-		relations: ["relationships"],
-	});
+		const user = await User.findOneOrFail({
+			where: { id: req.user_id },
+			select: userProjection,
+			relations: ["relationships"],
+		});
+		const friend = await User.findOneOrFail({
+			where: { id: id },
+			select: userProjection,
+			relations: ["relationships"],
+		});
 
-	const relationship = user.relationships.find((x) => x.to_id === id);
-	const friendRequest = friend.relationships.find(
-		(x) => x.to_id === req.user_id,
-	);
+		const relationship = user.relationships.find((x) => x.to_id === id);
+		const friendRequest = friend.relationships.find(
+			(x) => x.to_id === req.user_id,
+		);
 
-	if (!relationship)
-		throw new HTTPError("You are not friends with the user", 404);
-	if (relationship?.type === RelationshipType.blocked) {
-		// unblock user
+		if (!relationship)
+			throw new HTTPError("You are not friends with the user", 404);
+		if (relationship?.type === RelationshipType.blocked) {
+			// unblock user
+
+			await Promise.all([
+				Relationship.delete({ id: relationship.id }),
+				emitEvent({
+					event: "RELATIONSHIP_REMOVE",
+					user_id: req.user_id,
+					data: relationship.toPublicRelationship(),
+				} as RelationshipRemoveEvent),
+			]);
+			return res.sendStatus(204);
+		}
+		if (friendRequest && friendRequest.type !== RelationshipType.blocked) {
+			await Promise.all([
+				Relationship.delete({ id: friendRequest.id }),
+				await emitEvent({
+					event: "RELATIONSHIP_REMOVE",
+					data: friendRequest.toPublicRelationship(),
+					user_id: id,
+				} as RelationshipRemoveEvent),
+			]);
+		}
 
 		await Promise.all([
 			Relationship.delete({ id: relationship.id }),
 			emitEvent({
 				event: "RELATIONSHIP_REMOVE",
-				user_id: req.user_id,
 				data: relationship.toPublicRelationship(),
+				user_id: req.user_id,
 			} as RelationshipRemoveEvent),
 		]);
+
 		return res.sendStatus(204);
-	}
-	if (friendRequest && friendRequest.type !== RelationshipType.blocked) {
-		await Promise.all([
-			Relationship.delete({ id: friendRequest.id }),
-			await emitEvent({
-				event: "RELATIONSHIP_REMOVE",
-				data: friendRequest.toPublicRelationship(),
-				user_id: id,
-			} as RelationshipRemoveEvent),
-		]);
-	}
-
-	await Promise.all([
-		Relationship.delete({ id: relationship.id }),
-		emitEvent({
-			event: "RELATIONSHIP_REMOVE",
-			data: relationship.toPublicRelationship(),
-			user_id: req.user_id,
-		} as RelationshipRemoveEvent),
-	]);
-
-	return res.sendStatus(204);
-});
+	},
+);
 
 export default router;
 

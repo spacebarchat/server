@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@spacebar/api";
 import {
 	Channel,
 	ChannelType,
@@ -26,7 +27,6 @@ import {
 	VoiceStateUpdateEvent,
 	VoiceStateUpdateSchema,
 } from "@spacebar/util";
-import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 
 const router = Router();
@@ -34,7 +34,21 @@ const router = Router();
 
 router.patch(
 	"/",
-	route({ body: "VoiceStateUpdateSchema" }),
+	route({
+		requestBody: "VoiceStateUpdateSchema",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as VoiceStateUpdateSchema;
 		const { guild_id } = req.params;

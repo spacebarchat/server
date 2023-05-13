@@ -16,29 +16,42 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@spacebar/api";
 import {
-	emitEvent,
 	GuildStickersUpdateEvent,
 	Member,
+	ModifyGuildStickerSchema,
 	Snowflake,
 	Sticker,
 	StickerFormatType,
 	StickerType,
+	emitEvent,
 	uploadFile,
-	ModifyGuildStickerSchema,
 } from "@spacebar/util";
-import { Router, Request, Response } from "express";
-import { route } from "@spacebar/api";
-import multer from "multer";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import multer from "multer";
 const router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
-	await Member.IsInGuildOrFail(req.user_id, guild_id);
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "APIStickerArray",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id } = req.params;
+		await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	res.json(await Sticker.find({ where: { guild_id } }));
-});
+		res.json(await Sticker.find({ where: { guild_id } }));
+	},
+);
 
 const bodyParser = multer({
 	limits: {
@@ -54,7 +67,18 @@ router.post(
 	bodyParser,
 	route({
 		permission: "MANAGE_EMOJIS_AND_STICKERS",
-		body: "ModifyGuildStickerSchema",
+		requestBody: "ModifyGuildStickerSchema",
+		responses: {
+			200: {
+				body: "Sticker",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
 	}),
 	async (req: Request, res: Response) => {
 		if (!req.file) throw new HTTPError("missing file");
@@ -81,7 +105,7 @@ router.post(
 	},
 );
 
-export function getStickerFormat(mime_type: string) {
+function getStickerFormat(mime_type: string) {
 	switch (mime_type) {
 		case "image/apng":
 			return StickerFormatType.APNG;
@@ -98,20 +122,46 @@ export function getStickerFormat(mime_type: string) {
 	}
 }
 
-router.get("/:sticker_id", route({}), async (req: Request, res: Response) => {
-	const { guild_id, sticker_id } = req.params;
-	await Member.IsInGuildOrFail(req.user_id, guild_id);
+router.get(
+	"/:sticker_id",
+	route({
+		responses: {
+			200: {
+				body: "Sticker",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id, sticker_id } = req.params;
+		await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	res.json(
-		await Sticker.findOneOrFail({ where: { guild_id, id: sticker_id } }),
-	);
-});
+		res.json(
+			await Sticker.findOneOrFail({
+				where: { guild_id, id: sticker_id },
+			}),
+		);
+	},
+);
 
 router.patch(
 	"/:sticker_id",
 	route({
-		body: "ModifyGuildStickerSchema",
+		requestBody: "ModifyGuildStickerSchema",
 		permission: "MANAGE_EMOJIS_AND_STICKERS",
+		responses: {
+			200: {
+				body: "Sticker",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id, sticker_id } = req.params;
@@ -141,7 +191,15 @@ async function sendStickerUpdateEvent(guild_id: string) {
 
 router.delete(
 	"/:sticker_id",
-	route({ permission: "MANAGE_EMOJIS_AND_STICKERS" }),
+	route({
+		permission: "MANAGE_EMOJIS_AND_STICKERS",
+		responses: {
+			204: {},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id, sticker_id } = req.params;
 

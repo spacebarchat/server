@@ -17,21 +17,21 @@
 */
 
 import {
-	ajv,
 	DiscordApiErrors,
 	EVENT,
 	FieldErrors,
-	SpacebarApiErrors,
-	getPermission,
-	getRights,
-	normalizeBody,
 	PermissionResolvable,
 	Permissions,
 	RightResolvable,
 	Rights,
+	SpacebarApiErrors,
+	ajv,
+	getPermission,
+	getRights,
+	normalizeBody,
 } from "@spacebar/util";
-import { NextFunction, Request, Response } from "express";
 import { AnyValidateFunction } from "ajv/dist/core";
+import { NextFunction, Request, Response } from "express";
 
 declare global {
 	// TODO: fix this
@@ -52,21 +52,40 @@ export type RouteResponse = {
 export interface RouteOptions {
 	permission?: PermissionResolvable;
 	right?: RightResolvable;
-	body?: `${string}Schema`; // typescript interface name
-	test?: {
-		response?: RouteResponse;
-		body?: unknown;
-		path?: string;
-		event?: EVENT | EVENT[];
-		headers?: Record<string, string>;
+	requestBody?: `${string}Schema`; // typescript interface name
+	responses?: {
+		[status: number]: {
+			// body?: `${string}Response`;
+			body?: string;
+		};
 	};
+	event?: EVENT | EVENT[];
+	summary?: string;
+	description?: string;
+	query?: {
+		[key: string]: {
+			type: string;
+			required?: boolean;
+			description?: string;
+			values?: string[];
+		};
+	};
+	deprecated?: boolean;
+	// test?: {
+	// 	response?: RouteResponse;
+	// 	body?: unknown;
+	// 	path?: string;
+	// 	event?: EVENT | EVENT[];
+	// 	headers?: Record<string, string>;
+	// };
 }
 
 export function route(opts: RouteOptions) {
 	let validate: AnyValidateFunction | undefined;
-	if (opts.body) {
-		validate = ajv.getSchema(opts.body);
-		if (!validate) throw new Error(`Body schema ${opts.body} not found`);
+	if (opts.requestBody) {
+		validate = ajv.getSchema(opts.requestBody);
+		if (!validate)
+			throw new Error(`Body schema ${opts.requestBody} not found`);
 	}
 
 	return async (req: Request, res: Response, next: NextFunction) => {

@@ -16,18 +16,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
+import { route } from "@spacebar/api";
 import {
 	Channel,
 	Config,
 	emitEvent,
 	getPermission,
 	getRights,
-	MessageDeleteBulkEvent,
 	Message,
+	MessageDeleteBulkEvent,
 } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { route } from "@spacebar/api";
 
 const router: Router = Router();
 
@@ -38,7 +38,17 @@ export default router;
 // https://discord.com/developers/docs/resources/channel#bulk-delete-messages
 router.post(
 	"/",
-	route({ body: "BulkDeleteSchema" }),
+	route({
+		requestBody: "BulkDeleteSchema",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {},
+			404: {},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 		const channel = await Channel.findOneOrFail({

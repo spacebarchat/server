@@ -26,6 +26,7 @@ export interface VoiceStateUpdateSchema {
 	preferred_region?: string;
 	request_to_speak_timestamp?: Date;
 	suppress?: boolean;
+	flags?: number;
 }
 
 export const VoiceStateUpdateSchema = {
@@ -37,4 +38,5 @@ export const VoiceStateUpdateSchema = {
 	$preferred_region: String,
 	$request_to_speak_timestamp: Date,
 	$suppress: Boolean,
+	$flags: Number,
 };

@@ -28,9 +28,9 @@ export interface CreateWebAuthnCredentialSchema {
 	ticket: string;
 }
 
-export type WebAuthnPostSchema = Partial<
-	GenerateWebAuthnCredentialsSchema | CreateWebAuthnCredentialSchema
->;
+export type WebAuthnPostSchema =
+	| GenerateWebAuthnCredentialsSchema
+	| CreateWebAuthnCredentialSchema;
 
 export interface WebAuthnTotpSchema {
 	code: string;

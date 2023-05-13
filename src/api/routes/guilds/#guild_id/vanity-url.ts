@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@spacebar/api";
 import {
 	Channel,
 	ChannelType,
@@ -23,8 +24,7 @@ import {
 	Invite,
 	VanityUrlSchema,
 } from "@spacebar/util";
-import { Router, Request, Response } from "express";
-import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
 const router = Router();
@@ -33,7 +33,20 @@ const InviteRegex = /\W/g;
 
 router.get(
 	"/",
-	route({ permission: "MANAGE_GUILD" }),
+	route({
+		permission: "MANAGE_GUILD",
+		responses: {
+			200: {
+				body: "GuildVanityUrlResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
@@ -60,7 +73,21 @@ router.get(
 
 router.patch(
 	"/",
-	route({ body: "VanityUrlSchema", permission: "MANAGE_GUILD" }),
+	route({
+		requestBody: "VanityUrlSchema",
+		permission: "MANAGE_GUILD",
+		responses: {
+			200: {
+				body: "GuildVanityUrlCreateResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const body = req.body as VanityUrlSchema;
@@ -79,6 +106,17 @@ router.patch(
 		const { id } = await Channel.findOneOrFail({
 			where: { guild_id, type: ChannelType.GUILD_TEXT },
 		});
+
+		if (!guild.features.includes("ALIASABLE_NAMES")) {
+			await Invite.update(
+				{ guild_id },
+				{
+					code: code,
+				},
+			);
+
+			return res.json({ code });
+		}
 
 		await Invite.create({
 			vanity_url: true,

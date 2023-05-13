@@ -16,21 +16,34 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
 import {
 	BackupCode,
-	generateMfaBackupCodes,
-	User,
 	CodesVerificationSchema,
 	DiscordApiErrors,
+	User,
+	generateMfaBackupCodes,
 } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
 router.post(
 	"/",
-	route({ body: "CodesVerificationSchema" }),
+	route({
+		requestBody: "CodesVerificationSchema",
+		responses: {
+			200: {
+				body: "APIBackupCodeArray",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		// const { key, nonce, regenerate } = req.body as CodesVerificationSchema;
 		const { regenerate } = req.body as CodesVerificationSchema;

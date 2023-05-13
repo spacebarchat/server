@@ -31,7 +31,20 @@ const router = Router();
 
 router.patch(
 	"/:member_id",
-	route({ body: "MemberChangeProfileSchema" }),
+	route({
+		requestBody: "MemberChangeProfileSchema",
+		responses: {
+			200: {
+				body: "Member",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		// const member_id =

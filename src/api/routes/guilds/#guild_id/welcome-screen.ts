@@ -16,27 +16,49 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
-import { Guild, Member, GuildUpdateWelcomeScreenSchema } from "@spacebar/util";
-import { HTTPError } from "lambert-server";
 import { route } from "@spacebar/api";
+import { Guild, GuildUpdateWelcomeScreenSchema, Member } from "@spacebar/util";
+import { Request, Response, Router } from "express";
+import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const guild_id = req.params.guild_id;
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "GuildWelcomeScreen",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const guild_id = req.params.guild_id;
 
-	const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
-	await Member.IsInGuildOrFail(req.user_id, guild_id);
+		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
+		await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	res.json(guild.welcome_screen);
-});
+		res.json(guild.welcome_screen);
+	},
+);
 
 router.patch(
 	"/",
 	route({
-		body: "GuildUpdateWelcomeScreenSchema",
+		requestBody: "GuildUpdateWelcomeScreenSchema",
 		permission: "MANAGE_GUILD",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
 	}),
 	async (req: Request, res: Response) => {
 		const guild_id = req.params.guild_id;
