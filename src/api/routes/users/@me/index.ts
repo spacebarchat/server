@@ -140,7 +140,7 @@ router.patch(
 			newToken = (await generateToken(user.id)) as string;
 		}
 
-		// TODO: pomelo: disallow if pomelo is enabled
+		// TODO: uniqueUsernames: disallow if uniqueUsernames is enabled
 		if (body.username) {
 			const check_username = body?.username?.replace(/\s/g, "");
 			if (!check_username) {
@@ -163,7 +163,7 @@ router.patch(
 			}
 		}
 
-		// TODO: pomelo: disallow if pomelo is enabled
+		// TODO: uniqueUsernames: disallow if uniqueUsernames is enabled
 		if (body.discriminator) {
 			if (
 				await User.findOne({

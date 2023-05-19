@@ -7306,7 +7306,7 @@
                         "type": "boolean",
                         "default": false
                     },
-                    "pomeloEnabled": {
+                    "uniqueUsernames": {
                         "type": "boolean",
                         "default": false
                     }
@@ -7320,8 +7320,8 @@
                     "instanceDescription",
                     "instanceId",
                     "instanceName",
-                    "pomeloEnabled",
-                    "tosPage"
+                    "tosPage",
+                    "uniqueUsernames"
                 ]
             },
             "APIChannelArray": {

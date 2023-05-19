@@ -130,12 +130,12 @@ export default class DiscordConnection extends Connection {
 
 		if (exists) return null;
 
-		const { pomeloEnabled } = Config.get().general;
+		const { uniqueUsernames } = Config.get().general;
 		return await this.createConnection({
 			user_id: userId,
 			external_id: userInfo.id,
 			friend_sync: params.friend_sync,
-			name: pomeloEnabled
+			name: uniqueUsernames
 				? userInfo.username
 				: `${userInfo.username}#${userInfo.discriminator}`,
 			type: this.id,
