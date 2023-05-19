@@ -124,6 +124,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
         guild_member: { ...guild_member?.toPublicMember(), user: user.toPublicUser() },
         guild_member_profile: guild_id && guildMemberProfile,
         badges: badges.filter((x) => user.badge_ids?.includes(x.id)),
+        legacy_username: user.legacy_username, // part of the uniqueUsernames feature, only used for migrated accounts
     });
 });
 

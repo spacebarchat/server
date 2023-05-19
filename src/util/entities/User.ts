@@ -32,6 +32,7 @@ import { ChannelType, PrivateUserProjection, PublicUser, PublicUserProjection, U
 export enum PublicUserEnum {
 	username,
 	global_name,
+	legacy_username,
 	discriminator,
 	id,
 	public_flags,
@@ -55,7 +56,10 @@ export class User extends BaseClass {
     username: string; // username max length 32, min 2 (should be configurable)
 
 	@Column({ nullable: true })
-	global_name?: string; // puyo: uniqueUsernames
+	global_name?: string; // puyo: part of the uniqueUsernames feature, this is the users "nickname"
+
+	@Column({ nullable: true })
+	legacy_username?: string; // puyo: part of the uniqueUsernames feature, shows the users old username (only used for migrated accounts)
 
     @Column()
 	discriminator: string; // opaque string: 4 digits on discord.com, 0 for uniqueUsernames
