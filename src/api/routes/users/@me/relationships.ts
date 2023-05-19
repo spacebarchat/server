@@ -131,10 +131,10 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-		const { pomeloEnabled } = Config.get().general;
-		const where = pomeloEnabled
+		const { uniqueUsernames } = Config.get().general;
+		const where = uniqueUsernames
 			? {
-					// TODO: pomelo: should we use username or add global_name property to the request?
+					// TODO: uniqueUsernames: should we use username or add global_name property to the request?
 					global_name: req.body.username,
 			  }
 			: {

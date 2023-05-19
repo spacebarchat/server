@@ -55,10 +55,10 @@ export class User extends BaseClass {
     username: string; // username max length 32, min 2 (should be configurable)
 
 	@Column({ nullable: true })
-	global_name?: string; // puyo: pomelo
+	global_name?: string; // puyo: uniqueUsernames
 
     @Column()
-	discriminator: string; // opaque string: 4 digits on discord.com, 0 for pomelo
+	discriminator: string; // opaque string: 4 digits on discord.com, 0 for uniqueUsernames
 
     @Column({ nullable: true })
     avatar?: string; // hash of the user avatar
@@ -267,10 +267,10 @@ export class User extends BaseClass {
     }
 
 	public get tag(): string {
-		const { pomeloEnabled } = Config.get().general;
+		const { uniqueUsernames } = Config.get().general;
 
-		// if pomelo is enabled, global_name should be set
-		return pomeloEnabled
+		// if uniqueUsernames is enabled, global_name should be set
+		return uniqueUsernames
 			? (this.global_name as string)
 			: `${this.username}#${this.discriminator}`;
 	}
@@ -291,13 +291,13 @@ export class User extends BaseClass {
         req?: Request;
         bot?: boolean;
 	}) {
-		const { pomeloEnabled } = Config.get().general;
+		const { uniqueUsernames } = Config.get().general;
 
         // trim special uf8 control characters -> Backspace, Newline, ...
         username = trimSpecial(username);
 
 		let discriminator: string | undefined;
-		if (pomeloEnabled) discriminator = "0";
+		if (uniqueUsernames) discriminator = "0";
 		else {
 			discriminator = await User.generateDiscriminator(username);
 			if (!discriminator) {
