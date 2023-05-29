@@ -45,7 +45,7 @@ export async function Connection(
 	socket: WebSocket,
 	request: IncomingMessage,
 ) {
-	const forwardedFor = Config.get().security.forwadedFor;
+	const forwardedFor = Config.get().security.forwardedFor;
 	const ipAddress = forwardedFor
 		? (request.headers[forwardedFor] as string)
 		: request.socket.remoteAddress;
