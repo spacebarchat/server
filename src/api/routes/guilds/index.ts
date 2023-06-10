@@ -72,7 +72,7 @@ router.post(
 
 		await Member.addToGuild(req.user_id, guild.id);
 
-		res.status(201).json({ id: guild.id });
+		res.status(201).json(guild);
 	},
 );
 
