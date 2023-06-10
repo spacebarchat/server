@@ -4237,6 +4237,32 @@
                     "type"
                 ]
             },
+            "UserProfile": {
+                "type": "object",
+                "properties": {
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "bio"
+                ]
+            },
             "TokenResponse": {
                 "type": "object",
                 "properties": {
@@ -7638,11 +7664,116 @@
                     "premium_since": {
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "mutual_guilds": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "nick": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "id"
+                            ]
+                        }
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "profile_themes_experiment_bucket": {
+                        "type": "integer"
+                    },
+                    "user_profile": {
+                        "$ref": "#/components/schemas/UserProfile"
+                    },
+                    "guild_member": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "guild_id": {
+                                "type": "string"
+                            },
+                            "nick": {
+                                "type": "string"
+                            },
+                            "joined_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "pending": {
+                                "type": "boolean"
+                            },
+                            "deaf": {
+                                "type": "boolean"
+                            },
+                            "mute": {
+                                "type": "boolean"
+                            },
+                            "premium_since": {
+                                "type": "integer"
+                            },
+                            "user": {
+                                "$ref": "#/components/schemas/PublicUser"
+                            },
+                            "roles": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "deaf",
+                            "guild_id",
+                            "id",
+                            "joined_at",
+                            "mute",
+                            "pending",
+                            "roles",
+                            "user"
+                        ]
+                    },
+                    "guild_member_profile": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                            "guild_id": {
+                                "type": "string"
+                            },
+                            "banner": {
+                                "type": "string"
+                            },
+                            "bio": {
+                                "type": "string"
+                            },
+                            "accent_color": {
+                                "type": "null"
+                            }
+                        },
+                        "required": [
+                            "accent_color",
+                            "banner",
+                            "bio",
+                            "guild_id"
+                        ]
                     }
                 },
                 "required": [
                     "connected_accounts",
-                    "user"
+                    "mutual_guilds",
+                    "premium_type",
+                    "profile_themes_experiment_bucket",
+                    "user",
+                    "user_profile"
                 ]
             },
             "UserRelationshipsResponse": {
