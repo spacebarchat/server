@@ -225,7 +225,7 @@ router.post(
 		}
 
 		if (body.password) {
-                        if(body.password.length<8){
+                        if(body.password.length < register.password.minLength){
                                 throw FieldErrors({
                                         password: {
                                                 code: "PASSWORD_REQUIREMENTS_MIN_LENGTH",
