@@ -344,11 +344,7 @@ export class Member extends BaseClassWithoutId {
 				relations: ["user", "roles"],
 				take: 10,
 			})
-		).map((member) => ({
-			...member.toPublicMember(),
-			user: member.user.toPublicUser(),
-			roles: member.roles.map((x) => x.id),
-		}));
+		).map((member) => member.toPublicMember());
 
 		if (
 			await Member.count({
@@ -455,6 +451,10 @@ export class Member extends BaseClassWithoutId {
 		PublicMemberProjection.forEach((x) => {
 			member[x] = this[x];
 		});
+
+		if (member.roles) member.roles = member.roles.map((x: Role) => x.id);
+		if (member.user) member.user = member.user.toPublicUser();
+
 		return member as PublicMember;
 	}
 }

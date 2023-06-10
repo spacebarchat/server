@@ -11,6 +11,7 @@ import {
 	Member,
 	Message,
 	PrivateUser,
+	PublicMember,
 	PublicUser,
 	Role,
 	Sticker,
@@ -68,6 +69,7 @@ export type APIChannelArray = Channel[];
 export type APIEmojiArray = Emoji[];
 
 export type APIMemberArray = Member[];
+export type APIPublicMember = PublicMember;
 
 export interface APIGuildWithJoinedAt extends Guild {
 	joined_at: string;
