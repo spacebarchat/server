@@ -7235,6 +7235,55 @@
                     "$ref": "#/components/schemas/Member"
                 }
             },
+            "APIPublicMember": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "nick": {
+                        "type": "string"
+                    },
+                    "joined_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "pending": {
+                        "type": "boolean"
+                    },
+                    "deaf": {
+                        "type": "boolean"
+                    },
+                    "mute": {
+                        "type": "boolean"
+                    },
+                    "premium_since": {
+                        "type": "integer"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/PublicUser"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "deaf",
+                    "guild_id",
+                    "id",
+                    "joined_at",
+                    "mute",
+                    "pending",
+                    "roles",
+                    "user"
+                ]
+            },
             "APIGuildWithJoinedAt": {
                 "type": "object",
                 "properties": {
@@ -12467,7 +12516,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Member"
+                                    "$ref": "#/components/schemas/APIPublicMember"
                                 }
                             }
                         }

@@ -27,6 +27,8 @@ import {
 	handleFile,
 	Member,
 	MemberChangeSchema,
+	PublicMemberProjection,
+	PublicUserProjection,
 	Role,
 	Sticker,
 } from "@spacebar/util";
@@ -39,7 +41,7 @@ router.get(
 	route({
 		responses: {
 			200: {
-				body: "Member",
+				body: "APIPublicMember",
 			},
 			403: {
 				body: "APIErrorResponse",
@@ -55,9 +57,28 @@ router.get(
 
 		const member = await Member.findOneOrFail({
 			where: { id: member_id, guild_id },
+			relations: ["roles", "user"],
+			select: {
+				index: true,
+				// only grab public member props
+				...Object.fromEntries(
+					PublicMemberProjection.map((x) => [x, true]),
+				),
+				// and public user props
+				user: Object.fromEntries(
+					PublicUserProjection.map((x) => [x, true]),
+				),
+				roles: {
+					id: true,
+				},
+			},
 		});
 
-		return res.json(member);
+		return res.json({
+			...member.toPublicMember(),
+			user: member.user.toPublicUser(),
+			roles: member.roles.map((x) => x.id),
+		});
 	},
 );
 
