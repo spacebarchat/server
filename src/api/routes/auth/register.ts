@@ -225,7 +225,7 @@ router.post(
 		}
 
 		if (body.password) {
-            if(checkPassword(body.password)<register.password.strength){
+			if (checkPassword(body.password) < register.password.strength) {
 				throw FieldErrors({
 					password: {
 						code: "PASSWORD_BAD_PASSWORD",

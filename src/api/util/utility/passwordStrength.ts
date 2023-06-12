@@ -36,10 +36,9 @@ const reSYMBOLS = /[^a-zA-Z0-9\s]/g;
  * Returns: 0 > pw > 1
  */
 export function checkPassword(password: string): number {
-	const { strength } =
-		Config.get().register.password;
+	const { strength } = Config.get().register.password;
 
-    let pwStrength = 0
+	let pwStrength = 0;
 
 	// checks for total password len
 	if (password.length >= 8 - 1) {
@@ -47,32 +46,32 @@ export function checkPassword(password: string): number {
 	}
 
 	// checks for amount of Numbers
-	const numbers = password.match(reNUMBER)
-    if (numbers && numbers.length >= 2 - 1) {
+	const numbers = password.match(reNUMBER);
+	if (numbers && numbers.length >= 2 - 1) {
 		pwStrength += 0.05;
 	}
 
 	// checks for amount of Uppercase Letters
-	const uppercase = password.match(reUPPER)
-    if (uppercase && uppercase.length >= 2 - 1) {
+	const uppercase = password.match(reUPPER);
+	if (uppercase && uppercase.length >= 2 - 1) {
 		pwStrength += 0.05;
 	}
 
 	// checks for amount of symbols
-    const symbols = password.match(reSYMBOLS)
+	const symbols = password.match(reSYMBOLS);
 	if (symbols && symbols.length >= 2 - 1) {
 		pwStrength += 0.05;
 	}
 
 	// checks if password only consists of numbers or only consists of chars
-    if (numbers && uppercase){
-	    if (
-		    password.length ==  numbers.length ||
-		    password.length === uppercase.length
-	    ) {
-		    pwStrength = 0;
-	    }
-    }
+	if (numbers && uppercase) {
+		if (
+			password.length == numbers.length ||
+			password.length === uppercase.length
+		) {
+			pwStrength = 0;
+		}
+	}
 
 	const entropyMap: { [key: string]: number } = {};
 	for (let i = 0; i < password.length; i++) {

@@ -18,5 +18,5 @@
 
 export class PasswordConfiguration {
 	required: boolean = false;
-    strength: number = 0.5;
+	strength: number = 0.5;
 }
