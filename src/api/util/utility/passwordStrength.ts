@@ -20,8 +20,8 @@ import { Config } from "@spacebar/util";
 import "missing-native-js-functions";
 
 const reNUMBER = /[0-9]/g;
-const reUPPERCASELETTER = /[A-Z]/g;
-const reSYMBOLS = /[A-Z,a-z,0-9]/g;
+const reUPPER = /[A-Z]/g;
+const reSYMBOLS = /[^a-zA-Z0-9\s]/g;
 
 // const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored in db
 /*
@@ -36,37 +36,43 @@ const reSYMBOLS = /[A-Z,a-z,0-9]/g;
  * Returns: 0 > pw > 1
  */
 export function checkPassword(password: string): number {
-	const { minLength, minNumbers, minUpperCase, minSymbols } =
+	const { strength } =
 		Config.get().register.password;
-	let strength = 0;
+
+    let pwStrength = 0
 
 	// checks for total password len
-	if (password.length >= minLength - 1) {
-		strength += 0.05;
+	if (password.length >= 8 - 1) {
+		pwStrength += 0.05;
 	}
 
 	// checks for amount of Numbers
-	if (password.count(reNUMBER) >= minNumbers - 1) {
-		strength += 0.05;
+	const numbers = password.match(reNUMBER)
+    if (numbers && numbers.length >= 2 - 1) {
+		pwStrength += 0.05;
 	}
 
 	// checks for amount of Uppercase Letters
-	if (password.count(reUPPERCASELETTER) >= minUpperCase - 1) {
-		strength += 0.05;
+	const uppercase = password.match(reUPPER)
+    if (uppercase && uppercase.length >= 2 - 1) {
+		pwStrength += 0.05;
 	}
 
 	// checks for amount of symbols
-	if (password.replace(reSYMBOLS, "").length >= minSymbols - 1) {
-		strength += 0.05;
+    const symbols = password.match(reSYMBOLS)
+	if (symbols && symbols.length >= 2 - 1) {
+		pwStrength += 0.05;
 	}
 
 	// checks if password only consists of numbers or only consists of chars
-	if (
-		password.length == password.count(reNUMBER) ||
-		password.length === password.count(reUPPERCASELETTER)
-	) {
-		strength = 0;
-	}
+    if (numbers && uppercase){
+	    if (
+		    password.length ==  numbers.length ||
+		    password.length === uppercase.length
+	    ) {
+		    pwStrength = 0;
+	    }
+    }
 
 	const entropyMap: { [key: string]: number } = {};
 	for (let i = 0; i < password.length; i++) {
@@ -77,7 +83,7 @@ export function checkPassword(password: string): number {
 	const entropies = Object.values(entropyMap);
 
 	entropies.map((x) => x / entropyMap.length);
-	strength +=
+	pwStrength +=
 		entropies.reduceRight((a: number, x: number) => a - x * Math.log2(x)) /
 		Math.log2(password.length);
 	return strength;
