@@ -18,35 +18,25 @@
 
 export interface UserModifySchema {
     /**
-     * @minLength 2
+     * @minLength 1
+     * @maxLength 100
      */
     username?: string;
     avatar?: string | null;
+    /**
+     * @maxLength 1024
+     */
     bio?: string;
     accent_color?: number;
     banner?: string | null;
-    /**
-     * @minLength 1
-     * @maxLength 72
-     */
     password?: string;
-    /**
-     * @minLength 1
-     * @maxLength 72
-     */
     new_password?: string;
-    /**
-     * @minLength 6
-     * @maxLength 6
-     */
     code?: string;
-    /**
-     * @TJS-format email
-     */
     email?: string;
     /**
      * @minLength 4
      * @maxLength 4
      */
     discriminator?: string;
+    global_name?: string;
 }
