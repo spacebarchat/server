@@ -85,5 +85,5 @@ export function checkPassword(password: string): number {
 	pwStrength +=
 		entropies.reduceRight((a: number, x: number) => a - x * Math.log2(x)) /
 		Math.log2(password.length);
-	return strength;
+	return pwStrength;
 }
