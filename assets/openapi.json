@@ -4049,6 +4049,10 @@
                         "type": "integer",
                         "default": 1048576
                     },
+                    "minUsername": {
+                        "type": "integer",
+                        "default": 2
+                    },
                     "maxUsername": {
                         "type": "integer",
                         "default": 32
@@ -4061,7 +4065,8 @@
                 "required": [
                     "maxFriends",
                     "maxGuilds",
-                    "maxUsername"
+                    "maxUsername",
+                    "minUsername"
                 ]
             },
             "GuildLimits": {
@@ -5834,6 +5839,9 @@
                     "discriminator": {
                         "minLength": 4,
                         "maxLength": 4,
+                        "type": "string"
+                    },
+                    "global_name": {
                         "type": "string"
                     }
                 }

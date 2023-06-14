@@ -38,4 +38,5 @@ export interface UserModifySchema {
 	 * @maxLength 4
 	 */
 	discriminator?: string;
+	global_name?: string;
 }
