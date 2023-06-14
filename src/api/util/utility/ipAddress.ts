@@ -102,7 +102,7 @@ export function getIpAdress(req: Request): string {
 	return (
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		req.headers[Config.get().security.forwadedFor] ||
+		req.headers[Config.get().security.forwardedFor] ||
 		req.socket.remoteAddress
 	);
 }
