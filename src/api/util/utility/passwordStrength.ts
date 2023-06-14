@@ -41,25 +41,25 @@ export function checkPassword(password: string): number {
 	let pwStrength = 0;
 
 	// checks for total password len
-	if (password.length >= 8 - 1) {
+	if (password.length >= 7) {
 		pwStrength += 0.05;
 	}
 
 	// checks for amount of Numbers
 	const numbers = password.match(reNUMBER);
-	if (numbers && numbers.length >= 2 - 1) {
+	if (numbers && numbers.length >= 1) {
 		pwStrength += 0.05;
 	}
 
 	// checks for amount of Uppercase Letters
 	const uppercase = password.match(reUPPER);
-	if (uppercase && uppercase.length >= 2 - 1) {
+	if (uppercase && uppercase.length >= 1) {
 		pwStrength += 0.05;
 	}
 
 	// checks for amount of symbols
 	const symbols = password.match(reSYMBOLS);
-	if (symbols && symbols.length >= 2 - 1) {
+	if (symbols && symbols.length >= 1) {
 		pwStrength += 0.05;
 	}
 
