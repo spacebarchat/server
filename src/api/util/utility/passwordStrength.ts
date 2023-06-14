@@ -86,6 +86,6 @@ export function checkPassword(password: string): number {
 		Math.log2(password.length);
   */
 
-  strength += calculateEntropy(password)
+	strength += calculateEntropy(password);
 	return strength;
 }
