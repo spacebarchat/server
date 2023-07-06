@@ -29,7 +29,7 @@ import {
 	Invite,
 	RegisterSchema,
 	User,
-	ValidRegistrationToken,
+	ValidRegistrationTokens,
 	adjustEmail,
 	generateToken,
 } from "@spacebar/util";
@@ -61,7 +61,7 @@ router.post(
 			// eg theyre on https://staging.spacebar.chat/register?token=whatever
 			const token = req.get("Referrer")?.split("token=")[1].split("&")[0];
 			if (token) {
-				const regToken = await ValidRegistrationToken.findOneOrFail({
+				const regToken = await ValidRegistrationTokens.findOneOrFail({
 					where: { token, expires_at: MoreThan(new Date()) },
 				});
 				await regToken.remove();
