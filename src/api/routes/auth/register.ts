@@ -225,6 +225,20 @@ router.post(
 		}
 
 		if (body.password) {
+			const min = register.password.minLength
+				? register.password.minLength
+				: 8;
+			if (body.password.length < min) {
+				throw FieldErrors({
+					password: {
+						code: "PASSWORD_REQUIREMENTS_MIN_LENGTH",
+						message: req.t(
+							"auth:register.PASSWORD_REQUIREMENTS_MIN_LENGTH",
+							{ min: min },
+						),
+					},
+				});
+			}
 			// the salt is saved in the password refer to bcrypt docs
 			body.password = await bcrypt.hash(body.password, 12);
 		} else if (register.password.required) {
