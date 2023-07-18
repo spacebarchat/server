@@ -20,7 +20,6 @@ import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
 	Attachment,
 	Channel,
-	ChannelType,
 	Config,
 	DmChannelDTO,
 	FieldErrors,
@@ -93,8 +92,6 @@ router.get(
 		if (limit < 1 || limit > 100)
 			throw new HTTPError("limit must be between 1 and 100", 422);
 
-		const halfLimit = Math.floor(limit / 2);
-
 		const permissions = await getPermission(
 			req.user_id,
 			channel.guild_id,
@@ -121,24 +118,28 @@ router.get(
 			],
 		};
 
+		let messages: Message[];
 		if (after) {
 			if (BigInt(after) > BigInt(Snowflake.generate()))
 				return res.status(422);
 			query.where.id = MoreThan(after);
+			messages = await Message.find(query);
 		} else if (before) {
 			if (BigInt(before) < BigInt(req.params.channel_id))
 				return res.status(422);
 			query.where.id = LessThan(before);
+			messages = await Message.find(query);
 		} else if (around) {
-			query.where.id = [
-				MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
-				LessThan((BigInt(around) + BigInt(halfLimit)).toString()),
-			];
-
-			return res.json([]); // TODO: fix around
+			query.take = Math.floor(limit / 2);
+			query.where.id = LessThan(around);
+			const messages_before = await Message.find(query);
+			query.where.id = MoreThan(around);
+			const messages_after = await Message.find(query);
+			messages = messages_before.concat(messages_after);
+		} else {
+			throw new HTTPError("after, around or before must be present", 422);
 		}
 
-		const messages = await Message.find(query);
 		const endpoint = Config.get().cdn.endpointPublic;
 
 		return res.json(
