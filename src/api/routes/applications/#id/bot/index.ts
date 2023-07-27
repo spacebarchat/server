@@ -16,78 +16,99 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
 import {
 	Application,
-	generateToken,
-	User,
 	BotModifySchema,
-	handleFile,
 	DiscordApiErrors,
+	User,
+	createAppBotUser,
+	generateToken,
+	handleFile,
 } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
 
 const router: Router = Router();
 
-router.post("/", route({}), async (req: Request, res: Response) => {
-	const app = await Application.findOneOrFail({
-		where: { id: req.params.id },
-		relations: ["owner"],
-	});
+router.post(
+	"/",
+	route({
+		responses: {
+			204: {
+				body: "TokenOnlyResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const app = await Application.findOneOrFail({
+			where: { id: req.params.id },
+			relations: ["owner"],
+		});
 
-	if (app.owner.id != req.user_id)
-		throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		if (app.owner.id != req.user_id)
+			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-	const user = await User.register({
-		username: app.name,
-		password: undefined,
-		id: app.id,
-		req,
-	});
+		const user = await createAppBotUser(app, req);
 
-	user.id = app.id;
-	user.premium_since = new Date();
-	user.bot = true;
+		res.send({
+			token: await generateToken(user.id),
+		}).status(204);
+	},
+);
 
-	await user.save();
+router.post(
+	"/reset",
+	route({
+		responses: {
+			200: {
+				body: "TokenResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const bot = await User.findOneOrFail({ where: { id: req.params.id } });
+		const owner = await User.findOneOrFail({ where: { id: req.user_id } });
 
-	// flags is NaN here?
-	app.assign({ bot: user, flags: app.flags || 0 });
+		if (owner.id != req.user_id)
+			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-	await app.save();
+		if (
+			owner.totp_secret &&
+			(!req.body.code || verifyToken(owner.totp_secret, req.body.code))
+		)
+			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
-	res.send({
-		token: await generateToken(user.id),
-	}).status(204);
-});
+		bot.data = { hash: undefined, valid_tokens_since: new Date() };
 
-router.post("/reset", route({}), async (req: Request, res: Response) => {
-	const bot = await User.findOneOrFail({ where: { id: req.params.id } });
-	const owner = await User.findOneOrFail({ where: { id: req.user_id } });
+		await bot.save();
 
-	if (owner.id != req.user_id)
-		throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		const token = await generateToken(bot.id);
 
-	if (
-		owner.totp_secret &&
-		(!req.body.code || verifyToken(owner.totp_secret, req.body.code))
-	)
-		throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
-
-	bot.data = { hash: undefined, valid_tokens_since: new Date() };
-
-	await bot.save();
-
-	const token = await generateToken(bot.id);
-
-	res.json({ token }).status(200);
-});
+		res.json({ token }).status(200);
+	},
+);
 
 router.patch(
 	"/",
-	route({ body: "BotModifySchema" }),
+	route({
+		requestBody: "BotModifySchema",
+		responses: {
+			200: {
+				body: "Application",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as BotModifySchema;
 		if (!body.avatar?.trim()) delete body.avatar;

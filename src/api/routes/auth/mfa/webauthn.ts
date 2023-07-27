@@ -41,7 +41,13 @@ function toArrayBuffer(buf: Buffer) {
 
 router.post(
 	"/",
-	route({ body: "WebAuthnTotpSchema" }),
+	route({
+		requestBody: "WebAuthnTotpSchema",
+		responses: {
+			200: { body: "TokenResponse" },
+			400: { body: "APIErrorResponse" },
+		},
+	}),
 	async (req: Request, res: Response) => {
 		if (!WebAuthn.fido2) {
 			// TODO: I did this for typescript and I can't use !

@@ -16,16 +16,16 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import {
-	Guild,
-	Config,
-	getRights,
-	Member,
-	DiscordApiErrors,
-	GuildCreateSchema,
-} from "@spacebar/util";
 import { route } from "@spacebar/api";
+import {
+	Config,
+	DiscordApiErrors,
+	Guild,
+	GuildCreateSchema,
+	Member,
+	getRights,
+} from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
@@ -33,7 +33,21 @@ const router: Router = Router();
 
 router.post(
 	"/",
-	route({ body: "GuildCreateSchema", right: "CREATE_GUILDS" }),
+	route({
+		requestBody: "GuildCreateSchema",
+		right: "CREATE_GUILDS",
+		responses: {
+			201: {
+				body: "GuildCreateResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as GuildCreateSchema;
 
@@ -58,7 +72,7 @@ router.post(
 
 		await Member.addToGuild(req.user_id, guild.id);
 
-		res.status(201).json({ id: guild.id });
+		res.status(201).json(guild);
 	},
 );
 

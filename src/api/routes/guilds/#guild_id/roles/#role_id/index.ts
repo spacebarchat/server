@@ -16,31 +16,63 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
+import { route } from "@spacebar/api";
 import {
-	Role,
-	Member,
-	GuildRoleUpdateEvent,
-	GuildRoleDeleteEvent,
 	emitEvent,
+	GuildRoleDeleteEvent,
+	GuildRoleUpdateEvent,
 	handleFile,
+	Member,
+	Role,
 	RoleModifySchema,
 } from "@spacebar/util";
-import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
 const router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { guild_id, role_id } = req.params;
-	await Member.IsInGuildOrFail(req.user_id, guild_id);
-	const role = await Role.findOneOrFail({ where: { guild_id, id: role_id } });
-	return res.json(role);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "Role",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id, role_id } = req.params;
+		await Member.IsInGuildOrFail(req.user_id, guild_id);
+		const role = await Role.findOneOrFail({
+			where: { guild_id, id: role_id },
+		});
+		return res.json(role);
+	},
+);
 
 router.delete(
 	"/",
-	route({ permission: "MANAGE_ROLES" }),
+	route({
+		permission: "MANAGE_ROLES",
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id, role_id } = req.params;
 		if (role_id === guild_id)
@@ -69,7 +101,24 @@ router.delete(
 
 router.patch(
 	"/",
-	route({ body: "RoleModifySchema", permission: "MANAGE_ROLES" }),
+	route({
+		requestBody: "RoleModifySchema",
+		permission: "MANAGE_ROLES",
+		responses: {
+			200: {
+				body: "Role",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { role_id, guild_id } = req.params;
 		const body = req.body as RoleModifySchema;

@@ -34,9 +34,7 @@ const settings = {
 	noExtraProps: true,
 	defaultProps: false,
 };
-const compilerOptions = {
-	strictNullChecks: true,
-};
+
 const Excluded = [
 	"DefaultSchema",
 	"Schema",
@@ -57,15 +55,9 @@ const Excluded = [
 	"PropertiesSchema",
 	"AsyncSchema",
 	"AnySchema",
+	"SMTPConnection.CustomAuthenticationResponse",
+	"TransportMakeRequestResponse",
 ];
-
-function modify(obj) {
-	for (var k in obj) {
-		if (typeof obj[k] === "object" && obj[k] !== null) {
-			modify(obj[k]);
-		}
-	}
-}
 
 function main() {
 	const program = TJS.programFromConfig(
@@ -75,14 +67,14 @@ function main() {
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 
-	let schemas = generator
-		.getUserSymbols()
-		.filter(
-			(x) =>
-				(x.endsWith("Schema") || x.endsWith("Response")) &&
-				!Excluded.includes(x),
+	let schemas = generator.getUserSymbols().filter((x) => {
+		return (
+			(x.endsWith("Schema") ||
+				x.endsWith("Response") ||
+				x.startsWith("API")) &&
+			!Excluded.includes(x)
 		);
-	console.log(schemas);
+	});
 
 	var definitions = {};
 
@@ -109,31 +101,11 @@ function main() {
 					delete part.properties[key];
 					continue;
 				}
-
-				// if (part.properties[key].anyOf) {
-				// 	const nullIndex = part.properties[key].anyOf.findIndex(
-				// 		(x) => x.type == "null",
-				// 	);
-				// 	if (nullIndex != -1) {
-				// 		part.properties[key].nullable = true;
-				// 		part.properties[key].anyOf.splice(nullIndex, 1);
-
-				// 		if (part.properties[key].anyOf.length == 1) {
-				// 			Object.assign(
-				// 				part.properties[key],
-				// 				part.properties[key].anyOf[0],
-				// 			);
-				// 			delete part.properties[key].anyOf;
-				// 		}
-				// 	}
-				// }
 			}
 		}
 
 		definitions = { ...definitions, [name]: { ...part } };
 	}
-
-	modify(definitions);
 
 	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
 }

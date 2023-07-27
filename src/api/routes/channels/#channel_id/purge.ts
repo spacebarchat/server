@@ -16,20 +16,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { HTTPError } from "lambert-server";
 import { route } from "@spacebar/api";
-import { isTextChannel } from "./messages";
-import { FindManyOptions, Between, Not, FindOperator } from "typeorm";
 import {
 	Channel,
-	emitEvent,
-	getPermission,
-	getRights,
 	Message,
 	MessageDeleteBulkEvent,
 	PurgeSchema,
+	emitEvent,
+	getPermission,
+	getRights,
+	isTextChannel,
 } from "@spacebar/util";
-import { Router, Response, Request } from "express";
+import { Request, Response, Router } from "express";
+import { HTTPError } from "lambert-server";
+import { Between, FindManyOptions, FindOperator, Not } from "typeorm";
 
 const router: Router = Router();
 
@@ -42,6 +42,14 @@ router.post(
 	"/",
 	route({
 		/*body: "PurgeSchema",*/
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {},
+			403: {},
+		},
 	}),
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;

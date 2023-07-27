@@ -16,16 +16,16 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
 import {
 	BackupCode,
 	FieldErrors,
 	generateMfaBackupCodes,
-	User,
 	MfaCodesSchema,
+	User,
 } from "@spacebar/util";
 import bcrypt from "bcrypt";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
@@ -33,7 +33,23 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ body: "MfaCodesSchema" }),
+	route({
+		requestBody: "MfaCodesSchema",
+		deprecated: true,
+		description:
+			"This route is replaced with users/@me/mfa/codes-verification in newer clients",
+		responses: {
+			200: {
+				body: "APIBackupCodeArray",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { password, regenerate } = req.body as MfaCodesSchema;
 

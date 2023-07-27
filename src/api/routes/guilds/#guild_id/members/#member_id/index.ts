@@ -16,38 +16,91 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
 import {
-	Member,
+	emitEvent,
+	Emoji,
 	getPermission,
 	getRights,
-	Role,
-	GuildMemberUpdateEvent,
-	emitEvent,
-	Sticker,
-	Emoji,
 	Guild,
+	GuildMemberUpdateEvent,
 	handleFile,
+	Member,
 	MemberChangeSchema,
+	PublicMemberProjection,
+	PublicUserProjection,
+	Role,
+	Sticker,
 } from "@spacebar/util";
-import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { guild_id, member_id } = req.params;
-	await Member.IsInGuildOrFail(req.user_id, guild_id);
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "APIPublicMember",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id, member_id } = req.params;
+		await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	const member = await Member.findOneOrFail({
-		where: { id: member_id, guild_id },
-	});
+		const member = await Member.findOneOrFail({
+			where: { id: member_id, guild_id },
+			relations: ["roles", "user"],
+			select: {
+				index: true,
+				// only grab public member props
+				...Object.fromEntries(
+					PublicMemberProjection.map((x) => [x, true]),
+				),
+				// and public user props
+				user: Object.fromEntries(
+					PublicUserProjection.map((x) => [x, true]),
+				),
+				roles: {
+					id: true,
+				},
+			},
+		});
 
-	return res.json(member);
-});
+		return res.json({
+			...member.toPublicMember(),
+			user: member.user.toPublicUser(),
+			roles: member.roles.map((x) => x.id),
+		});
+	},
+);
 
 router.patch(
 	"/",
-	route({ body: "MemberChangeSchema" }),
+	route({
+		requestBody: "MemberChangeSchema",
+		responses: {
+			200: {
+				body: "Member",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const member_id =
@@ -119,54 +172,81 @@ router.patch(
 	},
 );
 
-router.put("/", route({}), async (req: Request, res: Response) => {
-	// TODO: Lurker mode
+router.put(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "MemberJoinGuildResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		// TODO: Lurker mode
 
-	const rights = await getRights(req.user_id);
+		const rights = await getRights(req.user_id);
 
-	const { guild_id } = req.params;
-	let { member_id } = req.params;
-	if (member_id === "@me") {
-		member_id = req.user_id;
-		rights.hasThrow("JOIN_GUILDS");
-	} else {
-		// TODO: join others by controller
-	}
+		const { guild_id } = req.params;
+		let { member_id } = req.params;
+		if (member_id === "@me") {
+			member_id = req.user_id;
+			rights.hasThrow("JOIN_GUILDS");
+		} else {
+			// TODO: join others by controller
+		}
 
-	const guild = await Guild.findOneOrFail({
-		where: { id: guild_id },
-	});
+		const guild = await Guild.findOneOrFail({
+			where: { id: guild_id },
+		});
 
-	const emoji = await Emoji.find({
-		where: { guild_id: guild_id },
-	});
+		const emoji = await Emoji.find({
+			where: { guild_id: guild_id },
+		});
 
-	const roles = await Role.find({
-		where: { guild_id: guild_id },
-	});
+		const roles = await Role.find({
+			where: { guild_id: guild_id },
+		});
 
-	const stickers = await Sticker.find({
-		where: { guild_id: guild_id },
-	});
+		const stickers = await Sticker.find({
+			where: { guild_id: guild_id },
+		});
 
-	await Member.addToGuild(member_id, guild_id);
-	res.send({ ...guild, emojis: emoji, roles: roles, stickers: stickers });
-});
+		await Member.addToGuild(member_id, guild_id);
+		res.send({ ...guild, emojis: emoji, roles: roles, stickers: stickers });
+	},
+);
 
-router.delete("/", route({}), async (req: Request, res: Response) => {
-	const { guild_id, member_id } = req.params;
-	const permission = await getPermission(req.user_id, guild_id);
-	const rights = await getRights(req.user_id);
-	if (member_id === "@me" || member_id === req.user_id) {
-		// TODO: unless force-joined
-		rights.hasThrow("SELF_LEAVE_GROUPS");
-	} else {
-		rights.hasThrow("KICK_BAN_MEMBERS");
-		permission.hasThrow("KICK_MEMBERS");
-	}
+router.delete(
+	"/",
+	route({
+		responses: {
+			204: {},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id, member_id } = req.params;
+		const permission = await getPermission(req.user_id, guild_id);
+		const rights = await getRights(req.user_id);
+		if (member_id === "@me" || member_id === req.user_id) {
+			// TODO: unless force-joined
+			rights.hasThrow("SELF_LEAVE_GROUPS");
+		} else {
+			rights.hasThrow("KICK_BAN_MEMBERS");
+			permission.hasThrow("KICK_MEMBERS");
+		}
 
-	await Member.removeFromGuild(member_id, guild_id);
-	res.sendStatus(204);
-});
+		await Member.removeFromGuild(member_id, guild_id);
+		res.sendStatus(204);
+	},
+);
 
 export default router;

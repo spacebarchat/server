@@ -18,7 +18,7 @@
 
 import { Payload, Send, WebSocket } from "@spacebar/gateway";
 import { SelectProtocolSchema, validateSchema } from "@spacebar/util";
-import { endpoint, PublicIP, VoiceOPCodes } from "@spacebar/webrtc";
+import { PublicIP, VoiceOPCodes, endpoint } from "@spacebar/webrtc";
 import SemanticSDP, { MediaInfo, SDPInfo } from "semantic-sdp";
 
 export async function onSelectProtocol(this: WebSocket, payload: Payload) {
@@ -56,7 +56,7 @@ export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 		`a=candidate:1 1 ${candidate.getTransport()} ${candidate.getFoundation()} ${candidate.getAddress()} ${candidate.getPort()} typ host`;
 
 	await Send(this, {
-		op: VoiceOPCodes.SELECT_PROTOCOL_ACK,
+		op: VoiceOPCodes.SESSION_DESCRIPTION,
 		d: {
 			video_codec: "H264",
 			sdp: answer,

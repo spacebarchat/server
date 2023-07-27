@@ -26,11 +26,11 @@ import {
 	OneToOne,
 } from "typeorm";
 import {
-	adjustEmail,
 	Config,
 	Email,
 	FieldErrors,
 	Snowflake,
+	adjustEmail,
 	trimSpecial,
 } from "..";
 import { BitField } from "../util/BitField";
@@ -86,8 +86,7 @@ export const PrivateUserProjection = [
 
 // Private user data that should never get sent to the client
 export type PublicUser = Pick<User, PublicUserKeys>;
-
-export type UserPublic = Pick<User, PublicUserKeys>;
+export type PrivateUser = Pick<User, PrivateUserKeys>;
 
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
@@ -110,8 +109,10 @@ export class User extends BaseClass {
 	@Column({ nullable: true })
 	banner?: string; // hash of the user banner
 
+	// TODO: Separate `User` and `UserProfile` models
+	// puyo: changed from [number, number] because it breaks openapi
 	@Column({ nullable: true, type: "simple-array" })
-	theme_colors?: [number, number]; // TODO: Separate `User` and `UserProfile` models
+	theme_colors?: number[];
 
 	@Column({ nullable: true })
 	pronouns?: string;
@@ -126,10 +127,10 @@ export class User extends BaseClass {
 	mobile: boolean = false; // if the user has mobile app installed
 
 	@Column()
-	premium: boolean = Config.get().defaults.user.premium ?? false; // if user bought individual premium
+	premium: boolean; // if user bought individual premium
 
 	@Column()
-	premium_type: number = Config.get().defaults.user.premiumType ?? 0; // individual premium level
+	premium_type: number; // individual premium level
 
 	@Column()
 	bot: boolean = false; // if user is bot
@@ -156,13 +157,13 @@ export class User extends BaseClass {
 	totp_last_ticket?: string = "";
 
 	@Column()
-	created_at: Date = new Date(); // registration date
+	created_at: Date; // registration date
 
 	@Column({ nullable: true })
 	premium_since: Date; // premium date
 
 	@Column({ select: false })
-	verified: boolean = Config.get().defaults.user.verified ?? true; // email is verified
+	verified: boolean; // email is verified
 
 	@Column()
 	disabled: boolean = false; // if the account is disabled
@@ -390,11 +391,16 @@ export class User extends BaseClass {
 				valid_tokens_since: new Date(),
 			},
 			extended_settings: "{}",
+			settings: settings,
+
 			premium_since: Config.get().defaults.user.premium
 				? new Date()
 				: undefined,
-			settings: settings,
 			rights: Config.get().register.defaultRights,
+			premium: Config.get().defaults.user.premium ?? false,
+			premium_type: Config.get().defaults.user.premiumType ?? 0,
+			verified: Config.get().defaults.user.verified ?? true,
+			created_at: new Date(),
 		});
 
 		user.validate();

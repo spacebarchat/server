@@ -21,8 +21,7 @@ export interface MemberChangeProfileSchema {
 	nick?: string;
 	bio?: string;
 	pronouns?: string;
-
-	/*
+	/**
 	 * @items.type integer
 	 */
 	theme_colors?: [number, number];

@@ -29,7 +29,7 @@ const router = Router();
 
 router.post(
 	"/",
-	route({ body: "ConnectionCallbackSchema" }),
+	route({ requestBody: "ConnectionCallbackSchema" }),
 	async (req: Request, res: Response) => {
 		const { connection_name } = req.params;
 		const connection = ConnectionStore.connections.get(connection_name);

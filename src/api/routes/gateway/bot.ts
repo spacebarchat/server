@@ -16,32 +16,34 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { route } from "@spacebar/api";
 import { Config } from "@spacebar/util";
-import { Router, Response, Request } from "express";
-import { route, RouteOptions } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
-const options: RouteOptions = {
-	test: {
-		response: {
-			body: "GatewayBotResponse",
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {
+				body: "GatewayBotResponse",
+			},
 		},
+	}),
+	(req: Request, res: Response) => {
+		const { endpointPublic } = Config.get().gateway;
+		res.json({
+			url: endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
+			shards: 1,
+			session_start_limit: {
+				total: 1000,
+				remaining: 999,
+				reset_after: 14400000,
+				max_concurrency: 1,
+			},
+		});
 	},
-};
-
-router.get("/", route(options), (req: Request, res: Response) => {
-	const { endpointPublic } = Config.get().gateway;
-	res.json({
-		url: endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
-		shards: 1,
-		session_start_limit: {
-			total: 1000,
-			remaining: 999,
-			reset_after: 14400000,
-			max_concurrency: 1,
-		},
-	});
-});
+);
 
 export default router;

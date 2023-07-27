@@ -16,25 +16,25 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
 import {
-	Config,
-	generateToken,
-	Invite,
-	FieldErrors,
-	User,
-	adjustEmail,
-	RegisterSchema,
-	ValidRegistrationToken,
-} from "@spacebar/util";
-import {
-	route,
-	getIpAdress,
 	IPAnalysis,
+	getIpAdress,
 	isProxy,
+	route,
 	verifyCaptcha,
 } from "@spacebar/api";
+import {
+	Config,
+	FieldErrors,
+	Invite,
+	RegisterSchema,
+	User,
+	ValidRegistrationToken,
+	adjustEmail,
+	generateToken,
+} from "@spacebar/util";
 import bcrypt from "bcrypt";
+import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
 
@@ -42,7 +42,13 @@ const router: Router = Router();
 
 router.post(
 	"/",
-	route({ body: "RegisterSchema" }),
+	route({
+		requestBody: "RegisterSchema",
+		responses: {
+			200: { body: "TokenOnlyResponse" },
+			400: { body: "APIErrorOrCaptchaResponse" },
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as RegisterSchema;
 		const { register, security, limits } = Config.get();
@@ -219,6 +225,20 @@ router.post(
 		}
 
 		if (body.password) {
+			const min = register.password.minLength
+				? register.password.minLength
+				: 8;
+			if (body.password.length < min) {
+				throw FieldErrors({
+					password: {
+						code: "PASSWORD_REQUIREMENTS_MIN_LENGTH",
+						message: req.t(
+							"auth:register.PASSWORD_REQUIREMENTS_MIN_LENGTH",
+							{ min: min },
+						),
+					},
+				});
+			}
 			// the salt is saved in the password refer to bcrypt docs
 			body.password = await bcrypt.hash(body.password, 12);
 		} else if (register.password.required) {

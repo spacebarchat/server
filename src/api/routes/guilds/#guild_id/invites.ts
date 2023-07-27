@@ -16,15 +16,22 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Invite, PublicInviteRelation } from "@spacebar/util";
 import { route } from "@spacebar/api";
+import { Invite, PublicInviteRelation } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();
 
 router.get(
 	"/",
-	route({ permission: "MANAGE_GUILD" }),
+	route({
+		permission: "MANAGE_GUILD",
+		responses: {
+			200: {
+				body: "APIInviteArray",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 

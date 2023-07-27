@@ -36,7 +36,17 @@ export default router;
 
 router.post(
 	"/",
-	route({ body: "LoginSchema" }),
+	route({
+		requestBody: "LoginSchema",
+		responses: {
+			200: {
+				body: "LoginResponse",
+			},
+			400: {
+				body: "APIErrorOrCaptchaResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const { login, password, captcha_key, undelete } =
 			req.body as LoginSchema;

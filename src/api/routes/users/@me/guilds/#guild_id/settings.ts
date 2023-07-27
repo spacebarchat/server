@@ -16,29 +16,49 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
+import { route } from "@spacebar/api";
 import {
 	Channel,
 	Member,
 	OrmUtils,
 	UserGuildSettingsSchema,
 } from "@spacebar/util";
-import { route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
 // GET doesn't exist on discord.com
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const user = await Member.findOneOrFail({
-		where: { id: req.user_id, guild_id: req.params.guild_id },
-		select: ["settings"],
-	});
-	return res.json(user.settings);
-});
+router.get(
+	"/",
+	route({
+		responses: {
+			200: {},
+			404: {},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const user = await Member.findOneOrFail({
+			where: { id: req.user_id, guild_id: req.params.guild_id },
+			select: ["settings"],
+		});
+		return res.json(user.settings);
+	},
+);
 
 router.patch(
 	"/",
-	route({ body: "UserGuildSettingsSchema" }),
+	route({
+		requestBody: "UserGuildSettingsSchema",
+		responses: {
+			200: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as UserGuildSettingsSchema;
 

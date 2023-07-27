@@ -27,6 +27,8 @@ import {
 	User,
 	Presence,
 	partition,
+	Channel,
+	Permissions,
 } from "@spacebar/util";
 import {
 	WebSocket,
@@ -35,6 +37,7 @@ import {
 	OPCODES,
 	Send,
 } from "@spacebar/gateway";
+import murmur from "murmurhash-js/murmurhash3_gc";
 import { check } from "./instanceOf";
 
 // TODO: only show roles/members that have access to this channel
@@ -267,7 +270,31 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	if (!Array.isArray(ranges)) throw new Error("Not a valid Array");
 
 	const member_count = await Member.count({ where: { guild_id } });
-	const ops = await Promise.all(ranges.map((x) => getMembers(guild_id, x)));
+	const ops = await Promise.all(
+		ranges.map((x) => getMembers(guild_id, x as [number, number])),
+	);
+
+	let list_id = "everyone";
+
+	const channel = await Channel.findOneOrFail({
+		where: { id: channel_id },
+	});
+	if (channel.permission_overwrites) {
+		const perms: string[] = [];
+
+		channel.permission_overwrites.forEach((overwrite) => {
+			const { id, allow, deny } = overwrite;
+
+			if (allow.toBigInt() & Permissions.FLAGS.VIEW_CHANNEL)
+				perms.push(`allow:${id}`);
+			else if (deny.toBigInt() & Permissions.FLAGS.VIEW_CHANNEL)
+				perms.push(`deny:${id}`);
+		});
+
+		if (perms.length > 0) {
+			list_id = murmur(perms.sort().join(",")).toString();
+		}
+	}
 
 	// TODO: unsubscribe member_events that are not in op.members
 
@@ -297,7 +324,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 				member_count -
 				(groups.find((x) => x.id == "offline")?.count ?? 0),
 			member_count,
-			id: "everyone",
+			id: list_id,
 			guild_id,
 			groups,
 		},

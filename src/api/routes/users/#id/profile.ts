@@ -16,23 +16,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import {
-	User,
-	Member,
-	UserProfileModifySchema,
-	handleFile,
-	PrivateUserProjection,
-	emitEvent,
-	UserUpdateEvent,
-} from "@spacebar/util";
 import { route } from "@spacebar/api";
+import {
+	Member,
+	PrivateUserProjection,
+	User,
+	UserProfileModifySchema,
+	UserUpdateEvent,
+	emitEvent,
+	handleFile,
+} from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
 router.get(
 	"/",
-	route({ test: { response: { body: "UserProfileResponse" } } }),
+	route({ responses: { 200: { body: "UserProfileResponse" } } }),
 	async (req: Request, res: Response) => {
 		if (req.params.id === "@me") req.params.id = req.user_id;
 
@@ -84,18 +84,6 @@ router.get(
 
 		// TODO: make proper DTO's in util?
 
-		const userDto = {
-			username: user.username,
-			discriminator: user.discriminator,
-			id: user.id,
-			public_flags: user.public_flags,
-			avatar: user.avatar,
-			accent_color: user.accent_color,
-			banner: user.banner,
-			bio: req.user_bot ? null : user.bio,
-			bot: user.bot,
-		};
-
 		const userProfile = {
 			bio: req.user_bot ? null : user.bio,
 			accent_color: user.accent_color,
@@ -103,28 +91,6 @@ router.get(
 			pronouns: user.pronouns,
 			theme_colors: user.theme_colors,
 		};
-
-		const guildMemberDto = guild_member
-			? {
-					avatar: guild_member.avatar,
-					banner: guild_member.banner,
-					bio: req.user_bot ? null : guild_member.bio,
-					communication_disabled_until:
-						guild_member.communication_disabled_until,
-					deaf: guild_member.deaf,
-					flags: user.flags,
-					is_pending: guild_member.pending,
-					pending: guild_member.pending, // why is this here twice, discord?
-					joined_at: guild_member.joined_at,
-					mute: guild_member.mute,
-					nick: guild_member.nick,
-					premium_since: guild_member.premium_since,
-					roles: guild_member.roles
-						.map((x) => x.id)
-						.filter((id) => id != guild_id),
-					user: userDto,
-			  }
-			: undefined;
 
 		const guildMemberProfile = {
 			accent_color: null,
@@ -139,11 +105,11 @@ router.get(
 			premium_guild_since: premium_guild_since, // TODO
 			premium_since: user.premium_since, // TODO
 			mutual_guilds: mutual_guilds, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
-			user: userDto,
+			user: user.toPublicUser(),
 			premium_type: user.premium_type,
 			profile_themes_experiment_bucket: 4, // TODO: This doesn't make it available, for some reason?
 			user_profile: userProfile,
-			guild_member: guild_id && guildMemberDto,
+			guild_member: guild_member?.toPublicMember(),
 			guild_member_profile: guild_id && guildMemberProfile,
 		});
 	},
@@ -151,7 +117,7 @@ router.get(
 
 router.patch(
 	"/",
-	route({ body: "UserProfileModifySchema" }),
+	route({ requestBody: "UserProfileModifySchema" }),
 	async (req: Request, res: Response) => {
 		const body = req.body as UserProfileModifySchema;
 
