@@ -119,25 +119,26 @@ router.get(
 		};
 
 		let messages: Message[];
-		if (after) {
-			if (BigInt(after) > BigInt(Snowflake.generate()))
-				return res.status(422);
-			query.where.id = MoreThan(after);
-			messages = await Message.find(query);
-		} else if (before) {
-			if (BigInt(before) < BigInt(req.params.channel_id))
-				return res.status(422);
-			query.where.id = LessThan(before);
-			messages = await Message.find(query);
-		} else if (around) {
+
+		if (around) {
 			query.take = Math.floor(limit / 2);
-			query.where.id = LessThan(around);
-			const messages_before = await Message.find(query);
-			query.where.id = MoreThan(around);
-			const messages_after = await Message.find(query);
-			messages = messages_before.concat(messages_after);
+			const [right, left] = await Promise.all([
+				Message.find({ ...query, where: { id: LessThan(around) } }),
+				Message.find({ ...query, where: { id: MoreThan(around) } }),
+			]);
+			messages = right.concat(left);
 		} else {
-			throw new HTTPError("after, around or before must be present", 422);
+			if (after) {
+				if (BigInt(after) > BigInt(Snowflake.generate()))
+					return res.status(422);
+				query.where.id = MoreThan(after);
+			} else if (before) {
+				if (BigInt(before) < BigInt(Snowflake.generate()))
+					return res.status(422);
+				query.where.id = LessThan(before);
+			}
+
+			messages = await Message.find(query);
 		}
 
 		const endpoint = Config.get().cdn.endpointPublic;
