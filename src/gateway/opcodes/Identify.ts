@@ -30,7 +30,6 @@ import {
 	Intents,
 	Member,
 	ReadyEventData,
-	User,
 	Session,
 	EVENTEnum,
 	Config,
@@ -60,17 +59,6 @@ import { check } from "./instanceOf";
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
 
-const getUserFromToken = async (token: string): Promise<string | null> => {
-	try {
-		const { jwtSecret } = Config.get().security;
-		const { decoded } = await checkToken(token, jwtSecret);
-		return decoded.id;
-	} catch (e) {
-		console.error(`[Gateway] Invalid token`, e);
-		return null;
-	}
-};
-
 export async function onIdentify(this: WebSocket, data: Payload) {
 	if (this.user_id) {
 		// we've already identified
@@ -85,12 +73,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	this.capabilities = new Capabilities(identify.capabilities || 0);
 
-	// Check auth
-	// TODO: the checkToken call will fetch user, and then we have to refetch with different select
-	// checkToken should be able to select what we want
-	const user_id = await getUserFromToken(identify.token);
-	if (!user_id) return this.close(CLOSECODES.Authentication_failed);
-	this.user_id = user_id;
+	const { user } = await checkToken(identify.token, {
+		relations: ["relationships", "relationships.to", "settings"],
+		select: [...PrivateUserProjection, "relationships"],
+	});
+	if (!user) return this.close(CLOSECODES.Authentication_failed);
+	this.user_id = user.id;
 
 	// Check intents
 	if (!identify.intents) identify.intents = 30064771071n; // TODO: what is this number?
@@ -112,7 +100,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		) {
 			// TODO: why do we even care about this right now?
 			console.log(
-				`[Gateway] Invalid sharding from ${user_id}: ${identify.shard}`,
+				`[Gateway] Invalid sharding from ${user.id}: ${identify.shard}`,
 			);
 			return this.close(CLOSECODES.Invalid_shard);
 		}
@@ -132,21 +120,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	});
 
 	// Get from database:
-	// * the current user,
 	// * the users read states
 	// * guild members for this user
 	// * recipients ( dm channels )
 	// * the bot application, if it exists
-	const [, user, application, read_states, members, recipients] =
-		await Promise.all([
+	const [, application, read_states, members, recipients] = await Promise.all(
+		[
 			session.save(),
-
-			// TODO: Refactor checkToken to allow us to skip this additional query
-			User.findOneOrFail({
-				where: { id: this.user_id },
-				relations: ["relationships", "relationships.to", "settings"],
-				select: [...PrivateUserProjection, "relationships"],
-			}),
 
 			Application.findOne({
 				where: { id: this.user_id },
@@ -224,7 +204,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					},
 				},
 			}),
-		]);
+		],
+	);
 
 	// We forgot to migrate user settings from the JSON column of `users`
 	// to the `user_settings` table theyre in now,
@@ -407,6 +388,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		merged_members: merged_members,
 		sessions: allSessions,
 
+		resume_gateway_url:
+			Config.get().gateway.endpointClient ||
+			Config.get().gateway.endpointPublic ||
+			"ws://127.0.0.1:3001",
+
+		// lol hack whatever
+		required_action:
+			Config.get().login.requireVerification && !user.verified
+				? "REQUIRE_VERIFIED_EMAIL"
+				: undefined,
+
 		consents: {
 			personalization: {
 				consented: false, // TODO
@@ -421,18 +413,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		friend_suggestion_count: 0,
 		analytics_token: "",
 		tutorial: null,
-		resume_gateway_url:
-			Config.get().gateway.endpointClient ||
-			Config.get().gateway.endpointPublic ||
-			"ws://127.0.0.1:3001",
 		session_type: "normal", // TODO
 		auth_session_id_hash: "", // TODO
-
-		// lol hack whatever
-		required_action:
-			Config.get().login.requireVerification && !user.verified
-				? "REQUIRE_VERIFIED_EMAIL"
-				: undefined,
 	};
 
 	// Send READY
