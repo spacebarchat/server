@@ -126,7 +126,8 @@ router.get(
 				Message.find({ ...query, where: { id: LessThan(around) } }),
 				Message.find({ ...query, where: { id: MoreThan(around) } }),
 			]);
-			messages = right.concat(left);
+			right.push(...left);
+			messages = right;
 		} else {
 			if (after) {
 				if (BigInt(after) > BigInt(Snowflake.generate()))
