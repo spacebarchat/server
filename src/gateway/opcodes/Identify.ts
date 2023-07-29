@@ -265,6 +265,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return {
 			...member.guild.toJSON(),
 			joined_at: member.joined_at,
+
+			threads: [],
 		};
 	});
 

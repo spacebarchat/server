@@ -390,4 +390,11 @@ export class Guild extends BaseClass {
 
 		return guild;
 	}
+
+	toJSON() {
+		return {
+			...this,
+			unavailable: this.unavailable == false ? undefined : true,
+		};
+	}
 }

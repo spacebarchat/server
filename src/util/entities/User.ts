@@ -175,7 +175,7 @@ export class User extends BaseClass {
 	email?: string; // email of the user
 
 	@Column()
-	flags: string = "0"; // UserFlags // TODO: generate
+	flags: number = 0; // UserFlags // TODO: generate
 
 	@Column()
 	public_flags: number = 0;

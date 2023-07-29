@@ -49,12 +49,12 @@ export interface ReadyPrivateChannel {
 
 export type GuildOrUnavailable =
 	| { id: string; unavailable: boolean }
-	| (Guild & { joined_at?: Date; unavailable: boolean });
+	| (Guild & { joined_at?: Date; unavailable: undefined });
 
 const guildIsAvailable = (
 	guild: GuildOrUnavailable,
 ): guild is Guild & { joined_at: Date; unavailable: false } => {
-	return guild.unavailable == false;
+	return guild.unavailable != true;
 };
 
 export interface IReadyGuildDTO {
