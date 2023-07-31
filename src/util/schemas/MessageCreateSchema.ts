@@ -29,7 +29,7 @@ export interface MessageCreateSchema {
 	nonce?: string;
 	channel_id?: string;
 	tts?: boolean;
-	flags?: string;
+	flags?: number;
 	embeds?: Embed[];
 	embed?: Embed;
 	// TODO: ^ embed is deprecated in favor of embeds (https://discord.com/developers/docs/resources/channel#message-object)
