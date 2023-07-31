@@ -53,6 +53,7 @@ import {
 	DMChannel,
 	GuildOrUnavailable,
 	Recipient,
+	OPCodes,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 
@@ -441,7 +442,25 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		),
 	);
 
-	//TODO send READY_SUPPLEMENTAL
+	// TODO: ready supplemental
+	await Send(this, {
+		op: OPCodes.DISPATCH,
+		t: EVENTEnum.ReadySupplemental,
+		s: this.sequence++,
+		d: {
+			merged_presences: {
+				guilds: [],
+				friends: [],
+			},
+			// these merged members seem to be all users currently in vc in your guilds
+			merged_members: [],
+			lazy_private_channels: [],
+			guilds: [], // { voice_states: [], id: string, embedded_activities: [] }
+			// embedded_activities are users currently in an activity?
+			disclose: ["pomelo"],
+		},
+	});
+
 	//TODO send GUILD_MEMBER_LIST_UPDATE
 	//TODO send VOICE_STATE_UPDATE to let the client know if another device is already connected to a voice channel
 

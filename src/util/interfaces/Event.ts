@@ -583,6 +583,7 @@ export type EventData =
 
 export enum EVENTEnum {
 	Ready = "READY",
+	ReadySupplemental = "READY_SUPPLEMENTAL",
 	ChannelCreate = "CHANNEL_CREATE",
 	ChannelUpdate = "CHANNEL_UPDATE",
 	ChannelDelete = "CHANNEL_DELETE",
