@@ -457,7 +457,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			lazy_private_channels: [],
 			guilds: [], // { voice_states: [], id: string, embedded_activities: [] }
 			// embedded_activities are users currently in an activity?
-			disclose: ["pomelo"],
+			disclose: [], // Config.get().general.uniqueUsernames ? ["pomelo"] : []
 		},
 	});
 
