@@ -48,11 +48,9 @@ router.post(
 	async (req: Request, res: Response) => {
 		const { password, token } = req.body as PasswordResetSchema;
 
-		const { jwtSecret } = Config.get().security;
-
 		let user;
 		try {
-			const userTokenData = await checkToken(token, jwtSecret, true);
+			const userTokenData = await checkToken(token);
 			user = userTokenData.user;
 		} catch {
 			throw FieldErrors({

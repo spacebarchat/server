@@ -353,6 +353,7 @@ export class Guild extends BaseClass {
 			position: 0,
 			icon: undefined,
 			unicode_emoji: undefined,
+			flags: 0, // TODO?
 		}).save();
 
 		if (!body.channels || !body.channels.length)
@@ -388,5 +389,12 @@ export class Guild extends BaseClass {
 		}
 
 		return guild;
+	}
+
+	toJSON() {
+		return {
+			...this,
+			unavailable: this.unavailable == false ? undefined : true,
+		};
 	}
 }

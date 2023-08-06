@@ -175,7 +175,7 @@ export class User extends BaseClass {
 	email?: string; // email of the user
 
 	@Column()
-	flags: string = "0"; // UserFlags // TODO: generate
+	flags: number = 0; // UserFlags // TODO: generate
 
 	@Column()
 	public_flags: number = 0;
@@ -279,6 +279,15 @@ export class User extends BaseClass {
 			user[x] = this[x];
 		});
 		return user as PublicUser;
+	}
+
+	toPrivateUser() {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const user: any = {};
+		PrivateUserProjection.forEach((x) => {
+			user[x] = this[x];
+		});
+		return user as UserPrivate;
 	}
 
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {

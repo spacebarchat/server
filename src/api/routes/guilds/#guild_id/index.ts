@@ -161,7 +161,7 @@ router.patch(
 		const data = guild.toJSON();
 		// TODO: guild hashes
 		// TODO: fix vanity_url_code, template_id
-		delete data.vanity_url_code;
+		// delete data.vanity_url_code;
 		delete data.template_id;
 
 		await Promise.all([

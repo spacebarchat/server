@@ -193,7 +193,7 @@ export class Message extends BaseClass {
 	};
 
 	@Column({ nullable: true })
-	flags?: string;
+	flags?: number;
 
 	@Column({ type: "simple-json", nullable: true })
 	message_reference?: {
@@ -217,6 +217,30 @@ export class Message extends BaseClass {
 
 	@Column({ type: "simple-json", nullable: true })
 	components?: MessageComponent[];
+
+	toJSON(): Message {
+		return {
+			...this,
+			author_id: undefined,
+			member_id: undefined,
+			guild_id: undefined,
+			webhook_id: undefined,
+			application_id: undefined,
+			nonce: undefined,
+
+			tts: this.tts ?? false,
+			guild: this.guild ?? undefined,
+			webhook: this.webhook ?? undefined,
+			interaction: this.interaction ?? undefined,
+			reactions: this.reactions ?? undefined,
+			sticker_items: this.sticker_items ?? undefined,
+			message_reference: this.message_reference ?? undefined,
+			author: this.author?.toPublicUser() ?? undefined,
+			activity: this.activity ?? undefined,
+			application: this.application ?? undefined,
+			components: this.components ?? undefined,
+		};
+	}
 }
 
 export interface MessageComponent {

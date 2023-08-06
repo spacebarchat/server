@@ -21,3 +21,4 @@ export * from "./Send";
 export * from "./SessionUtils";
 export * from "./Heartbeat";
 export * from "./WebSocket";
+export * from "./Capabilities";
