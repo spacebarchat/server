@@ -144,44 +144,46 @@ router.get(
 
 		const endpoint = Config.get().cdn.endpointPublic;
 
-		return res.json(
-			messages.map((x: Partial<Message>) => {
-				(x.reactions || []).forEach((y: Partial<Reaction>) => {
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					//@ts-ignore
-					if ((y.user_ids || []).includes(req.user_id)) y.me = true;
-					delete y.user_ids;
-				});
-				if (!x.author)
-					x.author = User.create({
-						id: "4",
-						discriminator: "0000",
-						username: "Spacebar Ghost",
-						public_flags: 0,
-					});
-				x.attachments?.forEach((y: Attachment) => {
-					// dynamically set attachment proxy_url in case the endpoint changed
-					const uri = y.proxy_url.startsWith("http")
-						? y.proxy_url
-						: `https://example.org${y.proxy_url}`;
-					y.proxy_url = `${endpoint == null ? "" : endpoint}${
-						new URL(uri).pathname
-					}`;
-				});
+		const ret = messages.map((x: Message) => {
+			x = x.toJSON();
 
-				/**
+			(x.reactions || []).forEach((y: Partial<Reaction>) => {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				//@ts-ignore
+				if ((y.user_ids || []).includes(req.user_id)) y.me = true;
+				delete y.user_ids;
+			});
+			if (!x.author)
+				x.author = User.create({
+					id: "4",
+					discriminator: "0000",
+					username: "Spacebar Ghost",
+					public_flags: 0,
+				});
+			x.attachments?.forEach((y: Attachment) => {
+				// dynamically set attachment proxy_url in case the endpoint changed
+				const uri = y.proxy_url.startsWith("http")
+					? y.proxy_url
+					: `https://example.org${y.proxy_url}`;
+				y.proxy_url = `${endpoint == null ? "" : endpoint}${
+					new URL(uri).pathname
+				}`;
+			});
+
+			/**
 			Some clients ( discord.js ) only check if a property exists within the response,
 			which causes errors when, say, the `application` property is `null`.
 			**/
 
-				// for (var curr in x) {
-				// 	if (x[curr] === null)
-				// 		delete x[curr];
-				// }
+			// for (var curr in x) {
+			// 	if (x[curr] === null)
+			// 		delete x[curr];
+			// }
 
-				return x;
-			}),
-		);
+			return x;
+		});
+
+		return res.json(ret);
 	},
 );
 
@@ -307,9 +309,11 @@ router.post(
 			embeds,
 			channel_id,
 			attachments,
-			edited_timestamp: undefined,
 			timestamp: new Date(),
 		});
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		//@ts-ignore dont care2
+		message.edited_timestamp = null;
 
 		channel.last_message_id = message.id;
 

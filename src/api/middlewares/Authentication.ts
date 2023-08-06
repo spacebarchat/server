@@ -92,12 +92,7 @@ export async function Authentication(
 	Sentry.setUser({ id: req.user_id });
 
 	try {
-		const { jwtSecret } = Config.get().security;
-
-		const { decoded, user } = await checkToken(
-			req.headers.authorization,
-			jwtSecret,
-		);
+		const { decoded, user } = await checkToken(req.headers.authorization);
 
 		req.token = decoded;
 		req.user_id = decoded.id;

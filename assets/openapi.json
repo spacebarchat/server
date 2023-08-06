@@ -2390,12 +2390,16 @@
                         },
                         "additionalProperties": false
                     },
+                    "flags": {
+                        "type": "integer"
+                    },
                     "id": {
                         "type": "string"
                     }
                 },
                 "required": [
                     "color",
+                    "flags",
                     "guild",
                     "guild_id",
                     "hoist",
@@ -3632,47 +3636,45 @@
                         "type": "object",
                         "additionalProperties": false
                     },
-                    "id": {
-                        "type": "string"
-                    },
-                    "roles": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Role"
-                        }
-                    },
                     "name": {
-                        "type": "string"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "unavailable": {
-                        "type": "boolean"
-                    },
-                    "channels": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Channel"
-                        }
-                    },
-                    "region": {
                         "type": "string"
                     },
                     "icon": {
                         "type": "string"
                     },
-                    "system_channel_id": {
+                    "parent": {
                         "type": "string"
                     },
-                    "rules_channel_id": {
+                    "owner_id": {
                         "type": "string"
                     },
-                    "afk_timeout": {
-                        "type": "integer"
+                    "nsfw": {
+                        "type": "boolean"
                     },
-                    "explicit_content_filter": {
-                        "type": "integer"
+                    "invites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Invite"
+                        }
+                    },
+                    "voice_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VoiceState"
+                        }
+                    },
+                    "webhooks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Webhook"
+                        }
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "_do_validate": {
+                        "type": "object",
+                        "additionalProperties": false
                     },
                     "assign": {
                         "type": "object",
@@ -3706,6 +3708,39 @@
                         "description": "Recovers a given entity in the database.",
                         "type": "object",
                         "additionalProperties": false
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "unavailable": {
+                        "type": "boolean"
+                    },
+                    "channels": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Channel"
+                        }
+                    },
+                    "region": {
+                        "type": "string"
+                    },
+                    "system_channel_id": {
+                        "type": "string"
+                    },
+                    "rules_channel_id": {
+                        "type": "string"
+                    },
+                    "afk_timeout": {
+                        "type": "integer"
+                    },
+                    "explicit_content_filter": {
+                        "type": "integer"
                     },
                     "afk_channel_id": {
                         "type": "string"
@@ -3773,29 +3808,8 @@
                             "$ref": "#/components/schemas/Sticker"
                         }
                     },
-                    "invites": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Invite"
-                        }
-                    },
-                    "voice_states": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/VoiceState"
-                        }
-                    },
-                    "webhooks": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Webhook"
-                        }
-                    },
                     "mfa_level": {
                         "type": "integer"
-                    },
-                    "owner_id": {
-                        "type": "string"
                     },
                     "preferred_locale": {
                         "type": "string"
@@ -3830,21 +3844,11 @@
                     "nsfw_level": {
                         "type": "integer"
                     },
-                    "nsfw": {
-                        "type": "boolean"
-                    },
-                    "parent": {
-                        "type": "string"
-                    },
                     "permissions": {
                         "type": "integer"
                     },
                     "premium_progress_bar_enabled": {
                         "type": "boolean"
-                    },
-                    "_do_validate": {
-                        "type": "object",
-                        "additionalProperties": false
                     }
                 },
                 "required": [
@@ -4173,13 +4177,30 @@
                     "channel": {
                         "$ref": "#/components/schemas/RateLimitOptions"
                     },
-                    "auth": {}
+                    "auth": {
+                        "$ref": "#/components/schemas/AuthRateLimit"
+                    }
                 },
                 "required": [
                     "auth",
                     "channel",
                     "guild",
                     "webhook"
+                ]
+            },
+            "AuthRateLimit": {
+                "type": "object",
+                "properties": {
+                    "login": {
+                        "$ref": "#/components/schemas/RateLimitOptions"
+                    },
+                    "register": {
+                        "$ref": "#/components/schemas/RateLimitOptions"
+                    }
+                },
+                "required": [
+                    "login",
+                    "register"
                 ]
             },
             "GlobalRateLimits": {
@@ -4664,12 +4685,12 @@
                     "discovery_splash": {
                         "type": "string"
                     },
-                    "region": {
-                        "type": "string"
-                    },
                     "icon": {
                         "type": "string",
                         "nullable": true
+                    },
+                    "region": {
+                        "type": "string"
                     },
                     "guild_template_code": {
                         "type": "string"
@@ -5406,6 +5427,12 @@
                     },
                     "promotional_email_opt_in": {
                         "type": "boolean"
+                    },
+                    "unique_username_registration": {
+                        "type": "boolean"
+                    },
+                    "global_name": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -5684,13 +5711,6 @@
                     "version": {
                         "type": "integer"
                     },
-                    "guild_id": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "flags": {
-                        "type": "integer"
-                    },
                     "message_notifications": {
                         "type": "integer"
                     },
@@ -5715,6 +5735,13 @@
                     },
                     "suppress_roles": {
                         "type": "boolean"
+                    },
+                    "guild_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "flags": {
+                        "type": "integer"
                     },
                     "mute_scheduled_events": {
                         "type": "boolean"
@@ -6934,6 +6961,9 @@
             "APIPrivateUser": {
                 "type": "object",
                 "properties": {
+                    "flags": {
+                        "type": "string"
+                    },
                     "id": {
                         "type": "string"
                     },
@@ -6978,9 +7008,6 @@
                         }
                     },
                     "pronouns": {
-                        "type": "string"
-                    },
-                    "flags": {
                         "type": "string"
                     },
                     "mfa_enabled": {
@@ -7051,6 +7078,9 @@
                     "newToken": {
                         "type": "string"
                     },
+                    "flags": {
+                        "type": "string"
+                    },
                     "id": {
                         "type": "string"
                     },
@@ -7095,9 +7125,6 @@
                         }
                     },
                     "pronouns": {
-                        "type": "string"
-                    },
-                    "flags": {
                         "type": "string"
                     },
                     "mfa_enabled": {
@@ -7264,10 +7291,10 @@
             "APIPublicMember": {
                 "type": "object",
                 "properties": {
-                    "id": {
+                    "guild_id": {
                         "type": "string"
                     },
-                    "guild_id": {
+                    "id": {
                         "type": "string"
                     },
                     "nick": {
@@ -7696,10 +7723,10 @@
                         "additionalProperties": false,
                         "type": "object",
                         "properties": {
-                            "id": {
+                            "guild_id": {
                                 "type": "string"
                             },
-                            "guild_id": {
+                            "id": {
                                 "type": "string"
                             },
                             "nick": {
