@@ -134,7 +134,7 @@ router.get(
 					return res.status(422);
 				query.where.id = MoreThan(after);
 			} else if (before) {
-				if (BigInt(before) < BigInt(Snowflake.generate()))
+				if (BigInt(before) > BigInt(Snowflake.generate()))
 					return res.status(422);
 				query.where.id = LessThan(before);
 			}
