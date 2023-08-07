@@ -18,7 +18,7 @@
 
 import fs from "fs";
 import path from "path";
-import Connection from "./Connection";
+import { Connection } from "@spacebar/util";
 import { ConnectionConfig } from "./ConnectionConfig";
 import { ConnectionStore } from "./ConnectionStore";
 

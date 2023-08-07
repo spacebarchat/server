@@ -22,9 +22,9 @@ import {
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
+	Connection,
 } from "@spacebar/util";
 import wretch from "wretch";
-import Connection from "../../util/connections/Connection";
 import { BattleNetSettings } from "./BattleNetSettings";
 
 interface BattleNetConnectionUser {
@@ -33,10 +33,10 @@ interface BattleNetConnectionUser {
 	battletag: string;
 }
 
-interface BattleNetErrorResponse {
-	error: string;
-	error_description: string;
-}
+// interface BattleNetErrorResponse {
+// 	error: string;
+// 	error_description: string;
+// }
 
 export default class BattleNetConnection extends Connection {
 	public readonly id = "battlenet";

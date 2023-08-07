@@ -22,9 +22,9 @@ import {
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
+	RefreshableConnection,
 } from "@spacebar/util";
 import wretch from "wretch";
-import RefreshableConnection from "../../util/connections/RefreshableConnection";
 import { TwitterSettings } from "./TwitterSettings";
 
 interface TwitterUserResponse {
@@ -40,10 +40,10 @@ interface TwitterUserResponse {
 	};
 }
 
-interface TwitterErrorResponse {
-	error: string;
-	error_description: string;
-}
+// interface TwitterErrorResponse {
+// 	error: string;
+// 	error_description: string;
+// }
 
 export default class TwitterConnection extends RefreshableConnection {
 	public readonly id = "twitter";

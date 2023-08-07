@@ -22,9 +22,9 @@ import {
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
+	Connection,
 } from "@spacebar/util";
 import wretch from "wretch";
-import Connection from "../../util/connections/Connection";
 import { XboxSettings } from "./XboxSettings";
 
 interface XboxUserResponse {
@@ -44,10 +44,10 @@ interface XboxUserResponse {
 	};
 }
 
-interface XboxErrorResponse {
-	error: string;
-	error_description: string;
-}
+// interface XboxErrorResponse {
+// 	error: string;
+// 	error_description: string;
+// }
 
 export default class XboxConnection extends Connection {
 	public readonly id = "xbox";

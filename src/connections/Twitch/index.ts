@@ -22,9 +22,9 @@ import {
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
+	RefreshableConnection,
 } from "@spacebar/util";
 import wretch from "wretch";
-import RefreshableConnection from "../../util/connections/RefreshableConnection";
 import { TwitchSettings } from "./TwitchSettings";
 
 interface TwitchConnectionUserResponse {

@@ -22,9 +22,9 @@ import {
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
+	Connection,
 } from "@spacebar/util";
 import wretch from "wretch";
-import Connection from "../../util/connections/Connection";
 import { EpicGamesSettings } from "./EpicGamesSettings";
 
 export interface UserResponse {
