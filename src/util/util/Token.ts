@@ -40,6 +40,9 @@ export const checkToken = (
 	},
 ): Promise<UserTokenData> =>
 	new Promise((resolve, reject) => {
+		token = token.replace("Bot ", ""); // there is no bot distinction in sb
+		token = token.replace("Bearer ", ""); // allow bearer tokens
+
 		jwt.verify(
 			token,
 			Config.get().security.jwtSecret,
