@@ -19,7 +19,6 @@
 import { route } from "@spacebar/api";
 import {
 	checkToken,
-	Config,
 	Email,
 	FieldErrors,
 	generateToken,
