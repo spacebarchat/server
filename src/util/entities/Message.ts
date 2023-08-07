@@ -225,8 +225,8 @@ export class Message extends BaseClass {
 			member_id: undefined,
 			webhook_id: undefined,
 			application_id: undefined,
-			nonce: undefined,
 
+			nonce: this.nonce ?? undefined,
 			tts: this.tts ?? false,
 			guild: this.guild ?? undefined,
 			webhook: this.webhook ?? undefined,
