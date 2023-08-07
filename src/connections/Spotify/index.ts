@@ -63,17 +63,20 @@ export default class SpotifyConnection extends RefreshableConnection {
 		 * So to prevent spamming the spotify api we disable the ability to refresh.
 		 */
 		this.refreshEnabled = false;
-		this.settings = ConnectionLoader.getConnectionConfig(
+		const settings = ConnectionLoader.getConnectionConfig<SpotifySettings>(
 			this.id,
 			this.settings,
-		) as SpotifySettings;
+		);
+
+		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
+			throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
 		const state = this.createState(userId);
 		const url = new URL(this.authorizeUrl);
 
-		url.searchParams.append("client_id", this.settings.clientId!);
+		url.searchParams.append("client_id", this.settings.clientId as string);
 		url.searchParams.append("redirect_uri", this.getRedirectUri());
 		url.searchParams.append("response_type", "code");
 		url.searchParams.append("scope", this.scopes.join(" "));
@@ -98,7 +101,9 @@ export default class SpotifyConnection extends RefreshableConnection {
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
+					`${this.settings.clientId as string}:${
+						this.settings.clientSecret as string
+					}`,
 				).toString("base64")}`,
 			})
 			.body(
@@ -129,7 +134,9 @@ export default class SpotifyConnection extends RefreshableConnection {
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId!}:${this.settings.clientSecret!}`,
+					`${this.settings.clientId as string}:${
+						this.settings.clientSecret as string
+					}`,
 				).toString("base64")}`,
 			})
 			.body(
@@ -169,8 +176,11 @@ export default class SpotifyConnection extends RefreshableConnection {
 	async handleCallback(
 		params: ConnectionCallbackSchema,
 	): Promise<ConnectedAccount | null> {
-		const userId = this.getUserId(params.state);
-		const tokenData = await this.exchangeCode(params.state, params.code!);
+		const { state, code } = params;
+		if (!code) throw new Error("No code provided");
+
+		const userId = this.getUserId(state);
+		const tokenData = await this.exchangeCode(state, code);
 		const userInfo = await this.getUser(tokenData.access_token);
 
 		const exists = await this.hasConnection(userId, userInfo.id);

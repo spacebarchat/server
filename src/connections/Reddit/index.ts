@@ -19,10 +19,10 @@
 import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
+	Connection,
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
-	Connection,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { RedditSettings } from "./RedditSettings";
@@ -54,17 +54,20 @@ export default class RedditConnection extends Connection {
 	settings: RedditSettings = new RedditSettings();
 
 	init(): void {
-		this.settings = ConnectionLoader.getConnectionConfig(
+		const settings = ConnectionLoader.getConnectionConfig<RedditSettings>(
 			this.id,
 			this.settings,
-		) as RedditSettings;
+		);
+
+		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
+			throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
 		const state = this.createState(userId);
 		const url = new URL(this.authorizeUrl);
 
-		url.searchParams.append("client_id", this.settings.clientId!);
+		url.searchParams.append("client_id", this.settings.clientId as string);
 		url.searchParams.append("redirect_uri", this.getRedirectUri());
 		url.searchParams.append("response_type", "code");
 		url.searchParams.append("scope", this.scopes.join(" "));
@@ -124,8 +127,11 @@ export default class RedditConnection extends Connection {
 	async handleCallback(
 		params: ConnectionCallbackSchema,
 	): Promise<ConnectedAccount | null> {
-		const userId = this.getUserId(params.state);
-		const tokenData = await this.exchangeCode(params.state, params.code!);
+		const { state, code } = params;
+		if (!code) throw new Error("No code provided");
+
+		const userId = this.getUserId(state);
+		const tokenData = await this.exchangeCode(state, code);
 		const userInfo = await this.getUser(tokenData.access_token);
 
 		const exists = await this.hasConnection(userId, userInfo.id.toString());

@@ -25,6 +25,7 @@ import { Connection } from "./Connection";
  */
 export abstract class RefreshableConnection extends Connection {
 	refreshEnabled = true;
+
 	/**
 	 * Refreshes the token for a connected account.
 	 * @param connectedAccount The connected account to refresh

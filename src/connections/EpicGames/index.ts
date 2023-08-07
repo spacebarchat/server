@@ -19,10 +19,10 @@
 import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
+	Connection,
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
-	Connection,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { EpicGamesSettings } from "./EpicGamesSettings";
@@ -53,17 +53,21 @@ export default class EpicGamesConnection extends Connection {
 	settings: EpicGamesSettings = new EpicGamesSettings();
 
 	init(): void {
-		this.settings = ConnectionLoader.getConnectionConfig(
-			this.id,
-			this.settings,
-		) as EpicGamesSettings;
+		const settings =
+			ConnectionLoader.getConnectionConfig<EpicGamesSettings>(
+				this.id,
+				this.settings,
+			);
+
+		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
+			throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
 		const state = this.createState(userId);
 		const url = new URL(this.authorizeUrl);
 
-		url.searchParams.append("client_id", this.settings.clientId!);
+		url.searchParams.append("client_id", this.settings.clientId as string);
 		url.searchParams.append("redirect_uri", this.getRedirectUri());
 		url.searchParams.append("response_type", "code");
 		url.searchParams.append("scope", this.scopes.join(" "));
@@ -127,8 +131,11 @@ export default class EpicGamesConnection extends Connection {
 	async handleCallback(
 		params: ConnectionCallbackSchema,
 	): Promise<ConnectedAccount | null> {
-		const userId = this.getUserId(params.state);
-		const tokenData = await this.exchangeCode(params.state, params.code!);
+		const { state, code } = params;
+		if (!code) throw new Error("No code provided");
+
+		const userId = this.getUserId(state);
+		const tokenData = await this.exchangeCode(state, code);
 		const userInfo = await this.getUser(tokenData.access_token);
 
 		const exists = await this.hasConnection(userId, userInfo[0].accountId);
