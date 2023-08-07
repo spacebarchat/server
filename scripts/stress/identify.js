@@ -3,7 +3,7 @@
 require("dotenv").config();
 const { OPCODES } = require("../../dist/gateway/util/Constants.js");
 const WebSocket = require("ws");
-const ENDPOINT = `ws://localhost:3002?v=9&encoding=json`;
+const ENDPOINT = `ws://localhost:3001?v=9&encoding=json`;
 const TOKEN = process.env.TOKEN;
 const TOTAL_ITERATIONS = process.env.ITER ? parseInt(process.env.ITER) : 500;
 
