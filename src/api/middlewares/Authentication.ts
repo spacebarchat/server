@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { checkToken, Config, Rights } from "@spacebar/util";
+import { checkToken, Rights } from "@spacebar/util";
 import * as Sentry from "@sentry/node";
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";

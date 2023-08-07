@@ -1444,8 +1444,8 @@
                         "type": "string"
                     },
                     "flags": {
-                        "type": "string",
-                        "default": "0"
+                        "type": "integer",
+                        "default": 0
                     },
                     "public_flags": {
                         "type": "integer",
@@ -2176,7 +2176,7 @@
                         ]
                     },
                     "flags": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "message_reference": {
                         "type": "object",
@@ -3631,12 +3631,15 @@
             "APIGuild": {
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string"
+                    },
                     "reload": {
                         "description": "Reloads entity data from the database.",
                         "type": "object",
                         "additionalProperties": false
                     },
-                    "name": {
+                    "id": {
                         "type": "string"
                     },
                     "icon": {
@@ -3669,18 +3672,15 @@
                             "$ref": "#/components/schemas/Webhook"
                         }
                     },
-                    "id": {
-                        "type": "string"
+                    "toJSON": {
+                        "type": "object",
+                        "additionalProperties": false
                     },
                     "_do_validate": {
                         "type": "object",
                         "additionalProperties": false
                     },
                     "assign": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "toJSON": {
                         "type": "object",
                         "additionalProperties": false
                     },
@@ -4177,30 +4177,13 @@
                     "channel": {
                         "$ref": "#/components/schemas/RateLimitOptions"
                     },
-                    "auth": {
-                        "$ref": "#/components/schemas/AuthRateLimit"
-                    }
+                    "auth": {}
                 },
                 "required": [
                     "auth",
                     "channel",
                     "guild",
                     "webhook"
-                ]
-            },
-            "AuthRateLimit": {
-                "type": "object",
-                "properties": {
-                    "login": {
-                        "$ref": "#/components/schemas/RateLimitOptions"
-                    },
-                    "register": {
-                        "$ref": "#/components/schemas/RateLimitOptions"
-                    }
-                },
-                "required": [
-                    "login",
-                    "register"
                 ]
             },
             "GlobalRateLimits": {
@@ -4243,10 +4226,10 @@
             "PublicConnectedAccount": {
                 "type": "object",
                 "properties": {
-                    "type": {
+                    "name": {
                         "type": "string"
                     },
-                    "name": {
+                    "type": {
                         "type": "string"
                     },
                     "verified": {
@@ -5102,7 +5085,7 @@
                         "type": "boolean"
                     },
                     "flags": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "embeds": {
                         "type": "array",
@@ -5224,7 +5207,7 @@
                         "$ref": "#/components/schemas/Embed"
                     },
                     "flags": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "content": {
                         "type": "string"
@@ -6961,11 +6944,11 @@
             "APIPrivateUser": {
                 "type": "object",
                 "properties": {
-                    "flags": {
-                        "type": "string"
-                    },
                     "id": {
                         "type": "string"
+                    },
+                    "flags": {
+                        "type": "integer"
                     },
                     "premium_since": {
                         "type": "string",
@@ -7078,11 +7061,11 @@
                     "newToken": {
                         "type": "string"
                     },
-                    "flags": {
-                        "type": "string"
-                    },
                     "id": {
                         "type": "string"
+                    },
+                    "flags": {
+                        "type": "integer"
                     },
                     "premium_since": {
                         "type": "string",
@@ -7291,10 +7274,10 @@
             "APIPublicMember": {
                 "type": "object",
                 "properties": {
-                    "guild_id": {
+                    "id": {
                         "type": "string"
                     },
-                    "id": {
+                    "guild_id": {
                         "type": "string"
                     },
                     "nick": {
@@ -7723,10 +7706,10 @@
                         "additionalProperties": false,
                         "type": "object",
                         "properties": {
-                            "guild_id": {
+                            "id": {
                                 "type": "string"
                             },
-                            "id": {
+                            "guild_id": {
                                 "type": "string"
                             },
                             "nick": {

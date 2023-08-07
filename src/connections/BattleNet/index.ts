@@ -19,12 +19,12 @@
 import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
+	Connection,
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@spacebar/util";
 import wretch from "wretch";
-import Connection from "../../util/connections/Connection";
 import { BattleNetSettings } from "./BattleNetSettings";
 
 interface BattleNetConnectionUser {
@@ -33,10 +33,10 @@ interface BattleNetConnectionUser {
 	battletag: string;
 }
 
-interface BattleNetErrorResponse {
-	error: string;
-	error_description: string;
-}
+// interface BattleNetErrorResponse {
+// 	error: string;
+// 	error_description: string;
+// }
 
 export default class BattleNetConnection extends Connection {
 	public readonly id = "battlenet";
@@ -47,17 +47,21 @@ export default class BattleNetConnection extends Connection {
 	settings: BattleNetSettings = new BattleNetSettings();
 
 	init(): void {
-		this.settings = ConnectionLoader.getConnectionConfig(
-			this.id,
-			this.settings,
-		) as BattleNetSettings;
+		const settings =
+			ConnectionLoader.getConnectionConfig<BattleNetSettings>(
+				this.id,
+				this.settings,
+			);
+
+		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
+			throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
 		const state = this.createState(userId);
 		const url = new URL(this.authorizeUrl);
 
-		url.searchParams.append("client_id", this.settings.clientId!);
+		url.searchParams.append("client_id", this.settings.clientId as string);
 		url.searchParams.append("redirect_uri", this.getRedirectUri());
 		url.searchParams.append("scope", this.scopes.join(" "));
 		url.searchParams.append("state", state);
@@ -85,8 +89,8 @@ export default class BattleNetConnection extends Connection {
 				new URLSearchParams({
 					grant_type: "authorization_code",
 					code: code,
-					client_id: this.settings.clientId!,
-					client_secret: this.settings.clientSecret!,
+					client_id: this.settings.clientId as string,
+					client_secret: this.settings.clientSecret as string,
 					redirect_uri: this.getRedirectUri(),
 				}),
 			)
@@ -115,8 +119,11 @@ export default class BattleNetConnection extends Connection {
 	async handleCallback(
 		params: ConnectionCallbackSchema,
 	): Promise<ConnectedAccount | null> {
-		const userId = this.getUserId(params.state);
-		const tokenData = await this.exchangeCode(params.state, params.code!);
+		const { state, code } = params;
+		if (!code) throw new Error("No code provided");
+
+		const userId = this.getUserId(state);
+		const tokenData = await this.exchangeCode(state, code);
 		const userInfo = await this.getUser(tokenData.access_token);
 
 		const exists = await this.hasConnection(userId, userInfo.id.toString());

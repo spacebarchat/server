@@ -66,6 +66,7 @@ export class ConnectedAccount extends BaseClass {
 	integrations?: string[] = [];
 
 	@Column({ type: "simple-json", name: "metadata", nullable: true })
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	metadata_?: any;
 
 	@Column()

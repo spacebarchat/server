@@ -34,6 +34,7 @@ server.stdout.on("data", (data) => {
 	if (data.toString().toLowerCase().includes("listening")) {
 		// we good :)
 		console.log("we good");
+		server.kill();
 		process.exit();
 	}
 });
