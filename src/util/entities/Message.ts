@@ -223,7 +223,6 @@ export class Message extends BaseClass {
 			...this,
 			author_id: undefined,
 			member_id: undefined,
-			guild_id: undefined,
 			webhook_id: undefined,
 			application_id: undefined,
 			nonce: undefined,
