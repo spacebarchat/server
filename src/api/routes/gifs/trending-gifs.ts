@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { TenorMediaTypes, getGifApiKey, parseGifResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import fetch from "node-fetch";
-import ProxyAgent from "proxy-agent";
+import { ProxyAgent } from "proxy-agent";
 
 const router = Router();
 

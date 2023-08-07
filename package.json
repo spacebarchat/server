@@ -102,7 +102,7 @@
 		"nodemailer": "^6.9.4",
 		"picocolors": "^1.0.0",
 		"probe-image-size": "^7.2.3",
-		"proxy-agent": "^5.0.0",
+		"proxy-agent": "^6.3.0",
 		"reflect-metadata": "^0.1.13",
 		"ts-node": "^10.9.1",
 		"tslib": "^2.6.1",

@@ -25,7 +25,7 @@ import {
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import fetch from "node-fetch";
-import ProxyAgent from "proxy-agent";
+import { ProxyAgent } from "proxy-agent";
 
 const router = Router();
 
