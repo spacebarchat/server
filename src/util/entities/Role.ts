@@ -67,6 +67,6 @@ export class Role extends BaseClass {
 		premium_subscriber?: boolean;
 	};
 
-	@Column()
+	@Column({ default: 0 })
 	flags: number;
 }
