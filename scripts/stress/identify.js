@@ -4,9 +4,8 @@ require("dotenv").config();
 const { OPCODES } = require("../../dist/gateway/util/Constants.js");
 const WebSocket = require("ws");
 const ENDPOINT = `ws://localhost:3002?v=9&encoding=json`;
-const TOKEN =
-	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwOTMxMTgwMjgzNjA1MzYxMDYiLCJpYXQiOjE2ODA2OTE5MDB9.9ByCqDvC4mIutW8nM7WhVCtGuKW08UimPnmBeNw-K0E";
-const TOTAL_ITERATIONS = 500;
+const TOKEN = process.env.TOKEN;
+const TOTAL_ITERATIONS = process.env.ITER ? parseInt(process.env.ITER) : 500;
 
 const doTimedIdentify = () =>
 	new Promise((resolve) => {
