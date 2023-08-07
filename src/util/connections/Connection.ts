@@ -24,7 +24,7 @@ import { Config, DiscordApiErrors } from "../util";
 /**
  * A connection that can be used to connect to an external service.
  */
-export default abstract class Connection {
+export abstract class Connection {
 	id: string;
 	settings: { enabled: boolean };
 	states: Map<string, string> = new Map();

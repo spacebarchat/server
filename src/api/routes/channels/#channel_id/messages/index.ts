@@ -20,7 +20,6 @@ import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
 	Attachment,
 	Channel,
-	ChannelType,
 	Config,
 	DmChannelDTO,
 	FieldErrors,
@@ -93,8 +92,6 @@ router.get(
 		if (limit < 1 || limit > 100)
 			throw new HTTPError("limit must be between 1 and 100", 422);
 
-		const halfLimit = Math.floor(limit / 2);
-
 		const permissions = await getPermission(
 			req.user_id,
 			channel.guild_id,
@@ -121,64 +118,72 @@ router.get(
 			],
 		};
 
-		if (after) {
-			if (BigInt(after) > BigInt(Snowflake.generate()))
-				return res.status(422);
-			query.where.id = MoreThan(after);
-		} else if (before) {
-			if (BigInt(before) < BigInt(req.params.channel_id))
-				return res.status(422);
-			query.where.id = LessThan(before);
-		} else if (around) {
-			query.where.id = [
-				MoreThan((BigInt(around) - BigInt(halfLimit)).toString()),
-				LessThan((BigInt(around) + BigInt(halfLimit)).toString()),
-			];
+		let messages: Message[];
 
-			return res.json([]); // TODO: fix around
+		if (around) {
+			query.take = Math.floor(limit / 2);
+			const [right, left] = await Promise.all([
+				Message.find({ ...query, where: { id: LessThan(around) } }),
+				Message.find({ ...query, where: { id: MoreThan(around) } }),
+			]);
+			right.push(...left);
+			messages = right;
+		} else {
+			if (after) {
+				if (BigInt(after) > BigInt(Snowflake.generate()))
+					return res.status(422);
+				query.where.id = MoreThan(after);
+			} else if (before) {
+				if (BigInt(before) > BigInt(Snowflake.generate()))
+					return res.status(422);
+				query.where.id = LessThan(before);
+			}
+
+			messages = await Message.find(query);
 		}
 
-		const messages = await Message.find(query);
 		const endpoint = Config.get().cdn.endpointPublic;
 
-		return res.json(
-			messages.map((x: Partial<Message>) => {
-				(x.reactions || []).forEach((y: Partial<Reaction>) => {
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					//@ts-ignore
-					if ((y.user_ids || []).includes(req.user_id)) y.me = true;
-					delete y.user_ids;
-				});
-				if (!x.author)
-					x.author = User.create({
-						id: "4",
-						discriminator: "0000",
-						username: "Spacebar Ghost",
-						public_flags: 0,
-					});
-				x.attachments?.forEach((y: Attachment) => {
-					// dynamically set attachment proxy_url in case the endpoint changed
-					const uri = y.proxy_url.startsWith("http")
-						? y.proxy_url
-						: `https://example.org${y.proxy_url}`;
-					y.proxy_url = `${endpoint == null ? "" : endpoint}${
-						new URL(uri).pathname
-					}`;
-				});
+		const ret = messages.map((x: Message) => {
+			x = x.toJSON();
 
-				/**
+			(x.reactions || []).forEach((y: Partial<Reaction>) => {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				//@ts-ignore
+				if ((y.user_ids || []).includes(req.user_id)) y.me = true;
+				delete y.user_ids;
+			});
+			if (!x.author)
+				x.author = User.create({
+					id: "4",
+					discriminator: "0000",
+					username: "Spacebar Ghost",
+					public_flags: 0,
+				});
+			x.attachments?.forEach((y: Attachment) => {
+				// dynamically set attachment proxy_url in case the endpoint changed
+				const uri = y.proxy_url.startsWith("http")
+					? y.proxy_url
+					: `https://example.org${y.proxy_url}`;
+				y.proxy_url = `${endpoint == null ? "" : endpoint}${
+					new URL(uri).pathname
+				}`;
+			});
+
+			/**
 			Some clients ( discord.js ) only check if a property exists within the response,
 			which causes errors when, say, the `application` property is `null`.
 			**/
 
-				// for (var curr in x) {
-				// 	if (x[curr] === null)
-				// 		delete x[curr];
-				// }
+			// for (var curr in x) {
+			// 	if (x[curr] === null)
+			// 		delete x[curr];
+			// }
 
-				return x;
-			}),
-		);
+			return x;
+		});
+
+		return res.json(ret);
 	},
 );
 
@@ -304,9 +309,11 @@ router.post(
 			embeds,
 			channel_id,
 			attachments,
-			edited_timestamp: undefined,
 			timestamp: new Date(),
 		});
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		//@ts-ignore dont care2
+		message.edited_timestamp = null;
 
 		channel.last_message_id = message.id;
 

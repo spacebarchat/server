@@ -42,4 +42,8 @@ export interface RegisterSchema {
 	captcha_key?: string;
 
 	promotional_email_opt_in?: boolean;
+
+	// part of pomelo
+	unique_username_registration?: boolean;
+	global_name?: string;
 }

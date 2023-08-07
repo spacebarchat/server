@@ -66,4 +66,7 @@ export class Role extends BaseClass {
 		integration_id?: string;
 		premium_subscriber?: boolean;
 	};
+
+	@Column({ default: 0 })
+	flags: number;
 }

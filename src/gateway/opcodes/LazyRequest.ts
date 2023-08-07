@@ -95,7 +95,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		console.error(`LazyRequest`, e);
 	}
 
-	if (!members) {
+	if (!members || !members.length) {
 		return {
 			items: [],
 			groups: [],

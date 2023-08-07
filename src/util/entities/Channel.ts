@@ -468,6 +468,18 @@ export class Channel extends BaseClass {
 		];
 		return disallowedChannelTypes.indexOf(this.type) == -1;
 	}
+
+	toJSON() {
+		return {
+			...this,
+
+			// these fields are not returned depending on the type of channel
+			bitrate: this.bitrate || undefined,
+			user_limit: this.user_limit || undefined,
+			rate_limit_per_user: this.rate_limit_per_user || undefined,
+			owner_id: this.owner_id || undefined,
+		};
+	}
 }
 
 export interface ChannelPermissionOverwrite {
@@ -483,6 +495,12 @@ export enum ChannelPermissionOverwriteType {
 	group = 2,
 }
 
+export interface DMChannel extends Omit<Channel, "type" | "recipients"> {
+	type: ChannelType.DM | ChannelType.GROUP_DM;
+	recipients: Recipient[];
+}
+
+// TODO: probably more props
 export function isTextChannel(type: ChannelType): boolean {
 	switch (type) {
 		case ChannelType.GUILD_STORE:

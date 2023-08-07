@@ -30,7 +30,7 @@ export class ConnectedAccountDTO {
 	verified?: boolean;
 	visibility?: number;
 	integrations?: string[];
-	metadata_?: any;
+	metadata_?: unknown;
 	metadata_visibility?: number;
 	two_way_link?: boolean;
 
