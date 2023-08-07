@@ -19,12 +19,12 @@
 import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
+	Connection,
 	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@spacebar/util";
 import wretch from "wretch";
-import Connection from "../../util/connections/Connection";
 import { DiscordSettings } from "./DiscordSettings";
 
 interface UserResponse {
@@ -43,10 +43,13 @@ export default class DiscordConnection extends Connection {
 	settings: DiscordSettings = new DiscordSettings();
 
 	init(): void {
-		this.settings = ConnectionLoader.getConnectionConfig(
+		const settings = ConnectionLoader.getConnectionConfig<DiscordSettings>(
 			this.id,
 			this.settings,
-		) as DiscordSettings;
+		);
+
+		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
+			throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -54,7 +57,7 @@ export default class DiscordConnection extends Connection {
 		const url = new URL(this.authorizeUrl);
 
 		url.searchParams.append("state", state);
-		url.searchParams.append("client_id", this.settings.clientId!);
+		url.searchParams.append("client_id", this.settings.clientId as string);
 		url.searchParams.append("scope", this.scopes.join(" "));
 		url.searchParams.append("response_type", "code");
 		// controls whether, on repeated authorizations, the consent screen is shown
@@ -82,8 +85,8 @@ export default class DiscordConnection extends Connection {
 			})
 			.body(
 				new URLSearchParams({
-					client_id: this.settings.clientId!,
-					client_secret: this.settings.clientSecret!,
+					client_id: this.settings.clientId as string,
+					client_secret: this.settings.clientSecret as string,
 					grant_type: "authorization_code",
 					code: code,
 					redirect_uri: this.getRedirectUri(),
@@ -114,8 +117,11 @@ export default class DiscordConnection extends Connection {
 	async handleCallback(
 		params: ConnectionCallbackSchema,
 	): Promise<ConnectedAccount | null> {
-		const userId = this.getUserId(params.state);
-		const tokenData = await this.exchangeCode(params.state, params.code!);
+		const { state, code } = params;
+		if (!code) throw new Error("No code provided");
+
+		const userId = this.getUserId(state);
+		const tokenData = await this.exchangeCode(state, code);
 		const userInfo = await this.getUser(tokenData.access_token);
 
 		const exists = await this.hasConnection(userId, userInfo.id);
