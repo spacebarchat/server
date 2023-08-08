@@ -54,11 +54,19 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 			status: "offline",
 		};
 
+		// TODO
+		// If a user was deleted, they may still be connected to gateway,
+		// which will cause this to throw when they disconnect.
+		// just send the ID of the user instead of the full correct payload for now
+		const userOrId = await User.getPublicUser(this.user_id).catch(() => ({
+			id: this.user_id,
+		}));
+
 		await emitEvent({
 			event: "PRESENCE_UPDATE",
 			user_id: this.user_id,
 			data: {
-				user: await User.getPublicUser(this.user_id),
+				user: userOrId,
 				activities: session.activities,
 				client_status: session?.client_info,
 				status: session.status,
