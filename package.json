@@ -16,8 +16,6 @@
 		"sync:db": "npm run build && node scripts/syncronise.js",
 		"generate:rights": "node scripts/rights.js",
 		"generate:schema": "node scripts/schema.js",
-		"generate:client": "node scripts/client.js",
-		"generate:changelog": "node scripts/changelog.js",
 		"generate:migration": "node -r dotenv/config -r module-alias/register node_modules/typeorm/cli.js migration:generate -d dist/util/util/Database.js",
 		"generate:openapi": "node scripts/openapi.js",
 		"add:license": "node scripts/license.js",
