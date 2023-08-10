@@ -18,11 +18,13 @@
 
 import { route } from "@spacebar/api";
 import {
+	Channel,
 	DiscordApiErrors,
 	Guild,
 	GuildUpdateEvent,
 	GuildUpdateSchema,
 	Member,
+	Permissions,
 	SpacebarApiErrors,
 	emitEvent,
 	getPermission,
@@ -153,6 +155,76 @@ router.patch(
 
 			// for some reason, they don't update in the assign.
 			guild.features = body.features;
+		}
+
+		if (body.public_updates_channel_id == "1") {
+			// move all channels up 1
+			await Channel.createQueryBuilder("channels")
+				.where({ guild: { id: guild_id } })
+				.update({ position: () => "position + 1" })
+				.execute();
+
+			// create an updates channel for them
+			await Channel.createChannel(
+				{
+					name: "moderator-only",
+					guild_id: guild.id,
+					position: 0,
+					type: 0,
+					permission_overwrites: [
+						// remove SEND_MESSAGES from @everyone
+						{
+							id: guild.id,
+							allow: "0",
+							deny: Permissions.FLAGS.VIEW_CHANNEL.toString(),
+							type: 0,
+						},
+					],
+				},
+				undefined,
+				{ skipPermissionCheck: true },
+			);
+		} else if (body.public_updates_channel_id != undefined) {
+			// ensure channel exists in this guild
+			await Channel.findOneOrFail({
+				where: { guild_id, id: body.public_updates_channel_id },
+				select: { id: true },
+			});
+		}
+
+		if (body.rules_channel_id == "1") {
+			// move all channels up 1
+			await Channel.createQueryBuilder("channels")
+				.where({ guild: { id: guild_id } })
+				.update({ position: () => "position + 1" })
+				.execute();
+
+			// create a rules for them
+			await Channel.createChannel(
+				{
+					name: "rules",
+					guild_id: guild.id,
+					position: 0,
+					type: 0,
+					permission_overwrites: [
+						// remove SEND_MESSAGES from @everyone
+						{
+							id: guild.id,
+							allow: "0",
+							deny: Permissions.FLAGS.SEND_MESSAGES.toString(),
+							type: 0,
+						},
+					],
+				},
+				undefined,
+				{ skipPermissionCheck: true },
+			);
+		} else if (body.rules_channel_id != undefined) {
+			// ensure channel exists in this guild
+			await Channel.findOneOrFail({
+				where: { guild_id, id: body.rules_channel_id },
+				select: { id: true },
+			});
 		}
 
 		// TODO: check if body ids are valid

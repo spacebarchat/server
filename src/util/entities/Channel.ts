@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { HTTPError } from "lambert-server";
 import {
 	Column,
 	Entity,
@@ -24,26 +25,25 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
-import { PublicUserProjection, User } from "./User";
-import { HTTPError } from "lambert-server";
+import { DmChannelDTO } from "../dtos";
+import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import {
+	InvisibleCharacters,
+	Snowflake,
 	containsAll,
 	emitEvent,
 	getPermission,
-	Snowflake,
 	trimSpecial,
-	InvisibleCharacters,
 } from "../util";
-import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
-import { Recipient } from "./Recipient";
+import { BaseClass } from "./BaseClass";
+import { Guild } from "./Guild";
+import { Invite } from "./Invite";
 import { Message } from "./Message";
 import { ReadState } from "./ReadState";
-import { Invite } from "./Invite";
+import { Recipient } from "./Recipient";
+import { PublicUserProjection, User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
-import { DmChannelDTO } from "../dtos";
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a guild
@@ -302,8 +302,10 @@ export class Channel extends BaseClass {
 					: channel.position) || 0,
 		};
 
+		const ret = Channel.create(channel);
+
 		await Promise.all([
-			Channel.create(channel).save(),
+			ret.save(),
 			!opts?.skipEventEmit
 				? emitEvent({
 						event: "CHANNEL_CREATE",
@@ -313,7 +315,7 @@ export class Channel extends BaseClass {
 				: Promise.resolve(),
 		]);
 
-		return channel;
+		return ret;
 	}
 
 	static async createDMChannel(
