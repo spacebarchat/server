@@ -83,6 +83,13 @@ export default function rateLimit(opts: {
 
 		const offender = Cache.get(executor_id + bucket_id);
 
+		res.set("X-RateLimit-Limit", `${max_hits}`)
+			.set("X-RateLimit-Remaining", `${max_hits - (offender?.hits || 0)}`)
+			.set("X-RateLimit-Bucket", `${bucket_id}`)
+			// assuming we aren't blocked, a new window will start after this request
+			.set("X-RateLimit-Reset", `${Date.now() + opts.window}`)
+			.set("X-RateLimit-Reset-After", `${opts.window}`);
+
 		if (offender) {
 			let reset = offender.expires_at.getTime();
 			let resetAfterMs = reset - Date.now();
@@ -95,6 +102,12 @@ export default function rateLimit(opts: {
 
 				Cache.delete(executor_id + bucket_id);
 			}
+
+			res.set("X-RateLimit-Reset", `${reset}`);
+			res.set(
+				"X-RateLimit-Reset-After",
+				`${Math.max(0, Math.ceil(resetAfterSec))}`,
+			);
 
 			if (offender.blocked) {
 				const global = bucket_id === "global";
@@ -109,16 +122,17 @@ export default function rateLimit(opts: {
 				console.log(`blocked bucket: ${bucket_id} ${executor_id}`, {
 					resetAfterMs,
 				});
+
+				if (global) res.set("X-RateLimit-Global", "true");
+
 				return (
 					res
 						.status(429)
-						.set("X-RateLimit-Limit", `${max_hits}`)
 						.set("X-RateLimit-Remaining", "0")
-						.set("X-RateLimit-Reset", `${reset}`)
-						.set("X-RateLimit-Reset-After", `${resetAfterSec}`)
-						.set("X-RateLimit-Global", `${global}`)
-						.set("Retry-After", `${Math.ceil(resetAfterSec)}`)
-						.set("X-RateLimit-Bucket", `${bucket_id}`)
+						.set(
+							"Retry-After",
+							`${Math.max(0, Math.ceil(resetAfterSec))}`,
+						)
 						// TODO: error rate limit message translation
 						.send({
 							message: "You are being rate limited.",
