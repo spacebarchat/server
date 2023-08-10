@@ -17,9 +17,13 @@
 */
 
 import { route } from "@spacebar/api";
-import { Guild, GuildUpdateWelcomeScreenSchema, Member } from "@spacebar/util";
+import {
+	Channel,
+	Guild,
+	GuildUpdateWelcomeScreenSchema,
+	Member,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
@@ -66,17 +70,28 @@ router.patch(
 
 		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
 
-		if (!guild.welcome_screen.enabled)
-			throw new HTTPError("Welcome screen disabled", 400);
-		if (body.welcome_channels)
-			guild.welcome_screen.welcome_channels = body.welcome_channels; // TODO: check if they exist and are valid
-		if (body.description)
+		if (body.enabled != undefined)
+			guild.welcome_screen.enabled = body.enabled;
+
+		if (body.description != undefined)
 			guild.welcome_screen.description = body.description;
-		if (body.enabled != null) guild.welcome_screen.enabled = body.enabled;
+
+		if (body.welcome_channels != undefined) {
+			// Ensure channels exist within the guild
+			await Promise.all(
+				body.welcome_channels?.map(({ channel_id }) =>
+					Channel.findOneOrFail({
+						where: { id: channel_id, guild_id },
+						select: { id: true },
+					}),
+				) || [],
+			);
+			guild.welcome_screen.welcome_channels = body.welcome_channels;
+		}
 
 		await guild.save();
 
-		res.sendStatus(204);
+		res.status(200).json(guild.welcome_screen);
 	},
 );
 
