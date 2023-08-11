@@ -24,7 +24,7 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { Config, GuildWelcomeScreen, handleFile, Snowflake } from "..";
+import { Config, GuildWelcomeScreen, Snowflake, handleFile } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -321,7 +321,7 @@ export class Guild extends BaseClass {
 			verification_level: 0,
 			welcome_screen: {
 				enabled: false,
-				description: "Fill in your description",
+				description: "",
 				welcome_channels: [],
 			},
 
