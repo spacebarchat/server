@@ -157,6 +157,9 @@ router.patch(
 			guild.features = body.features;
 		}
 
+		// TODO: check if body ids are valid
+		guild.assign(body);
+
 		if (body.public_updates_channel_id == "1") {
 			// move all channels up 1
 			await Channel.createQueryBuilder("channels")
@@ -185,7 +188,7 @@ router.patch(
 				{ skipPermissionCheck: true },
 			);
 
-			guild.rules_channel_id = channel.id;
+			guild.public_updates_channel_id = channel.id;
 		} else if (body.public_updates_channel_id != undefined) {
 			// ensure channel exists in this guild
 			await Channel.findOneOrFail({
@@ -230,9 +233,6 @@ router.patch(
 				select: { id: true },
 			});
 		}
-
-		// TODO: check if body ids are valid
-		guild.assign(body);
 
 		const data = guild.toJSON();
 		// TODO: guild hashes
