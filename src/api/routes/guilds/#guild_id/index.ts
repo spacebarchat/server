@@ -165,7 +165,7 @@ router.patch(
 				.execute();
 
 			// create an updates channel for them
-			await Channel.createChannel(
+			const channel = await Channel.createChannel(
 				{
 					name: "moderator-only",
 					guild_id: guild.id,
@@ -184,6 +184,8 @@ router.patch(
 				undefined,
 				{ skipPermissionCheck: true },
 			);
+
+			guild.rules_channel_id = channel.id;
 		} else if (body.public_updates_channel_id != undefined) {
 			// ensure channel exists in this guild
 			await Channel.findOneOrFail({
@@ -200,7 +202,7 @@ router.patch(
 				.execute();
 
 			// create a rules for them
-			await Channel.createChannel(
+			const channel = await Channel.createChannel(
 				{
 					name: "rules",
 					guild_id: guild.id,
@@ -219,6 +221,8 @@ router.patch(
 				undefined,
 				{ skipPermissionCheck: true },
 			);
+
+			guild.rules_channel_id = channel.id;
 		} else if (body.rules_channel_id != undefined) {
 			// ensure channel exists in this guild
 			await Channel.findOneOrFail({
