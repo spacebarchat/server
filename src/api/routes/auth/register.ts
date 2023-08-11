@@ -225,9 +225,8 @@ router.post(
 		}
 
 		if (body.password) {
-			const min = register.password.minLength
-				? register.password.minLength
-				: 8;
+			const min = register.password.minLength ?? 8;
+
 			if (body.password.length < min) {
 				throw FieldErrors({
 					password: {
