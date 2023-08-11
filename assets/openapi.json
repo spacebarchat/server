@@ -2034,6 +2034,9 @@
                     },
                     "vanity_url": {
                         "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "integer"
                     }
                 },
                 "required": [
@@ -2041,7 +2044,7 @@
                     "channel_id",
                     "code",
                     "created_at",
-                    "expires_at",
+                    "flags",
                     "guild",
                     "guild_id",
                     "inviter",
@@ -4927,6 +4930,9 @@
                         "type": "string"
                     },
                     "target_user_type": {
+                        "type": "integer"
+                    },
+                    "flags": {
                         "type": "integer"
                     }
                 }

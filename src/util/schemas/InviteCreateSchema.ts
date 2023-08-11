@@ -26,4 +26,5 @@ export interface InviteCreateSchema {
 	unique?: boolean;
 	target_user?: string;
 	target_user_type?: number;
+	flags?: number;
 }
