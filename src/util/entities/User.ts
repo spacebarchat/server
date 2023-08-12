@@ -25,14 +25,7 @@ import {
 	OneToMany,
 	OneToOne,
 } from "typeorm";
-import {
-	Config,
-	Email,
-	FieldErrors,
-	Snowflake,
-	adjustEmail,
-	trimSpecial,
-} from "..";
+import { Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
 import { BitField } from "../util/BitField";
 import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
@@ -240,18 +233,6 @@ export class User extends BaseClass {
 
 	// TODO: I don't like this method?
 	validate() {
-		if (this.email) {
-			this.email = adjustEmail(this.email);
-			if (!this.email)
-				throw FieldErrors({
-					email: { message: "Invalid email", code: "EMAIL_INVALID" },
-				});
-			if (!this.email.match(/([a-z\d.-]{3,})@([a-z\d.-]+).([a-z]{2,})/g))
-				throw FieldErrors({
-					email: { message: "Invalid email", code: "EMAIL_INVALID" },
-				});
-		}
-
 		if (this.discriminator) {
 			const discrim = Number(this.discriminator);
 			if (

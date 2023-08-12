@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import fs from "node:fs";
+import fs from "fs/promises";
 import path from "node:path";
 import { SentMessageInfo, Transporter } from "nodemailer";
 import { User } from "../../entities";
@@ -24,8 +24,8 @@ import { Config } from "../Config";
 import { generateToken } from "../Token";
 import MailGun from "./transports/MailGun";
 import MailJet from "./transports/MailJet";
-import SendGrid from "./transports/SendGrid";
 import SMTP from "./transports/SMTP";
+import SendGrid from "./transports/SendGrid";
 
 const ASSET_FOLDER_PATH = path.join(
 	__dirname,
@@ -35,32 +35,11 @@ const ASSET_FOLDER_PATH = path.join(
 	"..",
 	"assets",
 );
-export const EMAIL_REGEX =
-	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-export function adjustEmail(email?: string): string | undefined {
-	if (!email) return email;
-	// body parser already checked if it is a valid email
-	const parts = <RegExpMatchArray>email.match(EMAIL_REGEX);
-	if (!parts || parts.length < 5) return undefined;
-
-	return email;
-	// // TODO: The below code doesn't actually do anything.
-	// const domain = parts[5];
-	// const user = parts[1];
-
-	// // TODO: check accounts with uncommon email domains
-	// if (domain === "gmail.com" || domain === "googlemail.com") {
-	// 	// replace .dots and +alternatives -> Gmail Dot Trick https://support.google.com/mail/answer/7436150 and https://generator.email/blog/gmail-generator
-	// 	const v = user.replace(/[.]|(\+.*)/g, "") + "@gmail.com";
-	// }
-
-	// if (domain === "google.com") {
-	// 	// replace .dots and +alternatives -> Google Staff GMail Dot Trick
-	// 	const v = user.replace(/[.]|(\+.*)/g, "") + "@google.com";
-	// }
-
-	// return email;
+enum MailTypes {
+	verify = "verify",
+	reset = "reset",
+	pwchange = "pwchange",
 }
 
 const transporters: {
@@ -76,10 +55,15 @@ export const Email: {
 	transporter: Transporter | null;
 	init: () => Promise<void>;
 	generateLink: (
-		type: "verify" | "reset",
+		type: Omit<MailTypes, "pwchange">,
 		id: string,
 		email: string,
 	) => Promise<string>;
+	sendMail: (
+		type: MailTypes,
+		user: User,
+		email: string,
+	) => Promise<SentMessageInfo>;
 	sendVerifyEmail: (user: User, email: string) => Promise<SentMessageInfo>;
 	sendResetPassword: (user: User, email: string) => Promise<SentMessageInfo>;
 	sendPasswordChanged: (
@@ -89,8 +73,7 @@ export const Email: {
 	doReplacements: (
 		template: string,
 		user: User,
-		emailVerificationUrl?: string,
-		passwordResetUrl?: string,
+		actionUrl?: string,
 		ipInfo?: {
 			ip: string;
 			city: string;
@@ -119,8 +102,7 @@ export const Email: {
 	doReplacements: function (
 		template,
 		user,
-		emailVerificationUrl?,
-		passwordResetUrl?,
+		actionUrl?,
 		ipInfo?: {
 			ip: string;
 			city: string;
@@ -137,8 +119,7 @@ export const Email: {
 			["{userId}", user.id],
 			["{phoneNumber}", user.phone?.slice(-4)],
 			["{userEmail}", user.email],
-			["{emailVerificationUrl}", emailVerificationUrl],
-			["{passwordResetUrl}", passwordResetUrl],
+			["{actionUrl}", actionUrl],
 			["{ipAddress}", ipInfo?.ip],
 			["{locationCity}", ipInfo?.city],
 			["{locationRegion}", ipInfo?.region],
@@ -165,32 +146,45 @@ export const Email: {
 		const link = `${instanceUrl}/${type}#token=${token}`;
 		return link;
 	},
+
 	/**
-	 * Sends an email to the user with a link to verify their email address
+	 *
+	 * @param type the MailType to send
+	 * @param user the user to address it to
+	 * @param email the email to send it to
+	 * @returns
 	 */
-	sendVerifyEmail: async function (user, email) {
+	sendMail: async function (type, user, email) {
 		if (!this.transporter) return;
 
-		// generate a verification link for the user
-		const link = await this.generateLink("verify", user.id, email);
+		const templateNames: { [key in MailTypes]: string } = {
+			verify: "verify_email.html",
+			reset: "password_reset_request.html",
+			pwchange: "password_changed.html",
+		};
 
-		// load the email template
-		const rawTemplate = fs.readFileSync(
+		const template = await fs.readFile(
 			path.join(
 				ASSET_FOLDER_PATH,
 				"email_templates",
-				"verify_email.html",
+				templateNames[type],
 			),
 			{ encoding: "utf-8" },
 		);
 
 		// replace email template placeholders
-		const html = this.doReplacements(rawTemplate, user, link);
+		const html = this.doReplacements(
+			template,
+			user,
+			// password change emails don't have links
+			type != MailTypes.pwchange
+				? await this.generateLink(type, user.id, email)
+				: undefined,
+		);
 
 		// extract the title from the email template to use as the email subject
 		const subject = html.match(/<title>(.*)<\/title>/)?.[1] || "";
 
-		// construct the email
 		const message = {
 			from:
 				Config.get().general.correspondenceEmail || "noreply@localhost",
@@ -199,78 +193,25 @@ export const Email: {
 			html,
 		};
 
-		// send the email
 		return this.transporter.sendMail(message);
+	},
+
+	/**
+	 * Sends an email to the user with a link to verify their email address
+	 */
+	sendVerifyEmail: async function (user, email) {
+		return this.sendMail(MailTypes.verify, user, email);
 	},
 	/**
 	 * Sends an email to the user with a link to reset their password
 	 */
 	sendResetPassword: async function (user, email) {
-		if (!this.transporter) return;
-
-		// generate a password reset link for the user
-		const link = await this.generateLink("reset", user.id, email);
-
-		// load the email template
-		const rawTemplate = await fs.promises.readFile(
-			path.join(
-				ASSET_FOLDER_PATH,
-				"email_templates",
-				"password_reset_request.html",
-			),
-			{ encoding: "utf-8" },
-		);
-
-		// replace email template placeholders
-		const html = this.doReplacements(rawTemplate, user, undefined, link);
-
-		// extract the title from the email template to use as the email subject
-		const subject = html.match(/<title>(.*)<\/title>/)?.[1] || "";
-
-		// construct the email
-		const message = {
-			from:
-				Config.get().general.correspondenceEmail || "noreply@localhost",
-			to: email,
-			subject,
-			html,
-		};
-
-		// send the email
-		return this.transporter.sendMail(message);
+		return this.sendMail(MailTypes.reset, user, email);
 	},
 	/**
 	 * Sends an email to the user notifying them that their password has been changed
 	 */
 	sendPasswordChanged: async function (user, email) {
-		if (!this.transporter) return;
-
-		// load the email template
-		const rawTemplate = await fs.promises.readFile(
-			path.join(
-				ASSET_FOLDER_PATH,
-				"email_templates",
-				"password_changed.html",
-			),
-			{ encoding: "utf-8" },
-		);
-
-		// replace email template placeholders
-		const html = this.doReplacements(rawTemplate, user);
-
-		// extract the title from the email template to use as the email subject
-		const subject = html.match(/<title>(.*)<\/title>/)?.[1] || "";
-
-		// construct the email
-		const message = {
-			from:
-				Config.get().general.correspondenceEmail || "noreply@localhost",
-			to: email,
-			subject,
-			html,
-		};
-
-		// send the email
-		return this.transporter.sendMail(message);
+		return this.sendMail(MailTypes.pwchange, user, email);
 	},
 };
