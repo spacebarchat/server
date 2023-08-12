@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PublicUser, User } from "./User";
-import { Message } from "./Message";
+import { HTTPError } from "lambert-server";
 import {
 	BeforeInsert,
 	BeforeUpdate,
@@ -32,8 +31,8 @@ import {
 	PrimaryGeneratedColumn,
 	RelationId,
 } from "typeorm";
-import { Guild } from "./Guild";
-import { Config, emitEvent } from "../util";
+import { Ban, PublicGuildRelations } from ".";
+import { ReadyGuildDTO } from "../dtos";
 import {
 	GuildCreateEvent,
 	GuildDeleteEvent,
@@ -42,12 +41,13 @@ import {
 	GuildMemberUpdateEvent,
 	MessageCreateEvent,
 } from "../interfaces";
-import { HTTPError } from "lambert-server";
-import { Role } from "./Role";
-import { BaseClassWithoutId } from "./BaseClass";
-import { Ban, PublicGuildRelations } from ".";
+import { Config, emitEvent } from "../util";
 import { DiscordApiErrors } from "../util/Constants";
-import { ReadyGuildDTO } from "../dtos";
+import { BaseClassWithoutId } from "./BaseClass";
+import { Guild } from "./Guild";
+import { Message } from "./Message";
+import { Role } from "./Role";
+import { PublicUser, User } from "./User";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
 	"id",
@@ -326,7 +326,7 @@ export class Member extends BaseClassWithoutId {
 			where: {
 				id: guild_id,
 			},
-			relations: [...PublicGuildRelations, "system_channel"],
+			relations: PublicGuildRelations,
 		});
 
 		const memberCount = await Member.count({ where: { guild_id } });
