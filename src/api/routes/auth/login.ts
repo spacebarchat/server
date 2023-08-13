@@ -93,6 +93,10 @@ router.post(
 					message: req.t("auth:login.INVALID_LOGIN"),
 					code: "INVALID_LOGIN",
 				},
+				password: {
+					message: req.t("auth:login.INVALID_LOGIN"),
+					code: "INVALID_LOGIN",
+				},
 			});
 		});
 
@@ -103,9 +107,13 @@ router.post(
 		);
 		if (!same_password) {
 			throw FieldErrors({
+				login: {
+					message: req.t("auth:login.INVALID_LOGIN"),
+					code: "INVALID_LOGIN",
+				},
 				password: {
-					message: req.t("auth:login.INVALID_PASSWORD"),
-					code: "INVALID_PASSWORD",
+					message: req.t("auth:login.INVALID_LOGIN"),
+					code: "INVALID_LOGIN",
 				},
 			});
 		}
