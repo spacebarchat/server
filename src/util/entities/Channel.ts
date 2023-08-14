@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { APActor } from "activitypub-types";
 import { HTTPError } from "lambert-server";
 import {
 	Column,
@@ -28,6 +29,7 @@ import {
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import {
+	Config,
 	InvisibleCharacters,
 	Snowflake,
 	containsAll,
@@ -480,6 +482,26 @@ export class Channel extends BaseClass {
 			user_limit: this.user_limit || undefined,
 			rate_limit_per_user: this.rate_limit_per_user || undefined,
 			owner_id: this.owner_id || undefined,
+		};
+	}
+
+	toAP(): APActor {
+		const { webDomain } = Config.get().federation;
+
+		return {
+			"@context": "https://www.w3.org/ns/activitystreams",
+			type: "Group",
+			id: `https://${webDomain}/fed/channel/${this.id}`,
+			name: this.name,
+			preferredUsername: this.name,
+			summary: this.topic,
+			icon: undefined,
+
+			inbox: `https://${webDomain}/fed/channel/${this.id}/inbox`,
+			outbox: `https://${webDomain}/fed/channel/${this.id}/outbox`,
+			followers: `https://${webDomain}/fed/channel/${this.id}/followers`,
+			following: `https://${webDomain}/fed/channel/${this.id}/following`,
+			liked: `https://${webDomain}/fed/channel/${this.id}/likeds`,
 		};
 	}
 }

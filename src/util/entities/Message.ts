@@ -16,12 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { User } from "./User";
-import { Member } from "./Member";
-import { Role } from "./Role";
-import { Channel } from "./Channel";
-import { InteractionType } from "../interfaces/Interaction";
-import { Application } from "./Application";
+import type { APNote } from "activitypub-types";
 import {
 	Column,
 	CreateDateColumn,
@@ -34,11 +29,18 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
-import { Webhook } from "./Webhook";
-import { Sticker } from "./Sticker";
+import { Config } from "..";
+import { InteractionType } from "../interfaces/Interaction";
+import { Application } from "./Application";
 import { Attachment } from "./Attachment";
+import { BaseClass } from "./BaseClass";
+import { Channel } from "./Channel";
+import { Guild } from "./Guild";
+import { Member } from "./Member";
+import { Role } from "./Role";
+import { Sticker } from "./Sticker";
+import { User } from "./User";
+import { Webhook } from "./Webhook";
 
 export enum MessageType {
 	DEFAULT = 0,
@@ -238,6 +240,20 @@ export class Message extends BaseClass {
 			activity: this.activity ?? undefined,
 			application: this.application ?? undefined,
 			components: this.components ?? undefined,
+		};
+	}
+
+	toAP(): APNote {
+		const { webDomain } = Config.get().federation;
+
+		return {
+			id: `https://${webDomain}/fed/channel/${this.channel_id}/messages/${this.id}`,
+			type: "Note",
+			published: this.timestamp,
+			url: `https://${webDomain}/fed/channel/${this.channel_id}/messages/${this.id}`,
+			attributedTo: `https://${webDomain}/fed/user/${this.author_id}`,
+			to: `https://${webDomain}/fed/channel/${this.channel_id}`,
+			content: this.content,
 		};
 	}
 }

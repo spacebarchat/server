@@ -1,5 +1,6 @@
 import { route } from "@spacebar/api";
 import { Config, User } from "@spacebar/util";
+import { APPerson } from "activitypub-types";
 import { Request, Response, Router } from "express";
 
 const router = Router();
@@ -12,7 +13,7 @@ router.get("/:id", route({}), async (req: Request, res: Response) => {
 
 	const { webDomain } = Config.get().federation;
 
-	return res.json({
+	const ret: APPerson = {
 		"@context": "https://www.w3.org/ns/activitystreams",
 		type: "Person",
 		id: `https://${webDomain}/fed/user/${user.id}`,
@@ -31,6 +32,8 @@ router.get("/:id", route({}), async (req: Request, res: Response) => {
 		outbox: `https://${webDomain}/fed/user/${user.id}/outbox`,
 		followers: `https://${webDomain}/fed/user/${user.id}/followers`,
 		following: `https://${webDomain}/fed/user/${user.id}/following`,
-		linked: `https://${webDomain}/fed/user/${user.id}/likeds`,
-	});
+		liked: `https://${webDomain}/fed/user/${user.id}/likeds`,
+	};
+
+	return res.json(ret);
 });

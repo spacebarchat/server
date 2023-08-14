@@ -1,5 +1,6 @@
 import { route } from "@spacebar/api";
 import { Config, Message, Snowflake } from "@spacebar/util";
+import { APOrderedCollection } from "activitypub-types";
 import { Router } from "express";
 import { FindManyOptions, FindOperator, LessThan, MoreThan } from "typeorm";
 
@@ -14,14 +15,16 @@ router.get("/", route({}), async (req, res) => {
 
 	const { webDomain } = Config.get().federation;
 
-	if (!page)
-		return res.json({
+	if (!page) {
+		const ret: APOrderedCollection = {
 			"@context": "https://www.w3.org/ns/activitystreams",
 			id: `https://${webDomain}/fed/users/${channel_id}/outbox`,
 			type: "OrderedCollection",
 			first: `https://${webDomain}/fed/users/${channel_id}/outbox?page=true`,
 			last: `https://${webDomain}/fed/users/${channel_id}/outbox?page=true&min_id=0`,
-		});
+		};
+		return res.json(ret);
+	}
 
 	const after = min_id ? `${min_id}` : undefined;
 	const before = max_id ? `${max_id}` : undefined;
@@ -47,30 +50,26 @@ router.get("/", route({}), async (req, res) => {
 
 	const messages = await Message.find(query);
 
-	return res.json({
+	// move this to like, Channel.createAPMessages or smth
+	const apMessages = messages.map((message) => ({
+		"@context": "https://www.w3.org/ns/activitystreams",
+		id: `https://${webDomain}/fed/channel/${message.channel_id}/messages/${message.id}`,
+		type: "Announce",
+		actor: `https://${webDomain}/fed/user/${message.author_id}`,
+		published: message.timestamp,
+		to: `https://${webDomain}/fed/channel/${message.channel_id}`,
+		object: message.toAP(),
+	}));
+
+	const ret: APOrderedCollection = {
 		"@context": "https://www.w3.org/ns/activitystreams",
 		id: `https://${webDomain}/fed/channel/${channel_id}/outbox?page=true`,
 		type: "OrderedCollection",
-		next: `https://${webDomain}/fed/channel/${channel_id}/outbox?page=true&max_id=${
-			messages[0]?.id || "0"
-		}`,
-		prev: `https://${webDomain}/fed/channel/${channel_id}/outbox?page=true&max_id=${
-			messages[messages.length - 1]?.id || "0"
-		}`,
-		partOf: `https://${webDomain}/fed/channel/${channel_id}/outbox`,
-		orderedItems: messages.map((message) => ({
-			id: `https://${webDomain}/fed/channel/${channel_id}/message/${message.id}`,
-			type: "Announce", // hmm
-			actor: `https://${webDomain}/fed/channel/${channel_id}`,
-			published: message.timestamp,
-			to: ["https://www.w3.org/ns/activitystreams#Public"],
-			cc: [
-				message.author?.id
-					? `https://${webDomain}/fed/users/${message.author.id}`
-					: undefined,
-				`https://${webDomain}/fed/channel/${channel_id}/followers`,
-			],
-			object: `https://${webDomain}/fed/channel/${channel_id}/messages/${message.id}`,
-		})),
-	});
+		first: `https://${webDomain}/fed/users/${channel_id}/outbox?page=true`,
+		last: `https://${webDomain}/fed/users/${channel_id}/outbox?page=true&min_id=0`,
+		totalItems: await Message.count({ where: { channel_id } }),
+		items: apMessages,
+	};
+
+	return res.json(ret);
 });
