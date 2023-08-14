@@ -517,7 +517,7 @@ export class Channel extends BaseClass {
 			type: "Group",
 			id: `https://${webDomain}/fed/channel/${this.id}`,
 			name: this.name,
-			preferredUsername: this.name,
+			preferredUsername: this.id,
 			summary: this.topic,
 			icon: undefined,
 

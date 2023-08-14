@@ -298,7 +298,7 @@ export class User extends BaseClass {
 			type: "Person",
 			id: `https://${webDomain}/fed/user/${this.id}`,
 			name: this.username,
-			preferredUsername: this.username,
+			preferredUsername: this.id,
 			summary: this.bio,
 			icon: this.avatar
 				? [
