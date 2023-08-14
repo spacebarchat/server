@@ -6,7 +6,7 @@ const router = Router();
 export default router;
 
 router.get("/:id", route({}), async (req: Request, res: Response) => {
-	const id = req.params.name;
+	const id = req.params.id;
 
 	const user = await User.findOneOrFail({ where: { id } });
 
