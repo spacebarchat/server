@@ -365,28 +365,30 @@ export class Member extends BaseClassWithoutId {
 			bio: "",
 		};
 
+		const ret = Member.create({
+			...member,
+			roles: [Role.create({ id: guild_id })],
+			// read_state: {},
+			settings: {
+				guild_id: null,
+				mute_config: null,
+				mute_scheduled_events: false,
+				flags: 0,
+				hide_muted_channels: false,
+				notify_highlights: 0,
+				channel_overrides: {},
+				message_notifications: 0,
+				mobile_push: true,
+				muted: false,
+				suppress_everyone: false,
+				suppress_roles: false,
+				version: 0,
+			},
+			// Member.save is needed because else the roles relations wouldn't be updated
+		});
+
 		await Promise.all([
-			Member.create({
-				...member,
-				roles: [Role.create({ id: guild_id })],
-				// read_state: {},
-				settings: {
-					guild_id: null,
-					mute_config: null,
-					mute_scheduled_events: false,
-					flags: 0,
-					hide_muted_channels: false,
-					notify_highlights: 0,
-					channel_overrides: {},
-					message_notifications: 0,
-					mobile_push: true,
-					muted: false,
-					suppress_everyone: false,
-					suppress_roles: false,
-					version: 0,
-				},
-				// Member.save is needed because else the roles relations wouldn't be updated
-			}).save(),
+			ret.save(),
 			Guild.increment({ id: guild_id }, "member_count", 1),
 			emitEvent({
 				event: "GUILD_MEMBER_ADD",
@@ -443,6 +445,8 @@ export class Member extends BaseClassWithoutId {
 				} as MessageCreateEvent),
 			]);
 		}
+
+		return ret;
 	}
 
 	toPublicMember() {

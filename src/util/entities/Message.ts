@@ -310,12 +310,23 @@ export class Message extends BaseClass {
 			relations: { guild: true },
 		});
 
+		const user = await User.fromAP(attrib as APPerson);
+		let member;
+		if (
+			(await Member.count({
+				where: { id: user.id, guild_id: channel.guild_id },
+			})) == 0
+		)
+			member = await Member.addToGuild(user.id, channel.guild.id);
+
 		return Message.create({
 			id: Snowflake.generate(),
-			author: await User.fromAP(attrib as APPerson),
+			author: user,
+			member,
 			content: data.content, // convert html to markdown
 			timestamp: data.published,
-			channel_id,
+			channel,
+			guild: channel.guild,
 
 			sticker_items: [],
 			guild_id: channel.guild_id,
@@ -323,6 +334,9 @@ export class Message extends BaseClass {
 			embeds: [],
 			reactions: [],
 			type: 0,
+			mentions: [],
+			mention_roles: [],
+			mention_channels: [],
 		});
 	}
 }
