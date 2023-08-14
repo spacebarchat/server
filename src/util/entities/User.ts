@@ -36,6 +36,10 @@ import { SecurityKey } from "./SecurityKey";
 import { Session } from "./Session";
 import { UserSettings } from "./UserSettings";
 
+import crypto from "crypto";
+import { promisify } from "util";
+const generateKeyPair = promisify(crypto.generateKeyPair);
+
 export enum PublicUserEnum {
 	username,
 	discriminator,
@@ -84,6 +88,15 @@ export type PrivateUser = Pick<User, PrivateUserKeys>;
 
 export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
+}
+
+interface APPersonButMore extends APPerson {
+	type: "Person";
+	publicKey: {
+		id: string;
+		owner: string;
+		publicKeyPem: string;
+	};
 }
 
 @Entity("users")
@@ -232,6 +245,12 @@ export class User extends BaseClass {
 	@OneToMany(() => SecurityKey, (key: SecurityKey) => key.user)
 	security_keys: SecurityKey[];
 
+	@Column()
+	publicKey: string;
+
+	@Column({ select: false })
+	privateKey: string;
+
 	// TODO: I don't like this method?
 	validate() {
 		if (this.discriminator) {
@@ -272,7 +291,7 @@ export class User extends BaseClass {
 		return user as UserPrivate;
 	}
 
-	toAP(): APPerson {
+	toAP(): APPersonButMore {
 		const { webDomain } = Config.get().federation;
 
 		return {
@@ -293,6 +312,11 @@ export class User extends BaseClass {
 			inbox: `https://${webDomain}/fed/user/${this.id}/inbox`,
 			outbox: `https://${webDomain}/fed/user/${this.id}/outbox`,
 			followers: `https://${webDomain}/fed/user/${this.id}/followers`,
+			publicKey: {
+				id: `https://${webDomain}/fed/user/${this.id}#main-key`,
+				owner: `https://${webDomain}/fed/user/${this.id}`,
+				publicKeyPem: this.publicKey,
+			},
 		};
 	}
 
@@ -387,6 +411,18 @@ export class User extends BaseClass {
 			locale: language,
 		});
 
+		const { publicKey, privateKey } = await generateKeyPair("rsa", {
+			modulusLength: 4096,
+			publicKeyEncoding: {
+				type: "spki",
+				format: "pem",
+			},
+			privateKeyEncoding: {
+				type: "pkcs8",
+				format: "pem",
+			},
+		});
+
 		const user = User.create({
 			username: username,
 			discriminator,
@@ -397,7 +433,9 @@ export class User extends BaseClass {
 				valid_tokens_since: new Date(),
 			},
 			extended_settings: "{}",
-			settings: settings,
+			settings,
+			publicKey,
+			privateKey,
 
 			premium_since: Config.get().defaults.user.premium
 				? new Date()
