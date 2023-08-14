@@ -520,6 +520,7 @@ export class Channel extends BaseClass {
 			preferredUsername: this.id,
 			summary: this.topic,
 			icon: undefined,
+			discoverable: true,
 
 			publicKey: {
 				id: `https://${webDomain}/fed/user/${this.id}#main-key`,

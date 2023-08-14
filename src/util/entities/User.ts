@@ -96,6 +96,8 @@ export interface APPersonButMore extends APPerson {
 		owner: string;
 		publicKeyPem: string;
 	};
+
+	discoverable: boolean;
 }
 
 @Entity("users")
