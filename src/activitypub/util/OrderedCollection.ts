@@ -18,6 +18,7 @@ export const makeOrderedCollection = async <T extends ActivityPubable>(
 			"@context": "https://www.w3.org/ns/activitystreams",
 			id: id,
 			type: "OrderedCollection",
+			totalItems: await getTotalElements(),
 			first: `${id}?page=true`,
 			last: `${id}?page=true&min_id=0`,
 		};
