@@ -12,7 +12,7 @@ router.get("/", route({}), async (req, res) => {
 
 	const { webDomain } = Config.get().federation;
 
-	const ret = makeOrderedCollection(
+	const ret = await makeOrderedCollection(
 		req,
 		`https://${webDomain}/fed/channels/${channel_id}/followers`,
 		() =>
