@@ -17,7 +17,7 @@ router.get("/", route({}), async (req, res) => {
 
 	const ret = await makeOrderedCollection(
 		req,
-		`https://${webDomain}/fed/channels/${channel_id}/outbox`,
+		`https://${webDomain}/fed/channel/${channel_id}/outbox`,
 		() => Message.count({ where: { channel_id } }),
 		async (before, after) => {
 			const query: FindManyOptions<Message> & {

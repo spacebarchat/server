@@ -14,7 +14,7 @@ router.get("/", route({}), async (req, res) => {
 
 	const ret = await makeOrderedCollection(
 		req,
-		`https://${webDomain}/fed/channels/${channel_id}/followers`,
+		`https://${webDomain}/fed/channel/${channel_id}/followers`,
 		() =>
 			Member.count({
 				where: { guild: { channels: { id: channel_id } } },
