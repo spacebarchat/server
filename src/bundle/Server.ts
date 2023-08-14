@@ -19,13 +19,14 @@
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
-import http from "http";
+import { APServer } from "@spacebar/ap";
 import * as Api from "@spacebar/api";
-import * as Gateway from "@spacebar/gateway";
 import { CDNServer } from "@spacebar/cdn";
+import * as Gateway from "@spacebar/gateway";
+import { Config, Sentry, initDatabase } from "@spacebar/util";
 import express from "express";
-import { green, bold } from "picocolors";
-import { Config, initDatabase, Sentry } from "@spacebar/util";
+import http from "http";
+import { bold, green } from "picocolors";
 
 const app = express();
 const server = http.createServer();
@@ -36,12 +37,14 @@ server.on("request", app);
 const api = new Api.SpacebarServer({ server, port, production, app });
 const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
+const activitypub = new APServer({ server, port, production, app });
 
 process.on("SIGTERM", async () => {
 	console.log("Shutting down due to SIGTERM");
 	await gateway.stop();
 	await cdn.stop();
 	await api.stop();
+	activitypub.stop();
 	server.close();
 	Sentry.close();
 });
@@ -54,7 +57,12 @@ async function main() {
 	await new Promise((resolve) =>
 		server.listen({ port }, () => resolve(undefined)),
 	);
-	await Promise.all([api.start(), cdn.start(), gateway.start()]);
+	await Promise.all([
+		api.start(),
+		cdn.start(),
+		gateway.start(),
+		activitypub.start(),
+	]);
 
 	Sentry.errorHandler(app);
 

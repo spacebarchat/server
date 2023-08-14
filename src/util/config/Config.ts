@@ -38,6 +38,7 @@ import {
 	SentryConfiguration,
 	TemplateConfiguration,
 } from "../config";
+import { FederationConfiguration } from "./types/FederationConfiguration";
 
 export class ConfigValue {
 	gateway: EndpointConfiguration = new EndpointConfiguration();
@@ -61,4 +62,5 @@ export class ConfigValue {
 	email: EmailConfiguration = new EmailConfiguration();
 	passwordReset: PasswordResetConfiguration =
 		new PasswordResetConfiguration();
+	federation = new FederationConfiguration();
 }
