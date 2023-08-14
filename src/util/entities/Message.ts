@@ -251,7 +251,7 @@ export class Message extends BaseClass {
 			type: "Announce",
 			actor: `https://${webDomain}/fed/user/${this.author_id}`,
 			published: this.timestamp,
-			to: `https://${webDomain}/fed/channel/${this.channel_id}`,
+			to: ["https://www.w3.org/ns/activitystreams#Public"],
 			object: this.toAP(),
 		};
 	}
@@ -265,7 +265,7 @@ export class Message extends BaseClass {
 			published: this.timestamp,
 			url: `https://${webDomain}/fed/messages/${this.id}`,
 			attributedTo: `https://${webDomain}/fed/user/${this.author_id}`,
-			to: `https://${webDomain}/fed/channel/${this.channel_id}/followers`,
+			to: ["https://www.w3.org/ns/activitystreams#Public"],
 			content: this.content,
 		};
 	}
