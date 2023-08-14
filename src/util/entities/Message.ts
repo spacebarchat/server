@@ -285,7 +285,9 @@ export class Message extends BaseClass {
 			: data.attributedTo;
 		if (typeof attrib == "string") {
 			// fetch it
-			attrib = (await fetch(attrib).then((x) => x.json())) as AnyAPObject;
+			attrib = (await fetch(attrib, {
+				headers: { Accept: "application/activity+json" },
+			}).then((x) => x.json())) as AnyAPObject;
 		}
 
 		if (attrib.type != "Person")
