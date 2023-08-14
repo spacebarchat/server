@@ -278,7 +278,7 @@ export class User extends BaseClass {
 		return {
 			"@context": "https://www.w3.org/ns/activitystreams",
 			type: "Person",
-			id: `https://${webDomain}/fed/user/${user.id}`,
+			id: `https://${webDomain}/fed/user/${this.id}`,
 			name: this.username,
 			preferredUsername: this.username,
 			summary: this.bio,
