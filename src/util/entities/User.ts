@@ -326,7 +326,7 @@ export class User extends BaseClass {
 	static async fromAP(data: APPerson | string): Promise<User> {
 		if (typeof data == "string") {
 			data = (await fetch(data, {
-				headers: { Accept: "application/activity+json" },
+				headers: { Accept: "application/json" },
 			}).then((x) => x.json())) as APPerson;
 		}
 

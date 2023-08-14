@@ -11,7 +11,7 @@ router.post("/", route({}), async (req, res) => {
 
 	if (body.type != "Create") throw new HTTPError("not implemented");
 
-	const message = await Message.fromAP(body);
+	const message = await Message.fromAP(body.object);
 	await message.save();
 
 	await emitEvent({
