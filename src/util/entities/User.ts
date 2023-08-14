@@ -309,6 +309,7 @@ export class User extends BaseClass {
 						}/${this.avatar}`,
 				  ]
 				: undefined,
+			discoverable: true,
 
 			inbox: `https://${webDomain}/fed/user/${this.id}/inbox`,
 			outbox: `https://${webDomain}/fed/user/${this.id}/outbox`,

@@ -1,8 +1,16 @@
-import { APObject, APOrderedCollection } from "activitypub-types";
+import {
+	APObject,
+	APOrderedCollection,
+	OrderedCollectionItemsField,
+} from "activitypub-types";
 import { Request } from "express";
 
 interface ActivityPubable {
 	toAP(): APObject;
+}
+
+interface CorrectOrderedCollection extends APOrderedCollection {
+	orderedItems?: OrderedCollectionItemsField[];
 }
 
 export const makeOrderedCollection = async <T extends ActivityPubable>(
@@ -10,7 +18,7 @@ export const makeOrderedCollection = async <T extends ActivityPubable>(
 	id: string,
 	getTotalElements: () => Promise<number>,
 	getElements: (before?: string, after?: string) => Promise<T[]>,
-): Promise<APOrderedCollection> => {
+): Promise<CorrectOrderedCollection> => {
 	const { page, min_id, max_id } = req.query;
 
 	if (!page)
@@ -37,6 +45,6 @@ export const makeOrderedCollection = async <T extends ActivityPubable>(
 		first: `${id}?page=true`,
 		last: `${id}?page=true&min_id=0`,
 		totalItems: await getTotalElements(),
-		items: items,
+		orderedItems: items,
 	};
 };
