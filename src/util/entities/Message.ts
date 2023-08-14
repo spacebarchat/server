@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import type { APNote } from "activitypub-types";
+import type { APAnnounce, APNote } from "activitypub-types";
 import {
 	Column,
 	CreateDateColumn,
@@ -240,6 +240,19 @@ export class Message extends BaseClass {
 			activity: this.activity ?? undefined,
 			application: this.application ?? undefined,
 			components: this.components ?? undefined,
+		};
+	}
+
+	toAnnounceAP(): APAnnounce {
+		const { webDomain } = Config.get().federation;
+
+		return {
+			id: `https://${webDomain}/fed/channel/${this.channel_id}/messages/${this.id}`,
+			type: "Announce",
+			actor: `https://${webDomain}/fed/user/${this.author_id}`,
+			published: this.timestamp,
+			to: `https://${webDomain}/fed/channel/${this.channel_id}`,
+			object: this.toAP(),
 		};
 	}
 
