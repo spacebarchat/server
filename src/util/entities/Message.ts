@@ -299,7 +299,7 @@ export class Message extends BaseClass {
 			to = to.filter((x) => {
 				if (typeof x == "string") return x.includes("channel");
 				return false;
-			});
+			})[0];
 
 		if (!to) throw new Error("not deliverable");
 
