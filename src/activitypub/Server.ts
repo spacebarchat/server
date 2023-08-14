@@ -50,6 +50,13 @@ export class APServer extends Server {
 
 		this.app = app;
 
+		this.app.use("*", (req, res, next) => {
+			res.setHeader(
+				"Content-Type",
+				"application/activity+json; charset=utf-8",
+			);
+			next();
+		});
 		this.app.use("/fed", api);
 		this.app.get("/fed", (req, res) => {
 			res.json({ ping: "pong" });

@@ -48,6 +48,7 @@ router.get(
 
 		const type = found instanceof Channel ? "channel" : "user";
 
+		res.setHeader("Content-Type", "application/jrd+json; charset=utf-8");
 		return res.json({
 			subject: `acct:${resourceId}@${webDomain}`, // mastodon always returns acct so might as well
 			aliases: [`https://${webDomain}/fed/${type}/${resourceId}`],
