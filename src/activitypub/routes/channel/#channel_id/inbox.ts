@@ -19,4 +19,6 @@ router.post("/", route({}), async (req, res) => {
 		channel_id: message.channel_id,
 		data: message.toJSON(),
 	});
+
+	return res.status(200);
 });
