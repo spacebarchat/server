@@ -16,7 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import type { APAnnounce, APNote } from "activitypub-types";
+import type {
+	APAnnounce,
+	APNote,
+	APPerson,
+	AnyAPObject,
+} from "activitypub-types";
+import fetch from "node-fetch";
 import {
 	Column,
 	CreateDateColumn,
@@ -29,7 +35,7 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { Config } from "..";
+import { Config, Snowflake } from "..";
 import { InteractionType } from "../interfaces/Interaction";
 import { Application } from "./Application";
 import { Attachment } from "./Attachment";
@@ -268,6 +274,54 @@ export class Message extends BaseClass {
 			to: ["https://www.w3.org/ns/activitystreams#Public"],
 			content: this.content,
 		};
+	}
+
+	static async fromAP(data: APNote): Promise<Message> {
+		if (!data.attributedTo)
+			throw new Error("sb Message must have author (attributedTo)");
+
+		let attrib = Array.isArray(data.attributedTo)
+			? data.attributedTo[0]
+			: data.attributedTo;
+		if (typeof attrib == "string") {
+			// fetch it
+			attrib = (await fetch(attrib).then((x) => x.json())) as AnyAPObject;
+		}
+
+		if (attrib.type != "Person")
+			throw new Error("only Person can be author of sb Message"); //hm
+
+		let to = data.to;
+
+		if (Array.isArray(to))
+			to = to.filter((x) => {
+				if (typeof x == "string") return x.includes("channel");
+				return false;
+			});
+
+		if (!to) throw new Error("not deliverable");
+
+		const channel_id = (to as string).split("/").reverse()[0];
+
+		const channel = await Channel.findOneOrFail({
+			where: { id: channel_id },
+			relations: { guild: true },
+		});
+
+		return Message.create({
+			id: Snowflake.generate(),
+			author: await User.fromAP(attrib as APPerson),
+			content: data.content, // convert html to markdown
+			timestamp: data.published,
+			channel_id,
+
+			sticker_items: [],
+			guild_id: channel.guild_id,
+			attachments: [],
+			embeds: [],
+			reactions: [],
+			type: 0,
+		});
 	}
 }
 

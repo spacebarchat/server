@@ -37,6 +37,7 @@ import { Session } from "./Session";
 import { UserSettings } from "./UserSettings";
 
 import crypto from "crypto";
+import fetch from "node-fetch";
 import { promisify } from "util";
 const generateKeyPair = promisify(crypto.generateKeyPair);
 
@@ -320,6 +321,20 @@ export class User extends BaseClass {
 				publicKeyPem: this.publicKey,
 			},
 		};
+	}
+
+	static async fromAP(data: APPerson | string): Promise<User> {
+		if (typeof data == "string") {
+			data = (await fetch(data, {
+				headers: { Accept: "application/activity+json" },
+			}).then((x) => x.json())) as APPerson;
+		}
+
+		return User.create({
+			id: Snowflake.generate(), // hm
+			username: data.preferredUsername,
+			bio: data.summary, // TODO: convert to markdown
+		});
 	}
 
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {
