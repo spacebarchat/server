@@ -18,10 +18,10 @@ router.get("/", route({}), async (req, res) => {
 	if (!page) {
 		const ret: APOrderedCollection = {
 			"@context": "https://www.w3.org/ns/activitystreams",
-			id: `https://${webDomain}/fed/users/${channel_id}/outbox`,
+			id: `https://${webDomain}/fed/channel/${channel_id}/outbox`,
 			type: "OrderedCollection",
-			first: `https://${webDomain}/fed/users/${channel_id}/outbox?page=true`,
-			last: `https://${webDomain}/fed/users/${channel_id}/outbox?page=true&min_id=0`,
+			first: `https://${webDomain}/fed/channel/${channel_id}/outbox?page=true`,
+			last: `https://${webDomain}/fed/channel/${channel_id}/outbox?page=true&min_id=0`,
 		};
 		return res.json(ret);
 	}
@@ -65,8 +65,8 @@ router.get("/", route({}), async (req, res) => {
 		"@context": "https://www.w3.org/ns/activitystreams",
 		id: `https://${webDomain}/fed/channel/${channel_id}/outbox?page=true`,
 		type: "OrderedCollection",
-		first: `https://${webDomain}/fed/users/${channel_id}/outbox?page=true`,
-		last: `https://${webDomain}/fed/users/${channel_id}/outbox?page=true&min_id=0`,
+		first: `https://${webDomain}/fed/channel/${channel_id}/outbox?page=true`,
+		last: `https://${webDomain}/fed/channel/${channel_id}/outbox?page=true&min_id=0`,
 		totalItems: await Message.count({ where: { channel_id } }),
 		items: apMessages,
 	};
