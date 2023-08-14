@@ -1,6 +1,6 @@
 interface WebfingerLink {
 	rel: string;
-	type: string;
+	type?: string;
 	href: string;
 	template?: string;
 }

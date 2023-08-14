@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { APPerson } from "activitypub-types";
 import { Request } from "express";
 import {
 	Column,
@@ -269,6 +270,30 @@ export class User extends BaseClass {
 			user[x] = this[x];
 		});
 		return user as UserPrivate;
+	}
+
+	toAP(): APPerson {
+		const { webDomain } = Config.get().federation;
+
+		return {
+			"@context": "https://www.w3.org/ns/activitystreams",
+			type: "Person",
+			id: `https://${webDomain}/fed/user/${user.id}`,
+			name: this.username,
+			preferredUsername: this.username,
+			summary: this.bio,
+			icon: this.avatar
+				? [
+						`${Config.get().cdn.endpointPublic}/avatars/${
+							this.id
+						}/${this.avatar}`,
+				  ]
+				: undefined,
+
+			inbox: `https://${webDomain}/fed/user/${this.id}/inbox`,
+			outbox: `https://${webDomain}/fed/user/${this.id}/outbox`,
+			followers: `https://${webDomain}/fed/user/${this.id}/followers`,
+		};
 	}
 
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {

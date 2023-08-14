@@ -500,8 +500,6 @@ export class Channel extends BaseClass {
 			inbox: `https://${webDomain}/fed/channel/${this.id}/inbox`,
 			outbox: `https://${webDomain}/fed/channel/${this.id}/outbox`,
 			followers: `https://${webDomain}/fed/channel/${this.id}/followers`,
-			following: `https://${webDomain}/fed/channel/${this.id}/following`,
-			liked: `https://${webDomain}/fed/channel/${this.id}/likeds`,
 		};
 	}
 }

@@ -8,7 +8,8 @@ import {
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
 import path from "path";
-import webfinger from "./webfinger";
+import hostMeta from "./well-known/host-meta";
+import webfinger from "./well-known/webfinger";
 
 export class APServer extends Server {
 	public declare options: ServerOptions;
@@ -63,6 +64,7 @@ export class APServer extends Server {
 		});
 
 		this.app.use("/.well-known/webfinger", webfinger);
+		this.app.use("/.well-known/host-meta", hostMeta);
 
 		this.app.use(ErrorHandler);
 

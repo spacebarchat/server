@@ -58,6 +58,10 @@ router.get(
 					type: "application/activity+json",
 					href: `https://${webDomain}/fed/${type}/${resourceId}`,
 				},
+				// {
+				// 	rel: "http://ostatus.org/schema/1.0/subscribe",
+				// 	href: `"https://${webDomain}/fed/authorize-follow?acct={uri}"`,
+				// },
 			],
 		});
 	},
