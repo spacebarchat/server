@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { APActor } from "activitypub-types";
 import { HTTPError } from "lambert-server";
 import {
 	Column,
@@ -43,9 +42,13 @@ import { Invite } from "./Invite";
 import { Message } from "./Message";
 import { ReadState } from "./ReadState";
 import { Recipient } from "./Recipient";
-import { PublicUserProjection, User } from "./User";
+import { APPersonButMore, PublicUserProjection, User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
+
+import crypto from "crypto";
+import { promisify } from "util";
+const generateKeyPair = promisify(crypto.generateKeyPair);
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a guild
@@ -194,6 +197,12 @@ export class Channel extends BaseClass {
 	@Column()
 	default_thread_rate_limit_per_user: number = 0;
 
+	@Column()
+	publicKey: string;
+
+	@Column()
+	privateKey: string;
+
 	// TODO: DM channel
 	static async createChannel(
 		channel: Partial<Channel>,
@@ -303,6 +312,21 @@ export class Channel extends BaseClass {
 					? 0
 					: channel.position) || 0,
 		};
+
+		const { publicKey, privateKey } = await generateKeyPair("rsa", {
+			modulusLength: 4096,
+			publicKeyEncoding: {
+				type: "spki",
+				format: "pem",
+			},
+			privateKeyEncoding: {
+				type: "pkcs8",
+				format: "pem",
+			},
+		});
+
+		channel.publicKey = publicKey;
+		channel.privateKey = privateKey;
 
 		const ret = Channel.create(channel);
 
@@ -485,7 +509,7 @@ export class Channel extends BaseClass {
 		};
 	}
 
-	toAP(): APActor {
+	toAP(): APPersonButMore {
 		const { webDomain } = Config.get().federation;
 
 		return {
@@ -496,6 +520,12 @@ export class Channel extends BaseClass {
 			preferredUsername: this.name,
 			summary: this.topic,
 			icon: undefined,
+
+			publicKey: {
+				id: `https://${webDomain}/fed/user/${this.id}#main-key`,
+				owner: `https://${webDomain}/fed/user/${this.id}`,
+				publicKeyPem: this.publicKey,
+			},
 
 			inbox: `https://${webDomain}/fed/channel/${this.id}/inbox`,
 			outbox: `https://${webDomain}/fed/channel/${this.id}/outbox`,

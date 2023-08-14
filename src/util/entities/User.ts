@@ -90,8 +90,7 @@ export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
 }
 
-interface APPersonButMore extends APPerson {
-	type: "Person";
+export interface APPersonButMore extends APPerson {
 	publicKey: {
 		id: string;
 		owner: string;
