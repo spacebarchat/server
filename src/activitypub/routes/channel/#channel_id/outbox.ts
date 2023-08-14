@@ -1,6 +1,6 @@
+import { makeOrderedCollection } from "@spacebar/ap";
 import { route } from "@spacebar/api";
 import { Config, Message, Snowflake } from "@spacebar/util";
-import { makeOrderedCollection } from "activitypub/util/OrderedCollection";
 import { Router } from "express";
 import { FindManyOptions, FindOperator, LessThan, MoreThan } from "typeorm";
 

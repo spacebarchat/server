@@ -1,6 +1,6 @@
+import { makeOrderedCollection } from "@spacebar/ap";
 import { route } from "@spacebar/api";
 import { Config, Member } from "@spacebar/util";
-import { makeOrderedCollection } from "activitypub/util/OrderedCollection";
 import { Router } from "express";
 
 const router = Router();
