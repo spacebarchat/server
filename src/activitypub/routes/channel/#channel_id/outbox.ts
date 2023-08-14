@@ -52,7 +52,6 @@ router.get("/", route({}), async (req, res) => {
 
 	// move this to like, Channel.createAPMessages or smth
 	const apMessages = messages.map((message) => ({
-		"@context": "https://www.w3.org/ns/activitystreams",
 		id: `https://${webDomain}/fed/channel/${message.channel_id}/messages/${message.id}`,
 		type: "Announce",
 		actor: `https://${webDomain}/fed/user/${message.author_id}`,

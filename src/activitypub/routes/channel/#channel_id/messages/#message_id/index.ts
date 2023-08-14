@@ -21,7 +21,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		type: "Announce",
 		actor: `https://${webDomain}/fed/user/${message.author_id}`,
 		published: message.timestamp,
-		to: `https://${webDomain}/fed/channel/${message.channel_id}`,
+		to: `https://${webDomain}/fed/channel/${message.channel_id}/followers`,
 		object: message.toAP(),
 	};
 

@@ -247,12 +247,12 @@ export class Message extends BaseClass {
 		const { webDomain } = Config.get().federation;
 
 		return {
-			id: `https://${webDomain}/fed/channel/${this.channel_id}/messages/${this.id}`,
+			id: `https://${webDomain}/fed/messages/${this.id}`,
 			type: "Note",
 			published: this.timestamp,
-			url: `https://${webDomain}/fed/channel/${this.channel_id}/messages/${this.id}`,
+			url: `https://${webDomain}/fed/messages/${this.id}`,
 			attributedTo: `https://${webDomain}/fed/user/${this.author_id}`,
-			to: `https://${webDomain}/fed/channel/${this.channel_id}`,
+			to: `https://${webDomain}/fed/channel/${this.channel_id}/followers`,
 			content: this.content,
 		};
 	}
