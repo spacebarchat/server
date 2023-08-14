@@ -28,6 +28,7 @@ router.get(
 		// we know what you mean, bro
 		resource = resource.replace("acct:", "");
 
+		if (resource[0] == "@") resource = resource.slice(1);
 		const [resourceId, resourceDomain] = resource.split("@");
 
 		const { webDomain } = Config.get().federation;
