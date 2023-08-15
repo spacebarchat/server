@@ -16,13 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import type {
-	APAnnounce,
-	APNote,
-	APPerson,
-	AnyAPObject,
-} from "activitypub-types";
-import fetch from "node-fetch";
+import type { APAnnounce, APNote } from "activitypub-types";
 import {
 	Column,
 	CreateDateColumn,
@@ -35,7 +29,7 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { Config, Snowflake } from "..";
+import { Config } from "..";
 import { InteractionType } from "../interfaces/Interaction";
 import { Application } from "./Application";
 import { Attachment } from "./Attachment";
@@ -262,6 +256,7 @@ export class Message extends BaseClass {
 		};
 	}
 
+	// TODO: move to AP module
 	toAP(): APNote {
 		const { webDomain } = Config.get().federation;
 
@@ -274,70 +269,6 @@ export class Message extends BaseClass {
 			to: ["https://www.w3.org/ns/activitystreams#Public"],
 			content: this.content,
 		};
-	}
-
-	static async fromAP(data: APNote): Promise<Message> {
-		if (!data.attributedTo)
-			throw new Error("sb Message must have author (attributedTo)");
-
-		let attrib = Array.isArray(data.attributedTo)
-			? data.attributedTo[0]
-			: data.attributedTo;
-		if (typeof attrib == "string") {
-			// fetch it
-			attrib = (await fetch(attrib, {
-				headers: { Accept: "application/activity+json" },
-			}).then((x) => x.json())) as AnyAPObject;
-		}
-
-		if (attrib.type != "Person")
-			throw new Error("only Person can be author of sb Message"); //hm
-
-		let to = data.to;
-
-		if (Array.isArray(to))
-			to = to.filter((x) => {
-				if (typeof x == "string") return x.includes("channel");
-				return false;
-			})[0];
-
-		if (!to) throw new Error("not deliverable");
-
-		const channel_id = (to as string).split("/").reverse()[0];
-
-		const channel = await Channel.findOneOrFail({
-			where: { id: channel_id },
-			relations: { guild: true },
-		});
-
-		const user = await User.fromAP(attrib as APPerson);
-		let member;
-		if (
-			(await Member.count({
-				where: { id: user.id, guild_id: channel.guild_id },
-			})) == 0
-		)
-			member = await Member.addToGuild(user.id, channel.guild.id);
-
-		return Message.create({
-			id: Snowflake.generate(),
-			author: user,
-			member,
-			content: data.content, // convert html to markdown
-			timestamp: data.published,
-			channel,
-			guild: channel.guild,
-
-			sticker_items: [],
-			guild_id: channel.guild_id,
-			attachments: [],
-			embeds: [],
-			reactions: [],
-			type: 0,
-			mentions: [],
-			mention_roles: [],
-			mention_channels: [],
-		});
 	}
 }
 

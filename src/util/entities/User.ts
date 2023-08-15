@@ -37,7 +37,6 @@ import { Session } from "./Session";
 import { UserSettings } from "./UserSettings";
 
 import crypto from "crypto";
-import fetch from "node-fetch";
 import { promisify } from "util";
 const generateKeyPair = promisify(crypto.generateKeyPair);
 
@@ -293,6 +292,7 @@ export class User extends BaseClass {
 		return user as UserPrivate;
 	}
 
+	// TODO: move to AP module
 	toAP(): APPersonButMore {
 		const { webDomain } = Config.get().federation;
 
@@ -321,49 +321,6 @@ export class User extends BaseClass {
 				publicKeyPem: this.publicKey,
 			},
 		};
-	}
-
-	static async fromAP(data: APPerson | string): Promise<User> {
-		if (typeof data == "string") {
-			data = (await fetch(data, {
-				headers: { Accept: "application/json" },
-			}).then((x) => x.json())) as APPerson;
-		}
-
-		const cache = await User.findOne({
-			where: {
-				email: `${data.preferredUsername}@${
-					new URL(data.id!).hostname
-				}`,
-			},
-		});
-		if (cache) return cache;
-
-		return User.create({
-			id: Snowflake.generate(), // hm
-			username: data.preferredUsername,
-			discriminator: new URL(data.id!).hostname,
-			premium: false,
-			bio: data.summary, // TODO: convert to markdown
-
-			email: `${data.preferredUsername}@${new URL(data.id!).hostname}`,
-			data: {
-				hash: "#",
-				valid_tokens_since: new Date(),
-			},
-			extended_settings: "{}",
-			settings: UserSettings.create(),
-			publicKey: "",
-			privateKey: "",
-
-			premium_since: Config.get().defaults.user.premium
-				? new Date()
-				: undefined,
-			rights: Config.get().register.defaultRights,
-			premium_type: Config.get().defaults.user.premiumType ?? 0,
-			verified: Config.get().defaults.user.verified ?? true,
-			created_at: new Date(),
-		}).save();
 	}
 
 	static async getPublicUser(user_id: string, opts?: FindOneOptions<User>) {

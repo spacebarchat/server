@@ -1,3 +1,4 @@
+import { messageFromAP } from "@spacebar/ap";
 import { route } from "@spacebar/api";
 import { Message, emitEvent } from "@spacebar/util";
 import { Router } from "express";
@@ -11,7 +12,11 @@ router.post("/", route({}), async (req, res) => {
 
 	if (body.type != "Create") throw new HTTPError("not implemented");
 
-	const message = await Message.fromAP(body.object);
+	const message = await messageFromAP(body.object);
+
+	if ((await Message.count({ where: { id: message.id } })) != 0)
+		return res.status(200);
+
 	await message.save();
 
 	await emitEvent({
