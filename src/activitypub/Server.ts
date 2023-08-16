@@ -9,6 +9,7 @@ import bodyParser from "body-parser";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
 import path from "path";
+import { setupListener } from "./listener";
 import hostMeta from "./well-known/host-meta";
 import webfinger from "./well-known/webfinger";
 
@@ -24,6 +25,7 @@ export class APServer extends Server {
 	async start() {
 		await initDatabase();
 		await Config.init();
+		setupListener();
 
 		this.app.set("json replacer", JSONReplacer);
 

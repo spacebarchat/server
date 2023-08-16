@@ -15,6 +15,9 @@
 			"skipFiles": ["<node_internals>/**"],
 			"program": "${workspaceFolder}/src/bundle/start.ts",
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+			"env": {
+				"CONFIG_PATH": "./config.json"
+			},
 			"preLaunchTask": "tsc: build - tsconfig.json"
 		}
 	]

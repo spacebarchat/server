@@ -14,7 +14,11 @@ router.post("/", route({}), async (req, res) => {
 
 	const message = await messageFromAP(body.object);
 
-	if ((await Message.count({ where: { id: message.id } })) != 0)
+	if (
+		(await Message.count({
+			where: { federatedId: message.federatedId },
+		})) != 0
+	)
 		return res.status(200);
 
 	await message.save();

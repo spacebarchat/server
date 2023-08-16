@@ -387,6 +387,18 @@ export class Channel extends BaseClass {
 		if (channel == null) {
 			name = trimSpecial(name);
 
+			const { publicKey, privateKey } = await generateKeyPair("rsa", {
+				modulusLength: 4096,
+				publicKeyEncoding: {
+					type: "spki",
+					format: "pem",
+				},
+				privateKeyEncoding: {
+					type: "pkcs8",
+					format: "pem",
+				},
+			});
+
 			channel = await Channel.create({
 				name,
 				type,
@@ -403,6 +415,8 @@ export class Channel extends BaseClass {
 					}),
 				),
 				nsfw: false,
+				publicKey,
+				privateKey,
 			}).save();
 		}
 

@@ -252,6 +252,9 @@ export class User extends BaseClass {
 	@Column({ select: false })
 	privateKey: string;
 
+	@Column({ nullable: true })
+	federatedId: string;
+
 	// TODO: I don't like this method?
 	validate() {
 		if (this.discriminator) {

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import type { APAnnounce, APNote } from "activitypub-types";
+import type { APAnnounce, APCreate, APNote } from "activitypub-types";
 import {
 	Column,
 	CreateDateColumn,
@@ -220,6 +220,9 @@ export class Message extends BaseClass {
 	@Column({ type: "simple-json", nullable: true })
 	components?: MessageComponent[];
 
+	@Column({ nullable: true })
+	federatedId: string;
+
 	toJSON(): Message {
 		return {
 			...this,
@@ -227,6 +230,7 @@ export class Message extends BaseClass {
 			member_id: undefined,
 			webhook_id: undefined,
 			application_id: undefined,
+			federatedId: undefined,
 
 			nonce: this.nonce ?? undefined,
 			tts: this.tts ?? false,
@@ -252,6 +256,19 @@ export class Message extends BaseClass {
 			actor: `https://${webDomain}/fed/user/${this.author_id}`,
 			published: this.timestamp,
 			to: ["https://www.w3.org/ns/activitystreams#Public"],
+			object: this.toAP(),
+		};
+	}
+
+	toCreateAP(): APCreate {
+		const { webDomain } = Config.get().federation;
+
+		return {
+			"@context": "https://www.w3.org/ns/activitystreams",
+			type: "Create",
+			id: `https://${webDomain}/fed/channel/${this.channel_id}/messages/${this.id}`,
+			to: [],
+			actor: `https://${webDomain}/fed/user/${this.author_id}`,
 			object: this.toAP(),
 		};
 	}

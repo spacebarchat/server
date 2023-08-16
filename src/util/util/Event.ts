@@ -17,9 +17,9 @@
 */
 
 import { Channel } from "amqplib";
-import { RabbitMQ } from "./RabbitMQ";
-import EventEmitter from "events";
+import EventEmitter from "eventemitter2";
 import { EVENT, Event } from "../interfaces";
+import { RabbitMQ } from "./RabbitMQ";
 export const events = new EventEmitter();
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
