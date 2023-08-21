@@ -39,7 +39,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	let data: Payload;
 
 	if (
-		(buffer instanceof Buffer && buffer[0] === 123) || // ASCII 123 = `{`. Bad check for JSON
+		(buffer instanceof Buffer && (buffer[0] === 123 && buffer[1] === 34)) || // ASCII 123 = `{`. Bad check for JSON
 		typeof buffer === "string"
 	) {
 		data = bigIntJson.parse(buffer.toString());
