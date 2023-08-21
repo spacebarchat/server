@@ -334,8 +334,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		active: x.session_id == session.session_id,
 		activities: x.activities ?? [],
 		client_info: x.client_info,
-		// TODO: what does all mean?
-		session_id: x.session_id == session.session_id ? "all" : x.session_id,
+		session_id: x.session_id, // TODO: discord.com sends 'all', what is that???
 		status: x.status,
 	}));
 
