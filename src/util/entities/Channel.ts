@@ -506,7 +506,6 @@ export interface DMChannel extends Omit<Channel, "type" | "recipients"> {
 export function isTextChannel(type: ChannelType): boolean {
 	switch (type) {
 		case ChannelType.GUILD_STORE:
-		case ChannelType.GUILD_VOICE:
 		case ChannelType.GUILD_STAGE_VOICE:
 		case ChannelType.GUILD_CATEGORY:
 		case ChannelType.GUILD_FORUM:
@@ -515,6 +514,7 @@ export function isTextChannel(type: ChannelType): boolean {
 		case ChannelType.DM:
 		case ChannelType.GROUP_DM:
 		case ChannelType.GUILD_NEWS:
+		case ChannelType.GUILD_VOICE:
 		case ChannelType.GUILD_NEWS_THREAD:
 		case ChannelType.GUILD_PUBLIC_THREAD:
 		case ChannelType.GUILD_PRIVATE_THREAD:
