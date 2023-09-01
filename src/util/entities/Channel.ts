@@ -97,10 +97,11 @@ export class Channel extends BaseClass {
 	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, {
+	@ManyToOne(() => Guild, (guild) => guild.channels, {
 		onDelete: "CASCADE",
+		nullable: true,
 	})
-	guild: Guild;
+	guild?: Guild;
 
 	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.parent)

@@ -327,6 +327,7 @@ export class Member extends BaseClassWithoutId {
 				id: guild_id,
 			},
 			relations: PublicGuildRelations,
+			relationLoadStrategy: "query",
 		});
 
 		const memberCount = await Member.count({ where: { guild_id } });
