@@ -60,6 +60,14 @@ import { check } from "./instanceOf";
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
 
+const tryGetUserFromToken = async (...args: Parameters<typeof checkToken>) => {
+	try {
+		return (await checkToken(...args)).user;
+	} catch (e) {
+		return null;
+	}
+};
+
 export async function onIdentify(this: WebSocket, data: Payload) {
 	if (this.user_id) {
 		// we've already identified
@@ -74,7 +82,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	this.capabilities = new Capabilities(identify.capabilities || 0);
 
-	const { user } = await checkToken(identify.token, {
+	const user = await tryGetUserFromToken(identify.token, {
 		relations: ["relationships", "relationships.to", "settings"],
 		select: [...PrivateUserProjection, "relationships"],
 	});
