@@ -17,11 +17,11 @@
 */
 
 import { Config, Embed, EmbedType } from "@spacebar/util";
-import fetch, { RequestInit } from "node-fetch";
 import * as cheerio from "cheerio";
-import probe from "probe-image-size";
 import crypto from "crypto";
+import fetch, { RequestInit } from "node-fetch";
 import { yellow } from "picocolors";
+import probe from "probe-image-size";
 
 export const DEFAULT_FETCH_OPTIONS: RequestInit = {
 	redirect: "follow",
@@ -85,6 +85,7 @@ export const getMetaDescriptions = (text: string) => {
 	const $ = cheerio.load(text);
 
 	return {
+		type: getMeta($, "og:type"),
 		title: getMeta($, "og:title") || $("title").first().text(),
 		provider_name: getMeta($, "og:site_name"),
 		author: getMeta($, "article:author"),
@@ -96,6 +97,8 @@ export const getMetaDescriptions = (text: string) => {
 		height: parseInt(getMeta($, "og:image:height") || "0"),
 		url: getMeta($, "og:url"),
 		youtube_embed: getMeta($, "og:video:secure_url"),
+
+		$,
 	};
 };
 
@@ -116,7 +119,7 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 		method: "HEAD",
 	});
 
-	let width, height, image;
+	let width: number, height: number, image: string | undefined;
 
 	if (type.headers.get("content-type")?.indexOf("image") !== -1) {
 		const result = await probe(url.href);
@@ -181,9 +184,16 @@ export const EmbedHandlers: {
 			return null;
 		}
 
+		let embedType = EmbedType.link;
+		if (metas.type == "article") embedType = EmbedType.article;
+		if (metas.type == "object") embedType = EmbedType.article; // github
+		if (metas.type == "rich") embedType = EmbedType.rich;
+
+		if (metas.width < 400) embedType = EmbedType.link;
+
 		return {
 			url: url.href,
-			type: EmbedType.link,
+			type: embedType,
 			title: metas.title,
 			thumbnail: {
 				width: metas.width,
@@ -210,9 +220,7 @@ export const EmbedHandlers: {
 	// TODO: facebook
 	// have to use their APIs or something because they don't send the metas in initial html
 
-	"twitter.com": (url: URL) => {
-		return EmbedHandlers["www.twitter.com"](url);
-	},
+	"twitter.com": (url) => EmbedHandlers["www.twitter.com"](url),
 	"www.twitter.com": async (url: URL) => {
 		const token = Config.get().external.twitter;
 		if (!token) return null;
@@ -345,15 +353,15 @@ export const EmbedHandlers: {
 		};
 	},
 
-	"pixiv.net": (url: URL) => {
-		return EmbedHandlers["www.pixiv.net"](url);
-	},
+	// TODO: docs: Pixiv won't work without Imagor
+	"pixiv.net": (url) => EmbedHandlers["www.pixiv.net"](url),
 	"www.pixiv.net": async (url: URL) => {
 		const response = await doFetch(url);
 		if (!response) return null;
 		const metas = getMetaDescriptions(await response.text());
 
-		// TODO: doesn't show images. think it's a bug in the cdn
+		if (!metas.image) return null;
+
 		return {
 			url: url.href,
 			type: EmbedType.image,
@@ -407,9 +415,7 @@ export const EmbedHandlers: {
 		};
 	},
 
-	"reddit.com": (url: URL) => {
-		return EmbedHandlers["www.reddit.com"](url);
-	},
+	"reddit.com": (url) => EmbedHandlers["www.reddit.com"](url),
 	"www.reddit.com": async (url: URL) => {
 		const res = await EmbedHandlers["default"](url);
 		return {
@@ -420,12 +426,9 @@ export const EmbedHandlers: {
 			},
 		};
 	},
-	"youtu.be": (url: URL) => {
-		return EmbedHandlers["www.youtube.com"](url);
-	},
-	"youtube.com": (url: URL) => {
-		return EmbedHandlers["www.youtube.com"](url);
-	},
+
+	"youtu.be": (url) => EmbedHandlers["www.youtube.com"](url),
+	"youtube.com": (url) => EmbedHandlers["www.youtube.com"](url),
 	"www.youtube.com": async (url: URL): Promise<Embed | null> => {
 		const response = await doFetch(url);
 		if (!response) return null;
@@ -463,6 +466,36 @@ export const EmbedHandlers: {
 				name: metas.author,
 				// TODO: author channel url
 			},
+		};
+	},
+
+	"www.xkcd.com": (url) => EmbedHandlers["xkcd.com"](url),
+	"xkcd.com": async (url) => {
+		const response = await doFetch(url);
+		if (!response) return null;
+
+		const metas = getMetaDescriptions(await response.text());
+		const hoverText = metas.$("#comic img").attr("title");
+
+		if (!metas.image) return null;
+
+		const { width, height } = await probe(metas.image);
+
+		return {
+			url: url.href,
+			type: EmbedType.rich,
+			title: `xkcd: ${metas.title}`,
+			image: {
+				width,
+				height,
+				url: metas.image,
+				proxy_url: getProxyUrl(new URL(metas.image), width, height),
+			},
+			footer: hoverText
+				? {
+						text: hoverText,
+				  }
+				: undefined,
 		};
 	},
 
