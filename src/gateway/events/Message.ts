@@ -16,15 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket, Payload, CLOSECODES, OPCODES } from "@spacebar/gateway";
-import OPCodeHandlers from "../opcodes";
-import { check } from "../opcodes/instanceOf";
-import WS from "ws";
-import { PayloadSchema, ErlpackType } from "@spacebar/util";
 import * as Sentry from "@sentry/node";
+import { CLOSECODES, OPCODES, Payload, WebSocket } from "@spacebar/gateway";
+import { ErlpackType, PayloadSchema } from "@spacebar/util";
+import fs from "fs/promises";
 import BigIntJson from "json-bigint";
 import path from "path";
-import fs from "fs/promises";
+import WS from "ws";
+import OPCodeHandlers from "../opcodes";
+import { check } from "../opcodes/instanceOf";
 const bigIntJson = BigIntJson({ storeAsString: true });
 
 let erlpack: ErlpackType | null = null;
@@ -88,33 +88,28 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		return;
 	}
 
-	const transaction =
-		data.op != 1
-			? Sentry.startTransaction({
-					op: OPCODES[data.op],
-					name: `GATEWAY ${OPCODES[data.op]}`,
-					data: {
-						...data.d,
-						token: data?.d?.token ? "[Redacted]" : undefined,
-					},
-			  })
-			: undefined;
-
 	try {
-		const ret = await OPCodeHandler.call(this, data);
-		Sentry.withScope((scope) => {
-			scope.setSpan(transaction);
-			scope.setUser({ id: this.user_id });
-			transaction?.finish();
-		});
-		return ret;
+		return await Sentry.startActiveSpan(
+			{
+				op: "websocket.server",
+				name: `GATEWAY ${OPCODES[data.op]}`,
+				data: {
+					...data.d,
+					token: data?.d?.token ? "[Redacted]" : undefined,
+				},
+			},
+			async () => {
+				const ret = await OPCodeHandler.call(this, data);
+				Sentry.setUser({ id: this.user_id });
+				return ret;
+			},
+		);
 	} catch (error) {
-		Sentry.withScope((scope) => {
-			scope.setSpan(transaction);
-			if (this.user_id) scope.setUser({ id: this.user_id });
-			Sentry.captureException(error);
+		Sentry.captureException(error, {
+			user: {
+				id: this.user_id,
+			},
 		});
-		transaction?.finish();
 		console.error(`Error: Op ${data.op}`, error);
 		// if (!this.CLOSED && this.CLOSING)
 		return this.close(CLOSECODES.Unknown_error);
