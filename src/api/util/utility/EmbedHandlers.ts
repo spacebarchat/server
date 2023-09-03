@@ -238,9 +238,7 @@ export const EmbedHandlers: {
 			title: metas.title,
 			description: metas.description,
 			thumbnail: makeEmbedImage(metas.image, 640, 640),
-			provider: {
-				name: "Facebook",
-			},
+			color: 16777215,
 		};
 	},
 
