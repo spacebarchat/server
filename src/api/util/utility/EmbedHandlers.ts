@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, Embed, EmbedType } from "@spacebar/util";
+import { Config, Embed, EmbedImage, EmbedType } from "@spacebar/util";
 import * as cheerio from "cheerio";
 import crypto from "crypto";
 import fetch, { RequestInit } from "node-fetch";
@@ -33,6 +33,20 @@ export const DEFAULT_FETCH_OPTIONS: RequestInit = {
 	// size: 1024 * 1024 * 5, 	// grabbed from config later
 	compress: true,
 	method: "GET",
+};
+
+const makeEmbedImage = (
+	url: string | undefined,
+	width: number | undefined,
+	height: number | undefined,
+): Required<EmbedImage> | undefined => {
+	if (!url || !width || !height) return undefined;
+	return {
+		url,
+		width,
+		height,
+		proxy_url: getProxyUrl(new URL(url), width, height),
+	};
 };
 
 let hasWarnedAboutImagor = false;
@@ -82,6 +96,15 @@ const getMeta = ($: cheerio.CheerioAPI, name: string): string | undefined => {
 	return ret.trim().length == 0 ? undefined : ret;
 };
 
+const tryParseInt = (str: string | undefined) => {
+	if (!str) return undefined;
+	try {
+		return parseInt(str);
+	} catch (e) {
+		return undefined;
+	}
+};
+
 export const getMetaDescriptions = (text: string) => {
 	const $ = cheerio.load(text);
 
@@ -94,8 +117,8 @@ export const getMetaDescriptions = (text: string) => {
 		image: getMeta($, "og:image") || getMeta($, "twitter:image"),
 		image_fallback: $(`image`).attr("src"),
 		video_fallback: $(`video`).attr("src"),
-		width: parseInt(getMeta($, "og:image:width") || "0"),
-		height: parseInt(getMeta($, "og:image:height") || "0"),
+		width: tryParseInt(getMeta($, "og:image:width")),
+		height: tryParseInt(getMeta($, "og:image:height")),
 		url: getMeta($, "og:url"),
 		youtube_embed: getMeta($, "og:video:secure_url"),
 
@@ -120,13 +143,11 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 		method: "HEAD",
 	});
 
-	let width: number, height: number, image: string | undefined;
+	let image;
 
 	if (type.headers.get("content-type")?.indexOf("image") !== -1) {
 		const result = await probe(url.href);
-		width = result.width;
-		height = result.height;
-		image = url.href;
+		image = makeEmbedImage(url.href, result.width, result.height);
 	} else if (type.headers.get("content-type")?.indexOf("video") !== -1) {
 		// TODO
 		return null;
@@ -135,22 +156,19 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 		const response = await doFetch(url);
 		if (!response) return null;
 		const metas = getMetaDescriptions(await response.text());
-		width = metas.width;
-		height = metas.height;
-		image = metas.image || metas.image_fallback;
+		image = makeEmbedImage(
+			metas.image || metas.image_fallback,
+			metas.width,
+			metas.height,
+		);
 	}
 
-	if (!width || !height || !image) return null;
+	if (!image) return null;
 
 	return {
 		url: url.href,
 		type: EmbedType.image,
-		thumbnail: {
-			width: width,
-			height: height,
-			url: url.href,
-			proxy_url: getProxyUrl(new URL(image), width, height),
-		},
+		thumbnail: image,
 	};
 };
 
@@ -176,13 +194,15 @@ export const EmbedHandlers: {
 
 		if (!metas.image) metas.image = metas.image_fallback;
 
+		let image: Required<EmbedImage> | undefined;
+
 		if (metas.image && (!metas.width || !metas.height)) {
 			const result = await probe(metas.image);
-			metas.width = result.width;
-			metas.height = result.height;
+			image = makeEmbedImage(metas.image, result.width, result.height);
 		}
 
-		if (!metas.image && (!metas.title || !metas.description)) {
+		if (!image && (!metas.title || !metas.description)) {
+			// we don't have any content to display
 			return null;
 		}
 
@@ -191,24 +211,11 @@ export const EmbedHandlers: {
 		if (metas.type == "object") embedType = EmbedType.article; // github
 		if (metas.type == "rich") embedType = EmbedType.rich;
 
-		if (metas.width && metas.width < 400) embedType = EmbedType.link;
-
 		return {
 			url: url.href,
 			type: embedType,
 			title: metas.title,
-			thumbnail: {
-				width: metas.width,
-				height: metas.height,
-				url: metas.image,
-				proxy_url: metas.image
-					? getProxyUrl(
-							new URL(metas.image),
-							metas.width,
-							metas.height,
-					  )
-					: undefined,
-			},
+			thumbnail: image,
 			description: metas.description,
 		};
 	},
@@ -340,14 +347,7 @@ export const EmbedHandlers: {
 			type: EmbedType.link,
 			title: metas.title,
 			description: metas.description,
-			thumbnail: {
-				width: 640,
-				height: 640,
-				proxy_url: metas.image
-					? getProxyUrl(new URL(metas.image), 640, 640)
-					: undefined,
-				url: metas.image,
-			},
+			thumbnail: makeEmbedImage(metas.image, 640, 640),
 			provider: {
 				url: "https://spotify.com",
 				name: "Spotify",
@@ -369,18 +369,11 @@ export const EmbedHandlers: {
 			type: EmbedType.image,
 			title: metas.title,
 			description: metas.description,
-			image: {
-				width: metas.width,
-				height: metas.height,
-				url: url.href,
-				proxy_url: metas.image
-					? getProxyUrl(
-							new URL(metas.image),
-							metas.width,
-							metas.height,
-					  )
-					: undefined,
-			},
+			image: makeEmbedImage(
+				metas.image || metas.image_fallback,
+				metas.width,
+				metas.height,
+			),
 			provider: {
 				url: "https://pixiv.net",
 				name: "Pixiv",
@@ -437,37 +430,31 @@ export const EmbedHandlers: {
 		const metas = getMetaDescriptions(await response.text());
 
 		return {
-			video: {
-				// TODO: does this adjust with aspect ratio?
-				width: metas.width,
-				height: metas.height,
-				url: metas.youtube_embed,
-			},
+			video: makeEmbedImage(
+				metas.youtube_embed,
+				metas.width,
+				metas.height,
+			),
 			url: url.href,
-			type: EmbedType.video,
+			type: metas.youtube_embed ? EmbedType.video : EmbedType.link,
 			title: metas.title,
-			thumbnail: {
-				width: metas.width,
-				height: metas.height,
-				url: metas.image,
-				proxy_url: metas.image
-					? getProxyUrl(
-							new URL(metas.image),
-							metas.width,
-							metas.height,
-					  )
-					: undefined,
-			},
+			thumbnail: makeEmbedImage(
+				metas.image || metas.image_fallback,
+				metas.width,
+				metas.height,
+			),
 			provider: {
 				url: "https://www.youtube.com",
 				name: "YouTube",
 			},
 			description: metas.description,
 			color: 16711680,
-			author: {
-				name: metas.author,
-				// TODO: author channel url
-			},
+			author: metas.author
+				? {
+						name: metas.author,
+						// TODO: author channel url
+				  }
+				: undefined,
 		};
 	},
 
@@ -487,12 +474,7 @@ export const EmbedHandlers: {
 			url: url.href,
 			type: EmbedType.rich,
 			title: `xkcd: ${metas.title}`,
-			image: {
-				width,
-				height,
-				url: metas.image,
-				proxy_url: getProxyUrl(new URL(metas.image), width, height),
-			},
+			image: makeEmbedImage(metas.image, width, height),
 			footer: hoverText
 				? {
 						text: hoverText,
