@@ -78,7 +78,8 @@ export const getProxyUrl = (
 const getMeta = ($: cheerio.CheerioAPI, name: string): string | undefined => {
 	let elem = $(`meta[property="${name}"]`);
 	if (!elem.length) elem = $(`meta[name="${name}"]`);
-	return elem.attr("content") || elem.text();
+	const ret = elem.attr("content") || elem.text();
+	return ret.trim().length == 0 ? undefined : ret;
 };
 
 export const getMetaDescriptions = (text: string) => {
@@ -168,7 +169,8 @@ export const EmbedHandlers: {
 		const response = await doFetch(url);
 		if (!response) return null;
 
-		const metas = getMetaDescriptions(await response.text());
+		const text = await response.text();
+		const metas = getMetaDescriptions(text);
 
 		// TODO: handle video
 
@@ -189,7 +191,7 @@ export const EmbedHandlers: {
 		if (metas.type == "object") embedType = EmbedType.article; // github
 		if (metas.type == "rich") embedType = EmbedType.rich;
 
-		if (metas.width < 400) embedType = EmbedType.link;
+		if (metas.width && metas.width < 400) embedType = EmbedType.link;
 
 		return {
 			url: url.href,
