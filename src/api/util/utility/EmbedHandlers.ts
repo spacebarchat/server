@@ -226,8 +226,21 @@ export const EmbedHandlers: {
 	"c.tenor.com": genericImageHandler,
 	"media.tenor.com": genericImageHandler,
 
-	// TODO: facebook
-	// have to use their APIs or something because they don't send the metas in initial html
+	"facebook.com": (url) => EmbedHandlers["www.facebook.com"](url),
+	"www.facebook.com": async (url: URL) => {
+		const response = await doFetch(url);
+		if (!response) return null;
+		const metas = getMetaDescriptions(await response.text());
+
+		return {
+			url: url.href,
+			type: EmbedType.link,
+			title: metas.title,
+			description: metas.description,
+			thumbnail: makeEmbedImage(metas.image, 640, 640),
+			color: 16777215,
+		};
+	},
 
 	"twitter.com": (url) => EmbedHandlers["www.twitter.com"](url),
 	"www.twitter.com": async (url: URL) => {
@@ -385,6 +398,42 @@ export const EmbedHandlers: {
 		const response = await doFetch(url);
 		if (!response) return null;
 		const metas = getMetaDescriptions(await response.text());
+		const numReviews = metas.$("#review_summary_num_reviews").val() as
+			| string
+			| undefined;
+		const price = metas
+			.$(".game_purchase_price.price")
+			.data("price-final") as number | undefined;
+		const releaseDate = metas
+			.$(".release_date")
+			.find("div.date")
+			.text()
+			.trim();
+		const isReleased = new Date(releaseDate) < new Date();
+
+		const fields: Embed["fields"] = [];
+
+		if (numReviews)
+			fields.push({
+				name: "Reviews",
+				value: numReviews,
+				inline: true,
+			});
+
+		if (price)
+			fields.push({
+				name: "Price",
+				value: `$${price / 100}`,
+				inline: true,
+			});
+
+		// if the release date is in the past, it's already out
+		if (releaseDate && !isReleased)
+			fields.push({
+				name: "Release Date",
+				value: releaseDate,
+				inline: true,
+			});
 
 		return {
 			url: url.href,
@@ -405,7 +454,7 @@ export const EmbedHandlers: {
 				url: "https://store.steampowered.com",
 				name: "Steam",
 			},
-			// TODO: fields for release date
+			fields,
 			// TODO: Video
 		};
 	},
