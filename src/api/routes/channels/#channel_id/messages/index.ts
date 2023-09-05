@@ -40,7 +40,13 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
-import { FindManyOptions, FindOperator, LessThan, MoreThan } from "typeorm";
+import {
+	FindManyOptions,
+	FindOperator,
+	LessThan,
+	MoreThan,
+	MoreThanOrEqual,
+} from "typeorm";
 import { URL } from "url";
 
 const router: Router = Router();
@@ -122,12 +128,24 @@ router.get(
 
 		if (around) {
 			query.take = Math.floor(limit / 2);
-			const [right, left] = await Promise.all([
-				Message.find({ ...query, where: { id: LessThan(around) } }),
-				Message.find({ ...query, where: { id: MoreThan(around) } }),
-			]);
-			right.push(...left);
-			messages = right;
+			if (query.take != 0) {
+				const [right, left] = await Promise.all([
+					Message.find({ ...query, where: { id: LessThan(around) } }),
+					Message.find({
+						...query,
+						where: { id: MoreThanOrEqual(around) },
+					}),
+				]);
+				left.push(...right);
+				messages = left;
+			} else {
+				query.take = 1;
+				const message = await Message.findOne({
+					...query,
+					where: { id: around },
+				});
+				messages = message ? [message] : [];
+			}
 		} else {
 			if (after) {
 				if (BigInt(after) > BigInt(Snowflake.generate()))
