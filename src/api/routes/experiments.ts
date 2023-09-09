@@ -35,7 +35,7 @@ router.get("/", route({}), (req: Request, res: Response) => {
 	if (uniqueUsernames) {
 		// hash, revision, bucket, override, population, hash_result, as_mode
 		// bucket 4 is used by the official client, and enables live checking and suggestions, 3 is only live checking
-		data.assignments.push([2476969328, 0, 3, -1, 0, 9267, 0, 0]);
+		data.assignments.push([2476969328, 0, 4, -1, 0, 9267, 0, 0]);
 	}
 	res.send(data);
 });
