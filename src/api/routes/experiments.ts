@@ -16,14 +16,28 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
 import { route } from "@spacebar/api";
+import { Config, Experiments } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
 	// TODO:
-	res.send({ fingerprint: "", assignments: [], guild_experiments: [] });
+	const { uniqueUsernames } = Config.get().general;
+
+	const data: Experiments = {
+		fingerprint: "fingerprint",
+		assignments: [],
+		guild_experiments: [],
+	};
+	// this enables the pomelo/unique usernames UI in the official clients
+	if (uniqueUsernames) {
+		// hash, revision, bucket, override, population, hash_result, as_mode
+		// bucket 4 is used by the official client, and enables live checking and suggestions, 3 is only live checking
+		data.assignments.push([2476969328, 0, 3, -1, 0, 9267, 0, 0]);
+	}
+	res.send(data);
 });
 
 export default router;
