@@ -172,7 +172,7 @@ router.patch(
 				}
 
 				// check if username is already taken (pomelo only)
-				if (!User.isUsernameAvailable(body.username))
+				if (!(await User.isUsernameAvailable(body.username)))
 					throw FieldErrors({
 						username: {
 							code: "USERNAME_ALREADY_TAKEN",
