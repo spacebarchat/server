@@ -16,11 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * from "./Activity";
-export * from "./ConnectedAccount";
-export * from "./Event";
-export * from "./Experiments";
-export * from "./GuildWelcomeScreen";
-export * from "./Interaction";
-export * from "./Presence";
-export * from "./Status";
+export type GuildExperiment = [
+	number,
+	string | null,
+	number,
+	unknown[],
+	unknown[],
+	unknown[],
+	unknown | null,
+	unknown | null,
+	number,
+	number,
+];
+
+export interface Experiments {
+	fingerprint: string;
+	assignments: number[][];
+	guild_experiments: GuildExperiment[];
+}
