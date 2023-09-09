@@ -54,6 +54,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	/\/guilds\/\d+\/widget\.(json|png)/,
 	// Connections
 	/\/connections\/\w+\/callback/,
+	"/unique-username/",
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;
