@@ -318,7 +318,7 @@ export class User extends BaseClass {
 
 		if (uniqueUsernames) {
 			// check if there is already an account with this username
-			if (!User.isUsernameAvailable(username))
+			if (!(await User.isUsernameAvailable(username)))
 				throw FieldErrors({
 					username: {
 						code: "USERNAME_ALREADY_TAKEN",
@@ -439,10 +439,13 @@ export class User extends BaseClass {
     }
 
     static async isUsernameAvailable(username: string) {
-        const user = await User.findOne({
-            where: { username },
-            select: ["id"],
+		// TODO: implement regex check?
+		const count = await User.count({
+			where: {
+				username: username.toLowerCase(),
+			},
         });
-        return !user;
+
+		return count === 0;
     }
 }

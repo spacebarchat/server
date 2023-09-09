@@ -25,7 +25,7 @@ router.post(
 		}
 
 		res.json({
-			taken: !User.isUsernameAvailable(body.username),
+			taken: !(await User.isUsernameAvailable(body.username)),
 		});
 	},
 );
