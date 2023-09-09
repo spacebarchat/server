@@ -37,8 +37,17 @@ router.post(
     }),
     async (req: Request, res: Response) => {
         const body = req.body as RegisterSchema;
-        const { register, security, limits } = Config.get();
+        const { register, security, limits, general } = Config.get();
         const ip = req.ip!;
+
+		if (!general.uniqueUsernames && body.unique_username_registration) {
+			throw FieldErrors({
+				unique_username_registration: {
+					code: "UNIQUE_USERNAMES_DISABLED",
+					message: req.t("auth:register.UNIQUE_USERNAMES_DISABLED"),
+				},
+			});
+		}
 
         // Reg tokens
         // They're a one time use token that bypasses registration limits ( rates, disabled reg, etc )

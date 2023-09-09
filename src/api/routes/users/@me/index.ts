@@ -152,10 +152,7 @@ router.patch(
                 }
 
                 // check if username is already taken (pomelo only)
-                const userCount = await User.count({
-                    where: { username: body.username },
-                });
-                if (userCount > 0) {
+				if (!User.isUsernameAvailable(body.username))
                     throw FieldErrors({
                         username: {
                             code: "USERNAME_ALREADY_TAKEN",
@@ -165,7 +162,6 @@ router.patch(
                         },
                     });
                 }
-            }
 
             // handle username changes (old username system)
 			const check_username = body?.username?.replace(/\s/g, "");
