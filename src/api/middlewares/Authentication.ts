@@ -58,6 +58,8 @@ export const NO_AUTHORIZATION_ROUTES = [
     /^(POST|HEAD) \/connections\/\w+\/callback/,
     // Image proxy
     /^(GET|HEAD) \/imageproxy\/[A-Za-z0-9+/]\/\d+x\d+\/.+/,
+	/\/connections\/\w+\/callback/,
+	"/unique-username/",
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;
