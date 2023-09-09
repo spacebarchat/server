@@ -344,6 +344,7 @@ export class User extends BaseClass {
 		password,
 		id,
 		req,
+		global_name,
 	}: {
 		username: string;
 		password?: string;
@@ -351,8 +352,10 @@ export class User extends BaseClass {
 		date_of_birth?: Date; // "2000-04-03"
 		id?: string;
 		req?: Request;
+		global_name?: string;
 	}) {
 		const { uniqueUsernames } = Config.get().general;
+		const { minUsername, maxUsername } = Config.get().limits.user;
 
 		// trim special uf8 control characters -> Backspace, Newline, ...
 		username = trimSpecial(username);
@@ -374,6 +377,34 @@ export class User extends BaseClass {
 			}
 		}
 
+		if (uniqueUsernames) {
+			// check if there is already an account with this username
+			if (!User.isUsernameAvailable(username))
+				throw FieldErrors({
+					username: {
+						code: "USERNAME_ALREADY_TAKEN",
+						message:
+							req?.t("common:field.USERNAME_ALREADY_TAKEN") || "",
+					},
+				});
+
+			// validate username length
+			if (
+				username.length < minUsername ||
+				username.length > maxUsername
+			) {
+				throw FieldErrors({
+					username: {
+						code: "BASE_TYPE_BAD_LENGTH",
+						message:
+							req?.t("common:field.BASE_TYPE_BAD_LENGTH", {
+								length: `${minUsername} and ${maxUsername}`,
+							}) || "",
+					},
+				});
+			}
+		}
+
 		// TODO: save date_of_birth
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
@@ -386,6 +417,7 @@ export class User extends BaseClass {
 
 		const user = User.create({
 			username: uniqueUsernames ? username.toLowerCase() : username,
+			global_name: uniqueUsernames ? global_name : undefined,
 			discriminator,
 			id: id || Snowflake.generate(),
 			email: email,
@@ -428,6 +460,14 @@ export class User extends BaseClass {
 		});
 
 		return user;
+	}
+
+	static async isUsernameAvailable(username: string) {
+		const user = await User.findOne({
+			where: { username },
+			select: ["id"],
+		});
+		return !user;
 	}
 }
 

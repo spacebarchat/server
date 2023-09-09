@@ -72,6 +72,7 @@ export * from "./UserModifySchema";
 export * from "./UserNoteUpdateSchema";
 export * from "./UserProfileModifySchema";
 export * from "./UserSettingsSchema";
+export * from "./UsernameAttemptUnauthedSchema";
 export * from "./Validator";
 export * from "./VanityUrlSchema";
 export * from "./VoiceIdentifySchema";

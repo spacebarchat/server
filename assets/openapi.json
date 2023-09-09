@@ -3499,9 +3499,6 @@
                     "global_name": {
                         "type": "string"
                     },
-                    "legacy_username": {
-                        "type": "string"
-                    },
                     "discriminator": {
                         "type": "string"
                     },
@@ -6014,6 +6011,17 @@
                     }
                 }
             },
+            "UsernameAttemptUnauthedSchema": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "username"
+                ]
+            },
             "VanityUrlSchema": {
                 "type": "object",
                 "properties": {
@@ -7040,9 +7048,6 @@
                     "global_name": {
                         "type": "string"
                     },
-                    "legacy_username": {
-                        "type": "string"
-                    },
                     "discriminator": {
                         "type": "string"
                     },
@@ -7161,9 +7166,6 @@
                         "type": "string"
                     },
                     "global_name": {
-                        "type": "string"
-                    },
-                    "legacy_username": {
                         "type": "string"
                     },
                     "discriminator": {
@@ -8025,6 +8027,17 @@
                     "days"
                 ]
             },
+            "UsernameAttemptResponse": {
+                "type": "object",
+                "properties": {
+                    "taken": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "taken"
+                ]
+            },
             "VerifyEmailSchema": {
                 "type": "object",
                 "properties": {
@@ -8129,6 +8142,9 @@
         },
         {
             "name": "track"
+        },
+        {
+            "name": "unique-username"
         },
         {
             "name": "updates"
@@ -9775,6 +9791,85 @@
                 ]
             }
         },
+        "/unique-username/username-suggestions-unauthed/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "global_name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "unique-username"
+                ]
+            }
+        },
+        "/unique-username/username-attempt-unauthed/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Check if a username is available",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UsernameAttemptUnauthedSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsernameAttemptResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "unique-username"
+                ]
+            }
+        },
         "/track/": {
             "post": {
                 "responses": {
@@ -10290,6 +10385,15 @@
                         }
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "tags": [
                     "oauth2"
                 ]
@@ -10361,6 +10465,30 @@
                         }
                     }
                 ],
+                "tags": [
+                    "oauth2"
+                ]
+            }
+        },
+        "/oauth2/applications/@me/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    }
+                },
                 "tags": [
                     "oauth2"
                 ]
@@ -13995,71 +14123,6 @@
                 ]
             }
         },
-        "/guilds/{guild_id}/bans/@me": {
-            "put": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/BanCreateSchema"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Ban"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "guild_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "guild_id"
-                    }
-                ],
-                "tags": [
-                    "guilds"
-                ]
-            }
-        },
         "/guilds/{guild_id}/audit-logs/": {
             "get": {
                 "security": [
@@ -16408,7 +16471,7 @@
         },
         "/auth/generate-registration-tokens/": {
             "get": {
-                "x-right-required": "OPERATOR",
+                "x-right-required": "CREATE_REGISTRATION_TOKENS",
                 "security": [
                     {
                         "bearer": []
