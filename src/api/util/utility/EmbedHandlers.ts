@@ -194,14 +194,13 @@ export const EmbedHandlers: {
 
 		if (!metas.image) metas.image = metas.image_fallback;
 
-		let image: Required<EmbedImage> | undefined;
-
 		if (metas.image && (!metas.width || !metas.height)) {
 			const result = await probe(metas.image);
-			image = makeEmbedImage(metas.image, result.width, result.height);
+			metas.width = result.width;
+			metas.height = result.height;
 		}
 
-		if (!image && (!metas.title || !metas.description)) {
+		if (!metas.image && (!metas.title || !metas.description)) {
 			// we don't have any content to display
 			return null;
 		}
@@ -215,7 +214,7 @@ export const EmbedHandlers: {
 			url: url.href,
 			type: embedType,
 			title: metas.title,
-			thumbnail: image,
+			thumbnail: makeEmbedImage(metas.image, metas.width, metas.height),
 			description: metas.description,
 		};
 	},
