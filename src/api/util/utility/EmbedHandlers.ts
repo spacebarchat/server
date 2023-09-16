@@ -121,6 +121,7 @@ export const getMetaDescriptions = (text: string) => {
 		height: tryParseInt(getMeta($, "og:image:height")),
 		url: getMeta($, "og:url"),
 		youtube_embed: getMeta($, "og:video:secure_url"),
+		site_name: getMeta($, "og:site_name"),
 
 		$,
 	};
@@ -216,6 +217,12 @@ export const EmbedHandlers: {
 			title: metas.title,
 			thumbnail: makeEmbedImage(metas.image, metas.width, metas.height),
 			description: metas.description,
+			provider: metas.site_name
+				? {
+						name: metas.site_name,
+						url: url.origin,
+				  }
+				: undefined,
 		};
 	},
 
