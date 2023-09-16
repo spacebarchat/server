@@ -16,6 +16,9 @@
 
 ## [About](https://spacebar.chat)
 
+Spacebar/server is a Discord backend re-implementation and extension.
+We aim to reverse engineer and add additional features to the Discord backend, while remaining completely backwards compatible with existing bots, applications, and clients.
+
 This repository contains:
 
 -   [Spacebar HTTP API Server](/src/api)
@@ -23,6 +26,13 @@ This repository contains:
 -   [HTTP CDN Server](/src/cdn)
 -   [Utility and Database Models](/src/util)
 
+## [Documentation](https://docs.spacebar.chat)
+
 ## [Contributing](https://docs.spacebar.chat/contributing/)
 
-## [Setup](https://docs.spacebar.chat/setup/server/)
+## Clients
+
+You *should* be able to use any client designed for Discord.com to connect to a Spacebar instance.  
+However, some incompatibilities still exist between Spacebar and Discord. For this reason, not every client will connect.  
+The [WIP official Spacebar client](https://github.com/spacebarchat/client) will always work.
+You can find a [live version here](https://app.spacebar.chat).
