@@ -72,6 +72,7 @@ function main() {
 			(x.endsWith("Schema") ||
 				x.endsWith("Response") ||
 				x.startsWith("API")) &&
+			!x.startsWith("AP") &&
 			!Excluded.includes(x)
 		);
 	});

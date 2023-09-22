@@ -18,6 +18,7 @@
 
 import { route } from "@spacebar/api";
 import {
+	DiscordApiErrors,
 	emitEvent,
 	Emoji,
 	getPermission,
@@ -198,7 +199,9 @@ router.put(
 			member_id = req.user_id;
 			rights.hasThrow("JOIN_GUILDS");
 		} else {
-			// TODO: join others by controller
+			// TODO: check oauth2 scope
+
+			throw DiscordApiErrors.MISSING_REQUIRED_OAUTH2_SCOPE;
 		}
 
 		const guild = await Guild.findOneOrFail({

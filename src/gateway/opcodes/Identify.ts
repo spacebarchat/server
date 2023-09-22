@@ -17,48 +17,56 @@
 */
 
 import {
-	WebSocket,
-	Payload,
-	setupListener,
-	Capabilities,
 	CLOSECODES,
+	Capabilities,
 	OPCODES,
+	Payload,
 	Send,
+	WebSocket,
+	setupListener,
 } from "@spacebar/gateway";
 import {
-	checkToken,
+	Application,
+	Config,
+	DMChannel,
+	DefaultUserGuildSettings,
+	EVENTEnum,
+	Guild,
+	GuildOrUnavailable,
+	IdentifySchema,
 	Intents,
 	Member,
-	ReadyEventData,
-	Session,
-	EVENTEnum,
-	Config,
-	PublicUser,
-	PrivateUserProjection,
-	ReadState,
-	Application,
-	emitEvent,
-	SessionsReplace,
-	PrivateSessionProjection,
 	MemberPrivateProjection,
-	PresenceUpdateEvent,
-	IdentifySchema,
-	DefaultUserGuildSettings,
-	ReadyGuildDTO,
-	Guild,
-	PublicUserProjection,
-	ReadyUserGuildSettingsEntries,
-	UserSettings,
-	Permissions,
-	DMChannel,
-	GuildOrUnavailable,
-	Recipient,
 	OPCodes,
+	Permissions,
+	PresenceUpdateEvent,
+	PrivateSessionProjection,
+	PrivateUserProjection,
+	PublicUser,
+	PublicUserProjection,
+	ReadState,
+	ReadyEventData,
+	ReadyGuildDTO,
+	ReadyUserGuildSettingsEntries,
+	Recipient,
+	Session,
+	SessionsReplace,
+	UserSettings,
+	checkToken,
+	emitEvent,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
+
+const tryGetUserFromToken = async (...args: Parameters<typeof checkToken>) => {
+	try {
+		return (await checkToken(...args)).user;
+	} catch (e) {
+		return null;
+	}
+};
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	if (this.user_id) {
@@ -74,7 +82,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	this.capabilities = new Capabilities(identify.capabilities || 0);
 
-	const { user } = await checkToken(identify.token, {
+	const user = await tryGetUserFromToken(identify.token, {
 		relations: ["relationships", "relationships.to", "settings"],
 		select: [...PrivateUserProjection, "relationships"],
 	});
@@ -332,10 +340,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// TODO how is active determined?
 		// in our lazy request impl, we just pick the 'most relevant' session
 		active: x.session_id == session.session_id,
-		activities: x.activities,
+		activities: x.activities ?? [],
 		client_info: x.client_info,
-		// TODO: what does all mean?
-		session_id: x.session_id == session.session_id ? "all" : x.session_id,
+		session_id: x.session_id, // TODO: discord.com sends 'all', what is that???
 		status: x.status,
 	}));
 

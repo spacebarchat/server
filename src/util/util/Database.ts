@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { DataSource } from "typeorm";
-import { yellow, green, red } from "picocolors";
-import { Migration } from "../entities/Migration";
-import { ConfigEntity } from "../entities/Config";
 import { config } from "dotenv";
 import path from "path";
+import { green, red, yellow } from "picocolors";
+import { DataSource } from "typeorm";
+import { ConfigEntity } from "../entities/Config";
+import { Migration } from "../entities/Migration";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -50,7 +50,7 @@ const DataSourceOptions = new DataSource({
 	database: isSqlite ? dbConnectionString : undefined,
 	entities: [path.join(__dirname, "..", "entities", "*.js")],
 	synchronize: !!process.env.DB_SYNC,
-	logging: false,
+	logging: !!process.env.DB_LOGGING,
 	bigNumberStrings: false,
 	supportBigNumbers: true,
 	name: "default",
@@ -129,7 +129,7 @@ export async function initDatabase(): Promise<DataSource> {
 	return dbConnection;
 }
 
-export { dbConnection, DataSourceOptions, DatabaseType };
+export { DataSourceOptions, DatabaseType, dbConnection };
 
 export async function closeDatabase() {
 	await dbConnection?.destroy();

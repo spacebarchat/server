@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, Embed, EmbedType } from "@spacebar/util";
-import fetch, { RequestInit } from "node-fetch";
+import { Config, Embed, EmbedImage, EmbedType } from "@spacebar/util";
 import * as cheerio from "cheerio";
-import probe from "probe-image-size";
 import crypto from "crypto";
+import fetch, { RequestInit } from "node-fetch";
 import { yellow } from "picocolors";
+import probe from "probe-image-size";
 
 export const DEFAULT_FETCH_OPTIONS: RequestInit = {
 	redirect: "follow",
@@ -33,6 +33,20 @@ export const DEFAULT_FETCH_OPTIONS: RequestInit = {
 	// size: 1024 * 1024 * 5, 	// grabbed from config later
 	compress: true,
 	method: "GET",
+};
+
+const makeEmbedImage = (
+	url: string | undefined,
+	width: number | undefined,
+	height: number | undefined,
+): Required<EmbedImage> | undefined => {
+	if (!url || !width || !height) return undefined;
+	return {
+		url,
+		width,
+		height,
+		proxy_url: getProxyUrl(new URL(url), width, height),
+	};
 };
 
 let hasWarnedAboutImagor = false;
@@ -78,13 +92,24 @@ export const getProxyUrl = (
 const getMeta = ($: cheerio.CheerioAPI, name: string): string | undefined => {
 	let elem = $(`meta[property="${name}"]`);
 	if (!elem.length) elem = $(`meta[name="${name}"]`);
-	return elem.attr("content") || elem.text();
+	const ret = elem.attr("content") || elem.text();
+	return ret.trim().length == 0 ? undefined : ret;
+};
+
+const tryParseInt = (str: string | undefined) => {
+	if (!str) return undefined;
+	try {
+		return parseInt(str);
+	} catch (e) {
+		return undefined;
+	}
 };
 
 export const getMetaDescriptions = (text: string) => {
 	const $ = cheerio.load(text);
 
 	return {
+		type: getMeta($, "og:type"),
 		title: getMeta($, "og:title") || $("title").first().text(),
 		provider_name: getMeta($, "og:site_name"),
 		author: getMeta($, "article:author"),
@@ -92,10 +117,13 @@ export const getMetaDescriptions = (text: string) => {
 		image: getMeta($, "og:image") || getMeta($, "twitter:image"),
 		image_fallback: $(`image`).attr("src"),
 		video_fallback: $(`video`).attr("src"),
-		width: parseInt(getMeta($, "og:image:width") || "0"),
-		height: parseInt(getMeta($, "og:image:height") || "0"),
+		width: tryParseInt(getMeta($, "og:image:width")),
+		height: tryParseInt(getMeta($, "og:image:height")),
 		url: getMeta($, "og:url"),
 		youtube_embed: getMeta($, "og:video:secure_url"),
+		site_name: getMeta($, "og:site_name"),
+
+		$,
 	};
 };
 
@@ -116,13 +144,11 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 		method: "HEAD",
 	});
 
-	let width, height, image;
+	let image;
 
 	if (type.headers.get("content-type")?.indexOf("image") !== -1) {
 		const result = await probe(url.href);
-		width = result.width;
-		height = result.height;
-		image = url.href;
+		image = makeEmbedImage(url.href, result.width, result.height);
 	} else if (type.headers.get("content-type")?.indexOf("video") !== -1) {
 		// TODO
 		return null;
@@ -131,22 +157,19 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 		const response = await doFetch(url);
 		if (!response) return null;
 		const metas = getMetaDescriptions(await response.text());
-		width = metas.width;
-		height = metas.height;
-		image = metas.image || metas.image_fallback;
+		image = makeEmbedImage(
+			metas.image || metas.image_fallback,
+			metas.width,
+			metas.height,
+		);
 	}
 
-	if (!width || !height || !image) return null;
+	if (!image) return null;
 
 	return {
 		url: url.href,
 		type: EmbedType.image,
-		thumbnail: {
-			width: width,
-			height: height,
-			url: url.href,
-			proxy_url: getProxyUrl(new URL(image), width, height),
-		},
+		thumbnail: image,
 	};
 };
 
@@ -165,7 +188,8 @@ export const EmbedHandlers: {
 		const response = await doFetch(url);
 		if (!response) return null;
 
-		const metas = getMetaDescriptions(await response.text());
+		const text = await response.text();
+		const metas = getMetaDescriptions(text);
 
 		// TODO: handle video
 
@@ -178,26 +202,27 @@ export const EmbedHandlers: {
 		}
 
 		if (!metas.image && (!metas.title || !metas.description)) {
+			// we don't have any content to display
 			return null;
 		}
 
+		let embedType = EmbedType.link;
+		if (metas.type == "article") embedType = EmbedType.article;
+		if (metas.type == "object") embedType = EmbedType.article; // github
+		if (metas.type == "rich") embedType = EmbedType.rich;
+
 		return {
 			url: url.href,
-			type: EmbedType.link,
+			type: embedType,
 			title: metas.title,
-			thumbnail: {
-				width: metas.width,
-				height: metas.height,
-				url: metas.image,
-				proxy_url: metas.image
-					? getProxyUrl(
-							new URL(metas.image),
-							metas.width,
-							metas.height,
-					  )
-					: undefined,
-			},
+			thumbnail: makeEmbedImage(metas.image, metas.width, metas.height),
 			description: metas.description,
+			provider: metas.site_name
+				? {
+						name: metas.site_name,
+						url: url.origin,
+				  }
+				: undefined,
 		};
 	},
 
@@ -207,12 +232,23 @@ export const EmbedHandlers: {
 	"c.tenor.com": genericImageHandler,
 	"media.tenor.com": genericImageHandler,
 
-	// TODO: facebook
-	// have to use their APIs or something because they don't send the metas in initial html
+	"facebook.com": (url) => EmbedHandlers["www.facebook.com"](url),
+	"www.facebook.com": async (url: URL) => {
+		const response = await doFetch(url);
+		if (!response) return null;
+		const metas = getMetaDescriptions(await response.text());
 
-	"twitter.com": (url: URL) => {
-		return EmbedHandlers["www.twitter.com"](url);
+		return {
+			url: url.href,
+			type: EmbedType.link,
+			title: metas.title,
+			description: metas.description,
+			thumbnail: makeEmbedImage(metas.image, 640, 640),
+			color: 16777215,
+		};
 	},
+
+	"twitter.com": (url) => EmbedHandlers["www.twitter.com"](url),
 	"www.twitter.com": async (url: URL) => {
 		const token = Config.get().external.twitter;
 		if (!token) return null;
@@ -330,14 +366,7 @@ export const EmbedHandlers: {
 			type: EmbedType.link,
 			title: metas.title,
 			description: metas.description,
-			thumbnail: {
-				width: 640,
-				height: 640,
-				proxy_url: metas.image
-					? getProxyUrl(new URL(metas.image), 640, 640)
-					: undefined,
-				url: metas.image,
-			},
+			thumbnail: makeEmbedImage(metas.image, 640, 640),
 			provider: {
 				url: "https://spotify.com",
 				name: "Spotify",
@@ -345,32 +374,25 @@ export const EmbedHandlers: {
 		};
 	},
 
-	"pixiv.net": (url: URL) => {
-		return EmbedHandlers["www.pixiv.net"](url);
-	},
+	// TODO: docs: Pixiv won't work without Imagor
+	"pixiv.net": (url) => EmbedHandlers["www.pixiv.net"](url),
 	"www.pixiv.net": async (url: URL) => {
 		const response = await doFetch(url);
 		if (!response) return null;
 		const metas = getMetaDescriptions(await response.text());
 
-		// TODO: doesn't show images. think it's a bug in the cdn
+		if (!metas.image) return null;
+
 		return {
 			url: url.href,
 			type: EmbedType.image,
 			title: metas.title,
 			description: metas.description,
-			image: {
-				width: metas.width,
-				height: metas.height,
-				url: url.href,
-				proxy_url: metas.image
-					? getProxyUrl(
-							new URL(metas.image),
-							metas.width,
-							metas.height,
-					  )
-					: undefined,
-			},
+			image: makeEmbedImage(
+				metas.image || metas.image_fallback,
+				metas.width,
+				metas.height,
+			),
 			provider: {
 				url: "https://pixiv.net",
 				name: "Pixiv",
@@ -382,6 +404,42 @@ export const EmbedHandlers: {
 		const response = await doFetch(url);
 		if (!response) return null;
 		const metas = getMetaDescriptions(await response.text());
+		const numReviews = metas.$("#review_summary_num_reviews").val() as
+			| string
+			| undefined;
+		const price = metas
+			.$(".game_purchase_price.price")
+			.data("price-final") as number | undefined;
+		const releaseDate = metas
+			.$(".release_date")
+			.find("div.date")
+			.text()
+			.trim();
+		const isReleased = new Date(releaseDate) < new Date();
+
+		const fields: Embed["fields"] = [];
+
+		if (numReviews)
+			fields.push({
+				name: "Reviews",
+				value: numReviews,
+				inline: true,
+			});
+
+		if (price)
+			fields.push({
+				name: "Price",
+				value: `$${price / 100}`,
+				inline: true,
+			});
+
+		// if the release date is in the past, it's already out
+		if (releaseDate && !isReleased)
+			fields.push({
+				name: "Release Date",
+				value: releaseDate,
+				inline: true,
+			});
 
 		return {
 			url: url.href,
@@ -402,14 +460,12 @@ export const EmbedHandlers: {
 				url: "https://store.steampowered.com",
 				name: "Steam",
 			},
-			// TODO: fields for release date
+			fields,
 			// TODO: Video
 		};
 	},
 
-	"reddit.com": (url: URL) => {
-		return EmbedHandlers["www.reddit.com"](url);
-	},
+	"reddit.com": (url) => EmbedHandlers["www.reddit.com"](url),
 	"www.reddit.com": async (url: URL) => {
 		const res = await EmbedHandlers["default"](url);
 		return {
@@ -420,49 +476,65 @@ export const EmbedHandlers: {
 			},
 		};
 	},
-	"youtu.be": (url: URL) => {
-		return EmbedHandlers["www.youtube.com"](url);
-	},
-	"youtube.com": (url: URL) => {
-		return EmbedHandlers["www.youtube.com"](url);
-	},
+
+	"youtu.be": (url) => EmbedHandlers["www.youtube.com"](url),
+	"youtube.com": (url) => EmbedHandlers["www.youtube.com"](url),
 	"www.youtube.com": async (url: URL): Promise<Embed | null> => {
 		const response = await doFetch(url);
 		if (!response) return null;
 		const metas = getMetaDescriptions(await response.text());
 
 		return {
-			video: {
-				// TODO: does this adjust with aspect ratio?
-				width: metas.width,
-				height: metas.height,
-				url: metas.youtube_embed,
-			},
+			video: makeEmbedImage(
+				metas.youtube_embed,
+				metas.width,
+				metas.height,
+			),
 			url: url.href,
-			type: EmbedType.video,
+			type: metas.youtube_embed ? EmbedType.video : EmbedType.link,
 			title: metas.title,
-			thumbnail: {
-				width: metas.width,
-				height: metas.height,
-				url: metas.image,
-				proxy_url: metas.image
-					? getProxyUrl(
-							new URL(metas.image),
-							metas.width,
-							metas.height,
-					  )
-					: undefined,
-			},
+			thumbnail: makeEmbedImage(
+				metas.image || metas.image_fallback,
+				metas.width,
+				metas.height,
+			),
 			provider: {
 				url: "https://www.youtube.com",
 				name: "YouTube",
 			},
 			description: metas.description,
 			color: 16711680,
-			author: {
-				name: metas.author,
-				// TODO: author channel url
-			},
+			author: metas.author
+				? {
+						name: metas.author,
+						// TODO: author channel url
+				  }
+				: undefined,
+		};
+	},
+
+	"www.xkcd.com": (url) => EmbedHandlers["xkcd.com"](url),
+	"xkcd.com": async (url) => {
+		const response = await doFetch(url);
+		if (!response) return null;
+
+		const metas = getMetaDescriptions(await response.text());
+		const hoverText = metas.$("#comic img").attr("title");
+
+		if (!metas.image) return null;
+
+		const { width, height } = await probe(metas.image);
+
+		return {
+			url: url.href,
+			type: EmbedType.rich,
+			title: `xkcd: ${metas.title}`,
+			image: makeEmbedImage(metas.image, width, height),
+			footer: hoverText
+				? {
+						text: hoverText,
+				  }
+				: undefined,
 		};
 	},
 

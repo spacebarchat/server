@@ -53,7 +53,7 @@ export class Invite extends BaseClassWithoutId {
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, {
+	@ManyToOne(() => Guild, (guild) => guild.invites, {
 		onDelete: "CASCADE",
 	})
 	guild: Guild;

@@ -126,7 +126,7 @@ export const messageFromAP = async (data: APNote): Promise<Message> => {
 	const member =
 		channel instanceof Channel
 			? await Member.findOneOrFail({
-					where: { id: user.id, guild_id: channel.guild.id },
+					where: { id: user.id, guild_id: channel.guild!.id },
 			  })
 			: undefined;
 

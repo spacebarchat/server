@@ -23,12 +23,12 @@ import { Guild } from "./Guild";
 
 @Entity("roles")
 export class Role extends BaseClass {
-	@Column({ nullable: true })
+	@Column()
 	@RelationId((role: Role) => role.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, {
+	@ManyToOne(() => Guild, (guild) => guild.roles, {
 		onDelete: "CASCADE",
 	})
 	guild: Guild;
