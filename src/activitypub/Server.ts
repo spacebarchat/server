@@ -7,6 +7,7 @@ import {
 	registerRoutes,
 	setupMorganLogging,
 } from "@spacebar/util";
+import bodyParser from "body-parser";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
 import path from "path";
@@ -32,7 +33,14 @@ export class FederationServer extends Server {
 		this.app.set("json replacer", JSONReplacer);
 
 		this.app.use(CORS);
-		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
+		this.app.use(
+			BodyParser({
+				inflate: true,
+				limit: "10mb",
+				type: "application/activity+json",
+			}),
+		);
+		this.app.use(bodyParser.urlencoded({ extended: true }));
 
 		const app = this.app;
 		const api = Router();

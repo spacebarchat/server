@@ -45,10 +45,13 @@ export class FederationKey extends BaseClassWithoutId {
 		// Lazy loading config to prevent circular dep
 		const { Config } = await import("../util/Config");
 
+		const { accountDomain, host } = Config.get().federation;
+
 		const keys = FederationKey.create({
 			actorId,
 			type,
-			domain: Config.get().federation.accountDomain,
+			federatedId: `https://${host}/federation/${type}/${actorId}`,
+			domain: accountDomain,
 			...(await generateKeyPair("rsa", {
 				modulusLength: 4096,
 				publicKeyEncoding: {

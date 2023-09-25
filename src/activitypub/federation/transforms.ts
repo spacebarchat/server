@@ -235,7 +235,7 @@ export const transformPersonToUser = async (person: AP.Person) => {
 		return await User.findOneOrFail({ where: { id: cachedKeys.actorId } });
 	}
 
-	await FederationKey.create({
+	const keys = await FederationKey.create({
 		actorId: Snowflake.generate(),
 		federatedId: url.toString(),
 		domain: url.hostname,
@@ -243,7 +243,8 @@ export const transformPersonToUser = async (person: AP.Person) => {
 		type: ActorType.USER,
 	}).save();
 
-	return User.create({
+	return await User.create({
+		id: keys.actorId,
 		username: person.preferredUsername,
 		discriminator: url.hostname,
 		bio: new TurndownService().turndown(person.summary),
