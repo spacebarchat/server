@@ -54,6 +54,7 @@
 		"@types/nodemailer": "^6.4.9",
 		"@types/probe-image-size": "^7.2.0",
 		"@types/sharp": "^0.31.1",
+		"@types/turndown": "^5.0.2",
 		"@types/ws": "^8.5.5",
 		"@typescript-eslint/eslint-plugin": "^5.62.0",
 		"@typescript-eslint/parser": "^5.62.0",
@@ -68,6 +69,7 @@
 		"@aws-sdk/client-s3": "^3.385.0",
 		"@sentry/integrations": "^7.66.0",
 		"@sentry/node": "^7.66.0",
+		"activitypub-core-types": "^0.3.2",
 		"ajv": "8.6.2",
 		"ajv-formats": "2.1.1",
 		"amqplib": "^0.10.3",
@@ -103,6 +105,7 @@
 		"reflect-metadata": "^0.1.13",
 		"ts-node": "^10.9.1",
 		"tslib": "^2.6.1",
+		"turndown": "^7.1.2",
 		"typeorm": "^0.3.17",
 		"typescript-json-schema": "^0.50.1",
 		"wretch": "^2.6.0",
@@ -112,7 +115,8 @@
 		"@spacebar/api": "dist/api",
 		"@spacebar/cdn": "dist/cdn",
 		"@spacebar/gateway": "dist/gateway",
-		"@spacebar/util": "dist/util"
+		"@spacebar/util": "dist/util",
+		"@spacebar/ap": "dist/activitypub"
 	},
 	"optionalDependencies": {
 		"erlpack": "^0.1.4",

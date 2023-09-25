@@ -28,6 +28,7 @@ import {
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import {
+	Config,
 	InvisibleCharacters,
 	Snowflake,
 	containsAll,
@@ -36,6 +37,7 @@ import {
 	trimSpecial,
 } from "../util";
 import { BaseClass } from "./BaseClass";
+import { ActorType, FederationKey } from "./FederationKeys";
 import { Guild } from "./Guild";
 import { Invite } from "./Invite";
 import { Message } from "./Message";
@@ -193,6 +195,9 @@ export class Channel extends BaseClass {
 	@Column()
 	default_thread_rate_limit_per_user: number = 0;
 
+	@Column({ nullable: true, type: String, select: false })
+	domain: string | null; // federation. if null, we own this channel
+
 	// TODO: DM channel
 	static async createChannel(
 		channel: Partial<Channel>,
@@ -315,6 +320,16 @@ export class Channel extends BaseClass {
 				  } as ChannelCreateEvent)
 				: Promise.resolve(),
 		]);
+
+		// If federation is enabled, generate signing keys for this actor.
+		setImmediate(
+			async () =>
+				Config.get().federation.enabled &&
+				(await FederationKey.generateSigningKeys(
+					ret.id,
+					ActorType.CHANNEL,
+				)),
+		);
 
 		return ret;
 	}

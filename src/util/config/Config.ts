@@ -23,6 +23,7 @@ import {
 	EmailConfiguration,
 	EndpointConfiguration,
 	ExternalTokensConfiguration,
+	FederationConfiguration,
 	GeneralConfiguration,
 	GifConfiguration,
 	GuildConfiguration,
@@ -61,4 +62,5 @@ export class ConfigValue {
 	email: EmailConfiguration = new EmailConfiguration();
 	passwordReset: PasswordResetConfiguration =
 		new PasswordResetConfiguration();
+	federation: FederationConfiguration = new FederationConfiguration();
 }

@@ -17,26 +17,26 @@
 */
 
 import {
-	getDatabase,
-	getPermission,
-	listenEvent,
+	OPCODES,
+	Payload,
+	Send,
+	WebSocket,
+	handlePresenceUpdate,
+} from "@spacebar/gateway";
+import {
+	Channel,
+	Datasource,
+	LazyRequestSchema,
 	Member,
+	Permissions,
+	Presence,
 	Role,
 	Session,
-	LazyRequestSchema,
 	User,
-	Presence,
+	getPermission,
+	listenEvent,
 	partition,
-	Channel,
-	Permissions,
 } from "@spacebar/util";
-import {
-	WebSocket,
-	Payload,
-	handlePresenceUpdate,
-	OPCODES,
-	Send,
-} from "@spacebar/gateway";
 import murmur from "murmurhash-js/murmurhash3_gc";
 import { check } from "./instanceOf";
 
@@ -73,8 +73,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	let members: Member[] = [];
 	try {
 		members =
-			(await getDatabase()
-				?.getRepository(Member)
+			(await Datasource?.getRepository(Member)
 				.createQueryBuilder("member")
 				.where("member.guild_id = :guild_id", { guild_id })
 				.leftJoinAndSelect("member.roles", "role")

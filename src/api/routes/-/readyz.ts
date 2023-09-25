@@ -16,14 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
 import { route } from "@spacebar/api";
-import { getDatabase } from "@spacebar/util";
+import { Datasource } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	if (!getDatabase()) return res.sendStatus(503);
+	if (!Datasource.isInitialized) return res.sendStatus(503);
 
 	return res.sendStatus(200);
 });

@@ -18,22 +18,21 @@
 
 import {
 	Config,
-	Email,
-	initDatabase,
-	initEvent,
-	JSONReplacer,
-	registerRoutes,
-	Sentry,
-	WebAuthn,
 	ConnectionConfig,
 	ConnectionLoader,
+	Email,
+	JSONReplacer,
+	Sentry,
+	WebAuthn,
+	initDatabase,
+	initEvent,
+	registerRoutes,
+	setupMorganLogging,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
 import "missing-native-js-functions";
-import morgan from "morgan";
 import path from "path";
-import { red } from "picocolors";
 import { Authentication, CORS } from "./middlewares/";
 import { BodyParser } from "./middlewares/BodyParser";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
@@ -79,23 +78,7 @@ export class SpacebarServer extends Server {
 		await Sentry.init(this.app);
 		WebAuthn.init();
 
-		const logRequests = process.env["LOG_REQUESTS"] != undefined;
-		if (logRequests) {
-			this.app.use(
-				morgan("combined", {
-					skip: (req, res) => {
-						let skip = !(
-							process.env["LOG_REQUESTS"]?.includes(
-								res.statusCode.toString(),
-							) ?? false
-						);
-						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-")
-							skip = !skip;
-						return skip;
-					},
-				}),
-			);
-		}
+		setupMorganLogging(this.app);
 
 		this.app.set("json replacer", JSONReplacer);
 
@@ -146,13 +129,6 @@ export class SpacebarServer extends Server {
 		Sentry.errorHandler(this.app);
 
 		ConnectionLoader.loadConnections();
-
-		if (logRequests)
-			console.log(
-				red(
-					`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`,
-				),
-			);
 
 		return super.start();
 	}

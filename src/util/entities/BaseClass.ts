@@ -24,9 +24,9 @@ import {
 	ObjectIdColumn,
 	PrimaryColumn,
 } from "typeorm";
-import { Snowflake } from "../util/Snowflake";
-import { getDatabase } from "../util/Database";
 import { OrmUtils } from "../imports/OrmUtils";
+import { Datasource } from "../util/Datasource";
+import { Snowflake } from "../util/Snowflake";
 
 export class BaseClassWithoutId extends BaseEntity {
 	private get construct() {
@@ -34,7 +34,7 @@ export class BaseClassWithoutId extends BaseEntity {
 	}
 
 	private get metadata() {
-		return getDatabase()?.getMetadata(this.construct);
+		return Datasource.getMetadata(this.construct);
 	}
 
 	assign(props: object) {

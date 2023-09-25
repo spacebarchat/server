@@ -16,57 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { config } from "dotenv";
-import path from "path";
 import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
 import { ConfigEntity } from "../entities/Config";
 import { Migration } from "../entities/Migration";
+import { Datasource } from "./Datasource";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
 
-let dbConnection: DataSource | undefined;
-
-// For typeorm cli
-if (!process.env) {
-	config();
-}
-
-const dbConnectionString =
-	process.env.DATABASE || path.join(process.cwd(), "database.db");
-
-const DatabaseType = dbConnectionString.includes("://")
-	? dbConnectionString.split(":")[0]?.replace("+srv", "")
-	: "sqlite";
-const isSqlite = DatabaseType.includes("sqlite");
-
-const DataSourceOptions = new DataSource({
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	//@ts-ignore type 'string' is not 'mysql' | 'sqlite' | 'mariadb' | etc etc
-	type: DatabaseType,
-	charset: "utf8mb4",
-	url: isSqlite ? undefined : dbConnectionString,
-	database: isSqlite ? dbConnectionString : undefined,
-	entities: [path.join(__dirname, "..", "entities", "*.js")],
-	synchronize: !!process.env.DB_SYNC,
-	logging: !!process.env.DB_LOGGING,
-	bigNumberStrings: false,
-	supportBigNumbers: true,
-	name: "default",
-	migrations: [path.join(__dirname, "..", "migration", DatabaseType, "*.js")],
-});
-
-// Gets the existing database connection
-export function getDatabase(): DataSource | null {
-	// if (!dbConnection) throw new Error("Tried to get database before it was initialised");
-	if (!dbConnection) return null;
-	return dbConnection;
-}
-
 // Called once on server start
 export async function initDatabase(): Promise<DataSource> {
-	if (dbConnection) return dbConnection;
+	if (Datasource.isInitialized) return Datasource;
+
+	const DatabaseType = Datasource.options.type;
+	const isSqlite = DatabaseType.includes("sqlite");
 
 	if (isSqlite) {
 		console.log(
@@ -92,7 +56,7 @@ export async function initDatabase(): Promise<DataSource> {
 
 	console.log(`[Database] ${yellow(`Connecting to ${DatabaseType} db`)}`);
 
-	dbConnection = await DataSourceOptions.initialize();
+	await Datasource.initialize();
 
 	// Crude way of detecting if the migrations table exists.
 	const dbExists = async () => {
@@ -107,12 +71,12 @@ export async function initDatabase(): Promise<DataSource> {
 		console.log(
 			"[Database] This appears to be a fresh database. Synchronising.",
 		);
-		await dbConnection.synchronize();
+		await Datasource.synchronize();
 
 		// On next start, typeorm will try to run all the migrations again from beginning.
 		// Manually insert every current migration to prevent this:
 		await Promise.all(
-			dbConnection.migrations.map((migration) =>
+			Datasource.migrations.map((migration) =>
 				Migration.insert({
 					name: migration.name,
 					timestamp: Date.now(),
@@ -121,16 +85,14 @@ export async function initDatabase(): Promise<DataSource> {
 		);
 	} else {
 		console.log("[Database] Applying missing migrations, if any.");
-		await dbConnection.runMigrations();
+		await Datasource.runMigrations();
 	}
 
 	console.log(`[Database] ${green("Connected")}`);
 
-	return dbConnection;
+	return Datasource;
 }
 
-export { DataSourceOptions, DatabaseType, dbConnection };
-
 export async function closeDatabase() {
-	await dbConnection?.destroy();
+	await Datasource?.destroy();
 }

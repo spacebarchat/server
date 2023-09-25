@@ -25,7 +25,15 @@ import {
 	OneToMany,
 	OneToOne,
 } from "typeorm";
-import { Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
+import {
+	ActorType,
+	Config,
+	Email,
+	FederationKey,
+	FieldErrors,
+	Snowflake,
+	trimSpecial,
+} from "..";
 import { BitField } from "../util/BitField";
 import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
@@ -181,6 +189,15 @@ export class User extends BaseClass {
 
 	@Column({ type: "bigint" })
 	rights: string;
+
+	@Column({ nullable: true, type: String, select: false })
+	domain: string | null; // Federation. null means this user is our own
+
+	@Column({ nullable: true, type: String, select: false })
+	privateKey: string | null; // No private key if federation is disabled
+
+	@Column({ nullable: true, type: String, select: false })
+	publicKey: string | null; // No public key if federation is disabled
 
 	@OneToMany(() => Session, (session: Session) => session.user)
 	sessions: Session[];
@@ -405,6 +422,16 @@ export class User extends BaseClass {
 				}
 			}
 		});
+
+		// If federation is enabled, generate signing keys for this actor.
+		setImmediate(
+			async () =>
+				Config.get().federation.enabled &&
+				(await FederationKey.generateSigningKeys(
+					user.id,
+					ActorType.USER,
+				)),
+		);
 
 		return user;
 	}
