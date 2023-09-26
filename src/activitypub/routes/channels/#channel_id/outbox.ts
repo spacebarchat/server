@@ -4,7 +4,7 @@ import {
 } from "@spacebar/ap";
 import { route } from "@spacebar/api";
 import { Config, Message, Snowflake } from "@spacebar/util";
-import { AP } from "activitypub-core-types";
+import { APAnnounce } from "activitypub-types";
 import { Request, Response, Router } from "express";
 import { FindManyOptions, FindOperator, LessThan, MoreThan } from "typeorm";
 const router = Router();
@@ -19,9 +19,9 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		page: page != undefined,
 		min_id: min_id?.toString(),
 		max_id: max_id?.toString(),
-		id: new URL(`https://${host}/federation/channels/${channel_id}/outbox`),
+		id: `https://${host}/federation/channels/${channel_id}/outbox`,
 		getTotalElements: () => Message.count({ where: { channel_id } }),
-		getElements: async (before, after): Promise<AP.Announce[]> => {
+		getElements: async (before, after): Promise<APAnnounce[]> => {
 			const query: FindManyOptions<Message> & {
 				where: { id?: FindOperator<string> | FindOperator<string>[] };
 			} = {

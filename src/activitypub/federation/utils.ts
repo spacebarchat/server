@@ -5,7 +5,13 @@ import {
 	OrmUtils,
 	WebfingerResponse,
 } from "@spacebar/util";
-import { AP } from "activitypub-core-types";
+import {
+	APActivity,
+	APActor,
+	APObject,
+	APPerson,
+	AnyAPObject,
+} from "activitypub-types";
 import crypto from "crypto";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
@@ -30,7 +36,7 @@ export const hasAPContext = (data: object) => {
 	return context == activitystreams;
 };
 
-export const resolveAPObject = async <T extends object>(
+export const resolveAPObject = async <T extends AnyAPObject>(
 	data: string | T,
 ): Promise<T> => {
 	// we were already given an AP object
@@ -79,7 +85,7 @@ export const splitQualifiedMention = (lookup: string) => {
 
 export const resolveWebfinger = async (
 	lookup: string,
-): Promise<AP.CoreObject> => {
+): Promise<AnyAPObject> => {
 	const { domain } = splitQualifiedMention(lookup);
 
 	const agent = new ProxyAgent();
@@ -94,7 +100,7 @@ export const resolveWebfinger = async (
 	const link = wellknown.links.find((x) => x.rel == "self");
 	if (!link) throw new APError(".well-known did not contain rel=self link");
 
-	return await resolveAPObject<AP.CoreObject>(link.href);
+	return await resolveAPObject<AnyAPObject>(link.href);
 };
 
 /**
@@ -107,7 +113,7 @@ export const resolveWebfinger = async (
 export const signActivity = async (
 	inbox: string,
 	sender: FederationKey,
-	message: AP.Activity,
+	message: APActivity,
 ) => {
 	if (!sender.privateKey)
 		throw new APError("cannot sign without private key");
@@ -152,27 +158,23 @@ export const signActivity = async (
 };
 
 // fetch from remote server?
-export const APObjectIsPerson = (
-	object: AP.EntityReference,
-): object is AP.Person => {
+export const APObjectIsPerson = (object: AnyAPObject): object is APPerson => {
 	return "type" in object && object.type == "Person";
 };
 
-export const APObjectIsGroup = (
-	object: AP.EntityReference,
-): object is AP.Person => {
+export const APObjectIsGroup = (object: AnyAPObject): object is APPerson => {
 	return "type" in object && object.type == "Group";
 };
 
 export const APObjectIsOrganisation = (
-	object: AP.EntityReference,
-): object is AP.Person => {
+	object: AnyAPObject,
+): object is APPerson => {
 	return "type" in object && object.type == "Organization";
 };
 
 export const APObjectIsSpacebarActor = (
-	object: AP.EntityReference,
-): object is AP.Person => {
+	object: AnyAPObject,
+): object is APPerson => {
 	return (
 		APObjectIsGroup(object) ||
 		APObjectIsOrganisation(object) ||

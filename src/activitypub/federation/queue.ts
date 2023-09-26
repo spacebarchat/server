@@ -1,16 +1,16 @@
 import { Config, FederationKey } from "@spacebar/util";
-import { AP } from "activitypub-core-types";
 import fetch from "node-fetch";
 import { APError, signActivity, splitQualifiedMention } from "./utils";
+import { APActivity } from "activitypub-types";
 
 //
 type Instance = string;
 
 class FederationQueue {
 	// TODO: queue messages and send them to shared inbox
-	private queue: Map<Instance, Array<AP.Activity>> = new Map();
+	private queue: Map<Instance, Array<APActivity>> = new Map();
 
-	public async distribute(activity: AP.Activity) {
+	public async distribute(activity: APActivity) {
 		let { to, actor } = activity;
 
 		if (!to)

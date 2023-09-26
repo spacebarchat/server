@@ -10,20 +10,19 @@ import {
 	User,
 	UserSettings,
 } from "@spacebar/util";
-import { AP } from "activitypub-core-types";
 import TurndownService from "turndown";
 import { In } from "typeorm";
 import {
 	ACTIVITYSTREAMS_CONTEXT,
 	APError,
 	APObjectIsPerson,
-	APObjectIsSpacebarActor,
 	resolveAPObject,
 } from "./utils";
+import { APAnnounce, APGroup, APNote, APPerson } from "activitypub-types";
 
 export const transformMessageToAnnounceNoce = async (
 	message: Message,
-): Promise<AP.Announce> => {
+): Promise<APAnnounce> => {
 	const { host } = Config.get().federation;
 
 	const channel = await Channel.findOneOrFail({
@@ -34,10 +33,9 @@ export const transformMessageToAnnounceNoce = async (
 	});
 
 	let to = [
-		new URL(
-			`https://${host}/federation/channels/${message.channel_id}/followers`,
-		),
+		`https://${host}/federation/channels/${message.channel_id}/followers`,
 	];
+
 	if (channel.isDm()) {
 		const otherUsers = channel.recipients?.filter(
 			(x) => x.user_id != message.author_id,
@@ -48,27 +46,25 @@ export const transformMessageToAnnounceNoce = async (
 		});
 
 		to = remoteUsersKeys.map((x) =>
-			x.inbox ? new URL(x.inbox!) : new URL(`${x.federatedId}/inbox`),
+			x.inbox ? x.inbox! : `${x.federatedId}/inbox`,
 		);
 	}
 
 	return {
 		"@context": ACTIVITYSTREAMS_CONTEXT,
 		type: "Announce",
-		id: new URL(
-			`https://${host}/federation/channels/${message.channel_id}/messages/${message.id}`,
-		),
+		id: `https://${host}/federation/channels/${message.channel_id}/messages/${message.id}`,
 		// this is wrong for remote users
-		actor: new URL(`https://${host}/federation/users/${message.author_id}`),
+		actor: `https://${host}/federation/users/${message.author_id}`,
 		published: message.timestamp,
 		to,
 		object: await transformMessageToNote(message),
-	};
+	} as APAnnounce;
 };
 
 export const transformMessageToNote = async (
 	message: Message,
-): Promise<AP.Note> => {
+): Promise<APNote> => {
 	const { host } = Config.get().federation;
 
 	const referencedMessage = message.message_reference
@@ -78,23 +74,18 @@ export const transformMessageToNote = async (
 		: null;
 
 	return {
-		id: new URL(`https://${host}/federation/messages/${message.id}`),
+		id: `https://${host}/federation/messages/${message.id}`,
 		type: "Note",
 		content: message.content, // TODO: convert markdown to html
 		inReplyTo: referencedMessage
 			? await transformMessageToNote(referencedMessage)
 			: undefined,
 		published: message.timestamp,
-		attributedTo: new URL(
-			`https://${host}/federation/users/${message.author_id}`,
-		),
-		to: [
-			new URL(
-				`https://${host}/federation/channels/${message.channel_id}`,
-			),
-		],
+		attributedTo: `https://${host}/federation/users/${message.author_id}`,
+
+		to: [`https://${host}/federation/channels/${message.channel_id}`],
 		tag: message.mentions?.map(
-			(x) => new URL(`https://${host}/federation/users/${x.id}`),
+			(x) => `https://${host}/federation/users/${x.id}`,
 		),
 		attachment: [],
 		// replies: [],
@@ -105,7 +96,7 @@ export const transformMessageToNote = async (
 };
 
 // TODO: this was copied from the previous implemention. refactor it.
-export const transformNoteToMessage = async (note: AP.Note) => {
+export const transformNoteToMessage = async (note: APNote) => {
 	if (!note.id) throw new APError("Note must have ID");
 	if (note.type != "Note") throw new APError("Message must be Note");
 
@@ -177,7 +168,7 @@ export const transformNoteToMessage = async (note: AP.Note) => {
 
 export const transformChannelToGroup = async (
 	channel: Channel,
-): Promise<AP.Group> => {
+): Promise<APGroup> => {
 	const { host, accountDomain } = Config.get().federation;
 
 	const keys = await FederationKey.findOneOrFail({
@@ -187,7 +178,7 @@ export const transformChannelToGroup = async (
 	return {
 		"@context": "https://www.w3.org/ns/activitystreams",
 		type: "Group",
-		id: new URL(`https://${host}/fed/channels/${channel.id}`),
+		id: `https://${host}/fed/channels/${channel.id}`,
 		name: channel.name,
 		preferredUsername: channel.id,
 		summary: channel.topic,
@@ -200,15 +191,13 @@ export const transformChannelToGroup = async (
 			publicKeyPem: keys.publicKey,
 		},
 
-		inbox: new URL(`https://${host}/fed/channels/${channel.id}/inbox`),
-		outbox: new URL(`https://${host}/fed/channels/${channel.id}/outbox`),
-		followers: new URL(
-			`https://${host}/fed/channels/${channel.id}/followers`,
-		),
+		inbox: `https://${host}/fed/channels/${channel.id}/inbox`,
+		outbox: `https://${host}/fed/channels/${channel.id}/outbox`,
+		followers: `https://${host}/fed/channels/${channel.id}/followers`,
 	};
 };
 
-export const transformUserToPerson = async (user: User): Promise<AP.Person> => {
+export const transformUserToPerson = async (user: User): Promise<APPerson> => {
 	const { host, accountDomain } = Config.get().federation;
 
 	const keys = await FederationKey.findOneOrFail({
@@ -218,7 +207,7 @@ export const transformUserToPerson = async (user: User): Promise<AP.Person> => {
 	return {
 		"@context": ACTIVITYSTREAMS_CONTEXT,
 		type: "Person",
-		id: new URL(`https://${host}/federation/users/${user.id}`),
+		id: `https://${host}/federation/users/${user.id}`,
 
 		name: user.username,
 		preferredUsername: user.id,
@@ -233,11 +222,9 @@ export const transformUserToPerson = async (user: User): Promise<AP.Person> => {
 			  ]
 			: undefined,
 
-		inbox: new URL(`https://${host}/federation/users/${user.id}/inbox`),
-		outbox: new URL(`https://${host}/federation/users/${user.id}/outbox`),
-		followers: new URL(
-			`https://${host}/federation/users/${user.id}/followers`,
-		),
+		inbox: `https://${host}/federation/users/${user.id}/inbox`,
+		outbox: `https://${host}/federation/users/${user.id}/outbox`,
+		followers: `https://${host}/federation/users/${user.id}/followers`,
 		publicKey: {
 			id: `https://${host}/federation/users/${user.id}#main-key`,
 			owner: `https://${host}/federation/users/${user.id}`,
@@ -247,7 +234,7 @@ export const transformUserToPerson = async (user: User): Promise<AP.Person> => {
 };
 
 // TODO: this was copied from previous implementation. refactor.
-export const transformPersonToUser = async (person: AP.Person) => {
+export const transformPersonToUser = async (person: APPerson) => {
 	if (!person.id) throw new APError("User must have ID");
 
 	const url = new URL(person.id.toString());

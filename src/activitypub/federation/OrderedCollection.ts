@@ -1,14 +1,14 @@
-import { AP } from "activitypub-core-types";
+import { APOrderedCollection, AnyAPObject } from "activitypub-types";
 import { ACTIVITYSTREAMS_CONTEXT } from "./utils";
 
-export const makeOrderedCollection = async <T extends AP.CoreObject>(opts: {
+export const makeOrderedCollection = async <T extends AnyAPObject>(opts: {
 	page: boolean;
 	min_id?: string;
 	max_id?: string;
-	id: URL;
+	id: string;
 	getTotalElements: () => Promise<number>;
 	getElements: (before?: string, after?: string) => Promise<T[]>;
-}): Promise<AP.OrderedCollection> => {
+}): Promise<APOrderedCollection> => {
 	const { page, min_id, max_id, id, getTotalElements, getElements } = opts;
 
 	if (!page)
@@ -28,7 +28,7 @@ export const makeOrderedCollection = async <T extends AP.CoreObject>(opts: {
 
 	return {
 		"@context": ACTIVITYSTREAMS_CONTEXT,
-		id: new URL(`${id}?page=true`),
+		id: `${id}?page=true`,
 		type: "OrderedCollection",
 		first: new URL(`${id}?page=true`),
 		last: new URL(`${id}?page=true&min_id=0`),
