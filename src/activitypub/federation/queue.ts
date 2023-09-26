@@ -1,12 +1,7 @@
 import { Config, FederationKey } from "@spacebar/util";
 import { AP } from "activitypub-core-types";
 import fetch from "node-fetch";
-import {
-	APError,
-	resolveWebfinger,
-	signActivity,
-	splitQualifiedMention,
-} from "./utils";
+import { APError, signActivity, splitQualifiedMention } from "./utils";
 
 //
 type Instance = string;
@@ -48,27 +43,15 @@ class FederationQueue {
 				continue;
 			}
 
-			const apReceiver = await resolveWebfinger(receiver.toString());
-			if (!("inbox" in apReceiver)) {
-				console.error(
-					"[federation] receiver doesn't have inbox",
-					apReceiver,
-				);
-				continue;
-			}
-
-			if (typeof apReceiver.inbox != "string") {
-				console.error(apReceiver.inbox);
-				continue;
-			}
-
 			const signedActivity = await signActivity(
-				apReceiver.inbox,
+				receiver.toString(),
 				sender,
 				activity,
 			);
 
-			await fetch(apReceiver.inbox, signedActivity);
+			const ret = await fetch(receiver, signedActivity);
+
+			console.log(ret);
 		}
 	}
 }

@@ -30,9 +30,14 @@ export const hasAPContext = (data: object) => {
 	return context == activitystreams;
 };
 
-export const resolveAPObject = async <T>(data: string | T): Promise<T> => {
+export const resolveAPObject = async <T extends object>(
+	data: string | T,
+): Promise<T> => {
 	// we were already given an AP object
-	if (typeof data != "string") return data;
+	if (typeof data != "string") {
+		if (!hasAPContext(data)) throw new APError("Object is not APObject");
+		return data;
+	}
 
 	const agent = new ProxyAgent();
 	const ret = await fetch(data, {

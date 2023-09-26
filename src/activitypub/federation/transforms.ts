@@ -12,10 +12,12 @@ import {
 } from "@spacebar/util";
 import { AP } from "activitypub-core-types";
 import TurndownService from "turndown";
+import { In } from "typeorm";
 import {
 	ACTIVITYSTREAMS_CONTEXT,
 	APError,
 	APObjectIsPerson,
+	APObjectIsSpacebarActor,
 	resolveAPObject,
 } from "./utils";
 
@@ -24,19 +26,42 @@ export const transformMessageToAnnounceNoce = async (
 ): Promise<AP.Announce> => {
 	const { host } = Config.get().federation;
 
+	const channel = await Channel.findOneOrFail({
+		where: { id: message.channel_id },
+		relations: {
+			recipients: true,
+		},
+	});
+
+	let to = [
+		new URL(
+			`https://${host}/federation/channels/${message.channel_id}/followers`,
+		),
+	];
+	if (channel.isDm()) {
+		const otherUsers = channel.recipients?.filter(
+			(x) => x.user_id != message.author_id,
+		);
+		if (!otherUsers) throw new APError("this dm channel has no recipients");
+		const remoteUsersKeys = await FederationKey.find({
+			where: { actorId: In(otherUsers?.map((x) => x.user_id)) },
+		});
+
+		to = remoteUsersKeys.map((x) =>
+			x.inbox ? new URL(x.inbox!) : new URL(`${x.federatedId}/inbox`),
+		);
+	}
+
 	return {
 		"@context": ACTIVITYSTREAMS_CONTEXT,
 		type: "Announce",
 		id: new URL(
 			`https://${host}/federation/channels/${message.channel_id}/messages/${message.id}`,
 		),
+		// this is wrong for remote users
 		actor: new URL(`https://${host}/federation/users/${message.author_id}`),
 		published: message.timestamp,
-		to: [
-			new URL(
-				`https://${host}/federation/channels/${message.channel_id}/followers`,
-			),
-		],
+		to,
 		object: await transformMessageToNote(message),
 	};
 };
@@ -241,6 +266,8 @@ export const transformPersonToUser = async (person: AP.Person) => {
 		domain: url.hostname,
 		publicKey: person.publicKey?.publicKeyPem,
 		type: ActorType.USER,
+		inbox: person.inbox.toString(),
+		outbox: person.outbox.toString(),
 	}).save();
 
 	return await User.create({

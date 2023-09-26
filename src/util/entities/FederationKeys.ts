@@ -29,6 +29,14 @@ export class FederationKey extends BaseClassWithoutId {
 	@Column()
 	federatedId: string;
 
+	/** The inbox of the remote user */
+	@Column({ nullable: true, type: String })
+	inbox: string | null;
+
+	/** The outbox of the remote user */
+	@Column({ nullable: true, type: String })
+	outbox: string | null;
+
 	/** The public key of this actor. Public keys of remote actors are cached. */
 	@Column()
 	publicKey: string;

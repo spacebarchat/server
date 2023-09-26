@@ -7,6 +7,7 @@ import { HTTPError } from "lambert-server";
 const router = Router();
 
 // TODO: check if the activity exists on the remote server
+// TODO: support lemmy ChatMessage type?
 router.post("/", route({}), async (req: Request, res: Response) => {
 	const body = req.body as AP.Create;
 

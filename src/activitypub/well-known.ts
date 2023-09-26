@@ -66,7 +66,7 @@ router.get(
 				break;
 		}
 
-		res.setHeader("Content-Type", "application/jrd+json; charset=utf-8");
+		res.setHeader("Content-Type", "application/jrd+json");
 		return res.json({
 			subject: `acct:${user}@${accountDomain}`, // mastodon always returns acct so might as well
 			aliases: [`https://${host}/federation/${keys.type}/${entity.id}`],

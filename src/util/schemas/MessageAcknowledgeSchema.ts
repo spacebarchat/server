@@ -19,4 +19,8 @@
 export interface MessageAcknowledgeSchema {
 	manual?: boolean;
 	mention_count?: number;
+
+	flags?: number;
+	last_viewed?: number;
+	token?: null;
 }

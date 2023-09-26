@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Federation, transformMessageToAnnounceNoce } from "@spacebar/ap";
 import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
 	Attachment,
@@ -403,6 +404,12 @@ router.post(
 		postHandleMessage(message).catch((e) =>
 			console.error("[Message] post-message handler failed", e),
 		);
+
+		setImmediate(async () => {
+			const ap = await transformMessageToAnnounceNoce(message);
+
+			await Federation.distribute(ap);
+		});
 
 		return res.json(message);
 	},
