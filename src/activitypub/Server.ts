@@ -51,6 +51,14 @@ export class FederationServer extends Server {
 		// TODO: auth
 		// TODO: rate limits
 
+		this.app.use("*", (req, res, next) => {
+			res.setHeader(
+				"Content-Type",
+				"application/activity+json; charset=utf-8",
+			);
+			next();
+		});
+
 		this.routes = await registerRoutes(
 			this,
 			path.join(__dirname, "routes", "/"),
