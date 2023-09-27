@@ -4,12 +4,21 @@ import {
 	Config,
 	DmChannelDTO,
 	FederationKey,
+	Guild,
+	Invite,
 	Member,
 	Message,
 	Snowflake,
 	User,
 	UserSettings,
 } from "@spacebar/util";
+import {
+	APAnnounce,
+	APGroup,
+	APNote,
+	APOrganization,
+	APPerson,
+} from "activitypub-types";
 import TurndownService from "turndown";
 import { In } from "typeorm";
 import {
@@ -18,7 +27,6 @@ import {
 	APObjectIsPerson,
 	resolveAPObject,
 } from "./utils";
-import { APAnnounce, APGroup, APNote, APPerson } from "activitypub-types";
 
 export const transformMessageToAnnounceNoce = async (
 	message: Message,
@@ -32,9 +40,8 @@ export const transformMessageToAnnounceNoce = async (
 		},
 	});
 
-	let to = [
-		`https://${host}/federation/channels/${message.channel_id}/followers`,
-	];
+	// let to = `https://${host}/federation/channels/${message.channel_id}/followers`;
+	let to = ["https://www.w3.org/ns/activitystreams#Public"]; // TODO
 
 	if (channel.isDm()) {
 		const otherUsers = channel.recipients?.filter(
@@ -83,7 +90,7 @@ export const transformMessageToNote = async (
 		published: message.timestamp,
 		attributedTo: `https://${host}/federation/users/${message.author_id}`,
 
-		to: [`https://${host}/federation/channels/${message.channel_id}`],
+		to: `https://${host}/federation/channels/${message.channel_id}/followers`,
 		tag: message.mentions?.map(
 			(x) => `https://${host}/federation/users/${x.id}`,
 		),
@@ -250,6 +257,7 @@ export const transformPersonToUser = async (person: APPerson) => {
 	const keys = await FederationKey.create({
 		actorId: Snowflake.generate(),
 		federatedId: url.toString(),
+		username: person.preferredUsername,
 		domain: url.hostname,
 		publicKey: person.publicKey?.publicKeyPem,
 		type: ActorType.USER,
@@ -279,4 +287,45 @@ export const transformPersonToUser = async (person: APPerson) => {
 		verified: Config.get().defaults.user.verified ?? true,
 		created_at: new Date(),
 	}).save();
+};
+
+export const transformOrganisationToInvite = (guild: APOrganization) => {
+	return Invite.create({
+		code: guild.id,
+		temporary: false,
+		uses: -1,
+		max_uses: 0,
+		max_age: 0,
+		created_at: new Date(0),
+		flags: 0,
+	});
+};
+
+export const transformGuildToOrganisation = async (
+	guild: Guild,
+): Promise<APOrganization> => {
+	const { host, accountDomain } = Config.get().federation;
+
+	const keys = await FederationKey.findOneOrFail({
+		where: { actorId: guild.id, domain: accountDomain },
+	});
+
+	return {
+		"@context": ACTIVITYSTREAMS_CONTEXT,
+		type: "Organization",
+		id: `https://${host}/federation/guilds/${guild.id}`,
+
+		name: guild.name,
+		preferredUsername: guild.id,
+		icon: undefined,
+
+		inbox: `https://${host}/federation/guilds/${guild.id}/inbox`,
+		outbox: `https://${host}/federation/guilds/${guild.id}/outbox`,
+		followers: `https://${host}/federation/guilds/${guild.id}/followers`,
+		publicKey: {
+			id: `https://${host}/federation/guilds/${guild.id}#main-key`,
+			owner: `https://${host}/federation/guilds/${guild.id}`,
+			publicKeyPem: keys.publicKey,
+		},
+	};
 };

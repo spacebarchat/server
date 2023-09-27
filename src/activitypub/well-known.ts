@@ -6,12 +6,13 @@ import {
 	FederationKey,
 	FieldErrors,
 	Guild,
+	Invite,
 	User,
 	WebfingerResponse,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { splitQualifiedMention } from "./federation";
+import { APError, splitQualifiedMention } from "./federation";
 const router = Router();
 
 router.get(
@@ -41,17 +42,34 @@ router.get(
 
 		const { accountDomain, host } = Config.get().federation;
 
-		const { user, domain } = splitQualifiedMention(resource);
+		const mention = splitQualifiedMention(resource);
+		const domain = mention.domain;
+		let user = mention.user;
 		if (domain != accountDomain)
 			throw new HTTPError("Resource could not be found", 404);
 
-		const keys = await FederationKey.findOneOrFail({
+		let keys = await FederationKey.findOne({
 			where: {
 				actorId: user,
 				domain,
 			},
 			select: ["type"],
 		});
+
+		if (!keys) {
+			// maybe it's an invite?
+
+			const invite = await Invite.findOne({ where: { code: user } });
+			if (!invite) throw new APError("Resource count not be found");
+
+			// yippe, it is.
+
+			keys = await FederationKey.findOneOrFail({
+				where: { domain, actorId: invite.guild_id },
+			});
+
+			user = invite.guild_id;
+		}
 
 		let entity: User | Channel | Guild;
 		switch (keys.type) {

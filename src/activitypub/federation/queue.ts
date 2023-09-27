@@ -1,7 +1,8 @@
 import { Config, FederationKey } from "@spacebar/util";
-import fetch from "node-fetch";
-import { APError, signActivity, splitQualifiedMention } from "./utils";
 import { APActivity } from "activitypub-types";
+import fetch from "node-fetch";
+import { HttpSig } from "./HttpSig";
+import { APError, splitQualifiedMention } from "./utils";
 
 //
 type Instance = string;
@@ -38,12 +39,12 @@ class FederationQueue {
 		}
 
 		for (const receiver of to) {
-			if (!(receiver instanceof URL)) {
+			if (typeof receiver != "string") {
 				console.error(receiver);
 				continue;
 			}
 
-			const signedActivity = await signActivity(
+			const signedActivity = await HttpSig.sign(
 				receiver.toString(),
 				sender,
 				activity,

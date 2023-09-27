@@ -16,16 +16,24 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import {
+	APError,
+	APObjectIsOrganisation,
+	resolveWebfinger,
+	splitQualifiedMention,
+	transformOrganisationToInvite,
+} from "@spacebar/ap";
 import { route } from "@spacebar/api";
 import {
+	Config,
 	DiscordApiErrors,
-	emitEvent,
-	getPermission,
 	Guild,
 	Invite,
 	InviteDeleteEvent,
 	PublicInviteRelation,
 	User,
+	emitEvent,
+	getPermission,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -46,6 +54,31 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const { code } = req.params;
+		const { inputValue } = req.query;
+
+		if (inputValue && typeof inputValue == "string") {
+			const mention = splitQualifiedMention(inputValue);
+			if (mention.user.length && Config.get().federation.enabled) {
+				// This invite is in the form `invitecode@domain.com` OR `https://domain.com/whatever/invitecode`
+				// If the domain provided isn't ours, it's a federated invite
+				// and we should try and fetch that
+
+				const { domain } = mention;
+				const { accountDomain, host } = Config.get().federation;
+				if (domain != accountDomain && domain != host) {
+					// The domain isn't ours
+
+					const remoteGuild = await resolveWebfinger(inputValue);
+
+					if (APObjectIsOrganisation(remoteGuild))
+						return res.json(
+							transformOrganisationToInvite(remoteGuild),
+						);
+
+					throw new APError("Remote resource is not a guild");
+				}
+			}
+		}
 
 		const invite = await Invite.findOneOrFail({
 			where: { code },

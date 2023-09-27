@@ -118,6 +118,7 @@ Is a [Collection](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-collecti
 Base url: `/federation`
 
 -   `/.well-known/webfinger?resource=acct@domain` - Returns webfinger response i.e. https://docs.joinmastodon.org/spec/webfinger/
+-   -   Webfinger resources include users, channels, guilds, as well as invite codes which returns a the corresponding guild
 -   `/.well-known/host-meta` - Returns location of webfinger? Why is this neccessary?
 
 -   `/channels/:channel_id` - Returns specified Channel as AP object ( Group )

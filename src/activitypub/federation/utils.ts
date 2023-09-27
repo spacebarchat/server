@@ -1,21 +1,26 @@
 import { DEFAULT_FETCH_OPTIONS } from "@spacebar/api";
 import {
+	ActorType,
 	Config,
 	FederationKey,
 	OrmUtils,
+	Snowflake,
+	User,
+	UserSettings,
 	WebfingerResponse,
 } from "@spacebar/util";
 import {
 	APActivity,
-	APActor,
-	APObject,
+	APAnnounce,
+	APCreate,
+	APNote,
 	APPerson,
 	AnyAPObject,
 } from "activitypub-types";
-import crypto from "crypto";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import { ProxyAgent } from "proxy-agent";
+import TurndownService from "turndown";
 
 export const ACTIVITYSTREAMS_CONTEXT = "https://www.w3.org/ns/activitystreams";
 
@@ -30,10 +35,9 @@ export class APError extends HTTPError {}
 export const hasAPContext = (data: object) => {
 	if (!("@context" in data)) return false;
 	const context = data["@context"];
-	const activitystreams = "https://www.w3.org/ns/activitystreams";
 	if (Array.isArray(context))
-		return context.find((x) => x == activitystreams);
-	return context == activitystreams;
+		return !!context.find((x) => x == ACTIVITYSTREAMS_CONTEXT);
+	return context == ACTIVITYSTREAMS_CONTEXT;
 };
 
 export const resolveAPObject = async <T extends AnyAPObject>(
@@ -97,64 +101,91 @@ export const resolveWebfinger = async (
 		},
 	).then((x) => x.json())) as WebfingerResponse;
 
+	if (!("links" in wellknown))
+		throw new APError(
+			`webfinger did not return any links for actor ${lookup}`,
+		);
+
 	const link = wellknown.links.find((x) => x.rel == "self");
 	if (!link) throw new APError(".well-known did not contain rel=self link");
 
 	return await resolveAPObject<AnyAPObject>(link.href);
 };
 
-/**
- * Returns a signed request that can be passed to fetch
- * ```
- * const signed = await signActivity(receiver.inbox, sender, activity);
- * await fetch(receiver.inbox, signed);
- * ```
- */
-export const signActivity = async (
-	inbox: string,
-	sender: FederationKey,
-	message: APActivity,
-) => {
-	if (!sender.privateKey)
-		throw new APError("cannot sign without private key");
-
-	const digest = crypto
-		.createHash("sha256")
-		.update(JSON.stringify(message))
-		.digest("base64");
-	const signer = crypto.createSign("sha256");
-	const now = new Date();
-
-	const url = new URL(inbox);
-	const inboxFrag = url.pathname;
-	const toSign =
-		`(request-target): post ${inboxFrag}\n` +
-		`host: ${url.hostname}\n` +
-		`date: ${now.toUTCString()}\n` +
-		`digest: SHA-256=${digest}`;
-
-	signer.update(toSign);
-	signer.end();
-
-	const signature = signer.sign(sender.privateKey);
-	const sig_b64 = signature.toString("base64");
-
-	const { host } = Config.get().federation;
-	const header =
-		`keyId="${host}/${sender.type}/${sender.actorId}#main-key",` +
-		`headers="(request-target) host date digest",` +
-		`signature=${sig_b64}`;
-
-	return OrmUtils.mergeDeep(fetchOpts, {
-		method: "POST",
-		body: message,
-		headers: {
-			Host: url.hostname,
-			Date: now.toUTCString(),
-			Digest: `SHA-256=${digest}`,
-			Signature: header,
-		},
+/** Fetch from local db, if not found fetch from remote instance and save */
+export const fetchFederatedUser = async (actorId: string) => {
+	// if we were given webfinger, resolve that first
+	const mention = splitQualifiedMention(actorId);
+	const cache = await FederationKey.findOne({
+		where: { username: mention.user, domain: mention.domain },
 	});
+	if (cache) {
+		return {
+			keys: cache,
+			user: await User.findOneOrFail({ where: { id: cache.actorId } }),
+		};
+	}
+
+	// if we don't already have it, resolve webfinger
+	const remoteActor = await resolveWebfinger(actorId);
+
+	let type: ActorType;
+	if (APObjectIsPerson(remoteActor)) type = ActorType.USER;
+	else if (APObjectIsGroup(remoteActor)) type = ActorType.CHANNEL;
+	else if (APObjectIsOrganisation(remoteActor)) type = ActorType.GUILD;
+	else
+		throw new APError(
+			`The remote actor '${actorId}' is not a Person, Group, or Organisation`,
+		);
+
+	if (
+		typeof remoteActor.inbox != "string" ||
+		typeof remoteActor.outbox != "string"
+	)
+		throw new APError("Actor inbox/outbox must be string");
+
+	const keys = FederationKey.create({
+		actorId: Snowflake.generate(),
+		federatedId: actorId,
+		username: remoteActor.preferredUsername,
+		// this is technically not correct
+		// but it's slightly more difficult to go from actor url -> handle
+		// so thats a problem for future me
+		domain: mention.domain,
+		publicKey: remoteActor.publicKey?.publicKeyPem,
+		type,
+		inbox: remoteActor.inbox,
+		outbox: remoteActor.outbox,
+	});
+
+	const user = User.create({
+		id: keys.actorId,
+		username: remoteActor.preferredUsername,
+		discriminator: "0",
+		bio: new TurndownService().turndown(remoteActor.summary), // html -> markdown
+		email: `${remoteActor.preferredUsername}@${keys.domain}`,
+		data: {
+			hash: "#",
+			valid_tokens_since: new Date(),
+		},
+		extended_settings: "{}",
+		settings: UserSettings.create(),
+		premium: false,
+
+		premium_since: Config.get().defaults.user.premium
+			? new Date()
+			: undefined,
+		rights: Config.get().register.defaultRights,
+		premium_type: Config.get().defaults.user.premiumType ?? 0,
+		verified: Config.get().defaults.user.verified ?? true,
+		created_at: new Date(),
+	});
+
+	await Promise.all([keys.save(), user.save()]);
+	return {
+		keys,
+		user,
+	};
 };
 
 // fetch from remote server?
@@ -180,4 +211,16 @@ export const APObjectIsSpacebarActor = (
 		APObjectIsOrganisation(object) ||
 		APObjectIsPerson(object)
 	);
+};
+
+export const APActivityIsCreate = (act: APActivity): act is APCreate => {
+	return act.type == "Create";
+};
+
+export const APActivityIsAnnounce = (act: APActivity): act is APAnnounce => {
+	return act.type == "Announce";
+};
+
+export const APObjectIsNote = (obj: AnyAPObject): obj is APNote => {
+	return obj.type == "Note";
 };

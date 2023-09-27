@@ -24,7 +24,14 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { Config, GuildWelcomeScreen, Snowflake, handleFile } from "..";
+import {
+	ActorType,
+	Config,
+	FederationKey,
+	GuildWelcomeScreen,
+	Snowflake,
+	handleFile,
+} from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -387,6 +394,16 @@ export class Guild extends BaseClass {
 				},
 			);
 		}
+
+		// If federation is enabled, generate signing keys for this actor.
+		setImmediate(
+			async () =>
+				Config.get().federation.enabled &&
+				(await FederationKey.generateSigningKeys(
+					guild.id,
+					ActorType.GUILD,
+				)),
+		);
 
 		return guild;
 	}

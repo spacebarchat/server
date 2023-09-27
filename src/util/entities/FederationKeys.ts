@@ -25,9 +25,9 @@ export class FederationKey extends BaseClassWithoutId {
 	@Column()
 	domain: string;
 
-	/** The federated preferred username */
-	@Column()
-	username: string;
+	/** The federated preferred username of remote users. Local usernames are null. */
+	@Column({ nullable: true, type: String })
+	username: string | null;
 
 	/** The remote ID ( actor URL ) of this user */
 	@Column()
