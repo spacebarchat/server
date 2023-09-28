@@ -31,6 +31,7 @@ export * from "./ConnectionConfigEntity";
 export * from "./EmbedCache";
 export * from "./Emoji";
 export * from "./Encryption";
+export * from "./FederationActivity";
 export * from "./FederationKeys";
 export * from "./Guild";
 export * from "./Invite";

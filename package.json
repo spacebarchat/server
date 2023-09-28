@@ -8,6 +8,7 @@
 		"start": "node dist/bundle/start.js",
 		"start:api": "node dist/api/start.js",
 		"start:cdn": "node dist/cdn/start.js",
+		"start:ap": "node dist/activitypub/start.js",
 		"start:gateway": "node dist/gateway/start.js",
 		"build": "tsc -p .",
 		"test": "node scripts/test.js",

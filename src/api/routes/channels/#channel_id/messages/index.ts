@@ -406,6 +406,7 @@ router.post(
 		);
 
 		setImmediate(async () => {
+			if (!Config.get().federation.enabled) return;
 			const ap = await transformMessageToAnnounceNoce(message);
 
 			await Federation.distribute(ap);

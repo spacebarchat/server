@@ -30,7 +30,10 @@ export class Federation {
 			throw new APError("Invalid signature");
 		}
 
-		if (!APActivityIsCreate(activity)) throw new APError("not implemented");
+		if (!APActivityIsCreate(activity))
+			throw new APError(
+				`activity of type ${activity.type} not implemented`,
+			);
 
 		const object = Array.isArray(activity.object)
 			? activity.object[0]

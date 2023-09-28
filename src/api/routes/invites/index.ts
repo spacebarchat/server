@@ -19,9 +19,10 @@
 import {
 	APError,
 	APObjectIsOrganisation,
-	resolveWebfinger,
 	splitQualifiedMention,
 	transformOrganisationToInvite,
+	tryFederatedGuildJoin,
+	tryResolveWebfinger,
 } from "@spacebar/ap";
 import { route } from "@spacebar/api";
 import {
@@ -68,14 +69,18 @@ router.get(
 				if (domain != accountDomain && domain != host) {
 					// The domain isn't ours
 
-					const remoteGuild = await resolveWebfinger(inputValue);
+					const remoteGuild = await tryResolveWebfinger(inputValue);
+					if (remoteGuild) {
+						if (APObjectIsOrganisation(remoteGuild))
+							return res.json(
+								await transformOrganisationToInvite(
+									inputValue,
+									remoteGuild,
+								),
+							);
 
-					if (APObjectIsOrganisation(remoteGuild))
-						return res.json(
-							transformOrganisationToInvite(remoteGuild),
-						);
-
-					throw new APError("Remote resource is not a guild");
+						throw new APError("Remote resource is not a guild");
+					}
 				}
 			}
 		}
@@ -110,8 +115,21 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		if (req.user_bot) throw DiscordApiErrors.BOT_PROHIBITED_ENDPOINT;
-
 		const { code } = req.params;
+
+		// Federation
+		const mention = splitQualifiedMention(code);
+		if (mention.user.length && Config.get().federation.enabled) {
+			const { domain } = mention;
+			const { accountDomain, host } = Config.get().federation;
+			if (domain != accountDomain && domain != host) {
+				// this domain isn't ours, try a federated join
+				// send a follow request to the guild
+
+				return res.json(await tryFederatedGuildJoin(code, req.user_id));
+			}
+		}
+
 		const { guild_id } = await Invite.findOneOrFail({
 			where: { code: code },
 		});

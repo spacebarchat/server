@@ -2,19 +2,19 @@ import Express from "express";
 import morgan from "morgan";
 import { red } from "picocolors";
 
-let HAS_WARNED = false;
-export const setupMorganLogging = (app: Express.Application) => {
+let ENABLED = false;
+export const setupMorganLogging = (app: Express.Router) => {
 	const logRequests = process.env["LOG_REQUESTS"] != undefined;
 	if (!logRequests) return;
 
-	if (!HAS_WARNED)
-		console.log(
-			red(
-				`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`,
-			),
-		);
+	if (ENABLED) return;
+	ENABLED = true;
 
-	HAS_WARNED = true;
+	console.log(
+		red(
+			`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`,
+		),
+	);
 
 	app.use(
 		morgan("combined", {

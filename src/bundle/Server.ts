@@ -23,7 +23,12 @@ import { FederationServer } from "@spacebar/ap";
 import * as Api from "@spacebar/api";
 import { CDNServer } from "@spacebar/cdn";
 import * as Gateway from "@spacebar/gateway";
-import { Config, Sentry, initDatabase } from "@spacebar/util";
+import {
+	Config,
+	Sentry,
+	initDatabase,
+	setupMorganLogging,
+} from "@spacebar/util";
 import express from "express";
 import http from "http";
 import { bold, green } from "picocolors";
@@ -35,9 +40,9 @@ const production = process.env.NODE_ENV == "development" ? false : true;
 server.on("request", app);
 
 const api = new Api.SpacebarServer({ server, port, production, app });
+const federation = new FederationServer({ server, port, production, app });
 const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
-const federation = new FederationServer({ server, port, production, app });
 
 process.on("SIGTERM", async () => {
 	console.log("Shutting down due to SIGTERM");
@@ -52,6 +57,8 @@ async function main() {
 	await initDatabase();
 	await Config.init();
 	await Sentry.init(app);
+
+	setupMorganLogging(app);
 
 	await new Promise((resolve) =>
 		server.listen({ port }, () => resolve(undefined)),

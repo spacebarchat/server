@@ -70,6 +70,14 @@ router.patch(
 
 		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
 
+		// TODO: move this
+		if (!guild.welcome_screen)
+			guild.welcome_screen = {
+				enabled: false,
+				description: "",
+				welcome_channels: [],
+			};
+
 		if (body.enabled != undefined)
 			guild.welcome_screen.enabled = body.enabled;
 

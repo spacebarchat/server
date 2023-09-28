@@ -15,7 +15,28 @@
 			"skipFiles": ["<node_internals>/**"],
 			"program": "${workspaceFolder}/src/bundle/start.ts",
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
-			"preLaunchTask": "tsc: build - tsconfig.json"
+			"preLaunchTask": "tsc: build - tsconfig.json",
+			"outputCapture": "std"
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "API",
+			"skipFiles": ["<node_internals>/**"],
+			"program": "${workspaceFolder}/src/api/start.ts",
+			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+			"preLaunchTask": "tsc: build - tsconfig.json",
+			"outputCapture": "std"
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Activitypub",
+			"skipFiles": ["<node_internals>/**"],
+			"program": "${workspaceFolder}/src/activitypub/start.ts",
+			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+			"preLaunchTask": "tsc: build - tsconfig.json",
+			"outputCapture": "std"
 		}
 	]
 }

@@ -2,6 +2,7 @@ import { Config, FederationKey, OrmUtils } from "@spacebar/util";
 import { APActivity } from "activitypub-types";
 import crypto from "crypto";
 import { IncomingHttpHeaders } from "http";
+import { RequestInit } from "node-fetch";
 import { APError, fetchFederatedUser, fetchOpts } from "./utils";
 
 export class HttpSig {
@@ -27,8 +28,9 @@ export class HttpSig {
 		activity: APActivity,
 		requestHeaders: IncomingHttpHeaders,
 	) {
-		const sigheader = requestHeaders["signature"] as string;
-		const sigopts: { [key: string]: string } = Object.assign(
+		const sigheader = requestHeaders["signature"]?.toString();
+		if (!sigheader) throw new APError("Missing signature");
+		const sigopts: { [key: string]: string | undefined } = Object.assign(
 			{},
 			...sigheader.split(",").flatMap((keyval) => {
 				const split = keyval.split("=");
@@ -43,8 +45,10 @@ export class HttpSig {
 		if (!signature || !headers || !keyId)
 			throw new APError("Invalid signature");
 
+		const ALLOWED_ALGO = "rsa-sha256";
+
 		// If it's provided, check it. otherwise just assume it's sha256
-		if (algorithm && algorithm != "rsa-sha256")
+		if (algorithm && algorithm != ALLOWED_ALGO)
 			throw new APError(`Unsupported encryption algorithm ${algorithm}`);
 
 		const url = new URL(keyId);
@@ -59,7 +63,9 @@ export class HttpSig {
 			headers.split(/\s+/),
 		);
 
-		const verifier = crypto.createVerify(algorithm.toUpperCase());
+		const verifier = crypto.createVerify(
+			algorithm?.toUpperCase() || ALLOWED_ALGO,
+		);
 		verifier.write(expected);
 		verifier.end();
 
@@ -113,13 +119,13 @@ export class HttpSig {
 
 		return OrmUtils.mergeDeep(fetchOpts, {
 			method: "POST",
-			body: message,
+			body: JSON.stringify(message),
 			headers: {
 				Host: url.hostname,
 				Date: now.toUTCString(),
 				Digest: `SHA-256=${digest}`,
 				Signature: header,
 			},
-		});
+		} as RequestInit);
 	}
 }

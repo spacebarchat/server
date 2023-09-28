@@ -1,4 +1,4 @@
-import { BodyParser, CORS, ErrorHandler } from "@spacebar/api";
+import { CORS, ErrorHandler } from "@spacebar/api";
 import {
 	Config,
 	JSONReplacer,
@@ -13,7 +13,7 @@ import { Server, ServerOptions } from "lambert-server";
 import path from "path";
 import wellknown from "./well-known";
 
-export type SpacebarServerOptions = ServerOptions;
+type SpacebarServerOptions = ServerOptions;
 
 export class FederationServer extends Server {
 	public declare options: SpacebarServerOptions;
@@ -29,18 +29,23 @@ export class FederationServer extends Server {
 		await Config.init();
 		await Sentry.init(this.app);
 
-		setupMorganLogging(this.app);
-		this.app.set("json replacer", JSONReplacer);
+		if (!Config.get().federation.enabled) {
+			return;
+		}
 
+		console.log("Federation is enabled!");
+
+		this.app.set("json replacer", JSONReplacer);
 		this.app.use(CORS);
+		this.app.use(bodyParser.json({ inflate: true }));
 		this.app.use(
-			BodyParser({
-				inflate: true,
-				limit: "10mb",
+			bodyParser.json({
 				type: "application/activity+json",
 			}),
 		);
-		this.app.use(bodyParser.urlencoded({ extended: true }));
+		this.app.use(bodyParser.urlencoded({ inflate: true, extended: true }));
+
+		setupMorganLogging(this.app);
 
 		const app = this.app;
 		const api = Router();
@@ -64,13 +69,6 @@ export class FederationServer extends Server {
 			path.join(__dirname, "routes", "/"),
 		);
 
-		api.use("*", (req: Request, res: Response) => {
-			res.status(404).json({
-				message: "404 endpoint not found",
-				code: 0,
-			});
-		});
-
 		this.app = app;
 
 		this.app.use("/federation", api);
@@ -79,6 +77,13 @@ export class FederationServer extends Server {
 		this.app.use(ErrorHandler);
 
 		Sentry.errorHandler(this.app);
+
+		api.use("*", (req: Request, res: Response) => {
+			res.status(404).json({
+				message: "404 endpoint not found",
+				code: 0,
+			});
+		});
 
 		return super.start();
 	}

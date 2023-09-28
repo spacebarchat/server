@@ -2,6 +2,7 @@ import { DEFAULT_FETCH_OPTIONS } from "@spacebar/api";
 import {
 	ActorType,
 	Config,
+	FederationActivity,
 	FederationKey,
 	OrmUtils,
 	Snowflake,
@@ -13,6 +14,7 @@ import {
 	APActivity,
 	APAnnounce,
 	APCreate,
+	APFollow,
 	APNote,
 	APPerson,
 	AnyAPObject,
@@ -21,14 +23,18 @@ import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import { ProxyAgent } from "proxy-agent";
 import TurndownService from "turndown";
+import { Federation } from ".";
 
 export const ACTIVITYSTREAMS_CONTEXT = "https://www.w3.org/ns/activitystreams";
 
-export const fetchOpts = OrmUtils.mergeDeep(DEFAULT_FETCH_OPTIONS, {
-	headers: {
-		Accept: "application/activity+json",
-	},
-});
+export const fetchOpts = Object.freeze(
+	OrmUtils.mergeDeep(DEFAULT_FETCH_OPTIONS, {
+		headers: {
+			Accept: "application/activity+json",
+			"Content-Type": "application/activity+json",
+		},
+	}),
+);
 
 export class APError extends HTTPError {}
 
@@ -112,6 +118,15 @@ export const resolveWebfinger = async (
 	return await resolveAPObject<AnyAPObject>(link.href);
 };
 
+export const tryResolveWebfinger = async (lookup: string) => {
+	try {
+		return await resolveWebfinger(lookup);
+	} catch (e) {
+		console.error(`Error resolving webfinger ${lookup}`, e);
+		return null;
+	}
+};
+
 /** Fetch from local db, if not found fetch from remote instance and save */
 export const fetchFederatedUser = async (actorId: string) => {
 	// if we were given webfinger, resolve that first
@@ -147,7 +162,7 @@ export const fetchFederatedUser = async (actorId: string) => {
 	const keys = FederationKey.create({
 		actorId: Snowflake.generate(),
 		federatedId: actorId,
-		username: remoteActor.preferredUsername,
+		username: remoteActor.name,
 		// this is technically not correct
 		// but it's slightly more difficult to go from actor url -> handle
 		// so thats a problem for future me
@@ -160,7 +175,7 @@ export const fetchFederatedUser = async (actorId: string) => {
 
 	const user = User.create({
 		id: keys.actorId,
-		username: remoteActor.preferredUsername,
+		username: remoteActor.name,
 		discriminator: "0",
 		bio: new TurndownService().turndown(remoteActor.summary), // html -> markdown
 		email: `${remoteActor.preferredUsername}@${keys.domain}`,
@@ -186,6 +201,27 @@ export const fetchFederatedUser = async (actorId: string) => {
 		keys,
 		user,
 	};
+};
+
+export const tryFederatedGuildJoin = async (code: string, user_id: string) => {
+	const guild = await tryResolveWebfinger(code);
+	if (!guild || !APObjectIsOrganisation(guild))
+		throw new APError(
+			`Invite code did not produce Guild on remote server ${code}`,
+		);
+
+	const { host } = Config.get().federation;
+
+	const follow = await FederationActivity.create({
+		data: {
+			"@context": ACTIVITYSTREAMS_CONTEXT,
+			type: "Follow",
+			actor: `https://${host}/federation/users/${user_id}`,
+			object: guild.id,
+		} as APFollow,
+	}).save();
+
+	await Federation.distribute(follow.toJSON());
 };
 
 // fetch from remote server?

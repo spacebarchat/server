@@ -25,6 +25,7 @@ import {
 	ACTIVITYSTREAMS_CONTEXT,
 	APError,
 	APObjectIsPerson,
+	fetchFederatedUser,
 	resolveAPObject,
 } from "./utils";
 
@@ -257,7 +258,7 @@ export const transformPersonToUser = async (person: APPerson) => {
 	const keys = await FederationKey.create({
 		actorId: Snowflake.generate(),
 		federatedId: url.toString(),
-		username: person.preferredUsername,
+		username: person.name,
 		domain: url.hostname,
 		publicKey: person.publicKey?.publicKeyPem,
 		type: ActorType.USER,
@@ -289,16 +290,61 @@ export const transformPersonToUser = async (person: APPerson) => {
 	}).save();
 };
 
-export const transformOrganisationToInvite = (guild: APOrganization) => {
+export const transformOrganisationToInvite = async (
+	code: string,
+	org: APOrganization,
+) => {
+	const guild = await transformOrganisationToGuild(org);
 	return Invite.create({
-		code: guild.id,
+		code,
 		temporary: false,
 		uses: -1,
 		max_uses: 0,
 		max_age: 0,
 		created_at: new Date(0),
 		flags: 0,
+		guild,
+		channel: Channel.create({}),
+		inviter: guild.owner,
 	});
+};
+
+export const transformOrganisationToGuild = async (org: APOrganization) => {
+	if (!org.id) throw new APError("Federated guild must have ID");
+	if (!org.publicKey || !org.publicKey.publicKeyPem)
+		throw new APError("Federated guild must have public key.");
+
+	const cache = await FederationKey.findOne({
+		where: { federatedId: org.id },
+	});
+	if (cache) {
+		return await Guild.findOneOrFail({ where: { id: cache.actorId } });
+	}
+
+	const keys = FederationKey.create({
+		actorId: Snowflake.generate(),
+		federatedId: org.id,
+		username: org.name,
+		domain: new URL(org.id).hostname,
+		publicKey: org.publicKey.publicKeyPem,
+		type: ActorType.GUILD,
+		inbox: org.inbox.toString(),
+		outbox: org.outbox.toString(),
+	});
+
+	if (typeof org.attributedTo != "string")
+		throw new APError("attributedTo must be string");
+
+	const owner = await fetchFederatedUser(org.attributedTo);
+
+	const guild = Guild.create({
+		id: keys.actorId,
+		name: org.name,
+		owner_id: owner.user.id,
+	});
+
+	await Promise.all([guild.save(), keys.save()]);
+	return guild;
 };
 
 export const transformGuildToOrganisation = async (
@@ -317,7 +363,11 @@ export const transformGuildToOrganisation = async (
 
 		name: guild.name,
 		preferredUsername: guild.id,
-		icon: undefined,
+		icon: guild.icon
+			? `${Config.get().cdn.endpointPublic}/icons/${guild.icon}`
+			: undefined,
+
+		attributedTo: `https://${host}/federation/users/${guild.owner_id}`,
 
 		inbox: `https://${host}/federation/guilds/${guild.id}/inbox`,
 		outbox: `https://${host}/federation/guilds/${guild.id}/outbox`,

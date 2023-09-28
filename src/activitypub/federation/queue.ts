@@ -12,14 +12,11 @@ class FederationQueue {
 	private queue: Map<Instance, Array<APActivity>> = new Map();
 
 	public async distribute(activity: APActivity) {
-		let { to, actor } = activity;
-
-		if (!to)
-			throw new APError("Activity with no `to` field is undeliverable.");
-		if (!Array.isArray(to)) to = [to];
+		let { actor } = activity;
+		const { to, object } = activity;
 
 		if (!actor)
-			throw new APError("Activity with no `to` field is undeliverable.");
+			throw new APError("Activity with no actor cannot be signed.");
 		if (Array.isArray(actor)) actor = actor[0];
 
 		// TODO: check if `to` is on our instance?
@@ -38,21 +35,56 @@ class FederationQueue {
 			return;
 		}
 
-		for (const receiver of to) {
-			if (typeof receiver != "string") {
-				console.error(receiver);
+		// this is ugly
+		for (let recv of [
+			...(Array.isArray(to) ? to : [to]),
+			...(Array.isArray(object) ? object : [object]),
+		]) {
+			if (!recv) continue;
+
+			if (typeof recv != "string") {
+				console.warn(
+					`TODO: activity with non-string destination was not sent`,
+					recv,
+				);
 				continue;
 			}
 
-			const signedActivity = await HttpSig.sign(
-				receiver.toString(),
-				sender,
-				activity,
+			if (recv == "https://www.w3.org/ns/activitystreams#Public") {
+				console.debug(`TODO: Skipping sending activity to #Public`);
+				continue;
+			}
+
+			if (recv.includes("/followers")) {
+				console.warn("sending to /followers is not implemented");
+				continue;
+			}
+
+			// TODO: this is bad
+			if (!recv.includes("/inbox")) recv = `${recv}/inbox`;
+
+			await this.signAndSend(activity, sender, recv);
+		}
+	}
+
+	private async signAndSend(
+		activity: APActivity,
+		sender: FederationKey,
+		receiver: string,
+	) {
+		const signedActivity = await HttpSig.sign(
+			receiver.toString(),
+			sender,
+			activity,
+		);
+
+		const ret = await fetch(receiver, signedActivity);
+		if (!ret.ok) {
+			console.error(
+				`Sending activity ${activity.id} to ` +
+					`${receiver} failed with code ${ret.status} `,
+				JSON.stringify(await ret.json()),
 			);
-
-			const ret = await fetch(receiver, signedActivity);
-
-			console.log(ret);
 		}
 	}
 }
