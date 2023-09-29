@@ -1,4 +1,4 @@
-import { Config, FederationKey, OrmUtils } from "@spacebar/util";
+import { Config, FederationKey } from "@spacebar/util";
 import { APActivity } from "activitypub-types";
 import crypto from "crypto";
 import { IncomingHttpHeaders } from "http";
@@ -23,6 +23,7 @@ export class HttpSig {
 			.join("\n");
 	}
 
+	// TODO: Support hs2019 algo
 	public static async validate(
 		target: string,
 		activity: APActivity,
@@ -125,15 +126,17 @@ export class HttpSig {
 			`headers="(request-target) host date digest",` +
 			`signature="${sig_b64}"`;
 
-		return OrmUtils.mergeDeep({}, fetchOpts, {
-			method: "POST",
-			body: JSON.stringify(message),
+		return {
+			...fetchOpts,
 			headers: {
+				...fetchOpts.headers,
 				Host: url.hostname,
 				Date: now.toUTCString(),
 				Digest: `SHA-256=${digest}`,
 				Signature: header,
 			},
-		} as RequestInit);
+			method: "POST",
+			body: JSON.stringify(message),
+		} as RequestInit;
 	}
 }
