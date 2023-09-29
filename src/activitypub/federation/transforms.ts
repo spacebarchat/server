@@ -18,13 +18,13 @@ import {
 	APNote,
 	APOrganization,
 	APPerson,
+	ObjectIsPerson,
 } from "activitypub-types";
 import TurndownService from "turndown";
 import { In } from "typeorm";
 import {
 	ACTIVITYSTREAMS_CONTEXT,
 	APError,
-	APObjectIsPerson,
 	fetchFederatedUser,
 	resolveAPObject,
 } from "./utils";
@@ -117,7 +117,7 @@ export const transformNoteToMessage = async (note: APNote) => {
 			: note.attributedTo,
 	);
 
-	if (!APObjectIsPerson(attrib))
+	if (!ObjectIsPerson(attrib))
 		throw new APError("Note must be attributedTo a Person");
 
 	const user = await transformPersonToUser(attrib);

@@ -1,15 +1,10 @@
 import { MessageCreateEvent, emitEvent } from "@spacebar/util";
-import { APActivity } from "activitypub-types";
+import { APActivity, ActivityIsCreate, ObjectIsNote } from "activitypub-types";
 import { Request } from "express";
 import { HttpSig } from "./HttpSig";
 import { federationQueue } from "./queue";
 import { transformNoteToMessage } from "./transforms";
-import {
-	APActivityIsCreate,
-	APError,
-	APObjectIsNote,
-	hasAPContext,
-} from "./utils";
+import { APError, hasAPContext } from "./utils";
 
 export * from "./OrderedCollection";
 export * from "./transforms";
@@ -30,7 +25,7 @@ export class Federation {
 			throw new APError("Invalid signature");
 		}
 
-		if (!APActivityIsCreate(activity))
+		if (!ActivityIsCreate(activity))
 			throw new APError(
 				`activity of type ${activity.type} not implemented`,
 			);
@@ -39,7 +34,7 @@ export class Federation {
 			? activity.object[0]
 			: activity.object;
 
-		if (!object || typeof object == "string" || !APObjectIsNote(object))
+		if (!object || typeof object == "string" || !ObjectIsNote(object))
 			throw new APError("not implemented");
 
 		const message = await transformNoteToMessage(object);

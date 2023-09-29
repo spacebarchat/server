@@ -11,13 +11,12 @@ import {
 	WebfingerResponse,
 } from "@spacebar/util";
 import {
-	APActivity,
-	APAnnounce,
-	APCreate,
 	APFollow,
-	APNote,
 	APPerson,
 	AnyAPObject,
+	ObjectIsGroup,
+	ObjectIsOrganization,
+	ObjectIsPerson,
 } from "activitypub-types";
 import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
@@ -145,9 +144,9 @@ export const fetchFederatedUser = async (actorId: string) => {
 	const remoteActor = await resolveWebfinger(actorId);
 
 	let type: ActorType;
-	if (APObjectIsPerson(remoteActor)) type = ActorType.USER;
-	else if (APObjectIsGroup(remoteActor)) type = ActorType.CHANNEL;
-	else if (APObjectIsOrganisation(remoteActor)) type = ActorType.GUILD;
+	if (ObjectIsPerson(remoteActor)) type = ActorType.USER;
+	else if (ObjectIsGroup(remoteActor)) type = ActorType.CHANNEL;
+	else if (ObjectIsOrganization(remoteActor)) type = ActorType.GUILD;
 	else
 		throw new APError(
 			`The remote actor '${actorId}' is not a Person, Group, or Organisation`,
@@ -205,7 +204,7 @@ export const fetchFederatedUser = async (actorId: string) => {
 
 export const tryFederatedGuildJoin = async (code: string, user_id: string) => {
 	const guild = await tryResolveWebfinger(code);
-	if (!guild || !APObjectIsOrganisation(guild))
+	if (!guild || !ObjectIsOrganization(guild))
 		throw new APError(
 			`Invite code did not produce Guild on remote server ${code}`,
 		);
@@ -224,39 +223,12 @@ export const tryFederatedGuildJoin = async (code: string, user_id: string) => {
 	await Federation.distribute(follow.toJSON());
 };
 
-// fetch from remote server?
-export const APObjectIsPerson = (object: AnyAPObject): object is APPerson => {
-	return "type" in object && object.type == "Person";
-};
-
-export const APObjectIsGroup = (object: AnyAPObject): object is APPerson => {
-	return "type" in object && object.type == "Group";
-};
-
-export const APObjectIsOrganisation = (
-	object: AnyAPObject,
-): object is APPerson => {
-	return "type" in object && object.type == "Organization";
-};
-
 export const APObjectIsSpacebarActor = (
 	object: AnyAPObject,
 ): object is APPerson => {
 	return (
-		APObjectIsGroup(object) ||
-		APObjectIsOrganisation(object) ||
-		APObjectIsPerson(object)
+		ObjectIsPerson(object) ||
+		ObjectIsGroup(object) ||
+		ObjectIsOrganization(object)
 	);
-};
-
-export const APActivityIsCreate = (act: APActivity): act is APCreate => {
-	return act.type == "Create";
-};
-
-export const APActivityIsAnnounce = (act: APActivity): act is APAnnounce => {
-	return act.type == "Announce";
-};
-
-export const APObjectIsNote = (obj: AnyAPObject): obj is APNote => {
-	return obj.type == "Note";
 };
