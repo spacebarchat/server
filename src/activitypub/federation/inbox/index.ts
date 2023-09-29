@@ -12,6 +12,7 @@ import {
 	APAccept,
 	APCreate,
 	APFollow,
+	ActivityIsFollow,
 	AnyAPObject,
 	ObjectIsNote,
 } from "activitypub-types";
@@ -63,8 +64,6 @@ const handlers = {
 	},
 
 	Follow: async (activity: APFollow) => {
-		// dummy: send back Accept regardless
-
 		if (typeof activity.object != "string")
 			throw new APError("not implemented");
 		const mention = splitQualifiedMention(activity.object);
@@ -81,6 +80,39 @@ const handlers = {
 			default:
 				throw new APError("not implemented");
 		}
+	},
+
+	Accept: async (activity: APAccept) => {
+		// check what this accept is for
+
+		if (!activity.object)
+			throw new APError(
+				"Received Accept activity without object, what was accepted?",
+			);
+
+		const inner = await resolveAPObject(
+			Array.isArray(activity.object)
+				? activity.object[0]
+				: activity.object,
+		);
+
+		if (!ActivityIsFollow(inner))
+			throw new APError(
+				"Accept received for activity other than Follow, ignoring",
+			);
+
+		// if it's for a guild join,
+
+		if (typeof inner.object != "string")
+			throw new APError("not implemented");
+
+		const guild = await fetchFederatedUser(inner.object);
+
+		if (typeof inner.actor != "string")
+			throw new APError("not implemented");
+
+		const { user } = splitQualifiedMention(inner.actor);
+		Member.addToGuild(user, guild.entity.id);
 	},
 } as Record<string, (activity: AnyAPObject) => Promise<unknown>>;
 
