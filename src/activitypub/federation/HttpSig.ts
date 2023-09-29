@@ -117,7 +117,7 @@ export class HttpSig {
 			`headers="(request-target) host date digest",` +
 			`signature=${sig_b64}`;
 
-		return OrmUtils.mergeDeep(fetchOpts, {
+		return OrmUtils.mergeDeep({}, fetchOpts, {
 			method: "POST",
 			body: JSON.stringify(message),
 			headers: {
