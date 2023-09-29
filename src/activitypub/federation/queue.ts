@@ -42,13 +42,8 @@ class FederationQueue {
 		]) {
 			if (!recv) continue;
 
-			if (typeof recv != "string") {
-				console.warn(
-					`TODO: activity with non-string destination was not sent`,
-					recv,
-				);
-				continue;
-			}
+			// this is wrong?
+			if (typeof recv != "string") continue;
 
 			if (recv == "https://www.w3.org/ns/activitystreams#Public") {
 				console.debug(`TODO: Skipping sending activity to #Public`);

@@ -25,6 +25,7 @@ export * from "./Config";
 export * from "./Constants";
 export * from "./Database";
 export * from "./Datasource";
+export * from "./DebugLogger";
 export * from "./Event";
 export * from "./FieldError";
 export * from "./Gifs";

@@ -17,7 +17,7 @@
 */
 
 import { APError } from "@spacebar/ap";
-import { ApiError, FieldError } from "@spacebar/util";
+import { ApiError, Debug, FieldError } from "@spacebar/util";
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 const EntityNotFoundErrorRegex = /"(\w+)"/;
@@ -75,6 +75,8 @@ export function ErrorHandler(
 		}
 
 		if (httpcode > 511) httpcode = 400;
+
+		if (error instanceof APError) Debug("Federation", error);
 
 		res.status(httpcode).json({ code: code, message, errors });
 	} catch (error) {

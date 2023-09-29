@@ -32,6 +32,7 @@ export * from "./EmbedCache";
 export * from "./Emoji";
 export * from "./Encryption";
 export * from "./FederationActivity";
+export * from "./FederationCache";
 export * from "./FederationKeys";
 export * from "./Guild";
 export * from "./Invite";

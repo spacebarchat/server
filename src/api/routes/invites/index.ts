@@ -59,7 +59,7 @@ router.get(
 
 		if (inputValue && typeof inputValue == "string") {
 			const mention = splitQualifiedMention(inputValue);
-			if (mention.user.length && Config.get().federation.enabled) {
+			if (mention.user.length > 0 && Config.get().federation.enabled) {
 				// This invite is in the form `invitecode@domain.com` OR `https://domain.com/whatever/invitecode`
 				// If the domain provided isn't ours, it's a federated invite
 				// and we should try and fetch that

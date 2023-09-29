@@ -2,7 +2,9 @@ import { DEFAULT_FETCH_OPTIONS } from "@spacebar/api";
 import {
 	ActorType,
 	Config,
+	Debug,
 	FederationActivity,
+	FederationCache,
 	FederationKey,
 	OrmUtils,
 	Snowflake,
@@ -26,6 +28,10 @@ import TurndownService from "turndown";
 import { federationQueue } from "./queue";
 
 export const ACTIVITYSTREAMS_CONTEXT = "https://www.w3.org/ns/activitystreams";
+export const LOG_NAMES = {
+	webfinger: "Webfinger",
+	remote: "Remote",
+};
 
 export const fetchOpts = Object.freeze(
 	OrmUtils.mergeDeep(DEFAULT_FETCH_OPTIONS, {
@@ -52,6 +58,11 @@ export const resolveAPObject = async <T extends AnyAPObject>(
 	// we were already given an object
 	if (typeof data != "string") return data;
 
+	const cache = await FederationCache.findOne({ where: { id: data } });
+	if (cache) return cache.toJSON() as T;
+
+	Debug(LOG_NAMES.remote, `Fetching from remote ${data}`);
+
 	const agent = new ProxyAgent();
 	const ret = await fetch(data, {
 		...fetchOpts,
@@ -61,6 +72,10 @@ export const resolveAPObject = async <T extends AnyAPObject>(
 	const json = await ret.json();
 
 	if (!hasAPContext(json)) throw new APError("Object is not APObject");
+
+	setImmediate(async () => {
+		await FederationCache.create({ id: json.id, data: json }).save();
+	});
 
 	return json as T;
 };
@@ -94,6 +109,8 @@ export const resolveWebfinger = async (
 	lookup: string,
 ): Promise<AnyAPObject> => {
 	const { domain } = splitQualifiedMention(lookup);
+
+	Debug(LOG_NAMES.webfinger, `Performing lookup ${lookup}`);
 
 	const agent = new ProxyAgent();
 	const wellknown = (await fetch(
