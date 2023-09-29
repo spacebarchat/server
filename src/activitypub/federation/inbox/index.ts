@@ -1,9 +1,33 @@
-import { Message, MessageCreateEvent, emitEvent } from "@spacebar/util";
-import { APCreate, AnyAPObject, ObjectIsNote } from "activitypub-types";
+import {
+	ActorType,
+	FederationActivity,
+	FederationKey,
+	Invite,
+	Member,
+	Message,
+	MessageCreateEvent,
+	emitEvent,
+} from "@spacebar/util";
+import {
+	APAccept,
+	APCreate,
+	APFollow,
+	AnyAPObject,
+	ObjectIsNote,
+} from "activitypub-types";
 import { Request } from "express";
 import { HttpSig } from "../HttpSig";
+import { federationQueue } from "../queue";
 import { transformNoteToMessage } from "../transforms";
-import { APError, hasAPContext, resolveAPObject } from "../utils";
+import { APFollowWithInvite } from "../types";
+import {
+	ACTIVITYSTREAMS_CONTEXT,
+	APError,
+	fetchFederatedUser,
+	hasAPContext,
+	resolveAPObject,
+	splitQualifiedMention,
+} from "../utils";
 
 /**
  * Key names are derived from the object type names
@@ -36,6 +60,27 @@ const handlers = {
 			} as MessageCreateEvent),
 			message.save(),
 		]);
+	},
+
+	Follow: async (activity: APFollow) => {
+		// dummy: send back Accept regardless
+
+		if (typeof activity.object != "string")
+			throw new APError("not implemented");
+		const mention = splitQualifiedMention(activity.object);
+
+		const keys = await FederationKey.findOneOrFail({
+			where: { domain: mention.domain, actorId: mention.user },
+		});
+
+		switch (keys.type) {
+			case ActorType.GUILD:
+				if (typeof activity.actor != "string")
+					throw new APError("not implemented");
+				return addRemoteUserToGuild(activity.actor, keys, activity);
+			default:
+				throw new APError("not implemented");
+		}
 	},
 } as Record<string, (activity: AnyAPObject) => Promise<unknown>>;
 
@@ -77,4 +122,35 @@ export const genericInboxHandler = async (req: Request) => {
 
 	console.warn(`Activity of type ${type} not implemented`);
 	throw new APError(`Activity of type ${type} not implemented`);
+};
+
+const addRemoteUserToGuild = async (
+	actor: string,
+	guild: FederationKey,
+	follow: APFollow,
+) => {
+	const invite = (follow as APFollowWithInvite).invite;
+	if (!invite) throw new APError("Requires invite");
+
+	await Invite.findOneOrFail({
+		where: {
+			guild_id: guild.actorId,
+			code: splitQualifiedMention(invite).user,
+		},
+	});
+
+	const { entity, keys } = await fetchFederatedUser(actor);
+
+	await Member.addToGuild(entity.id, guild.actorId);
+
+	const accept = await FederationActivity.create({
+		data: {
+			type: "Accept",
+			"@context": ACTIVITYSTREAMS_CONTEXT,
+			actor: guild.federatedId,
+			object: follow,
+		} as APAccept,
+	}).save();
+
+	federationQueue.distribute(accept.toJSON());
 };

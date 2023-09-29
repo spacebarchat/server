@@ -1,8 +1,8 @@
-import { Config, FederationKey } from "@spacebar/util";
-import { APActivity } from "activitypub-types";
+import { Config, Debug, FederationKey } from "@spacebar/util";
+import { APActivity, ActivityIsFollow } from "activitypub-types";
 import fetch from "node-fetch";
 import { HttpSig } from "./HttpSig";
-import { APError, splitQualifiedMention } from "./utils";
+import { APError, LOG_NAMES, splitQualifiedMention } from "./utils";
 
 //
 type Instance = string;
@@ -14,6 +14,8 @@ class FederationQueue {
 	public async distribute(activity: APActivity) {
 		let { actor } = activity;
 		const { to, object } = activity;
+
+		Debug(LOG_NAMES.remote, `distributing activity ${activity.id}`);
 
 		if (!actor)
 			throw new APError("Activity with no actor cannot be signed.");
@@ -43,7 +45,11 @@ class FederationQueue {
 			if (!recv) continue;
 
 			// this is wrong?
-			if (typeof recv != "string") continue;
+			if (typeof recv != "string") {
+				if (ActivityIsFollow(recv)) {
+					recv = recv.actor!.toString();
+				} else continue;
+			}
 
 			if (recv == "https://www.w3.org/ns/activitystreams#Public") {
 				console.debug(`TODO: Skipping sending activity to #Public`);
@@ -58,6 +64,7 @@ class FederationQueue {
 			// TODO: this is bad
 			if (!recv.includes("/inbox")) recv = `${recv}/inbox`;
 
+			Debug(LOG_NAMES.remote, `sending activity to ${recv}`);
 			await this.signAndSend(activity, sender, recv);
 		}
 	}

@@ -1,11 +1,13 @@
 import { DEFAULT_FETCH_OPTIONS } from "@spacebar/api";
 import {
 	ActorType,
+	BaseClass,
 	Config,
 	Debug,
 	FederationActivity,
 	FederationCache,
 	FederationKey,
+	Guild,
 	OrmUtils,
 	Snowflake,
 	User,
@@ -13,7 +15,6 @@ import {
 	WebfingerResponse,
 } from "@spacebar/util";
 import {
-	APFollow,
 	APObject,
 	APPerson,
 	AnyAPObject,
@@ -26,6 +27,7 @@ import fetch from "node-fetch";
 import { ProxyAgent } from "proxy-agent";
 import TurndownService from "turndown";
 import { federationQueue } from "./queue";
+import { APFollowWithInvite } from "./types";
 
 export const ACTIVITYSTREAMS_CONTEXT = "https://www.w3.org/ns/activitystreams";
 export const LOG_NAMES = {
@@ -142,7 +144,9 @@ export const tryResolveWebfinger = async (lookup: string) => {
 };
 
 /** Fetch from local db, if not found fetch from remote instance and save */
-export const fetchFederatedUser = async (actorId: string) => {
+export const fetchFederatedUser = async (
+	actorId: string,
+): Promise<{ keys: FederationKey; entity: BaseClass }> => {
 	// if we were given webfinger, resolve that first
 	const mention = splitQualifiedMention(actorId);
 	const cache = await FederationKey.findOne({
@@ -151,7 +155,7 @@ export const fetchFederatedUser = async (actorId: string) => {
 	if (cache) {
 		return {
 			keys: cache,
-			user: await User.findOneOrFail({ where: { id: cache.actorId } }),
+			entity: await User.findOneOrFail({ where: { id: cache.actorId } }),
 		};
 	}
 
@@ -187,33 +191,46 @@ export const fetchFederatedUser = async (actorId: string) => {
 		outbox: remoteActor.outbox,
 	});
 
-	const user = User.create({
-		id: keys.actorId,
-		username: remoteActor.name,
-		discriminator: "0",
-		bio: new TurndownService().turndown(remoteActor.summary), // html -> markdown
-		email: `${remoteActor.preferredUsername}@${keys.domain}`,
-		data: {
-			hash: "#",
-			valid_tokens_since: new Date(),
-		},
-		extended_settings: "{}",
-		settings: UserSettings.create(),
-		premium: false,
+	let entity: BaseClass | undefined = undefined;
+	if (type == ActorType.USER)
+		entity = User.create({
+			id: keys.actorId,
+			username: remoteActor.name,
+			discriminator: "0",
+			bio: new TurndownService().turndown(remoteActor.summary), // html -> markdown
+			email: `${remoteActor.preferredUsername}@${keys.domain}`,
+			data: {
+				hash: "#",
+				valid_tokens_since: new Date(),
+			},
+			extended_settings: "{}",
+			settings: UserSettings.create(),
+			premium: false,
 
-		premium_since: Config.get().defaults.user.premium
-			? new Date()
-			: undefined,
-		rights: Config.get().register.defaultRights,
-		premium_type: Config.get().defaults.user.premiumType ?? 0,
-		verified: Config.get().defaults.user.verified ?? true,
-		created_at: new Date(),
-	});
+			premium_since: Config.get().defaults.user.premium
+				? new Date()
+				: undefined,
+			rights: Config.get().register.defaultRights,
+			premium_type: Config.get().defaults.user.premiumType ?? 0,
+			verified: Config.get().defaults.user.verified ?? true,
+			created_at: new Date(),
+		});
 
-	await Promise.all([keys.save(), user.save()]);
+	if (type == ActorType.GUILD)
+		entity = Guild.create({
+			id: keys.actorId,
+			name: remoteActor.name,
+			owner_id: (
+				await fetchFederatedUser(remoteActor.attributedTo!.toString())
+			).entity.id,
+		});
+
+	if (!entity) throw new APError("not possible :3");
+
+	await Promise.all([keys.save(), entity.save()]);
 	return {
 		keys,
-		user,
+		entity,
 	};
 };
 
@@ -232,7 +249,8 @@ export const tryFederatedGuildJoin = async (code: string, user_id: string) => {
 			type: "Follow",
 			actor: `https://${host}/federation/users/${user_id}`,
 			object: guild.id,
-		} as APFollow,
+			invite: code,
+		} as APFollowWithInvite,
 	}).save();
 
 	await federationQueue.distribute(follow.toJSON());

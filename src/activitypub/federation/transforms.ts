@@ -340,7 +340,7 @@ export const transformOrganisationToGuild = async (org: APOrganization) => {
 	const guild = Guild.create({
 		id: keys.actorId,
 		name: org.name,
-		owner_id: owner.user.id,
+		owner_id: owner.entity.id,
 	});
 
 	await Promise.all([guild.save(), keys.save()]);
