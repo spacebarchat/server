@@ -28,6 +28,14 @@ export class HttpSig {
 		activity: APActivity,
 		requestHeaders: IncomingHttpHeaders,
 	) {
+		const date = requestHeaders["date"];
+		if (
+			!date ||
+			// Older than 1 day
+			Date.parse(date).valueOf() > Date.now() + 24 * 60 * 60 * 1000
+		)
+			throw new APError("Signature too old");
+
 		const sigheader = requestHeaders["signature"]?.toString();
 		if (!sigheader) throw new APError("Missing signature");
 		const sigopts: { [key: string]: string | undefined } = Object.assign(
@@ -115,7 +123,7 @@ export class HttpSig {
 		const header =
 			`keyId="https://${host}/federation/${sender.type}/${sender.actorId}",` +
 			`headers="(request-target) host date digest",` +
-			`signature=${sig_b64}`;
+			`signature="${sig_b64}"`;
 
 		return OrmUtils.mergeDeep({}, fetchOpts, {
 			method: "POST",
