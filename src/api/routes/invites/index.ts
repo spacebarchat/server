@@ -18,7 +18,6 @@
 
 import {
 	APError,
-	APObjectIsOrganisation,
 	splitQualifiedMention,
 	transformOrganisationToInvite,
 	tryFederatedGuildJoin,
@@ -36,6 +35,7 @@ import {
 	emitEvent,
 	getPermission,
 } from "@spacebar/util";
+import { ObjectIsOrganization } from "activitypub-types";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -71,7 +71,7 @@ router.get(
 
 					const remoteGuild = await tryResolveWebfinger(inputValue);
 					if (remoteGuild) {
-						if (APObjectIsOrganisation(remoteGuild))
+						if (ObjectIsOrganization(remoteGuild))
 							return res.json(
 								await transformOrganisationToInvite(
 									inputValue,

@@ -12,6 +12,7 @@ import {
 } from "@spacebar/util";
 import {
 	APFollow,
+	APObject,
 	APPerson,
 	AnyAPObject,
 	ObjectIsGroup,
@@ -22,7 +23,7 @@ import { HTTPError } from "lambert-server";
 import fetch from "node-fetch";
 import { ProxyAgent } from "proxy-agent";
 import TurndownService from "turndown";
-import { Federation } from ".";
+import { federationQueue } from "./queue";
 
 export const ACTIVITYSTREAMS_CONTEXT = "https://www.w3.org/ns/activitystreams";
 
@@ -37,7 +38,7 @@ export const fetchOpts = Object.freeze(
 
 export class APError extends HTTPError {}
 
-export const hasAPContext = (data: object) => {
+export const hasAPContext = (data: object): data is APObject => {
 	if (!("@context" in data)) return false;
 	const context = data["@context"];
 	if (Array.isArray(context))
@@ -48,11 +49,8 @@ export const hasAPContext = (data: object) => {
 export const resolveAPObject = async <T extends AnyAPObject>(
 	data: string | T,
 ): Promise<T> => {
-	// we were already given an AP object
-	if (typeof data != "string") {
-		if (!hasAPContext(data)) throw new APError("Object is not APObject");
-		return data;
-	}
+	// we were already given an object
+	if (typeof data != "string") return data;
 
 	const agent = new ProxyAgent();
 	const ret = await fetch(data, {
@@ -64,7 +62,7 @@ export const resolveAPObject = async <T extends AnyAPObject>(
 
 	if (!hasAPContext(json)) throw new APError("Object is not APObject");
 
-	return json;
+	return json as T;
 };
 
 export const splitQualifiedMention = (lookup: string) => {
@@ -220,7 +218,7 @@ export const tryFederatedGuildJoin = async (code: string, user_id: string) => {
 		} as APFollow,
 	}).save();
 
-	await Federation.distribute(follow.toJSON());
+	await federationQueue.distribute(follow.toJSON());
 };
 
 export const APObjectIsSpacebarActor = (

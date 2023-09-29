@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Federation, transformMessageToAnnounceNoce } from "@spacebar/ap";
+import { federationQueue, transformMessageToAnnounceNoce } from "@spacebar/ap";
 import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
 	Attachment,
@@ -409,7 +409,7 @@ router.post(
 			if (!Config.get().federation.enabled) return;
 			const ap = await transformMessageToAnnounceNoce(message);
 
-			await Federation.distribute(ap);
+			await federationQueue.distribute(ap);
 		});
 
 		return res.json(message);
