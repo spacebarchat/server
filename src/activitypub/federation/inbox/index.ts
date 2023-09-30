@@ -15,15 +15,20 @@ import {
 	ActivityIsFollow,
 	AnyAPObject,
 	ObjectIsNote,
+	ObjectIsOrganization,
 } from "activitypub-types";
 import { Request } from "express";
 import { HttpSig } from "../HttpSig";
 import { federationQueue } from "../queue";
-import { transformNoteToMessage } from "../transforms";
+import {
+	transformNoteToMessage,
+	transformOrganisationToGuild,
+} from "../transforms";
 import { APFollowWithInvite } from "../types";
 import {
 	ACTIVITYSTREAMS_CONTEXT,
 	APError,
+	createChannelsFromGuildFollows,
 	fetchFederatedUser,
 	hasAPContext,
 	resolveAPObject,
@@ -106,13 +111,29 @@ const handlers = {
 		if (typeof inner.object != "string")
 			throw new APError("not implemented");
 
-		const guild = await fetchFederatedUser(inner.object);
+		const apGuild = await resolveAPObject(inner.object);
+		if (!ObjectIsOrganization(apGuild))
+			throw new APError(
+				"Accept Follow received for object other than Organisation ( Guild ), Ignoring",
+			);
+
+		if (!apGuild.following || typeof apGuild.following != "string")
+			throw new APError("Guild must be following channels");
+
+		const guild = await transformOrganisationToGuild(apGuild);
+
+		// create the channels
+
+		await createChannelsFromGuildFollows(
+			apGuild.following + "?page=true", // TODO: wrong
+			guild.id,
+		);
 
 		if (typeof inner.actor != "string")
 			throw new APError("not implemented");
 
 		const { user } = splitQualifiedMention(inner.actor);
-		Member.addToGuild(user, guild.entity.id);
+		Member.addToGuild(user, guild.id);
 	},
 } as Record<string, (activity: AnyAPObject) => Promise<unknown>>;
 

@@ -26,6 +26,9 @@ export const makeOrderedCollection = async <T extends AnyAPObject>(opts: {
 
 	const elems = await getElements(before, after);
 
+	// TODO: we need to specify next/prev props
+	// and should probably let the caller of this function specify what they are
+	// along with first/last
 	return {
 		"@context": ACTIVITYSTREAMS_CONTEXT,
 		id: `${id}?page=true`,

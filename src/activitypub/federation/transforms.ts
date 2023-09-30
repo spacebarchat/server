@@ -1,6 +1,7 @@
 import {
 	ActorType,
 	Channel,
+	ChannelType,
 	Config,
 	DmChannelDTO,
 	FederationKey,
@@ -8,6 +9,7 @@ import {
 	Invite,
 	Member,
 	Message,
+	Role,
 	Snowflake,
 	User,
 	UserSettings,
@@ -343,7 +345,25 @@ export const transformOrganisationToGuild = async (org: APOrganization) => {
 		owner_id: owner.entity.id,
 	});
 
+	const role = Role.create({
+		id: guild.id,
+		guild_id: guild.id,
+		color: 0,
+		hoist: false,
+		managed: false,
+		// NB: in Spacebar, every role will be non-managed, as we use user-groups instead of roles for managed groups
+		mentionable: false,
+		name: "@everyone",
+		permissions: String("2251804225"),
+		position: 0,
+		icon: undefined,
+		unicode_emoji: undefined,
+		flags: 0, // TODO?
+	});
+
 	await Promise.all([guild.save(), keys.save()]);
+	await role.save();
+
 	return guild;
 };
 
@@ -372,10 +392,50 @@ export const transformGuildToOrganisation = async (
 		inbox: `https://${host}/federation/guilds/${guild.id}/inbox`,
 		outbox: `https://${host}/federation/guilds/${guild.id}/outbox`,
 		followers: `https://${host}/federation/guilds/${guild.id}/followers`,
+		following: `https://${host}/federation/guilds/${guild.id}/following`,
 		publicKey: {
 			id: `https://${host}/federation/guilds/${guild.id}#main-key`,
 			owner: `https://${host}/federation/guilds/${guild.id}`,
 			publicKeyPem: keys.publicKey,
 		},
 	};
+};
+
+export const transformGroupToChannel = async (
+	group: APGroup,
+	guild_id: string,
+) => {
+	if (!group.id) throw new APError("Channel ( group ) must have ID");
+	if (!group.publicKey || !group.publicKey.publicKeyPem)
+		throw new APError("Federated guild must have public key.");
+
+	const cache = await FederationKey.findOne({
+		where: { federatedId: group.id },
+	});
+	if (cache) return Channel.findOneOrFail({ where: { id: cache.actorId } });
+
+	const keys = FederationKey.create({
+		actorId: Snowflake.generate(),
+		federatedId: group.id,
+		username: group.name,
+		domain: new URL(group.id).hostname,
+		publicKey: group.publicKey.publicKeyPem,
+		type: ActorType.CHANNEL,
+		inbox: group.inbox.toString(),
+		outbox: group.outbox.toString(),
+	});
+
+	const channel = Channel.create({
+		id: keys.actorId,
+		name: group.name,
+		type: ChannelType.GUILD_TEXT, // TODO
+		owner_id: undefined,
+		last_message_id: undefined,
+		position: 0, // TODO
+		guild_id,
+	});
+
+	await Promise.all([keys.save(), channel.save()]);
+
+	return channel;
 };

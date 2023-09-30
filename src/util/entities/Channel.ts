@@ -19,6 +19,7 @@
 import { HTTPError } from "lambert-server";
 import {
 	Column,
+	CreateDateColumn,
 	Entity,
 	JoinColumn,
 	ManyToOne,
@@ -73,7 +74,7 @@ export enum ChannelType {
 
 @Entity("channels")
 export class Channel extends BaseClass {
-	@Column()
+	@CreateDateColumn()
 	created_at: Date;
 
 	@Column({ nullable: true })
@@ -301,7 +302,6 @@ export class Channel extends BaseClass {
 		channel = {
 			...channel,
 			...(!opts?.keepId && { id: Snowflake.generate() }),
-			created_at: new Date(),
 			position:
 				(channel.type === ChannelType.UNHANDLED
 					? 0
@@ -381,7 +381,6 @@ export class Channel extends BaseClass {
 				name,
 				type,
 				owner_id: undefined,
-				created_at: new Date(),
 				last_message_id: undefined,
 				recipients: channelRecipients.map((x) =>
 					Recipient.create({

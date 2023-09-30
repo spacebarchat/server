@@ -2,6 +2,7 @@ import { DEFAULT_FETCH_OPTIONS } from "@spacebar/api";
 import {
 	ActorType,
 	BaseClass,
+	ChannelCreateEvent,
 	Config,
 	Debug,
 	FederationActivity,
@@ -13,9 +14,11 @@ import {
 	User,
 	UserSettings,
 	WebfingerResponse,
+	emitEvent,
 } from "@spacebar/util";
 import {
 	APObject,
+	APOrderedCollection,
 	APPerson,
 	AnyAPObject,
 	ObjectIsGroup,
@@ -27,6 +30,7 @@ import fetch from "node-fetch";
 import { ProxyAgent } from "proxy-agent";
 import TurndownService from "turndown";
 import { federationQueue } from "./queue";
+import { transformGroupToChannel } from "./transforms";
 import { APFollowWithInvite } from "./types";
 
 export const ACTIVITYSTREAMS_CONTEXT = "https://www.w3.org/ns/activitystreams";
@@ -254,6 +258,28 @@ export const tryFederatedGuildJoin = async (code: string, user_id: string) => {
 	}).save();
 
 	await federationQueue.distribute(follow.toJSON());
+};
+
+export const createChannelsFromGuildFollows = async (
+	endpoint: string,
+	guild_id: string,
+) => {
+	const collection = (await resolveAPObject(endpoint)) as APOrderedCollection; // TODO: validation
+	if (!collection.orderedItems)
+		throw new APError("Guild followers did not contain orderedItems");
+
+	// resolve every channel
+	for (const channel of collection.orderedItems) {
+		if (typeof channel == "string" || !ObjectIsGroup(channel)) continue;
+
+		const guildchannel = await transformGroupToChannel(channel, guild_id);
+
+		await emitEvent({
+			event: "CHANNEL_CREATE",
+			data: guildchannel,
+			guild_id: guildchannel.guild_id,
+		} as ChannelCreateEvent);
+	}
 };
 
 export const APObjectIsSpacebarActor = (
