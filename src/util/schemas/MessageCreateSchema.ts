@@ -26,6 +26,7 @@ type Attachment = {
 export interface MessageCreateSchema {
 	type?: number;
 	content?: string;
+	mobile_network_type?: string;
 	nonce?: string;
 	channel_id?: string;
 	tts?: boolean;
