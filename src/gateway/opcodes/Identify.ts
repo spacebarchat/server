@@ -278,7 +278,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				);
 				return channel;
 			})
-			.sort((a, b) => a.position - b.position);
+			.sort((a, b) => b.position - a.position);
 
 		if (user.bot) {
 			pending_guilds.push(member.guild);
