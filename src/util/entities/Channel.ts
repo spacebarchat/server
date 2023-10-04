@@ -126,9 +126,6 @@ export class Channel extends BaseClass {
 	@Column({ nullable: true })
 	default_auto_archive_duration?: number;
 
-	@Column({ nullable: true })
-	position?: number;
-
 	@Column({ type: "simple-json", nullable: true })
 	permission_overwrites?: ChannelPermissionOverwrite[];
 
@@ -193,6 +190,9 @@ export class Channel extends BaseClass {
 	@Column()
 	default_thread_rate_limit_per_user: number = 0;
 
+	/** Must be calculated Channel.calculatePosition */
+	position: number;
+
 	// TODO: DM channel
 	static async createChannel(
 		channel: Partial<Channel>,
@@ -211,10 +211,16 @@ export class Channel extends BaseClass {
 			permissions.hasThrow("MANAGE_CHANNELS");
 		}
 
+		const guild = await Guild.findOneOrFail({
+			where: { id: channel.guild_id },
+			select: {
+				features: !opts?.skipNameChecks,
+				channelOrdering: true,
+				id: true,
+			},
+		});
+
 		if (!opts?.skipNameChecks) {
-			const guild = await Guild.findOneOrFail({
-				where: { id: channel.guild_id },
-			});
 			if (
 				!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") &&
 				channel.name
@@ -293,14 +299,15 @@ export class Channel extends BaseClass {
 		if (!channel.permission_overwrites) channel.permission_overwrites = [];
 		// TODO: eagerly auto generate position of all guild channels
 
+		const position =
+			(channel.type === ChannelType.UNHANDLED ? 0 : channel.position) ||
+			0;
+
 		channel = {
 			...channel,
 			...(!opts?.keepId && { id: Snowflake.generate() }),
 			created_at: new Date(),
-			position:
-				(channel.type === ChannelType.UNHANDLED
-					? 0
-					: channel.position) || 0,
+			position,
 		};
 
 		const ret = Channel.create(channel);
@@ -314,6 +321,7 @@ export class Channel extends BaseClass {
 						guild_id: channel.guild_id,
 				  } as ChannelCreateEvent)
 				: Promise.resolve(),
+			Guild.insertChannelInOrder(guild.id, ret.id, position, guild),
 		]);
 
 		return ret;
@@ -454,6 +462,40 @@ export class Channel extends BaseClass {
 		await Message.delete({ channel_id: channel.id }); //TODO we should also delete the attachments from the cdn but to do that we need to move cdn.ts in util
 		//TODO before deleting the channel we should check and delete other relations
 		await Channel.delete({ id: channel.id });
+	}
+
+	static async calculatePosition(
+		channel_id: string,
+		guild_id: string,
+		guild?: Guild,
+	) {
+		if (!guild)
+			guild = await Guild.findOneOrFail({
+				where: { id: guild_id },
+				select: { channelOrdering: true },
+			});
+
+		return guild.channelOrdering.findIndex((id) => channel_id == id);
+	}
+
+	static async getOrderedChannels(guild_id: string, guild?: Guild) {
+		if (!guild)
+			guild = await Guild.findOneOrFail({
+				where: { id: guild_id },
+				select: { channelOrdering: true },
+			});
+
+		const channels = await Promise.all(
+			guild.channelOrdering.map((id) =>
+				Channel.findOneOrFail({ where: { id } }),
+			),
+		);
+
+		return channels.reduce((r, v) => {
+			v.position = (guild as Guild).channelOrdering.indexOf(v.id);
+			r[v.position] = v;
+			return r;
+		}, [] as Array<Channel>);
 	}
 
 	isDm() {

@@ -77,12 +77,7 @@ router.get(
 		// Fetch voice channels, and the @everyone permissions object
 		const channels: { id: string; name: string; position: number }[] = [];
 
-		(
-			await Channel.find({
-				where: { guild_id: guild_id, type: 2 },
-				order: { position: "ASC" },
-			})
-		).filter((doc) => {
+		(await Channel.getOrderedChannels(guild.id, guild)).filter((doc) => {
 			// Only return channels where @everyone has the CONNECT permission
 			if (
 				doc.permission_overwrites === undefined ||

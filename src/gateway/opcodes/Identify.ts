@@ -54,6 +54,7 @@ import {
 	UserSettings,
 	checkToken,
 	emitEvent,
+	getDatabase,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 
@@ -167,7 +168,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					// guild channels, emoji, roles, stickers
 					// but we do want almost everything from guild.
 					// How do you do that without just enumerating the guild props?
-					guild: true,
+					guild: Object.fromEntries(
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						getDatabase()!
+							.getMetadata(Guild)
+							.columns.map((x) => [x.propertyName, true]),
+					),
 				},
 				relations: [
 					"guild",
@@ -253,18 +259,26 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const guilds: GuildOrUnavailable[] = members.map((member) => {
 		// filter guild channels we don't have permission to view
 		// TODO: check if this causes issues when the user is granted other roles?
-		member.guild.channels = member.guild.channels.filter((channel) => {
-			const perms = Permissions.finalPermission({
-				user: {
-					id: member.id,
-					roles: member.roles.map((x) => x.id),
-				},
-				guild: member.guild,
-				channel,
-			});
+		member.guild.channels = member.guild.channels
+			.filter((channel) => {
+				const perms = Permissions.finalPermission({
+					user: {
+						id: member.id,
+						roles: member.roles.map((x) => x.id),
+					},
+					guild: member.guild,
+					channel,
+				});
 
-			return perms.has("VIEW_CHANNEL");
-		});
+				return perms.has("VIEW_CHANNEL");
+			})
+			.map((channel) => {
+				channel.position = member.guild.channelOrdering.indexOf(
+					channel.id,
+				);
+				return channel;
+			})
+			.sort((a, b) => a.position - b.position);
 
 		if (user.bot) {
 			pending_guilds.push(member.guild);

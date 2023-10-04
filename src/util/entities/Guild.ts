@@ -297,6 +297,9 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	premium_progress_bar_enabled: boolean = false;
 
+	@Column({ select: false, type: "simple-array" })
+	channelOrdering: string[];
+
 	static async createGuild(body: {
 		name?: string;
 		icon?: string | null;
@@ -324,6 +327,7 @@ export class Guild extends BaseClass {
 				description: "",
 				welcome_channels: [],
 			},
+			channelOrdering: [],
 
 			afk_timeout: Config.get().defaults.guild.afkTimeout,
 			default_message_notifications:
@@ -376,7 +380,7 @@ export class Guild extends BaseClass {
 
 			const parent_id = ids.get(channel.parent_id);
 
-			await Channel.createChannel(
+			const saved = await Channel.createChannel(
 				{ ...channel, guild_id, id, parent_id },
 				body.owner_id,
 				{
@@ -386,15 +390,69 @@ export class Guild extends BaseClass {
 					skipEventEmit: true,
 				},
 			);
+
+			await Guild.insertChannelInOrder(
+				guild.id,
+				saved.id,
+				parent_id ?? channel.position ?? 0,
+				guild,
+			);
 		}
 
 		return guild;
 	}
 
-	toJSON() {
+	/** Insert a channel into the guild ordering by parent channel id or position */
+	static async insertChannelInOrder(
+		guild_id: string,
+		channel_id: string,
+		position: number,
+		guild?: Guild,
+	): Promise<number>;
+	static async insertChannelInOrder(
+		guild_id: string,
+		channel_id: string,
+		parent_id: string,
+		guild?: Guild,
+	): Promise<number>;
+	static async insertChannelInOrder(
+		guild_id: string,
+		channel_id: string,
+		insertPoint: string | number,
+		guild?: Guild,
+	): Promise<number>;
+	static async insertChannelInOrder(
+		guild_id: string,
+		channel_id: string,
+		insertPoint: string | number,
+		guild?: Guild,
+	): Promise<number> {
+		if (!guild)
+			guild = await Guild.findOneOrFail({
+				where: { id: guild_id },
+				select: { channelOrdering: true },
+			});
+
+		let position;
+		if (typeof insertPoint == "string")
+			position = guild.channelOrdering.indexOf(insertPoint) + 1;
+		else position = insertPoint;
+
+		guild.channelOrdering.remove(channel_id);
+
+		guild.channelOrdering.splice(position, 0, channel_id);
+		await Guild.update(
+			{ id: guild_id },
+			{ channelOrdering: guild.channelOrdering },
+		);
+		return position;
+	}
+
+	toJSON(): Guild {
 		return {
 			...this,
 			unavailable: this.unavailable == false ? undefined : true,
+			channelOrdering: undefined,
 		};
 	}
 }

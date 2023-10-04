@@ -22,10 +22,10 @@ import {
 	ChannelModifySchema,
 	ChannelReorderSchema,
 	ChannelUpdateEvent,
+	Guild,
 	emitEvent,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
 const router = Router();
 
 router.get(
@@ -96,44 +96,72 @@ router.patch(
 		const { guild_id } = req.params;
 		const body = req.body as ChannelReorderSchema;
 
-		await Promise.all([
-			body.map(async (x) => {
-				if (x.position == null && !x.parent_id)
-					throw new HTTPError(
-						`You need to at least specify position or parent_id`,
-						400,
-					);
+		const guild = await Guild.findOneOrFail({
+			where: { id: guild_id },
+			select: { channelOrdering: true },
+		});
 
-				const opts: Partial<Channel> = {};
-				if (x.position != null) opts.position = x.position;
+		// The channels not listed for this query
+		const notMentioned = guild.channelOrdering.filter(
+			(x) => !body.find((c) => c.id == x),
+		);
 
-				if (x.parent_id) {
-					opts.parent_id = x.parent_id;
-					const parent_channel = await Channel.findOneOrFail({
-						where: { id: x.parent_id, guild_id },
-						select: ["permission_overwrites"],
-					});
-					if (x.lock_permissions) {
-						opts.permission_overwrites =
-							parent_channel.permission_overwrites;
-					}
-				}
+		const withParents = body.filter((x) => x.parent_id != undefined);
+		const withPositions = body.filter((x) => x.position != undefined);
 
-				await Channel.update({ guild_id, id: x.id }, opts);
+		await Promise.all(
+			withPositions.map(async (opt) => {
 				const channel = await Channel.findOneOrFail({
-					where: { guild_id, id: x.id },
+					where: { id: opt.id },
 				});
+
+				channel.position = opt.position as number;
+				notMentioned.splice(opt.position as number, 0, channel.id);
 
 				await emitEvent({
 					event: "CHANNEL_UPDATE",
 					data: channel,
-					channel_id: x.id,
+					channel_id: channel.id,
 					guild_id,
 				} as ChannelUpdateEvent);
 			}),
-		]);
+		);
 
-		res.sendStatus(204);
+		// have to do the parents after the positions
+		await Promise.all(
+			withParents.map(async (opt) => {
+				const [channel, parent] = await Promise.all([
+					Channel.findOneOrFail({
+						where: { id: opt.id },
+					}),
+					Channel.findOneOrFail({
+						where: { id: opt.parent_id as string },
+						select: { permission_overwrites: true },
+					}),
+				]);
+
+				if (opt.lock_permissions)
+					await Channel.update(
+						{ id: channel.id },
+						{ permission_overwrites: parent.permission_overwrites },
+					);
+
+				const parentPos = notMentioned.indexOf(parent.id);
+				notMentioned.splice(parentPos + 1, 0, channel.id);
+				channel.position = (parentPos + 1) as number;
+
+				await emitEvent({
+					event: "CHANNEL_UPDATE",
+					data: channel,
+					channel_id: channel.id,
+					guild_id,
+				} as ChannelUpdateEvent);
+			}),
+		);
+
+		await Guild.update({ id: guild_id }, { channelOrdering: notMentioned });
+
+		return res.sendStatus(204);
 	},
 );
 

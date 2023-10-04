@@ -161,12 +161,6 @@ router.patch(
 		guild.assign(body);
 
 		if (body.public_updates_channel_id == "1") {
-			// move all channels up 1
-			await Channel.createQueryBuilder("channels")
-				.where({ guild: { id: guild_id } })
-				.update({ position: () => "position + 1" })
-				.execute();
-
 			// create an updates channel for them
 			const channel = await Channel.createChannel(
 				{
@@ -188,6 +182,8 @@ router.patch(
 				{ skipPermissionCheck: true },
 			);
 
+			await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
+
 			guild.public_updates_channel_id = channel.id;
 		} else if (body.public_updates_channel_id != undefined) {
 			// ensure channel exists in this guild
@@ -198,12 +194,6 @@ router.patch(
 		}
 
 		if (body.rules_channel_id == "1") {
-			// move all channels up 1
-			await Channel.createQueryBuilder("channels")
-				.where({ guild: { id: guild_id } })
-				.update({ position: () => "position + 1" })
-				.execute();
-
 			// create a rules for them
 			const channel = await Channel.createChannel(
 				{
@@ -224,6 +214,8 @@ router.patch(
 				undefined,
 				{ skipPermissionCheck: true },
 			);
+
+			await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
 
 			guild.rules_channel_id = channel.id;
 		} else if (body.rules_channel_id != undefined) {
