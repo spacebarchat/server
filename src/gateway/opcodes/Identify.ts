@@ -273,7 +273,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				return perms.has("VIEW_CHANNEL");
 			})
 			.map((channel) => {
-				channel.position = member.guild.channelOrdering.indexOf(
+				channel.position = member.guild.channel_ordering.indexOf(
 					channel.id,
 				);
 				return channel;

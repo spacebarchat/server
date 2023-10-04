@@ -298,7 +298,7 @@ export class Guild extends BaseClass {
 	premium_progress_bar_enabled: boolean = false;
 
 	@Column({ select: false, type: "simple-array" })
-	channelOrdering: string[];
+	channel_ordering: string[];
 
 	static async createGuild(body: {
 		name?: string;
@@ -327,7 +327,7 @@ export class Guild extends BaseClass {
 				description: "",
 				welcome_channels: [],
 			},
-			channelOrdering: [],
+			channel_ordering: [],
 
 			afk_timeout: Config.get().defaults.guild.afkTimeout,
 			default_message_notifications:
@@ -430,20 +430,20 @@ export class Guild extends BaseClass {
 		if (!guild)
 			guild = await Guild.findOneOrFail({
 				where: { id: guild_id },
-				select: { channelOrdering: true },
+				select: { channel_ordering: true },
 			});
 
 		let position;
 		if (typeof insertPoint == "string")
-			position = guild.channelOrdering.indexOf(insertPoint) + 1;
+			position = guild.channel_ordering.indexOf(insertPoint) + 1;
 		else position = insertPoint;
 
-		guild.channelOrdering.remove(channel_id);
+		guild.channel_ordering.remove(channel_id);
 
-		guild.channelOrdering.splice(position, 0, channel_id);
+		guild.channel_ordering.splice(position, 0, channel_id);
 		await Guild.update(
 			{ id: guild_id },
-			{ channelOrdering: guild.channelOrdering },
+			{ channel_ordering: guild.channel_ordering },
 		);
 		return position;
 	}
@@ -452,7 +452,7 @@ export class Guild extends BaseClass {
 		return {
 			...this,
 			unavailable: this.unavailable == false ? undefined : true,
-			channelOrdering: undefined,
+			channel_ordering: undefined,
 		};
 	}
 }

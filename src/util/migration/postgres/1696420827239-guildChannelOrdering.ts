@@ -11,7 +11,7 @@ export class guildChannelOrdering1696420827239 implements MigrationInterface {
 		);
 
 		await queryRunner.query(
-			`ALTER TABLE guilds ADD channelOrdering text NOT NULL DEFAULT '[]'`,
+			`ALTER TABLE guilds ADD channel_ordering text NOT NULL DEFAULT '[]'`,
 		);
 
 		for (const guild_id of guilds.records.map((x) => x.id)) {
@@ -26,7 +26,7 @@ export class guildChannelOrdering1696420827239 implements MigrationInterface {
 			channels.sort((a, b) => a.position - b.position);
 
 			await queryRunner.query(
-				`UPDATE guilds SET channelOrdering = $1 WHERE id = $2`,
+				`UPDATE guilds SET channel_ordering = $1 WHERE id = $2`,
 				[JSON.stringify(channels.map((x) => x.id)), guild_id],
 			);
 		}

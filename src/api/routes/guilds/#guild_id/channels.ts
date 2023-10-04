@@ -98,11 +98,11 @@ router.patch(
 
 		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
-			select: { channelOrdering: true },
+			select: { channel_ordering: true },
 		});
 
 		// The channels not listed for this query
-		const notMentioned = guild.channelOrdering.filter(
+		const notMentioned = guild.channel_ordering.filter(
 			(x) => !body.find((c) => c.id == x),
 		);
 
@@ -159,7 +159,10 @@ router.patch(
 			}),
 		);
 
-		await Guild.update({ id: guild_id }, { channelOrdering: notMentioned });
+		await Guild.update(
+			{ id: guild_id },
+			{ channel_ordering: notMentioned },
+		);
 
 		return res.sendStatus(204);
 	},

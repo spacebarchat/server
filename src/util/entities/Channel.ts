@@ -215,7 +215,7 @@ export class Channel extends BaseClass {
 			where: { id: channel.guild_id },
 			select: {
 				features: !opts?.skipNameChecks,
-				channelOrdering: true,
+				channel_ordering: true,
 				id: true,
 			},
 		});
@@ -472,27 +472,27 @@ export class Channel extends BaseClass {
 		if (!guild)
 			guild = await Guild.findOneOrFail({
 				where: { id: guild_id },
-				select: { channelOrdering: true },
+				select: { channel_ordering: true },
 			});
 
-		return guild.channelOrdering.findIndex((id) => channel_id == id);
+		return guild.channel_ordering.findIndex((id) => channel_id == id);
 	}
 
 	static async getOrderedChannels(guild_id: string, guild?: Guild) {
 		if (!guild)
 			guild = await Guild.findOneOrFail({
 				where: { id: guild_id },
-				select: { channelOrdering: true },
+				select: { channel_ordering: true },
 			});
 
 		const channels = await Promise.all(
-			guild.channelOrdering.map((id) =>
+			guild.channel_ordering.map((id) =>
 				Channel.findOneOrFail({ where: { id } }),
 			),
 		);
 
 		return channels.reduce((r, v) => {
-			v.position = (guild as Guild).channelOrdering.indexOf(v.id);
+			v.position = (guild as Guild).channel_ordering.indexOf(v.id);
 			r[v.position] = v;
 			return r;
 		}, [] as Array<Channel>);
