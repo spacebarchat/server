@@ -34,12 +34,20 @@ export class FederationKey extends BaseClassWithoutId {
 	federatedId: string;
 
 	/** The inbox of the remote user */
-	@Column({ nullable: true, type: String })
-	inbox: string | null;
+	@Column()
+	inbox: string;
 
 	/** The outbox of the remote user */
-	@Column({ nullable: true, type: String })
-	outbox: string | null;
+	@Column()
+	outbox: string;
+
+	/** The following collection of this user */
+	@Column()
+	following: string;
+
+	/** The followers collection of this user */
+	@Column()
+	followers: string;
 
 	/** The public key of this actor. Public keys of remote actors are cached. */
 	@Column()
@@ -63,6 +71,10 @@ export class FederationKey extends BaseClassWithoutId {
 			actorId,
 			type,
 			federatedId: `https://${host}/federation/${type}/${actorId}`,
+			inbox: `https://${host}/federation/${type}/${actorId}/inbox`,
+			outbox: `https://${host}/federation/${type}/${actorId}/outbox`,
+			followers: `https://${host}/federation/${type}/${actorId}/followers`,
+			following: `https://${host}/federation/${type}/${actorId}/following`,
 			domain: accountDomain,
 			...(await generateKeyPair("rsa", {
 				modulusLength: 4096,

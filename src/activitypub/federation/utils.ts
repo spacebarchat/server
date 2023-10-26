@@ -191,8 +191,10 @@ export const fetchFederatedUser = async (
 		domain: mention.domain,
 		publicKey: remoteActor.publicKey?.publicKeyPem,
 		type,
-		inbox: remoteActor.inbox,
-		outbox: remoteActor.outbox,
+		inbox: remoteActor.inbox?.toString(),
+		outbox: remoteActor.outbox?.toString(),
+		following: remoteActor.following?.toString(),
+		followers: remoteActor.followers?.toString(),
 	});
 
 	let entity: BaseClass | undefined = undefined;

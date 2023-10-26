@@ -192,7 +192,7 @@ const addRemoteUserToGuild = async (
 		},
 	});
 
-	const { entity, keys } = await fetchFederatedUser(actor);
+	const { entity } = await fetchFederatedUser(actor);
 
 	await Member.addToGuild(entity.id, guild.actorId);
 

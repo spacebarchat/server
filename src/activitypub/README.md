@@ -97,7 +97,7 @@ Follows/is followed by it's corresponding Guild, if applicable.
 
 ## Guild Federation
 
-An automated actor. Follows and is followed by it's corresponding Channels.
+An automated actor. Follows its Channels. Is followed by guild members.
 Also contains a collection of [roles](#role-federation).
 
 ### Supported Activities

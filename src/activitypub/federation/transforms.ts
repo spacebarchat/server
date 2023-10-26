@@ -211,13 +211,13 @@ export const transformUserToPerson = async (user: User): Promise<APPerson> => {
 	const { host, accountDomain } = Config.get().federation;
 
 	const keys = await FederationKey.findOneOrFail({
-		where: { actorId: user.id, domain: accountDomain },
+		where: { actorId: user.id },
 	});
 
 	return {
 		"@context": ACTIVITYSTREAMS_CONTEXT,
 		type: "Person",
-		id: `https://${host}/federation/users/${user.id}`,
+		id: keys.federatedId,
 
 		name: user.username,
 		preferredUsername: user.id,
@@ -232,9 +232,10 @@ export const transformUserToPerson = async (user: User): Promise<APPerson> => {
 			  ]
 			: undefined,
 
-		inbox: `https://${host}/federation/users/${user.id}/inbox`,
-		outbox: `https://${host}/federation/users/${user.id}/outbox`,
-		followers: `https://${host}/federation/users/${user.id}/followers`,
+		inbox: keys.inbox,
+		outbox: keys.outbox,
+		followers: keys.followers,
+		following: keys.following,
 		publicKey: {
 			id: `https://${host}/federation/users/${user.id}#main-key`,
 			owner: `https://${host}/federation/users/${user.id}`,
@@ -266,6 +267,8 @@ export const transformPersonToUser = async (person: APPerson) => {
 		type: ActorType.USER,
 		inbox: person.inbox.toString(),
 		outbox: person.outbox.toString(),
+		followers: person.followers?.toString(),
+		following: person.following?.toString(),
 	}).save();
 
 	return await User.create({
@@ -332,6 +335,8 @@ export const transformOrganisationToGuild = async (org: APOrganization) => {
 		type: ActorType.GUILD,
 		inbox: org.inbox.toString(),
 		outbox: org.outbox.toString(),
+		followers: org.followers?.toString(),
+		following: org.following?.toString(),
 	});
 
 	if (typeof org.attributedTo != "string")
@@ -423,6 +428,8 @@ export const transformGroupToChannel = async (
 		type: ActorType.CHANNEL,
 		inbox: group.inbox.toString(),
 		outbox: group.outbox.toString(),
+		followers: group.followers?.toString(),
+		following: group.following?.toString(),
 	});
 
 	const channel = Channel.create({

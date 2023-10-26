@@ -1,7 +1,9 @@
-import { APOrderedCollection, AnyAPObject } from "activitypub-types";
+import { APOrderedCollection, CollectionCurrentField } from "activitypub-types";
 import { ACTIVITYSTREAMS_CONTEXT } from "./utils";
 
-export const makeOrderedCollection = async <T extends AnyAPObject>(opts: {
+export const makeOrderedCollection = async <
+	T extends CollectionCurrentField,
+>(opts: {
 	page: boolean;
 	min_id?: string;
 	max_id?: string;
