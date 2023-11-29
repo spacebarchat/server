@@ -69,4 +69,11 @@ export class Role extends BaseClass {
 
 	@Column({ default: 0 })
 	flags: number;
+
+	toJSON(): Role {
+		return {
+			...this,
+			tags: this.tags ?? undefined,
+		};
+	}
 }
