@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConfigEntity } from "../entities/Config";
-import fs from "fs/promises";
 import { existsSync } from "fs";
-import { ConfigValue } from "../config";
+import fs from "fs/promises";
 import { OrmUtils } from "..";
+import { ConfigValue } from "../config";
+import { ConfigEntity } from "../entities/Config";
 
 // TODO: yaml instead of json
 const overridePath = process.env.CONFIG_PATH ?? "";
@@ -36,7 +36,7 @@ export const Config = {
 		if (config) return config;
 		console.log("[Config] Loading configuration...");
 		if (!process.env.CONFIG_PATH) {
-			pairs = await ConfigEntity.find();
+			pairs = await validateConfig();
 			config = pairsToConfig(pairs);
 		} else {
 			console.log(`[Config] Using CONFIG_PATH rather than database`);
@@ -129,3 +129,34 @@ function pairsToConfig(pairs: ConfigEntity[]) {
 
 	return value as ConfigValue;
 }
+
+const validateConfig = async () => {
+	let hasErrored = false;
+	const config = await ConfigEntity.find({ select: { key: true } });
+
+	for (const row in config) {
+		try {
+			const found = await ConfigEntity.findOne({
+				where: { key: config[row].key },
+			});
+			if (!found) continue;
+			config[row] = found;
+		} catch (e) {
+			console.error(
+				`Config key '${config[row].key}' has invalid JSON value : ${
+					(e as Error)?.message
+				}`,
+			);
+			hasErrored = true;
+		}
+	}
+
+	if (hasErrored) {
+		console.error(
+			"Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration",
+		);
+		process.exit(1);
+	}
+
+	return config;
+};
