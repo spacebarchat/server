@@ -300,8 +300,9 @@ export class Channel extends BaseClass {
 		// TODO: eagerly auto generate position of all guild channels
 
 		const position =
-			(channel.type === ChannelType.UNHANDLED ? 0 : channel.position) ||
-			0;
+			channel.type == ChannelType.GUILD_CATEGORY
+				? Number.MAX_SAFE_INTEGER // add categories to the bottom
+				: channel.position ?? 0;
 
 		channel = {
 			...channel,

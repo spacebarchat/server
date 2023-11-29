@@ -23,6 +23,7 @@ import {
 	ChannelModifySchema,
 	ChannelType,
 	ChannelUpdateEvent,
+	Guild,
 	Recipient,
 	emitEvent,
 	handleFile,
@@ -97,6 +98,20 @@ router.delete(
 					data: channel,
 					channel_id,
 				} as ChannelDeleteEvent),
+				(async () => {
+					const guild = await Guild.findOneOrFail({
+						where: { id: channel.guild_id },
+						select: { channel_ordering: true },
+					});
+					await Guild.update(
+						{ id: guild.id },
+						{
+							channel_ordering: guild.channel_ordering.remove(
+								channel.id,
+							),
+						},
+					);
+				})(),
 			]);
 		}
 

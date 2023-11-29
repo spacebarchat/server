@@ -21,9 +21,7 @@ import {
 	Channel,
 	ChannelModifySchema,
 	ChannelReorderSchema,
-	ChannelUpdateEvent,
 	Guild,
-	emitEvent,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router();
@@ -104,59 +102,6 @@ router.patch(
 		// The channels not listed for this query
 		const notMentioned = guild.channel_ordering.filter(
 			(x) => !body.find((c) => c.id == x),
-		);
-
-		const withParents = body.filter((x) => x.parent_id != undefined);
-		const withPositions = body.filter((x) => x.position != undefined);
-
-		await Promise.all(
-			withPositions.map(async (opt) => {
-				const channel = await Channel.findOneOrFail({
-					where: { id: opt.id },
-				});
-
-				channel.position = opt.position as number;
-				notMentioned.splice(opt.position as number, 0, channel.id);
-
-				await emitEvent({
-					event: "CHANNEL_UPDATE",
-					data: channel,
-					channel_id: channel.id,
-					guild_id,
-				} as ChannelUpdateEvent);
-			}),
-		);
-
-		// have to do the parents after the positions
-		await Promise.all(
-			withParents.map(async (opt) => {
-				const [channel, parent] = await Promise.all([
-					Channel.findOneOrFail({
-						where: { id: opt.id },
-					}),
-					Channel.findOneOrFail({
-						where: { id: opt.parent_id as string },
-						select: { permission_overwrites: true },
-					}),
-				]);
-
-				if (opt.lock_permissions)
-					await Channel.update(
-						{ id: channel.id },
-						{ permission_overwrites: parent.permission_overwrites },
-					);
-
-				const parentPos = notMentioned.indexOf(parent.id);
-				notMentioned.splice(parentPos + 1, 0, channel.id);
-				channel.position = (parentPos + 1) as number;
-
-				await emitEvent({
-					event: "CHANNEL_UPDATE",
-					data: channel,
-					channel_id: channel.id,
-					guild_id,
-				} as ChannelUpdateEvent);
-			}),
 		);
 
 		await Guild.update(
