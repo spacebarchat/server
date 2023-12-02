@@ -16,11 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BitField } from "./BitField";
-import "missing-native-js-functions";
-import { BitFieldResolvable, BitFlag } from "./BitField";
-import { User } from "../entities";
 import { HTTPError } from "lambert-server";
+import "missing-native-js-functions";
+import { User } from "../entities";
+import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 
 export type RightResolvable =
 	| bigint
@@ -35,7 +34,7 @@ type RightString = keyof typeof Rights.FLAGS;
 export class Rights extends BitField {
 	constructor(bits: BitFieldResolvable = 0) {
 		super(bits);
-		if (this.bitfield & Rights.FLAGS.OPERATOR) {
+		if ((this.bitfield & Rights.FLAGS.OPERATOR) === 0n) {
 			this.bitfield = ALL_RIGHTS;
 		}
 	}

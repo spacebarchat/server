@@ -81,3 +81,4 @@ export * from "./WebAuthnSchema";
 export * from "./WebhookCreateSchema";
 export * from "./WidgetModifySchema";
 export * from "./responses";
+export * from "./admin";

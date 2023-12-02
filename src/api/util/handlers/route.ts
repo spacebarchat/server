@@ -109,7 +109,7 @@ export function route(opts: RouteOptions) {
 			const required = new Rights(opts.right);
 			req.rights = await getRights(req.user_id);
 
-			if (!req.rights || !req.rights.has(required)) {
+			if (!req.rights.has(required)) {
 				throw SpacebarApiErrors.MISSING_RIGHTS.withParams(
 					opts.right as string,
 				);
