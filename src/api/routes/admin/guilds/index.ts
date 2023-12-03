@@ -30,7 +30,8 @@ router.get(
 		right: "MANAGE_GUILDS",
 		query: {
 			limit: {
-				description: "The maximum amount of guilds to return",
+				description:
+					"max number of guilds to return (1-1000). default 100",
 				type: "number",
 				required: false,
 			},
