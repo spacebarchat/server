@@ -27,7 +27,7 @@ router.get(
 	"/",
 	route({
 		description: "Get bans of a guild",
-		right: "MANAGE_GUILDS",
+		right: "ADMIN_READ_GUILD_BANS",
 		query: {
 			limit: {
 				type: "number",

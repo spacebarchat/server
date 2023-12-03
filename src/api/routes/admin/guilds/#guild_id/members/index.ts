@@ -27,7 +27,7 @@ router.get(
 	"/",
 	route({
 		description: "Get members of a guild",
-		right: "MANAGE_GUILDS",
+		right: "ADMIN_READ_MEMBERS",
 		query: {
 			limit: {
 				type: "number",

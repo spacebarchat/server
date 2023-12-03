@@ -18,10 +18,10 @@
 
 import { route } from "@spacebar/api";
 import {
+	AdminGuildModifySchema,
 	AdminGuildProjection,
 	Channel,
 	Guild,
-	GuildAdminModifySchema,
 	GuildUpdateEvent,
 	Permissions,
 	emitEvent,
@@ -34,10 +34,10 @@ router.get(
 	"/",
 	route({
 		description: "Get a guild",
-		right: "MANAGE_GUILDS",
+		right: "ADMIN_READ_GUILDS",
 		responses: {
 			200: {
-				body: "GuildAdminResponse",
+				body: "AdminGuildResponse",
 			},
 			400: {
 				body: "APIErrorResponse",
@@ -62,11 +62,11 @@ router.get(
 router.patch(
 	"/",
 	route({
-		requestBody: "GuildAdminModifySchema",
-		right: "MANAGE_GUILDS",
+		requestBody: "AdminGuildModifySchema",
+		right: "ADMIN_UPDATE_GUILDS",
 		responses: {
 			"200": {
-				body: "GuildAdminResponse",
+				body: "AdminGuildResponse",
 			},
 			401: {
 				body: "APIErrorResponse",
@@ -80,7 +80,7 @@ router.patch(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const body = req.body as GuildAdminModifySchema;
+		const body = req.body as AdminGuildModifySchema;
 		const { id: guild_id } = req.params;
 
 		const guild = await Guild.findOneOrFail({
@@ -212,7 +212,7 @@ router.delete(
 	"/",
 	route({
 		description: "Delete a guild",
-		right: "MANAGE_GUILDS",
+		right: "ADMIN_DELETE_GUILDS",
 		responses: {
 			200: {},
 			400: {

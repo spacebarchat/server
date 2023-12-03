@@ -18,10 +18,10 @@
 
 import { route } from "@spacebar/api";
 import {
+	AdminUserModifySchema,
 	AdminUserProjection,
 	FieldErrors,
 	User,
-	UserAdminModifySchema,
 	UserUpdateEvent,
 	emitEvent,
 	handleFile,
@@ -34,10 +34,10 @@ router.get(
 	"/",
 	route({
 		description: "Get a user",
-		right: "MANAGE_USERS",
+		right: "ADMIN_READ_USERS",
 		responses: {
 			200: {
-				body: "UserAdminResponse",
+				body: "AdminUserResponse",
 			},
 			400: {
 				body: "APIErrorResponse",
@@ -61,11 +61,11 @@ router.patch(
 	"/",
 	route({
 		description: "Update a user",
-		right: "MANAGE_USERS",
-		requestBody: "UserAdminModifySchema",
+		right: "ADMIN_UPDATE_USERS",
+		requestBody: "AdminUserModifySchema",
 		responses: {
 			200: {
-				body: "UserAdminResponse",
+				body: "AdminUserResponse",
 			},
 			400: {
 				body: "APIErrorResponse",
@@ -76,7 +76,7 @@ router.patch(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const body = req.body as UserAdminModifySchema;
+		const body = req.body as AdminUserModifySchema;
 
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id },
@@ -136,7 +136,7 @@ router.delete(
 	"/",
 	route({
 		description: "Delete a user",
-		right: "MANAGE_USERS",
+		right: "ADMIN_DELETE_USERS",
 		responses: {
 			200: {},
 			400: {

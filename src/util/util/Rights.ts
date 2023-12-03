@@ -94,6 +94,26 @@ export class Rights extends BitField {
 		VIEW_SERVER_STATS: BitFlag(48), // added per @chrischrome's request — can view server stats)
 		RESEND_VERIFICATION_EMAIL: BitFlag(49), // can resend verification emails (/auth/verify/resend)
 		CREATE_REGISTRATION_TOKENS: BitFlag(50), // can create registration tokens (/auth/generate-registration-tokens)
+		// start of admin rights
+		ADMIN_CREATE_USERS: BitFlag(51), // can create users
+		ADMIN_READ_USERS: BitFlag(52), // can read users
+		ADMIN_UPDATE_USERS: BitFlag(53), // can update users
+		ADMIN_DELETE_USERS: BitFlag(54), // can delete users
+		//
+		ADMIN_CREATE_GUILDS: BitFlag(55), // can create guilds for other users
+		ADMIN_READ_GUILDS: BitFlag(56), // can read guilds
+		ADMIN_UPDATE_GUILDS: BitFlag(57), // can update guilds
+		ADMIN_DELETE_GUILDS: BitFlag(58), // can delete guilds
+		//
+		ADMIN_CREATE_MEMBERS: BitFlag(59), // can "create" members, aka force add members to a guild
+		ADMIN_READ_MEMBERS: BitFlag(60), // can read members
+		ADMIN_UPDATE_MEMBERS: BitFlag(61), // can update members
+		ADMIN_DELETE_MEMBERS: BitFlag(62), // can delete members
+		//
+		ADMIN_CREATE_GUILD_BANS: BitFlag(63), // can create guild bans
+		ADMIN_READ_GUILD_BANS: BitFlag(64), // can read guild bans
+		ADMIN_UPDATE_GUILD_BANS: BitFlag(65), // can update guild bans
+		ADMIN_DELETE_GUILD_BANS: BitFlag(66), // can delete guild bans
 	};
 
 	any(permission: RightResolvable, checkOperator = true) {

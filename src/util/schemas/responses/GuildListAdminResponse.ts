@@ -18,5 +18,5 @@
 
 import { AdminGuild } from "@spacebar/util";
 
-export type GuildAdminResponse = AdminGuild;
-export type GuildsAdminResponse = AdminGuild[];
+export type AdminGuildResponse = AdminGuild;
+export type AdminGuildsResponse = AdminGuild[];

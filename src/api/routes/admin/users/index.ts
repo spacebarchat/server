@@ -26,7 +26,7 @@ const router = Router();
 router.get(
 	"/",
 	route({
-		right: "MANAGE_USERS",
+		right: "ADMIN_READ_USERS",
 		description: "Get a list of users",
 		query: {
 			limit: {
@@ -48,7 +48,7 @@ router.get(
 		},
 		responses: {
 			200: {
-				body: "UsersAdminResponse",
+				body: "AdminUsersResponse",
 			},
 			400: {
 				body: "APIErrorResponse",
