@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { UserAdmin } from "../admin";
+import { AdminUser } from "@spacebar/util";
 
-export type UserAdminResponse = UserAdmin;
-export type UsersAdminResponse = UserAdmin[];
+export type UserAdminResponse = AdminUser;
+export type UsersAdminResponse = AdminUser[];

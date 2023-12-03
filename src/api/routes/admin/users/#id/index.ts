@@ -18,10 +18,10 @@
 
 import { route } from "@spacebar/api";
 import {
-	AdminUserModifySchema,
+	AdminUserProjection,
 	FieldErrors,
-	PrivateUserProjection,
 	User,
+	UserAdminModifySchema,
 	UserUpdateEvent,
 	emitEvent,
 	handleFile,
@@ -49,7 +49,10 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
-		const user = await User.findOneOrFail({ where: { id } });
+		const user = await User.findOneOrFail({
+			where: { id },
+			select: AdminUserProjection,
+		});
 		res.send(user);
 	},
 );
@@ -59,7 +62,7 @@ router.patch(
 	route({
 		description: "Update a user",
 		right: "MANAGE_USERS",
-		requestBody: "AdminUserModifySchema",
+		requestBody: "UserAdminModifySchema",
 		responses: {
 			200: {
 				body: "UserAdminResponse",
@@ -73,11 +76,11 @@ router.patch(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const body = req.body as AdminUserModifySchema;
+		const body = req.body as UserAdminModifySchema;
 
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id },
-			select: [...PrivateUserProjection, "data"],
+			select: [...AdminUserProjection, "data"],
 		});
 
 		if (body.avatar)
@@ -115,8 +118,6 @@ router.patch(
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		//@ts-ignore
 		delete user.data;
-		delete user.totp_secret;
-		delete user.totp_last_ticket;
 
 		// TODO: send update member list event in gateway
 		await emitEvent({
@@ -148,7 +149,10 @@ router.delete(
 	}),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
-		const user = await User.findOneOrFail({ where: { id } });
+		const user = await User.findOneOrFail({
+			where: { id },
+			select: AdminUserProjection,
+		});
 		await user.remove();
 		res.sendStatus(200);
 	},

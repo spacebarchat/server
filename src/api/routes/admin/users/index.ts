@@ -17,9 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import { User } from "@spacebar/util";
+import { AdminUserProjection, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { FindManyOptions, ILike } from "typeorm";
+import { HTTPError } from "lambert-server";
+import { ILike, MoreThan } from "typeorm";
 const router = Router();
 
 router.get(
@@ -33,7 +34,7 @@ router.get(
 				type: "number",
 				required: false,
 			},
-			offset: {
+			after: {
 				description: "The amount of users to skip",
 				type: "number",
 				required: false,
@@ -54,24 +55,24 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { limit, offset, query } = req.query as {
-			limit?: number;
-			offset?: number;
+		const { after, query } = req.query as {
+			after?: number;
 			query?: string;
 		};
 
-		const options: FindManyOptions<User> = {};
+		const limit = Number(req.query.limit) || 100;
+		if (limit > 1000 || limit < 1)
+			throw new HTTPError("Limit must be between 1 and 1000");
 
-		if (limit) options.take = limit;
-
-		if (offset) options.skip = offset;
-
-		if (query)
-			options.where = {
-				username: ILike(`%${query}%`),
-			};
-
-		const users = await User.find(options);
+		const users = await User.find({
+			where: {
+				...(after ? { id: MoreThan(`${after}`) } : {}),
+				...(query ? { username: ILike(`%${query}%`) } : {}),
+			},
+			take: limit,
+			select: AdminUserProjection,
+			order: { id: "ASC" },
+		});
 
 		res.send(users);
 	},
