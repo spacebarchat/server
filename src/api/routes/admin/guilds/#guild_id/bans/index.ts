@@ -17,65 +17,55 @@
 */
 
 import { route } from "@spacebar/api";
-import { AdminUserProjection, User } from "@spacebar/util";
+import { Ban } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { ILike, MoreThan } from "typeorm";
+import { MoreThan } from "typeorm";
 const router = Router();
 
 router.get(
 	"/",
 	route({
-		right: "MANAGE_USERS",
-		description: "Get a list of users",
+		description: "Get bans of a guild",
+		right: "MANAGE_GUILDS",
 		query: {
 			limit: {
-				description:
-					"max number of users to return (1-1000). default 100",
 				type: "number",
-				required: false,
+				description:
+					"max number of bans to return (1-1000). default 100",
 			},
 			after: {
-				description: "The amount of users to skip",
-				type: "number",
-				required: false,
-			},
-			query: {
-				description: "The search query",
 				type: "string",
-				required: false,
 			},
 		},
 		responses: {
 			200: {
-				body: "UsersAdminResponse",
+				body: "GuildBansResponse",
 			},
 			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
 				body: "APIErrorResponse",
 			},
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { after, query } = req.query as {
-			after?: number;
-			query?: string;
+		const { guild_id } = req.params;
+		const { after } = req.query as {
+			after?: string;
 		};
-
 		const limit = Number(req.query.limit) || 100;
 		if (limit > 1000 || limit < 1)
 			throw new HTTPError("Limit must be between 1 and 1000");
 
-		const users = await User.find({
-			where: {
-				...(after ? { id: MoreThan(`${after}`) } : {}),
-				...(query ? { username: ILike(`%${query}%`) } : {}),
-			},
-			take: limit,
-			select: AdminUserProjection,
+		const bans = await Ban.find({
+			where: { guild_id, ...(after ? { id: MoreThan(after) } : {}) },
 			order: { id: "ASC" },
+			take: limit,
 		});
 
-		res.send(users);
+		return res.json(bans);
 	},
 );
 

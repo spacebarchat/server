@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Member } from "@spacebar/util";
+import { Member, PublicMemberProjection } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
@@ -32,7 +32,7 @@ router.get(
 			limit: {
 				type: "number",
 				description:
-					"max number of members to return (1-1000). default 1",
+					"max number of members to return (1-1000). default 100",
 			},
 			after: {
 				type: "string",
@@ -61,7 +61,7 @@ router.get(
 
 		const members = await Member.find({
 			where: { guild_id, ...(after ? { id: MoreThan(after) } : {}) },
-			// select: PublicMemberProjection,
+			select: PublicMemberProjection, // TODO: Add admin projection
 			order: { id: "ASC" },
 			take: limit,
 		});
