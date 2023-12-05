@@ -57,7 +57,7 @@ const getMostRelevantSession = (sessions: Session[]) => {
 		return (
 			statusMap[a.status] -
 			statusMap[b.status] +
-			(a.activities.length - b.activities.length) * 2
+			((a.activities?.length ?? 0) - (b.activities?.length ?? 0)) * 2
 		);
 	});
 
