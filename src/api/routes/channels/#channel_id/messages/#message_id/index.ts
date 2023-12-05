@@ -109,7 +109,11 @@ router.patch(
 			await emitEvent({
 				event: "MESSAGE_UPDATE",
 				channel_id,
-				data: { ...new_message.toJSON(), nonce: undefined },
+				data: {
+					...new_message.toJSON(),
+					nonce: undefined,
+					member: new_message.member?.toPublicMember(),
+				},
 			} as MessageUpdateEvent),
 		]);
 
@@ -121,6 +125,7 @@ router.patch(
 			id: new_message.id,
 			type: new_message.type,
 			channel_id: new_message.channel_id,
+			member: new_message.member?.toPublicMember(),
 			author: new_message.author?.toPublicUser(),
 			attachments: new_message.attachments,
 			embeds: new_message.embeds,
