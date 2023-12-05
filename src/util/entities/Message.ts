@@ -238,6 +238,7 @@ export class Message extends BaseClass {
 			activity: this.activity ?? undefined,
 			application: this.application ?? undefined,
 			components: this.components ?? undefined,
+			content: this.content ?? "",
 		};
 	}
 }

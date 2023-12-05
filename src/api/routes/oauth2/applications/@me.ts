@@ -17,7 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import { Application } from "@spacebar/util";
+import {
+	Application,
+	DiscordApiErrors,
+	PublicUserProjection,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router();
@@ -29,18 +33,27 @@ router.get(
 			200: {
 				body: "Application",
 			},
-			400: {
-				body: "APIErrorResponse",
-			},
 		},
 	}),
 	async (req: Request, res: Response) => {
 		const app = await Application.findOneOrFail({
-			where: { id: req.user_id },
-			relations: ["owner", "bot"],
+			where: { id: req.params.id },
+			relations: ["bot", "owner"],
+			select: {
+				owner: Object.fromEntries(
+					PublicUserProjection.map((x) => [x, true]),
+				),
+			},
 		});
-		return res.json(app);
+
+		if (!app.bot) throw DiscordApiErrors.BOT_ONLY_ENDPOINT;
+
+		res.json({
+			...app,
+			owner: app.owner.toPublicUser(),
+			install_params:
+				app.install_params !== null ? app.install_params : undefined,
+		});
 	},
 );
-
 export default router;

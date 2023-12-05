@@ -229,7 +229,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 			nsfw: guild.nsfw,
 			safety_alerts_channel_id: null,
 		};
-		this.roles = guild.roles;
+		this.roles = guild.roles.map((x) => x.toJSON());
 		this.stage_instances = [];
 		this.stickers = guild.stickers;
 		this.threads = [];
