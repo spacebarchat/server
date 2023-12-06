@@ -54,4 +54,6 @@ export interface MessageCreateSchema {
 	**/
 	attachments?: Attachment[];
 	sticker_ids?: string[];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	components?: any[];
 }
