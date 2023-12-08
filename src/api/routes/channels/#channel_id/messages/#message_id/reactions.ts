@@ -215,7 +215,8 @@ router.put(
 			const external_emoji = await Emoji.findOneOrFail({
 				where: { id: emoji.id },
 			});
-			if (!already_added) req.permission?.hasThrow("USE_EXTERNAL_EMOJIS");
+			if (!already_added && channel.guild_id != external_emoji.guild_id)
+				req.permission?.hasThrow("USE_EXTERNAL_EMOJIS");
 			emoji.animated = external_emoji.animated;
 			emoji.name = external_emoji.name;
 		}
