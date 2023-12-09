@@ -136,7 +136,7 @@ export class Member extends BaseClassWithoutId {
 	joined_by: string;
 
 	@Column({ nullable: true })
-	avatar: string;
+	avatar?: string;
 
 	@Column({ nullable: true })
 	banner: string;
@@ -522,7 +522,8 @@ export type PublicMemberKeys =
 	| "pending"
 	| "deaf"
 	| "mute"
-	| "premium_since";
+	| "premium_since"
+	| "avatar";
 
 export const PublicMemberProjection: PublicMemberKeys[] = [
 	"id",
@@ -534,6 +535,7 @@ export const PublicMemberProjection: PublicMemberKeys[] = [
 	"deaf",
 	"mute",
 	"premium_since",
+	"avatar",
 ];
 
 export type PublicMember = Omit<Pick<Member, PublicMemberKeys>, "roles"> & {
