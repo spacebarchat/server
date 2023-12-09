@@ -197,6 +197,16 @@ router.post(
 		// const { client_id, scope, response_type, redirect_url } = req.query;
 		const { client_id } = req.query;
 
+		if (!client_id) {
+			throw FieldErrors({
+				client_id: {
+					code: "BASE_TYPE_REQUIRED",
+					message: req.t("common:field.BASE_TYPE_REQUIRED"),
+				},
+			});
+		}
+
+		// TODO: ensure guild_id is not an empty string
 		// TODO: captcha verification
 		// TODO: MFA verification
 
