@@ -13,6 +13,7 @@ assets/cacheMisses
 .vscode/settings.json
 
 build
+result
 
 *.log
 *.log.ansi

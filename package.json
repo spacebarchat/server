@@ -35,6 +35,16 @@
 	"imports": {
 		"#*": "./dist/*/index.js"
 	},
+	"files": [
+		"dist",
+		"assets"
+	],
+	"bin": {
+		"start-bundle": "dist/bundle/start.js",
+		"start-api": "dist/api/start.js",
+		"start-cdn": "dist/cdn/start.js",
+		"start-gateway": "dist/gateway/start.js"
+	},
 	"homepage": "https://spacebar.chat",
 	"devDependencies": {
 		"@types/amqplib": "^0.8.2",
