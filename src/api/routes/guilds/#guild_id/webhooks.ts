@@ -16,12 +16,37 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
 import { route } from "@spacebar/api";
+import { Webhook } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 const router = Router();
 
-//TODO: implement webhooks
-router.get("/", route({}), async (req: Request, res: Response) => {
-	res.json([]);
-});
+router.get(
+	"/",
+	route({
+		description:
+			"Returns a list of guild webhook objects. Requires the MANAGE_WEBHOOKS permission.",
+		permission: "MANAGE_WEBHOOKS",
+		responses: {
+			200: {
+				body: "APIWebhookArray",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id } = req.params;
+		const webhooks = await Webhook.find({
+			where: { guild_id },
+			relations: [
+				"user",
+				"guild",
+				"source_guild",
+				"application" /*"source_channel"*/,
+			],
+		});
+
+		return res.json(webhooks);
+	},
+);
+
 export default router;

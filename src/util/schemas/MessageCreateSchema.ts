@@ -18,7 +18,7 @@
 
 import { Embed } from "@spacebar/util";
 
-type Attachment = {
+export type MessageCreateAttachment = {
 	id: string;
 	filename: string;
 };
@@ -52,7 +52,7 @@ export interface MessageCreateSchema {
 	TODO: we should create an interface for attachments
 	TODO: OpenWAAO<-->attachment-style metadata conversion
 	**/
-	attachments?: Attachment[];
+	attachments?: MessageCreateAttachment[];
 	sticker_ids?: string[];
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	components?: any[];

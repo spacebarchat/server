@@ -26,8 +26,8 @@ import {
 	WebhookCreateSchema,
 	WebhookType,
 	handleFile,
-	trimSpecial,
 	isTextChannel,
+	trimSpecial,
 } from "@spacebar/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
@@ -35,10 +35,12 @@ import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
-//TODO: implement webhooks
 router.get(
 	"/",
 	route({
+		description:
+			"Returns a list of channel webhook objects. Requires the MANAGE_WEBHOOKS permission.",
+		permission: "MANAGE_WEBHOOKS",
 		responses: {
 			200: {
 				body: "APIWebhookArray",
@@ -46,7 +48,18 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		res.json([]);
+		const { channel_id } = req.params;
+		const webhooks = await Webhook.find({
+			where: { channel_id },
+			relations: [
+				"user",
+				"guild",
+				"source_guild",
+				"application" /*"source_channel"*/,
+			],
+		});
+
+		return res.json(webhooks);
 	},
 );
 
@@ -89,15 +102,15 @@ router.post(
 
 		if (avatar) avatar = await handleFile(`/avatars/${channel_id}`, avatar);
 
-		const hook = Webhook.create({
+		const hook = await Webhook.create({
 			type: WebhookType.Incoming,
 			name,
 			avatar,
 			guild_id: channel.guild_id,
 			channel_id: channel.id,
 			user_id: req.user_id,
-			token: crypto.randomBytes(24).toString("base64"),
-		});
+			token: crypto.randomBytes(24).toString("base64url"),
+		}).save();
 
 		const user = await User.getPublicUser(req.user_id);
 

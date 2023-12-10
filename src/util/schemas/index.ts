@@ -79,5 +79,6 @@ export * from "./VoiceStateUpdateSchema";
 export * from "./VoiceVideoSchema";
 export * from "./WebAuthnSchema";
 export * from "./WebhookCreateSchema";
+export * from "./WebhookExecuteSchema";
 export * from "./WidgetModifySchema";
 export * from "./responses";
