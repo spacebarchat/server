@@ -22,6 +22,7 @@
 			#makeCacheWritable = true;
 			postPatch = ''
 				substituteInPlace package.json --replace 'npx patch-package' '${pkgs.nodePackages.patch-package}/bin/patch-package'
+				substituteInPlace src/bundle/start.ts --replace 'execSync("git rev-parse HEAD").toString().trim()' '"${self.rev or "dirty"}"'
 			'';
 		};
 		devShell = pkgs.mkShell {

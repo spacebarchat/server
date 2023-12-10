@@ -18,10 +18,11 @@
 			meta.mainProgram = "start-bundle";
 
 			#nativeBuildInputs = with pkgs; [ python3 ];
-			npmDepsHash = "sha256-9yyOPogFi71Dcm7DKe4FJJz9d6uDtJsliDR+b32KKvA=";
+			npmDepsHash = "sha256-W8OPoBHfoJYg5S+jldYd63qx8knxSHvzePrre+dwpHk=";
 			#makeCacheWritable = true;
 			postPatch = ''
 				substituteInPlace package.json --replace 'npx patch-package' '${pkgs.nodePackages.patch-package}/bin/patch-package'
+				substituteInPlace src/bundle/start.ts --replace 'execSync("git rev-parse HEAD").toString().trim()' '"${self.rev or "dirty"}"'
 			'';
 		};
 		devShell = pkgs.mkShell {
