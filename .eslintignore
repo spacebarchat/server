@@ -5,3 +5,4 @@ COPYING
 src/webrtc
 scripts/
 assets
+package-lock.json
