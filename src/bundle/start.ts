@@ -49,21 +49,11 @@ if (cluster.isPrimary) {
 ███████║██║     ██║  ██║╚██████╗███████╗██████╔╝██║  ██║██║  ██║
 ╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
 
-		spacebar-server | ${yellow(
-			`Pre-release (${
-				commit !== null
-					? commit.slice(0, 7)
-					: "Unknown (Git cannot be found)"
-			})`,
-		)}
+		spacebar-server | ${yellow(`Pre-release (${commit !== null ? commit.slice(0, 7) : "Unknown (Git cannot be found)"})`)}
 
-Commit Hash: ${
-			commit !== null
-				? `${cyan(commit)} (${yellow(commit.slice(0, 7))})`
-				: "Unknown (Git cannot be found)"
-		}
+Commit Hash: ${commit !== null ? `${cyan(commit)} (${yellow(commit.slice(0, 7))})` : "Unknown (Git cannot be found)"}
 Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
-`),
+`)
 	);
 
 	if (commit == null) {
@@ -98,11 +88,7 @@ Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 		});
 
 		cluster.on("exit", (worker) => {
-			console.log(
-				`[Worker] ${red(
-					`died with PID: ${worker.process.pid} , restarting ...`,
-				)}`,
-			);
+			console.log(`[Worker] ${red(`died with PID: ${worker.process.pid} , restarting ...`)}`);
 			cluster.fork();
 		});
 	}

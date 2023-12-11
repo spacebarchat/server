@@ -17,13 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	BackupCode,
-	FieldErrors,
-	generateMfaBackupCodes,
-	MfaCodesSchema,
-	User,
-} from "@spacebar/util";
+import { BackupCode, FieldErrors, generateMfaBackupCodes, MfaCodesSchema, User } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 
@@ -36,8 +30,7 @@ router.post(
 	route({
 		requestBody: "MfaCodesSchema",
 		deprecated: true,
-		description:
-			"This route is replaced with users/@me/mfa/codes-verification in newer clients",
+		description: "This route is replaced with users/@me/mfa/codes-verification in newer clients",
 		responses: {
 			200: {
 				body: "APIBackupCodeArray",
@@ -69,10 +62,7 @@ router.post(
 
 		let codes: BackupCode[];
 		if (regenerate) {
-			await BackupCode.update(
-				{ user: { id: req.user_id } },
-				{ expired: true },
-			);
+			await BackupCode.update({ user: { id: req.user_id } }, { expired: true });
 
 			codes = generateMfaBackupCodes(req.user_id);
 			await Promise.all(codes.map((x) => x.save()));
@@ -90,7 +80,7 @@ router.post(
 		return res.json({
 			backup_codes: codes.map((x) => ({ ...x, expired: undefined })),
 		});
-	},
+	}
 );
 
 export default router;

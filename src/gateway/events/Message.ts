@@ -60,22 +60,15 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		}
 	} else return this.close(CLOSECODES.Decode_error);
 
-	if (process.env.WS_VERBOSE)
-		console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
+	if (process.env.WS_VERBOSE) console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
 
 	if (process.env.WS_DUMP) {
 		const id = this.session_id || "unknown";
 
 		await fs.mkdir(path.join("dump", id), { recursive: true });
-		await fs.writeFile(
-			path.join("dump", id, `${Date.now()}.in.json`),
-			JSON.stringify(data, null, 2),
-		);
+		await fs.writeFile(path.join("dump", id, `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
 
-		if (!this.session_id)
-			console.log(
-				"[Gateway] Unknown session id, dumping to unknown folder",
-			);
+		if (!this.session_id) console.log("[Gateway] Unknown session id, dumping to unknown folder");
 	}
 
 	check.call(this, PayloadSchema, data);
@@ -102,7 +95,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 				const ret = await OPCodeHandler.call(this, data);
 				Sentry.setUser({ id: this.user_id });
 				return ret;
-			},
+			}
 		);
 	} catch (error) {
 		Sentry.captureException(error, {

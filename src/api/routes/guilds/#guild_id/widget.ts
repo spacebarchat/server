@@ -44,7 +44,7 @@ router.get(
 			enabled: guild.widget_enabled || false,
 			channel_id: guild.widget_channel_id || null,
 		});
-	},
+	}
 );
 
 // https://discord.com/developers/docs/resources/guild#modify-guild-widget
@@ -74,12 +74,12 @@ router.patch(
 			{
 				widget_enabled: body.enabled,
 				widget_channel_id: body.channel_id,
-			},
+			}
 		);
 		// Widget invite for the widget_channel_id gets created as part of the /guilds/{guild.id}/widget.json request
 
 		return res.json(body);
-	},
+	}
 );
 
 export default router;

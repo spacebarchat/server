@@ -16,14 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	OneToMany,
-	RelationId,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { Config, GuildWelcomeScreen, Snowflake, handleFile } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
@@ -330,15 +323,12 @@ export class Guild extends BaseClass {
 			channel_ordering: [],
 
 			afk_timeout: Config.get().defaults.guild.afkTimeout,
-			default_message_notifications:
-				Config.get().defaults.guild.defaultMessageNotifications,
-			explicit_content_filter:
-				Config.get().defaults.guild.explicitContentFilter,
+			default_message_notifications: Config.get().defaults.guild.defaultMessageNotifications,
+			explicit_content_filter: Config.get().defaults.guild.explicitContentFilter,
 			features: Config.get().guild.defaultFeatures,
 			max_members: Config.get().limits.guild.maxMembers,
 			max_presences: Config.get().defaults.guild.maxPresences,
-			max_video_channel_users:
-				Config.get().defaults.guild.maxVideoChannelUsers,
+			max_video_channel_users: Config.get().defaults.guild.maxVideoChannelUsers,
 			region: Config.get().regions.default,
 		}).save();
 
@@ -361,9 +351,7 @@ export class Guild extends BaseClass {
 		}).save();
 
 		if (!body.channels || !body.channels.length)
-			body.channels = [
-				{ id: "01", type: 0, name: "general", nsfw: false },
-			];
+			body.channels = [{ id: "01", type: 0, name: "general", nsfw: false }];
 
 		const ids = new Map();
 
@@ -373,30 +361,19 @@ export class Guild extends BaseClass {
 			}
 		});
 
-		for (const channel of body.channels.sort((a) =>
-			a.parent_id ? 1 : -1,
-		)) {
+		for (const channel of body.channels.sort((a) => (a.parent_id ? 1 : -1))) {
 			const id = ids.get(channel.id) || Snowflake.generate();
 
 			const parent_id = ids.get(channel.parent_id);
 
-			const saved = await Channel.createChannel(
-				{ ...channel, guild_id, id, parent_id },
-				body.owner_id,
-				{
-					keepId: true,
-					skipExistsCheck: true,
-					skipPermissionCheck: true,
-					skipEventEmit: true,
-				},
-			);
+			const saved = await Channel.createChannel({ ...channel, guild_id, id, parent_id }, body.owner_id, {
+				keepId: true,
+				skipExistsCheck: true,
+				skipPermissionCheck: true,
+				skipEventEmit: true,
+			});
 
-			await Guild.insertChannelInOrder(
-				guild.id,
-				saved.id,
-				parent_id ?? channel.position ?? 0,
-				guild,
-			);
+			await Guild.insertChannelInOrder(guild.id, saved.id, parent_id ?? channel.position ?? 0, guild);
 		}
 
 		return guild;
@@ -407,25 +384,25 @@ export class Guild extends BaseClass {
 		guild_id: string,
 		channel_id: string,
 		position: number,
-		guild?: Guild,
+		guild?: Guild
 	): Promise<number>;
 	static async insertChannelInOrder(
 		guild_id: string,
 		channel_id: string,
 		parent_id: string,
-		guild?: Guild,
+		guild?: Guild
 	): Promise<number>;
 	static async insertChannelInOrder(
 		guild_id: string,
 		channel_id: string,
 		insertPoint: string | number,
-		guild?: Guild,
+		guild?: Guild
 	): Promise<number>;
 	static async insertChannelInOrder(
 		guild_id: string,
 		channel_id: string,
 		insertPoint: string | number,
-		guild?: Guild,
+		guild?: Guild
 	): Promise<number> {
 		if (!guild)
 			guild = await Guild.findOneOrFail({
@@ -434,17 +411,13 @@ export class Guild extends BaseClass {
 			});
 
 		let position;
-		if (typeof insertPoint == "string")
-			position = guild.channel_ordering.indexOf(insertPoint) + 1;
+		if (typeof insertPoint == "string") position = guild.channel_ordering.indexOf(insertPoint) + 1;
 		else position = insertPoint;
 
 		guild.channel_ordering.remove(channel_id);
 
 		guild.channel_ordering.splice(position, 0, channel_id);
-		await Guild.update(
-			{ id: guild_id },
-			{ channel_ordering: guild.channel_ordering },
-		);
+		await Guild.update({ id: guild_id }, { channel_ordering: guild.channel_ordering });
 		return position;
 	}
 

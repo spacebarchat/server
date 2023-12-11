@@ -42,7 +42,7 @@ router.get(
 		const channels = await Channel.find({ where: { guild_id } });
 
 		res.json(channels);
-	},
+	}
 );
 
 router.post(
@@ -67,13 +67,10 @@ router.post(
 		const { guild_id } = req.params;
 		const body = req.body as ChannelModifySchema;
 
-		const channel = await Channel.createChannel(
-			{ ...body, guild_id },
-			req.user_id,
-		);
+		const channel = await Channel.createChannel({ ...body, guild_id }, req.user_id);
 
 		res.status(201).json(channel);
-	},
+	}
 );
 
 router.patch(
@@ -102,9 +99,7 @@ router.patch(
 		});
 
 		// The channels not listed for this query
-		const notMentioned = guild.channel_ordering.filter(
-			(x) => !body.find((c) => c.id == x),
-		);
+		const notMentioned = guild.channel_ordering.filter((x) => !body.find((c) => c.id == x));
 
 		const withParents = body.filter((x) => x.parent_id != undefined);
 		const withPositions = body.filter((x) => x.position != undefined);
@@ -124,7 +119,7 @@ router.patch(
 					channel_id: channel.id,
 					guild_id,
 				} as ChannelUpdateEvent);
-			}),
+			})
 		);
 
 		// have to do the parents after the positions
@@ -141,10 +136,7 @@ router.patch(
 				]);
 
 				if (opt.lock_permissions)
-					await Channel.update(
-						{ id: channel.id },
-						{ permission_overwrites: parent.permission_overwrites },
-					);
+					await Channel.update({ id: channel.id }, { permission_overwrites: parent.permission_overwrites });
 
 				const parentPos = notMentioned.indexOf(parent.id);
 				notMentioned.splice(parentPos + 1, 0, channel.id);
@@ -156,16 +148,13 @@ router.patch(
 					channel_id: channel.id,
 					guild_id,
 				} as ChannelUpdateEvent);
-			}),
+			})
 		);
 
-		await Guild.update(
-			{ id: guild_id },
-			{ channel_ordering: notMentioned },
-		);
+		await Guild.update({ id: guild_id }, { channel_ordering: notMentioned });
 
 		return res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

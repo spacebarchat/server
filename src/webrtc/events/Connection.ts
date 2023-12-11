@@ -28,11 +28,7 @@ import { onMessage } from "./Message";
 // TODO: specify rate limit in config
 // TODO: check msg max size
 
-export async function Connection(
-	this: WS.Server,
-	socket: WebSocket,
-	request: IncomingMessage,
-) {
+export async function Connection(this: WS.Server, socket: WebSocket, request: IncomingMessage) {
 	try {
 		socket.on("close", onClose.bind(socket));
 		socket.on("message", onMessage.bind(socket));
@@ -57,8 +53,7 @@ export async function Connection(
 
 		socket.encoding = "json";
 		socket.version = Number(searchParams.get("v")) || 5;
-		if (socket.version < 3)
-			return socket.close(CLOSECODES.Unknown_error, "invalid version");
+		if (socket.version < 3) return socket.close(CLOSECODES.Unknown_error, "invalid version");
 
 		setHeartbeat(socket);
 

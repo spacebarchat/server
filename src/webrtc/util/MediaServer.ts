@@ -17,11 +17,7 @@
 */
 
 import { WebSocket } from "@spacebar/gateway";
-import MediaServer, {
-	IncomingStream,
-	OutgoingStream,
-	Transport,
-} from "medooze-media-server";
+import MediaServer, { IncomingStream, OutgoingStream, Transport } from "medooze-media-server";
 import SemanticSDP from "semantic-sdp";
 MediaServer.enableLog(true);
 
@@ -35,11 +31,7 @@ try {
 
 	MediaServer.setPortRange(min, max);
 } catch (error) {
-	console.error(
-		"Invalid env var: WEBRTC_PORT_RANGE",
-		process.env.WEBRTC_PORT_RANGE,
-		error,
-	);
+	console.error("Invalid env var: WEBRTC_PORT_RANGE", process.env.WEBRTC_PORT_RANGE, error);
 	process.exit(1);
 }
 

@@ -16,13 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	CLOSECODES,
-	Payload,
-	Send,
-	setHeartbeat,
-	WebSocket,
-} from "@spacebar/gateway";
+import { CLOSECODES, Payload, Send, setHeartbeat, WebSocket } from "@spacebar/gateway";
 import { VoiceOPCodes } from "../util";
 
 export async function onHeartbeat(this: WebSocket, data: Payload) {

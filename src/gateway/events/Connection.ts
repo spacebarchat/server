@@ -40,15 +40,9 @@ try {
 // TODO: specify rate limit in config
 // TODO: check msg max size
 
-export async function Connection(
-	this: WS.Server,
-	socket: WebSocket,
-	request: IncomingMessage,
-) {
+export async function Connection(this: WS.Server, socket: WebSocket, request: IncomingMessage) {
 	const forwardedFor = Config.get().security.forwardedFor;
-	const ipAddress = forwardedFor
-		? (request.headers[forwardedFor] as string)
-		: request.socket.remoteAddress;
+	const ipAddress = forwardedFor ? (request.headers[forwardedFor] as string) : request.socket.remoteAddress;
 
 	socket.ipAddress = ipAddress;
 
@@ -85,21 +79,17 @@ export async function Connection(
 		const { searchParams } = new URL(`http://localhost${request.url}`);
 		// @ts-ignore
 		socket.encoding = searchParams.get("encoding") || "json";
-		if (!["json", "etf"].includes(socket.encoding))
-			return socket.close(CLOSECODES.Decode_error);
+		if (!["json", "etf"].includes(socket.encoding)) return socket.close(CLOSECODES.Decode_error);
 
-		if (socket.encoding === "etf" && !erlpack)
-			throw new Error("Erlpack is not installed: 'npm i erlpack'");
+		if (socket.encoding === "etf" && !erlpack) throw new Error("Erlpack is not installed: 'npm i erlpack'");
 
 		socket.version = Number(searchParams.get("version")) || 8;
-		if (socket.version != 8)
-			return socket.close(CLOSECODES.Invalid_API_version);
+		if (socket.version != 8) return socket.close(CLOSECODES.Invalid_API_version);
 
 		// @ts-ignore
 		socket.compress = searchParams.get("compress") || "";
 		if (socket.compress) {
-			if (socket.compress !== "zlib-stream")
-				return socket.close(CLOSECODES.Decode_error);
+			if (socket.compress !== "zlib-stream") return socket.close(CLOSECODES.Decode_error);
 			socket.deflate = new Deflate();
 			socket.inflate = new Inflate();
 		}

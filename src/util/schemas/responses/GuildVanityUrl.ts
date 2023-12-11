@@ -7,10 +7,7 @@ export interface GuildVanityUrlNoInvite {
 	code: null;
 }
 
-export type GuildVanityUrlResponse =
-	| GuildVanityUrl
-	| GuildVanityUrl[]
-	| GuildVanityUrlNoInvite;
+export type GuildVanityUrlResponse = GuildVanityUrl | GuildVanityUrl[] | GuildVanityUrlNoInvite;
 
 export interface GuildVanityUrlCreateResponse {
 	code: string;

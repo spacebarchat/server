@@ -40,13 +40,7 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
-import {
-	FindManyOptions,
-	FindOperator,
-	LessThan,
-	MoreThan,
-	MoreThanOrEqual,
-} from "typeorm";
+import { FindManyOptions, FindOperator, LessThan, MoreThan, MoreThanOrEqual } from "typeorm";
 import { URL } from "url";
 
 const router: Router = Router();
@@ -68,8 +62,7 @@ router.get(
 			},
 			limit: {
 				type: "number",
-				description:
-					"max number of messages to return (1-100). defaults to 50",
+				description: "max number of messages to return (1-100). defaults to 50",
 			},
 		},
 		responses: {
@@ -95,14 +88,9 @@ router.get(
 		const before = req.query.before ? `${req.query.before}` : undefined;
 		const after = req.query.after ? `${req.query.after}` : undefined;
 		const limit = Number(req.query.limit) || 50;
-		if (limit < 1 || limit > 100)
-			throw new HTTPError("limit must be between 1 and 100", 422);
+		if (limit < 1 || limit > 100) throw new HTTPError("limit must be between 1 and 100", 422);
 
-		const permissions = await getPermission(
-			req.user_id,
-			channel.guild_id,
-			channel_id,
-		);
+		const permissions = await getPermission(req.user_id, channel.guild_id, channel_id);
 		permissions.hasThrow("VIEW_CHANNEL");
 		if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json([]);
 
@@ -148,12 +136,10 @@ router.get(
 			}
 		} else {
 			if (after) {
-				if (BigInt(after) > BigInt(Snowflake.generate()))
-					return res.status(422);
+				if (BigInt(after) > BigInt(Snowflake.generate())) return res.status(422);
 				query.where.id = MoreThan(after);
 			} else if (before) {
-				if (BigInt(before) > BigInt(Snowflake.generate()))
-					return res.status(422);
+				if (BigInt(before) > BigInt(Snowflake.generate())) return res.status(422);
 				query.where.id = LessThan(before);
 			}
 
@@ -180,12 +166,8 @@ router.get(
 				});
 			x.attachments?.forEach((y: Attachment) => {
 				// dynamically set attachment proxy_url in case the endpoint changed
-				const uri = y.proxy_url.startsWith("http")
-					? y.proxy_url
-					: `https://example.org${y.proxy_url}`;
-				y.proxy_url = `${endpoint == null ? "" : endpoint}${
-					new URL(uri).pathname
-				}`;
+				const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
+				y.proxy_url = `${endpoint == null ? "" : endpoint}${new URL(uri).pathname}`;
 			});
 
 			/**
@@ -202,7 +184,7 @@ router.get(
 		});
 
 		return res.json(ret);
-	},
+	}
 );
 
 // TODO: config max upload size
@@ -258,10 +240,7 @@ router.post(
 			relations: ["recipients", "recipients.user"],
 		});
 		if (!channel.isWritable()) {
-			throw new HTTPError(
-				`Cannot send messages to channel of type ${channel.type}`,
-				400,
-			);
+			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
 		}
 
 		if (body.nonce) {
@@ -283,12 +262,7 @@ router.post(
 				const count = await Message.count({
 					where: {
 						channel_id,
-						timestamp: MoreThan(
-							new Date(
-								Date.now() -
-									limits.absoluteRate.sendMessage.window,
-							),
-						),
+						timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window)),
 					},
 				});
 
@@ -305,13 +279,8 @@ router.post(
 		const files = (req.files as Express.Multer.File[]) ?? [];
 		for (const currFile of files) {
 			try {
-				const file = await uploadFile(
-					`/attachments/${channel.id}`,
-					currFile,
-				);
-				attachments.push(
-					Attachment.create({ ...file, proxy_url: file.url }),
-				);
+				const file = await uploadFile(`/attachments/${channel.id}`, currFile);
+				attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
 			} catch (error) {
 				return res.status(400).json({ message: error?.toString() });
 			}
@@ -347,14 +316,12 @@ router.post(
 							recipient.save(),
 							emitEvent({
 								event: "CHANNEL_CREATE",
-								data: channel_dto.excludedRecipients([
-									recipient.user_id,
-								]),
+								data: channel_dto.excludedRecipients([recipient.user_id]),
 								user_id: recipient.user_id,
 							}),
 						]);
 					}
-				}) || [],
+				}) || []
 			);
 		}
 
@@ -370,16 +337,13 @@ router.post(
 
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			//@ts-ignore
-			message.member.roles = message.member.roles
-				.filter((x) => x.id != x.guild_id)
-				.map((x) => x.id);
+			message.member.roles = message.member.roles.filter((x) => x.id != x.guild_id).map((x) => x.id);
 		}
 
 		let read_state = await ReadState.findOne({
 			where: { user_id: req.user_id, channel_id },
 		});
-		if (!read_state)
-			read_state = ReadState.create({ user_id: req.user_id, channel_id });
+		if (!read_state) read_state = ReadState.create({ user_id: req.user_id, channel_id });
 		read_state.last_message_id = message.id;
 
 		await Promise.all([
@@ -391,21 +355,16 @@ router.post(
 				data: message,
 			} as MessageCreateEvent),
 			message.guild_id
-				? Member.update(
-						{ id: req.user_id, guild_id: message.guild_id },
-						{ last_message_id: message.id },
-				  )
+				? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id })
 				: null,
 			channel.save(),
 		]);
 
 		// no await as it shouldnt block the message send function and silently catch error
-		postHandleMessage(message).catch((e) =>
-			console.error("[Message] post-message handler failed", e),
-		);
+		postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));
 
 		return res.json(message);
-	},
+	}
 );
 
 export default router;

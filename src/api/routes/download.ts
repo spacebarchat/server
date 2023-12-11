@@ -52,7 +52,7 @@ router.get(
 		});
 
 		res.redirect(release.url);
-	},
+	}
 );
 
 export default router;

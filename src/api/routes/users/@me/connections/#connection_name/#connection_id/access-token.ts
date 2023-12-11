@@ -77,18 +77,13 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	});
 	if (!connectedAccount) throw DiscordApiErrors.UNKNOWN_CONNECTION;
 	if (connectedAccount.revoked) throw DiscordApiErrors.CONNECTION_REVOKED;
-	if (!connectedAccount.token_data)
-		throw new ApiError("No token data", 0, 400);
+	if (!connectedAccount.token_data) throw new ApiError("No token data", 0, 400);
 
 	let access_token = connectedAccount.token_data.access_token;
 	const { expires_at, expires_in, fetched_at } = connectedAccount.token_data;
 
-	if (
-		(expires_at && expires_at < Date.now()) ||
-		(expires_in && fetched_at + expires_in * 1000 < Date.now())
-	) {
-		if (!(connection instanceof RefreshableConnection))
-			throw new ApiError("Access token expired", 0, 400);
+	if ((expires_at && expires_at < Date.now()) || (expires_in && fetched_at + expires_in * 1000 < Date.now())) {
+		if (!(connection instanceof RefreshableConnection)) throw new ApiError("Access token expired", 0, 400);
 		const tokenData = await connection.refresh(connectedAccount);
 		access_token = tokenData.access_token;
 	}

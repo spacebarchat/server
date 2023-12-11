@@ -17,15 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Channel,
-	Config,
-	emitEvent,
-	getPermission,
-	getRights,
-	Message,
-	MessageDeleteBulkEvent,
-} from "@spacebar/util";
+import { Channel, Config, emitEvent, getPermission, getRights, Message, MessageDeleteBulkEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -54,30 +46,22 @@ router.post(
 		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
 		});
-		if (!channel.guild_id)
-			throw new HTTPError("Can't bulk delete dm channel messages", 400);
+		if (!channel.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
 
 		const rights = await getRights(req.user_id);
 		rights.hasThrow("SELF_DELETE_MESSAGES");
 
 		const superuser = rights.has("MANAGE_MESSAGES");
-		const permission = await getPermission(
-			req.user_id,
-			channel?.guild_id,
-			channel_id,
-		);
+		const permission = await getPermission(req.user_id, channel?.guild_id, channel_id);
 
 		const { maxBulkDelete } = Config.get().limits.message;
 
 		const { messages } = req.body as { messages: string[] };
-		if (messages.length === 0)
-			throw new HTTPError("You must specify messages to bulk delete");
+		if (messages.length === 0) throw new HTTPError("You must specify messages to bulk delete");
 		if (!superuser) {
 			permission.hasThrow("MANAGE_MESSAGES");
 			if (messages.length > maxBulkDelete)
-				throw new HTTPError(
-					`You cannot delete more than ${maxBulkDelete} messages`,
-				);
+				throw new HTTPError(`You cannot delete more than ${maxBulkDelete} messages`);
 		}
 
 		await Message.delete(messages);
@@ -89,5 +73,5 @@ router.post(
 		} as MessageDeleteBulkEvent);
 
 		res.sendStatus(204);
-	},
+	}
 );

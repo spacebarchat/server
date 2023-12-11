@@ -83,9 +83,7 @@ export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 	const { ipdataApiKey } = Config.get().security;
 	if (!ipdataApiKey) return { ...exampleData, ip };
 
-	return (
-		await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)
-	).json();
+	return (await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)).json();
 }
 
 export function isProxy(data: typeof exampleData) {
@@ -102,37 +100,20 @@ export function getIpAdress(req: Request): string {
 	return (
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		req.headers[Config.get().security.forwardedFor] ||
-		req.socket.remoteAddress
+		req.headers[Config.get().security.forwardedFor] || req.socket.remoteAddress
 	);
 }
 
 type Location = { latitude: number; longitude: number };
-export function distanceBetweenLocations(
-	loc1: Location,
-	loc2: Location,
-): number {
-	return distanceBetweenCoords(
-		loc1.latitude,
-		loc1.longitude,
-		loc2.latitude,
-		loc2.longitude,
-	);
+export function distanceBetweenLocations(loc1: Location, loc2: Location): number {
+	return distanceBetweenCoords(loc1.latitude, loc1.longitude, loc2.latitude, loc2.longitude);
 }
 
 //Haversine function
-function distanceBetweenCoords(
-	lat1: number,
-	lon1: number,
-	lat2: number,
-	lon2: number,
-) {
+function distanceBetweenCoords(lat1: number, lon1: number, lat2: number, lon2: number) {
 	const p = 0.017453292519943295; // Math.PI / 180
 	const c = Math.cos;
-	const a =
-		0.5 -
-		c((lat2 - lat1) * p) / 2 +
-		(c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
+	const a = 0.5 - c((lat2 - lat1) * p) / 2 + (c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
 
 	return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
 }

@@ -33,8 +33,7 @@ if (!process.env) {
 	config();
 }
 
-const dbConnectionString =
-	process.env.DATABASE || path.join(process.cwd(), "database.db");
+const dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
 
 const DatabaseType = dbConnectionString.includes("://")
 	? dbConnectionString.split(":")[0]?.replace("+srv", "")
@@ -71,8 +70,8 @@ export async function initDatabase(): Promise<DataSource> {
 	if (isSqlite) {
 		console.log(
 			`[Database] ${red(
-				`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`,
-			)}`,
+				`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`
+			)}`
 		);
 	}
 
@@ -83,8 +82,8 @@ export async function initDatabase(): Promise<DataSource> {
 				"[Database]" +
 					red(
 						` We don't have migrations for DB type '${DatabaseType}'` +
-							` To ignore, set DB_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
-					),
+							` To ignore, set DB_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`
+					)
 			);
 			process.exit();
 		}
@@ -104,9 +103,7 @@ export async function initDatabase(): Promise<DataSource> {
 		}
 	};
 	if (!(await dbExists())) {
-		console.log(
-			"[Database] This appears to be a fresh database. Synchronising.",
-		);
+		console.log("[Database] This appears to be a fresh database. Synchronising.");
 		await dbConnection.synchronize();
 
 		// On next start, typeorm will try to run all the migrations again from beginning.
@@ -116,8 +113,8 @@ export async function initDatabase(): Promise<DataSource> {
 				Migration.insert({
 					name: migration.name,
 					timestamp: Date.now(),
-				}),
-			),
+				})
+			)
 		);
 	} else {
 		console.log("[Database] Applying missing migrations, if any.");

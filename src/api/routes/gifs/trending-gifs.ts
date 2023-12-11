@@ -31,9 +31,7 @@ router.get(
 			media_format: {
 				type: "string",
 				description: "Media format",
-				values: Object.keys(TenorMediaTypes).filter((key) =>
-					isNaN(Number(key)),
-				),
+				values: Object.keys(TenorMediaTypes).filter((key) => isNaN(Number(key))),
 			},
 			locale: {
 				type: "string",
@@ -60,13 +58,13 @@ router.get(
 				agent,
 				method: "get",
 				headers: { "Content-Type": "application/json" },
-			},
+			}
 		);
 
 		const { results } = await response.json();
 
 		res.json(results.map(parseGifResult)).status(200);
-	},
+	}
 );
 
 export default router;

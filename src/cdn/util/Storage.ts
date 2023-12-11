@@ -49,16 +49,12 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
 		bucket = process.env.STORAGE_BUCKET;
 
 	if (!region) {
-		console.error(
-			`[CDN] You must provide a region when using the S3 storage provider.`,
-		);
+		console.error(`[CDN] You must provide a region when using the S3 storage provider.`);
 		process.exit(1);
 	}
 
 	if (!bucket) {
-		console.error(
-			`[CDN] You must provide a bucket when using the S3 storage provider.`,
-		);
+		console.error(`[CDN] You must provide a bucket when using the S3 storage provider.`);
 		process.exit(1);
 	}
 
@@ -66,9 +62,7 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
 	let location = process.env.STORAGE_LOCATION;
 
 	if (!location) {
-		console.warn(
-			`[CDN] STORAGE_LOCATION unconfigured for S3 provider, defaulting to the bucket root...`,
-		);
+		console.warn(`[CDN] STORAGE_LOCATION unconfigured for S3 provider, defaulting to the bucket root...`);
 		location = undefined;
 	}
 

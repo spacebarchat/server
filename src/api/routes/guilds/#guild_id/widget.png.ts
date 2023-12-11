@@ -57,15 +57,8 @@ router.get(
 
 		// Fetch parameter
 		const style = req.query.style?.toString() || "shield";
-		if (
-			!["shield", "banner1", "banner2", "banner3", "banner4"].includes(
-				style,
-			)
-		) {
-			throw new HTTPError(
-				"Value must be one of ('shield', 'banner1', 'banner2', 'banner3', 'banner4').",
-				400,
-			);
+		if (!["shield", "banner1", "banner2", "banner3", "banner4"].includes(style)) {
+			throw new HTTPError("Value must be one of ('shield', 'banner1', 'banner2', 'banner3', 'banner4').", 400);
 		}
 
 		// Setup canvas
@@ -74,17 +67,7 @@ router.get(
 		const sizeOf = require("image-size");
 
 		// TODO: Widget style templates need Spacebar branding
-		const source = path.join(
-			__dirname,
-			"..",
-			"..",
-			"..",
-			"..",
-			"..",
-			"assets",
-			"widget",
-			`${style}.png`,
-		);
+		const source = path.join(__dirname, "..", "..", "..", "..", "..", "assets", "widget", `${style}.png`);
 		if (!fs.existsSync(source)) {
 			throw new HTTPError("Widget template does not exist.", 400);
 		}
@@ -100,99 +83,32 @@ router.get(
 		switch (style) {
 			case "shield":
 				ctx.textAlign = "center";
-				await drawText(
-					ctx,
-					73,
-					13,
-					"#FFFFFF",
-					"thin 10px Verdana",
-					presence,
-				);
+				await drawText(ctx, 73, 13, "#FFFFFF", "thin 10px Verdana", presence);
 				break;
 			case "banner1":
 				if (icon) await drawIcon(ctx, 20, 27, 50, icon);
-				await drawText(
-					ctx,
-					83,
-					51,
-					"#FFFFFF",
-					"12px Verdana",
-					name,
-					22,
-				);
-				await drawText(
-					ctx,
-					83,
-					66,
-					"#C9D2F0FF",
-					"thin 11px Verdana",
-					presence,
-				);
+				await drawText(ctx, 83, 51, "#FFFFFF", "12px Verdana", name, 22);
+				await drawText(ctx, 83, 66, "#C9D2F0FF", "thin 11px Verdana", presence);
 				break;
 			case "banner2":
 				if (icon) await drawIcon(ctx, 13, 19, 36, icon);
-				await drawText(
-					ctx,
-					62,
-					34,
-					"#FFFFFF",
-					"12px Verdana",
-					name,
-					15,
-				);
-				await drawText(
-					ctx,
-					62,
-					49,
-					"#C9D2F0FF",
-					"thin 11px Verdana",
-					presence,
-				);
+				await drawText(ctx, 62, 34, "#FFFFFF", "12px Verdana", name, 15);
+				await drawText(ctx, 62, 49, "#C9D2F0FF", "thin 11px Verdana", presence);
 				break;
 			case "banner3":
 				if (icon) await drawIcon(ctx, 20, 20, 50, icon);
-				await drawText(
-					ctx,
-					83,
-					44,
-					"#FFFFFF",
-					"12px Verdana",
-					name,
-					27,
-				);
-				await drawText(
-					ctx,
-					83,
-					58,
-					"#C9D2F0FF",
-					"thin 11px Verdana",
-					presence,
-				);
+				await drawText(ctx, 83, 44, "#FFFFFF", "12px Verdana", name, 27);
+				await drawText(ctx, 83, 58, "#C9D2F0FF", "thin 11px Verdana", presence);
 				break;
 			case "banner4":
 				if (icon) await drawIcon(ctx, 21, 136, 50, icon);
-				await drawText(
-					ctx,
-					84,
-					156,
-					"#FFFFFF",
-					"13px Verdana",
-					name,
-					27,
-				);
-				await drawText(
-					ctx,
-					84,
-					171,
-					"#C9D2F0FF",
-					"thin 12px Verdana",
-					presence,
-				);
+				await drawText(ctx, 84, 156, "#FFFFFF", "13px Verdana", name, 27);
+				await drawText(ctx, 84, 171, "#C9D2F0FF", "thin 12px Verdana", presence);
 				break;
 			default:
 				throw new HTTPError(
 					"Value must be one of ('shield', 'banner1', 'banner2', 'banner3', 'banner4').",
-					400,
+					400
 				);
 		}
 
@@ -201,16 +117,10 @@ router.get(
 		res.set("Content-Type", "image/png");
 		res.set("Cache-Control", "public, max-age=3600");
 		return res.send(buffer);
-	},
+	}
 );
 
-async function drawIcon(
-	canvas: any,
-	x: number,
-	y: number,
-	scale: number,
-	icon: string,
-) {
+async function drawIcon(canvas: any, x: number, y: number, scale: number, icon: string) {
 	const img = new (require("canvas").Image)();
 	img.src = icon;
 
@@ -234,12 +144,11 @@ async function drawText(
 	color: string,
 	font: string,
 	text: string,
-	maxcharacters?: number,
+	maxcharacters?: number
 ) {
 	canvas.fillStyle = color;
 	canvas.font = font;
-	if (text.length > (maxcharacters || 0) && maxcharacters)
-		text = text.slice(0, maxcharacters) + "...";
+	if (text.length > (maxcharacters || 0) && maxcharacters) text = text.slice(0, maxcharacters) + "...";
 	canvas.fillText(text, x, y);
 }
 

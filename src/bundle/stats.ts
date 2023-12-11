@@ -34,8 +34,8 @@ export function initStats() {
 		console.warn(
 			red(
 				`[Process] Warning Spacebar is running as root, this highly discouraged and might expose your system vulnerable to attackers.` +
-					`Please run Spacebar as a user without root privileges.`,
-			),
+					`Please run Spacebar as a user without root privileges.`
+			)
 		);
 	}
 

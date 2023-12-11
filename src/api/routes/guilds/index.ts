@@ -17,14 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Config,
-	DiscordApiErrors,
-	Guild,
-	GuildCreateSchema,
-	Member,
-	getRights,
-} from "@spacebar/util";
+import { Config, DiscordApiErrors, Guild, GuildCreateSchema, Member, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router();
@@ -73,7 +66,7 @@ router.post(
 		await Member.addToGuild(req.user_id, guild.id);
 
 		res.status(201).json(guild);
-	},
+	}
 );
 
 export default router;

@@ -37,32 +37,20 @@ export const WebAuthn: {
 	},
 };
 
-export async function generateWebAuthnTicket(
-	challenge: string,
-): Promise<string> {
+export async function generateWebAuthnTicket(challenge: string): Promise<string> {
 	return new Promise((res, rej) => {
-		jwt.sign(
-			{ challenge },
-			Config.get().security.jwtSecret,
-			JWTOptions,
-			(err, token) => {
-				if (err || !token) return rej(err || "no token");
-				return res(token);
-			},
-		);
+		jwt.sign({ challenge }, Config.get().security.jwtSecret, JWTOptions, (err, token) => {
+			if (err || !token) return rej(err || "no token");
+			return res(token);
+		});
 	});
 }
 
 export async function verifyWebAuthnToken(token: string) {
 	return new Promise((res, rej) => {
-		jwt.verify(
-			token,
-			Config.get().security.jwtSecret,
-			JWTOptions,
-			async (err, decoded) => {
-				if (err) return rej(err);
-				return res(decoded);
-			},
-		);
+		jwt.verify(token, Config.get().security.jwtSecret, JWTOptions, async (err, decoded) => {
+			if (err) return rej(err);
+			return res(decoded);
+		});
 	});
 }

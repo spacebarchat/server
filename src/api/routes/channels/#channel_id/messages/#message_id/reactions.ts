@@ -88,7 +88,7 @@ router.delete(
 		} as MessageReactionRemoveAllEvent);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 router.delete(
@@ -113,9 +113,7 @@ router.delete(
 		});
 
 		const already_added = message.reactions.find(
-			(x) =>
-				(x.emoji.id === emoji.id && emoji.id) ||
-				x.emoji.name === emoji.name,
+			(x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name
 		);
 		if (!already_added) throw new HTTPError("Reaction not found", 404);
 		message.reactions.remove(already_added);
@@ -135,7 +133,7 @@ router.delete(
 		]);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 router.get(
@@ -161,9 +159,7 @@ router.get(
 			where: { id: message_id, channel_id },
 		});
 		const reaction = message.reactions.find(
-			(x) =>
-				(x.emoji.id === emoji.id && emoji.id) ||
-				x.emoji.name === emoji.name,
+			(x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name
 		);
 		if (!reaction) throw new HTTPError("Reaction not found", 404);
 
@@ -175,7 +171,7 @@ router.get(
 		});
 
 		res.json(users);
-	},
+	}
 );
 
 router.put(
@@ -204,9 +200,7 @@ router.put(
 			where: { id: message_id, channel_id },
 		});
 		const already_added = message.reactions.find(
-			(x) =>
-				(x.emoji.id === emoji.id && emoji.id) ||
-				x.emoji.name === emoji.name,
+			(x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name
 		);
 
 		if (!already_added) req.permission?.hasThrow("ADD_REACTIONS");
@@ -222,8 +216,7 @@ router.put(
 		}
 
 		if (already_added) {
-			if (already_added.user_ids.includes(req.user_id))
-				return res.sendStatus(204); // Do not throw an error ¯\_(ツ)_/¯ as discord also doesn't throw any error
+			if (already_added.user_ids.includes(req.user_id)) return res.sendStatus(204); // Do not throw an error ¯\_(ツ)_/¯ as discord also doesn't throw any error
 			already_added.count++;
 			already_added.user_ids.push(req.user_id);
 		} else
@@ -258,7 +251,7 @@ router.put(
 		} as MessageReactionAddEvent);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 router.delete(
@@ -288,30 +281,19 @@ router.delete(
 
 		if (user_id === "@me") user_id = req.user_id;
 		else {
-			const permissions = await getPermission(
-				req.user_id,
-				undefined,
-				channel_id,
-			);
+			const permissions = await getPermission(req.user_id, undefined, channel_id);
 			permissions.hasThrow("MANAGE_MESSAGES");
 		}
 
 		const already_added = message.reactions.find(
-			(x) =>
-				(x.emoji.id === emoji.id && emoji.id) ||
-				x.emoji.name === emoji.name,
+			(x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name
 		);
-		if (!already_added || !already_added.user_ids.includes(user_id))
-			throw new HTTPError("Reaction not found", 404);
+		if (!already_added || !already_added.user_ids.includes(user_id)) throw new HTTPError("Reaction not found", 404);
 
 		already_added.count--;
 
 		if (already_added.count <= 0) message.reactions.remove(already_added);
-		else
-			already_added.user_ids.splice(
-				already_added.user_ids.indexOf(user_id),
-				1,
-			);
+		else already_added.user_ids.splice(already_added.user_ids.indexOf(user_id), 1);
 
 		await message.save();
 
@@ -328,7 +310,7 @@ router.delete(
 		} as MessageReactionRemoveEvent);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

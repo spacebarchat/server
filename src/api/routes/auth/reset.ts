@@ -17,14 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	checkToken,
-	Email,
-	FieldErrors,
-	generateToken,
-	PasswordResetSchema,
-	User,
-} from "@spacebar/util";
+import { checkToken, Email, FieldErrors, generateToken, PasswordResetSchema, User } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 
@@ -76,7 +69,7 @@ router.post(
 		await Email.sendPasswordChanged(user, user.email!);
 
 		res.json({ token: await generateToken(user.id) });
-	},
+	}
 );
 
 export default router;

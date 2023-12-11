@@ -68,8 +68,7 @@ router.post(
 		const role_count = await Role.count({ where: { guild_id } });
 		const { maxRoles } = Config.get().limits.guild;
 
-		if (role_count > maxRoles)
-			throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
+		if (role_count > maxRoles) throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
 
 		const role = Role.create({
 			// values before ...body are default and can be overriden
@@ -80,10 +79,7 @@ router.post(
 			...body,
 			guild_id: guild_id,
 			managed: false,
-			permissions: String(
-				(req.permission?.bitfield || 0n) &
-					BigInt(body.permissions || "0"),
-			),
+			permissions: String((req.permission?.bitfield || 0n) & BigInt(body.permissions || "0")),
 			tags: undefined,
 			icon: undefined,
 			unicode_emoji: undefined,
@@ -112,7 +108,7 @@ router.post(
 		]);
 
 		res.json(role);
-	},
+	}
 );
 
 router.patch(
@@ -136,11 +132,7 @@ router.patch(
 		const { guild_id } = req.params;
 		const body = req.body as RolePositionUpdateSchema;
 
-		await Promise.all(
-			body.map(async (x) =>
-				Role.update({ guild_id, id: x.id }, { position: x.position }),
-			),
-		);
+		await Promise.all(body.map(async (x) => Role.update({ guild_id, id: x.id }, { position: x.position })));
 
 		const roles = await Role.find({
 			where: body.map((x) => ({ id: x.id, guild_id })),
@@ -155,12 +147,12 @@ router.patch(
 						guild_id,
 						role: x,
 					},
-				} as GuildRoleUpdateEvent),
-			),
+				} as GuildRoleUpdateEvent)
+			)
 		);
 
 		res.json(roles);
-	},
+	}
 );
 
 export default router;

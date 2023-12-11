@@ -45,10 +45,7 @@ router.post(
 
 		if (user.data.hash) {
 			// guest accounts can delete accounts without password
-			correctpass = await bcrypt.compare(
-				req.body.password,
-				user.data.hash,
-			); //Not sure if user typed right password :/
+			correctpass = await bcrypt.compare(req.body.password, user.data.hash); //Not sure if user typed right password :/
 		}
 
 		if (correctpass) {
@@ -61,7 +58,7 @@ router.post(
 				code: 50018,
 			});
 		}
-	},
+	}
 );
 
 export default router;

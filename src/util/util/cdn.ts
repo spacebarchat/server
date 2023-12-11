@@ -25,7 +25,7 @@ import { Config } from "./Config";
 export async function uploadFile(
 	path: string,
 	// These are the only props we use, don't need to enforce the full type.
-	file?: Pick<Express.Multer.File, "mimetype" | "originalname" | "buffer">,
+	file?: Pick<Express.Multer.File, "mimetype" | "originalname" | "buffer">
 ): Promise<Attachment> {
 	if (!file?.buffer) throw new HTTPError("Missing file in body");
 
@@ -35,27 +35,21 @@ export async function uploadFile(
 		filename: file.originalname,
 	});
 
-	const response = await fetch(
-		`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`,
-		{
-			headers: {
-				signature: Config.get().security.requestSignature,
-				...form.getHeaders(),
-			},
-			method: "POST",
-			body: form,
+	const response = await fetch(`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`, {
+		headers: {
+			signature: Config.get().security.requestSignature,
+			...form.getHeaders(),
 		},
-	);
+		method: "POST",
+		body: form,
+	});
 	const result = (await response.json()) as Attachment;
 
 	if (response.status !== 200) throw result;
 	return result;
 }
 
-export async function handleFile(
-	path: string,
-	body?: string,
-): Promise<string | undefined> {
+export async function handleFile(path: string, body?: string): Promise<string | undefined> {
 	if (!body || !body.startsWith("data:")) return undefined;
 	try {
 		const mimetype = body.split(":")[1].split(";")[0];
@@ -74,15 +68,12 @@ export async function handleFile(
 }
 
 export async function deleteFile(path: string) {
-	const response = await fetch(
-		`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`,
-		{
-			headers: {
-				signature: Config.get().security.requestSignature,
-			},
-			method: "DELETE",
+	const response = await fetch(`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`, {
+		headers: {
+			signature: Config.get().security.requestSignature,
 		},
-	);
+		method: "DELETE",
+	});
 	const result = await response.json();
 
 	if (response.status !== 200) throw result;

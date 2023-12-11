@@ -49,7 +49,7 @@ router.get(
 			note_user_id: id,
 			user_id: req.user_id,
 		});
-	},
+	}
 );
 
 router.put(
@@ -79,10 +79,7 @@ router.put(
 					},
 				})
 			) {
-				Note.update(
-					{ owner: { id: owner.id }, target: { id: target.id } },
-					{ owner, target, content: note },
-				);
+				Note.update({ owner: { id: owner.id }, target: { id: target.id } }, { owner, target, content: note });
 			} else {
 				Note.insert({
 					id: Snowflake.generate(),
@@ -108,7 +105,7 @@ router.put(
 		});
 
 		return res.status(204);
-	},
+	}
 );
 
 export default router;

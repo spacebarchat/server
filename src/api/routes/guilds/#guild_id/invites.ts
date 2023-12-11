@@ -41,7 +41,7 @@ router.get(
 		});
 
 		return res.json(invites);
-	},
+	}
 );
 
 export default router;

@@ -181,8 +181,7 @@ export class Member extends BaseClassWithoutId {
 			select: ["owner_id"],
 			where: { id: guild_id },
 		});
-		if (guild.owner_id === user_id)
-			throw new Error("The owner cannot be removed of the guild");
+		if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
 		const member = await Member.findOneOrFail({
 			where: { id: user_id, guild_id },
 			relations: ["user"],
@@ -244,11 +243,7 @@ export class Member extends BaseClassWithoutId {
 		]);
 	}
 
-	static async removeRole(
-		user_id: string,
-		guild_id: string,
-		role_id: string,
-	) {
+	static async removeRole(user_id: string, guild_id: string, role_id: string) {
 		const [member] = await Promise.all([
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
@@ -278,11 +273,7 @@ export class Member extends BaseClassWithoutId {
 		]);
 	}
 
-	static async changeNickname(
-		user_id: string,
-		guild_id: string,
-		nickname: string,
-	) {
+	static async changeNickname(user_id: string, guild_id: string, nickname: string) {
 		const member = await Member.findOneOrFail({
 			where: {
 				id: user_id,
@@ -316,10 +307,7 @@ export class Member extends BaseClassWithoutId {
 		const { maxGuilds } = Config.get().limits.user;
 		const guild_count = await Member.count({ where: { id: user_id } });
 		if (guild_count >= maxGuilds) {
-			throw new HTTPError(
-				`You are at the ${maxGuilds} server limit.`,
-				403,
-			);
+			throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
 		}
 
 		const guild = await Guild.findOneOrFail({

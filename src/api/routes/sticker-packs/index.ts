@@ -37,7 +37,7 @@ router.get(
 		});
 
 		res.json({ sticker_packs });
-	},
+	}
 );
 
 export default router;

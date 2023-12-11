@@ -47,18 +47,11 @@ export default class TwitchConnection extends RefreshableConnection {
 	public readonly authorizeUrl = "https://id.twitch.tv/oauth2/authorize";
 	public readonly tokenUrl = "https://id.twitch.tv/oauth2/token";
 	public readonly userInfoUrl = "https://api.twitch.tv/helix/users";
-	public readonly scopes = [
-		"channel_subscriptions",
-		"channel_check_subscription",
-		"channel:read:subscriptions",
-	];
+	public readonly scopes = ["channel_subscriptions", "channel_check_subscription", "channel:read:subscriptions"];
 	settings: TwitchSettings = new TwitchSettings();
 
 	init(): void {
-		const settings = ConnectionLoader.getConnectionConfig<TwitchSettings>(
-			this.id,
-			this.settings,
-		);
+		const settings = ConnectionLoader.getConnectionConfig<TwitchSettings>(this.id, this.settings);
 
 		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
 			throw new Error(`Invalid settings for connection ${this.id}`);
@@ -80,10 +73,7 @@ export default class TwitchConnection extends RefreshableConnection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -100,7 +90,7 @@ export default class TwitchConnection extends RefreshableConnection {
 					client_id: this.settings.clientId as string,
 					client_secret: this.settings.clientSecret as string,
 					redirect_uri: this.getRedirectUri(),
-				}),
+				})
 			)
 			.post()
 			.json<ConnectedAccountCommonOAuthTokenResponse>()
@@ -110,11 +100,8 @@ export default class TwitchConnection extends RefreshableConnection {
 			});
 	}
 
-	async refreshToken(
-		connectedAccount: ConnectedAccount,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
-		if (!connectedAccount.token_data?.refresh_token)
-			throw new Error("No refresh token available.");
+	async refreshToken(connectedAccount: ConnectedAccount): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+		if (!connectedAccount.token_data?.refresh_token) throw new Error("No refresh token available.");
 		const refresh_token = connectedAccount.token_data.refresh_token;
 
 		const url = this.getTokenUrl();
@@ -130,7 +117,7 @@ export default class TwitchConnection extends RefreshableConnection {
 					client_id: this.settings.clientId as string,
 					client_secret: this.settings.clientSecret as string,
 					refresh_token: refresh_token,
-				}),
+				})
 			)
 			.post()
 			.unauthorized(async () => {
@@ -161,9 +148,7 @@ export default class TwitchConnection extends RefreshableConnection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

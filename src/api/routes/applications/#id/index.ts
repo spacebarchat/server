@@ -17,11 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Application,
-	ApplicationModifySchema,
-	DiscordApiErrors,
-} from "@spacebar/util";
+import { Application, ApplicationModifySchema, DiscordApiErrors } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
@@ -45,11 +41,10 @@ router.get(
 			where: { id: req.params.id },
 			relations: ["owner", "bot"],
 		});
-		if (app.owner.id != req.user_id)
-			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
 		return res.json(app);
-	},
+	}
 );
 
 router.patch(
@@ -73,14 +68,9 @@ router.patch(
 			relations: ["owner", "bot"],
 		});
 
-		if (app.owner.id != req.user_id)
-			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-		if (
-			app.owner.totp_secret &&
-			(!req.body.code ||
-				verifyToken(app.owner.totp_secret, req.body.code))
-		)
+		if (app.owner.totp_secret && (!req.body.code || verifyToken(app.owner.totp_secret, req.body.code)))
 			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
 		if (app.bot) {
@@ -93,7 +83,7 @@ router.patch(
 		await app.save();
 
 		return res.json(app);
-	},
+	}
 );
 
 router.post(
@@ -111,20 +101,15 @@ router.post(
 			where: { id: req.params.id },
 			relations: ["bot", "owner"],
 		});
-		if (app.owner.id != req.user_id)
-			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-		if (
-			app.owner.totp_secret &&
-			(!req.body.code ||
-				verifyToken(app.owner.totp_secret, req.body.code))
-		)
+		if (app.owner.totp_secret && (!req.body.code || verifyToken(app.owner.totp_secret, req.body.code)))
 			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
 		await Application.delete({ id: app.id });
 
 		res.send().status(200);
-	},
+	}
 );
 
 export default router;

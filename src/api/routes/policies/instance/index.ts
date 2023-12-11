@@ -33,7 +33,7 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { general } = Config.get();
 		res.json(general);
-	},
+	}
 );
 
 export default router;

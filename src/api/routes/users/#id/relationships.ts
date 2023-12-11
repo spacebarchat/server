@@ -46,11 +46,7 @@ router.get(
 
 		for (const rmem of requested_relations.relationships) {
 			for (const smem of self_relations.relationships)
-				if (
-					rmem.to_id === smem.to_id &&
-					rmem.type === 1 &&
-					rmem.to_id !== req.user_id
-				) {
+				if (rmem.to_id === smem.to_id && rmem.type === 1 && rmem.to_id !== req.user_id) {
 					const relation_user = await User.getPublicUser(rmem.to_id);
 
 					mutual_relations.push({
@@ -64,7 +60,7 @@ router.get(
 		}
 
 		res.json(mutual_relations);
-	},
+	}
 );
 
 export default router;

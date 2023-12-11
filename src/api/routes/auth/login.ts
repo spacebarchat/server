@@ -47,8 +47,7 @@ router.post(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { login, password, captcha_key, undelete } =
-			req.body as LoginSchema;
+		const { login, password, captcha_key, undelete } = req.body as LoginSchema;
 
 		const config = Config.get();
 
@@ -101,10 +100,7 @@ router.post(
 		});
 
 		// the salt is saved in the password refer to bcrypt docs
-		const same_password = await bcrypt.compare(
-			password,
-			user.data.hash || "",
-		);
+		const same_password = await bcrypt.compare(password, user.data.hash || "");
 		if (!same_password) {
 			throw FieldErrors({
 				login: {
@@ -123,8 +119,7 @@ router.post(
 			throw FieldErrors({
 				login: {
 					code: "ACCOUNT_LOGIN_VERIFICATION_EMAIL",
-					message:
-						"Email verification is required, please check your email.",
+					message: "Email verification is required, please check your email.",
 				},
 			});
 		}
@@ -153,9 +148,7 @@ router.post(
 			const challenge = JSON.stringify({
 				publicKey: {
 					...options,
-					challenge: Buffer.from(options.challenge).toString(
-						"base64",
-					),
+					challenge: Buffer.from(options.challenge).toString("base64"),
 					allowCredentials: user.security_keys.map((x) => ({
 						id: x.key_id,
 						type: "public-key",
@@ -179,10 +172,8 @@ router.post(
 
 		if (undelete) {
 			// undelete refers to un'disable' here
-			if (user.disabled)
-				await User.update({ id: user.id }, { disabled: false });
-			if (user.deleted)
-				await User.update({ id: user.id }, { deleted: false });
+			if (user.disabled) await User.update({ id: user.id }, { disabled: false });
+			if (user.deleted) await User.update({ id: user.id }, { deleted: false });
 		} else {
 			if (user.deleted)
 				return res.status(400).json({
@@ -203,7 +194,7 @@ router.post(
 		// https://user-images.githubusercontent.com/6506416/81051916-dd8c9900-8ec2-11ea-8794-daf12d6f31f0.png
 
 		res.json({ token, settings: { ...user.settings, index: undefined } });
-	},
+	}
 );
 
 /**

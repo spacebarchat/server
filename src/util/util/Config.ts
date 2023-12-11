@@ -41,9 +41,7 @@ export const Config = {
 		} else {
 			console.log(`[Config] Using CONFIG_PATH rather than database`);
 			if (existsSync(process.env.CONFIG_PATH)) {
-				const file = JSON.parse(
-					(await fs.readFile(process.env.CONFIG_PATH)).toString(),
-				);
+				const file = JSON.parse((await fs.readFile(process.env.CONFIG_PATH)).toString());
 				config = file;
 			} else config = new ConfigValue();
 			pairs = generatePairs(config);
@@ -82,7 +80,7 @@ const generatePairs = (obj: object | null, key = ""): ConfigEntity[] => {
 		return Object.keys(obj)
 			.map((k) =>
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				generatePairs((obj as any)[k], key ? `${key}_${k}` : k),
+				generatePairs((obj as any)[k], key ? `${key}_${k}` : k)
 			)
 			.flat();
 	}
@@ -94,8 +92,7 @@ const generatePairs = (obj: object | null, key = ""): ConfigEntity[] => {
 };
 
 async function applyConfig(val: ConfigValue) {
-	if (process.env.CONFIG_PATH)
-		await fs.writeFile(overridePath, JSON.stringify(val, null, 4));
+	if (process.env.CONFIG_PATH) await fs.writeFile(overridePath, JSON.stringify(val, null, 4));
 	else {
 		const pairs = generatePairs(val);
 		await Promise.all(pairs.map((pair) => pair.save()));
@@ -116,8 +113,7 @@ function pairsToConfig(pairs: ConfigEntity[]) {
 		let i = 0;
 
 		for (const key of keys) {
-			if (!isNaN(Number(key)) && !prevObj[prev]?.length)
-				prevObj[prev] = obj = [];
+			if (!isNaN(Number(key)) && !prevObj[prev]?.length) prevObj[prev] = obj = [];
 			if (i++ === keys.length - 1) obj[key] = p.value;
 			else if (!obj[key]) obj[key] = {};
 
@@ -142,18 +138,14 @@ const validateConfig = async () => {
 			if (!found) continue;
 			config[row] = found;
 		} catch (e) {
-			console.error(
-				`Config key '${config[row].key}' has invalid JSON value : ${
-					(e as Error)?.message
-				}`,
-			);
+			console.error(`Config key '${config[row].key}' has invalid JSON value : ${(e as Error)?.message}`);
 			hasErrored = true;
 		}
 	}
 
 	if (hasErrored) {
 		console.error(
-			"Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration",
+			"Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration"
 		);
 		process.exit(1);
 	}

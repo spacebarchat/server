@@ -33,7 +33,7 @@ router.get(
 	async (req: Request, res: Response) => {
 		//TODO
 		res.send([]).status(200);
-	},
+	}
 );
 
 export default router;

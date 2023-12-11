@@ -49,7 +49,7 @@ router.patch(
 
 		await Member.changeNickname(member_id, guild_id, req.body.nick);
 		res.status(200).send();
-	},
+	}
 );
 
 export default router;

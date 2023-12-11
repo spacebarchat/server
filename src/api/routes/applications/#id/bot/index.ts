@@ -50,15 +50,14 @@ router.post(
 			relations: ["owner"],
 		});
 
-		if (app.owner.id != req.user_id)
-			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
 		const user = await createAppBotUser(app, req);
 
 		res.send({
 			token: await generateToken(user.id),
 		}).status(204);
-	},
+	}
 );
 
 router.post(
@@ -77,13 +76,9 @@ router.post(
 		const bot = await User.findOneOrFail({ where: { id: req.params.id } });
 		const owner = await User.findOneOrFail({ where: { id: req.user_id } });
 
-		if (owner.id != req.user_id)
-			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		if (owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-		if (
-			owner.totp_secret &&
-			(!req.body.code || verifyToken(owner.totp_secret, req.body.code))
-		)
+		if (owner.totp_secret && (!req.body.code || verifyToken(owner.totp_secret, req.body.code)))
 			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
 		bot.data = { hash: undefined, valid_tokens_since: new Date() };
@@ -93,7 +88,7 @@ router.post(
 		const token = await generateToken(bot.id);
 
 		res.json({ token }).status(200);
-	},
+	}
 );
 
 router.patch(
@@ -120,14 +115,9 @@ router.patch(
 
 		if (!app.bot) throw DiscordApiErrors.BOT_ONLY_ENDPOINT;
 
-		if (app.owner.id != req.user_id)
-			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-		if (body.avatar)
-			body.avatar = await handleFile(
-				`/avatars/${app.id}`,
-				body.avatar as string,
-			);
+		if (body.avatar) body.avatar = await handleFile(`/avatars/${app.id}`, body.avatar as string);
 
 		app.bot.assign(body);
 
@@ -135,7 +125,7 @@ router.patch(
 
 		await app.save();
 		res.json(app).status(200);
-	},
+	}
 );
 
 export default router;

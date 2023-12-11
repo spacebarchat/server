@@ -33,10 +33,7 @@ import { HTTPError } from "lambert-server";
 
 const router = Router();
 
-const userProjection: (keyof User)[] = [
-	"relationships",
-	...PublicUserProjection,
-];
+const userProjection: (keyof User)[] = ["relationships", ...PublicUserProjection];
 
 router.get(
 	"/",
@@ -68,7 +65,7 @@ router.get(
 		});
 
 		return res.json(related_users);
-	},
+	}
 );
 
 router.put(
@@ -94,9 +91,9 @@ router.put(
 				relations: ["relationships", "relationships.to"],
 				select: userProjection,
 			}),
-			req.body.type ?? RelationshipType.friends,
+			req.body.type ?? RelationshipType.friends
 		);
-	},
+	}
 );
 
 router.post(
@@ -121,16 +118,13 @@ router.post(
 				relations: ["relationships", "relationships.to"],
 				select: userProjection,
 				where: {
-					discriminator: String(req.body.discriminator).padStart(
-						4,
-						"0",
-					), //Discord send the discriminator as integer, we need to add leading zeroes
+					discriminator: String(req.body.discriminator).padStart(4, "0"), //Discord send the discriminator as integer, we need to add leading zeroes
 					username: req.body.username,
 				},
 			}),
-			req.body.type,
+			req.body.type
 		);
-	},
+	}
 );
 
 router.delete(
@@ -148,8 +142,7 @@ router.delete(
 	}),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
-		if (id === req.user_id)
-			throw new HTTPError("You can't remove yourself as a friend");
+		if (id === req.user_id) throw new HTTPError("You can't remove yourself as a friend");
 
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id },
@@ -163,12 +156,9 @@ router.delete(
 		});
 
 		const relationship = user.relationships.find((x) => x.to_id === id);
-		const friendRequest = friend.relationships.find(
-			(x) => x.to_id === req.user_id,
-		);
+		const friendRequest = friend.relationships.find((x) => x.to_id === req.user_id);
 
-		if (!relationship)
-			throw new HTTPError("You are not friends with the user", 404);
+		if (!relationship) throw new HTTPError("You are not friends with the user", 404);
 		if (relationship?.type === RelationshipType.blocked) {
 			// unblock user
 
@@ -203,20 +193,14 @@ router.delete(
 		]);
 
 		return res.sendStatus(204);
-	},
+	}
 );
 
 export default router;
 
-async function updateRelationship(
-	req: Request,
-	res: Response,
-	friend: User,
-	type: RelationshipType,
-) {
+async function updateRelationship(req: Request, res: Response, friend: User, type: RelationshipType) {
 	const id = friend.id;
-	if (id === req.user_id)
-		throw new HTTPError("You can't add yourself as a friend");
+	if (id === req.user_id) throw new HTTPError("You can't add yourself as a friend");
 
 	const user = await User.findOneOrFail({
 		where: { id: req.user_id },
@@ -225,15 +209,12 @@ async function updateRelationship(
 	});
 
 	let relationship = user.relationships.find((x) => x.to_id === id);
-	const friendRequest = friend.relationships.find(
-		(x) => x.to_id === req.user_id,
-	);
+	const friendRequest = friend.relationships.find((x) => x.to_id === req.user_id);
 
 	// TODO: you can add infinitely many blocked users (should this be prevented?)
 	if (type === RelationshipType.blocked) {
 		if (relationship) {
-			if (relationship.type === RelationshipType.blocked)
-				throw new HTTPError("You already blocked the user");
+			if (relationship.type === RelationshipType.blocked) throw new HTTPError("You already blocked the user");
 			relationship.type = RelationshipType.blocked;
 			await relationship.save();
 		} else {
@@ -265,8 +246,7 @@ async function updateRelationship(
 	}
 
 	const { maxFriends } = Config.get().limits.user;
-	if (user.relationships.length >= maxFriends)
-		throw DiscordApiErrors.MAXIMUM_FRIENDS.withParams(maxFriends);
+	if (user.relationships.length >= maxFriends) throw DiscordApiErrors.MAXIMUM_FRIENDS.withParams(maxFriends);
 
 	let incoming_relationship = Relationship.create({
 		nickname: undefined,
@@ -282,8 +262,7 @@ async function updateRelationship(
 	});
 
 	if (friendRequest) {
-		if (friendRequest.type === RelationshipType.blocked)
-			throw new HTTPError("The user blocked you");
+		if (friendRequest.type === RelationshipType.blocked) throw new HTTPError("The user blocked you");
 		if (friendRequest.type === RelationshipType.friends)
 			throw new HTTPError("You are already friends with the user");
 		// accept friend request
@@ -292,12 +271,9 @@ async function updateRelationship(
 	}
 
 	if (relationship) {
-		if (relationship.type === RelationshipType.outgoing)
-			throw new HTTPError("You already sent a friend request");
+		if (relationship.type === RelationshipType.outgoing) throw new HTTPError("You already sent a friend request");
 		if (relationship.type === RelationshipType.blocked)
-			throw new HTTPError(
-				"Unblock the user before sending a friend request",
-			);
+			throw new HTTPError("Unblock the user before sending a friend request");
 		if (relationship.type === RelationshipType.friends)
 			throw new HTTPError("You are already friends with the user");
 		outgoing_relationship = relationship;

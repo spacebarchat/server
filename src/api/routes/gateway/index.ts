@@ -36,7 +36,7 @@ router.get(
 		res.json({
 			url: endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
 		});
-	},
+	}
 );
 
 export default router;

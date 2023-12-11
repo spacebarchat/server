@@ -33,7 +33,7 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { limits } = Config.get();
 		res.json(limits);
-	},
+	}
 );
 
 export default router;

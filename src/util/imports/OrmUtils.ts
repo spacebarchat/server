@@ -12,12 +12,7 @@ export class OrmUtils {
 		return !item.constructor || item.constructor === Object;
 	}
 
-	private static mergeArrayKey(
-		target: any,
-		key: number,
-		value: any,
-		memo: Map<any, any>,
-	) {
+	private static mergeArrayKey(target: any, key: number, value: any, memo: Map<any, any>) {
 		// Have we seen this before?  Prevent infinite recursion.
 		if (memo.has(value)) {
 			target[key] = memo.get(value);
@@ -46,12 +41,7 @@ export class OrmUtils {
 		memo.delete(value);
 	}
 
-	private static mergeObjectKey(
-		target: any,
-		key: string,
-		value: any,
-		memo: Map<any, any>,
-	) {
+	private static mergeObjectKey(target: any, key: string, value: any, memo: Map<any, any>) {
 		// Have we seen this before?  Prevent infinite recursion.
 		if (memo.has(value)) {
 			Object.assign(target, { [key]: memo.get(value) });
@@ -80,11 +70,7 @@ export class OrmUtils {
 		memo.delete(value);
 	}
 
-	private static merge(
-		target: any,
-		source: any,
-		memo: Map<any, any> = new Map(),
-	): any {
+	private static merge(target: any, source: any, memo: Map<any, any> = new Map()): any {
 		if (Array.isArray(target) && Array.isArray(source)) {
 			for (let key = 0; key < source.length; key++) {
 				this.mergeArrayKey(target, key, source[key], memo);

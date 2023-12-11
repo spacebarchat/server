@@ -51,21 +51,15 @@ interface XboxUserResponse {
 
 export default class XboxConnection extends Connection {
 	public readonly id = "xbox";
-	public readonly authorizeUrl =
-		"https://login.live.com/oauth20_authorize.srf";
+	public readonly authorizeUrl = "https://login.live.com/oauth20_authorize.srf";
 	public readonly tokenUrl = "https://login.live.com/oauth20_token.srf";
-	public readonly userInfoUrl =
-		"https://xsts.auth.xboxlive.com/xsts/authorize";
-	public readonly userAuthUrl =
-		"https://user.auth.xboxlive.com/user/authenticate";
+	public readonly userInfoUrl = "https://xsts.auth.xboxlive.com/xsts/authorize";
+	public readonly userAuthUrl = "https://user.auth.xboxlive.com/user/authenticate";
 	public readonly scopes = ["Xboxlive.signin", "Xboxlive.offline_access"];
 	settings: XboxSettings = new XboxSettings();
 
 	init(): void {
-		const settings = ConnectionLoader.getConnectionConfig<XboxSettings>(
-			this.id,
-			this.settings,
-		);
+		const settings = ConnectionLoader.getConnectionConfig<XboxSettings>(this.id, this.settings);
 
 		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
 			throw new Error(`Invalid settings for connection ${this.id}`);
@@ -104,7 +98,7 @@ export default class XboxConnection extends Connection {
 						SiteName: "user.auth.xboxlive.com",
 						RpsTicket: `d=${token}`,
 					},
-				}),
+				})
 			)
 			.post()
 			.json((res: XboxUserResponse) => res.Token)
@@ -114,10 +108,7 @@ export default class XboxConnection extends Connection {
 			});
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -127,9 +118,7 @@ export default class XboxConnection extends Connection {
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId as string}:${
-						this.settings.clientSecret as string
-					}`,
+					`${this.settings.clientId as string}:${this.settings.clientSecret as string}`
 				).toString("base64")}`,
 			})
 			.body(
@@ -139,7 +128,7 @@ export default class XboxConnection extends Connection {
 					client_id: this.settings.clientId as string,
 					redirect_uri: this.getRedirectUri(),
 					scope: this.scopes.join(" "),
-				}),
+				})
 			)
 			.post()
 			.json<ConnectedAccountCommonOAuthTokenResponse>()
@@ -166,7 +155,7 @@ export default class XboxConnection extends Connection {
 						UserTokens: [token],
 						SandboxId: "RETAIL",
 					},
-				}),
+				})
 			)
 			.post()
 			.json<XboxUserResponse>()
@@ -176,9 +165,7 @@ export default class XboxConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 
@@ -187,10 +174,7 @@ export default class XboxConnection extends Connection {
 		const userToken = await this.getUserToken(tokenData.access_token);
 		const userInfo = await this.getUser(userToken);
 
-		const exists = await this.hasConnection(
-			userId,
-			userInfo.DisplayClaims.xui[0].xid,
-		);
+		const exists = await this.hasConnection(userId, userInfo.DisplayClaims.xui[0].xid);
 
 		if (exists) return null;
 

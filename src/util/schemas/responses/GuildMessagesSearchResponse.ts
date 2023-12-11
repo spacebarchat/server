@@ -1,10 +1,4 @@
-import {
-	Attachment,
-	Embed,
-	MessageType,
-	PublicUser,
-	Role,
-} from "../../entities";
+import { Attachment, Embed, MessageType, PublicUser, Role } from "../../entities";
 
 export interface GuildMessagesSearchMessage {
 	id: string;

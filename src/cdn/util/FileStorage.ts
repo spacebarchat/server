@@ -30,8 +30,7 @@ function getPath(path: string) {
 	const root = process.env.STORAGE_LOCATION || "../";
 	const filename = join(root, path);
 
-	if (path.indexOf("\0") !== -1 || !filename.startsWith(root))
-		throw new Error("invalid path");
+	if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
 	return filename;
 }
 
@@ -53,8 +52,7 @@ export class FileStorage implements Storage {
 
 	async set(path: string, value: Buffer) {
 		path = getPath(path);
-		if (!fs.existsSync(dirname(path)))
-			fs.mkdirSync(dirname(path), { recursive: true });
+		if (!fs.existsSync(dirname(path))) fs.mkdirSync(dirname(path), { recursive: true });
 
 		const ret = Readable.from(value);
 		const cleaned_file = fs.createWriteStream(path);

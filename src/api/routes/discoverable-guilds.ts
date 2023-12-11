@@ -70,7 +70,7 @@ router.get(
 			offset: Number(offset || Config.get().guild.discovery.offset),
 			limit: Number(limit || configLimit),
 		});
-	},
+	}
 );
 
 export default router;

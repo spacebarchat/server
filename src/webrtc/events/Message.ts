@@ -31,8 +31,7 @@ const PayloadSchema = {
 export async function onMessage(this: WebSocket, buffer: Buffer) {
 	try {
 		var data: Payload = JSON.parse(buffer.toString());
-		if (data.op !== VoiceOPCodes.IDENTIFY && !this.user_id)
-			return this.close(CLOSECODES.Not_authenticated);
+		if (data.op !== VoiceOPCodes.IDENTIFY && !this.user_id) return this.close(CLOSECODES.Not_authenticated);
 
 		// @ts-ignore
 		const OPCodeHandler = OPCodeHandlers[data.op];
@@ -44,11 +43,7 @@ export async function onMessage(this: WebSocket, buffer: Buffer) {
 			return;
 		}
 
-		if (
-			![VoiceOPCodes.HEARTBEAT, VoiceOPCodes.SPEAKING].includes(
-				data.op as VoiceOPCodes,
-			)
-		) {
+		if (![VoiceOPCodes.HEARTBEAT, VoiceOPCodes.SPEAKING].includes(data.op as VoiceOPCodes)) {
 			// @ts-ignore
 			console.log("[WebRTC] Opcode " + VoiceOPCodes[data.op]);
 		}

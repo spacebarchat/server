@@ -23,27 +23,17 @@ import { EVENT, Event } from "../interfaces";
 export const events = new EventEmitter();
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
-	const id = (payload.channel_id ||
-		payload.user_id ||
-		payload.guild_id) as string;
+	const id = (payload.channel_id || payload.user_id || payload.guild_id) as string;
 	if (!id) return console.error("event doesn't contain any id", payload);
 
 	if (RabbitMQ.connection) {
-		const data =
-			typeof payload.data === "object"
-				? JSON.stringify(payload.data)
-				: payload.data; // use rabbitmq for event transmission
+		const data = typeof payload.data === "object" ? JSON.stringify(payload.data) : payload.data; // use rabbitmq for event transmission
 		await RabbitMQ.channel?.assertExchange(id, "fanout", {
 			durable: false,
 		});
 
 		// assertQueue isn't needed, because a queue will automatically created if it doesn't exist
-		const successful = RabbitMQ.channel?.publish(
-			id,
-			"",
-			Buffer.from(`${data}`),
-			{ type: payload.event },
-		);
+		const successful = RabbitMQ.channel?.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
 		if (!successful) throw new Error("failed to send event");
 	} else if (process.env.EVENT_TRANSMISSION === "process") {
 		process.send?.({ type: "event", event: payload, id } as ProcessEvent);
@@ -79,17 +69,10 @@ export interface ProcessEvent {
 	id: string;
 }
 
-export async function listenEvent(
-	event: string,
-	callback: (event: EventOpts) => unknown,
-	opts?: ListenEventOpts,
-) {
+export async function listenEvent(event: string, callback: (event: EventOpts) => unknown, opts?: ListenEventOpts) {
 	if (RabbitMQ.connection) {
 		const channel = opts?.channel || RabbitMQ.channel;
-		if (!channel)
-			throw new Error(
-				"[Events] An event was sent without an associated channel",
-			);
+		if (!channel) throw new Error("[Events] An event was sent without an associated channel");
 		return await rabbitListen(channel, event, callback, {
 			acknowledge: opts?.acknowledge,
 		});
@@ -100,9 +83,7 @@ export async function listenEvent(
 		};
 
 		const listener = (msg: ProcessEvent) => {
-			msg.type === "event" &&
-				msg.id === event &&
-				callback({ ...msg.event, cancel });
+			msg.type === "event" && msg.id === event && callback({ ...msg.event, cancel });
 		};
 
 		// TODO: assert the type is correct?
@@ -127,7 +108,7 @@ async function rabbitListen(
 	channel: Channel,
 	id: string,
 	callback: (event: EventOpts) => unknown,
-	opts?: { acknowledge?: boolean },
+	opts?: { acknowledge?: boolean }
 ) {
 	await channel.assertExchange(id, "fanout", { durable: false });
 	const q = await channel.assertQueue("", {
@@ -162,7 +143,7 @@ async function rabbitListen(
 		},
 		{
 			noAck: !opts?.acknowledge,
-		},
+		}
 	);
 
 	return cancel;

@@ -30,13 +30,7 @@ import { storage } from "../util/Storage";
 // TODO: delete old icons
 
 const ANIMATED_MIME_TYPES = ["image/apng", "image/gif", "image/gifv"];
-const STATIC_MIME_TYPES = [
-	"image/png",
-	"image/jpeg",
-	"image/webp",
-	"image/svg+xml",
-	"image/svg",
-];
+const STATIC_MIME_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml", "image/svg"];
 const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 
 const router = Router();
@@ -48,14 +42,10 @@ router.post("/", multer.single("file"), async (req: Request, res: Response) => {
 	const { buffer, size } = req.file;
 	const { guild_id, user_id } = req.params;
 
-	let hash = crypto
-		.createHash("md5")
-		.update(Snowflake.generate())
-		.digest("hex");
+	let hash = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
 
 	const type = await FileType.fromBuffer(buffer);
-	if (!type || !ALLOWED_MIME_TYPES.includes(type.mime))
-		throw new HTTPError("Invalid file type");
+	if (!type || !ALLOWED_MIME_TYPES.includes(type.mime)) throw new HTTPError("Invalid file type");
 	if (ANIMATED_MIME_TYPES.includes(type.mime)) hash = `a_${hash}`; // animated icons have a_ infront of the hash
 
 	const path = `guilds/${guild_id}/users/${user_id}/avatars/${hash}`;

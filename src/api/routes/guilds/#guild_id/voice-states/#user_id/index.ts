@@ -52,14 +52,9 @@ router.patch(
 	async (req: Request, res: Response) => {
 		const body = req.body as VoiceStateUpdateSchema;
 		const { guild_id } = req.params;
-		const user_id =
-			req.params.user_id === "@me" ? req.user_id : req.params.user_id;
+		const user_id = req.params.user_id === "@me" ? req.user_id : req.params.user_id;
 
-		const perms = await getPermission(
-			req.user_id,
-			guild_id,
-			body.channel_id,
-		);
+		const perms = await getPermission(req.user_id, guild_id, body.channel_id);
 
 		/*
 	From https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state
@@ -98,7 +93,7 @@ router.patch(
 			} as VoiceStateUpdateEvent),
 		]);
 		return res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

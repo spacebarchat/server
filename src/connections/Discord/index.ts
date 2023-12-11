@@ -43,10 +43,7 @@ export default class DiscordConnection extends Connection {
 	settings: DiscordSettings = new DiscordSettings();
 
 	init(): void {
-		const settings = ConnectionLoader.getConnectionConfig<DiscordSettings>(
-			this.id,
-			this.settings,
-		);
+		const settings = ConnectionLoader.getConnectionConfig<DiscordSettings>(this.id, this.settings);
 
 		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
 			throw new Error(`Invalid settings for connection ${this.id}`);
@@ -71,10 +68,7 @@ export default class DiscordConnection extends Connection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 		const url = this.getTokenUrl();
 
@@ -90,7 +84,7 @@ export default class DiscordConnection extends Connection {
 					grant_type: "authorization_code",
 					code: code,
 					redirect_uri: this.getRedirectUri(),
-				}),
+				})
 			)
 			.post()
 			.json<ConnectedAccountCommonOAuthTokenResponse>()
@@ -114,9 +108,7 @@ export default class DiscordConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

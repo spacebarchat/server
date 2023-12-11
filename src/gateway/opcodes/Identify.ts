@@ -16,15 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	CLOSECODES,
-	Capabilities,
-	OPCODES,
-	Payload,
-	Send,
-	WebSocket,
-	setupListener,
-} from "@spacebar/gateway";
+import { CLOSECODES, Capabilities, OPCODES, Payload, Send, WebSocket, setupListener } from "@spacebar/gateway";
 import {
 	Application,
 	Config,
@@ -109,9 +101,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			this.shard_count <= 0
 		) {
 			// TODO: why do we even care about this right now?
-			console.log(
-				`[Gateway] Invalid sharding from ${user.id}: ${identify.shard}`,
-			);
+			console.log(`[Gateway] Invalid sharding from ${user.id}: ${identify.shard}`);
 			return this.close(CLOSECODES.Invalid_shard);
 		}
 	}
@@ -134,93 +124,77 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	// * guild members for this user
 	// * recipients ( dm channels )
 	// * the bot application, if it exists
-	const [, application, read_states, members, recipients] = await Promise.all(
-		[
-			session.save(),
+	const [, application, read_states, members, recipients] = await Promise.all([
+		session.save(),
 
-			Application.findOne({
-				where: { id: this.user_id },
-				select: ["id", "flags"],
-			}),
+		Application.findOne({
+			where: { id: this.user_id },
+			select: ["id", "flags"],
+		}),
 
-			ReadState.find({
-				where: { user_id: this.user_id },
-				select: [
-					"id",
-					"channel_id",
-					"last_message_id",
-					"last_pin_timestamp",
-					"mention_count",
-				],
-			}),
+		ReadState.find({
+			where: { user_id: this.user_id },
+			select: ["id", "channel_id", "last_message_id", "last_pin_timestamp", "mention_count"],
+		}),
 
-			Member.find({
-				where: { id: this.user_id },
-				select: {
-					// We only want some member props
-					...Object.fromEntries(
-						MemberPrivateProjection.map((x) => [x, true]),
-					),
-					settings: true, // guild settings
-					roles: { id: true }, // the full role is fetched from the `guild` relation
+		Member.find({
+			where: { id: this.user_id },
+			select: {
+				// We only want some member props
+				...Object.fromEntries(MemberPrivateProjection.map((x) => [x, true])),
+				settings: true, // guild settings
+				roles: { id: true }, // the full role is fetched from the `guild` relation
 
-					// TODO: we don't really need every property of
-					// guild channels, emoji, roles, stickers
-					// but we do want almost everything from guild.
-					// How do you do that without just enumerating the guild props?
-					guild: Object.fromEntries(
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						getDatabase()!
-							.getMetadata(Guild)
-							.columns.map((x) => [x.propertyName, true]),
-					),
-				},
-				relations: [
-					"guild",
-					"guild.channels",
-					"guild.emojis",
-					"guild.roles",
-					"guild.stickers",
-					"roles",
+				// TODO: we don't really need every property of
+				// guild channels, emoji, roles, stickers
+				// but we do want almost everything from guild.
+				// How do you do that without just enumerating the guild props?
+				guild: Object.fromEntries(
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					getDatabase()!
+						.getMetadata(Guild)
+						.columns.map((x) => [x.propertyName, true])
+				),
+			},
+			relations: [
+				"guild",
+				"guild.channels",
+				"guild.emojis",
+				"guild.roles",
+				"guild.stickers",
+				"roles",
 
-					// For these entities, `user` is always just the logged in user we fetched above
-					// "user",
-				],
-			}),
+				// For these entities, `user` is always just the logged in user we fetched above
+				// "user",
+			],
+		}),
 
-			Recipient.find({
-				where: { user_id: this.user_id, closed: false },
-				relations: [
-					"channel",
-					"channel.recipients",
-					"channel.recipients.user",
-				],
-				select: {
-					channel: {
+		Recipient.find({
+			where: { user_id: this.user_id, closed: false },
+			relations: ["channel", "channel.recipients", "channel.recipients.user"],
+			select: {
+				channel: {
+					id: true,
+					flags: true,
+					// is_spam: true,	// TODO
+					last_message_id: true,
+					last_pin_timestamp: true,
+					type: true,
+					icon: true,
+					name: true,
+					owner_id: true,
+					recipients: {
+						// we don't actually need this ID or any other information about the recipient info,
+						// but typeorm does not select anything from the users relation of recipients unless we select
+						// at least one column.
 						id: true,
-						flags: true,
-						// is_spam: true,	// TODO
-						last_message_id: true,
-						last_pin_timestamp: true,
-						type: true,
-						icon: true,
-						name: true,
-						owner_id: true,
-						recipients: {
-							// we don't actually need this ID or any other information about the recipient info,
-							// but typeorm does not select anything from the users relation of recipients unless we select
-							// at least one column.
-							id: true,
-							// We only want public user data for each dm channel
-							user: Object.fromEntries(
-								PublicUserProjection.map((x) => [x, true]),
-							),
-						},
+						// We only want public user data for each dm channel
+						user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
 					},
 				},
-			}),
-		],
-	);
+			},
+		}),
+	]);
 
 	// We forgot to migrate user settings from the JSON column of `users`
 	// to the `user_settings` table theyre in now,
@@ -273,9 +247,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				return perms.has("VIEW_CHANNEL");
 			})
 			.map((channel) => {
-				channel.position = member.guild.channel_ordering.indexOf(
-					channel.id,
-				);
+				channel.position = member.guild.channel_ordering.indexOf(channel.id);
 				return channel;
 			})
 			.sort((a, b) => a.position - b.position);
@@ -294,18 +266,15 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	});
 
 	// Generate user_guild_settings
-	const user_guild_settings_entries: ReadyUserGuildSettingsEntries[] =
-		members.map((x) => ({
-			...DefaultUserGuildSettings,
-			...x.settings,
-			guild_id: x.guild_id,
-			channel_overrides: Object.entries(
-				x.settings.channel_overrides ?? {},
-			).map((y) => ({
-				...y[1],
-				channel_id: y[0],
-			})),
-		}));
+	const user_guild_settings_entries: ReadyUserGuildSettingsEntries[] = members.map((x) => ({
+		...DefaultUserGuildSettings,
+		...x.settings,
+		guild_id: x.guild_id,
+		channel_overrides: Object.entries(x.settings.channel_overrides ?? {}).map((y) => ({
+			...y[1],
+			channel_id: y[0],
+		})),
+	}));
 
 	// Popultaed with users from private channels, relationships.
 	// Uses a set to dedupe for us.
@@ -320,16 +289,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			const channel = r.channel as DMChannel;
 
 			// Remove ourself from the list of other users in dm channel
-			channel.recipients = channel.recipients.filter(
-				(recipient) => recipient.user.id !== this.user_id,
-			);
+			channel.recipients = channel.recipients.filter((recipient) => recipient.user.id !== this.user_id);
 
-			const channelUsers = channel.recipients?.map((recipient) =>
-				recipient.user.toPublicUser(),
-			);
+			const channelUsers = channel.recipients?.map((recipient) => recipient.user.toPublicUser());
 
-			if (channelUsers && channelUsers.length > 0)
-				channelUsers.forEach((user) => users.add(user));
+			if (channelUsers && channelUsers.length > 0) channelUsers.forEach((user) => users.add(user));
 
 			return {
 				id: channel.id,
@@ -386,9 +350,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const d: ReadyEventData = {
 		v: 9,
-		application: application
-			? { id: application.id, flags: application.flags }
-			: undefined,
+		application: application ? { id: application.id, flags: application.flags } : undefined,
 		user: user.toPrivateUser(),
 		user_settings: user.settings,
 		guilds: this.capabilities.has(Capabilities.FLAGS.CLIENT_STATE_V2)
@@ -413,15 +375,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		sessions: allSessions,
 
 		resume_gateway_url:
-			Config.get().gateway.endpointClient ||
-			Config.get().gateway.endpointPublic ||
-			"ws://127.0.0.1:3001",
+			Config.get().gateway.endpointClient || Config.get().gateway.endpointPublic || "ws://127.0.0.1:3001",
 
 		// lol hack whatever
 		required_action:
-			Config.get().login.requireVerification && !user.verified
-				? "REQUIRE_VERIFIED_EMAIL"
-				: undefined,
+			Config.get().login.requireVerification && !user.verified ? "REQUIRE_VERIFIED_EMAIL" : undefined,
 
 		consents: {
 			personalization: {
@@ -457,10 +415,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				t: EVENTEnum.GuildCreate,
 				s: this.sequence++,
 				d: x,
-			})?.catch((e) =>
-				console.error(`[Gateway] error when sending bot guilds`, e),
-			),
-		),
+			})?.catch((e) => console.error(`[Gateway] error when sending bot guilds`, e))
+		)
 	);
 
 	// TODO: ready supplemental

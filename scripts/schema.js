@@ -62,18 +62,13 @@ const Excluded = [
 function main() {
 	const program = TJS.programFromConfig(
 		path.join(__dirname, "..", "tsconfig.json"),
-		walk(path.join(__dirname, "..", "src", "util", "schemas")),
+		walk(path.join(__dirname, "..", "src", "util", "schemas"))
 	);
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 
 	let schemas = generator.getUserSymbols().filter((x) => {
-		return (
-			(x.endsWith("Schema") ||
-				x.endsWith("Response") ||
-				x.startsWith("API")) &&
-			!Excluded.includes(x)
-		);
+		return (x.endsWith("Schema") || x.endsWith("Response") || x.startsWith("API")) && !Excluded.includes(x);
 	});
 
 	var definitions = {};

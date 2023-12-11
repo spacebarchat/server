@@ -57,10 +57,7 @@ router.patch(
 		});
 
 		if (body.banner)
-			body.banner = await handleFile(
-				`/guilds/${guild_id}/users/${req.user_id}/avatars`,
-				body.banner as string,
-			);
+			body.banner = await handleFile(`/guilds/${guild_id}/users/${req.user_id}/avatars`, body.banner as string);
 
 		member = await OrmUtils.mergeDeep(member, body);
 
@@ -74,7 +71,7 @@ router.patch(
 		} as GuildMemberUpdateEvent);
 
 		res.json(member);
-	},
+	}
 );
 
 export default router;

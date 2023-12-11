@@ -65,9 +65,7 @@ router.post(
 		const { guild_id } = channel;
 
 		const expires_at =
-			body.max_age == 0 || body.max_age == undefined
-				? undefined
-				: new Date(body.max_age * 1000 + Date.now());
+			body.max_age == 0 || body.max_age == undefined ? undefined : new Date(body.max_age * 1000 + Date.now());
 
 		const invite = await Invite.create({
 			code: random(),
@@ -95,7 +93,7 @@ router.post(
 		} as InviteCreateEvent);
 
 		res.status(201).send(data);
-	},
+	}
 );
 
 router.get(
@@ -126,7 +124,7 @@ router.get(
 		});
 
 		res.status(200).send(invites);
-	},
+	}
 );
 
 export default router;

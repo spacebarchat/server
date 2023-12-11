@@ -24,10 +24,7 @@ import SemanticSDP, { MediaInfo, SDPInfo } from "semantic-sdp";
 export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 	if (!this.client) return;
 
-	const data = validateSchema(
-		"SelectProtocolSchema",
-		payload.d,
-	) as SelectProtocolSchema;
+	const data = validateSchema("SelectProtocolSchema", payload.d) as SelectProtocolSchema;
 
 	const offer = SemanticSDP.SDPInfo.parse("m=audio\n" + data.sdp!);
 	this.client.sdp!.setICE(offer.getICE());

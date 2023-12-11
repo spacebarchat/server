@@ -24,10 +24,7 @@ export default async function () {
 	const { apiKey } = Config.get().email.sendgrid;
 
 	// ensure all required configuration values are set
-	if (!apiKey)
-		return console.error(
-			"[Email] SendGrid has not been configured correctly.",
-		);
+	if (!apiKey) return console.error("[Email] SendGrid has not been configured correctly.");
 
 	let sg;
 	try {
@@ -36,7 +33,7 @@ export default async function () {
 	} catch {
 		// if the package is not installed, log an error and return void so we don't set the transporter
 		console.error(
-			"[Email] SendGrid transport is not installed. Please run `npm install Maria-Golomb/nodemailer-sendgrid-transport --save-optional` to install it.",
+			"[Email] SendGrid transport is not installed. Please run `npm install Maria-Golomb/nodemailer-sendgrid-transport --save-optional` to install it."
 		);
 		return;
 	}

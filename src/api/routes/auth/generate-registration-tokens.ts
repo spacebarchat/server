@@ -29,13 +29,11 @@ router.get(
 		query: {
 			count: {
 				type: "number",
-				description:
-					"The number of registration tokens to generate. Defaults to 1.",
+				description: "The number of registration tokens to generate. Defaults to 1.",
 			},
 			length: {
 				type: "number",
-				description:
-					"The length of each registration token. Defaults to 255.",
+				description: "The length of each registration token. Defaults to 255.",
 			},
 		},
 		right: "OPERATOR",
@@ -43,18 +41,14 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const count = req.query.count ? parseInt(req.query.count as string) : 1;
-		const length = req.query.length
-			? parseInt(req.query.length as string)
-			: 255;
+		const length = req.query.length ? parseInt(req.query.length as string) : 255;
 
 		const tokens: ValidRegistrationToken[] = [];
 
 		for (let i = 0; i < count; i++) {
 			const token = ValidRegistrationToken.create({
 				token: random(length),
-				expires_at:
-					Date.now() +
-					Config.get().security.defaultRegistrationTokenExpiration,
+				expires_at: Date.now() + Config.get().security.defaultRegistrationTokenExpiration,
 			});
 			tokens.push(token);
 		}
@@ -67,16 +61,11 @@ router.get(
 		});
 
 		const ret = req.query.include_url
-			? tokens.map(
-					(x) =>
-						`${Config.get().general.frontPage}/register?token=${
-							x.token
-						}`,
-			  )
+			? tokens.map((x) => `${Config.get().general.frontPage}/register?token=${x.token}`)
 			: tokens.map((x) => x.token);
 
 		if (req.query.plain) return res.send(ret.join("\n"));
 
 		return res.json({ tokens: ret });
-	},
+	}
 );

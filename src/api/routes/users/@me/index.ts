@@ -47,9 +47,9 @@ router.get(
 			await User.findOne({
 				select: PrivateUserProjection,
 				where: { id: req.user_id },
-			}),
+			})
 		);
-	},
+	}
 );
 
 router.patch(
@@ -79,23 +79,12 @@ router.patch(
 		// Populated on password change
 		let newToken: string | undefined;
 
-		if (body.avatar)
-			body.avatar = await handleFile(
-				`/avatars/${req.user_id}`,
-				body.avatar as string,
-			);
-		if (body.banner)
-			body.banner = await handleFile(
-				`/banners/${req.user_id}`,
-				body.banner as string,
-			);
+		if (body.avatar) body.avatar = await handleFile(`/avatars/${req.user_id}`, body.avatar as string);
+		if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
 
 		if (body.password) {
 			if (user.data?.hash) {
-				const same_password = await bcrypt.compare(
-					body.password,
-					user.data.hash || "",
-				);
+				const same_password = await bcrypt.compare(body.password, user.data.hash || "");
 				if (!same_password) {
 					throw FieldErrors({
 						password: {
@@ -199,7 +188,7 @@ router.patch(
 			...user,
 			newToken,
 		});
-	},
+	}
 );
 
 export default router;

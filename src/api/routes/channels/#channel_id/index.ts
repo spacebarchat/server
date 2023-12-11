@@ -52,7 +52,7 @@ router.get(
 		});
 
 		return res.send(channel);
-	},
+	}
 );
 
 router.delete(
@@ -101,7 +101,7 @@ router.delete(
 		}
 
 		res.send(channel);
-	},
+	}
 );
 
 router.patch(
@@ -122,11 +122,7 @@ router.patch(
 	async (req: Request, res: Response) => {
 		const payload = req.body as ChannelModifySchema;
 		const { channel_id } = req.params;
-		if (payload.icon)
-			payload.icon = await handleFile(
-				`/channel-icons/${channel_id}`,
-				payload.icon,
-			);
+		if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
 
 		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
@@ -143,7 +139,7 @@ router.patch(
 		]);
 
 		res.send(channel);
-	},
+	}
 );
 
 export default router;

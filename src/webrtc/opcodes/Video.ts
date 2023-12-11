@@ -40,7 +40,7 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 				id,
 				// @ts-ignore
 				tracks: [],
-			}),
+			})
 		);
 		this.client.in.stream = stream;
 
@@ -65,7 +65,7 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 				id: "out" + this.user_id,
 				// @ts-ignore
 				tracks: [],
-			}),
+			})
 		);
 		this.client.out.stream = out;
 
@@ -95,22 +95,14 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 	}
 }
 
-function attachTrack(
-	this: WebSocket,
-	track: IncomingStreamTrack,
-	user_id: string,
-) {
+function attachTrack(this: WebSocket, track: IncomingStreamTrack, user_id: string) {
 	if (!this.client) return;
-	const outTrack = this.client.transport!.createOutgoingStreamTrack(
-		track.getMedia(),
-	);
+	const outTrack = this.client.transport!.createOutgoingStreamTrack(track.getMedia());
 	outTrack.attachTo(track);
 	this.client.out.stream!.addTrack(outTrack);
 	var ssrcs = this.client.out.tracks.get(user_id)!;
 	if (!ssrcs)
-		ssrcs = this.client.out.tracks
-			.set(user_id, { audio_ssrc: 0, rtx_ssrc: 0, video_ssrc: 0 })
-			.get(user_id)!;
+		ssrcs = this.client.out.tracks.set(user_id, { audio_ssrc: 0, rtx_ssrc: 0, video_ssrc: 0 }).get(user_id)!;
 
 	if (track.getMedia() === "audio") {
 		ssrcs.audio_ssrc = outTrack.getSSRCs().media!;

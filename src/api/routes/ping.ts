@@ -48,7 +48,7 @@ router.get(
 				tosPage: general.tosPage,
 			},
 		});
-	},
+	}
 );
 
 export default router;

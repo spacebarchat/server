@@ -39,9 +39,7 @@ router.get(
 		const showAllGuilds = Config.get().guild.discovery.showAllGuilds;
 
 		const genLoadId = (size: number) =>
-			[...Array(size)]
-				.map(() => Math.floor(Math.random() * 16).toString(16))
-				.join("");
+			[...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join("");
 
 		const guilds = showAllGuilds
 			? await Guild.find({ take: Math.abs(Number(limit || 24)) })
@@ -53,7 +51,7 @@ router.get(
 			recommended_guilds: guilds,
 			load_id: `server_recs/${genLoadId(32)}`,
 		}).status(200);
-	},
+	}
 );
 
 export default router;

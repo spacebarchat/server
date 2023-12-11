@@ -30,13 +30,7 @@ import {
 	Channel,
 	Permissions,
 } from "@spacebar/util";
-import {
-	WebSocket,
-	Payload,
-	handlePresenceUpdate,
-	OPCODES,
-	Send,
-} from "@spacebar/gateway";
+import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spacebar/gateway";
 import murmur from "murmurhash-js/murmurhash3_gc";
 import { check } from "./instanceOf";
 
@@ -55,9 +49,7 @@ const getMostRelevantSession = (sessions: Session[]) => {
 	// sort sessions by relevance
 	sessions = sessions.sort((a, b) => {
 		return (
-			statusMap[a.status] -
-			statusMap[b.status] +
-			((a.activities?.length ?? 0) - (b.activities?.length ?? 0)) * 2
+			statusMap[a.status] - statusMap[b.status] + ((a.activities?.length ?? 0) - (b.activities?.length ?? 0)) * 2
 		);
 	});
 
@@ -81,10 +73,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				.leftJoinAndSelect("member.user", "user")
 				.leftJoinAndSelect("user.sessions", "session")
 				.addSelect("user.settings")
-				.addSelect(
-					"CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
-					"_status",
-				)
+				.addSelect("CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END", "_status")
 				.orderBy("role.position", "DESC")
 				.addOrderBy("_status", "DESC")
 				.addOrderBy("user.username", "ASC")
@@ -113,8 +102,8 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	member_roles.push(
 		member_roles.splice(
 			member_roles.findIndex((x) => x.id === x.guild_id),
-			1,
-		)[0],
+			1
+		)[0]
 	);
 
 	const offlineItems = [];
@@ -122,7 +111,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	for (const role of member_roles) {
 		const [role_members, other_members] = partition(
 			members,
-			(m: Member) => !!m.roles.find((r) => r.id === role.id),
+			(m: Member) => !!m.roles.find((r) => r.id === role.id)
 		);
 		const group = {
 			count: role_members.length,
@@ -133,13 +122,9 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		groups.push(group);
 
 		for (const member of role_members) {
-			const roles = member.roles
-				.filter((x: Role) => x.id !== guild_id)
-				.map((x: Role) => x.id);
+			const roles = member.roles.filter((x: Role) => x.id !== guild_id).map((x: Role) => x.id);
 
-			const session: Session | undefined = getMostRelevantSession(
-				member.user.sessions,
-			);
+			const session: Session | undefined = getMostRelevantSession(member.user.sessions);
 
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
@@ -160,11 +145,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				},
 			};
 
-			if (
-				!session ||
-				session.status == "invisible" ||
-				session.status == "offline"
-			) {
+			if (!session || session.status == "invisible" || session.status == "offline") {
 				item.member.presence.status = "offline";
 				offlineItems.push(item);
 				group.count--;
@@ -192,11 +173,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 		groups,
 		range,
 		members: items
-			.map((x) =>
-				"member" in x
-					? { ...x.member, settings: undefined }
-					: undefined,
-			)
+			.map((x) => ("member" in x ? { ...x.member, settings: undefined } : undefined))
 			.filter((x) => !!x),
 	};
 }
@@ -204,11 +181,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 async function subscribeToMemberEvents(this: WebSocket, user_id: string) {
 	if (this.events[user_id]) return false; // already subscribed as friend
 	if (this.member_events[user_id]) return false; // already subscribed in member list
-	this.member_events[user_id] = await listenEvent(
-		user_id,
-		handlePresenceUpdate.bind(this),
-		this.listen_options,
-	);
+	this.member_events[user_id] = await listenEvent(user_id, handlePresenceUpdate.bind(this), this.listen_options);
 	return true;
 }
 
@@ -216,8 +189,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	// TODO: check data
 	check.call(this, LazyRequestSchema, d);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { guild_id, typing, channels, activities, members } =
-		d as LazyRequestSchema;
+	const { guild_id, typing, channels, activities, members } = d as LazyRequestSchema;
 
 	if (members) {
 		// Client has requested a PRESENCE_UPDATE for specific member
@@ -225,10 +197,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 		await Promise.all([
 			members.map(async (x) => {
 				if (!x) return;
-				const didSubscribe = await subscribeToMemberEvents.call(
-					this,
-					x,
-				);
+				const didSubscribe = await subscribeToMemberEvents.call(this, x);
 				if (!didSubscribe) return;
 
 				// if we didn't subscribe just now, this is a new subscription
@@ -270,9 +239,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	if (!Array.isArray(ranges)) throw new Error("Not a valid Array");
 
 	const member_count = await Member.count({ where: { guild_id } });
-	const ops = await Promise.all(
-		ranges.map((x) => getMembers(guild_id, x as [number, number])),
-	);
+	const ops = await Promise.all(ranges.map((x) => getMembers(guild_id, x as [number, number])));
 
 	let list_id = "everyone";
 
@@ -285,10 +252,8 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 		channel.permission_overwrites.forEach((overwrite) => {
 			const { id, allow, deny } = overwrite;
 
-			if (allow.toBigInt() & Permissions.FLAGS.VIEW_CHANNEL)
-				perms.push(`allow:${id}`);
-			else if (deny.toBigInt() & Permissions.FLAGS.VIEW_CHANNEL)
-				perms.push(`deny:${id}`);
+			if (allow.toBigInt() & Permissions.FLAGS.VIEW_CHANNEL) perms.push(`allow:${id}`);
+			else if (deny.toBigInt() & Permissions.FLAGS.VIEW_CHANNEL) perms.push(`deny:${id}`);
 		});
 
 		if (perms.length > 0) {
@@ -320,9 +285,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 				op: "SYNC",
 				range: x.range,
 			})),
-			online_count:
-				member_count -
-				(groups.find((x) => x.id == "offline")?.count ?? 0),
+			online_count: member_count - (groups.find((x) => x.id == "offline")?.count ?? 0),
 			member_count,
 			id: list_id,
 			guild_id,

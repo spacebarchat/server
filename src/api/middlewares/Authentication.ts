@@ -71,11 +71,7 @@ declare global {
 	}
 }
 
-export async function Authentication(
-	req: Request,
-	res: Response,
-	next: NextFunction,
-) {
+export async function Authentication(req: Request, res: Response, next: NextFunction) {
 	if (req.method === "OPTIONS") return res.sendStatus(204);
 	const url = req.url.replace(API_PREFIX, "");
 	if (url.startsWith("/invites") && req.method === "GET") return next();
@@ -86,8 +82,7 @@ export async function Authentication(
 		})
 	)
 		return next();
-	if (!req.headers.authorization)
-		return next(new HTTPError("Missing Authorization Header", 401));
+	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 
 	Sentry.setUser({ id: req.user_id });
 

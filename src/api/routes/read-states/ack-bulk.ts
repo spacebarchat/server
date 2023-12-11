@@ -61,7 +61,7 @@ router.post(
 		]);
 
 		return res.status(204);
-	},
+	}
 );
 
 export default router;

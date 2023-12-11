@@ -17,24 +17,10 @@
 */
 
 import { HTTPError } from "lambert-server";
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	OneToMany,
-	RelationId,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
-import {
-	InvisibleCharacters,
-	Snowflake,
-	containsAll,
-	emitEvent,
-	getPermission,
-	trimSpecial,
-} from "../util";
+import { InvisibleCharacters, Snowflake, containsAll, emitEvent, getPermission, trimSpecial } from "../util";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Invite } from "./Invite";
@@ -162,14 +148,10 @@ export class Channel extends BaseClass {
 	})
 	messages?: Message[];
 
-	@OneToMany(
-		() => VoiceState,
-		(voice_state: VoiceState) => voice_state.channel,
-		{
-			cascade: true,
-			orphanedRowAction: "delete",
-		},
-	)
+	@OneToMany(() => VoiceState, (voice_state: VoiceState) => voice_state.channel, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	voice_states?: VoiceState[];
 
 	@OneToMany(() => ReadState, (read_state: ReadState) => read_state.channel, {
@@ -203,7 +185,7 @@ export class Channel extends BaseClass {
 			skipPermissionCheck?: boolean;
 			skipEventEmit?: boolean;
 			skipNameChecks?: boolean;
-		},
+		}
 	) {
 		if (!opts?.skipPermissionCheck) {
 			// Always check if user has permission first
@@ -221,48 +203,26 @@ export class Channel extends BaseClass {
 		});
 
 		if (!opts?.skipNameChecks) {
-			if (
-				!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") &&
-				channel.name
-			) {
+			if (!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") && channel.name) {
 				for (const character of InvisibleCharacters)
 					if (channel.name.includes(character))
-						throw new HTTPError(
-							"Channel name cannot include invalid characters",
-							403,
-						);
+						throw new HTTPError("Channel name cannot include invalid characters", 403);
 
 				// Categories skip these checks on discord.com
-				if (
-					channel.type !== ChannelType.GUILD_CATEGORY ||
-					guild.features.includes("IRC_LIKE_CATEGORY_NAMES")
-				) {
+				if (channel.type !== ChannelType.GUILD_CATEGORY || guild.features.includes("IRC_LIKE_CATEGORY_NAMES")) {
 					if (channel.name.includes(" "))
-						throw new HTTPError(
-							"Channel name cannot include invalid characters",
-							403,
-						);
+						throw new HTTPError("Channel name cannot include invalid characters", 403);
 
 					if (channel.name.match(/--+/g))
-						throw new HTTPError(
-							"Channel name cannot include multiple adjacent dashes.",
-							403,
-						);
+						throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403);
 
-					if (
-						channel.name.charAt(0) === "-" ||
-						channel.name.charAt(channel.name.length - 1) === "-"
-					)
-						throw new HTTPError(
-							"Channel name cannot start/end with dash.",
-							403,
-						);
+					if (channel.name.charAt(0) === "-" || channel.name.charAt(channel.name.length - 1) === "-")
+						throw new HTTPError("Channel name cannot start/end with dash.", 403);
 				} else channel.name = channel.name.trim(); //category names are trimmed client side on discord.com
 			}
 
 			if (!guild.features.includes("ALLOW_UNNAMED_CHANNELS")) {
-				if (!channel.name)
-					throw new HTTPError("Channel name cannot be empty.", 403);
+				if (!channel.name) throw new HTTPError("Channel name cannot be empty.", 403);
 			}
 		}
 
@@ -274,15 +234,9 @@ export class Channel extends BaseClass {
 					const exists = await Channel.findOneOrFail({
 						where: { id: channel.parent_id },
 					});
-					if (!exists)
-						throw new HTTPError(
-							"Parent id channel doesn't exist",
-							400,
-						);
+					if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
 					if (exists.guild_id !== channel.guild_id)
-						throw new HTTPError(
-							"The category channel needs to be in the guild",
-						);
+						throw new HTTPError("The category channel needs to be in the guild");
 				}
 				break;
 			case ChannelType.GUILD_CATEGORY:
@@ -299,9 +253,7 @@ export class Channel extends BaseClass {
 		if (!channel.permission_overwrites) channel.permission_overwrites = [];
 		// TODO: eagerly auto generate position of all guild channels
 
-		const position =
-			(channel.type === ChannelType.UNHANDLED ? 0 : channel.position) ||
-			0;
+		const position = (channel.type === ChannelType.UNHANDLED ? 0 : channel.position) || 0;
 
 		channel = {
 			...channel,
@@ -327,11 +279,7 @@ export class Channel extends BaseClass {
 		return ret;
 	}
 
-	static async createDMChannel(
-		recipients: string[],
-		creator_user_id: string,
-		name?: string,
-	) {
+	static async createDMChannel(recipients: string[], creator_user_id: string, name?: string) {
 		recipients = recipients.unique().filter((x) => x !== creator_user_id);
 		// TODO: check config for max number of recipients
 		/** if you want to disallow note to self channels, uncomment the conditional below
@@ -342,8 +290,7 @@ export class Channel extends BaseClass {
 		}
 		**/
 
-		const type =
-			recipients.length > 1 ? ChannelType.GROUP_DM : ChannelType.DM;
+		const type = recipients.length > 1 ? ChannelType.GROUP_DM : ChannelType.DM;
 
 		let channel = null;
 
@@ -379,11 +326,8 @@ export class Channel extends BaseClass {
 				recipients: channelRecipients.map((x) =>
 					Recipient.create({
 						user_id: x,
-						closed: !(
-							type === ChannelType.GROUP_DM ||
-							x === creator_user_id
-						),
-					}),
+						closed: !(type === ChannelType.GROUP_DM || x === creator_user_id),
+					})
 				),
 				nsfw: false,
 			}).save();
@@ -413,9 +357,7 @@ export class Channel extends BaseClass {
 
 	static async removeRecipientFromChannel(channel: Channel, user_id: string) {
 		await Recipient.delete({ channel_id: channel.id, user_id: user_id });
-		channel.recipients = channel.recipients?.filter(
-			(r) => r.user_id !== user_id,
-		);
+		channel.recipients = channel.recipients?.filter((r) => r.user_id !== user_id);
 
 		if (channel.recipients?.length === 0) {
 			await Channel.deleteChannel(channel);
@@ -464,11 +406,7 @@ export class Channel extends BaseClass {
 		await Channel.delete({ id: channel.id });
 	}
 
-	static async calculatePosition(
-		channel_id: string,
-		guild_id: string,
-		guild?: Guild,
-	) {
+	static async calculatePosition(channel_id: string, guild_id: string, guild?: Guild) {
 		if (!guild)
 			guild = await Guild.findOneOrFail({
 				where: { id: guild_id },
@@ -486,9 +424,7 @@ export class Channel extends BaseClass {
 			});
 
 		const channels = await Promise.all(
-			guild.channel_ordering.map((id) =>
-				Channel.findOneOrFail({ where: { id } }),
-			),
+			guild.channel_ordering.map((id) => Channel.findOneOrFail({ where: { id } }))
 		);
 
 		return channels.reduce((r, v) => {
@@ -499,9 +435,7 @@ export class Channel extends BaseClass {
 	}
 
 	isDm() {
-		return (
-			this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM
-		);
+		return this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM;
 	}
 
 	// Does the channel support sending messages ( eg categories do not )

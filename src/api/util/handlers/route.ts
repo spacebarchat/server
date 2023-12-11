@@ -84,24 +84,17 @@ export function route(opts: RouteOptions) {
 	let validate: AnyValidateFunction | undefined;
 	if (opts.requestBody) {
 		validate = ajv.getSchema(opts.requestBody);
-		if (!validate)
-			throw new Error(`Body schema ${opts.requestBody} not found`);
+		if (!validate) throw new Error(`Body schema ${opts.requestBody} not found`);
 	}
 
 	return async (req: Request, res: Response, next: NextFunction) => {
 		if (opts.permission) {
 			const required = new Permissions(opts.permission);
-			req.permission = await getPermission(
-				req.user_id,
-				req.params.guild_id,
-				req.params.channel_id,
-			);
+			req.permission = await getPermission(req.user_id, req.params.guild_id, req.params.channel_id);
 
 			// bitfield comparison: check if user lacks certain permission
 			if (!req.permission.has(required)) {
-				throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(
-					opts.permission as string,
-				);
+				throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(opts.permission as string);
 			}
 		}
 
@@ -110,25 +103,20 @@ export function route(opts: RouteOptions) {
 			req.rights = await getRights(req.user_id);
 
 			if (!req.rights || !req.rights.has(required)) {
-				throw SpacebarApiErrors.MISSING_RIGHTS.withParams(
-					opts.right as string,
-				);
+				throw SpacebarApiErrors.MISSING_RIGHTS.withParams(opts.right as string);
 			}
 		}
 
 		if (validate) {
 			const valid = validate(normalizeBody(req.body));
 			if (!valid) {
-				const fields: Record<
-					string,
-					{ code?: string; message: string }
-				> = {};
+				const fields: Record<string, { code?: string; message: string }> = {};
 				validate.errors?.forEach(
 					(x) =>
 						(fields[x.instancePath.slice(1)] = {
 							code: x.keyword,
 							message: x.message || "",
-						}),
+						})
 				);
 				throw FieldErrors(fields);
 			}

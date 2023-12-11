@@ -17,13 +17,7 @@
 */
 
 import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
-import {
-	checkToken,
-	Config,
-	FieldErrors,
-	generateToken,
-	User,
-} from "@spacebar/util";
+import { checkToken, Config, FieldErrors, generateToken, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 
@@ -97,7 +91,7 @@ router.post(
 		await User.update({ id: user.id }, { verified: true });
 
 		return res.json(await getToken(user));
-	},
+	}
 );
 
 export default router;

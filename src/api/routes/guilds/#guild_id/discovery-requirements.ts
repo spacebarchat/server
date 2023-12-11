@@ -59,7 +59,7 @@ router.get(
 			},
 			minimum_size: 0,
 		});
-	},
+	}
 );
 
 export default router;

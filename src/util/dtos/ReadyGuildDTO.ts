@@ -30,10 +30,7 @@ import {
 } from "../entities";
 
 // TODO: this is not the best place for this type
-export type ReadyUserGuildSettingsEntries = Omit<
-	UserGuildSettings,
-	"channel_overrides"
-> & {
+export type ReadyUserGuildSettingsEntries = Omit<UserGuildSettings, "channel_overrides"> & {
 	channel_overrides: (ChannelOverride & { channel_id: string })[];
 };
 
@@ -51,9 +48,7 @@ export type GuildOrUnavailable =
 	| { id: string; unavailable: boolean }
 	| (Guild & { joined_at?: Date; unavailable: undefined });
 
-const guildIsAvailable = (
-	guild: GuildOrUnavailable,
-): guild is Guild & { joined_at: Date; unavailable: false } => {
+const guildIsAvailable = (guild: GuildOrUnavailable): guild is Guild & { joined_at: Date; unavailable: false } => {
 	return guild.unavailable != true;
 };
 

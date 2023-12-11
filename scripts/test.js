@@ -24,9 +24,7 @@
 const { spawn } = require("child_process");
 const path = require("path");
 
-const server = spawn("node", [
-	path.join(__dirname, "..", "dist", "bundle", "start.js"),
-]);
+const server = spawn("node", [path.join(__dirname, "..", "dist", "bundle", "start.js")]);
 
 server.stdout.on("data", (data) => {
 	process.stdout.write(data);

@@ -161,14 +161,10 @@ export class Message extends BaseClass {
 	@ManyToMany(() => Sticker, { cascade: true, onDelete: "CASCADE" })
 	sticker_items?: Sticker[];
 
-	@OneToMany(
-		() => Attachment,
-		(attachment: Attachment) => attachment.message,
-		{
-			cascade: true,
-			orphanedRowAction: "delete",
-		},
-	)
+	@OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	attachments?: Attachment[];
 
 	@Column({ type: "simple-json" })

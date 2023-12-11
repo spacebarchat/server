@@ -17,12 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Channel,
-	Member,
-	OrmUtils,
-	UserGuildSettingsSchema,
-} from "@spacebar/util";
+import { Channel, Member, OrmUtils, UserGuildSettingsSchema } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();
@@ -42,7 +37,7 @@ router.get(
 			select: ["settings"],
 		});
 		return res.json(user.settings);
-	},
+	}
 );
 
 router.patch(
@@ -76,7 +71,7 @@ router.patch(
 		Member.update({ id: req.user_id, guild_id: req.params.guild_id }, user);
 
 		res.json(user.settings);
-	},
+	}
 );
 
 export default router;

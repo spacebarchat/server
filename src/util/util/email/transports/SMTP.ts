@@ -29,7 +29,7 @@ export default async function () {
 
 	if (!Config.get().general.correspondenceEmail)
 		return console.error(
-			"[Email] Correspondence email has not been configured! This is used as the sender email address.",
+			"[Email] Correspondence email has not been configured! This is used as the sender email address."
 		);
 
 	// construct the transporter

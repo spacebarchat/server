@@ -58,12 +58,9 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		where: { id: opts.channel_id },
 		relations: ["recipients"],
 	});
-	if (!channel || !opts.channel_id)
-		throw new HTTPError("Channel not found", 404);
+	if (!channel || !opts.channel_id) throw new HTTPError("Channel not found", 404);
 
-	const stickers = opts.sticker_ids
-		? await Sticker.find({ where: { id: In(opts.sticker_ids) } })
-		: undefined;
+	const stickers = opts.sticker_ids ? await Sticker.find({ where: { id: In(opts.sticker_ids) } }) : undefined;
 	const message = Message.create({
 		...opts,
 		sticker_items: stickers,
@@ -75,10 +72,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		type: opts.type ?? 0,
 	});
 
-	if (
-		message.content &&
-		message.content.length > Config.get().limits.message.maxCharacters
-	) {
+	if (message.content && message.content.length > Config.get().limits.message.maxCharacters) {
 		throw new HTTPError("Content length over max character limit");
 	}
 
@@ -98,11 +92,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		});
 	}
 
-	const permission = await getPermission(
-		opts.author_id,
-		channel.guild_id,
-		opts.channel_id,
-	);
+	const permission = await getPermission(opts.author_id, channel.guild_id, opts.channel_id);
 	permission.hasThrow("SEND_MESSAGES");
 	if (permission.cache.member) {
 		message.member = permission.cache.member;
@@ -118,13 +108,9 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 			});
 			if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
 				if (opts.message_reference.guild_id !== channel.guild_id)
-					throw new HTTPError(
-						"You can only reference messages from this guild",
-					);
+					throw new HTTPError("You can only reference messages from this guild");
 				if (opts.message_reference.channel_id !== opts.channel_id)
-					throw new HTTPError(
-						"You can only reference messages from this channel",
-					);
+					throw new HTTPError("You can only reference messages from this channel");
 			}
 		}
 		/** Q: should be checked if the referenced message exists? ANSWER: NO
@@ -162,27 +148,22 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		}*/
 
 		for (const [, mention] of content.matchAll(USER_MENTION)) {
-			if (!mention_user_ids.includes(mention))
-				mention_user_ids.push(mention);
+			if (!mention_user_ids.includes(mention)) mention_user_ids.push(mention);
 		}
 
 		await Promise.all(
-			Array.from(content.matchAll(ROLE_MENTION)).map(
-				async ([, mention]) => {
-					const role = await Role.findOneOrFail({
-						where: { id: mention, guild_id: channel.guild_id },
-					});
-					if (role.mentionable || permission.has("MANAGE_ROLES")) {
-						mention_role_ids.push(mention);
-					}
-				},
-			),
+			Array.from(content.matchAll(ROLE_MENTION)).map(async ([, mention]) => {
+				const role = await Role.findOneOrFail({
+					where: { id: mention, guild_id: channel.guild_id },
+				});
+				if (role.mentionable || permission.has("MANAGE_ROLES")) {
+					mention_role_ids.push(mention);
+				}
+			})
 		);
 
 		if (permission.has("MENTION_EVERYONE")) {
-			mention_everyone =
-				!!content.match(EVERYONE_MENTION) ||
-				!!content.match(HERE_MENTION);
+			mention_everyone = !!content.match(EVERYONE_MENTION) || !!content.match(HERE_MENTION);
 		}
 	}
 
@@ -222,8 +203,7 @@ export async function postHandleMessage(message: Message) {
 		}
 
 		// bit gross, but whatever!
-		const endpointPublic =
-			Config.get().cdn.endpointPublic || "http://127.0.0.1"; // lol
+		const endpointPublic = Config.get().cdn.endpointPublic || "http://127.0.0.1"; // lol
 		const handler =
 			url.hostname == new URL(endpointPublic).hostname
 				? EmbedHandlers["self"]
@@ -262,10 +242,7 @@ export async function postHandleMessage(message: Message) {
 			channel_id: message.channel_id,
 			data,
 		} as MessageUpdateEvent),
-		Message.update(
-			{ id: message.id, channel_id: message.channel_id },
-			{ embeds: data.embeds },
-		),
+		Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: data.embeds }),
 		...cachePromises,
 	]);
 }
@@ -283,9 +260,7 @@ export async function sendMessage(opts: MessageOptions) {
 	]);
 
 	// no await as it should catch error non-blockingly
-	postHandleMessage(message).catch((e) =>
-		console.error("[Message] post-message handler failed", e),
-	);
+	postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));
 
 	return message;
 }

@@ -25,7 +25,7 @@ const doTimedIdentify = () =>
 								token: TOKEN,
 								properties: {},
 							},
-						}),
+						})
 					);
 					break;
 				case OPCODES.Dispatch:

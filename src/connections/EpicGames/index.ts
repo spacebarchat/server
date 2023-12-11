@@ -33,8 +33,7 @@ export interface UserResponse {
 	preferredLanguage: string;
 }
 
-export interface EpicTokenResponse
-	extends ConnectedAccountCommonOAuthTokenResponse {
+export interface EpicTokenResponse extends ConnectedAccountCommonOAuthTokenResponse {
 	expires_at: string;
 	refresh_expires_in: number;
 	refresh_expires_at: string;
@@ -47,17 +46,12 @@ export default class EpicGamesConnection extends Connection {
 	public readonly id = "epicgames";
 	public readonly authorizeUrl = "https://www.epicgames.com/id/authorize";
 	public readonly tokenUrl = "https://api.epicgames.dev/epic/oauth/v1/token";
-	public readonly userInfoUrl =
-		"https://api.epicgames.dev/epic/id/v1/accounts";
+	public readonly userInfoUrl = "https://api.epicgames.dev/epic/id/v1/accounts";
 	public readonly scopes = ["basic profile"];
 	settings: EpicGamesSettings = new EpicGamesSettings();
 
 	init(): void {
-		const settings =
-			ConnectionLoader.getConnectionConfig<EpicGamesSettings>(
-				this.id,
-				this.settings,
-			);
+		const settings = ConnectionLoader.getConnectionConfig<EpicGamesSettings>(this.id, this.settings);
 
 		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
 			throw new Error(`Invalid settings for connection ${this.id}`);
@@ -79,10 +73,7 @@ export default class EpicGamesConnection extends Connection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<EpicTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<EpicTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -90,16 +81,16 @@ export default class EpicGamesConnection extends Connection {
 		return wretch(url.toString())
 			.headers({
 				Accept: "application/json",
-				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId}:${this.settings.clientSecret}`,
-				).toString("base64")}`,
+				Authorization: `Basic ${Buffer.from(`${this.settings.clientId}:${this.settings.clientSecret}`).toString(
+					"base64"
+				)}`,
 				"Content-Type": "application/x-www-form-urlencoded",
 			})
 			.body(
 				new URLSearchParams({
 					grant_type: "authorization_code",
 					code,
-				}),
+				})
 			)
 			.post()
 			.json<EpicTokenResponse>()
@@ -110,9 +101,7 @@ export default class EpicGamesConnection extends Connection {
 	}
 
 	async getUser(token: string): Promise<UserResponse[]> {
-		const { sub } = JSON.parse(
-			Buffer.from(token.split(".")[1], "base64").toString("utf8"),
-		);
+		const { sub } = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString("utf8"));
 		const url = new URL(this.userInfoUrl);
 		url.searchParams.append("accountId", sub);
 
@@ -128,9 +117,7 @@ export default class EpicGamesConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

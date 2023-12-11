@@ -81,10 +81,8 @@ router.get(
 			// Only return channels where @everyone has the CONNECT permission
 			if (
 				doc.permission_overwrites === undefined ||
-				Permissions.channelPermission(
-					doc.permission_overwrites,
-					Permissions.FLAGS.CONNECT,
-				) === Permissions.FLAGS.CONNECT
+				Permissions.channelPermission(doc.permission_overwrites, Permissions.FLAGS.CONNECT) ===
+					Permissions.FLAGS.CONNECT
 			) {
 				channels.push({
 					id: doc.id,
@@ -110,7 +108,7 @@ router.get(
 
 		res.set("Cache-Control", "public, max-age=300");
 		return res.json(data);
-	},
+	}
 );
 
 export default router;

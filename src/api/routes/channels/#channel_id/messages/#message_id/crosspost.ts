@@ -57,7 +57,7 @@ router.post(
 			flags: 1,
 			components: [],
 		}).status(200);
-	},
+	}
 );
 
 export default router;

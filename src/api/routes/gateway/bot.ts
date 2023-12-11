@@ -43,7 +43,7 @@ router.get(
 				max_concurrency: 1,
 			},
 		});
-	},
+	}
 );
 
 export default router;

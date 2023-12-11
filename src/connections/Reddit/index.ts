@@ -54,10 +54,7 @@ export default class RedditConnection extends Connection {
 	settings: RedditSettings = new RedditSettings();
 
 	init(): void {
-		const settings = ConnectionLoader.getConnectionConfig<RedditSettings>(
-			this.id,
-			this.settings,
-		);
+		const settings = ConnectionLoader.getConnectionConfig<RedditSettings>(this.id, this.settings);
 
 		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
 			throw new Error(`Invalid settings for connection ${this.id}`);
@@ -79,10 +76,7 @@ export default class RedditConnection extends Connection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -90,9 +84,9 @@ export default class RedditConnection extends Connection {
 		return wretch(url.toString())
 			.headers({
 				Accept: "application/json",
-				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId}:${this.settings.clientSecret}`,
-				).toString("base64")}`,
+				Authorization: `Basic ${Buffer.from(`${this.settings.clientId}:${this.settings.clientSecret}`).toString(
+					"base64"
+				)}`,
 				"Content-Type": "application/x-www-form-urlencoded",
 			})
 			.body(
@@ -100,7 +94,7 @@ export default class RedditConnection extends Connection {
 					grant_type: "authorization_code",
 					code: code,
 					redirect_uri: this.getRedirectUri(),
-				}),
+				})
 			)
 			.post()
 			.json<ConnectedAccountCommonOAuthTokenResponse>()
@@ -124,9 +118,7 @@ export default class RedditConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

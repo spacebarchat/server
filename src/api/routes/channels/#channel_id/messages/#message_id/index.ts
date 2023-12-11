@@ -75,11 +75,7 @@ router.patch(
 			relations: ["attachments"],
 		});
 
-		const permissions = await getPermission(
-			req.user_id,
-			undefined,
-			channel_id,
-		);
+		const permissions = await getPermission(req.user_id, undefined, channel_id);
 
 		const rights = await getRights(req.user_id);
 
@@ -139,7 +135,7 @@ router.patch(
 			// these are not in the Discord.com response
 			mention_channels: new_message.mention_channels,
 		});
-	},
+	}
 );
 
 // Backfill message with specific timestamp
@@ -196,13 +192,8 @@ router.put(
 
 		if (req.file) {
 			try {
-				const file = await uploadFile(
-					`/attachments/${req.params.channel_id}`,
-					req.file,
-				);
-				attachments.push(
-					Attachment.create({ ...file, proxy_url: file.url }),
-				);
+				const file = await uploadFile(`/attachments/${req.params.channel_id}`, req.file);
+				attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
 			} catch (error) {
 				return res.status(400).json(error);
 			}
@@ -241,12 +232,10 @@ router.put(
 		]);
 
 		// no await as it shouldnt block the message send function and silently catch error
-		postHandleMessage(message).catch((e) =>
-			console.error("[Message] post-message handler failed", e),
-		);
+		postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));
 
 		return res.json(message);
-	},
+	}
 );
 
 router.get(
@@ -272,17 +261,12 @@ router.get(
 			relations: ["attachments"],
 		});
 
-		const permissions = await getPermission(
-			req.user_id,
-			undefined,
-			channel_id,
-		);
+		const permissions = await getPermission(req.user_id, undefined, channel_id);
 
-		if (message.author_id !== req.user_id)
-			permissions.hasThrow("READ_MESSAGE_HISTORY");
+		if (message.author_id !== req.user_id) permissions.hasThrow("READ_MESSAGE_HISTORY");
 
 		return res.json(message);
-	},
+	}
 );
 
 router.delete(
@@ -310,11 +294,7 @@ router.delete(
 
 		if (message.author_id !== req.user_id) {
 			if (!rights.has("MANAGE_MESSAGES")) {
-				const permission = await getPermission(
-					req.user_id,
-					channel.guild_id,
-					channel_id,
-				);
+				const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
 				permission.hasThrow("MANAGE_MESSAGES");
 			}
 		} else rights.hasThrow("SELF_DELETE_MESSAGES");
@@ -332,7 +312,7 @@ router.delete(
 		} as MessageDeleteEvent);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

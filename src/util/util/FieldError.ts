@@ -18,9 +18,7 @@
 
 import "missing-native-js-functions";
 
-export function FieldErrors(
-	fields: Record<string, { code?: string; message: string }>,
-) {
+export function FieldErrors(fields: Record<string, { code?: string; message: string }>) {
 	return new FieldError(
 		50035,
 		"Invalid Form Body",
@@ -31,7 +29,7 @@ export function FieldErrors(
 					code: code || "BASE_TYPE_INVALID",
 				},
 			],
-		})),
+		}))
 	);
 }
 
@@ -42,7 +40,7 @@ export class FieldError extends Error {
 	constructor(
 		public code: string | number,
 		public message: string,
-		public errors?: object, // TODO: I don't like this typing.
+		public errors?: object // TODO: I don't like this typing.
 	) {
 		super(message);
 	}

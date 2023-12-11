@@ -55,15 +55,14 @@ router.put(
 		if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
 		if (body.type === 0) {
-			if (!(await Role.count({ where: { id: overwrite_id } })))
-				throw new HTTPError("role not found", 404);
+			if (!(await Role.count({ where: { id: overwrite_id } }))) throw new HTTPError("role not found", 404);
 		} else if (body.type === 1) {
-			if (!(await Member.count({ where: { id: overwrite_id } })))
-				throw new HTTPError("user not found", 404);
+			if (!(await Member.count({ where: { id: overwrite_id } }))) throw new HTTPError("user not found", 404);
 		} else throw new HTTPError("type not supported", 501);
 
-		let overwrite: ChannelPermissionOverwrite | undefined =
-			channel.permission_overwrites?.find((x) => x.id === overwrite_id);
+		let overwrite: ChannelPermissionOverwrite | undefined = channel.permission_overwrites?.find(
+			(x) => x.id === overwrite_id
+		);
 		if (!overwrite) {
 			overwrite = {
 				id: overwrite_id,
@@ -73,14 +72,8 @@ router.put(
 			};
 			channel.permission_overwrites?.push(overwrite);
 		}
-		overwrite.allow = String(
-			(req.permission?.bitfield || 0n) &
-				(BigInt(body.allow) || BigInt("0")),
-		);
-		overwrite.deny = String(
-			(req.permission?.bitfield || 0n) &
-				(BigInt(body.deny) || BigInt("0")),
-		);
+		overwrite.allow = String((req.permission?.bitfield || 0n) & (BigInt(body.allow) || BigInt("0")));
+		overwrite.deny = String((req.permission?.bitfield || 0n) & (BigInt(body.deny) || BigInt("0")));
 
 		await Promise.all([
 			channel.save(),
@@ -92,7 +85,7 @@ router.put(
 		]);
 
 		return res.sendStatus(204);
-	},
+	}
 );
 
 // TODO: check permission hierarchy
@@ -107,9 +100,7 @@ router.delete(
 		});
 		if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
-		channel.permission_overwrites = channel.permission_overwrites?.filter(
-			(x) => x.id === overwrite_id,
-		);
+		channel.permission_overwrites = channel.permission_overwrites?.filter((x) => x.id === overwrite_id);
 
 		await Promise.all([
 			channel.save(),
@@ -121,7 +112,7 @@ router.delete(
 		]);
 
 		return res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

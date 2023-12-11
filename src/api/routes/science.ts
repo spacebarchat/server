@@ -31,7 +31,7 @@ router.post(
 	(req: Request, res: Response) => {
 		// TODO:
 		res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

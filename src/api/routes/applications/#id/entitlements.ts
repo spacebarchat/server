@@ -34,7 +34,7 @@ router.get(
 		// TODO:
 		//const { exclude_consumed } = req.query;
 		res.status(200).send([]);
-	},
+	}
 );
 
 export default router;

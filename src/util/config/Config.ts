@@ -59,6 +59,5 @@ export class ConfigValue {
 	defaults: DefaultsConfiguration = new DefaultsConfiguration();
 	external: ExternalTokensConfiguration = new ExternalTokensConfiguration();
 	email: EmailConfiguration = new EmailConfiguration();
-	passwordReset: PasswordResetConfiguration =
-		new PasswordResetConfiguration();
+	passwordReset: PasswordResetConfiguration = new PasswordResetConfiguration();
 }

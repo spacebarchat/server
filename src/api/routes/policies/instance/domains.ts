@@ -34,20 +34,14 @@ router.get(
 		const { cdn, gateway, api } = Config.get();
 
 		const IdentityForm = {
-			cdn:
-				cdn.endpointPublic ||
-				process.env.CDN ||
-				"http://localhost:3001",
-			gateway:
-				gateway.endpointPublic ||
-				process.env.GATEWAY ||
-				"ws://localhost:3001",
+			cdn: cdn.endpointPublic || process.env.CDN || "http://localhost:3001",
+			gateway: gateway.endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
 			defaultApiVersion: api.defaultVersion ?? 9,
 			apiEndpoint: api.endpointPublic ?? "http://localhost:3001/api/",
 		};
 
 		res.json(IdentityForm);
-	},
+	}
 );
 
 export default router;

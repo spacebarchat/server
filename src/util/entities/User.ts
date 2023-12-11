@@ -17,14 +17,7 @@
 */
 
 import { Request } from "express";
-import {
-	Column,
-	Entity,
-	FindOneOptions,
-	JoinColumn,
-	OneToMany,
-	OneToOne,
-} from "typeorm";
+import { Column, Entity, FindOneOptions, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
 import { BitField } from "../util/BitField";
 import { BaseClass } from "./BaseClass";
@@ -70,7 +63,7 @@ export enum PrivateUserEnum {
 export type PrivateUserKeys = keyof typeof PrivateUserEnum | PublicUserKeys;
 
 export const PublicUserProjection = Object.values(PublicUserEnum).filter(
-	(x) => typeof x === "string",
+	(x) => typeof x === "string"
 ) as PublicUserKeys[];
 export const PrivateUserProjection = [
 	...PublicUserProjection,
@@ -186,25 +179,17 @@ export class User extends BaseClass {
 	sessions: Session[];
 
 	@JoinColumn({ name: "relationship_ids" })
-	@OneToMany(
-		() => Relationship,
-		(relationship: Relationship) => relationship.from,
-		{
-			cascade: true,
-			orphanedRowAction: "delete",
-		},
-	)
+	@OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	relationships: Relationship[];
 
 	@JoinColumn({ name: "connected_account_ids" })
-	@OneToMany(
-		() => ConnectedAccount,
-		(account: ConnectedAccount) => account.user,
-		{
-			cascade: true,
-			orphanedRowAction: "delete",
-		},
-	)
+	@OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	connected_accounts: ConnectedAccount[];
 
 	@Column({ type: "simple-json", select: false })
@@ -281,9 +266,7 @@ export class User extends BaseClass {
 		});
 	}
 
-	public static async generateDiscriminator(
-		username: string,
-	): Promise<string | undefined> {
+	public static async generateDiscriminator(username: string): Promise<string | undefined> {
 		if (Config.get().register.incrementingDiscriminators) {
 			// discriminator will be incrementally generated
 
@@ -292,10 +275,7 @@ export class User extends BaseClass {
 				where: { username },
 				select: ["discriminator"],
 			});
-			const highestDiscriminator = Math.max(
-				0,
-				...users.map((u) => Number(u.discriminator)),
-			);
+			const highestDiscriminator = Math.max(0, ...users.map((u) => Number(u.discriminator)));
 
 			const discriminator = highestDiscriminator + 1;
 			if (discriminator >= 10000) {
@@ -309,9 +289,7 @@ export class User extends BaseClass {
 			// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
 			// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
 			for (let tries = 0; tries < 5; tries++) {
-				const discriminator = Math.randomIntBetween(1, 9999)
-					.toString()
-					.padStart(4, "0");
+				const discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
 				const exists = await User.findOne({
 					where: { discriminator, username: username },
 					select: ["id"],
@@ -346,8 +324,7 @@ export class User extends BaseClass {
 			throw FieldErrors({
 				username: {
 					code: "USERNAME_TOO_MANY_USERS",
-					message:
-						req?.t("auth:register.USERNAME_TOO_MANY_USERS") || "",
+					message: req?.t("auth:register.USERNAME_TOO_MANY_USERS") || "",
 				},
 			});
 		}
@@ -355,8 +332,7 @@ export class User extends BaseClass {
 		// TODO: save date_of_birth
 		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
-		const language =
-			req?.language === "en" ? "en-US" : req?.language || "en-US";
+		const language = req?.language === "en" ? "en-US" : req?.language || "en-US";
 
 		const settings = UserSettings.create({
 			locale: language,
@@ -374,9 +350,7 @@ export class User extends BaseClass {
 			extended_settings: "{}",
 			settings: settings,
 
-			premium_since: Config.get().defaults.user.premium
-				? new Date()
-				: undefined,
+			premium_since: Config.get().defaults.user.premium ? new Date() : undefined,
 			rights: Config.get().register.defaultRights,
 			premium: Config.get().defaults.user.premium ?? false,
 			premium_type: Config.get().defaults.user.premiumType ?? 0,
@@ -390,18 +364,14 @@ export class User extends BaseClass {
 		// send verification email if users aren't verified by default and we have an email
 		if (!Config.get().defaults.user.verified && email) {
 			await Email.sendVerifyEmail(user, email).catch((e) => {
-				console.error(
-					`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`,
-				);
+				console.error(`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`);
 			});
 		}
 
 		setImmediate(async () => {
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
-					await Member.addToGuild(user.id, guild).catch((e) =>
-						console.error("[Autojoin]", e),
-					);
+					await Member.addToGuild(user.id, guild).catch((e) => console.error("[Autojoin]", e));
 				}
 			}
 		});

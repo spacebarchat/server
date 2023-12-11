@@ -17,11 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Application,
-	DiscordApiErrors,
-	PublicUserProjection,
-} from "@spacebar/util";
+import { Application, DiscordApiErrors, PublicUserProjection } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router();
@@ -40,9 +36,7 @@ router.get(
 			where: { id: req.params.id },
 			relations: ["bot", "owner"],
 			select: {
-				owner: Object.fromEntries(
-					PublicUserProjection.map((x) => [x, true]),
-				),
+				owner: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
 			},
 		});
 
@@ -51,9 +45,8 @@ router.get(
 		res.json({
 			...app,
 			owner: app.owner.toPublicUser(),
-			install_params:
-				app.install_params !== null ? app.install_params : undefined,
+			install_params: app.install_params !== null ? app.install_params : undefined,
 		});
-	},
+	}
 );
 export default router;

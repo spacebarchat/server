@@ -51,21 +51,14 @@ interface YouTubeConnectionChannelListResult {
 
 export default class YoutubeConnection extends Connection {
 	public readonly id = "youtube";
-	public readonly authorizeUrl =
-		"https://accounts.google.com/o/oauth2/v2/auth";
+	public readonly authorizeUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 	public readonly tokenUrl = "https://oauth2.googleapis.com/token";
-	public readonly userInfoUrl =
-		"https://www.googleapis.com/youtube/v3/channels?mine=true&part=snippet";
-	public readonly scopes = [
-		"https://www.googleapis.com/auth/youtube.readonly",
-	];
+	public readonly userInfoUrl = "https://www.googleapis.com/youtube/v3/channels?mine=true&part=snippet";
+	public readonly scopes = ["https://www.googleapis.com/auth/youtube.readonly"];
 	settings: YoutubeSettings = new YoutubeSettings();
 
 	init(): void {
-		const settings = ConnectionLoader.getConnectionConfig<YoutubeSettings>(
-			this.id,
-			this.settings,
-		);
+		const settings = ConnectionLoader.getConnectionConfig<YoutubeSettings>(this.id, this.settings);
 
 		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
 			throw new Error(`Invalid settings for connection ${this.id}`);
@@ -87,10 +80,7 @@ export default class YoutubeConnection extends Connection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -107,7 +97,7 @@ export default class YoutubeConnection extends Connection {
 					client_id: this.settings.clientId as string,
 					client_secret: this.settings.clientSecret as string,
 					redirect_uri: this.getRedirectUri(),
-				}),
+				})
 			)
 			.post()
 			.json<ConnectedAccountCommonOAuthTokenResponse>()
@@ -131,9 +121,7 @@ export default class YoutubeConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

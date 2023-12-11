@@ -36,7 +36,7 @@ router.get(
 			message: "Unknown Guild Member Verification Form",
 			code: 10068,
 		});
-	},
+	}
 );
 
 export default router;

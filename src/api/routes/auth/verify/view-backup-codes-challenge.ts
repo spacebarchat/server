@@ -52,7 +52,7 @@ router.post(
 			nonce: "NoncePlaceholder",
 			regenerate_nonce: "RegenNoncePlaceholder",
 		});
-	},
+	}
 );
 
 export default router;

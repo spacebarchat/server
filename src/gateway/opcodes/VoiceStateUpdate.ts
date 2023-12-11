@@ -45,20 +45,14 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		voiceState = await VoiceState.findOneOrFail({
 			where: { user_id: this.user_id },
 		});
-		if (
-			voiceState.session_id !== this.session_id &&
-			body.channel_id === null
-		) {
+		if (voiceState.session_id !== this.session_id && body.channel_id === null) {
 			//Should we also check guild_id === null?
 			//changing deaf or mute on a client that's not the one with the same session of the voicestate in the database should be ignored
 			return;
 		}
 
 		//If a user change voice channel between guild we should send a left event first
-		if (
-			voiceState.guild_id !== body.guild_id &&
-			voiceState.session_id === this.session_id
-		) {
+		if (voiceState.guild_id !== body.guild_id && voiceState.session_id === this.session_id) {
 			await emitEvent({
 				event: "VOICE_STATE_UPDATE",
 				data: { ...voiceState, channel_id: null },
@@ -95,8 +89,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	});
 
 	//If the session changed we generate a new token
-	if (voiceState.session_id !== this.session_id)
-		voiceState.token = genVoiceToken();
+	if (voiceState.session_id !== this.session_id) voiceState.token = genVoiceToken();
 	voiceState.session_id = this.session_id;
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -119,13 +112,9 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		const regions = Config.get().regions;
 		let guildRegion: Region;
 		if (guild && guild.region) {
-			guildRegion = regions.available.filter(
-				(r) => r.id === guild.region,
-			)[0];
+			guildRegion = regions.available.filter((r) => r.id === guild.region)[0];
 		} else {
-			guildRegion = regions.available.filter(
-				(r) => r.id === regions.default,
-			)[0];
+			guildRegion = regions.available.filter((r) => r.id === regions.default)[0];
 		}
 
 		await emitEvent({

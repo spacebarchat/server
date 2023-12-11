@@ -18,8 +18,7 @@ export function parseGifResult(result: TenorGif) {
 export function getGifApiKey() {
 	const { enabled, provider, apiKey } = Config.get().gif;
 	if (!enabled) throw new HTTPError(`Gifs are disabled`);
-	if (provider !== "tenor" || !apiKey)
-		throw new HTTPError(`${provider} gif provider not supported`);
+	if (provider !== "tenor" || !apiKey) throw new HTTPError(`${provider} gif provider not supported`);
 
 	return apiKey;
 }

@@ -38,7 +38,7 @@ router.delete(
 
 		await Member.removeRole(member_id, guild_id, role_id);
 		res.sendStatus(204);
-	},
+	}
 );
 
 router.put(
@@ -55,7 +55,7 @@ router.put(
 
 		await Member.addRole(member_id, guild_id, role_id);
 		res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

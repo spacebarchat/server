@@ -35,7 +35,7 @@ router.get(
 		const { id } = req.params;
 
 		res.json(await User.getPublicUser(id));
-	},
+	}
 );
 
 export default router;

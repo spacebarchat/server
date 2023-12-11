@@ -4,12 +4,7 @@
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
 // @fc-license-skip
 
-export type BitFieldResolvable =
-	| number
-	| bigint
-	| BitField
-	| string
-	| BitFieldResolvable[];
+export type BitFieldResolvable = number | bigint | BitField | string | BitFieldResolvable[];
 
 /**
  * Data structure that makes it easy to interact with a bitfield.
@@ -97,8 +92,7 @@ export class BitField {
 	 */
 	serialize() {
 		const serialized: Record<string, boolean> = {};
-		for (const [flag, bit] of Object.entries(BitField.FLAGS))
-			serialized[flag] = this.has(bit);
+		for (const [flag, bit] of Object.entries(BitField.FLAGS)) serialized[flag] = this.has(bit);
 		return serialized;
 	}
 
@@ -144,11 +138,7 @@ export class BitField {
 			else bit = BigInt(bit);
 		}
 
-		if (
-			(typeof bit === "number" || typeof bit === "bigint") &&
-			bit >= BigInt(0)
-		)
-			return BigInt(bit);
+		if ((typeof bit === "number" || typeof bit === "bigint") && bit >= BigInt(0)) return BigInt(bit);
 
 		if (bit instanceof BitField) return bit.bitfield;
 
@@ -156,9 +146,7 @@ export class BitField {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			const resolve = this.constructor?.resolve || this.resolve;
-			return bit
-				.map((p) => resolve.call(this, p))
-				.reduce((prev, p) => BigInt(prev) | BigInt(p), BigInt(0));
+			return bit.map((p) => resolve.call(this, p)).reduce((prev, p) => BigInt(prev) | BigInt(p), BigInt(0));
 		}
 
 		throw new RangeError("BITFIELD_INVALID: " + bit);

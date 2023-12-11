@@ -62,7 +62,7 @@ router.get(
 			url: release.url,
 			notes: release.notes,
 		});
-	},
+	}
 );
 
 export default router;

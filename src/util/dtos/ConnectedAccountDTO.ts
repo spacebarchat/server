@@ -34,16 +34,11 @@ export class ConnectedAccountDTO {
 	metadata_visibility?: number;
 	two_way_link?: boolean;
 
-	constructor(
-		connectedAccount: ConnectedAccount,
-		with_token: boolean = false,
-	) {
+	constructor(connectedAccount: ConnectedAccount, with_token: boolean = false) {
 		this.id = connectedAccount.external_id;
 		this.user_id = connectedAccount.user_id;
 		this.access_token =
-			connectedAccount.token_data && with_token
-				? connectedAccount.token_data.access_token
-				: undefined;
+			connectedAccount.token_data && with_token ? connectedAccount.token_data.access_token : undefined;
 		this.friend_sync = connectedAccount.friend_sync;
 		this.name = connectedAccount.name;
 		this.revoked = connectedAccount.revoked;
@@ -53,9 +48,7 @@ export class ConnectedAccountDTO {
 		this.visibility = +(connectedAccount.visibility || false);
 		this.integrations = connectedAccount.integrations;
 		this.metadata_ = connectedAccount.metadata_;
-		this.metadata_visibility = +(
-			connectedAccount.metadata_visibility || false
-		);
+		this.metadata_visibility = +(connectedAccount.metadata_visibility || false);
 		this.two_way_link = connectedAccount.two_way_link;
 	}
 }

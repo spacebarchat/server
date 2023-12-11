@@ -84,13 +84,7 @@ router.get(
 				id: req.user_id,
 				bot: false,
 			},
-			select: [
-				"id",
-				"username",
-				"avatar",
-				"discriminator",
-				"public_flags",
-			],
+			select: ["id", "username", "avatar", "discriminator", "public_flags"],
 		});
 
 		const guilds = await Member.find({
@@ -165,7 +159,7 @@ router.get(
 			},
 			authorized: false,
 		});
-	},
+	}
 );
 
 router.post(
@@ -210,17 +204,9 @@ router.post(
 		// TODO: captcha verification
 		// TODO: MFA verification
 
-		const perms = await getPermission(
-			req.user_id,
-			body.guild_id,
-			undefined,
-			{ member_relations: ["user"] },
-		);
+		const perms = await getPermission(req.user_id, body.guild_id, undefined, { member_relations: ["user"] });
 		// getPermission cache won't exist if we're owner
-		if (
-			Object.keys(perms.cache || {}).length > 0 &&
-			perms.cache.member?.user.bot
-		)
+		if (Object.keys(perms.cache || {}).length > 0 && perms.cache.member?.user.bot)
 			throw DiscordApiErrors.UNAUTHORIZED;
 		perms.hasThrow("MANAGE_GUILD");
 
@@ -234,19 +220,14 @@ router.post(
 		// TODO: use DiscordApiErrors
 		// findOneOrFail throws code 404
 		if (!app) throw new ApiError("Unknown Application", 10002, 404);
-		if (!app.bot)
-			throw new ApiError(
-				"OAuth2 application does not have a bot",
-				50010,
-				400,
-			);
+		if (!app.bot) throw new ApiError("OAuth2 application does not have a bot", 50010, 400);
 
 		await Member.addToGuild(app.id, body.guild_id);
 
 		return res.json({
 			location: "/oauth2/authorized", // redirect URL
 		});
-	},
+	}
 );
 
 export default router;

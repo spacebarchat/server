@@ -17,14 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Application,
-	ApplicationCreateSchema,
-	Config,
-	User,
-	createAppBotUser,
-	trimSpecial,
-} from "@spacebar/util";
+import { Application, ApplicationCreateSchema, Config, User, createAppBotUser, trimSpecial } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router();
@@ -44,7 +37,7 @@ router.get(
 			relations: ["owner", "bot"],
 		});
 		res.json(results).status(200);
-	},
+	}
 );
 
 router.post(
@@ -77,7 +70,7 @@ router.post(
 		} else await app.save();
 
 		res.json(app);
-	},
+	}
 );
 
 export default router;

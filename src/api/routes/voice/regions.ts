@@ -32,7 +32,7 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		res.json(await getVoiceRegions(getIpAdress(req), true)); //vip true?
-	},
+	}
 );
 
 export default router;

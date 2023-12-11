@@ -20,8 +20,7 @@ import { Snowflake } from "@spacebar/util";
 
 export class GeneralConfiguration {
 	instanceName: string = "Spacebar Instance";
-	instanceDescription: string | null =
-		"This is a Spacebar instance made in the pre-release days";
+	instanceDescription: string | null = "This is a Spacebar instance made in the pre-release days";
 	frontPage: string | null = null;
 	tosPage: string | null = null;
 	correspondenceEmail: string | null = null;

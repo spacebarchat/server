@@ -34,7 +34,7 @@ router.get(
 		const { sticker_id } = req.params;
 
 		res.json(await Sticker.find({ where: { id: sticker_id } }));
-	},
+	}
 );
 
 export default router;

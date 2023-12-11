@@ -58,17 +58,13 @@ router.get(
 			Guild.findOneOrFail({ where: { id: guild_id } }),
 			Member.findOne({ where: { guild_id: guild_id, id: req.user_id } }),
 		]);
-		if (!member)
-			throw new HTTPError(
-				"You are not a member of the guild you are trying to access",
-				401,
-			);
+		if (!member) throw new HTTPError("You are not a member of the guild you are trying to access", 401);
 
 		return res.send({
 			...guild,
 			joined_at: member?.joined_at,
 		});
-	},
+	}
 );
 
 router.patch(
@@ -99,9 +95,7 @@ router.patch(
 		const permission = await getPermission(req.user_id, guild_id);
 
 		if (!rights.has("MANAGE_GUILDS") && !permission.has("MANAGE_GUILD"))
-			throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(
-				"MANAGE_GUILDS",
-			);
+			throw DiscordApiErrors.MISSING_PERMISSIONS.withParams("MANAGE_GUILDS");
 
 		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
@@ -110,47 +104,29 @@ router.patch(
 
 		// TODO: guild update check image
 
-		if (body.icon && body.icon != guild.icon)
-			body.icon = await handleFile(`/icons/${guild_id}`, body.icon);
+		if (body.icon && body.icon != guild.icon) body.icon = await handleFile(`/icons/${guild_id}`, body.icon);
 
 		if (body.banner && body.banner !== guild.banner)
 			body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
 
 		if (body.splash && body.splash !== guild.splash)
-			body.splash = await handleFile(
-				`/splashes/${guild_id}`,
-				body.splash,
-			);
+			body.splash = await handleFile(`/splashes/${guild_id}`, body.splash);
 
-		if (
-			body.discovery_splash &&
-			body.discovery_splash !== guild.discovery_splash
-		)
-			body.discovery_splash = await handleFile(
-				`/discovery-splashes/${guild_id}`,
-				body.discovery_splash,
-			);
+		if (body.discovery_splash && body.discovery_splash !== guild.discovery_splash)
+			body.discovery_splash = await handleFile(`/discovery-splashes/${guild_id}`, body.discovery_splash);
 
 		if (body.features) {
 			const diff = guild.features
 				.filter((x) => !body.features?.includes(x))
-				.concat(
-					body.features.filter((x) => !guild.features.includes(x)),
-				);
+				.concat(body.features.filter((x) => !guild.features.includes(x)));
 
 			// TODO move these
-			const MUTABLE_FEATURES = [
-				"COMMUNITY",
-				"INVITES_DISABLED",
-				"DISCOVERABLE",
-			];
+			const MUTABLE_FEATURES = ["COMMUNITY", "INVITES_DISABLED", "DISCOVERABLE"];
 
 			for (const feature of diff) {
 				if (MUTABLE_FEATURES.includes(feature)) continue;
 
-				throw SpacebarApiErrors.FEATURE_IS_IMMUTABLE.withParams(
-					feature,
-				);
+				throw SpacebarApiErrors.FEATURE_IS_IMMUTABLE.withParams(feature);
 			}
 
 			// for some reason, they don't update in the assign.
@@ -179,7 +155,7 @@ router.patch(
 					],
 				},
 				undefined,
-				{ skipPermissionCheck: true },
+				{ skipPermissionCheck: true }
 			);
 
 			await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
@@ -212,7 +188,7 @@ router.patch(
 					],
 				},
 				undefined,
-				{ skipPermissionCheck: true },
+				{ skipPermissionCheck: true }
 			);
 
 			await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
@@ -242,7 +218,7 @@ router.patch(
 		]);
 
 		return res.json(data);
-	},
+	}
 );
 
 export default router;

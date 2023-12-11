@@ -29,8 +29,7 @@ export class SecurityConfiguration {
 	// X-Forwarded-For for nginx/reverse proxies
 	// CF-Connecting-IP for cloudflare
 	forwardedFor: string | null = null;
-	ipdataApiKey: string | null =
-		"eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9";
+	ipdataApiKey: string | null = "eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9";
 	mfaBackupCodeCount: number = 10;
 	statsWorldReadable: boolean = true;
 	defaultRegistrationTokenExpiration: number = 1000 * 60 * 60 * 24 * 7; //1 week

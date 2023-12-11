@@ -67,18 +67,11 @@ export class ConnectionLoader {
 		return cfg;
 	}
 
-	public static async setConnectionConfig(
-		id: string,
-		config: Partial<unknown>,
-	): Promise<void> {
-		if (!config)
-			console.warn(`[Connections/WARN] ${id} tried to set config=null!`);
+	public static async setConnectionConfig(id: string, config: Partial<unknown>): Promise<void> {
+		if (!config) console.warn(`[Connections/WARN] ${id} tried to set config=null!`);
 
 		await ConnectionConfig.set({
-			[id]: Object.assign(
-				config,
-				ConnectionLoader.getConnectionConfig(id) || {},
-			),
+			[id]: Object.assign(config, ConnectionLoader.getConnectionConfig(id) || {}),
 		});
 	}
 }

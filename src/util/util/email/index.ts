@@ -27,14 +27,7 @@ import MailJet from "./transports/MailJet";
 import SMTP from "./transports/SMTP";
 import SendGrid from "./transports/SendGrid";
 
-const ASSET_FOLDER_PATH = path.join(
-	__dirname,
-	"..",
-	"..",
-	"..",
-	"..",
-	"assets",
-);
+const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "..", "assets");
 
 enum MailTypes {
 	verify = "verify",
@@ -54,22 +47,11 @@ const transporters: {
 export const Email: {
 	transporter: Transporter | null;
 	init: () => Promise<void>;
-	generateLink: (
-		type: Omit<MailTypes, "pwchange">,
-		id: string,
-		email: string,
-	) => Promise<string>;
-	sendMail: (
-		type: MailTypes,
-		user: User,
-		email: string,
-	) => Promise<SentMessageInfo>;
+	generateLink: (type: Omit<MailTypes, "pwchange">, id: string, email: string) => Promise<string>;
+	sendMail: (type: MailTypes, user: User, email: string) => Promise<SentMessageInfo>;
 	sendVerifyEmail: (user: User, email: string) => Promise<SentMessageInfo>;
 	sendResetPassword: (user: User, email: string) => Promise<SentMessageInfo>;
-	sendPasswordChanged: (
-		user: User,
-		email: string,
-	) => Promise<SentMessageInfo>;
+	sendPasswordChanged: (user: User, email: string) => Promise<SentMessageInfo>;
 	doReplacements: (
 		template: string,
 		user: User,
@@ -79,7 +61,7 @@ export const Email: {
 			city: string;
 			region: string;
 			country_name: string;
-		},
+		}
 	) => string;
 } = {
 	transporter: null,
@@ -88,8 +70,7 @@ export const Email: {
 		if (!provider) return;
 
 		const transporterFn = transporters[provider];
-		if (!transporterFn)
-			return console.error(`[Email] Invalid provider: ${provider}`);
+		if (!transporterFn) return console.error(`[Email] Invalid provider: ${provider}`);
 		console.log(`[Email] Initializing ${provider} transport...`);
 		const transporter = await transporterFn();
 		if (!transporter) return;
@@ -108,7 +89,7 @@ export const Email: {
 			city: string;
 			region: string;
 			country_name: string;
-		},
+		}
 	) {
 		const { instanceName } = Config.get().general;
 
@@ -141,8 +122,7 @@ export const Email: {
 	 */
 	generateLink: async function (type, id, email) {
 		const token = (await generateToken(id, email)) as string;
-		const instanceUrl =
-			Config.get().general.frontPage || "http://localhost:3001";
+		const instanceUrl = Config.get().general.frontPage || "http://localhost:3001";
 		const link = `${instanceUrl}/${type}#token=${token}`;
 		return link;
 	},
@@ -163,31 +143,23 @@ export const Email: {
 			pwchange: "password_changed.html",
 		};
 
-		const template = await fs.readFile(
-			path.join(
-				ASSET_FOLDER_PATH,
-				"email_templates",
-				templateNames[type],
-			),
-			{ encoding: "utf-8" },
-		);
+		const template = await fs.readFile(path.join(ASSET_FOLDER_PATH, "email_templates", templateNames[type]), {
+			encoding: "utf-8",
+		});
 
 		// replace email template placeholders
 		const html = this.doReplacements(
 			template,
 			user,
 			// password change emails don't have links
-			type != MailTypes.pwchange
-				? await this.generateLink(type, user.id, email)
-				: undefined,
+			type != MailTypes.pwchange ? await this.generateLink(type, user.id, email) : undefined
 		);
 
 		// extract the title from the email template to use as the email subject
 		const subject = html.match(/<title>(.*)<\/title>/)?.[1] || "";
 
 		const message = {
-			from:
-				Config.get().general.correspondenceEmail || "noreply@localhost",
+			from: Config.get().general.correspondenceEmail || "noreply@localhost",
 			to: email,
 			subject,
 			html,

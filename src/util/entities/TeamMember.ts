@@ -38,13 +38,9 @@ export class TeamMember extends BaseClass {
 	team_id: string;
 
 	@JoinColumn({ name: "team_id" })
-	@ManyToOne(
-		() => require("./Team").Team,
-		(team: import("./Team").Team) => team.members,
-		{
-			onDelete: "CASCADE",
-		},
-	)
+	@ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.members, {
+		onDelete: "CASCADE",
+	})
 	team: import("./Team").Team;
 
 	@Column({ nullable: true })

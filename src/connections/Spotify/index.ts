@@ -63,10 +63,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 		 * So to prevent spamming the spotify api we disable the ability to refresh.
 		 */
 		this.refreshEnabled = false;
-		const settings = ConnectionLoader.getConnectionConfig<SpotifySettings>(
-			this.id,
-			this.settings,
-		);
+		const settings = ConnectionLoader.getConnectionConfig<SpotifySettings>(this.id, this.settings);
 
 		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
 			throw new Error(`Invalid settings for connection ${this.id}`);
@@ -88,10 +85,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -101,9 +95,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId as string}:${
-						this.settings.clientSecret as string
-					}`,
+					`${this.settings.clientId as string}:${this.settings.clientSecret as string}`
 				).toString("base64")}`,
 			})
 			.body(
@@ -111,7 +103,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 					grant_type: "authorization_code",
 					code: code,
 					redirect_uri: this.getRedirectUri(),
-				}),
+				})
 			)
 			.post()
 			.json<ConnectedAccountCommonOAuthTokenResponse>()
@@ -121,11 +113,8 @@ export default class SpotifyConnection extends RefreshableConnection {
 			});
 	}
 
-	async refreshToken(
-		connectedAccount: ConnectedAccount,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
-		if (!connectedAccount.token_data?.refresh_token)
-			throw new Error("No refresh token available.");
+	async refreshToken(connectedAccount: ConnectedAccount): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+		if (!connectedAccount.token_data?.refresh_token) throw new Error("No refresh token available.");
 		const refresh_token = connectedAccount.token_data.refresh_token;
 		const url = this.getTokenUrl();
 
@@ -134,16 +123,14 @@ export default class SpotifyConnection extends RefreshableConnection {
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId as string}:${
-						this.settings.clientSecret as string
-					}`,
+					`${this.settings.clientId as string}:${this.settings.clientSecret as string}`
 				).toString("base64")}`,
 			})
 			.body(
 				new URLSearchParams({
 					grant_type: "refresh_token",
 					refresh_token,
-				}),
+				})
 			)
 			.post()
 			.unauthorized(async () => {
@@ -173,9 +160,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

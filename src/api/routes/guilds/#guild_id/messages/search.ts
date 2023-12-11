@@ -54,14 +54,10 @@ router.get(
 		} = req.query;
 
 		const parsedLimit = Number(limit) || 50;
-		if (parsedLimit < 1 || parsedLimit > 100)
-			throw new HTTPError("limit must be between 1 and 100", 422);
+		if (parsedLimit < 1 || parsedLimit > 100) throw new HTTPError("limit must be between 1 and 100", 422);
 
 		if (sort_order) {
-			if (
-				typeof sort_order != "string" ||
-				["desc", "asc"].indexOf(sort_order) == -1
-			)
+			if (typeof sort_order != "string" || ["desc", "asc"].indexOf(sort_order) == -1)
 				throw FieldErrors({
 					sort_order: {
 						message: "Value must be one of ('desc', 'asc').",
@@ -70,20 +66,13 @@ router.get(
 				}); // todo this is wrong
 		}
 
-		const permissions = await getPermission(
-			req.user_id,
-			req.params.guild_id,
-			channel_id as string | undefined,
-		);
+		const permissions = await getPermission(req.user_id, req.params.guild_id, channel_id as string | undefined);
 		permissions.hasThrow("VIEW_CHANNEL");
-		if (!permissions.has("READ_MESSAGE_HISTORY"))
-			return res.json({ messages: [], total_results: 0 });
+		if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json({ messages: [], total_results: 0 });
 
 		const query: FindManyOptions<Message> = {
 			order: {
-				timestamp: sort_order
-					? (sort_order.toUpperCase() as "ASC" | "DESC")
-					: "DESC",
+				timestamp: sort_order ? (sort_order.toUpperCase() as "ASC" | "DESC") : "DESC",
 			},
 			take: parsedLimit || 0,
 			where: {
@@ -114,16 +103,8 @@ router.get(
 			const ids = [];
 
 			for (const channel of channels) {
-				const perm = await getPermission(
-					req.user_id,
-					req.params.guild_id,
-					channel.id,
-				);
-				if (
-					!perm.has("VIEW_CHANNEL") ||
-					!perm.has("READ_MESSAGE_HISTORY")
-				)
-					continue;
+				const perm = await getPermission(req.user_id, req.params.guild_id, channel.id);
+				if (!perm.has("VIEW_CHANNEL") || !perm.has("READ_MESSAGE_HISTORY")) continue;
 				ids.push(channel.id);
 			}
 
@@ -170,7 +151,7 @@ router.get(
 			messages: messagesDto,
 			total_results: messages.length,
 		});
-	},
+	}
 );
 
 export default router;

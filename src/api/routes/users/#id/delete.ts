@@ -17,13 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	emitEvent,
-	Member,
-	PrivateUserProjection,
-	User,
-	UserDeleteEvent,
-} from "@spacebar/util";
+import { emitEvent, Member, PrivateUserProjection, User, UserDeleteEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();
@@ -47,10 +41,7 @@ router.post(
 			where: { id: req.params.id },
 			select: [...PrivateUserProjection, "data"],
 		});
-		await Promise.all([
-			Member.delete({ id: req.params.id }),
-			User.delete({ id: req.params.id }),
-		]);
+		await Promise.all([Member.delete({ id: req.params.id }), User.delete({ id: req.params.id })]);
 
 		// TODO: respect intents as USER_DELETE has potential to cause privacy issues
 		await emitEvent({
@@ -60,7 +51,7 @@ router.post(
 		} as UserDeleteEvent);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

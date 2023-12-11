@@ -40,7 +40,7 @@ router.get(
 			relations: ["settings"],
 		});
 		return res.json(user.settings);
-	},
+	}
 );
 
 router.patch(
@@ -73,7 +73,7 @@ router.patch(
 		await user.settings.save();
 
 		res.json({ ...user.settings, index: undefined });
-	},
+	}
 );
 
 export default router;

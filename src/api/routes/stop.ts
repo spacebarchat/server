@@ -36,7 +36,7 @@ router.post(
 		console.log(`/stop was called by ${req.user_id} at ${new Date()}`);
 		res.sendStatus(200);
 		process.kill(process.pid, "SIGTERM");
-	},
+	}
 );
 
 export default router;

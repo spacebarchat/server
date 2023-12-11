@@ -29,11 +29,7 @@ const readableToBuffer = (readable: Readable): Promise<Buffer> =>
 	});
 
 export class S3Storage implements Storage {
-	public constructor(
-		private client: S3,
-		private bucket: string,
-		private basePath?: string,
-	) {}
+	public constructor(private client: S3, private bucket: string, private basePath?: string) {}
 
 	/**
 	 * Always return a string, to ensure consistency.

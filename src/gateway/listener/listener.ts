@@ -42,10 +42,7 @@ import { Recipient } from "@spacebar/util";
 // Sharding: calculate if the current shard id matches the formula: shard_id = (guild_id >> 22) % num_shards
 // https://discord.com/developers/docs/topics/gateway#sharding
 
-export function handlePresenceUpdate(
-	this: WebSocket,
-	{ event, acknowledge, data }: EventOpts,
-) {
+export function handlePresenceUpdate(this: WebSocket, { event, acknowledge, data }: EventOpts) {
 	acknowledge?.();
 	if (event === EVENTEnum.PresenceUpdate) {
 		return Send(this, {
@@ -96,11 +93,7 @@ export async function setupListener(this: WebSocket) {
 	this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
 
 	relationships.forEach(async (relationship) => {
-		this.events[relationship.to_id] = await listenEvent(
-			relationship.to_id,
-			handlePresenceUpdate.bind(this),
-			opts,
-		);
+		this.events[relationship.to_id] = await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts);
 	});
 
 	dm_channels.forEach(async (channel) => {
@@ -113,16 +106,8 @@ export async function setupListener(this: WebSocket) {
 		this.events[guild.id] = await listenEvent(guild.id, consumer, opts);
 
 		guild.channels.forEach(async (channel) => {
-			if (
-				permission
-					.overwriteChannel(channel.permission_overwrites ?? [])
-					.has("VIEW_CHANNEL")
-			) {
-				this.events[channel.id] = await listenEvent(
-					channel.id,
-					consumer,
-					opts,
-				);
+			if (permission.overwriteChannel(channel.permission_overwrites ?? []).has("VIEW_CHANNEL")) {
+				this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
 			}
 		});
 	});
@@ -158,7 +143,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			this.member_events[data.user.id] = await listenEvent(
 				data.user.id,
 				handlePresenceUpdate.bind(this),
-				this.listen_options,
+				this.listen_options
 			);
 			break;
 		case "GUILD_MEMBER_UPDATE":
@@ -172,11 +157,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			opts.cancel();
 			break;
 		case "CHANNEL_CREATE":
-			if (
-				!permission
-					.overwriteChannel(data.permission_overwrites)
-					.has("VIEW_CHANNEL")
-			) {
+			if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
 				return;
 			}
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
@@ -185,7 +166,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			this.events[data.user.id] = await listenEvent(
 				data.user.id,
 				handlePresenceUpdate.bind(this),
-				this.listen_options,
+				this.listen_options
 			);
 			break;
 		case "GUILD_CREATE":
@@ -193,11 +174,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			break;
 		case "CHANNEL_UPDATE": {
 			const exists = this.events[id];
-			if (
-				permission
-					.overwriteChannel(data.permission_overwrites)
-					.has("VIEW_CHANNEL")
-			) {
+			if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
 				if (exists) break;
 				this.events[id] = await listenEvent(id, consumer, listenOpts);
 			} else {

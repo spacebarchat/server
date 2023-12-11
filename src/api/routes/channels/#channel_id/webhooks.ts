@@ -47,7 +47,7 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		res.json([]);
-	},
+	}
 );
 
 // TODO: use Image Data Type for avatar instead of String
@@ -77,8 +77,7 @@ router.post(
 
 		const webhook_count = await Webhook.count({ where: { channel_id } });
 		const { maxWebhooks } = Config.get().limits.channel;
-		if (maxWebhooks && webhook_count > maxWebhooks)
-			throw DiscordApiErrors.MAXIMUM_WEBHOOKS.withParams(maxWebhooks);
+		if (maxWebhooks && webhook_count > maxWebhooks) throw DiscordApiErrors.MAXIMUM_WEBHOOKS.withParams(maxWebhooks);
 
 		let { avatar, name } = req.body as WebhookCreateSchema;
 		name = trimSpecial(name);
@@ -105,7 +104,7 @@ router.post(
 			...hook,
 			user: user,
 		});
-	},
+	}
 );
 
 export default router;

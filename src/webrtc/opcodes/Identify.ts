@@ -17,19 +17,17 @@
 */
 
 import { CLOSECODES, Payload, Send, WebSocket } from "@spacebar/gateway";
-import {
-	validateSchema,
-	VoiceIdentifySchema,
-	VoiceState,
-} from "@spacebar/util";
+import { validateSchema, VoiceIdentifySchema, VoiceState } from "@spacebar/util";
 import { endpoint, getClients, VoiceOPCodes, PublicIP } from "@spacebar/webrtc";
 import SemanticSDP from "semantic-sdp";
 const defaultSDP = require("./sdp.json");
 
 export async function onIdentify(this: WebSocket, data: Payload) {
 	clearTimeout(this.readyTimeout);
-	const { server_id, user_id, session_id, token, streams, video } =
-		validateSchema("VoiceIdentifySchema", data.d) as VoiceIdentifySchema;
+	const { server_id, user_id, session_id, token, streams, video } = validateSchema(
+		"VoiceIdentifySchema",
+		data.d
+	) as VoiceIdentifySchema;
 
 	const voiceState = await VoiceState.findOne({
 		where: { guild_id: server_id, user_id, token, session_id },
@@ -44,7 +42,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			setup: "actpass",
 			hash: "sha-256",
 			fingerprint: endpoint.getDTLSFingerprint(),
-		}),
+		})
 	);
 
 	this.client = {

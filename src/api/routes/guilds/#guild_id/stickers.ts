@@ -50,7 +50,7 @@ router.get(
 		await Member.IsInGuildOrFail(req.user_id, guild_id);
 
 		res.json(await Sticker.find({ where: { guild_id } }));
-	},
+	}
 );
 
 const bodyParser = multer({
@@ -102,7 +102,7 @@ router.post(
 		await sendStickerUpdateEvent(guild_id);
 
 		res.json(sticker);
-	},
+	}
 );
 
 function getStickerFormat(mime_type: string) {
@@ -116,9 +116,7 @@ function getStickerFormat(mime_type: string) {
 		case "image/gif":
 			return StickerFormatType.GIF;
 		default:
-			throw new HTTPError(
-				"invalid sticker format: must be png, apng or lottie",
-			);
+			throw new HTTPError("invalid sticker format: must be png, apng or lottie");
 	}
 }
 
@@ -141,9 +139,9 @@ router.get(
 		res.json(
 			await Sticker.findOneOrFail({
 				where: { guild_id, id: sticker_id },
-			}),
+			})
 		);
-	},
+	}
 );
 
 router.patch(
@@ -175,7 +173,7 @@ router.patch(
 		await sendStickerUpdateEvent(guild_id);
 
 		return res.json(sticker);
-	},
+	}
 );
 
 async function sendStickerUpdateEvent(guild_id: string) {
@@ -207,7 +205,7 @@ router.delete(
 		await sendStickerUpdateEvent(guild_id);
 
 		return res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

@@ -38,7 +38,7 @@ router.get(
 			country_code: country_code,
 			promotional_email_opt_in: { required: true, pre_checked: false },
 		});
-	},
+	}
 );
 
 export default router;

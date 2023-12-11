@@ -62,13 +62,9 @@ router.get(
 			select: {
 				index: true,
 				// only grab public member props
-				...Object.fromEntries(
-					PublicMemberProjection.map((x) => [x, true]),
-				),
+				...Object.fromEntries(PublicMemberProjection.map((x) => [x, true])),
 				// and public user props
-				user: Object.fromEntries(
-					PublicUserProjection.map((x) => [x, true]),
-				),
+				user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
 				roles: {
 					id: true,
 				},
@@ -80,7 +76,7 @@ router.get(
 			user: member.user.toPublicUser(),
 			roles: member.roles.map((x) => x.id),
 		});
-	},
+	}
 );
 
 router.patch(
@@ -104,8 +100,7 @@ router.patch(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
-		const member_id =
-			req.params.member_id === "@me" ? req.user_id : req.params.member_id;
+		const member_id = req.params.member_id === "@me" ? req.user_id : req.params.member_id;
 		const body = req.body as MemberChangeSchema;
 
 		const member = await Member.findOneOrFail({
@@ -128,19 +123,13 @@ router.patch(
 			}
 		}
 
-		if (
-			("bio" in body || "avatar" in body) &&
-			req.params.member_id != "@me"
-		) {
+		if (("bio" in body || "avatar" in body) && req.params.member_id != "@me") {
 			const rights = await getRights(req.user_id);
 			rights.hasThrow("MANAGE_USERS");
 		}
 
 		if (body.avatar)
-			body.avatar = await handleFile(
-				`/guilds/${guild_id}/users/${member_id}/avatars`,
-				body.avatar as string,
-			);
+			body.avatar = await handleFile(`/guilds/${guild_id}/users/${member_id}/avatars`, body.avatar as string);
 
 		member.assign(body);
 
@@ -152,8 +141,7 @@ router.patch(
 			body.roles = body.roles || [];
 			body.roles.filter((x) => !!x);
 
-			if (body.roles.indexOf(everyone.id) === -1)
-				body.roles.push(everyone.id);
+			if (body.roles.indexOf(everyone.id) === -1) body.roles.push(everyone.id);
 			// foreign key constraint will fail if role doesn't exist
 			member.roles = body.roles.map((x) => Role.create({ id: x }));
 		}
@@ -170,7 +158,7 @@ router.patch(
 		} as GuildMemberUpdateEvent);
 
 		res.json(member);
-	},
+	}
 );
 
 router.put(
@@ -222,7 +210,7 @@ router.put(
 
 		await Member.addToGuild(member_id, guild_id);
 		res.send({ ...guild, emojis: emoji, roles: roles, stickers: stickers });
-	},
+	}
 );
 
 router.delete(
@@ -249,7 +237,7 @@ router.delete(
 
 		await Member.removeFromGuild(member_id, guild_id);
 		res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

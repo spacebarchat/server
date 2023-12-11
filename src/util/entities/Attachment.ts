@@ -16,14 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	BeforeRemove,
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	RelationId,
-} from "typeorm";
+import { BeforeRemove, Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { URL } from "url";
 import { deleteFile } from "../util/cdn";
 import { BaseClass } from "./BaseClass";
@@ -56,13 +49,9 @@ export class Attachment extends BaseClass {
 	message_id: string;
 
 	@JoinColumn({ name: "message_id" })
-	@ManyToOne(
-		() => require("./Message").Message,
-		(message: import("./Message").Message) => message.attachments,
-		{
-			onDelete: "CASCADE",
-		},
-	)
+	@ManyToOne(() => require("./Message").Message, (message: import("./Message").Message) => message.attachments, {
+		onDelete: "CASCADE",
+	})
 	message: import("./Message").Message;
 
 	@BeforeRemove()

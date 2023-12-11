@@ -57,7 +57,7 @@ router.get(
 		});
 
 		return res.json(templates);
-	},
+	}
 );
 
 router.post(
@@ -102,7 +102,7 @@ router.post(
 		}).save();
 
 		res.json(template);
-	},
+	}
 );
 
 router.delete(
@@ -123,7 +123,7 @@ router.delete(
 		});
 
 		res.json(template);
-	},
+	}
 );
 
 router.put(
@@ -148,7 +148,7 @@ router.put(
 		}).save();
 
 		res.json(template);
-	},
+	}
 );
 
 router.patch(
@@ -173,7 +173,7 @@ router.patch(
 		}).save();
 
 		res.json(template);
-	},
+	}
 );
 
 export default router;

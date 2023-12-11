@@ -64,7 +64,7 @@ router.post(
 		} as TypingStartEvent);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

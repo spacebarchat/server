@@ -16,13 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	IPAnalysis,
-	getIpAdress,
-	isProxy,
-	route,
-	verifyCaptcha,
-} from "@spacebar/api";
+import { IPAnalysis, getIpAdress, isProxy, route, verifyCaptcha } from "@spacebar/api";
 import {
 	Config,
 	FieldErrors,
@@ -65,13 +59,9 @@ router.post(
 				});
 				await regToken.remove();
 				regTokenUsed = true;
-				console.log(
-					`[REGISTER] Registration token ${token} used for registration!`,
-				);
+				console.log(`[REGISTER] Registration token ${token} used for registration!`);
 			} else {
-				console.log(
-					`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`,
-				);
+				console.log(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`);
 			}
 		}
 
@@ -104,11 +94,7 @@ router.post(
 			});
 		}
 
-		if (
-			!regTokenUsed &&
-			register.requireCaptcha &&
-			security.captcha.enabled
-		) {
+		if (!regTokenUsed && register.requireCaptcha && security.captcha.enabled) {
 			const { sitekey, service } = security.captcha;
 			if (!body.captcha_key) {
 				return res?.status(400).json({
@@ -139,9 +125,7 @@ router.post(
 				throw FieldErrors({
 					email: {
 						code: "EMAIL_ALREADY_REGISTERED",
-						message: req.t(
-							"auth:register.EMAIL_ALREADY_REGISTERED",
-						),
+						message: req.t("auth:register.EMAIL_ALREADY_REGISTERED"),
 					},
 				});
 			}
@@ -176,9 +160,7 @@ router.post(
 				throw FieldErrors({
 					email: {
 						code: "EMAIL_ALREADY_REGISTERED",
-						message: req.t(
-							"auth:register.EMAIL_ALREADY_REGISTERED",
-						),
+						message: req.t("auth:register.EMAIL_ALREADY_REGISTERED"),
 					},
 				});
 			}
@@ -198,14 +180,9 @@ router.post(
 					message: req.t("common:field.BASE_TYPE_REQUIRED"),
 				},
 			});
-		} else if (
-			register.dateOfBirth.required &&
-			register.dateOfBirth.minimum
-		) {
+		} else if (register.dateOfBirth.required && register.dateOfBirth.minimum) {
 			const minimum = new Date();
-			minimum.setFullYear(
-				minimum.getFullYear() - register.dateOfBirth.minimum,
-			);
+			minimum.setFullYear(minimum.getFullYear() - register.dateOfBirth.minimum);
 			body.date_of_birth = new Date(body.date_of_birth as Date);
 
 			// higher is younger
@@ -228,10 +205,7 @@ router.post(
 				throw FieldErrors({
 					password: {
 						code: "PASSWORD_REQUIREMENTS_MIN_LENGTH",
-						message: req.t(
-							"auth:register.PASSWORD_REQUIREMENTS_MIN_LENGTH",
-							{ min: min },
-						),
+						message: req.t("auth:register.PASSWORD_REQUIREMENTS_MIN_LENGTH", { min: min }),
 					},
 				});
 			}
@@ -249,8 +223,7 @@ router.post(
 		if (
 			!regTokenUsed &&
 			!body.invite &&
-			(register.requireInvite ||
-				(register.guestsRequireInvite && !register.email))
+			(register.requireInvite || (register.guestsRequireInvite && !register.email))
 		) {
 			// require invite to register -> e.g. for organizations to send invites to their employees
 			throw FieldErrors({
@@ -266,18 +239,14 @@ router.post(
 			limits.absoluteRate.register.enabled &&
 			(await User.count({
 				where: {
-					created_at: MoreThan(
-						new Date(
-							Date.now() - limits.absoluteRate.register.window,
-						),
-					),
+					created_at: MoreThan(new Date(Date.now() - limits.absoluteRate.register.window)),
 				},
 			})) >= limits.absoluteRate.register.limit
 		) {
 			console.log(
-				`Global register ratelimit exceeded for ${getIpAdress(req)}, ${
-					req.body.username
-				}, ${req.body.invite || "No invite given"}`,
+				`Global register ratelimit exceeded for ${getIpAdress(req)}, ${req.body.username}, ${
+					req.body.invite || "No invite given"
+				}`
 			);
 			throw FieldErrors({
 				email: {
@@ -295,7 +264,7 @@ router.post(
 		}
 
 		return res.json({ token: await generateToken(user.id) });
-	},
+	}
 );
 
 export default router;

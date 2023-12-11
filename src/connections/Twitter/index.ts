@@ -55,10 +55,7 @@ export default class TwitterConnection extends RefreshableConnection {
 	settings: TwitterSettings = new TwitterSettings();
 
 	init(): void {
-		const settings = ConnectionLoader.getConnectionConfig<TwitterSettings>(
-			this.id,
-			this.settings,
-		);
+		const settings = ConnectionLoader.getConnectionConfig<TwitterSettings>(this.id, this.settings);
 
 		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
 			throw new Error(`Invalid settings for connection ${this.id}`);
@@ -82,10 +79,7 @@ export default class TwitterConnection extends RefreshableConnection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -95,9 +89,7 @@ export default class TwitterConnection extends RefreshableConnection {
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId as string}:${
-						this.settings.clientSecret as string
-					}`,
+					`${this.settings.clientId as string}:${this.settings.clientSecret as string}`
 				).toString("base64")}`,
 			})
 			.body(
@@ -107,7 +99,7 @@ export default class TwitterConnection extends RefreshableConnection {
 					client_id: this.settings.clientId as string,
 					redirect_uri: this.getRedirectUri(),
 					code_verifier: "challenge", // TODO: properly use PKCE challenge
-				}),
+				})
 			)
 			.post()
 			.json<ConnectedAccountCommonOAuthTokenResponse>()
@@ -117,11 +109,8 @@ export default class TwitterConnection extends RefreshableConnection {
 			});
 	}
 
-	async refreshToken(
-		connectedAccount: ConnectedAccount,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
-		if (!connectedAccount.token_data?.refresh_token)
-			throw new Error("No refresh token available.");
+	async refreshToken(connectedAccount: ConnectedAccount): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+		if (!connectedAccount.token_data?.refresh_token) throw new Error("No refresh token available.");
 		const refresh_token = connectedAccount.token_data.refresh_token;
 
 		const url = this.getTokenUrl();
@@ -131,9 +120,7 @@ export default class TwitterConnection extends RefreshableConnection {
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId as string}:${
-						this.settings.clientSecret as string
-					}`,
+					`${this.settings.clientId as string}:${this.settings.clientSecret as string}`
 				).toString("base64")}`,
 			})
 			.body(
@@ -143,7 +130,7 @@ export default class TwitterConnection extends RefreshableConnection {
 					client_id: this.settings.clientId as string,
 					redirect_uri: this.getRedirectUri(),
 					code_verifier: "challenge", // TODO: properly use PKCE challenge
-				}),
+				})
 			)
 			.post()
 			.json<ConnectedAccountCommonOAuthTokenResponse>()
@@ -167,9 +154,7 @@ export default class TwitterConnection extends RefreshableConnection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

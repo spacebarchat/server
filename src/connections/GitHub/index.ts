@@ -42,10 +42,7 @@ export default class GitHubConnection extends Connection {
 	settings: GitHubSettings = new GitHubSettings();
 
 	init(): void {
-		const settings = ConnectionLoader.getConnectionConfig<GitHubSettings>(
-			this.id,
-			this.settings,
-		);
+		const settings = ConnectionLoader.getConnectionConfig<GitHubSettings>(this.id, this.settings);
 
 		if (settings.enabled && (!settings.clientId || !settings.clientSecret))
 			throw new Error(`Invalid settings for connection ${this.id}`);
@@ -65,18 +62,12 @@ export default class GitHubConnection extends Connection {
 	getTokenUrl(code: string): string {
 		const url = new URL(this.tokenUrl);
 		url.searchParams.append("client_id", this.settings.clientId as string);
-		url.searchParams.append(
-			"client_secret",
-			this.settings.clientSecret as string,
-		);
+		url.searchParams.append("client_secret", this.settings.clientSecret as string);
 		url.searchParams.append("code", code);
 		return url.toString();
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl(code);
@@ -108,9 +99,7 @@ export default class GitHubConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

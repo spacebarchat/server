@@ -46,10 +46,7 @@ router.post(
 
 		if (user.data.hash) {
 			// guest accounts can delete accounts without password
-			correctpass = await bcrypt.compare(
-				req.body.password,
-				user.data.hash,
-			);
+			correctpass = await bcrypt.compare(req.body.password, user.data.hash);
 			if (!correctpass) {
 				throw new HTTPError(req.t("auth:login.INVALID_PASSWORD"));
 			}
@@ -58,16 +55,13 @@ router.post(
 		// TODO: decrement guild member count
 
 		if (correctpass) {
-			await Promise.all([
-				User.delete({ id: req.user_id }),
-				Member.delete({ id: req.user_id }),
-			]);
+			await Promise.all([User.delete({ id: req.user_id }), Member.delete({ id: req.user_id })]);
 
 			res.sendStatus(204);
 		} else {
 			res.sendStatus(401);
 		}
-	},
+	}
 );
 
 export default router;

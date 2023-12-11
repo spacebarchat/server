@@ -53,7 +53,7 @@ router.get(
 			where: { guild_id, id: role_id },
 		});
 		return res.json(role);
-	},
+	}
 );
 
 router.delete(
@@ -75,8 +75,7 @@ router.delete(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id, role_id } = req.params;
-		if (role_id === guild_id)
-			throw new HTTPError("You can't delete the @everyone role");
+		if (role_id === guild_id) throw new HTTPError("You can't delete the @everyone role");
 
 		await Promise.all([
 			Role.delete({
@@ -94,7 +93,7 @@ router.delete(
 		]);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 // TODO: check role hierarchy
@@ -123,11 +122,7 @@ router.patch(
 		const { role_id, guild_id } = req.params;
 		const body = req.body as RoleModifySchema;
 
-		if (body.icon && body.icon.length)
-			body.icon = await handleFile(
-				`/role-icons/${role_id}`,
-				body.icon as string,
-			);
+		if (body.icon && body.icon.length) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string);
 		else body.icon = undefined;
 
 		const role = await Role.findOneOrFail({
@@ -135,10 +130,7 @@ router.patch(
 		});
 		role.assign({
 			...body,
-			permissions: String(
-				(req.permission?.bitfield || 0n) &
-					BigInt(body.permissions || "0"),
-			),
+			permissions: String((req.permission?.bitfield || 0n) & BigInt(body.permissions || "0")),
 		});
 
 		await Promise.all([
@@ -154,7 +146,7 @@ router.patch(
 		]);
 
 		res.json(role);
-	},
+	}
 );
 
 export default router;

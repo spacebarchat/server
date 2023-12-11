@@ -57,8 +57,7 @@ router.put(
 			where: { channel: { id: channel_id }, pinned: true },
 		});
 		const { maxPins } = Config.get().limits.channel;
-		if (pinned_count >= maxPins)
-			throw DiscordApiErrors.MAXIMUM_PINS.withParams(maxPins);
+		if (pinned_count >= maxPins) throw DiscordApiErrors.MAXIMUM_PINS.withParams(maxPins);
 
 		await Promise.all([
 			Message.update({ id: message_id }, { pinned: true }),
@@ -79,7 +78,7 @@ router.put(
 		]);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 router.delete(
@@ -129,7 +128,7 @@ router.delete(
 		]);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 router.get(
@@ -153,7 +152,7 @@ router.get(
 		});
 
 		res.send(pins);
-	},
+	}
 );
 
 export default router;

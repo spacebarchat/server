@@ -57,7 +57,7 @@ router.get(
 		});
 
 		return res.json(emojis);
-	},
+	}
 );
 
 router.get(
@@ -86,7 +86,7 @@ router.get(
 		});
 
 		return res.json(emoji);
-	},
+	}
 );
 
 router.post(
@@ -116,10 +116,7 @@ router.post(
 		});
 		const { maxEmojis } = Config.get().limits.guild;
 
-		if (emoji_count >= maxEmojis)
-			throw DiscordApiErrors.MAXIMUM_NUMBER_OF_EMOJIS_REACHED.withParams(
-				maxEmojis,
-			);
+		if (emoji_count >= maxEmojis) throw DiscordApiErrors.MAXIMUM_NUMBER_OF_EMOJIS_REACHED.withParams(maxEmojis);
 		if (body.require_colons == null) body.require_colons = true;
 
 		const user = await User.findOneOrFail({ where: { id: req.user_id } });
@@ -147,7 +144,7 @@ router.post(
 		} as GuildEmojisUpdateEvent);
 
 		return res.status(201).json(emoji);
-	},
+	}
 );
 
 router.patch(
@@ -184,7 +181,7 @@ router.patch(
 		} as GuildEmojisUpdateEvent);
 
 		return res.json(emoji);
-	},
+	}
 );
 
 router.delete(
@@ -216,7 +213,7 @@ router.delete(
 		} as GuildEmojisUpdateEvent);
 
 		res.sendStatus(204);
-	},
+	}
 );
 
 export default router;

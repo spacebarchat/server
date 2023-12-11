@@ -24,10 +24,7 @@ export default async function () {
 	const { apiKey, domain } = Config.get().email.mailgun;
 
 	// ensure all required configuration values are set
-	if (!apiKey || !domain)
-		return console.error(
-			"[Email] Mailgun has not been configured correctly.",
-		);
+	if (!apiKey || !domain) return console.error("[Email] Mailgun has not been configured correctly.");
 
 	let mg;
 	try {
@@ -36,7 +33,7 @@ export default async function () {
 	} catch {
 		// if the package is not installed, log an error and return void so we don't set the transporter
 		console.error(
-			"[Email] Mailgun transport is not installed. Please run `npm install nodemailer-mailgun-transport --save-optional` to install it.",
+			"[Email] Mailgun transport is not installed. Please run `npm install nodemailer-mailgun-transport --save-optional` to install it."
 		);
 		return;
 	}

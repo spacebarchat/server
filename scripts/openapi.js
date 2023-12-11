@@ -20,9 +20,7 @@ require("module-alias/register");
 const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");
 const fs = require("fs");
-const {
-	NO_AUTHORIZATION_ROUTES,
-} = require("../dist/api/middlewares/Authentication");
+const { NO_AUTHORIZATION_ROUTES } = require("../dist/api/middlewares/Authentication");
 require("missing-native-js-functions");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
@@ -35,8 +33,7 @@ let specification = {
 	openapi: "3.1.0",
 	info: {
 		title: "Spacebar Server",
-		description:
-			"Spacebar is a free open source selfhostable discord compatible chat, voice and video platform",
+		description: "Spacebar is a free open source selfhostable discord compatible chat, voice and video platform",
 		license: {
 			name: "AGPLV3",
 			url: "https://www.gnu.org/licenses/agpl-3.0.en.html",
@@ -90,8 +87,7 @@ function combineSchemas(schemas) {
 			continue;
 		}
 		specification.components = specification.components || {};
-		specification.components.schemas =
-			specification.components.schemas || {};
+		specification.components.schemas = specification.components.schemas || {};
 		specification.components.schemas[key] = definitions[key];
 		delete definitions[key].additionalProperties;
 		delete definitions[key].$schema;
@@ -170,8 +166,7 @@ function apiRoutes() {
 					[k]: {
 						...(v.body
 							? {
-									description:
-										obj?.responses?.[k]?.description || "",
+									description: obj?.responses?.[k]?.description || "",
 									content: {
 										"application/json": {
 											schema: schema,
@@ -218,12 +213,9 @@ function apiRoutes() {
 
 		obj.tags = [...(obj.tags || []), getTag(p)].unique();
 
-		specification.paths[path] = Object.assign(
-			specification.paths[path] || {},
-			{
-				[method]: obj,
-			},
-		);
+		specification.paths[path] = Object.assign(specification.paths[path] || {}, {
+			[method]: obj,
+		});
 	});
 }
 
@@ -236,7 +228,7 @@ function main() {
 		openapiPath,
 		JSON.stringify(specification, null, 4)
 			.replaceAll("#/definitions", "#/components/schemas")
-			.replaceAll("bigint", "number"),
+			.replaceAll("bigint", "number")
 	);
 }
 
