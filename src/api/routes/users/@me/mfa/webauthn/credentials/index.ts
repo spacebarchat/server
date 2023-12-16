@@ -18,9 +18,12 @@
 
 import { route } from "@spacebar/api";
 import {
+	AuthenticatorType,
+	BackupCode,
 	CreateWebAuthnCredentialSchema,
 	DiscordApiErrors,
 	FieldErrors,
+	generateMfaBackupCodes,
 	GenerateWebAuthnCredentialsSchema,
 	generateWebAuthnTicket,
 	SecurityKey,
@@ -193,12 +196,41 @@ router.post(
 
 			await Promise.all([
 				securityKey.save(),
-				User.update({ id: req.user_id }, { webauthn_enabled: true }),
+				User.update(
+					{ id: req.user_id },
+					{
+						webauthn_enabled: true,
+						authenticator_types: [
+							...user.authenticator_types,
+							AuthenticatorType.WEBAUTHN,
+						],
+					},
+				),
 			]);
+
+			// try and get the users existing backup codes
+			let backup_codes = await BackupCode.find({
+				where: {
+					user: {
+						id: req.user_id,
+					},
+				},
+			});
+
+			// if there arent any, create them
+			if (!backup_codes.length) {
+				backup_codes = generateMfaBackupCodes(req.user_id);
+				await Promise.all(backup_codes.map((x) => x.save()));
+			}
 
 			return res.json({
 				name,
 				id: securityKey.id,
+				type: AuthenticatorType.WEBAUTHN, // I think thats what this is?
+				backup_codes: backup_codes.map((x) => ({
+					...x,
+					expired: undefined,
+				})),
 			});
 		} else {
 			throw DiscordApiErrors.INVALID_AUTHENTICATION_TOKEN;

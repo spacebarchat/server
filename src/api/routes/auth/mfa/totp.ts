@@ -73,7 +73,10 @@ router.post(
 
 		return res.json({
 			token: await generateToken(user.id),
-			settings: { ...user.settings, index: undefined },
+			settings: {
+				locale: user.settings.locale,
+				theme: user.settings.theme,
+			},
 		});
 	},
 );

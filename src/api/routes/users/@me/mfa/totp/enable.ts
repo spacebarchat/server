@@ -18,6 +18,7 @@
 
 import { route } from "@spacebar/api";
 import {
+	AuthenticatorType,
 	TotpEnableSchema,
 	User,
 	generateMfaBackupCodes,
@@ -74,7 +75,14 @@ router.post(
 		await Promise.all(backup_codes.map((x) => x.save()));
 		await User.update(
 			{ id: req.user_id },
-			{ mfa_enabled: true, totp_secret: body.secret },
+			{
+				mfa_enabled: true,
+				totp_secret: body.secret,
+				authenticator_types: [
+					...user.authenticator_types,
+					AuthenticatorType.TOTP,
+				],
+			},
 		);
 
 		res.send({

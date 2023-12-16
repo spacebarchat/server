@@ -85,6 +85,12 @@ export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
 }
 
+export enum AuthenticatorType {
+	WEBAUTHN = 1,
+	TOTP = 2,
+	SMS = 3,
+}
+
 @Entity("users")
 export class User extends BaseClass {
 	@Column()
@@ -230,6 +236,9 @@ export class User extends BaseClass {
 
 	@OneToMany(() => SecurityKey, (key: SecurityKey) => key.user)
 	security_keys: SecurityKey[];
+
+	@Column({ type: "simple-array", select: false })
+	authenticator_types: AuthenticatorType[] = [];
 
 	// TODO: I don't like this method?
 	validate() {

@@ -33,6 +33,15 @@ export const WebAuthn: {
 	init: function () {
 		this.fido2 = new Fido2Lib({
 			challengeSize: 128,
+			rpName: Config.get().general.instanceName,
+			rpId:
+				Config.get().general.frontPage ??
+				Config.get().general.instanceName.toLowerCase(),
+			attestation: Config.get().security.twoFactor.webauthnAttestation,
+			// rpIcon:
+			timeout: Config.get().security.twoFactor.webauthnTimeout,
+			authenticatorRequireResidentKey: false,
+			authenticatorUserVerification: "preferred",
 		});
 	},
 };
