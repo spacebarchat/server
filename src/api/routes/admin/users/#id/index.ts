@@ -22,6 +22,7 @@ import {
 	AdminUserProjection,
 	FieldErrors,
 	User,
+	UserDeleteEvent,
 	UserUpdateEvent,
 	emitEvent,
 	handleFile,
@@ -138,7 +139,7 @@ router.delete(
 		description: "Delete a user",
 		right: "ADMIN_DELETE_USERS",
 		responses: {
-			200: {},
+			204: {},
 			400: {
 				body: "APIErrorResponse",
 			},
@@ -149,12 +150,20 @@ router.delete(
 	}),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
-		const user = await User.findOneOrFail({
-			where: { id },
-			select: AdminUserProjection,
-		});
-		await user.remove();
-		res.sendStatus(200);
+
+		await Promise.all([
+			User.findOneOrFail({
+				where: { id },
+			}),
+			User.delete({ id }),
+			emitEvent({
+				event: "USER_DELETE",
+				user_id: req.user_id,
+				data: { user_id: req.params.id },
+			} as UserDeleteEvent),
+		]);
+
+		res.sendStatus(204);
 	},
 );
 

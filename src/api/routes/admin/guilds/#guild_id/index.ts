@@ -22,6 +22,7 @@ import {
 	AdminGuildProjection,
 	Channel,
 	Guild,
+	GuildDeleteEvent,
 	GuildUpdateEvent,
 	Permissions,
 	emitEvent,
@@ -214,7 +215,7 @@ router.delete(
 		description: "Delete a guild",
 		right: "ADMIN_DELETE_GUILDS",
 		responses: {
-			200: {},
+			204: {},
 			400: {
 				body: "APIErrorResponse",
 			},
@@ -225,9 +226,18 @@ router.delete(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
-		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
-		await guild.remove();
-		res.sendStatus(200);
+		await Promise.all([
+			Guild.findOneOrFail({ where: { id: guild_id } }),
+			Guild.delete({ id: guild_id }), // this will also delete all guild related data
+			emitEvent({
+				event: "GUILD_DELETE",
+				data: {
+					id: guild_id,
+				},
+				guild_id: guild_id,
+			} as GuildDeleteEvent),
+		]);
+		res.sendStatus(204);
 	},
 );
 

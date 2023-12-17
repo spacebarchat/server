@@ -28,39 +28,6 @@ import { HTTPError } from "lambert-server";
 import { ILike, MoreThan } from "typeorm";
 const router = Router();
 
-router.post(
-	"/",
-	route({
-		requestBody: "AdminGuildCreateSchema",
-		right: "ADMIN_CREATE_GUILDS",
-		responses: {
-			201: {
-				body: "AdminGuildResponse",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const body = req.body as AdminGuildCreateSchema;
-
-		const ownerId = body.owner_id || req.user_id;
-
-		const guild = await Guild.createGuild({
-			...body,
-			owner_id: ownerId,
-		});
-
-		await Member.addToGuild(ownerId, guild.id);
-
-		res.status(201).json(guild);
-	},
-);
-
 router.get(
 	"/",
 	route({
@@ -113,6 +80,39 @@ router.get(
 		});
 
 		res.send(guilds);
+	},
+);
+
+router.post(
+	"/",
+	route({
+		requestBody: "AdminGuildCreateSchema",
+		right: "ADMIN_CREATE_GUILDS",
+		responses: {
+			201: {
+				body: "AdminGuildResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const body = req.body as AdminGuildCreateSchema;
+
+		const ownerId = body.owner_id || req.user_id;
+
+		const guild = await Guild.createGuild({
+			...body,
+			owner_id: ownerId,
+		});
+
+		await Member.addToGuild(ownerId, guild.id);
+
+		res.status(201).json(guild);
 	},
 );
 
