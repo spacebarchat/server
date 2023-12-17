@@ -18,15 +18,25 @@
 
 import { route } from "@spacebar/api";
 import {
+	Emoji,
+	Guild,
 	GuildMemberUpdateEvent,
 	Member,
 	MemberChangeSchema,
 	Role,
+	Sticker,
 	emitEvent,
 	handleFile,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router();
+
+// redirect get request to standard member endpoint, as it doesnt require having guild permissions
+router.get("/", (req: Request, res: Response) => {
+	res.redirect(
+		`/api/guilds/${req.params.guild_id}/members/${req.params.member_id}`,
+	);
+});
 
 router.patch(
 	"/",
@@ -98,6 +108,45 @@ router.patch(
 		} as GuildMemberUpdateEvent);
 
 		res.json(member);
+	},
+);
+
+router.put(
+	"/",
+	route({
+		description: "Add a member to a guild",
+		right: "ADMIN_CREATE_MEMBERS",
+		responses: {
+			200: {
+				body: "MemberJoinGuildResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id, member_id } = req.params;
+
+		const [guild, emoji, roles, stickers] = await Promise.all([
+			Guild.findOneOrFail({
+				where: { id: guild_id },
+			}),
+			Emoji.find({
+				where: { guild_id },
+			}),
+			Role.find({
+				where: { guild_id },
+			}),
+			Sticker.find({
+				where: { guild_id },
+			}),
+			Member.addToGuild(member_id, guild_id, req.user_id),
+		]);
+		res.send({ ...guild, emojis: emoji, roles: roles, stickers: stickers });
 	},
 );
 

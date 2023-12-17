@@ -41,7 +41,7 @@ import {
 	GuildMemberUpdateEvent,
 	MessageCreateEvent,
 } from "../interfaces";
-import { Config, emitEvent } from "../util";
+import { Config, emitEvent, getRights } from "../util";
 import { DiscordApiErrors } from "../util/Constants";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Guild } from "./Guild";
@@ -307,15 +307,27 @@ export class Member extends BaseClassWithoutId {
 		]);
 	}
 
-	static async addToGuild(user_id: string, guild_id: string) {
+	static async addToGuild(
+		user_id: string,
+		guild_id: string,
+		executor_id?: string,
+	) {
 		const user = await User.getPublicUser(user_id);
+		const executorRights = executor_id
+			? await getRights(executor_id)
+			: null;
 		const isBanned = await Ban.count({ where: { guild_id, user_id } });
 		if (isBanned) {
 			throw DiscordApiErrors.USER_BANNED;
 		}
 		const { maxGuilds } = Config.get().limits.user;
 		const guild_count = await Member.count({ where: { id: user_id } });
-		if (guild_count >= maxGuilds) {
+		// being force added by an admin bypasses this limit
+		if (
+			guild_count >= maxGuilds &&
+			executorRights &&
+			!executorRights.has("ADMIN_CREATE_MEMBERS")
+		) {
 			throw new HTTPError(
 				`You are at the ${maxGuilds} server limit.`,
 				403,
@@ -352,7 +364,12 @@ export class Member extends BaseClassWithoutId {
 				where: { id: user.id, guild: { id: guild_id } },
 			})
 		)
-			throw new HTTPError("You are already a member of this guild", 400);
+			throw new HTTPError(
+				`${
+					executor_id ? "User is" : "You are"
+				} already a member of this guild`,
+				400,
+			);
 
 		const member = {
 			id: user_id,
