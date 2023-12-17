@@ -16,8 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Ban } from "@spacebar/util";
+import { getIpAdress, route } from "@spacebar/api";
+import {
+	Ban,
+	GuildBanAddEvent,
+	GuildBanRemoveEvent,
+	Member,
+	User,
+	emitEvent,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
@@ -66,6 +73,129 @@ router.get(
 		});
 
 		return res.json(bans);
+	},
+);
+
+router.get(
+	"/:user",
+	route({
+		description: "Get ban of a user from a guild",
+		right: "ADMIN_READ_GUILD_BANS",
+		responses: {
+			200: {
+				body: "GuildBansResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id, user_id } = req.params;
+
+		const ban = await Ban.findOneOrFail({
+			where: { guild_id, user_id },
+		});
+
+		return res.json(ban);
+	},
+);
+
+router.put(
+	"/:user_id",
+	route({
+		description: "Ban a user from a guild",
+		right: "ADMIN_CREATE_GUILD_BANS",
+		requestBody: "BanCreateSchema",
+		responses: {
+			200: {
+				body: "Ban",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id } = req.params;
+		const banned_user_id = req.params.user_id;
+
+		if (req.permission?.cache.guild?.owner_id === banned_user_id)
+			throw new HTTPError("You can't ban the owner", 400);
+
+		const banned_user = await User.getPublicUser(banned_user_id);
+
+		const ban = Ban.create({
+			user_id: banned_user_id,
+			guild_id: guild_id,
+			ip: getIpAdress(req),
+			executor_id: req.user_id,
+			reason: req.body.reason, // || otherwise empty
+		});
+
+		await Promise.all([
+			Member.removeFromGuild(banned_user_id, guild_id),
+			ban.save(),
+			emitEvent({
+				event: "GUILD_BAN_ADD",
+				data: {
+					guild_id: guild_id,
+					user: banned_user,
+				},
+				guild_id: guild_id,
+			} as GuildBanAddEvent),
+		]);
+
+		return res.json(ban);
+	},
+);
+
+router.delete(
+	"/:user_id",
+	route({
+		description: "Unban a user from a guild",
+		right: "ADMIN_DELETE_GUILD_BANS",
+		responses: {
+			204: {},
+			403: {
+				body: "APIErrorResponse",
+			},
+			404: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id, user_id } = req.params;
+
+		const banned_user = await User.getPublicUser(user_id);
+
+		await Promise.all([
+			await Ban.findOneOrFail({
+				where: { guild_id: guild_id, user_id: user_id },
+			}),
+			Ban.delete({
+				user_id: user_id,
+				guild_id,
+			}),
+
+			emitEvent({
+				event: "GUILD_BAN_REMOVE",
+				data: {
+					guild_id,
+					user: banned_user,
+				},
+				guild_id,
+			} as GuildBanRemoveEvent),
+		]);
+
+		return res.sendStatus(204);
 	},
 );
 
