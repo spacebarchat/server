@@ -54,7 +54,9 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id, member_id } = req.params;
-		await Member.IsInGuildOrFail(req.user_id, guild_id);
+		const rights = await getRights(req.user_id);
+		if (!rights.has("ADMIN_READ_MEMBERS"))
+			await Member.IsInGuildOrFail(req.user_id, guild_id);
 
 		const member = await Member.findOneOrFail({
 			where: { id: member_id, guild_id },
