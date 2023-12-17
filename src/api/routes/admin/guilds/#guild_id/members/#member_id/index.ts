@@ -42,7 +42,7 @@ router.patch(
 	"/",
 	route({
 		description: "Update a guild member",
-		requestBody: "MemberChangeSchema",
+		requestBody: "AdminGuildMemberModifySchema",
 		right: "ADMIN_UPDATE_MEMBERS",
 		responses: {
 			200: {

@@ -17,4 +17,5 @@
 */
 
 export * from "./AdminGuild";
+export * from "./AdminGuildMember";
 export * from "./AdminUser";
