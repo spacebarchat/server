@@ -18,4 +18,4 @@
 
 import { AdminGuild } from "@spacebar/util";
 
-export type AdminGuildModifySchema = Partial<Exclude<AdminGuild, "id">>;
+export type AdminGuildModifySchema = Partial<Omit<AdminGuild, "id">>;

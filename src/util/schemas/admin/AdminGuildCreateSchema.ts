@@ -19,7 +19,7 @@
 import { AdminGuild } from "../../interfaces";
 
 export type AdminGuildCreateSchema = Partial<
-	Exclude<
+	Omit<
 		AdminGuild,
 		| "id"
 		| "bans"

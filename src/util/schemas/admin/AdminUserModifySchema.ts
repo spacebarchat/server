@@ -19,7 +19,7 @@
 import { AdminUser } from "@spacebar/util";
 
 export type AdminUserModifySchema = Partial<
-	Exclude<AdminUser, "id"> & {
+	Omit<AdminUser, "id"> & {
 		password?: string;
 	}
 >;

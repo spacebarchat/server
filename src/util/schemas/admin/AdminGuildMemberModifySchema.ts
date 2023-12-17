@@ -19,7 +19,7 @@
 import { AdminGuildMember } from "@spacebar/util";
 
 export type AdminGuildMemberModifySchema = Partial<
-	Exclude<
+	Omit<
 		AdminGuildMember,
 		"id" | "guild_id" | "joined_at" | "last_message_id" | "joined_by"
 	>
