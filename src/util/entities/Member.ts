@@ -182,7 +182,10 @@ export class Member extends BaseClassWithoutId {
 			where: { id: guild_id },
 		});
 		if (guild.owner_id === user_id)
-			throw new Error("The owner cannot be removed of the guild");
+			throw new HTTPError(
+				"The owner cannot be removed of the guild",
+				400,
+			);
 		const member = await Member.findOneOrFail({
 			where: { id: user_id, guild_id },
 			relations: ["user"],
