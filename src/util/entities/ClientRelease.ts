@@ -43,10 +43,10 @@ export class Release extends BaseClass {
 	enabled: boolean;
 
 	@Column({ nullable: true })
-	notes: string | null;
+	notes?: string;
 
 	@Column({ nullable: true })
-	signature: string | null;
+	signature?: string;
 
 	@Column({ default: "stable" })
 	channel: string;
