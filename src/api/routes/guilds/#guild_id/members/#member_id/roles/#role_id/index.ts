@@ -26,6 +26,7 @@ router.delete(
 	"/",
 	route({
 		permission: "MANAGE_ROLES",
+		right: "OPERATOR",
 		responses: {
 			204: {},
 			403: {
@@ -45,6 +46,7 @@ router.put(
 	"/",
 	route({
 		permission: "MANAGE_ROLES",
+		right: "OPERATOR",
 		responses: {
 			204: {},
 			403: {},

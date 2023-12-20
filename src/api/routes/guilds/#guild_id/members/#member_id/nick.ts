@@ -17,7 +17,12 @@
 */
 
 import { route } from "@spacebar/api";
-import { getPermission, Member, PermissionResolvable } from "@spacebar/util";
+import {
+	getPermission,
+	getRights,
+	Member,
+	PermissionResolvable,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();
@@ -38,14 +43,18 @@ router.patch(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
+		const rights = await getRights(req.user_id);
 		let permissionString: PermissionResolvable = "MANAGE_NICKNAMES";
 		const member_id =
 			req.params.member_id === "@me"
 				? ((permissionString = "CHANGE_NICKNAME"), req.user_id)
 				: req.params.member_id;
 
-		const perms = await getPermission(req.user_id, guild_id);
-		perms.hasThrow(permissionString);
+		// admins dont need to be in the guild
+		if (member_id !== "@me" && !rights.has("OPERATOR")) {
+			const perms = await getPermission(req.user_id, guild_id);
+			perms.hasThrow(permissionString);
+		}
 
 		await Member.changeNickname(member_id, guild_id, req.body.nick);
 		res.status(200).send();

@@ -38,6 +38,7 @@ router.get(
 	"/",
 	route({
 		permission: "BAN_MEMBERS",
+		right: "OPERATOR",
 		responses: {
 			200: {
 				body: "GuildBansResponse",
@@ -84,6 +85,7 @@ router.get(
 	"/:user_id",
 	route({
 		permission: "BAN_MEMBERS",
+		right: "OPERATOR",
 		responses: {
 			200: {
 				body: "BanModeratorSchema",
@@ -120,6 +122,7 @@ router.put(
 	route({
 		requestBody: "BanCreateSchema",
 		permission: "BAN_MEMBERS",
+		right: "OPERATOR",
 		responses: {
 			200: {
 				body: "Ban",
@@ -185,6 +188,7 @@ router.delete(
 	"/:user_id",
 	route({
 		permission: "BAN_MEMBERS",
+		right: "OPERATOR",
 		responses: {
 			204: {},
 			403: {
@@ -198,13 +202,12 @@ router.delete(
 	async (req: Request, res: Response) => {
 		const { guild_id, user_id } = req.params;
 
-		await Ban.findOneOrFail({
-			where: { guild_id: guild_id, user_id: user_id },
-		});
-
 		const banned_user = await User.getPublicUser(user_id);
 
 		await Promise.all([
+			Ban.findOneOrFail({
+				where: { guild_id: guild_id, user_id: user_id },
+			}),
 			Ban.delete({
 				user_id: user_id,
 				guild_id,

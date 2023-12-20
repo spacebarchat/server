@@ -16,16 +16,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
-import { Role, Member } from "@spacebar/util";
 import { route } from "@spacebar/api";
+import { Member, Role, getRights } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 import {} from "typeorm";
 
 const router: Router = Router();
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id } = req.params;
-	await Member.IsInGuildOrFail(req.user_id, guild_id);
+	const rights = await getRights(req.user_id);
+	// admins dont need to be in the guild
+	if (!rights.has("OPERATOR"))
+		await Member.IsInGuildOrFail(req.user_id, guild_id);
 
 	const role_ids = await Role.find({ where: { guild_id }, select: ["id"] });
 	const counts: { [id: string]: number } = {};

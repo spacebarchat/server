@@ -19,7 +19,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import { route } from "@spacebar/api";
-import { Channel, FieldErrors, Message, getPermission } from "@spacebar/util";
+import {
+	Channel,
+	FieldErrors,
+	Message,
+	getPermission,
+	getRights,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { FindManyOptions, In, Like } from "typeorm";
@@ -53,6 +59,7 @@ router.get(
 			author_id,
 		} = req.query;
 
+		const rights = await getRights(req.user_id);
 		const parsedLimit = Number(limit) || 50;
 		if (parsedLimit < 1 || parsedLimit > 100)
 			throw new HTTPError("limit must be between 1 and 100", 422);
@@ -75,7 +82,7 @@ router.get(
 			req.params.guild_id,
 			channel_id as string | undefined,
 		);
-		permissions.hasThrow("VIEW_CHANNEL");
+		if (!rights.has("OPERATOR")) permissions.hasThrow("VIEW_CHANNEL");
 		if (!permissions.has("READ_MESSAGE_HISTORY"))
 			return res.json({ messages: [], total_results: 0 });
 
@@ -120,6 +127,7 @@ router.get(
 					channel.id,
 				);
 				if (
+					!rights.has("OPERATOR") ||
 					!perm.has("VIEW_CHANNEL") ||
 					!perm.has("READ_MESSAGE_HISTORY")
 				)

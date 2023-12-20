@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Member, PublicMemberProjection } from "@spacebar/util";
+import { Member, PublicMemberProjection, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
@@ -51,13 +51,15 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
+		const rights = await getRights(req.user_id);
 		const limit = Number(req.query.limit) || 1;
 		if (limit > 1000 || limit < 1)
 			throw new HTTPError("Limit must be between 1 and 1000");
 		const after = `${req.query.after}`;
 		const query = after ? { id: MoreThan(after) } : {};
 
-		await Member.IsInGuildOrFail(req.user_id, guild_id);
+		if (!rights.has("OPERATOR"))
+			await Member.IsInGuildOrFail(req.user_id, guild_id);
 
 		const members = await Member.find({
 			where: { guild_id, ...query },

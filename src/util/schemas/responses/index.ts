@@ -18,6 +18,7 @@
 
 export * from "./APIErrorOrCaptchaResponse";
 export * from "./APIErrorResponse";
+export * from "./AdminGuildsResponse";
 export * from "./BackupCodesChallengeResponse";
 export * from "./CaptchaRequiredResponse";
 export * from "./DiscoverableGuildsResponse";

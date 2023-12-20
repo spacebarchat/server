@@ -5219,6 +5219,9 @@
                     },
                     "rules_channel_id": {
                         "type": "string"
+                    },
+                    "owner_id": {
+                        "type": "string"
                     }
                 }
             },
@@ -5294,6 +5297,9 @@
                     "icon": {
                         "type": "string",
                         "nullable": true
+                    },
+                    "owner_id": {
+                        "type": "string"
                     },
                     "region": {
                         "type": "string"
@@ -7040,6 +7046,12 @@
                     }
                 ]
             },
+            "AdminGuildsResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Guild"
+                }
+            },
             "BackupCodesChallengeResponse": {
                 "type": "object",
                 "properties": {
@@ -7859,6 +7871,9 @@
                     },
                     "disabled": {
                         "type": "boolean"
+                    },
+                    "rights": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -7876,6 +7891,7 @@
                     "premium_usage_flags",
                     "public_flags",
                     "purchased_flags",
+                    "rights",
                     "username",
                     "verified"
                 ]
@@ -7982,6 +7998,9 @@
                     },
                     "disabled": {
                         "type": "boolean"
+                    },
+                    "rights": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -7999,6 +8018,7 @@
                     "premium_usage_flags",
                     "public_flags",
                     "purchased_flags",
+                    "rights",
                     "username",
                     "verified"
                 ]
@@ -9005,6 +9025,71 @@
                 },
                 "tags": [
                     "voice"
+                ]
+            }
+        },
+        "/users/": {
+            "get": {
+                "x-right-required": "OPERATOR",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get a list of users",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminUsersResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "max number of users to return (1-1000). default 100"
+                    },
+                    {
+                        "name": "after",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "The amount of users to skip"
+                    },
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The search query"
+                    }
+                ],
+                "tags": [
+                    "users"
                 ]
             }
         },
@@ -10945,6 +11030,12 @@
                 },
                 "tags": [
                     "scheduled-maintenances"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -11577,8 +11668,70 @@
             }
         },
         "/guilds/": {
+            "get": {
+                "x-right-required": "OPERATOR",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get a list of guilds",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminGuildsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "max number of guilds to return (1-1000). default 100"
+                    },
+                    {
+                        "name": "after",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "The amount of guilds to skip"
+                    },
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The search query"
+                    }
+                ],
+                "tags": [
+                    "guilds"
+                ]
+            },
             "post": {
-                "x-right-required": "CREATE_GUILDS",
                 "security": [
                     {
                         "bearer": []
@@ -12787,6 +12940,7 @@
                 ]
             },
             "post": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
@@ -12917,6 +13071,7 @@
         },
         "/guilds/{guild_id}/roles/{role_id}/members/": {
             "patch": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
@@ -13054,6 +13209,7 @@
                 ]
             },
             "delete": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
@@ -13120,6 +13276,7 @@
                 ]
             },
             "patch": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
@@ -13547,6 +13704,7 @@
         },
         "/guilds/{guild_id}/members/{member_id}/roles/{role_id}/": {
             "delete": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
@@ -13602,6 +13760,7 @@
                 ]
             },
             "put": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
                     {
@@ -14124,6 +14283,7 @@
                 ]
             },
             "patch": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
@@ -14598,6 +14758,7 @@
                 ]
             },
             "post": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "MANAGE_CHANNELS",
                 "security": [
                     {
@@ -14662,6 +14823,7 @@
                 ]
             },
             "patch": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "MANAGE_CHANNELS",
                 "security": [
                     {
@@ -14790,6 +14952,7 @@
         },
         "/guilds/{guild_id}/bans/": {
             "get": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
                     {
@@ -14836,6 +14999,7 @@
         },
         "/guilds/{guild_id}/bans/{user_id}": {
             "get": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
                     {
@@ -14899,6 +15063,7 @@
                 ]
             },
             "put": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
                     {
@@ -14972,6 +15137,7 @@
                 ]
             },
             "delete": {
+                "x-right-required": "OPERATOR",
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
                     {

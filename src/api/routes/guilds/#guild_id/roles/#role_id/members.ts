@@ -16,15 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Request, Response } from "express";
-import { DiscordApiErrors, Member, partition } from "@spacebar/util";
 import { route } from "@spacebar/api";
+import { DiscordApiErrors, Member, partition } from "@spacebar/util";
+import { Request, Response, Router } from "express";
 
 const router = Router();
 
 router.patch(
 	"/",
-	route({ permission: "MANAGE_ROLES" }),
+	route({ permission: "MANAGE_ROLES", right: "OPERATOR" }),
 	async (req: Request, res: Response) => {
 		// Payload is JSON containing a list of member_ids, the new list of members to have the role
 		const { guild_id, role_id } = req.params;

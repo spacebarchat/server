@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { User } from "@spacebar/util";
+import { User, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router();
@@ -33,8 +33,15 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
+		const rights = await getRights(req.user_id);
 
-		res.json(await User.getPublicUser(id));
+		const user = await User.findOneOrFail({ where: { id } });
+
+		res.json(
+			rights.has("OPERATOR")
+				? await user.toPrivateUser()
+				: await user.toPublicUser(),
+		);
 	},
 );
 

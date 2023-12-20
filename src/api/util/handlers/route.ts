@@ -89,7 +89,7 @@ export function route(opts: RouteOptions) {
 	}
 
 	return async (req: Request, res: Response, next: NextFunction) => {
-		if (opts.permission) {
+		if (opts.permission && !opts.right) {
 			req.permission = await getPermission(
 				req.user_id,
 				req.params.guild_id,
@@ -118,6 +118,7 @@ export function route(opts: RouteOptions) {
 					opts.right as string,
 				);
 			}
+			req.has_right = true;
 		}
 
 		if (validate) {

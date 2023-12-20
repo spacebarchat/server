@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Guild, GuildDeleteEvent, emitEvent } from "@spacebar/util";
+import { Guild, GuildDeleteEvent, emitEvent, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -40,12 +40,13 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
+		const rights = await getRights(req.user_id);
 
 		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
 			select: ["owner_id"],
 		});
-		if (guild.owner_id !== req.user_id)
+		if (!rights.has("OPERATOR") || guild.owner_id !== req.user_id)
 			throw new HTTPError("You are not the owner of this guild", 401);
 
 		await Promise.all([

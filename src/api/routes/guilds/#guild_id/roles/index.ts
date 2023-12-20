@@ -49,6 +49,7 @@ router.post(
 	route({
 		requestBody: "RoleModifySchema",
 		permission: "MANAGE_ROLES",
+		right: "OPERATOR",
 		responses: {
 			200: {
 				body: "Role",
@@ -65,11 +66,14 @@ router.post(
 		const guild_id = req.params.guild_id;
 		const body = req.body as RoleModifySchema;
 
-		const role_count = await Role.count({ where: { guild_id } });
-		const { maxRoles } = Config.get().limits.guild;
+		// admins can bypass this
+		if (!req.has_right) {
+			const role_count = await Role.count({ where: { guild_id } });
+			const { maxRoles } = Config.get().limits.guild;
 
-		if (role_count > maxRoles)
-			throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
+			if (role_count > maxRoles)
+				throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
+		}
 
 		const role = Role.create({
 			// values before ...body are default and can be overriden

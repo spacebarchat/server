@@ -67,6 +67,8 @@ declare global {
 			user_bot: boolean;
 			token: { id: string; iat: number };
 			rights: Rights;
+			has_permission?: boolean;
+			has_right?: boolean;
 		}
 	}
 }

@@ -26,8 +26,64 @@ import {
 	getRights,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { HTTPError } from "lambert-server";
+import { ILike, MoreThan } from "typeorm";
 
 const router: Router = Router();
+
+router.get(
+	"/",
+	route({
+		description: "Get a list of guilds",
+		right: "OPERATOR",
+		query: {
+			limit: {
+				description:
+					"max number of guilds to return (1-1000). default 100",
+				type: "number",
+				required: false,
+			},
+			after: {
+				description: "The amount of guilds to skip",
+				type: "number",
+				required: false,
+			},
+			query: {
+				description: "The search query",
+				type: "string",
+				required: false,
+			},
+		},
+		responses: {
+			200: {
+				body: "AdminGuildsResponse",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { after, query } = req.query as {
+			after?: number;
+			query?: string;
+		};
+
+		const limit = Number(req.query.limit) || 100;
+		if (limit > 1000 || limit < 1)
+			throw new HTTPError("Limit must be between 1 and 1000");
+
+		const guilds = await Guild.find({
+			where: {
+				...(after ? { id: MoreThan(`${after}`) } : {}),
+				...(query ? { name: ILike(`%${query}%`) } : {}),
+			},
+			take: limit,
+		});
+
+		res.send(guilds);
+	},
+);
 
 //TODO: create default channel
 
@@ -35,7 +91,6 @@ router.post(
 	"/",
 	route({
 		requestBody: "GuildCreateSchema",
-		right: "CREATE_GUILDS",
 		responses: {
 			201: {
 				body: "GuildCreateResponse",
@@ -50,17 +105,31 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as GuildCreateSchema;
+		const rights = await getRights(req.user_id);
+		if (!rights.has("CREATE_GUILDS") && !rights.has("OPERATOR")) {
+			throw new HTTPError(
+				`You are missing the following rights CREATE_GUILDS or OPERATOR`,
+				403,
+			);
+		}
 
 		const { maxGuilds } = Config.get().limits.user;
 		const guild_count = await Member.count({ where: { id: req.user_id } });
-		const rights = await getRights(req.user_id);
-		if (guild_count >= maxGuilds && !rights.has("MANAGE_GUILDS")) {
+		// allow admins to bypass guild limits
+		if (guild_count >= maxGuilds && !rights.has("OPERATOR")) {
 			throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
+		}
+
+		let owner_id = req.user_id;
+
+		// only admins can do this, is ignored otherwise
+		if (body.owner_id && rights.has("OPERATOR")) {
+			owner_id = body.owner_id;
 		}
 
 		const guild = await Guild.createGuild({
 			...body,
-			owner_id: req.user_id,
+			owner_id,
 		});
 
 		const { autoJoin } = Config.get().guild;

@@ -19,7 +19,6 @@
 import { route } from "@spacebar/api";
 import {
 	Channel,
-	DiscordApiErrors,
 	Guild,
 	GuildUpdateEvent,
 	GuildUpdateSchema,
@@ -27,7 +26,6 @@ import {
 	Permissions,
 	SpacebarApiErrors,
 	emitEvent,
-	getPermission,
 	getRights,
 	handleFile,
 } from "@spacebar/util";
@@ -53,12 +51,13 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
+		const rights = await getRights(req.user_id);
 
 		const [guild, member] = await Promise.all([
 			Guild.findOneOrFail({ where: { id: guild_id } }),
 			Member.findOne({ where: { guild_id: guild_id, id: req.user_id } }),
 		]);
-		if (!member)
+		if (!rights.has("OPERATOR") || !member)
 			throw new HTTPError(
 				"You are not a member of the guild you are trying to access",
 				401,
@@ -76,6 +75,7 @@ router.patch(
 	route({
 		requestBody: "GuildUpdateSchema",
 		permission: "MANAGE_GUILD",
+		right: "OPERATOR",
 		responses: {
 			200: {
 				body: "GuildCreateResponse",
@@ -94,14 +94,6 @@ router.patch(
 	async (req: Request, res: Response) => {
 		const body = req.body as GuildUpdateSchema;
 		const { guild_id } = req.params;
-
-		const rights = await getRights(req.user_id);
-		const permission = await getPermission(req.user_id, guild_id);
-
-		if (!rights.has("MANAGE_GUILDS") && !permission.has("MANAGE_GUILD"))
-			throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(
-				"MANAGE_GUILDS",
-			);
 
 		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
