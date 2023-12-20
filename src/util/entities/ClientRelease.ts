@@ -25,17 +25,29 @@ export class Release extends BaseClass {
 	name: string;
 
 	@Column()
-	pub_date: Date;
+	version: string;
 
 	@Column()
-	url: string;
+	pub_date: Date;
+
+	@Column({ nullable: true })
+	url: string | null;
 
 	@Column()
 	platform: string;
 
 	@Column()
+	arch: string;
+
+	@Column()
 	enabled: boolean;
 
 	@Column({ nullable: true })
-	notes?: string;
+	notes: string | null;
+
+	@Column({ nullable: true })
+	signature: string | null;
+
+	@Column({ default: "stable" })
+	channel: string;
 }

@@ -17,8 +17,32 @@
 */
 
 export interface UpdatesResponse {
+	/**
+	 * Version to install.
+	 * Tauri Specific
+	 */
+	version: string;
+	/**
+	 * The latest host version.
+	 */
 	name: string;
+	/**
+	 * When the update was published
+	 */
 	pub_date: string;
-	url: string;
+	/**
+	 * The URL to the corresponding installer.
+	 * Only provided if auto updates are available for the selected platform.
+	 */
+	url: string | null;
+	/**
+	 * Any extra notes for the update
+	 * Only provided if auto updates are available for the selected platform.
+	 */
 	notes: string | null;
+	/**
+	 * The signature of the update.
+	 * Tauri Specific
+	 */
+	signature: string | null;
 }

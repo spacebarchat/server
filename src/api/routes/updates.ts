@@ -36,9 +36,26 @@ router.get(
 				body: "APIErrorResponse",
 			},
 		},
+		query: {
+			platform: {
+				type: "string",
+				required: true,
+				description: "The platform to get the manifest for",
+			},
+			arch: {
+				type: "string",
+				required: true,
+				description: "The architecture to get the manifest for",
+			},
+			channel: {
+				type: "string",
+				required: true,
+				description: "The release channel to get the manifest for",
+			},
+		},
 	}),
 	async (req: Request, res: Response) => {
-		const platform = req.query.platform;
+		const { platform, arch, channel } = req.query;
 
 		if (!platform)
 			throw FieldErrors({
@@ -52,15 +69,19 @@ router.get(
 			where: {
 				enabled: true,
 				platform: platform as string,
+				arch: arch as string,
+				channel: channel as string,
 			},
 			order: { pub_date: "DESC" },
 		});
 
 		res.json({
+			version: release.version,
 			name: release.name,
 			pub_date: release.pub_date,
 			url: release.url,
 			notes: release.notes,
+			signature: release.signature,
 		});
 	},
 );
