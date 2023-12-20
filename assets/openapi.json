@@ -1127,12 +1127,19 @@
                         "type": "boolean",
                         "default": false
                     },
+                    "channel_ordering": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
                     "id": {
                         "type": "string"
                     }
                 },
                 "required": [
                     "bans",
+                    "channel_ordering",
                     "channels",
                     "emojis",
                     "features",
@@ -1203,9 +1210,6 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     },
-                    "position": {
-                        "type": "integer"
-                    },
                     "permission_overwrites": {
                         "type": "array",
                         "items": {
@@ -1272,6 +1276,10 @@
                         "type": "integer",
                         "default": 0
                     },
+                    "position": {
+                        "description": "Must be calculated Channel.calculatePosition",
+                        "type": "integer"
+                    },
                     "id": {
                         "type": "string"
                     }
@@ -1280,11 +1288,11 @@
                     "created_at",
                     "default_thread_rate_limit_per_user",
                     "flags",
-                    "guild",
                     "id",
                     "nsfw",
                     "owner",
                     "parent_id",
+                    "position",
                     "type"
                 ]
             },
@@ -2324,7 +2332,6 @@
                     }
                 },
                 "required": [
-                    "avatar",
                     "banner",
                     "bio",
                     "communication_disabled_until",
@@ -3473,6 +3480,9 @@
                         "type": "string",
                         "format": "date-time"
                     },
+                    "avatar": {
+                        "type": "string"
+                    },
                     "username": {
                         "type": "string"
                     },
@@ -3481,9 +3491,6 @@
                     },
                     "public_flags": {
                         "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
                     },
                     "accent_color": {
                         "type": "integer"
@@ -3721,6 +3728,9 @@
                     "banner": {
                         "type": "string"
                     },
+                    "description": {
+                        "type": "string"
+                    },
                     "unavailable": {
                         "type": "boolean"
                     },
@@ -3756,9 +3766,6 @@
                     },
                     "default_message_notifications": {
                         "type": "integer"
-                    },
-                    "description": {
-                        "type": "string"
                     },
                     "discovery_splash": {
                         "type": "string"
@@ -3852,12 +3859,19 @@
                     },
                     "premium_progress_bar_enabled": {
                         "type": "boolean"
+                    },
+                    "channel_ordering": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "required": [
                     "_do_validate",
                     "assign",
                     "bans",
+                    "channel_ordering",
                     "channels",
                     "emojis",
                     "features",
@@ -5081,6 +5095,9 @@
                     "content": {
                         "type": "string"
                     },
+                    "mobile_network_type": {
+                        "type": "string"
+                    },
                     "nonce": {
                         "type": "string"
                     },
@@ -5191,6 +5208,10 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {}
                     }
                 }
             },
@@ -5218,6 +5239,9 @@
                     "content": {
                         "type": "string"
                     },
+                    "mobile_network_type": {
+                        "type": "string"
+                    },
                     "nonce": {
                         "type": "string"
                     },
@@ -5310,6 +5334,10 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {}
                     }
                 }
             },
@@ -5834,6 +5862,16 @@
             "UserSettingsSchema": {
                 "type": "object",
                 "properties": {
+                    "status": {
+                        "enum": [
+                            "dnd",
+                            "idle",
+                            "invisible",
+                            "offline",
+                            "online"
+                        ],
+                        "type": "string"
+                    },
                     "afk_timeout": {
                         "type": "integer"
                     },
@@ -5930,16 +5968,6 @@
                     },
                     "show_current_game": {
                         "type": "boolean"
-                    },
-                    "status": {
-                        "enum": [
-                            "dnd",
-                            "idle",
-                            "invisible",
-                            "offline",
-                            "online"
-                        ],
-                        "type": "string"
                     },
                     "stream_notifications_enabled": {
                         "type": "boolean"
@@ -6960,6 +6988,9 @@
                         "type": "string",
                         "format": "date-time"
                     },
+                    "avatar": {
+                        "type": "string"
+                    },
                     "verified": {
                         "type": "boolean"
                     },
@@ -6971,9 +7002,6 @@
                     },
                     "public_flags": {
                         "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
                     },
                     "accent_color": {
                         "type": "integer"
@@ -7077,6 +7105,9 @@
                         "type": "string",
                         "format": "date-time"
                     },
+                    "avatar": {
+                        "type": "string"
+                    },
                     "verified": {
                         "type": "boolean"
                     },
@@ -7088,9 +7119,6 @@
                     },
                     "public_flags": {
                         "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
                     },
                     "accent_color": {
                         "type": "integer"
@@ -7304,6 +7332,9 @@
                     },
                     "premium_since": {
                         "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
                     },
                     "user": {
                         "$ref": "#/components/schemas/PublicUser"
@@ -7533,12 +7564,19 @@
                         "type": "boolean",
                         "default": false
                     },
+                    "channel_ordering": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
                     "id": {
                         "type": "string"
                     }
                 },
                 "required": [
                     "bans",
+                    "channel_ordering",
                     "channels",
                     "emojis",
                     "features",
@@ -7737,6 +7775,9 @@
                             "premium_since": {
                                 "type": "integer"
                             },
+                            "avatar": {
+                                "type": "string"
+                            },
                             "user": {
                                 "$ref": "#/components/schemas/PublicUser"
                             },
@@ -7792,29 +7833,6 @@
                     "user_profile"
                 ]
             },
-            "UserRelationshipsResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/RelationshipType"
-                    },
-                    "nickname": {
-                        "type": "null"
-                    },
-                    "user": {
-                        "$ref": "#/components/schemas/PublicUser"
-                    }
-                },
-                "required": [
-                    "id",
-                    "nickname",
-                    "type",
-                    "user"
-                ]
-            },
             "UserRelationsResponse": {
                 "type": "array",
                 "items": {
@@ -7844,6 +7862,29 @@
                         "username"
                     ]
                 }
+            },
+            "UserRelationshipsResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RelationshipType"
+                    },
+                    "nickname": {
+                        "type": "null"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/PublicUser"
+                    }
+                },
+                "required": [
+                    "id",
+                    "nickname",
+                    "type",
+                    "user"
+                ]
             },
             "WebAuthnCreateResponse": {
                 "type": "object",
