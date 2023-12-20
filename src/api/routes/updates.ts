@@ -22,6 +22,9 @@ import { Request, Response, Router } from "express";
 
 const router = Router();
 
+const PLATFORMS = ["linux", "windows", "darwin"];
+const ARCHS = ["x86_64", "i686", "aarch64", "armv7"];
+
 router.get(
 	"/",
 	route({
@@ -55,22 +58,36 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { platform, arch, channel } = req.query;
+		const { platform, arch, channel } = req.query as Record<string, string>;
 
-		if (!platform)
+		if (PLATFORMS.indexOf(platform) == -1)
 			throw FieldErrors({
 				platform: {
-					code: "BASE_TYPE_REQUIRED",
-					message: req.t("common:field.BASE_TYPE_REQUIRED"),
+					message: `Value must be one of (${PLATFORMS.map(
+						(x) => `'${x}'`,
+					).join(", ")}).`,
+					code: "BASE_TYPE_CHOICES",
 				},
 			});
+
+		if (ARCHS.indexOf(arch) == -1)
+			throw FieldErrors({
+				arch: {
+					message: `Value must be one of (${ARCHS.map(
+						(x) => `'${x}'`,
+					).join(", ")}).`,
+					code: "BASE_TYPE_CHOICES",
+				},
+			});
+
+		// no strict validation on channel so instance owners can use custom channels easily
 
 		const release = await Release.findOneOrFail({
 			where: {
 				enabled: true,
-				platform: platform as string,
-				arch: arch as string,
-				channel: channel as string,
+				platform: platform,
+				arch: arch,
+				channel: channel,
 			},
 			order: { pub_date: "DESC" },
 		});
