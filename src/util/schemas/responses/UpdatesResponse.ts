@@ -32,9 +32,8 @@ export interface UpdatesResponse {
 	pub_date: string;
 	/**
 	 * The URL to the corresponding installer.
-	 * Only provided if auto updates are available for the selected platform.
 	 */
-	url: string | null;
+	url: string;
 	/**
 	 * Any extra notes for the update
 	 * Only provided if auto updates are available for the selected platform.

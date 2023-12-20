@@ -30,8 +30,8 @@ export class Release extends BaseClass {
 	@Column()
 	pub_date: Date;
 
-	@Column({ nullable: true })
-	url: string | null;
+	@Column()
+	url: string;
 
 	@Column()
 	platform: string;
