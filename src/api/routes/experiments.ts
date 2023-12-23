@@ -23,7 +23,6 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.get("/", route({}), (req: Request, res: Response) => {
-    // TODO:
 	const { uniqueUsernames } = Config.get().general;
 
 	const data: Experiments = {
@@ -34,8 +33,7 @@ router.get("/", route({}), (req: Request, res: Response) => {
 	// this enables the pomelo/unique usernames UI in the official clients
 	if (uniqueUsernames) {
 		// hash, revision, bucket, override, population, hash_result, as_mode
-		// bucket 4 is used by the official client, and enables live checking and suggestions, 3 is only live checking
-		data.assignments.push([2476969328, 0, 4, -1, 0, 9267, 0, 0]);
+		data.assignments.push([268309827, 0, 1, -1, 7, 8062, 0, 0]);
 	}
 	res.send(data);
 });
