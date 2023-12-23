@@ -1,12 +1,14 @@
 import { route } from "@spacebar/api";
+import { Config } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { Config } from "../../../util";
 const router = Router();
 
 router.get(
 	"/",
 	route({
+		description:
+			"Returns a suggested unique username string based on the current user's username.",
 		query: {
 			global_name: {
 				type: "string",

@@ -60,6 +60,9 @@ export type APIDMChannelArray = DmChannelDTO[];
 
 export type APIBackupCodeArray = BackupCode[];
 
+export type PrivateUserResponse = APIPrivateUser;
+export type PublicUserResponse = APIPublicUser;
+
 export interface UserUpdateResponse extends APIPrivateUser {
 	newToken?: string;
 }
