@@ -749,6 +749,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     });
 
     // TODO: ready supplemental
+	const disclosures = [];
+	// this tells the client the user can migrate
+	if (Config.get().general.uniqueUsernames) disclosures.push("pomelo");
+
     await Send(this, {
         op: OPCodes.DISPATCH,
         t: EVENTEnum.ReadySupplemental,
@@ -763,7 +767,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             lazy_private_channels: [],
             guilds: readySupplementalGuilds, // { voice_states: [], id: string, embedded_activities: [] }
             // embedded_activities are users currently in an activity?
-            disclose: [], // Config.get().general.uniqueUsernames ? ["pomelo"] : []
+			disclose: disclosures,
         },
     });
 
