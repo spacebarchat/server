@@ -29,9 +29,9 @@ router.get(
 			);
 		}
 
-		// return a random suggestion
+		// TODO: return a random suggestion
 		if (!globalName) return res.json({ username: "" });
-		// return a suggestion based on the globalName
+		// TODO: return a suggestion based on the globalName
 		return res.json({ username: globalName });
 	},
 );
