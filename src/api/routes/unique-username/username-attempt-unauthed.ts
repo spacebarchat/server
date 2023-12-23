@@ -1,5 +1,5 @@
 import { route } from "@spacebar/api";
-import { Config, User, UsernameAttemptUnauthedSchema } from "@spacebar/util";
+import { Config, UniqueUsernameAttemptSchema, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 const router = Router();
@@ -7,15 +7,16 @@ const router = Router();
 router.post(
 	"/",
 	route({
-		requestBody: "UsernameAttemptUnauthedSchema",
+		requestBody: "UniqueUsernameAttemptSchema",
 		responses: {
-			200: { body: "UsernameAttemptResponse" },
+			200: { body: "UniqueUsernameAttemptResponse" },
 			400: { body: "APIErrorResponse" },
 		},
-		description: "Check if a username is available",
+		description:
+			"Checks whether a unique username is available for the user to claim.",
 	}),
 	async (req: Request, res: Response) => {
-		const body = req.body as UsernameAttemptUnauthedSchema;
+		const body = req.body as UniqueUsernameAttemptSchema;
 		const { uniqueUsernames } = Config.get().general;
 		if (!uniqueUsernames) {
 			throw new HTTPError(
