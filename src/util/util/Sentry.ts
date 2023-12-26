@@ -16,13 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config } from "./Config";
 import { yellow } from "picocolors";
+import { Config } from "./Config";
 
-import express from "express";
-import * as SentryNode from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
 import * as Integrations from "@sentry/integrations";
+import * as SentryNode from "@sentry/node";
+import express from "express";
 
 // Work around for when bundle calls api/etc
 let errorHandlersUsed = false;
@@ -46,16 +45,28 @@ export const Sentry = {
 			);
 		}
 
+		const integrations = [
+			new SentryNode.Integrations.Http({ tracing: true }),
+			new Integrations.RewriteFrames({
+				root: __dirname,
+			}),
+			new SentryNode.Integrations.Http({
+				tracing: true,
+				breadcrumbs: true,
+			}),
+			...SentryNode.autoDiscoverNodePerformanceMonitoringIntegrations(),
+		];
+
+		if (app)
+			integrations.push(
+				new SentryNode.Integrations.Express({
+					app,
+				}),
+			);
+
 		SentryNode.init({
 			dsn: endpoint,
-			integrations: [
-				new SentryNode.Integrations.Http({ tracing: true }),
-				new Tracing.Integrations.Express({ app }),
-				new Tracing.Integrations.Mysql(),
-				new Integrations.RewriteFrames({
-					root: __dirname,
-				}),
-			],
+			integrations,
 			tracesSampleRate: traceSampleRate, // naming?
 			environment,
 		});

@@ -16,330 +16,432 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket, Payload } from "@spacebar/gateway";
 import {
-	checkToken,
+	CLOSECODES,
+	Capabilities,
+	OPCODES,
+	Payload,
+	Send,
+	WebSocket,
+	setupListener,
+} from "@spacebar/gateway";
+import {
+	Application,
+	Config,
+	DMChannel,
+	DefaultUserGuildSettings,
+	EVENTEnum,
+	Guild,
+	GuildOrUnavailable,
+	IdentifySchema,
 	Intents,
 	Member,
-	ReadyEventData,
-	User,
-	Session,
-	EVENTEnum,
-	Config,
-	PublicMember,
-	PublicUser,
-	PrivateUserProjection,
-	ReadState,
-	Application,
-	emitEvent,
-	SessionsReplace,
-	PrivateSessionProjection,
 	MemberPrivateProjection,
+	OPCodes,
+	Permissions,
 	PresenceUpdateEvent,
-	UserSettings,
-	IdentifySchema,
-	DefaultUserGuildSettings,
-	UserGuildSettings,
+	PrivateSessionProjection,
+	PrivateUserProjection,
+	PublicUser,
+	PublicUserProjection,
+	ReadState,
+	ReadyEventData,
 	ReadyGuildDTO,
-	Guild,
-	UserTokenData,
-	ConnectedAccount,
+	ReadyUserGuildSettingsEntries,
+	Recipient,
+	Session,
+	SessionsReplace,
+	UserSettings,
+	checkToken,
+	emitEvent,
+	getDatabase,
 } from "@spacebar/util";
-import { Send } from "../util/Send";
-import { CLOSECODES, OPCODES } from "../util/Constants";
-import { setupListener } from "../listener/listener";
-// import experiments from "./experiments.json";
-const experiments: unknown[] = [];
 import { check } from "./instanceOf";
-import { Recipient } from "@spacebar/util";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
-// TODO: check if already identified
 
-// TODO: Refactor identify ( and lazyrequest, tbh )
+const tryGetUserFromToken = async (...args: Parameters<typeof checkToken>) => {
+	try {
+		return (await checkToken(...args)).user;
+	} catch (e) {
+		return null;
+	}
+};
 
 export async function onIdentify(this: WebSocket, data: Payload) {
-	clearTimeout(this.readyTimeout);
-	// TODO: is this needed now that we use `json-bigint`?
-	if (typeof data.d?.client_state?.highest_last_message_id === "number")
-		data.d.client_state.highest_last_message_id += "";
-	check.call(this, IdentifySchema, data.d);
+	if (this.user_id) {
+		// we've already identified
+		return this.close(CLOSECODES.Already_authenticated);
+	}
 
+	clearTimeout(this.readyTimeout);
+
+	// Check payload matches schema
+	check.call(this, IdentifySchema, data.d);
 	const identify: IdentifySchema = data.d;
 
-	let decoded: UserTokenData["decoded"];
-	try {
-		const { jwtSecret } = Config.get().security;
-		decoded = (await checkToken(identify.token, jwtSecret)).decoded; // will throw an error if invalid
-	} catch (error) {
-		console.error("invalid token", error);
-		return this.close(CLOSECODES.Authentication_failed);
-	}
-	this.user_id = decoded.id;
-	const session_id = this.session_id;
+	this.capabilities = new Capabilities(identify.capabilities || 0);
 
-	const [
-		user,
-		read_states,
-		members,
-		recipients,
-		session,
-		application,
-		connected_accounts,
-	] = await Promise.all([
-		User.findOneOrFail({
-			where: { id: this.user_id },
-			relations: ["relationships", "relationships.to", "settings"],
-			select: [...PrivateUserProjection, "relationships"],
-		}),
-		ReadState.find({ where: { user_id: this.user_id } }),
-		Member.find({
-			where: { id: this.user_id },
-			select: MemberPrivateProjection,
-			relations: [
-				"guild",
-				"guild.channels",
-				"guild.emojis",
-				"guild.roles",
-				"guild.stickers",
-				"user",
-				"roles",
-			],
-		}),
-		Recipient.find({
-			where: { user_id: this.user_id, closed: false },
-			relations: [
-				"channel",
-				"channel.recipients",
-				"channel.recipients.user",
-			],
-			// TODO: public user selection
-		}),
-		// save the session and delete it when the websocket is closed
-		Session.create({
-			user_id: this.user_id,
-			session_id: session_id,
-			// TODO: check if status is only one of: online, dnd, offline, idle
-			status: identify.presence?.status || "offline", //does the session always start as online?
-			client_info: {
-				//TODO read from identity
-				client: "desktop",
-				os: identify.properties?.os,
-				version: 0,
-			},
-			activities: [],
-		}).save(),
-		Application.findOne({ where: { id: this.user_id } }),
-		ConnectedAccount.find({ where: { user_id: this.user_id } }),
-	]);
-
+	const user = await tryGetUserFromToken(identify.token, {
+		relations: ["relationships", "relationships.to", "settings"],
+		select: [...PrivateUserProjection, "relationships"],
+	});
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
+	this.user_id = user.id;
+
+	// Check intents
+	if (!identify.intents) identify.intents = 30064771071n; // TODO: what is this number?
+	this.intents = new Intents(identify.intents);
+
+	// TODO: actually do intent things.
+
+	// Validate sharding
+	if (identify.shard) {
+		this.shard_id = identify.shard[0];
+		this.shard_count = identify.shard[1];
+
+		if (
+			this.shard_count == null ||
+			this.shard_id == null ||
+			this.shard_id > this.shard_count ||
+			this.shard_id < 0 ||
+			this.shard_count <= 0
+		) {
+			// TODO: why do we even care about this right now?
+			console.log(
+				`[Gateway] Invalid sharding from ${user.id}: ${identify.shard}`,
+			);
+			return this.close(CLOSECODES.Invalid_shard);
+		}
+	}
+
+	// Generate a new gateway session ( id is already made, just save it in db )
+	const session = Session.create({
+		user_id: this.user_id,
+		session_id: this.session_id,
+		status: identify.presence?.status || "online",
+		client_info: {
+			client: identify.properties?.$device,
+			os: identify.properties?.os,
+			version: 0,
+		},
+		activities: identify.presence?.activities, // TODO: validation
+	});
+
+	// Get from database:
+	// * the users read states
+	// * guild members for this user
+	// * recipients ( dm channels )
+	// * the bot application, if it exists
+	const [, application, read_states, members, recipients] = await Promise.all(
+		[
+			session.save(),
+
+			Application.findOne({
+				where: { id: this.user_id },
+				select: ["id", "flags"],
+			}),
+
+			ReadState.find({
+				where: { user_id: this.user_id },
+				select: [
+					"id",
+					"channel_id",
+					"last_message_id",
+					"last_pin_timestamp",
+					"mention_count",
+				],
+			}),
+
+			Member.find({
+				where: { id: this.user_id },
+				select: {
+					// We only want some member props
+					...Object.fromEntries(
+						MemberPrivateProjection.map((x) => [x, true]),
+					),
+					settings: true, // guild settings
+					roles: { id: true }, // the full role is fetched from the `guild` relation
+
+					// TODO: we don't really need every property of
+					// guild channels, emoji, roles, stickers
+					// but we do want almost everything from guild.
+					// How do you do that without just enumerating the guild props?
+					guild: Object.fromEntries(
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						getDatabase()!
+							.getMetadata(Guild)
+							.columns.map((x) => [x.propertyName, true]),
+					),
+				},
+				relations: [
+					"guild",
+					"guild.channels",
+					"guild.emojis",
+					"guild.roles",
+					"guild.stickers",
+					"roles",
+
+					// For these entities, `user` is always just the logged in user we fetched above
+					// "user",
+				],
+			}),
+
+			Recipient.find({
+				where: { user_id: this.user_id, closed: false },
+				relations: [
+					"channel",
+					"channel.recipients",
+					"channel.recipients.user",
+				],
+				select: {
+					channel: {
+						id: true,
+						flags: true,
+						// is_spam: true,	// TODO
+						last_message_id: true,
+						last_pin_timestamp: true,
+						type: true,
+						icon: true,
+						name: true,
+						owner_id: true,
+						recipients: {
+							// we don't actually need this ID or any other information about the recipient info,
+							// but typeorm does not select anything from the users relation of recipients unless we select
+							// at least one column.
+							id: true,
+							// We only want public user data for each dm channel
+							user: Object.fromEntries(
+								PublicUserProjection.map((x) => [x, true]),
+							),
+						},
+					},
+				},
+			}),
+		],
+	);
+
+	// We forgot to migrate user settings from the JSON column of `users`
+	// to the `user_settings` table theyre in now,
+	// so for instances that migrated, users may not have a `user_settings` row.
 	if (!user.settings) {
 		user.settings = new UserSettings();
 		await user.settings.save();
 	}
 
-	if (!identify.intents) identify.intents = BigInt("0x6ffffffff");
-	this.intents = new Intents(identify.intents);
-	if (identify.shard) {
-		this.shard_id = identify.shard[0];
-		this.shard_count = identify.shard[1];
-		if (
-			this.shard_count == null ||
-			this.shard_id == null ||
-			this.shard_id >= this.shard_count ||
-			this.shard_id < 0 ||
-			this.shard_count <= 0
-		) {
-			console.log(identify.shard);
-			return this.close(CLOSECODES.Invalid_shard);
-		}
-	}
-	let users: PublicUser[] = [];
-
-	const merged_members = members.map((x: Member) => {
+	// Generate merged_members
+	const merged_members = members.map((x) => {
 		return [
 			{
 				...x,
 				roles: x.roles.map((x) => x.id),
+
+				// add back user, which we don't fetch from db
+				// TODO: For guild profiles, this may need to be changed.
+				// TODO: The only field required in the user prop is `id`,
+				// but our types are annoying so I didn't bother.
+				user: user.toPublicUser(),
+
+				guild: {
+					id: x.guild.id,
+				},
 				settings: undefined,
-				guild: undefined,
 			},
 		];
-	}) as PublicMember[][];
-	// TODO: This type is bad.
-	let guilds: Partial<Guild>[] = members.map((x) => ({
-		...x.guild,
-		joined_at: x.joined_at,
-	}));
-
-	const pending_guilds: typeof guilds = [];
-	if (user.bot)
-		guilds = guilds.map((guild) => {
-			pending_guilds.push(guild);
-			return { id: guild.id, unavailable: true };
-		});
-
-	// TODO: Rewrite this. Perhaps a DTO?
-	const user_guild_settings_entries = members.map((x) => ({
-		...DefaultUserGuildSettings,
-		...x.settings,
-		guild_id: x.guild.id,
-		channel_overrides: Object.entries(
-			x.settings.channel_overrides ?? {},
-		).map((y) => ({
-			...y[1],
-			channel_id: y[0],
-		})),
-	})) as unknown as UserGuildSettings[];
-
-	const channels = recipients.map((x) => {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		//@ts-ignore
-		x.channel.recipients = x.channel.recipients.map((x) =>
-			x.user.toPublicUser(),
-		);
-		//TODO is this needed? check if users in group dm that are not friends are sent in the READY event
-		users = users.concat(x.channel.recipients as unknown as User[]);
-		if (x.channel.isDm()) {
-			x.channel.recipients = x.channel.recipients?.filter(
-				(x) => x.id !== this.user_id,
-			);
-		}
-		return x.channel;
 	});
 
-	for (const relation of user.relationships) {
-		const related_user = relation.to;
-		const public_related_user = {
-			username: related_user.username,
-			discriminator: related_user.discriminator,
-			id: related_user.id,
-			public_flags: related_user.public_flags,
-			avatar: related_user.avatar,
-			bot: related_user.bot,
-			bio: related_user.bio,
-			premium_since: user.premium_since,
-			premium_type: user.premium_type,
-			accent_color: related_user.accent_color,
-		};
-		users.push(public_related_user);
-	}
+	// Populated with guilds 'unavailable' currently
+	// Just for bots
+	const pending_guilds: Guild[] = [];
 
-	setImmediate(async () => {
-		// run in seperate "promise context" because ready payload is not dependent on those events
+	// Generate guilds list ( make them unavailable if user is bot )
+	const guilds: GuildOrUnavailable[] = members.map((member) => {
+		// filter guild channels we don't have permission to view
+		// TODO: check if this causes issues when the user is granted other roles?
+		member.guild.channels = member.guild.channels
+			.filter((channel) => {
+				const perms = Permissions.finalPermission({
+					user: {
+						id: member.id,
+						roles: member.roles.map((x) => x.id),
+					},
+					guild: member.guild,
+					channel,
+				});
+
+				return perms.has("VIEW_CHANNEL");
+			})
+			.map((channel) => {
+				channel.position = member.guild.channel_ordering.indexOf(
+					channel.id,
+				);
+				return channel;
+			})
+			.sort((a, b) => a.position - b.position);
+
+		if (user.bot) {
+			pending_guilds.push(member.guild);
+			return { id: member.guild.id, unavailable: true };
+		}
+
+		return {
+			...member.guild.toJSON(),
+			joined_at: member.joined_at,
+
+			threads: [],
+		};
+	});
+
+	// Generate user_guild_settings
+	const user_guild_settings_entries: ReadyUserGuildSettingsEntries[] =
+		members.map((x) => ({
+			...DefaultUserGuildSettings,
+			...x.settings,
+			guild_id: x.guild_id,
+			channel_overrides: Object.entries(
+				x.settings.channel_overrides ?? {},
+			).map((y) => ({
+				...y[1],
+				channel_id: y[0],
+			})),
+		}));
+
+	// Popultaed with users from private channels, relationships.
+	// Uses a set to dedupe for us.
+	const users: Set<PublicUser> = new Set();
+
+	// Generate dm channels from recipients list. Append recipients to `users` list
+	const channels = recipients
+		.filter(({ channel }) => channel.isDm())
+		.map((r) => {
+			// TODO: fix the types of Recipient
+			// Their channels are only ever private (I think) and thus are always DM channels
+			const channel = r.channel as DMChannel;
+
+			// Remove ourself from the list of other users in dm channel
+			channel.recipients = channel.recipients.filter(
+				(recipient) => recipient.user.id !== this.user_id,
+			);
+
+			const channelUsers = channel.recipients?.map((recipient) =>
+				recipient.user.toPublicUser(),
+			);
+
+			if (channelUsers && channelUsers.length > 0)
+				channelUsers.forEach((user) => users.add(user));
+
+			return {
+				id: channel.id,
+				flags: channel.flags,
+				last_message_id: channel.last_message_id,
+				type: channel.type,
+				recipients: channelUsers || [],
+				is_spam: false, // TODO
+			};
+		});
+
+	// From user relationships ( friends ), also append to `users` list
+	user.relationships.forEach((x) => users.add(x.to.toPublicUser()));
+
+	// Send SESSIONS_REPLACE and PRESENCE_UPDATE
+	const allSessions = (
+		await Session.find({
+			where: { user_id: this.user_id },
+			select: PrivateSessionProjection,
+		})
+	).map((x) => ({
+		// TODO how is active determined?
+		// in our lazy request impl, we just pick the 'most relevant' session
+		active: x.session_id == session.session_id,
+		activities: x.activities ?? [],
+		client_info: x.client_info,
+		session_id: x.session_id, // TODO: discord.com sends 'all', what is that???
+		status: x.status,
+	}));
+
+	Promise.all([
 		emitEvent({
 			event: "SESSIONS_REPLACE",
 			user_id: this.user_id,
-			data: await Session.find({
-				where: { user_id: this.user_id },
-				select: PrivateSessionProjection,
-			}),
-		} as SessionsReplace);
+			data: allSessions,
+		} as SessionsReplace),
 		emitEvent({
 			event: "PRESENCE_UPDATE",
 			user_id: this.user_id,
 			data: {
-				user: await User.getPublicUser(this.user_id),
+				user: user.toPublicUser(),
 				activities: session.activities,
-				client_status: session?.client_info,
+				client_status: session.client_info,
 				status: session.status,
 			},
-		} as PresenceUpdateEvent);
-	});
+		} as PresenceUpdateEvent),
+	]);
 
-	read_states.forEach((s: Partial<ReadState>) => {
-		s.id = s.channel_id;
-		delete s.user_id;
-		delete s.channel_id;
-	});
+	// Build READY
 
-	const privateUser = {
-		avatar: user.avatar,
-		mobile: user.mobile,
-		desktop: user.desktop,
-		discriminator: user.discriminator,
-		email: user.email,
-		flags: user.flags,
-		id: user.id,
-		mfa_enabled: user.mfa_enabled,
-		nsfw_allowed: user.nsfw_allowed,
-		phone: user.phone,
-		premium: user.premium,
-		premium_type: user.premium_type,
-		public_flags: user.public_flags,
-		premium_usage_flags: user.premium_usage_flags,
-		purchased_flags: user.purchased_flags,
-		username: user.username,
-		verified: user.verified,
-		bot: user.bot,
-		accent_color: user.accent_color,
-		banner: user.banner,
-		bio: user.bio,
-		premium_since: user.premium_since,
-	};
+	read_states.forEach((x) => {
+		x.id = x.channel_id;
+	});
 
 	const d: ReadyEventData = {
 		v: 9,
-		application: {
-			id: application?.id ?? "",
-			flags: application?.flags ?? 0,
-		}, //TODO: check this code!
-		user: privateUser,
+		application: application
+			? { id: application.id, flags: application.flags }
+			: undefined,
+		user: user.toPrivateUser(),
 		user_settings: user.settings,
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		guilds: guilds.map((x: Guild & { joined_at: Date }) => {
-			return {
-				...new ReadyGuildDTO(x).toJSON(),
-				guild_hashes: {},
-				joined_at: x.joined_at,
-				name: x.name,
-				icon: x.icon,
-			};
-		}),
-		guild_experiments: [], // TODO
-		geo_ordered_rtc_regions: [], // TODO
+		guilds: this.capabilities.has(Capabilities.FLAGS.CLIENT_STATE_V2)
+			? guilds.map((x) => new ReadyGuildDTO(x).toJSON())
+			: guilds,
 		relationships: user.relationships.map((x) => x.toPublicRelationship()),
 		read_state: {
 			entries: read_states,
 			partial: false,
-			version: 304128,
+			version: 0, // TODO
 		},
 		user_guild_settings: {
 			entries: user_guild_settings_entries,
-			partial: false, // TODO partial
-			version: 642,
+			partial: false,
+			version: 0, // TODO
 		},
 		private_channels: channels,
-		session_id: session_id,
-		analytics_token: "", // TODO
-		connected_accounts,
-		consents: {
-			personalization: {
-				consented: false, // TODO
-			},
-		},
-		country_code: user.settings.locale,
-		friend_suggestion_count: 0, // TODO
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		experiments: experiments, // TODO
-		guild_join_requests: [], // TODO what is this?
-		users: users.filter((x) => x).unique(),
+		session_id: this.session_id,
+		country_code: user.settings.locale, // TODO: do ip analysis instead
+		users: Array.from(users),
 		merged_members: merged_members,
-		// shard // TODO: only for user sharding
-		sessions: [], // TODO:
+		sessions: allSessions,
+
+		resume_gateway_url:
+			Config.get().gateway.endpointClient ||
+			Config.get().gateway.endpointPublic ||
+			"ws://127.0.0.1:3001",
 
 		// lol hack whatever
 		required_action:
 			Config.get().login.requireVerification && !user.verified
 				? "REQUIRE_VERIFIED_EMAIL"
 				: undefined,
+
+		consents: {
+			personalization: {
+				consented: false, // TODO
+			},
+		},
+		experiments: [],
+		guild_join_requests: [],
+		connected_accounts: [],
+		guild_experiments: [],
+		geo_ordered_rtc_regions: [],
+		api_code_version: 1,
+		friend_suggestion_count: 0,
+		analytics_token: "",
+		tutorial: null,
+		session_type: "normal", // TODO
+		auth_session_id_hash: "", // TODO
 	};
 
-	// TODO: send real proper data structure
+	// Send READY
 	await Send(this, {
 		op: OPCODES.Dispatch,
 		t: EVENTEnum.Ready,
@@ -347,23 +449,41 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		d,
 	});
 
+	// If we're a bot user, send GUILD_CREATE for each unavailable guild
 	await Promise.all(
-		pending_guilds.map((guild) =>
+		pending_guilds.map((x) =>
 			Send(this, {
 				op: OPCODES.Dispatch,
 				t: EVENTEnum.GuildCreate,
 				s: this.sequence++,
-				d: guild,
-			})?.catch(console.error),
+				d: x,
+			})?.catch((e) =>
+				console.error(`[Gateway] error when sending bot guilds`, e),
+			),
 		),
 	);
 
-	//TODO send READY_SUPPLEMENTAL
+	// TODO: ready supplemental
+	await Send(this, {
+		op: OPCodes.DISPATCH,
+		t: EVENTEnum.ReadySupplemental,
+		s: this.sequence++,
+		d: {
+			merged_presences: {
+				guilds: [],
+				friends: [],
+			},
+			// these merged members seem to be all users currently in vc in your guilds
+			merged_members: [],
+			lazy_private_channels: [],
+			guilds: [], // { voice_states: [], id: string, embedded_activities: [] }
+			// embedded_activities are users currently in an activity?
+			disclose: [], // Config.get().general.uniqueUsernames ? ["pomelo"] : []
+		},
+	});
+
 	//TODO send GUILD_MEMBER_LIST_UPDATE
-	//TODO send SESSIONS_REPLACE
 	//TODO send VOICE_STATE_UPDATE to let the client know if another device is already connected to a voice channel
 
 	await setupListener.call(this);
-
-	// console.log(`${this.ipAddress} identified as ${d.user.id}`);
 }

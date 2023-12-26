@@ -20,8 +20,8 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
-import { User } from "./User";
 import { Member } from "./Member";
+import { User } from "./User";
 
 //https://gist.github.com/vassjozsef/e482c65df6ee1facaace8b3c9ff66145#file-voice_state-ex
 @Entity("voice_states")
@@ -31,7 +31,7 @@ export class VoiceState extends BaseClass {
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, {
+	@ManyToOne(() => Guild, (guild) => guild.voice_states, {
 		onDelete: "CASCADE",
 	})
 	guild?: Guild;

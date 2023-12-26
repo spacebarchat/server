@@ -109,7 +109,11 @@ router.patch(
 			await emitEvent({
 				event: "MESSAGE_UPDATE",
 				channel_id,
-				data: { ...new_message, nonce: undefined },
+				data: {
+					...new_message.toJSON(),
+					nonce: undefined,
+					member: new_message.member?.toPublicMember(),
+				},
 			} as MessageUpdateEvent),
 		]);
 
@@ -117,10 +121,11 @@ router.patch(
 
 		// TODO: a DTO?
 		return res.json({
+			...new_message.toJSON(),
 			id: new_message.id,
 			type: new_message.type,
-			content: new_message.content,
 			channel_id: new_message.channel_id,
+			member: new_message.member?.toPublicMember(),
 			author: new_message.author?.toPublicUser(),
 			attachments: new_message.attachments,
 			embeds: new_message.embeds,
@@ -128,11 +133,8 @@ router.patch(
 			mention_roles: new_message.mention_roles,
 			mention_everyone: new_message.mention_everyone,
 			pinned: new_message.pinned,
-			tts: new_message.tts,
 			timestamp: new_message.timestamp,
 			edited_timestamp: new_message.edited_timestamp,
-			flags: new_message.flags,
-			components: new_message.components,
 
 			// these are not in the Discord.com response
 			mention_channels: new_message.mention_channels,

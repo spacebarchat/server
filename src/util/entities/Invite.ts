@@ -17,10 +17,10 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { Member } from "./Member";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
+import { Member } from "./Member";
 import { User } from "./User";
 
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
@@ -45,15 +45,15 @@ export class Invite extends BaseClassWithoutId {
 	@Column()
 	created_at: Date;
 
-	@Column()
-	expires_at: Date;
+	@Column({ nullable: true })
+	expires_at?: Date;
 
 	@Column({ nullable: true })
 	@RelationId((invite: Invite) => invite.guild)
 	guild_id: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, {
+	@ManyToOne(() => Guild, (guild) => guild.invites, {
 		onDelete: "CASCADE",
 	})
 	guild: Guild;
@@ -93,6 +93,9 @@ export class Invite extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	vanity_url?: boolean;
+
+	@Column()
+	flags: number;
 
 	static async joinGuild(user_id: string, code: string) {
 		const invite = await Invite.findOneOrFail({ where: { code } });

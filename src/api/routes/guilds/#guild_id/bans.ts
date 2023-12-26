@@ -178,58 +178,6 @@ router.put(
 	},
 );
 
-router.put(
-	"/@me",
-	route({
-		requestBody: "BanCreateSchema",
-		responses: {
-			200: {
-				body: "Ban",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
-
-		const banned_user = await User.getPublicUser(req.params.user_id);
-
-		if (req.permission?.cache.guild?.owner_id === req.params.user_id)
-			throw new HTTPError(
-				"You are the guild owner, hence can't ban yourself",
-				403,
-			);
-
-		const ban = Ban.create({
-			user_id: req.params.user_id,
-			guild_id: guild_id,
-			ip: getIpAdress(req),
-			executor_id: req.params.user_id,
-			reason: req.body.reason, // || otherwise empty
-		});
-
-		await Promise.all([
-			Member.removeFromGuild(req.user_id, guild_id),
-			ban.save(),
-			emitEvent({
-				event: "GUILD_BAN_ADD",
-				data: {
-					guild_id: guild_id,
-					user: banned_user,
-				},
-				guild_id: guild_id,
-			} as GuildBanAddEvent),
-		]);
-
-		return res.json(ban);
-	},
-);
-
 router.delete(
 	"/:user_id",
 	route({
@@ -250,9 +198,6 @@ router.delete(
 		const ban = await Ban.findOneOrFail({
 			where: { guild_id: guild_id, user_id: user_id },
 		});
-
-		if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
-		// make self-bans irreversible and hide them from view to avoid victim chasing
 
 		const banned_user = await User.getPublicUser(user_id);
 

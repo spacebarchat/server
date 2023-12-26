@@ -24,7 +24,7 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { Config, GuildWelcomeScreen, handleFile, Snowflake } from "..";
+import { Config, GuildWelcomeScreen, Snowflake, handleFile } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -297,6 +297,9 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	premium_progress_bar_enabled: boolean = false;
 
+	@Column({ select: false, type: "simple-array" })
+	channel_ordering: string[];
+
 	static async createGuild(body: {
 		name?: string;
 		icon?: string | null;
@@ -321,9 +324,10 @@ export class Guild extends BaseClass {
 			verification_level: 0,
 			welcome_screen: {
 				enabled: false,
-				description: "Fill in your description",
+				description: "",
 				welcome_channels: [],
 			},
+			channel_ordering: [],
 
 			afk_timeout: Config.get().defaults.guild.afkTimeout,
 			default_message_notifications:
@@ -353,6 +357,7 @@ export class Guild extends BaseClass {
 			position: 0,
 			icon: undefined,
 			unicode_emoji: undefined,
+			flags: 0, // TODO?
 		}).save();
 
 		if (!body.channels || !body.channels.length)
@@ -375,7 +380,7 @@ export class Guild extends BaseClass {
 
 			const parent_id = ids.get(channel.parent_id);
 
-			await Channel.createChannel(
+			const saved = await Channel.createChannel(
 				{ ...channel, guild_id, id, parent_id },
 				body.owner_id,
 				{
@@ -385,8 +390,69 @@ export class Guild extends BaseClass {
 					skipEventEmit: true,
 				},
 			);
+
+			await Guild.insertChannelInOrder(
+				guild.id,
+				saved.id,
+				parent_id ?? channel.position ?? 0,
+				guild,
+			);
 		}
 
 		return guild;
+	}
+
+	/** Insert a channel into the guild ordering by parent channel id or position */
+	static async insertChannelInOrder(
+		guild_id: string,
+		channel_id: string,
+		position: number,
+		guild?: Guild,
+	): Promise<number>;
+	static async insertChannelInOrder(
+		guild_id: string,
+		channel_id: string,
+		parent_id: string,
+		guild?: Guild,
+	): Promise<number>;
+	static async insertChannelInOrder(
+		guild_id: string,
+		channel_id: string,
+		insertPoint: string | number,
+		guild?: Guild,
+	): Promise<number>;
+	static async insertChannelInOrder(
+		guild_id: string,
+		channel_id: string,
+		insertPoint: string | number,
+		guild?: Guild,
+	): Promise<number> {
+		if (!guild)
+			guild = await Guild.findOneOrFail({
+				where: { id: guild_id },
+				select: { channel_ordering: true },
+			});
+
+		let position;
+		if (typeof insertPoint == "string")
+			position = guild.channel_ordering.indexOf(insertPoint) + 1;
+		else position = insertPoint;
+
+		guild.channel_ordering.remove(channel_id);
+
+		guild.channel_ordering.splice(position, 0, channel_id);
+		await Guild.update(
+			{ id: guild_id },
+			{ channel_ordering: guild.channel_ordering },
+		);
+		return position;
+	}
+
+	toJSON(): Guild {
+		return {
+			...this,
+			unavailable: this.unavailable == false ? undefined : true,
+			channel_ordering: undefined,
+		};
 	}
 }

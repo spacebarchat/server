@@ -31,7 +31,6 @@ import {
 	RegisterSchema,
 	User,
 	ValidRegistrationToken,
-	adjustEmail,
 	generateToken,
 } from "@spacebar/util";
 import bcrypt from "bcrypt";
@@ -76,9 +75,6 @@ router.post(
 				);
 			}
 		}
-
-		// email will be slightly modified version of the user supplied email -> e.g. protection against GMail Trick
-		const email = adjustEmail(body.email);
 
 		// check if registration is allowed
 		if (!regTokenUsed && !register.allowNewRegistration) {
@@ -161,6 +157,7 @@ router.post(
 
 		// TODO: gift_code_sku_id?
 
+		const email = body.email;
 		if (email) {
 			// replace all dots and chars after +, if its a gmail.com email
 			if (!email) {

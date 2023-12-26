@@ -17,9 +17,9 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { User } from "./User";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
+import { User } from "./User";
 
 export enum StickerType {
 	STANDARD = 1,
@@ -62,7 +62,7 @@ export class Sticker extends BaseClass {
 	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, {
+	@ManyToOne(() => Guild, (guild) => guild.stickers, {
 		onDelete: "CASCADE",
 	})
 	guild?: Guild;

@@ -18,14 +18,13 @@
 
 import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
 import {
-	adjustEmail,
 	Config,
 	FieldErrors,
-	generateToken,
-	generateWebAuthnTicket,
 	LoginSchema,
 	User,
 	WebAuthn,
+	generateToken,
+	generateWebAuthnTicket,
 } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -50,7 +49,6 @@ router.post(
 	async (req: Request, res: Response) => {
 		const { login, password, captcha_key, undelete } =
 			req.body as LoginSchema;
-		const email = adjustEmail(login);
 
 		const config = Config.get();
 
@@ -76,7 +74,7 @@ router.post(
 		}
 
 		const user = await User.findOneOrFail({
-			where: [{ phone: login }, { email: email }],
+			where: [{ phone: login }, { email: login }],
 			select: [
 				"data",
 				"id",
@@ -95,6 +93,10 @@ router.post(
 					message: req.t("auth:login.INVALID_LOGIN"),
 					code: "INVALID_LOGIN",
 				},
+				password: {
+					message: req.t("auth:login.INVALID_LOGIN"),
+					code: "INVALID_LOGIN",
+				},
 			});
 		});
 
@@ -105,9 +107,13 @@ router.post(
 		);
 		if (!same_password) {
 			throw FieldErrors({
+				login: {
+					message: req.t("auth:login.INVALID_LOGIN"),
+					code: "INVALID_LOGIN",
+				},
 				password: {
-					message: req.t("auth:login.INVALID_PASSWORD"),
-					code: "INVALID_PASSWORD",
+					message: req.t("auth:login.INVALID_LOGIN"),
+					code: "INVALID_LOGIN",
 				},
 			});
 		}

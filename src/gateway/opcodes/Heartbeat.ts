@@ -25,5 +25,5 @@ export async function onHeartbeat(this: WebSocket) {
 
 	setHeartbeat(this);
 
-	await Send(this, { op: 11 });
+	await Send(this, { op: 11, d: {} });
 }

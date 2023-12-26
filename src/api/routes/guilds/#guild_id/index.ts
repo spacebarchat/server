@@ -18,11 +18,13 @@
 
 import { route } from "@spacebar/api";
 import {
+	Channel,
 	DiscordApiErrors,
 	Guild,
 	GuildUpdateEvent,
 	GuildUpdateSchema,
 	Member,
+	Permissions,
 	SpacebarApiErrors,
 	emitEvent,
 	getPermission,
@@ -158,10 +160,76 @@ router.patch(
 		// TODO: check if body ids are valid
 		guild.assign(body);
 
+		if (body.public_updates_channel_id == "1") {
+			// create an updates channel for them
+			const channel = await Channel.createChannel(
+				{
+					name: "moderator-only",
+					guild_id: guild.id,
+					position: 0,
+					type: 0,
+					permission_overwrites: [
+						// remove SEND_MESSAGES from @everyone
+						{
+							id: guild.id,
+							allow: "0",
+							deny: Permissions.FLAGS.VIEW_CHANNEL.toString(),
+							type: 0,
+						},
+					],
+				},
+				undefined,
+				{ skipPermissionCheck: true },
+			);
+
+			await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
+
+			guild.public_updates_channel_id = channel.id;
+		} else if (body.public_updates_channel_id != undefined) {
+			// ensure channel exists in this guild
+			await Channel.findOneOrFail({
+				where: { guild_id, id: body.public_updates_channel_id },
+				select: { id: true },
+			});
+		}
+
+		if (body.rules_channel_id == "1") {
+			// create a rules for them
+			const channel = await Channel.createChannel(
+				{
+					name: "rules",
+					guild_id: guild.id,
+					position: 0,
+					type: 0,
+					permission_overwrites: [
+						// remove SEND_MESSAGES from @everyone
+						{
+							id: guild.id,
+							allow: "0",
+							deny: Permissions.FLAGS.SEND_MESSAGES.toString(),
+							type: 0,
+						},
+					],
+				},
+				undefined,
+				{ skipPermissionCheck: true },
+			);
+
+			await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
+
+			guild.rules_channel_id = channel.id;
+		} else if (body.rules_channel_id != undefined) {
+			// ensure channel exists in this guild
+			await Channel.findOneOrFail({
+				where: { guild_id, id: body.rules_channel_id },
+				select: { id: true },
+			});
+		}
+
 		const data = guild.toJSON();
 		// TODO: guild hashes
 		// TODO: fix vanity_url_code, template_id
-		delete data.vanity_url_code;
+		// delete data.vanity_url_code;
 		delete data.template_id;
 
 		await Promise.all([

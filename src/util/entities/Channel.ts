@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { HTTPError } from "lambert-server";
 import {
 	Column,
 	Entity,
@@ -24,26 +25,25 @@ import {
 	OneToMany,
 	RelationId,
 } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
-import { PublicUserProjection, User } from "./User";
-import { HTTPError } from "lambert-server";
+import { DmChannelDTO } from "../dtos";
+import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import {
+	InvisibleCharacters,
+	Snowflake,
 	containsAll,
 	emitEvent,
 	getPermission,
-	Snowflake,
 	trimSpecial,
-	InvisibleCharacters,
 } from "../util";
-import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
-import { Recipient } from "./Recipient";
+import { BaseClass } from "./BaseClass";
+import { Guild } from "./Guild";
+import { Invite } from "./Invite";
 import { Message } from "./Message";
 import { ReadState } from "./ReadState";
-import { Invite } from "./Invite";
+import { Recipient } from "./Recipient";
+import { PublicUserProjection, User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
-import { DmChannelDTO } from "../dtos";
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a guild
@@ -97,10 +97,11 @@ export class Channel extends BaseClass {
 	guild_id?: string;
 
 	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, {
+	@ManyToOne(() => Guild, (guild) => guild.channels, {
 		onDelete: "CASCADE",
+		nullable: true,
 	})
-	guild: Guild;
+	guild?: Guild;
 
 	@Column({ nullable: true })
 	@RelationId((channel: Channel) => channel.parent)
@@ -124,9 +125,6 @@ export class Channel extends BaseClass {
 
 	@Column({ nullable: true })
 	default_auto_archive_duration?: number;
-
-	@Column({ nullable: true })
-	position?: number;
 
 	@Column({ type: "simple-json", nullable: true })
 	permission_overwrites?: ChannelPermissionOverwrite[];
@@ -192,6 +190,9 @@ export class Channel extends BaseClass {
 	@Column()
 	default_thread_rate_limit_per_user: number = 0;
 
+	/** Must be calculated Channel.calculatePosition */
+	position: number;
+
 	// TODO: DM channel
 	static async createChannel(
 		channel: Partial<Channel>,
@@ -210,10 +211,16 @@ export class Channel extends BaseClass {
 			permissions.hasThrow("MANAGE_CHANNELS");
 		}
 
+		const guild = await Guild.findOneOrFail({
+			where: { id: channel.guild_id },
+			select: {
+				features: !opts?.skipNameChecks,
+				channel_ordering: true,
+				id: true,
+			},
+		});
+
 		if (!opts?.skipNameChecks) {
-			const guild = await Guild.findOneOrFail({
-				where: { id: channel.guild_id },
-			});
 			if (
 				!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") &&
 				channel.name
@@ -292,18 +299,21 @@ export class Channel extends BaseClass {
 		if (!channel.permission_overwrites) channel.permission_overwrites = [];
 		// TODO: eagerly auto generate position of all guild channels
 
+		const position =
+			(channel.type === ChannelType.UNHANDLED ? 0 : channel.position) ||
+			0;
+
 		channel = {
 			...channel,
 			...(!opts?.keepId && { id: Snowflake.generate() }),
 			created_at: new Date(),
-			position:
-				(channel.type === ChannelType.UNHANDLED
-					? 0
-					: channel.position) || 0,
+			position,
 		};
 
+		const ret = Channel.create(channel);
+
 		await Promise.all([
-			Channel.create(channel).save(),
+			ret.save(),
 			!opts?.skipEventEmit
 				? emitEvent({
 						event: "CHANNEL_CREATE",
@@ -311,9 +321,10 @@ export class Channel extends BaseClass {
 						guild_id: channel.guild_id,
 				  } as ChannelCreateEvent)
 				: Promise.resolve(),
+			Guild.insertChannelInOrder(guild.id, ret.id, position, guild),
 		]);
 
-		return channel;
+		return ret;
 	}
 
 	static async createDMChannel(
@@ -453,6 +464,40 @@ export class Channel extends BaseClass {
 		await Channel.delete({ id: channel.id });
 	}
 
+	static async calculatePosition(
+		channel_id: string,
+		guild_id: string,
+		guild?: Guild,
+	) {
+		if (!guild)
+			guild = await Guild.findOneOrFail({
+				where: { id: guild_id },
+				select: { channel_ordering: true },
+			});
+
+		return guild.channel_ordering.findIndex((id) => channel_id == id);
+	}
+
+	static async getOrderedChannels(guild_id: string, guild?: Guild) {
+		if (!guild)
+			guild = await Guild.findOneOrFail({
+				where: { id: guild_id },
+				select: { channel_ordering: true },
+			});
+
+		const channels = await Promise.all(
+			guild.channel_ordering.map((id) =>
+				Channel.findOneOrFail({ where: { id } }),
+			),
+		);
+
+		return channels.reduce((r, v) => {
+			v.position = (guild as Guild).channel_ordering.indexOf(v.id);
+			r[v.position] = v;
+			return r;
+		}, [] as Array<Channel>);
+	}
+
 	isDm() {
 		return (
 			this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM
@@ -467,6 +512,18 @@ export class Channel extends BaseClass {
 			ChannelType.VOICELESS_WHITEBOARD,
 		];
 		return disallowedChannelTypes.indexOf(this.type) == -1;
+	}
+
+	toJSON() {
+		return {
+			...this,
+
+			// these fields are not returned depending on the type of channel
+			bitrate: this.bitrate || undefined,
+			user_limit: this.user_limit || undefined,
+			rate_limit_per_user: this.rate_limit_per_user || undefined,
+			owner_id: this.owner_id || undefined,
+		};
 	}
 }
 
@@ -483,10 +540,15 @@ export enum ChannelPermissionOverwriteType {
 	group = 2,
 }
 
+export interface DMChannel extends Omit<Channel, "type" | "recipients"> {
+	type: ChannelType.DM | ChannelType.GROUP_DM;
+	recipients: Recipient[];
+}
+
+// TODO: probably more props
 export function isTextChannel(type: ChannelType): boolean {
 	switch (type) {
 		case ChannelType.GUILD_STORE:
-		case ChannelType.GUILD_VOICE:
 		case ChannelType.GUILD_STAGE_VOICE:
 		case ChannelType.GUILD_CATEGORY:
 		case ChannelType.GUILD_FORUM:
@@ -495,6 +557,7 @@ export function isTextChannel(type: ChannelType): boolean {
 		case ChannelType.DM:
 		case ChannelType.GROUP_DM:
 		case ChannelType.GUILD_NEWS:
+		case ChannelType.GUILD_VOICE:
 		case ChannelType.GUILD_NEWS_THREAD:
 		case ChannelType.GUILD_PUBLIC_THREAD:
 		case ChannelType.GUILD_PRIVATE_THREAD:

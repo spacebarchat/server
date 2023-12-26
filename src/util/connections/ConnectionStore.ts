@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import Connection from "./Connection";
-import RefreshableConnection from "./RefreshableConnection";
+import { Connection } from "./Connection";
+import { RefreshableConnection } from "./RefreshableConnection";
 
 export class ConnectionStore {
 	public static connections: Map<string, Connection | RefreshableConnection> =

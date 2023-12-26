@@ -93,9 +93,26 @@ router.get("/:role_id", async (req: Request, res: Response) => {
 router.get("/:role_id/:hash", async (req: Request, res: Response) => {
 	const { role_id, hash } = req.params;
 	//hash = hash.split(".")[0]; // remove .file extension
-	const path = `role-icons/${role_id}/${hash}`;
+	const requested_extension = hash.split(".")[1];
+	const role_icon_hash = hash.split(".")[0];
+	let file: Buffer | null = null;
 
-	const file = await storage.get(path);
+	const extensions_to_try = [
+		requested_extension,
+		"png",
+		"jpg",
+		"jpeg",
+		"webp",
+		"svg",
+	];
+
+	for (let i = 0; i < extensions_to_try.length; i++) {
+		file = await storage.get(
+			`role-icons/${role_id}/${role_icon_hash}.${extensions_to_try[i]}`,
+		);
+		if (file) break;
+	}
+
 	if (!file) throw new HTTPError("not found", 404);
 	const type = await FileType.fromBuffer(file);
 

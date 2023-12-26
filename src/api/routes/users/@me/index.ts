@@ -18,7 +18,6 @@
 
 import { route } from "@spacebar/api";
 import {
-	adjustEmail,
 	Config,
 	emitEvent,
 	FieldErrors,
@@ -111,7 +110,6 @@ router.patch(
 		}
 
 		if (body.email) {
-			body.email = adjustEmail(body.email);
 			if (!body.email && Config.get().register.email.required)
 				throw FieldErrors({
 					email: {

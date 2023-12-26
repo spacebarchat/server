@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Connection } from "@spacebar/util";
 import fs from "fs";
 import path from "path";
-import Connection from "./Connection";
 import { ConnectionConfig } from "./ConnectionConfig";
 import { ConnectionStore } from "./ConnectionStore";
 
@@ -48,8 +48,7 @@ export class ConnectionLoader {
 		});
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	public static getConnectionConfig(id: string, defaults?: any): any {
+	public static getConnectionConfig<T>(id: string, defaults?: unknown): T {
 		let cfg = ConnectionConfig.get()[id];
 		if (defaults) {
 			if (cfg) cfg = Object.assign({}, defaults, cfg);
@@ -70,8 +69,7 @@ export class ConnectionLoader {
 
 	public static async setConnectionConfig(
 		id: string,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		config: Partial<any>,
+		config: Partial<unknown>,
 	): Promise<void> {
 		if (!config)
 			console.warn(`[Connections/WARN] ${id} tried to set config=null!`);

@@ -22,6 +22,7 @@ import {
 	Guild,
 	Invite,
 	InviteCreateEvent,
+	InviteCreateSchema,
 	PublicInviteRelation,
 	User,
 	emitEvent,
@@ -50,6 +51,7 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		const { user_id } = req;
+		const body = req.body as InviteCreateSchema;
 		const { channel_id } = req.params;
 		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
@@ -62,22 +64,27 @@ router.post(
 		}
 		const { guild_id } = channel;
 
-		const expires_at = new Date(req.body.max_age * 1000 + Date.now());
+		const expires_at =
+			body.max_age == 0 || body.max_age == undefined
+				? undefined
+				: new Date(body.max_age * 1000 + Date.now());
 
 		const invite = await Invite.create({
 			code: random(),
-			temporary: req.body.temporary || true,
+			temporary: body.temporary || true,
 			uses: 0,
-			max_uses: req.body.max_uses,
-			max_age: req.body.max_age,
+			max_uses: body.max_uses ? Math.max(0, body.max_uses) : 0,
+			max_age: body.max_age ? Math.max(0, body.max_age) : 0,
 			expires_at,
 			created_at: new Date(),
 			guild_id,
 			channel_id: channel_id,
 			inviter_id: user_id,
+			flags: body.flags ?? 0,
 		}).save();
+
 		const data = invite.toJSON();
-		data.inviter = await User.getPublicUser(req.user_id);
+		data.inviter = (await User.getPublicUser(req.user_id)).toPublicUser();
 		data.guild = await Guild.findOne({ where: { id: guild_id } });
 		data.channel = channel;
 
@@ -86,6 +93,7 @@ router.post(
 			data,
 			guild_id,
 		} as InviteCreateEvent);
+
 		res.status(201).send(data);
 	},
 );

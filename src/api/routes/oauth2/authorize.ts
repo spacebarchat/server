@@ -22,6 +22,7 @@ import {
 	Application,
 	ApplicationAuthorizeSchema,
 	DiscordApiErrors,
+	FieldErrors,
 	Member,
 	Permissions,
 	User,
@@ -35,6 +36,11 @@ const router = Router();
 router.get(
 	"/",
 	route({
+		query: {
+			client_id: {
+				type: "string",
+			},
+		},
 		responses: {
 			// TODO: I really didn't feel like typing all of it out
 			200: {},
@@ -49,6 +55,14 @@ router.get(
 	async (req: Request, res: Response) => {
 		// const { client_id, scope, response_type, redirect_url } = req.query;
 		const { client_id } = req.query;
+		if (!client_id) {
+			throw FieldErrors({
+				client_id: {
+					code: "BASE_TYPE_REQUIRED",
+					message: req.t("common:field.BASE_TYPE_REQUIRED"),
+				},
+			});
+		}
 
 		const app = await Application.findOne({
 			where: {
@@ -183,6 +197,16 @@ router.post(
 		// const { client_id, scope, response_type, redirect_url } = req.query;
 		const { client_id } = req.query;
 
+		if (!client_id) {
+			throw FieldErrors({
+				client_id: {
+					code: "BASE_TYPE_REQUIRED",
+					message: req.t("common:field.BASE_TYPE_REQUIRED"),
+				},
+			});
+		}
+
+		// TODO: ensure guild_id is not an empty string
 		// TODO: captcha verification
 		// TODO: MFA verification
 

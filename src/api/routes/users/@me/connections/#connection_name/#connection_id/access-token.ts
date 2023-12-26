@@ -23,9 +23,9 @@ import {
 	ConnectionStore,
 	DiscordApiErrors,
 	FieldErrors,
+	RefreshableConnection,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import RefreshableConnection from "../../../../../../../util/connections/RefreshableConnection";
 const router = Router();
 
 // TODO: this route is only used for spotify, twitch, and youtube. (battlenet seems to be able to PUT, maybe others also)

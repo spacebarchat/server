@@ -26,10 +26,11 @@ type Attachment = {
 export interface MessageCreateSchema {
 	type?: number;
 	content?: string;
+	mobile_network_type?: string;
 	nonce?: string;
 	channel_id?: string;
 	tts?: boolean;
-	flags?: string;
+	flags?: number;
 	embeds?: Embed[];
 	embed?: Embed;
 	// TODO: ^ embed is deprecated in favor of embeds (https://discord.com/developers/docs/resources/channel#message-object)
@@ -53,4 +54,6 @@ export interface MessageCreateSchema {
 	**/
 	attachments?: Attachment[];
 	sticker_ids?: string[];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	components?: any[];
 }

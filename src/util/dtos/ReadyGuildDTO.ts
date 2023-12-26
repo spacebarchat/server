@@ -18,12 +18,44 @@
 
 import {
 	Channel,
+	ChannelOverride,
+	ChannelType,
 	Emoji,
 	Guild,
-	PublicMember,
+	PublicUser,
 	Role,
 	Sticker,
+	UserGuildSettings,
+	PublicMember,
 } from "../entities";
+
+// TODO: this is not the best place for this type
+export type ReadyUserGuildSettingsEntries = Omit<
+	UserGuildSettings,
+	"channel_overrides"
+> & {
+	channel_overrides: (ChannelOverride & { channel_id: string })[];
+};
+
+// TODO: probably should move somewhere else
+export interface ReadyPrivateChannel {
+	id: string;
+	flags: number;
+	is_spam: boolean;
+	last_message_id?: string;
+	recipients: PublicUser[];
+	type: ChannelType.DM | ChannelType.GROUP_DM;
+}
+
+export type GuildOrUnavailable =
+	| { id: string; unavailable: boolean }
+	| (Guild & { joined_at?: Date; unavailable: undefined });
+
+const guildIsAvailable = (
+	guild: GuildOrUnavailable,
+): guild is Guild & { joined_at: Date; unavailable: false } => {
+	return guild.unavailable != true;
+};
 
 export interface IReadyGuildDTO {
 	application_command_counts?: { 1: number; 2: number; 3: number }; // ????????????
@@ -65,12 +97,21 @@ export interface IReadyGuildDTO {
 		max_members: number | undefined;
 		nsfw_level: number | undefined;
 		hub_type?: unknown | null; // ????
+
+		home_header: null; // TODO
+		latest_onboarding_question_id: null; // TODO
+		safety_alerts_channel_id: null; // TODO
+		max_stage_video_channel_users: 50; // TODO
+		nsfw: boolean;
+		id: string;
 	};
 	roles: Role[];
 	stage_instances: unknown[];
 	stickers: Sticker[];
 	threads: unknown[];
 	version: string;
+	guild_hashes: unknown;
+	unavailable: boolean;
 }
 
 export class ReadyGuildDTO implements IReadyGuildDTO {
@@ -113,14 +154,30 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 		max_members: number | undefined;
 		nsfw_level: number | undefined;
 		hub_type?: unknown | null; // ????
+
+		home_header: null; // TODO
+		latest_onboarding_question_id: null; // TODO
+		safety_alerts_channel_id: null; // TODO
+		max_stage_video_channel_users: 50; // TODO
+		nsfw: boolean;
+		id: string;
 	};
 	roles: Role[];
 	stage_instances: unknown[];
 	stickers: Sticker[];
 	threads: unknown[];
 	version: string;
+	guild_hashes: unknown;
+	unavailable: boolean;
+	joined_at: Date;
 
-	constructor(guild: Guild) {
+	constructor(guild: GuildOrUnavailable) {
+		if (!guildIsAvailable(guild)) {
+			this.id = guild.id;
+			this.unavailable = true;
+			return;
+		}
+
 		this.application_command_counts = {
 			1: 5,
 			2: 2,
@@ -164,12 +221,21 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 			max_members: guild.max_members,
 			nsfw_level: guild.nsfw_level,
 			hub_type: null,
+
+			home_header: null,
+			id: guild.id,
+			latest_onboarding_question_id: null,
+			max_stage_video_channel_users: 50, // TODO
+			nsfw: guild.nsfw,
+			safety_alerts_channel_id: null,
 		};
-		this.roles = guild.roles;
+		this.roles = guild.roles.map((x) => x.toJSON());
 		this.stage_instances = [];
 		this.stickers = guild.stickers;
 		this.threads = [];
 		this.version = "1"; // ??????
+		this.guild_hashes = {};
+		this.joined_at = guild.joined_at;
 	}
 
 	toJSON() {
