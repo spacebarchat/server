@@ -63,12 +63,11 @@ function calculateEntropy(str: string) {
     if (p > 0) entropy -= p * Math.log2(p);
   }
 
-	  // Normalize the entropy to the range [0, 1]
-    const MAX_ENTROPY_PER_CHAR = Math.log2(95);  // Maximum entropy per character for all printable ASCII characters
-    const MAX_ENTROPY = MAX_ENTROPY_PER_CHAR * length;  // Maximum possible entropy for the password
-    entropy = entropy / MAX_ENTROPY;
+	// Normalize the entropy to the range [0, 1]
+  const MAX_ENTROPY_PER_CHAR = Math.log2(95);  // Maximum entropy per character for all printable ASCII characters
+  const MAX_ENTROPY = MAX_ENTROPY_PER_CHAR * length;  // Maximum possible entropy for the password
+  entropy = entropy / MAX_ENTROPY;
 
-    
   // Return the calculated entropy
 	return entropy;
 }
