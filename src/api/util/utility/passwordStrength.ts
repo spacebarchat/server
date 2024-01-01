@@ -37,8 +37,40 @@ const reSYMBOLS = /[^a-zA-Z0-9\s]/g;
  */
 
 function calculateEntropy(str: string) {
-	// TODO: calculate the shannon entropy
-	return 0;
+	// Initialize entropy to 0
+	let entropy = 0;
+
+	// Initialize a frequency array with 256 elements all set to 0
+	// This array will hold the frequency of each character in the string
+	const frequency = new Array(256).fill(0);
+
+	// Get the length of the string
+	const length = str.length;
+
+  // Iterate over each character in the string
+	for (let i = 0; i < length; i++) {
+		// Increment the frequency of the current character
+		frequency[str.charCodeAt(i)]++;
+	}
+  
+	// Iterate over each possible character
+  for (let i = 0; i < 256; i++) {
+  	// Calculate the probability of the current character
+  	const p = frequency[i] / length;
+
+    // If the character appears in the string (probability > 0)
+    // add its contribution to the entropy
+    if (p > 0) entropy -= p * Math.log2(p);
+  }
+
+	  // Normalize the entropy to the range [0, 1]
+    const MAX_ENTROPY_PER_CHAR = Math.log2(95);  // Maximum entropy per character for all printable ASCII characters
+    const MAX_ENTROPY = MAX_ENTROPY_PER_CHAR * length;  // Maximum possible entropy for the password
+    entropy = entropy / MAX_ENTROPY;
+
+    
+  // Return the calculated entropy
+	return entropy;
 }
 
 export function checkPassword(password: string): number {
@@ -69,23 +101,11 @@ export function checkPassword(password: string): number {
 		}
 	}
 
-	/*
-   * this seems to be broken
-   *
-	const entropyMap: { [key: string]: number } = {};
-	for (let i = 0; i < password.length; i++) {
-		if (entropyMap[password[i]]) entropyMap[password[i]]++;
-		else entropyMap[password[i]] = 1;
-	}
-
-	const entropies = Object.values(entropyMap);
-
-	entropies.map((x) => x / entropyMap.length);
-	strength +=
-		entropies.reduceRight((a: number, x: number) => a - x * Math.log2(x)) /
-		Math.log2(password.length);
-  */
-
 	strength += calculateEntropy(password);
+	// Strength should between 0 and 1??? (am I wrong?)
+  // Normalize the strength score to the range [0, 1]
+  const MAX_STRENGTH = 2.0;  // Maximum possible strength score
+  strength = strength / MAX_STRENGTH;
+
 	return strength;
 }
