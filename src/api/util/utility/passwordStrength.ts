@@ -101,10 +101,5 @@ export function checkPassword(password: string): number {
 	}
 
 	strength += calculateEntropy(password);
-	// Strength should between 0 and 1??? (am I wrong?)
-	// Normalize the strength score to the range [0, 1]
-	const MAX_STRENGTH = 2.0; // Maximum possible strength score
-	strength = strength / MAX_STRENGTH;
-
 	return strength;
 }
