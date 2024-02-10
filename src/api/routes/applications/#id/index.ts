@@ -21,7 +21,7 @@ import {
 	Application,
 	ApplicationModifySchema,
 	DiscordApiErrors,
-	handleFile
+	handleFile,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -87,10 +87,10 @@ router.patch(
 		if (body.icon) {
 			body.icon = await handleFile(
 				`/app-icons/${app.id}`,
-				body.icon as string
+				body.icon as string,
 			);
 		}
-		
+
 		if (app.bot) {
 			app.bot.assign({ bio: body.description });
 			await app.bot.save();
