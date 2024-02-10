@@ -84,7 +84,7 @@ export class VoiceState extends BaseClass {
 	@Column({ nullable: true })
 	self_stream?: boolean;
 
-	@Column()
+	@Column({ nullable: true })
 	self_video: boolean;
 
 	@Column()
