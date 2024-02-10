@@ -195,7 +195,7 @@ router.delete(
 	async (req: Request, res: Response) => {
 		const { guild_id, user_id } = req.params;
 
-		const ban = await Ban.findOneOrFail({
+		await Ban.findOneOrFail({
 			where: { guild_id: guild_id, user_id: user_id },
 		});
 
