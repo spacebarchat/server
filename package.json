@@ -93,12 +93,10 @@
 		"morgan": "^1.10.0",
 		"multer": "^1.4.5-lts.1",
 		"murmurhash-js": "^1.0.0",
-		"mysql": "^2.18.1",
 		"node-2fa": "^2.0.3",
 		"node-fetch": "^2.6.12",
 		"node-os-utils": "^1.3.7",
 		"nodemailer": "^6.9.4",
-		"pg": "^8.11.3",
 		"picocolors": "^1.0.0",
 		"probe-image-size": "^7.2.3",
 		"proxy-agent": "^6.3.0",
@@ -118,9 +116,11 @@
 	},
 	"optionalDependencies": {
 		"erlpack": "^0.1.4",
+		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.5",
 		"nodemailer-mailjet-transport": "github:n0script22/nodemailer-mailjet-transport",
 		"nodemailer-sendgrid-transport": "github:Maria-Golomb/nodemailer-sendgrid-transport",
+		"pg": "^8.11.3",
 		"sqlite3": "^5.1.6"
 	}
 }
