@@ -18,6 +18,7 @@
 
 export class UserLimits {
 	maxGuilds: number = 1048576;
+	minUsername: number = 2;
 	maxUsername: number = 32;
 	maxFriends: number = 5000;
 }

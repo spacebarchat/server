@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: uniqueUsernames?
 export interface RelationshipPostSchema {
 	discriminator: string;
 	username: string;

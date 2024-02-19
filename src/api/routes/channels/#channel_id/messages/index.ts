@@ -171,11 +171,13 @@ router.get(
 				if ((y.user_ids || []).includes(req.user_id)) y.me = true;
 				delete y.user_ids;
 			});
+			const { uniqueUsernames } = Config.get().general;
 			if (!x.author)
 				x.author = User.create({
 					id: "4",
-					discriminator: "0000",
-					username: "Spacebar Ghost",
+					discriminator: uniqueUsernames ? "0" : "0000",
+					username: "spacebarghost",
+					global_name: "Spacebar Ghost",
 					public_flags: 0,
 				});
 			x.attachments?.forEach((y: Attachment) => {

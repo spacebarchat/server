@@ -111,6 +111,7 @@ router.get(
 			user_profile: userProfile,
 			guild_member: guild_member?.toPublicMember(),
 			guild_member_profile: guild_id && guildMemberProfile,
+			legacy_username: user.legacy_username, // part of the uniqueUsernames feature, only used for migrated accounts
 		});
 	},
 );

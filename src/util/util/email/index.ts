@@ -115,6 +115,7 @@ export const Email: {
 		const replacements = [
 			["{instanceName}", instanceName],
 			["{userUsername}", user.username],
+			["{userGlobalName}", user.global_name],
 			["{userDiscriminator}", user.discriminator],
 			["{userId}", user.id],
 			["{phoneNumber}", user.phone?.slice(-4)],

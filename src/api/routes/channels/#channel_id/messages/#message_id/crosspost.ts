@@ -43,6 +43,7 @@ router.post(
 				username: "",
 				avatar: "",
 				discriminator: "",
+				global_name: "",
 				public_flags: 64,
 			},
 			attachments: [],
