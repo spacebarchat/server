@@ -1,8 +1,10 @@
 {
   description = "Spacebar server, written in Typescript.";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+  };
 
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachSystem flake-utils.lib.allSystems (system:
@@ -16,7 +18,7 @@
           src = ./.;
           name = "spacebar-server-ts";
           nativeBuildInputs = with pkgs; [ python3 ];
-          npmDepsHash = "sha256-sjKGxaSPm/Uzi8viOySNhEY122GUdFRGZuyyVMVqCtY=";
+          npmDepsHash = "sha256-fuW15WgfDaKPVDQx8OhRAa253J+SQDUr35rKt42KsTc=";
           makeCacheWritable = true;
           postPatch = ''
             substituteInPlace package.json --replace 'npx patch-package' '${pkgs.nodePackages.patch-package}/bin/patch-package'
