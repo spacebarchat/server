@@ -14,5 +14,5 @@ jobs:
       with:
         nix_path: nixpkgs=channel:nixos-unstable
     - uses: DeterminateSystems/magic-nix-cache-action@v2
-    - run: nix build
+    - run: nix build -L
     - run: nix develop --command echo OK
