@@ -12,13 +12,14 @@
         pkgs = import nixpkgs {
           inherit system;
         };
+        hashesFile = builtins.fromJSON (builtins.readFile ./hashes.json);
       in rec {
         packages.default = pkgs.buildNpmPackage {
           pname = "spacebar-server-ts";
           src = ./.;
           name = "spacebar-server-ts";
           nativeBuildInputs = with pkgs; [ python3 ];
-          npmDepsHash = "sha256-fuW15WgfDaKPVDQx8OhRAa253J+SQDUr35rKt42KsTc=";
+          npmDepsHash = hashesFile.npm_deps_hash;
           makeCacheWritable = true;
           postPatch = ''
             substituteInPlace package.json --replace 'npx patch-package' '${pkgs.nodePackages.patch-package}/bin/patch-package'
