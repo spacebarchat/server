@@ -1,11 +1,5 @@
 blank_issues_enabled: true
 contact_links:
-    - name: Spacebar Documentation
-      url: https://docs.spacebar.chat/
-      about: Need documentation and examples for the Spacebar? Head over to Spacebar's official documentation.
     - name: Discord's Developer Documentation
       url: https://discord.com/developers/docs/intro
-      about: Need help with the Discord resources? Head here instead of asking on Spacebar!
-    - name: Spacebar' Official Discord server
-      url: https://discord.com/invite/Ms5Ev7S6bF
-      about: Need help with the server? Talk with us in our official server.
+      about: Need help with the Discord resources? Head here instead!
