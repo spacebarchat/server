@@ -415,7 +415,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		resume_gateway_url:
 			Config.get().gateway.endpointClient ||
 			Config.get().gateway.endpointPublic ||
-			"ws://127.0.0.1:3001",
+			"wss://api.accord.ripples.lol",
 
 		// lol hack whatever
 		required_action:
