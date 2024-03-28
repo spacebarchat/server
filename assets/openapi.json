@@ -7979,6 +7979,9 @@
                 "required": [
                     "token"
                 ]
+            },
+            "WebhookGetSchema": {
+                "type": "object"
             }
         }
     },
@@ -8078,9 +8081,87 @@
         },
         {
             "name": "voice"
+        },
+        {
+            "name": "webhooks"
         }
     ],
     "paths": {
+        "/webhooks/{id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Webhook"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "id"
+                    }
+                ],
+                "tags": [
+                    "webhooks"
+                ]
+            }
+        },
+        "/webhooks/{id}/{token}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Webhook"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "id"
+                    },
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "token"
+                    }
+                ],
+                "tags": [
+                    "webhooks"
+                ]
+            }
+        },
         "/voice/regions/": {
             "get": {
                 "security": [
@@ -10230,6 +10311,15 @@
                         }
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "tags": [
                     "oauth2"
                 ]
@@ -10301,6 +10391,30 @@
                         }
                     }
                 ],
+                "tags": [
+                    "oauth2"
+                ]
+            }
+        },
+        "/oauth2/applications/@me/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    }
+                },
                 "tags": [
                     "oauth2"
                 ]
@@ -13935,71 +14049,6 @@
                 ]
             }
         },
-        "/guilds/{guild_id}/bans/@me": {
-            "put": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/BanCreateSchema"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Ban"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "guild_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "guild_id"
-                    }
-                ],
-                "tags": [
-                    "guilds"
-                ]
-            }
-        },
         "/guilds/{guild_id}/audit-logs/": {
             "get": {
                 "security": [
@@ -16348,7 +16397,7 @@
         },
         "/auth/generate-registration-tokens/": {
             "get": {
-                "x-right-required": "OPERATOR",
+                "x-right-required": "CREATE_REGISTRATION_TOKENS",
                 "security": [
                     {
                         "bearer": []
