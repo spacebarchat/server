@@ -75,7 +75,11 @@ Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 	console.log(`[Process] starting with ${cores} threads`);
 
 	if (cores === 1) {
-		require("./Server");
+		if (process.env.WEBRTC_DISABLE == "1" || process.platform == "win32") {
+			require("./WinServer");
+		} else {
+			require("./Server");
+		}
 	} else {
 		process.env.EVENT_TRANSMISSION = "process";
 
@@ -107,5 +111,9 @@ Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 		});
 	}
 } else {
-	require("./Server");
+	if (process.env.WEBRTC_DISABLE == "1" || process.platform == "win32") {
+		require("./WinServer");
+	} else {
+		require("./Server");
+	}
 }

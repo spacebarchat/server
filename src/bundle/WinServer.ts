@@ -23,7 +23,7 @@ import http from "http";
 import * as Api from "@spacebar/api";
 import * as Gateway from "@spacebar/gateway";
 import { CDNServer } from "@spacebar/cdn";
-import * as Webrtc from "@spacebar/webrtc";
+//import * as Webrtc from "@spacebar/webrtc";
 import express from "express";
 import { green, bold } from "picocolors";
 import { Config, initDatabase, Sentry } from "@spacebar/util";
@@ -37,14 +37,14 @@ server.on("request", app);
 const api = new Api.SpacebarServer({ server, port, production, app });
 const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
-const webrtc = new Webrtc.Server({ server, port, production });
+//const webrtc = new Webrtc.Server({ server, port, production });
 
 process.on("SIGTERM", async () => {
 	console.log("Shutting down due to SIGTERM");
 	await gateway.stop();
 	await cdn.stop();
 	await api.stop();
-	await webrtc.stop();
+	//	await webrtc.stop();
 	server.close();
 	Sentry.close();
 });
@@ -61,7 +61,7 @@ async function main() {
 		api.start(),
 		cdn.start(),
 		gateway.start(),
-		webrtc.start(),
+		//		webrtc.start(),
 	]);
 
 	Sentry.errorHandler(app);

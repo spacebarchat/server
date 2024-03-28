@@ -135,7 +135,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 				guild_id: voiceState.guild_id,
 				endpoint: guildRegion.endpoint,
 			},
-			guild_id: voiceState.guild_id,
+			user_id: this.user_id,
 		} as VoiceServerUpdateEvent);
 	}
 }

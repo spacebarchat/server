@@ -112,14 +112,17 @@
 		"@spacebar/api": "dist/api",
 		"@spacebar/cdn": "dist/cdn",
 		"@spacebar/gateway": "dist/gateway",
-		"@spacebar/util": "dist/util"
+		"@spacebar/util": "dist/util",
+		"@spacebar/webrtc": "dist/webrtc"
 	},
 	"optionalDependencies": {
 		"erlpack": "^0.1.4",
 		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.5",
+		"medooze-media-server": "0.129.9",
 		"nodemailer-mailjet-transport": "github:n0script22/nodemailer-mailjet-transport",
 		"nodemailer-sendgrid-transport": "github:Maria-Golomb/nodemailer-sendgrid-transport",
+		"semantic-sdp": "3.26.0",
 		"pg": "^8.11.3",
 		"sqlite3": "^5.1.6"
 	}
