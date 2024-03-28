@@ -114,7 +114,10 @@ router.post(
 
 		return res.json({
 			token: await generateToken(user.id),
-			user_settings: user.settings,
+			user_settings: {
+				locale: user.settings.locale,
+				theme: user.settings.theme,
+			},
 		});
 	},
 );

@@ -18,4 +18,6 @@
 
 export class TwoFactorConfiguration {
 	generateBackupCodes: boolean = true;
+	webauthnAttestation: "none" | "indirect" | "direct" = "none";
+	webauthnTimeout: number = 60000;
 }

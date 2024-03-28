@@ -139,7 +139,9 @@ router.post(
 				ticket: ticket,
 				mfa: true,
 				sms: false, // TODO
-				token: null,
+				totp: true,
+				backup: true,
+				user_id: user.id,
 			});
 		}
 
@@ -172,7 +174,9 @@ router.post(
 				ticket: ticket,
 				mfa: true,
 				sms: false, // TODO
-				token: null,
+				totp: true,
+				backup: true,
+				user_id: user.id,
 				webauthn: challenge,
 			});
 		}
@@ -202,7 +206,13 @@ router.post(
 		// Discord header is just the user id as string, which is not possible with npm-jsonwebtoken package
 		// https://user-images.githubusercontent.com/6506416/81051916-dd8c9900-8ec2-11ea-8794-daf12d6f31f0.png
 
-		res.json({ token, settings: { ...user.settings, index: undefined } });
+		res.json({
+			token,
+			settings: {
+				locale: user.settings.locale,
+				theme: user.settings.theme,
+			},
+		});
 	},
 );
 
@@ -211,15 +221,12 @@ router.post(
  * @argument { login: "email@gmail.com", password: "cleartextpassword", undelete: false, captcha_key: null, login_source: null, gift_code_sku_id: null, }
 
  * MFA required:
- * @returns {"token": null, "mfa": true, "sms": true, "ticket": "SOME TICKET JWT TOKEN"}
-
- * WebAuthn MFA required:
- * @returns {"token": null, "mfa": true, "webauthn": true, "sms": true, "ticket": "SOME TICKET JWT TOKEN"}
+ * @returns {"mfa": true, "sms": boolean, "totp": boolean, "backup": true, "ticket": "SOME TICKET JWT TOKEN", "user_id": "USER ID", "webauthn": "WEBAUTHN DATA or null"}
 
  * Captcha required:
  * @returns {"captcha_key": ["captcha-required"], "captcha_sitekey": null, "captcha_service": "recaptcha"}
 
  * Sucess:
- * @returns {"token": "USERTOKEN", "settings": {"locale": "en", "theme": "dark"}}
+ * @returns {"token": "USERTOKEN", "user_id": "USER ID", "settings": {"locale": "en-US", "theme": "dark"}}
 
  */
