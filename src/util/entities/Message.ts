@@ -192,8 +192,8 @@ export class Message extends BaseClass {
 		party_id: string;
 	};
 
-	@Column({ nullable: true })
-	flags?: number;
+	@Column({ default: 0 })
+	flags: number;
 
 	@Column({ type: "simple-json", nullable: true })
 	message_reference?: {
