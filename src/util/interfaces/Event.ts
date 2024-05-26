@@ -129,6 +129,9 @@ export interface ReadyEventData {
 		| "REQUIRE_CAPTCHA" // TODO: allow these to be triggered
 		| "TOS_UPDATE_ACKNOWLEDGMENT"
 		| "AGREEMENTS";
+	notification_settings: {
+		flags: number;
+	};
 }
 
 export interface ReadyEvent extends Event {
