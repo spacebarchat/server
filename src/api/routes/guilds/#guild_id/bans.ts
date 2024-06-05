@@ -109,7 +109,7 @@ router.get(
 		const banInfo = {
 			user: await User.getPublicUser(ban.user_id),
 			reason: ban.reason,
-		}
+		};
 
 		return res.json(banInfo);
 	},

@@ -96,7 +96,9 @@ export function route(opts: RouteOptions) {
 				req.params.channel_id,
 			);
 
-			const requiredPerms = Array.isArray(opts.permission) ? opts.permission : [opts.permission];
+			const requiredPerms = Array.isArray(opts.permission)
+				? opts.permission
+				: [opts.permission];
 			requiredPerms.forEach((perm) => {
 				// bitfield comparison: check if user lacks certain permission
 				if (!req.permission!.has(new Permissions(perm))) {

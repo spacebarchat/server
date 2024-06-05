@@ -1003,10 +1003,7 @@ export const DiscordApiErrors = {
 		"Message was blocked by automatic moderation",
 		200000,
 	),
-	BULK_BAN_FAILED: new ApiError(
-		"Failed to ban users",
-		500000
-	),
+	BULK_BAN_FAILED: new ApiError("Failed to ban users", 500000),
 
 	//Other errors
 	UNKNOWN_VOICE_STATE: new ApiError("Unknown Voice State", 10065, 404),

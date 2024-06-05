@@ -51,10 +51,12 @@ router.post(
 		const { guild_id } = req.params;
 
 		const userIds: Array<string> = req.body.user_ids;
-		if (!userIds)
-			throw new HTTPError("The user_ids array is missing", 400);
+		if (!userIds) throw new HTTPError("The user_ids array is missing", 400);
 		if (userIds.length > 200)
-			throw new HTTPError("The user_ids array must be between 1 and 200 in length", 400);
+			throw new HTTPError(
+				"The user_ids array must be between 1 and 200 in length",
+				400,
+			);
 
 		const banned_users = [];
 		const failed_users = [];
@@ -116,8 +118,12 @@ router.post(
 			}
 		}
 
-		if (banned_users.length === 0 && failed_users.length > 0) throw DiscordApiErrors.BULK_BAN_FAILED;
-		return res.json({ banned_users: banned_users, failed_users: failed_users });
+		if (banned_users.length === 0 && failed_users.length > 0)
+			throw DiscordApiErrors.BULK_BAN_FAILED;
+		return res.json({
+			banned_users: banned_users,
+			failed_users: failed_users,
+		});
 	},
 );
 
