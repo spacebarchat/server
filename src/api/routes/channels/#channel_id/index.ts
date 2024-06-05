@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -90,6 +90,24 @@ router.delete(
 		} else if (channel.type === ChannelType.GROUP_DM) {
 			await Channel.removeRecipientFromChannel(channel, req.user_id);
 		} else {
+			if (channel.type == ChannelType.GUILD_CATEGORY) {
+				const channels = await Channel.find({
+					where: { parent_id: channel_id },
+				});
+				for await (const c of channels) {
+					c.parent_id = null;
+
+					await Promise.all([
+						c.save(),
+						emitEvent({
+							event: "CHANNEL_UPDATE",
+							data: c,
+							channel_id: c.id,
+						} as ChannelUpdateEvent),
+					]);
+				}
+			}
+
 			await Promise.all([
 				Channel.delete({ id: channel_id }),
 				emitEvent({
