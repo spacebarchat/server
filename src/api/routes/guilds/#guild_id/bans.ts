@@ -99,7 +99,7 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { guild_id, user_id } = req.params;
 
-		let ban = (await Ban.findOneOrFail({
+		const ban = (await Ban.findOneOrFail({
 			where: { guild_id: guild_id, user_id: user_id },
 		})) as BanRegistrySchema;
 
