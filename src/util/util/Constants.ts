@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -553,6 +553,8 @@ export const VerificationLevels = [
  * * LOTTIE_ANIMATION_MAXIMUM_DIMENSIONS
  * * STICKER_FRAME_RATE_TOO_SMALL_OR_TOO_LARGE
  * * STICKER_ANIMATION_DURATION_MAXIMUM
+ * * AUTOMODERATOR_BLOCK
+ * * BULK_BAN_FAILED
  * * UNKNOWN_VOICE_STATE
  * @typedef {string} APIError
  */
@@ -1000,6 +1002,10 @@ export const DiscordApiErrors = {
 	AUTOMODERATOR_BLOCK: new ApiError(
 		"Message was blocked by automatic moderation",
 		200000,
+	),
+	BULK_BAN_FAILED: new ApiError(
+		"Failed to ban users",
+		500000
 	),
 
 	//Other errors
