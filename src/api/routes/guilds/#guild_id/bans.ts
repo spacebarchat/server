@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -19,7 +19,6 @@
 import { getIpAdress, route } from "@spacebar/api";
 import {
 	Ban,
-	BanModeratorSchema,
 	BanRegistrySchema,
 	DiscordApiErrors,
 	GuildBanAddEvent,
@@ -82,7 +81,7 @@ router.get(
 );
 
 router.get(
-	"/:user",
+	"/:user_id",
 	route({
 		permission: "BAN_MEMBERS",
 		responses: {
@@ -98,23 +97,21 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
-		const user_id = req.params.ban;
+		const { guild_id, user_id } = req.params;
 
-		let ban = (await Ban.findOneOrFail({
+		const ban = (await Ban.findOneOrFail({
 			where: { guild_id: guild_id, user_id: user_id },
 		})) as BanRegistrySchema;
 
 		if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
 		// pretend self-bans don't exist to prevent victim chasing
 
-		/* Filter secret from registry. */
+		const banInfo = {
+			user: await User.getPublicUser(ban.user_id),
+			reason: ban.reason,
+		};
 
-		ban = ban as BanModeratorSchema;
-
-		delete ban.ip;
-
-		return res.json(ban);
+		return res.json(banInfo);
 	},
 );
 
@@ -151,6 +148,12 @@ router.put(
 		if (req.permission?.cache.guild?.owner_id === banned_user_id)
 			throw new HTTPError("You can't ban the owner", 400);
 
+		const existingBan = await Ban.findOne({
+			where: { guild_id: guild_id, user_id: banned_user_id },
+		});
+		// Bans on already banned users are silently ignored
+		if (existingBan) return res.status(204).send();
+
 		const banned_user = await User.getPublicUser(banned_user_id);
 
 		const ban = Ban.create({
@@ -174,7 +177,7 @@ router.put(
 			} as GuildBanAddEvent),
 		]);
 
-		return res.json(ban);
+		return res.status(204).send();
 	},
 );
 
