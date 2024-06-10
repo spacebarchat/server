@@ -18,6 +18,7 @@
 
 import {
 	IPAnalysis,
+	checkPassword,
 	getIpAdress,
 	isProxy,
 	route,
@@ -155,7 +156,6 @@ router.post(
 		}
 
 		// TODO: gift_code_sku_id?
-		// TODO: check password strength
 
 		const email = body.email;
 		if (email) {
@@ -222,16 +222,11 @@ router.post(
 		}
 
 		if (body.password) {
-			const min = register.password.minLength ?? 8;
-
-			if (body.password.length < min) {
+			if (checkPassword(body.password) < register.password.strength) {
 				throw FieldErrors({
 					password: {
-						code: "PASSWORD_REQUIREMENTS_MIN_LENGTH",
-						message: req.t(
-							"auth:register.PASSWORD_REQUIREMENTS_MIN_LENGTH",
-							{ min: min },
-						),
+						code: "PASSWORD_BAD_PASSWORD",
+						message: req.t("auth:register.PASSWORD_BAD_PASSWORD"),
 					},
 				});
 			}
