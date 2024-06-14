@@ -70,6 +70,8 @@ router.patch(
 	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as UserModifySchema;
+		const { uniqueUsernames } = Config.get().general;
+		const { minUsername, maxUsername } = Config.get().limits.user;
 
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id },
@@ -141,6 +143,47 @@ router.patch(
 		}
 
 		if (body.username) {
+			// password is required to update username
+			if (!body.password)
+				throw FieldErrors({
+					password: {
+						message: req.t("common:field.PASSWORD_DOES_NOT_MATCH"),
+						code: "PASSWORD_DOES_NOT_MATCH",
+					},
+				});
+
+			// handle username changes (pomelo)
+			if (uniqueUsernames) {
+				body.username = body.username.toLowerCase();
+				// validate username length
+				if (
+					body.username.length < minUsername ||
+					body.username.length > maxUsername
+				) {
+					throw FieldErrors({
+						username: {
+							code: "BASE_TYPE_BAD_LENGTH",
+							message: req.t(
+								"common:field.BASE_TYPE_BAD_LENGTH",
+								{ length: `${minUsername} and ${maxUsername}` },
+							),
+						},
+					});
+				}
+
+				// check if username is already taken (pomelo only)
+				if (!(await User.isUsernameAvailable(body.username)))
+					throw FieldErrors({
+						username: {
+							code: "USERNAME_ALREADY_TAKEN",
+							message: req.t(
+								"common:field.USERNAME_ALREADY_TAKEN",
+							),
+						},
+					});
+			}
+
+			// handle username changes (old username system)
 			const check_username = body?.username?.replace(/\s/g, "");
 			if (!check_username) {
 				throw FieldErrors({
@@ -151,7 +194,6 @@ router.patch(
 				});
 			}
 
-			const { maxUsername } = Config.get().limits.user;
 			if (check_username.length > maxUsername) {
 				throw FieldErrors({
 					username: {
@@ -163,6 +205,17 @@ router.patch(
 		}
 
 		if (body.discriminator) {
+			if (uniqueUsernames) {
+				throw FieldErrors({
+					username: {
+						code: "DISCRIMINATOR_UPDATE_BLOCKED",
+						message: req.t(
+							"common:field.DISCRIMINATOR_UPDATE_BLOCKED",
+						),
+					},
+				});
+			}
+
 			if (
 				await User.findOne({
 					where: {
@@ -174,7 +227,7 @@ router.patch(
 				throw FieldErrors({
 					discriminator: {
 						code: "INVALID_DISCRIMINATOR",
-						message: "This discriminator is already in use.",
+						message: req.t("common.field.INVALID_DISCRIMINATOR"),
 					},
 				});
 			}

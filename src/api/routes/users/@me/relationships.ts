@@ -114,19 +114,26 @@ router.post(
 		},
 	}),
 	async (req: Request, res: Response) => {
+		const { uniqueUsernames } = Config.get().general;
+		const where = uniqueUsernames
+			? {
+					// TODO: uniqueUsernames: should we use username or add global_name property to the request?
+					global_name: req.body.username,
+			  }
+			: {
+					discriminator: String(req.body.discriminator).padStart(
+						4,
+						"0",
+					), //Discord send the discriminator as integer, we need to add leading zeroes
+					username: req.body.username,
+			  };
 		return await updateRelationship(
 			req,
 			res,
 			await User.findOneOrFail({
 				relations: ["relationships", "relationships.to"],
 				select: userProjection,
-				where: {
-					discriminator: String(req.body.discriminator).padStart(
-						4,
-						"0",
-					), //Discord send the discriminator as integer, we need to add leading zeroes
-					username: req.body.username,
-				},
+				where,
 			}),
 			req.body.type,
 		);

@@ -37,6 +37,7 @@ import { UserSettings } from "./UserSettings";
 
 export enum PublicUserEnum {
 	username,
+	global_name,
 	discriminator,
 	id,
 	public_flags,
@@ -90,8 +91,14 @@ export class User extends BaseClass {
 	@Column()
 	username: string; // username max length 32, min 2 (should be configurable)
 
+	@Column({ nullable: true })
+	global_name?: string; // puyo: part of the uniqueUsernames feature, this is the users "nickname"
+
+	@Column({ nullable: true })
+	legacy_username?: string; // puyo: part of the uniqueUsernames feature, shows the users old username (only used for migrated accounts)
+
 	@Column()
-	discriminator: string; // opaque string: 4 digits on discord.com
+	discriminator: string; // opaque string: 4 digits on discord.com, 0 for uniqueUsernames
 
 	@Column({ nullable: true })
 	avatar?: string; // hash of the user avatar
@@ -233,7 +240,7 @@ export class User extends BaseClass {
 
 	// TODO: I don't like this method?
 	validate() {
-		if (this.discriminator) {
+		if (this.discriminator && this.discriminator !== "0") {
 			const discrim = Number(this.discriminator);
 			if (
 				isNaN(discrim) ||
@@ -323,12 +330,21 @@ export class User extends BaseClass {
 		}
 	}
 
+	public get tag(): string {
+		const { uniqueUsernames } = Config.get().general;
+
+		return uniqueUsernames
+			? this.username
+			: `${this.username}#${this.discriminator}`;
+	}
+
 	static async register({
 		email,
 		username,
 		password,
 		id,
 		req,
+		global_name,
 	}: {
 		username: string;
 		password?: string;
@@ -336,20 +352,57 @@ export class User extends BaseClass {
 		date_of_birth?: Date; // "2000-04-03"
 		id?: string;
 		req?: Request;
+		global_name?: string;
 	}) {
+		const { uniqueUsernames } = Config.get().general;
+		const { minUsername, maxUsername } = Config.get().limits.user;
+
 		// trim special uf8 control characters -> Backspace, Newline, ...
 		username = trimSpecial(username);
 
-		const discriminator = await User.generateDiscriminator(username);
-		if (!discriminator) {
-			// We've failed to generate a valid and unused discriminator
-			throw FieldErrors({
-				username: {
-					code: "USERNAME_TOO_MANY_USERS",
-					message:
-						req?.t("auth:register.USERNAME_TOO_MANY_USERS") || "",
-				},
-			});
+		let discriminator: string | undefined;
+		if (uniqueUsernames) discriminator = "0";
+		else {
+			discriminator = await User.generateDiscriminator(username);
+			if (!discriminator) {
+				// We've failed to generate a valid and unused discriminator
+				throw FieldErrors({
+					username: {
+						code: "USERNAME_TOO_MANY_USERS",
+						message:
+							req?.t("auth:register.USERNAME_TOO_MANY_USERS") ||
+							"",
+					},
+				});
+			}
+		}
+
+		if (uniqueUsernames) {
+			// check if there is already an account with this username
+			if (!(await User.isUsernameAvailable(username)))
+				throw FieldErrors({
+					username: {
+						code: "USERNAME_ALREADY_TAKEN",
+						message:
+							req?.t("common:field.USERNAME_ALREADY_TAKEN") || "",
+					},
+				});
+
+			// validate username length
+			if (
+				username.length < minUsername ||
+				username.length > maxUsername
+			) {
+				throw FieldErrors({
+					username: {
+						code: "BASE_TYPE_BAD_LENGTH",
+						message:
+							req?.t("common:field.BASE_TYPE_BAD_LENGTH", {
+								length: `${minUsername} and ${maxUsername}`,
+							}) || "",
+					},
+				});
+			}
 		}
 
 		// TODO: save date_of_birth
@@ -363,7 +416,8 @@ export class User extends BaseClass {
 		});
 
 		const user = User.create({
-			username: username,
+			username: uniqueUsernames ? username.toLowerCase() : username,
+			global_name: uniqueUsernames ? global_name : undefined,
 			discriminator,
 			id: id || Snowflake.generate(),
 			email: email,
@@ -373,7 +427,6 @@ export class User extends BaseClass {
 			},
 			extended_settings: "{}",
 			settings: settings,
-
 			premium_since: Config.get().defaults.user.premium
 				? new Date()
 				: undefined,
@@ -391,7 +444,7 @@ export class User extends BaseClass {
 		if (!Config.get().defaults.user.verified && email) {
 			await Email.sendVerifyEmail(user, email).catch((e) => {
 				console.error(
-					`Failed to send verification email to ${user.username}#${user.discriminator}: ${e}`,
+					`Failed to send verification email to ${user.tag}: ${e}`,
 				);
 			});
 		}
@@ -407,6 +460,17 @@ export class User extends BaseClass {
 		});
 
 		return user;
+	}
+
+	static async isUsernameAvailable(username: string) {
+		// TODO: implement regex check?
+		const count = await User.count({
+			where: {
+				username: username.toLowerCase(),
+			},
+		});
+
+		return count === 0;
 	}
 }
 

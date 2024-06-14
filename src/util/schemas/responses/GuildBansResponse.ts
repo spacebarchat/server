@@ -21,6 +21,7 @@ export interface GuildBansResponse {
 	user: {
 		username: string;
 		discriminator: string;
+		global_name?: string;
 		id: string;
 		avatar: string | null;
 		public_flags: number;

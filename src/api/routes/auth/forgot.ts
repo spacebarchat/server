@@ -111,7 +111,7 @@ router.post(
 			})
 			.catch((e) => {
 				console.error(
-					`Failed to send password reset email to ${user.username}#${user.discriminator}: ${e}`,
+					`Failed to send password reset email to ${user.tag}: ${e}`,
 				);
 				throw new HTTPError("Failed to send password reset email", 500);
 			});

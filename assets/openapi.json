@@ -1359,6 +1359,12 @@
                     "username": {
                         "type": "string"
                     },
+                    "global_name": {
+                        "type": "string"
+                    },
+                    "legacy_username": {
+                        "type": "string"
+                    },
                     "discriminator": {
                         "type": "string"
                     },
@@ -1524,6 +1530,9 @@
                             "$ref": "#/components/schemas/SecurityKey"
                         }
                     },
+                    "tag": {
+                        "type": "string"
+                    },
                     "id": {
                         "type": "string"
                     }
@@ -1557,6 +1566,7 @@
                     "sessions",
                     "settings",
                     "system",
+                    "tag",
                     "username",
                     "verified",
                     "webauthn_enabled"
@@ -3487,6 +3497,9 @@
                     "username": {
                         "type": "string"
                     },
+                    "global_name": {
+                        "type": "string"
+                    },
                     "discriminator": {
                         "type": "string"
                     },
@@ -3947,25 +3960,31 @@
             "MinimalPublicUserDTO": {
                 "type": "object",
                 "properties": {
-                    "avatar": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "global_name": {
                         "type": "string",
+                        "default": null,
                         "nullable": true
                     },
                     "discriminator": {
                         "type": "string"
                     },
-                    "id": {
-                        "type": "string"
-                    },
                     "public_flags": {
                         "type": "integer"
                     },
-                    "username": {
-                        "type": "string"
+                    "avatar": {
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "required": [
                     "discriminator",
+                    "global_name",
                     "id",
                     "public_flags",
                     "username"
@@ -4028,6 +4047,10 @@
                         "type": "integer",
                         "default": 1048576
                     },
+                    "minUsername": {
+                        "type": "integer",
+                        "default": 2
+                    },
                     "maxUsername": {
                         "type": "integer",
                         "default": 32
@@ -4040,7 +4063,8 @@
                 "required": [
                     "maxFriends",
                     "maxGuilds",
-                    "maxUsername"
+                    "maxUsername",
+                    "minUsername"
                 ]
             },
             "GuildLimits": {
@@ -5706,6 +5730,17 @@
                     "ticket"
                 ]
             },
+            "UniqueUsernameAttemptSchema": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "username"
+                ]
+            },
             "UserDeleteSchema": {
                 "type": "object",
                 "properties": {
@@ -5813,6 +5848,9 @@
                     "discriminator": {
                         "minLength": 4,
                         "maxLength": 4,
+                        "type": "string"
+                    },
+                    "global_name": {
                         "type": "string"
                     }
                 }
@@ -6356,6 +6394,9 @@
                             "discriminator": {
                                 "type": "string"
                             },
+                            "global_name": {
+                                "type": "string"
+                            },
                             "id": {
                                 "type": "string"
                             },
@@ -6616,6 +6657,12 @@
                                 "username": {
                                     "type": "string"
                                 },
+                                "global_name": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                },
                                 "discriminator": {
                                     "type": "string"
                                 },
@@ -6637,6 +6684,7 @@
                                 "avatar",
                                 "avatar_url",
                                 "discriminator",
+                                "global_name",
                                 "id",
                                 "status",
                                 "username"
@@ -6998,6 +7046,9 @@
                     "username": {
                         "type": "string"
                     },
+                    "global_name": {
+                        "type": "string"
+                    },
                     "discriminator": {
                         "type": "string"
                     },
@@ -7090,6 +7141,108 @@
                     "$ref": "#/components/schemas/BackupCode"
                 }
             },
+            "PrivateUserResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "global_name": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "mfa_enabled": {
+                        "type": "boolean"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "nsfw_allowed": {
+                        "type": "boolean"
+                    },
+                    "premium": {
+                        "type": "boolean"
+                    },
+                    "purchased_flags": {
+                        "type": "integer"
+                    },
+                    "premium_usage_flags": {
+                        "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "disabled",
+                    "discriminator",
+                    "flags",
+                    "id",
+                    "mfa_enabled",
+                    "nsfw_allowed",
+                    "premium",
+                    "premium_since",
+                    "premium_type",
+                    "premium_usage_flags",
+                    "public_flags",
+                    "purchased_flags",
+                    "username",
+                    "verified"
+                ]
+            },
+            "PublicUserResponse": {
+                "$ref": "#/components/schemas/PublicUser"
+            },
             "UserUpdateResponse": {
                 "type": "object",
                 "properties": {
@@ -7113,6 +7266,9 @@
                         "type": "boolean"
                     },
                     "username": {
+                        "type": "string"
+                    },
+                    "global_name": {
                         "type": "string"
                     },
                     "discriminator": {
@@ -7274,6 +7430,10 @@
                     "autoCreateBotUsers": {
                         "type": "boolean",
                         "default": false
+                    },
+                    "uniqueUsernames": {
+                        "type": "boolean",
+                        "default": false
                     }
                 },
                 "required": [
@@ -7285,7 +7445,8 @@
                     "instanceDescription",
                     "instanceId",
                     "instanceName",
-                    "tosPage"
+                    "tosPage",
+                    "uniqueUsernames"
                 ]
             },
             "APIChannelArray": {
@@ -7846,6 +8007,9 @@
                         "username": {
                             "type": "string"
                         },
+                        "global_name": {
+                            "type": "string"
+                        },
                         "discriminator": {
                             "type": "string"
                         },
@@ -7966,6 +8130,17 @@
                     "days"
                 ]
             },
+            "UniqueUsernameAttemptResponse": {
+                "type": "object",
+                "properties": {
+                    "taken": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "taken"
+                ]
+            },
             "VerifyEmailSchema": {
                 "type": "object",
                 "properties": {
@@ -8070,6 +8245,9 @@
         },
         {
             "name": "track"
+        },
+        {
+            "name": "unique-username"
         },
         {
             "name": "updates"
@@ -8370,6 +8548,121 @@
                         "description": "id"
                     }
                 ],
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/@me/pomelo/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Claims a unique username for the user. Returns the updated user object on success. Fires a User Update Gateway event.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UniqueUsernameAttemptSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PrivateUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/@me/pomelo-suggestions/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Returns a suggested unique username string based on the current user's username.",
+                "responses": {
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/@me/pomelo-attempt/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Checks whether a unique username is available for the user to claim.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UniqueUsernameAttemptSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UniqueUsernameAttemptResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -9713,6 +10006,76 @@
                 },
                 "tags": [
                     "updates"
+                ]
+            }
+        },
+        "/unique-username/username-suggestions-unauthed/": {
+            "get": {
+                "description": "Returns a suggested unique username string based on the current user's username.",
+                "responses": {
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "global_name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "unique-username"
+                ]
+            }
+        },
+        "/unique-username/username-attempt-unauthed/": {
+            "post": {
+                "description": "Checks whether a unique username is available for the user to claim.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UniqueUsernameAttemptSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UniqueUsernameAttemptResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "unique-username"
                 ]
             }
         },
