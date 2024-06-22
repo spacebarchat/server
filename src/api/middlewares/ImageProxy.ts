@@ -148,9 +148,9 @@ export async function ImageProxy(req: Request, res: Response) {
 		} else if (Jimp && jimpSupported.has(contentType)) {
 			resultBuffer = await Jimp.read(buffer).then((image) => {
 				contentType = image.getMIME();
-				// @ts-expect-error Jimp is defined at this point
 				return image
 					.scaleToFit(width, height)
+					// @ts-expect-error Jimp is defined at this point
 					.getBufferAsync(Jimp.AUTO);
 			});
 		}
