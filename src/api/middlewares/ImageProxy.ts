@@ -1,19 +1,19 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+        Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+        Copyright (C) 2023 Spacebar and Spacebar Contributors
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU Affero General Public License as published
+        by the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU Affero General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { Config } from "@spacebar/util";
@@ -58,7 +58,8 @@ export async function ImageProxy(req: Request, res: Response) {
 		.replace(/\//g, "_");
 
 	try {
-		if (!crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(path[0]))) throw new Error("Invalid signature");
+		if (!crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(path[0])))
+			throw new Error("Invalid signature");
 	} catch {
 		console.log("Invalid signature, expected " + hash + " got " + path[0]);
 		res.status(403).send("Invalid signature");
@@ -80,18 +81,30 @@ export async function ImageProxy(req: Request, res: Response) {
 	if (!request) return;
 
 	if (request.status !== 200) {
-		res.status(request.status).send("Origin failed to respond: " + request.status + " " + request.statusText);
+		res.status(request.status).send(
+			"Origin failed to respond: " +
+				request.status +
+				" " +
+				request.statusText,
+		);
 		return;
 	}
 
-	if (!request.headers.get("Content-Type") || !request.headers.get("Content-Length")) {
-		res.status(500).send("Origin did not provide a Content-Type or Content-Length header");
+	if (
+		!request.headers.get("Content-Type") ||
+		!request.headers.get("Content-Length")
+	) {
+		res.status(500).send(
+			"Origin did not provide a Content-Type or Content-Length header",
+		);
 		return;
 	}
 
 	// @ts-expect-error TS doesn't believe that the header cannot be null (it's checked for falsiness above)
 	if (parseInt(request.headers.get("Content-Length")) > 1024 * 1024 * 10) {
-		res.status(500).send("Origin provided a Content-Length header that is too large");
+		res.status(500).send(
+			"Origin provided a Content-Length header that is too large",
+		);
 		return;
 	}
 
@@ -115,7 +128,11 @@ export async function ImageProxy(req: Request, res: Response) {
 				Jimp = await import("jimp");
 			} catch {
 				Jimp = false;
-				console.log(`[ImageProxy] ${yellow("Neither \"sharp\" or \"jimp\" NPM packages are installed, image resizing will be disabled")}`);
+				console.log(
+					`[ImageProxy] ${yellow(
+						'Neither "sharp" or "jimp" NPM packages are installed, image resizing will be disabled',
+					)}`,
+				);
 			}
 		}
 
@@ -123,7 +140,8 @@ export async function ImageProxy(req: Request, res: Response) {
 
 		const buffer = Buffer.from(arrayBuffer);
 		if (sharp && sharpSupported.has(contentType)) {
-			resultBuffer = await sharp.default(buffer)
+			resultBuffer = await sharp
+				.default(buffer)
 				// Sharp doesn't support "scaleToFit"
 				.resize(width)
 				.toBuffer();
@@ -131,13 +149,15 @@ export async function ImageProxy(req: Request, res: Response) {
 			resultBuffer = await Jimp.read(buffer).then((image) => {
 				contentType = image.getMIME();
 				// @ts-expect-error Jimp is defined at this point
-				return image.scaleToFit(width, height).getBufferAsync(Jimp.AUTO);
+				return image
+					.scaleToFit(width, height)
+					.getBufferAsync(Jimp.AUTO);
 			});
 		}
 	}
 
 	res.header("Content-Type", contentType);
-	res.setHeader("Cache-Control", "public, max-age=" + (1000 * 60 * 60 * 24));
+	res.setHeader("Cache-Control", "public, max-age=" + 1000 * 60 * 60 * 24);
 
 	res.send(resultBuffer);
 }
