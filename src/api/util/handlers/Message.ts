@@ -51,7 +51,7 @@ const allow_empty = false;
 // TODO: embed gifs/videos/images
 
 const LINK_REGEX =
-	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
+	/<?https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)>?/g;
 
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	const channel = await Channel.findOneOrFail({
@@ -213,6 +213,9 @@ export async function postHandleMessage(message: Message) {
 	const cachePromises = [];
 
 	for (const link of links) {
+		// Don't embed links in <>
+		if (link.startsWith("<") && link.endsWith(">")) continue;
+
 		const url = new URL(link);
 
 		const cached = await EmbedCache.findOne({ where: { url: link } });
