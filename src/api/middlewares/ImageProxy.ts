@@ -47,11 +47,9 @@ const resizeSupported = new Set([...sharpSupported, ...jimpSupported]);
 export async function ImageProxy(req: Request, res: Response) {
 	const path = req.originalUrl.split("/").slice(2);
 
-	const secret = Config.get().security.requestSignature;
-
 	// src/api/util/utility/EmbedHandlers.ts getProxyUrl
 	const hash = crypto
-		.createHmac("sha1", secret)
+		.createHmac("sha1", Config.get().security.requestSignature)
 		.update(path.slice(1).join("/"))
 		.digest("base64")
 		.replace(/\+/g, "-")
@@ -159,7 +157,10 @@ export async function ImageProxy(req: Request, res: Response) {
 	}
 
 	res.header("Content-Type", contentType);
-	res.setHeader("Cache-Control", "public, max-age=" + 1000 * 60 * 60 * 24);
+	res.setHeader(
+		"Cache-Control",
+		"public, max-age=" + Config.get().cdn.proxyCacheHeaderSeconds,
+	);
 
 	res.send(resultBuffer);
 }
