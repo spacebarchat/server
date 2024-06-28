@@ -16,14 +16,22 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config } from "@spacebar/util";
+import { Config, JimpType } from "@spacebar/util";
 import { Request, Response } from "express";
 import { yellow } from "picocolors";
 import crypto from "crypto";
 import fetch from "node-fetch";
 
 let sharp: undefined | false | { default: typeof import("sharp") } = undefined;
-let Jimp: undefined | false | typeof import("jimp") = undefined;
+
+let Jimp: JimpType | undefined = undefined;
+try {
+    Jimp = require("jimp") as JimpType;
+} catch {
+	// empty
+}
+
+let sentImageProxyWarning = false;
 
 const sharpSupported = new Set([
 	"image/jpeg",
@@ -112,20 +120,21 @@ export async function ImageProxy(req: Request, res: Response) {
 	const arrayBuffer = await request.arrayBuffer();
 	let resultBuffer = Buffer.from(arrayBuffer);
 
-	if (/^\d+x\d+$/.test(path[1]) && resizeSupported.has(contentType)) {
+	if (!sentImageProxyWarning && resizeSupported.has(contentType) && /^\d+x\d+$/.test(path[1])) {
 		if (sharp !== false) {
 			try {
 				sharp = await import("sharp");
-			} catch (e) {
+			} catch {
 				sharp = false;
 			}
 		}
-		if (sharp === false && Jimp !== false) {
+
+		if (sharp === false && !Jimp) {
 			try {
 				// @ts-expect-error Typings don't fit
 				Jimp = await import("jimp");
 			} catch {
-				Jimp = false;
+				sentImageProxyWarning = true;
 				console.log(
 					`[ImageProxy] ${yellow(
 						'Neither "sharp" or "jimp" NPM packages are installed, image resizing will be disabled',
