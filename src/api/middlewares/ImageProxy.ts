@@ -135,7 +135,8 @@ export async function ImageProxy(req: Request, res: Response) {
 
 		if (sharp === false && !Jimp) {
 			try {
-				// @ts-expect-error Typings don't fit
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore Typings don't fit
 				Jimp = await import("jimp");
 			} catch {
 				sentImageProxyWarning = true;
