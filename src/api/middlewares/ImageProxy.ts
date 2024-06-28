@@ -26,7 +26,7 @@ let sharp: undefined | false | { default: typeof import("sharp") } = undefined;
 
 let Jimp: JimpType | undefined = undefined;
 try {
-    Jimp = require("jimp") as JimpType;
+	Jimp = require("jimp") as JimpType;
 } catch {
 	// empty
 }
@@ -120,7 +120,11 @@ export async function ImageProxy(req: Request, res: Response) {
 	const arrayBuffer = await request.arrayBuffer();
 	let resultBuffer = Buffer.from(arrayBuffer);
 
-	if (!sentImageProxyWarning && resizeSupported.has(contentType) && /^\d+x\d+$/.test(path[1])) {
+	if (
+		!sentImageProxyWarning &&
+		resizeSupported.has(contentType) &&
+		/^\d+x\d+$/.test(path[1])
+	) {
 		if (sharp !== false) {
 			try {
 				sharp = await import("sharp");
