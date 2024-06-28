@@ -3,7 +3,7 @@
 nix flake update
 DEPS_HASH=`prefetch-npm-deps package-lock.json`
 TMPFILE=$(mktemp)
-jq '.npm_deps_hash = "'$DEPS_HASH'"' hashes.json > $TMPFILE
+jq '.npmDepsHash = "'$DEPS_HASH'"' hashes.json > $TMPFILE
 mv -- "$TMPFILE" hashes.json
 
 nom build .# || exit $?
