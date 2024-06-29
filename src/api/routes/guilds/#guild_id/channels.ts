@@ -48,6 +48,7 @@ router.get(
 				channel.guild,
 			);
 		}
+		channels.sort((a, b) => a.position - b.position);
 
 		res.json(channels);
 	},
