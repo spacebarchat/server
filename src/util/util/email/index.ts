@@ -187,7 +187,9 @@ export const Email: {
 
 		const message = {
 			from:
-				Config.get().general.correspondenceEmail || "noreply@localhost",
+				Config.get().email.senderAddress ||
+				Config.get().general.correspondenceEmail ||
+				"noreply@localhost",
 			to: email,
 			subject,
 			html,

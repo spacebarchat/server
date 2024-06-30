@@ -122,7 +122,6 @@ export class UserSettings extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	view_nsfw_guilds: boolean = true;
-
 }
 
 interface CustomStatus {
