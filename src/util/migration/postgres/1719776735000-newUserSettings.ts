@@ -8,7 +8,7 @@ export class NewUserSettings1719776735000 implements MigrationInterface {
 			"ALTER TABLE user_settings ADD COLUMN friend_discovery_flags integer DEFAULT 0;",
 		);
 		await queryRunner.query(
-			"ALTER TABLE user_settings ADD COLUMN view_nsfw_guilds tinyint DEFAULT 1;",
+			"ALTER TABLE user_settings ADD COLUMN view_nsfw_guilds boolean DEFAULT true;",
 		);
 	}
 
