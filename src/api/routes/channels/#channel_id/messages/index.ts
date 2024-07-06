@@ -187,7 +187,7 @@ router.get(
 				let pathname = new URL(uri).pathname;
 				while (
 					pathname.split("/")[0] != "attachments" &&
-					pathname.length > 10
+					pathname.length > 30
 				) {
 					pathname = pathname.split("/").slice(1).join("/");
 				}
