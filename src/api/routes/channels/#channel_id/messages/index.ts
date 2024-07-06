@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -183,9 +183,17 @@ router.get(
 				const uri = y.proxy_url.startsWith("http")
 					? y.proxy_url
 					: `https://example.org${y.proxy_url}`;
-				y.proxy_url = `${endpoint == null ? "" : endpoint}${
-					new URL(uri).pathname
-				}`;
+
+				let pathname = new URL(uri).pathname;
+				while (
+					pathname.split("/")[0] != "attachments" &&
+					pathname.length > 10
+				) {
+					pathname = pathname.split("/").slice(1).join("/");
+				}
+				if (!endpoint?.endsWith("/")) pathname = "/" + pathname;
+
+				y.proxy_url = `${endpoint == null ? "" : endpoint}${pathname}`;
 			});
 
 			/**
