@@ -139,7 +139,9 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		!opts.content &&
 		!opts.embeds?.length &&
 		!opts.attachments?.length &&
-		!opts.sticker_ids?.length
+		!opts.sticker_ids?.length &&
+		!opts.poll &&
+		!opts.components?.length
 	) {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
