@@ -219,7 +219,7 @@ export class Message extends BaseClass {
 	components?: MessageComponent[];
 
 	@Column({ type: "simple-json", nullable: true })
-	poll?: Poll[];
+	poll?: Poll;
 
 	toJSON(): Message {
 		return {
