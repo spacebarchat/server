@@ -1,76 +1,87 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+		<title>Verify {instanceName} Login from New Location</title>
 
-<head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
-	<title>Verify {instanceName} Login from New Location</title>
+		<style>
+			* {
+				font-size: 16px;
+				line-height: 24px;
+				font-family: Arial, Helvetica, sans-serif;
+			}
 
-	<style>
-		* {
-			font-size: 16px;
-			line-height: 24px;
-			font-family: Arial, Helvetica, sans-serif;
-		}
+			p {
+				color: white;
+			}
 
-		p {
-			color: white;
-		}
+			.ExternalClass {
+				width: 100%;
+			}
+		</style>
+	</head>
 
-		.ExternalClass {
-			width: 100%;
-		}
-	</style>
-</head>
-
-<body>
-	<div style="background-color: #202225;">
-		<img src="https://raw.githubusercontent.com/spacebarchat/spacebarchat/master/branding/svg/Spacebar__Logo-Blue.svg"
-			alt="Branding" style="
+	<body>
+		<div style="background-color: #202225">
+			<img
+				src="https://raw.githubusercontent.com/spacebarchat/spacebarchat/master/branding/svg/Spacebar__Logo-Blue.svg"
+				alt="Branding"
+				style="
 					width: 100%;
 					max-width: 200px;
 					margin: 0 auto;
 					display: block;
 					padding: 20px;
-				" />
-		<div style="
+				"
+			/>
+			<div
+				style="
 					width: 100%;
 					max-width: 500px;
 					margin: 0 auto;
 					padding: 40px 50px;
 					background-color: #32353b;
 					border-radius: 5px;
-				">
-			<p style="
+				"
+			>
+				<p
+					style="
 						font-weight: 600;
 						font-size: 20px;
 						letter-spacing: 0.27px;
 						line-height: 24px;
-					">
-				Hey {userUsername},
-			</p>
-			<p>
-				It looks like someone tried to log into your {instanceName}
-				account from a new location. If this is you, follow the link
-				below to authorize logging in from this location on your
-				account. If this isn't you, we suggest changing your
-				password as soon as possible.
-			</p>
-			<p>
-				<strong>IP Address:</strong> {ipAddress}
-				<br />
-				<strong>Location:</strong> {locationCity}, {locationRegion},
-				{locationCountryName}
-			</p>
-			<div>
-				<div style="
+					"
+				>
+					Hey {userUsername},
+				</p>
+				<p>
+					It looks like someone tried to log into your {instanceName}
+					account from a new location. If this is you, follow the link
+					below to authorize logging in from this location on your
+					account. If this isn't you, we suggest changing your
+					password as soon as possible.
+				</p>
+				<p>
+					<strong>IP Address:</strong> {ipAddress}
+					<br />
+					<strong>Location:</strong> {locationCity}, {locationRegion},
+					{locationCountryName}
+				</p>
+				<div>
+					<div
+						style="
 							text-align: center;
 							justify-content: center;
 							padding-bottom: 10px;
-						">
-					<a href="{actionUrl}" target="_blank" style="
+						"
+					>
+						<a
+							href="{actionUrl}"
+							target="_blank"
+							style="
 								font-size: 15px;
 								border: none;
 								text-decoration: none;
@@ -79,23 +90,31 @@
 								padding: 15px 19px;
 								background-color: #0185ff;
 								border-radius: 5px;
-							">Verify Login</a>
-				</div>
-				<hr />
-				<div style="
+							"
+							>Verify Login</a
+						>
+					</div>
+					<hr />
+					<div
+						style="
 							text-align: center;
 							justify-content: center;
 							padding-bottom: 10px;
-						">
-					<p>
-						Alternatively, you can directly paste this link into
-						your browser:
-					</p>
-					<a href="{actionUrl}" target="_blank" style="word-wrap: break-word;">{actionUrl}</a>
+						"
+					>
+						<p>
+							Alternatively, you can directly paste this link into
+							your browser:
+						</p>
+						<a
+							href="{actionUrl}"
+							target="_blank"
+							style="word-wrap: break-word"
+							>{actionUrl}</a
+						>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</body>
-
+	</body>
 </html>
