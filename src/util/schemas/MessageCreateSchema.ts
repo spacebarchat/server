@@ -56,7 +56,7 @@ export interface MessageCreateSchema {
 	sticker_ids?: string[];
 	components?: MessageComponent[];
 	// TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
-	//poll?: PollCreationSchema;
+	poll?: PollCreationSchema;
 	enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here
 	applied_tags?: string[]; // Not implemented yet, for webhooks in forums
 	thread_name?: string; // Not implemented yet, for webhooks

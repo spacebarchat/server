@@ -16,36 +16,36 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import * as Sentry from "@sentry/node";
+import { EmbedHandlers } from "@spacebar/api";
 import {
+	Application,
+	Attachment,
 	Channel,
+	Config,
 	Embed,
+	EmbedCache,
 	emitEvent,
-	Guild,
-	Message,
-	MessageCreateEvent,
-	MessageUpdateEvent,
+	EVERYONE_MENTION,
 	getPermission,
 	getRights,
+	Guild,
+	HERE_MENTION,
+	Message,
+	MessageCreateEvent,
+	MessageCreateSchema,
+	MessageType,
+	MessageUpdateEvent,
+	Role,
+	ROLE_MENTION,
+	Sticker,
+	User,
 	//CHANNEL_MENTION,
 	USER_MENTION,
-	ROLE_MENTION,
-	Role,
-	EVERYONE_MENTION,
-	HERE_MENTION,
-	MessageType,
-	User,
-	Application,
 	Webhook,
-	Attachment,
-	Config,
-	Sticker,
-	MessageCreateSchema,
-	EmbedCache,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
-import { EmbedHandlers } from "@spacebar/api";
-import * as Sentry from "@sentry/node";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
@@ -66,6 +66,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		: undefined;
 	const message = Message.create({
 		...opts,
+		poll: opts.poll ? [opts.poll] : undefined,
 		sticker_items: stickers,
 		guild_id: channel.guild_id,
 		channel_id: opts.channel_id,
