@@ -734,6 +734,114 @@
                     }
                 }
             },
+            "MessageComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "integer"
+                    },
+                    "style": {
+                        "type": "integer"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "emoji": {
+                        "$ref": "#/components/schemas/PartialEmoji"
+                    },
+                    "custom_id": {
+                        "type": "string"
+                    },
+                    "sku_id": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MessageComponent"
+                        }
+                    }
+                },
+                "required": [
+                    "components",
+                    "type"
+                ]
+            },
+            "PartialEmoji": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "animated": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "PollCreationSchema": {
+                "type": "object",
+                "properties": {
+                    "question": {
+                        "$ref": "#/components/schemas/PollMedia"
+                    },
+                    "answers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PollAnswer"
+                        }
+                    },
+                    "duration": {
+                        "type": "integer"
+                    },
+                    "allow_multiselect": {
+                        "type": "boolean"
+                    },
+                    "layout_type": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "answers",
+                    "question"
+                ]
+            },
+            "PollMedia": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string"
+                    },
+                    "emoji": {
+                        "$ref": "#/components/schemas/PartialEmoji"
+                    }
+                }
+            },
+            "PollAnswer": {
+                "type": "object",
+                "properties": {
+                    "answer_id": {
+                        "type": "string"
+                    },
+                    "poll_media": {
+                        "$ref": "#/components/schemas/PollMedia"
+                    }
+                },
+                "required": [
+                    "poll_media"
+                ]
+            },
             "ChannelOverride": {
                 "type": "object",
                 "properties": {
@@ -1193,7 +1301,8 @@
                         "$ref": "#/components/schemas/Guild"
                     },
                     "parent_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "parent": {
                         "$ref": "#/components/schemas/Channel"
@@ -1802,6 +1911,10 @@
                         "type": "integer",
                         "default": 0
                     },
+                    "friend_discovery_flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
                     "friend_source_flags": {
                         "$ref": "#/components/schemas/FriendSourceFlags"
                     },
@@ -1892,6 +2005,10 @@
                     "timezone_offset": {
                         "type": "integer",
                         "default": 0
+                    },
+                    "view_nsfw_guilds": {
+                        "type": "boolean",
+                        "default": true
                     }
                 },
                 "required": [
@@ -1908,6 +2025,7 @@
                     "disable_games_tab",
                     "enable_tts_command",
                     "explicit_content_filter",
+                    "friend_discovery_flags",
                     "friend_source_flags",
                     "gateway_connected",
                     "gif_auto_play",
@@ -1926,7 +2044,8 @@
                     "status",
                     "stream_notifications_enabled",
                     "theme",
-                    "timezone_offset"
+                    "timezone_offset",
+                    "view_nsfw_guilds"
                 ]
             },
             "SecurityKey": {
@@ -2238,6 +2357,12 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/MessageComponent"
+                        }
+                    },
+                    "poll": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Poll"
                         }
                     },
                     "id": {
@@ -2963,23 +3088,6 @@
                     "user_ids"
                 ]
             },
-            "PartialEmoji": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "animated": {
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "name"
-                ]
-            },
             "MessageType": {
                 "enum": [
                     0,
@@ -3018,40 +3126,71 @@
                 ],
                 "type": "number"
             },
-            "MessageComponent": {
+            "Poll": {
                 "type": "object",
                 "properties": {
-                    "type": {
-                        "type": "integer"
+                    "question": {
+                        "$ref": "#/components/schemas/PollMedia"
                     },
-                    "style": {
-                        "type": "integer"
-                    },
-                    "label": {
-                        "type": "string"
-                    },
-                    "emoji": {
-                        "$ref": "#/components/schemas/PartialEmoji"
-                    },
-                    "custom_id": {
-                        "type": "string"
-                    },
-                    "url": {
-                        "type": "string"
-                    },
-                    "disabled": {
-                        "type": "boolean"
-                    },
-                    "components": {
+                    "answers": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/MessageComponent"
+                            "$ref": "#/components/schemas/PollAnswer"
+                        }
+                    },
+                    "expiry": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "allow_multiselect": {
+                        "type": "boolean"
+                    },
+                    "results": {
+                        "$ref": "#/components/schemas/PollResult"
+                    }
+                },
+                "required": [
+                    "allow_multiselect",
+                    "answers",
+                    "expiry",
+                    "question"
+                ]
+            },
+            "PollResult": {
+                "type": "object",
+                "properties": {
+                    "is_finalized": {
+                        "type": "boolean"
+                    },
+                    "answer_counts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PollAnswerCount"
                         }
                     }
                 },
                 "required": [
-                    "components",
-                    "type"
+                    "answer_counts",
+                    "is_finalized"
+                ]
+            },
+            "PollAnswerCount": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "count": {
+                        "type": "integer"
+                    },
+                    "me_voted": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "count",
+                    "id",
+                    "me_voted"
                 ]
             },
             "VoiceState": {
@@ -3444,7 +3583,12 @@
                     },
                     "components": {
                         "type": "array",
-                        "items": {}
+                        "items": {
+                            "$ref": "#/components/schemas/MessageComponent"
+                        }
+                    },
+                    "poll": {
+                        "$ref": "#/components/schemas/Poll"
                     },
                     "hit": {
                         "type": "boolean",
@@ -3466,6 +3610,7 @@
                     "mention_roles",
                     "mentions",
                     "pinned",
+                    "poll",
                     "timestamp",
                     "tts",
                     "type"
@@ -5212,7 +5357,27 @@
                     },
                     "components": {
                         "type": "array",
-                        "items": {}
+                        "items": {
+                            "$ref": "#/components/schemas/MessageComponent"
+                        }
+                    },
+                    "poll": {
+                        "$ref": "#/components/schemas/PollCreationSchema"
+                    },
+                    "enforce_nonce": {
+                        "type": "boolean"
+                    },
+                    "applied_tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "thread_name": {
+                        "type": "string"
+                    },
+                    "avatar_url": {
+                        "type": "string"
                     }
                 }
             },
@@ -5338,7 +5503,27 @@
                     },
                     "components": {
                         "type": "array",
-                        "items": {}
+                        "items": {
+                            "$ref": "#/components/schemas/MessageComponent"
+                        }
+                    },
+                    "poll": {
+                        "$ref": "#/components/schemas/PollCreationSchema"
+                    },
+                    "enforce_nonce": {
+                        "type": "boolean"
+                    },
+                    "applied_tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "thread_name": {
+                        "type": "string"
+                    },
+                    "avatar_url": {
+                        "type": "string"
                     }
                 }
             },
@@ -5919,6 +6104,9 @@
                     "explicit_content_filter": {
                         "type": "integer"
                     },
+                    "friend_discovery_flags": {
+                        "type": "integer"
+                    },
                     "friend_source_flags": {
                         "$ref": "#/components/schemas/FriendSourceFlags"
                     },
@@ -5982,6 +6170,9 @@
                     },
                     "timezone_offset": {
                         "type": "integer"
+                    },
+                    "view_nsfw_guilds": {
+                        "type": "boolean"
                     }
                 }
             },
@@ -7915,6 +8106,23 @@
                 "required": [
                     "hook",
                     "user"
+                ]
+            },
+            "BulkBanSchema": {
+                "type": "object",
+                "properties": {
+                    "user_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "delete_message_seconds": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "user_ids"
                 ]
             },
             "BulkDeleteSchema": {
@@ -13729,12 +13937,25 @@
         },
         "/guilds/{guild_id}/bulk-ban/": {
             "post": {
-                "x-permission-required": "BAN_MEMBERS",
+                "x-permission-required": [
+                    "BAN_MEMBERS",
+                    "MANAGE_GUILD"
+                ],
                 "security": [
                     {
                         "bearer": []
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BulkBanSchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "",

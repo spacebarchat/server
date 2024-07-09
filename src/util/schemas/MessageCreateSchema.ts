@@ -1,22 +1,22 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Embed } from "@spacebar/util";
+import { Embed, MessageComponent, PollAnswer, PollMedia } from "@spacebar/util";
 
 type Attachment = {
 	id: string;
@@ -54,6 +54,21 @@ export interface MessageCreateSchema {
 	**/
 	attachments?: Attachment[];
 	sticker_ids?: string[];
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	components?: any[];
+	components?: MessageComponent[];
+	// TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
+	poll?: PollCreationSchema;
+	enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here
+	applied_tags?: string[]; // Not implemented yet, for webhooks in forums
+	thread_name?: string; // Not implemented yet, for webhooks
+	avatar_url?: string; // Not implemented yet, for webhooks
+}
+
+// TypeScript complains once this is used above
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface PollCreationSchema {
+	question: PollMedia;
+	answers: PollAnswer[];
+	duration?: number;
+	allow_multiselect?: boolean;
+	layout_type?: number;
 }
