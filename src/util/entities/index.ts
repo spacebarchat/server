@@ -20,6 +20,7 @@ export * from "./Application";
 export * from "./Attachment";
 export * from "./AuditLog";
 export * from "./BackupCodes";
+export * from "./Badge";
 export * from "./Ban";
 export * from "./BaseClass";
 export * from "./Categories";

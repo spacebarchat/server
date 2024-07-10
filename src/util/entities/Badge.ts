@@ -16,22 +16,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { User } from "../entities";
+import { Column, Entity } from "typeorm";
+import { BaseClassWithoutId } from "./BaseClass";
 
-export class MinimalPublicUserDTO {
-	avatar?: string | null;
-	discriminator: string;
+@Entity("badges")
+export class Badge extends BaseClassWithoutId {
+	@Column({ primary: true })
 	id: string;
-	public_flags: number;
-	username: string;
-	badge_ids?: string[] | null;
 
-	constructor(user: User) {
-		this.avatar = user.avatar;
-		this.discriminator = user.discriminator;
-		this.id = user.id;
-		this.public_flags = user.public_flags;
-		this.username = user.username;
-		this.badge_ids = user.badge_ids;
-	}
+	@Column()
+	description: string;
+
+	@Column()
+	icon: string;
+
+	@Column({ nullable: true })
+	link?: string;
 }
