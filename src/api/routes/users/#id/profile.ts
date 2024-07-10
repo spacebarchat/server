@@ -18,6 +18,7 @@
 
 import { route } from "@spacebar/api";
 import {
+	Badge,
 	Member,
 	PrivateUserProjection,
 	User,
@@ -98,6 +99,9 @@ router.get(
 			bio: guild_member?.bio || "",
 			guild_id,
 		};
+
+		const badges = await Badge.find();
+
 		res.json({
 			connected_accounts: user.connected_accounts.filter(
 				(x) => x.visibility != 0,
@@ -111,6 +115,7 @@ router.get(
 			user_profile: userProfile,
 			guild_member: guild_member?.toPublicMember(),
 			guild_member_profile: guild_id && guildMemberProfile,
+			badges: badges.filter((x) => user.badge_ids?.includes(x.id)),
 		});
 	},
 );

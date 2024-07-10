@@ -49,6 +49,7 @@ export enum PublicUserEnum {
 	premium_type,
 	theme_colors,
 	pronouns,
+	badge_ids,
 }
 export type PublicUserKeys = keyof typeof PublicUserEnum;
 
@@ -230,6 +231,9 @@ export class User extends BaseClass {
 
 	@OneToMany(() => SecurityKey, (key: SecurityKey) => key.user)
 	security_keys: SecurityKey[];
+
+	@Column({ type: "simple-array", nullable: true })
+	badge_ids?: string[];
 
 	// TODO: I don't like this method?
 	validate() {
