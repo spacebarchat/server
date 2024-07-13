@@ -2360,10 +2360,7 @@
                         }
                     },
                     "poll": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Poll"
-                        }
+                        "$ref": "#/components/schemas/Poll"
                     },
                     "id": {
                         "type": "string"
@@ -10316,6 +10313,25 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/InstanceDomainsResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "policies"
+                ]
+            }
+        },
+        "/policies/instance/connections/": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIConnectionsConfiguration"
                                 }
                             }
                         }
