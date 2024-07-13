@@ -105,6 +105,9 @@ export type APILimitsConfiguration = LimitsConfiguration;
 
 export type APIStickerPackArray = StickerPack[];
 
-export type APIConnectionsConfiguration = Record<string, {
-	enabled: boolean;
-}>;
+export type APIConnectionsConfiguration = Record<
+	string,
+	{
+		enabled: boolean;
+	}
+>;
