@@ -7848,6 +7848,9 @@
                     "$ref": "#/components/schemas/StickerPack"
                 }
             },
+            "APIConnectionsConfiguration": {
+                "type": "object"
+            },
             "UpdatesResponse": {
                 "type": "object",
                 "properties": {
@@ -10313,25 +10316,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/InstanceDomainsResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "policies"
-                ]
-            }
-        },
-        "/policies/instance/connections/": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIConnectionsConfiguration"
                                 }
                             }
                         }
@@ -14556,6 +14540,30 @@
                 },
                 "tags": [
                     "discoverable-guilds"
+                ]
+            }
+        },
+        "/connections/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIConnectionsConfiguration"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "connections"
                 ]
             }
         },
