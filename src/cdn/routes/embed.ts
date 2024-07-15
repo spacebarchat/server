@@ -23,12 +23,12 @@ import { HTTPError } from "lambert-server";
 import { join } from "path";
 
 const defaultAvatarHashMap = new Map([
-	["0", "823a3de61c4dc2415cc4dbc38fca4299"],
-	["1", "e56a89224be0b2b1f7c04eca975be468"],
-	["2", "0c8138dcc0dfe2689cdd73f7952c2475"],
-	["3", "5ac2728593bb455250d11b848a0c36c6"],
-	["4", "addd2f3268df46459e1d6012ad8e75bd"],
-	["5", "c4e0c8300fa491d94acfd2a1fb26cea8"],
+	["0", "4a8562cf00887030c416d3ec2d46385a"],
+	["1", "9b0bb198936784c45c72833cc426cc55"],
+	["2", "22341bdb500c7b63a93bbce957d1601e"],
+	["3", "d9977836b82058bf2f74eebd50edc095"],
+	["4", "9d6ddb4e4d899a533a8cc617011351c9"],
+	["5", "7213ab6677377974697dfdfbaf5f6a6f"],
 ]);
 
 const defaultGroupDMAvatarHashMap = new Map([
