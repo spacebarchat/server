@@ -125,6 +125,7 @@ router.post(
 		const user = await User.findOneOrFail({ where: { id: req.user_id } });
 		body.image = (await handleFile(`/emojis/${id}`, body.image)) as string;
 
+		const mimeType = body.image.split(":")[1].split(";")[0];
 		const emoji = await Emoji.create({
 			id: id,
 			guild_id: guild_id,
@@ -132,7 +133,10 @@ router.post(
 			require_colons: body.require_colons ?? undefined, // schema allows nulls, db does not
 			user: user,
 			managed: false,
-			animated: body.image.split(":")[1].split(";")[0] == "image/gif",
+			animated:
+				mimeType == "image/gif" ||
+				mimeType == "image/apng" ||
+				mimeType == "video/webm",
 			available: true,
 			roles: [],
 		}).save();
