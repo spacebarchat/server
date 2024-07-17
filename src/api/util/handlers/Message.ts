@@ -117,6 +117,12 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 			const guild = await Guild.findOneOrFail({
 				where: { id: channel.guild_id },
 			});
+
+			if (!opts.message_reference.guild_id)
+				opts.message_reference.guild_id = channel.guild_id;
+			if (!opts.message_reference.channel_id)
+				opts.message_reference.channel_id = opts.channel_id;
+
 			if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
 				if (opts.message_reference.guild_id !== channel.guild_id)
 					throw new HTTPError(
@@ -127,6 +133,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 						"You can only reference messages from this channel",
 					);
 			}
+
+			message.message_reference = opts.message_reference;
 		}
 		/** Q: should be checked if the referenced message exists? ANSWER: NO
 		 otherwise backfilling won't work **/
