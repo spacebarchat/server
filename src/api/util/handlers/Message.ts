@@ -149,7 +149,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 				`/avatars/${opts.webhook_id}`,
 				dataUri as string,
 			);
-			console.log(message.avatar);
 			message.author.avatar = message.avatar;
 		}
 	} else {

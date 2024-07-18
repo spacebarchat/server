@@ -2582,6 +2582,9 @@
                     "source_guild": {
                         "$ref": "#/components/schemas/Guild"
                     },
+                    "url": {
+                        "type": "string"
+                    },
                     "id": {
                         "type": "string"
                     }
@@ -2589,10 +2592,9 @@
                 "required": [
                     "application",
                     "application_id",
+                    "avatar",
                     "channel",
                     "channel_id",
-                    "guild",
-                    "guild_id",
                     "id",
                     "name",
                     "source_guild",
@@ -8778,7 +8780,7 @@
                         "bearer": []
                     }
                 ],
-                "description": "Returns a webhook object for the given id.",
+                "description": "Returns a webhook object for the given id and token.",
                 "responses": {
                     "200": {
                         "description": "",

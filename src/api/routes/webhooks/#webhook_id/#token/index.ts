@@ -20,7 +20,7 @@ const router = Router();
 router.get(
 	"/",
 	route({
-		description: "Returns a webhook object for the given id.",
+		description: "Returns a webhook object for the given id and token.",
 		responses: {
 			200: {
 				body: "APIWebhook",
@@ -45,7 +45,12 @@ router.get(
 			throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
 		}
 
-		return res.json(webhook);
+		const instanceUrl =
+			Config.get().api.endpointPublic || "http://localhost:3001";
+		return res.json({
+			...webhook,
+			url: instanceUrl + "/webhooks/" + webhook.id + "/" + webhook.token,
+		});
 	},
 );
 

@@ -1,5 +1,10 @@
 import { route } from "@spacebar/api";
-import { Webhook } from "@spacebar/util";
+import {
+	Config,
+	DiscordApiErrors,
+	getPermission,
+	Webhook,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 
@@ -15,18 +20,29 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		// TODO: Permission check
 		const { webhook_id } = req.params;
 		const webhook = await Webhook.findOneOrFail({
 			where: { id: webhook_id },
-			relations: [
-				"user",
-				"guild",
-				"source_guild",
-				"application" /*"source_channel"*/,
-			],
+			relations: ["channel", "guild", "application", "user"],
 		});
-		return res.json(webhook);
+
+		if (webhook.guild_id) {
+			const permission = await getPermission(
+				req.user_id,
+				webhook.guild_id,
+			);
+
+			if (!permission.has("MANAGE_WEBHOOKS"))
+				throw DiscordApiErrors.UNKNOWN_WEBHOOK;
+		} else if (webhook.user_id != req.user_id)
+			throw DiscordApiErrors.UNKNOWN_WEBHOOK;
+
+		const instanceUrl =
+			Config.get().api.endpointPublic || "http://localhost:3001";
+		return res.json({
+			...webhook,
+			url: instanceUrl + "/webhooks/" + webhook.id + "/" + webhook.token,
+		});
 	},
 );
 
