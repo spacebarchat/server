@@ -38,7 +38,7 @@ router.get(
 					"The length of each registration token. Defaults to 255.",
 			},
 		},
-		right: "OPERATOR",
+		right: "CREATE_REGISTRATION_TOKENS",
 		responses: { 200: { body: "GenerateRegistrationTokensResponse" } },
 	}),
 	async (req: Request, res: Response) => {

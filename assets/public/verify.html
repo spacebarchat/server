@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Spacebar Server</title>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap"
+			rel="stylesheet"
+		/>
+
+		<style>
+			body {
+				font-family: "Montserrat", sans-serif;
+				background-color: rgb(10, 10, 10);
+				color: white;
+				font-size: 1.1rem;
+				height: 100vh;
+			}
+
+			* {
+				padding: 0;
+				margin: 0;
+			}
+
+			p {
+				margin-top: 10px;
+			}
+
+			#wordmark {
+				width: min(200px, 50%);
+				margin: 20px;
+				position: absolute;
+				top: 20px;
+				left: 20px;
+			}
+
+			.title {
+				font-size: 1.5rem;
+				font-weight: 600;
+			}
+
+			.subtitle {
+				font-size: 1.1rem;
+				font-weight: 400;
+			}
+
+			.container {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100%;
+			}
+
+			.box {
+				width: 22vw;
+				padding: 32px;
+				border-radius: 8px;
+				background-color: rgb(32, 32, 32);
+				align-items: center;
+				display: flex;
+				flex-direction: column;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<img
+				alt="Spacebar Logo"
+				id="wordmark"
+				src="https://raw.githubusercontent.com/spacebarchat/spacebarchat/master/branding/svg/Spacebar__Logo-Blue.svg"
+			/>
+
+			<div class="box">
+				<p id="title" class="title">Verifying your email</p>
+				<p id="subtitle" class="subtitle">Please wait...</p>
+			</div>
+		</div>
+
+		<script>
+			window.onload = verify;
+
+			function verify() {
+				const title = document.getElementById("title");
+				const subtitle = document.getElementById("subtitle");
+
+				// if no fragment identifier in URL, error
+				if (!window.location.hash) {
+					title.innerText = "Invalid Link";
+					subtitle.innerText = "Please check the link and try again.";
+					return;
+				}
+
+				// convert fragment to a key-value pair
+				const fragment = window.location.hash.substring(1);
+				const pairs = fragment.split("&");
+				const values = {};
+				pairs.forEach((pair) => {
+					const [key, value] = pair.split("=");
+					values[key] = value;
+				});
+
+				// ensure token key is present
+				if (!values.token) {
+					title.innerText = "Invalid Link";
+					subtitle.innerText = "Please check the link and try again.";
+					return;
+				}
+
+				// make request to server
+				const token = values.token;
+				fetch("/api/auth/verify", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						token,
+					}),
+				})
+					.then((response) => response.json())
+					.then((data) => {
+						// check for an error response
+						if ("message" in data) {
+							title.innerText = "Email Verification Link Expired";
+							subtitle.innerText =
+								"Please request a new verification link.";
+							return;
+						}
+
+						title.innerText = "Email Verified";
+						subtitle.innerText = "You can now login.";
+					})
+					.catch((error) => {
+						title.innerText = "Email Verification Failed";
+						subtitle.innerText = error;
+					});
+			}
+		</script>
+	</body>
+</html>

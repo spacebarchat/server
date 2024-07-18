@@ -192,8 +192,8 @@ export class Message extends BaseClass {
 		party_id: string;
 	};
 
-	@Column({ nullable: true })
-	flags?: number;
+	@Column({ default: 0 })
+	flags: number;
 
 	@Column({ type: "simple-json", nullable: true })
 	message_reference?: {
@@ -252,6 +252,7 @@ export class Message extends BaseClass {
 			activity: this.activity ?? undefined,
 			application: this.application ?? undefined,
 			components: this.components ?? undefined,
+			poll: this.poll ?? undefined,
 			content: this.content ?? "",
 		};
 	}
@@ -263,6 +264,7 @@ export interface MessageComponent {
 	label?: string;
 	emoji?: PartialEmoji;
 	custom_id?: string;
+	sku_id?: string;
 	url?: string;
 	disabled?: boolean;
 	components: MessageComponent[];
@@ -340,4 +342,33 @@ export interface AllowedMentions {
 	roles?: string[];
 	users?: string[];
 	replied_user?: boolean;
+}
+
+export interface Poll {
+	question: PollMedia;
+	answers: PollAnswer[];
+	expiry: Date;
+	allow_multiselect: boolean;
+	results?: PollResult;
+}
+
+export interface PollMedia {
+	text?: string;
+	emoji?: PartialEmoji;
+}
+
+export interface PollAnswer {
+	answer_id?: string;
+	poll_media: PollMedia;
+}
+
+export interface PollResult {
+	is_finalized: boolean;
+	answer_counts: PollAnswerCount[];
+}
+
+export interface PollAnswerCount {
+	id: string;
+	count: number;
+	me_voted: boolean;
 }

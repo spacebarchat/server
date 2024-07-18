@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -125,6 +125,7 @@ router.post(
 		const user = await User.findOneOrFail({ where: { id: req.user_id } });
 		body.image = (await handleFile(`/emojis/${id}`, body.image)) as string;
 
+		const mimeType = body.image.split(":")[1].split(";")[0];
 		const emoji = await Emoji.create({
 			id: id,
 			guild_id: guild_id,
@@ -132,7 +133,10 @@ router.post(
 			require_colons: body.require_colons ?? undefined, // schema allows nulls, db does not
 			user: user,
 			managed: false,
-			animated: false, // TODO: Add support animated emojis
+			animated:
+				mimeType == "image/gif" ||
+				mimeType == "image/apng" ||
+				mimeType == "video/webm",
 			available: true,
 			roles: [],
 		}).save();

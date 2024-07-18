@@ -27,9 +27,12 @@ export default async function () {
 	if (!host || !port || secure === null || !username || !password)
 		return console.error("[Email] SMTP has not been configured correctly.");
 
-	if (!Config.get().general.correspondenceEmail)
+	if (
+		!Config.get().email.senderAddress &&
+		!Config.get().general.correspondenceEmail
+	)
 		return console.error(
-			"[Email] Correspondence email has not been configured! This is used as the sender email address.",
+			'[Email] You have to configure either "email_senderAddress" or "general_correspondenceEmail" for emails to work. The configured value is used as the sender address.',
 		);
 
 	// construct the transporter

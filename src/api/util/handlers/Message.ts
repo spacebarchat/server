@@ -16,45 +16,49 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import * as Sentry from "@sentry/node";
+import { EmbedHandlers } from "@spacebar/api";
 import {
+	Application,
+	Attachment,
 	Channel,
+	Config,
 	Embed,
+	EmbedCache,
 	emitEvent,
-	Guild,
-	Message,
-	MessageCreateEvent,
-	MessageUpdateEvent,
+	EVERYONE_MENTION,
 	getPermission,
 	getRights,
+	Guild,
+	HERE_MENTION,
+	Message,
+	MessageCreateEvent,
+	MessageCreateSchema,
+	MessageType,
+	MessageUpdateEvent,
+	Role,
+	ROLE_MENTION,
+	Sticker,
+	User,
 	//CHANNEL_MENTION,
 	USER_MENTION,
-	ROLE_MENTION,
-	Role,
-	EVERYONE_MENTION,
-	HERE_MENTION,
-	MessageType,
-	User,
-	Application,
 	Webhook,
 	Attachment,
 	Config,
 	Sticker,
 	MessageCreateSchema,
 	EmbedCache,
-	handleFile,
-	Permissions,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
 import { EmbedHandlers } from "@spacebar/api";
 import * as Sentry from "@sentry/node";
-import fetch from "node-fetch";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
 
 const LINK_REGEX =
-	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
+	/<?https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)>?/g;
 
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	const channel = await Channel.findOneOrFail({
@@ -69,6 +73,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		: undefined;
 	const message = Message.create({
 		...opts,
+		poll: opts.poll,
 		sticker_items: stickers,
 		guild_id: channel.guild_id,
 		channel_id: opts.channel_id,
@@ -162,29 +167,28 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 			message.member = permission.cache.member;
 		}
 
-		if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
-		if (opts.message_reference) {
-			permission.hasThrow("READ_MESSAGE_HISTORY");
-			// code below has to be redone when we add custom message routing
-			if (message.guild_id !== null) {
-				const guild = await Guild.findOneOrFail({
-					where: { id: channel.guild_id },
-				});
-				if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
-					if (opts.message_reference.guild_id !== channel.guild_id)
-						throw new HTTPError(
-							"You can only reference messages from this guild",
-						);
-					if (opts.message_reference.channel_id !== opts.channel_id)
-						throw new HTTPError(
-							"You can only reference messages from this channel",
-						);
-				}
+	if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
+	if (opts.message_reference) {
+		permission.hasThrow("READ_MESSAGE_HISTORY");
+		// code below has to be redone when we add custom message routing
+		if (message.guild_id !== null) {
+			const guild = await Guild.findOneOrFail({
+				where: { id: channel.guild_id },
+			});
+			if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
+				if (opts.message_reference.guild_id !== channel.guild_id)
+					throw new HTTPError(
+						"You can only reference messages from this guild",
+					);
+				if (opts.message_reference.channel_id !== opts.channel_id)
+					throw new HTTPError(
+						"You can only reference messages from this channel",
+					);
 			}
-			/** Q: should be checked if the referenced message exists? ANSWER: NO
-			 otherwise backfilling won't work **/
-			message.type = MessageType.REPLY;
 		}
+		/** Q: should be checked if the referenced message exists? ANSWER: NO
+		 otherwise backfilling won't work **/
+		message.type = MessageType.REPLY;
 	}
 
 	// TODO: stickers/activity
@@ -193,7 +197,9 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		!opts.content &&
 		!opts.embeds?.length &&
 		!opts.attachments?.length &&
-		!opts.sticker_ids?.length
+		!opts.sticker_ids?.length &&
+		!opts.poll &&
+		!opts.components?.length
 	) {
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
@@ -272,6 +278,9 @@ export async function postHandleMessage(message: Message) {
 	const cachePromises = [];
 
 	for (const link of links) {
+		// Don't embed links in <>
+		if (link.startsWith("<") && link.endsWith(">")) continue;
+
 		const url = new URL(link);
 
 		const cached = await EmbedCache.findOne({ where: { url: link } });

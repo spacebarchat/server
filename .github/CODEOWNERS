@@ -1,0 +1,3 @@
+# Nix stuff is owned by Rory& - we& want to be notified if these are changed.
+/flake.nix root@rory.gay
+/nix-update.sh root@rory.gay
