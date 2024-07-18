@@ -2582,6 +2582,12 @@
                     "source_guild": {
                         "$ref": "#/components/schemas/Guild"
                     },
+                    "source_channel_id": {
+                        "type": "string"
+                    },
+                    "source_channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
                     "url": {
                         "type": "string"
                     },
@@ -2597,9 +2603,10 @@
                     "channel_id",
                     "id",
                     "name",
-                    "source_guild",
-                    "source_guild_id",
+                    "source_channel",
+                    "source_channel_id",
                     "type",
+                    "url",
                     "user",
                     "user_id"
                 ]
@@ -8741,7 +8748,7 @@
                         "bearer": []
                     }
                 ],
-                "description": "Returns a webhook object for the given id.",
+                "description": "Returns a webhook object for the given id. Requires the MANAGE_WEBHOOKS permission or to be the owner of the webhook.",
                 "responses": {
                     "200": {
                         "description": "",

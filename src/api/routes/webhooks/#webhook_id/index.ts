@@ -11,7 +11,7 @@ const router = Router();
 router.get(
 	"/",
 	route({
-		description: "Returns a webhook object for the given id.",
+		description: "Returns a webhook object for the given id. Requires the MANAGE_WEBHOOKS permission or to be the owner of the webhook.",
 		responses: {
 			200: {
 				body: "APIWebhook",
@@ -23,7 +23,14 @@ router.get(
 		const { webhook_id } = req.params;
 		const webhook = await Webhook.findOneOrFail({
 			where: { id: webhook_id },
-			relations: ["channel", "guild", "application", "user"],
+			relations: [
+				"user",
+				"channel",
+				"source_channel",
+				"guild",
+				"source_guild",
+				"application",
+			],
 		});
 
 		if (webhook.guild_id) {

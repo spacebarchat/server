@@ -85,13 +85,23 @@ export class Webhook extends BaseClass {
 
 	@Column({ nullable: true })
 	@RelationId((webhook: Webhook) => webhook.guild)
-	source_guild_id: string;
+	source_guild_id?: string;
 
 	@JoinColumn({ name: "source_guild_id" })
 	@ManyToOne(() => Guild, {
 		onDelete: "CASCADE",
 	})
-	source_guild: Guild;
+	source_guild?: Guild;
 
-	url?: string;
+	@Column({ nullable: true })
+	@RelationId((webhook: Webhook) => webhook.channel)
+	source_channel_id: string;
+
+	@JoinColumn({ name: "source_channel_id" })
+	@ManyToOne(() => Channel, {
+		onDelete: "CASCADE",
+	})
+	source_channel: Channel;
+
+	url: string;
 }

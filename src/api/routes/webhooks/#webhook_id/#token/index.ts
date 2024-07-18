@@ -34,7 +34,14 @@ router.get(
 			where: {
 				id: webhook_id,
 			},
-			relations: ["channel", "guild", "application"],
+			relations: [
+				"user",
+				"channel",
+				"source_channel",
+				"guild",
+				"source_guild",
+				"application",
+			],
 		});
 
 		if (!webhook) {
@@ -65,6 +72,7 @@ const messageUpload = multer({
 }); // max upload 50 mb
 
 // https://discord.com/developers/docs/resources/webhook#execute-webhook
+// TODO: GitHub/Slack compatible hooks
 router.post(
 	"/",
 	messageUpload.any(),
