@@ -218,6 +218,9 @@ export class Message extends BaseClass {
 	@Column({ type: "simple-json", nullable: true })
 	components?: MessageComponent[];
 
+	@Column({ type: "simple-json", nullable: true })
+	poll?: Poll;
+
 	@Column({ nullable: true })
 	username?: string;
 
