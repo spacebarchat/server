@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -41,11 +41,13 @@ import {
 	Sticker,
 	MessageCreateSchema,
 	EmbedCache,
+	handleFile,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
 import { EmbedHandlers } from "@spacebar/api";
 import * as Sentry from "@sentry/node";
+import fetch from "node-fetch";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
@@ -92,44 +94,89 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 			where: { id: opts.application_id },
 		});
 	}
+
+	let permission: any;
 	if (opts.webhook_id) {
 		message.webhook = await Webhook.findOneOrFail({
 			where: { id: opts.webhook_id },
 		});
-	}
 
-	const permission = await getPermission(
-		opts.author_id,
-		channel.guild_id,
-		opts.channel_id,
-	);
-	permission.hasThrow("SEND_MESSAGES");
-	if (permission.cache.member) {
-		message.member = permission.cache.member;
-	}
+		message.author = (await User.findOne({
+			where: { id: opts.webhook_id },
+		})) || undefined;
 
-	if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
-	if (opts.message_reference) {
-		permission.hasThrow("READ_MESSAGE_HISTORY");
-		// code below has to be redone when we add custom message routing
-		if (message.guild_id !== null) {
-			const guild = await Guild.findOneOrFail({
-				where: { id: channel.guild_id },
+		if (!message.author) {
+			message.author = User.create({
+				id: opts.webhook_id,
+				username: message.webhook.name,
+				discriminator: "0000",
+				avatar: message.webhook.avatar,
+				public_flags: 0,
+				premium: false,
+				premium_type: 0,
+				bot: true,
+				created_at: new Date(),
+				verified: true,
+				rights: "0",
+				data: {
+					valid_tokens_since: new Date(),
+				},
 			});
-			if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
-				if (opts.message_reference.guild_id !== channel.guild_id)
-					throw new HTTPError(
-						"You can only reference messages from this guild",
-					);
-				if (opts.message_reference.channel_id !== opts.channel_id)
-					throw new HTTPError(
-						"You can only reference messages from this channel",
-					);
-			}
+
+			await message.author.save();
 		}
-		/** Q: should be checked if the referenced message exists? ANSWER: NO
-		 otherwise backfilling won't work **/
-		message.type = MessageType.REPLY;
+
+		if (opts.username) {
+			message.username = opts.username;
+			message.author.username = message.username;
+		}
+		if (opts.avatar_url) {
+			const avatarData = await fetch(opts.avatar_url);
+			const base64 = await avatarData.buffer().then((x) => x.toString("base64"));
+
+			const dataUri = "data:" + avatarData.headers.get("content-type") + ";base64," + base64;
+
+			message.avatar = await handleFile(
+				`/avatars/${opts.webhook_id}`,
+				dataUri as string,
+			);
+			console.log(message.avatar);
+			message.author.avatar = message.avatar;
+		}
+	} else {
+		permission = await getPermission(
+			opts.author_id,
+			channel.guild_id,
+			opts.channel_id,
+		);
+		permission.hasThrow("SEND_MESSAGES");
+		if (permission.cache.member) {
+			message.member = permission.cache.member;
+		}
+
+		if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
+		if (opts.message_reference) {
+			permission.hasThrow("READ_MESSAGE_HISTORY");
+			// code below has to be redone when we add custom message routing
+			if (message.guild_id !== null) {
+				const guild = await Guild.findOneOrFail({
+					where: { id: channel.guild_id },
+				});
+				if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
+					if (opts.message_reference.guild_id !== channel.guild_id)
+						throw new HTTPError(
+							"You can only reference messages from this guild",
+						);
+					if (opts.message_reference.channel_id !== opts.channel_id)
+						throw new HTTPError(
+							"You can only reference messages from this channel",
+						);
+				}
+			}
+			/** Q: should be checked if the referenced message exists? ANSWER: NO
+			 otherwise backfilling won't work **/
+			message.type = MessageType.REPLY;
+		}
 	}
 
 	// TODO: stickers/activity
@@ -172,14 +219,14 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 					const role = await Role.findOneOrFail({
 						where: { id: mention, guild_id: channel.guild_id },
 					});
-					if (role.mentionable || permission.has("MANAGE_ROLES")) {
+					if (role.mentionable || (opts.webhook_id || permission.has("MANAGE_ROLES"))) {
 						mention_role_ids.push(mention);
 					}
 				},
 			),
 		);
 
-		if (permission.has("MENTION_EVERYONE")) {
+		if (opts.webhook_id || permission.has("MENTION_EVERYONE")) {
 			mention_everyone =
 				!!content.match(EVERYONE_MENTION) ||
 				!!content.match(HERE_MENTION);
@@ -302,4 +349,6 @@ interface MessageOptions extends MessageCreateSchema {
 	attachments?: Attachment[];
 	edited_timestamp?: Date;
 	timestamp?: Date;
+	username?: string;
+	avatar_url?: string;
 }

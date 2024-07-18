@@ -1,12 +1,14 @@
-import { handleMessage, route } from "@spacebar/api";
+import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
 	Attachment,
 	Config,
 	DiscordApiErrors,
 	FieldErrors,
 	Message,
+	MessageCreateEvent,
 	Webhook,
 	WebhookExecuteSchema,
+	emitEvent,
 	uploadFile,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
@@ -93,7 +95,11 @@ router.post(
 		},
 	}),
 	async (req: Request, res: Response) => {
+		const { wait, thread_id } = req.query;
+		if (!wait) return res.status(204).send();
+
 		const { webhook_id, token } = req.params;
+
 		const body = req.body as WebhookExecuteSchema;
 		const attachments: Attachment[] = [];
 
@@ -200,6 +206,7 @@ router.post(
 			webhook_id: webhook.id,
 			application_id: webhook.application?.id,
 			embeds,
+			// TODO: Support thread_id/thread_name once threads are implemented
 			channel_id: webhook.channel_id,
 			attachments,
 			timestamp: new Date(),
@@ -209,6 +216,22 @@ router.post(
 		message.edited_timestamp = null;
 
 		webhook.channel.last_message_id = message.id;
+
+		await Promise.all([
+			message.save(),
+			emitEvent({
+				event: "MESSAGE_CREATE",
+				channel_id: webhook.channel_id,
+				data: message,
+			} as MessageCreateEvent),
+		]);
+
+		// no await as it shouldnt block the message send function and silently catch error
+		postHandleMessage(message).catch((e) =>
+			console.error("[Message] post-message handler failed", e),
+		);
+
+		return res.json(message);
 	},
 );
 

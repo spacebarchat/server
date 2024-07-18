@@ -1127,12 +1127,19 @@
                         "type": "boolean",
                         "default": false
                     },
+                    "channel_ordering": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
                     "id": {
                         "type": "string"
                     }
                 },
                 "required": [
                     "bans",
+                    "channel_ordering",
                     "channels",
                     "emojis",
                     "features",
@@ -1203,9 +1210,6 @@
                     "default_auto_archive_duration": {
                         "type": "integer"
                     },
-                    "position": {
-                        "type": "integer"
-                    },
                     "permission_overwrites": {
                         "type": "array",
                         "items": {
@@ -1272,6 +1276,10 @@
                         "type": "integer",
                         "default": 0
                     },
+                    "position": {
+                        "description": "Must be calculated Channel.calculatePosition",
+                        "type": "integer"
+                    },
                     "id": {
                         "type": "string"
                     }
@@ -1280,11 +1288,11 @@
                     "created_at",
                     "default_thread_rate_limit_per_user",
                     "flags",
-                    "guild",
                     "id",
                     "nsfw",
                     "owner",
                     "parent_id",
+                    "position",
                     "type"
                 ]
             },
@@ -2138,7 +2146,7 @@
                     "attachments": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Attachment_1"
+                            "$ref": "#/components/schemas/Attachment"
                         }
                     },
                     "embeds": {
@@ -2324,7 +2332,6 @@
                     }
                 },
                 "required": [
-                    "avatar",
                     "banner",
                     "bio",
                     "communication_disabled_until",
@@ -2889,7 +2896,7 @@
                 ],
                 "type": "number"
             },
-            "Attachment_1": {
+            "Attachment": {
                 "type": "object",
                 "properties": {
                     "filename": {
@@ -3394,7 +3401,7 @@
                     "attachments": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Attachment_1"
+                            "$ref": "#/components/schemas/Attachment"
                         }
                     },
                     "embeds": {
@@ -3473,6 +3480,9 @@
                         "type": "string",
                         "format": "date-time"
                     },
+                    "avatar": {
+                        "type": "string"
+                    },
                     "username": {
                         "type": "string"
                     },
@@ -3481,9 +3491,6 @@
                     },
                     "public_flags": {
                         "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
                     },
                     "accent_color": {
                         "type": "integer"
@@ -3721,6 +3728,9 @@
                     "banner": {
                         "type": "string"
                     },
+                    "description": {
+                        "type": "string"
+                    },
                     "unavailable": {
                         "type": "boolean"
                     },
@@ -3756,9 +3766,6 @@
                     },
                     "default_message_notifications": {
                         "type": "integer"
-                    },
-                    "description": {
-                        "type": "string"
                     },
                     "discovery_splash": {
                         "type": "string"
@@ -3852,12 +3859,19 @@
                     },
                     "premium_progress_bar_enabled": {
                         "type": "boolean"
+                    },
+                    "channel_ordering": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "required": [
                     "_do_validate",
                     "assign",
                     "bans",
+                    "channel_ordering",
                     "channels",
                     "emojis",
                     "features",
@@ -5081,6 +5095,9 @@
                     "content": {
                         "type": "string"
                     },
+                    "mobile_network_type": {
+                        "type": "string"
+                    },
                     "nonce": {
                         "type": "string"
                     },
@@ -5191,6 +5208,10 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {}
                     }
                 }
             },
@@ -5218,6 +5239,9 @@
                     "content": {
                         "type": "string"
                     },
+                    "mobile_network_type": {
+                        "type": "string"
+                    },
                     "nonce": {
                         "type": "string"
                     },
@@ -5310,6 +5334,10 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {}
                     }
                 }
             },
@@ -5834,6 +5862,16 @@
             "UserSettingsSchema": {
                 "type": "object",
                 "properties": {
+                    "status": {
+                        "enum": [
+                            "dnd",
+                            "idle",
+                            "invisible",
+                            "offline",
+                            "online"
+                        ],
+                        "type": "string"
+                    },
                     "afk_timeout": {
                         "type": "integer"
                     },
@@ -5930,16 +5968,6 @@
                     },
                     "show_current_game": {
                         "type": "boolean"
-                    },
-                    "status": {
-                        "enum": [
-                            "dnd",
-                            "idle",
-                            "invisible",
-                            "offline",
-                            "online"
-                        ],
-                        "type": "string"
                     },
                     "stream_notifications_enabled": {
                         "type": "boolean"
@@ -6180,6 +6208,107 @@
                 "required": [
                     "name"
                 ]
+            },
+            "WebhookExecuteSchema": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "avatar_url": {
+                        "type": "string"
+                    },
+                    "tts": {
+                        "type": "boolean"
+                    },
+                    "embeds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Embed"
+                        }
+                    },
+                    "allowed_mentions": {
+                        "type": "object",
+                        "properties": {
+                            "parse": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "roles": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "replied_user": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "file": {
+                        "type": "object",
+                        "properties": {
+                            "filename": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "filename"
+                        ]
+                    },
+                    "payload_json": {
+                        "type": "string"
+                    },
+                    "attachments": {
+                        "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "filename": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "filename",
+                                "id"
+                            ]
+                        }
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "thread_name": {
+                        "type": "string"
+                    },
+                    "applied_tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
             },
             "WidgetModifySchema": {
                 "type": "object",
@@ -6960,6 +7089,9 @@
                         "type": "string",
                         "format": "date-time"
                     },
+                    "avatar": {
+                        "type": "string"
+                    },
                     "verified": {
                         "type": "boolean"
                     },
@@ -6971,9 +7103,6 @@
                     },
                     "public_flags": {
                         "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
                     },
                     "accent_color": {
                         "type": "integer"
@@ -7077,6 +7206,9 @@
                         "type": "string",
                         "format": "date-time"
                     },
+                    "avatar": {
+                        "type": "string"
+                    },
                     "verified": {
                         "type": "boolean"
                     },
@@ -7088,9 +7220,6 @@
                     },
                     "public_flags": {
                         "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
                     },
                     "accent_color": {
                         "type": "integer"
@@ -7304,6 +7433,9 @@
                     },
                     "premium_since": {
                         "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
                     },
                     "user": {
                         "$ref": "#/components/schemas/PublicUser"
@@ -7533,12 +7665,19 @@
                         "type": "boolean",
                         "default": false
                     },
+                    "channel_ordering": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
                     "id": {
                         "type": "string"
                     }
                 },
                 "required": [
                     "bans",
+                    "channel_ordering",
                     "channels",
                     "emojis",
                     "features",
@@ -7736,6 +7875,9 @@
                             },
                             "premium_since": {
                                 "type": "integer"
+                            },
+                            "avatar": {
+                                "type": "string"
                             },
                             "user": {
                                 "$ref": "#/components/schemas/PublicUser"
@@ -8037,9 +8179,175 @@
         },
         {
             "name": "voice"
+        },
+        {
+            "name": "webhooks"
         }
     ],
     "paths": {
+        "/webhooks/{webhook_id}/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Returns a webhook object for the given id.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIWebhook"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "webhook_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "webhook_id"
+                    }
+                ],
+                "tags": [
+                    "webhooks"
+                ]
+            }
+        },
+        "/webhooks/{webhook_id}/{token}/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Returns a webhook object for the given id.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIWebhook"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "webhook_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "webhook_id"
+                    },
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "token"
+                    }
+                ],
+                "tags": [
+                    "webhooks"
+                ]
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebhookExecuteSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "webhook_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "webhook_id"
+                    },
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "token"
+                    },
+                    {
+                        "name": "wait",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "waits for server confirmation of message send before response, and returns the created message body"
+                    },
+                    {
+                        "name": "thread_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Send a message to the specified thread within a webhook's channel."
+                    }
+                ],
+                "tags": [
+                    "webhooks"
+                ]
+            }
+        },
         "/voice/regions/": {
             "get": {
                 "security": [
@@ -10189,6 +10497,15 @@
                         }
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "tags": [
                     "oauth2"
                 ]
@@ -10260,6 +10577,30 @@
                         }
                     }
                 ],
+                "tags": [
+                    "oauth2"
+                ]
+            }
+        },
+        "/oauth2/applications/@me/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    }
+                },
                 "tags": [
                     "oauth2"
                 ]
@@ -10879,14 +11220,23 @@
         },
         "/guilds/{guild_id}/webhooks/": {
             "get": {
+                "x-permission-required": "MANAGE_WEBHOOKS",
                 "security": [
                     {
                         "bearer": []
                     }
                 ],
+                "description": "Returns a list of guild webhook objects. Requires the MANAGE_WEBHOOKS permission.",
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIWebhookArray"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -14363,11 +14713,13 @@
         },
         "/channels/{channel_id}/webhooks/": {
             "get": {
+                "x-permission-required": "MANAGE_WEBHOOKS",
                 "security": [
                     {
                         "bearer": []
                     }
                 ],
+                "description": "Returns a list of channel webhook objects. Requires the MANAGE_WEBHOOKS permission.",
                 "responses": {
                     "200": {
                         "description": "",
