@@ -241,7 +241,7 @@ export class Message extends BaseClass {
 			sticker_items: this.sticker_items ?? undefined,
 			message_reference: this.message_reference ?? undefined,
 			author: {
-				...this.author?.toPublicUser() ?? undefined,
+				...(this.author?.toPublicUser() ?? undefined),
 				// Webhooks
 				username: this.username ?? this.author?.username,
 				avatar: this.avatar ?? this.author?.avatar,

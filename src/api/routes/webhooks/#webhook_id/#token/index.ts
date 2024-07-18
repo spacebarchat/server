@@ -95,7 +95,7 @@ router.post(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { wait, thread_id } = req.query;
+		const { wait } = req.query;
 		if (!wait) return res.status(204).send();
 
 		const { webhook_id, token } = req.params;

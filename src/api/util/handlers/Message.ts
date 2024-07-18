@@ -42,6 +42,7 @@ import {
 	MessageCreateSchema,
 	EmbedCache,
 	handleFile,
+	Permissions,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
@@ -95,15 +96,16 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		});
 	}
 
-	let permission: any;
+	let permission: undefined | Permissions;
 	if (opts.webhook_id) {
 		message.webhook = await Webhook.findOneOrFail({
 			where: { id: opts.webhook_id },
 		});
 
-		message.author = (await User.findOne({
-			where: { id: opts.webhook_id },
-		})) || undefined;
+		message.author =
+			(await User.findOne({
+				where: { id: opts.webhook_id },
+			})) || undefined;
 
 		if (!message.author) {
 			message.author = User.create({
@@ -132,9 +134,15 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		}
 		if (opts.avatar_url) {
 			const avatarData = await fetch(opts.avatar_url);
-			const base64 = await avatarData.buffer().then((x) => x.toString("base64"));
+			const base64 = await avatarData
+				.buffer()
+				.then((x) => x.toString("base64"));
 
-			const dataUri = "data:" + avatarData.headers.get("content-type") + ";base64," + base64;
+			const dataUri =
+				"data:" +
+				avatarData.headers.get("content-type") +
+				";base64," +
+				base64;
 
 			message.avatar = await handleFile(
 				`/avatars/${opts.webhook_id}`,
@@ -219,14 +227,18 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 					const role = await Role.findOneOrFail({
 						where: { id: mention, guild_id: channel.guild_id },
 					});
-					if (role.mentionable || (opts.webhook_id || permission.has("MANAGE_ROLES"))) {
+					if (
+						role.mentionable ||
+						opts.webhook_id ||
+						permission?.has("MANAGE_ROLES")
+					) {
 						mention_role_ids.push(mention);
 					}
 				},
 			),
 		);
 
-		if (opts.webhook_id || permission.has("MENTION_EVERYONE")) {
+		if (opts.webhook_id || permission?.has("MENTION_EVERYONE")) {
 			mention_everyone =
 				!!content.match(EVERYONE_MENTION) ||
 				!!content.match(HERE_MENTION);

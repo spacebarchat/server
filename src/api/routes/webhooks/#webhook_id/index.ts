@@ -15,6 +15,7 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
+		// TODO: Permission check
 		const { webhook_id } = req.params;
 		const webhook = await Webhook.findOneOrFail({
 			where: { id: webhook_id },
