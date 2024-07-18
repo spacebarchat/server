@@ -43,16 +43,12 @@ import {
 	//CHANNEL_MENTION,
 	USER_MENTION,
 	Webhook,
-	Attachment,
-	Config,
-	Sticker,
-	MessageCreateSchema,
-	EmbedCache,
+	handleFile,
+	Permissions,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
-import { EmbedHandlers } from "@spacebar/api";
-import * as Sentry from "@sentry/node";
+import fetch from "node-fetch";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
@@ -167,28 +163,36 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 			message.member = permission.cache.member;
 		}
 
-	if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
-	if (opts.message_reference) {
-		permission.hasThrow("READ_MESSAGE_HISTORY");
-		// code below has to be redone when we add custom message routing
-		if (message.guild_id !== null) {
-			const guild = await Guild.findOneOrFail({
-				where: { id: channel.guild_id },
-			});
-			if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
-				if (opts.message_reference.guild_id !== channel.guild_id)
-					throw new HTTPError(
-						"You can only reference messages from this guild",
-					);
-				if (opts.message_reference.channel_id !== opts.channel_id)
-					throw new HTTPError(
-						"You can only reference messages from this channel",
-					);
+		if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
+		if (opts.message_reference) {
+			permission.hasThrow("READ_MESSAGE_HISTORY");
+			// code below has to be redone when we add custom message routing
+			if (message.guild_id !== null) {
+				const guild = await Guild.findOneOrFail({
+					where: { id: channel.guild_id },
+				});
+				if (!opts.message_reference.guild_id)
+					opts.message_reference.guild_id = channel.guild_id;
+				if (!opts.message_reference.channel_id)
+					opts.message_reference.channel_id = opts.channel_id;
+
+				if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
+					if (opts.message_reference.guild_id !== channel.guild_id)
+						throw new HTTPError(
+							"You can only reference messages from this guild",
+						);
+					if (opts.message_reference.channel_id !== opts.channel_id)
+						throw new HTTPError(
+							"You can only reference messages from this channel",
+						);
+				}
+
+				message.message_reference = opts.message_reference;
 			}
+			/** Q: should be checked if the referenced message exists? ANSWER: NO
+			 otherwise backfilling won't work **/
+			message.type = MessageType.REPLY;
 		}
-		/** Q: should be checked if the referenced message exists? ANSWER: NO
-		 otherwise backfilling won't work **/
-		message.type = MessageType.REPLY;
 	}
 
 	// TODO: stickers/activity
