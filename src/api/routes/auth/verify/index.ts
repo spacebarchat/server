@@ -85,7 +85,7 @@ router.post(
 			user = userTokenData.user;
 		} catch {
 			throw FieldErrors({
-				password: {
+				token: {
 					message: req.t("auth:password_reset.INVALID_TOKEN"),
 					code: "INVALID_TOKEN",
 				},

@@ -50,7 +50,13 @@ router.get(
 		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
 		});
+		if (!channel.guild_id) return res.send(channel);
 
+		channel.position = await Channel.calculatePosition(
+			channel_id,
+			channel.guild_id,
+			channel.guild,
+		);
 		return res.send(channel);
 	},
 );

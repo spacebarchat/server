@@ -18,15 +18,15 @@
 
 import {
 	Config,
-	Email,
-	initDatabase,
-	initEvent,
-	JSONReplacer,
-	registerRoutes,
-	Sentry,
-	WebAuthn,
 	ConnectionConfig,
 	ConnectionLoader,
+	Email,
+	JSONReplacer,
+	Sentry,
+	WebAuthn,
+	initDatabase,
+	initEvent,
+	registerRoutes,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
@@ -141,6 +141,10 @@ export class SpacebarServer extends Server {
 
 		app.get("/", (req, res) =>
 			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "index.html")),
+		);
+
+		app.get("/verify", (req, res) =>
+			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "verify.html")),
 		);
 
 		this.app.use(ErrorHandler);

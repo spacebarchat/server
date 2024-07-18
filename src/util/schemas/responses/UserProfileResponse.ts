@@ -17,6 +17,7 @@
 */
 
 import {
+	Badge,
 	Member,
 	PublicConnectedAccount,
 	PublicMember,
@@ -52,4 +53,5 @@ export interface UserProfileResponse {
 	user_profile: UserProfile;
 	guild_member?: PublicMember;
 	guild_member_profile?: PublicMemberProfile;
+	badges: Badge[];
 }
