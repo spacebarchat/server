@@ -21,6 +21,7 @@ import {
 	Application,
 	ApplicationModifySchema,
 	DiscordApiErrors,
+	handleFile,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -82,6 +83,13 @@ router.patch(
 				verifyToken(app.owner.totp_secret, req.body.code))
 		)
 			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+
+		if (body.icon) {
+			body.icon = await handleFile(
+				`/app-icons/${app.id}`,
+				body.icon as string,
+			);
+		}
 
 		if (app.bot) {
 			app.bot.assign({ bio: body.description });

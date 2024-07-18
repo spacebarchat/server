@@ -113,9 +113,6 @@ router.patch(
 			relations: ["roles", "user"],
 		});
 		const permission = await getPermission(req.user_id, guild_id);
-		const everyone = await Role.findOneOrFail({
-			where: { guild_id: guild_id, name: "@everyone", position: 0 },
-		});
 
 		if ("nick" in body) {
 			permission.hasThrow("MANAGE_NICKNAMES");
@@ -152,15 +149,14 @@ router.patch(
 			body.roles = body.roles || [];
 			body.roles.filter((x) => !!x);
 
-			if (body.roles.indexOf(everyone.id) === -1)
-				body.roles.push(everyone.id);
+			if (body.roles.indexOf(guild_id) === -1) body.roles.push(guild_id);
 			// foreign key constraint will fail if role doesn't exist
 			member.roles = body.roles.map((x) => Role.create({ id: x }));
 		}
 
 		await member.save();
 
-		member.roles = member.roles.filter((x) => x.id !== everyone.id);
+		member.roles = member.roles.filter((x) => x.id !== guild_id);
 
 		// do not use promise.all as we have to first write to db before emitting the event to catch errors
 		await emitEvent({

@@ -10,6 +10,7 @@
 		"start:cdn": "node dist/cdn/start.js",
 		"start:gateway": "node dist/gateway/start.js",
 		"build": "tsc -p .",
+		"watch": "tsc -w -p .",
 		"test": "node scripts/test.js",
 		"lint": "eslint .",
 		"setup": "npm run build && npm run generate:schema",
@@ -55,9 +56,9 @@
 		"@types/probe-image-size": "^7.2.0",
 		"@types/sharp": "^0.31.1",
 		"@types/ws": "^8.5.5",
-		"@typescript-eslint/eslint-plugin": "^5.62.0",
-		"@typescript-eslint/parser": "^5.62.0",
-		"eslint": "^8.46.0",
+		"@typescript-eslint/eslint-plugin": "^6.21.0",
+		"@typescript-eslint/parser": "^6.21.0",
+		"eslint": "^8.56.0",
 		"express": "^4.18.2",
 		"husky": "^8.0.3",
 		"prettier": "^2.8.8",
@@ -116,9 +117,11 @@
 	},
 	"optionalDependencies": {
 		"erlpack": "^0.1.4",
+		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.5",
 		"nodemailer-mailjet-transport": "github:n0script22/nodemailer-mailjet-transport",
 		"nodemailer-sendgrid-transport": "github:Maria-Golomb/nodemailer-sendgrid-transport",
+		"pg": "^8.11.3",
 		"sqlite3": "^5.1.6"
 	}
 }

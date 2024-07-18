@@ -1,4 +1,28 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!nix-shell -i "bash" -p bash prefetch-npm-deps jq nodejs nix-output-monitor
+#. "$(dirname -- "$0")/_/husky.sh"
 
-npx -y lint-staged
+# Check if nix is available
+if [ -x "$(/usr/bin/env which nix-shell 2>/dev/null)" ]; then
+  # Check if we haven't re-executed ourselves yet
+  if [ ! "$HOOK_NIX_SHELL" ]; then
+    echo "Nix is available, updating nix flake..."
+    export HOOK_NIX_SHELL=1
+    nix-shell $0
+    exit $?
+  else
+    nix flake update
+    # run ./nix-update.sh if package lock has changed and has no unstaged changes
+    if [ -n "$(git status --porcelain=v1 2>/dev/null | grep -E '^(MM| M) package-lock.json')" ]; then
+      echo "package-lock.json has unstaged changes. Skipping update of nix dependencies."
+    elif [ ! -n "$(git status --porcelain=v1 2>/dev/null | grep -E '^M package-lock.json')" ]; then
+      echo "package-lock.json has no changes. Skipping update of nix dependencies."
+    else
+      ./nix-update.sh || exit $?
+    fi
+  fi
+else
+  echo "You do not appear to have nix installed. Skipping update of nix dependencies."
+fi
+
+#npx -y lint-staged
