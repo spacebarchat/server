@@ -253,7 +253,12 @@ export interface MessageComponent {
 
 export interface ActionRowComponent extends MessageComponent {
 	type: MessageComponentType.ActionRow;
-	components: (ButtonComponent | StringSelectMenuComponent | SelectMenuComponent | TextInputComponent)[];
+	components: (
+		| ButtonComponent
+		| StringSelectMenuComponent
+		| SelectMenuComponent
+		| TextInputComponent
+	)[];
 }
 
 export interface ButtonComponent extends MessageComponent {
@@ -277,7 +282,12 @@ export enum ButtonStyle {
 }
 
 export interface SelectMenuComponent extends MessageComponent {
-	type: MessageComponentType.StringSelect | MessageComponentType.UserSelect | MessageComponentType.RoleSelect | MessageComponentType.MentionableSelect | MessageComponentType.ChannelSelect;
+	type:
+		| MessageComponentType.StringSelect
+		| MessageComponentType.UserSelect
+		| MessageComponentType.RoleSelect
+		| MessageComponentType.MentionableSelect
+		| MessageComponentType.ChannelSelect;
 	custom_id: string;
 	channel_types?: number[];
 	placeholder?: string;
