@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Embed, MessageComponent, PollAnswer, PollMedia } from "@spacebar/util";
+import { ActionRowComponent, Embed, PollAnswer, PollMedia } from "@spacebar/util";
 
 type Attachment = {
 	id: string;
@@ -54,7 +54,7 @@ export interface MessageCreateSchema {
 	**/
 	attachments?: Attachment[];
 	sticker_ids?: string[];
-	components?: MessageComponent[];
+	components?: ActionRowComponent[];
 	// TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
 	poll?: PollCreationSchema;
 	enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here
