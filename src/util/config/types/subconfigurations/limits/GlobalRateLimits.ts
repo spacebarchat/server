@@ -27,6 +27,11 @@ export class GlobalRateLimits {
 		window: 60 * 1000,
 		enabled: true,
 	};
+	bulkBan: GlobalRateLimit = {
+		limit: 200,
+		window: 0,
+		enabled: true,
+	};
 }
 
 export class GlobalRateLimit {
