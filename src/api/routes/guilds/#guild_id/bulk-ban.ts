@@ -54,8 +54,7 @@ router.post(
 		const userIds: Array<string> = req.body.user_ids;
 		if (!userIds) throw new HTTPError("The user_ids array is missing", 400);
 
-		const bulkBanLimit = Config.get().limits.absoluteRate.bulkBan;
-		if (bulkBanLimit.enabled && userIds.length > bulkBanLimit.limit)
+		if (userIds.length > Config.get().limits.guild.maxBulkBanUsers)
 			throw new HTTPError(
 				"The user_ids array must be between 1 and 200 in length",
 				400,
