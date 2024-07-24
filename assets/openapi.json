@@ -1633,6 +1633,12 @@
                             "$ref": "#/components/schemas/SecurityKey"
                         }
                     },
+                    "badge_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
                     "id": {
                         "type": "string"
                     }
@@ -3658,6 +3664,12 @@
                     },
                     "pronouns": {
                         "type": "string"
+                    },
+                    "badge_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "required": [
@@ -4104,6 +4116,19 @@
                     },
                     "username": {
                         "type": "string"
+                    },
+                    "badge_ids": {
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     }
                 },
                 "required": [
@@ -4204,12 +4229,17 @@
                         "type": "integer",
                         "default": 65535
                     },
+                    "maxBulkBanUsers": {
+                        "type": "integer",
+                        "default": 200
+                    },
                     "maxChannelsInCategory": {
                         "type": "integer",
                         "default": 65535
                     }
                 },
                 "required": [
+                    "maxBulkBanUsers",
                     "maxChannels",
                     "maxChannelsInCategory",
                     "maxEmojis",
@@ -4425,6 +4455,28 @@
                 },
                 "required": [
                     "bio"
+                ]
+            },
+            "Badge": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "description",
+                    "icon",
+                    "id"
                 ]
             },
             "TokenResponse": {
@@ -5307,7 +5359,6 @@
                         },
                         "additionalProperties": false,
                         "required": [
-                            "channel_id",
                             "message_id"
                         ]
                     },
@@ -5465,7 +5516,6 @@
                         },
                         "additionalProperties": false,
                         "required": [
-                            "channel_id",
                             "message_id"
                         ]
                     },
@@ -7216,6 +7266,12 @@
                     "pronouns": {
                         "type": "string"
                     },
+                    "badge_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
                     "mfa_enabled": {
                         "type": "boolean"
                     },
@@ -7332,6 +7388,12 @@
                     },
                     "pronouns": {
                         "type": "string"
+                    },
+                    "badge_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     "mfa_enabled": {
                         "type": "boolean"
@@ -8014,9 +8076,16 @@
                             "bio",
                             "guild_id"
                         ]
+                    },
+                    "badges": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Badge"
+                        }
                     }
                 },
                 "required": [
+                    "badges",
                     "connected_accounts",
                     "mutual_guilds",
                     "premium_type",
