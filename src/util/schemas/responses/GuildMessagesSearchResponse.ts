@@ -17,9 +17,9 @@
 */
 
 import {
+	ActionRowComponent,
 	Attachment,
 	Embed,
-	MessageComponent,
 	MessageType,
 	Poll,
 	PublicUser,
@@ -42,7 +42,7 @@ export interface GuildMessagesSearchMessage {
 	timestamp: string;
 	edited_timestamp: string | null;
 	flags: number;
-	components: MessageComponent[];
+	components: ActionRowComponent[];
 	poll: Poll;
 	hit: true;
 }
