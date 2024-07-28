@@ -157,6 +157,7 @@ router.get(
 				if (BigInt(after) > BigInt(Snowflake.generate()))
 					return res.status(422);
 				query.where.id = MoreThan(after);
+				query.order = { timestamp: "ASC" };
 			} else if (before) {
 				if (BigInt(before) > BigInt(Snowflake.generate()))
 					return res.status(422);
