@@ -21,5 +21,6 @@ export class GuildLimits {
 	maxEmojis: number = 2000;
 	maxMembers: number = 25000000;
 	maxChannels: number = 65535;
+	maxBulkBanUsers: number = 200;
 	maxChannelsInCategory: number = 65535;
 }

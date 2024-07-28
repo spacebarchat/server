@@ -4371,12 +4371,17 @@
                         "type": "integer",
                         "default": 65535
                     },
+                    "maxBulkBanUsers": {
+                        "type": "integer",
+                        "default": 200
+                    },
                     "maxChannelsInCategory": {
                         "type": "integer",
                         "default": 65535
                     }
                 },
                 "required": [
+                    "maxBulkBanUsers",
                     "maxChannels",
                     "maxChannelsInCategory",
                     "maxEmojis",
