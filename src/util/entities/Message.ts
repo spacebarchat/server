@@ -216,7 +216,7 @@ export class Message extends BaseClass {
 	};
 
 	@Column({ type: "simple-json", nullable: true })
-	components?: MessageComponent[];
+	components?: ActionRowComponent[];
 
 	@Column({ type: "simple-json", nullable: true })
 	poll?: Poll;
@@ -248,21 +248,100 @@ export class Message extends BaseClass {
 }
 
 export interface MessageComponent {
-	type: number;
-	style?: number;
+	type: MessageComponentType;
+}
+
+export interface ActionRowComponent extends MessageComponent {
+	type: MessageComponentType.ActionRow;
+	components: (
+		| ButtonComponent
+		| StringSelectMenuComponent
+		| SelectMenuComponent
+		| TextInputComponent
+	)[];
+}
+
+export interface ButtonComponent extends MessageComponent {
+	type: MessageComponentType.Button;
+	style: ButtonStyle;
 	label?: string;
 	emoji?: PartialEmoji;
 	custom_id?: string;
 	sku_id?: string;
 	url?: string;
 	disabled?: boolean;
-	components: MessageComponent[];
+}
+
+export enum ButtonStyle {
+	Primary = 1,
+	Secondary = 2,
+	Success = 3,
+	Danger = 4,
+	Link = 5,
+	Premium = 6,
+}
+
+export interface SelectMenuComponent extends MessageComponent {
+	type:
+		| MessageComponentType.StringSelect
+		| MessageComponentType.UserSelect
+		| MessageComponentType.RoleSelect
+		| MessageComponentType.MentionableSelect
+		| MessageComponentType.ChannelSelect;
+	custom_id: string;
+	channel_types?: number[];
+	placeholder?: string;
+	default_values?: SelectMenuDefaultOption[]; // only for non-string selects
+	min_values?: number;
+	max_values?: number;
+	disabled?: boolean;
+}
+
+export interface SelectMenuOption {
+	label: string;
+	value: string;
+	description?: string;
+	emoji?: PartialEmoji;
+	default?: boolean;
+}
+
+export interface SelectMenuDefaultOption {
+	id: string;
+	type: "user" | "role" | "channel";
+}
+
+export interface StringSelectMenuComponent extends SelectMenuComponent {
+	type: MessageComponentType.StringSelect;
+	options: SelectMenuOption[];
+}
+
+export interface TextInputComponent extends MessageComponent {
+	type: MessageComponentType.TextInput;
+	custom_id: string;
+	style: TextInputStyle;
+	label: string;
+	min_length?: number;
+	max_length?: number;
+	required?: boolean;
+	value?: string;
+	placeholder?: string;
+}
+
+export enum TextInputStyle {
+	Short = 1,
+	Paragraph = 2,
 }
 
 export enum MessageComponentType {
 	Script = 0, // self command script
 	ActionRow = 1,
 	Button = 2,
+	StringSelect = 3,
+	TextInput = 4,
+	UserSelect = 5,
+	RoleSelect = 6,
+	MentionableSelect = 7,
+	ChannelSelect = 8,
 }
 
 export interface Embed {

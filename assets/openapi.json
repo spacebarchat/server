@@ -61,208 +61,109 @@
                     "read_states"
                 ]
             },
-            "ConnectedAccountCommonOAuthTokenResponse": {
+            "DiagnosticsChannel.Response": {
                 "type": "object",
                 "properties": {
-                    "access_token": {
-                        "type": "string"
-                    },
-                    "token_type": {
-                        "type": "string"
-                    },
-                    "scope": {
-                        "type": "string"
-                    },
-                    "refresh_token": {
-                        "type": "string"
-                    },
-                    "expires_in": {
+                    "statusCode": {
                         "type": "integer"
-                    }
-                },
-                "required": [
-                    "access_token",
-                    "scope",
-                    "token_type"
-                ]
-            },
-            "ApplicationAuthorizeSchema": {
-                "type": "object",
-                "properties": {
-                    "authorize": {
-                        "type": "boolean"
                     },
-                    "guild_id": {
+                    "statusText": {
                         "type": "string"
                     },
-                    "permissions": {
-                        "type": "string"
-                    },
-                    "captcha_key": {
-                        "type": "string"
-                    },
-                    "code": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "authorize",
-                    "guild_id",
-                    "permissions"
-                ]
-            },
-            "ApplicationCreateSchema": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "team_id": {
-                        "type": [
-                            "string",
-                            "integer"
-                        ]
-                    }
-                },
-                "required": [
-                    "name"
-                ]
-            },
-            "ApplicationModifySchema": {
-                "type": "object",
-                "properties": {
-                    "description": {
-                        "type": "string"
-                    },
-                    "icon": {
-                        "type": "string"
-                    },
-                    "interactions_endpoint_url": {
-                        "type": "string"
-                    },
-                    "max_participants": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "privacy_policy_url": {
-                        "type": "string"
-                    },
-                    "role_connections_verification_url": {
-                        "type": "string"
-                    },
-                    "tags": {
+                    "headers": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": false,
+                            "patternProperties": {
+                                "^[0-9]+$": {
+                                    "type": "integer"
+                                }
+                            }
                         }
-                    },
-                    "terms_of_service_url": {
-                        "type": "string"
-                    },
-                    "bot_public": {
-                        "type": "boolean"
-                    },
-                    "bot_require_code_grant": {
-                        "type": "boolean"
-                    },
-                    "flags": {
-                        "type": "integer"
-                    }
-                }
-            },
-            "BackupCodesChallengeSchema": {
-                "type": "object",
-                "properties": {
-                    "password": {
-                        "type": "string"
                     }
                 },
                 "required": [
-                    "password"
+                    "headers",
+                    "statusCode",
+                    "statusText"
                 ]
             },
-            "BanCreateSchema": {
+            "Headers": {
                 "type": "object",
                 "properties": {
-                    "delete_message_seconds": {
-                        "type": "string"
+                    "append": {
+                        "type": "object",
+                        "additionalProperties": false
                     },
-                    "delete_message_days": {
-                        "type": "string"
+                    "delete": {
+                        "type": "object",
+                        "additionalProperties": false
                     },
-                    "reason": {
-                        "type": "string"
-                    }
-                }
-            },
-            "BanModeratorSchema": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
+                    "get": {
+                        "type": "object",
+                        "additionalProperties": false
                     },
-                    "user_id": {
-                        "type": "string"
+                    "has": {
+                        "type": "object",
+                        "additionalProperties": false
                     },
-                    "guild_id": {
-                        "type": "string"
+                    "set": {
+                        "type": "object",
+                        "additionalProperties": false
                     },
-                    "executor_id": {
-                        "type": "string"
+                    "getSetCookie": {
+                        "type": "object",
+                        "additionalProperties": false
                     },
-                    "reason": {
-                        "type": "string"
+                    "forEach": {
+                        "description": "Performs the specified action for each element in an array.",
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "keys": {
+                        "description": "Returns an array consisting of the keys of the object",
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "values": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "entries": {
+                        "description": "Returns an array consisting of the key value pairs of the object",
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "__@iterator": {
+                        "type": "object",
+                        "additionalProperties": false
                     }
                 },
                 "required": [
-                    "executor_id",
-                    "guild_id",
-                    "id",
-                    "user_id"
+                    "__@iterator",
+                    "append",
+                    "delete",
+                    "entries",
+                    "forEach",
+                    "get",
+                    "getSetCookie",
+                    "has",
+                    "keys",
+                    "set",
+                    "values"
                 ]
             },
-            "BanRegistrySchema": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "user_id": {
-                        "type": "string"
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "executor_id": {
-                        "type": "string"
-                    },
-                    "ip": {
-                        "type": "string"
-                    },
-                    "reason": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "executor_id",
-                    "guild_id",
-                    "id",
-                    "user_id"
-                ]
-            },
-            "BotModifySchema": {
-                "type": "object",
-                "properties": {
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    }
-                }
+            "ResponseType": {
+                "enum": [
+                    "basic",
+                    "cors",
+                    "default",
+                    "error",
+                    "opaque",
+                    "opaqueredirect"
+                ],
+                "type": "string"
             },
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -734,14 +635,51 @@
                     }
                 }
             },
-            "MessageComponent": {
+            "ActionRowComponent": {
                 "type": "object",
                 "properties": {
                     "type": {
-                        "type": "integer"
+                        "$ref": "#/components/schemas/MessageComponentType.ActionRow"
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/ButtonComponent"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/SelectMenuComponent"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/StringSelectMenuComponent"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/TextInputComponent"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "components",
+                    "type"
+                ]
+            },
+            "MessageComponentType.ActionRow": {
+                "type": "number",
+                "enum": [
+                    1
+                ]
+            },
+            "ButtonComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/MessageComponentType.Button"
                     },
                     "style": {
-                        "type": "integer"
+                        "$ref": "#/components/schemas/ButtonStyle"
                     },
                     "label": {
                         "type": "string"
@@ -760,18 +698,29 @@
                     },
                     "disabled": {
                         "type": "boolean"
-                    },
-                    "components": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/MessageComponent"
-                        }
                     }
                 },
                 "required": [
-                    "components",
+                    "style",
                     "type"
                 ]
+            },
+            "MessageComponentType.Button": {
+                "type": "number",
+                "enum": [
+                    2
+                ]
+            },
+            "ButtonStyle": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "type": "number"
             },
             "PartialEmoji": {
                 "type": "object",
@@ -789,6 +738,199 @@
                 "required": [
                     "name"
                 ]
+            },
+            "SelectMenuComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "enum": [
+                            3,
+                            5,
+                            6,
+                            7,
+                            8
+                        ],
+                        "type": "number"
+                    },
+                    "custom_id": {
+                        "type": "string"
+                    },
+                    "channel_types": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
+                    },
+                    "default_values": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SelectMenuDefaultOption"
+                        }
+                    },
+                    "min_values": {
+                        "type": "integer"
+                    },
+                    "max_values": {
+                        "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "custom_id",
+                    "type"
+                ]
+            },
+            "SelectMenuDefaultOption": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "enum": [
+                            "channel",
+                            "role",
+                            "user"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ]
+            },
+            "StringSelectMenuComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/MessageComponentType.StringSelect"
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SelectMenuOption"
+                        }
+                    },
+                    "custom_id": {
+                        "type": "string"
+                    },
+                    "channel_types": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
+                    },
+                    "default_values": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SelectMenuDefaultOption"
+                        }
+                    },
+                    "min_values": {
+                        "type": "integer"
+                    },
+                    "max_values": {
+                        "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "custom_id",
+                    "options",
+                    "type"
+                ]
+            },
+            "MessageComponentType.StringSelect": {
+                "type": "number",
+                "enum": [
+                    3
+                ]
+            },
+            "SelectMenuOption": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "emoji": {
+                        "$ref": "#/components/schemas/PartialEmoji"
+                    },
+                    "default": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "label",
+                    "value"
+                ]
+            },
+            "TextInputComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/MessageComponentType.TextInput"
+                    },
+                    "custom_id": {
+                        "type": "string"
+                    },
+                    "style": {
+                        "$ref": "#/components/schemas/TextInputStyle"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "min_length": {
+                        "type": "integer"
+                    },
+                    "max_length": {
+                        "type": "integer"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "placeholder": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "custom_id",
+                    "label",
+                    "style",
+                    "type"
+                ]
+            },
+            "MessageComponentType.TextInput": {
+                "type": "number",
+                "enum": [
+                    4
+                ]
+            },
+            "TextInputStyle": {
+                "enum": [
+                    1,
+                    2
+                ],
+                "type": "number"
             },
             "PollCreationSchema": {
                 "type": "object",
@@ -2362,7 +2504,7 @@
                     "components": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/MessageComponent"
+                            "$ref": "#/components/schemas/ActionRowComponent"
                         }
                     },
                     "poll": {
@@ -3587,7 +3729,7 @@
                     "components": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/MessageComponent"
+                            "$ref": "#/components/schemas/ActionRowComponent"
                         }
                     },
                     "poll": {
@@ -3796,13 +3938,13 @@
             "APIGuild": {
                 "type": "object",
                 "properties": {
-                    "name": {
-                        "type": "string"
-                    },
                     "reload": {
                         "description": "Reloads entity data from the database.",
                         "type": "object",
                         "additionalProperties": false
+                    },
+                    "name": {
+                        "type": "string"
                     },
                     "id": {
                         "type": "string"
@@ -4555,6 +4697,372 @@
                     "token",
                     "webauthn"
                 ]
+            },
+            "_Response": {
+                "type": "object",
+                "properties": {
+                    "headers": {
+                        "$ref": "#/components/schemas/Headers"
+                    },
+                    "ok": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "statusText": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ResponseType"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "redirected": {
+                        "type": "boolean"
+                    },
+                    "body": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ReadableStream<any>"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "bodyUsed": {
+                        "type": "boolean"
+                    },
+                    "arrayBuffer": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "blob": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "formData": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "json": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "text": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "clone": {
+                        "type": "object",
+                        "additionalProperties": false
+                    }
+                },
+                "required": [
+                    "arrayBuffer",
+                    "blob",
+                    "body",
+                    "bodyUsed",
+                    "clone",
+                    "formData",
+                    "headers",
+                    "json",
+                    "ok",
+                    "redirected",
+                    "status",
+                    "statusText",
+                    "text",
+                    "type",
+                    "url"
+                ]
+            },
+            "global.Response": {
+                "type": "object",
+                "properties": {
+                    "headers": {
+                        "$ref": "#/components/schemas/Headers"
+                    },
+                    "ok": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "statusText": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ResponseType"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "redirected": {
+                        "type": "boolean"
+                    },
+                    "body": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ReadableStream<any>"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "bodyUsed": {
+                        "type": "boolean"
+                    },
+                    "arrayBuffer": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "blob": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "formData": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "json": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "text": {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    "clone": {
+                        "type": "object",
+                        "additionalProperties": false
+                    }
+                },
+                "required": [
+                    "arrayBuffer",
+                    "blob",
+                    "body",
+                    "bodyUsed",
+                    "clone",
+                    "formData",
+                    "headers",
+                    "json",
+                    "ok",
+                    "redirected",
+                    "status",
+                    "statusText",
+                    "text",
+                    "type",
+                    "url"
+                ]
+            },
+            "ConnectedAccountCommonOAuthTokenResponse": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "access_token",
+                    "scope",
+                    "token_type"
+                ]
+            },
+            "ExpressResponse": {
+                "type": "object"
+            },
+            "ApplicationAuthorizeSchema": {
+                "type": "object",
+                "properties": {
+                    "authorize": {
+                        "type": "boolean"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "permissions": {
+                        "type": "string"
+                    },
+                    "captcha_key": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "authorize",
+                    "guild_id",
+                    "permissions"
+                ]
+            },
+            "ApplicationCreateSchema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "team_id": {
+                        "type": [
+                            "string",
+                            "integer"
+                        ]
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "ApplicationModifySchema": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "interactions_endpoint_url": {
+                        "type": "string"
+                    },
+                    "max_participants": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "privacy_policy_url": {
+                        "type": "string"
+                    },
+                    "role_connections_verification_url": {
+                        "type": "string"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "terms_of_service_url": {
+                        "type": "string"
+                    },
+                    "bot_public": {
+                        "type": "boolean"
+                    },
+                    "bot_require_code_grant": {
+                        "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "BackupCodesChallengeSchema": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "password"
+                ]
+            },
+            "BanCreateSchema": {
+                "type": "object",
+                "properties": {
+                    "delete_message_seconds": {
+                        "type": "string"
+                    },
+                    "delete_message_days": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                }
+            },
+            "BanModeratorSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "executor_id": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "executor_id",
+                    "guild_id",
+                    "id",
+                    "user_id"
+                ]
+            },
+            "BanRegistrySchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "executor_id": {
+                        "type": "string"
+                    },
+                    "ip": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "executor_id",
+                    "guild_id",
+                    "id",
+                    "user_id"
+                ]
+            },
+            "BotModifySchema": {
+                "type": "object",
+                "properties": {
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    }
+                }
             },
             "ChannelPermissionOverwriteSchema": {
                 "type": "object",
@@ -5406,7 +5914,7 @@
                     "components": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/MessageComponent"
+                            "$ref": "#/components/schemas/ActionRowComponent"
                         }
                     },
                     "poll": {
@@ -5432,6 +5940,9 @@
             "MessageEditSchema": {
                 "type": "object",
                 "properties": {
+                    "embed": {
+                        "$ref": "#/components/schemas/Embed"
+                    },
                     "file": {
                         "type": "object",
                         "properties": {
@@ -5444,11 +5955,28 @@
                             "filename"
                         ]
                     },
-                    "embed": {
-                        "$ref": "#/components/schemas/Embed"
-                    },
                     "flags": {
                         "type": "integer"
+                    },
+                    "attachments": {
+                        "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "filename": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "filename",
+                                "id"
+                            ]
+                        }
                     },
                     "content": {
                         "type": "string"
@@ -5522,26 +6050,6 @@
                     "payload_json": {
                         "type": "string"
                     },
-                    "attachments": {
-                        "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string"
-                                },
-                                "filename": {
-                                    "type": "string"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "filename",
-                                "id"
-                            ]
-                        }
-                    },
                     "sticker_ids": {
                         "type": "array",
                         "items": {
@@ -5551,7 +6059,7 @@
                     "components": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/MessageComponent"
+                            "$ref": "#/components/schemas/ActionRowComponent"
                         }
                     },
                     "poll": {

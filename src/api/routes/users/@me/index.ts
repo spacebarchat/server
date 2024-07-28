@@ -120,7 +120,7 @@ router.patch(
 			if (!body.password)
 				throw FieldErrors({
 					password: {
-						message: req.t("auth:register.INVALID_PASSWORD"),
+						message: req.t("auth:login.INVALID_PASSWORD"),
 						code: "INVALID_PASSWORD",
 					},
 				});
@@ -157,6 +157,15 @@ router.patch(
 					username: {
 						code: "USERNAME_INVALID",
 						message: `Username must be less than ${maxUsername} in length`,
+					},
+				});
+			}
+
+			if (!body.password) {
+				throw FieldErrors({
+					password: {
+						message: req.t("auth:login.INVALID_PASSWORD"),
+						code: "INVALID_PASSWORD",
 					},
 				});
 			}
