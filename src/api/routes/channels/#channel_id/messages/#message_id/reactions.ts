@@ -262,7 +262,7 @@ router.put(
 );
 
 router.delete(
-	"/:emoji/:user_id",
+	"/:emoji/:burst/:user_id",
 	route({
 		responses: {
 			204: {},
