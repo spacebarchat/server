@@ -221,6 +221,12 @@ export class Message extends BaseClass {
 	@Column({ type: "simple-json", nullable: true })
 	poll?: Poll;
 
+	@Column({ nullable: true })
+	username?: string;
+
+	@Column({ nullable: true })
+	avatar?: string;
+
 	toJSON(): Message {
 		return {
 			...this,
@@ -237,7 +243,12 @@ export class Message extends BaseClass {
 			reactions: this.reactions ?? undefined,
 			sticker_items: this.sticker_items ?? undefined,
 			message_reference: this.message_reference ?? undefined,
-			author: this.author?.toPublicUser() ?? undefined,
+			author: {
+				...(this.author?.toPublicUser() ?? undefined),
+				// Webhooks
+				username: this.username ?? this.author?.username,
+				avatar: this.avatar ?? this.author?.avatar,
+			},
 			activity: this.activity ?? undefined,
 			application: this.application ?? undefined,
 			components: this.components ?? undefined,

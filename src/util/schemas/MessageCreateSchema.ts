@@ -23,7 +23,7 @@ import {
 	PollMedia,
 } from "@spacebar/util";
 
-type Attachment = {
+export type MessageCreateAttachment = {
 	id: string;
 	filename: string;
 };
@@ -57,7 +57,7 @@ export interface MessageCreateSchema {
 	TODO: we should create an interface for attachments
 	TODO: OpenWAAO<-->attachment-style metadata conversion
 	**/
-	attachments?: Attachment[];
+	attachments?: MessageCreateAttachment[];
 	sticker_ids?: string[];
 	components?: ActionRowComponent[];
 	// TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
