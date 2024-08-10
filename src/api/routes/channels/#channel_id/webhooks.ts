@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -26,8 +26,8 @@ import {
 	WebhookCreateSchema,
 	WebhookType,
 	handleFile,
-	trimSpecial,
 	isTextChannel,
+	trimSpecial,
 } from "@spacebar/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
@@ -35,10 +35,12 @@ import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
-//TODO: implement webhooks
 router.get(
 	"/",
 	route({
+		description:
+			"Returns a list of channel webhook objects. Requires the MANAGE_WEBHOOKS permission.",
+		permission: "MANAGE_WEBHOOKS",
 		responses: {
 			200: {
 				body: "APIWebhookArray",
@@ -46,7 +48,32 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		res.json([]);
+		const { channel_id } = req.params;
+		const webhooks = await Webhook.find({
+			where: { channel_id },
+			relations: [
+				"user",
+				"channel",
+				"source_channel",
+				"guild",
+				"source_guild",
+				"application",
+			],
+		});
+
+		const instanceUrl =
+			Config.get().api.endpointPublic || "http://localhost:3001";
+		return res.json(
+			webhooks.map((webhook) => ({
+				...webhook,
+				url:
+					instanceUrl +
+					"/webhooks/" +
+					webhook.id +
+					"/" +
+					webhook.token,
+			})),
+		);
 	},
 );
 
@@ -89,15 +116,15 @@ router.post(
 
 		if (avatar) avatar = await handleFile(`/avatars/${channel_id}`, avatar);
 
-		const hook = Webhook.create({
+		const hook = await Webhook.create({
 			type: WebhookType.Incoming,
 			name,
 			avatar,
 			guild_id: channel.guild_id,
 			channel_id: channel.id,
 			user_id: req.user_id,
-			token: crypto.randomBytes(24).toString("base64"),
-		});
+			token: crypto.randomBytes(24).toString("base64url"),
+		}).save();
 
 		const user = await User.getPublicUser(req.user_id);
 
