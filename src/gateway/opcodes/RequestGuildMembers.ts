@@ -23,12 +23,7 @@ import {
 	Presence,
 	RequestGuildMembersSchema,
 } from "@spacebar/util";
-import {
-	WebSocket,
-	Payload,
-	OPCODES,
-	Send,
-} from "@spacebar/gateway";
+import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
 import { check } from "./instanceOf";
 import { FindManyOptions, In, Like } from "typeorm";
 
@@ -38,24 +33,26 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 
 	const { guild_id, query, presences, nonce } =
 		d as RequestGuildMembersSchema;
-	let { limit, user_ids } =
-		d as RequestGuildMembersSchema;
+	let { limit, user_ids } = d as RequestGuildMembersSchema;
 
-	if ("query" in d && (!limit || Number.isNaN(limit))) throw new Error("\"query\" requires \"limit\" to be set");
-	if ("query" in d && user_ids) throw new Error("\"query\" and \"user_ids\" are mutually exclusive");
+	if ("query" in d && (!limit || Number.isNaN(limit)))
+		throw new Error('"query" requires "limit" to be set');
+	if ("query" in d && user_ids)
+		throw new Error('"query" and "user_ids" are mutually exclusive');
 	if (user_ids && !Array.isArray(user_ids)) user_ids = [user_ids];
 	user_ids = user_ids as string[] | undefined;
 
 	// TODO: Configurable limit?
-	if ((query || (user_ids && user_ids.length > 0)) && (!limit || limit > 100)) limit = 100;
+	if ((query || (user_ids && user_ids.length > 0)) && (!limit || limit > 100))
+		limit = 100;
 
 	const permissions = await getPermission(this.user_id, guild_id);
 	permissions.hasThrow("VIEW_CHANNEL");
 
-	const whereQuery: any = {};
+	const whereQuery: FindManyOptions["where"] = {};
 	if (query) {
 		whereQuery.user = {
-			username: Like(query + "%")
+			username: Like(query + "%"),
 		};
 	} else if (user_ids && user_ids.length > 0) {
 		whereQuery.id = In(user_ids);
@@ -64,9 +61,9 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	const memberFind: FindManyOptions = {
 		where: {
 			...whereQuery,
-			guild_id
+			guild_id,
 		},
-		relations: ["user", "roles", ...(presences ? ["presence"] : [])],
+		relations: ["roles", ...(presences ? ["presence"] : [])],
 	};
 	if (limit) memberFind.take = Math.abs(Number(limit || 100));
 	const members = await Member.find(memberFind);
@@ -74,7 +71,15 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	const baseData = {
 		guild_id,
 		nonce,
-	}
+	};
+
+	const chunkCount = Math.ceil(members.length / 1000);
+
+	let notFound: string[] = [];
+	if (user_ids && user_ids.length > 0)
+		notFound = user_ids.filter(
+			(id) => !members.some((member) => member.id == id),
+		);
 
 	const chunks: GuildMembersChunkEvent["data"][] = [];
 	while (members.length > 0) {
@@ -90,15 +95,14 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 
 		chunks.push({
 			...baseData,
-			members: chunk.map(member => member.toPublicMember()),
+			members: chunk.map((member) => member.toPublicMember()),
 			presences: presences ? presenceList : undefined,
 			chunk_index: chunks.length,
-			chunk_count: Math.ceil(members.length / 1000),
+			chunk_count: chunkCount,
 		});
 	}
 
-	if (user_ids && user_ids.length > 0)
-		chunks[0].not_found = user_ids.filter(id => !members.some(member => member.user.id == id));
+	if (notFound.length > 0) chunks[0].not_found = notFound;
 
 	chunks.forEach((chunk) => {
 		Send(this, {
