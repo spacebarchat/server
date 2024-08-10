@@ -262,6 +262,76 @@ router.put(
 );
 
 router.delete(
+	"/:emoji/:user_id",
+	route({
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {},
+			403: {},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		let { user_id } = req.params;
+		const { message_id, channel_id } = req.params;
+
+		const emoji = getEmoji(req.params.emoji);
+
+		const channel = await Channel.findOneOrFail({
+			where: { id: channel_id },
+		});
+		const message = await Message.findOneOrFail({
+			where: { id: message_id, channel_id },
+		});
+
+		if (user_id === "@me") user_id = req.user_id;
+		else {
+			const permissions = await getPermission(
+				req.user_id,
+				undefined,
+				channel_id,
+			);
+			permissions.hasThrow("MANAGE_MESSAGES");
+		}
+
+		const already_added = message.reactions.find(
+			(x) =>
+				(x.emoji.id === emoji.id && emoji.id) ||
+				x.emoji.name === emoji.name,
+		);
+		if (!already_added || !already_added.user_ids.includes(user_id))
+			throw new HTTPError("Reaction not found", 404);
+
+		already_added.count--;
+
+		if (already_added.count <= 0) message.reactions.remove(already_added);
+		else
+			already_added.user_ids.splice(
+				already_added.user_ids.indexOf(user_id),
+				1,
+			);
+
+		await message.save();
+
+		await emitEvent({
+			event: "MESSAGE_REACTION_REMOVE",
+			channel_id,
+			data: {
+				user_id: req.user_id,
+				channel_id,
+				message_id,
+				guild_id: channel.guild_id,
+				emoji,
+			},
+		} as MessageReactionRemoveEvent);
+
+		res.sendStatus(204);
+	},
+);
+
+router.delete(
 	"/:emoji/:burst/:user_id",
 	route({
 		responses: {
