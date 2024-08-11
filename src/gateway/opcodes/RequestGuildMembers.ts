@@ -22,6 +22,7 @@ import {
 	Member,
 	Presence,
 	RequestGuildMembersSchema,
+	Session,
 } from "@spacebar/util";
 import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
 import { check } from "./instanceOf";
@@ -63,7 +64,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 			...whereQuery,
 			guild_id,
 		},
-		relations: ["roles", ...(presences ? ["presence"] : [])],
+		relations: ["users", "roles"],
 	};
 	if (limit) memberFind.take = Math.abs(Number(limit || 100));
 	const members = await Member.find(memberFind);
@@ -83,13 +84,21 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 
 	const chunks: GuildMembersChunkEvent["data"][] = [];
 	while (members.length > 0) {
-		const chunk = members.splice(0, 1000);
+		const chunk: Member[] = members.splice(0, 1000);
 
 		const presenceList: Presence[] = [];
 		if (presences) {
 			for await (const member of chunk) {
-				presenceList.push(member.presence);
-				delete member.presence;
+				const session = await Session.findOne({
+					where: { user_id: member.id },
+				});
+				if (session)
+					presenceList.push({
+						user: member.user.toPublicUser(),
+						status: session.status,
+						activities: session.activities,
+						client_status: session.client_status,
+					});
 			}
 		}
 
