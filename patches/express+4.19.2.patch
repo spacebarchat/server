@@ -1,5 +1,5 @@
 diff --git a/node_modules/express/lib/response.js b/node_modules/express/lib/response.js
-index fede486..e3d868e 100644
+index dd7b3c8..a339896 100644
 --- a/node_modules/express/lib/response.js
 +++ b/node_modules/express/lib/response.js
 @@ -27,7 +27,6 @@ var merge = require('utils-merge');
@@ -10,21 +10,15 @@ index fede486..e3d868e 100644
  var cookie = require('cookie');
  var send = require('send');
  var extname = path.extname;
-@@ -49,13 +48,6 @@ var res = Object.create(http.ServerResponse.prototype)
+@@ -54,7 +53,6 @@ module.exports = res
+  * @private
+  */
  
- module.exports = res
- 
--/**
-- * Module variables.
-- * @private
-- */
--
 -var charsetRegExp = /;\s*charset\s*=/;
--
+ var schemaAndHostRegExp = /^(?:[a-zA-Z][a-zA-Z0-9+.-]*:)?\/\/[^\\\/\?]+/;
+ 
  /**
-  * Set status `code`.
-  *
-@@ -164,17 +156,6 @@ res.send = function send(body) {
+@@ -165,16 +163,6 @@ res.send = function send(body) {
        break;
    }
  
@@ -38,11 +32,10 @@ index fede486..e3d868e 100644
 -      this.set('Content-Type', setCharset(type, 'utf-8'));
 -    }
 -  }
--
+ 
    // determine if ETag should be generated
    var etagFn = app.get('etag fn')
-   var generateETag = !this.get('ETag') && typeof etagFn === 'function'
-@@ -780,17 +761,6 @@ res.header = function header(field, val) {
+@@ -781,17 +769,6 @@ res.header = function header(field, val) {
        ? val.map(String)
        : String(val);
  
