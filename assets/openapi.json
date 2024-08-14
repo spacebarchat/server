@@ -1857,6 +1857,9 @@
                             "version"
                         ]
                     },
+                    "client_status": {
+                        "$ref": "#/components/schemas/ClientStatus"
+                    },
                     "status": {
                         "$ref": "#/components/schemas/Status"
                     },
@@ -1867,12 +1870,30 @@
                 "required": [
                     "activities",
                     "client_info",
+                    "client_status",
                     "id",
                     "session_id",
                     "status",
                     "user",
                     "user_id"
                 ]
+            },
+            "ClientStatus": {
+                "type": "object",
+                "properties": {
+                    "desktop": {
+                        "type": "string"
+                    },
+                    "mobile": {
+                        "type": "string"
+                    },
+                    "web": {
+                        "type": "string"
+                    },
+                    "embedded": {
+                        "type": "string"
+                    }
+                }
             },
             "Relationship": {
                 "type": "object",
@@ -3867,20 +3888,6 @@
                     "code"
                 ]
             },
-            "ClientStatus": {
-                "type": "object",
-                "properties": {
-                    "desktop": {
-                        "type": "string"
-                    },
-                    "mobile": {
-                        "type": "string"
-                    },
-                    "web": {
-                        "type": "string"
-                    }
-                }
-            },
             "Snowflake": {
                 "description": "A container for useful snowflake-related methods.",
                 "type": "object"
@@ -4310,6 +4317,9 @@
                     },
                     "is_primary": {
                         "type": "boolean"
+                    },
+                    "icon": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -4360,9 +4370,14 @@
                     "maxFriends": {
                         "type": "integer",
                         "default": 5000
+                    },
+                    "maxBio": {
+                        "type": "integer",
+                        "default": 190
                     }
                 },
                 "required": [
+                    "maxBio",
                     "maxFriends",
                     "maxGuilds",
                     "maxUsername"
@@ -6243,6 +6258,42 @@
                     }
                 }
             },
+            "RequestGuildMembersSchema": {
+                "type": "object",
+                "properties": {
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "query": {
+                        "type": "string"
+                    },
+                    "limit": {
+                        "type": "integer"
+                    },
+                    "presences": {
+                        "type": "boolean"
+                    },
+                    "user_ids": {
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "nonce": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "guild_id"
+                ]
+            },
             "RoleModifySchema": {
                 "type": "object",
                 "properties": {
@@ -6544,7 +6595,6 @@
                         "nullable": true
                     },
                     "bio": {
-                        "maxLength": 1024,
                         "type": "string"
                     },
                     "accent_color": {
