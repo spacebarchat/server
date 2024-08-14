@@ -232,7 +232,7 @@ export class Message extends BaseClass {
 			...this,
 			author_id: undefined,
 			member_id: undefined,
-			webhook_id: undefined,
+			webhook_id: this.webhook_id ?? undefined,
 			application_id: undefined,
 
 			nonce: this.nonce ?? undefined,
