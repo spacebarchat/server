@@ -155,12 +155,20 @@ router.get(
 		} else {
 			if (after) {
 				if (BigInt(after) > BigInt(Snowflake.generate()))
-					return res.status(422);
+					throw new HTTPError(
+						"after parameter must not be greater than current time",
+						422,
+					);
+
 				query.where.id = MoreThan(after);
 				query.order = { timestamp: "ASC" };
 			} else if (before) {
 				if (BigInt(before) > BigInt(Snowflake.generate()))
-					return res.status(422);
+					throw new HTTPError(
+						"before parameter must not be greater than current time",
+						422,
+					);
+
 				query.where.id = LessThan(before);
 			}
 
