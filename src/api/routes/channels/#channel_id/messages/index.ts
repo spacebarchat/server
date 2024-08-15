@@ -130,30 +130,45 @@ router.get(
 			query.take = Math.floor(limit / 2);
 			if (query.take != 0) {
 				const [right, left] = await Promise.all([
-					Message.find({ ...query, where: { id: LessThan(around) } }),
 					Message.find({
 						...query,
-						where: { id: MoreThanOrEqual(around) },
+						where: { channel_id, id: LessThan(around) },
+					}),
+					Message.find({
+						...query,
+						where: { channel_id, id: MoreThanOrEqual(around) },
+						order: { timestamp: "ASC" },
 					}),
 				]);
 				left.push(...right);
-				messages = left;
+				messages = left.sort(
+					(a, b) => a.timestamp.getTime() - b.timestamp.getTime(),
+				);
 			} else {
 				query.take = 1;
 				const message = await Message.findOne({
 					...query,
-					where: { id: around },
+					where: { channel_id, id: around },
 				});
 				messages = message ? [message] : [];
 			}
 		} else {
 			if (after) {
 				if (BigInt(after) > BigInt(Snowflake.generate()))
-					return res.status(422);
+					throw new HTTPError(
+						"after parameter must not be greater than current time",
+						422,
+					);
+
 				query.where.id = MoreThan(after);
+				query.order = { timestamp: "ASC" };
 			} else if (before) {
 				if (BigInt(before) > BigInt(Snowflake.generate()))
-					return res.status(422);
+					throw new HTTPError(
+						"before parameter must not be greater than current time",
+						422,
+					);
+
 				query.where.id = LessThan(before);
 			}
 

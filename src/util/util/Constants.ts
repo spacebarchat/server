@@ -578,7 +578,7 @@ export const DiscordApiErrors = {
 	UNKNOWN_TOKEN: new ApiError("Unknown token", 10012),
 	UNKNOWN_USER: new ApiError("Unknown user", 10013),
 	UNKNOWN_EMOJI: new ApiError("Unknown emoji", 10014),
-	UNKNOWN_WEBHOOK: new ApiError("Unknown webhook", 10015),
+	UNKNOWN_WEBHOOK: new ApiError("Unknown webhook", 10015, 404),
 	UNKNOWN_WEBHOOK_SERVICE: new ApiError("Unknown webhook service", 10016),
 	UNKNOWN_CONNECTION: new ApiError("Unknown connection", 10017, 400),
 	UNKNOWN_SESSION: new ApiError("Unknown session", 10020),

@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { checkToken, Rights } from "@spacebar/util";
 import * as Sentry from "@sentry/node";
+import { checkToken, Rights } from "@spacebar/util";
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -32,7 +32,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"/auth/forgot",
 	"/auth/reset",
 	// Routes with a seperate auth system
-	"/webhooks/",
+	/\/webhooks\/\d+\/\w+\/?/, // no token requires auth
 	// Public information endpoints
 	"/ping",
 	"/gateway",

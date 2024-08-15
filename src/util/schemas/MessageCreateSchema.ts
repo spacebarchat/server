@@ -16,9 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Embed, MessageComponent, PollAnswer, PollMedia } from "@spacebar/util";
+import {
+	ActionRowComponent,
+	Embed,
+	PollAnswer,
+	PollMedia,
+} from "@spacebar/util";
 
-type Attachment = {
+export type MessageCreateAttachment = {
 	id: string;
 	filename: string;
 };
@@ -52,9 +57,9 @@ export interface MessageCreateSchema {
 	TODO: we should create an interface for attachments
 	TODO: OpenWAAO<-->attachment-style metadata conversion
 	**/
-	attachments?: Attachment[];
+	attachments?: MessageCreateAttachment[];
 	sticker_ids?: string[];
-	components?: MessageComponent[];
+	components?: ActionRowComponent[];
 	// TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
 	poll?: PollCreationSchema;
 	enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here

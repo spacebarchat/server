@@ -27,6 +27,7 @@ import {
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { Config } from "@spacebar/util";
 
 const router: Router = Router();
 
@@ -52,7 +53,8 @@ router.post(
 
 		const userIds: Array<string> = req.body.user_ids;
 		if (!userIds) throw new HTTPError("The user_ids array is missing", 400);
-		if (userIds.length > 200)
+
+		if (userIds.length > Config.get().limits.guild.maxBulkBanUsers)
 			throw new HTTPError(
 				"The user_ids array must be between 1 and 200 in length",
 				400,
