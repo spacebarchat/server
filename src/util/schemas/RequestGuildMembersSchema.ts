@@ -17,7 +17,7 @@
 */
 
 export interface RequestGuildMembersSchema {
-	guild_id: string | string[];
+	guild_id: string | [string];
 	query?: string;
 	limit?: number;
 	presences?: boolean;
