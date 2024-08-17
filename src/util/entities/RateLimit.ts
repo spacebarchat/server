@@ -19,7 +19,10 @@
 import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
 
-@Entity({name: "rate_limits", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "rate_limits",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class RateLimit extends BaseClass {
 	@Column() // no relation as it also
 	executor_id: string;

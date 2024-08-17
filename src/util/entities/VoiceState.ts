@@ -24,7 +24,10 @@ import { Member } from "./Member";
 import { User } from "./User";
 
 //https://gist.github.com/vassjozsef/e482c65df6ee1facaace8b3c9ff66145#file-voice_state-ex
-@Entity({name: "voice_states", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "voice_states",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class VoiceState extends BaseClass {
 	@Column({ nullable: true })
 	@RelationId((voice_state: VoiceState) => voice_state.guild)

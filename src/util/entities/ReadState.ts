@@ -32,7 +32,10 @@ import { User } from "./User";
 // notification cursor and public read receipt need to be forwards-only (the former to prevent re-pinging when marked as unread, and the latter to be acceptable as a legal acknowledgement in criminal proceedings), and private read marker needs to be advance-rewind capable
 // public read receipt ≥ notification cursor ≥ private fully read marker
 
-@Entity({name: "read_states", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "read_states",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 @Index(["channel_id", "user_id"], { unique: true })
 export class ReadState extends BaseClass {
 	@Column()

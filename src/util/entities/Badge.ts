@@ -19,7 +19,10 @@
 import { Column, Entity } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
 
-@Entity({name: "badges", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "badges",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class Badge extends BaseClassWithoutId {
 	@Column({ primary: true })
 	id: string;

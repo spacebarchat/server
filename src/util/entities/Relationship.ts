@@ -34,7 +34,10 @@ export enum RelationshipType {
 	friends = 1,
 }
 
-@Entity({name: "relationships", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "relationships",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 @Index(["from_id", "to_id"], { unique: true })
 export class Relationship extends BaseClass {
 	@Column({})

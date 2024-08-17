@@ -24,7 +24,10 @@ import { Activity } from "../interfaces/Activity";
 
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 
-@Entity({name: "sessions", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "sessions",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class Session extends BaseClass {
 	@Column({ nullable: true })
 	@RelationId((session: Session) => session.user)

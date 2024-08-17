@@ -25,7 +25,10 @@ import { User } from "./User";
 
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 
-@Entity({name: "invites", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "invites",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class Invite extends BaseClassWithoutId {
 	@PrimaryIdColumn()
 	code: string;

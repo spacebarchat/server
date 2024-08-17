@@ -19,7 +19,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
 
-@Entity({name: "user_settings", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "user_settings",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class UserSettings extends BaseClassWithoutId {
 	@PrimaryGeneratedColumn()
 	index: string;

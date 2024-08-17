@@ -66,7 +66,10 @@ export const PublicGuildRelations = [
 	// "members.user",
 ];
 
-@Entity({name: "guilds", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "guilds",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.afk_channel)

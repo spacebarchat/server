@@ -29,7 +29,10 @@ export enum WebhookType {
 	Application = 3,
 }
 
-@Entity({name: "webhooks", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "webhooks",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class Webhook extends BaseClass {
 	@Column({ type: "int" })
 	type: WebhookType;

@@ -21,7 +21,10 @@ import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 import crypto from "crypto";
 
-@Entity({name: "backup_codes", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "backup_codes",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class BackupCode extends BaseClass {
 	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, { onDelete: "CASCADE" })

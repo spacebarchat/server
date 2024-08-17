@@ -33,7 +33,10 @@ export enum StickerFormatType {
 	LOTTIE = 3,
 }
 
-@Entity({name: "stickers", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "stickers",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class Sticker extends BaseClass {
 	@Column()
 	name: string;

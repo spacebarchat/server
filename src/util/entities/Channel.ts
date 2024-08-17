@@ -69,7 +69,10 @@ export enum ChannelType {
 	UNHANDLED = 255, // unhandled unowned pass-through channel type
 }
 
-@Entity({name: "channels", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "channels",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class Channel extends BaseClass {
 	@Column()
 	created_at: Date;

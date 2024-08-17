@@ -68,7 +68,10 @@ export enum MessageType {
 	UNHANDLED = 255,
 }
 
-@Entity({name: "messages", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "messages",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 @Index(["channel_id", "id"], { unique: true })
 export class Message extends BaseClass {
 	@Column({ nullable: true })

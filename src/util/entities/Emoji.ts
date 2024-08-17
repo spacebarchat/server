@@ -21,7 +21,10 @@ import { User } from ".";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 
-@Entity({name: "emojis", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "emojis",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class Emoji extends BaseClass {
 	@Column()
 	animated: boolean;

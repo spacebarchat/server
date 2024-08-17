@@ -25,7 +25,10 @@ export enum TeamMemberState {
 	ACCEPTED = 2,
 }
 
-@Entity({name: "team_members", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "team_members",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class TeamMember extends BaseClass {
 	@Column({ type: "int" })
 	membership_state: TeamMemberState;

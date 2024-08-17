@@ -21,7 +21,10 @@ import { BaseClass } from "./BaseClass";
 import { Team } from "./Team";
 import { User } from "./User";
 
-@Entity({name: "applications", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "applications",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class Application extends BaseClass {
 	@Column()
 	name: string;

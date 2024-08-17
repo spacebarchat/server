@@ -27,7 +27,10 @@ import {
 import { Sticker } from ".";
 import { BaseClass } from "./BaseClass";
 
-@Entity({name: "sticker_packs", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "sticker_packs",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class StickerPack extends BaseClass {
 	@Column()
 	name: string;

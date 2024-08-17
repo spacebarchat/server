@@ -19,7 +19,10 @@
 import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
 
-@Entity({name: "security_settings", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "security_settings",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class SecuritySettings extends BaseClass {
 	@Column({ nullable: true })
 	guild_id: string;

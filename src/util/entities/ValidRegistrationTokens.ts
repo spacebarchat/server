@@ -18,7 +18,10 @@
 
 import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
 
-@Entity({name: "valid_registration_tokens", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "valid_registration_tokens",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class ValidRegistrationToken extends BaseEntity {
 	@PrimaryColumn()
 	token: string;

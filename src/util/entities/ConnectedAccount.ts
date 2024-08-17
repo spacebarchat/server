@@ -26,7 +26,10 @@ export type PublicConnectedAccount = Pick<
 	"name" | "type" | "verified"
 >;
 
-@Entity({name: "connected_accounts", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "connected_accounts",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class ConnectedAccount extends BaseClass {
 	@Column()
 	external_id: string;

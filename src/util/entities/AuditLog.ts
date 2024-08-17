@@ -111,7 +111,10 @@ export enum AuditLogEvents {
 	ROUTE_UPDATE = 226,
 }
 
-@Entity({name: "audit_logs", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
+@Entity({
+	name: "audit_logs",
+	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+})
 export class AuditLog extends BaseClass {
 	@JoinColumn({ name: "target_id" })
 	@ManyToOne(() => User)
