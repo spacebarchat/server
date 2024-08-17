@@ -33,7 +33,7 @@ import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 // }]
 // Also populate discord default categories
 
-@Entity("categories")
+@Entity({name: "categories", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
 export class Categories extends BaseClassWithoutId {
 	// Not using snowflake
 

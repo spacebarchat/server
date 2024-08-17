@@ -65,7 +65,7 @@ export const MemberPrivateProjection: (keyof Member)[] = [
 	"user",
 ];
 
-@Entity("members")
+@Entity({name: "members", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
 @Index(["id", "guild_id"], { unique: true })
 export class Member extends BaseClassWithoutId {
 	@PrimaryGeneratedColumn()

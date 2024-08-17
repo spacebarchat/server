@@ -86,7 +86,7 @@ export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
 }
 
-@Entity("users")
+@Entity({name: "users", engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"})
 export class User extends BaseClass {
 	@Column()
 	username: string; // username max length 32, min 2 (should be configurable)
