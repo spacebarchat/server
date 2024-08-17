@@ -291,8 +291,8 @@ router.post(
 		if (body.username.length > maxUsername) {
 			throw FieldErrors({
 				username: {
-					code: "USERNAME_INVALID",
-					message: `Username must be less than ${maxUsername} in length`,
+					code: "BASE_TYPE_BAD_LENGTH",
+					message: `Must be between 2 and ${maxUsername} in length.`,
 				},
 			});
 		}
