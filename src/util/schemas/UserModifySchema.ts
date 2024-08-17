@@ -23,9 +23,6 @@ export interface UserModifySchema {
 	 */
 	username?: string;
 	avatar?: string | null;
-	/**
-	 * @maxLength 1024
-	 */
 	bio?: string;
 	accent_color?: number;
 	banner?: string | null;
