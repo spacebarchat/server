@@ -126,6 +126,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			os: identify.properties?.os || identify.properties?.$os,
 			version: 0,
 		},
+		client_status: {},
 		activities: identify.presence?.activities, // TODO: validation
 	});
 
