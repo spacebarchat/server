@@ -47,7 +47,10 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	if ((query || (user_ids && user_ids.length > 0)) && (!limit || limit > 100))
 		limit = 100;
 
-	const permissions = await getPermission(this.user_id, guild_id);
+	const permissions = await getPermission(
+		this.user_id,
+		Array.isArray(guild_id) ? guild_id[0] : guild_id,
+	);
 	permissions.hasThrow("VIEW_CHANNEL");
 
 	const whereQuery: FindManyOptions["where"] = {};
@@ -62,7 +65,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	const memberFind: FindManyOptions = {
 		where: {
 			...whereQuery,
-			guild_id,
+			guild_id: Array.isArray(guild_id) ? guild_id[0] : guild_id,
 		},
 		relations: ["user", "roles"],
 	};
@@ -70,7 +73,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	const members = await Member.find(memberFind);
 
 	const baseData = {
-		guild_id,
+		guild_id: Array.isArray(guild_id) ? guild_id[0] : guild_id,
 		nonce,
 	};
 
