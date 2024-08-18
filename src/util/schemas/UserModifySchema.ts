@@ -18,8 +18,7 @@
 
 export interface UserModifySchema {
 	/**
-	 * @minLength 1
-	 * @maxLength 100
+	 * @minLength 2
 	 */
 	username?: string;
 	avatar?: string | null;
