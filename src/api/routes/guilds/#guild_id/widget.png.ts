@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -24,6 +24,7 @@ import { Request, Response, Router } from "express";
 import fs from "fs";
 import { HTTPError } from "lambert-server";
 import path from "path";
+import { storage } from "../../../../cdn/util/Storage";
 
 const router: Router = Router();
 
@@ -51,7 +52,7 @@ router.get(
 		if (!guild.widget_enabled) throw new HTTPError("Unknown Guild", 404);
 
 		// Fetch guild information
-		const icon = guild.icon;
+		const icon = "avatars/" + guild_id + "/" + guild.icon;
 		const name = guild.name;
 		const presence = guild.presence_count + " ONLINE";
 
@@ -69,8 +70,7 @@ router.get(
 		}
 
 		// Setup canvas
-		const { createCanvas } = require("canvas");
-		const { loadImage } = require("canvas");
+		const { createCanvas, loadImage } = require("canvas");
 		const sizeOf = require("image-size");
 
 		// TODO: Widget style templates need Spacebar branding
@@ -211,8 +211,8 @@ async function drawIcon(
 	scale: number,
 	icon: string,
 ) {
-	const img = new (require("canvas").Image)();
-	img.src = icon;
+	const { loadImage } = require("canvas");
+	const img = await loadImage(await storage.get(icon));
 
 	// Do some canvas clipping magic!
 	canvas.save();
