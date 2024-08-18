@@ -462,6 +462,16 @@ export class Channel extends BaseClass {
 		await Message.delete({ channel_id: channel.id }); //TODO we should also delete the attachments from the cdn but to do that we need to move cdn.ts in util
 		//TODO before deleting the channel we should check and delete other relations
 		await Channel.delete({ id: channel.id });
+
+		const guild = await Guild.findOneOrFail({
+			where: { id: channel.guild_id },
+			select: { channel_ordering: true },
+		});
+
+		const updatedOrdering = guild.channel_ordering.filter(
+			(id) => id != channel.id,
+		);
+		await Guild.update({id: channel.guild_id}, { channel_ordering: updatedOrdering });
 	}
 
 	static async calculatePosition(
@@ -487,11 +497,13 @@ export class Channel extends BaseClass {
 
 		const channels = await Promise.all(
 			guild.channel_ordering.map((id) =>
-				Channel.findOneOrFail({ where: { id } }),
+				Channel.findOne({ where: { id } }),
 			),
 		);
 
-		return channels.reduce((r, v) => {
+		return channels.filter(channel => channel !== null).reduce((r, v) => {
+			v = v as Channel;
+
 			v.position = (guild as Guild).channel_ordering.indexOf(v.id);
 			r[v.position] = v;
 			return r;
