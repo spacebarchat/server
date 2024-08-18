@@ -51,7 +51,7 @@ router.get(
 			where: { id: guild_id },
 			select: {
 				channel_ordering: true,
-			}
+			},
 		});
 		if (!guild.widget_enabled) throw new HTTPError("Widget Disabled", 404);
 

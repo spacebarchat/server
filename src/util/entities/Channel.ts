@@ -459,8 +459,6 @@ export class Channel extends BaseClass {
 	}
 
 	static async deleteChannel(channel: Channel) {
-		await Message.delete({ channel_id: channel.id }); //TODO we should also delete the attachments from the cdn but to do that we need to move cdn.ts in util
-		//TODO before deleting the channel we should check and delete other relations
 		await Channel.delete({ id: channel.id });
 
 		const guild = await Guild.findOneOrFail({
@@ -471,7 +469,10 @@ export class Channel extends BaseClass {
 		const updatedOrdering = guild.channel_ordering.filter(
 			(id) => id != channel.id,
 		);
-		await Guild.update({id: channel.guild_id}, { channel_ordering: updatedOrdering });
+		await Guild.update(
+			{ id: channel.guild_id },
+			{ channel_ordering: updatedOrdering },
+		);
 	}
 
 	static async calculatePosition(
@@ -501,13 +502,15 @@ export class Channel extends BaseClass {
 			),
 		);
 
-		return channels.filter(channel => channel !== null).reduce((r, v) => {
-			v = v as Channel;
+		return channels
+			.filter((channel) => channel !== null)
+			.reduce((r, v) => {
+				v = v as Channel;
 
-			v.position = (guild as Guild).channel_ordering.indexOf(v.id);
-			r[v.position] = v;
-			return r;
-		}, [] as Array<Channel>);
+				v.position = (guild as Guild).channel_ordering.indexOf(v.id);
+				r[v.position] = v;
+				return r;
+			}, [] as Array<Channel>);
 	}
 
 	isDm() {
