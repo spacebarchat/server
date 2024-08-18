@@ -19,7 +19,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { route } from "@spacebar/api";
-import { Guild } from "@spacebar/util";
+import { DiscordApiErrors, Guild } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import fs from "fs";
 import { HTTPError } from "lambert-server";
@@ -49,7 +49,7 @@ router.get(
 		const { guild_id } = req.params;
 
 		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
-		if (!guild.widget_enabled) throw new HTTPError("Unknown Guild", 404);
+		if (!guild.widget_enabled) throw DiscordApiErrors.EMBED_DISABLED;
 
 		// Fetch guild information
 		const icon = "avatars/" + guild_id + "/" + guild.icon;
