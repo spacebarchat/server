@@ -82,6 +82,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const identify: IdentifySchema = data.d;
 
 	this.capabilities = new Capabilities(identify.capabilities || 0);
+	this.large_threshold = identify.large_threshold || 250;
 
 	const user = await tryGetUserFromToken(identify.token, {
 		relations: ["relationships", "relationships.to", "settings"],
@@ -126,6 +127,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			os: identify.properties?.os || identify.properties?.$os,
 			version: 0,
 		},
+		client_status: {},
 		activities: identify.presence?.activities, // TODO: validation
 	});
 
