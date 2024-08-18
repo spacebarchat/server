@@ -459,6 +459,7 @@ export class Channel extends BaseClass {
 	}
 
 	static async deleteChannel(channel: Channel) {
+		// TODO Delete attachments from the CDN for messages in the channel
 		await Channel.delete({ id: channel.id });
 
 		const guild = await Guild.findOneOrFail({
