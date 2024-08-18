@@ -79,6 +79,7 @@ router.put(
 			} as ChannelPinsUpdateEvent),
 
 			Message.create({
+				timestamp: new Date(),
 				type: 6,
 				embeds: [],
 				reactions: [],
