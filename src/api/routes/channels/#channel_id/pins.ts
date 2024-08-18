@@ -1,23 +1,24 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-
+	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-
+	
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-
+	
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { route } from "@spacebar/api";
 import {
+	Channel,
 	ChannelPinsUpdateEvent,
 	Config,
 	DiscordApiErrors,
@@ -77,6 +78,20 @@ router.put(
 					last_pin_timestamp: undefined,
 				},
 			} as ChannelPinsUpdateEvent),
+
+			Message.create({
+				type: 6,
+				embeds: [],
+				reactions: [],
+				channel_id: message.channel_id,
+				guild_id: message.guild_id,
+				author_id: req.user_id,
+				message_reference: {
+					message_id: message.id,
+					channel_id: message.channel_id,
+					guild_id: message.guild_id,
+				},
+			}).save(),
 		]);
 
 		res.sendStatus(204);
@@ -99,27 +114,31 @@ router.delete(
 	async (req: Request, res: Response) => {
 		const { channel_id, message_id } = req.params;
 
+		const channel = await Channel.findOneOrFail({
+			where: { id: channel_id },
+		});
+		if (channel.guild_id) req.permission?.hasThrow("MANAGE_MESSAGES");
+
 		const message = await Message.findOneOrFail({
 			where: { id: message_id },
 		});
-
-		if (message.guild_id) req.permission?.hasThrow("MANAGE_MESSAGES");
-
 		message.pinned = false;
 
 		await Promise.all([
 			message.save(),
+
 			emitEvent({
 				event: "MESSAGE_UPDATE",
 				channel_id,
 				data: message,
 			} as MessageUpdateEvent),
+
 			emitEvent({
 				event: "CHANNEL_PINS_UPDATE",
 				channel_id,
 				data: {
 					channel_id,
-					guild_id: message.guild_id,
+					guild_id: channel.guild_id,
 					last_pin_timestamp: undefined,
 				},
 			} as ChannelPinsUpdateEvent),
