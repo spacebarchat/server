@@ -26,6 +26,7 @@ import {
 } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 export enum RelationshipType {
 	outgoing = 4,
@@ -36,7 +37,7 @@ export enum RelationshipType {
 
 @Entity({
 	name: "relationships",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 @Index(["from_id", "to_id"], { unique: true })
 export class Relationship extends BaseClass {

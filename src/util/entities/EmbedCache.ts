@@ -19,10 +19,11 @@
 import { BaseClass } from "./BaseClass";
 import { Entity, Column } from "typeorm";
 import { Embed } from "./Message";
+import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "embed_cache",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class EmbedCache extends BaseClass {
 	@Column()

@@ -20,10 +20,11 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Team } from "./Team";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "applications",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class Application extends BaseClass {
 	@Column()

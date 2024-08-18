@@ -39,6 +39,7 @@ import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
+import { dbEngine } from "../util/Database";
 
 export enum MessageType {
 	DEFAULT = 0,
@@ -70,7 +71,7 @@ export enum MessageType {
 
 @Entity({
 	name: "messages",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 @Index(["channel_id", "id"], { unique: true })
 export class Message extends BaseClass {

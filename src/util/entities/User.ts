@@ -34,6 +34,7 @@ import { Relationship } from "./Relationship";
 import { SecurityKey } from "./SecurityKey";
 import { Session } from "./Session";
 import { UserSettings } from "./UserSettings";
+import { dbEngine } from "../util/Database";
 
 export enum PublicUserEnum {
 	username,
@@ -88,7 +89,7 @@ export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 
 @Entity({
 	name: "users",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class User extends BaseClass {
 	@Column()

@@ -20,6 +20,7 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { ConnectedAccountTokenData } from "../interfaces";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 export type PublicConnectedAccount = Pick<
 	ConnectedAccount,
@@ -28,7 +29,7 @@ export type PublicConnectedAccount = Pick<
 
 @Entity({
 	name: "connected_accounts",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class ConnectedAccount extends BaseClass {
 	@Column()

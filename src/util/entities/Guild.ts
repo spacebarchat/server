@@ -37,6 +37,7 @@ import { Template } from "./Template";
 import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
+import { dbEngine } from "../util/Database";
 
 // TODO: application_command_count, application_command_counts: {1: 0, 2: 0, 3: 0}
 // TODO: guild_scheduled_events
@@ -68,7 +69,7 @@ export const PublicGuildRelations = [
 
 @Entity({
 	name: "guilds",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class Guild extends BaseClass {
 	@Column({ nullable: true })

@@ -22,11 +22,12 @@ import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { Member } from "./Member";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 //https://gist.github.com/vassjozsef/e482c65df6ee1facaace8b3c9ff66145#file-voice_state-ex
 @Entity({
 	name: "voice_states",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class VoiceState extends BaseClass {
 	@Column({ nullable: true })

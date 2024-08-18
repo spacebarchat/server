@@ -18,10 +18,11 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
+import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "client_release",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class Release extends BaseClass {
 	@Column()

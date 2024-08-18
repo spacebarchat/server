@@ -18,6 +18,7 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
+import { dbEngine } from "../util/Database";
 
 // TODO: categories:
 // [{
@@ -35,7 +36,7 @@ import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 
 @Entity({
 	name: "categories",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class Categories extends BaseClassWithoutId {
 	// Not using snowflake

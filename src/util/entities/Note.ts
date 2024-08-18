@@ -19,10 +19,11 @@
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "notes",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 @Unique(["owner", "target"])
 export class Note extends BaseClass {

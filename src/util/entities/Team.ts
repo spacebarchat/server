@@ -27,10 +27,11 @@ import {
 import { BaseClass } from "./BaseClass";
 import { TeamMember } from "./TeamMember";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "teams",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class Team extends BaseClass {
 	@Column({ nullable: true })

@@ -18,10 +18,11 @@
 
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
+import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "user_settings",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class UserSettings extends BaseClassWithoutId {
 	@PrimaryGeneratedColumn()

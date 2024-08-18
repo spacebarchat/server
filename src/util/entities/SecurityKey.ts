@@ -19,10 +19,11 @@
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "security_keys",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class SecurityKey extends BaseClass {
 	@Column({ nullable: true })

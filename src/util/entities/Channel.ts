@@ -44,6 +44,7 @@ import { Recipient } from "./Recipient";
 import { PublicUserProjection, User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
+import { dbEngine } from "../util/Database";
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a guild
@@ -71,7 +72,7 @@ export enum ChannelType {
 
 @Entity({
 	name: "channels",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class Channel extends BaseClass {
 	@Column()

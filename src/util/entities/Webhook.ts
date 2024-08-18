@@ -22,6 +22,7 @@ import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 export enum WebhookType {
 	Incoming = 1,
@@ -31,7 +32,7 @@ export enum WebhookType {
 
 @Entity({
 	name: "webhooks",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class Webhook extends BaseClass {
 	@Column({ type: "int" })

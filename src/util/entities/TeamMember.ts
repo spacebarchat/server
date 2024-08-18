@@ -19,6 +19,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 export enum TeamMemberState {
 	INVITED = 1,
@@ -27,7 +28,7 @@ export enum TeamMemberState {
 
 @Entity({
 	name: "team_members",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class TeamMember extends BaseClass {
 	@Column({ type: "int" })

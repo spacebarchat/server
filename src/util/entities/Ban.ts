@@ -20,10 +20,11 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "bans",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class Ban extends BaseClass {
 	@Column({ nullable: true })

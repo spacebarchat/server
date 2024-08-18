@@ -18,10 +18,11 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
+import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "recipients",
-	engine: "InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+	engine: dbEngine,
 })
 export class Recipient extends BaseClass {
 	@Column()
