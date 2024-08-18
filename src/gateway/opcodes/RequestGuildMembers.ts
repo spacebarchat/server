@@ -17,6 +17,7 @@
 */
 
 import {
+	getDatabase,
 	getPermission,
 	GuildMembersChunkEvent,
 	Member,
@@ -29,51 +30,103 @@ import { check } from "./instanceOf";
 import { FindManyOptions, In, Like } from "typeorm";
 
 export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
-	// TODO: check data
+	// Schema validation can only accept either string or array, so transforming it here to support both
+	if (!d.guild_id) throw new Error('"guild_id" is required');
+	d.guild_id = Array.isArray(d.guild_id) ? d.guild_id[0] : d.guild_id;
+
+	if (d.user_ids && !Array.isArray(d.user_ids)) d.user_ids = [d.user_ids];
+
 	check.call(this, RequestGuildMembersSchema, d);
 
-	const { guild_id, query, presences, nonce } =
-		d as RequestGuildMembersSchema;
-	let { limit, user_ids } = d as RequestGuildMembersSchema;
+	const { query, presences, nonce } = d as RequestGuildMembersSchema;
+	let { limit, user_ids, guild_id } = d as RequestGuildMembersSchema;
+
+	guild_id = guild_id as string;
+	user_ids = user_ids as string[] | undefined;
 
 	if ("query" in d && (!limit || Number.isNaN(limit)))
 		throw new Error('"query" requires "limit" to be set');
 	if ("query" in d && user_ids)
 		throw new Error('"query" and "user_ids" are mutually exclusive');
-	if (user_ids && !Array.isArray(user_ids)) user_ids = [user_ids];
-	user_ids = user_ids as string[] | undefined;
 
 	// TODO: Configurable limit?
 	if ((query || (user_ids && user_ids.length > 0)) && (!limit || limit > 100))
 		limit = 100;
 
-	const permissions = await getPermission(
-		this.user_id,
-		Array.isArray(guild_id) ? guild_id[0] : guild_id,
-	);
+	const permissions = await getPermission(this.user_id, guild_id);
 	permissions.hasThrow("VIEW_CHANNEL");
 
-	const whereQuery: FindManyOptions["where"] = {};
-	if (query) {
-		whereQuery.user = {
-			username: Like(query + "%"),
-		};
-	} else if (user_ids && user_ids.length > 0) {
-		whereQuery.id = In(user_ids);
-	}
+	const memberCount = await Member.count({
+		where: {
+			guild_id,
+		},
+	});
 
 	const memberFind: FindManyOptions = {
 		where: {
-			...whereQuery,
-			guild_id: Array.isArray(guild_id) ? guild_id[0] : guild_id,
+			guild_id,
 		},
 		relations: ["user", "roles"],
 	};
 	if (limit) memberFind.take = Math.abs(Number(limit || 100));
-	const members = await Member.find(memberFind);
+
+	let members: Member[] = [];
+
+	if (memberCount > 75000) {
+		// since we dont have voice channels yet, just return the connecting users member object
+		members = await Member.find({
+			...memberFind,
+			where: {
+				...memberFind.where,
+				user: {
+					id: this.user_id,
+				},
+			},
+		});
+	} else if (memberCount > this.large_threshold) {
+		// find all members who are online, have a role, have a nickname, or are in a voice channel, as well as respecting the query and user_ids
+		const db = getDatabase();
+		if (!db) throw new Error("Database not initialized");
+		const repo = db.getRepository(Member);
+		const q = repo
+			.createQueryBuilder("member")
+			.where("member.guild_id = :guild_id", { guild_id })
+			.leftJoinAndSelect("member.roles", "role")
+			.leftJoinAndSelect("member.user", "user")
+			.leftJoinAndSelect("user.sessions", "session")
+			.andWhere(
+				"',' || member.roles || ',' NOT LIKE :everyoneRoleIdList",
+				{ everyoneRoleIdList: "%," + guild_id + ",%" },
+			)
+			.andWhere("session.status != 'offline'")
+			.addOrderBy("user.username", "ASC")
+			.limit(memberFind.take);
+
+		if (query && query != "") {
+			q.andWhere(`user.username ILIKE :query`, {
+				query: `${query}%`,
+			});
+		} else if (user_ids) {
+			q.andWhere(`user.id IN (:...user_ids)`, { user_ids });
+		}
+
+		members = await q.getMany();
+	} else {
+		if (query) {
+			// @ts-expect-error memberFind.where is very much defined
+			memberFind.where.user = {
+				username: Like(query + "%"),
+			};
+		} else if (user_ids && user_ids.length > 0) {
+			// @ts-expect-error memberFind.where is still very much defined
+			memberFind.where.id = In(user_ids);
+		}
+
+		members = await Member.find(memberFind);
+	}
 
 	const baseData = {
-		guild_id: Array.isArray(guild_id) ? guild_id[0] : guild_id,
+		guild_id,
 		nonce,
 	};
 
@@ -114,7 +167,17 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 		});
 	}
 
-	if (notFound.length > 0) chunks[0].not_found = notFound;
+	if (notFound.length > 0) {
+		if (chunks.length == 0)
+			chunks.push({
+				...baseData,
+				members: [],
+				presences: presences ? [] : undefined,
+				chunk_index: 0,
+				chunk_count: 1,
+			});
+		chunks[0].not_found = notFound;
+	}
 
 	chunks.forEach((chunk) => {
 		Send(this, {
