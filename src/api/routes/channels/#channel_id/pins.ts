@@ -23,7 +23,9 @@ import {
 	DiscordApiErrors,
 	emitEvent,
 	Message,
+	MessageCreateEvent,
 	MessageUpdateEvent,
+	User,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
@@ -61,6 +63,30 @@ router.put(
 
 		message.pinned = true;
 
+		const author = await User.getPublicUser(req.user_id);
+
+		const systemPinMessage = Message.create({
+			timestamp: new Date(),
+			type: 6,
+			guild_id: message.guild_id,
+			channel_id: message.channel_id,
+			author,
+			message_reference: {
+				message_id: message.id,
+				channel_id: message.channel_id,
+				guild_id: message.guild_id,
+			},
+			reactions: [],
+			attachments: [],
+			embeds: [],
+			sticker_items: [],
+			edited_timestamp: undefined,
+			mentions: [],
+			mention_channels: [],
+			mention_roles: [],
+			mention_everyone: false,
+		});
+
 		await Promise.all([
 			message.save(),
 			emitEvent({
@@ -77,6 +103,12 @@ router.put(
 					last_pin_timestamp: undefined,
 				},
 			} as ChannelPinsUpdateEvent),
+			systemPinMessage.save(),
+			emitEvent({
+				event: "MESSAGE_CREATE",
+				channel_id: message.channel_id,
+				data: systemPinMessage,
+			} as MessageCreateEvent),
 		]);
 
 		res.sendStatus(204);
