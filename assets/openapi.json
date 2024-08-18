@@ -6262,7 +6262,21 @@
                 "type": "object",
                 "properties": {
                     "guild_id": {
-                        "type": "string"
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
                     },
                     "query": {
                         "type": "string"

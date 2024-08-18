@@ -26,7 +26,7 @@ export interface RequestGuildMembersSchema {
 }
 
 export const RequestGuildMembersSchema = {
-	guild_id: [] as string | string[],
+	guild_id: "" as string | string[],
 	$query: String,
 	$limit: Number,
 	$presences: Boolean,
