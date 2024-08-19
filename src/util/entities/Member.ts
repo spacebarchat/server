@@ -290,7 +290,9 @@ export class Member extends BaseClassWithoutId {
 			},
 			relations: ["user"],
 		});
-		member.nick = nickname;
+
+		// @ts-expect-error Member nickname is nullable
+		member.nick = nickname || null;
 
 		await Promise.all([
 			member.save(),
@@ -300,7 +302,7 @@ export class Member extends BaseClassWithoutId {
 				data: {
 					guild_id,
 					user: member.user,
-					nick: nickname,
+					nick: nickname || null,
 				},
 				guild_id,
 			} as GuildMemberUpdateEvent),
