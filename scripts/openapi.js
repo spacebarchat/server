@@ -114,7 +114,7 @@ function getTag(key) {
 	return key.match(/\/([\w-]+)/)[1];
 }
 
-function apiRoutes() {
+function apiRoutes(missingRoutes) {
 	const routes = getRouteDescriptions();
 
 	// populate tags
@@ -214,6 +214,15 @@ function apiRoutes() {
 
 		obj.tags = [...(obj.tags || []), getTag(p)].unique();
 
+		if (missingRoutes.additional.includes(path.replace(/\/$/, ""))) {
+			obj["x-badges"] = [
+				{
+					label: "Spacebar-only",
+					color: "red",
+				},
+			];
+		}
+
 		specification.paths[path] = Object.assign(
 			specification.paths[path] || {},
 			{
@@ -223,10 +232,21 @@ function apiRoutes() {
 	});
 }
 
-function main() {
+async function main() {
 	console.log("Generating OpenAPI Specification...");
+
+	const routesRes = await fetch(
+		"https://github.com/spacebarchat/missing-routes/raw/main/missing.json",
+		{
+			headers: {
+				Accept: "application/json",
+			},
+		},
+	);
+	const missingRoutes = await routesRes.json();
+
 	combineSchemas(schemas);
-	apiRoutes();
+	apiRoutes(missingRoutes);
 
 	fs.writeFileSync(
 		openapiPath,
