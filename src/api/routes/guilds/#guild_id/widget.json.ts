@@ -17,9 +17,15 @@
 */
 
 import { random, route } from "@spacebar/api";
-import { Channel, Guild, Invite, Member, Permissions } from "@spacebar/util";
+import {
+	Channel,
+	DiscordApiErrors,
+	Guild,
+	Invite,
+	Member,
+	Permissions,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
 
 const router: Router = Router();
 
@@ -46,14 +52,14 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
-
+    
 		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
 			select: {
 				channel_ordering: true,
 			},
 		});
-		if (!guild.widget_enabled) throw new HTTPError("Widget Disabled", 404);
+		if (!guild.widget_enabled) throw DiscordApiErrors.EMBED_DISABLED;
 
 		// Fetch existing widget invite for widget channel
 		let invite = await Invite.findOne({
