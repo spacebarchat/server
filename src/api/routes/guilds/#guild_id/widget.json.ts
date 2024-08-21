@@ -52,8 +52,13 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
-
-		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
+    
+		const guild = await Guild.findOneOrFail({
+			where: { id: guild_id },
+			select: {
+				channel_ordering: true,
+			},
+		});
 		if (!guild.widget_enabled) throw DiscordApiErrors.EMBED_DISABLED;
 
 		// Fetch existing widget invite for widget channel
