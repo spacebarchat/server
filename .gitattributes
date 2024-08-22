@@ -1,0 +1,4 @@
+* text=auto
+*.sh -crlf
+*.nix -crlf
+.husky/pre-commit -crlf

@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "Spacebar Server",
-        "description": "Spacebar is a free open source selfhostable discord compatible chat, voice and video platform",
+        "description": "Spacebar is a Discord.com server implementation and extension, with the goal of complete feature parity with Discord.com, all while adding some additional goodies, security, privacy, and configuration options.",
         "license": {
             "name": "AGPLV3",
             "url": "https://www.gnu.org/licenses/agpl-3.0.en.html"
@@ -61,109 +61,208 @@
                     "read_states"
                 ]
             },
-            "DiagnosticsChannel.Response": {
+            "ConnectedAccountCommonOAuthTokenResponse": {
                 "type": "object",
                 "properties": {
-                    "statusCode": {
-                        "type": "integer"
-                    },
-                    "statusText": {
+                    "access_token": {
                         "type": "string"
                     },
-                    "headers": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "patternProperties": {
-                                "^[0-9]+$": {
-                                    "type": "integer"
-                                }
-                            }
-                        }
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
                     }
                 },
                 "required": [
-                    "headers",
-                    "statusCode",
-                    "statusText"
+                    "access_token",
+                    "scope",
+                    "token_type"
                 ]
             },
-            "Headers": {
+            "ApplicationAuthorizeSchema": {
                 "type": "object",
                 "properties": {
-                    "append": {
-                        "type": "object",
-                        "additionalProperties": false
+                    "authorize": {
+                        "type": "boolean"
                     },
-                    "delete": {
-                        "type": "object",
-                        "additionalProperties": false
+                    "guild_id": {
+                        "type": "string"
                     },
-                    "get": {
-                        "type": "object",
-                        "additionalProperties": false
+                    "permissions": {
+                        "type": "string"
                     },
-                    "has": {
-                        "type": "object",
-                        "additionalProperties": false
+                    "captcha_key": {
+                        "type": "string"
                     },
-                    "set": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "getSetCookie": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "forEach": {
-                        "description": "Performs the specified action for each element in an array.",
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "keys": {
-                        "description": "Returns an array consisting of the keys of the object",
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "values": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "entries": {
-                        "description": "Returns an array consisting of the key value pairs of the object",
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "__@iterator": {
-                        "type": "object",
-                        "additionalProperties": false
+                    "code": {
+                        "type": "string"
                     }
                 },
                 "required": [
-                    "__@iterator",
-                    "append",
-                    "delete",
-                    "entries",
-                    "forEach",
-                    "get",
-                    "getSetCookie",
-                    "has",
-                    "keys",
-                    "set",
-                    "values"
+                    "authorize",
+                    "guild_id",
+                    "permissions"
                 ]
             },
-            "ResponseType": {
-                "enum": [
-                    "basic",
-                    "cors",
-                    "default",
-                    "error",
-                    "opaque",
-                    "opaqueredirect"
-                ],
-                "type": "string"
+            "ApplicationCreateSchema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "team_id": {
+                        "type": [
+                            "string",
+                            "integer"
+                        ]
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "ApplicationModifySchema": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "interactions_endpoint_url": {
+                        "type": "string"
+                    },
+                    "max_participants": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "privacy_policy_url": {
+                        "type": "string"
+                    },
+                    "role_connections_verification_url": {
+                        "type": "string"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "terms_of_service_url": {
+                        "type": "string"
+                    },
+                    "bot_public": {
+                        "type": "boolean"
+                    },
+                    "bot_require_code_grant": {
+                        "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "BackupCodesChallengeSchema": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "password"
+                ]
+            },
+            "BanCreateSchema": {
+                "type": "object",
+                "properties": {
+                    "delete_message_seconds": {
+                        "type": "string"
+                    },
+                    "delete_message_days": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                }
+            },
+            "BanModeratorSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "executor_id": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "executor_id",
+                    "guild_id",
+                    "id",
+                    "user_id"
+                ]
+            },
+            "BanRegistrySchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "executor_id": {
+                        "type": "string"
+                    },
+                    "ip": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "executor_id",
+                    "guild_id",
+                    "id",
+                    "user_id"
+                ]
+            },
+            "BotModifySchema": {
+                "type": "object",
+                "properties": {
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    }
+                }
             },
             "ChannelPermissionOverwriteType": {
                 "enum": [
@@ -4861,372 +4960,6 @@
                     "webauthn"
                 ]
             },
-            "_Response": {
-                "type": "object",
-                "properties": {
-                    "headers": {
-                        "$ref": "#/components/schemas/Headers"
-                    },
-                    "ok": {
-                        "type": "boolean"
-                    },
-                    "status": {
-                        "type": "integer"
-                    },
-                    "statusText": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/ResponseType"
-                    },
-                    "url": {
-                        "type": "string"
-                    },
-                    "redirected": {
-                        "type": "boolean"
-                    },
-                    "body": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/ReadableStream<any>"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "bodyUsed": {
-                        "type": "boolean"
-                    },
-                    "arrayBuffer": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "blob": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "formData": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "json": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "text": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "clone": {
-                        "type": "object",
-                        "additionalProperties": false
-                    }
-                },
-                "required": [
-                    "arrayBuffer",
-                    "blob",
-                    "body",
-                    "bodyUsed",
-                    "clone",
-                    "formData",
-                    "headers",
-                    "json",
-                    "ok",
-                    "redirected",
-                    "status",
-                    "statusText",
-                    "text",
-                    "type",
-                    "url"
-                ]
-            },
-            "global.Response": {
-                "type": "object",
-                "properties": {
-                    "headers": {
-                        "$ref": "#/components/schemas/Headers"
-                    },
-                    "ok": {
-                        "type": "boolean"
-                    },
-                    "status": {
-                        "type": "integer"
-                    },
-                    "statusText": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/ResponseType"
-                    },
-                    "url": {
-                        "type": "string"
-                    },
-                    "redirected": {
-                        "type": "boolean"
-                    },
-                    "body": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/ReadableStream<any>"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "bodyUsed": {
-                        "type": "boolean"
-                    },
-                    "arrayBuffer": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "blob": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "formData": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "json": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "text": {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    "clone": {
-                        "type": "object",
-                        "additionalProperties": false
-                    }
-                },
-                "required": [
-                    "arrayBuffer",
-                    "blob",
-                    "body",
-                    "bodyUsed",
-                    "clone",
-                    "formData",
-                    "headers",
-                    "json",
-                    "ok",
-                    "redirected",
-                    "status",
-                    "statusText",
-                    "text",
-                    "type",
-                    "url"
-                ]
-            },
-            "ConnectedAccountCommonOAuthTokenResponse": {
-                "type": "object",
-                "properties": {
-                    "access_token": {
-                        "type": "string"
-                    },
-                    "token_type": {
-                        "type": "string"
-                    },
-                    "scope": {
-                        "type": "string"
-                    },
-                    "refresh_token": {
-                        "type": "string"
-                    },
-                    "expires_in": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "access_token",
-                    "scope",
-                    "token_type"
-                ]
-            },
-            "ExpressResponse": {
-                "type": "object"
-            },
-            "ApplicationAuthorizeSchema": {
-                "type": "object",
-                "properties": {
-                    "authorize": {
-                        "type": "boolean"
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "permissions": {
-                        "type": "string"
-                    },
-                    "captcha_key": {
-                        "type": "string"
-                    },
-                    "code": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "authorize",
-                    "guild_id",
-                    "permissions"
-                ]
-            },
-            "ApplicationCreateSchema": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "team_id": {
-                        "type": [
-                            "string",
-                            "integer"
-                        ]
-                    }
-                },
-                "required": [
-                    "name"
-                ]
-            },
-            "ApplicationModifySchema": {
-                "type": "object",
-                "properties": {
-                    "description": {
-                        "type": "string"
-                    },
-                    "icon": {
-                        "type": "string"
-                    },
-                    "interactions_endpoint_url": {
-                        "type": "string"
-                    },
-                    "max_participants": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "privacy_policy_url": {
-                        "type": "string"
-                    },
-                    "role_connections_verification_url": {
-                        "type": "string"
-                    },
-                    "tags": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "terms_of_service_url": {
-                        "type": "string"
-                    },
-                    "bot_public": {
-                        "type": "boolean"
-                    },
-                    "bot_require_code_grant": {
-                        "type": "boolean"
-                    },
-                    "flags": {
-                        "type": "integer"
-                    }
-                }
-            },
-            "BackupCodesChallengeSchema": {
-                "type": "object",
-                "properties": {
-                    "password": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "password"
-                ]
-            },
-            "BanCreateSchema": {
-                "type": "object",
-                "properties": {
-                    "delete_message_seconds": {
-                        "type": "string"
-                    },
-                    "delete_message_days": {
-                        "type": "string"
-                    },
-                    "reason": {
-                        "type": "string"
-                    }
-                }
-            },
-            "BanModeratorSchema": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "user_id": {
-                        "type": "string"
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "executor_id": {
-                        "type": "string"
-                    },
-                    "reason": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "executor_id",
-                    "guild_id",
-                    "id",
-                    "user_id"
-                ]
-            },
-            "BanRegistrySchema": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "user_id": {
-                        "type": "string"
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "executor_id": {
-                        "type": "string"
-                    },
-                    "ip": {
-                        "type": "string"
-                    },
-                    "reason": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "executor_id",
-                    "guild_id",
-                    "id",
-                    "user_id"
-                ]
-            },
-            "BotModifySchema": {
-                "type": "object",
-                "properties": {
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    }
-                }
-            },
             "ChannelPermissionOverwriteSchema": {
                 "type": "object",
                 "properties": {
@@ -6311,7 +6044,6 @@
                 "properties": {
                     "username": {
                         "minLength": 2,
-                        "maxLength": 32,
                         "type": "string"
                     },
                     "password": {
@@ -6727,8 +6459,7 @@
                 "type": "object",
                 "properties": {
                     "username": {
-                        "minLength": 1,
-                        "maxLength": 100,
+                        "minLength": 2,
                         "type": "string"
                     },
                     "avatar": {
@@ -10856,6 +10587,12 @@
                 },
                 "tags": [
                     "updates"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -10868,6 +10605,12 @@
                 },
                 "tags": [
                     "track"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -11130,6 +10873,12 @@
                 },
                 "tags": [
                     "scheduled-maintenances"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -11201,6 +10950,12 @@
                 },
                 "tags": [
                     "policies"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -11220,6 +10975,12 @@
                 },
                 "tags": [
                     "policies"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -11239,6 +11000,12 @@
                 },
                 "tags": [
                     "policies"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -11258,6 +11025,12 @@
                 },
                 "tags": [
                     "policies"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -11277,6 +11050,12 @@
                 },
                 "tags": [
                     "ping"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -17523,6 +17302,12 @@
                 },
                 "tags": [
                     "auth"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -17562,6 +17347,12 @@
                 },
                 "tags": [
                     "auth"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -17680,6 +17471,12 @@
                 ],
                 "tags": [
                     "auth"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -18163,6 +17960,12 @@
                 },
                 "tags": [
                     "-"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -18175,6 +17978,12 @@
                 },
                 "tags": [
                     "-"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         }

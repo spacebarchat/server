@@ -18,6 +18,7 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
+import { dbEngine } from "../util/Database";
 
 // TODO: categories:
 // [{
@@ -33,7 +34,10 @@ import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 // }]
 // Also populate discord default categories
 
-@Entity("categories")
+@Entity({
+	name: "categories",
+	engine: dbEngine,
+})
 export class Categories extends BaseClassWithoutId {
 	// Not using snowflake
 

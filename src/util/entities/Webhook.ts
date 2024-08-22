@@ -22,6 +22,7 @@ import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
 
 export enum WebhookType {
 	Incoming = 1,
@@ -29,7 +30,10 @@ export enum WebhookType {
 	Application = 3,
 }
 
-@Entity("webhooks")
+@Entity({
+	name: "webhooks",
+	engine: dbEngine,
+})
 export class Webhook extends BaseClass {
 	@Column({ type: "int" })
 	type: WebhookType;

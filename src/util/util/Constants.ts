@@ -812,7 +812,7 @@ export const DiscordApiErrors = {
 		"Cannot execute action on a DM channel",
 		50003,
 	),
-	EMBED_DISABLED: new ApiError("Guild widget disabled", 50004),
+	EMBED_DISABLED: new ApiError("Widget Disabled", 50004),
 	CANNOT_EDIT_MESSAGE_BY_OTHER: new ApiError(
 		"Cannot edit a message authored by another user",
 		50005,
