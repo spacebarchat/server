@@ -34,6 +34,7 @@ import { Relationship } from "./Relationship";
 import { SecurityKey } from "./SecurityKey";
 import { Session } from "./Session";
 import { UserSettings } from "./UserSettings";
+import { dbEngine } from "../util/Database";
 
 export enum PublicUserEnum {
 	username,
@@ -86,7 +87,10 @@ export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 	locale: string;
 }
 
-@Entity("users")
+@Entity({
+	name: "users",
+	engine: dbEngine,
+})
 export class User extends BaseClass {
 	@Column()
 	username: string; // username max length 32, min 2 (should be configurable)

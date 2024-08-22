@@ -44,6 +44,7 @@ import { Recipient } from "./Recipient";
 import { PublicUserProjection, User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
+import { dbEngine } from "../util/Database";
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a guild
@@ -69,7 +70,10 @@ export enum ChannelType {
 	UNHANDLED = 255, // unhandled unowned pass-through channel type
 }
 
-@Entity("channels")
+@Entity({
+	name: "channels",
+	engine: dbEngine,
+})
 export class Channel extends BaseClass {
 	@Column()
 	created_at: Date;

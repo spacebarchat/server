@@ -18,8 +18,12 @@
 
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
+import { dbEngine } from "../util/Database";
 
-@Entity("user_settings")
+@Entity({
+	name: "user_settings",
+	engine: dbEngine,
+})
 export class UserSettings extends BaseClassWithoutId {
 	@PrimaryGeneratedColumn()
 	index: string;
