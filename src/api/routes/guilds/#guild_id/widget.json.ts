@@ -52,7 +52,7 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
-    
+
 		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
 			select: {
