@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { GuildCreateResponse } from "@spacebar/util";
 import { GeneralConfiguration, LimitsConfiguration } from "../../config";
 import { DmChannelDTO } from "../../dtos";
 import {
@@ -89,7 +90,7 @@ export type APIEmojiArray = Emoji[];
 export type APIMemberArray = Member[];
 export type APIPublicMember = PublicMember;
 
-export interface APIGuildWithJoinedAt extends Guild {
+export interface APIGuildWithJoinedAt extends GuildCreateResponse {
 	joined_at: string;
 }
 
