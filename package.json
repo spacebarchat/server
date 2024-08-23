@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "A Spacebar server written in Node.js",
 	"scripts": {
-		"prepare": "husky install",
+		"prepare": "husky",
 		"postinstall": "npx patch-package",
 		"start": "node dist/bundle/start.js",
 		"start:api": "node dist/api/start.js",
