@@ -57,6 +57,10 @@ router.get(
 			where: { id: guild_id },
 			select: {
 				channel_ordering: true,
+				widget_channel_id: true,
+				widget_enabled: true,
+				presence_count: true,
+				name: true,
 			},
 		});
 		if (!guild.widget_enabled) throw DiscordApiErrors.EMBED_DISABLED;
@@ -82,6 +86,7 @@ router.get(
 				created_at: new Date(),
 				guild_id,
 				channel_id: guild.widget_channel_id,
+				flags: 0,
 			}).save();
 		}
 
