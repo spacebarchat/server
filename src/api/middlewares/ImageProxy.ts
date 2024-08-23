@@ -20,7 +20,6 @@ import { Config, JimpType } from "@spacebar/util";
 import { Request, Response } from "express";
 import { yellow } from "picocolors";
 import crypto from "crypto";
-import fetch from "node-fetch";
 
 let sharp: undefined | false | { default: typeof import("sharp") } = undefined;
 

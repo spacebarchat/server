@@ -19,7 +19,6 @@
 import { Config } from "@spacebar/util";
 import { Request } from "express";
 // use ipdata package instead of simple fetch because of integrated caching
-import fetch from "node-fetch";
 
 const exampleData = {
 	ip: "",

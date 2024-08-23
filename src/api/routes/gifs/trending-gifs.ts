@@ -24,8 +24,6 @@ import {
 	parseGifResult,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import fetch from "node-fetch";
-import { ProxyAgent } from "proxy-agent";
 
 const router = Router();
 
@@ -57,12 +55,9 @@ router.get(
 
 		const apiKey = getGifApiKey();
 
-		const agent = new ProxyAgent();
-
 		const response = await fetch(
 			`https://g.tenor.com/v1/trending?media_format=${media_format}&locale=${locale}&key=${apiKey}`,
 			{
-				agent,
 				method: "get",
 				headers: { "Content-Type": "application/json" },
 			},
