@@ -85,7 +85,7 @@ export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 
 	return (
 		await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)
-	).json();
+	).json() as Promise<typeof exampleData>;
 }
 
 export function isProxy(data: typeof exampleData) {

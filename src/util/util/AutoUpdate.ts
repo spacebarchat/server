@@ -91,17 +91,22 @@ async function getCurrentVersion(dir: string) {
 			encoding: "utf8",
 		});
 		return JSON.parse(content).version;
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (error) {
 		throw new Error("[Auto update] couldn't get current version in " + dir);
 	}
 }
 
+type PackageJson = {
+	version: string;
+};
 async function getLatestVersion(url: string) {
 	try {
 		const agent = new ProxyAgent();
 		const response = await fetch(url, { agent });
-		const content = await response.json();
+		const content = (await response.json()) as PackageJson;
 		return content.version;
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (error) {
 		throw new Error("[Auto update] check failed for " + url);
 	}

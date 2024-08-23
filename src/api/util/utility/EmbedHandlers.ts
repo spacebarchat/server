@@ -100,6 +100,7 @@ const tryParseInt = (str: string | undefined) => {
 	if (!str) return undefined;
 	try {
 		return parseInt(str);
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (e) {
 		return undefined;
 	}
@@ -133,6 +134,7 @@ const doFetch = async (url: URL) => {
 			...DEFAULT_FETCH_OPTIONS,
 			size: Config.get().limits.message.maxEmbedDownloadSize,
 		});
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (e) {
 		return null;
 	}
@@ -221,7 +223,7 @@ export const EmbedHandlers: {
 				? {
 						name: metas.site_name,
 						url: url.origin,
-				  }
+					}
 				: undefined,
 		};
 	},
@@ -269,12 +271,12 @@ export const EmbedHandlers: {
 				authorization: `Bearer ${token}`,
 			},
 		});
-		const json = await response.json();
+		const json = (await response.json()) as TwitterApiResponse;
 		if (json.errors) return null;
 		const author = json.includes.users[0];
-		const text = json.data.text;
-		const created_at = new Date(json.data.created_at);
-		const metrics = json.data.public_metrics;
+		const text = json.data[0].text;
+		const created_at = new Date(json.data[0].created_at);
+		const metrics = json.data[0].public_metrics;
 		const media = json.includes.media?.filter(
 			(x: { type: string }) => x.type == "photo",
 		);
@@ -508,7 +510,7 @@ export const EmbedHandlers: {
 				? {
 						name: metas.author,
 						// TODO: author channel url
-				  }
+					}
 				: undefined,
 		};
 	},
@@ -533,7 +535,7 @@ export const EmbedHandlers: {
 			footer: hoverText
 				? {
 						text: hoverText,
-				  }
+					}
 				: undefined,
 		};
 	},
@@ -554,3 +556,51 @@ export const EmbedHandlers: {
 		};
 	},
 };
+
+interface TweetMetrics {
+	retweet_count: number;
+	reply_count: number;
+	like_count: number;
+	quote_count: number;
+}
+
+interface Tweet {
+	public_metrics: TweetMetrics;
+	edit_history_tweet_ids: string[];
+	text: string;
+	id: string;
+	created_at: string;
+	author_id: string;
+}
+
+interface User {
+	profile_image_url: string;
+	name: string;
+	created_at: string;
+	id: string;
+	username: string;
+}
+interface Media {
+	url: string;
+	duration_ms: number;
+	type: string;
+	height: number;
+	media_key: string;
+	public_metrics: {
+		view_count: number;
+	};
+	preview_image_url: string;
+	width: number;
+}
+
+interface TwitterApiResponse {
+	errors: {
+		code: number;
+		message: string;
+	}[];
+	data: Tweet[];
+	includes: {
+		media: Media[];
+		users: User[];
+	};
+}
