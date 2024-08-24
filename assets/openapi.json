@@ -10936,13 +10936,8 @@
                 ]
             }
         },
-        "/scheduled-maintenances/upcoming_json/scheduled-maintenances/upcoming.json": {
+        "/scheduled-maintenances/upcoming.json/": {
             "get": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "responses": {
                     "default": {
                         "description": "No description available"
@@ -10950,12 +10945,6 @@
                 },
                 "tags": [
                     "scheduled-maintenances"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -11341,11 +11330,6 @@
         },
         "/invites/{code}": {
             "get": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "",
