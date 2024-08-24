@@ -25,6 +25,11 @@ export enum TeamMemberState {
 	INVITED = 1,
 	ACCEPTED = 2,
 }
+export enum TeamMemberRole {
+	ADMIN = "admin",
+	DEVELOPER = "developer",
+	READ_ONLY = "read_only",
+}
 
 @Entity({
 	name: "team_members",
@@ -36,6 +41,9 @@ export class TeamMember extends BaseClass {
 
 	@Column({ type: "simple-array" })
 	permissions: string[];
+
+	@Column()
+	role: TeamMemberRole;
 
 	@Column({ nullable: true })
 	@RelationId((member: TeamMember) => member.team)
