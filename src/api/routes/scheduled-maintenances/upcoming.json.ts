@@ -20,15 +20,11 @@ import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
 const router = Router();
 
-router.get(
-	"/",
-	route({}),
-	async (req: Request, res: Response) => {
-		res.json({
-			page: {},
-			scheduled_maintenances: {},
-		});
-	},
-);
+router.get("/", route({}), async (req: Request, res: Response) => {
+	res.json({
+		page: {},
+		scheduled_maintenances: {},
+	});
+});
 
 export default router;

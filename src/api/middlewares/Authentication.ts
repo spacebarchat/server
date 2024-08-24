@@ -80,7 +80,8 @@ export async function Authentication(
 	const url = req.url.replace(API_PREFIX, "");
 	if (
 		NO_AUTHORIZATION_ROUTES.some((x) => {
-			if (typeof x === "string") return (req.method + " " + url).startsWith(x);
+			if (typeof x === "string")
+				return (req.method + " " + url).startsWith(x);
 			return x.test(req.method + " " + url);
 		})
 	)

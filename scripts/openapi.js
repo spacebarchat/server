@@ -134,7 +134,8 @@ function apiRoutes(missingRoutes) {
 
 		if (
 			!NO_AUTHORIZATION_ROUTES.some((x) => {
-				if (typeof x === "string") return (method.toUpperCase() + " " + path).startsWith(x);
+				if (typeof x === "string")
+					return (method.toUpperCase() + " " + path).startsWith(x);
 				return x.test(method.toUpperCase() + " " + path);
 			})
 		) {
