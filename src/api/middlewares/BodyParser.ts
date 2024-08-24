@@ -20,6 +20,19 @@ import bodyParser, { OptionsJson } from "body-parser";
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 
+const errorMessages: { [key: string]: [string, number] } = {
+	"entity.too.large": ["Request body too large", 413],
+	"entity.parse.failed": ["Invalid JSON body", 400],
+	"entity.verify.failed": ["Entity verification failed", 403],
+	"request.aborted": ["Request aborted", 400],
+	"request.size.invalid": ["Request size did not match content length", 400],
+	"stream.encoding.set": ["Stream encoding should not be set", 500],
+	"stream.not.readable": ["Stream is not readable", 500],
+	"parameters.too.many": ["Too many parameters", 413],
+	"charset.unsupported": ["Unsupported charset", 415],
+	"encoding.unsupported": ["Unsupported content encoding", 415],
+};
+
 export function BodyParser(opts?: OptionsJson) {
 	const jsonParser = bodyParser.json(opts);
 
@@ -29,8 +42,15 @@ export function BodyParser(opts?: OptionsJson) {
 
 		jsonParser(req, res, (err) => {
 			if (err) {
-				// TODO: different errors for body parser (request size limit, wrong body type, invalid body, ...)
-				return next(new HTTPError("Invalid Body", 400));
+				const [message, status] = errorMessages[err.type] || [
+					"Invalid Body",
+					400,
+				];
+				const errorMessage =
+					message.includes("charset") || message.includes("encoding")
+						? `${message} "${err.charset || err.encoding}"`
+						: message;
+				return next(new HTTPError(errorMessage, status));
 			}
 			next();
 		});

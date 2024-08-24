@@ -48,6 +48,7 @@ import { Guild } from "./Guild";
 import { Message } from "./Message";
 import { Role } from "./Role";
 import { PublicUser, User } from "./User";
+import { dbEngine } from "../util/Database";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
 	"id",
@@ -65,7 +66,10 @@ export const MemberPrivateProjection: (keyof Member)[] = [
 	"user",
 ];
 
-@Entity("members")
+@Entity({
+	name: "members",
+	engine: dbEngine,
+})
 @Index(["id", "guild_id"], { unique: true })
 export class Member extends BaseClassWithoutId {
 	@PrimaryGeneratedColumn()
@@ -290,7 +294,9 @@ export class Member extends BaseClassWithoutId {
 			},
 			relations: ["user"],
 		});
-		member.nick = nickname;
+
+		// @ts-expect-error Member nickname is nullable
+		member.nick = nickname || null;
 
 		await Promise.all([
 			member.save(),
@@ -300,7 +306,7 @@ export class Member extends BaseClassWithoutId {
 				data: {
 					guild_id,
 					user: member.user,
-					nick: nickname,
+					nick: nickname || null,
 				},
 				guild_id,
 			} as GuildMemberUpdateEvent),

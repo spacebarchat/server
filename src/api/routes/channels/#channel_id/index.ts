@@ -115,7 +115,7 @@ router.delete(
 			}
 
 			await Promise.all([
-				Channel.delete({ id: channel_id }),
+				Channel.deleteChannel(channel),
 				emitEvent({
 					event: "CHANNEL_DELETE",
 					data: channel,

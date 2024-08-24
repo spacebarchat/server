@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -28,15 +28,13 @@ require("missing-native-js-functions");
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
 const SchemaPath = path.join(__dirname, "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
-// const specification = JSON.parse(
-// 	fs.readFileSync(openapiPath, { encoding: "utf8" }),
-// );
+
 let specification = {
 	openapi: "3.1.0",
 	info: {
 		title: "Spacebar Server",
 		description:
-			"Spacebar is a free open source selfhostable discord compatible chat, voice and video platform",
+			"Spacebar is a Discord.com server implementation and extension, with the goal of complete feature parity with Discord.com, all while adding some additional goodies, security, privacy, and configuration options.",
 		license: {
 			name: "AGPLV3",
 			url: "https://www.gnu.org/licenses/agpl-3.0.en.html",
@@ -68,8 +66,9 @@ let specification = {
 	paths: {},
 };
 
+const schemaRegEx = new RegExp(/^[\w.]+$/);
 function combineSchemas(schemas) {
-	var definitions = {};
+	let definitions = {};
 
 	for (const name in schemas) {
 		definitions = {
@@ -84,9 +83,8 @@ function combineSchemas(schemas) {
 	}
 
 	for (const key in definitions) {
-		const reg = new RegExp(/^[a-zA-Z0-9.\-_]+$/, "gm");
-		if (!reg.test(key)) {
-			console.error(`Invalid schema name: ${key} (${reg.test(key)})`);
+		if (!schemaRegEx.test(key)) {
+			console.error(`Invalid schema name: ${key}`);
 			continue;
 		}
 		specification.components = specification.components || {};
@@ -116,7 +114,7 @@ function getTag(key) {
 	return key.match(/\/([\w-]+)/)[1];
 }
 
-function apiRoutes() {
+function apiRoutes(missingRoutes) {
 	const routes = getRouteDescriptions();
 
 	// populate tags
@@ -136,8 +134,9 @@ function apiRoutes() {
 
 		if (
 			!NO_AUTHORIZATION_ROUTES.some((x) => {
-				if (typeof x === "string") return path.startsWith(x);
-				return x.test(path);
+				if (typeof x === "string")
+					return (method.toUpperCase() + " " + path).startsWith(x);
+				return x.test(method.toUpperCase() + " " + path);
 			})
 		) {
 			obj.security = [{ bearer: [] }];
@@ -157,32 +156,30 @@ function apiRoutes() {
 						},
 					},
 				},
-			}.merge(obj.requestBody);
+			};
 		}
 
 		if (route.responses) {
-			for (const [k, v] of Object.entries(route.responses)) {
-				let schema = {
-					$ref: `#/components/schemas/${v.body}`,
-				};
+			obj.responses = {};
 
-				obj.responses = {
-					[k]: {
-						...(v.body
-							? {
-									description:
-										obj?.responses?.[k]?.description || "",
-									content: {
-										"application/json": {
-											schema: schema,
-										},
-									},
-							  }
-							: {
-									description: "No description available",
-							  }),
-					},
-				}.merge(obj.responses);
+			for (const [k, v] of Object.entries(route.responses)) {
+				if (v.body)
+					obj.responses[k] = {
+						description: obj?.responses?.[k]?.description || "",
+						content: {
+							"application/json": {
+								schema: {
+									$ref: `#/components/schemas/${v.body}`,
+								},
+							},
+						},
+					};
+				else
+					obj.responses[k] = {
+						description:
+							obj?.responses?.[k]?.description ||
+							"No description available",
+					};
 			}
 		} else {
 			obj.responses = {
@@ -218,6 +215,15 @@ function apiRoutes() {
 
 		obj.tags = [...(obj.tags || []), getTag(p)].unique();
 
+		if (missingRoutes.additional.includes(path.replace(/\/$/, ""))) {
+			obj["x-badges"] = [
+				{
+					label: "Spacebar-only",
+					color: "red",
+				},
+			];
+		}
+
 		specification.paths[path] = Object.assign(
 			specification.paths[path] || {},
 			{
@@ -227,10 +233,21 @@ function apiRoutes() {
 	});
 }
 
-function main() {
+async function main() {
 	console.log("Generating OpenAPI Specification...");
+
+	const routesRes = await fetch(
+		"https://github.com/spacebarchat/missing-routes/raw/main/missing.json",
+		{
+			headers: {
+				Accept: "application/json",
+			},
+		},
+	);
+	const missingRoutes = await routesRes.json();
+
 	combineSchemas(schemas);
-	apiRoutes();
+	apiRoutes(missingRoutes);
 
 	fs.writeFileSync(
 		openapiPath,

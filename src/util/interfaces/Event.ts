@@ -28,7 +28,6 @@ import {
 	Role,
 	Emoji,
 	PublicMember,
-	Guild,
 	Channel,
 	PublicUser,
 	User,
@@ -43,6 +42,7 @@ import {
 	ReadyUserGuildSettingsEntries,
 	ReadyPrivateChannel,
 	GuildOrUnavailable,
+	GuildCreateResponse,
 } from "@spacebar/util";
 
 export interface Event {
@@ -195,7 +195,7 @@ export interface GuildCreateEvent extends Event {
 
 export interface GuildUpdateEvent extends Event {
 	event: "GUILD_UPDATE";
-	data: Guild;
+	data: GuildCreateResponse;
 }
 
 export interface GuildDeleteEvent extends Event {

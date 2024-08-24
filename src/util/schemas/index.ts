@@ -62,6 +62,7 @@ export * from "./RequestGuildMembersSchema";
 export * from "./RoleModifySchema";
 export * from "./RolePositionUpdateSchema";
 export * from "./SelectProtocolSchema";
+export * from "./TeamCreateSchema";
 export * from "./TemplateCreateSchema";
 export * from "./TemplateModifySchema";
 export * from "./TotpDisableSchema";

@@ -39,6 +39,7 @@ import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
+import { dbEngine } from "../util/Database";
 
 export enum MessageType {
 	DEFAULT = 0,
@@ -68,7 +69,10 @@ export enum MessageType {
 	UNHANDLED = 255,
 }
 
-@Entity("messages")
+@Entity({
+	name: "messages",
+	engine: dbEngine,
+})
 @Index(["channel_id", "id"], { unique: true })
 export class Message extends BaseClass {
 	@Column({ nullable: true })

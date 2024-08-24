@@ -13,11 +13,21 @@
           inherit system;
         };
         hashesFile = builtins.fromJSON (builtins.readFile ./hashes.json);
+        lib = pkgs.lib;
       in rec {
         packages.default = pkgs.buildNpmPackage {
           pname = "spacebar-server-ts";
-          src = ./.;
           name = "spacebar-server-ts";
+
+          meta = with lib; {
+            description = "Spacebar server, a FOSS reimplementation of the Discord backend.";
+            homepage = "https://github.com/spacebarchat/server";
+            license = licenses.agpl3Plus;
+            platforms = platforms.all;
+            mainProgram = "start-bundle";
+          };
+
+          src = ./.;
           nativeBuildInputs = with pkgs; [ python3 ];
           npmDepsHash = hashesFile.npmDepsHash;
           makeCacheWritable = true;
