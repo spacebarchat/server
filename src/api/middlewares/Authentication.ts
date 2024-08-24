@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -23,37 +23,37 @@ import { HTTPError } from "lambert-server";
 
 export const NO_AUTHORIZATION_ROUTES = [
 	// Authentication routes
-	"/auth/login",
-	"/auth/register",
-	"/auth/location-metadata",
-	"/auth/mfa/totp",
-	"/auth/mfa/webauthn",
-	"/auth/verify",
-	"/auth/forgot",
-	"/auth/reset",
+	"POST /auth/login",
+	"POST /auth/register",
+	"GET /auth/location-metadata",
+	"POST /auth/mfa/",
+	"POST /auth/verify",
+	"POST /auth/forgot",
+	"POST /auth/reset",
+	"GET /invites/",
 	// Routes with a seperate auth system
-	/\/webhooks\/\d+\/\w+\/?/, // no token requires auth
+	/POST \/webhooks\/\d+\/\w+\/?/, // no token requires auth
 	// Public information endpoints
-	"/ping",
-	"/gateway",
-	"/experiments",
-	"/updates",
-	"/download",
-	"/scheduled-maintenances/upcoming.json",
+	"GET /ping",
+	"GET /gateway",
+	"GET /experiments",
+	"GET /updates",
+	"GET /download",
+	"GET /scheduled-maintenances/upcoming.json",
 	// Public kubernetes integration
-	"/-/readyz",
-	"/-/healthz",
+	"GET /-/readyz",
+	"GET /-/healthz",
 	// Client analytics
-	"/science",
-	"/track",
+	"POST /science",
+	"POST /track",
 	// Public policy pages
-	"/policies/instance",
+	"GET /policies/instance/",
 	// Oauth callback
 	"/oauth2/callback",
 	// Asset delivery
-	/\/guilds\/\d+\/widget\.(json|png)/,
+	/GET \/guilds\/\d+\/widget\.(json|png)/,
 	// Connections
-	/\/connections\/\w+\/callback/,
+	/POST \/connections\/\w+\/callback/,
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;
@@ -78,11 +78,10 @@ export async function Authentication(
 ) {
 	if (req.method === "OPTIONS") return res.sendStatus(204);
 	const url = req.url.replace(API_PREFIX, "");
-	if (url.startsWith("/invites") && req.method === "GET") return next();
 	if (
 		NO_AUTHORIZATION_ROUTES.some((x) => {
-			if (typeof x === "string") return url.startsWith(x);
-			return x.test(url);
+			if (typeof x === "string") return (req.method + " " + url).startsWith(x);
+			return x.test(req.method + " " + url);
 		})
 	)
 		return next();
