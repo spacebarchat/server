@@ -55,7 +55,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	// Connections
 	/POST \/connections\/\w+\/callback/,
 	// Image proxy
-	/GET \/imageproxy\/[A-Za-z0-9+/]\/\d+x\d+\/.+/
+	/GET \/imageproxy\/[A-Za-z0-9+/]\/\d+x\d+\/.+/,
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;

@@ -67,7 +67,12 @@ export async function ImageProxy(req: Request, res: Response) {
 		if (!crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(path[0])))
 			throw new Error("Invalid signature");
 	} catch {
-		console.log("[ImageProxy] Invalid signature, expected " + hash + " but got " + path[0]);
+		console.log(
+			"[ImageProxy] Invalid signature, expected " +
+				hash +
+				" but got " +
+				path[0],
+		);
 		res.status(403).send("Invalid signature");
 		return;
 	}
