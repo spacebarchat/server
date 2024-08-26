@@ -68,7 +68,6 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	if (!Array.isArray(range) || range.length !== 2) {
 		throw new Error("range is not a valid array");
 	}
-	// TODO: wait for typeorm to implement ordering for .find queries https://github.com/typeorm/typeorm/issues/2620
 
 	let members: Member[] = [];
 	try {
@@ -82,11 +81,11 @@ async function getMembers(guild_id: string, range: [number, number]) {
 				.leftJoinAndSelect("user.sessions", "session")
 				.addSelect("user.settings")
 				.addSelect(
-					"CASE WHEN session.status = 'offline' THEN 0 ELSE 1 END",
+					"CASE WHEN session.status IS NULL OR session.status = 'offline' OR session.status = 'invisible' THEN 0 ELSE 1 END",
 					"_status",
 				)
-				.orderBy("role.position", "DESC")
-				.addOrderBy("_status", "DESC")
+				.orderBy("_status", "DESC")
+				.addOrderBy("role.position", "DESC")
 				.addOrderBy("user.username", "ASC")
 				.offset(Number(range[0]) || 0)
 				.limit(Number(range[1]) || 100)
