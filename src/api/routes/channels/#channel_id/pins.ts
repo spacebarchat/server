@@ -179,6 +179,7 @@ router.get(
 
 		const pins = await Message.find({
 			where: { channel_id: channel_id, pinned: true },
+			relations: ["author"],
 		});
 
 		res.send(pins);
