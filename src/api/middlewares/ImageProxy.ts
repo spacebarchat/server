@@ -67,7 +67,12 @@ export async function ImageProxy(req: Request, res: Response) {
 		if (!crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(path[0])))
 			throw new Error("Invalid signature");
 	} catch {
-		console.log("Invalid signature, expected " + hash + " got " + path[0]);
+		console.log(
+			"[ImageProxy] Invalid signature, expected " +
+				hash +
+				" but got " +
+				path[0],
+		);
 		res.status(403).send("Invalid signature");
 		return;
 	}
@@ -75,7 +80,7 @@ export async function ImageProxy(req: Request, res: Response) {
 	const abort = new AbortController();
 	setTimeout(() => abort.abort(), 5000);
 
-	const request = await fetch(path.slice(2).join("/"), {
+	const request = await fetch("https://" + path.slice(2).join("/"), {
 		headers: {
 			"User-Agent": "SpacebarImageProxy/1.0.0 (https://spacebar.chat)",
 		},
