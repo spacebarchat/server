@@ -102,6 +102,8 @@
                         "type": "string"
                     },
                     "code": {
+                        "minLength": 6,
+                        "maxLength": 6,
                         "type": "string"
                     }
                 },
@@ -174,6 +176,8 @@
                 "type": "object",
                 "properties": {
                     "password": {
+                        "minLength": 1,
+                        "maxLength": 72,
                         "type": "string"
                     }
                 },
@@ -5606,6 +5610,8 @@
                         "type": "string"
                     },
                     "password": {
+                        "minLength": 1,
+                        "maxLength": 72,
                         "type": "string"
                     },
                     "undelete": {
@@ -5986,6 +5992,8 @@
                 "type": "object",
                 "properties": {
                     "password": {
+                        "minLength": 1,
+                        "maxLength": 72,
                         "type": "string"
                     },
                     "regenerate": {
@@ -6022,6 +6030,8 @@
                 "type": "object",
                 "properties": {
                     "password": {
+                        "minLength": 1,
+                        "maxLength": 72,
                         "type": "string"
                     },
                     "token": {
@@ -6359,6 +6369,8 @@
                 "type": "object",
                 "properties": {
                     "code": {
+                        "minLength": 6,
+                        "maxLength": 6,
                         "type": "string"
                     }
                 },
@@ -6370,9 +6382,13 @@
                 "type": "object",
                 "properties": {
                     "password": {
+                        "minLength": 1,
+                        "maxLength": 72,
                         "type": "string"
                     },
                     "code": {
+                        "minLength": 6,
+                        "maxLength": 6,
                         "type": "string"
                     },
                     "secret": {
@@ -6497,15 +6513,22 @@
                         "nullable": true
                     },
                     "password": {
+                        "minLength": 1,
+                        "maxLength": 72,
                         "type": "string"
                     },
                     "new_password": {
+                        "minLength": 1,
+                        "maxLength": 72,
                         "type": "string"
                     },
                     "code": {
+                        "minLength": 6,
+                        "maxLength": 6,
                         "type": "string"
                     },
                     "email": {
+                        "format": "email",
                         "type": "string"
                     },
                     "discriminator": {
@@ -10945,6 +10968,12 @@
                 },
                 "tags": [
                     "scheduled-maintenances"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
