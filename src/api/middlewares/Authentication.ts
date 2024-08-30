@@ -32,7 +32,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"POST /auth/reset",
 	"GET /invites/",
 	// Routes with a seperate auth system
-	/(POST|HEAD) \/webhooks\/\d+\/\w+\/?/, // no token requires auth
+	/^(POST|HEAD) \/webhooks\/\d+\/\w+\/?/, // no token requires auth
 	// Public information endpoints
 	"GET /ping",
 	"GET /gateway",
@@ -51,11 +51,11 @@ export const NO_AUTHORIZATION_ROUTES = [
 	// Oauth callback
 	"/oauth2/callback",
 	// Asset delivery
-	/(GET|HEAD) \/guilds\/\d+\/widget\.(json|png)/,
+	/^(GET|HEAD) \/guilds\/\d+\/widget\.(json|png)/,
 	// Connections
-	/(POST|HEAD) \/connections\/\w+\/callback/,
+	/^(POST|HEAD) \/connections\/\w+\/callback/,
 	// Image proxy
-	/(GET|HEAD) \/imageproxy\/[A-Za-z0-9+/]\/\d+x\d+\/.+/,
+	/^(GET|HEAD) \/imageproxy\/[A-Za-z0-9+/]\/\d+x\d+\/.+/,
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;
