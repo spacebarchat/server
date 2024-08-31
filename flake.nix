@@ -6,9 +6,13 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachSystem flake-utils.lib.allSystems (system:
-      let
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+  }:
+    flake-utils.lib.eachSystem flake-utils.lib.allSystems (
+      system: let
         pkgs = import nixpkgs {
           inherit system;
         };
@@ -28,7 +32,7 @@
           };
 
           src = ./.;
-          nativeBuildInputs = with pkgs; [ python3 ];
+          nativeBuildInputs = with pkgs; [python3];
           npmDepsHash = hashesFile.npmDepsHash;
           makeCacheWritable = true;
           postPatch = ''
@@ -59,6 +63,7 @@
             done
             set -x
             cp -r assets/ $out/
+            cp -r images/ $out/
             cp package.json $out/
             rm -v $out/assets/openapi.json
             #rm -v $out/assets/schemas.json
