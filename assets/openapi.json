@@ -136,6 +136,9 @@
                     "icon": {
                         "type": "string"
                     },
+                    "cover_image": {
+                        "type": "string"
+                    },
                     "interactions_endpoint_url": {
                         "type": "string"
                     },
@@ -169,6 +172,12 @@
                     },
                     "flags": {
                         "type": "integer"
+                    },
+                    "custom_install_url": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
                     }
                 }
             },
@@ -3097,6 +3106,15 @@
                         "type": "string"
                     },
                     "privacy_policy_url": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "custom_install_url": {
                         "type": "string"
                     },
                     "team": {
