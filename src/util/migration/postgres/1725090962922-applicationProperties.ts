@@ -5,10 +5,10 @@ export class ApplicationProperties1725090962922 implements MigrationInterface {
 
 	public async up(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.query(
-			"ALTER TABLE applications ADD COLUMN guild_id TEXT NOT NULL",
+			"ALTER TABLE applications ADD COLUMN guild_id TEXT NULL DEFAULT NULL",
 		);
 		await queryRunner.query(
-			"ALTER TABLE applications ADD COLUMN custom_install_url TEXT NOT NULL",
+			"ALTER TABLE applications ADD COLUMN custom_install_url TEXT NULL DEFAULT NULL",
 		);
 	}
 
