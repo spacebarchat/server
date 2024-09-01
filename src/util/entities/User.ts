@@ -17,14 +17,7 @@
 */
 
 import { Request } from "express";
-import {
-	Column,
-	Entity,
-	FindOneOptions,
-	JoinColumn,
-	OneToMany,
-	OneToOne,
-} from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
 import { BitField } from "../util/BitField";
 import { BaseClass } from "./BaseClass";
