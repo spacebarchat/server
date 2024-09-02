@@ -123,13 +123,13 @@ router.post(
 		if (body.require_colons == null) body.require_colons = true;
 
 		const user = await User.findOneOrFail({ where: { id: req.user_id } });
-		body.image = (await handleFile(`/emojis/${id}`, body.image)) as string;
+		await handleFile(`/emojis/${id}`, body.image);
 
 		const mimeType = body.image.split(":")[1].split(";")[0];
 		const emoji = await Emoji.create({
 			id: id,
 			guild_id: guild_id,
-			...body,
+			name: body.name,
 			require_colons: body.require_colons ?? undefined, // schema allows nulls, db does not
 			user: user,
 			managed: false,
