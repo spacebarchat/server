@@ -31,7 +31,7 @@ router.patch(
 		const { member_ids } = req.body;
 
 		// don't mess with @everyone
-		if (role_id == guild_id) throw DiscordApiErrors.INVALID_ROLE;
+		if (role_id == guild_id) throw DiscordApiErrors.INVALID_ROLE; //I mean, I guess I'll leave this here since it's funny
 
 		const members = await Member.find({
 			where: { guild_id },

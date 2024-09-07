@@ -169,8 +169,25 @@ export class Permissions extends BitField {
 	}) {
 		if (user.id === "0") return new Permissions("ADMINISTRATOR"); // system user id
 
-		const roles = guild.roles.filter((x) => user.roles.includes(x.id));
-		let permission = Permissions.rolePermission(roles);
+		let everyoneRole = guild.roles.find((x: Role) => x.name === "@everyone");
+		let roles: Role[] = [];
+		let permission = BigInt("2251804225"); //fall back for @ everyone role just not existing???
+
+		if (everyoneRole) {
+			roles.push(everyoneRole);
+		}
+
+		if (user.roles.length > 0) {
+			roles.push(
+				...guild.roles.filter((x) => user.roles.includes(x.id))
+			);
+		}
+
+		if (roles.length > 0) {
+			permission = Permissions.rolePermission(roles);
+		}
+
+		//So, @everyone is an internal role, since we aren't putting it on the member object by default anymore, it must be used here first
 
 		if (channel?.overwrites) {
 			const overwrites = channel.overwrites.filter((x) => {

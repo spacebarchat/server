@@ -216,6 +216,8 @@ export class Member extends BaseClassWithoutId {
 	}
 
 	static async addRole(user_id: string, guild_id: string, role_id: string) {
+		if (role_id === guild_id) return; //Prevent addition of the @ everyone role - just in case
+
 		const [member] = await Promise.all([
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
@@ -371,7 +373,7 @@ export class Member extends BaseClassWithoutId {
 			id: user_id,
 			guild_id,
 			nick: undefined,
-			roles: [guild_id], // @everyone role
+			roles: [], //The @everyone is an implicit role, it should not be exposed to the client in any way.
 			joined_at: new Date(),
 			deaf: false,
 			mute: false,
@@ -382,7 +384,7 @@ export class Member extends BaseClassWithoutId {
 		await Promise.all([
 			Member.create({
 				...member,
-				roles: [Role.create({ id: guild_id })],
+				roles: [],
 				// read_state: {},
 				settings: {
 					guild_id: null,

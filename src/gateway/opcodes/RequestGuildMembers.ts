@@ -44,8 +44,10 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	guild_id = guild_id as string;
 	user_ids = user_ids as string[] | undefined;
 
-	if ("query" in d && (!limit || Number.isNaN(limit)))
-		throw new Error('"query" requires "limit" to be set');
+	if ("query" in d && (!limit || Number.isNaN(limit))) {
+		limit = 10; //The client has a habit of sending an op 8 without a limit/NaN limit sometimes. Default to 10 (used by the client when searching messages)
+	}
+
 	if ("query" in d && user_ids)
 		throw new Error('"query" and "user_ids" are mutually exclusive');
 
