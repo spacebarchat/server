@@ -27,7 +27,9 @@ router.patch(
 	route({
 		requestBody: "MemberNickChangeSchema",
 		responses: {
-			200: {},
+			200: {
+				body: "APIPublicMember",
+			},
 			400: {
 				body: "APIErrorResponse",
 			},
@@ -48,7 +50,13 @@ router.patch(
 		perms.hasThrow(permissionString);
 
 		await Member.changeNickname(member_id, guild_id, req.body.nick);
-		res.status(200).send();
+
+		const member = await Member.findOne({
+			where: { id: member_id, guild_id },
+			relations: ["roles"],
+		});
+
+		res.send(member?.toPublicMember());
 	},
 );
 
