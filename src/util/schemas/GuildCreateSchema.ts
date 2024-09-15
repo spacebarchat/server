@@ -28,4 +28,5 @@ export interface GuildCreateSchema {
 	channels?: ChannelModifySchema[];
 	system_channel_id?: string;
 	rules_channel_id?: string;
+	guild_template_code?: string;
 }
