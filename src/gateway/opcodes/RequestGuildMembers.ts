@@ -98,7 +98,6 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 				"',' || member.roles || ',' NOT LIKE :everyoneRoleIdList",
 				{ everyoneRoleIdList: "%," + guild_id + ",%" },
 			)
-			.andWhere("session.status != 'offline'")
 			.addOrderBy("user.username", "ASC")
 			.limit(memberFind.take);
 
