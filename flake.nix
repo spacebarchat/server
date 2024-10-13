@@ -63,7 +63,6 @@
             done
             set -x
             cp -r assets/ $out/
-            cp -r images/ $out/
             cp package.json $out/
             rm -v $out/assets/openapi.json
             #rm -v $out/assets/schemas.json
