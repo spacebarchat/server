@@ -18,7 +18,7 @@
 
 import FormData from "form-data";
 import { HTTPError } from "lambert-server";
-import fetch from "node-fetch";
+import fetch from "node-fetch-commonjs";
 import { Attachment } from "../entities";
 import { Config } from "./Config";
 
