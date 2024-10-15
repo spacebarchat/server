@@ -116,6 +116,7 @@
 		"@spacebar/util": "dist/util"
 	},
 	"optionalDependencies": {
+		"@yukikaze-bot/erlpack": "^1.0.1",
 		"erlpack": "^0.1.4",
 		"jimp": "^0.22.12",
 		"mysql": "^2.18.1",
