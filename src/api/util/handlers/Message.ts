@@ -48,7 +48,7 @@ import {
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
-import fetch from "node-fetch";
+import fetch from "node-fetch-commonjs";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images

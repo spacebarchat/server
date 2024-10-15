@@ -17,7 +17,7 @@
 */
 
 import "missing-native-js-functions";
-import fetch from "node-fetch";
+import fetch from "node-fetch-commonjs";
 import { ProxyAgent } from "proxy-agent";
 import readline from "readline";
 import fs from "fs/promises";
@@ -100,7 +100,7 @@ async function getLatestVersion(url: string) {
 	try {
 		const agent = new ProxyAgent();
 		const response = await fetch(url, { agent });
-		const content = await response.json();
+		const content = (await response.json()) as { version: string };
 		return content.version;
 	} catch (error) {
 		throw new Error("[Auto update] check failed for " + url);

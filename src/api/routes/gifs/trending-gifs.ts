@@ -17,9 +17,14 @@
 */
 
 import { route } from "@spacebar/api";
-import { TenorMediaTypes, getGifApiKey, parseGifResult } from "@spacebar/util";
+import {
+	TenorMediaTypes,
+	getGifApiKey,
+	parseGifResult,
+	TenorGif,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import fetch from "node-fetch";
+import fetch from "node-fetch-commonjs";
 import { ProxyAgent } from "proxy-agent";
 
 const router = Router();
@@ -63,7 +68,7 @@ router.get(
 			},
 		);
 
-		const { results } = await response.json();
+		const { results } = (await response.json()) as { results: TenorGif[] };
 
 		res.json(results.map(parseGifResult)).status(200);
 	},

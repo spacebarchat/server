@@ -1,5 +1,5 @@
 diff --git a/node_modules/express/lib/response.js b/node_modules/express/lib/response.js
-index dd7b3c8..a339896 100644
+index 2b654f4..60592b0 100644
 --- a/node_modules/express/lib/response.js
 +++ b/node_modules/express/lib/response.js
 @@ -27,7 +27,6 @@ var merge = require('utils-merge');
@@ -10,15 +10,16 @@ index dd7b3c8..a339896 100644
  var cookie = require('cookie');
  var send = require('send');
  var extname = path.extname;
-@@ -54,7 +53,6 @@ module.exports = res
+@@ -54,8 +53,6 @@ module.exports = res
   * @private
   */
  
 -var charsetRegExp = /;\s*charset\s*=/;
- var schemaAndHostRegExp = /^(?:[a-zA-Z][a-zA-Z0-9+.-]*:)?\/\/[^\\\/\?]+/;
- 
+-
  /**
-@@ -165,16 +163,6 @@ res.send = function send(body) {
+  * Set status `code`.
+  *
+@@ -164,16 +161,6 @@ res.send = function send(body) {
        break;
    }
  
@@ -35,7 +36,7 @@ index dd7b3c8..a339896 100644
  
    // determine if ETag should be generated
    var etagFn = app.get('etag fn')
-@@ -781,17 +769,6 @@ res.header = function header(field, val) {
+@@ -780,17 +767,6 @@ res.header = function header(field, val) {
        ? val.map(String)
        : String(val);
  
