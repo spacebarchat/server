@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-require("module-alias/register");
+import moduleAlias from "module-alias";
+moduleAlias(__dirname + "../../../package.json");
 import "dotenv/config";
 
 import { CDNServer } from "./Server";

@@ -46,6 +46,7 @@
 		"@types/i18next-node-fs-backend": "^2.1.2",
 		"@types/json-bigint": "^1.0.1",
 		"@types/jsonwebtoken": "^9.0.2",
+		"@types/module-alias": "^2.0.4",
 		"@types/morgan": "^1.9.4",
 		"@types/multer": "^1.4.7",
 		"@types/murmurhash-js": "^1.0.4",
