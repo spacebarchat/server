@@ -18,6 +18,7 @@
 
 // process.env.MONGOMS_DEBUG = "true";
 import moduleAlias from "module-alias";
+
 moduleAlias(__dirname + "../../../package.json");
 
 import "reflect-metadata";
@@ -26,8 +27,10 @@ import os from "os";
 import { red, bold, yellow, cyan } from "picocolors";
 import { initStats } from "./stats";
 import { config } from "dotenv";
+
 config();
 import { execSync } from "child_process";
+import { centerString, Logo } from "@spacebar/util";
 
 const cores = process.env.THREADS ? parseInt(process.env.THREADS) : 1;
 
@@ -41,23 +44,19 @@ function getCommitOrFail() {
 
 if (cluster.isPrimary) {
 	const commit = getCommitOrFail();
-
+	Logo.printLogo();
 	console.log(
 		bold(`
-███████╗██████╗  █████╗  ██████╗███████╗██████╗  █████╗ ██████╗ 
-██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔══██╗
-███████╗██████╔╝███████║██║     █████╗  ██████╔╝███████║██████╔╝
-╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝  ██╔══██╗██╔══██║██╔══██╗
-███████║██║     ██║  ██║╚██████╗███████╗██████╔╝██║  ██║██║  ██║
-╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-
-		spacebar-server | ${yellow(
-			`Pre-release (${
-				commit !== null
-					? commit.slice(0, 7)
-					: "Unknown (Git cannot be found)"
-			})`,
-		)}
+${centerString(
+	`spacebar-server | ${yellow(
+		`Pre-release (${
+			commit !== null
+				? commit.slice(0, 7)
+				: "Unknown (Git cannot be found)"
+		})`,
+	)}`,
+	64,
+)}
 
 Commit Hash: ${
 			commit !== null
@@ -74,7 +73,7 @@ Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 
 	initStats();
 
-	console.log(`[Process] starting with ${cores} threads`);
+	console.log(`[Process] Starting with ${cores} threads`);
 
 	if (cores === 1) {
 		require("./Server");
@@ -87,7 +86,7 @@ Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 			const delay = process.env.DATABASE?.includes("://") ? 0 : i * 1000;
 			setTimeout(() => {
 				cluster.fork();
-				console.log(`[Process] worker ${cyan(i)} started.`);
+				console.log(`[Process] Worker ${cyan(i)} started.`);
 			}, delay);
 		}
 
@@ -102,7 +101,7 @@ Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
 		cluster.on("exit", (worker) => {
 			console.log(
 				`[Worker] ${red(
-					`died with PID: ${worker.process.pid} , restarting ...`,
+					`PID ${worker.process.pid} died, restarting ...`,
 				)}`,
 			);
 			cluster.fork();
