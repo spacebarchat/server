@@ -6,15 +6,22 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachSystem flake-utils.lib.allSystems (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachSystem flake-utils.lib.allSystems (
+      system:
       let
         pkgs = import nixpkgs {
           inherit system;
         };
         hashesFile = builtins.fromJSON (builtins.readFile ./hashes.json);
         lib = pkgs.lib;
-      in rec {
+      in
+      rec {
         packages.default = pkgs.buildNpmPackage {
           pname = "spacebar-server-ts";
           name = "spacebar-server-ts";
@@ -41,27 +48,35 @@
             npm prune --omit dev --no-save $npmInstallFlags "''${npmInstallFlagsArray[@]}" $npmFlags "''${npmFlagsArray[@]}"
             find node_modules -maxdepth 1 -type d -empty -delete
 
-            mkdir -p $out/node_modules/
-            cp -r node_modules/* $out/node_modules/
-            cp -r dist/ $out/node_modules/@spacebar
+
+            #mkdir -p $out/node_modules/
+            #cp -r node_modules/* $out/node_modules/
+            #cp -r dist/ $out/node_modules/@spacebar
+            #for i in dist/**/start.js
+            #do
+            #  makeWrapper ${pkgs.nodejs-slim}/bin/node $out/bin/start-`dirname ''${i/dist\//}` --prefix NODE_PATH : $out/node_modules --add-flags $out/node_modules/@spacebar`dirname ''${i/dist/}`/start.js
+            #done
+            #set +x
+            #substituteInPlace package.json --replace 'dist/' 'node_modules/@spacebar/'
+            #find $out/node_modules/@spacebar/ -type f -name "*.js" | while read srcFile; do
+            #  echo Patching imports in ''${srcFile/$out\/node_modules\/@spacebar//}...
+            #  substituteInPlace $srcFile --replace 'require("./' 'require(__dirname + "/'
+            #  substituteInPlace $srcFile --replace 'require("../' 'require(__dirname + "/../'
+            #  substituteInPlace $srcFile --replace ', "assets"' ', "..", "assets"'
+            #  #substituteInPlace $srcFile --replace 'require("@spacebar/' 'require("
+            #done
+            #set -x
+            #cp -r assets/ $out/
+            #cp package.json $out/
+            #rm -v $out/assets/openapi.json
+            ##rm -v $out/assets/schemas.json
+
+            mkdir -p $out
+            cp -r assets dist node_modules package.json $out/
             for i in dist/**/start.js
             do
-              makeWrapper ${pkgs.nodejs-slim}/bin/node $out/bin/start-`dirname ''${i/dist\//}` --prefix NODE_PATH : $out/node_modules --add-flags $out/node_modules/@spacebar`dirname ''${i/dist/}`/start.js
+              makeWrapper ${pkgs.nodejs-slim}/bin/node $out/bin/start-`dirname ''${i/dist\//}` --prefix NODE_PATH : $out/node_modules --add-flags $out/$i
             done
-            set +x
-            substituteInPlace package.json --replace 'dist/' 'node_modules/@spacebar/'
-            find $out/node_modules/@spacebar/ -type f -name "*.js" | while read srcFile; do
-              echo Patching imports in ''${srcFile/$out\/node_modules\/@spacebar//}...
-              substituteInPlace $srcFile --replace 'require("./' 'require(__dirname + "/'
-              substituteInPlace $srcFile --replace 'require("../' 'require(__dirname + "/../'
-              substituteInPlace $srcFile --replace ', "assets"' ', "..", "assets"'
-              #substituteInPlace $srcFile --replace 'require("@spacebar/' 'require("
-            done
-            set -x
-            cp -r assets/ $out/
-            cp package.json $out/
-            rm -v $out/assets/openapi.json
-            #rm -v $out/assets/schemas.json
 
             #debug utils:
             #cp $out/node_modules/@spacebar/ $out/build_output -r
