@@ -44,4 +44,5 @@ export * from "./WebAuthn";
 export * from "./Url";
 export * from "./Gifs";
 export * from "./Application";
+export * from "./Logo";
 export * from "./NameValidation";
