@@ -31,14 +31,9 @@ import { Config, ErlpackType } from "@spacebar/util";
 
 let erlpack: ErlpackType | null = null;
 try {
-	erlpack = require("erlpack") as ErlpackType;
+	erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
 } catch (e) {
-	console.log("Failed to import erlpack: ", e);
-	try {
-		erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
-	} catch (e) {
-		console.log("Failed to import @yukikaze-bot/erlpack: ", e);
-	}
+	console.log("Failed to import @yukikaze-bot/erlpack: ", e);
 }
 
 // TODO: check rate limit
