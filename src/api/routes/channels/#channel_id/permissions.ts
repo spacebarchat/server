@@ -113,7 +113,7 @@ router.delete(
 		if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
 
 		channel.permission_overwrites = channel.permission_overwrites?.filter(
-			(x) => x.id === overwrite_id,
+			(x) => x.id !== overwrite_id,
 		);
 
 		await Promise.all([
