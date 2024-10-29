@@ -117,7 +117,7 @@
 	},
 	"optionalDependencies": {
 		"@yukikaze-bot/erlpack": "^1.0.1",
-		"jimp": "^0.22.12",
+		"jimp": "^1.6.0",
 		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.5",
 		"nodemailer-mailjet-transport": "github:n0script22/nodemailer-mailjet-transport",
