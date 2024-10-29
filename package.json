@@ -67,7 +67,7 @@
 		"typescript": "^5.6.3"
 	},
 	"dependencies": {
-		"@aws-sdk/client-s3": "^3.679.0",
+		"@aws-sdk/client-s3": "^3.682.0",
 		"@sentry/integrations": "^7.66.0",
 		"@sentry/node": "^7.119.2",
 		"ajv": "^8.17.1",
