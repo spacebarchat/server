@@ -88,6 +88,9 @@
           buildInputs = with pkgs; [
             nodejs
             nodePackages.typescript
+            nodePackages.ts-node
+            nodePackages.patch-package
+            nodePackages.prettier
           ];
         };
       }
