@@ -83,7 +83,7 @@
 		"fido2-lib": "^3.5.3",
 		"file-type": "~16.5.4",
 		"form-data": "^4.0.1",
-		"i18next": "^21.10.0",
+		"i18next": "^23.16.4",
 		"i18next-fs-backend": "^2.3.2",
 		"i18next-http-middleware": "^3.6.0",
 		"image-size": "^1.1.1",
