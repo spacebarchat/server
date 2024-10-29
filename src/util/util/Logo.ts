@@ -6,8 +6,8 @@ import { KittyLogo } from "./KittyLogo";
 
 
 export class Logo {
-	public static printLogo() {
-		KittyLogo.printLogo();
+	public static async printLogo() {
+		await KittyLogo.printLogo();
 		// const chafaPath = findOnPath("chafa");
 		// console.log("Chafa path: " + chafaPath);
 		// const info = terminfo.parse({debug: true});
