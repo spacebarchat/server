@@ -101,7 +101,7 @@
 		"picocolors": "^1.1.1",
 		"probe-image-size": "^7.2.3",
 		"proxy-agent": "^6.4.0",
-		"reflect-metadata": "^0.1.14",
+		"reflect-metadata": "^0.2.2",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.0",
 		"typeorm": "^0.3.20",
