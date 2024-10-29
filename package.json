@@ -38,7 +38,7 @@
 	},
 	"homepage": "https://spacebar.chat",
 	"devDependencies": {
-		"@types/amqplib": "^0.8.2",
+		"@types/amqplib": "^0.10.5",
 		"@types/bcrypt": "^5.0.2",
 		"@types/body-parser": "^1.19.5",
 		"@types/cookie-parser": "^1.4.7",
