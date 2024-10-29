@@ -70,7 +70,7 @@
 		"@aws-sdk/client-s3": "^3.682.0",
 		"@sentry/node": "^8.35.0",
 		"ajv": "^8.17.1",
-		"ajv-formats": "2.1.1",
+		"ajv-formats": "^3.0.1",
 		"amqplib": "^0.10.4",
 		"bcrypt": "^5.1.1",
 		"body-parser": "^1.20.3",
