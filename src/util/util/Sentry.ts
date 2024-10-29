@@ -19,8 +19,7 @@
 import { yellow } from "picocolors";
 import { Config } from "./Config";
 
-import * as Integrations from "@sentry/integrations";
-import * as SentryNode from "@sentry/node";
+import * as Integrations from "@sentry/node";
 import express from "express";
 
 // Work around for when bundle calls api/etc
@@ -33,7 +32,7 @@ export const Sentry = {
 			Config.get().sentry;
 		if (!enabled) return;
 
-		if (SentryNode.getCurrentHub().getClient()) return; // we've already initialised sentry
+		if (Integrations.getClient()) return; // we've already initialised sentry
 
 		console.log("[Sentry] Enabling sentry...");
 
@@ -46,32 +45,30 @@ export const Sentry = {
 		}
 
 		const integrations = [
-			new SentryNode.Integrations.Http({ tracing: true }),
-			new Integrations.RewriteFrames({
+			Integrations.httpIntegration(),
+			Integrations.rewriteFramesIntegration({
 				root: __dirname,
 			}),
-			new SentryNode.Integrations.Http({
-				tracing: true,
-				breadcrumbs: true,
-			}),
-			...SentryNode.autoDiscoverNodePerformanceMonitoringIntegrations(),
+			Integrations.httpIntegration(),
+			...Integrations.getAutoPerformanceIntegrations(),
 		];
 
-		if (app)
-			integrations.push(
-				new SentryNode.Integrations.Express({
-					app,
-				}),
-			);
+		//deprecated in v8? unable to test
+		// if (app)
+		// 	integrations.push(
+		// 		Integrations.expressIntegration({
+		// 			app,
+		// 		}),
+		// 	);
 
-		SentryNode.init({
+		Integrations.init({
 			dsn: endpoint,
 			integrations,
 			tracesSampleRate: traceSampleRate, // naming?
 			environment,
 		});
 
-		SentryNode.addGlobalEventProcessor((event) => {
+		Integrations.addEventProcessor((event) => {
 			if (event.transaction) {
 				// Rewrite things that look like IDs to `:id` for sentry
 				event.transaction = event.transaction
@@ -109,11 +106,6 @@ export const Sentry = {
 
 			return event;
 		});
-
-		if (app) {
-			app.use(SentryNode.Handlers.requestHandler());
-			app.use(SentryNode.Handlers.tracingHandler());
-		}
 	},
 
 	/** Call AFTER registering your routes */
@@ -122,7 +114,8 @@ export const Sentry = {
 		if (errorHandlersUsed) return;
 		errorHandlersUsed = true;
 
-		app.use(SentryNode.Handlers.errorHandler());
+		Integrations.setupExpressErrorHandler(app);
+
 		// The typings for this are broken?
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 		app.use(function onError(err: any, req: any, res: any, next: any) {
@@ -132,6 +125,6 @@ export const Sentry = {
 	},
 
 	close: () => {
-		SentryNode.close();
+		Integrations.close();
 	},
 };

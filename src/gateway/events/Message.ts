@@ -89,11 +89,11 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	}
 
 	try {
-		return await Sentry.startActiveSpan(
+		return await Sentry.startSpan( // Emma [it/its]@Rory&: is this the right function to migrate to in v8?
 			{
 				op: "websocket.server",
 				name: `GATEWAY ${OPCODES[data.op]}`,
-				data: {
+				attributes: { // this needs to be reworked :)
 					...data.d,
 					token: data?.d?.token ? "[Redacted]" : undefined,
 				},
