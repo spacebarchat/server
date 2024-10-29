@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import fs from "fs";
+import "missing-native-js-functions";
 
 var util = require("util");
 
@@ -26,6 +27,16 @@ var util = require("util");
 // 		};
 
 export class KittyLogo {
+	private static isSupported = false;
+	private static iconCache: string;
+
+	public static async initialise() {
+		this.isSupported = await this.checkSupport();
+		this.iconCache = readFileSync(__dirname + "/../../../assets/icon.png", {
+			encoding: "base64",
+		});
+	}
+
 	public static printLogo(): void {
 		const data = readFileSync(__dirname + "/../../../assets/logo.png", {
 			encoding: "base64",
@@ -48,48 +59,54 @@ export class KittyLogo {
 	}
 
 	private static writeIcon(): void {
-		const data = readFileSync(__dirname + "/../../../assets/icon.png", {
-			encoding: "base64",
-		});
 		KittyLogo.writeImage({
-			base64Data: data,
+			base64Data: this.iconCache,
 			width: 2,
 			addNewline: false,
 		});
 	}
 
-	private static checkSupport(cb: void): boolean {
-		process.stdin.setEncoding("utf8");
-		process.stdin.setRawMode(true);
-		let resp = "";
-		process.stdin.once("data", function (key) {
-			console.log(util.inspect(key));
-			process.stdin.setRawMode(false);
-			process.stdin.pause();
-			resp = key.toString();
+	private static checkSupport(): Promise<boolean> {
+		if (process.env.FORCE_KITTY) return Promise.resolve(true);
+		// Check if we are running in a terminal
+		if (!process.stdin.isTTY) return Promise.resolve(false);
+		if (!process.stdout.isTTY) return Promise.resolve(false);
+
+		// Check if we are running in a Kitty terminal
+		if (process.env.TERM == "xterm-kitty") return Promise.resolve(true);
+
+		// Check if we are running in a common unsupported terminal
+		if (process.env.TERM == "xterm") return Promise.resolve(false);
+		if (process.env.TERM == "xterm-256color") return Promise.resolve(false);
+
+		return new Promise<boolean>((resolve) => {
+			(async () => {
+				process.stdin.setEncoding("utf8");
+				process.stdin.setRawMode(true);
+				let resp = "";
+				process.stdin.once("data", function (key) {
+					process.stdin.setRawMode(false);
+					process.stdin.pause();
+					resp = key.toString();
+					if (resp == "\x1B_Gi=31;OK\x1B\\\x1B[?62;c") resolve(true);
+					else resolve(false);
+				});
+				process.stdout.write(
+					"\x1b_Gi=31,s=1,v=1,a=q,t=d,f=24;AAAA\x1b\\\x1b[c",
+				);
+
+				await sleep(5000);
+				resolve(false);
+			})();
 		});
-		process.stdout.write(
-			"\x1b_Gi=31,s=1,v=1,a=q,t=d,f=24;AAAA\x1b\\\x1b[c",
-		);
-
-		while(resp == "") {
-			console.log("waiting");
-			Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1000);
-		}
-
-		return false;
 	}
 
-	// private static sleep(ms: number): void {
-	// 	Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
-	// }
-
-	private static writeImage(request: KittyImageMetadata): void {
-		if (this.checkSupport()) return;
+	private static writeImage(request: KittyImageMetadata) {
+		if (!this.isSupported) return;
 		let pngData = request.base64Data;
 
 		// Ga=T,q=2,o=z,s=1022,v=181,X=5;
-		const chunkSize = 1024;
+		const chunkSize = 4096;
 
 		//#region Header
 		let header = `\x1b_G`; // enable graphics
@@ -120,16 +137,25 @@ export class KittyLogo {
 	}
 }
 
-export class KittyImageMetadata {
-	public base64Data: string;
-	public width?: number;
-	public height?: number;
-	public widthPixels?: number;
-	public heightPixels?: number;
-	public addNewline?: boolean;
+export interface KittyImageMetadata {
+	base64Data: string;
+	width?: number;
+	height?: number;
+	widthPixels?: number;
+	heightPixels?: number;
+	addNewline?: boolean;
 }
 
-KittyLogo.printLogo();
+(async () => {
+	await KittyLogo.initialise();
+	KittyLogo.printLogo();
+
+	for (let i = 0; i < 1000; i++) {
+		console.time("meow");
+		KittyLogo.printWithIcon("meow");
+		console.timeEnd("meow");
+	}
+})();
 
 //
 // for (let i = 0; i < 10; i++) {

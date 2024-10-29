@@ -24,7 +24,7 @@ moduleAlias(__dirname + "../../../package.json");
 import "reflect-metadata";
 import cluster, { Worker } from "cluster";
 import os from "os";
-import { red, bold, yellow, cyan } from "picocolors";
+import { red, bold, yellow, cyan, blueBright, redBright } from "picocolors";
 import { initStats } from "./stats";
 import { config } from "dotenv";
 
@@ -44,28 +44,24 @@ function getCommitOrFail() {
 
 if (cluster.isPrimary) {
 	const commit = getCommitOrFail();
-	Logo.printLogo();
+	// Logo.printLogo();
+	const unformatted = `spacebar-server | ! Pre-release build !`;
+	const formatted = `${blueBright("spacebar-server")} | ${redBright("⚠️ Pre-release build ⚠️")}`;
 	console.log(
-		bold(`
-${centerString(
-	`spacebar-server | ${yellow(
-		`Pre-release (${
-			commit !== null
-				? commit.slice(0, 7)
-				: "Unknown (Git cannot be found)"
-		})`,
-	)}`,
-	64,
-)}
-
-Commit Hash: ${
-			commit !== null
-				? `${cyan(commit)} (${yellow(commit.slice(0, 7))})`
-				: "Unknown (Git cannot be found)"
-		}
-Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
-`),
+		bold(centerString(unformatted, 64).replace(unformatted, formatted)),
 	);
+
+	const unformattedGitHeader = `Commit Hash: ${commit !== null ? commit : "Unknown (Git cannot be found)"}`;
+	const formattedGitHeader = `Commit Hash: ${commit !== null ? `${cyan(commit)} (${yellow(commit.slice(0, 7))})` : "Unknown (Git cannot be found)"}`;
+	console.log(
+		bold(
+			centerString(unformattedGitHeader, 64).replace(
+				unformattedGitHeader,
+				formattedGitHeader,
+			),
+		),
+	);
+	console.log(`Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)`);
 
 	if (commit == null) {
 		console.log(yellow(`Warning: Git is not installed or not in PATH.`));
