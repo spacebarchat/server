@@ -100,8 +100,7 @@ export class SpacebarServer extends Server {
 		this.app.set("json replacer", JSONReplacer);
 
 		const trustedProxies = Config.get().security.trustedProxies;
-		if(trustedProxies)
-			this.app.set("trust proxy", trustedProxies);
+		if (trustedProxies) this.app.set("trust proxy", trustedProxies);
 
 		this.app.use(CORS);
 		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
@@ -149,6 +148,14 @@ export class SpacebarServer extends Server {
 
 		app.get("/verify", (req, res) =>
 			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "verify.html")),
+		);
+
+		app.get("/tos", (req, res) =>
+			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "tos.html")),
+		);
+
+		app.get("/logo.ong", (req, res) =>
+			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "logo.png")),
 		);
 
 		this.app.use(ErrorHandler);
