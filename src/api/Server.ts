@@ -154,7 +154,7 @@ export class SpacebarServer extends Server {
 			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "tos.html")),
 		);
 
-		app.get("/logo.ong", (req, res) =>
+		app.get("/logo.png", (req, res) =>
 			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "logo.png")),
 		);
 
