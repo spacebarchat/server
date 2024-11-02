@@ -34,6 +34,7 @@ import { WebSocket } from "@spacebar/gateway";
 import "missing-native-js-functions";
 import { Channel as AMQChannel } from "amqplib";
 import { Recipient } from "@spacebar/util";
+import * as console from "node:console";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent
@@ -88,9 +89,12 @@ export async function setupListener(this: WebSocket) {
 	this.listen_options = opts;
 	const consumer = consume.bind(this);
 
+	console.log("[RabbitMQ] setupListener: open for ", this.user_id);
 	if (RabbitMQ.connection) {
+		console.log("[RabbitMQ] setupListener: opts.channel = ", typeof opts.channel, opts.channel);
 		opts.channel = await RabbitMQ.connection.createChannel();
 		opts.channel.queues = {};
+		console.log("[RabbitMQ] channel created: ", typeof opts.channel, opts.channel);
 	}
 
 	this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
@@ -128,6 +132,7 @@ export async function setupListener(this: WebSocket) {
 	});
 
 	this.once("close", () => {
+		console.log("[RabbitMQ] setupListener: close for ", this.user_id, "=", typeof opts.channel, opts.channel);
 		if (opts.channel) opts.channel.close();
 		else {
 			Object.values(this.events).forEach((x) => x?.());
