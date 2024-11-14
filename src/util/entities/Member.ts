@@ -466,8 +466,8 @@ export class Member extends BaseClassWithoutId {
 			member[x] = this[x];
 		});
 
-		if (member.roles) member.roles = member.roles.map((x: Role) => x.id);
-		if (member.user) member.user = member.user.toPublicUser();
+		if (this.roles) member.roles = this.roles.map((x: Role) => x.id);
+		if (this.user) member.user = this.user.toPublicUser();
 
 		return member as PublicMember;
 	}

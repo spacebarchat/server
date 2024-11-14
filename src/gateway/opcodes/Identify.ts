@@ -171,7 +171,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					// but we do want almost everything from guild.
 					// How do you do that without just enumerating the guild props?
 					guild: Object.fromEntries(
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 						getDatabase()!
 							.getMetadata(Guild)
 							.columns.map((x) => [x.propertyName, true]),
