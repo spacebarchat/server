@@ -70,7 +70,6 @@ export function enableAutoUpdate(opts: {
 	});
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function download(url: string, dir: string) {
 	try {
 		// TODO: use file stream instead of buffer (to prevent crash because of high memory usage for big files)
