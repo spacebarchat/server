@@ -214,7 +214,6 @@ async function subscribeToMemberEvents(this: WebSocket, user_id: string) {
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	// TODO: check data
 	check.call(this, LazyRequestSchema, d);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { guild_id, typing, channels, activities, members } =
 		d as LazyRequestSchema;
 

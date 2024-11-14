@@ -100,6 +100,7 @@ export async function listenEvent(
 		};
 
 		const listener = (msg: ProcessEvent) => {
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 			msg.type === "event" &&
 				msg.id === event &&
 				callback({ ...msg.event, cancel });
