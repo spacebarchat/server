@@ -117,7 +117,7 @@ export const Sentry = {
 		Integrations.setupExpressErrorHandler(app);
 
 		// The typings for this are broken?
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		app.use(function onError(err: any, req: any, res: any, next: any) {
 			res.statusCode = 500;
 			res.end(res.sentry + "\n");
