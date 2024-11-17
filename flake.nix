@@ -66,10 +66,7 @@
             runtimeInputs = with pkgs; [
               prefetch-npm-deps
               nix
-              bash
               jq
-              git
-              nix-output-monitor
             ];
             text = ''
               nix flake update --extra-experimental-features 'nix-command flakes'
@@ -77,9 +74,6 @@
               TMPFILE=$(mktemp)
               jq '.npmDepsHash = "'"$DEPS_HASH"'"' hashes.json > "$TMPFILE"
               mv -- "$TMPFILE" hashes.json
-
-              nom build .# --extra-experimental-features 'nix-command flakes' || exit $?
-              git add hashes.json flake.lock flake.nix
             '';
           };
         };
