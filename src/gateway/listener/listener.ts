@@ -82,7 +82,7 @@ export async function setupListener(this: WebSocket) {
 
 	const opts: {
 		acknowledge: boolean;
-		channel?: AMQChannel & { queues?: unknown, ch?: number };
+		channel?: AMQChannel & { queues?: unknown; ch?: number };
 	} = {
 		acknowledge: true,
 	};
@@ -91,10 +91,20 @@ export async function setupListener(this: WebSocket) {
 
 	console.log("[RabbitMQ] setupListener: open for ", this.user_id);
 	if (RabbitMQ.connection) {
-		console.log("[RabbitMQ] setupListener: opts.channel = ", typeof opts.channel, "with channel id", opts.channel?.ch);
+		console.log(
+			"[RabbitMQ] setupListener: opts.channel = ",
+			typeof opts.channel,
+			"with channel id",
+			opts.channel?.ch,
+		);
 		opts.channel = await RabbitMQ.connection.createChannel();
 		opts.channel.queues = {};
-		console.log("[RabbitMQ] channel created: ", typeof opts.channel, "with channel id", opts.channel?.ch);
+		console.log(
+			"[RabbitMQ] channel created: ",
+			typeof opts.channel,
+			"with channel id",
+			opts.channel?.ch,
+		);
 	}
 
 	this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
@@ -132,7 +142,14 @@ export async function setupListener(this: WebSocket) {
 	});
 
 	this.once("close", () => {
-		console.log("[RabbitMQ] setupListener: close for", this.user_id, "=", typeof opts.channel, "with channel id", opts.channel?.ch);
+		console.log(
+			"[RabbitMQ] setupListener: close for",
+			this.user_id,
+			"=",
+			typeof opts.channel,
+			"with channel id",
+			opts.channel?.ch,
+		);
 		if (opts.channel) opts.channel.close();
 		else {
 			Object.values(this.events).forEach((x) => x?.());
