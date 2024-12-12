@@ -1,0 +1,44 @@
+name: Dependabot-nix-update
+
+on:
+  push:
+    branches:
+      - "dependabot/npm_and_yarn/*"
+
+jobs:
+  update_npm_deps_hash:
+    name: Update NPM dependencies hash
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
+    permissions:
+      contents: write
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v3
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Configure Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Update Hash
+        run: nix run .#update-nix
+
+      - name: Set up Git Config
+        run: |
+          # Configure author metadata to look like commits are made by Dependabot
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Commit changes
+        run: |
+          git add .
+          # Skip committing or pushing if there are no changes
+          if [[ $(git status -s) ]]; then
+            git commit -m "build(deps): update npm dependencies hash [dependabot skip]" --no-verify
+            git push
+            echo "Pushed an update to npm dependencies hash"
+          else
+            echo "Npm dependencies hash was not changed"
+          fi

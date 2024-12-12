@@ -100,8 +100,7 @@ export class SpacebarServer extends Server {
 		this.app.set("json replacer", JSONReplacer);
 
 		const trustedProxies = Config.get().security.trustedProxies;
-		if(trustedProxies)
-			this.app.set("trust proxy", trustedProxies);
+		if (trustedProxies) this.app.set("trust proxy", trustedProxies);
 
 		this.app.use(CORS);
 		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
