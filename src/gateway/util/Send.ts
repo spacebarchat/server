@@ -23,9 +23,9 @@ import path from "path";
 import { ErlpackType, JSONReplacer } from "@spacebar/util";
 let erlpack: ErlpackType | null = null;
 try {
-	erlpack = require("erlpack") as ErlpackType;
+	erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
 } catch (e) {
-	// empty
+	console.log("Failed to import @yukikaze-bot/erlpack: ", e);
 }
 
 // don't care

@@ -17,7 +17,9 @@
 */
 
 // process.env.MONGOMS_DEBUG = "true";
-require("module-alias/register");
+import moduleAlias from "module-alias";
+moduleAlias(__dirname + "../../../package.json");
+
 import "reflect-metadata";
 import cluster, { Worker } from "cluster";
 import os from "os";

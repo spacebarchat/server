@@ -32,7 +32,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"POST /auth/reset",
 	"GET /invites/",
 	// Routes with a seperate auth system
-	/POST \/webhooks\/\d+\/\w+\/?/, // no token requires auth
+	/^(POST|HEAD) \/webhooks\/\d+\/\w+\/?/, // no token requires auth
 	// Public information endpoints
 	"GET /ping",
 	"GET /gateway",
@@ -51,9 +51,11 @@ export const NO_AUTHORIZATION_ROUTES = [
 	// Oauth callback
 	"/oauth2/callback",
 	// Asset delivery
-	/GET \/guilds\/\d+\/widget\.(json|png)/,
+	/^(GET|HEAD) \/guilds\/\d+\/widget\.(json|png)/,
 	// Connections
-	/POST \/connections\/\w+\/callback/,
+	/^(POST|HEAD) \/connections\/\w+\/callback/,
+	// Image proxy
+	/^(GET|HEAD) \/imageproxy\/[A-Za-z0-9+/]\/\d+x\d+\/.+/,
 ];
 
 export const API_PREFIX = /^\/api(\/v\d+)?/;
@@ -80,6 +82,12 @@ export async function Authentication(
 	const url = req.url.replace(API_PREFIX, "");
 	if (
 		NO_AUTHORIZATION_ROUTES.some((x) => {
+			if (req.method == "HEAD") {
+				if (typeof x === "string")
+					return url.startsWith(x.split(" ").slice(1).join(" "));
+				return x.test(req.method + " " + url);
+			}
+
 			if (typeof x === "string")
 				return (req.method + " " + url).startsWith(x);
 			return x.test(req.method + " " + url);
@@ -100,7 +108,6 @@ export async function Authentication(
 		req.rights = new Rights(Number(user.rights));
 		return next();
 	} catch (error) {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		return next(new HTTPError(error!.toString(), 400));
 	}
 }

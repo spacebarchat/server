@@ -1,0 +1,39 @@
+diff --git a/node_modules/body-parser/lib/types/json.js b/node_modules/body-parser/lib/types/json.js
+index 59f3f7e..604f8b1 100644
+--- a/node_modules/body-parser/lib/types/json.js
++++ b/node_modules/body-parser/lib/types/json.js
+@@ -18,6 +18,7 @@ var createError = require('http-errors')
+ var debug = require('debug')('body-parser:json')
+ var read = require('../read')
+ var typeis = require('type-is')
++var JSONbig = require("json-bigint");
+ 
+ /**
+  * Module exports.
+@@ -89,7 +90,7 @@ function json (options) {
+ 
+     try {
+       debug('parse json')
+-      return JSON.parse(body, reviver)
++      return JSONbig.parse(body, reviver)
+     } catch (e) {
+       throw normalizeJsonSyntaxError(e, {
+         message: e.message,
+@@ -166,7 +167,7 @@ function createStrictSyntaxError (str, char) {
+   }
+ 
+   try {
+-    JSON.parse(partial); /* istanbul ignore next */ throw new SyntaxError('strict violation')
++    JSONbig.parse(partial); /* istanbul ignore next */ throw new SyntaxError('strict violation')
+   } catch (e) {
+     return normalizeJsonSyntaxError(e, {
+       message: e.message.replace(JSON_SYNTAX_REGEXP, function (placeholder) {
+@@ -227,7 +228,7 @@ function normalizeJsonSyntaxError (error, obj) {
+   }
+ 
+   // replace stack before message for Node.js 0.10 and below
+-  error.stack = obj.stack.replace(error.message, obj.message)
++  error.stack = obj.stack?.replace(error.message, obj.message)
+   error.message = obj.message
+ 
+   return error

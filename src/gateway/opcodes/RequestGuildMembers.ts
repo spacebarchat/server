@@ -27,7 +27,7 @@ import {
 } from "@spacebar/util";
 import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
 import { check } from "./instanceOf";
-import { FindManyOptions, In, Like } from "typeorm";
+import { FindManyOptions, ILike, In } from "typeorm";
 
 export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	// Schema validation can only accept either string or array, so transforming it here to support both
@@ -98,7 +98,6 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 				"',' || member.roles || ',' NOT LIKE :everyoneRoleIdList",
 				{ everyoneRoleIdList: "%," + guild_id + ",%" },
 			)
-			.andWhere("session.status != 'offline'")
 			.addOrderBy("user.username", "ASC")
 			.limit(memberFind.take);
 
@@ -115,7 +114,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 		if (query) {
 			// @ts-expect-error memberFind.where is very much defined
 			memberFind.where.user = {
-				username: Like(query + "%"),
+				username: ILike(query + "%"),
 			};
 		} else if (user_ids && user_ids.length > 0) {
 			// @ts-expect-error memberFind.where is still very much defined
@@ -167,15 +166,17 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 		});
 	}
 
+	if (chunks.length == 0) {
+		chunks.push({
+			...baseData,
+			members: [],
+			presences: presences ? [] : undefined,
+			chunk_index: 0,
+			chunk_count: 1,
+		});
+	}
+
 	if (notFound.length > 0) {
-		if (chunks.length == 0)
-			chunks.push({
-				...baseData,
-				members: [],
-				presences: presences ? [] : undefined,
-				chunk_index: 0,
-				chunk_count: 1,
-			});
 		chunks[0].not_found = notFound;
 	}
 

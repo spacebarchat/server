@@ -19,7 +19,7 @@
 import { Config } from "@spacebar/util";
 import { Request } from "express";
 // use ipdata package instead of simple fetch because of integrated caching
-import fetch from "node-fetch";
+import fetch from "node-fetch-commonjs";
 
 const exampleData = {
 	ip: "",
@@ -85,7 +85,7 @@ export async function IPAnalysis(ip: string): Promise<typeof exampleData> {
 
 	return (
 		await fetch(`https://api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)
-	).json();
+	).json() as Promise<typeof exampleData>;
 }
 
 export function isProxy(data: typeof exampleData) {

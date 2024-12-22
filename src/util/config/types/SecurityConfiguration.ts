@@ -29,6 +29,9 @@ export class SecurityConfiguration {
 	// X-Forwarded-For for nginx/reverse proxies
 	// CF-Connecting-IP for cloudflare
 	forwardedFor: string | null = null;
+	// trusted proxies to get the real user ip address
+	// requires a reverse proxy to overwrite X-Forwarded-For, X-Forwarded-Host, X-Forwarded-Proto
+	trustedProxies: string | boolean | null = null;
 	ipdataApiKey: string | null =
 		"eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9";
 	mfaBackupCodeCount: number = 10;

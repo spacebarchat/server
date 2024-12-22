@@ -99,7 +99,6 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		voiceState.token = genVoiceToken();
 	voiceState.session_id = this.session_id;
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { id, ...newObj } = voiceState;
 
 	await Promise.all([

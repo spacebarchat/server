@@ -19,7 +19,7 @@
 import { Config, Embed, EmbedImage, EmbedType } from "@spacebar/util";
 import * as cheerio from "cheerio";
 import crypto from "crypto";
-import fetch, { RequestInit } from "node-fetch";
+import fetch, { RequestInit } from "node-fetch-commonjs";
 import { yellow } from "picocolors";
 import probe from "probe-image-size";
 
@@ -221,7 +221,7 @@ export const EmbedHandlers: {
 				? {
 						name: metas.site_name,
 						url: url.origin,
-				  }
+					}
 				: undefined,
 		};
 	},
@@ -269,7 +269,27 @@ export const EmbedHandlers: {
 				authorization: `Bearer ${token}`,
 			},
 		});
-		const json = await response.json();
+		const json = (await response.json()) as {
+			errors?: never[];
+			includes: {
+				users: {
+					profile_image_url: string;
+					username: string;
+					name: string;
+				}[];
+				media: {
+					type: string;
+					width: number;
+					height: number;
+					url: string;
+				}[];
+			};
+			data: {
+				text: string;
+				created_at: string;
+				public_metrics: { like_count: number; retweet_count: number };
+			};
+		};
 		if (json.errors) return null;
 		const author = json.includes.users[0];
 		const text = json.data.text;
@@ -508,7 +528,7 @@ export const EmbedHandlers: {
 				? {
 						name: metas.author,
 						// TODO: author channel url
-				  }
+					}
 				: undefined,
 		};
 	},
@@ -533,7 +553,7 @@ export const EmbedHandlers: {
 			footer: hoverText
 				? {
 						text: hoverText,
-				  }
+					}
 				: undefined,
 		};
 	},
