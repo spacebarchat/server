@@ -80,6 +80,7 @@
 		"cheerio": "^1.0.0",
 		"cookie-parser": "^1.4.7",
 		"dotenv": "^16.4.5",
+		"email-providers": "^2.7.0",
 		"exif-be-gone": "^1.5.1",
 		"fast-zlib": "^2.0.1",
 		"fido2-lib": "^3.5.3",
