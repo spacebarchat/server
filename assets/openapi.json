@@ -8871,6 +8871,36 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "enforce_nonce": {
+                        "type": "boolean"
+                    },
+                    "nonce": {
+                        "type": "string"
+                    },
+                    "poll": {
+                        "$ref": "#/definitions/Poll"
+                    },
+                    "sticker_ids": {
+                        "type": "string"
+                    },
+                    "message_reference": {
+                        "type": "object",
+                        "properties": {
+                            "message_id": {
+                                "type": "string"
+                            },
+                            "channel_id": {
+                                "type": "string"
+                            },
+                            "guild_id": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "message_id"
+                        ]
                     }
                 }
             },
