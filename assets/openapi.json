@@ -4620,13 +4620,30 @@
                     "channel": {
                         "$ref": "#/components/schemas/RateLimitOptions"
                     },
-                    "auth": {}
+                    "auth": {
+                        "$ref": "#/components/schemas/AuthRateLimit"
+                    }
                 },
                 "required": [
                     "auth",
                     "channel",
                     "guild",
                     "webhook"
+                ]
+            },
+            "AuthRateLimit": {
+                "type": "object",
+                "properties": {
+                    "login": {
+                        "$ref": "#/components/schemas/RateLimitOptions"
+                    },
+                    "register": {
+                        "$ref": "#/components/schemas/RateLimitOptions"
+                    }
+                },
+                "required": [
+                    "login",
+                    "register"
                 ]
             },
             "GlobalRateLimits": {
@@ -8872,18 +8889,6 @@
                             "type": "string"
                         }
                     },
-                    "enforce_nonce": {
-                        "type": "boolean"
-                    },
-                    "nonce": {
-                        "type": "string"
-                    },
-                    "poll": {
-                        "$ref": "#/definitions/Poll"
-                    },
-                    "sticker_ids": {
-                        "type": "string"
-                    },
                     "message_reference": {
                         "type": "object",
                         "properties": {
@@ -8895,12 +8900,44 @@
                             },
                             "guild_id": {
                                 "type": "string"
+                            },
+                            "fail_if_not_exists": {
+                                "type": "boolean"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
                             "message_id"
                         ]
+                    },
+                    "sticker_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "nonce": {
+                        "type": "string"
+                    },
+                    "enforce_nonce": {
+                        "type": "boolean"
+                    },
+                    "poll": {
+                        "$ref": "#/components/schemas/PollCreationSchema"
+                    }
+                }
+            },
+            "WebhookUpdateSchema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "channel_id": {
+                        "type": "string"
                     }
                 }
             },
@@ -9144,6 +9181,104 @@
                 "tags": [
                     "webhooks"
                 ]
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "webhook_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "webhook_id"
+                    }
+                ],
+                "tags": [
+                    "webhooks"
+                ]
+            },
+            "patch": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebhookUpdateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WebhookCreateResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "No description available"
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "webhook_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "webhook_id"
+                    }
+                ],
+                "tags": [
+                    "webhooks"
+                ]
             }
         },
         "/webhooks/{webhook_id}/{token}/": {
@@ -9263,6 +9398,122 @@
                             "type": "string"
                         },
                         "description": "Send a message to the specified thread within a webhook's channel."
+                    }
+                ],
+                "tags": [
+                    "webhooks"
+                ]
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "webhook_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "webhook_id"
+                    },
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "token"
+                    }
+                ],
+                "tags": [
+                    "webhooks"
+                ]
+            },
+            "patch": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebhookUpdateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "No description available"
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "webhook_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "webhook_id"
+                    },
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "token"
                     }
                 ],
                 "tags": [
