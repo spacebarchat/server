@@ -152,7 +152,7 @@ router.patch(
 			}
 
 			const { maxUsername } = Config.get().limits.user;
-			if (check_username.length > maxUsername) {
+			if (check_username.length > maxUsername || check_username.length < 2) {
 				throw FieldErrors({
 					username: {
 						code: "BASE_TYPE_BAD_LENGTH",
