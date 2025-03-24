@@ -10,6 +10,9 @@ import {
 	WebhookExecuteSchema,
 	emitEvent,
 	uploadFile,
+	WebhooksUpdateEvent,
+	WebhookUpdateSchema,
+	handleFile,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -129,12 +132,37 @@ router.post(
 
 		// block username from containing certain words
 		// TODO: configurable additions
-		const blockedContains = ["discord", "clyde", "spacebar"];
-		for (const word of blockedContains) {
-			if (body.username?.toLowerCase().includes(word)) {
-				return res.status(400).json({
-					username: [`Username cannot contain "${word}"`],
+		if (body.username) {
+			const check_username = body.username.replace(/\s/g, "");
+			if (!check_username) {
+				throw FieldErrors({
+					username: {
+						code: "BASE_TYPE_REQUIRED",
+						message: req.t("common:field.BASE_TYPE_REQUIRED"),
+					},
 				});
+			}
+
+			const { maxUsername } = Config.get().limits.user;
+			if (
+				check_username.length > maxUsername ||
+				check_username.length < 2
+			) {
+				throw FieldErrors({
+					username: {
+						code: "BASE_TYPE_BAD_LENGTH",
+						message: `Must be between 2 and ${maxUsername} in length.`,
+					},
+				});
+			}
+
+			const blockedContains = ["discord", "clyde", "spacebar"];
+			for (const word of blockedContains) {
+				if (body.username.toLowerCase().includes(word)) {
+					return res.status(400).json({
+						username: [`Username cannot contain "${word}"`],
+					});
+				}
 			}
 		}
 
@@ -245,6 +273,107 @@ router.post(
 		);
 
 		return res.json(message);
+	},
+);
+
+router.delete(
+	"/",
+	route({
+		responses: {
+			204: {},
+			400: {
+				body: "APIErrorResponse",
+			},
+			404: {},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { webhook_id, token } = req.params;
+
+		const webhook = await Webhook.findOne({
+			where: {
+				id: webhook_id,
+			},
+			relations: ["channel", "guild", "application"],
+		});
+
+		if (!webhook) {
+			throw DiscordApiErrors.UNKNOWN_WEBHOOK;
+		}
+
+		if (webhook.token !== token) {
+			throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
+		}
+		const channel_id = webhook.channel_id;
+		await Webhook.delete({ id: webhook_id });
+
+		await emitEvent({
+			event: "WEBHOOKS_UPDATE",
+			channel_id,
+			data: {
+				channel_id,
+				guild_id: webhook.guild_id,
+			},
+		} as WebhooksUpdateEvent);
+
+		res.sendStatus(204);
+	},
+);
+
+router.patch(
+	"/",
+	route({
+		requestBody: "WebhookUpdateSchema",
+		responses: {
+			200: {
+				body: "Message",
+			},
+			400: {
+				body: "APIErrorResponse",
+			},
+			403: {},
+			404: {},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { webhook_id, token } = req.params;
+		const body = req.body as WebhookUpdateSchema;
+
+		const webhook = await Webhook.findOneOrFail({
+			where: { id: webhook_id },
+			relations: [
+				"user",
+				"channel",
+				"source_channel",
+				"guild",
+				"source_guild",
+				"application",
+			],
+		});
+
+		const channel_id = webhook.channel_id;
+		if (!body.name && !body.avatar) {
+			throw new HTTPError("Empty messages are not allowed", 50006);
+		}
+		if (body.avatar)
+			body.avatar = await handleFile(
+				`/avatars/${webhook_id}`,
+				body.avatar as string,
+			);
+		webhook.assign(body);
+
+		await Promise.all([
+			webhook.save(),
+			emitEvent({
+				event: "WEBHOOKS_UPDATE",
+				channel_id,
+				data: {
+					channel_id,
+					guild_id: webhook.guild_id,
+				},
+			} as WebhooksUpdateEvent),
+		]);
+		res.status(204);
 	},
 );
 
