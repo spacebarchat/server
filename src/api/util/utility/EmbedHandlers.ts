@@ -147,6 +147,7 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 	let image;
 
 	if (type.headers.get("content-type")?.indexOf("image") !== -1) {
+		metas.image = new URL(metas.image, url).toString();
 		const result = await probe(url.href);
 		image = makeEmbedImage(url.href, result.width, result.height);
 	} else if (type.headers.get("content-type")?.indexOf("video") !== -1) {
