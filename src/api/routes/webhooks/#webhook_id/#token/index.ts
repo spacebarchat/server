@@ -13,6 +13,7 @@ import {
 	WebhooksUpdateEvent,
 	WebhookUpdateSchema,
 	handleFile,
+	ValidateName,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -350,7 +351,6 @@ router.patch(
 				"application",
 			],
 		});
-
 		const channel_id = webhook.channel_id;
 		if (!body.name && !body.avatar) {
 			throw new HTTPError("Empty messages are not allowed", 50006);
@@ -360,6 +360,11 @@ router.patch(
 				`/avatars/${webhook_id}`,
 				body.avatar as string,
 			);
+
+		if (body.name) {
+			ValidateName(body.name);
+		}
+
 		webhook.assign(body);
 
 		await Promise.all([

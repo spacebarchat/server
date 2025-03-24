@@ -10,6 +10,7 @@ import {
 	Channel,
 	handleFile,
 	FieldErrors,
+	ValidateName,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -167,37 +168,7 @@ router.patch(
 			);
 
 		if (body.name) {
-			const check_username = body.name.replace(/\s/g, "");
-			if (!check_username) {
-				throw FieldErrors({
-					username: {
-						code: "BASE_TYPE_REQUIRED",
-						message: req.t("common:field.BASE_TYPE_REQUIRED"),
-					},
-				});
-			}
-
-			const { maxUsername } = Config.get().limits.user;
-			if (
-				check_username.length > maxUsername ||
-				check_username.length < 2
-			) {
-				throw FieldErrors({
-					username: {
-						code: "BASE_TYPE_BAD_LENGTH",
-						message: `Must be between 2 and ${maxUsername} in length.`,
-					},
-				});
-			}
-
-			const blockedContains = ["discord", "clyde", "spacebar"];
-			for (const word of blockedContains) {
-				if (body.name.toLowerCase().includes(word)) {
-					return res.status(400).json({
-						username: [`Username cannot contain "${word}"`],
-					});
-				}
-			}
+			ValidateName(body.name);
 		}
 
 		const channel_id = body.channel_id || webhook.channel_id;
