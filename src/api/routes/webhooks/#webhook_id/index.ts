@@ -158,7 +158,7 @@ router.patch(
 			throw DiscordApiErrors.UNKNOWN_WEBHOOK;
 
 		if (!body.name && !body.avatar && !body.channel_id) {
-			throw new HTTPError("Empty messages are not allowed", 50006);
+			throw new HTTPError("Empty webhook updates are not allowed", 50006);
 		}
 
 		if (body.avatar)

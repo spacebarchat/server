@@ -353,7 +353,7 @@ router.patch(
 		});
 		const channel_id = webhook.channel_id;
 		if (!body.name && !body.avatar) {
-			throw new HTTPError("Empty messages are not allowed", 50006);
+			throw new HTTPError("Empty webhook updates are not allowed", 50006);
 		}
 		if (body.avatar)
 			body.avatar = await handleFile(
