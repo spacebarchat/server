@@ -196,6 +196,7 @@ export const EmbedHandlers: {
 		if (!metas.image) metas.image = metas.image_fallback;
 
 		if (metas.image && (!metas.width || !metas.height)) {
+			metas.image = new URL(metas.image, url).toString();
 			const result = await probe(metas.image);
 			metas.width = result.width;
 			metas.height = result.height;
