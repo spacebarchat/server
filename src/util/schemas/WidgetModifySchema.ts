@@ -18,5 +18,5 @@
 
 export interface WidgetModifySchema {
 	enabled: boolean; // whether the widget is enabled
-	channel_id: string; // the widget channel id
+	channel_id?: string | null; // the widget channel id
 }

@@ -67,6 +67,7 @@ router.get(
 
 		// Fetch existing widget invite for widget channel
 		let invite = await Invite.findOne({
+			// @ts-expect-error widget_channel_id can be null
 			where: { channel_id: guild.widget_channel_id },
 		});
 

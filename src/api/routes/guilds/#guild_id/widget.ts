@@ -69,6 +69,9 @@ router.patch(
 		const body = req.body as WidgetModifySchema;
 		const { guild_id } = req.params;
 
+		// body.channel_id is undefined even tho we send null for some reason?
+		if (!body.channel_id) body.channel_id = null;
+
 		await Guild.update(
 			{ id: guild_id },
 			{

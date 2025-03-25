@@ -275,7 +275,7 @@ export class Guild extends BaseClass {
 
 	@Column({ nullable: true })
 	@RelationId((guild: Guild) => guild.widget_channel)
-	widget_channel_id?: string;
+	widget_channel_id?: string | null;
 
 	@JoinColumn({ name: "widget_channel_id" })
 	@ManyToOne(() => Channel)
