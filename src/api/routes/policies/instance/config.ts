@@ -62,6 +62,9 @@ router.get(
 				guild_autoJoin_canLeave: general.guild.autoJoin.canLeave,
 				guild_autoJoin_guilds_x: general.guild.autoJoin.guilds,
 				register_email_required: general.register.email.required,
+				can_recover_account:
+					general.email.provider != null &&
+					general.general.frontPage != null,
 			};
 		}
 		res.send(outputtedConfig);
