@@ -30,8 +30,8 @@ export function ValidateName(name: string) {
 			},
 		});
 	}
-
-	const { maxUsername } = Config.get().limits.user;
+	const general = Config.get();
+	const { maxUsername } = general.limits.user;
 	if (check_username.length > maxUsername || check_username.length < 2) {
 		throw FieldErrors({
 			username: {
@@ -41,10 +41,16 @@ export function ValidateName(name: string) {
 		});
 	}
 
-	const blockedContains = ["discord", "clyde", "spacebar"];
+	const { blockedContains, blockedEquals } = general.user;
 	for (const word of blockedContains) {
 		if (name.toLowerCase().includes(word)) {
 			throw new HTTPError(`Username cannot contain "${word}"`, 400);
+		}
+	}
+
+	for (const word of blockedEquals) {
+		if (name.toLowerCase() === word) {
+			throw new HTTPError(`Username cannot be "${word}"`, 400);
 		}
 	}
 	return name;

@@ -180,19 +180,19 @@ router.patch(
 					where: { id: channel_id },
 				}),
 			});
-		console.log(webhook.channel_id);
 
-		await webhook.save();
-		await emitEvent({
-			event: "WEBHOOKS_UPDATE",
-			channel_id,
-			data: {
+		await Promise.all([
+			webhook.save(),
+			emitEvent({
+				event: "WEBHOOKS_UPDATE",
 				channel_id,
-				guild_id: webhook.guild_id,
-			},
-		} as WebhooksUpdateEvent);
+				data: {
+					channel_id,
+					guild_id: webhook.guild_id,
+				},
+			} as WebhooksUpdateEvent),
+		]);
 
-		console.log(webhook.channel_id);
 		res.json(webhook);
 	},
 );
