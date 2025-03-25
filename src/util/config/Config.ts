@@ -37,6 +37,7 @@ import {
 	SecurityConfiguration,
 	SentryConfiguration,
 	TemplateConfiguration,
+	UserConfiguration,
 } from "../config";
 
 export class ConfigValue {
@@ -61,4 +62,5 @@ export class ConfigValue {
 	email: EmailConfiguration = new EmailConfiguration();
 	passwordReset: PasswordResetConfiguration =
 		new PasswordResetConfiguration();
+	user: UserConfiguration = new UserConfiguration();
 }
