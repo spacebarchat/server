@@ -29,6 +29,7 @@ import {
 	isTextChannel,
 	trimSpecial,
 	FieldErrors,
+	ValidateName,
 } from "@spacebar/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
@@ -113,37 +114,7 @@ router.post(
 
 		// TODO: move this
 		if (name) {
-			const check_username = name.replace(/\s/g, "");
-			if (!check_username) {
-				throw FieldErrors({
-					username: {
-						code: "BASE_TYPE_REQUIRED",
-						message: req.t("common:field.BASE_TYPE_REQUIRED"),
-					},
-				});
-			}
-
-			const { maxUsername } = Config.get().limits.user;
-			if (
-				check_username.length > maxUsername ||
-				check_username.length < 2
-			) {
-				throw FieldErrors({
-					username: {
-						code: "BASE_TYPE_BAD_LENGTH",
-						message: `Must be between 2 and ${maxUsername} in length.`,
-					},
-				});
-			}
-
-			const blockedContains = ["discord", "clyde", "spacebar"];
-			for (const word of blockedContains) {
-				if (name.toLowerCase().includes(word)) {
-					return res.status(400).json({
-						username: [`Username cannot contain "${word}"`],
-					});
-				}
-			}
+			ValidateName(name);
 		}
 
 		if (avatar) avatar = await handleFile(`/avatars/${channel_id}`, avatar);

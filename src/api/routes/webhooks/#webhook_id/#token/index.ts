@@ -134,37 +134,7 @@ router.post(
 		// block username from containing certain words
 		// TODO: configurable additions
 		if (body.username) {
-			const check_username = body.username.replace(/\s/g, "");
-			if (!check_username) {
-				throw FieldErrors({
-					username: {
-						code: "BASE_TYPE_REQUIRED",
-						message: req.t("common:field.BASE_TYPE_REQUIRED"),
-					},
-				});
-			}
-
-			const { maxUsername } = Config.get().limits.user;
-			if (
-				check_username.length > maxUsername ||
-				check_username.length < 2
-			) {
-				throw FieldErrors({
-					username: {
-						code: "BASE_TYPE_BAD_LENGTH",
-						message: `Must be between 2 and ${maxUsername} in length.`,
-					},
-				});
-			}
-
-			const blockedContains = ["discord", "clyde", "spacebar"];
-			for (const word of blockedContains) {
-				if (body.username.toLowerCase().includes(word)) {
-					return res.status(400).json({
-						username: [`Username cannot contain "${word}"`],
-					});
-				}
-			}
+			ValidateName(body.username);
 		}
 
 		// block username from being certain words
