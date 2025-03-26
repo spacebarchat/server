@@ -71,7 +71,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.682.0",
-		"@sentry/node": "^8.35.0",
+		"@sentry/node": "^8.49.0",
 		"ajv": "^8.17.1",
 		"ajv-formats": "^3.0.1",
 		"amqplib": "^0.10.4",
