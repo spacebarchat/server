@@ -21,6 +21,7 @@ import dotenv from "dotenv";
 import http from "http";
 import ws from "ws";
 import { Connection } from "./events/Connection";
+import { mediaServer } from "./util/MediaServer";
 dotenv.config();
 
 export class Server {
@@ -69,6 +70,7 @@ export class Server {
 		await initDatabase();
 		await Config.init();
 		await initEvent();
+		await mediaServer.start();
 		if (!this.server.listening) {
 			this.server.listen(this.port);
 			console.log(`[WebRTC] online on 0.0.0.0:${this.port}`);
@@ -78,5 +80,6 @@ export class Server {
 	async stop() {
 		closeDatabase();
 		this.server.close();
+		mediaServer.stop();
 	}
 }

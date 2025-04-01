@@ -31,7 +31,7 @@ export interface SelectProtocolSchema {
 		type: "audio" | "video";
 		priority: number;
 		payload_type: number;
-		rtx_payload_type?: number | null;
+		rtx_payload_type?: number;
 	}[];
 	rtc_connection_id?: string; // uuid
 }
