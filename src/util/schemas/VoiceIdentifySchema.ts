@@ -27,4 +27,5 @@ export interface VoiceIdentifySchema {
 		rid: string;
 		quality: number;
 	}[];
+	max_secure_frames_version?: number;
 }

@@ -18,8 +18,7 @@
 
 import { Payload, Send, WebSocket } from "@spacebar/gateway";
 import { SelectProtocolSchema, validateSchema } from "@spacebar/util";
-import { PublicIP, VoiceOPCodes, endpoint } from "@spacebar/webrtc";
-import SemanticSDP, { MediaInfo, SDPInfo } from "semantic-sdp";
+import { VoiceOPCodes, mediaServer } from "@spacebar/webrtc";
 
 export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 	if (!this.client) return;
@@ -29,31 +28,11 @@ export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 		payload.d,
 	) as SelectProtocolSchema;
 
-	const offer = SemanticSDP.SDPInfo.parse("m=audio\n" + data.sdp!);
-	this.client.sdp!.setICE(offer.getICE());
-	this.client.sdp!.setDTLS(offer.getDTLS());
-
-	const transport = endpoint.createTransport(this.client.sdp!);
-	this.client.transport = transport;
-	transport.setRemoteProperties(this.client.sdp!);
-	transport.setLocalProperties(this.client.sdp!);
-
-	const dtls = transport.getLocalDTLSInfo();
-	const ice = transport.getLocalICEInfo();
-	const port = endpoint.getLocalPort();
-	const fingerprint = dtls.getHash() + " " + dtls.getFingerprint();
-	const candidates = transport.getLocalCandidates();
-	const candidate = candidates[0];
-
-	const answer =
-		`m=audio ${port} ICE/SDP` +
-		`a=fingerprint:${fingerprint}` +
-		`c=IN IP4 ${PublicIP}` +
-		`a=rtcp:${port}` +
-		`a=ice-ufrag:${ice.getUfrag()}` +
-		`a=ice-pwd:${ice.getPwd()}` +
-		`a=fingerprint:${fingerprint}` +
-		`a=candidate:1 1 ${candidate.getTransport()} ${candidate.getFoundation()} ${candidate.getAddress()} ${candidate.getPort()} typ host`;
+	const answer = await mediaServer.onOffer(
+		this.client,
+		data.sdp!,
+		data.codecs ?? [],
+	);
 
 	await Send(this, {
 		op: VoiceOPCodes.SESSION_DESCRIPTION,

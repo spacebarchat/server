@@ -34,4 +34,4 @@ export default {
 	[VoiceOPCodes.VIDEO]: onVideo,
 	[VoiceOPCodes.SPEAKING]: onSpeaking,
 	[VoiceOPCodes.SELECT_PROTOCOL]: onSelectProtocol,
-};
+} as { [key: number]: OPCodeHandler };
