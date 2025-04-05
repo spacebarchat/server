@@ -11,6 +11,7 @@
 			"id": "1",
 			"type": "video",
 			"direction": "sendrecv",
+		}
 	],
 	"candidates": []
 }
