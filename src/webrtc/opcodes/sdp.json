@@ -4,7 +4,7 @@
 	"medias": [
 		{
 			"id": "0",
-			"type": "video",
+			"type": "audio",
 			"direction": "sendrecv"
 		}
 	],
