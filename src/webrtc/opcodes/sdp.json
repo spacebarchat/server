@@ -5,12 +5,12 @@
 		{
 			"id": "0",
 			"type": "audio",
-			"direction": "sendrecv",
+			"direction": "sendrecv"
 		},
 		{
 			"id": "1",
 			"type": "video",
-			"direction": "sendrecv",
+			"direction": "sendrecv"
 		}
 	],
 	"candidates": []
