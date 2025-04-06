@@ -4,8 +4,11 @@
 	"medias": [
 		{
 			"id": "0",
-			"type": "audio",
-			"direction": "sendrecv"
+			"type": "audio"
+		},
+		{
+			"id": "1",
+			"type": "video"
 		}
 	],
 	"candidates": []
