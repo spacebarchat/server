@@ -4,11 +4,6 @@
 	"medias": [
 		{
 			"id": "0",
-			"type": "audio",
-			"direction": "sendrecv"
-		},
-		{
-			"id": "1",
 			"type": "video",
 			"direction": "sendrecv"
 		}
