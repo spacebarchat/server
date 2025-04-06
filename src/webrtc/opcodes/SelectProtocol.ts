@@ -33,8 +33,8 @@ export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 
 	const offer = SemanticSDP.SDPInfo.parse("m=audio\n" + data.sdp);
 	//@ts-ignore
-	offer.getMedias()[0].type = "audio";
-	this.webrtcClient.sdp.getMedias()[0].setCodecs(offer.getMedias()[0].getCodecs());
+	offer.getMedias()[0].type = "video";
+	this.webrtcClient.sdp.replaceMedia(offer.getMedias()[0]);
 	this.webrtcClient.sdp.setICE(offer.getICE());
 	this.webrtcClient.sdp.setDTLS(offer.getDTLS());
 
