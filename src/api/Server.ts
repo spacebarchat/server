@@ -151,6 +151,14 @@ export class SpacebarServer extends Server {
 			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "verify.html")),
 		);
 
+		app.get("/tos", (req, res) =>
+			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "tos.html")),
+		);
+
+		app.get("/logo.png", (req, res) =>
+			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "logo.png")),
+		);
+
 		this.app.use(ErrorHandler);
 
 		Sentry.errorHandler(this.app);
