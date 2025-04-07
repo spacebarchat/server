@@ -1,23 +1,23 @@
 {
 	"folders": [
 		{
-			"path": "src"
+			"path": "src",
 		},
 		{
-			"path": "assets"
+			"path": "assets",
 		},
 		{
-			"path": "scripts"
+			"path": "scripts",
 		},
 		{
-			"path": "."
-		}
+			"path": ".",
+		},
 	],
 	"settings": {
-		"typescript.tsdk": "util\\node_modules\\typescript\\lib"
+		"typescript.tsdk": "util\\node_modules\\typescript\\lib",
 	},
 	"launch": {
 		"version": "0.2.0",
-		"configurations": []
-	}
+		"configurations": [],
+	},
 }

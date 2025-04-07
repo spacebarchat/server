@@ -49,7 +49,7 @@ router.post(
 
 		let user;
 		try {
-			const userTokenData = await checkToken(token);
+			const userTokenData = await checkToken(token, {select : ["email"]});
 			user = userTokenData.user;
 		} catch {
 			throw FieldErrors({

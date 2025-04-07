@@ -69,7 +69,7 @@ export interface MessageCreateSchema {
 }
 
 // TypeScript complains once this is used above
-interface PollCreationSchema {
+export interface PollCreationSchema {
 	question: PollMedia;
 	answers: PollAnswer[];
 	duration?: number;

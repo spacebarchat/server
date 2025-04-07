@@ -52,9 +52,11 @@ router.get(
 		for (let i = 0; i < count; i++) {
 			const token = ValidRegistrationToken.create({
 				token: random(length),
-				expires_at:
+				expires_at: new Date(
 					Date.now() +
-					Config.get().security.defaultRegistrationTokenExpiration,
+						Config.get().security
+							.defaultRegistrationTokenExpiration,
+				),
 			});
 			tokens.push(token);
 		}
@@ -72,7 +74,7 @@ router.get(
 						`${Config.get().general.frontPage}/register?token=${
 							x.token
 						}`,
-			  )
+				)
 			: tokens.map((x) => x.token);
 
 		if (req.query.plain) return res.send(ret.join("\n"));

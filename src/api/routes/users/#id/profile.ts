@@ -82,7 +82,7 @@ router.get(
 				? await Member.findOneOrFail({
 						where: { id: req.params.id, guild_id: guild_id },
 						relations: ["roles"],
-				  })
+					})
 				: undefined;
 
 		// TODO: make proper DTO's in util?
@@ -92,7 +92,7 @@ router.get(
 			accent_color: user.accent_color,
 			banner: user.banner,
 			pronouns: user.pronouns,
-			theme_colors: user.theme_colors,
+			theme_colors: user.theme_colors?.map((t) => Number(t)), // these are strings for some reason, they should be numbers
 		};
 
 		const guildMemberProfile = {
