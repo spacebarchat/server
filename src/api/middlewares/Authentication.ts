@@ -32,7 +32,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"POST /auth/reset",
 	"GET /invites/",
 	// Routes with a seperate auth system
-	/^(POST|HEAD) \/webhooks\/\d+\/\w+\/?/, // no token requires auth
+	/^(POST|HEAD|GET|PATCH|DELETE) \/webhooks\/\d+\/\w+\/?/, // no token requires auth
 	// Public information endpoints
 	"GET /ping",
 	"GET /gateway",

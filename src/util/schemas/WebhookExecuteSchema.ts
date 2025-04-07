@@ -17,7 +17,10 @@
 */
 
 import { Embed } from "../entities";
-import { MessageCreateAttachment } from "./MessageCreateSchema";
+import {
+	MessageCreateAttachment,
+	PollCreationSchema,
+} from "./MessageCreateSchema";
 
 export interface WebhookExecuteSchema {
 	content?: string;
@@ -43,4 +46,14 @@ export interface WebhookExecuteSchema {
 	flags?: number;
 	thread_name?: string;
 	applied_tags?: string[];
+	message_reference?: {
+		message_id: string;
+		channel_id?: string;
+		guild_id?: string;
+		fail_if_not_exists?: boolean;
+	};
+	sticker_ids?: string[];
+	nonce?: string;
+	enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here
+	poll?: PollCreationSchema;
 }

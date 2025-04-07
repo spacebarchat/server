@@ -28,6 +28,8 @@ This repository contains:
 
 ## [Documentation](https://docs.spacebar.chat)
 
+And with documentation on how to set up your own server [here](https://docs.spacebar.chat/setup/server), docs to set up either client [here](https://docs.spacebar.chat/setup/clients/), and docs about bots [here](https://docs.spacebar.chat/setup/bots/)
+
 ## [Contributing](https://docs.spacebar.chat/contributing/)
 
 ## Clients

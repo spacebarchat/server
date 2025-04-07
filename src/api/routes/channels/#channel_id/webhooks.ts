@@ -28,6 +28,8 @@ import {
 	handleFile,
 	isTextChannel,
 	trimSpecial,
+	FieldErrors,
+	ValidateName,
 } from "@spacebar/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
@@ -111,8 +113,9 @@ router.post(
 		name = trimSpecial(name);
 
 		// TODO: move this
-		if (name === "clyde") throw new HTTPError("Invalid name", 400);
-		if (name === "Spacebar Ghost") throw new HTTPError("Invalid name", 400);
+		if (name) {
+			ValidateName(name);
+		}
 
 		if (avatar) avatar = await handleFile(`/avatars/${channel_id}`, avatar);
 
