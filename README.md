@@ -25,6 +25,7 @@ This repository contains:
 - [WebSocket Gateway Server](/src/gateway)
 - [HTTP CDN Server](/src/cdn)
 - [Utility and Database Models](/src/util)
+- [Spacebar Admin API](/extra/admin-api) (Emma [it/its]@Rory& was here)
 
 ## [Documentation](https://docs.spacebar.chat)
 

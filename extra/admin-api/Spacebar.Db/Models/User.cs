@@ -92,11 +92,11 @@ public partial class User
     [Column("email", TypeName = "character varying")]
     public string? Email { get; set; }
 
-    [Column("flags", TypeName = "character varying")]
-    public string Flags { get; set; }
+    [Column("flags")]
+    public ulong Flags { get; set; }
 
     [Column("public_flags")]
-    public int PublicFlags { get; set; }
+    public ulong PublicFlags { get; set; }
 
     [Column("purchased_flags")]
     public int PurchasedFlags { get; set; }
@@ -105,7 +105,7 @@ public partial class User
     public int PremiumUsageFlags { get; set; }
 
     [Column("rights")]
-    public long Rights { get; set; }
+    public ulong Rights { get; set; }
 
     [Column("data")]
     public string Data { get; set; } = null!;

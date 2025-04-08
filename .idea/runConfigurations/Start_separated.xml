@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start separated" type="CompoundRunConfigurationType">
+    <toRun name="Start API" type="js.build_tools.npm" />
+    <toRun name="Start CDN" type="js.build_tools.npm" />
+    <toRun name="Start Gateway" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>

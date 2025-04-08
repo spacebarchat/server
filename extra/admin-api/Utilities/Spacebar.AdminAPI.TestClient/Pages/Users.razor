@@ -1,0 +1,72 @@
+﻿@page "/Users"
+@using System.Net.Http.Headers
+@using System.Reflection
+@using Spacebar.AdminApi.Models
+@using Spacebar.AdminAPI.TestClient.Services
+@using ArcaneLibs.Blazor.Components
+@inject Config Config
+@inject ILocalStorageService LocalStorage
+
+<PageTitle>Users</PageTitle>
+
+<details>
+    <summary>Displayed columns</summary>
+    @foreach (var column in DisplayedColumns) {
+        var value = column.Value;
+        <span>
+        <InputCheckbox @bind-Value:get="@(value)" @bind-Value:set="@(b => {
+                                                                       DisplayedColumns[column.Key] = b;
+                                                                       StateHasChanged();
+                                                                   })"/>
+            @column.Key.Name
+    </span>
+        <br/>
+    }
+</details>
+
+<table class="table table-bordered">
+    @{
+        var columns = DisplayedColumns.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
+    }
+    <thead>
+        <tr>
+            @foreach (var column in columns) {
+                <th>@column.Name</th>
+            }
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in UserList) {
+            <tr>
+                @foreach (var column in columns) {
+                    <td>@column.GetValue(user)</td>
+                }
+                <td>
+                    <LinkButton href="@($"/Users/Delete/{user.Id}")" Color="#ff0000">Delete</LinkButton>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+    private Dictionary<PropertyInfo, bool> DisplayedColumns { get; set; } = typeof(UserModel).GetProperties()
+        .ToDictionary(p => p, p => p.Name == "Username" || p.Name == "Id" || p.Name == "MessageCount");
+
+    private List<UserModel> UserList { get; set; } = new();
+
+    protected override async Task OnInitializedAsync() {
+        using var hc = new HttpClient();
+        hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
+        var response = await hc.GetAsync(Config.AdminUrl + "/_spacebar/admin/users/");
+        if (!response.IsSuccessStatusCode) throw new Exception(await response.Content.ReadAsStringAsync());
+        var content = response.Content.ReadFromJsonAsAsyncEnumerable<UserModel>();
+        await foreach (var user in content) {
+            UserList.Add(user);
+            StateHasChanged();
+        }
+    }
+
+}
