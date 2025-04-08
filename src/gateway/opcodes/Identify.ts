@@ -57,14 +57,22 @@ import {
 	getDatabase,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
+import * as process from "node:process";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
 
+function logAuth(message: string) {
+	if (process.env.LOG_AUTH != "true") return;
+	console.log(`[Gateway/Auth] ${message}`);
+}
+
 const tryGetUserFromToken = async (...args: Parameters<typeof checkToken>) => {
+	logAuth("Checking token");
 	try {
 		return (await checkToken(...args)).user;
 	} catch (e) {
+		console.log("[Gateway] Error when identifying: ", e);
 		return null;
 	}
 };
@@ -88,7 +96,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		relations: ["relationships", "relationships.to", "settings"],
 		select: [...PrivateUserProjection, "relationships"],
 	});
-	if (!user) return this.close(CLOSECODES.Authentication_failed);
+	if (!user) {
+		console.log("[Gateway] Failed to identify user");
+		return this.close(CLOSECODES.Authentication_failed);
+	}
 	this.user_id = user.id;
 
 	// Check intents

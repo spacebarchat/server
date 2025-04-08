@@ -10,11 +10,14 @@
         <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20241210-161342" />
         <PackageReference Include="ArcaneLibs.StringNormalisation" Version="1.0.0-preview.20241210-161342" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
+        <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Spacebar.AdminApi.Models\Spacebar.AdminApi.Models.csproj" />
       <ProjectReference Include="..\Spacebar.Db\Spacebar.Db.csproj" />
+      <ProjectReference Include="..\Utilities\Spacebar.RabbitMqUtilities\Spacebar.RabbitMqUtilities.csproj" />
     </ItemGroup>
 
 </Project>

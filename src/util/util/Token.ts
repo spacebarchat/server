@@ -36,6 +36,16 @@ export type UserTokenData = {
 	decoded: { id: string; iat: number };
 };
 
+function logAuth(text: string) {
+	if(process.env.LOG_AUTH !== "true") return;
+	console.log(`[AUTH] ${text}`);
+}
+
+function rejectAndLog(rejectFunction: (reason?: any) => void, reason: any) {
+	console.error(reason);
+	rejectFunction(reason);
+}
+
 export const checkToken = (
 	token: string,
 	opts?: {
@@ -49,12 +59,16 @@ export const checkToken = (
 
 		const validateUser: jwt.VerifyCallback = async (err, out) => {
 			const decoded = out as UserTokenData["decoded"];
-			if (err || !decoded) return reject("Invalid Token meow " + err);
+			if (err || !decoded) {
+				logAuth("validateUser rejected: " + err);
+				return rejectAndLog(reject, "Invalid Token meow " + err);
+			}
 
 			const user = await User.findOne({
 				where: { id: decoded.id },
 				select: [
 					...(opts?.select || []),
+					"id",
 					"bot",
 					"disabled",
 					"deleted",
@@ -64,23 +78,36 @@ export const checkToken = (
 				relations: opts?.relations,
 			});
 
-			if (!user) return reject("User not found");
+			if (!user) {
+				logAuth("validateUser rejected: User not found");
+				return rejectAndLog(reject, "User not found");
+			}
 
 			// we need to round it to seconds as it saved as seconds in jwt iat and valid_tokens_since is stored in milliseconds
 			if (
 				decoded.iat * 1000 <
 				new Date(user.data.valid_tokens_since).setSeconds(0, 0)
-			)
-				return reject("Invalid Token");
+			) {
+				logAuth("validateUser rejected: Token not yet valid");
+				return rejectAndLog(reject, "Invalid Token");
+			}
 
-			if (user.disabled) return reject("User disabled");
-			if (user.deleted) return reject("User not found");
+			if (user.disabled) {
+				logAuth("validateUser rejected: User disabled");
+				return rejectAndLog(reject, "User disabled");
+			}
+			if (user.deleted) {
+				logAuth("validateUser rejected: User deleted");
+				return rejectAndLog(reject, "User not found");
+			}
 
+			logAuth("validateUser success: " + JSON.stringify({ decoded, user }));
 			return resolve({ decoded, user });
 		};
 
 		const dec = jwt.decode(token, { complete: true });
 		if (!dec) return reject("Could not parse token");
+		logAuth("Decoded token: " + JSON.stringify(dec));
 
 		if (dec.header.alg == "HS256") {
 			jwt.verify(

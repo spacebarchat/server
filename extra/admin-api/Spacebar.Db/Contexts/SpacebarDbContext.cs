@@ -5,11 +5,9 @@ using Spacebar.Db.Models;
 
 namespace Spacebar.Db.Contexts;
 
-public partial class SpacebarDbContext : DbContext
-{
-    public SpacebarDbContext(DbContextOptions<SpacebarDbContext> options)
-        : base(options)
-    {
+public partial class SpacebarDbContext(DbContextOptions<SpacebarDbContext> options) : DbContext(options) {
+    public SpacebarDbContext Clone() {
+        return new SpacebarDbContext(options);
     }
 
     public virtual DbSet<Application> Applications { get; set; }

@@ -36,5 +36,9 @@ export function CORS(req: Request, res: Response, next: NextFunction) {
 		req.header("Access-Control-Request-Methods") || "*",
 	);
 
+	if (req.method === "OPTIONS") {
+		res.status(204).end();
+		return;
+	}
 	next();
 }

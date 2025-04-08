@@ -2,7 +2,9 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.EntityFrameworkCore;
 using Spacebar.AdminAPI.Middleware;
+using Spacebar.AdminAPI.Services;
 using Spacebar.Db.Contexts;
+using Spacebar.RabbitMqUtilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options => {
     options.MaxValidationDepth = null;
-    options.MaxIAsyncEnumerableBufferLimit = 100;
+    // options.MaxIAsyncEnumerableBufferLimit = 1;
 }).AddJsonOptions(options => {
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     options.JsonSerializerOptions.WriteIndented = true;
+    // options.JsonSerializerOptions.DefaultBufferSize = ;
+}).AddMvcOptions(o=> {
+    o.SuppressOutputFormatterBuffering = true;
 });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -23,6 +28,10 @@ builder.Services.AddDbContextPool<SpacebarDbContext>(options => {
         .UseNpgsql(builder.Configuration.GetConnectionString("Spacebar"))
         .EnableDetailedErrors();
 });
+builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddScoped<Configuration>();
+builder.Services.AddSingleton<RabbitMQConfiguration>();
+builder.Services.AddSingleton<RabbitMQService>();
 
 builder.Services.AddRequestTimeouts(x => {
     x.DefaultPolicy = new RequestTimeoutPolicy {
@@ -43,6 +52,7 @@ builder.Services.AddCors(options => {
 });
 
 var app = builder.Build();
+app.UsePathBase("/_spacebar/admin");
 app.UseCors("Open");
 
 // Configure the HTTP request pipeline.
