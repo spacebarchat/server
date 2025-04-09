@@ -157,11 +157,11 @@ export async function ImageProxy(req: Request, res: Response) {
 
 		const buffer = Buffer.from(arrayBuffer);
 		if (sharp && sharpSupported.has(contentType)) {
-			resultBuffer = await sharp
+			resultBuffer = Buffer.from(await sharp
 				.default(buffer)
 				// Sharp doesn't support "scaleToFit"
 				.resize(width)
-				.toBuffer();
+				.toBuffer());
 		} else if (Jimp && jimpSupported.has(contentType)) {
 			resultBuffer = await Jimp.read(buffer).then((image) => {
 				contentType = image.getMIME();
@@ -183,3 +183,5 @@ export async function ImageProxy(req: Request, res: Response) {
 
 	res.send(resultBuffer);
 }
+
+
