@@ -455,13 +455,16 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	});
 
 	// If we're a bot user, send GUILD_CREATE for each unavailable guild
+	// TODO: check if bot has permission to view some of these based on intents (i.e. GUILD_MEMBERS, GUILD_PRESENCES, GUILD_VOICE_STATES)
 	await Promise.all(
 		pending_guilds.map((x) =>
 			Send(this, {
 				op: OPCODES.Dispatch,
 				t: EVENTEnum.GuildCreate,
 				s: this.sequence++,
-				d: x,
+				d: {
+					...new ReadyGuildDTO(x).toJSON(),
+				},
 			})?.catch((e) =>
 				console.error(`[Gateway] error when sending bot guilds`, e),
 			),
