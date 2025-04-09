@@ -21,7 +21,7 @@ import { SelectProtocolSchema, validateSchema } from "@spacebar/util";
 import { VoiceOPCodes, mediaServer } from "@spacebar/webrtc";
 
 export async function onSelectProtocol(this: WebSocket, payload: Payload) {
-	if (!this.client) return;
+	if (!this.voiceWs) return;
 
 	const data = validateSchema(
 		"SelectProtocolSchema",
@@ -29,7 +29,7 @@ export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 	) as SelectProtocolSchema;
 
 	const answer = await mediaServer.onOffer(
-		this.client,
+		this.voiceWs,
 		data.sdp!,
 		data.codecs ?? [],
 	);

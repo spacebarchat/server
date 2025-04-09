@@ -21,8 +21,8 @@ import { validateSchema, VoiceVideoSchema } from "@spacebar/util";
 import { mediaServer, VoiceOPCodes, WebRtcClient } from "@spacebar/webrtc";
 
 export async function onVideo(this: WebSocket, payload: Payload) {
-	if (!this.client || !this.client.webrtcConnected) return;
-	const { channel_id } = this.client;
+	if (!this.voiceWs || !this.voiceWs.webrtcConnected) return;
+	const { rtc_server_id: channel_id } = this.voiceWs;
 
 	const d = validateSchema("VoiceVideoSchema", payload.d) as VoiceVideoSchema;
 
@@ -30,7 +30,7 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 
 	await Send(this, { op: VoiceOPCodes.MEDIA_SINK_WANTS, d: { any: 100 } });
 
-	const ssrcs = this.client.getIncomingStreamSSRCs();
+	const ssrcs = this.voiceWs.getIncomingStreamSSRCs();
 
 	const clientsThatNeedUpdate = new Set<WebRtcClient<WebSocket>>();
 
@@ -41,11 +41,11 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 			console.log(
 				`[${this.user_id}] publishing new audio track ssrc:${d.audio_ssrc}`,
 			);
-			this.client.publishTrack("audio", { audio_ssrc: d.audio_ssrc });
+			this.voiceWs.publishTrack("audio", { audio_ssrc: d.audio_ssrc });
 		}
 
 		// now check that all clients have outgoing media for this ssrcs
-		for (const client of mediaServer.getClientsForChannel<WebSocket>(
+		for (const client of mediaServer.getClientsForRtcServer<WebSocket>(
 			channel_id,
 		)) {
 			if (client.user_id === this.user_id) continue;
@@ -55,7 +55,7 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 				console.log(
 					`[${client.user_id}] subscribing to audio track ssrcs: ${d.audio_ssrc}`,
 				);
-				client.subscribeToTrack(this.client.user_id, "audio");
+				client.subscribeToTrack(this.voiceWs.user_id, "audio");
 
 				clientsThatNeedUpdate.add(client);
 			}
@@ -68,26 +68,26 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 			console.log(
 				`[${this.user_id}] publishing new video track ssrc:${d.video_ssrc}`,
 			);
-			this.client.publishTrack("video", {
+			this.voiceWs.publishTrack("video", {
 				video_ssrc: d.video_ssrc,
 				rtx_ssrc: d.rtx_ssrc,
 			});
 		}
 
 		// now check that all clients have outgoing media for this ssrcs
-		for (const client of mediaServer.getClientsForChannel<WebSocket>(
+		for (const client of mediaServer.getClientsForRtcServer<WebSocket>(
 			channel_id,
 		)) {
 			if (client.user_id === this.user_id) continue;
 
 			const ssrcs = client.getOutgoingStreamSSRCsForUser(
-				this.client.user_id,
+				this.voiceWs.user_id,
 			);
 			if (ssrcs.video_ssrc != d.video_ssrc) {
 				console.log(
 					`[${client.user_id}] subscribing to video track ssrc: ${d.video_ssrc}`,
 				);
-				client.subscribeToTrack(this.client.user_id, "video");
+				client.subscribeToTrack(this.voiceWs.user_id, "video");
 
 				clientsThatNeedUpdate.add(client);
 			}

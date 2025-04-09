@@ -8,11 +8,11 @@ import {
 	Transport,
 	Endpoint,
 } from "@dank074/medooze-media-server";
-import { VoiceChannel } from "./VoiceChannel";
+import { VoiceRoom } from "./VoiceRoom";
 import { MedoozeWebRtcClient } from "./MedoozeWebRtcClient";
 
 export class MedoozeSignalingDelegate implements SignalingDelegate {
-	private _channels: Map<string, VoiceChannel> = new Map();
+	private _rooms: Map<string, VoiceRoom> = new Map();
 	private _ip: string;
 	private _port: number;
 	private _endpoint: Endpoint;
@@ -44,7 +44,11 @@ export class MedoozeSignalingDelegate implements SignalingDelegate {
 		return Promise.resolve();
 	}
 
-	public join(channelId: string, userId: string, ws: any): WebRtcClient<any> {
+	public join(
+		rtcServerId: string,
+		userId: string,
+		ws: any,
+	): WebRtcClient<any> {
 		const existingClient = this.getClientForUserId(userId);
 
 		if (existingClient) {
@@ -52,16 +56,16 @@ export class MedoozeSignalingDelegate implements SignalingDelegate {
 			this.onClientClose(existingClient);
 		}
 
-		if (!this._channels.has(channelId)) {
+		if (!this._rooms.has(rtcServerId)) {
 			console.debug("no channel created, creating one...");
-			this.createChannel(channelId);
+			this.createChannel(rtcServerId);
 		}
 
-		const channel = this._channels.get(channelId)!;
+		const room = this._rooms.get(rtcServerId)!;
 
-		const client = new MedoozeWebRtcClient(userId, channelId, ws, channel);
+		const client = new MedoozeWebRtcClient(userId, rtcServerId, ws, room);
 
-		channel?.onClientJoin(client);
+		room?.onClientJoin(client);
 
 		return client;
 	}
@@ -71,9 +75,9 @@ export class MedoozeSignalingDelegate implements SignalingDelegate {
 		sdpOffer: string,
 		codecs: Codec[],
 	): Promise<string> {
-		const channel = this._channels.get(client.channel_id);
+		const room = this._rooms.get(client.rtc_server_id);
 
-		if (!channel) {
+		if (!room) {
 			console.error(
 				"error, client sent an offer but has not authenticated",
 			);
@@ -175,7 +179,7 @@ export class MedoozeSignalingDelegate implements SignalingDelegate {
 
 		transport.setRemoteProperties(offer);
 
-		channel?.onClientOffer(client, transport);
+		room?.onClientOffer(client, transport);
 
 		const dtls = transport.getLocalDTLSInfo();
 		const ice = transport.getLocalICEInfo();
@@ -197,37 +201,39 @@ export class MedoozeSignalingDelegate implements SignalingDelegate {
 	}
 
 	public onClientClose = (client: WebRtcClient<any>) => {
-		this._channels.get(client.channel_id)?.onClientLeave(client);
+		this._rooms.get(client.rtc_server_id)?.onClientLeave(client);
 	};
 
 	public updateSDP(offer: string): void {
 		throw new Error("Method not implemented.");
 	}
 
-	public createChannel(channelId: string): void {
-		this._channels.set(channelId, new VoiceChannel(channelId, this));
+	public createChannel(rtcServerId: string): void {
+		this._rooms.set(rtcServerId, new VoiceRoom(rtcServerId, this));
 	}
 
-	public disposeChannelRouter(channelId: string): void {
-		this._channels.delete(channelId);
+	public disposeRoom(rtcServerId: string): void {
+		const room = this._rooms.get(rtcServerId);
+		room?.dispose();
+		this._rooms.delete(rtcServerId);
 	}
 
-	get channels(): Map<string, VoiceChannel> {
-		return this._channels;
+	get rooms(): Map<string, VoiceRoom> {
+		return this._rooms;
 	}
 
-	public getClientsForChannel(channelId: string): Set<WebRtcClient<any>> {
-		if (!this._channels.has(channelId)) {
+	public getClientsForRtcServer(rtcServerId: string): Set<WebRtcClient<any>> {
+		if (!this._rooms.has(rtcServerId)) {
 			return new Set();
 		}
 
-		return new Set(this._channels.get(channelId)?.clients.values())!;
+		return new Set(this._rooms.get(rtcServerId)?.clients.values())!;
 	}
 
 	private getClientForUserId = (
 		userId: string,
 	): MedoozeWebRtcClient | undefined => {
-		for (const channel of this.channels.values()) {
+		for (const channel of this.rooms.values()) {
 			let result = channel.getClientById(userId);
 			if (result) {
 				return result;

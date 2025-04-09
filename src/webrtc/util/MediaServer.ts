@@ -16,7 +16,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { MedoozeSignalingDelegate } from "../medooze/MedoozeSignalingDelegate";
+//import { MedoozeSignalingDelegate } from "../medooze/MedoozeSignalingDelegate";
 import { SignalingDelegate } from "./SignalingDelegate";
 
-export const mediaServer: SignalingDelegate = new MedoozeSignalingDelegate();
+export let mediaServer: SignalingDelegate;
+
+(async () => {
+	try {
+		//mediaServer = require('../medooze/MedoozeSignalingDelegate');
+		mediaServer = new (
+			await import("../medooze/MedoozeSignalingDelegate")
+		).MedoozeSignalingDelegate();
+	} catch (e) {
+		console.error("Failed to import MedoozeSignalingDelegate", e);
+		// Fallback to a different implementation or handle the error
+		// For example, you could set mediaServer to null or throw an error
+	}
+})();

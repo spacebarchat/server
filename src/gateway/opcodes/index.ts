@@ -25,6 +25,9 @@ import { onRequestGuildMembers } from "./RequestGuildMembers";
 import { onResume } from "./Resume";
 import { onVoiceStateUpdate } from "./VoiceStateUpdate";
 import { onGuildSubscriptionsBulk } from "./GuildSubscriptionsBulk";
+import { onStreamCreate } from "./StreamCreate";
+import { onStreamDelete } from "./StreamDelete";
+import { onStreamWatch } from "./StreamWatch";
 
 export type OPCodeHandler = (this: WebSocket, data: Payload) => unknown;
 
@@ -41,5 +44,8 @@ export default {
 	// 10: Hello
 	// 13: Dm_update
 	14: onLazyRequest,
+	18: onStreamCreate,
+	19: onStreamDelete,
+	20: onStreamWatch,
 	37: onGuildSubscriptionsBulk,
 } as { [key: number]: OPCodeHandler };

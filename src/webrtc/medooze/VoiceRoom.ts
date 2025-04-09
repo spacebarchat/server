@@ -7,7 +7,7 @@ import {
 import { MedoozeWebRtcClient } from "./MedoozeWebRtcClient";
 import { StreamInfo } from "semantic-sdp";
 
-export class VoiceChannel {
+export class VoiceRoom {
 	private _clients: Map<string, MedoozeWebRtcClient>;
 	private _id: string;
 	private _sfu: MedoozeSignalingDelegate;
@@ -78,7 +78,7 @@ export class VoiceChannel {
 			client.outgoingStream?.stop();
 
 			client.transport?.stop();
-			client.channel = undefined;
+			client.room = undefined;
 			client.incomingStream = undefined;
 			client.outgoingStream = undefined;
 			client.transport = undefined;
@@ -96,5 +96,15 @@ export class VoiceChannel {
 
 	get id(): string {
 		return this._id;
+	}
+
+	public dispose(): void {
+		const clients = this._clients.values();
+		for (const client of clients) {
+			this.onClientLeave(client);
+		}
+		this._clients.clear();
+		this._sfu = undefined!;
+		this._clients = undefined!;
 	}
 }

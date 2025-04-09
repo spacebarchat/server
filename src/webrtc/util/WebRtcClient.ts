@@ -1,7 +1,7 @@
 export interface WebRtcClient<T> {
 	websocket: T;
 	user_id: string;
-	channel_id: string;
+	rtc_server_id: string;
 	webrtcConnected: boolean;
 	getIncomingStreamSSRCs: () => SSRCs;
 	getOutgoingStreamSSRCsForUser: (user_id: string) => SSRCs;
