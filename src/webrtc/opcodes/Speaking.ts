@@ -22,10 +22,10 @@ import { mediaServer, VoiceOPCodes } from "../util";
 // {"speaking":1,"delay":5,"ssrc":2805246727}
 
 export async function onSpeaking(this: WebSocket, data: Payload) {
-	if (!this.client) return;
+	if (!this.voiceWs) return;
 
 	mediaServer
-		.getClientsForChannel<WebSocket>(this.client.channel_id)
+		.getClientsForRtcServer<WebSocket>(this.voiceWs.rtc_server_id)
 		.forEach((client) => {
 			if (client.user_id === this.user_id) return;
 

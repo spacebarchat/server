@@ -37,10 +37,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	this.user_id = user_id;
 	this.session_id = session_id;
 
-	this.client = mediaServer.join(voiceState.channel_id, this.user_id, this);
+	this.voiceWs = mediaServer.join(voiceState.channel_id, this.user_id, this);
 
 	this.on("close", () => {
-		mediaServer.onClientClose(this.client!);
+		mediaServer.onClientClose(this.voiceWs!);
 	});
 
 	await Send(this, {
