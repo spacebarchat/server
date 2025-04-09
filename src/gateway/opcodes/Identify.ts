@@ -32,6 +32,7 @@ import {
 	DefaultUserGuildSettings,
 	EVENTEnum,
 	Guild,
+	GuildCreateEvent,
 	GuildOrUnavailable,
 	IdentifySchema,
 	Intents,
@@ -464,7 +465,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				s: this.sequence++,
 				d: {
 					...new ReadyGuildDTO(x).toJSON(),
-				},
+				} as GuildCreateEvent["data"],
 			})?.catch((e) =>
 				console.error(`[Gateway] error when sending bot guilds`, e),
 			),
