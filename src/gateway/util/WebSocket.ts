@@ -42,6 +42,7 @@ export interface WebSocket extends WS {
 	member_events: Record<string, () => unknown>;
 	listen_options: ListenEventOpts;
 	capabilities?: Capabilities;
-	client?: WebRtcClient<WebSocket>;
+	voiceWs?: WebRtcClient<WebSocket>;
+	streamWs?: WebRtcClient<WebSocket>;
 	large_threshold: number;
 }

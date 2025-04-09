@@ -445,6 +445,23 @@ export interface VoiceServerUpdateEvent extends Event {
 	};
 }
 
+export interface StreamCreateEvent extends Event {
+	event: "STREAM_CREATE";
+	data: {
+		stream_key: string;
+		rtc_server_id: string;
+	};
+}
+
+export interface StreamServerUpdateEvent extends Event {
+	event: "STREAM_SERVER_UPDATE";
+	data: {
+		token: string;
+		stream_key: string;
+		endpoint: string;
+	};
+}
+
 export interface WebhooksUpdateEvent extends Event {
 	event: "WEBHOOKS_UPDATE";
 	data: {
@@ -681,6 +698,8 @@ export type EVENT =
 	| "INTERACTION_CREATE"
 	| "VOICE_STATE_UPDATE"
 	| "VOICE_SERVER_UPDATE"
+	| "STREAM_CREATE"
+	| "STREAM_SERVER_UPDATE"
 	| "APPLICATION_COMMAND_CREATE"
 	| "APPLICATION_COMMAND_UPDATE"
 	| "APPLICATION_COMMAND_DELETE"

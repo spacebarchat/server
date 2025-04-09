@@ -4,29 +4,29 @@ import {
 	Transport,
 } from "@dank074/medooze-media-server";
 import { SSRCs, WebRtcClient } from "webrtc/util";
-import { VoiceChannel } from "./VoiceChannel";
+import { VoiceRoom } from "./VoiceRoom";
 
 export class MedoozeWebRtcClient implements WebRtcClient<any> {
 	websocket: any;
 	user_id: string;
-	channel_id: string;
+	rtc_server_id: string;
 	webrtcConnected: boolean;
 	public transport?: Transport;
 	public incomingStream?: IncomingStream;
 	public outgoingStream?: OutgoingStream;
-	public channel?: VoiceChannel;
+	public room?: VoiceRoom;
 	public isStopped?: boolean;
 
 	constructor(
 		userId: string,
-		channelId: string,
+		rtcServerId: string,
 		websocket: any,
-		channel: VoiceChannel,
+		room: VoiceRoom,
 	) {
 		this.user_id = userId;
-		this.channel_id = channelId;
+		this.rtc_server_id = rtcServerId;
 		this.websocket = websocket;
-		this.channel = channel;
+		this.room = room;
 		this.webrtcConnected = false;
 		this.isStopped = false;
 	}
@@ -120,7 +120,7 @@ export class MedoozeWebRtcClient implements WebRtcClient<any> {
 
 		const id = `${type}-${user_id}`;
 
-		const otherClient = this.channel?.getClientById(user_id);
+		const otherClient = this.room?.getClientById(user_id);
 		const incomingStream = otherClient?.incomingStream;
 		const incomingTrack = incomingStream?.getTrack(id);
 
