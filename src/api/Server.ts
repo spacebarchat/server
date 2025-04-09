@@ -61,7 +61,7 @@ declare global {
 }
 
 export class SpacebarServer extends Server {
-	public declare options: SpacebarServerOptions;
+	declare public options: SpacebarServerOptions;
 
 	constructor(opts?: Partial<SpacebarServerOptions>) {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
