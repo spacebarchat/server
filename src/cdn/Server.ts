@@ -28,7 +28,7 @@ import { BodyParser } from "../api/middlewares/BodyParser";
 export type CDNServerOptions = ServerOptions;
 
 export class CDNServer extends Server {
-	public declare options: CDNServerOptions;
+	declare public options: CDNServerOptions;
 
 	constructor(options?: Partial<CDNServerOptions>) {
 		super(options);

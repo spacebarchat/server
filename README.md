@@ -21,10 +21,10 @@ We aim to reverse engineer and add additional features to the Discord backend, w
 
 This repository contains:
 
--   [Spacebar HTTP API Server](/src/api)
--   [WebSocket Gateway Server](/src/gateway)
--   [HTTP CDN Server](/src/cdn)
--   [Utility and Database Models](/src/util)
+- [Spacebar HTTP API Server](/src/api)
+- [WebSocket Gateway Server](/src/gateway)
+- [HTTP CDN Server](/src/cdn)
+- [Utility and Database Models](/src/util)
 
 ## [Documentation](https://docs.spacebar.chat)
 
