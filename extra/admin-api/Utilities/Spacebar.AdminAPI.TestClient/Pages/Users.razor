@@ -4,6 +4,7 @@
 @using Spacebar.AdminApi.Models
 @using Spacebar.AdminAPI.TestClient.Services
 @using ArcaneLibs.Blazor.Components
+@using ArcaneLibs.Extensions
 @inject Config Config
 @inject ILocalStorageService LocalStorage
 
@@ -24,6 +25,7 @@
     }
 </details>
 
+<p>Got @UserList.Count users.</p>
 <table class="table table-bordered">
     @{
         var columns = DisplayedColumns.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
@@ -37,7 +39,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var user in UserList) {
+        @foreach (var user in UserList.Where(x => !x.Deleted).OrderByDescending(x=>x.MessageCount)) {
             <tr>
                 @foreach (var column in columns) {
                     <td>@column.GetValue(user)</td>
@@ -58,15 +60,21 @@
     private List<UserModel> UserList { get; set; } = new();
 
     protected override async Task OnInitializedAsync() {
-        using var hc = new HttpClient();
+        var hc = new StreamingHttpClient();
         hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
-        var response = await hc.GetAsync(Config.AdminUrl + "/_spacebar/admin/users/");
-        if (!response.IsSuccessStatusCode) throw new Exception(await response.Content.ReadAsStringAsync());
-        var content = response.Content.ReadFromJsonAsAsyncEnumerable<UserModel>();
-        await foreach (var user in content) {
-            UserList.Add(user);
-            StateHasChanged();
+
+        // var request = new HttpRequestMessage(HttpMethod.Get, Config.AdminUrl + "/_spacebar/admin/users/");
+        
+        var response = hc.GetAsyncEnumerableFromJsonAsync<UserModel>(Config.AdminUrl + "/_spacebar/admin/users/");
+        // if (!response.IsSuccessStatusCode) throw new Exception(await response.Content.ReadAsStringAsync());
+        // var content = response.Content.ReadFromJsonAsAsyncEnumerable<UserModel>();
+        await foreach (var user in response) {
+            // Console.WriteLine(user.ToJson(indent: false, ignoreNull: true));
+            UserList.Add(user!);
+            if(UserList.Count % 1000 == 0)
+                StateHasChanged();
         }
+        StateHasChanged();
     }
 
 }

@@ -14,15 +14,21 @@ Deleted @ChannelDeleteProgress.Sum(x=>x.Value.Deleted) messages so far!
     <progress max="@progress.Total" value="@progress.Deleted"></progress>
 }
 
+@if (Done) {
+    <h1>Done!</h1>
+}
+
 @code {
 
     [Parameter]
     public required string Id { get; set; }
 
     private Dictionary<string, DeleteProgress> ChannelDeleteProgress { get; set; } = new();
+    
+    private bool Done { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        using var hc = new HttpClient();
+        var hc = new StreamingHttpClient();
         hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
         var response = await hc.GetAsync(Config.AdminUrl + $"/_spacebar/admin/Users/{Id}/delete?messageDeleteChunkSize=100");
         if (!response.IsSuccessStatusCode) throw new Exception(await response.Content.ReadAsStringAsync());
@@ -47,10 +53,13 @@ Deleted @ChannelDeleteProgress.Sum(x=>x.Value.Deleted) messages so far!
                     break;
                 }
             }
-
+            
             StateHasChanged();
             await Task.Delay(1);
         }
+
+        Done = true;
+        StateHasChanged();
     }
 
     private class DeleteProgress {
