@@ -7,7 +7,7 @@ using Spacebar.Db.Models;
 
 namespace Spacebar.AdminAPI.Services;
 
-public class AuthenticationService(SpacebarDbContext db) {
+public class AuthenticationService(SpacebarDbContext db, Configuration config) {
     private static Dictionary<string, User> _userCache = new();
     private static Dictionary<string, DateTime> _userCacheExpiry = new();
     
@@ -37,6 +37,6 @@ public class AuthenticationService(SpacebarDbContext db) {
             throw new UnauthorizedAccessException();
         }
 
-        return await db.Users.FindAsync(res.ClaimsIdentity.Claims.First(x => x.Type == "id").Value) ?? throw new InvalidOperationException();
+        return await db.Users.FindAsync(config.OverrideUid ?? res.ClaimsIdentity.Claims.First(x => x.Type == "id").Value) ?? throw new InvalidOperationException();
     }
 }

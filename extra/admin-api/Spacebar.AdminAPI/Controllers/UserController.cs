@@ -146,6 +146,13 @@ public class UserController(ILogger<UserController> logger, SpacebarDbContext db
             yield break;
         }
 
+        user.Data = "{}";
+        user.Deleted = true;
+        user.Disabled = true;
+        user.Rights = 0;
+        db.Users.Update(user);
+        await db.SaveChangesAsync();
+
         var factory = new ConnectionFactory {
             Uri = new Uri("amqp://guest:guest@127.0.0.1/")
         };

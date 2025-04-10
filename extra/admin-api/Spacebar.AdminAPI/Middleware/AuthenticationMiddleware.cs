@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using ArcaneLibs.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using Spacebar.AdminAPI.Services;
 using Spacebar.Db.Contexts;
 using Spacebar.Db.Models;
 
@@ -54,7 +55,8 @@ public class AuthenticationMiddleware(RequestDelegate next) {
 
         if (!_userCache.ContainsKey(token)) {
             var db = sp.GetRequiredService<SpacebarDbContext>();
-            user = await db.Users.FindAsync(res.ClaimsIdentity.Claims.First(x => x.Type == "id").Value)
+            var config = sp.GetRequiredService<Configuration>();
+            user = await db.Users.FindAsync(config.OverrideUid ?? res.ClaimsIdentity.Claims.First(x => x.Type == "id").Value)
                    ?? throw new InvalidOperationException();
             _userCache[token] = user;
             _userCacheExpiry[token] = DateTime.Now.AddMinutes(5);
