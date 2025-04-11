@@ -32,6 +32,7 @@ import {
 	DefaultUserGuildSettings,
 	EVENTEnum,
 	Guild,
+	GuildCreateEvent,
 	GuildOrUnavailable,
 	IdentifySchema,
 	Intents,
@@ -455,17 +456,33 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	});
 
 	// If we're a bot user, send GUILD_CREATE for each unavailable guild
+	// TODO: check if bot has permission to view some of these based on intents (i.e. GUILD_MEMBERS, GUILD_PRESENCES, GUILD_VOICE_STATES)
 	await Promise.all(
-		pending_guilds.map((x) =>
-			Send(this, {
+		pending_guilds.map((x) => {
+			//Even with the GUILD_MEMBERS intent, the bot always receives just itself as the guild members
+			const botMemberObject = members.find(
+				(member) => member.guild_id === x.id,
+			);
+
+			return Send(this, {
 				op: OPCODES.Dispatch,
 				t: EVENTEnum.GuildCreate,
 				s: this.sequence++,
-				d: x,
+				d: {
+					...x.toJSON(),
+					members: botMemberObject
+						? [
+								{
+									...botMemberObject.toPublicMember(),
+									user: user.toPublicUser(),
+								},
+							]
+						: [],
+				},
 			})?.catch((e) =>
 				console.error(`[Gateway] error when sending bot guilds`, e),
-			),
-		),
+			);
+		}),
 	);
 
 	// TODO: ready supplemental
