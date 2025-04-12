@@ -41,6 +41,7 @@ export * from "./EmojiModifySchema";
 export * from "./ForgotPasswordSchema";
 export * from "./GatewayPayloadSchema";
 export * from "./GuildCreateSchema";
+export * from "./GuildSubscriptionsBulkSchema";
 export * from "./GuildTemplateCreateSchema";
 export * from "./GuildUpdateSchema";
 export * from "./GuildUpdateWelcomeScreenSchema";
