@@ -24,6 +24,7 @@ import { onPresenceUpdate } from "./PresenceUpdate";
 import { onRequestGuildMembers } from "./RequestGuildMembers";
 import { onResume } from "./Resume";
 import { onVoiceStateUpdate } from "./VoiceStateUpdate";
+import { onGuildSubscriptionsBulk } from "./GuildSubscriptionsBulk";
 
 export type OPCodeHandler = (this: WebSocket, data: Payload) => unknown;
 
@@ -40,4 +41,5 @@ export default {
 	// 10: Hello
 	// 13: Dm_update
 	14: onLazyRequest,
+	37: onGuildSubscriptionsBulk,
 } as { [key: number]: OPCodeHandler };

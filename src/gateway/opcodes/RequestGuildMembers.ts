@@ -38,8 +38,15 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 
 	check.call(this, RequestGuildMembersSchema, d);
 
-	const { query, presences, nonce } = d as RequestGuildMembersSchema;
+	const {
+		presences,
+		nonce,
+		query: requestQuery,
+	} = d as RequestGuildMembersSchema;
 	let { limit, user_ids, guild_id } = d as RequestGuildMembersSchema;
+
+	// some discord libraries send empty string as query when they meant to send undefined, which was leading to errors being thrown in this handler
+	const query = requestQuery != "" ? requestQuery : undefined;
 
 	guild_id = guild_id as string;
 	user_ids = user_ids as string[] | undefined;
