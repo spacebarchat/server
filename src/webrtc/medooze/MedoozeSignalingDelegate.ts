@@ -1,13 +1,7 @@
 import { CodecInfo, MediaInfo, SDPInfo } from "semantic-sdp";
 import { SignalingDelegate } from "../util/SignalingDelegate";
 import { Codec, WebRtcClient } from "../util/WebRtcClient";
-import {
-	MediaServer,
-	IncomingStream,
-	OutgoingStream,
-	Transport,
-	Endpoint,
-} from "@dank074/medooze-media-server";
+import { MediaServer, Endpoint } from "@dank074/medooze-media-server";
 import { VoiceRoom } from "./VoiceRoom";
 import { MedoozeWebRtcClient } from "./MedoozeWebRtcClient";
 
@@ -48,8 +42,26 @@ export class MedoozeSignalingDelegate implements SignalingDelegate {
 		rtcServerId: string,
 		userId: string,
 		ws: any,
+		type: "guild-voice" | "dm-voice" | "stream",
 	): WebRtcClient<any> {
-		const existingClient = this.getClientForUserId(userId);
+		// make sure user isn't already in a room of the same type
+		// user can be in two simultanous rooms of different type though (can be in a voice channel and watching a stream for example)
+		const rooms = this.rooms
+			.values()
+			.filter((room) =>
+				type === "stream"
+					? room.type === "stream"
+					: room.type === "dm-voice" || room.type === "guild-voice",
+			);
+		let existingClient;
+
+		for (const room of rooms) {
+			let result = room.getClientById(userId);
+			if (result) {
+				existingClient = result;
+				break;
+			}
+		}
 
 		if (existingClient) {
 			console.log("client already connected, disconnect..");
@@ -58,7 +70,7 @@ export class MedoozeSignalingDelegate implements SignalingDelegate {
 
 		if (!this._rooms.has(rtcServerId)) {
 			console.debug("no channel created, creating one...");
-			this.createChannel(rtcServerId);
+			this.createRoom(rtcServerId, type);
 		}
 
 		const room = this._rooms.get(rtcServerId)!;
@@ -208,8 +220,11 @@ export class MedoozeSignalingDelegate implements SignalingDelegate {
 		throw new Error("Method not implemented.");
 	}
 
-	public createChannel(rtcServerId: string): void {
-		this._rooms.set(rtcServerId, new VoiceRoom(rtcServerId, this));
+	public createRoom(
+		rtcServerId: string,
+		type: "guild-voice" | "dm-voice" | "stream",
+	): void {
+		this._rooms.set(rtcServerId, new VoiceRoom(rtcServerId, type, this));
 	}
 
 	public disposeRoom(rtcServerId: string): void {

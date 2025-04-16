@@ -23,7 +23,7 @@ export interface VoiceIdentifySchema {
 	token: string;
 	video?: boolean;
 	streams?: {
-		type: string;
+		type: "video" | "audio" | "screen";
 		rid: string;
 		quality: number;
 	}[];

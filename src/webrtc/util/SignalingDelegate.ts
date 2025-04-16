@@ -3,7 +3,12 @@ import { Codec, WebRtcClient } from "./WebRtcClient";
 export interface SignalingDelegate {
 	start: () => Promise<void>;
 	stop: () => Promise<void>;
-	join<T>(rtcServerId: string, userId: string, ws: T): WebRtcClient<T>;
+	join<T>(
+		rtcServerId: string,
+		userId: string,
+		ws: T,
+		type: "guild-voice" | "dm-voice" | "stream",
+	): WebRtcClient<T>;
 	onOffer<T>(
 		client: WebRtcClient<T>,
 		offer: string,

@@ -15,14 +15,20 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-import { Payload, Send, WebSocket } from "@spacebar/gateway";
 import { validateSchema, VoiceVideoSchema } from "@spacebar/util";
-import { mediaServer, VoiceOPCodes, WebRtcClient } from "@spacebar/webrtc";
+import {
+	mediaServer,
+	VoiceOPCodes,
+	VoicePayload,
+	WebRtcClient,
+	WebRtcWebSocket,
+	Send,
+} from "@spacebar/webrtc";
 
-export async function onVideo(this: WebSocket, payload: Payload) {
-	if (!this.voiceWs || !this.voiceWs.webrtcConnected) return;
-	const { rtc_server_id: channel_id } = this.voiceWs;
+export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
+	if (!this.webRtcClient || !this.webRtcClient.webrtcConnected) return;
+
+	const { rtc_server_id } = this.webRtcClient;
 
 	const d = validateSchema("VoiceVideoSchema", payload.d) as VoiceVideoSchema;
 
@@ -30,9 +36,9 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 
 	await Send(this, { op: VoiceOPCodes.MEDIA_SINK_WANTS, d: { any: 100 } });
 
-	const ssrcs = this.voiceWs.getIncomingStreamSSRCs();
+	const ssrcs = this.webRtcClient.getIncomingStreamSSRCs();
 
-	const clientsThatNeedUpdate = new Set<WebRtcClient<WebSocket>>();
+	const clientsThatNeedUpdate = new Set<WebRtcClient<WebRtcWebSocket>>();
 
 	// check if client has signaled that it will send audio
 	if (d.audio_ssrc !== 0) {
@@ -41,12 +47,14 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 			console.log(
 				`[${this.user_id}] publishing new audio track ssrc:${d.audio_ssrc}`,
 			);
-			this.voiceWs.publishTrack("audio", { audio_ssrc: d.audio_ssrc });
+			this.webRtcClient.publishTrack("audio", {
+				audio_ssrc: d.audio_ssrc,
+			});
 		}
 
 		// now check that all clients have outgoing media for this ssrcs
-		for (const client of mediaServer.getClientsForRtcServer<WebSocket>(
-			channel_id,
+		for (const client of mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
+			rtc_server_id,
 		)) {
 			if (client.user_id === this.user_id) continue;
 
@@ -55,7 +63,7 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 				console.log(
 					`[${client.user_id}] subscribing to audio track ssrcs: ${d.audio_ssrc}`,
 				);
-				client.subscribeToTrack(this.voiceWs.user_id, "audio");
+				client.subscribeToTrack(this.webRtcClient.user_id, "audio");
 
 				clientsThatNeedUpdate.add(client);
 			}
@@ -68,26 +76,26 @@ export async function onVideo(this: WebSocket, payload: Payload) {
 			console.log(
 				`[${this.user_id}] publishing new video track ssrc:${d.video_ssrc}`,
 			);
-			this.voiceWs.publishTrack("video", {
+			this.webRtcClient.publishTrack("video", {
 				video_ssrc: d.video_ssrc,
 				rtx_ssrc: d.rtx_ssrc,
 			});
 		}
 
 		// now check that all clients have outgoing media for this ssrcs
-		for (const client of mediaServer.getClientsForRtcServer<WebSocket>(
-			channel_id,
+		for (const client of mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
+			rtc_server_id,
 		)) {
 			if (client.user_id === this.user_id) continue;
 
 			const ssrcs = client.getOutgoingStreamSSRCsForUser(
-				this.voiceWs.user_id,
+				this.webRtcClient.user_id,
 			);
 			if (ssrcs.video_ssrc != d.video_ssrc) {
 				console.log(
 					`[${client.user_id}] subscribing to video track ssrc: ${d.video_ssrc}`,
 				);
-				client.subscribeToTrack(this.voiceWs.user_id, "video");
+				client.subscribeToTrack(this.webRtcClient.user_id, "video");
 
 				clientsThatNeedUpdate.add(client);
 			}
