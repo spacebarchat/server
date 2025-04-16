@@ -1,5 +1,5 @@
 import { WebSocket } from "@spacebar/gateway";
-import { WebRtcClient } from "./WebRtcClient";
+import type { WebRtcClient } from "spacebar-webrtc-types";
 
 export interface WebRtcWebSocket extends WebSocket {
 	type: "guild-voice" | "dm-voice" | "stream";

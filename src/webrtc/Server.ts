@@ -21,7 +21,12 @@ import dotenv from "dotenv";
 import http from "http";
 import ws from "ws";
 import { Connection } from "./events/Connection";
-import { mediaServer } from "./util/MediaServer";
+import {
+	mediaServer,
+	WRTC_PORT_MAX,
+	WRTC_PORT_MIN,
+	WRTC_PUBLIC_IP,
+} from "./util/MediaServer";
 import { green, yellow } from "picocolors";
 dotenv.config();
 
@@ -77,7 +82,7 @@ export class Server {
 			console.log(`[WebRTC] ${yellow("WEBRTC disabled")}`);
 			return Promise.resolve();
 		}
-		await mediaServer.start();
+		await mediaServer.start(WRTC_PUBLIC_IP, WRTC_PORT_MIN, WRTC_PORT_MAX);
 		if (!this.server.listening) {
 			this.server.listen(this.port);
 			console.log(`[WebRTC] ${green(`online on 0.0.0.0:${this.port}`)}`);

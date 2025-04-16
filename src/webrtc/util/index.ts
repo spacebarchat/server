@@ -18,6 +18,5 @@
 
 export * from "./Constants";
 export * from "./MediaServer";
-export * from "./WebRtcClient";
 export * from "./WebRtcWebSocket";
 export * from "./Send";
