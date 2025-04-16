@@ -18,7 +18,7 @@ if [ -x "$(/usr/bin/env which nix-shell 2>/dev/null)" ]; then
     elif [ ! -n "$(git status --porcelain=v1 2>/dev/null | grep -E '^M package-lock.json')" ]; then
       echo "package-lock.json has no changes. Skipping update of nix dependencies."
     else
-      nix run .#nix-update || exit $?
+      nix run .#update-nix || exit $?
     fi
   fi
 else
