@@ -20,10 +20,10 @@ import {
 	mediaServer,
 	VoiceOPCodes,
 	VoicePayload,
-	WebRtcClient,
 	WebRtcWebSocket,
 	Send,
 } from "@spacebar/webrtc";
+import type { WebRtcClient } from "spacebar-webrtc-types";
 
 export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 	if (!this.webRtcClient || !this.webRtcClient.webrtcConnected) return;

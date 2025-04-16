@@ -16,25 +16,49 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-//import { MedoozeSignalingDelegate } from "../medooze/MedoozeSignalingDelegate";
-import { SignalingDelegate } from "./SignalingDelegate";
+import type { SignalingDelegate } from "spacebar-webrtc-types";
 import { green, red } from "picocolors";
 
 export let mediaServer: SignalingDelegate;
 
+export const WRTC_PUBLIC_IP = process.env.WRTC_PUBLIC_IP ?? "127.0.0.1";
+export const WRTC_PORT_MIN = process.env.WRTC_PORT_MIN
+	? parseInt(process.env.WRTC_PORT_MIN)
+	: 2000;
+export const WRTC_PORT_MAX = process.env.WRTC_PORT_MAX
+	? parseInt(process.env.WRTC_PORT_MAX)
+	: 65000;
+
+const selectedWrtcLibrary = process.env.WRTC_LIBRARY;
+
+// could not find a way to hide stack trace from base Error object
+class NoConfiguredLibraryError implements Error {
+	name: string;
+	message: string;
+	stack?: string | undefined;
+	cause?: unknown;
+
+	constructor(message: string) {
+		this.name = "NoConfiguredLibraryError";
+		this.message = message;
+	}
+}
+
 (async () => {
 	try {
-		//mediaServer = require('../medooze/MedoozeSignalingDelegate');
-		mediaServer = new (
-			await import("../medooze/MedoozeSignalingDelegate")
-		).MedoozeSignalingDelegate();
+		//mediaServer = require('medooze-spacebar-wrtc');
+		if (!selectedWrtcLibrary)
+			throw new NoConfiguredLibraryError("No library configured in .env");
+
+		mediaServer = new // @ts-ignore
+		(await import(selectedWrtcLibrary)).default();
 
 		console.log(
-			`[WebRTC] ${green("Succesfully loaded MedoozeSignalingDelegate")}`,
+			`[WebRTC] ${green(`Succesfully loaded ${selectedWrtcLibrary}`)}`,
 		);
-	} catch (e) {
+	} catch (error) {
 		console.log(
-			`[WebRTC] ${red("Failed to import MedoozeSignalingDelegate")}`,
+			`[WebRTC] ${red(`Failed to import ${selectedWrtcLibrary}: ${error instanceof NoConfiguredLibraryError ? error.message : ""}`)}`,
 		);
 	}
 })();
