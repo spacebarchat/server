@@ -18,6 +18,7 @@
 
 //import { MedoozeSignalingDelegate } from "../medooze/MedoozeSignalingDelegate";
 import { SignalingDelegate } from "./SignalingDelegate";
+import { green, red } from "picocolors";
 
 export let mediaServer: SignalingDelegate;
 
@@ -27,9 +28,13 @@ export let mediaServer: SignalingDelegate;
 		mediaServer = new (
 			await import("../medooze/MedoozeSignalingDelegate")
 		).MedoozeSignalingDelegate();
+
+		console.log(
+			`[WebRTC] ${green("Succesfully loaded MedoozeSignalingDelegate")}`,
+		);
 	} catch (e) {
-		console.error("Failed to import MedoozeSignalingDelegate", e);
-		// Fallback to a different implementation or handle the error
-		// For example, you could set mediaServer to null or throw an error
+		console.log(
+			`[WebRTC] ${red("Failed to import MedoozeSignalingDelegate")}`,
+		);
 	}
 })();

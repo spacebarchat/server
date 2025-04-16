@@ -16,16 +16,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, Send, WebSocket } from "@spacebar/gateway";
-import { mediaServer, VoiceOPCodes } from "../util";
+import {
+	mediaServer,
+	VoiceOPCodes,
+	VoicePayload,
+	WebRtcWebSocket,
+	Send,
+} from "../util";
 
 // {"speaking":1,"delay":5,"ssrc":2805246727}
 
-export async function onSpeaking(this: WebSocket, data: Payload) {
-	if (!this.voiceWs) return;
+export async function onSpeaking(this: WebRtcWebSocket, data: VoicePayload) {
+	if (!this.webRtcClient) return;
 
 	mediaServer
-		.getClientsForRtcServer<WebSocket>(this.voiceWs.rtc_server_id)
+		.getClientsForRtcServer<WebRtcWebSocket>(
+			this.webRtcClient.rtc_server_id,
+		)
 		.forEach((client) => {
 			if (client.user_id === this.user_id) return;
 

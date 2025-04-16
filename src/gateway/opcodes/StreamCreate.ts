@@ -1,5 +1,17 @@
-import { Payload, WebSocket } from "@spacebar/gateway";
-import { Config, emitEvent, Region, VoiceState } from "@spacebar/util";
+import {
+	genVoiceToken,
+	Payload,
+	WebSocket,
+	generateStreamKey,
+} from "@spacebar/gateway";
+import {
+	Config,
+	emitEvent,
+	Region,
+	Snowflake,
+	Stream,
+	StreamSession,
+} from "@spacebar/util";
 
 interface StreamCreateSchema {
 	type: "guild" | "call";
@@ -11,12 +23,10 @@ interface StreamCreateSchema {
 export async function onStreamCreate(this: WebSocket, data: Payload) {
 	const body = data.d as StreamCreateSchema;
 
-	// first check if we are in a voice channel already. cannot create a stream if there's no existing voice connection
-	if (!this.voiceWs || !this.voiceWs.webrtcConnected) return;
+	// TODO: first check if we are in a voice channel already. cannot create a stream if there's no existing voice connection
+	if (body.channel_id.trim().length === 0) return;
 
 	// TODO: permissions check - if it's a guild, check if user is allowed to create stream in this guild
-
-	// TODO: create a new entry in db (StreamState?) containing the token for authenticating user in stream gateway IDENTIFY
 
 	// TODO: actually apply preferred_region from the event payload
 	const regions = Config.get().regions;
@@ -24,24 +34,54 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 		(r) => r.id === regions.default,
 	)[0];
 
-	const streamKey = `${body.type}${body.type === "guild" ? ":" + body.guild_id : ""}:${body.channel_id}:${this.user_id}`;
+	// create a new entry in db containing the token for authenticating user in stream gateway IDENTIFY
+	const stream = Stream.create({
+		id: Snowflake.generate(),
+		owner_id: this.user_id,
+		channel_id: body.channel_id,
+		endpoint: guildRegion.endpoint,
+	});
+
+	await stream.save();
+
+	const token = genVoiceToken();
+
+	const streamSession = StreamSession.create({
+		stream_id: stream.id,
+		user_id: this.user_id,
+		session_id: this.session_id,
+		token,
+	});
+
+	await streamSession.save();
+
+	const streamKey = generateStreamKey(
+		body.type,
+		body.guild_id,
+		body.channel_id,
+		this.user_id,
+	);
 
 	await emitEvent({
 		event: "STREAM_CREATE",
 		data: {
 			stream_key: streamKey,
-			rtc_server_id: "lol", // for voice connections in guilds it is guild_id, for dm voice calls it seems to be DM channel id, for GoLive streams a generated number
+			rtc_server_id: stream.id, // for voice connections in guilds it is guild_id, for dm voice calls it seems to be DM channel id, for GoLive streams a generated number
+			viewer_ids: [],
+			region: guildRegion.name,
+			paused: false,
 		},
 		guild_id: body.guild_id,
-		//user_id: this.user_id,
+		channel_id: body.channel_id,
 	});
 
 	await emitEvent({
 		event: "STREAM_SERVER_UPDATE",
 		data: {
-			token: "TEST",
+			token: streamSession.token,
 			stream_key: streamKey,
-			endpoint: guildRegion.endpoint,
+			guild_id: null, // not sure why its always null
+			endpoint: stream.endpoint,
 		},
 		user_id: this.user_id,
 	});

@@ -440,8 +440,9 @@ export interface VoiceServerUpdateEvent extends Event {
 	event: "VOICE_SERVER_UPDATE";
 	data: {
 		token: string;
-		guild_id: string;
+		guild_id: string | null;
 		endpoint: string;
+		channel_id?: string;
 	};
 }
 
@@ -700,6 +701,7 @@ export type EVENT =
 	| "VOICE_SERVER_UPDATE"
 	| "STREAM_CREATE"
 	| "STREAM_SERVER_UPDATE"
+	| "STREAM_DELETE"
 	| "APPLICATION_COMMAND_CREATE"
 	| "APPLICATION_COMMAND_UPDATE"
 	| "APPLICATION_COMMAND_DELETE"

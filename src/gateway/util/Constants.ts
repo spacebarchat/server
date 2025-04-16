@@ -16,8 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { VoiceOPCodes } from "@spacebar/webrtc";
-
 export enum OPCODES {
 	Dispatch = 0,
 	Heartbeat = 1,
@@ -63,7 +61,7 @@ export enum CLOSECODES {
 }
 
 export interface Payload {
-	op: OPCODES | VoiceOPCodes;
+	op: OPCODES;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	d?: any;
 	s?: number;

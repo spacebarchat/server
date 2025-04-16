@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, Payload, WebSocket } from "@spacebar/gateway";
+import { CLOSECODES } from "@spacebar/gateway";
 import { Tuple } from "lambert-server";
 import OPCodeHandlers from "../opcodes";
-import { VoiceOPCodes } from "../util";
+import { VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "../util";
 
 const PayloadSchema = {
 	op: Number,
@@ -28,9 +28,9 @@ const PayloadSchema = {
 	$t: String,
 };
 
-export async function onMessage(this: WebSocket, buffer: Buffer) {
+export async function onMessage(this: WebRtcWebSocket, buffer: Buffer) {
 	try {
-		const data: Payload = JSON.parse(buffer.toString());
+		const data: VoicePayload = JSON.parse(buffer.toString());
 		if (data.op !== VoiceOPCodes.IDENTIFY && !this.user_id)
 			return this.close(CLOSECODES.Not_authenticated);
 

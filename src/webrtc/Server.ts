@@ -22,6 +22,7 @@ import http from "http";
 import ws from "ws";
 import { Connection } from "./events/Connection";
 import { mediaServer } from "./util/MediaServer";
+import { green, yellow } from "picocolors";
 dotenv.config();
 
 export class Server {
@@ -70,16 +71,22 @@ export class Server {
 		await initDatabase();
 		await Config.init();
 		await initEvent();
+
+		// if we failed to load webrtc library
+		if (!mediaServer) {
+			console.log(`[WebRTC] ${yellow("WEBRTC disabled")}`);
+			return Promise.resolve();
+		}
 		await mediaServer.start();
 		if (!this.server.listening) {
 			this.server.listen(this.port);
-			console.log(`[WebRTC] online on 0.0.0.0:${this.port}`);
+			console.log(`[WebRTC] ${green(`online on 0.0.0.0:${this.port}`)}`);
 		}
 	}
 
 	async stop() {
 		closeDatabase();
 		this.server.close();
-		mediaServer.stop();
+		mediaServer?.stop();
 	}
 }

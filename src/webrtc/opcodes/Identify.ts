@@ -16,31 +16,79 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, Payload, Send, WebSocket } from "@spacebar/gateway";
+import { CLOSECODES } from "@spacebar/gateway";
 import {
+	StreamSession,
 	validateSchema,
 	VoiceIdentifySchema,
 	VoiceState,
 } from "@spacebar/util";
-import { mediaServer, VoiceOPCodes } from "@spacebar/webrtc";
+import {
+	mediaServer,
+	VoiceOPCodes,
+	VoicePayload,
+	WebRtcWebSocket,
+	Send,
+} from "@spacebar/webrtc";
 
-export async function onIdentify(this: WebSocket, data: Payload) {
+export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	clearTimeout(this.readyTimeout);
 	const { server_id, user_id, session_id, token, streams, video } =
 		validateSchema("VoiceIdentifySchema", data.d) as VoiceIdentifySchema;
 
-	const voiceState = await VoiceState.findOne({
-		where: { guild_id: server_id, user_id, token, session_id },
+	// server_id can be one of the following: a unique id for a GO Live stream, a channel id for a DM voice call, or a guild id for a guild voice channel
+	// not sure if there's a way to determine whether a snowflake is a channel id or a guild id without checking if it exists in db
+	// luckily we will only have to determine this once
+	let type: "guild-voice" | "dm-voice" | "stream";
+	let authenticated = false;
+
+	// first check if its a guild voice connection or DM voice call
+	let voiceState = await VoiceState.findOne({
+		where: [
+			{ guild_id: server_id, user_id, token, session_id },
+			{ channel_id: server_id, user_id, token, session_id },
+		],
 	});
-	if (!voiceState) return this.close(CLOSECODES.Authentication_failed);
+
+	if (voiceState) {
+		type = voiceState.guild_id === server_id ? "guild-voice" : "dm-voice";
+		authenticated = true;
+	} else {
+		// if its not a guild/dm voice connection, check if it is a go live stream
+		const streamSession = await StreamSession.findOne({
+			where: {
+				stream_id: server_id,
+				user_id,
+				token,
+				session_id,
+				used: false,
+			},
+		});
+
+		if (streamSession) {
+			type = "stream";
+			authenticated = true;
+			streamSession.used = true;
+			await streamSession.save();
+
+			this.once("close", async () => {
+				await streamSession.remove();
+			});
+		}
+	}
+
+	// if it doesnt match any then not valid token
+	if (!authenticated) return this.close(CLOSECODES.Authentication_failed);
 
 	this.user_id = user_id;
 	this.session_id = session_id;
 
-	this.voiceWs = mediaServer.join(voiceState.channel_id, this.user_id, this);
+	this.type = type!;
+	this.webRtcClient = mediaServer.join(server_id, this.user_id, this, type!);
 
 	this.on("close", () => {
-		mediaServer.onClientClose(this.voiceWs!);
+		// ice-lite media server relies on this to know when the peer went away
+		mediaServer.onClientClose(this.webRtcClient!);
 	});
 
 	await Send(this, {

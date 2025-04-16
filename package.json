@@ -124,7 +124,7 @@
 	"optionalDependencies": {
 		"@yukikaze-bot/erlpack": "^1.0.1",
 		"jimp": "^1.6.0",
-		"@dank074/medooze-media-server": "1.156.3",
+		"@dank074/medooze-media-server": "1.156.4",
 		"semantic-sdp": "^3.31.1",
 		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.5",

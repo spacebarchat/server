@@ -15,13 +15,20 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-import { Payload, Send, WebSocket } from "@spacebar/gateway";
 import { SelectProtocolSchema, validateSchema } from "@spacebar/util";
-import { VoiceOPCodes, mediaServer } from "@spacebar/webrtc";
+import {
+	VoiceOPCodes,
+	VoicePayload,
+	WebRtcWebSocket,
+	mediaServer,
+	Send,
+} from "@spacebar/webrtc";
 
-export async function onSelectProtocol(this: WebSocket, payload: Payload) {
-	if (!this.voiceWs) return;
+export async function onSelectProtocol(
+	this: WebRtcWebSocket,
+	payload: VoicePayload,
+) {
+	if (!this.webRtcClient) return;
 
 	const data = validateSchema(
 		"SelectProtocolSchema",
@@ -29,7 +36,7 @@ export async function onSelectProtocol(this: WebSocket, payload: Payload) {
 	) as SelectProtocolSchema;
 
 	const answer = await mediaServer.onOffer(
-		this.voiceWs,
+		this.webRtcClient,
 		data.sdp!,
 		data.codecs ?? [],
 	);

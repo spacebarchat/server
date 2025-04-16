@@ -11,10 +11,15 @@ export class VoiceRoom {
 	private _clients: Map<string, MedoozeWebRtcClient>;
 	private _id: string;
 	private _sfu: MedoozeSignalingDelegate;
+	private _type: "guild-voice" | "dm-voice" | "stream";
 
-	constructor(id: string, sfu: MedoozeSignalingDelegate) {
+	constructor(
+		id: string,
+		type: "guild-voice" | "dm-voice" | "stream",
+		sfu: MedoozeSignalingDelegate,
+	) {
 		this._id = id;
-
+		this._type = type;
 		this._clients = new Map();
 		this._sfu = sfu;
 	}
@@ -96,6 +101,10 @@ export class VoiceRoom {
 
 	get id(): string {
 		return this._id;
+	}
+
+	get type(): "guild-voice" | "dm-voice" | "stream" {
+		return this._type;
 	}
 
 	public dispose(): void {
