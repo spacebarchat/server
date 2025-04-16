@@ -98,7 +98,9 @@ export async function setupListener(this: WebSocket) {
 			opts.channel?.ch,
 		);
 		opts.channel = await RabbitMQ.connection.createChannel();
-		opts.channel.queues = {};
+		if (opts.channel) {
+			opts.channel.queues = {};
+		}
 		console.log(
 			"[RabbitMQ] channel created: ",
 			typeof opts.channel,
