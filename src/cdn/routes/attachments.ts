@@ -16,13 +16,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
-import { Config, Snowflake } from "@spacebar/util";
-import { storage } from "../util/Storage";
+import {
+	Config,
+	getUrlSignature,
+	hasValidSignature,
+	Snowflake,
+} from "@spacebar/util";
+import { Request, Response, Router } from "express";
 import FileType from "file-type";
+import imageSize from "image-size";
 import { HTTPError } from "lambert-server";
 import { multer } from "../util/multer";
-import imageSize from "image-size";
+import { storage } from "../util/Storage";
 
 const router = Router();
 
@@ -39,6 +44,7 @@ router.post(
 	async (req: Request, res: Response) => {
 		if (req.headers.signature !== Config.get().security.requestSignature)
 			throw new HTTPError("Invalid request signature");
+
 		if (!req.file) throw new HTTPError("file missing");
 
 		const { buffer, mimetype, size, originalname } = req.file;
@@ -63,12 +69,20 @@ router.post(
 			}
 		}
 
+		let finalUrl = `${endpoint}/${path}`;
+
+		if (Config.get().security.cdnSignUrls) {
+			const signatureData = getUrlSignature(path);
+			console.log(signatureData);
+			finalUrl = `${finalUrl}?ex=${signatureData.expiresAt}&is=${signatureData.issuedAt}&hm=${signatureData.hash}&`;
+		}
+
 		const file = {
 			id,
 			content_type: mimetype,
 			filename: filename,
 			size,
-			url: `${endpoint}/${path}`,
+			url: finalUrl,
 			width,
 			height,
 		};
@@ -84,6 +98,14 @@ router.get(
 		// const { format } = req.query;
 
 		const path = `attachments/${channel_id}/${id}/${filename}`;
+
+		if (
+			Config.get().security.cdnSignUrls &&
+			!hasValidSignature(path, req.query)
+		) {
+			return res.status(404).send("This content is no longer available.");
+		}
+
 		const file = await storage.get(path);
 		if (!file) throw new HTTPError("File not found");
 		const type = await FileType.fromBuffer(file);

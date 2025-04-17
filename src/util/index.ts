@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// NOTE: !! DO NOT REORDER THE IMPORTS !!
+
 import "reflect-metadata";
 
 export * from "./util/index";
@@ -26,3 +28,4 @@ export * from "./schemas";
 export * from "./imports";
 export * from "./config";
 export * from "./connections";
+export * from "./Signing"
