@@ -37,8 +37,12 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 			where: { id: rtc_server_id },
 		});
 
+		if (!stream) return;
+
 		// only the stream owner can publish to a go live stream
-		if (stream?.owner_id != this.user_id) return;
+		if (stream?.owner_id != this.user_id) {
+			return;
+		}
 	}
 
 	const stream = d.streams?.find((element) => element !== undefined);
