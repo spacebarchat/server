@@ -212,6 +212,48 @@
                     }
                 }
             },
+            "GuildSubscriptionSchema": {
+                "type": "object",
+                "properties": {
+                    "channels": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "activities": {
+                        "type": "boolean"
+                    },
+                    "threads": {
+                        "type": "boolean"
+                    },
+                    "typing": {
+                        "enum": [
+                            true
+                        ],
+                        "type": "boolean"
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "member_updates": {
+                        "type": "boolean"
+                    },
+                    "thread_member_lists": {
+                        "type": "array",
+                        "items": {}
+                    }
+                }
+            },
             "ActivitySchema": {
                 "type": "object",
                 "properties": {
@@ -3972,6 +4014,21 @@
                     "widget_enabled"
                 ]
             },
+            "RefreshedUrl": {
+                "type": "object",
+                "properties": {
+                    "original": {
+                        "type": "string"
+                    },
+                    "refreshed": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "original",
+                    "refreshed"
+                ]
+            },
             "TenorGifResponse": {
                 "type": "object",
                 "properties": {
@@ -4137,6 +4194,12 @@
                             "$ref": "#/components/schemas/Channel"
                         }
                     },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Member"
+                        }
+                    },
                     "region": {
                         "type": "string"
                     },
@@ -4214,12 +4277,6 @@
                     },
                     "presence_count": {
                         "type": "integer"
-                    },
-                    "members": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Member"
-                        }
                     },
                     "template_id": {
                         "type": "string"
@@ -4620,30 +4677,13 @@
                     "channel": {
                         "$ref": "#/components/schemas/RateLimitOptions"
                     },
-                    "auth": {
-                        "$ref": "#/components/schemas/AuthRateLimit"
-                    }
+                    "auth": {}
                 },
                 "required": [
                     "auth",
                     "channel",
                     "guild",
                     "webhook"
-                ]
-            },
-            "AuthRateLimit": {
-                "type": "object",
-                "properties": {
-                    "login": {
-                        "$ref": "#/components/schemas/RateLimitOptions"
-                    },
-                    "register": {
-                        "$ref": "#/components/schemas/RateLimitOptions"
-                    }
-                },
-                "required": [
-                    "login",
-                    "register"
                 ]
             },
             "GlobalRateLimits": {
@@ -5390,6 +5430,68 @@
                     }
                 }
             },
+            "LazyRequestSchema": {
+                "type": "object",
+                "properties": {
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "channels": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "activities": {
+                        "type": "boolean"
+                    },
+                    "threads": {
+                        "type": "boolean"
+                    },
+                    "typing": {
+                        "enum": [
+                            true
+                        ],
+                        "type": "boolean"
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "member_updates": {
+                        "type": "boolean"
+                    },
+                    "thread_member_lists": {
+                        "type": "array",
+                        "items": {}
+                    }
+                },
+                "required": [
+                    "guild_id"
+                ]
+            },
+            "GuildSubscriptionsBulkSchema": {
+                "type": "object",
+                "properties": {
+                    "subscriptions": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/GuildSubscriptionSchema"
+                        }
+                    }
+                },
+                "required": [
+                    "subscriptions"
+                ]
+            },
             "GuildTemplateCreateSchema": {
                 "type": "object",
                 "properties": {
@@ -5739,51 +5841,6 @@
                         "type": "integer"
                     }
                 }
-            },
-            "LazyRequestSchema": {
-                "type": "object",
-                "properties": {
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "channels": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "type": "integer"
-                                }
-                            }
-                        }
-                    },
-                    "activities": {
-                        "type": "boolean"
-                    },
-                    "threads": {
-                        "type": "boolean"
-                    },
-                    "typing": {
-                        "enum": [
-                            true
-                        ],
-                        "type": "boolean"
-                    },
-                    "members": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "thread_member_lists": {
-                        "type": "array",
-                        "items": {}
-                    }
-                },
-                "required": [
-                    "guild_id"
-                ]
             },
             "LoginSchema": {
                 "type": "object",
@@ -6247,6 +6304,20 @@
                 "required": [
                     "after",
                     "before"
+                ]
+            },
+            "RefreshUrlsRequestSchema": {
+                "type": "object",
+                "properties": {
+                    "attachment_urls": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "attachment_urls"
                 ]
             },
             "RegisterSchema": {
@@ -7088,6 +7159,20 @@
                 },
                 "required": [
                     "location"
+                ]
+            },
+            "RefreshUrlsResponse": {
+                "type": "object",
+                "properties": {
+                    "refreshed_urls": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RefreshedUrl"
+                        }
+                    }
+                },
+                "required": [
+                    "refreshed_urls"
                 ]
             },
             "TeamListResponse": {
@@ -9054,6 +9139,9 @@
         },
         {
             "name": "applications"
+        },
+        {
+            "name": "attachments"
         },
         {
             "name": "auth"
@@ -11649,6 +11737,25 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/policies/instance/config/": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "policies"
                 ]
             }
         },
@@ -18299,6 +18406,50 @@
                 },
                 "tags": [
                     "auth"
+                ]
+            }
+        },
+        "/attachments/refresh-urls/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshUrlsRequestSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RefreshUrlsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "attachments"
                 ]
             }
         },

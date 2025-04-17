@@ -59,6 +59,7 @@ export * from "./MfaCodesSchema";
 export * from "./ModifyGuildStickerSchema";
 export * from "./PasswordResetSchema";
 export * from "./PurgeSchema";
+export * from "./RefreshUrlsRequestSchema";
 export * from "./RegisterSchema";
 export * from "./RelationshipPostSchema";
 export * from "./RelationshipPutSchema";
