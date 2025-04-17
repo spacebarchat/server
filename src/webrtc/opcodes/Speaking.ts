@@ -29,16 +29,17 @@ import {
 export async function onSpeaking(this: WebRtcWebSocket, data: VoicePayload) {
 	if (!this.webRtcClient) return;
 
-	mediaServer
-		.getClientsForRtcServer<WebRtcWebSocket>(
-			this.webRtcClient.rtc_server_id,
-		)
-		.forEach((client) => {
-			if (client.user_id === this.user_id) return;
+	Promise.all(
+		Array.from(
+			mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
+				this.webRtcClient.rtc_server_id,
+			),
+		).map((client) => {
+			if (client.user_id === this.user_id) return Promise.resolve();
 
 			const ssrc = client.getOutgoingStreamSSRCsForUser(this.user_id);
 
-			Send(client.websocket, {
+			return Send(client.websocket, {
 				op: VoiceOPCodes.SPEAKING,
 				d: {
 					user_id: this.user_id,
@@ -46,5 +47,6 @@ export async function onSpeaking(this: WebRtcWebSocket, data: VoicePayload) {
 					ssrc: ssrc.audio_ssrc ?? 0,
 				},
 			});
-		});
+		}),
+	);
 }
