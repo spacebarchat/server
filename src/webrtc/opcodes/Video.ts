@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { validateSchema, VoiceVideoSchema } from "@spacebar/util";
+import { Stream, validateSchema, VoiceVideoSchema } from "@spacebar/util";
 import {
 	mediaServer,
 	VoiceOPCodes,
@@ -31,6 +31,15 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 	const { rtc_server_id } = this.webRtcClient;
 
 	const d = validateSchema("VoiceVideoSchema", payload.d) as VoiceVideoSchema;
+
+	if (this.type === "stream") {
+		const stream = await Stream.findOne({
+			where: { id: rtc_server_id },
+		});
+
+		// only the stream owner can publish to a go live stream
+		if (stream?.owner_id != this.user_id) return;
+	}
 
 	const stream = d.streams?.find((element) => element !== undefined);
 
@@ -102,22 +111,24 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 		}
 	}
 
-	for (const client of clientsThatNeedUpdate) {
-		const ssrcs = client.getOutgoingStreamSSRCsForUser(this.user_id);
+	await Promise.all(
+		Array.from(clientsThatNeedUpdate).map((client) => {
+			const ssrcs = client.getOutgoingStreamSSRCsForUser(this.user_id);
 
-		Send(client.websocket, {
-			op: VoiceOPCodes.VIDEO,
-			d: {
-				user_id: this.user_id,
-				audio_ssrc: ssrcs.audio_ssrc ?? 0,
-				video_ssrc: ssrcs.video_ssrc ?? 0,
-				rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
-				streams: d.streams?.map((x) => ({
-					...x,
-					ssrc: ssrcs.video_ssrc ?? 0,
+			return Send(client.websocket, {
+				op: VoiceOPCodes.VIDEO,
+				d: {
+					user_id: this.user_id,
+					audio_ssrc: ssrcs.audio_ssrc ?? 0,
+					video_ssrc: ssrcs.video_ssrc ?? 0,
 					rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
-				})),
-			} as VoiceVideoSchema,
-		});
-	}
+					streams: d.streams?.map((x) => ({
+						...x,
+						ssrc: ssrcs.video_ssrc ?? 0,
+						rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
+					})),
+				} as VoiceVideoSchema,
+			});
+		}),
+	);
 }

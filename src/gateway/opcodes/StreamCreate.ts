@@ -5,6 +5,7 @@ import {
 	generateStreamKey,
 } from "@spacebar/gateway";
 import {
+	Channel,
 	Config,
 	emitEvent,
 	Region,
@@ -27,6 +28,16 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 	if (body.channel_id.trim().length === 0) return;
 
 	// TODO: permissions check - if it's a guild, check if user is allowed to create stream in this guild
+
+	const channel = await Channel.findOne({
+		where: { id: body.channel_id },
+	});
+
+	if (
+		!channel ||
+		(body.type === "guild" && channel.guild_id != body.guild_id)
+	)
+		return this.close(4000, "invalid channel");
 
 	// TODO: actually apply preferred_region from the event payload
 	const regions = Config.get().regions;
