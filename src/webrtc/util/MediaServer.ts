@@ -44,7 +44,7 @@ class NoConfiguredLibraryError implements Error {
 	}
 }
 
-(async () => {
+export const loadWebRtcLibrary = async () => {
 	try {
 		//mediaServer = require('medooze-spacebar-wrtc');
 		if (!selectedWrtcLibrary)
@@ -56,9 +56,12 @@ class NoConfiguredLibraryError implements Error {
 		console.log(
 			`[WebRTC] ${green(`Succesfully loaded ${selectedWrtcLibrary}`)}`,
 		);
+		return Promise.resolve();
 	} catch (error) {
 		console.log(
 			`[WebRTC] ${red(`Failed to import ${selectedWrtcLibrary}: ${error instanceof NoConfiguredLibraryError ? error.message : ""}`)}`,
 		);
+
+		return Promise.reject();
 	}
-})();
+};
