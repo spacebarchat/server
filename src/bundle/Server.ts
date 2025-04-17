@@ -31,13 +31,18 @@ import { Config, initDatabase, Sentry } from "@spacebar/util";
 const app = express();
 const server = http.createServer();
 const port = Number(process.env.PORT) || 3001;
+const wrtcWsPort = Number(process.env.WRTC_WS_PORT) || 3004;
 const production = process.env.NODE_ENV == "development" ? false : true;
 server.on("request", app);
 
 const api = new Api.SpacebarServer({ server, port, production, app });
 const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
-const webrtc = new Webrtc.Server({ server: undefined, port: 3004, production });
+const webrtc = new Webrtc.Server({
+	server: undefined,
+	port: wrtcWsPort,
+	production,
+});
 
 process.on("SIGTERM", async () => {
 	console.log("Shutting down due to SIGTERM");
