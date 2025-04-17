@@ -1,16 +1,25 @@
 import { parseStreamKey, Payload, WebSocket } from "@spacebar/gateway";
-import { emitEvent, Stream } from "@spacebar/util";
-
-interface StreamDeleteSchema {
-	stream_key: string;
-}
+import { emitEvent, Stream, StreamDeleteSchema } from "@spacebar/util";
+import { check } from "./instanceOf";
 
 export async function onStreamDelete(this: WebSocket, data: Payload) {
+	check.call(this, StreamDeleteSchema, data.d);
 	const body = data.d as StreamDeleteSchema;
 
-	const { userId, channelId, guildId, type } = parseStreamKey(
-		body.stream_key,
-	);
+	let parsedKey: {
+		type: "guild" | "call";
+		channelId: string;
+		guildId?: string;
+		userId: string;
+	};
+
+	try {
+		parsedKey = parseStreamKey(body.stream_key);
+	} catch (e) {
+		return this.close(4000, "Invalid stream key");
+	}
+
+	const { userId, channelId, guildId, type } = parsedKey;
 
 	if (this.user_id !== userId) {
 		return this.close(4000, "Cannot delete stream for another user");
