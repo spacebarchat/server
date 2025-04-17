@@ -4,13 +4,18 @@ import {
 	Payload,
 	WebSocket,
 } from "@spacebar/gateway";
-import { Config, emitEvent, Stream, StreamSession } from "@spacebar/util";
-
-interface StreamWatchSchema {
-	stream_key: string;
-}
+import {
+	Config,
+	emitEvent,
+	Stream,
+	StreamSession,
+	StreamWatchSchema,
+} from "@spacebar/util";
+import { check } from "./instanceOf";
+import { Not } from "typeorm";
 
 export async function onStreamWatch(this: WebSocket, data: Payload) {
+	check.call(this, StreamWatchSchema, data.d);
 	const body = data.d as StreamWatchSchema;
 
 	// TODO: apply perms: check if user is allowed to watch
@@ -56,8 +61,13 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
 
 	await streamSession.save();
 
+	// get the viewers: stream session tokens for this stream that have been used but not including stream owner
 	const viewers = await StreamSession.find({
-		where: { stream_id: stream.id },
+		where: {
+			stream_id: stream.id,
+			used: true,
+			user_id: Not(stream.owner_id),
+		},
 	});
 
 	await emitEvent({

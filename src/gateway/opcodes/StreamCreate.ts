@@ -11,17 +11,13 @@ import {
 	Region,
 	Snowflake,
 	Stream,
+	StreamCreateSchema,
 	StreamSession,
 } from "@spacebar/util";
-
-interface StreamCreateSchema {
-	type: "guild" | "call";
-	channel_id: string;
-	guild_id?: string;
-	preferred_region?: string;
-}
+import { check } from "./instanceOf";
 
 export async function onStreamCreate(this: WebSocket, data: Payload) {
+	check.call(this, StreamCreateSchema, data.d);
 	const body = data.d as StreamCreateSchema;
 
 	// TODO: first check if we are in a voice channel already. cannot create a stream if there's no existing voice connection
