@@ -40,6 +40,13 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
 	if (type === "guild" && stream.channel.guild_id != guildId)
 		return this.close(4000, "Invalid stream key");
 
+	const regions = Config.get().regions;
+	const guildRegion = regions.available.find(
+		(r) => r.endpoint === stream.endpoint,
+	);
+
+	if (!guildRegion) return this.close(4000, "Unknown region");
+
 	const streamSession = StreamSession.create({
 		stream_id: stream.id,
 		user_id: this.user_id,
@@ -48,13 +55,6 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
 	});
 
 	await streamSession.save();
-
-	const regions = Config.get().regions;
-	const guildRegion = regions.available.find(
-		(r) => r.endpoint === stream.endpoint,
-	);
-
-	if (!guildRegion) return this.close(4000, "Unknown region");
 
 	const viewers = await StreamSession.find({
 		where: { stream_id: stream.id },
