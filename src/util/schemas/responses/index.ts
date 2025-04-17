@@ -44,6 +44,7 @@ export * from "./InstanceStatsResponse";
 export * from "./LocationMetadataResponse";
 export * from "./MemberJoinGuildResponse";
 export * from "./OAuthAuthorizeResponse";
+export * from "./RefreshUrlsResponse";
 export * from "./TeamListResponse";
 export * from "./Tenor";
 export * from "./TokenResponse";
