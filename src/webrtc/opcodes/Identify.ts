@@ -30,6 +30,7 @@ import {
 	WebRtcWebSocket,
 	Send,
 } from "@spacebar/webrtc";
+import { subscribeToProducers } from "./Video";
 
 export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	clearTimeout(this.readyTimeout);
@@ -89,6 +90,11 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	this.on("close", () => {
 		// ice-lite media server relies on this to know when the peer went away
 		mediaServer.onClientClose(this.webRtcClient!);
+	});
+
+	// once connected subscribe to tracks from other users
+	this.webRtcClient.emitter.once("connected", async () => {
+		await subscribeToProducers.call(this);
 	});
 
 	await Send(this, {

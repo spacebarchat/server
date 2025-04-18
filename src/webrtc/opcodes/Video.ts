@@ -45,18 +45,16 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 		}
 	}
 
-	const stream = d.streams?.find((element) => element !== undefined);
+	const stream = d.streams?.find((element) => element.active);
 
 	await Send(this, { op: VoiceOPCodes.MEDIA_SINK_WANTS, d: { any: 100 } });
-
-	const ssrcs = this.webRtcClient.getIncomingStreamSSRCs();
 
 	const clientsThatNeedUpdate = new Set<WebRtcClient<WebRtcWebSocket>>();
 
 	// check if client has signaled that it will send audio
 	if (d.audio_ssrc !== 0) {
-		// check if we already have incoming media for this ssrcs, if not, publish a new audio track for it
-		if (ssrcs.audio_ssrc != d.audio_ssrc) {
+		// check if we are already producing audio, if not, publish a new audio track for it
+		if (!this.webRtcClient!.isProducingAudio()) {
 			console.log(
 				`[${this.user_id}] publishing new audio track ssrc:${d.audio_ssrc}`,
 			);
@@ -65,14 +63,13 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 			});
 		}
 
-		// now check that all clients have outgoing media for this ssrcs
+		// now check that all clients have subscribed to our audio
 		for (const client of mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
 			rtc_server_id,
 		)) {
 			if (client.user_id === this.user_id) continue;
 
-			const ssrcs = client.getOutgoingStreamSSRCsForUser(this.user_id);
-			if (ssrcs.audio_ssrc != d.audio_ssrc) {
+			if (!client.isSubscribedToTrack(this.user_id, "audio")) {
 				console.log(
 					`[${client.user_id}] subscribing to audio track ssrcs: ${d.audio_ssrc}`,
 				);
@@ -84,8 +81,9 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 	}
 	// check if client has signaled that it will send video
 	if (d.video_ssrc !== 0 && stream?.active) {
-		// check if we already have incoming media for this ssrcs, if not, publish a new video track for it
-		if (ssrcs.video_ssrc != d.video_ssrc) {
+		this.webRtcClient!.videoStream = stream;
+		// check if we are already publishing video, if not, publish a new video track for it
+		if (!this.webRtcClient!.isProducingVideo()) {
 			console.log(
 				`[${this.user_id}] publishing new video track ssrc:${d.video_ssrc}`,
 			);
@@ -95,16 +93,13 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 			});
 		}
 
-		// now check that all clients have outgoing media for this ssrcs
+		// now check that all clients have subscribed to our video track
 		for (const client of mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
 			rtc_server_id,
 		)) {
 			if (client.user_id === this.user_id) continue;
 
-			const ssrcs = client.getOutgoingStreamSSRCsForUser(
-				this.webRtcClient.user_id,
-			);
-			if (ssrcs.video_ssrc != d.video_ssrc) {
+			if (!client.isSubscribedToTrack(this.user_id, "video")) {
 				console.log(
 					`[${client.user_id}] subscribing to video track ssrc: ${d.video_ssrc}`,
 				);
@@ -131,6 +126,73 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 						ssrc: ssrcs.video_ssrc ?? 0,
 						rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
 					})),
+				} as VoiceVideoSchema,
+			});
+		}),
+	);
+}
+
+// check if we are not subscribed to producers in this server, if not, subscribe
+export async function subscribeToProducers(
+	this: WebRtcWebSocket,
+): Promise<void> {
+	const clients = mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
+		this.webRtcClient!.rtc_server_id,
+	);
+
+	await Promise.all(
+		Array.from(clients).map((client) => {
+			let needsUpdate = false;
+
+			if (!client.isProducingAudio() && !client.isProducingVideo)
+				return Promise.resolve();
+
+			if (
+				client.isProducingAudio() &&
+				!this.webRtcClient!.isSubscribedToTrack(client.user_id, "audio")
+			) {
+				this.webRtcClient!.subscribeToTrack(client.user_id, "audio");
+				needsUpdate = true;
+			}
+
+			if (
+				client.isProducingVideo() &&
+				!this.webRtcClient!.isSubscribedToTrack(client.user_id, "video")
+			) {
+				this.webRtcClient!.subscribeToTrack(client.user_id, "video");
+				needsUpdate = true;
+			}
+
+			if (!needsUpdate) return Promise.resolve();
+
+			const ssrcs = this.webRtcClient!.getOutgoingStreamSSRCsForUser(
+				client.user_id,
+			);
+
+			return Send(this, {
+				op: VoiceOPCodes.VIDEO,
+				d: {
+					user_id: client.user_id,
+					audio_ssrc: ssrcs.audio_ssrc ?? 0,
+					video_ssrc: ssrcs.video_ssrc ?? 0,
+					rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
+					streams: [
+						client.videoStream ?? {
+							type: this.type === "stream" ? "screen" : "video",
+							rid: "100",
+							ssrc: ssrcs.video_ssrc ?? 0,
+							active: client.isProducingVideo(),
+							quality: 100,
+							rtx_ssrc: ssrcs.rtx_ssrc,
+							max_bitrate: 2500000,
+							max_framerate: 20,
+							max_resolution: {
+								type: "fixed",
+								width: 1280,
+								height: 720,
+							},
+						},
+					],
 				} as VoiceVideoSchema,
 			});
 		}),
