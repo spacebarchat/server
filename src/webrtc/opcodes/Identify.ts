@@ -40,7 +40,7 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	// server_id can be one of the following: a unique id for a GO Live stream, a channel id for a DM voice call, or a guild id for a guild voice channel
 	// not sure if there's a way to determine whether a snowflake is a channel id or a guild id without checking if it exists in db
 	// luckily we will only have to determine this once
-	let type: "guild-voice" | "dm-voice" | "stream";
+	let type: "guild-voice" | "dm-voice" | "stream" = "guild-voice";
 	let authenticated = false;
 
 	// first check if its a guild voice connection or DM voice call
@@ -54,6 +54,9 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	if (voiceState) {
 		type = voiceState.guild_id === server_id ? "guild-voice" : "dm-voice";
 		authenticated = true;
+		this.guild_id =
+			type === "guild-voice" ? voiceState.guild_id : undefined;
+		this.channel_id = voiceState.channel_id;
 	} else {
 		// if its not a guild/dm voice connection, check if it is a go live stream
 		const streamSession = await StreamSession.findOne({
@@ -64,6 +67,7 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 				session_id,
 				used: false,
 			},
+			relations: ["stream"],
 		});
 
 		if (streamSession) {
@@ -71,6 +75,8 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 			authenticated = true;
 			streamSession.used = true;
 			await streamSession.save();
+
+			this.channel_id = streamSession.stream.channel_id;
 
 			this.once("close", async () => {
 				await streamSession.remove();
@@ -84,8 +90,15 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	this.user_id = user_id;
 	this.session_id = session_id;
 
-	this.type = type!;
-	this.webRtcClient = mediaServer.join(server_id, this.user_id, this, type!);
+	this.type = type;
+
+	const voiceRoomId = type === "stream" ? server_id : voiceState!.channel_id;
+	this.webRtcClient = mediaServer.join(
+		voiceRoomId,
+		this.user_id,
+		this,
+		type!,
+	);
 
 	this.on("close", () => {
 		// ice-lite media server relies on this to know when the peer went away
