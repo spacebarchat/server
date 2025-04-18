@@ -35,7 +35,7 @@ export async function onSelectProtocol(
 		payload.d,
 	) as SelectProtocolSchema;
 
-	const answer = await mediaServer.onOffer(
+	const response = await mediaServer.onOffer(
 		this.webRtcClient,
 		data.sdp!,
 		data.codecs ?? [],
@@ -44,8 +44,8 @@ export async function onSelectProtocol(
 	await Send(this, {
 		op: VoiceOPCodes.SESSION_DESCRIPTION,
 		d: {
-			video_codec: "H264",
-			sdp: answer,
+			video_codec: response.selectedVideoCodec,
+			sdp: response.sdp,
 			media_session_id: this.session_id,
 			audio_codec: "opus",
 		},
