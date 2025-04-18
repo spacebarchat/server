@@ -32,7 +32,7 @@ export async function onSpeaking(this: WebRtcWebSocket, data: VoicePayload) {
 	await Promise.all(
 		Array.from(
 			mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
-				this.webRtcClient.rtc_server_id,
+				this.webRtcClient.voiceRoomId,
 			),
 		).map((client) => {
 			if (client.user_id === this.user_id) return Promise.resolve();

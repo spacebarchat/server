@@ -28,13 +28,13 @@ import type { WebRtcClient } from "spacebar-webrtc-types";
 export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 	if (!this.webRtcClient || !this.webRtcClient.webrtcConnected) return;
 
-	const { rtc_server_id } = this.webRtcClient;
+	const { voiceRoomId } = this.webRtcClient;
 
 	const d = validateSchema("VoiceVideoSchema", payload.d) as VoiceVideoSchema;
 
 	if (this.type === "stream") {
 		const stream = await Stream.findOne({
-			where: { id: rtc_server_id },
+			where: { id: voiceRoomId },
 		});
 
 		if (!stream) return;
@@ -50,9 +50,20 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 	await Send(this, { op: VoiceOPCodes.MEDIA_SINK_WANTS, d: { any: 100 } });
 
 	const clientsThatNeedUpdate = new Set<WebRtcClient<WebRtcWebSocket>>();
+	const wantsToProduceAudio = d.audio_ssrc !== 0;
+	const wantsToProduceVideo = d.video_ssrc !== 0 && stream?.active;
+
+	// first check if we need stop any tracks
+	if (!wantsToProduceAudio && this.webRtcClient.isProducingAudio()) {
+		this.webRtcClient.stopPublishingTrack("audio");
+	}
+
+	if (!wantsToProduceVideo && this.webRtcClient.isProducingVideo()) {
+		this.webRtcClient.stopPublishingTrack("video");
+	}
 
 	// check if client has signaled that it will send audio
-	if (d.audio_ssrc !== 0) {
+	if (wantsToProduceAudio) {
 		// check if we are already producing audio, if not, publish a new audio track for it
 		if (!this.webRtcClient!.isProducingAudio()) {
 			console.log(
@@ -65,7 +76,7 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 
 		// now check that all clients have subscribed to our audio
 		for (const client of mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
-			rtc_server_id,
+			voiceRoomId,
 		)) {
 			if (client.user_id === this.user_id) continue;
 
@@ -80,7 +91,7 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 		}
 	}
 	// check if client has signaled that it will send video
-	if (d.video_ssrc !== 0 && stream?.active) {
+	if (wantsToProduceVideo) {
 		this.webRtcClient!.videoStream = stream;
 		// check if we are already publishing video, if not, publish a new video track for it
 		if (!this.webRtcClient!.isProducingVideo()) {
@@ -95,7 +106,7 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 
 		// now check that all clients have subscribed to our video track
 		for (const client of mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
-			rtc_server_id,
+			voiceRoomId,
 		)) {
 			if (client.user_id === this.user_id) continue;
 
@@ -136,8 +147,10 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 export async function subscribeToProducers(
 	this: WebRtcWebSocket,
 ): Promise<void> {
+	if (!this.webRtcClient || !this.webRtcClient.webrtcConnected) return;
+
 	const clients = mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
-		this.webRtcClient!.rtc_server_id,
+		this.webRtcClient.voiceRoomId,
 	);
 
 	await Promise.all(
