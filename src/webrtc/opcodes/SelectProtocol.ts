@@ -35,6 +35,10 @@ export async function onSelectProtocol(
 		payload.d,
 	) as SelectProtocolSchema;
 
+	// UDP protocol not currently supported. Maybe in the future?
+	if (data.protocol !== "webrtc")
+		return this.close(4000, "only webrtc protocol supported currently");
+
 	const response = await mediaServer.onOffer(
 		this.webRtcClient,
 		data.sdp!,
