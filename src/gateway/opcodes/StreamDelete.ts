@@ -2,6 +2,7 @@ import { parseStreamKey, Payload, WebSocket } from "@spacebar/gateway";
 import {
 	emitEvent,
 	Stream,
+	StreamDeleteEvent,
 	StreamDeleteSchema,
 	VoiceState,
 	VoiceStateUpdateEvent,
@@ -27,15 +28,24 @@ export async function onStreamDelete(this: WebSocket, data: Payload) {
 
 	const { userId, channelId, guildId, type } = parsedKey;
 
+	// when a user selects to stop watching another user stream, this event gets triggered
+	// just disconnect user without actually deleting stream
 	if (this.user_id !== userId) {
-		return this.close(4000, "Cannot delete stream for another user");
+		await emitEvent({
+			event: "STREAM_DELETE",
+			data: {
+				stream_key: body.stream_key,
+			},
+			user_id: this.user_id,
+		} as StreamDeleteEvent);
+		return;
 	}
 
 	const stream = await Stream.findOne({
 		where: { channel_id: channelId, owner_id: userId },
 	});
 
-	if (!stream) return this.close(4000, "Invalid stream key");
+	if (!stream) return;
 
 	await stream.remove();
 
@@ -62,5 +72,5 @@ export async function onStreamDelete(this: WebSocket, data: Payload) {
 		},
 		guild_id: guildId,
 		channel_id: channelId,
-	});
+	} as StreamDeleteEvent);
 }

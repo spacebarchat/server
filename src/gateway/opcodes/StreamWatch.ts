@@ -8,6 +8,8 @@ import {
 	Config,
 	emitEvent,
 	Stream,
+	StreamCreateEvent,
+	StreamServerUpdateEvent,
 	StreamSession,
 	StreamWatchSchema,
 } from "@spacebar/util";
@@ -81,7 +83,7 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
 		},
 		channel_id: channelId,
 		user_id: this.user_id,
-	});
+	} as StreamCreateEvent);
 
 	await emitEvent({
 		event: "STREAM_SERVER_UPDATE",
@@ -92,5 +94,5 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
 			endpoint: stream.endpoint,
 		},
 		user_id: this.user_id,
-	});
+	} as StreamServerUpdateEvent);
 }
