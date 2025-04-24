@@ -8,11 +8,14 @@ import {
 	Channel,
 	Config,
 	emitEvent,
+	Member,
 	Region,
 	Snowflake,
 	Stream,
 	StreamCreateSchema,
 	StreamSession,
+	VoiceState,
+	VoiceStateUpdateEvent,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 
@@ -20,8 +23,21 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 	check.call(this, StreamCreateSchema, data.d);
 	const body = data.d as StreamCreateSchema;
 
-	// TODO: first check if we are in a voice channel already. cannot create a stream if there's no existing voice connection
 	if (body.channel_id.trim().length === 0) return;
+
+	// first check if we are in a voice channel already. cannot create a stream if there's no existing voice connection
+	const voiceState = await VoiceState.findOne({
+		where: { user_id: this.user_id },
+	});
+
+	if (!voiceState || !voiceState.channel_id) return;
+
+	if (body.guild_id) {
+		voiceState.member = await Member.findOneOrFail({
+			where: { id: voiceState.user_id, guild_id: voiceState.guild_id },
+			relations: ["user", "roles"],
+		});
+	}
 
 	// TODO: permissions check - if it's a guild, check if user is allowed to create stream in this guild
 
@@ -40,6 +56,11 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 	const guildRegion = regions.available.filter(
 		(r) => r.id === regions.default,
 	)[0];
+
+	// first make sure theres no other streams for this user that somehow didnt get cleared
+	await Stream.delete({
+		owner_id: this.user_id,
+	});
 
 	// create a new entry in db containing the token for authenticating user in stream gateway IDENTIFY
 	const stream = Stream.create({
@@ -78,8 +99,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 			region: guildRegion.name,
 			paused: false,
 		},
-		guild_id: body.guild_id,
-		channel_id: body.channel_id,
+		user_id: this.user_id,
 	});
 
 	await emitEvent({
@@ -92,6 +112,16 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 		},
 		user_id: this.user_id,
 	});
+
+	voiceState.self_stream = true;
+	await voiceState.save();
+
+	await emitEvent({
+		event: "VOICE_STATE_UPDATE",
+		data: { ...voiceState },
+		guild_id: voiceState.guild_id,
+		channel_id: voiceState.channel_id,
+	} as VoiceStateUpdateEvent);
 }
 
 //stream key:

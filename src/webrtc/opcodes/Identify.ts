@@ -29,8 +29,10 @@ import {
 	VoicePayload,
 	WebRtcWebSocket,
 	Send,
+	generateSsrc,
 } from "@spacebar/webrtc";
 import { subscribeToProducers } from "./Video";
+import { SSRCs } from "spacebar-webrtc-types";
 
 export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	clearTimeout(this.readyTimeout);
@@ -110,15 +112,19 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 		await subscribeToProducers.call(this);
 	});
 
+	// the server generates a unique ssrc for the audio and video stream. Must be unique among users connected to same server
+	// UDP clients will respect this ssrc, but websocket clients will generate and replace it with their own
+	const generatedSsrc: SSRCs = {
+		audio_ssrc: generateSsrc(),
+		video_ssrc: generateSsrc(),
+		rtx_ssrc: generateSsrc(),
+	};
+	this.webRtcClient.initIncomingSSRCs(generatedSsrc);
+
 	await Send(this, {
 		op: VoiceOPCodes.READY,
 		d: {
-			streams: streams?.map((x) => ({
-				...x,
-				ssrc: 2,
-				rtx_ssrc: 3,
-			})),
-			ssrc: 1,
+			ssrc: generatedSsrc.audio_ssrc,
 			port: mediaServer.port,
 			modes: [
 				"aead_aes256_gcm_rtpsize",
@@ -131,6 +137,12 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 			],
 			ip: mediaServer.ip,
 			experiments: [],
+			streams: streams?.map((x) => ({
+				...x,
+				ssrc: generatedSsrc.video_ssrc,
+				rtx_ssrc: generatedSsrc.rtx_ssrc,
+				type: "video", // client expects this to be overriden for some reason???
+			})),
 		},
 	});
 }
