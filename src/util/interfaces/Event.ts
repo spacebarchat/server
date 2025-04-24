@@ -451,6 +451,9 @@ export interface StreamCreateEvent extends Event {
 	data: {
 		stream_key: string;
 		rtc_server_id: string;
+		viewer_ids: string[];
+		region: string;
+		paused: boolean;
 	};
 }
 
@@ -460,6 +463,14 @@ export interface StreamServerUpdateEvent extends Event {
 		token: string;
 		stream_key: string;
 		endpoint: string;
+		guild_id: string | null;
+	};
+}
+
+export interface StreamDeleteEvent extends Event {
+	event: "STREAM_DELETE";
+	data: {
+		stream_key: string;
 	};
 }
 

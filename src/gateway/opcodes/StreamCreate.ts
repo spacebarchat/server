@@ -12,7 +12,9 @@ import {
 	Region,
 	Snowflake,
 	Stream,
+	StreamCreateEvent,
 	StreamCreateSchema,
+	StreamServerUpdateEvent,
 	StreamSession,
 	VoiceState,
 	VoiceStateUpdateEvent,
@@ -100,7 +102,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 			paused: false,
 		},
 		user_id: this.user_id,
-	});
+	} as StreamCreateEvent);
 
 	await emitEvent({
 		event: "STREAM_SERVER_UPDATE",
@@ -111,7 +113,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 			endpoint: stream.endpoint,
 		},
 		user_id: this.user_id,
-	});
+	} as StreamServerUpdateEvent);
 
 	voiceState.self_stream = true;
 	await voiceState.save();
