@@ -79,8 +79,8 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
 			region: guildRegion.name,
 			paused: false,
 		},
-		guild_id: guildId,
 		channel_id: channelId,
+		user_id: this.user_id,
 	});
 
 	await emitEvent({

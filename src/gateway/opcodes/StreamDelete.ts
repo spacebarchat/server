@@ -1,5 +1,11 @@
 import { parseStreamKey, Payload, WebSocket } from "@spacebar/gateway";
-import { emitEvent, Stream, StreamDeleteSchema } from "@spacebar/util";
+import {
+	emitEvent,
+	Stream,
+	StreamDeleteSchema,
+	VoiceState,
+	VoiceStateUpdateEvent,
+} from "@spacebar/util";
 import { check } from "./instanceOf";
 
 export async function onStreamDelete(this: WebSocket, data: Payload) {
@@ -32,6 +38,22 @@ export async function onStreamDelete(this: WebSocket, data: Payload) {
 	if (!stream) return this.close(4000, "Invalid stream key");
 
 	await stream.remove();
+
+	const voiceState = await VoiceState.findOne({
+		where: { user_id: this.user_id },
+	});
+
+	if (voiceState) {
+		voiceState.self_stream = false;
+		await voiceState.save();
+
+		await emitEvent({
+			event: "VOICE_STATE_UPDATE",
+			data: { ...voiceState },
+			guild_id: guildId,
+			channel_id: channelId,
+		} as VoiceStateUpdateEvent);
+	}
 
 	await emitEvent({
 		event: "STREAM_DELETE",

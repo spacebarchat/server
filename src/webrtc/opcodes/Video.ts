@@ -92,7 +92,7 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 	}
 	// check if client has signaled that it will send video
 	if (wantsToProduceVideo) {
-		this.webRtcClient!.videoStream = stream;
+		this.webRtcClient!.videoStream = { ...stream, type: "video" }; // client sends "screen" on go live but expects "video" on response
 		// check if we are already publishing video, if not, publish a new video track for it
 		if (!this.webRtcClient!.isProducingVideo()) {
 			console.log(
@@ -129,13 +129,16 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 				op: VoiceOPCodes.VIDEO,
 				d: {
 					user_id: this.user_id,
-					audio_ssrc: ssrcs.audio_ssrc ?? 0,
+					audio_ssrc:
+						ssrcs.audio_ssrc ??
+						this.webRtcClient!.getIncomingStreamSSRCs().audio_ssrc, // can never send audio ssrc as 0, it will mess up client state for some reason
 					video_ssrc: ssrcs.video_ssrc ?? 0,
 					rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
 					streams: d.streams?.map((x) => ({
 						...x,
 						ssrc: ssrcs.video_ssrc ?? 0,
 						rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
+						type: "video",
 					})),
 				} as VoiceVideoSchema,
 			});
@@ -156,6 +159,8 @@ export async function subscribeToProducers(
 	await Promise.all(
 		Array.from(clients).map((client) => {
 			let needsUpdate = false;
+
+			if (client.user_id === this.user_id) return Promise.resolve(); // cannot subscribe to self
 
 			if (!client.isProducingAudio() && !client.isProducingVideo)
 				return Promise.resolve();
@@ -186,17 +191,19 @@ export async function subscribeToProducers(
 				op: VoiceOPCodes.VIDEO,
 				d: {
 					user_id: client.user_id,
-					audio_ssrc: ssrcs.audio_ssrc ?? 0,
+					audio_ssrc:
+						ssrcs.audio_ssrc ??
+						client.getIncomingStreamSSRCs().audio_ssrc, // can never send audio ssrc as 0, it will mess up client state for some reason
 					video_ssrc: ssrcs.video_ssrc ?? 0,
 					rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
 					streams: [
 						client.videoStream ?? {
-							type: this.type === "stream" ? "screen" : "video",
+							type: "video",
 							rid: "100",
 							ssrc: ssrcs.video_ssrc ?? 0,
 							active: client.isProducingVideo(),
 							quality: 100,
-							rtx_ssrc: ssrcs.rtx_ssrc,
+							rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
 							max_bitrate: 2500000,
 							max_framerate: 20,
 							max_resolution: {

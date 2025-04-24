@@ -65,3 +65,13 @@ export const loadWebRtcLibrary = async () => {
 		return Promise.reject();
 	}
 };
+
+const MAX_INT32BIT = 2 ** 32;
+
+let count = 1;
+export const generateSsrc = () => {
+	count++;
+	if (count >= MAX_INT32BIT) count = 1;
+
+	return count;
+};
