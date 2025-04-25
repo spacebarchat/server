@@ -18,14 +18,6 @@
 
 import { Payload } from "@spacebar/gateway";
 
-export enum VoiceStatus {
-	CONNECTED = 0,
-	CONNECTING = 1,
-	AUTHENTICATING = 2,
-	RECONNECTING = 3,
-	DISCONNECTED = 4,
-}
-
 export enum VoiceOPCodes {
 	IDENTIFY = 0,
 	SELECT_PROTOCOL = 1,

@@ -52,23 +52,6 @@ export const WsStatus = {
 	RESUMING: 8,
 };
 
-/**
- * The current status of a voice connection. Here are the available statuses:
- * * CONNECTED: 0
- * * CONNECTING: 1
- * * AUTHENTICATING: 2
- * * RECONNECTING: 3
- * * DISCONNECTED: 4
- * @typedef {number} VoiceStatus
- */
-export const VoiceStatus = {
-	CONNECTED: 0,
-	CONNECTING: 1,
-	AUTHENTICATING: 2,
-	RECONNECTING: 3,
-	DISCONNECTED: 4,
-};
-
 export const OPCodes = {
 	DISPATCH: 0,
 	HEARTBEAT: 1,
@@ -82,22 +65,6 @@ export const OPCodes = {
 	INVALID_SESSION: 9,
 	HELLO: 10,
 	HEARTBEAT_ACK: 11,
-};
-
-export const VoiceOPCodes = {
-	IDENTIFY: 0,
-	SELECT_PROTOCOL: 1,
-	READY: 2,
-	HEARTBEAT: 3,
-	SESSION_DESCRIPTION: 4,
-	SPEAKING: 5,
-	HEARTBEAT_ACK: 6,
-	RESUME: 7,
-	HELLO: 8,
-	RESUMED: 9,
-	CLIENT_CONNECT: 12, // incorrect, op 12 is probably used for video
-	CLIENT_DISCONNECT: 13, // incorrect
-	VERSION: 16, //not documented
 };
 
 export const Events = {
