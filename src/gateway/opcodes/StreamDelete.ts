@@ -59,7 +59,7 @@ export async function onStreamDelete(this: WebSocket, data: Payload) {
 
 		await emitEvent({
 			event: "VOICE_STATE_UPDATE",
-			data: { ...voiceState },
+			data: voiceState.toPublicVoiceState(),
 			guild_id: guildId,
 			channel_id: channelId,
 		} as VoiceStateUpdateEvent);

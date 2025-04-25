@@ -24,6 +24,29 @@ import { Member } from "./Member";
 import { User } from "./User";
 import { dbEngine } from "../util/Database";
 
+export enum PublicVoiceStateEnum {
+	user_id,
+	suppress,
+	session_id,
+	self_video,
+	self_mute,
+	self_deaf,
+	self_stream,
+	request_to_speak_timestamp,
+	mute,
+	deaf,
+	channel_id,
+	guild_id,
+}
+
+export type PublicVoiceStateKeys = keyof typeof PublicVoiceStateEnum;
+
+export const PublicVoiceStateProjection = Object.values(
+	PublicVoiceStateEnum,
+).filter((x) => typeof x === "string") as PublicVoiceStateKeys[];
+
+export type PublicVoiceState = Pick<VoiceState, PublicVoiceStateKeys>;
+
 //https://gist.github.com/vassjozsef/e482c65df6ee1facaace8b3c9ff66145#file-voice_state-ex
 @Entity({
 	name: "voice_states",
@@ -96,4 +119,13 @@ export class VoiceState extends BaseClass {
 
 	@Column({ nullable: true, default: null })
 	request_to_speak_timestamp?: Date;
+
+	toPublicVoiceState() {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const voiceState: any = {};
+		PublicVoiceStateProjection.forEach((x) => {
+			voiceState[x] = this[x];
+		});
+		return voiceState as PublicVoiceState;
+	}
 }

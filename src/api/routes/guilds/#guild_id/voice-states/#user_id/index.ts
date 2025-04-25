@@ -93,7 +93,7 @@ router.patch(
 			voice_state.save(),
 			emitEvent({
 				event: "VOICE_STATE_UPDATE",
-				data: voice_state,
+				data: voice_state.toPublicVoiceState(),
 				guild_id,
 			} as VoiceStateUpdateEvent),
 		]);
