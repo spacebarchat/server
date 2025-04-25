@@ -21,7 +21,6 @@ import {
 	ConnectedAccount,
 	Interaction,
 	ApplicationCommand,
-	VoiceState,
 	Message,
 	PartialEmoji,
 	Invite,
@@ -43,6 +42,7 @@ import {
 	ReadyPrivateChannel,
 	GuildOrUnavailable,
 	GuildCreateResponse,
+	PublicVoiceState,
 } from "@spacebar/util";
 
 export interface Event {
@@ -431,7 +431,7 @@ export interface UserConnectionsUpdateEvent extends Event {
 
 export interface VoiceStateUpdateEvent extends Event {
 	event: "VOICE_STATE_UPDATE";
-	data: VoiceState & {
+	data: PublicVoiceState & {
 		member: PublicMember;
 	};
 }

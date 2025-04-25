@@ -490,7 +490,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		guilds.filter((guild) => !guild.unavailable) as Guild[]
 	).map((guild) => {
 		return {
-			voice_states: guild.voice_states,
+			voice_states: guild.voice_states.map((state) =>
+				state.toPublicVoiceState(),
+			),
 			id: guild.id,
 			embedded_activities: [],
 		};

@@ -120,7 +120,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 
 	await emitEvent({
 		event: "VOICE_STATE_UPDATE",
-		data: { ...voiceState },
+		data: voiceState.toPublicVoiceState(),
 		guild_id: voiceState.guild_id,
 		channel_id: voiceState.channel_id,
 	} as VoiceStateUpdateEvent);

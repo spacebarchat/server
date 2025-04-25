@@ -68,7 +68,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		) {
 			await emitEvent({
 				event: "VOICE_STATE_UPDATE",
-				data: { ...voiceState, channel_id: null },
+				data: { ...voiceState.toPublicVoiceState(), channel_id: null },
 				guild_id: voiceState.guild_id,
 			});
 		}
@@ -96,7 +96,11 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	) {
 		await emitEvent({
 			event: "VOICE_STATE_UPDATE",
-			data: { ...voiceState, channel_id: null, guild_id: null },
+			data: {
+				...voiceState.toPublicVoiceState(),
+				channel_id: null,
+				guild_id: null,
+			},
 			guild_id: prevState?.guild_id,
 			channel_id: prevState?.channel_id,
 		});
@@ -117,13 +121,16 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		voiceState.token = genVoiceToken();
 	voiceState.session_id = this.session_id;
 
-	const { id, member, ...newObj } = voiceState;
+	const { member } = voiceState;
 
 	await Promise.all([
 		voiceState.save(),
 		emitEvent({
 			event: "VOICE_STATE_UPDATE",
-			data: { ...newObj, member: member?.toPublicMember() },
+			data: {
+				...voiceState.toPublicVoiceState(),
+				member: member?.toPublicMember(),
+			},
 			guild_id: voiceState.guild_id,
 			channel_id: voiceState.channel_id,
 			user_id: voiceState.user_id,
