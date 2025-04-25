@@ -24,6 +24,8 @@ import {
 	Session,
 	SessionsReplace,
 	User,
+	VoiceState,
+	VoiceStateUpdateEvent,
 } from "@spacebar/util";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
@@ -36,6 +38,34 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 
 	if (this.session_id) {
 		await Session.delete({ session_id: this.session_id });
+
+		const voiceState = await VoiceState.findOne({
+			where: { user_id: this.user_id },
+		});
+
+		// clear the voice state for this session if user was in voice channel
+		if (
+			voiceState &&
+			voiceState.session_id === this.session_id &&
+			voiceState.channel_id
+		) {
+			const prevGuildId = voiceState.guild_id;
+			const prevChannelId = voiceState.channel_id;
+
+			// @ts-expect-error channel_id is nullable
+			voiceState.channel_id = null;
+			voiceState.self_stream = false;
+			voiceState.self_video = false;
+			await voiceState.save();
+
+			// let the users in previous guild/channel know that user disconnected
+			await emitEvent({
+				event: "VOICE_STATE_UPDATE",
+				data: voiceState.toPublicVoiceState(),
+				guild_id: prevGuildId,
+				channel_id: prevChannelId,
+			} as VoiceStateUpdateEvent);
+		}
 	}
 
 	if (this.user_id) {
