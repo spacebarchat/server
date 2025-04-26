@@ -83,7 +83,7 @@ export class Server {
 			await loadWebRtcLibrary();
 		} catch (e) {
 			console.log(`[WebRTC] ${yellow("WEBRTC disabled")}`);
-			return Promise.resolve();
+			return;
 		}
 
 		await mediaServer.start(WRTC_PUBLIC_IP, WRTC_PORT_MIN, WRTC_PORT_MAX);

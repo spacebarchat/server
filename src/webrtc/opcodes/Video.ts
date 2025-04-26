@@ -129,9 +129,10 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 				op: VoiceOPCodes.VIDEO,
 				d: {
 					user_id: this.user_id,
+					// can never send audio ssrc as 0, it will mess up client state for some reason. send server generated ssrc as backup
 					audio_ssrc:
 						ssrcs.audio_ssrc ??
-						this.webRtcClient!.getIncomingStreamSSRCs().audio_ssrc, // can never send audio ssrc as 0, it will mess up client state for some reason
+						this.webRtcClient!.getIncomingStreamSSRCs().audio_ssrc,
 					video_ssrc: ssrcs.video_ssrc ?? 0,
 					rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
 					streams: d.streams?.map((x) => ({
@@ -162,9 +163,6 @@ export async function subscribeToProducers(
 
 			if (client.user_id === this.user_id) return Promise.resolve(); // cannot subscribe to self
 
-			if (!client.isProducingAudio() && !client.isProducingVideo)
-				return Promise.resolve();
-
 			if (
 				client.isProducingAudio() &&
 				!this.webRtcClient!.isSubscribedToTrack(client.user_id, "audio")
@@ -191,9 +189,10 @@ export async function subscribeToProducers(
 				op: VoiceOPCodes.VIDEO,
 				d: {
 					user_id: client.user_id,
+					// can never send audio ssrc as 0, it will mess up client state for some reason. send server generated ssrc as backup
 					audio_ssrc:
 						ssrcs.audio_ssrc ??
-						client.getIncomingStreamSSRCs().audio_ssrc, // can never send audio ssrc as 0, it will mess up client state for some reason
+						client.getIncomingStreamSSRCs().audio_ssrc,
 					video_ssrc: ssrcs.video_ssrc ?? 0,
 					rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
 					streams: [
