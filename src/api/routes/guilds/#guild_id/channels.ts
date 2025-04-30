@@ -150,7 +150,7 @@ router.patch(
 					}),
 					Channel.findOneOrFail({
 						where: { id: opt.parent_id as string },
-						select: { permission_overwrites: true },
+						select: { permission_overwrites: true, id: true },
 					}),
 				]);
 
