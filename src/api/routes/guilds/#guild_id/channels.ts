@@ -163,6 +163,8 @@ router.patch(
 				const parentPos = notMentioned.indexOf(parent.id);
 				notMentioned.splice(parentPos + 1, 0, channel.id);
 				channel.position = (parentPos + 1) as number;
+				channel.parent = parent;
+				await channel.save();
 
 				await emitEvent({
 					event: "CHANNEL_UPDATE",
