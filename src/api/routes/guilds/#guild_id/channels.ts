@@ -121,7 +121,6 @@ router.patch(
 		);
 
 		const withParents = body.filter((x) => x.parent_id !== undefined);
-		console.log(body);
 		const withPositions = body.filter((x) => x.position !== undefined);
 
 		await Promise.all(
@@ -172,7 +171,6 @@ router.patch(
 				}
 				channel.parent = parent || undefined;
 				channel.parent_id = null;
-				console.log(channel.parent);
 				await channel.save();
 
 				await emitEvent({
