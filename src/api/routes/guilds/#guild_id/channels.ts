@@ -164,7 +164,7 @@ router.patch(
 						{ id: channel.id },
 						{ permission_overwrites: parent.permission_overwrites },
 					);
-				if (parent) {
+				if (parent && opt.position === undefined) {
 					const parentPos = notMentioned.indexOf(parent.id);
 					notMentioned.splice(parentPos + 1, 0, channel.id);
 					channel.position = (parentPos + 1) as number;
