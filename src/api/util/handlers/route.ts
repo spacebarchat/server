@@ -28,7 +28,6 @@ import {
 	ajv,
 	getPermission,
 	getRights,
-	normalizeBody,
 } from "@spacebar/util";
 import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
@@ -121,7 +120,7 @@ export function route(opts: RouteOptions) {
 		}
 
 		if (validate) {
-			const valid = validate(normalizeBody(req.body));
+			const valid = validate(req.body);
 			if (!valid) {
 				const fields: Record<
 					string,
