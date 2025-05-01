@@ -170,7 +170,7 @@ router.patch(
 					channel.position = (parentPos + 1) as number;
 				}
 				channel.parent = parent || undefined;
-				channel.parent_id = null;
+				channel.parent_id = parent?.id || null;
 				await channel.save();
 
 				await emitEvent({
