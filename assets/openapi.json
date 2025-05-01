@@ -212,6 +212,48 @@
                     }
                 }
             },
+            "GuildSubscriptionSchema": {
+                "type": "object",
+                "properties": {
+                    "channels": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "activities": {
+                        "type": "boolean"
+                    },
+                    "threads": {
+                        "type": "boolean"
+                    },
+                    "typing": {
+                        "enum": [
+                            true
+                        ],
+                        "type": "boolean"
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "member_updates": {
+                        "type": "boolean"
+                    },
+                    "thread_member_lists": {
+                        "type": "array",
+                        "items": {}
+                    }
+                }
+            },
             "ActivitySchema": {
                 "type": "object",
                 "properties": {
@@ -4137,6 +4179,12 @@
                             "$ref": "#/components/schemas/Channel"
                         }
                     },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Member"
+                        }
+                    },
                     "region": {
                         "type": "string"
                     },
@@ -4214,12 +4262,6 @@
                     },
                     "presence_count": {
                         "type": "integer"
-                    },
-                    "members": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Member"
-                        }
                     },
                     "template_id": {
                         "type": "string"
@@ -5131,7 +5173,10 @@
                             "type": "boolean"
                         },
                         "parent_id": {
-                            "type": "string"
+                            "type": [
+                                "null",
+                                "string"
+                            ]
                         }
                     },
                     "additionalProperties": false,
@@ -5389,6 +5434,68 @@
                         "type": "string"
                     }
                 }
+            },
+            "LazyRequestSchema": {
+                "type": "object",
+                "properties": {
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "channels": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "activities": {
+                        "type": "boolean"
+                    },
+                    "threads": {
+                        "type": "boolean"
+                    },
+                    "typing": {
+                        "enum": [
+                            true
+                        ],
+                        "type": "boolean"
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "member_updates": {
+                        "type": "boolean"
+                    },
+                    "thread_member_lists": {
+                        "type": "array",
+                        "items": {}
+                    }
+                },
+                "required": [
+                    "guild_id"
+                ]
+            },
+            "GuildSubscriptionsBulkSchema": {
+                "type": "object",
+                "properties": {
+                    "subscriptions": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/GuildSubscriptionSchema"
+                        }
+                    }
+                },
+                "required": [
+                    "subscriptions"
+                ]
             },
             "GuildTemplateCreateSchema": {
                 "type": "object",
@@ -5739,51 +5846,6 @@
                         "type": "integer"
                     }
                 }
-            },
-            "LazyRequestSchema": {
-                "type": "object",
-                "properties": {
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "channels": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "type": "integer"
-                                }
-                            }
-                        }
-                    },
-                    "activities": {
-                        "type": "boolean"
-                    },
-                    "threads": {
-                        "type": "boolean"
-                    },
-                    "typing": {
-                        "enum": [
-                            true
-                        ],
-                        "type": "boolean"
-                    },
-                    "members": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "thread_member_lists": {
-                        "type": "array",
-                        "items": {}
-                    }
-                },
-                "required": [
-                    "guild_id"
-                ]
             },
             "LoginSchema": {
                 "type": "object",
@@ -11649,6 +11711,25 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/policies/instance/config/": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "policies"
                 ]
             }
         },
