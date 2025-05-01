@@ -108,11 +108,30 @@ router.patch(
 	async (req: Request, res: Response) => {
 		// changes guild channel position
 		const { guild_id } = req.params;
-		const body = req.body as ChannelReorderSchema;
+		let body = req.body as ChannelReorderSchema;
 
 		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
 			select: { channel_ordering: true },
+		});
+
+		body = body.sort((a, b) => {
+			const apos =
+				a.position ||
+				(a.parent_id
+					? guild.channel_ordering.findIndex(
+							(_) => _ === a.parent_id,
+						) + 1
+					: 0);
+			const bpos =
+				b.position ||
+				(b.parent_id
+					? guild.channel_ordering.findIndex(
+							(_) => _ === b.parent_id,
+						) + 1
+					: 0);
+			console.log(apos, bpos);
+			return apos - bpos;
 		});
 
 		// The channels not listed for this query
