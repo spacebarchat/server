@@ -5171,7 +5171,10 @@
                             "type": "boolean"
                         },
                         "parent_id": {
-                            "type": "string"
+                            "type": [
+                                "null",
+                                "string"
+                            ]
                         }
                     },
                     "additionalProperties": false,

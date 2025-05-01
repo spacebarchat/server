@@ -120,8 +120,9 @@ router.patch(
 			(x) => !body.find((c) => c.id == x),
 		);
 
-		const withParents = body.filter((x) => x.parent_id != undefined);
-		const withPositions = body.filter((x) => x.position != undefined);
+		const withParents = body.filter((x) => x.parent_id !== undefined);
+		console.log(body);
+		const withPositions = body.filter((x) => x.position !== undefined);
 
 		await Promise.all(
 			withPositions.map(async (opt) => {
@@ -148,22 +149,30 @@ router.patch(
 					Channel.findOneOrFail({
 						where: { id: opt.id },
 					}),
-					Channel.findOneOrFail({
-						where: { id: opt.parent_id as string },
-						select: { permission_overwrites: true, id: true },
-					}),
+					opt.parent_id
+						? Channel.findOneOrFail({
+								where: { id: opt.parent_id },
+								select: {
+									permission_overwrites: true,
+									id: true,
+								},
+							})
+						: null,
 				]);
 
-				if (opt.lock_permissions)
+				if (opt.lock_permissions && parent)
 					await Channel.update(
 						{ id: channel.id },
 						{ permission_overwrites: parent.permission_overwrites },
 					);
-
-				const parentPos = notMentioned.indexOf(parent.id);
-				notMentioned.splice(parentPos + 1, 0, channel.id);
-				channel.position = (parentPos + 1) as number;
-				channel.parent = parent;
+				if (parent) {
+					const parentPos = notMentioned.indexOf(parent.id);
+					notMentioned.splice(parentPos + 1, 0, channel.id);
+					channel.position = (parentPos + 1) as number;
+				}
+				channel.parent = parent || undefined;
+				channel.parent_id = null;
+				console.log(channel.parent);
 				await channel.save();
 
 				await emitEvent({
