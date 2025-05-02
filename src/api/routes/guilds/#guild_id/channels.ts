@@ -146,8 +146,8 @@ router.patch(
 				where: { id: opt.id },
 			});
 
-			channel.position = opt.position as number;
 			notMentioned.splice(opt.position as number, 0, channel.id);
+			channel.position = notMentioned.findIndex((_) => _ === channel.id);
 
 			await emitEvent({
 				event: "CHANNEL_UPDATE",
