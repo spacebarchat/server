@@ -140,65 +140,61 @@ router.patch(
 
 		const withParents = body.filter((x) => x.parent_id !== undefined);
 		const withPositions = body.filter((x) => x.position !== undefined);
+		// You can't do it with Promise.all or the way this is being done is super incorrect
+		for await (const opt of withPositions) {
+			const channel = await Channel.findOneOrFail({
+				where: { id: opt.id },
+			});
 
-		await Promise.all(
-			withPositions.map(async (opt) => {
-				const channel = await Channel.findOneOrFail({
-					where: { id: opt.id },
-				});
+			channel.position = opt.position as number;
+			notMentioned.splice(opt.position as number, 0, channel.id);
 
-				channel.position = opt.position as number;
-				notMentioned.splice(opt.position as number, 0, channel.id);
-
-				await emitEvent({
-					event: "CHANNEL_UPDATE",
-					data: channel,
-					channel_id: channel.id,
-					guild_id,
-				} as ChannelUpdateEvent);
-			}),
-		);
-
+			await emitEvent({
+				event: "CHANNEL_UPDATE",
+				data: channel,
+				channel_id: channel.id,
+				guild_id,
+			} as ChannelUpdateEvent);
+		}
+		// Due to this also being able to change the order, this needs to be done in order
 		// have to do the parents after the positions
-		await Promise.all(
-			withParents.map(async (opt) => {
-				const [channel, parent] = await Promise.all([
-					Channel.findOneOrFail({
-						where: { id: opt.id },
-					}),
-					opt.parent_id
-						? Channel.findOneOrFail({
-								where: { id: opt.parent_id },
-								select: {
-									permission_overwrites: true,
-									id: true,
-								},
-							})
-						: null,
-				]);
+		for await (const opt of withParents) {
+			const [channel, parent] = await Promise.all([
+				Channel.findOneOrFail({
+					where: { id: opt.id },
+				}),
+				opt.parent_id
+					? Channel.findOneOrFail({
+							where: { id: opt.parent_id },
+							select: {
+								permission_overwrites: true,
+								id: true,
+							},
+						})
+					: null,
+			]);
 
-				if (opt.lock_permissions && parent)
-					await Channel.update(
-						{ id: channel.id },
-						{ permission_overwrites: parent.permission_overwrites },
-					);
-				if (parent && opt.position === undefined) {
-					const parentPos = notMentioned.indexOf(parent.id);
-					notMentioned.splice(parentPos + 1, 0, channel.id);
-					channel.position = (parentPos + 1) as number;
-				}
-				channel.parent = parent || undefined;
-				channel.parent_id = parent?.id || null;
-				await channel.save();
+			if (opt.lock_permissions && parent)
+				await Channel.update(
+					{ id: channel.id },
+					{ permission_overwrites: parent.permission_overwrites },
+				);
+			if (parent && opt.position === undefined) {
+				const parentPos = notMentioned.indexOf(parent.id);
+				notMentioned.splice(parentPos + 1, 0, channel.id);
+				channel.position = (parentPos + 1) as number;
+			}
+			channel.parent = parent || undefined;
+			channel.parent_id = parent?.id || null;
+			await channel.save();
 
-				await emitEvent({
-					event: "CHANNEL_UPDATE",
-					data: channel,
-					channel_id: channel.id,
-					guild_id,
-				} as ChannelUpdateEvent);
-			}),
-		);
+			await emitEvent({
+				event: "CHANNEL_UPDATE",
+				data: channel,
+				channel_id: channel.id,
+				guild_id,
+			} as ChannelUpdateEvent);
+		}
 
 		await Guild.update(
 			{ id: guild_id },
