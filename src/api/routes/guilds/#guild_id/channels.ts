@@ -130,7 +130,6 @@ router.patch(
 							(_) => _ === b.parent_id,
 						) + 1
 					: 0);
-			console.log(apos, bpos);
 			return apos - bpos;
 		});
 
