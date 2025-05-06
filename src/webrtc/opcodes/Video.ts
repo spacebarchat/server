@@ -69,7 +69,7 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 			console.log(
 				`[${this.user_id}] publishing new audio track ssrc:${d.audio_ssrc}`,
 			);
-			this.webRtcClient.publishTrack("audio", {
+			await this.webRtcClient.publishTrack("audio", {
 				audio_ssrc: d.audio_ssrc,
 			});
 		}
@@ -84,7 +84,10 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 				console.log(
 					`[${client.user_id}] subscribing to audio track ssrcs: ${d.audio_ssrc}`,
 				);
-				client.subscribeToTrack(this.webRtcClient.user_id, "audio");
+				await client.subscribeToTrack(
+					this.webRtcClient.user_id,
+					"audio",
+				);
 
 				clientsThatNeedUpdate.add(client);
 			}
@@ -98,7 +101,7 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 			console.log(
 				`[${this.user_id}] publishing new video track ssrc:${d.video_ssrc}`,
 			);
-			this.webRtcClient.publishTrack("video", {
+			await this.webRtcClient.publishTrack("video", {
 				video_ssrc: d.video_ssrc,
 				rtx_ssrc: d.rtx_ssrc,
 			});
@@ -114,7 +117,10 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 				console.log(
 					`[${client.user_id}] subscribing to video track ssrc: ${d.video_ssrc}`,
 				);
-				client.subscribeToTrack(this.webRtcClient.user_id, "video");
+				await client.subscribeToTrack(
+					this.webRtcClient.user_id,
+					"video",
+				);
 
 				clientsThatNeedUpdate.add(client);
 			}
@@ -158,16 +164,19 @@ export async function subscribeToProducers(
 	);
 
 	await Promise.all(
-		Array.from(clients).map((client) => {
+		Array.from(clients).map(async (client) => {
 			let needsUpdate = false;
 
-			if (client.user_id === this.user_id) return Promise.resolve(); // cannot subscribe to self
+			if (client.user_id === this.user_id) return; // cannot subscribe to self
 
 			if (
 				client.isProducingAudio() &&
 				!this.webRtcClient!.isSubscribedToTrack(client.user_id, "audio")
 			) {
-				this.webRtcClient!.subscribeToTrack(client.user_id, "audio");
+				await this.webRtcClient!.subscribeToTrack(
+					client.user_id,
+					"audio",
+				);
 				needsUpdate = true;
 			}
 
@@ -175,17 +184,20 @@ export async function subscribeToProducers(
 				client.isProducingVideo() &&
 				!this.webRtcClient!.isSubscribedToTrack(client.user_id, "video")
 			) {
-				this.webRtcClient!.subscribeToTrack(client.user_id, "video");
+				await this.webRtcClient!.subscribeToTrack(
+					client.user_id,
+					"video",
+				);
 				needsUpdate = true;
 			}
 
-			if (!needsUpdate) return Promise.resolve();
+			if (!needsUpdate) return;
 
 			const ssrcs = this.webRtcClient!.getOutgoingStreamSSRCsForUser(
 				client.user_id,
 			);
 
-			return Send(this, {
+			await Send(this, {
 				op: VoiceOPCodes.VIDEO,
 				d: {
 					user_id: client.user_id,
