@@ -56,9 +56,6 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	if (voiceState) {
 		type = voiceState.guild_id === server_id ? "guild-voice" : "dm-voice";
 		authenticated = true;
-		this.guild_id =
-			type === "guild-voice" ? voiceState.guild_id : undefined;
-		this.channel_id = voiceState.channel_id;
 	} else {
 		// if its not a guild/dm voice connection, check if it is a go live stream
 		const streamSession = await StreamSession.findOne({
@@ -77,8 +74,6 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 			authenticated = true;
 			streamSession.used = true;
 			await streamSession.save();
-
-			this.channel_id = streamSession.stream.channel_id;
 
 			this.once("close", async () => {
 				await streamSession.remove();
