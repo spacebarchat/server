@@ -26,7 +26,7 @@ import {
 import type { WebRtcClient } from "spacebar-webrtc-types";
 
 export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
-	if (!this.webRtcClient || !this.webRtcClient.webrtcConnected) return;
+	if (!this.webRtcClient) return;
 
 	const { voiceRoomId } = this.webRtcClient;
 
@@ -47,11 +47,21 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 
 	const stream = d.streams?.find((element) => element.active);
 
-	await Send(this, { op: VoiceOPCodes.MEDIA_SINK_WANTS, d: { any: 100 } });
-
 	const clientsThatNeedUpdate = new Set<WebRtcClient<WebRtcWebSocket>>();
 	const wantsToProduceAudio = d.audio_ssrc !== 0;
 	const wantsToProduceVideo = d.video_ssrc !== 0 && stream?.active;
+
+	// this is to handle a really weird case where the client sends audio info before the
+	// dtls ice connection is completely connected. TODO: find a better way to handle this
+	if (!this.webRtcClient.webrtcConnected) {
+		if (wantsToProduceAudio) {
+			await new Promise<void>((resolve, reject) => {
+				this.webRtcClient?.emitter.once("connected", () => resolve());
+			});
+		} else return;
+	}
+
+	await Send(this, { op: VoiceOPCodes.MEDIA_SINK_WANTS, d: { any: 100 } });
 
 	// first check if we need stop any tracks
 	if (!wantsToProduceAudio && this.webRtcClient.isProducingAudio()) {
