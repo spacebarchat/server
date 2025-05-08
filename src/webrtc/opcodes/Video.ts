@@ -52,12 +52,28 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 	const wantsToProduceVideo = d.video_ssrc !== 0 && stream?.active;
 
 	// this is to handle a really weird case where the client sends audio info before the
-	// dtls ice connection is completely connected. TODO: find a better way to handle this
+	// dtls ice connection is completely connected. Wait for connection for 3 seconds
+	// and if no connection, just ignore this message
 	if (!this.webRtcClient.webrtcConnected) {
 		if (wantsToProduceAudio) {
-			await new Promise<void>((resolve, reject) => {
-				this.webRtcClient?.emitter.once("connected", () => resolve());
-			});
+			try {
+				await Promise.race([
+					new Promise<void>((resolve, reject) => {
+						this.webRtcClient?.emitter.once("connected", () =>
+							resolve(),
+						);
+					}),
+					new Promise<void>((resolve, reject) => {
+						// Reject after 3 seconds if still not connected
+						setTimeout(() => {
+							if (this.webRtcClient?.webrtcConnected) resolve();
+							else reject();
+						}, 3000);
+					}),
+				]);
+			} catch (e) {
+				return; // just ignore this message if client didn't connect within 3 seconds
+			}
 		} else return;
 	}
 
