@@ -54,6 +54,8 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 
 			// @ts-expect-error channel_id is nullable
 			voiceState.channel_id = null;
+			// @ts-expect-error guild_id is nullable
+			voiceState.guild_id = null;
 			voiceState.self_stream = false;
 			voiceState.self_video = false;
 			await voiceState.save();
@@ -61,7 +63,10 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 			// let the users in previous guild/channel know that user disconnected
 			await emitEvent({
 				event: "VOICE_STATE_UPDATE",
-				data: voiceState.toPublicVoiceState(),
+				data: {
+					...voiceState.toPublicVoiceState(),
+					guild_id: prevGuildId, // have to send the previous guild_id because that's what client expects for disconnect messages
+				},
 				guild_id: prevGuildId,
 				channel_id: prevChannelId,
 			} as VoiceStateUpdateEvent);
