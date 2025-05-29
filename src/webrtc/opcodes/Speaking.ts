@@ -16,25 +16,37 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, Send, WebSocket } from "@spacebar/gateway";
-import { getClients, VoiceOPCodes } from "../util";
+import {
+	mediaServer,
+	VoiceOPCodes,
+	VoicePayload,
+	WebRtcWebSocket,
+	Send,
+} from "../util";
 
 // {"speaking":1,"delay":5,"ssrc":2805246727}
 
-export async function onSpeaking(this: WebSocket, data: Payload) {
-	if (!this.client) return;
+export async function onSpeaking(this: WebRtcWebSocket, data: VoicePayload) {
+	if (!this.webRtcClient) return;
 
-	getClients(this.client.channel_id).forEach((client) => {
-		if (client === this.client) return;
-		const ssrc = this.client!.out.tracks.get(client.websocket.user_id);
+	await Promise.all(
+		Array.from(
+			mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
+				this.webRtcClient.voiceRoomId,
+			),
+		).map((client) => {
+			if (client.user_id === this.user_id) return Promise.resolve();
 
-		Send(client.websocket, {
-			op: VoiceOPCodes.SPEAKING,
-			d: {
-				user_id: client.websocket.user_id,
-				speaking: data.d.speaking,
-				ssrc: ssrc?.audio_ssrc || 0,
-			},
-		});
-	});
+			const ssrc = client.getOutgoingStreamSSRCsForUser(this.user_id);
+
+			return Send(client.websocket, {
+				op: VoiceOPCodes.SPEAKING,
+				d: {
+					user_id: this.user_id,
+					speaking: data.d.speaking,
+					ssrc: ssrc.audio_ssrc ?? 0,
+				},
+			});
+		}),
+	);
 }
