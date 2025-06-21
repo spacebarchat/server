@@ -23,9 +23,9 @@ import { EVENT, Event } from "../interfaces";
 export const events = new EventEmitter();
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
-	const id = (payload.channel_id ||
-		payload.user_id ||
-		payload.guild_id) as string;
+	const id = (payload.guild_id ||
+		payload.channel_id ||
+		payload.user_id) as string;
 	if (!id) return console.error("event doesn't contain any id", payload);
 
 	if (RabbitMQ.connection) {

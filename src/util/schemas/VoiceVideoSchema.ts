@@ -22,7 +22,7 @@ export interface VoiceVideoSchema {
 	rtx_ssrc?: number;
 	user_id?: string;
 	streams?: {
-		type: "video" | "audio";
+		type: "video" | "audio" | "screen";
 		rid: string;
 		ssrc: number;
 		active: boolean;

@@ -21,7 +21,6 @@ import {
 	ConnectedAccount,
 	Interaction,
 	ApplicationCommand,
-	VoiceState,
 	Message,
 	PartialEmoji,
 	Invite,
@@ -43,6 +42,7 @@ import {
 	ReadyPrivateChannel,
 	GuildOrUnavailable,
 	GuildCreateResponse,
+	PublicVoiceState,
 } from "@spacebar/util";
 
 export interface Event {
@@ -431,7 +431,7 @@ export interface UserConnectionsUpdateEvent extends Event {
 
 export interface VoiceStateUpdateEvent extends Event {
 	event: "VOICE_STATE_UPDATE";
-	data: VoiceState & {
+	data: PublicVoiceState & {
 		member: PublicMember;
 	};
 }
@@ -440,8 +440,37 @@ export interface VoiceServerUpdateEvent extends Event {
 	event: "VOICE_SERVER_UPDATE";
 	data: {
 		token: string;
-		guild_id: string;
+		guild_id: string | null;
 		endpoint: string;
+		channel_id?: string;
+	};
+}
+
+export interface StreamCreateEvent extends Event {
+	event: "STREAM_CREATE";
+	data: {
+		stream_key: string;
+		rtc_server_id: string;
+		viewer_ids: string[];
+		region: string;
+		paused: boolean;
+	};
+}
+
+export interface StreamServerUpdateEvent extends Event {
+	event: "STREAM_SERVER_UPDATE";
+	data: {
+		token: string;
+		stream_key: string;
+		endpoint: string;
+		guild_id: string | null;
+	};
+}
+
+export interface StreamDeleteEvent extends Event {
+	event: "STREAM_DELETE";
+	data: {
+		stream_key: string;
 	};
 }
 
@@ -681,6 +710,9 @@ export type EVENT =
 	| "INTERACTION_CREATE"
 	| "VOICE_STATE_UPDATE"
 	| "VOICE_SERVER_UPDATE"
+	| "STREAM_CREATE"
+	| "STREAM_SERVER_UPDATE"
+	| "STREAM_DELETE"
 	| "APPLICATION_COMMAND_CREATE"
 	| "APPLICATION_COMMAND_UPDATE"
 	| "APPLICATION_COMMAND_DELETE"
