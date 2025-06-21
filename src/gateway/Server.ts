@@ -29,6 +29,7 @@ import {
 import ws from "ws";
 import { Connection } from "./events/Connection";
 import http from "http";
+import { cleanupOnStartup } from "./util/Utils";
 
 export class Server {
 	public ws: ws.Server;
@@ -74,6 +75,8 @@ export class Server {
 		await Config.init();
 		await initEvent();
 		await Sentry.init();
+		// temporary fix
+		await cleanupOnStartup();
 
 		if (!this.server.listening) {
 			this.server.listen(this.port);
