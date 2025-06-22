@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, Send, setHeartbeat, WebSocket } from "@spacebar/gateway";
+import { CLOSECODES, setHeartbeat } from "@spacebar/gateway";
 import { IncomingMessage } from "http";
 import { URL } from "url";
 import WS from "ws";
-import { VoiceOPCodes } from "../util";
+import { VoiceOPCodes, WebRtcWebSocket, Send } from "../util";
 import { onClose } from "./Close";
 import { onMessage } from "./Message";
 
@@ -30,7 +30,7 @@ import { onMessage } from "./Message";
 
 export async function Connection(
 	this: WS.Server,
-	socket: WebSocket,
+	socket: WebRtcWebSocket,
 	request: IncomingMessage,
 ) {
 	try {

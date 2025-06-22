@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, WebSocket } from "@spacebar/gateway";
-import { VoiceOPCodes } from "../util";
+import { VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "../util";
 import { onBackendVersion } from "./BackendVersion";
 import { onHeartbeat } from "./Heartbeat";
 import { onIdentify } from "./Identify";
@@ -25,7 +24,7 @@ import { onSelectProtocol } from "./SelectProtocol";
 import { onSpeaking } from "./Speaking";
 import { onVideo } from "./Video";
 
-export type OPCodeHandler = (this: WebSocket, data: Payload) => any;
+export type OPCodeHandler = (this: WebRtcWebSocket, data: VoicePayload) => any;
 
 export default {
 	[VoiceOPCodes.HEARTBEAT]: onHeartbeat,
@@ -34,4 +33,4 @@ export default {
 	[VoiceOPCodes.VIDEO]: onVideo,
 	[VoiceOPCodes.SPEAKING]: onSpeaking,
 	[VoiceOPCodes.SELECT_PROTOCOL]: onSelectProtocol,
-};
+} as { [key: number]: OPCodeHandler };

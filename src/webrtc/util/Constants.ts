@@ -16,13 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export enum VoiceStatus {
-	CONNECTED = 0,
-	CONNECTING = 1,
-	AUTHENTICATING = 2,
-	RECONNECTING = 3,
-	DISCONNECTED = 4,
-}
+import { Payload } from "@spacebar/gateway";
 
 export enum VoiceOPCodes {
 	IDENTIFY = 0,
@@ -42,3 +36,5 @@ export enum VoiceOPCodes {
 	VOICE_BACKEND_VERSION = 16,
 	CHANNEL_OPTIONS_UPDATE = 17,
 }
+
+export type VoicePayload = Omit<Payload, "op"> & { op: VoiceOPCodes };

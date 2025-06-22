@@ -183,6 +183,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					"guild.emojis",
 					"guild.roles",
 					"guild.stickers",
+					"guild.voice_states",
 					"roles",
 
 					// For these entities, `user` is always just the logged in user we fetched above
@@ -485,6 +486,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		}),
 	);
 
+	const readySupplementalGuilds = (
+		guilds.filter((guild) => !guild.unavailable) as Guild[]
+	).map((guild) => {
+		return {
+			voice_states: guild.voice_states.map((state) =>
+				state.toPublicVoiceState(),
+			),
+			id: guild.id,
+			embedded_activities: [],
+		};
+	});
+
 	// TODO: ready supplemental
 	await Send(this, {
 		op: OPCodes.DISPATCH,
@@ -498,7 +511,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			// these merged members seem to be all users currently in vc in your guilds
 			merged_members: [],
 			lazy_private_channels: [],
-			guilds: [], // { voice_states: [], id: string, embedded_activities: [] }
+			guilds: readySupplementalGuilds, // { voice_states: [], id: string, embedded_activities: [] }
 			// embedded_activities are users currently in an activity?
 			disclose: [], // Config.get().general.uniqueUsernames ? ["pomelo"] : []
 		},

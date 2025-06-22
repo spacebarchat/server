@@ -17,19 +17,19 @@
 */
 
 import { Payload, WebSocket } from "@spacebar/gateway";
-import { genVoiceToken } from "../util/SessionUtils";
-import { check } from "./instanceOf";
 import {
 	Config,
 	emitEvent,
 	Guild,
 	Member,
+	Region,
 	VoiceServerUpdateEvent,
 	VoiceState,
 	VoiceStateUpdateEvent,
 	VoiceStateUpdateSchema,
-	Region,
 } from "@spacebar/util";
+import { genVoiceToken } from "../util/SessionUtils";
+import { check } from "./instanceOf";
 // TODO: check if a voice server is setup
 
 // Notice: Bot users respect the voice channel's user limit, if set.
@@ -39,6 +39,10 @@ import {
 export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 	check.call(this, VoiceStateUpdateSchema, data.d);
 	const body = data.d as VoiceStateUpdateSchema;
+	const isNew = body.channel_id === null && body.guild_id === null;
+	let isChanged = false;
+
+	let prevState;
 
 	let voiceState: VoiceState;
 	try {
@@ -54,20 +58,24 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 			return;
 		}
 
+		if (voiceState.channel_id !== body.channel_id) isChanged = true;
+
 		//If a user change voice channel between guild we should send a left event first
 		if (
+			voiceState.guild_id &&
 			voiceState.guild_id !== body.guild_id &&
 			voiceState.session_id === this.session_id
 		) {
 			await emitEvent({
 				event: "VOICE_STATE_UPDATE",
-				data: { ...voiceState, channel_id: null },
+				data: { ...voiceState.toPublicVoiceState(), channel_id: null },
 				guild_id: voiceState.guild_id,
 			});
 		}
 
 		//The event send by Discord's client on channel leave has both guild_id and channel_id as null
-		if (body.guild_id === null) body.guild_id = voiceState.guild_id;
+		//if (body.guild_id === null) body.guild_id = voiceState.guild_id;
+		prevState = { ...voiceState };
 		voiceState.assign(body);
 	} catch (error) {
 		voiceState = VoiceState.create({
@@ -79,39 +87,58 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 		});
 	}
 
-	// 'Fix' for this one voice state error. TODO: Find out why this is sent
-	// It seems to be sent on client load,
-	// so maybe its trying to find which server you were connected to before disconnecting, if any?
-	if (body.guild_id == null) {
-		return;
+	// if user left voice channel, send an update to previous channel/guild to let other people know that the user left
+	if (
+		voiceState.session_id === this.session_id &&
+		body.guild_id == null &&
+		body.channel_id == null &&
+		(prevState?.guild_id || prevState?.channel_id)
+	) {
+		await emitEvent({
+			event: "VOICE_STATE_UPDATE",
+			data: {
+				...voiceState.toPublicVoiceState(),
+				channel_id: null,
+				guild_id: null,
+			},
+			guild_id: prevState?.guild_id,
+			channel_id: prevState?.channel_id,
+		});
 	}
 
 	//TODO the member should only have these properties: hoisted_role, deaf, joined_at, mute, roles, user
 	//TODO the member.user should only have these properties: avatar, discriminator, id, username
 	//TODO this may fail
-	voiceState.member = await Member.findOneOrFail({
-		where: { id: voiceState.user_id, guild_id: voiceState.guild_id },
-		relations: ["user", "roles"],
-	});
+	if (body.guild_id) {
+		voiceState.member = await Member.findOneOrFail({
+			where: { id: voiceState.user_id, guild_id: voiceState.guild_id },
+			relations: ["user", "roles"],
+		});
+	}
 
 	//If the session changed we generate a new token
 	if (voiceState.session_id !== this.session_id)
 		voiceState.token = genVoiceToken();
 	voiceState.session_id = this.session_id;
 
-	const { id, ...newObj } = voiceState;
+	const { member } = voiceState;
 
 	await Promise.all([
 		voiceState.save(),
 		emitEvent({
 			event: "VOICE_STATE_UPDATE",
-			data: newObj,
+			data: {
+				...voiceState.toPublicVoiceState(),
+				member: member?.toPublicMember(),
+			},
 			guild_id: voiceState.guild_id,
+			channel_id: voiceState.channel_id,
+			user_id: voiceState.user_id,
 		} as VoiceStateUpdateEvent),
 	]);
 
 	//If it's null it means that we are leaving the channel and this event is not needed
-	if (voiceState.channel_id !== null) {
+	if ((isNew || isChanged) && voiceState.channel_id !== null) {
 		const guild = await Guild.findOne({
 			where: { id: voiceState.guild_id },
 		});
@@ -133,8 +160,11 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 				token: voiceState.token,
 				guild_id: voiceState.guild_id,
 				endpoint: guildRegion.endpoint,
+				channel_id: voiceState.guild_id
+					? undefined
+					: voiceState.channel_id, // only DM voice calls have this set, and DM channel is one where guild_id is null
 			},
-			guild_id: voiceState.guild_id,
+			user_id: voiceState.user_id,
 		} as VoiceServerUpdateEvent);
 	}
 }

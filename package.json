@@ -67,6 +67,7 @@
 		"husky": "^9.1.7",
 		"prettier": "^3.5.3",
 		"pretty-quick": "^4.1.1",
+		"spacebar-webrtc-types": "github:spacebarchat/spacebar-webrtc-types",
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
@@ -118,7 +119,8 @@
 		"@spacebar/api": "dist/api",
 		"@spacebar/cdn": "dist/cdn",
 		"@spacebar/gateway": "dist/gateway",
-		"@spacebar/util": "dist/util"
+		"@spacebar/util": "dist/util",
+		"@spacebar/webrtc": "dist/webrtc"
 	},
 	"optionalDependencies": {
 		"@yukikaze-bot/erlpack": "^1.0.1",

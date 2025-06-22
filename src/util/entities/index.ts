@@ -47,6 +47,8 @@ export * from "./SecurityKey";
 export * from "./Session";
 export * from "./Sticker";
 export * from "./StickerPack";
+export * from "./Stream";
+export * from "./StreamSession";
 export * from "./Team";
 export * from "./TeamMember";
 export * from "./Template";
