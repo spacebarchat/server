@@ -67,7 +67,7 @@
 		"husky": "^9.1.7",
 		"prettier": "^3.5.3",
 		"pretty-quick": "^4.1.1",
-		"spacebar-webrtc-types": "github:dank074/spacebar-webrtc-types",
+		"spacebar-webrtc-types": "github:spacebarchat/spacebar-webrtc-types",
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
