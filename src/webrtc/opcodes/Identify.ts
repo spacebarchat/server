@@ -24,15 +24,15 @@ import {
 	VoiceState,
 } from "@spacebar/util";
 import {
+	generateSsrc,
 	mediaServer,
+	Send,
 	VoiceOPCodes,
 	VoicePayload,
 	WebRtcWebSocket,
-	Send,
-	generateSsrc,
 } from "@spacebar/webrtc";
+import { SSRCs } from "@spacebarchat/spacebar-webrtc-types";
 import { subscribeToProducers } from "./Video";
-import { SSRCs } from "spacebar-webrtc-types";
 
 export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	clearTimeout(this.readyTimeout);

@@ -40,6 +40,7 @@
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.1",
 		"@eslint/js": "^9.14.0",
+		"@spacebarchat/spacebar-webrtc-types": "^1.0.1",
 		"@types/amqplib": "^0.10.5",
 		"@types/bcrypt": "^5.0.2",
 		"@types/body-parser": "^1.19.5",
@@ -67,7 +68,6 @@
 		"husky": "^9.1.7",
 		"prettier": "^3.5.3",
 		"pretty-quick": "^4.1.1",
-		"spacebar-webrtc-types": "github:spacebarchat/spacebar-webrtc-types",
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {

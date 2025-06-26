@@ -18,12 +18,12 @@
 import { Stream, validateSchema, VoiceVideoSchema } from "@spacebar/util";
 import {
 	mediaServer,
+	Send,
 	VoiceOPCodes,
 	VoicePayload,
 	WebRtcWebSocket,
-	Send,
 } from "@spacebar/webrtc";
-import type { WebRtcClient } from "spacebar-webrtc-types";
+import type { WebRtcClient } from "@spacebarchat/spacebar-webrtc-types";
 
 export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 	if (!this.webRtcClient) return;
