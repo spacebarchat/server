@@ -190,8 +190,8 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		case "RELATIONSHIP_REMOVE":
 		case "CHANNEL_DELETE":
 		case "GUILD_DELETE":
+			this.events[id]?.();
 			delete this.events[id];
-			opts.cancel();
 			break;
 		case "CHANNEL_CREATE":
 			if (
