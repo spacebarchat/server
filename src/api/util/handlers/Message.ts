@@ -290,18 +290,13 @@ export async function postHandleMessage(message: Message) {
 		}
 	}
 
-	// Remove existing embeds whose URLs ARE in the current message (we'll regenerate them)
+	// Remove ALL embeds that have URLs when processing links (start fresh)
 	data.embeds = data.embeds.filter((embed) => {
 		if (!embed.url) {
 			return true;
 		}
-		try {
-			const normalizedEmbedUrl = normalizeUrl(embed.url);
-			const shouldRemove = currentNormalizedUrls.has(normalizedEmbedUrl);
-			return !shouldRemove;
-		} catch {
-			return true;
-		}
+
+		return false;
 	});
 
 	const seenNormalizedUrls = new Set<string>();
