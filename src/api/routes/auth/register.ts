@@ -206,10 +206,24 @@ router.post(
 			minimum.setFullYear(
 				minimum.getFullYear() - register.dateOfBirth.minimum,
 			);
-			body.date_of_birth = new Date(body.date_of_birth as Date);
+
+			let parsedDob;
+			try {
+				parsedDob = new Date(body.date_of_birth as Date);
+				if (isNaN(parsedDob.getTime())) {
+					throw new Error("Invalid date");
+				}
+			} catch (e) {
+				throw FieldErrors({
+					date_of_birth: {
+						code: "DATE_OF_BIRTH_INVALID",
+						message: req.t("auth:register.DATE_OF_BIRTH_INVALID"),
+					},
+				});
+			}
 
 			// higher is younger
-			if (body.date_of_birth > minimum) {
+			if (parsedDob > minimum) {
 				throw FieldErrors({
 					date_of_birth: {
 						code: "DATE_OF_BIRTH_UNDERAGE",
