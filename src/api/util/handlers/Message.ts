@@ -45,6 +45,7 @@ import {
 	Webhook,
 	handleFile,
 	Permissions,
+	normalizeUrl,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
@@ -270,23 +271,98 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 // TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
 	const content = message.content?.replace(/ *`[^)]*` */g, ""); // remove markdown
-	let links = content?.match(LINK_REGEX);
-	if (!links) return;
+
+	const linkMatches = content?.match(LINK_REGEX) || [];
 
 	const data = { ...message };
-	data.embeds = data.embeds.filter((x) => x.type !== "link");
 
-	links = links.slice(0, 20) as RegExpMatchArray; // embed max 20 links — TODO: make this configurable with instance policies
+	const currentNormalizedUrls = new Set<string>();
+	for (const link of linkMatches) {
+		// Don't process links in <>
+		if (link.startsWith("<") && link.endsWith(">")) {
+			continue;
+		}
+		try {
+			const normalized = normalizeUrl(link);
+			currentNormalizedUrls.add(normalized);
+		} catch (e) {
+			continue;
+		}
+	}
 
-	const cachePromises = [];
+	// Remove existing embeds whose URLs ARE in the current message (we'll regenerate them)
+	data.embeds = data.embeds.filter((embed) => {
+		if (!embed.url) {
+			return true;
+		}
+		try {
+			const normalizedEmbedUrl = normalizeUrl(embed.url);
+			const shouldRemove = currentNormalizedUrls.has(normalizedEmbedUrl);
+			return !shouldRemove;
+		} catch {
+			return true;
+		}
+	});
 
-	for (const link of links) {
+	const seenNormalizedUrls = new Set<string>();
+	const uniqueLinks: string[] = [];
+
+	for (const link of linkMatches.slice(0, 20)) {
+		// embed max 20 links - TODO: make this configurable with instance policies
 		// Don't embed links in <>
 		if (link.startsWith("<") && link.endsWith(">")) continue;
 
-		const url = new URL(link);
+		try {
+			const normalized = normalizeUrl(link);
 
-		const cached = await EmbedCache.findOne({ where: { url: link } });
+			if (!seenNormalizedUrls.has(normalized)) {
+				seenNormalizedUrls.add(normalized);
+				uniqueLinks.push(link);
+			}
+		} catch (e) {
+			// Invalid URL, skip
+			continue;
+		}
+	}
+
+	if (uniqueLinks.length === 0) {
+		// No valid unique links found, update message to remove old embeds
+		data.embeds = data.embeds.filter((embed) => {
+			const hasUrl = !!embed.url;
+			return !hasUrl;
+		});
+		await Promise.all([
+			emitEvent({
+				event: "MESSAGE_UPDATE",
+				channel_id: message.channel_id,
+				data,
+			} as MessageUpdateEvent),
+			Message.update(
+				{ id: message.id, channel_id: message.channel_id },
+				{ embeds: data.embeds },
+			),
+		]);
+		return;
+	}
+
+	const cachePromises = [];
+
+	for (const link of uniqueLinks) {
+		let url: URL;
+		try {
+			url = new URL(link);
+		} catch (e) {
+			// Skip invalid URLs
+			continue;
+		}
+
+		const normalizedUrl = normalizeUrl(link);
+
+		// Check cache using normalized URL
+		const cached = await EmbedCache.findOne({
+			where: { url: normalizedUrl },
+		});
+
 		if (cached) {
 			data.embeds.push(cached.embed);
 			continue;
@@ -296,7 +372,7 @@ export async function postHandleMessage(message: Message) {
 		const endpointPublic =
 			Config.get().cdn.endpointPublic || "http://127.0.0.1"; // lol
 		const handler =
-			url.hostname == new URL(endpointPublic).hostname
+			url.hostname === new URL(endpointPublic).hostname
 				? EmbedHandlers["self"]
 				: EmbedHandlers[url.hostname] || EmbedHandlers["default"];
 
@@ -307,25 +383,27 @@ export async function postHandleMessage(message: Message) {
 			if (!Array.isArray(res)) res = [res];
 
 			for (const embed of res) {
+				// Cache with normalized URL
 				const cache = EmbedCache.create({
-					url: link,
+					url: normalizedUrl,
 					embed: embed,
 				});
 				cachePromises.push(cache.save());
 				data.embeds.push(embed);
 			}
 		} catch (e) {
-			console.error(`[Embeds] Error while generating embed`, e);
+			console.error(
+				`[Embeds] Error while generating embed for ${link}`,
+				e,
+			);
 			Sentry.captureException(e, (scope) => {
 				scope.clear();
-				scope.setContext("request", { url });
+				scope.setContext("request", { url: link });
 				return scope;
 			});
 			continue;
 		}
 	}
-
-	if (!data.embeds) return;
 
 	await Promise.all([
 		emitEvent({
