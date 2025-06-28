@@ -145,6 +145,7 @@ router.post(
 			...template.serialized_source_guild,
 			id: guild_id,
 			owner_id: req.user_id,
+			premium_tier: 0,
 		}).save();
 
 		await Role.create({
