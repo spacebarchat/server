@@ -79,6 +79,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		embeds: opts.embeds || [],
 		reactions: opts.reactions || [],
 		type: opts.type ?? 0,
+		mentions: [],
 	});
 
 	if (
@@ -256,12 +257,35 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		}
 	}
 
+	if (message.message_reference?.message_id) {
+		const referencedMessage = await Message.findOne({
+			where: {
+				id: message.message_reference.message_id,
+				channel_id: message.channel_id,
+			},
+		});
+		if (
+			referencedMessage &&
+			referencedMessage.author_id !== message.author_id
+		) {
+			message.mentions.push(
+				User.create({
+					id: referencedMessage.author_id,
+				}),
+			);
+		}
+	}
+
 	// root@Rory - 20/02/2023 - This breaks channel mentions in test client. We're not sure this was used in older clients.
 	/*message.mention_channels = mention_channel_ids.map((x) =>
 		Channel.create({ id: x }),
 	);*/
 	message.mention_roles = mention_role_ids.map((x) => Role.create({ id: x }));
-	message.mentions = mention_user_ids.map((x) => User.create({ id: x }));
+	message.mentions = [
+		...message.mentions,
+		...mention_user_ids.map((x) => User.create({ id: x })),
+	];
+
 	message.mention_everyone = mention_everyone;
 
 	// TODO: check and put it all in the body
