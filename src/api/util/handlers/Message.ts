@@ -46,6 +46,7 @@ import {
 	handleFile,
 	Permissions,
 	normalizeUrl,
+	Reaction,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
@@ -76,7 +77,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		channel_id: opts.channel_id,
 		attachments: opts.attachments || [],
 		embeds: opts.embeds || [],
-		reactions: /*opts.reactions ||*/ [],
+		reactions: opts.reactions || [],
 		type: opts.type ?? 0,
 	});
 
@@ -436,6 +437,7 @@ interface MessageOptions extends MessageCreateSchema {
 	webhook_id?: string;
 	application_id?: string;
 	embeds?: Embed[];
+	reactions?: Reaction[];
 	channel_id?: string;
 	attachments?: Attachment[];
 	edited_timestamp?: Date;
