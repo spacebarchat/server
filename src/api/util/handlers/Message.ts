@@ -290,14 +290,8 @@ export async function postHandleMessage(message: Message) {
 		}
 	}
 
-	// Remove ALL embeds that have URLs when processing links (start fresh)
-	data.embeds = data.embeds.filter((embed) => {
-		if (!embed.url) {
-			return true;
-		}
-
-		return false;
-	});
+	// Filter out embeds that could be links, start from scratch
+	data.embeds = data.embeds.filter((embed) => embed.type === "rich");
 
 	const seenNormalizedUrls = new Set<string>();
 	const uniqueLinks: string[] = [];
