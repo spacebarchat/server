@@ -140,25 +140,24 @@ router.post(
 
 		const guild_id = Snowflake.generate();
 
-		const [guild] = await Promise.all([
-			Guild.create({
-				...body,
-				...template.serialized_source_guild,
-				id: guild_id,
-				owner_id: req.user_id,
-			}).save(),
-			Role.create({
-				id: guild_id,
-				guild_id: guild_id,
-				color: 0,
-				hoist: false,
-				managed: true,
-				mentionable: true,
-				name: "@everyone",
-				permissions: BigInt("2251804225").toString(), // TODO: where did this come from?
-				position: 0,
-			}).save(),
-		]);
+		const guild = await Guild.create({
+			...body,
+			...template.serialized_source_guild,
+			id: guild_id,
+			owner_id: req.user_id,
+		}).save();
+
+		await Role.create({
+			id: guild_id,
+			guild_id: guild_id,
+			color: 0,
+			hoist: false,
+			managed: true,
+			mentionable: true,
+			name: "@everyone",
+			permissions: BigInt("2251804225").toString(), // TODO: where did this come from?
+			position: 0,
+		}).save();
 
 		await Member.addToGuild(req.user_id, guild_id);
 
