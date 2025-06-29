@@ -61,6 +61,7 @@ router.post(
 		const guild = await Guild.createGuild({
 			...body,
 			owner_id: req.user_id,
+			template_guild_id: null,
 		});
 
 		const { autoJoin } = Config.get().guild;
