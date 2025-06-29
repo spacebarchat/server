@@ -15,6 +15,7 @@ import {
 	handleFile,
 	ValidateName,
 	EmbedType,
+	capitalize,
 } from "@spacebar/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -284,7 +285,7 @@ function transformGitHubToDiscord(
 				username: "GitHub",
 				embeds: [
 					{
-						title: `➕ ${payload.ref_type} created in ${payload.repository?.full_name}`,
+						title: `➕ ${capitalize(payload.ref_type)} created in ${payload.repository?.full_name}`,
 						type: EmbedType.rich,
 						description: `A new ${payload.ref_type} named \`${payload.ref}\` was created`,
 						color: 0x7289da,
