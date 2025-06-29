@@ -106,12 +106,9 @@ router.get(
 		if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
 		// pretend self-bans don't exist to prevent victim chasing
 
-		const banInfo = {
-			user: await User.getPublicUser(ban.user_id),
-			reason: ban.reason,
-		};
+		delete ban.ip;
 
-		return res.json(banInfo);
+		return res.json(ban);
 	},
 );
 
