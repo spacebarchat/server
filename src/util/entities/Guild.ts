@@ -270,6 +270,9 @@ export class Guild extends BaseClass {
 	@Column({ nullable: true })
 	verification_level?: number;
 
+	/**
+	 * DEPRECATED: Look at the new Guild onboarding screens.
+	 */
 	@Column({ type: "simple-json" })
 	welcome_screen: GuildWelcomeScreen;
 
@@ -308,7 +311,9 @@ export class Guild extends BaseClass {
 		name?: string;
 		icon?: string | null;
 		owner_id?: string;
+		roles?: Partial<Role>[];
 		channels?: Partial<Channel>[];
+		template_guild_id: string | null;
 	}) {
 		const guild_id = Snowflake.generate();
 
@@ -364,10 +369,32 @@ export class Guild extends BaseClass {
 			flags: 0, // TODO?
 		}).save();
 
-		if (!body.channels || !body.channels.length)
+		// create custom roles if provided
+		if (body.roles && body.roles.length) {
+			await Promise.all(
+				body.roles?.map((role) => {
+					new Promise((resolve) => {
+						Role.create({
+							...role,
+							guild_id,
+							id:
+								// role.id === body.template_guild_id indicates that this is the @everyone role
+								role.id === body.template_guild_id
+									? guild_id
+									: Snowflake.generate(),
+						})
+							.save()
+							.then(resolve);
+					});
+				}),
+			);
+		}
+
+		if (!body.channels || !body.channels.length) {
 			body.channels = [
 				{ id: "01", type: 0, name: "general", nsfw: false },
 			];
+		}
 
 		const ids = new Map();
 

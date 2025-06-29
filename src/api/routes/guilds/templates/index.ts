@@ -108,7 +108,7 @@ router.post(
 			// allowDiscordTemplates,
 			// allowRaws,
 		} = Config.get().templates;
-		if (!enabled)
+		if (!enabled) {
 			return res
 				.json({
 					code: 403,
@@ -116,13 +116,16 @@ router.post(
 						"Template creation & usage is disabled on this instance.",
 				})
 				.sendStatus(403);
-		if (!allowTemplateCreation)
+		}
+
+		if (!allowTemplateCreation) {
 			return res
 				.json({
 					code: 403,
 					message: "Template creation is disabled on this instance.",
 				})
 				.sendStatus(403);
+		}
 
 		const { code } = req.params;
 		const body = req.body as GuildTemplateCreateSchema;
@@ -138,29 +141,15 @@ router.post(
 			where: { code: code },
 		});
 
-		const guild_id = Snowflake.generate();
-
-		const guild = await Guild.create({
-			...body,
+		const guild = await Guild.createGuild({
 			...template.serialized_source_guild,
-			id: guild_id,
+			// body comes after the template
+			...body,
 			owner_id: req.user_id,
-			premium_tier: 0,
-		}).save();
+			template_guild_id: template.source_guild_id,
+		});
 
-		await Role.create({
-			id: guild_id,
-			guild_id: guild_id,
-			color: 0,
-			hoist: false,
-			managed: true,
-			mentionable: true,
-			name: "@everyone",
-			permissions: BigInt("2251804225").toString(), // TODO: where did this come from?
-			position: 0,
-		}).save();
-
-		await Member.addToGuild(req.user_id, guild_id);
+		await Member.addToGuild(req.user_id, guild.id);
 
 		res.status(201).json({ id: guild.id });
 	},

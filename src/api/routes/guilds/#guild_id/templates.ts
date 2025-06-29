@@ -24,6 +24,7 @@ import { HTTPError } from "lambert-server";
 const router: Router = Router();
 
 const TemplateGuildProjection: (keyof Guild)[] = [
+	"id",
 	"name",
 	"description",
 	"region",
@@ -32,7 +33,7 @@ const TemplateGuildProjection: (keyof Guild)[] = [
 	"explicit_content_filter",
 	"preferred_locale",
 	"afk_timeout",
-	"roles",
+	// "roles",
 	// "channels",
 	"afk_channel_id",
 	"system_channel_id",
@@ -85,6 +86,7 @@ router.post(
 		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
 			select: TemplateGuildProjection,
+			relations: ["roles", "channels"],
 		});
 		const exists = await Template.findOne({
 			where: { id: guild_id },
