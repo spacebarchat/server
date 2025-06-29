@@ -17,7 +17,7 @@
 */
 
 export interface GuildBansResponse {
-	reason: string;
+	reason: string | null;
 	user: {
 		username: string;
 		discriminator: string;
