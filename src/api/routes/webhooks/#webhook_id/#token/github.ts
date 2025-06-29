@@ -1,4 +1,4 @@
-import { route } from "@spacebar/api";
+import { getProxyUrl, route } from "@spacebar/api";
 import { capitalize, EmbedType, WebhookExecuteSchema } from "@spacebar/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -40,6 +40,10 @@ function transformGitHubToDiscord(
 ): WebhookExecuteSchema | null {
 	switch (eventType) {
 		case "star":
+			if (payload.action !== "created") {
+				return null;
+			}
+
 			return {
 				username: "GitHub",
 				// TODO: Provide a static avatar for GitHub
@@ -51,6 +55,13 @@ function transformGitHubToDiscord(
 						color: 0xffd700,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -68,6 +79,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -85,6 +103,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -102,6 +127,13 @@ function transformGitHubToDiscord(
 						color: 0xf04747,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -119,6 +151,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -136,6 +175,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -156,6 +202,13 @@ function transformGitHubToDiscord(
 								: 0xf04747,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -173,6 +226,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -190,6 +250,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -210,6 +277,13 @@ function transformGitHubToDiscord(
 								: 0xf04747,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -232,6 +306,13 @@ function transformGitHubToDiscord(
 									: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -249,6 +330,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -270,6 +358,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// TODO: Improve this by adding `fields` to show recent commits
 						// @ts-expect-error Validate using string in schema
@@ -289,6 +384,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -296,22 +398,7 @@ function transformGitHubToDiscord(
 				],
 			};
 		case "watch":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `👀 ${payload.repository?.full_name} is now watched`,
-						type: EmbedType.rich,
-						description: `${payload.sender?.login} started watching the repository`,
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
+			return null;
 		case "check_run":
 			return {
 				username: "GitHub",
@@ -329,6 +416,13 @@ function transformGitHubToDiscord(
 									: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -352,6 +446,13 @@ function transformGitHubToDiscord(
 									: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -369,6 +470,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
@@ -386,6 +494,13 @@ function transformGitHubToDiscord(
 						color: 0x7289da,
 						thumbnail: {
 							url: payload.sender?.avatar_url,
+							proxy_url: getProxyUrl(
+								new URL(payload.sender?.avatar_url),
+								80,
+								80,
+							),
+							width: 80,
+							height: 80,
 						},
 						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
