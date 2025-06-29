@@ -29,6 +29,7 @@ const parseGitHubWebhook = (
 	req.body = discordPayload;
 	// Set default wait=true for GitHub webhooks so they get a response
 	req.query.wait = req.query.wait || "true";
+
 	next();
 };
 
@@ -51,6 +52,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -67,6 +69,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -83,6 +86,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -99,6 +103,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -115,6 +120,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -131,6 +137,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -150,6 +157,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -166,6 +174,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -182,6 +191,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -201,6 +211,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -222,6 +233,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -238,6 +250,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -258,7 +271,8 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
-						// TODO: Improve this by adding fields for recent commits
+						// TODO: Improve this by adding `fields` to show recent commits
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -276,6 +290,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -292,6 +307,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -314,6 +330,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -336,6 +353,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -352,6 +370,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
@@ -368,6 +387,7 @@ function transformGitHubToDiscord(
 						thumbnail: {
 							url: payload.sender?.avatar_url,
 						},
+						// @ts-expect-error Validate using string in schema
 						timestamp: new Date().toISOString(),
 					},
 				],
