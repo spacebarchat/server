@@ -165,12 +165,14 @@ router.patch(
 		const { code, guild_id } = req.params;
 		const { name, description } = req.body;
 
-		const template = await Template.create({
-			code,
-			name: name,
-			description: description,
-			source_guild_id: guild_id,
-		}).save();
+		const template = await Template.findOneOrFail({
+			where: { code, source_guild_id: guild_id },
+		});
+
+		template.name = name;
+		template.description = description;
+
+		await template.save();
 
 		res.json(template);
 	},
