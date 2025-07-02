@@ -102,10 +102,14 @@ export const hasValidSignature = (path: string, query: ParsedQs, req: Request) =
 	const { ex, is, hm } = query;
 
 	// if the required query parameters are not present, return false
-	if (!ex || !is || !hm) return false;
+	if (!ex || !is || !hm) {
+		console.debug("Missing required query parameters for signature validation");
+		return false;
+	}
 
 	// check if the signature is expired
 	if (isExpired(ex as string, is as string)) {
+		console.debug("Signature is expired");
 		return false;
 	}
 
@@ -116,6 +120,10 @@ export const hasValidSignature = (path: string, query: ParsedQs, req: Request) =
 	const isHashValid =
 		calculated.length === received.length &&
 		timingSafeEqual(calculated, received);
+
+	console.debug(
+		`Signature validation for ${path} - isHashValid: ${isHashValid}, calculated: ${calcd}, received: ${hm}`,
+	);
 
 	return isHashValid;
 };
