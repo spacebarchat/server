@@ -210,8 +210,8 @@ router.get(
 
 				y.proxy_url = url.toString();
 
-				y.proxy_url = resignUrl(y.proxy_url);
-				y.url = resignUrl(y.url);
+				y.proxy_url = resignUrl(y.proxy_url, req);
+				y.url = resignUrl(y.url, req);
 			});
 
 			/**

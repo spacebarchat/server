@@ -20,8 +20,12 @@ import { Config } from "@spacebar/util";
 import { createHmac, timingSafeEqual } from "crypto";
 import ms, { StringValue } from "ms";
 import { ParsedQs } from "qs";
+import { Request } from "express";
 
-export const getUrlSignature = (path: string) => {
+export const getUrlSignature = (
+	path: string,
+	req: Request,
+) => {
 	const { cdnSignatureKey, cdnSignatureDuration } = Config.get().security;
 
 	// calculate the expiration time
@@ -32,11 +36,7 @@ export const getUrlSignature = (path: string) => {
 	);
 
 	// hash the url with the cdnSignatureKey
-	const hash = createHmac("sha256", cdnSignatureKey as string)
-		.update(path)
-		.update(issuedAt)
-		.update(expiresAt)
-		.digest("hex");
+	const hash = calculateHash(path, issuedAt, expiresAt, req);
 
 	return {
 		hash,
@@ -49,14 +49,31 @@ export const calculateHash = (
 	url: string,
 	issuedAt: string,
 	expiresAt: string,
+	req: Request,
 ) => {
 	const { cdnSignatureKey } = Config.get().security;
 	const hash = createHmac("sha256", cdnSignatureKey as string)
 		.update(url)
 		.update(issuedAt)
-		.update(expiresAt)
-		.digest("hex");
-	return hash;
+		.update(expiresAt);
+
+	if (Config.get().security.cdnSignatureIncludeIp) {
+		if (!req || !req.ip)
+			console.log(
+				"[Signing] CDN Signature IP is enabled but no request object was provided. This may cause issues with signature validation. Please report this to the Spacebar team!",
+			);
+		hash.update(req.ip!);
+	}
+
+	if (Config.get().security.cdnSignatureIncludeUserAgent) {
+		if (!req || !req.headers || !req.headers["user-agent"])
+			console.log(
+				"[Signing] CDN Signature User-Agent is enabled but no request object was provided. This may cause issues with signature validation. Please report this to the Spacebar team!",
+			);
+		hash.update(req.headers["user-agent"] as string);
+	}
+
+	return hash.digest("hex");
 };
 
 export const isExpired = (ex: string, is: string) => {
@@ -80,7 +97,7 @@ export const isExpired = (ex: string, is: string) => {
 	return false;
 };
 
-export const hasValidSignature = (path: string, query: ParsedQs) => {
+export const hasValidSignature = (path: string, query: ParsedQs, req: Request) => {
 	// get url path
 	const { ex, is, hm } = query;
 
@@ -92,21 +109,18 @@ export const hasValidSignature = (path: string, query: ParsedQs) => {
 		return false;
 	}
 
-	const calcd = calculateHash(path, is as string, ex as string);
+	const calcd = calculateHash(path, is as string, ex as string, req);
 	const calculated = Buffer.from(calcd);
 	const received = Buffer.from(hm as string);
 
 	const isHashValid =
 		calculated.length === received.length &&
 		timingSafeEqual(calculated, received);
-	// if (!isHashValid) {
-	// 	console.debug("Invalid signature");
-	// 	console.debug(calcd, hm);
-	// }
+
 	return isHashValid;
 };
 
-export const resignUrl = (attachmentUrl: string) => {
+export const resignUrl = (attachmentUrl: string, req: Request) => {
 	const url = new URL(attachmentUrl);
 
 	// if theres an existing signature, check if its expired or not. no reason to resign if its not expired
@@ -127,7 +141,7 @@ export const resignUrl = (attachmentUrl: string) => {
 		path = path.slice(1);
 	}
 
-	const { hash, issuedAt, expiresAt } = getUrlSignature(path);
+	const { hash, issuedAt, expiresAt } = getUrlSignature(path, req);
 	url.searchParams.set("ex", expiresAt);
 	url.searchParams.set("is", issuedAt);
 	url.searchParams.set("hm", hash);
