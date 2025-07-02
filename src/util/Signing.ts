@@ -52,7 +52,7 @@ export const calculateHash = (
 	req: Request,
 ) => {
 	const { cdnSignatureKey } = Config.get().security;
-	const hash = createHmac("sha256", cdnSignatureKey as string)
+	const data = createHmac("sha256", cdnSignatureKey as string)
 		.update(url)
 		.update(issuedAt)
 		.update(expiresAt);
@@ -63,7 +63,7 @@ export const calculateHash = (
 				"[Signing] CDN Signature IP is enabled but no request object was provided. This may cause issues with signature validation. Please report this to the Spacebar team!",
 			);
 		console.log("[Signing] CDN Signature IP is enabled, adding IP to hash:", req.ip);
-		hash.update(req.ip!);
+		data.update(req.ip!);
 	}
 
 	if (Config.get().security.cdnSignatureIncludeUserAgent) {
@@ -71,10 +71,22 @@ export const calculateHash = (
 			console.log(
 				"[Signing] CDN Signature User-Agent is enabled but no request object was provided. This may cause issues with signature validation. Please report this to the Spacebar team!",
 			);
-		hash.update(req.headers["user-agent"] as string);
+		data.update(req.headers["user-agent"] as string);
 	}
 
-	return hash.digest("hex");
+
+	const hash = data.digest("hex");
+	console.log("[Signing]", {
+		url,
+		issuedAt,
+		expiresAt,
+		includeUA: Config.get().security.cdnSignatureIncludeUserAgent,
+		ua: req.headers["user-agent"],
+		includeIP: Config.get().security.cdnSignatureIncludeIp,
+		ip: req.ip,
+
+	}, "->", hash);
+	return hash;
 };
 
 export const isExpired = (ex: string, is: string) => {
