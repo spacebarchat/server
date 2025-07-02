@@ -37,7 +37,7 @@ router.post(
 	async (req: Request, res: Response) => {
 		const { attachment_urls } = req.body as RefreshUrlsRequestSchema;
 
-		const refreshed_urls = attachment_urls.map(resignUrl);
+		const refreshed_urls = attachment_urls.map(url => resignUrl(url, req));
 
 		return res.status(200).json({
 			refreshed_urls,
