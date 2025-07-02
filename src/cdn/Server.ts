@@ -24,6 +24,7 @@ import guildProfilesRoute from "./routes/guild-profiles";
 import iconsRoute from "./routes/role-icons";
 import { CORS } from "../api/middlewares/CORS";
 import { BodyParser } from "../api/middlewares/BodyParser";
+import morgan from "morgan";
 
 export type CDNServerOptions = ServerOptions;
 
@@ -38,6 +39,24 @@ export class CDNServer extends Server {
 		await initDatabase();
 		await Config.init();
 		await Sentry.init(this.app);
+
+		const logRequests = process.env["LOG_REQUESTS"] != undefined;
+		if (logRequests) {
+			this.app.use(
+				morgan("combined", {
+					skip: (req, res) => {
+						let skip = !(
+							process.env["LOG_REQUESTS"]?.includes(
+								res.statusCode.toString(),
+							) ?? false
+						);
+						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-")
+							skip = !skip;
+						return skip;
+					},
+				}),
+			);
+		}
 
 		this.app.disable("x-powered-by");
 
