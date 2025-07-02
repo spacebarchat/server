@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import morgan from "morgan";
+
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
@@ -58,6 +60,24 @@ async function main() {
 	await initDatabase();
 	await Config.init();
 	await Sentry.init(app);
+
+	const logRequests = process.env["LOG_REQUESTS"] != undefined;
+	if (logRequests) {
+		app.use(
+			morgan("combined", {
+				skip: (req, res) => {
+					let skip = !(
+						process.env["LOG_REQUESTS"]?.includes(
+							res.statusCode.toString(),
+						) ?? false
+					);
+					if (process.env["LOG_REQUESTS"]?.charAt(0) == "-")
+						skip = !skip;
+					return skip;
+				},
+			}),
+		);
+	}
 
 	await new Promise((resolve) =>
 		server.listen({ port }, () => resolve(undefined)),
