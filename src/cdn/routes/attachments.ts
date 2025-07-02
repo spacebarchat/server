@@ -72,7 +72,7 @@ router.post(
 		let finalUrl = `${endpoint}/${path}`;
 
 		if (Config.get().security.cdnSignUrls) {
-			const signatureData = getUrlSignature(path);
+			const signatureData = getUrlSignature(path, req);
 			finalUrl = `${finalUrl}?ex=${signatureData.expiresAt}&is=${signatureData.issuedAt}&hm=${signatureData.hash}`;
 		}
 
@@ -100,7 +100,7 @@ router.get(
 
 		if (
 			Config.get().security.cdnSignUrls &&
-			!hasValidSignature(path, req.query)
+			!hasValidSignature(path, req.query, req)
 		) {
 			return res.status(404).send("This content is no longer available.");
 		}

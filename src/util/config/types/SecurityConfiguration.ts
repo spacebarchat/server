@@ -41,4 +41,6 @@ export class SecurityConfiguration {
 	cdnSignUrls: boolean = false;
 	cdnSignatureKey: string = crypto.randomBytes(32).toString("base64");
 	cdnSignatureDuration: string = "24h";
+	cdnSignatureIncludeIp: boolean = true;
+	cdnSignatureIncludeUserAgent: boolean = true;
 }
