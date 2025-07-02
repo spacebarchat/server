@@ -26,6 +26,7 @@ import {
 import { Request, Response, Router } from "express";
 import fetch from "node-fetch-commonjs";
 import { ProxyAgent } from "proxy-agent";
+import http from "http";
 
 const router = Router();
 
@@ -62,7 +63,7 @@ router.get(
 		const response = await fetch(
 			`https://g.tenor.com/v1/trending?media_format=${media_format}&locale=${locale}&key=${apiKey}`,
 			{
-				agent,
+				agent: agent as http.Agent,
 				method: "get",
 				headers: { "Content-Type": "application/json" },
 			},

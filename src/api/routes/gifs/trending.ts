@@ -26,6 +26,7 @@ import {
 import { Request, Response, Router } from "express";
 import fetch from "node-fetch-commonjs";
 import { ProxyAgent } from "proxy-agent";
+import http from "http";
 
 const router = Router();
 
@@ -58,7 +59,7 @@ router.get(
 			fetch(
 				`https://g.tenor.com/v1/categories?locale=${locale}&key=${apiKey}`,
 				{
-					agent,
+					agent: agent as http.Agent,
 					method: "get",
 					headers: { "Content-Type": "application/json" },
 				},
@@ -66,7 +67,7 @@ router.get(
 			fetch(
 				`https://g.tenor.com/v1/trending?locale=${locale}&key=${apiKey}`,
 				{
-					agent,
+					agent: agent as http.Agent,
 					method: "get",
 					headers: { "Content-Type": "application/json" },
 				},

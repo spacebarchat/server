@@ -20,9 +20,12 @@ import { Fido2Lib } from "fido2-lib";
 import jwt from "jsonwebtoken";
 import { Config } from "./Config";
 
-const JWTOptions: jwt.SignOptions = {
+const jwtSignOptions: jwt.SignOptions = {
 	algorithm: "HS256",
 	expiresIn: "5m",
+};
+const jwtVerifyOptions: jwt.VerifyOptions = {
+	algorithms: ["HS256"]
 };
 
 export const WebAuthn: {
@@ -44,7 +47,7 @@ export async function generateWebAuthnTicket(
 		jwt.sign(
 			{ challenge },
 			Config.get().security.jwtSecret,
-			JWTOptions,
+			jwtSignOptions,
 			(err, token) => {
 				if (err || !token) return rej(err || "no token");
 				return res(token);
@@ -58,7 +61,7 @@ export async function verifyWebAuthnToken(token: string) {
 		jwt.verify(
 			token,
 			Config.get().security.jwtSecret,
-			JWTOptions,
+			jwtVerifyOptions,
 			async (err, decoded) => {
 				if (err) return rej(err);
 				return res(decoded);

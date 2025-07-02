@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import amqp, { Connection, Channel } from "amqplib";
+import amqp, { Channel, ChannelModel } from "amqplib";
 import { Config } from "./Config";
 
 export const RabbitMQ: {
-	connection: Connection | null;
+	connection: ChannelModel | null;
 	channel: Channel | null;
 	init: () => Promise<void>;
 } = {
