@@ -58,6 +58,9 @@ export class CDNServer extends Server {
 			);
 		}
 
+		const trustedProxies = Config.get().security.trustedProxies;
+		if (trustedProxies) this.app.set("trust proxy", trustedProxies);
+
 		this.app.disable("x-powered-by");
 
 		this.app.use(CORS);
