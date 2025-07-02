@@ -62,6 +62,7 @@ export const calculateHash = (
 			console.log(
 				"[Signing] CDN Signature IP is enabled but no request object was provided. This may cause issues with signature validation. Please report this to the Spacebar team!",
 			);
+		console.log("[Signing] CDN Signature IP is enabled, adding IP to hash:", req.ip);
 		hash.update(req.ip!);
 	}
 
