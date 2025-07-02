@@ -84,7 +84,6 @@ export const calculateHash = (
 		ua: req.headers["user-agent"],
 		includeIP: Config.get().security.cdnSignatureIncludeIp,
 		ip: req.ip,
-
 	}, "->", hash);
 	return hash;
 };

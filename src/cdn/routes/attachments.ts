@@ -73,7 +73,7 @@ router.post(
 
 		if (Config.get().security.cdnSignUrls) {
 			const signatureData = getUrlSignature(path, req);
-			finalUrl = `${finalUrl}?ex=${signatureData.expiresAt}&is=${signatureData.issuedAt}&hm=${signatureData.hash}`;
+			finalUrl = `${finalUrl}?ex=${signatureData.expiresAt}&is=${signatureData.issuedAt}&hm=${signatureData.hash}&ip=${req.ip}`;
 		}
 
 		const file = {
