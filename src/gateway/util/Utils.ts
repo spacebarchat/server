@@ -49,15 +49,18 @@ export function generateStreamKey(
 // TODO: remove this when Server.stop() is fixed so that it waits for all websocket connections to run their
 // respective Close event listener function for session cleanup
 export async function cleanupOnStartup(): Promise<void> {
-	await VoiceState.update(
-		{},
-		{
-			// @ts-expect-error channel_id is nullable
-			channel_id: null,
-			// @ts-expect-error guild_id is nullable
-			guild_id: null,
-			self_stream: false,
-			self_video: false,
-		},
-	);
+	// TODO: how is this different from clearing the table?
+	//await VoiceState.update(
+	//	{},
+	//	{
+	//		// @ts-expect-error channel_id is nullable
+	//		channel_id: null,
+	//		// @ts-expect-error guild_id is nullable
+	//		guild_id: null,
+	//		self_stream: false,
+	//		self_video: false,
+	//	},
+	//);
+
+	await VoiceState.clear();
 }
