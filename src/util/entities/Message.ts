@@ -266,7 +266,7 @@ export class Message extends BaseClass {
 		return {
 			...this,
 			attachments: this.attachments?.map((attachment: Attachment) =>
-				attachment.signUrls(req)
+				Attachment.prototype.signUrls.call(attachment, req)
 			)
 		};
 	}
