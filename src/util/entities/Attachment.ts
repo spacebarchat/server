@@ -28,6 +28,8 @@ import { URL } from "url";
 import { deleteFile } from "../util/cdn";
 import { BaseClass } from "./BaseClass";
 import { dbEngine } from "../util/Database";
+import { Request } from "express";
+import { resignUrl } from "../Signing";
 
 @Entity({
 	name: "attachments",
@@ -72,5 +74,12 @@ export class Attachment extends BaseClass {
 	@BeforeRemove()
 	onDelete() {
 		return deleteFile(new URL(this.url).pathname);
+	}
+
+	signUrls(req: Request) {
+		return {
+			url: this.url + resignUrl(this.url, req),
+			proxy_url: this.proxy_url + resignUrl(this.proxy_url, req),
+		}
 	}
 }

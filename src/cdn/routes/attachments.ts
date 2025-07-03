@@ -69,12 +69,7 @@ router.post(
 			}
 		}
 
-		let finalUrl = `${endpoint}/${path}`;
-
-		if (Config.get().security.cdnSignUrls) {
-			const signatureData = getUrlSignature(path, req);
-			finalUrl = `${finalUrl}?ex=${signatureData.expiresAt}&is=${signatureData.issuedAt}&hm=${signatureData.hash}&ip=${req.ip}`;
-		}
+		const finalUrl = `${endpoint}/${path}`;
 
 		const file = {
 			id,
@@ -82,6 +77,7 @@ router.post(
 			filename: filename,
 			size,
 			url: finalUrl,
+			path,
 			width,
 			height,
 		};
