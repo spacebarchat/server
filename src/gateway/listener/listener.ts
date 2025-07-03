@@ -27,6 +27,7 @@ import {
 	EVENTEnum,
 	Relationship,
 	RelationshipType,
+	Message,
 } from "@spacebar/util";
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
@@ -160,7 +161,7 @@ export async function setupListener(this: WebSocket) {
 
 // TODO: only subscribe for events that are in the connection intents
 async function consume(this: WebSocket, opts: EventOpts) {
-	const { data, event } = opts;
+	let { data, event } = opts;
 	const id = data.id as string;
 	const permission = this.permissions[id] || new Permissions("ADMINISTRATOR"); // default permission for dm
 
@@ -282,6 +283,17 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		default:
 			// always gets sent
 			// Any events not defined in an intent are considered "passthrough" and will always be sent
+			break;
+	}
+
+	// data rewrites, e.g. signed attachment URLs
+	switch (event) {
+		case "MESSAGE_CREATE":
+		case "MESSAGE_UPDATE":
+			if(data["attachments"])
+				data["attachments"] = Message.prototype.withSignedAttachments.call(data, this.request).attachments;
+			break;
+		default:
 			break;
 	}
 
