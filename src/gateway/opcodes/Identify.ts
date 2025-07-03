@@ -238,7 +238,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return [
 			{
 				...x,
-				roles: x.roles.map((x) => x.id),
+				// filter out @everyone role
+				roles: x.roles
+					.filter((r) => r.id !== x.guild.id)
+					.map((x) => x.id),
 
 				// add back user, which we don't fetch from db
 				// TODO: For guild profiles, this may need to be changed.
