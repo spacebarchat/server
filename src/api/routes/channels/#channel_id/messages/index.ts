@@ -430,7 +430,7 @@ router.post(
 			console.error("[Message] post-message handler failed", e),
 		);
 
-		return res.json(message);
+		return res.json(message.withSignedAttachments(req));
 	},
 );
 
