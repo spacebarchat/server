@@ -17,14 +17,20 @@
 */
 
 import { Server, ServerOptions } from "lambert-server";
-import { Config, initDatabase, registerRoutes, Sentry } from "@spacebar/util";
+import {
+	Attachment,
+	Config,
+	initDatabase,
+	registerRoutes,
+	Sentry,
+} from "@spacebar/util";
+import { CORS, BodyParser } from "@spacebar/api";
 import path from "path";
 import avatarsRoute from "./routes/avatars";
 import guildProfilesRoute from "./routes/guild-profiles";
 import iconsRoute from "./routes/role-icons";
-import { CORS } from "../api/middlewares/CORS";
-import { BodyParser } from "../api/middlewares/BodyParser";
 import morgan from "morgan";
+import { Like, Or } from "typeorm";
 
 export type CDNServerOptions = ServerOptions;
 
@@ -38,6 +44,7 @@ export class CDNServer extends Server {
 	async start() {
 		await initDatabase();
 		await Config.init();
+		await this.cleanupSignaturesInDb();
 		await Sentry.init(this.app);
 
 		const logRequests = process.env["LOG_REQUESTS"] != undefined;
@@ -123,5 +130,27 @@ export class CDNServer extends Server {
 
 	async stop() {
 		return super.stop();
+	}
+
+	async cleanupSignaturesInDb() {
+		this.log("verbose", "[Server] Cleaning up signatures in database");
+		const attachmentsToFix = await Attachment.find({
+			where: { url: Like("%?ex=%") },
+		});
+		if (attachmentsToFix.length === 0) {
+			this.log("verbose", "[Server] No attachments to fix");
+			return;
+		}
+
+		this.log(
+			"verbose",
+			`[Server] Found ${attachmentsToFix.length} attachments to fix`,
+		);
+		for (const attachment of attachmentsToFix) {
+			attachment.url = attachment.url.split("?ex=")[0];
+			attachment.proxy_url = attachment.proxy_url?.split("?ex=")[0];
+			await attachment.save();
+			this.log("verbose", `[Server] Fixed attachment ${attachment.id}`);
+		}
 	}
 }
