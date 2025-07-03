@@ -78,6 +78,7 @@ export class Attachment extends BaseClass {
 
 	signUrls(req: Request) {
 		return {
+			...this,
 			url: this.url + resignUrl(this.url, req),
 			proxy_url: this.proxy_url + resignUrl(this.proxy_url, req),
 		}
