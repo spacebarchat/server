@@ -21,6 +21,7 @@ import { createHmac, timingSafeEqual } from "crypto";
 import ms, { StringValue } from "ms";
 import { ParsedQs } from "qs";
 import { Request } from "express";
+import attachments from "../cdn/routes/attachments";
 
 export const getUrlSignature = (
 	path: string,

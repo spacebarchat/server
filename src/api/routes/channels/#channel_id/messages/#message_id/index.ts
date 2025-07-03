@@ -30,12 +30,13 @@ import {
 	emitEvent,
 	getPermission,
 	getRights,
-	uploadFile,
+	uploadFile, Config, getUrlSignature,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { handleMessage, postHandleMessage, route } from "../../../../../util";
+import { URL } from "url";
 
 const router = Router();
 // TODO: message content/embed string length limit
@@ -244,7 +245,7 @@ router.put(
 			console.error("[Message] post-message handler failed", e),
 		);
 
-		return res.json(message);
+		return res.json(message.withSignedAttachments(req));
 	},
 );
 
