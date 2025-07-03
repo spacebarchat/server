@@ -20,6 +20,7 @@ import { Intents, ListenEventOpts, Permissions } from "@spacebar/util";
 import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
 import { Capabilities } from "./Capabilities";
+import { Request } from "express";
 
 export interface WebSocket extends WS {
 	version: number;
@@ -42,4 +43,9 @@ export interface WebSocket extends WS {
 	listen_options: ListenEventOpts;
 	capabilities?: Capabilities;
 	large_threshold: number;
+	/**
+	 * The request object for the WebSocket connection.
+	 * WARNING: This is not a proper Express Request object, it may be missing expected properties.
+	 */
+	request: Request; // For signed attachment URLs
 }

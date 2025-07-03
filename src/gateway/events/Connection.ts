@@ -28,6 +28,7 @@ import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "url";
 import { Config, ErlpackType } from "@spacebar/util";
+import { Request } from "express";
 
 let erlpack: ErlpackType | null = null;
 try {
@@ -51,6 +52,7 @@ export async function Connection(
 		: request.socket.remoteAddress;
 
 	socket.ipAddress = ipAddress;
+	socket.request = request as unknown as Request;
 
 	//Create session ID when the connection is opened. This allows gateway dump to group the initial websocket messages with the rest of the conversation.
 	const session_id = genSessionId();
