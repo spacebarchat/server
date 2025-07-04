@@ -40,7 +40,7 @@ import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
 import { dbEngine } from "../util/Database";
-import { Request } from "express";
+import { NewUrlUserSignatureData } from "../Signing";
 
 export enum MessageType {
 	DEFAULT = 0,
@@ -262,11 +262,11 @@ export class Message extends BaseClass {
 		};
 	}
 
-	withSignedAttachments(req: Request) {
+	withSignedAttachments(data: NewUrlUserSignatureData) {
 		return {
 			...this,
 			attachments: this.attachments?.map((attachment: Attachment) =>
-				Attachment.prototype.signUrls.call(attachment, req)
+				Attachment.prototype.signUrls.call(attachment, data)
 			)
 		};
 	}
