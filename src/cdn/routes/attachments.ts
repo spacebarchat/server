@@ -18,9 +18,8 @@
 
 import {
 	Config,
-	getUrlSignature,
-	hasValidSignature,
-	Snowflake,
+	hasValidSignature, NewUrlUserSignatureData,
+	Snowflake, UrlSignResult,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import FileType from "file-type";
@@ -94,9 +93,16 @@ router.get(
 
 		const path = `attachments/${channel_id}/${id}/${filename}`;
 
+		const fullUrl = (req.headers["x-forwarded-proto"] ?? req.protocol) + "://"
+			+ (req.headers["x-forwarded-host"] ?? req.hostname)
+			+ req.originalUrl;
+
 		if (
 			Config.get().security.cdnSignUrls &&
-			!hasValidSignature(path, req.query, req)
+			!hasValidSignature(new NewUrlUserSignatureData({
+				ip: req.ip,
+				userAgent: req.headers["user-agent"] as string,
+			}), UrlSignResult.fromUrl(fullUrl))
 		) {
 			return res.status(404).send("This content is no longer available.");
 		}

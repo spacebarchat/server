@@ -35,8 +35,8 @@ import {
 	emitEvent,
 	getPermission,
 	isTextChannel,
-	resignUrl,
-	uploadFile,
+	getUrlSignature,
+	uploadFile, NewUrlSignatureData,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -210,8 +210,17 @@ router.get(
 
 				y.proxy_url = url.toString();
 
-				y.proxy_url = resignUrl(y.proxy_url, req);
-				y.url = resignUrl(y.url, req);
+				y.proxy_url = getUrlSignature(new NewUrlSignatureData({
+					url: y.proxy_url,
+					userAgent: req.headers["user-agent"],
+					ip: req.ip,
+				})).applyToUrl(y.proxy_url).toString();
+
+				y.url = getUrlSignature(new NewUrlSignatureData({
+					url: y.url,
+					userAgent: req.headers["user-agent"],
+					ip: req.ip,
+				})).applyToUrl(y.url).toString();
 			});
 
 			/**

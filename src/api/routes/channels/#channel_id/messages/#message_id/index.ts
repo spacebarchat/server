@@ -30,7 +30,7 @@ import {
 	emitEvent,
 	getPermission,
 	getRights,
-	uploadFile, Config, getUrlSignature,
+	uploadFile
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
