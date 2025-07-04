@@ -29,6 +29,7 @@ export interface WebSocket extends WS {
 	encoding: "etf" | "json";
 	compress?: "zlib-stream";
 	ipAddress?: string;
+	userAgent?: string; // for cdn request signing
 	shard_count?: bigint;
 	shard_id?: bigint;
 	deflate?: Deflate;
@@ -43,9 +44,4 @@ export interface WebSocket extends WS {
 	listen_options: ListenEventOpts;
 	capabilities?: Capabilities;
 	large_threshold: number;
-	/**
-	 * The request object for the WebSocket connection.
-	 * WARNING: This is not a proper Express Request object, it may be missing expected properties.
-	 */
-	request: Request; // For signed attachment URLs
 }
