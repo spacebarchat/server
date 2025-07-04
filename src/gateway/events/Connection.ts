@@ -47,10 +47,28 @@ export async function Connection(
 ) {
 	const forwardedFor = Config.get().security.forwardedFor;
 	const ipAddress = forwardedFor
-		? (request.headers[forwardedFor] as string)
+		? (request.headers[forwardedFor.toLowerCase()] as string)
 		: request.socket.remoteAddress;
 
 	socket.ipAddress = ipAddress;
+	socket.userAgent = request.headers["user-agent"] as string;
+
+	if (!ipAddress && Config.get().security.cdnSignatureIncludeIp) {
+		return socket.close(
+			CLOSECODES.Decode_error,
+			"Gateway connection rejected: IP address is required.",
+		);
+	}
+
+	if (
+		!socket.userAgent &&
+		Config.get().security.cdnSignatureIncludeUserAgent
+	) {
+		return socket.close(
+			CLOSECODES.Decode_error,
+			"Gateway connection rejected: User-Agent header is required.",
+		);
+	}
 
 	//Create session ID when the connection is opened. This allows gateway dump to group the initial websocket messages with the rest of the conversation.
 	const session_id = genSessionId();
@@ -64,9 +82,9 @@ export async function Connection(
 
 		socket.on("error", (err) => console.error("[Gateway]", err));
 
-		// console.log(
-		// 	`[Gateway] New connection from ${socket.ipAddress}, total ${this.clients.size}`,
-		// );
+		console.log(
+			`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`,
+		);
 
 		if (process.env.WS_LOGEVENTS)
 			[

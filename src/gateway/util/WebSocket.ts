@@ -20,6 +20,7 @@ import { Intents, ListenEventOpts, Permissions } from "@spacebar/util";
 import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
 import { Capabilities } from "./Capabilities";
+import { Request } from "express";
 
 export interface WebSocket extends WS {
 	version: number;
@@ -28,6 +29,7 @@ export interface WebSocket extends WS {
 	encoding: "etf" | "json";
 	compress?: "zlib-stream";
 	ipAddress?: string;
+	userAgent?: string; // for cdn request signing
 	shard_count?: bigint;
 	shard_id?: bigint;
 	deflate?: Deflate;

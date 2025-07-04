@@ -34,5 +34,5 @@ export async function initInstance() {
 	// }
 
 	// TODO: do no clear sessions for instance cluster
-	await Session.delete({});
+	await Session.clear();
 }

@@ -28,6 +28,11 @@ import { URL } from "url";
 import { deleteFile } from "../util/cdn";
 import { BaseClass } from "./BaseClass";
 import { dbEngine } from "../util/Database";
+import {
+	getUrlSignature,
+	NewUrlUserSignatureData,
+	NewUrlSignatureData,
+} from "../Signing";
 
 @Entity({
 	name: "attachments",
@@ -72,5 +77,17 @@ export class Attachment extends BaseClass {
 	@BeforeRemove()
 	onDelete() {
 		return deleteFile(new URL(this.url).pathname);
+	}
+
+	signUrls(data: NewUrlUserSignatureData): Attachment {
+		return {
+			...this,
+			url: getUrlSignature(
+				new NewUrlSignatureData({ ...data, url: this.url }),
+			).applyToUrl(this.url).toString(),
+			proxy_url: getUrlSignature(
+				new NewUrlSignatureData({ ...data, url: this.proxy_url }),
+			).applyToUrl(this.proxy_url).toString(),
+		};
 	}
 }
