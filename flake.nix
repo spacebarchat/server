@@ -59,6 +59,8 @@
               set +x
               runHook postInstall
             '';
+
+            passthru.tests = pkgs.testers.runNixOSTest (import ./nix/tests/test_1.nix self);
           };
 
           update-nix = pkgs.writeShellApplication {
@@ -88,5 +90,9 @@
           ];
         };
       }
-    );
+    )
+    //
+    {
+      nixosModules.default = import ./nix/modules/default self;
+    };
 }
