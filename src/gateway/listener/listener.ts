@@ -161,7 +161,7 @@ export async function setupListener(this: WebSocket) {
 
 // TODO: only subscribe for events that are in the connection intents
 async function consume(this: WebSocket, opts: EventOpts) {
-	let { data, event } = opts;
+	const { data, event } = opts;
 	const id = data.id as string;
 	const permission = this.permissions[id] || new Permissions("ADMINISTRATOR"); // default permission for dm
 
