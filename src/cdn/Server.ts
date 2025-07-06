@@ -138,19 +138,19 @@ export class CDNServer extends Server {
 			where: { url: Like("%?ex=%") },
 		});
 		if (attachmentsToFix.length === 0) {
-			this.log("verbose", "[Server] No attachments to fix");
+			this.log("verbose", "[CDN] No attachments to fix");
 			return;
 		}
 
 		this.log(
 			"verbose",
-			`[Server] Found ${attachmentsToFix.length} attachments to fix`,
+			`[CDN] Found ${attachmentsToFix.length} attachments to fix`,
 		);
 		for (const attachment of attachmentsToFix) {
 			attachment.url = attachment.url.split("?ex=")[0];
 			attachment.proxy_url = attachment.proxy_url?.split("?ex=")[0];
 			await attachment.save();
-			this.log("verbose", `[Server] Fixed attachment ${attachment.id}`);
+			this.log("verbose", `[CDN] Fixed attachment ${attachment.id}`);
 		}
 	}
 }
