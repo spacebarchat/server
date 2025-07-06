@@ -94,7 +94,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	this.user_id = user.id;
 
 	// Check intents
-	if (!identify.intents) identify.intents = 30064771071n; // TODO: what is this number?
+	if (!identify.intents) identify.intents = 0b11011111111111111111111111111111111n; // TODO: what is this number?
 	this.intents = new Intents(identify.intents);
 
 	// TODO: actually do intent things.
