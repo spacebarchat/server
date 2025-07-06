@@ -38,6 +38,9 @@ export class Intents extends BitField {
 		GUILD_MESSAGES_CONTENT: BigInt(1) << BigInt(15), // guild message content
 		AUTO_MODERATION_CONFIGURATION: BigInt(1) << BigInt(20), // guild policies
 		AUTO_MODERATION_EXECUTION: BigInt(1) << BigInt(21), // guild policy execution
+	};
+
+	static ERKINALP_FLAGS = {
 		LIVE_MESSAGE_COMPOSITION: BigInt(1) << BigInt(32), // allow composing messages using the gateway
 		GUILD_ROUTES: BigInt(1) << BigInt(41), // message routes affecting the guild
 		DIRECT_MESSAGES_THREADS: BigInt(1) << BigInt(42), // direct message threads
