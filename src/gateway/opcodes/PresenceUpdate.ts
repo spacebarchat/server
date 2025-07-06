@@ -27,6 +27,7 @@ import {
 import { check } from "./instanceOf";
 
 export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
+	const startTime = Date.now();
 	check.call(this, ActivitySchema, d);
 	const presence = d as ActivitySchema;
 
@@ -50,4 +51,8 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
 			client_status: session.client_status,
 		},
 	} as PresenceUpdateEvent);
+
+	console.log(
+		`Presence update for user ${this.user_id} processed in ${Date.now() - startTime}ms`,
+	);
 }

@@ -37,6 +37,7 @@ import { check } from "./instanceOf";
 // Having MANAGE_CHANNELS permission bypasses this limit and allows you to join regardless of the channel being full or not.
 
 export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
+	const startTime = Date.now();
 	check.call(this, VoiceStateUpdateSchema, data.d);
 	const body = data.d as VoiceStateUpdateSchema;
 	const isNew = body.channel_id === null && body.guild_id === null;
@@ -167,4 +168,8 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 			user_id: voiceState.user_id,
 		} as VoiceServerUpdateEvent);
 	}
+
+	console.log(
+		`[Gateway] VOICE_STATE_UPDATE for user ${this.user_id} in channel ${voiceState.channel_id} in guild ${voiceState.guild_id} in ${Date.now() - startTime}ms`,
+	);
 }

@@ -22,6 +22,7 @@ import {
 import { check } from "./instanceOf";
 
 export async function onStreamCreate(this: WebSocket, data: Payload) {
+	const startTime = Date.now();
 	check.call(this, StreamCreateSchema, data.d);
 	const body = data.d as StreamCreateSchema;
 
@@ -124,6 +125,10 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 		guild_id: voiceState.guild_id,
 		channel_id: voiceState.channel_id,
 	} as VoiceStateUpdateEvent);
+
+	console.log(
+		`[Gateway] STREAM_CREATE for user ${this.user_id} in channel ${body.channel_id} with stream key ${streamKey} in ${Date.now() - startTime}ms`,
+	);
 }
 
 //stream key:

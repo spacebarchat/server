@@ -17,6 +17,7 @@ import { check } from "./instanceOf";
 import { Not } from "typeorm";
 
 export async function onStreamWatch(this: WebSocket, data: Payload) {
+	const startTime = Date.now();
 	check.call(this, StreamWatchSchema, data.d);
 	const body = data.d as StreamWatchSchema;
 
@@ -95,4 +96,8 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
 		},
 		user_id: this.user_id,
 	} as StreamServerUpdateEvent);
+
+	console.log(
+		`[Gateway] STREAM_WATCH for user ${this.user_id} in channel ${channelId} with stream key ${body.stream_key} in ${Date.now() - startTime}ms`,
+	);
 }

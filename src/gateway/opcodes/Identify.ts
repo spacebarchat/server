@@ -71,6 +71,7 @@ const tryGetUserFromToken = async (...args: Parameters<typeof checkToken>) => {
 };
 
 export async function onIdentify(this: WebSocket, data: Payload) {
+	const startTime = Date.now();
 	if (this.user_id) {
 		// we've already identified
 		return this.close(CLOSECODES.Already_authenticated);
@@ -521,4 +522,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	//TODO send VOICE_STATE_UPDATE to let the client know if another device is already connected to a voice channel
 
 	await setupListener.call(this);
+
+	console.log(
+		`[Gateway] IDENTIFY ${this.user_id} in ${Date.now() - startTime}ms`,
+	);
 }

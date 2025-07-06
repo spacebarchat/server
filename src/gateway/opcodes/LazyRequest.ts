@@ -212,6 +212,7 @@ async function subscribeToMemberEvents(this: WebSocket, user_id: string) {
 }
 
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
+	const startTime = Date.now();
 	// TODO: check data
 	check.call(this, LazyRequestSchema, d);
 	const { guild_id, typing, channels, activities, members } =
@@ -308,7 +309,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 		.flat()
 		.unique();
 
-	return await Send(this, {
+	await Send(this, {
 		op: OPCODES.Dispatch,
 		s: this.sequence++,
 		t: "GUILD_MEMBER_LIST_UPDATE",
@@ -327,4 +328,8 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 			groups,
 		},
 	});
+
+	console.log(
+		`[Gateway] LAZY_REQUEST ${guild_id} ${channel_id} took ${Date.now() - startTime}ms`,
+	);
 }

@@ -7,6 +7,7 @@ export async function onGuildSubscriptionsBulk(
 	this: WebSocket,
 	payload: Payload,
 ) {
+	const startTime = Date.now();
 	check.call(this, GuildSubscriptionsBulkSchema, payload.d);
 	const body = payload.d as GuildSubscriptionsBulkSchema;
 
@@ -21,4 +22,7 @@ export async function onGuildSubscriptionsBulk(
 			},
 		});
 	}
+	console.log(
+		`[Gateway] GuildSubscriptionsBulk processed ${Object.keys(body.subscriptions).length} subscriptions for user ${this.user_id} in ${Date.now() - startTime}ms`,
+	);
 }
