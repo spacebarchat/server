@@ -545,14 +545,14 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	console.log(
 		`[Gateway] IDENTIFY ${this.user_id} in ${Date.now() - startTime}ms`,
 		{
-			userQueryTime,
-			createSessionTime,
-			query1Time,
-			remapDataTime,
-			sessionReplaceTime,
-			readyTime,
-			pendingGuildsTime,
-			readySupplementalTime,
+			userQueryTime: Date.now() - userQueryTime,
+			createSessionTime: Date.now() - createSessionTime,
+			query1Time: Date.now() - query1Time,
+			remapDataTime: Date.now() - remapDataTime,
+			sessionReplaceTime: Date.now() - sessionReplaceTime,
+			readyTime: Date.now() - readyTime,
+			pendingGuildsTime: Date.now() - pendingGuildsTime,
+			readySupplementalTime: Date.now() - readySupplementalTime,
 		}
 	);
 }
