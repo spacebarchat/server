@@ -36,7 +36,9 @@ import {
 	getPermission,
 	isTextChannel,
 	getUrlSignature,
-	uploadFile, NewUrlSignatureData, NewUrlUserSignatureData,
+	uploadFile,
+	NewUrlSignatureData,
+	NewUrlUserSignatureData,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -210,17 +212,25 @@ router.get(
 
 				y.proxy_url = url.toString();
 
-				y.proxy_url = getUrlSignature(new NewUrlSignatureData({
-					url: y.proxy_url,
-					userAgent: req.headers["user-agent"],
-					ip: req.ip,
-				})).applyToUrl(y.proxy_url).toString();
+				y.proxy_url = getUrlSignature(
+					new NewUrlSignatureData({
+						url: y.proxy_url,
+						userAgent: req.headers["user-agent"],
+						ip: req.ip,
+					}),
+				)
+					.applyToUrl(y.proxy_url)
+					.toString();
 
-				y.url = getUrlSignature(new NewUrlSignatureData({
-					url: y.url,
-					userAgent: req.headers["user-agent"],
-					ip: req.ip,
-				})).applyToUrl(y.url).toString();
+				y.url = getUrlSignature(
+					new NewUrlSignatureData({
+						url: y.url,
+						userAgent: req.headers["user-agent"],
+						ip: req.ip,
+					}),
+				)
+					.applyToUrl(y.url)
+					.toString();
 			});
 
 			/**
@@ -439,10 +449,14 @@ router.post(
 			console.error("[Message] post-message handler failed", e),
 		);
 
-		return res.json(message.withSignedAttachments(new NewUrlUserSignatureData({
-			ip: req.ip,
-			userAgent: req.headers["user-agent"] as string,
-		})));
+		return res.json(
+			message.withSignedAttachments(
+				new NewUrlUserSignatureData({
+					ip: req.ip,
+					userAgent: req.headers["user-agent"] as string,
+				}),
+			),
+		);
 	},
 );
 

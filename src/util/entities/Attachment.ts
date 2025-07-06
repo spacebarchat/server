@@ -84,10 +84,14 @@ export class Attachment extends BaseClass {
 			...this,
 			url: getUrlSignature(
 				new NewUrlSignatureData({ ...data, url: this.url }),
-			).applyToUrl(this.url).toString(),
+			)
+				.applyToUrl(this.url)
+				.toString(),
 			proxy_url: getUrlSignature(
 				new NewUrlSignatureData({ ...data, url: this.proxy_url }),
-			).applyToUrl(this.proxy_url).toString(),
+			)
+				.applyToUrl(this.proxy_url)
+				.toString(),
 		};
 	}
 }

@@ -25,7 +25,7 @@ const jwtSignOptions: jwt.SignOptions = {
 	expiresIn: "5m",
 };
 const jwtVerifyOptions: jwt.VerifyOptions = {
-	algorithms: ["HS256"]
+	algorithms: ["HS256"],
 };
 
 export const WebAuthn: {
