@@ -9,11 +9,20 @@ in
   options.services.spacebarchat-server = {
     enable = lib.mkEnableOption "spacebarchat-server";
     package = lib.mkPackageOption self.packages.${pkgs.stdenv.hostPlatform.system} "spacebar-server" { default = "default"; };
+    databaseFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      description = ''
+        Path to a file containing a definition of the `DATABASE` environment variable database connection string.
+        Example content: `DATABASE=postgres//username:password@host-IP:port/databaseName`.
+        See https://docs.spacebar.chat/setup/server/database/.
+      '';
+    };
     extraEnvironment = lib.mkOption {
       default = {};
       description = ''
         Environment variables passed to spacebarchat-server.
-        See <link xlink:href="https://docs.spacebar.chat/setup/server/configuration/env"/>.
+        See https://docs.spacebar.chat/setup/server/configuration/env for supported values.
       '';
       type = lib.types.submodule {
         freeformType = with lib.types; attrsOf (oneOf [ str bool ]);
@@ -28,12 +37,6 @@ in
             default = 3001;
             description = "Port to listen on. Used by all components, including bundle. If using bundle, all components run under the same port";
           };
-          DATABASE = lib.mkOption {
-            type = lib.types.str;
-            default = "database.db";
-            example = "postgres://username:passwort@host-IP:port/databaseName";
-            description = "Database connection string. Defaults to SQLite3 at project root";
-          };
         };
       };
     };
@@ -43,7 +46,7 @@ in
       default = {};
       description = ''
         Configuration for spacebarchat-server.
-        See <link xlink:href="https://docs.spacebar.chat/setup/server/configuration"/> for supported values.
+        See https://docs.spacebar.chat/setup/server/configuration for supported values.
       '';
     };
   };
@@ -87,13 +90,14 @@ in
         ];
         StateDirectory = "spacebarchat-server";
         StateDirectoryMode = "0700";
-        ExecStart = "${cfg.package}/bin/start-bundle";
+        ExecStart = "env  ${cfg.package}/bin/start-bundle";
         Restart = "on-failure";
         RestartSec = 10;
         StartLimitBurst = 5;
         UMask = "077";
         WorkingDirectory = "/var/lib/spacebarchat-server/";
-      };
+      }
+      // optionalAttrs (cfg.databaseFile != null) { EnvironmentFile = cfg.databaseFile; };
     };
   };
 }
