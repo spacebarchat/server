@@ -90,7 +90,7 @@ in
         ];
         StateDirectory = "spacebarchat-server";
         StateDirectoryMode = "0700";
-        ExecStart = "env  ${cfg.package}/bin/start-bundle";
+        ExecStart = "${cfg.package}/bin/start-bundle";
         Restart = "on-failure";
         RestartSec = 10;
         StartLimitBurst = 5;
