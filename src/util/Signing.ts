@@ -74,12 +74,9 @@ export class UrlSignResult {
 	issuedAt: string;
 	expiresAt: string;
 
-	/*
-	 * @param data {UrlSignResult}
-	 */
-	constructor(data: any) {
+	constructor(data: Partial<UrlSignResult>) {
 		for (const key in data) {
-			// @ts-ignore TS7053 - We dont care about string indexing a class
+			// @ts-expect-error TS7053 - We dont care about string indexing a class
 			this[key] = data[key];
 		}
 	}
