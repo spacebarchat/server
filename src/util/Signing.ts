@@ -45,10 +45,12 @@ export class NewUrlSignatureData extends NewUrlUserSignatureData {
 			);
 		}
 		if (this.path && this.url) {
-			console.warn(
-				"[Signing] Both path and url are provided, using path for signing",
-				new Error().stack,
-			);
+			if (process.env["LOG_CDN_SIGNATURES"])
+				console.warn(
+					"[Signing] Both path and url are provided, using path for signing",
+					this,
+					new Error().stack,
+				);
 		}
 		if (this.url) {
 			try {
