@@ -92,6 +92,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	});
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 	this.user_id = user.id;
+	const userQueryTime = Date.now();
 
 	// Check intents
 	if (!identify.intents) identify.intents = 0b11011111111111111111111111111111111n; // TODO: what is this number?
@@ -132,6 +133,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		client_status: {},
 		activities: identify.presence?.activities, // TODO: validation
 	});
+
+	const createSessionTime = Date.now();
 
 	// Get from database:
 	// * the users read states
@@ -226,6 +229,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		],
 	);
 
+	const query1Time = Date.now();
+
 	// We forgot to migrate user settings from the JSON column of `users`
 	// to the `user_settings` table theyre in now,
 	// so for instances that migrated, users may not have a `user_settings` row.
@@ -254,6 +259,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			},
 		];
 	});
+
+	const mergedMembersTime = Date.now();
 
 	// Populated with guilds 'unavailable' currently
 	// Just for bots
@@ -348,6 +355,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	// From user relationships ( friends ), also append to `users` list
 	user.relationships.forEach((x) => users.add(x.to.toPublicUser()));
 
+	const remapDataTime = Date.now();
+
 	// Send SESSIONS_REPLACE and PRESENCE_UPDATE
 	const allSessions = (
 		await Session.find({
@@ -363,6 +372,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		session_id: x.session_id, // TODO: discord.com sends 'all', what is that???
 		status: x.status,
 	}));
+
+	const sessionReplaceTime = Date.now();
 
 	Promise.all([
 		emitEvent({
@@ -457,6 +468,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		d,
 	});
 
+	const readyTime = Date.now();
+
 	// If we're a bot user, send GUILD_CREATE for each unavailable guild
 	// TODO: check if bot has permission to view some of these based on intents (i.e. GUILD_MEMBERS, GUILD_PRESENCES, GUILD_VOICE_STATES)
 	await Promise.all(
@@ -486,6 +499,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			);
 		}),
 	);
+
+	const pendingGuildsTime = Date.now();
 
 	const readySupplementalGuilds = (
 		guilds.filter((guild) => !guild.unavailable) as Guild[]
@@ -518,12 +533,26 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		},
 	});
 
+	const readySupplementalTime = Date.now();
+
 	//TODO send GUILD_MEMBER_LIST_UPDATE
 	//TODO send VOICE_STATE_UPDATE to let the client know if another device is already connected to a voice channel
 
 	await setupListener.call(this);
 
+	const setupListenerTime = Date.now();
+
 	console.log(
 		`[Gateway] IDENTIFY ${this.user_id} in ${Date.now() - startTime}ms`,
+		{
+			userQueryTime,
+			createSessionTime,
+			query1Time,
+			remapDataTime,
+			sessionReplaceTime,
+			readyTime,
+			pendingGuildsTime,
+			readySupplementalTime,
+		}
 	);
 }
