@@ -52,5 +52,9 @@ export class Intents extends BitField {
 		INSTANCE_USER_UPDATES: BigInt(1) << BigInt(63), // all instance user updates
 	};
 
-	static PRIVILEGED_FLAGS: BitField = new Intents(Intents.FLAGS.GUILD_PRESENCES | Intents.FLAGS.GUILD_MEMBERS | Intents.FLAGS.GUILD_MESSAGES_CONTENT);
+	static PRIVILEGED_FLAGS: BitField = new Intents(
+		Intents.FLAGS.GUILD_PRESENCES |
+			Intents.FLAGS.GUILD_MEMBERS |
+			Intents.FLAGS.GUILD_MESSAGES_CONTENT,
+	);
 }
