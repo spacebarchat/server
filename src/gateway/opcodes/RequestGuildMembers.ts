@@ -51,10 +51,15 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	guild_id = guild_id as string;
 	user_ids = user_ids as string[] | undefined;
 
-	if ("query" in d && (!limit || Number.isNaN(limit)))
+	if (d.query && (!limit || Number.isNaN(limit))) {
+		console.log("Query:", d)
 		throw new Error('"query" requires "limit" to be set');
-	if ("query" in d && user_ids)
+	}
+
+	if (d.query && user_ids) {
+		console.log("Query:", d)
 		throw new Error('"query" and "user_ids" are mutually exclusive');
+	}
 
 	// TODO: Configurable limit?
 	if ((query || (user_ids && user_ids.length > 0)) && (!limit || limit > 100))
