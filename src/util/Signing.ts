@@ -39,7 +39,9 @@ export class NewUrlSignatureData extends NewUrlUserSignatureData {
 		this.path = data.path;
 		this.url = data.url;
 		if (!this.path && !this.url) {
-			throw new Error("Either path or url must be provided for URL signing");
+			throw new Error(
+				"Either path or url must be provided for URL signing",
+			);
 		}
 		if (this.path && this.url) {
 			console.warn(
@@ -51,7 +53,9 @@ export class NewUrlSignatureData extends NewUrlUserSignatureData {
 				const parsedUrl = new URL(this.url);
 				this.path = parsedUrl.pathname;
 			} catch (e) {
-				throw new Error("Invalid URL provided for signing: " + this.url);
+				throw new Error(
+					"Invalid URL provided for signing: " + this.url,
+				);
 			}
 		}
 	}
@@ -176,12 +180,21 @@ function calculateHash(request: UrlSignatureData): UrlSignResult {
 		expiresAt: request.expiresAt,
 		hash,
 	});
-	console.log("[Signing]", {
-		path: request.path,
-		validity: request.issuedAt + " .. " + request.expiresAt,
-		ua: Config.get().security.cdnSignatureIncludeUserAgent ? request.userAgent : "[disabled]",
-		ip: Config.get().security.cdnSignatureIncludeIp ? request.ip : "[disabled]"
-	}, "->", result);
+	console.log(
+		"[Signing]",
+		{
+			path: request.path,
+			validity: request.issuedAt + " .. " + request.expiresAt,
+			ua: Config.get().security.cdnSignatureIncludeUserAgent
+				? request.userAgent
+				: "[disabled]",
+			ip: Config.get().security.cdnSignatureIncludeIp
+				? request.ip
+				: "[disabled]",
+		},
+		"->",
+		result,
+	);
 	return result;
 }
 
@@ -212,7 +225,10 @@ export const isExpired = (data: UrlSignResult | UrlSignatureData) => {
 	return false;
 };
 
-export const hasValidSignature = (req: NewUrlUserSignatureData, sig: UrlSignResult) => {
+export const hasValidSignature = (
+	req: NewUrlUserSignatureData,
+	sig: UrlSignResult,
+) => {
 	// if the required query parameters are not present, return false
 	if (!sig.expiresAt || !sig.issuedAt || !sig.hash) {
 		console.warn(
@@ -227,31 +243,45 @@ export const hasValidSignature = (req: NewUrlUserSignatureData, sig: UrlSignResu
 		return false;
 	}
 
-	const calcResult = calculateHash(new UrlSignatureData({
-		path: sig.path,
-		issuedAt: sig.issuedAt,
-		expiresAt: sig.expiresAt,
-		ip: req.ip,
-		userAgent: req.userAgent
-	}));
+	const calcResult = calculateHash(
+		new UrlSignatureData({
+			path: sig.path,
+			issuedAt: sig.issuedAt,
+			expiresAt: sig.expiresAt,
+			ip: req.ip,
+			userAgent: req.userAgent,
+		}),
+	);
 	const calcd = calcResult.hash;
 	const calculated = Buffer.from(calcd);
 	const received = Buffer.from(sig.hash as string);
 
-	console.assert(sig.issuedAt == calcResult.issuedAt, "[Signing] Mismatched issuedAt", {
-		is: sig.issuedAt,
-		calculated: calcResult.issuedAt,
-	});
+	console.assert(
+		sig.issuedAt == calcResult.issuedAt,
+		"[Signing] Mismatched issuedAt",
+		{
+			is: sig.issuedAt,
+			calculated: calcResult.issuedAt,
+		},
+	);
 
-	console.assert(sig.expiresAt == calcResult.expiresAt, "[Signing] Mismatched expiresAt", {
-		ex: sig.expiresAt,
-		calculated: calcResult.expiresAt,
-	});
+	console.assert(
+		sig.expiresAt == calcResult.expiresAt,
+		"[Signing] Mismatched expiresAt",
+		{
+			ex: sig.expiresAt,
+			calculated: calcResult.expiresAt,
+		},
+	);
 
-	console.assert(calculated.length === received.length, "[Signing] Mismatched hash length", {
-		calculated: calculated.length,
-		received: received.length,
-	});
+	console.assert(
+		calculated.length === received.length,
+		"[Signing] Mismatched hash length",
+		{
+			calculated: calculated.length,
+			received: received.length,
+		},
+	);
 
 	const isHashValid =
 		calculated.length === received.length &&

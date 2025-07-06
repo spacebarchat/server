@@ -266,8 +266,8 @@ export class Message extends BaseClass {
 		return {
 			...this,
 			attachments: this.attachments?.map((attachment: Attachment) =>
-				Attachment.prototype.signUrls.call(attachment, data)
-			)
+				Attachment.prototype.signUrls.call(attachment, data),
+			),
 		};
 	}
 }

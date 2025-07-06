@@ -17,7 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import { RefreshUrlsRequestSchema, getUrlSignature, NewUrlSignatureData } from "@spacebar/util";
+import {
+	RefreshUrlsRequestSchema,
+	getUrlSignature,
+	NewUrlSignatureData,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 
@@ -37,12 +41,16 @@ router.post(
 	async (req: Request, res: Response) => {
 		const { attachment_urls } = req.body as RefreshUrlsRequestSchema;
 
-		const refreshed_urls = attachment_urls.map(url => {
-			return getUrlSignature(new NewUrlSignatureData({
-				url: url,
-				ip: req.ip,
-				userAgent: req.headers["user-agent"] as string
-			})).applyToUrl(url).toString();
+		const refreshed_urls = attachment_urls.map((url) => {
+			return getUrlSignature(
+				new NewUrlSignatureData({
+					url: url,
+					ip: req.ip,
+					userAgent: req.headers["user-agent"] as string,
+				}),
+			)
+				.applyToUrl(url)
+				.toString();
 		});
 
 		return res.status(200).json({
