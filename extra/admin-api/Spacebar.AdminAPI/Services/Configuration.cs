@@ -6,4 +6,6 @@ public class Configuration {
     }
     
     public string? OverrideUid { get; set; }
+    public bool DisableAuthentication { get; set; } = false;
+    public bool Enforce2FA { get; set; } = true;
 }

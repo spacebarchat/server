@@ -1,5 +1,5 @@
-**/bin/
-**/obj/
+bin/
+obj/
 /patches/
 appsettings.Local*.json
 *.DotSettings.user

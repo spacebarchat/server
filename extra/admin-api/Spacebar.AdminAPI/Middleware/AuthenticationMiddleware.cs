@@ -13,7 +13,8 @@ public class AuthenticationMiddleware(RequestDelegate next) {
     private static Dictionary<string, DateTime> _userCacheExpiry = new();
 
     public async Task InvokeAsync(HttpContext context, IServiceProvider sp) {
-        if (context.Request.Path.StartsWithSegments("/ping")) {
+        var config = sp.GetRequiredService<Configuration>();
+        if (context.Request.Path.StartsWithSegments("/ping") || config.DisableAuthentication) {
             await next(context);
             return;
         }
@@ -55,7 +56,6 @@ public class AuthenticationMiddleware(RequestDelegate next) {
 
         if (!_userCache.ContainsKey(token)) {
             var db = sp.GetRequiredService<SpacebarDbContext>();
-            var config = sp.GetRequiredService<Configuration>();
             user = await db.Users.FindAsync(config.OverrideUid ?? res.ClaimsIdentity.Claims.First(x => x.Type == "id").Value)
                    ?? throw new InvalidOperationException();
             _userCache[token] = user;

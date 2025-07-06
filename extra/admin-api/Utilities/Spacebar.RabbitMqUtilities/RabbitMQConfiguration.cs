@@ -9,4 +9,9 @@ public class RabbitMQConfiguration {
     public required string Host { get; set; }
     public required string Username { get; set; }
     public required string Password { get; set; }
+    public required string Port { get; set; }
+    
+    public string ToConnectionString() {
+        return $"amqp://{Username}:{Password}@{Host}:{Port}";
+    }
 }

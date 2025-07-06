@@ -1,9 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using ArcaneLibs;
 using ArcaneLibs.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using Spacebar.AdminApi.Models;
+using Spacebar.AdminAPI.Services;
 using Spacebar.Db.Contexts;
 using Spacebar.Db.Models;
 using Spacebar.RabbitMqUtilities;
@@ -12,7 +22,7 @@ namespace Spacebar.AdminAPI.Controllers;
 
 [ApiController]
 [Route("/Users")]
-public class UserController(ILogger<UserController> logger, SpacebarDbContext db, RabbitMQService mq, IServiceProvider sp) : ControllerBase {
+public class UserController(ILogger<UserController> logger, Configuration config, RabbitMQConfiguration amqpConfig, SpacebarDbContext db, RabbitMQService mq, IServiceProvider sp) : ControllerBase {
     private readonly ILogger<UserController> _logger = logger;
 
     [HttpGet]
@@ -406,6 +416,88 @@ public class UserController(ILogger<UserController> logger, SpacebarDbContext db
                     // ignored
                 }
             }
+        }
+    }
+    
+    // {
+        // "op": 0,
+        // "t": "GUILD_ROLE_UPDATE",
+        // "d": {
+            // "guild_id": "1006649183970562092",
+            // "role": {
+                // "id": "1006706520514028812",
+                // "guild_id": "1006649183970562092",
+                // "color": 16711680,
+                // "hoist": true,
+                // "managed": false,
+                // "mentionable": true,
+                // "name": "Adminstrator",
+                // "permissions": "9",
+                // "position": 5,
+                // "unicode_emoji": "💖",
+                // "flags": 0
+            // }
+        // },
+        // "s": 38
+    // }
+    
+    [HttpGet("test")]
+    public async IAsyncEnumerable<string> Test() {
+        var factory = new ConnectionFactory {
+            Uri = new Uri(amqpConfig.ToConnectionString())
+        };
+        await using var mqConnection = await factory.CreateConnectionAsync();
+        await using var mqChannel = await mqConnection.CreateChannelAsync();
+
+        var guildId = "1006649183970562092";
+        // var roleId = "1006706520514028812"; //Administrator
+        var roleId = "1391303296148639051"; //Spacebar Maintainer
+        // int color = 16711680; //Administrator
+        int color = 99839; //Spacebar Maintainer
+        
+        await mqChannel.ExchangeDeclareAsync(exchange: guildId, type: ExchangeType.Fanout, durable: false);
+
+        var props = new BasicProperties() { Type = "GUILD_ROLE_UPDATE" };
+        int framerate = 30;
+        float delay = 1000f / framerate;
+        var secondsPerRotation = 6.243f;
+        // use delay, 255f = one rotation, lengthFactor = iterations to make a full rotation
+        var lengthFactor = (secondsPerRotation * 1000f / delay);
+        Console.WriteLine("Length factor: {0}, RPS: {1}", lengthFactor, 0);
+        var re = new RainbowEnumerator(lengthFactor: lengthFactor, offset: color, skip: 1);
+        var sw = Stopwatch.StartNew();
+        while (true) {
+            var clr = re.Next();
+            color = clr.r << 16 | clr.g << 8 | clr.b;
+            var publishSuccess = false;
+            do {
+                try {
+                    await mqChannel.BasicPublishAsync(exchange: guildId, routingKey: "", mandatory: false, basicProperties: props, body: new {
+                        guild_id = guildId,
+                        role = new {
+                            id = roleId,
+                            guild_id = guildId,
+                            color,
+                            hoist = false,
+                            managed = false,
+                            mentionable = true,
+                            name = "Spacebar Maintainer",
+                            permissions = "8",
+                            position = 5,
+                            unicode_emoji = "",
+                            flags = 0
+                        }
+                    }.ToJson().AsBytes().ToArray());
+                    publishSuccess = true;
+                }
+                catch (Exception e) {
+                    Console.WriteLine($"[RabbitMQ] Error publishing bulk delete: {e.Message}");
+                    await Task.Delay(10);
+                }
+            } while (!publishSuccess);
+            yield return $"{clr.r:X2} {clr.g:X2} {clr.b:X2} | {color:X8} | {sw.Elapsed} (waiting {Math.Max(0, (int)delay - (int)sw.ElapsedMilliseconds)} out of {delay} ms)";
+            await Task.Delay(Math.Max(0, (int)delay - (int)sw.ElapsedMilliseconds));
+            sw.Restart();
         }
     }
 }
