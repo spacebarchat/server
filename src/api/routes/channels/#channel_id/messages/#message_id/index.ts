@@ -30,7 +30,7 @@ import {
 	emitEvent,
 	getPermission,
 	getRights,
-	uploadFile
+	uploadFile, NewUrlUserSignatureData,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -245,7 +245,10 @@ router.put(
 			console.error("[Message] post-message handler failed", e),
 		);
 
-		return res.json(message.withSignedAttachments(req));
+		return res.json(message.withSignedAttachments(new NewUrlUserSignatureData({
+			ip: req.ip,
+			userAgent: req.headers["user-agent"] as string,
+		})));
 	},
 );
 

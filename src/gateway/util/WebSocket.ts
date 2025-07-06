@@ -20,7 +20,6 @@ import { Intents, ListenEventOpts, Permissions } from "@spacebar/util";
 import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
 import { Capabilities } from "./Capabilities";
-import { Request } from "express";
 
 export interface WebSocket extends WS {
 	version: number;
