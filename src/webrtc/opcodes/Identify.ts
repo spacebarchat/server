@@ -46,7 +46,7 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	let authenticated = false;
 
 	// first check if its a guild voice connection or DM voice call
-	let voiceState = await VoiceState.findOne({
+	const voiceState = await VoiceState.findOne({
 		where: [
 			{ guild_id: server_id, user_id, token, session_id },
 			{ channel_id: server_id, user_id, token, session_id },
