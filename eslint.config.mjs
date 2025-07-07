@@ -21,7 +21,6 @@ export default [
 			"**/dist",
 			"**/README.md",
 			"**/COPYING",
-			"src/webrtc",
 			"**/scripts/",
 			"**/assets",
 		],

@@ -50,6 +50,7 @@ export const loadWebRtcLibrary = async () => {
 		if (!selectedWrtcLibrary)
 			throw new NoConfiguredLibraryError("No library configured in .env");
 
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		mediaServer = new // @ts-ignore
 		(await import(selectedWrtcLibrary)).default();
 
