@@ -24,6 +24,7 @@ export * from "./CaptchaRequiredResponse";
 export * from "./DiscoverableGuildsResponse";
 export * from "./EmailDomainLookupResponse";
 export * from "./EmailDomainLookupVerifyCodeResponse";
+export * from "./EmojiSourceResponse"
 export * from "./GatewayBotResponse";
 export * from "./GatewayResponse";
 export * from "./GenerateRegistrationTokensResponse";
