@@ -29,4 +29,5 @@ export interface GuildCreateSchema {
 	system_channel_id?: string;
 	rules_channel_id?: string;
 	guild_template_code?: string;
+	staff_only?: boolean;
 }
