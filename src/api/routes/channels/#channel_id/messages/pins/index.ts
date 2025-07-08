@@ -31,7 +31,6 @@ import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-// This is the old endpoint
 router.put(
 	"/:message_id",
 	route({
@@ -185,7 +184,10 @@ router.get(
 			relations: ["author"],
 		});
 
-		res.send(pins);
+		res.send({
+			items: pins,
+			has_more: false
+		});
 	},
 );
 
