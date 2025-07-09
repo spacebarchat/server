@@ -182,7 +182,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
 			1: 5,
 			2: 2,
 			3: 2,
-		}; // ?????
+		}; // ????? // emma: this appears to always be an empty attrset...
 		this.channels = guild.channels;
 		this.data_mode = "full";
 		this.emojis = guild.emojis;
