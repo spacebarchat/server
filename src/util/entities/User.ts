@@ -361,7 +361,7 @@ export class User extends BaseClass {
 		}
 
 		// TODO: save date_of_birth
-		// appearently discord doesn't save the date of birth and just calculate if nsfw is allowed
+		// apparently discord doesn't save the date of birth and just calculate if nsfw is allowed
 		// if nsfw_allowed is null/undefined it'll require date_of_birth to set it to true/false
 		const language =
 			req?.language === "en" ? "en-US" : req?.language || "en-US";
