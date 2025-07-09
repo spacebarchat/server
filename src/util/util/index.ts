@@ -39,6 +39,7 @@ export * from "./Regex";
 export * from "./Rights";
 export * from "./Sentry";
 export * from "./Snowflake";
+export * from "./Stopwatch";
 export * from "./String";
 export * from "./Token";
 export * from "./TraverseDirectory";
