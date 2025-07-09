@@ -509,11 +509,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		userQueryTime,
 		validateIntentsAndShardingTime,
 		createSessionTime,
-		sessionSaveTime,
-		applicationQueryTime,
-		read_statesQueryTime,
-		membersQueryTime,
-		recipientsQueryTime,
 		totalQueryTime,
 		createUserSettingsTime,
 		mergedMembersTime,
@@ -529,13 +524,29 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	};
 	for (const [key, value] of Object.entries(times)) {
 		if (value) {
-			_trace![1].calls.push(key, { micros: value.totalMicroseconds });
+			const val = { micros: value.totalMicroseconds } as { micros: number; calls: TraceNode[] };
+			_trace![1].calls.push(key, val);
+			if (key === "totalQueryTime") {
+				val.calls = [];
+				for (const [subkey, subvalue] of Object.entries({
+					sessionSaveTime,
+					applicationQueryTime,
+					read_statesQueryTime,
+					membersQueryTime,
+					recipientsQueryTime,
+				})) {
+					if (subvalue) {
+						val.calls.push(subkey, {
+							micros: subvalue.totalMicroseconds,
+						} as TraceNode);
+					}
+				}
+			}
 		}
 	}
-	_trace![1].calls.push(
-		"buildTraceTime",
-		{ micros: taskSw.elapsed().totalMicroseconds },
-	);
+	_trace![1].calls.push("buildTraceTime", {
+		micros: taskSw.elapsed().totalMicroseconds,
+	});
 	d._trace = [JSON.stringify(_trace)];
 
 	// Send READY
