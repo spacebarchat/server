@@ -56,6 +56,11 @@ import {
 	checkToken,
 	emitEvent,
 	getDatabase,
+	TraceNode,
+	TraceRoot,
+	Stopwatch,
+	timePromise,
+	ElapsedTime,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 
@@ -71,7 +76,10 @@ const tryGetUserFromToken = async (...args: Parameters<typeof checkToken>) => {
 };
 
 export async function onIdentify(this: WebSocket, data: Payload) {
-	const startTime = Date.now();
+	const totalSw = Stopwatch.startNew();
+	const taskSw = Stopwatch.startNew();
+	const gatewayShardName = `sb-gateway`;
+
 	if (this.user_id) {
 		// we've already identified
 		return this.close(CLOSECODES.Already_authenticated);
@@ -85,6 +93,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	this.capabilities = new Capabilities(identify.capabilities || 0);
 	this.large_threshold = identify.large_threshold || 250;
+	const parseAndValidateTime = taskSw.getElapsedAndReset();
 
 	const user = await tryGetUserFromToken(identify.token, {
 		relations: ["relationships", "relationships.to", "settings"],
@@ -92,10 +101,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	});
 	if (!user) return this.close(CLOSECODES.Authentication_failed);
 	this.user_id = user.id;
-	const userQueryTime = Date.now();
+	const userQueryTime = taskSw.getElapsedAndReset();
 
 	// Check intents
-	if (!identify.intents) identify.intents = 0b11011111111111111111111111111111111n; // TODO: what is this number?
+	if (!identify.intents)
+		identify.intents = 0b11011111111111111111111111111111111n; // TODO: what is this number?
 	this.intents = new Intents(identify.intents);
 
 	// TODO: actually do intent things.
@@ -119,6 +129,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			return this.close(CLOSECODES.Invalid_shard);
 		}
 	}
+	const validateIntentsAndShardingTime = taskSw.getElapsedAndReset();
 
 	// Generate a new gateway session ( id is already made, just save it in db )
 	const session = Session.create({
@@ -133,23 +144,30 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		client_status: {},
 		activities: identify.presence?.activities, // TODO: validation
 	});
-
-	const createSessionTime = Date.now();
+	const createSessionTime = taskSw.getElapsedAndReset();
 
 	// Get from database:
 	// * the users read states
 	// * guild members for this user
 	// * recipients ( dm channels )
 	// * the bot application, if it exists
-	const [, application, read_states, members, recipients] = await Promise.all(
-		[
-			session.save(),
+	const [
+		{ elapsed: sessionSaveTime },
+		{ result: application, elapsed: applicationQueryTime },
+		{ result: read_states, elapsed: read_statesQueryTime },
+		{ result: members, elapsed: membersQueryTime },
+		{ result: recipients, elapsed: recipientsQueryTime },
+	] = await Promise.all([
+		timePromise(() => session.save()),
 
+		timePromise(() =>
 			Application.findOne({
 				where: { id: this.user_id },
 				select: ["id", "flags"],
 			}),
+		),
 
+		timePromise(() =>
 			ReadState.find({
 				where: { user_id: this.user_id },
 				select: [
@@ -160,7 +178,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					"mention_count",
 				],
 			}),
+		),
 
+		timePromise(() =>
 			Member.find({
 				where: { id: this.user_id },
 				select: {
@@ -194,7 +214,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					// "user",
 				],
 			}),
+		),
 
+		timePromise(() =>
 			Recipient.find({
 				where: { user_id: this.user_id, closed: false },
 				relations: [
@@ -226,17 +248,19 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					},
 				},
 			}),
-		],
-	);
+		),
+	]);
 
-	const query1Time = Date.now();
+	const totalQueryTime = taskSw.getElapsedAndReset();
 
 	// We forgot to migrate user settings from the JSON column of `users`
 	// to the `user_settings` table theyre in now,
 	// so for instances that migrated, users may not have a `user_settings` row.
+	let createUserSettingsTime: ElapsedTime | undefined = undefined;
 	if (!user.settings) {
 		user.settings = new UserSettings();
 		await user.settings.save();
+		createUserSettingsTime = taskSw.getElapsedAndReset();
 	}
 
 	// Generate merged_members
@@ -262,8 +286,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			},
 		];
 	});
-
-	const mergedMembersTime = Date.now();
+	const mergedMembersTime = taskSw.getElapsedAndReset();
 
 	// Populated with guilds 'unavailable' currently
 	// Just for bots
@@ -307,6 +330,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			threads: [],
 		};
 	});
+	const generateGuildsListTime = taskSw.getElapsedAndReset();
 
 	// Generate user_guild_settings
 	const user_guild_settings_entries: ReadyUserGuildSettingsEntries[] =
@@ -321,6 +345,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				channel_id: y[0],
 			})),
 		}));
+	const generateUserGuildSettingsTime = taskSw.getElapsedAndReset();
 
 	// Popultaed with users from private channels, relationships.
 	// Uses a set to dedupe for us.
@@ -355,11 +380,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				is_spam: false, // TODO
 			};
 		});
+	const generateDmChannelsTime = taskSw.getElapsedAndReset();
 
 	// From user relationships ( friends ), also append to `users` list
 	user.relationships.forEach((x) => users.add(x.to.toPublicUser()));
-
-	const remapDataTime = Date.now();
+	const appendRelationshipsTime = taskSw.getElapsedAndReset();
 
 	// Send SESSIONS_REPLACE and PRESENCE_UPDATE
 	const allSessions = (
@@ -376,25 +401,31 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		session_id: x.session_id, // TODO: discord.com sends 'all', what is that???
 		status: x.status,
 	}));
+	const findAndGenerateSessionReplaceTime = taskSw.getElapsedAndReset();
 
-	const sessionReplaceTime = Date.now();
-
-	Promise.all([
-		emitEvent({
-			event: "SESSIONS_REPLACE",
-			user_id: this.user_id,
-			data: allSessions,
-		} as SessionsReplace),
-		emitEvent({
-			event: "PRESENCE_UPDATE",
-			user_id: this.user_id,
-			data: {
-				user: user.toPublicUser(),
-				activities: session.activities,
-				client_status: session.client_status,
-				status: session.status,
-			},
-		} as PresenceUpdateEvent),
+	const [
+		{ elapsed: emitSessionsReplaceTime },
+		{ elapsed: emitPresenceUpdateTime },
+	] = await Promise.all([
+		timePromise(() =>
+			emitEvent({
+				event: "SESSIONS_REPLACE",
+				user_id: this.user_id,
+				data: allSessions,
+			} as SessionsReplace),
+		),
+		timePromise(() =>
+			emitEvent({
+				event: "PRESENCE_UPDATE",
+				user_id: this.user_id,
+				data: {
+					user: user.toPublicUser(),
+					activities: session.activities,
+					client_status: session.client_status,
+					status: session.status,
+				},
+			} as PresenceUpdateEvent),
+		),
 	]);
 
 	// Build READY
@@ -402,6 +433,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	read_states.forEach((x) => {
 		x.id = x.channel_id;
 	});
+	const remapReadStateIdsTime = taskSw.getElapsedAndReset();
 
 	const d: ReadyEventData = {
 		v: 9,
@@ -462,7 +494,49 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			// ????
 			flags: 0,
 		},
+		game_relationships: [],
 	};
+	const buildReadyEventDataTime = taskSw.getElapsedAndReset();
+	const _trace = [
+		gatewayShardName,
+		{
+			micros: totalSw.elapsed().totalMicroseconds,
+			calls: [],
+		},
+	] as TraceRoot;
+	const times = {
+		parseAndValidateTime,
+		userQueryTime,
+		validateIntentsAndShardingTime,
+		createSessionTime,
+		sessionSaveTime,
+		applicationQueryTime,
+		read_statesQueryTime,
+		membersQueryTime,
+		recipientsQueryTime,
+		totalQueryTime,
+		createUserSettingsTime,
+		mergedMembersTime,
+		generateGuildsListTime,
+		generateUserGuildSettingsTime,
+		generateDmChannelsTime,
+		appendRelationshipsTime,
+		findAndGenerateSessionReplaceTime,
+		emitSessionsReplaceTime,
+		emitPresenceUpdateTime,
+		remapReadStateIdsTime,
+		buildReadyEventDataTime,
+	};
+	for (const [key, value] of Object.entries(times)) {
+		if (value) {
+			_trace![1].calls.push(key, { micros: value.totalMicroseconds });
+		}
+	}
+	_trace![1].calls.push(
+		"buildTraceTime",
+		{ micros: taskSw.elapsed().totalMicroseconds },
+	);
+	d._trace = [JSON.stringify(_trace)];
 
 	// Send READY
 	await Send(this, {
@@ -547,16 +621,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const setupListenerTime = Date.now();
 
 	console.log(
-		`[Gateway] IDENTIFY ${this.user_id} in ${Date.now() - startTime}ms`,
-		{
-			userQueryTime: Date.now() - userQueryTime,
-			createSessionTime: Date.now() - createSessionTime,
-			query1Time: Date.now() - query1Time,
-			remapDataTime: Date.now() - remapDataTime,
-			sessionReplaceTime: Date.now() - sessionReplaceTime,
-			readyTime: Date.now() - readyTime,
-			pendingGuildsTime: Date.now() - pendingGuildsTime,
-			readySupplementalTime: Date.now() - readySupplementalTime,
-		}
+		`[Gateway] IDENTIFY ${this.user_id} in ${totalSw.elapsed().totalMilliseconds}ms`,
+		JSON.stringify(d._trace, null, 2),
 	);
 }
