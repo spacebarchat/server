@@ -132,7 +132,16 @@ export interface ReadyEventData {
 	notification_settings: {
 		flags: number;
 	};
+	game_relationships: never[]; // what is this?
+	_trace?: string[]; // trace of the request, used for debugging
 }
+
+export type TraceNode =
+	| { micros: number; calls: TraceNode[] }
+	| { micros: number }
+	| string;
+
+export type TraceRoot = [string, { micros: number; calls: TraceNode[] }];
 
 export interface ReadyEvent extends Event {
 	event: "READY";
@@ -159,7 +168,10 @@ export interface ChannelPinsUpdateEvent extends Event {
 	data: {
 		guild_id?: string;
 		channel_id: string;
-		last_pin_timestamp?: number;
+		/**
+		 * @format ISO8601
+		 */
+		last_pin_timestamp?: string;
 	};
 }
 
