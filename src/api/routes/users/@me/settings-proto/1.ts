@@ -27,6 +27,7 @@ import {
 	UserSettingsProtos,
 } from "@spacebar/util";
 import { PreloadedUserSettings } from "discord-protos";
+import { JsonValue } from "@protobuf-ts/runtime";
 
 const router: Router = Router();
 
@@ -167,12 +168,25 @@ async function patchUserSettings(
 		};
 	}
 
-	console.log(`Updating user settings for user ${userId} with atomic=${atomic}:`, updatedSettings);
+	console.log(
+		`Updating user settings for user ${userId} with atomic=${atomic}:`,
+		updatedSettings,
+	);
 
 	if (!atomic) {
-		settings = Object.assign(settings, updatedSettings);
+		settings = PreloadedUserSettings.fromJson(
+			Object.assign(
+				PreloadedUserSettings.toJson(settings) as object,
+				PreloadedUserSettings.toJson(updatedSettings) as object,
+			) as JsonValue,
+		);
 	} else {
-		settings = OrmUtils.mergeDeep(settings, updatedSettings);
+		settings = PreloadedUserSettings.fromJson(
+			OrmUtils.mergeDeep(
+				PreloadedUserSettings.toJson(settings) as object,
+				PreloadedUserSettings.toJson(updatedSettings) as object,
+			) as JsonValue,
+		);
 	}
 
 	userSettings.userSettings = settings;
