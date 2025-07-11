@@ -19,6 +19,7 @@
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import {
+	emitEvent,
 	OrmUtils,
 	SettingsProtoJsonResponse,
 	SettingsProtoResponse,
@@ -193,6 +194,23 @@ async function patchUserSettings(
 
 	userSettings.frecencySettings = settings;
 	await userSettings.save();
+
+	await emitEvent({
+		event: "USER_SETTINGS_PROTO_UPDATE",
+		data: {
+			settings: {
+				proto: FrecencyUserSettings.toBase64(settings),
+				type: 2
+			},
+			json_settings: {
+				proto: FrecencyUserSettings.toJson(settings),
+				type: "frecency_settings"
+			},
+			partial: false, // Unsure how this should behave
+		}
+	});
+	// This should also send a USER_SETTINGS_UPDATE event, but that isn't sent
+	// when using the USER_SETTINGS_PROTOS capability, so we ignore it for now.
 
 	return {
 		settings: settings,
