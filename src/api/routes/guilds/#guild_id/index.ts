@@ -108,6 +108,14 @@ router.patch(
 			relations: ["emojis", "roles", "stickers"],
 		});
 
+		// trying to `select` this fails
+		guild.channel_ordering = (
+			await Guild.findOneOrFail({
+				where: { id: guild_id },
+				select: { channel_ordering: true },
+			})
+		).channel_ordering;
+
 		// TODO: guild update check image
 
 		if (body.icon && body.icon != guild.icon)
