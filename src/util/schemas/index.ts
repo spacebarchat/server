@@ -68,6 +68,7 @@ export * from "./responses";
 export * from "./RoleModifySchema";
 export * from "./RolePositionUpdateSchema";
 export * from "./SelectProtocolSchema";
+export * from "./SettingsProtoUpdateSchema";
 export * from "./StreamCreateSchema";
 export * from "./StreamDeleteSchema";
 export * from "./StreamWatchSchema";
