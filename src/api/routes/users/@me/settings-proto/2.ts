@@ -26,7 +26,8 @@ import {
 	SettingsProtoUpdateSchema,
 	UserSettingsProtos,
 } from "@spacebar/util";
-import { FrecencyUserSettings } from "discord-protos";
+import { FrecencyUserSettings, PreloadedUserSettings } from "discord-protos";
+import { JsonValue } from "@protobuf-ts/runtime";
 
 const router: Router = Router();
 
@@ -103,7 +104,9 @@ router.get(
 		const userSettings = await UserSettingsProtos.getOrCreate(req.user_id);
 
 		res.json({
-			settings: FrecencyUserSettings.toJson(userSettings.frecencySettings!),
+			settings: FrecencyUserSettings.toJson(
+				userSettings.frecencySettings!,
+			),
 		} as SettingsProtoJsonResponse);
 	},
 );
@@ -167,12 +170,25 @@ async function patchUserSettings(
 		};
 	}
 
-	console.log(`Updating frecency settings for user ${userId} with atomic=${atomic}:`, updatedSettings);
+	console.log(
+		`Updating frecency settings for user ${userId} with atomic=${atomic}:`,
+		updatedSettings,
+	);
 
 	if (!atomic) {
-		settings = Object.assign(settings, updatedSettings);
+		settings = FrecencyUserSettings.fromJson(
+			Object.assign(
+				FrecencyUserSettings.toJson(settings) as object,
+				FrecencyUserSettings.toJson(updatedSettings) as object,
+			) as JsonValue,
+		);
 	} else {
-		settings = OrmUtils.mergeDeep(settings, updatedSettings);
+		settings = FrecencyUserSettings.fromJson(
+			OrmUtils.mergeDeep(
+				FrecencyUserSettings.toJson(settings) as object,
+				FrecencyUserSettings.toJson(updatedSettings) as object,
+			) as JsonValue,
+		);
 	}
 
 	userSettings.frecencySettings = settings;
