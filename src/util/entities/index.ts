@@ -55,6 +55,7 @@ export * from "./TeamMember";
 export * from "./Template";
 export * from "./User";
 export * from "./UserSettings";
+export * from "./UserSettingsProtos";
 export * from "./ValidRegistrationTokens";
 export * from "./VoiceState";
 export * from "./Webhook";

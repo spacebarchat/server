@@ -112,7 +112,29 @@ function main() {
 		definitions = { ...definitions, [name]: { ...part } };
 	}
 
+	deleteOneOfKindUndefinedRecursive(definitions, "$");
+
 	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
+}
+
+function deleteOneOfKindUndefinedRecursive(obj, path) {
+	if (
+		obj?.type === "object" &&
+		obj?.properties?.oneofKind?.type === "undefined"
+	)
+		return true;
+
+	for (const key in obj) {
+		if (
+			typeof obj[key] === "object" &&
+			deleteOneOfKindUndefinedRecursive(obj[key], path + "." + key)
+		) {
+			console.log("Deleting", path, key);
+			delete obj[key];
+		}
+	}
+	
+	return false;
 }
 
 main();
