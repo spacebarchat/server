@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { FieldErrors, Release } from "@spacebar/util";
+import { FieldErrors, ClientRelease } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router = Router();
@@ -43,7 +43,7 @@ router.get(
 				},
 			});
 
-		const release = await Release.findOneOrFail({
+		const release = await ClientRelease.findOneOrFail({
 			where: {
 				enabled: true,
 				platform: platform as string,
