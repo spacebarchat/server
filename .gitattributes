@@ -4,3 +4,4 @@
 .husky/pre-commit -crlf
 package-lock.json -diff
 flake.lock -diff
+assets/schemas.json -diff
