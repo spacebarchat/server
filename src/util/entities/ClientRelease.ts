@@ -24,7 +24,7 @@ import { dbEngine } from "../util/Database";
 	name: "client_release",
 	engine: dbEngine,
 })
-export class Release extends BaseClass {
+export class ClientRelease extends BaseClass {
 	@Column()
 	name: string;
 
