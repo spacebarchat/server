@@ -125,9 +125,11 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 			where: { id: user_id },
 			select: { settings: true },
 		});
+
 		let userSettings = await UserSettingsProtos.findOne({
 			where: { user_id },
 		});
+
 		let modified = false;
 		if (!userSettings) {
 			userSettings = UserSettingsProtos.create({
