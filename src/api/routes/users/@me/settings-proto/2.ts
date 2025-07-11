@@ -196,6 +196,7 @@ async function patchUserSettings(
 	await userSettings.save();
 
 	await emitEvent({
+		user_id: userId,
 		event: "USER_SETTINGS_PROTO_UPDATE",
 		data: {
 			settings: {
