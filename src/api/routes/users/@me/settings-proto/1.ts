@@ -190,6 +190,11 @@ async function patchUserSettings(
 		);
 	}
 
+	settings.versions = {
+		clientVersion: updatedSettings.versions?.clientVersion ?? settings.versions?.clientVersion ?? 0,
+		serverVersion: settings.versions?.serverVersion ?? 0,
+		dataVersion: (settings.versions?.dataVersion ?? 0) + 1,
+	};
 	userSettings.userSettings = settings;
 	await userSettings.save();
 
