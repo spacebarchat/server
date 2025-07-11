@@ -138,28 +138,23 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 
 		if (!userSettings.userSettings) {
 			userSettings.userSettings = PreloadedUserSettings.create({
-				ads: {
-					alwaysDeliver: false,
-				},
-				appearance: {
-					developerMode: user.settings?.developer_mode ?? true,
-					theme: PreloadedUserSettings_Theme.DARK,
-					mobileRedesignDisabled: true,
-					launchPadMode:
-						PreloadedUserSettings_LaunchPadMode.LAUNCH_PAD_DISABLED,
-					swipeRightToLeftMode:
-						PreloadedUserSettings_SwipeRightToLeftMode.SWIPE_RIGHT_TO_LEFT_REPLY,
-					timestampHourCycle:
-						PreloadedUserSettings_TimestampHourCycle.AUTO,
-					uiDensity:
-						PreloadedUserSettings_UIDensity.UI_DENSITY_COMPACT,
+				versions: {
+					dataVersion: 0,
+					clientVersion: 0,
+					serverVersion: 0,
 				},
 			});
 			modified = true;
 		}
 
 		if (!userSettings.frecencySettings) {
-			userSettings.frecencySettings = FrecencyUserSettings.create({});
+			userSettings.frecencySettings = FrecencyUserSettings.create({
+				versions: {
+					dataVersion: 0,
+					clientVersion: 0,
+					serverVersion: 0,
+				},
+			});
 			modified = true;
 		}
 
