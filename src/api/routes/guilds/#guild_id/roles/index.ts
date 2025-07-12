@@ -72,7 +72,7 @@ router.post(
 			throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
 
 		const role = Role.create({
-			// values before ...body are default and can be overriden
+			// values before ...body are default and can be overridden
 			position: 1,
 			hoist: false,
 			color: 0,
@@ -88,6 +88,11 @@ router.post(
 			icon: undefined,
 			unicode_emoji: undefined,
 			id: Snowflake.generate(),
+			colors: {
+				primary_color: body.colors?.primary_color || body.color || 0,
+				secondary_color: body.colors?.secondary_color || undefined, // gradient
+				tertiary_color: body.colors?.tertiary_color || undefined, // "holographic"
+			},
 		});
 
 		await Promise.all([

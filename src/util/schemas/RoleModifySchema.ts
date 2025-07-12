@@ -25,4 +25,9 @@ export interface RoleModifySchema {
 	position?: number;
 	icon?: string;
 	unicode_emoji?: string;
+	colors?: {
+		primary_color: number;
+		secondary_color: number | null | undefined; // only used for "holographic" and "gradient" styles
+		tertiary_color?: number | null | undefined; // only used for "holographic" style
+	} | undefined;
 }
