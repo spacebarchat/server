@@ -155,7 +155,7 @@ router.get(
 				embeds: x.embeds,
 				mentions: x.mentions,
 				mention_roles: x.mention_roles,
-				pinned: x.pinned,
+				pinned: x.pinned_at != null,
 				mention_everyone: x.mention_everyone,
 				tts: x.tts,
 				timestamp: x.timestamp,

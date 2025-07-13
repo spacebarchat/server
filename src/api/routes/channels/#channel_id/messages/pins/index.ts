@@ -55,14 +55,18 @@ router.put(
 		// * in dm channels anyone can pin messages -> only check for guilds
 		if (message.guild_id) req.permission?.hasThrow("MANAGE_MESSAGES");
 
-		const pinned_count = await Message.count({
-			where: { channel: { id: channel_id }, pinned: true },
-		});
+		const pinned_count = await Message.createQueryBuilder("message")
+			.leftJoinAndSelect("message.channel", "channel")
+			.leftJoinAndSelect("message.author", "author")
+			.where("channel.id = :channelId", { channelId: channel_id })
+			.andWhere("message.pinned_at IS NOT NULL")
+			.orderBy("message.pinned_at", "DESC")
+			.getCount();
+
 		const { maxPins } = Config.get().limits.channel;
 		if (pinned_count >= maxPins)
 			throw DiscordApiErrors.MAXIMUM_PINS.withParams(maxPins);
 
-		message.pinned = true;
 		message.pinned_at = new Date();
 
 		const author = await User.getPublicUser(req.user_id);
@@ -140,7 +144,7 @@ router.delete(
 
 		if (message.guild_id) req.permission?.hasThrow("MANAGE_MESSAGES");
 
-		message.pinned = false;
+		message.pinned_at = null;
 
 		await Promise.all([
 			message.save(),
@@ -180,15 +184,15 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 
-		const pins = await Message.find({
-			where: { channel_id: channel_id, pinned: true },
-			relations: ["author"],
-			order: {
-				pinned_at: "DESC",
-			},
-		});
+		const pins = await Message.createQueryBuilder("message")
+			.leftJoinAndSelect("message.channel", "channel")
+			.leftJoinAndSelect("message.author", "author")
+			.where("channel.id = :channelId", { channelId: channel_id })
+			.andWhere("message.pinned_at IS NOT NULL")
+			.orderBy("message.pinned_at", "DESC")
+			.getMany();
 
-		const items = pins.map((message) => ({
+		const items = pins.map((message: Message) => ({
 			message,
 			pinned_at: message.pinned_at,
 		}));
