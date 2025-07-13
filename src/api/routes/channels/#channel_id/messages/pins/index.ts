@@ -63,6 +63,7 @@ router.put(
 			throw DiscordApiErrors.MAXIMUM_PINS.withParams(maxPins);
 
 		message.pinned = true;
+		message.pinned_at = new Date();
 
 		const author = await User.getPublicUser(req.user_id);
 
@@ -182,11 +183,19 @@ router.get(
 		const pins = await Message.find({
 			where: { channel_id: channel_id, pinned: true },
 			relations: ["author"],
+			order: {
+				pinned_at: "DESC",
+			},
 		});
 
+		const items = pins.map((message) => ({
+			message,
+			pinned_at: message.pinned_at,
+		}));
+
 		res.send({
-			items: pins,
-			has_more: false
+			items,
+			has_more: false,
 		});
 	},
 );
