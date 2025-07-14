@@ -63,7 +63,24 @@
             passthru.tests = pkgs.testers.runNixOSTest (import ./nix/tests/test_1.nix self);
           };
 
-          update-nix = pkgs.writeShellApplication {
+          update-nix-hashes = pkgs.writeShellApplication {
+            name = "update-nix";
+            runtimeInputs = with pkgs; [
+              prefetch-npm-deps
+              nix
+              jq
+            ];
+            text = ''
+              rm -rf node_modules
+              ${pkgs.nodejs}/bin/npm install --save
+              DEPS_HASH=$(prefetch-npm-deps package-lock.json)
+              TMPFILE=$(mktemp)
+              jq '.npmDepsHash = "'"$DEPS_HASH"'"' hashes.json > "$TMPFILE"
+              mv -- "$TMPFILE" hashes.json
+            '';
+          };
+
+          update-nix-flake = pkgs.writeShellApplication {
             name = "update-nix";
             runtimeInputs = with pkgs; [
               prefetch-npm-deps
@@ -72,10 +89,6 @@
             ];
             text = ''
               nix flake update --extra-experimental-features 'nix-command flakes'
-              DEPS_HASH=$(prefetch-npm-deps package-lock.json)
-              TMPFILE=$(mktemp)
-              jq '.npmDepsHash = "'"$DEPS_HASH"'"' hashes.json > "$TMPFILE"
-              mv -- "$TMPFILE" hashes.json
             '';
           };
         };
