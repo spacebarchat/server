@@ -21,10 +21,13 @@ export * from "./APIErrorOrCaptchaResponse";
 export * from "./APIErrorResponse";
 export * from "./BackupCodesChallengeResponse";
 export * from "./CaptchaRequiredResponse";
+export * from "./CollectiblesCategoriesResponse";
+export * from "./CollectiblesMarketingResponse";
+export * from "./CollectiblesShopResponse";
 export * from "./DiscoverableGuildsResponse";
 export * from "./EmailDomainLookupResponse";
 export * from "./EmailDomainLookupVerifyCodeResponse";
-export * from "./EmojiSourceResponse"
+export * from "./EmojiSourceResponse";
 export * from "./GatewayBotResponse";
 export * from "./GatewayResponse";
 export * from "./GenerateRegistrationTokensResponse";

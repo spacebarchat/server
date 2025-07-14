@@ -8,5 +8,6 @@
 	"quoteProps": "as-needed",
 	"useTabs": true,
 	"singleQuote": false,
-	"endOfLine": "auto"
+	"endOfLine": "auto",
+    "printWidth": 180
 }
