@@ -188,6 +188,10 @@ export class Message extends BaseClass {
 	@Column({ type: "timestamp", nullable: true })
 	pinned_at: Date | null;
 
+	get pinned(): boolean {
+		return this.pinned_at != null;
+	}
+
 	@Column({ type: "int" })
 	type: MessageType;
 
@@ -259,6 +263,7 @@ export class Message extends BaseClass {
 			components: this.components ?? undefined,
 			poll: this.poll ?? undefined,
 			content: this.content ?? "",
+			pinned: this.pinned,
 		};
 	}
 

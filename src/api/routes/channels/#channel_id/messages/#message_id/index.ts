@@ -133,7 +133,7 @@ router.patch(
 			mentions: new_message.embeds,
 			mention_roles: new_message.mention_roles,
 			mention_everyone: new_message.mention_everyone,
-			pinned: new_message.pinned_at != null,
+			pinned: new_message.pinned,
 			timestamp: new_message.timestamp,
 			edited_timestamp: new_message.edited_timestamp,
 
