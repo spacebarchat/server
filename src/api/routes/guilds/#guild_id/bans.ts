@@ -40,7 +40,7 @@ router.get(
 		permission: "BAN_MEMBERS",
 		responses: {
 			200: {
-				body: "GuildBansResponse",
+				body: "APIBansArray",
 			},
 			403: {
 				body: "APIErrorResponse",
@@ -50,11 +50,11 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 
-		const bans = await Ban.find({ where: { guild_id: guild_id } });
+		let bans = await Ban.find({ where: { guild_id: guild_id } });
 		const promisesToAwait: object[] = [];
 		const bansObj: object[] = [];
 
-		bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
+		bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
 
 		bans.forEach((ban) => {
 			promisesToAwait.push(User.getPublicUser(ban.user_id));
@@ -81,12 +81,81 @@ router.get(
 );
 
 router.get(
+	"/search",
+	route({
+		permission: "BAN_MEMBERS",
+		query: {
+			query: {
+				type: "string",
+				description:
+					"Query to match username(s) and display name(s) against (1-32 characters)",
+				required: true,
+			},
+			limit: {
+				type: "number",
+				description:
+					"Max number of members to return (1-10, default 10)",
+				required: false,
+			},
+		},
+		responses: {
+			200: {
+				body: "APIBansArray",
+			},
+			403: {
+				body: "APIErrorResponse",
+			},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { guild_id } = req.params;
+		const limit = Number(req.query.limit) || 10;
+		if (limit > 10 || limit < 1)
+			throw new HTTPError("Limit must be between 1 and 10");
+		const query = String(req.query.query);
+
+		if (!query || query.trim().length === 0 || query.length > 32) {
+			throw new HTTPError(
+				"The query must be between 1 and 32 characters in length",
+			);
+		}
+
+		let bans = await Ban.createQueryBuilder("ban")
+			.leftJoinAndSelect("ban.user", "user")
+			.where("ban.guild_id = :guildId", { guildId: guild_id })
+			.andWhere("user.username LIKE :userName", {
+				userName: `%${query}%`,
+			})
+			.limit(limit)
+			.getMany();
+
+		bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
+
+		const bansObj = bans.map((ban) => {
+			const user = ban.user;
+			return {
+				reason: ban.reason,
+				user: {
+					username: user.username,
+					discriminator: user.discriminator,
+					id: user.id,
+					avatar: user.avatar,
+					public_flags: user.public_flags,
+				},
+			};
+		});
+
+		return res.json(bansObj);
+	},
+);
+
+router.get(
 	"/:user_id",
 	route({
 		permission: "BAN_MEMBERS",
 		responses: {
 			200: {
-				body: "BanModeratorSchema",
+				body: "GuildBansResponse",
 			},
 			403: {
 				body: "APIErrorResponse",
@@ -121,9 +190,7 @@ router.put(
 		requestBody: "BanCreateSchema",
 		permission: "BAN_MEMBERS",
 		responses: {
-			200: {
-				body: "Ban",
-			},
+			204: {},
 			400: {
 				body: "APIErrorResponse",
 			},
