@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { GuildCreateResponse } from "@spacebar/util";
+import { GuildBansResponse, GuildCreateResponse } from "@spacebar/util";
 import { GeneralConfiguration, LimitsConfiguration } from "../../config";
 import { DmChannelDTO } from "../../dtos";
 import {
@@ -72,6 +72,8 @@ export type ApplicationEntitlementsResponse = unknown[];
 export type ApplicationSkusResponse = unknown[];
 
 export type APIApplicationArray = Application[];
+
+export type APIBansArray = GuildBansResponse[];
 
 export type APIInviteArray = Invite[];
 
