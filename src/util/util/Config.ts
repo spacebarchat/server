@@ -95,7 +95,9 @@ const generatePairs = (obj: object | null, key = ""): ConfigEntity[] => {
 
 async function applyConfig(val: ConfigValue) {
 	if (process.env.CONFIG_PATH)
-		await fs.writeFile(overridePath, JSON.stringify(val, null, 4));
+		if (!process.env.CONFIG_READONLY)
+			await fs.writeFile(overridePath, JSON.stringify(val, null, 4));
+		else console.log("[WARNING] JSON config file in use, and writing is disabled! Programmatic config changes will not be persisted, and your config will not get updated!");
 	else {
 		const pairs = generatePairs(val);
 		await Promise.all(pairs.map((pair) => pair.save()));
