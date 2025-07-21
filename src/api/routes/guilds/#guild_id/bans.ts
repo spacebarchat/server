@@ -18,11 +18,13 @@
 
 import { getIpAdress, route } from "@spacebar/api";
 import {
+	APIBansArray,
 	Ban,
 	BanRegistrySchema,
 	DiscordApiErrors,
 	GuildBanAddEvent,
 	GuildBanRemoveEvent,
+	GuildBansResponse,
 	Member,
 	User,
 	emitEvent,
@@ -51,8 +53,8 @@ router.get(
 		const { guild_id } = req.params;
 
 		let bans = await Ban.find({ where: { guild_id: guild_id } });
-		const promisesToAwait: object[] = [];
-		const bansObj: object[] = [];
+		const promisesToAwait: Promise<User>[] = [];
+		const bansObj: APIBansArray = [];
 
 		bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
 
@@ -60,17 +62,17 @@ router.get(
 			promisesToAwait.push(User.getPublicUser(ban.user_id));
 		});
 
-		const bannedUsers: object[] = await Promise.all(promisesToAwait);
+		const bannedUsers = await Promise.all(promisesToAwait);
 
 		bans.forEach((ban, index) => {
-			const user = bannedUsers[index] as User;
+			const user = bannedUsers[index];
 			bansObj.push({
-				reason: ban.reason,
+				reason: ban.reason ?? null,
 				user: {
 					username: user.username,
 					discriminator: user.discriminator,
 					id: user.id,
-					avatar: user.avatar,
+					avatar: user.avatar ?? null,
 					public_flags: user.public_flags,
 				},
 			});
@@ -109,11 +111,12 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
+
 		const limit = Number(req.query.limit) || 10;
 		if (limit > 10 || limit < 1)
 			throw new HTTPError("Limit must be between 1 and 10");
-		const query = String(req.query.query);
 
+		const query = String(req.query.query);
 		if (!query || query.trim().length === 0 || query.length > 32) {
 			throw new HTTPError(
 				"The query must be between 1 and 32 characters in length",
@@ -131,15 +134,15 @@ router.get(
 
 		bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
 
-		const bansObj = bans.map((ban) => {
+		const bansObj: APIBansArray = bans.map((ban) => {
 			const user = ban.user;
 			return {
-				reason: ban.reason,
+				reason: ban.reason ?? null,
 				user: {
 					username: user.username,
 					discriminator: user.discriminator,
 					id: user.id,
-					avatar: user.avatar,
+					avatar: user.avatar ?? null,
 					public_flags: user.public_flags,
 				},
 			};
@@ -175,9 +178,17 @@ router.get(
 		if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
 		// pretend self-bans don't exist to prevent victim chasing
 
-		const banInfo = {
-			user: await User.getPublicUser(ban.user_id),
-			reason: ban.reason,
+		const user = await User.getPublicUser(ban.user_id);
+
+		const banInfo: GuildBansResponse = {
+			user: {
+				username: user.username,
+				discriminator: user.discriminator,
+				id: user.id,
+				avatar: user.avatar ?? null,
+				public_flags: user.public_flags,
+			},
+			reason: ban.reason ?? null,
 		};
 
 		return res.json(banInfo);
