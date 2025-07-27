@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
+import { route, verifyCaptcha } from "@spacebar/api";
 import {
 	Config,
 	FieldErrors,
@@ -24,7 +24,7 @@ import {
 	User,
 	WebAuthn,
 	generateToken,
-	generateWebAuthnTicket,
+	generateWebAuthnTicket, getIpAdress,
 } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import crypto from "crypto";

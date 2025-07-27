@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config } from "@spacebar/util";
-import { distanceBetweenLocations, IPAnalysis } from "../utility/ipAddress";
+import { Config, distanceBetweenLocations, IPAnalysis } from "@spacebar/util";
 
 export async function getVoiceRegions(ipAddress: string, vip: boolean) {
 	const regions = Config.get().regions;

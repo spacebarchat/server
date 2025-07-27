@@ -17,9 +17,6 @@
 */
 
 import {
-	IPAnalysis,
-	getIpAdress,
-	isProxy,
 	route,
 	verifyCaptcha,
 } from "@spacebar/api";
@@ -30,7 +27,7 @@ import {
 	RegisterSchema,
 	User,
 	ValidRegistrationToken,
-	generateToken,
+	generateToken, getIpAdress, IPAnalysis, isProxy,
 } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";

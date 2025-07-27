@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, getVoiceRegions, route } from "@spacebar/api";
+import { getVoiceRegions, route } from "@spacebar/api";
+import { getIpAdress } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router();

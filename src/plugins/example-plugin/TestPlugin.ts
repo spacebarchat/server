@@ -7,7 +7,7 @@ import {
 	PluginManifest,
 	PreMessageEventArgs,
 	PreMessageEventResult
-} from "@fosscord/util";
+} from "@spacebar/util";
 import { TestSettings } from "./TestSettings";
 
 export default class TestPlugin implements Plugin {

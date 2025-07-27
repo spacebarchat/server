@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { random, route } from "@spacebar/api";
+import { route } from "@spacebar/api";
 import {
 	Channel,
 	DiscordApiErrors,
@@ -24,6 +24,7 @@ import {
 	Invite,
 	Member,
 	Permissions,
+	generateRandomString
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
@@ -77,7 +78,7 @@ router.get(
 			const expires_at = new Date(max_age * 1000 + Date.now());
 
 			invite = await Invite.create({
-				code: random(),
+				code: generateRandomString(),
 				temporary: false,
 				uses: 0,
 				max_uses: 0,

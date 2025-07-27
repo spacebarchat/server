@@ -16,8 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { IPAnalysis, getIpAdress, route } from "@spacebar/api";
+import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
+import { getIpAdress, IPAnalysis } from "@spacebar/util";
 const router = Router();
 
 router.get(

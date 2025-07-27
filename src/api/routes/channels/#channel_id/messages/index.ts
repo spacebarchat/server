@@ -427,17 +427,18 @@ router.post(
 			read_state = ReadState.create({ user_id: req.user_id, channel_id });
 		read_state.last_message_id = message.id;
 
-		let blocks = (
+		const blocks = (
 			await PluginEventHandler.preMessageEvent({
 				message
 			} as PreMessageEventArgs)
 		).filter((x) => x.cancel);
-		if (blocks.length > 0)
+		if (blocks.length > 0) {
+			console.log("[Message] Pre-message event handler blocked message send:", message, blocks)
 			throw new HTTPError(
 				"Message denied.",
 				400,
-				blocks.filter((x) => x.blockReason).map((x) => x.blockReason)
 			);
+		}
 
 		await Promise.all([
 			read_state.save(),

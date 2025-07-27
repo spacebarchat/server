@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { generateCode, route } from "@spacebar/api";
-import { Guild, Template } from "@spacebar/util";
+import { route } from "@spacebar/api";
+import { generateCode, Guild, Template } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 

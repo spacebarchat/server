@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress } from "@spacebar/api";
-import { Config, getRights, listenEvent } from "@spacebar/util";
+import { Config, getRights, listenEvent, getIpAdress } from "@spacebar/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 

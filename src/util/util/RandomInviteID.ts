@@ -22,7 +22,7 @@ import crypto from "crypto";
 // TODO: 'random'? seriously? who named this?
 // And why is this even here? Just use cryto.randomBytes?
 
-export function random(length = 6) {
+export function generateRandomString(length = 6) {
 	// Declare all characters
 	const chars =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -51,5 +51,5 @@ export function snowflakeBasedInvite() {
 		snowflake = snowflake / base;
 	}
 
-	return str.substr(3, 8).split("").reverse().join("");
+	return str.substring(3, 8).split("").reverse().join("");
 }

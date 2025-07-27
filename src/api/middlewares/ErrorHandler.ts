@@ -38,6 +38,7 @@ export function ErrorHandler(
 
 		if (error instanceof HTTPError && error.code) {
 			code = httpcode = error.code;
+			// @ts-expect-error - we make it exist
 			if (error.data) data = error.data;
 		} else if (error instanceof ApiError) {
 			code = error.code;

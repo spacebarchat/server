@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
-import { Config, Email, ForgotPasswordSchema, User } from "@spacebar/util";
+import { route, verifyCaptcha } from "@spacebar/api";
+import { Config, Email, ForgotPasswordSchema, getIpAdress, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 

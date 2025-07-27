@@ -17,6 +17,7 @@
 */
 
 import { SPECIAL_CHAR } from "./Regex";
+import { ntob } from "./Base64";
 
 export function trimSpecial(str?: string): string {
 	if (!str) return "";
@@ -37,4 +38,8 @@ export function centerString(str: string, len: number): string {
 	const pad = len - str.length;
 	const padLeft = Math.floor(pad / 2) + str.length;
 	return str.padStart(padLeft).padEnd(len);
+}
+
+export function generateCode() {
+	return ntob(Date.now() + Math.randomIntBetween(0, 10000));
 }

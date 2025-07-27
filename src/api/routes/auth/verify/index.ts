@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
+import { route, verifyCaptcha } from "@spacebar/api";
 import {
 	checkToken,
 	Config,
 	FieldErrors,
-	generateToken,
+	generateToken, getIpAdress,
 	User,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";

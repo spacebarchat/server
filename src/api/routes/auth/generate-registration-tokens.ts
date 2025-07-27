@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { random, route } from "@spacebar/api";
-import { Config, ValidRegistrationToken } from "@spacebar/util";
+import { route } from "@spacebar/api";
+import { Config, generateRandomString, ValidRegistrationToken } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router();
@@ -51,7 +51,7 @@ router.get(
 
 		for (let i = 0; i < count; i++) {
 			const token = ValidRegistrationToken.create({
-				token: random(length),
+				token: generateRandomString(length),
 				expires_at: new Date(
 					Date.now() +
 						Config.get().security
