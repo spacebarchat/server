@@ -27,7 +27,17 @@ import {
 } from "typeorm";
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
-import { InvisibleCharacters, Snowflake, containsAll, emitEvent, getPermission, trimSpecial, Permissions, BitField } from "../util";
+import {
+	InvisibleCharacters,
+	Snowflake,
+	containsAll,
+	emitEvent,
+	getPermission,
+	trimSpecial,
+	DiscordApiErrors,
+	Permissions,
+	BitField
+} from "../util";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Invite } from "./Invite";
@@ -338,7 +348,7 @@ export class Channel extends BaseClass {
 		if (otherRecipientsUsers.length !== recipients.length) {
 			throw new HTTPError("Recipient/s not found");
 		}
-		**/
+		 **/
 
 		const type =
 			recipients.length > 1 ? ChannelType.GROUP_DM : ChannelType.DM;
@@ -458,12 +468,40 @@ export class Channel extends BaseClass {
 
 	static async deleteChannel(channel: Channel) {
 		// TODO Delete attachments from the CDN for messages in the channel
-		await Channel.delete({ id: channel.id });
 
 		const guild = await Guild.findOneOrFail({
 			where: { id: channel.guild_id },
 			select: { channel_ordering: true },
 		});
+
+		if (guild.features.includes("COMMUNITY")) {
+			if (
+				[
+					guild.afk_channel_id,
+					guild.system_channel_id,
+					guild.rules_channel_id,
+					guild.public_updates_channel_id,
+				].includes(channel.id)
+			) {
+				throw DiscordApiErrors.CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL;
+			}
+		}
+		else {
+			if (guild.afk_channel_id === channel.id) {
+				guild.afk_channel_id = null;
+			}
+			if (guild.system_channel_id === channel.id) {
+				guild.system_channel_id = null;
+			}
+			if (guild.rules_channel_id === channel.id) {
+				guild.rules_channel_id = null;
+			}
+			if (guild.public_updates_channel_id === channel.id) {
+				guild.public_updates_channel_id = null;
+			}
+		}
+
+		await Channel.delete({ id: channel.id });
 
 		const updatedOrdering = guild.channel_ordering.filter(
 			(id) => id != channel.id,
