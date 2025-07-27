@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { dbEngine, User } from "@spacebar/util";
+import { dbEngine } from "@spacebar/util";
 import { BaseClass } from "./BaseClass";
 import { Entity, JoinColumn, ManyToOne, Column } from "typeorm";
+import { User } from "./User";
 
 export class AutomodMentionSpamRule {
 	mention_total_limit: number;
