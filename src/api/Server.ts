@@ -28,17 +28,21 @@ import {
 	initEvent,
 	registerRoutes,
 } from "@spacebar/util";
+import {
+	Authentication,
+	CORS,
+	ImageProxy,
+	BodyParser,
+	ErrorHandler,
+	initRateLimits,
+	initTranslation,
+} from "./middlewares";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
 import "missing-native-js-functions";
 import morgan from "morgan";
 import path from "path";
 import { red } from "picocolors";
-import { Authentication, CORS, ImageProxy } from "./middlewares/";
-import { BodyParser } from "./middlewares/BodyParser";
-import { ErrorHandler } from "./middlewares/ErrorHandler";
-import { initRateLimits } from "./middlewares/RateLimit";
-import { initTranslation } from "./middlewares/Translation";
 import { initInstance } from "./util/handlers/Instance";
 
 const PUBLIC_ASSETS_FOLDER = path.join(

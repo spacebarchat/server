@@ -1,4 +1,4 @@
-import { KittyLogo } from "./KittyLogo";
+import { KittyLogo } from ".";
 import { blueBright } from "picocolors";
 
 export class Logo {
