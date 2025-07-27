@@ -1,22 +1,5 @@
 import { readFileSync } from "node:fs";
-import fs from "fs";
 import "missing-native-js-functions";
-
-var util = require("util");
-
-// noinspection ES6ConvertRequireIntoImport
-// const ioctl = require("ioctl");
-// import ref from "ref";
-// import ArrayType from "ref-array";
-// import StructType from "ref-struct";
-// import os from "os";
-
-// const winsize = StructType({
-// 	ws_row : ref.types.ushort,
-// 	ws_col : ref.types.ushort,
-// 	ws_xpixel : ref.types.ushort,
-// 	ws_ypixel : ref.types.ushort
-// });
 
 // const originalConsoleLog = console.log;
 // console.error =
@@ -27,14 +10,18 @@ var util = require("util");
 // 		};
 
 export class KittyLogo {
-	private static isSupported = false;
+	static isSupported = false;
 	private static iconCache: string;
 
 	public static async initialise() {
 		this.isSupported = await this.checkSupport();
-		this.iconCache = readFileSync(__dirname + "/../../../assets/icon.png", {
-			encoding: "base64",
-		});
+		if (this.isSupported)
+			this.iconCache = readFileSync(
+				__dirname + "/../../../assets/icon.png",
+				{
+					encoding: "base64",
+				},
+			);
 	}
 
 	public static printLogo(): void {
@@ -43,7 +30,7 @@ export class KittyLogo {
 		});
 		KittyLogo.writeImage({
 			base64Data: data,
-			width: 70,
+			width: 86,
 			addNewline: true,
 		});
 	}
@@ -88,7 +75,7 @@ export class KittyLogo {
 					process.stdin.setRawMode(false);
 					process.stdin.pause();
 					resp = key.toString();
-					if (resp == "\x1B_Gi=31;OK\x1B\\\x1B[?62;c") resolve(true);
+					if (resp.startsWith("\x1B_Gi=31;OK")) resolve(true);
 					else resolve(false);
 				});
 				process.stdout.write(
@@ -145,23 +132,3 @@ export interface KittyImageMetadata {
 	heightPixels?: number;
 	addNewline?: boolean;
 }
-
-(async () => {
-	await KittyLogo.initialise();
-	KittyLogo.printLogo();
-
-	for (let i = 0; i < 1000; i++) {
-		console.time("meow");
-		KittyLogo.printWithIcon("meow");
-		console.timeEnd("meow");
-	}
-})();
-
-//
-// for (let i = 0; i < 10; i++) {
-// 	KittyLogo.printLogo();
-// }
-// for (let i = 0; i < 10; i++) {
-//
-// 	console.log(" ".repeat(i)+"meow");
-// }

@@ -44,65 +44,66 @@ function getCommitOrFail() {
 
 if (cluster.isPrimary) {
 	const commit = getCommitOrFail();
-	// Logo.printLogo();
-	const unformatted = `spacebar-server | ! Pre-release build !`;
-	const formatted = `${blueBright("spacebar-server")} | ${redBright("⚠️ Pre-release build ⚠️")}`;
-	console.log(
-		bold(centerString(unformatted, 64).replace(unformatted, formatted)),
-	);
+	Logo.printLogo().then(()=>{
+		const unformatted = `spacebar-server | !! Pre-release build !!`;
+		const formatted = `${blueBright("spacebar-server")} | ${redBright("⚠️ Pre-release build ⚠️")}`;
+		console.log(
+			bold(centerString(unformatted, 86).replace(unformatted, formatted)),
+		);
 
-	const unformattedGitHeader = `Commit Hash: ${commit !== null ? commit : "Unknown (Git cannot be found)"}`;
-	const formattedGitHeader = `Commit Hash: ${commit !== null ? `${cyan(commit)} (${yellow(commit.slice(0, 7))})` : "Unknown (Git cannot be found)"}`;
-	console.log(
-		bold(
-			centerString(unformattedGitHeader, 64).replace(
-				unformattedGitHeader,
-				formattedGitHeader,
+		const unformattedGitHeader = `Commit Hash: ${commit !== null ? `${commit} (${commit.slice(0, 7)})` : "Unknown (Git cannot be found)"}`;
+		const formattedGitHeader = `Commit Hash: ${commit !== null ? `${cyan(commit)} (${yellow(commit.slice(0, 7))})` : "Unknown (Git cannot be found)"}`;
+		console.log(
+			bold(
+				centerString(unformattedGitHeader, 86).replace(
+					unformattedGitHeader,
+					formattedGitHeader,
+				),
 			),
-		),
-	);
-	console.log(`Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)`);
+		);
+		console.log(`Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)`);
 
-	if (commit == null) {
-		console.log(yellow(`Warning: Git is not installed or not in PATH.`));
-	}
-
-	initStats();
-
-	console.log(`[Process] Starting with ${cores} threads`);
-
-	if (cores === 1) {
-		require("./Server");
-	} else {
-		process.env.EVENT_TRANSMISSION = "process";
-
-		// Fork workers.
-		for (let i = 0; i < cores; i++) {
-			// Delay each worker start if using sqlite database to prevent locking it
-			const delay = process.env.DATABASE?.includes("://") ? 0 : i * 1000;
-			setTimeout(() => {
-				cluster.fork();
-				console.log(`[Process] Worker ${cyan(i)} started.`);
-			}, delay);
+		if (commit == null) {
+			console.log(yellow(`Warning: Git is not installed or not in PATH.`));
 		}
 
-		cluster.on("message", (sender: Worker, message) => {
-			for (const id in cluster.workers) {
-				const worker = cluster.workers[id];
-				if (worker === sender || !worker) continue;
-				worker.send(message);
-			}
-		});
+		initStats();
 
-		cluster.on("exit", (worker) => {
-			console.log(
-				`[Worker] ${red(
-					`PID ${worker.process.pid} died, restarting ...`,
-				)}`,
-			);
-			cluster.fork();
-		});
-	}
+		console.log(`[Process] Starting with ${cores} threads`);
+
+		if (cores === 1) {
+			require("./Server");
+		} else {
+			process.env.EVENT_TRANSMISSION = "process";
+
+			// Fork workers.
+			for (let i = 0; i < cores; i++) {
+				// Delay each worker start if using sqlite database to prevent locking it
+				const delay = process.env.DATABASE?.includes("://") ? 0 : i * 1000;
+				setTimeout(() => {
+					cluster.fork();
+					console.log(`[Process] Worker ${cyan(i)} started.`);
+				}, delay);
+			}
+
+			cluster.on("message", (sender: Worker, message) => {
+				for (const id in cluster.workers) {
+					const worker = cluster.workers[id];
+					if (worker === sender || !worker) continue;
+					worker.send(message);
+				}
+			});
+
+			cluster.on("exit", (worker) => {
+				console.log(
+					`[Worker] ${red(
+						`PID ${worker.process.pid} died, restarting ...`,
+					)}`,
+				);
+				cluster.fork();
+			});
+		}
+	});
 } else {
 	require("./Server");
 }
