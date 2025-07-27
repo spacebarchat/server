@@ -19,7 +19,22 @@
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import { User } from "./User";
-import { FrecencyUserSettings, PreloadedUserSettings } from "discord-protos";
+import {
+    FrecencyUserSettings,
+    PreloadedUserSettings,
+    PreloadedUserSettings_AppearanceSettings,
+    PreloadedUserSettings_CustomStatus,
+    PreloadedUserSettings_LaunchPadMode,
+    PreloadedUserSettings_PrivacySettings,
+    PreloadedUserSettings_StatusSettings,
+    PreloadedUserSettings_SwipeRightToLeftMode,
+    PreloadedUserSettings_TextAndImagesSettings,
+    PreloadedUserSettings_Theme,
+    PreloadedUserSettings_TimestampHourCycle,
+    PreloadedUserSettings_UIDensity,
+    PreloadedUserSettings_VoiceAndVideoSettings,
+} from "discord-protos";
+import { BoolValue, UInt32Value } from "discord-protos/dist/discord_protos/google/protobuf/wrappers";
 
 @Entity({
     name: "user_settings_protos",
@@ -45,40 +60,13 @@ export class UserSettingsProtos extends BaseClassWithoutId {
     // @Column({nullable: true, type: "simple-json"})
     // testSettings: {};
 
-    bigintReplacer(_key: string, value: unknown): unknown {
-        if (typeof value === "bigint") {
-            return (value as bigint).toString();
-        } else if (value instanceof Uint8Array) {
-            return {
-                __type: "Uint8Array",
-                data: Array.from(value as Uint8Array)
-                    .map((b) => b.toString(16).padStart(2, "0"))
-                    .join(""),
-            };
-        } else {
-            return value;
-        }
-    }
-
-    bigintReviver(_key: string, value: unknown): unknown {
-        if (typeof value === "string" && /^\d+n$/.test(value)) {
-            return BigInt((value as string).slice(0, -1));
-        } else if (typeof value === "object" && value !== null && "__type" in value) {
-            if (value.__type === "Uint8Array" && "data" in value) {
-                return new Uint8Array((value.data as string).match(/.{1,2}/g)!.map((byte: string) => parseInt(byte, 16)));
-            }
-        }
-        return value;
-    }
-
     get userSettings(): PreloadedUserSettings | undefined {
         if (!this._userSettings) return undefined;
-        return PreloadedUserSettings.fromJson(JSON.parse(this._userSettings, this.bigintReviver));
+        return PreloadedUserSettings.fromJsonString(this._userSettings);
     }
 
     set userSettings(value: PreloadedUserSettings | undefined) {
         if (value) {
-            // this._userSettings = JSON.stringify(value, this.bigintReplacer);
             this._userSettings = PreloadedUserSettings.toJsonString(value);
         } else {
             this._userSettings = undefined;
@@ -87,33 +75,32 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 
     get frecencySettings(): FrecencyUserSettings | undefined {
         if (!this._frecencySettings) return undefined;
-        return FrecencyUserSettings.fromJson(JSON.parse(this._frecencySettings, this.bigintReviver));
+        return FrecencyUserSettings.fromJsonString(this._frecencySettings);
     }
 
     set frecencySettings(value: FrecencyUserSettings | undefined) {
         if (value) {
-            this._frecencySettings = JSON.stringify(value, this.bigintReplacer);
+            this._frecencySettings = FrecencyUserSettings.toJsonString(value);
         } else {
             this._frecencySettings = undefined;
         }
     }
 
-    static async getOrDefault(user_id: string, save: boolean = false): Promise<UserSettingsProtos> {
-        const user = await User.findOneOrFail({
-            where: { id: user_id },
-            select: { settings: true },
-        });
+    static async getOrCreate(user_id: string, save: boolean = false): Promise<UserSettingsProtos> {
+        if (!(await User.existsBy({ id: user_id }))) throw new Error(`User with ID ${user_id} does not exist.`);
 
         let userSettings = await UserSettingsProtos.findOne({
             where: { user_id },
         });
 
         let modified = false;
+        let isNewSettings = false;
         if (!userSettings) {
             userSettings = UserSettingsProtos.create({
                 user_id,
             });
             modified = true;
+            isNewSettings = true;
         }
 
         if (!userSettings.userSettings) {
@@ -150,8 +137,73 @@ export class UserSettingsProtos extends BaseClassWithoutId {
             modified = true;
         }
 
+        if (isNewSettings) userSettings = await this.importLegacySettings(user_id, userSettings);
+
         if (modified && save) userSettings = await userSettings.save();
 
         return userSettings;
+    }
+
+    static async importLegacySettings(user_id: string, settings: UserSettingsProtos): Promise<UserSettingsProtos> {
+        const user = await User.findOneOrFail({
+            where: { id: user_id },
+            select: { settings: true },
+        });
+        if (!user) throw new Error(`User with ID ${user_id} does not exist.`);
+
+        const legacySettings = user.settings;
+        const { frecencySettings, userSettings } = settings;
+
+        if (userSettings === undefined) {
+            throw new Error("UserSettingsProtos.userSettings is undefined, this should not happen.");
+        }
+        if (frecencySettings === undefined) {
+            throw new Error("UserSettingsProtos.frecencySettings is undefined, this should not happen.");
+        }
+
+        if (legacySettings) {
+            if (legacySettings.afk_timeout !== null && legacySettings.afk_timeout !== undefined) {
+                userSettings.voiceAndVideo ??= PreloadedUserSettings_VoiceAndVideoSettings.create();
+                userSettings.voiceAndVideo.afkTimeout = UInt32Value.fromJson(legacySettings.afk_timeout);
+            }
+
+            if (legacySettings.allow_accessibility_detection !== null && legacySettings.allow_accessibility_detection !== undefined) {
+                userSettings.privacy ??= PreloadedUserSettings_PrivacySettings.create();
+                userSettings.privacy.allowAccessibilityDetection = legacySettings.allow_accessibility_detection;
+            }
+
+            if (legacySettings.animate_emoji !== null && legacySettings.animate_emoji !== undefined) {
+                userSettings.textAndImages ??= PreloadedUserSettings_TextAndImagesSettings.create();
+                userSettings.textAndImages.animateEmoji = BoolValue.fromJson(legacySettings.animate_emoji);
+            }
+
+            if (legacySettings.animate_stickers !== null && legacySettings.animate_stickers !== undefined) {
+                userSettings.textAndImages ??= PreloadedUserSettings_TextAndImagesSettings.create();
+                userSettings.textAndImages.animateStickers = UInt32Value.fromJson(legacySettings.animate_stickers);
+            }
+
+            if (legacySettings.contact_sync_enabled !== null && legacySettings.contact_sync_enabled !== undefined) {
+                userSettings.privacy ??= PreloadedUserSettings_PrivacySettings.create();
+                userSettings.privacy.contactSyncEnabled = BoolValue.fromJson(legacySettings.contact_sync_enabled);
+            }
+
+            if (legacySettings.convert_emoticons !== null && legacySettings.convert_emoticons !== undefined) {
+                userSettings.textAndImages ??= PreloadedUserSettings_TextAndImagesSettings.create();
+                userSettings.textAndImages.convertEmoticons = BoolValue.fromJson(legacySettings.convert_emoticons);
+            }
+
+            if (legacySettings.custom_status !== null && legacySettings.custom_status !== undefined) {
+                userSettings.status ??= PreloadedUserSettings_StatusSettings.create();
+                userSettings.status.customStatus = PreloadedUserSettings_CustomStatus.create({
+                    emojiId: legacySettings.custom_status.emoji_id === undefined ? undefined : (BigInt(legacySettings.custom_status.emoji_id) as bigint),
+                    emojiName: legacySettings.custom_status.emoji_name,
+                    expiresAtMs: legacySettings.custom_status.expires_at === undefined ? undefined : (BigInt(legacySettings.custom_status.expires_at) as bigint),
+                    text: legacySettings.custom_status.text,
+                    createdAtMs: BigInt(Date.now()) as bigint,
+                });
+            }
+        }
+
+        return settings;
     }
 }
