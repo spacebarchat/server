@@ -151,7 +151,7 @@ export class SpacebarServer extends Server {
 			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "index.html")),
 		);
 
-		app.get("/verify", (req, res) =>
+		app.get("/verify-email", (req, res) =>
 			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "verify.html")),
 		);
 
