@@ -82,15 +82,26 @@ export async function Authentication(
 	const url = req.url.replace(API_PREFIX, "");
 	if (
 		NO_AUTHORIZATION_ROUTES.some((x) => {
-			if (req.method == "HEAD") {
-				if (typeof x === "string")
-					return url.startsWith(x.split(" ").slice(1).join(" "));
+			if (typeof x !== "string") {
 				return x.test(req.method + " " + url);
 			}
 
-			if (typeof x === "string")
-				return (req.method + " " + url).startsWith(x);
-			return x.test(req.method + " " + url);
+			const fullRoute = req.method + " " + url;
+
+			if (req.method === "HEAD") {
+				const urlPart = x.split(" ").slice(1).join(" ");
+				if (urlPart.endsWith("/")) {
+					return url.startsWith(urlPart);
+				} else {
+					return url === urlPart;
+				}
+			}
+
+			if (x.endsWith("/")) {
+				return fullRoute.startsWith(x);
+			} else {
+				return fullRoute === x;
+			}
 		})
 	)
 		return next();
