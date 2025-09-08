@@ -17,7 +17,7 @@
 */
 import dotenv from "dotenv";
 dotenv.config();
-import { closeDatabase, Config, initDatabase, initEvent } from "@spacebar/util";
+import { closeDatabase, Config, initDatabase, initEvent, PluginConfig } from "@spacebar/util";
 import http from "http";
 import ws from "ws";
 import { Connection } from "./events/Connection";
@@ -75,6 +75,7 @@ export class Server {
 	async start(): Promise<void> {
 		await initDatabase();
 		await Config.init();
+		await PluginConfig.init();
 		await initEvent();
 
 		// try to load webrtc library, if failed just don't start webrtc endpoint

@@ -20,7 +20,7 @@ import { Server, ServerOptions } from "lambert-server";
 import {
 	Attachment,
 	Config,
-	initDatabase,
+	initDatabase, PluginConfig,
 	registerRoutes,
 	Sentry,
 } from "@spacebar/util";
@@ -30,9 +30,7 @@ import avatarsRoute from "./routes/avatars";
 import guildProfilesRoute from "./routes/guild-profiles";
 import iconsRoute from "./routes/role-icons";
 import morgan from "morgan";
-import { Like, Or } from "typeorm";
-import bodyParser from "body-parser";
-import { PluginConfig } from "util/plugin/PluginConfig";
+import { Like } from "typeorm";
 
 export type CDNServerOptions = ServerOptions;
 

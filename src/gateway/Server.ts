@@ -23,14 +23,13 @@ import {
 	closeDatabase,
 	Config,
 	initDatabase,
-	initEvent,
+	initEvent, PluginConfig,
 	Sentry,
 } from "@spacebar/util";
 import ws from "ws";
 import { Connection } from "./events/Connection";
 import http from "http";
 import { cleanupOnStartup } from "./util";
-import { PluginConfig } from "util/plugin/PluginConfig";
 
 export class Server {
 	public ws: ws.Server;

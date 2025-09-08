@@ -26,7 +26,7 @@ import {
 	WebAuthn,
 	initDatabase,
 	initEvent,
-	registerRoutes,
+	registerRoutes, PluginConfig,
 } from "@spacebar/util";
 import {
 	Authentication,
@@ -44,7 +44,6 @@ import morgan from "morgan";
 import path from "path";
 import { red } from "picocolors";
 import { initInstance } from "./util/handlers/Instance";
-import { PluginConfig } from "util/plugin/PluginConfig";
 
 const PUBLIC_ASSETS_FOLDER = path.join(
 	__dirname,
