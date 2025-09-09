@@ -271,18 +271,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		// filter guild channels we don't have permission to view
 		// TODO: check if this causes issues when the user is granted other roles?
 		member.guild.channels = member.guild.channels
-			.filter((channel) => {
-				const perms = Permissions.finalPermission({
-					user: {
-						id: member.id,
-						roles: member.roles.map((x) => x.id),
-					},
-					guild: member.guild,
-					channel,
-				});
-
-				return perms.has("VIEW_CHANNEL");
-			})
 			.map((channel) => {
 				channel.position = member.guild.channel_ordering.indexOf(
 					channel.id,
