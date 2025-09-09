@@ -53,8 +53,15 @@ import {
 	Stopwatch,
 	timePromise,
 	ElapsedTime,
+	Channel,
+	Emoji,
+	Role,
+	Sticker,
+	VoiceState,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
+import { In } from "typeorm";
+import guild_id from "../../api/routes/guilds/#guild_id";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
@@ -231,16 +238,103 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 							.getMetadata(Guild)
 							.columns.map((x) => [x.propertyName, true]),
 					),
-					relations: ["channels", "emojis", "roles", "stickers", "voice_states"],
+					// relations: ["channels", "emojis", "roles", "stickers", "voice_states"],
 				}),
 			),
 		),
 	);
 
+	const guildIds = memberGuilds.map((g) => g.id);
+
+	// select relations
+	const [
+		{ result: memberGuildChannels, elapsed: queryGuildChannelsTime },
+		{ result: memberGuildEmojis, elapsed: queryGuildEmojisTime },
+		{ result: memberGuildRoles, elapsed: queryGuildRolesTime },
+		{ result: memberGuildStickers, elapsed: queryGuildStickersTime },
+		{ result: memberGuildVoiceStates, elapsed: queryGuildVoiceStatesTime },
+	] = await Promise.all([
+		timePromise(() =>
+			Channel.find({
+				where: { guild_id: In(guildIds) },
+				order: { guild_id: "ASC" },
+			}),
+		),
+		timePromise(() =>
+			Emoji.find({
+				where: { guild_id: In(guildIds) },
+				order: { guild_id: "ASC" },
+			}),
+		),
+		timePromise(() =>
+			Role.find({
+				where: { guild_id: In(guildIds) },
+				order: { guild_id: "ASC" },
+			}),
+		),
+		timePromise(() =>
+			Sticker.find({
+				where: { guild_id: In(guildIds) },
+				order: { guild_id: "ASC" },
+			}),
+		),
+		timePromise(() =>
+			VoiceState.find({
+				where: { guild_id: In(guildIds) },
+				order: { guild_id: "ASC" },
+			}),
+		),
+	]);
+
+	const mergeMemberGuildsTrace: TraceNode = {
+		micros: 0,
+		calls: [],
+	};
 	members.forEach((m) => {
+		const sw = Stopwatch.startNew();
+		const totalSw = Stopwatch.startNew();
+		const trace: TraceNode = {
+			micros: 0,
+			calls: [],
+		};
+
 		const g = memberGuilds.find((mg) => mg.id === m.guild_id);
-		if (g) m.guild = g;
+		if (g) {
+			m.guild = g;
+			trace.calls.push("findGuild", { micros: sw.getElapsedAndReset().totalMicroseconds });
+
+			//channels
+			g.channels = memberGuildChannels.filter((c) => c.guild_id === m.guild_id);
+			trace.calls.push("filterChannels", { micros: sw.getElapsedAndReset().totalMicroseconds });
+
+			//emojis
+			g.emojis = memberGuildEmojis.filter((e) => e.guild_id === m.guild_id);
+			trace.calls.push("filterEmojis", { micros: sw.getElapsedAndReset().totalMicroseconds });
+
+			//roles
+			g.roles = memberGuildRoles.filter((r) => r.guild_id === m.guild_id);
+			trace.calls.push("filterRoles", { micros: sw.getElapsedAndReset().totalMicroseconds });
+
+			//stickers
+			g.stickers = memberGuildStickers.filter((s) => s.guild_id === m.guild_id);
+			trace.calls.push("filterStickers", { micros: sw.getElapsedAndReset().totalMicroseconds });
+
+			//voice states
+			g.voice_states = memberGuildVoiceStates.filter((v) => v.guild_id === m.guild_id);
+			trace.calls.push("filterVoiceStates", { micros: sw.getElapsedAndReset().totalMicroseconds });
+
+			//total
+			trace.micros = totalSw.elapsed().totalMicroseconds;
+			mergeMemberGuildsTrace.calls!.push(`guild_${m.guild_id}`, trace);
+		} else {
+			console.error(`[Gateway] Member ${m.id} has invalid guild_id ${m.guild_id}`);
+			mergeMemberGuildsTrace.calls!.push(`guild_~~${m.guild_id}~~`, trace);
+		}
 	});
+
+	for (const call of mergeMemberGuildsTrace.calls!) {
+		mergeMemberGuildsTrace.micros += (call as { micros: number }).micros;
+	}
 
 	const totalQueryTime = taskSw.getElapsedAndReset();
 
@@ -503,6 +597,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					membersQueryTime,
 					recipientsQueryTime,
 					queryGuildsTime,
+					queryGuildChannelsTime,
+					queryGuildEmojisTime,
+					queryGuildRolesTime,
+					queryGuildStickersTime,
+					queryGuildVoiceStatesTime,
 				})) {
 					if (subvalue) {
 						val.calls.push(subkey, {
@@ -510,6 +609,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 						} as TraceNode);
 					}
 				}
+
+				val.calls.push("mergeMemberGuildsTrace", mergeMemberGuildsTrace)
 			}
 		}
 	}
