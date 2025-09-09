@@ -268,9 +268,22 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	// Generate guilds list ( make them unavailable if user is bot )
 	const guilds: GuildOrUnavailable[] = members.map((member) => {
-		// filter guild channels we don't have permission to view
-		// TODO: check if this causes issues when the user is granted other roles?
 		member.guild.channels = member.guild.channels
+			/*
+   			//TODO maybe implement this correctly, by causing create and delete events for users who can newly view and not view the channels, along with doing these checks correctly, as they don't currently take into account that the owner of the guild is always able to view channels, with potentially other issues
+   			.filter((channel) => {
+				const perms = Permissions.finalPermission({
+					user: {
+						id: member.id,
+						roles: member.roles.map((x) => x.id),
+					},
+					guild: member.guild,
+					channel,
+				});
+
+				return perms.has("VIEW_CHANNEL");
+			})
+   			*/
 			.map((channel) => {
 				channel.position = member.guild.channel_ordering.indexOf(
 					channel.id,
