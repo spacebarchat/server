@@ -2,24 +2,12 @@
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
 // @fc-license-skip
 
-import {
-	Channel,
-	ChannelPermissionOverwrite,
-	Guild,
-	Member,
-	Role,
-} from "../entities";
-import { BitField } from "./BitField";
+import { Channel, ChannelPermissionOverwrite, ChannelPermissionOverwriteType, Guild, Member, Role } from "../entities";
+import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 import "missing-native-js-functions";
-import { BitFieldResolvable, BitFlag } from "./BitField";
 import { HTTPError } from "lambert-server";
 
-export type PermissionResolvable =
-	| bigint
-	| number
-	| Permissions
-	| PermissionResolvable[]
-	| PermissionString;
+export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
 type PermissionString = keyof typeof Permissions.FLAGS;
 
@@ -117,9 +105,9 @@ export class Permissions extends BitField {
 		if (!overwrites) return this;
 		if (!this.cache) throw new Error("permission chache not available");
 		overwrites = overwrites.filter((x) => {
-			if (x.type === 0 && this.cache.roles?.some((r) => r.id === x.id))
+			if (x.type === ChannelPermissionOverwriteType.role && this.cache.roles?.some((r) => r.id === x.id))
 				return true;
-			if (x.type === 1 && x.id == this.cache.user_id) return true;
+			if (x.type === ChannelPermissionOverwriteType.member && x.id == this.cache.user_id) return true;
 			return false;
 		});
 		return new Permissions(
@@ -178,8 +166,8 @@ export class Permissions extends BitField {
 
 		if (channel?.overwrites) {
 			const overwrites = channel.overwrites.filter((x) => {
-				if (x.type === 0 && user.roles.includes(x.id)) return true;
-				if (x.type === 1 && x.id == user.id) return true;
+				if (x.type === ChannelPermissionOverwriteType.role && user.roles.includes(x.id)) return true;
+				if (x.type === ChannelPermissionOverwriteType.member && x.id == user.id) return true;
 				return false;
 			});
 			permission = Permissions.channelPermission(overwrites, permission);
