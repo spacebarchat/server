@@ -199,6 +199,12 @@ export class Permissions extends BitField {
 
 		return new Permissions(permission);
 	}
+
+	static NONE: Permissions = new Permissions(0);
+	static ALL: Permissions = new Permissions(Object.values(Permissions.FLAGS).reduce(
+		(total, val) => total | val,
+		BigInt(0),
+	));
 }
 
 const ALL_PERMISSIONS = Object.values(Permissions.FLAGS).reduce(
