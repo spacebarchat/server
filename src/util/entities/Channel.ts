@@ -27,14 +27,7 @@ import {
 } from "typeorm";
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
-import {
-	InvisibleCharacters,
-	Snowflake,
-	containsAll,
-	emitEvent,
-	getPermission,
-	trimSpecial,
-} from "../util";
+import { InvisibleCharacters, Snowflake, containsAll, emitEvent, getPermission, trimSpecial, Permissions, BitField } from "../util";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Invite } from "./Invite";
@@ -45,6 +38,9 @@ import { PublicUserProjection, User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
 import { dbEngine } from "../util/Database";
+import { Member } from "./Member";
+import user_id from "../../api/routes/guilds/#guild_id/voice-states/#user_id";
+import permissions from "../../api/routes/channels/#channel_id/permissions";
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a guild
@@ -532,6 +528,81 @@ export class Channel extends BaseClass {
 			ChannelType.VOICELESS_WHITEBOARD,
 		];
 		return disallowedChannelTypes.indexOf(this.type) == -1;
+	}
+
+	async getUserPermissions(opts: {user_id?: string, user?: User, member?: Member, guild?: Guild}): Promise<Permissions> {
+		let guild = opts.guild;
+		if (!guild) {
+			if (this.guild) guild = this.guild;
+			else if (this.guild_id) guild = await Guild.findOneOrFail({ where: { id: this.guild_id } });
+			else {
+				console.error("Channel.getUserPermissions: called without guild for non-DM channel.");
+				return Permissions.NONE;
+			}
+		}
+
+		// check if we can resolve here to short-circuit possibly calling the database unnecessarily
+		// TODO: do we want to have an instance-wide opt out of this behavior? It would just be an extra if statement here
+		const ownerId = guild?.owner?.id ?? guild?.owner_id;
+		if (!!opts.user_id && ownerId === opts.user_id) return Permissions.ALL;
+		if (!!opts.user?.id && ownerId === opts.user?.id) return Permissions.ALL;
+		if (!!opts.member?.id && ownerId === opts.member?.id) return Permissions.ALL;
+
+		let member = opts.member;
+		if (!member) {
+			if (opts.user) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user.id }, relations: [ "roles" ] });
+			else if (opts.user_id) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user_id }, relations: [ "roles" ] });
+			else {
+				console.error("Channel.getUserPermissions: called without user or member for non-DM channel.");
+				return Permissions.NONE;
+			}
+		}
+
+		const roles = (member.roles || (await Member.findOneOrFail({ where: { guild_id: guild.id, index: member.index }, relations: [ "roles" ] })).roles)
+			.sort((a, b) => a.position - b.position); // ascending by position
+
+		// calculate user's channel perms - should in theory match https://docs.discord.food/topics/permissions#permission-overwrites
+		// start at role permissions
+		let userPerms = new Permissions(new BitField(0).add(roles.map(r => r.permissions)));
+
+		// TODO: do we want to have an instance-wide opt out of this behavior? It would just be an extra if statement here
+		if (userPerms.has(Permissions.FLAGS.ADMINISTRATOR)) return true;
+
+		// apply channel overrides
+		if (this.permission_overwrites) {
+			// role overwrites - TODO: this probably violates the geneva conventions - we should probably be ordering roles here
+			for (const overwrite of this.permission_overwrites.filter(o => o.type === ChannelPermissionOverwriteType.role && roles.map(r => r.id).includes(o.id)))
+				userPerms = new Permissions(userPerms.remove(overwrite.deny).add(overwrite.allow));
+
+			// member overwrite, throws if somehow we have multiple overwrites for the same member
+			const memberOverwrite = this.permission_overwrites.single(o => o.type === ChannelPermissionOverwriteType.member && o.id === member?.id);
+			if (memberOverwrite) userPerms = new Permissions(userPerms.remove(memberOverwrite.deny).add(memberOverwrite.allow));
+		}
+
+		return userPerms;
+	}
+
+	// TODO: should we throw for missing args?
+	async canViewChannel(opts: {user_id?: string, user?: User, member?: Member, guild?: Guild}): Promise<boolean> {
+		if(this.isDm()) return await this.canViewDmChannel(opts.user_id, opts.user);
+
+		const userPerms = await this.getUserPermissions(opts);
+		return userPerms.has("VIEW_CHANNEL");
+	}
+
+	private async canViewDmChannel(user_id?: string, user?: User): Promise<boolean> {
+		const userId = user_id ?? user?.id;
+		if (!userId) {
+			console.error("Channel.canViewChannel: called without user for DM channel.");
+			return false;
+		}
+		if (!user) return false;
+		if (this.recipients)
+			return this.recipients.some((r) => r.user_id === user.id && !r.closed);
+		else { // we dont have recipients on hand
+			const recipient = await Recipient.findOne({ where: { channel_id: this.id, user_id: user.id } });
+			return recipient == null ? false : !recipient.closed;
+		}
 	}
 
 	toJSON() {
