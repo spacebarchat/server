@@ -16,15 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	Channel,
-	ChannelPermissionOverwrite,
-	ChannelPermissionOverwriteSchema,
-	ChannelUpdateEvent,
-	emitEvent,
-	Member,
-	Role,
-} from "@spacebar/util";
+import { Channel, ChannelPermissionOverwrite, ChannelPermissionOverwriteSchema, ChannelPermissionOverwriteType, ChannelUpdateEvent, emitEvent, Member, Role } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -59,10 +51,10 @@ router.put(
 			channel.guild,
 		);
 
-		if (body.type === 0) {
+		if (body.type === ChannelPermissionOverwriteType.role) {
 			if (!(await Role.count({ where: { id: overwrite_id } })))
 				throw new HTTPError("role not found", 404);
-		} else if (body.type === 1) {
+		} else if (body.type === ChannelPermissionOverwriteType.member) {
 			if (!(await Member.count({ where: { id: overwrite_id } })))
 				throw new HTTPError("user not found", 404);
 		} else throw new HTTPError("type not supported", 501);
