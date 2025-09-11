@@ -333,7 +333,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	});
 
 	for (const call of mergeMemberGuildsTrace.calls!) {
-		mergeMemberGuildsTrace.micros += (call as { micros: number }).micros;
+		if (typeof call !== "string")
+			mergeMemberGuildsTrace.micros += (call as { micros: number }).micros;
 	}
 
 	const totalQueryTime = taskSw.getElapsedAndReset();
