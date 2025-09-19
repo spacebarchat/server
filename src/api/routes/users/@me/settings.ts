@@ -69,6 +69,8 @@ router.patch(
 		});
 
 		user.settings.assign(body);
+		if (body.guild_folders)
+			user.settings.guild_folders = body.guild_folders;
 
 		await user.settings.save();
 
