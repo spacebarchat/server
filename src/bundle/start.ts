@@ -18,7 +18,6 @@
 
 // process.env.MONGOMS_DEBUG = "true";
 import moduleAlias from "module-alias";
-
 moduleAlias(__dirname + "../../../package.json");
 
 import "reflect-metadata";

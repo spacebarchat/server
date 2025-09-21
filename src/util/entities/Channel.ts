@@ -566,7 +566,7 @@ export class Channel extends BaseClass {
 		let userPerms = new Permissions(new BitField(0).add(roles.map(r => r.permissions)));
 
 		// TODO: do we want to have an instance-wide opt out of this behavior? It would just be an extra if statement here
-		if (userPerms.has(Permissions.FLAGS.ADMINISTRATOR)) return true;
+		if (userPerms.has(Permissions.FLAGS.ADMINISTRATOR)) return userPerms;
 
 		// apply channel overrides
 		if (this.permission_overwrites) {
