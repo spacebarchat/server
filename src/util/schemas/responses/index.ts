@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -49,6 +49,7 @@ export * from "./InstanceStatsResponse";
 export * from "./LocationMetadataResponse";
 export * from "./MemberJoinGuildResponse";
 export * from "./OAuthAuthorizeResponse";
+export * from "./PreloadMessagesResponseSchema";
 export * from "./RefreshUrlsResponse";
 export * from "./SettingsProtoUpdateResponse";
 export * from "./TeamListResponse";
