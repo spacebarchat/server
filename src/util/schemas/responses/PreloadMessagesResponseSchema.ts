@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,12 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export class MessageLimits {
-	maxCharacters: number = 1048576;
-	maxTTSCharacters: number = 160;
-	maxReactions: number = 2048;
-	maxAttachmentSize: number = 1024 * 1024 * 1024;
-	maxBulkDelete: number = 1000;
-	maxEmbedDownloadSize: number = 1024 * 1024 * 5;
-	maxPreloadCount: number = 100;
-}
+import { Message } from "@spacebar/util";
+
+export type PreloadMessagesResponseSchema = Message[];
