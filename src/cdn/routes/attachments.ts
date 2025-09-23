@@ -130,10 +130,13 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 
 	const maxLength = Config.get().cdn.maxAttachmentSize;
 
+	console.log("[Cloud Upload] Uploading attachment", att.id, att.userFilename, `Max size: ${maxLength} bytes\n`, att);
+
 	const chunks: Buffer[] = [];
 	let length = 0;
 
 	req.on("data", (chunk) => {
+		console.log(`[Cloud Upload] Received chunk of size ${chunk.length} bytes`);
 		chunks.push(chunk);
 		length += chunk.length;
 		if (length > maxLength) {
@@ -142,6 +145,7 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 		}
 	});
 	req.on("end", async () => {
+		console.log(`[Cloud Upload] Finished receiving file, total size ${length} bytes`);
 		const buffer = Buffer.concat(chunks);
 		const path = `${channel_id}/${batch_id}/${attachment_id}/${filename}`;
 
@@ -157,6 +161,7 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 		att.size = buffer.length;
 		await att.save();
 
+		console.log("[Cloud Upload] Saved attachment", att.id, att.userFilename, att);
 		res.status(200);
 	});
 });
