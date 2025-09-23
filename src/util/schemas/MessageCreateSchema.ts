@@ -24,6 +24,13 @@ export type MessageCreateAttachment = {
 	filename: string;
 };
 
+export type MessageCreateCloudAttachment = {
+	id?: string;
+	filename: string;
+	uploaded_filename: string;
+	original_content_type?: string;
+}
+
 export interface MessageCreateSchema {
 	type?: number;
 	content?: string;
@@ -53,7 +60,7 @@ export interface MessageCreateSchema {
 	TODO: we should create an interface for attachments
 	TODO: OpenWAAO<-->attachment-style metadata conversion
 	**/
-	attachments?: (MessageCreateAttachment | UploadAttachmentResponse)[];
+	attachments?: (MessageCreateAttachment | MessageCreateCloudAttachment)[];
 	sticker_ids?: string[];
 	components?: ActionRowComponent[];
 	// TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
