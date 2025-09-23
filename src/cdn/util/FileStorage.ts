@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -49,6 +49,17 @@ export class FileStorage implements Storage {
 				return null;
 			}
 		}
+	}
+
+	async clone(path: string, newPath: string) {
+		path = getPath(path);
+		newPath = getPath(newPath);
+
+		if (!fs.existsSync(dirname(newPath)))
+			fs.mkdirSync(dirname(newPath), { recursive: true });
+
+		// use reflink if possible, in order to not duplicate files at the block layer...
+		fs.copyFileSync(path, newPath, fs.constants.COPYFILE_FICLONE)
 	}
 
 	async set(path: string, value: Buffer) {

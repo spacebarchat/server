@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -47,6 +47,15 @@ export class S3Storage implements Storage {
 			Bucket: this.bucket,
 			Key: `${this.bucketBasePath}${path}`,
 			Body: data,
+		});
+	}
+
+	async clone(path: string, newPath: string): Promise<void> {
+		// TODO: does this even work?
+		await this.client.copyObject({
+			Bucket: this.bucket,
+			CopySource: `/${this.bucket}/${this.bucketBasePath}${path}`,
+			Key: `${this.bucketBasePath}${newPath}`,
 		});
 	}
 
