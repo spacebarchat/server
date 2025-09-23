@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { random, route } from "@spacebar/api";
+import { randomString, route } from "@spacebar/api";
 import {
 	Channel,
 	Guild,
@@ -70,7 +70,7 @@ router.post(
 				: new Date(body.max_age * 1000 + Date.now());
 
 		const invite = await Invite.create({
-			code: random(),
+			code: randomString(),
 			temporary: body.temporary || true,
 			uses: 0,
 			max_uses: body.max_uses ? Math.max(0, body.max_uses) : 0,
