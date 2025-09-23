@@ -34,7 +34,7 @@ export class CloudAttachment extends BaseClass {
 	@RelationId((att: CloudAttachment) => att.user)
 	userId: string;
 
-	@JoinColumn({ name: "userId" })
+	@JoinColumn({ name: "user_id" })
 	@ManyToOne(() => User, { nullable: true, onDelete: "SET NULL" })
 	user?: User;
 
@@ -42,7 +42,7 @@ export class CloudAttachment extends BaseClass {
 	@RelationId((att: CloudAttachment) => att.channel)
 	channelId?: string; // channel the file is uploaded to
 
-	@JoinColumn({ name: "channelId" })
+	@JoinColumn({ name: "channel_id" })
 	@ManyToOne(() => Channel, { nullable: true, onDelete: "SET NULL" })
 	channel?: Channel; // channel the file is uploaded to
 
