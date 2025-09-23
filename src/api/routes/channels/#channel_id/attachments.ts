@@ -71,7 +71,7 @@ router.post(
 		const attachments = await Promise.all(
 			payload.files.map(async (attachment) => {
 				attachment.filename = attachment.filename.replaceAll(" ", "_").replace(/[^a-zA-Z0-9._]+/g, "");
-				const uploadFilename = `${batchId}/${attachment.id}/${attachment.filename}`;
+				const uploadFilename = `${channel_id}/${batchId}/${attachment.id}/${attachment.filename}`;
 				const newAttachment = CloudAttachment.create({
 					user: user,
 					channel: channel,
