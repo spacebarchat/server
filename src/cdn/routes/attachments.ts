@@ -147,7 +147,7 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 	req.on("end", async () => {
 		console.log(`[Cloud Upload] Finished receiving file, total size ${length} bytes`);
 		const buffer = Buffer.concat(chunks);
-		const path = `${channel_id}/${batch_id}/${attachment_id}/${filename}`;
+		const path = `attachments/${channel_id}/${batch_id}/${attachment_id}/${filename}`;
 
 		await storage.set(path, buffer);
 		if (att.userOriginalContentType?.includes("image")) {
@@ -162,7 +162,7 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 		await att.save();
 
 		console.log("[Cloud Upload] Saved attachment", att.id, att.userFilename, att);
-		res.status(200);
+		res.status(200).end();
 	});
 });
 
