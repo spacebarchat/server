@@ -324,7 +324,7 @@ router.post(
 
 		if (!req.rights.has(Rights.FLAGS.BYPASS_RATE_LIMITS)) {
 			const limits = Config.get().limits;
-			if (limits.absoluteRate.register.enabled) {
+			if (limits.absoluteRate.sendMessage.enabled) {
 				const count = await Message.count({
 					where: {
 						channel_id,

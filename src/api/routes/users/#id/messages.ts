@@ -51,4 +51,6 @@ router.get(
 	},
 );
 
+// TODO: POST to send a message to the user
+
 export default router;
