@@ -268,6 +268,21 @@ export class Message extends BaseClass {
 		};
 	}
 
+	toPartialMessage(): PartialMessage {
+		return {
+			id: this.id,
+			// lobby_id: this.lobby_id,
+			channel_id: this.channel_id,
+			type: this.type,
+			content: this.content,
+			author: this.author,
+			flags: this.flags,
+			application_id: this.application_id,
+			channel: this.channel,
+			// recipient_id: this.recipient_id, // TODO: ephemeral DM channels
+		}
+	}
+
 	withSignedAttachments(data: NewUrlUserSignatureData) {
 		return {
 			...this,
@@ -277,6 +292,21 @@ export class Message extends BaseClass {
 		};
 	}
 }
+
+/**
+ * https://docs.discord.food/resources/message#partial-message-structure
+ */
+export type PartialMessage = Pick<Message, "id">
+	// & Pick<Message, "lobby_id">
+	& Pick<Message, "channel_id">
+	& Pick<Message, "type">
+	& Pick<Message, "content">
+	& Pick<Message, "author">
+	& Pick<Message, "flags">
+	& Pick<Message, "application_id">
+	& { channel?: Channel }
+// & Pick<Message, "recipient_id"> // TODO: ephemeral DM channels
+	;
 
 export interface MessageComponent {
 	type: MessageComponentType;
