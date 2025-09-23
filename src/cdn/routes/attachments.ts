@@ -122,29 +122,43 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 	const att = await CloudAttachment.findOneOrFail({
 		where: {
 			uploadFilename: `${channel_id}/${batch_id}/${attachment_id}/${filename}`,
+			channelId: channel_id,
+			userAttachmentId: attachment_id,
+			userFilename: filename
 		},
 	});
 
-	if (!req.file) throw new HTTPError("file missing");
+	const maxLength = Config.get().cdn.maxAttachmentSize;
 
-	const { buffer, mimetype, size } = req.file;
-	const path = `${channel_id}/${batch_id}/${attachment_id}/${filename}`;
+	const chunks: Buffer[] = [];
+	let length = 0;
 
-	await storage.set(path, buffer);
-	if (mimetype.includes("image")) {
-		const dimensions = imageSize(buffer);
-		if (dimensions) {
-			att.width = dimensions.width;
-			att.height = dimensions.height;
+	req.on("data", (chunk) => {
+		chunks.push(chunk);
+		length += chunk.length;
+		if (length > maxLength) {
+			res.status(413).send("File too large");
+			req.destroy();
 		}
-	}
+	});
+	req.on("end", async () => {
+		const buffer = Buffer.concat(chunks);
+		const path = `${channel_id}/${batch_id}/${attachment_id}/${filename}`;
 
-	att.size = size;
-	att.contentType = att.userOriginalContentType ?? mimetype;
+		await storage.set(path, buffer);
+		if (att.userOriginalContentType?.includes("image")) {
+			const dimensions = imageSize(buffer);
+			if (dimensions) {
+				att.width = dimensions.width;
+				att.height = dimensions.height;
+			}
+		}
 
-	await att.save();
+		att.size = buffer.length;
+		await att.save();
 
-	return res.status(200);
+		res.status(200);
+	});
 });
 
 export default router;
