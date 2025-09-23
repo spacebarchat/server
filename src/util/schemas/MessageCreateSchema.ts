@@ -16,12 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	ActionRowComponent,
-	Embed,
-	PollAnswer,
-	PollMedia,
-} from "@spacebar/util";
+import { ActionRowComponent, Embed, PollAnswer, PollMedia, UploadAttachmentResponse } from "@spacebar/util";
+import { CloudAttachment } from "../entities/CloudAttachment";
 
 export type MessageCreateAttachment = {
 	id: string;
@@ -57,7 +53,7 @@ export interface MessageCreateSchema {
 	TODO: we should create an interface for attachments
 	TODO: OpenWAAO<-->attachment-style metadata conversion
 	**/
-	attachments?: MessageCreateAttachment[];
+	attachments?: (MessageCreateAttachment | UploadAttachmentResponse)[];
 	sticker_ids?: string[];
 	components?: ActionRowComponent[];
 	// TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
