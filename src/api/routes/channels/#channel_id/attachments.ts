@@ -35,6 +35,7 @@ import {
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
 import { CloudAttachment } from "../../../../util/entities/CloudAttachment";
+import fetch from "node-fetch-commonjs";
 
 const router: Router = Router();
 
@@ -96,5 +97,39 @@ router.post(
 			})} as UploadAttachmentResponseSchema);
 	},
 );
+
+router.delete("/:cloud_attachment_url", async (req: Request, res: Response) => {
+	const { channel_id, cloud_attachment_url } = req.params;
+
+	const user = await User.findOneOrFail({ where: { id: req.user_id } });
+	const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
+	const att = await CloudAttachment.findOneOrFail({ where: { uploadFilename: decodeURI(cloud_attachment_url) } });
+	if (att.userId !== user.id) {
+		return res.status(403).json({
+			code: 403,
+			message: "You do not own this attachment.",
+		});
+	}
+
+	if (att.channelId !== channel.id) {
+		return res.status(400).json({
+			code: 400,
+			message: "Attachment does not belong to this channel.",
+		});
+	}
+
+	const response = await fetch(
+		`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}/attachments/${att.uploadFilename}`,
+		{
+			headers: {
+				signature: Config.get().security.requestSignature
+			},
+			method: "DELETE",
+		},
+	);
+
+	await att.remove();
+	return res.status(response.status).send(response.body);
+});
 
 export default router;
