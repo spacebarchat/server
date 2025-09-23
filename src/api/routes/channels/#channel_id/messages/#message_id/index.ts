@@ -93,7 +93,7 @@ router.patch(
 			}
 		} else rights.hasThrow("SELF_EDIT_MESSAGES");
 
-		// @ts-expect-error Something is wrong with message_reference here, TS complains since "channel_id" is optional in MessageCreateSchema
+		// //@ts-expect-error Something is wrong with message_reference here, TS complains since "channel_id" is optional in MessageCreateSchema
 		const new_message = await handleMessage({
 			...message,
 			// TODO: should message_reference be overridable?

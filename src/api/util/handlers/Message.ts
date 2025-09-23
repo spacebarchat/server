@@ -494,7 +494,7 @@ interface MessageOptions extends MessageCreateSchema {
 	embeds?: Embed[];
 	reactions?: Reaction[];
 	channel_id?: string;
-	attachments?: Attachment[];
+	// attachments?: Attachment[]; // why are we masking this?
 	edited_timestamp?: Date;
 	timestamp?: Date;
 	username?: string;
