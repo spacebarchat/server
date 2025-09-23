@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -25,6 +25,7 @@ process.cwd();
 
 export interface Storage {
 	set(path: string, data: Buffer): Promise<void>;
+	clone(path: string, newPath: string): Promise<void>;
 	get(path: string): Promise<Buffer | null>;
 	delete(path: string): Promise<void>;
 }
