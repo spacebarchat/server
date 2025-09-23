@@ -39,8 +39,6 @@ import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
 import { dbEngine } from "../util/Database";
 import { Member } from "./Member";
-import user_id from "../../api/routes/guilds/#guild_id/voice-states/#user_id";
-import permissions from "../../api/routes/channels/#channel_id/permissions";
 
 export enum ChannelType {
 	GUILD_TEXT = 0, // a text channel within a guild
