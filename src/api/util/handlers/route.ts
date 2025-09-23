@@ -133,6 +133,11 @@ export function route(opts: RouteOptions) {
 							message: x.message || "",
 						}),
 				);
+				if (process.env.LOG_VALIDATION_ERRORS)
+					console.log(
+						`[VALIDATION ERROR] ${req.method} ${req.originalUrl} -`,
+						validate?.errors,
+					);
 				throw FieldErrors(fields);
 			}
 		}
