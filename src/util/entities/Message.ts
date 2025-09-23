@@ -210,6 +210,7 @@ export class Message extends BaseClass {
 		message_id: string;
 		channel_id?: string;
 		guild_id?: string;
+		type?: number; // 0 = DEFAULT, 1 = FORWARD
 	};
 
 	@JoinColumn({ name: "message_reference_id" })
