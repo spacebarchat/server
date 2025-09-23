@@ -124,13 +124,13 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 			uploadFilename: `${channel_id}/${batch_id}/${attachment_id}/${filename}`,
 			channelId: channel_id,
 			userAttachmentId: attachment_id,
-			userFilename: filename
+			userFilename: filename,
 		},
 	});
 
 	const maxLength = Config.get().cdn.maxAttachmentSize;
 
-	console.log("[Cloud Upload] Uploading attachment", att.id, att.userFilename, `Max size: ${maxLength} bytes\n`, att);
+	console.log("[Cloud Upload] Uploading attachment", att.id, att.userFilename, `Max size: ${maxLength} bytes`);
 
 	const chunks: Buffer[] = [];
 	let length = 0;
@@ -161,9 +161,32 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 		att.size = buffer.length;
 		await att.save();
 
-		console.log("[Cloud Upload] Saved attachment", att.id, att.userFilename, att);
+		console.log("[Cloud Upload] Saved attachment", att.id, att.userFilename);
 		res.status(200).end();
 	});
+});
+
+router.delete("/:channel_id/:batch_id/:attachment_id/:filename", async (req: Request, res: Response) => {
+	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
+
+	const { channel_id, batch_id, attachment_id, filename } = req.params;
+	const path = `attachments/${channel_id}/${batch_id}/${attachment_id}/${filename}`;
+
+	const att = await CloudAttachment.findOne({
+		where: {
+			uploadFilename: `${channel_id}/${batch_id}/${attachment_id}/${filename}`,
+			channelId: channel_id,
+			userAttachmentId: attachment_id,
+			userFilename: filename,
+		},
+	});
+
+	if (att) {
+		await att.remove();
+		await storage.delete(path);
+		return res.send({ success: true });
+	}
+	return res.status(404).send("Attachment not found");
 });
 
 export default router;
