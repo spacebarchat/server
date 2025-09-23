@@ -290,6 +290,37 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 	// TODO: check and put it all in the body
 
+	if(message.attachments?.some(att => "uploaded_filename" in att)) {
+		message.attachments = await Promise.all(message.attachments.map(async att => {
+			if("uploaded_filename" in att) {
+				const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${att.uploaded_filename}/clone_to_message/${message.id}`, {
+					method: "POST",
+					headers: {
+						"X-Signature": Config.get().security.requestSignature || "",
+					},
+				});
+				if(!cloneResponse.ok) {
+					console.error(`[Message] Failed to clone attachment ${att.uploaded_filename} to message ${message.id}`);
+					throw new HTTPError("Failed to process attachment: " + await cloneResponse.text(), 500);
+				}
+
+				const cloneRespBody = await cloneResponse.json() as { success: boolean, new_path: string };
+
+				return Attachment.create({
+					id: att.id,
+					filename: att.filename,
+					url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
+					proxy_url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
+					size: att.size,
+					height: att.height,
+					width: att.width,
+					content_type: att.content_type,
+				});
+			}
+			return att;
+		}));
+	}
+
 	return message;
 }
 
