@@ -81,6 +81,7 @@ export * from "./TemplateModifySchema";
 export * from "./TotpDisableSchema";
 export * from "./TotpEnableSchema";
 export * from "./TotpSchema";
+export * from "./UploadAttachmentRequestSchema";
 export * from "./UserDeleteSchema";
 export * from "./UserGuildSettingsSchema";
 export * from "./UserModifySchema";

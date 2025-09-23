@@ -58,6 +58,7 @@ export * from "./Tenor";
 export * from "./TokenResponse";
 export * from "./TypedResponses";
 export * from "./UpdatesResponse";
+export * from "./UploadAttachmentResponseSchema";
 export * from "./UserNoteResponse";
 export * from "./UserProfileResponse";
 export * from "./UserRelationshipsResponse";

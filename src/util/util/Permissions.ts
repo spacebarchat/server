@@ -20,7 +20,7 @@ export class Permissions extends BitField {
 	constructor(bits: BitFieldResolvable = 0) {
 		super(bits);
 		if (this.bitfield & Permissions.FLAGS.ADMINISTRATOR) {
-			this.bitfield = ALL_PERMISSIONS;
+			this.bitfield = Permissions.ALL_PERMISSIONS;
 		}
 	}
 
@@ -72,6 +72,11 @@ export class Permissions extends BitField {
 		 */
 		// CUSTOM_PERMISSION: BigInt(1) << BigInt(0) + CUSTOM_PERMISSION_OFFSET
 	};
+
+	static ALL_PERMISSIONS = Object.values(Permissions.FLAGS).reduce(
+		(total, val) => total | val,
+		BigInt(0),
+	);
 
 	any(permission: PermissionResolvable, checkAdmin = true) {
 		return (
@@ -206,11 +211,6 @@ export class Permissions extends BitField {
 		BigInt(0),
 	));
 }
-
-const ALL_PERMISSIONS = Object.values(Permissions.FLAGS).reduce(
-	(total, val) => total | val,
-	BigInt(0),
-);
 
 export type PermissionCache = {
 	channel?: Channel | undefined;
