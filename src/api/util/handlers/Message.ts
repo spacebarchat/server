@@ -207,6 +207,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		!opts.poll &&
 		!opts.components?.length
 	) {
+		console.log("[Message] Rejecting empty message:", opts, message);
 		throw new HTTPError("Empty messages are not allowed", 50006);
 	}
 
@@ -494,7 +495,7 @@ interface MessageOptions extends MessageCreateSchema {
 	embeds?: Embed[];
 	reactions?: Reaction[];
 	channel_id?: string;
-	// attachments?: Attachment[]; // why are we masking this?
+	attachments?: Attachment[]; // why are we masking this?
 	edited_timestamp?: Date;
 	timestamp?: Date;
 	username?: string;
