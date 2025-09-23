@@ -24,9 +24,7 @@ const router = Router();
 router.post(
 	"/",
 	route({
-		// // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// // @ts-expect-error
-		// requestBody: "PreloadMessagesRequest", // this is broken for some reason?
+		requestBody: "PreloadMessagesRequestSchema",
 		responses: {
 			200: {
 				body: "PreloadMessagesResponse",
