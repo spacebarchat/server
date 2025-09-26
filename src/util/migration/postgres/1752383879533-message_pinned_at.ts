@@ -7,6 +7,9 @@ export class MessagePinnedAt1752383879533 implements MigrationInterface {
 		await queryRunner.query(
 			`ALTER TABLE "messages" ADD "pinned_at" TIMESTAMP`,
 		);
+		await queryRunner.query(
+			`UPDATE "messages" SET "pinned_at" = NOW() WHERE "pinned" = true`,
+		);
 		await queryRunner.query(`ALTER TABLE "messages" DROP COLUMN "pinned"`);
 	}
 
