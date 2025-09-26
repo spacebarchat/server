@@ -39,12 +39,16 @@ router.post(
 	async (req: Request, res: Response) => {
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id },
-			select: ["username", "email"],
+			select: ["username", "email", "verified"],
 		});
 
 		if (!user.email) {
 			// TODO: whats the proper error response for this?
 			throw new HTTPError("User does not have an email address", 400);
+		}
+
+		if (user.verified) {
+			throw new HTTPError("Email is already verified", 400);
 		}
 
 		await Email.sendVerifyEmail(user, user.email)

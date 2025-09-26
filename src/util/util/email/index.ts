@@ -37,9 +37,9 @@ const ASSET_FOLDER_PATH = path.join(
 );
 
 enum MailTypes {
-	verify = "verify",
-	reset = "reset",
-	pwchange = "pwchange",
+	verifyEmail = "verifyEmail",
+	resetPassword = "resetPassword",
+	changePassword = "changePassword",
 }
 
 const transporters: {
@@ -55,7 +55,7 @@ export const Email: {
 	transporter: Transporter | null;
 	init: () => Promise<void>;
 	generateLink: (
-		type: Omit<MailTypes, "pwchange">,
+		type: Omit<MailTypes, "changePassword">,
 		id: string,
 		email: string,
 	) => Promise<string>;
@@ -143,8 +143,10 @@ export const Email: {
 		const token = (await generateToken(id, email)) as string;
 		// puyodead1: this is set to api endpoint because the verification page is on the server since no clients have one, and not all 3rd party clients will have one
 		const instanceUrl =
-			Config.get().api.endpointPublic || "http://localhost:3001";
-		const link = `${instanceUrl}/${type}#token=${token}`;
+			Config.get().api.endpointPublic?.replace("/api", "") ||
+			"http://localhost:3001";
+		const dashedType = type.replace(/([A-Z])/g, "-$1").toLowerCase();
+		const link = `${instanceUrl}/${dashedType}#token=${token}`;
 		return link;
 	},
 
@@ -159,9 +161,9 @@ export const Email: {
 		if (!this.transporter) return;
 
 		const templateNames: { [key in MailTypes]: string } = {
-			verify: "verify_email.html",
-			reset: "password_reset_request.html",
-			pwchange: "password_changed.html",
+			verifyEmail: "verify_email.html",
+			resetPassword: "password_reset_request.html",
+			changePassword: "password_changed.html",
 		};
 
 		const template = await fs.readFile(
@@ -178,7 +180,7 @@ export const Email: {
 			template,
 			user,
 			// password change emails don't have links
-			type != MailTypes.pwchange
+			type != MailTypes.changePassword
 				? await this.generateLink(type, user.id, email)
 				: undefined,
 		);
@@ -203,18 +205,18 @@ export const Email: {
 	 * Sends an email to the user with a link to verify their email address
 	 */
 	sendVerifyEmail: async function (user, email) {
-		return this.sendMail(MailTypes.verify, user, email);
+		return this.sendMail(MailTypes.verifyEmail, user, email);
 	},
 	/**
 	 * Sends an email to the user with a link to reset their password
 	 */
 	sendResetPassword: async function (user, email) {
-		return this.sendMail(MailTypes.reset, user, email);
+		return this.sendMail(MailTypes.resetPassword, user, email);
 	},
 	/**
 	 * Sends an email to the user notifying them that their password has been changed
 	 */
 	sendPasswordChanged: async function (user, email) {
-		return this.sendMail(MailTypes.pwchange, user, email);
+		return this.sendMail(MailTypes.changePassword, user, email);
 	},
 };

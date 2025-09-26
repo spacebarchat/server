@@ -57,7 +57,8 @@
 			}
 
 			.box {
-				width: 22vw;
+				min-width: 350px;
+				width: max(22vw, 350px);
 				padding: 32px;
 				border-radius: 8px;
 				background-color: rgb(32, 32, 32);
@@ -65,6 +66,30 @@
 				display: flex;
 				flex-direction: column;
 				text-align: center;
+			}
+
+			#captcha-container {
+				margin: 20px 0;
+			}
+
+			.retry-button {
+				margin-top: 15px;
+				padding: 10px 20px;
+				background-color: #5865f2;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-family: "Montserrat", sans-serif;
+			}
+
+			.retry-button:hover {
+				background-color: #4752c4;
+			}
+
+			.retry-button:disabled {
+				background-color: #666;
+				cursor: not-allowed;
 			}
 		</style>
 	</head>
@@ -85,6 +110,9 @@
 
 		<script>
 			window.onload = verify;
+
+			let captchaConfig = null;
+			let currentToken = null;
 
 			function verify() {
 				const title = document.getElementById("title");
@@ -113,24 +141,43 @@
 					return;
 				}
 
+				currentToken = values.token;
+				performVerification();
+			}
+
+			function performVerification(captchaResponse = null) {
+				const title = document.getElementById("title");
+				const subtitle = document.getElementById("subtitle");
+
+				const requestBody = { token: currentToken };
+				if (captchaResponse) {
+					requestBody.captcha_key = captchaResponse;
+				}
+
 				// make request to server
-				const token = values.token;
 				fetch("/api/auth/verify", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({
-						token,
-					}),
+					body: JSON.stringify(requestBody),
 				})
 					.then((response) => response.json())
 					.then((data) => {
-						// check for an error response
+						// check for captcha requirement
+						if (data.captcha_key && data.captcha_key.includes("captcha-required")) {
+							captchaConfig = {
+								sitekey: data.captcha_sitekey,
+								service: data.captcha_service
+							};
+							showCaptcha();
+							return;
+						}
+
+						// check for other error responses
 						if ("message" in data) {
 							title.innerText = "Email Verification Link Expired";
-							subtitle.innerText =
-								"Please request a new verification link.";
+							subtitle.innerText = "Please request a new verification link.";
 							return;
 						}
 
@@ -141,6 +188,104 @@
 						title.innerText = "Email Verification Failed";
 						subtitle.innerText = error;
 					});
+			}
+
+			function showCaptcha() {
+				const title = document.getElementById("title");
+				const subtitle = document.getElementById("subtitle");
+				const box = document.querySelector(".box");
+
+				title.innerText = "Please complete the captcha";
+				subtitle.innerText = "We need to verify that you're human.";
+
+				// Create captcha container if it doesn't exist
+				let captchaContainer = document.getElementById("captcha-container");
+				if (!captchaContainer) {
+					captchaContainer = document.createElement("div");
+					captchaContainer.id = "captcha-container";
+					box.appendChild(captchaContainer);
+				}
+
+				// Load and render captcha based on service
+				if (captchaConfig.service === "hcaptcha") {
+					loadHCaptcha();
+				} else if (captchaConfig.service === "recaptcha") {
+					loadReCaptcha();
+				}
+			}
+
+			function loadHCaptcha() {
+				if (window.hcaptcha) {
+					renderHCaptcha();
+					return;
+				}
+
+				const script = document.createElement("script");
+				script.src = "https://js.hcaptcha.com/1/api.js";
+				script.onload = renderHCaptcha;
+				document.head.appendChild(script);
+			}
+
+			function renderHCaptcha() {
+				const captchaContainer = document.getElementById("captcha-container");
+				captchaContainer.innerHTML = "";
+
+				window.hcaptcha.render(captchaContainer, {
+					sitekey: captchaConfig.sitekey,
+					theme: "dark",
+					callback: function(response) {
+						performVerification(response);
+					},
+					"expired-callback": function() {
+						const title = document.getElementById("title");
+						const subtitle = document.getElementById("subtitle");
+						title.innerText = "Captcha Expired";
+						subtitle.innerText = "Please refresh the page and try again.";
+					},
+					"error-callback": function() {
+						const title = document.getElementById("title");
+						const subtitle = document.getElementById("subtitle");
+						title.innerText = "Captcha Error";
+						subtitle.innerText = "Please refresh the page and try again.";
+					}
+				});
+			}
+
+			function loadReCaptcha() {
+				if (window.grecaptcha) {
+					renderReCaptcha();
+					return;
+				}
+
+				const script = document.createElement("script");
+				script.src = "https://www.google.com/recaptcha/api.js";
+				script.onload = renderReCaptcha;
+				document.head.appendChild(script);
+			}
+
+			function renderReCaptcha() {
+				const captchaContainer = document.getElementById("captcha-container");
+				captchaContainer.innerHTML = "";
+
+				window.grecaptcha.render(captchaContainer, {
+					sitekey: captchaConfig.sitekey,
+					theme: "dark",
+					callback: function(response) {
+						performVerification(response);
+					},
+					"expired-callback": function() {
+						const title = document.getElementById("title");
+						const subtitle = document.getElementById("subtitle");
+						title.innerText = "Captcha Expired";
+						subtitle.innerText = "Please refresh the page and try again.";
+					},
+					"error-callback": function() {
+						const title = document.getElementById("title");
+						const subtitle = document.getElementById("subtitle");
+						title.innerText = "Captcha Error";
+						subtitle.innerText = "Please refresh the page and try again.";
+					}
+				});
 			}
 		</script>
 	</body>

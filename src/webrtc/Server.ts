@@ -15,9 +15,9 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-import { closeDatabase, Config, initDatabase, initEvent } from "@spacebar/util";
 import dotenv from "dotenv";
+dotenv.config();
+import { closeDatabase, Config, initDatabase, initEvent } from "@spacebar/util";
 import http from "http";
 import ws from "ws";
 import { Connection } from "./events/Connection";
@@ -29,7 +29,6 @@ import {
 	WRTC_PUBLIC_IP,
 } from "./util/MediaServer";
 import { green, yellow } from "picocolors";
-dotenv.config();
 
 export class Server {
 	public ws: ws.Server;

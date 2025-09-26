@@ -30,6 +30,8 @@ export * from "./FieldError";
 export * from "./Intents";
 export * from "./InvisibleCharacters";
 export * from "./JSON";
+export * from "./KittyLogo";
+export * from "./Logo";
 export * from "./MessageFlags";
 export * from "./Permissions";
 export * from "./RabbitMQ";

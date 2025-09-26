@@ -18,16 +18,19 @@
 
 // process.env.MONGOMS_DEBUG = "true";
 import moduleAlias from "module-alias";
+
 moduleAlias(__dirname + "../../../package.json");
 
 import "reflect-metadata";
 import cluster, { Worker } from "cluster";
 import os from "os";
-import { red, bold, yellow, cyan } from "picocolors";
+import { red, bold, yellow, cyan, blueBright, redBright } from "picocolors";
 import { initStats } from "./stats";
 import { config } from "dotenv";
+
 config();
 import { execSync } from "child_process";
+import { centerString, Logo } from "@spacebar/util";
 
 const cores = process.env.THREADS ? parseInt(process.env.THREADS) : 1;
 
@@ -41,73 +44,66 @@ function getCommitOrFail() {
 
 if (cluster.isPrimary) {
 	const commit = getCommitOrFail();
+	Logo.printLogo().then(()=>{
+		const unformatted = `spacebar-server | !! Pre-release build !!`;
+		const formatted = `${blueBright("spacebar-server")} | ${redBright("⚠️ Pre-release build ⚠️")}`;
+		console.log(
+			bold(centerString(unformatted, 86).replace(unformatted, formatted)),
+		);
 
-	console.log(
-		bold(`
-███████╗██████╗  █████╗  ██████╗███████╗██████╗  █████╗ ██████╗ 
-██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔══██╗
-███████╗██████╔╝███████║██║     █████╗  ██████╔╝███████║██████╔╝
-╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝  ██╔══██╗██╔══██║██╔══██╗
-███████║██║     ██║  ██║╚██████╗███████╗██████╔╝██║  ██║██║  ██║
-╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+		const unformattedGitHeader = `Commit Hash: ${commit !== null ? `${commit} (${commit.slice(0, 7)})` : "Unknown (Git cannot be found)"}`;
+		const formattedGitHeader = `Commit Hash: ${commit !== null ? `${cyan(commit)} (${yellow(commit.slice(0, 7))})` : "Unknown (Git cannot be found)"}`;
+		console.log(
+			bold(
+				centerString(unformattedGitHeader, 86).replace(
+					unformattedGitHeader,
+					formattedGitHeader,
+				),
+			),
+		);
+		console.log(`Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)`);
 
-		spacebar-server | ${yellow(
-			`Pre-release (${
-				commit !== null
-					? commit.slice(0, 7)
-					: "Unknown (Git cannot be found)"
-			})`,
-		)}
-
-Commit Hash: ${
-			commit !== null
-				? `${cyan(commit)} (${yellow(commit.slice(0, 7))})`
-				: "Unknown (Git cannot be found)"
-		}
-Cores: ${cyan(os.cpus().length)} (Using ${cores} thread(s).)
-`),
-	);
-
-	if (commit == null) {
-		console.log(yellow(`Warning: Git is not installed or not in PATH.`));
-	}
-
-	initStats();
-
-	console.log(`[Process] starting with ${cores} threads`);
-
-	if (cores === 1) {
-		require("./Server");
-	} else {
-		process.env.EVENT_TRANSMISSION = "process";
-
-		// Fork workers.
-		for (let i = 0; i < cores; i++) {
-			// Delay each worker start if using sqlite database to prevent locking it
-			const delay = process.env.DATABASE?.includes("://") ? 0 : i * 1000;
-			setTimeout(() => {
-				cluster.fork();
-				console.log(`[Process] worker ${cyan(i)} started.`);
-			}, delay);
+		if (commit == null) {
+			console.log(yellow(`Warning: Git is not installed or not in PATH.`));
 		}
 
-		cluster.on("message", (sender: Worker, message) => {
-			for (const id in cluster.workers) {
-				const worker = cluster.workers[id];
-				if (worker === sender || !worker) continue;
-				worker.send(message);
+		initStats();
+
+		console.log(`[Process] Starting with ${cores} threads`);
+
+		if (cores === 1) {
+			require("./Server");
+		} else {
+			process.env.EVENT_TRANSMISSION = "process";
+
+			// Fork workers.
+			for (let i = 0; i < cores; i++) {
+				// Delay each worker start if using sqlite database to prevent locking it
+				const delay = process.env.DATABASE?.includes("://") ? 0 : i * 1000;
+				setTimeout(() => {
+					cluster.fork();
+					console.log(`[Process] Worker ${cyan(i)} started.`);
+				}, delay);
 			}
-		});
 
-		cluster.on("exit", (worker) => {
-			console.log(
-				`[Worker] ${red(
-					`died with PID: ${worker.process.pid} , restarting ...`,
-				)}`,
-			);
-			cluster.fork();
-		});
-	}
+			cluster.on("message", (sender: Worker, message) => {
+				for (const id in cluster.workers) {
+					const worker = cluster.workers[id];
+					if (worker === sender || !worker) continue;
+					worker.send(message);
+				}
+			});
+
+			cluster.on("exit", (worker) => {
+				console.log(
+					`[Worker] ${red(
+						`PID ${worker.process.pid} died, restarting ...`,
+					)}`,
+				);
+				cluster.fork();
+			});
+		}
+	});
 } else {
 	require("./Server");
 }
