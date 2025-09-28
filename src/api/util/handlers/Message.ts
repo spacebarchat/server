@@ -106,7 +106,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 				const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${message.id}`, {
 					method: "POST",
 					headers: {
-						"signature": Config.get().security.requestSignature || "",
+						signature: Config.get().security.requestSignature || "",
 					},
 				});
 
@@ -223,6 +223,13 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 				}
 
 				message.message_reference = opts.message_reference;
+				message.referenced_message = await Message.findOneOrFail({
+					where: {
+						id: opts.message_reference.message_id,
+					},
+				});
+
+				if (message.referenced_message.channel_id !== opts.message_reference.channel_id) throw new HTTPError("Referenced message not found in the specified channel", 404);
 			}
 			/** Q: should be checked if the referenced message exists? ANSWER: NO
 			 otherwise backfilling won't work **/
