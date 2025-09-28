@@ -93,6 +93,16 @@
           };
         };
 
+        containers.docker = pkgs.dockerTools.buildLayeredImage {
+          name = "spacebar-server-ts";
+          tag = "latest";
+          contents = [ self.packages.${system}.default ];
+          config = {
+            Cmd = [ "${self.outputs.packages.x86_64-linux.default}/bin/start-bundle" ];
+            Expose = [ "3001" ];
+          };
+        };
+
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             nodejs
