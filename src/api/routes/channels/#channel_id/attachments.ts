@@ -73,7 +73,6 @@ router.post(
 		// validate IDs
 		const seenIds: (string | undefined)[] = [];
 		for (const file of payload.files) {
-			file.id ??= "0";
 			if (seenIds.includes(file.id)) {
 				return res.status(400).json({
 					code: 400,
@@ -86,12 +85,12 @@ router.post(
 		const attachments = await Promise.all(
 			payload.files.map(async (attachment) => {
 				attachment.filename = attachment.filename.replaceAll(" ", "_").replace(/[^a-zA-Z0-9._]+/g, "");
-				const uploadFilename = `${channel_id}/${batchId}/${attachment.id}/${attachment.filename}`;
+				const uploadFilename = `${channel_id}/${batchId}/${attachment.id ?? "0"}/${attachment.filename}`;
 				const newAttachment = CloudAttachment.create({
 					user: user,
 					channel: channel,
 					uploadFilename: uploadFilename,
-					userAttachmentId: attachment.id,
+					userAttachmentId: attachment.id ?? "0",
 					userFilename: attachment.filename,
 					userFileSize: attachment.file_size,
 					userIsClip: attachment.is_clip,
