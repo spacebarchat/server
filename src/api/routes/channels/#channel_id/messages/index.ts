@@ -231,6 +231,18 @@ router.get(
 			return x;
 		});
 
+
+		// polyfill message references for old messages
+		await ret.filter((msg) => msg.message_reference && !msg.referenced_message?.id).forEachAsync(async (msg) => {
+			const whereOptions: { id: string; guild_id?: string; channel_id?: string } = {
+				id: msg.message_reference!.message_id,
+			};
+			if (msg.message_reference!.guild_id) whereOptions.guild_id = msg.message_reference!.guild_id;
+			if (msg.message_reference!.channel_id) whereOptions.channel_id = msg.message_reference!.channel_id;
+
+			msg.referenced_message = await Message.findOneOrFail({ where: whereOptions, relations: ["author", "mentions", "mention_roles", "mention_channels"] });
+		});
+
 		return res.json(ret);
 	},
 );
