@@ -118,9 +118,13 @@ router.get(
 				"attachments",
 				"referenced_message",
 				"referenced_message.author",
+				"referenced_message.webhook",
+				"referenced_message.application",
 				"referenced_message.mentions",
 				"referenced_message.mention_roles",
 				"referenced_message.mention_channels",
+				"referenced_message.sticker_items",
+				"referenced_message.attachments",
 			],
 		};
 
