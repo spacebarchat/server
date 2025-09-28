@@ -129,6 +129,8 @@ router.get(
 				"sticker_items",
 				"attachments",
 				"referenced_message",
+				"referenced_message.author",
+				"referenced_message.mentions",
 			],
 		};
 

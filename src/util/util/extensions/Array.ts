@@ -21,6 +21,7 @@ declare global {
 		containsAll(target: T[]): boolean;
 		partition(filter: (elem: T) => boolean): [T[], T[]];
 		single(filter: (elem: T) => boolean): T | null;
+		forEachAsync(callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void>;
 	}
 }
 
@@ -41,6 +42,10 @@ export function single<T>(array: T[], filter: (elem: T) => boolean): T | null {
 	if (results.length > 1) throw new Error("Array contains more than one matching element");
 	if (results.length === 0) return null;
 	return results[0];
+}
+
+export async function forEachAsync<T>(array: T[], callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void> {
+	await Promise.all(array.map(callback));
 }
 
 // register extensions
