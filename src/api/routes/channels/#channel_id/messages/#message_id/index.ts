@@ -32,6 +32,8 @@ import {
 	getRights,
 	uploadFile,
 	NewUrlUserSignatureData,
+	MessageCreateAttachment,
+	MessageCreateCloudAttachment,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -93,7 +95,8 @@ router.patch(
 			}
 		} else rights.hasThrow("SELF_EDIT_MESSAGES");
 
-		//@ts-expect-error Something is wrong with message_reference here, TS complains since "channel_id" is optional in MessageCreateSchema
+		// no longer necessary, somehow resolved by updating the type of `attachments`...?
+		// //@ts-expect-error Something is wrong with message_reference here, TS complains since "channel_id" is optional in MessageCreateSchema
 		const new_message = await handleMessage({
 			...message,
 			// TODO: should message_reference be overridable?
@@ -172,7 +175,7 @@ router.put(
 	async (req: Request, res: Response) => {
 		const { channel_id, message_id } = req.params;
 		const body = req.body as MessageCreateSchema;
-		const attachments: Attachment[] = [];
+		const attachments: (MessageCreateAttachment | MessageCreateCloudAttachment)[] = body.attachments ?? [];
 
 		const rights = await getRights(req.user_id);
 		rights.hasThrow("SEND_MESSAGES");

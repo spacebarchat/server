@@ -39,6 +39,8 @@ import {
 	uploadFile,
 	NewUrlSignatureData,
 	NewUrlUserSignatureData,
+	MessageCreateCloudAttachment,
+	MessageCreateAttachment,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -51,6 +53,8 @@ import {
 	MoreThanOrEqual,
 } from "typeorm";
 import { URL } from "url";
+import fetch from "node-fetch-commonjs";
+import { CloudAttachment } from "../../../../../util/entities/CloudAttachment";
 
 const router: Router = Router();
 
@@ -296,7 +300,7 @@ router.post(
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 		const body = req.body as MessageCreateSchema;
-		const attachments: Attachment[] = [];
+		const attachments: (Attachment | MessageCreateAttachment | MessageCreateCloudAttachment)[] = body.attachments ?? [];
 
 		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
@@ -364,6 +368,7 @@ router.post(
 
 		const embeds = body.embeds || [];
 		if (body.embed) embeds.push(body.embed);
+		console.log("messages/index.ts: attachments:", attachments);
 		const message = await handleMessage({
 			...body,
 			type: 0,

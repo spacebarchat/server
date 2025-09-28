@@ -150,7 +150,14 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 		const path = `attachments/${channel_id}/${batch_id}/${attachment_id}/${filename}`;
 
 		await storage.set(path, buffer);
-		if (att.userOriginalContentType?.includes("image")) {
+
+		let mimeType = att.userOriginalContentType;
+		if (att.userOriginalContentType === null) {
+			const ft = await FileType.fromBuffer(buffer);
+			mimeType = att.contentType = ft?.mime || "application/octet-stream";
+		}
+
+		if (mimeType?.includes("image")) {
 			const dimensions = imageSize(buffer);
 			if (dimensions) {
 				att.width = dimensions.width;
@@ -168,6 +175,7 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 
 router.delete("/:channel_id/:batch_id/:attachment_id/:filename", async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
+	console.log("[Cloud Delete] Deleting attachment", req.params);
 
 	const { channel_id, batch_id, attachment_id, filename } = req.params;
 	const path = `attachments/${channel_id}/${batch_id}/${attachment_id}/${filename}`;
@@ -191,10 +199,11 @@ router.delete("/:channel_id/:batch_id/:attachment_id/:filename", async (req: Req
 
 router.post("/:channel_id/:batch_id/:attachment_id/:filename/clone_to_message/:message_id", async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
+	console.log("[Cloud Clone] Cloning attachment to message", req.params);
 
-	const { channel_id, batch_id, attachment_id, filename } = req.params;
+	const { channel_id, batch_id, attachment_id, filename, message_id } = req.params;
 	const path = `attachments/${channel_id}/${batch_id}/${attachment_id}/${filename}`;
-	const newPath = `attachments/${channel_id}/${filename}`;
+	const newPath = `attachments/${channel_id}/${message_id}/${filename}`;
 
 	const att = await CloudAttachment.findOne({
 		where: {
