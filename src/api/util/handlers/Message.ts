@@ -227,10 +227,13 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 					where: {
 						id: opts.message_reference.message_id,
 					},
-					relations: ["author", "mentions", "mention_roles", "mention_channels"],
+					relations: ["author", "mentions", "mention_roles", "mention_channels", "attachments"],
 				});
 
-				if (message.referenced_message.channel_id !== opts.message_reference.channel_id) throw new HTTPError("Referenced message not found in the specified channel", 404);
+				if (message.referenced_message.channel_id && message.referenced_message.channel_id !== opts.message_reference.channel_id)
+					throw new HTTPError("Referenced message not found in the specified channel", 404);
+				if (message.referenced_message.guild_id && message.referenced_message.guild_id !== opts.message_reference.guild_id)
+					throw new HTTPError("Referenced message not found in the specified channel", 404);
 			}
 			/** Q: should be checked if the referenced message exists? ANSWER: NO
 			 otherwise backfilling won't work **/
