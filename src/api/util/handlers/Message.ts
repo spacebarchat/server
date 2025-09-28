@@ -227,7 +227,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 					where: {
 						id: opts.message_reference.message_id,
 					},
-					relations: ["author", "mentions", "mention_roles", "mention_channels", "attachments"],
+					relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"],
 				});
 
 				if (message.referenced_message.channel_id && message.referenced_message.channel_id !== opts.message_reference.channel_id)
