@@ -168,6 +168,8 @@ export class Member extends BaseClassWithoutId {
 			this.nick = this.nick.split("\n").join("");
 			this.nick = this.nick.split("\t").join("");
 		}
+		if (this.nick === "") this.nick = undefined;
+		if (this.pronouns === "") this.pronouns = undefined;
 	}
 
 	static async IsInGuildOrFail(user_id: string, guild_id: string) {
