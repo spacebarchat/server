@@ -69,6 +69,20 @@ router.post(
 
 		const cdnUrl = Config.get().cdn.endpointPublic;
 		const batchId = `CLOUD_${user.id}_${randomString(128)}`;
+
+		// validate IDs
+		const seenIds: (string | undefined)[] = [];
+		for (const file of payload.files) {
+			file.id ??= "0";
+			if (seenIds.includes(file.id)) {
+				return res.status(400).json({
+					code: 400,
+					message: `Duplicate attachment ID: ${file.id}`,
+				});
+			}
+			seenIds.push(file.id);
+		}
+
 		const attachments = await Promise.all(
 			payload.files.map(async (attachment) => {
 				attachment.filename = attachment.filename.replaceAll(" ", "_").replace(/[^a-zA-Z0-9._]+/g, "");
