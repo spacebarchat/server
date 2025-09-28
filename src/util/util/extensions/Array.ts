@@ -61,3 +61,7 @@ if (!Array.prototype.single)
 	Array.prototype.single = function <T>(this: T[], filter: (elem: T) => boolean) {
 		return single(this, filter);
 	};
+if (!Array.prototype.forEachAsync)
+	Array.prototype.forEachAsync = function <T>(this: T[], callback: (elem: T, index: number, array: T[]) => Promise<void>) {
+		return forEachAsync(this, callback);
+	};
