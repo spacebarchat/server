@@ -128,6 +128,7 @@ router.get(
 				"mention_channels",
 				"sticker_items",
 				"attachments",
+				"referenced_message",
 			],
 		};
 
