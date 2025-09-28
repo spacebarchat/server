@@ -22,7 +22,7 @@ export interface UploadAttachmentRequestSchema {
 }
 
 export interface UploadAttachmentRequest {
-	id: string;
+	id?: string;
 	filename: string;
 	file_size: number;
 	is_clip?: boolean;
