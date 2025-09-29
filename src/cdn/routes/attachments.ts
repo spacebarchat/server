@@ -18,7 +18,7 @@
 
 import { Config, hasValidSignature, NewUrlUserSignatureData, Snowflake, UrlSignResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import FileType from "file-type";
+import { fileTypeFromBuffer } from "file-type";
 import imageSize from "image-size";
 import { HTTPError } from "lambert-server";
 import { multer } from "../util/multer";
@@ -92,7 +92,7 @@ router.get("/:channel_id/:id/:filename", async (req: Request, res: Response) => 
 
 	const file = await storage.get(path);
 	if (!file) throw new HTTPError("File not found");
-	const type = await FileType.fromBuffer(file);
+	const type = await fileTypeFromBuffer(file);
 	let content_type = type?.mime || "application/octet-stream";
 
 	if (SANITIZED_CONTENT_TYPE.includes(content_type)) {
@@ -153,7 +153,7 @@ router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("fil
 
 		let mimeType = att.userOriginalContentType;
 		if (att.userOriginalContentType === null) {
-			const ft = await FileType.fromBuffer(buffer);
+			const ft = await fileTypeFromBuffer(buffer);
 			mimeType = att.contentType = ft?.mime || "application/octet-stream";
 		}
 

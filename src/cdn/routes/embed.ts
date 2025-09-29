@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import FileType from "file-type";
+import { fileTypeFromBuffer } from "file-type";
 import fs from "fs/promises";
 import { HTTPError } from "lambert-server";
 import { join } from "path";
@@ -75,7 +75,7 @@ router.get("/avatars/:id", async (req: Request, res: Response) => {
 
 	const file = await getFile(path);
 	if (!file) throw new HTTPError("not found", 404);
-	const type = await FileType.fromBuffer(file);
+	const type = await fileTypeFromBuffer(file);
 
 	res.set("Content-Type", type?.mime);
 	res.set("Cache-Control", "public, max-age=31536000");
@@ -100,7 +100,7 @@ router.get("/group-avatars/:id", async (req: Request, res: Response) => {
 
 	const file = await getFile(path);
 	if (!file) throw new HTTPError("not found", 404);
-	const type = await FileType.fromBuffer(file);
+	const type = await fileTypeFromBuffer(file);
 
 	res.set("Content-Type", type?.mime);
 	res.set("Cache-Control", "public, max-age=31536000");

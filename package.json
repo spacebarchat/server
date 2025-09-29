@@ -86,7 +86,7 @@
 		"exif-be-gone": "^1.5.1",
 		"fast-zlib": "^2.0.1",
 		"fido2-lib": "^3.5.3",
-		"file-type": "~16.5.4",
+		"file-type": "^21.0.0",
 		"form-data": "^4.0.4",
 		"i18next": "^25.5.2",
 		"i18next-fs-backend": "^2.6.0",

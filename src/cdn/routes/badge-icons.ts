@@ -18,7 +18,7 @@
 
 import { Router, Response, Request } from "express";
 import { storage } from "../util/Storage";
-import FileType from "file-type";
+import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
 
 const router = Router();
@@ -29,7 +29,7 @@ router.get("/:badge_id", async (req: Request, res: Response) => {
 
 	const file = await storage.get(path);
 	if (!file) throw new HTTPError("not found", 404);
-	const type = await FileType.fromBuffer(file);
+	const type = await fileTypeFromBuffer(file);
 
 	res.set("Content-Type", type?.mime);
 	res.set("Cache-Control", "public, max-age=31536000, must-revalidate");
