@@ -185,7 +185,7 @@ export class Message extends BaseClass {
 	@Column({ type: "text", nullable: true })
 	nonce?: string;
 
-	@Column()
+	@Column({ nullable: true })
 	@CreateDateColumn()
 	pinned_at: Date | null;
 
