@@ -58,6 +58,7 @@ router.put(
 
 		const pinned_count = await Message.count({
 			where: { channel: { id: channel_id }, pinned_at: Not(IsNull()) },
+			order: { pinned_at: "DESC" },
 		});
 
 		const { maxPins } = Config.get().limits.channel;
@@ -184,6 +185,7 @@ router.get(
 		const pins = await Message.find({
 			where: { channel_id: channel_id, pinned_at: Not(IsNull()) },
 			relations: ["author"],
+			order: { pinned_at: "DESC" },
 		});
 
 		const items = pins.map((message: Message) => ({
