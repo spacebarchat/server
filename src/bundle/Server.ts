@@ -28,7 +28,7 @@ import * as Webrtc from "@spacebar/webrtc";
 import { CDNServer } from "@spacebar/cdn";
 import express from "express";
 import { green, bold } from "picocolors";
-import { Config, initDatabase, Sentry } from "@spacebar/util";
+import { Config, initDatabase } from "@spacebar/util";
 
 const app = express();
 const server = http.createServer();
@@ -53,13 +53,11 @@ process.on("SIGTERM", async () => {
 	await api.stop();
 	await webrtc.stop();
 	server.close();
-	Sentry.close();
 });
 
 async function main() {
 	await initDatabase();
 	await Config.init();
-	await Sentry.init(app);
 
 	const logRequests = process.env["LOG_REQUESTS"] != undefined;
 	if (logRequests) {
@@ -88,8 +86,6 @@ async function main() {
 		gateway.start(),
 		webrtc.start(),
 	]);
-
-	Sentry.errorHandler(app);
 
 	console.log(`[Server] ${green(`Listening on port ${bold(port)}`)}`);
 }

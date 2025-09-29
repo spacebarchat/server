@@ -37,7 +37,6 @@ export * from "./Permissions";
 export * from "./RabbitMQ";
 export * from "./Regex";
 export * from "./Rights";
-export * from "./Sentry";
 export * from "./Snowflake";
 export * from "./Stopwatch";
 export * from "./String";

@@ -24,7 +24,6 @@ import {
 	Config,
 	initDatabase,
 	initEvent,
-	Sentry,
 } from "@spacebar/util";
 import ws from "ws";
 import { Connection } from "./events/Connection";
@@ -74,7 +73,6 @@ export class Server {
 		await initDatabase();
 		await Config.init();
 		await initEvent();
-		await Sentry.init();
 		// temporary fix
 		await cleanupOnStartup();
 

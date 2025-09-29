@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Sentry from "@sentry/node";
 import { CLOSECODES, OPCODES, Payload, WebSocket } from "@spacebar/gateway";
 import { ErlpackType, PayloadSchema } from "@spacebar/util";
 import fs from "fs/promises";
@@ -25,6 +24,7 @@ import path from "path";
 import WS from "ws";
 import OPCodeHandlers from "../opcodes";
 import { check } from "../opcodes/instanceOf";
+
 const bigIntJson = BigIntJson({ storeAsString: true });
 
 let erlpack: ErlpackType | null = null;
@@ -89,29 +89,8 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	}
 
 	try {
-		return await Sentry.startSpan(
-			// Emma [it/its]@Rory&: is this the right function to migrate to in v8?
-			{
-				op: "websocket.server",
-				name: `GATEWAY ${OPCODES[data.op]}`,
-				attributes: {
-					// this needs to be reworked :)
-					...data.d,
-					token: data?.d?.token ? "[Redacted]" : undefined,
-				},
-			},
-			async () => {
-				const ret = await OPCodeHandler.call(this, data);
-				Sentry.setUser({ id: this.user_id });
-				return ret;
-			},
-		);
+		return await OPCodeHandler.call(this, data);
 	} catch (error) {
-		Sentry.captureException(error, {
-			user: {
-				id: this.user_id,
-			},
-		});
 		console.error(`Error: Op ${data.op}`, error);
 		// if (!this.CLOSED && this.CLOSING)
 		return this.close(CLOSECODES.Unknown_error);

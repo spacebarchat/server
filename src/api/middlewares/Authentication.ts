@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Sentry from "@sentry/node";
 import { checkToken, Rights } from "@spacebar/util";
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
@@ -107,8 +106,6 @@ export async function Authentication(
 		return next();
 	if (!req.headers.authorization)
 		return next(new HTTPError("Missing Authorization Header", 401));
-
-	Sentry.setUser({ id: req.user_id });
 
 	try {
 		const { decoded, user } = await checkToken(req.headers.authorization);

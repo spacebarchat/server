@@ -22,7 +22,6 @@ import {
 	Config,
 	initDatabase,
 	registerRoutes,
-	Sentry,
 } from "@spacebar/util";
 import { CORS, BodyParser } from "@spacebar/api";
 import path from "path";
@@ -45,7 +44,6 @@ export class CDNServer extends Server {
 		await initDatabase();
 		await Config.init();
 		await this.cleanupSignaturesInDb();
-		await Sentry.init(this.app);
 
 		const logRequests = process.env["LOG_REQUESTS"] != undefined;
 		if (logRequests) {
@@ -122,8 +120,6 @@ export class CDNServer extends Server {
 			guildProfilesRoute,
 		);
 		this.log("verbose", "[Server] Route /guilds/banners registered");
-
-		Sentry.errorHandler(this.app);
 
 		return super.start();
 	}

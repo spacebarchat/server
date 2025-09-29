@@ -34,7 +34,6 @@ export * from "./RabbitMQConfiguration";
 export * from "./RegionConfiguration";
 export * from "./RegisterConfiguration";
 export * from "./SecurityConfiguration";
-export * from "./SentryConfiguration";
 export * from "./subconfigurations";
 export * from "./TemplateConfiguration";
 export * from "./UsersConfiguration";

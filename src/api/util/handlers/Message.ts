@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Sentry from "@sentry/node";
 import { EmbedHandlers } from "@spacebar/api";
 import {
 	Application,
@@ -422,12 +421,6 @@ export async function postHandleMessage(message: Message) {
 			}
 		} catch (e) {
 			console.error(`[Embeds] Error while generating embed for ${link}`, e);
-			Sentry.captureException(e, (scope) => {
-				scope.clear();
-				scope.setContext("request", { url: link });
-				return scope;
-			});
-			continue;
 		}
 	}
 

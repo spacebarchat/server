@@ -22,7 +22,6 @@ import {
 	ConnectionLoader,
 	Email,
 	JSONReplacer,
-	Sentry,
 	WebAuthn,
 	initDatabase,
 	initEvent,
@@ -80,7 +79,6 @@ export class SpacebarServer extends Server {
 		await Email.init();
 		await ConnectionConfig.init();
 		await initInstance();
-		await Sentry.init(this.app);
 		WebAuthn.init();
 
 		const logRequests = process.env["LOG_REQUESTS"] != undefined;
@@ -156,8 +154,6 @@ export class SpacebarServer extends Server {
 		);
 
 		this.app.use(ErrorHandler);
-
-		Sentry.errorHandler(this.app);
 
 		ConnectionLoader.loadConnections();
 
