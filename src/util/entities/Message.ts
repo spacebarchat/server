@@ -215,7 +215,7 @@ export class Message extends BaseClass {
 
 	@JoinColumn({ name: "message_reference_id" })
 	@ManyToOne(() => Message)
-	referenced_message?: Message;
+	referenced_message?: Message | null;
 
 	@Column({ type: "simple-json", nullable: true })
 	interaction?: {
