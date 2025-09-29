@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { AfterLoad, Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
@@ -104,10 +104,19 @@ export class Invite extends BaseClassWithoutId {
 	@Column()
 	flags: number;
 
+	isExpired() {
+		if (this.max_age !== 0 && this.expires_at && this.expires_at < new Date()) return true;
+		if (this.max_uses !== 0 && this.uses >= this.max_uses) return true;
+		return false;
+	}
+
 	static async joinGuild(user_id: string, code: string) {
 		const invite = await Invite.findOneOrFail({ where: { code } });
-		if (invite.uses++ >= invite.max_uses && invite.max_uses !== 0)
+		if (invite.isExpired()) {
 			await Invite.delete({ code });
+			throw new Error("Invite is expired");
+		}
+		if (invite.uses++ >= invite.max_uses && invite.max_uses !== 0) await Invite.delete({ code });
 		else await invite.save();
 
 		await Member.addToGuild(user_id, invite.guild_id);
