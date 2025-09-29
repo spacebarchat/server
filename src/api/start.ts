@@ -23,7 +23,7 @@ process.on("unhandledRejection", console.error);
 
 import "missing-native-js-functions";
 import { config } from "dotenv";
-config();
+config({ quiet: true });
 import { SpacebarServer } from "./Server";
 import cluster from "cluster";
 import os from "os";

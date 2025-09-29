@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({ quiet: true });
 import { closeDatabase, Config, initDatabase, initEvent } from "@spacebar/util";
 import http from "http";
 import ws from "ws";

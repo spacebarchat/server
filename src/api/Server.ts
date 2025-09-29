@@ -126,7 +126,8 @@ export class SpacebarServer extends Server {
 		// 404 is not an error in express, so this should not be an error middleware
 		// this is a fine place to put the 404 handler because its after we register the routes
 		// and since its not an error middleware, our error handler below still works.
-		api.use("*", (req: Request, res: Response) => {
+		// Emma [it/its] @ Rory& - the _ is required now, as pillarjs throw an error if you don't pass a param name now
+		api.use("*_", (req: Request, res: Response) => {
 			res.status(404).json({
 				message: "404 endpoint not found",
 				code: 0,

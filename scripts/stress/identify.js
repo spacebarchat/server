@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 const { OPCODES } = require("../../dist/gateway/util/Constants.js");
 const WebSocket = require("ws");
 const ENDPOINT = `ws://localhost:3001?v=9&encoding=json`;

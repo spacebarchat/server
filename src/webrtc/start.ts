@@ -22,7 +22,7 @@ process.on("unhandledRejection", console.error);
 
 import { config } from "dotenv";
 import { Server } from "./Server";
-config();
+config({ quiet: true });
 
 const port = Number(process.env.PORT) || 3004;
 

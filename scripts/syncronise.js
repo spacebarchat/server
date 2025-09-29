@@ -26,7 +26,7 @@
 */
 
 require("module-alias/register");
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 const { initDatabase } = require("..");
 
 (async () => {

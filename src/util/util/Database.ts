@@ -30,7 +30,7 @@ let dbConnection: DataSource | undefined;
 
 // For typeorm cli
 if (!process.env) {
-	config();
+	config({ quiet: true });
 }
 
 const dbConnectionString =

@@ -18,7 +18,7 @@
 
 import "missing-native-js-functions";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({ quiet: true });
 import {
 	closeDatabase,
 	Config,

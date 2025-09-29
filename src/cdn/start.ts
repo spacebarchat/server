@@ -18,7 +18,8 @@
 
 import moduleAlias from "module-alias";
 moduleAlias(__dirname + "../../../package.json");
-import "dotenv/config";
+import { config } from "dotenv";
+config({ quiet: true});
 
 import { CDNServer } from "./Server";
 const server = new CDNServer({ port: Number(process.env.PORT) || 3003 });

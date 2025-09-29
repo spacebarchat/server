@@ -27,7 +27,7 @@ import { red, bold, yellow, cyan, blueBright, redBright } from "picocolors";
 import { initStats } from "./stats";
 import { config } from "dotenv";
 
-config();
+config({ quiet: true });
 import { execSync } from "child_process";
 import { centerString, Logo } from "@spacebar/util";
 
