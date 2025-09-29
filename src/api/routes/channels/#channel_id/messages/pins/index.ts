@@ -28,6 +28,7 @@ import {
 	User,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { IsNull, Not } from "typeorm";
 
 const router: Router = Router();
 
@@ -184,13 +185,10 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 
-		const pins = await Message.createQueryBuilder("message")
-			.leftJoinAndSelect("message.channel", "channel")
-			.leftJoinAndSelect("message.author", "author")
-			.where("channel.id = :channelId", { channelId: channel_id })
-			.andWhere("message.pinned_at IS NOT NULL")
-			.orderBy("message.pinned_at", "DESC")
-			.getMany();
+		const pins = await Message.find({
+			where: { channel_id: channel_id, pinned_at: Not(IsNull()) },
+			relations: ["author"],
+		});
 
 		const items = pins.map((message: Message) => ({
 			message,
