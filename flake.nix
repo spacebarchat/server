@@ -26,6 +26,7 @@
           default = pkgs.buildNpmPackage {
             pname = "spacebar-server-ts";
             name = "spacebar-server-ts";
+            nodejs = pkgs.nodejs_24;
 
             meta = with lib; {
               description = "Spacebar server, a FOSS reimplementation of the Discord backend.";
@@ -53,7 +54,7 @@
               cp -r assets dist node_modules package.json $out/
               for i in dist/**/start.js
               do
-                makeWrapper ${pkgs.nodejs}/bin/node $out/bin/start-`dirname ''${i/dist\//}` --prefix NODE_PATH : $out/node_modules --add-flags $out/$i
+                makeWrapper ${pkgs.nodejs_24}/bin/node $out/bin/start-`dirname ''${i/dist\//}` --prefix NODE_PATH : $out/node_modules --add-flags $out/$i
               done
 
               set +x
@@ -72,7 +73,7 @@
             ];
             text = ''
               rm -rf node_modules
-              ${pkgs.nodejs}/bin/npm install --save
+              ${pkgs.nodejs_24}/bin/npm install --save
               DEPS_HASH=$(prefetch-npm-deps package-lock.json)
               TMPFILE=$(mktemp)
               jq '.npmDepsHash = "'"$DEPS_HASH"'"' hashes.json > "$TMPFILE"
@@ -105,7 +106,7 @@
 
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            nodejs
+            nodejs_24
             nodePackages.typescript
             nodePackages.ts-node
             nodePackages.patch-package
