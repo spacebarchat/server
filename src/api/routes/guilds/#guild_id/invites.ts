@@ -40,6 +40,12 @@ router.get(
 			relations: PublicInviteRelation,
 		});
 
+		await invites
+			.filter((i) => i.isExpired())
+			.forEachAsync(async (i) => {
+				await Invite.delete({ code: i.code });
+			});
+
 		return res.json(invites);
 	},
 );
