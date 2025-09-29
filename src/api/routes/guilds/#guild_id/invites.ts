@@ -46,7 +46,7 @@ router.get(
 				await Invite.delete({ code: i.code });
 			});
 
-		return res.json(invites);
+		return res.json(invites.filter(i => !i.isExpired()));
 	},
 );
 
