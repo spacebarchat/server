@@ -55,10 +55,11 @@ import {
 	Emoji,
 	Role,
 	Sticker,
-	VoiceState,
+	VoiceState, UserSettingsProtos,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { In } from "typeorm";
+import { PreloadedUserSettings } from "discord-protos";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
@@ -245,12 +246,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	// select relations
 	const [
+		{ result: settingsProtos, elapsed: settingsProtosQueryTime },
 		{ result: memberGuildChannels, elapsed: queryGuildChannelsTime },
 		{ result: memberGuildEmojis, elapsed: queryGuildEmojisTime },
 		{ result: memberGuildRoles, elapsed: queryGuildRolesTime },
 		{ result: memberGuildStickers, elapsed: queryGuildStickersTime },
 		{ result: memberGuildVoiceStates, elapsed: queryGuildVoiceStatesTime },
 	] = await Promise.all([
+		timePromise(() =>
+			UserSettingsProtos.findOne({
+				where: { user_id: this.user_id },
+			})
+		),
 		timePromise(() =>
 			Channel.find({
 				where: { guild_id: In(guildIds) },
@@ -510,6 +517,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		application: application ? { id: application.id, flags: application.flags } : undefined,
 		user: user.toPrivateUser(),
 		user_settings: user.settings,
+		user_settings_proto: settingsProtos?.userSettings ? PreloadedUserSettings.toBase64(settingsProtos.userSettings) : undefined,
+		user_settings_proto_json: settingsProtos?.userSettings ? PreloadedUserSettings.toJson(settingsProtos.userSettings) : undefined,
 		guilds: this.capabilities.has(Capabilities.FLAGS.CLIENT_STATE_V2) ? guilds.map((x) => new ReadyGuildDTO(x).toJSON()) : guilds,
 		relationships: user.relationships.map((x) => x.toPublicRelationship()),
 		read_state: {
