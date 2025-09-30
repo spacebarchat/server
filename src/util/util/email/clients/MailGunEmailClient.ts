@@ -17,7 +17,7 @@
 */
 
 import { BaseEmailClient, IEmail } from "./IEmailClient";
-import { Config } from "@spacebar/util*";
+import { Config } from "@spacebar/util";
 
 // NOTE: mailgun supports SMTP, is there any point in maintaining this?
 export class MailGunEmailClient extends BaseEmailClient {

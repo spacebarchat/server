@@ -17,7 +17,7 @@
 */
 
 import { BaseEmailClient, IEmail } from "./IEmailClient";
-import { Config } from "@spacebar/util*";
+import { Config } from "@spacebar/util";
 
 export class MailJetEmailClient extends BaseEmailClient {
 	mailJet?: unknown;
