@@ -31,7 +31,7 @@ import {
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.get(
 	"/",

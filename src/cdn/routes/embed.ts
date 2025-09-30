@@ -42,7 +42,7 @@ const defaultGroupDMAvatarHashMap = new Map([
 	["7", "904bf9f1b61f53ef4a3b7a893afeabe3"],
 ]);
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 async function getFile(path: string) {
 	try {

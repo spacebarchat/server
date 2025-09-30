@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	//TODO

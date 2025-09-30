@@ -30,7 +30,7 @@ import {
 import { Request, Response, Router } from "express";
 import { IsNull, Not } from "typeorm";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.put(
 	"/:message_id",

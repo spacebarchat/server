@@ -32,7 +32,7 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 /* TODO: Deleting the secrets is just a temporary go-around. Views should be implemented for both safety and better handling. */
 

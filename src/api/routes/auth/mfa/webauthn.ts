@@ -28,7 +28,7 @@ import {
 import { Request, Response, Router } from "express";
 import { ExpectedAssertionResult } from "fido2-lib";
 import { HTTPError } from "lambert-server";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 function toArrayBuffer(buf: Buffer) {
 	const ab = new ArrayBuffer(buf.length);

@@ -48,7 +48,7 @@ import multer from "multer";
 import { FindManyOptions, FindOperator, LessThan, MoreThan, MoreThanOrEqual } from "typeorm";
 import { URL } from "url";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 // https://discord.com/developers/docs/resources/channel#create-message
 // get messages

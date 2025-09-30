@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { BackupCodesChallengeSchema, FieldErrors, User } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.post(
 	"/",

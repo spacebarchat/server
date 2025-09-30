@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { SecurityKey, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.delete(
 	"/",

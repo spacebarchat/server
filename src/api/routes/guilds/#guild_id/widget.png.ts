@@ -26,7 +26,7 @@ import { HTTPError } from "lambert-server";
 import path from "path";
 import { storage } from "../../../../cdn/util/Storage";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 // TODO: use svg templates instead of node-canvas for improved performance and to change it easily
 

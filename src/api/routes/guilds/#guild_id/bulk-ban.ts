@@ -29,7 +29,7 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { Config } from "@spacebar/util";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.post(
 	"/",

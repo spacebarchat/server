@@ -25,7 +25,7 @@ import { storage } from "../util/Storage";
 import { CloudAttachment } from "../../util/entities/CloudAttachment";
 import { fileTypeFromBuffer } from "file-type";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 const SANITIZED_CONTENT_TYPE = ["text/html", "text/mhtml", "multipart/related", "application/xhtml+xml"];
 

@@ -28,7 +28,7 @@ import fetch from "node-fetch-commonjs";
 import { ProxyAgent } from "proxy-agent";
 import http from "http";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get(
 	"/",

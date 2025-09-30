@@ -27,7 +27,7 @@ import {
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import fetch from "node-fetch-commonjs";
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.get(
 	"/:code",

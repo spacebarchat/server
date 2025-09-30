@@ -21,7 +21,7 @@ import { Guild, GuildDeleteEvent, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 // discord prefixes this route with /delete instead of using the delete method
 // docs are wrong https://discord.com/developers/docs/resources/guild#delete-guild

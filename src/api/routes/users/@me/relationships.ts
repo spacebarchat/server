@@ -31,7 +31,7 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 const userProjection: (keyof User)[] = [
 	"relationships",

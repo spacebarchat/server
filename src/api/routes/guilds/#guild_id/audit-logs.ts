@@ -18,7 +18,7 @@
 
 import { Router, Response, Request } from "express";
 import { route } from "@spacebar/api";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 //TODO: implement audit logs
 router.get("/", route({}), async (req: Request, res: Response) => {

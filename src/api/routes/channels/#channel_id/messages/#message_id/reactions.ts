@@ -37,7 +37,7 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 // TODO: check if emoji is really an unicode emoji or a prperly encoded external emoji
 
 function getEmoji(emoji: string): PartialEmoji {

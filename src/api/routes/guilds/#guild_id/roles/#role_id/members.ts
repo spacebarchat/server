@@ -20,7 +20,7 @@ import { Router, Request, Response } from "express";
 import { DiscordApiErrors, Member, partition } from "@spacebar/util";
 import { route } from "@spacebar/api";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.patch(
 	"/",

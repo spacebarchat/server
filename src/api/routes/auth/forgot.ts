@@ -19,7 +19,7 @@
 import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
 import { Config, Email, ForgotPasswordSchema, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.post(
 	"/",

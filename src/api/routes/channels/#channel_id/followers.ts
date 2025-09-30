@@ -17,7 +17,7 @@
 */
 
 import { Router } from "express";
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 // TODO:
 
 export default router;

@@ -18,7 +18,7 @@
 
 import { IPAnalysis, getIpAdress, route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get(
 	"/",

@@ -27,7 +27,7 @@ import {
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 // TODO: This route is replaced with users/@me/mfa/codes-verification in newer clients
 

@@ -21,7 +21,7 @@ import { User, AutomodRuleSchema, AutomodRule } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.get(
 	"/",

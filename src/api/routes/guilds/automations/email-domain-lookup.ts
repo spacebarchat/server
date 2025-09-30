@@ -27,7 +27,7 @@ import emailProviders from "email-providers/all.json";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.post(
 	"/",

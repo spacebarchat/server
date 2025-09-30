@@ -30,7 +30,7 @@ import {
 import { FrecencyUserSettings } from "discord-protos";
 import { JsonValue } from "@protobuf-ts/runtime";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 //#region Protobuf
 router.get(

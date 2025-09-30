@@ -21,7 +21,7 @@ import { BackupCode, TotpSchema, User, generateToken } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.post(
 	"/",

@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.get(
 	"/",

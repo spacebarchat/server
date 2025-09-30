@@ -25,7 +25,7 @@ import {
 	User,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 async function getToken(user: User) {
 	const token = await generateToken(user.id);

@@ -21,7 +21,7 @@ import { Channel, emitEvent, GreetRequestSchema, Message, MessageCreateEvent, Me
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.post(
 	"/",

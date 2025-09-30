@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Guild, Member, Snowflake } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { IsNull, LessThan } from "typeorm";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 //Returns all inactive members, respecting role hierarchy
 const inactiveMembers = async (

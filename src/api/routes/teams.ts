@@ -28,7 +28,7 @@ import {
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.get(
 	"/",

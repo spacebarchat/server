@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 // Unsure what this endpoint does, it seems to only affect the visual style of the shop tab in home
 router.get(

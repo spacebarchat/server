@@ -21,7 +21,7 @@ import { storage } from "../util/Storage";
 import { HTTPError } from "lambert-server";
 import { fileTypeFromBuffer } from "file-type";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get("/:badge_id", async (req: Request, res: Response) => {
 	const { badge_id } = req.params;

@@ -40,7 +40,7 @@ import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { handleMessage, postHandleMessage, route } from "../../../../../util";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 // TODO: message content/embed string length limit
 
 const messageUpload = multer({

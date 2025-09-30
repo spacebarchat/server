@@ -18,7 +18,7 @@
 
 import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get("/subscriptions", route({}), async (req: Request, res: Response) => {
 	// TODO:

@@ -32,7 +32,7 @@ import {
 import { Request, Response, Router } from "express";
 import { Not } from "typeorm";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const guild_id = req.params.guild_id;

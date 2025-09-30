@@ -29,7 +29,7 @@ import {
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 // TODO: delete channel
 // TODO: Get channel
 

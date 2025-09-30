@@ -20,7 +20,7 @@ import { Router, Request, Response } from "express";
 import { Member } from "@spacebar/util";
 import { route } from "@spacebar/api";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { guild_id, role_id } = req.params;

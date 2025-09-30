@@ -26,7 +26,7 @@ import {
 	RefreshableConnection,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 // TODO: this route is only used for spotify, twitch, and youtube. (battlenet seems to be able to PUT, maybe others also)
 

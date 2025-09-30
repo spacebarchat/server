@@ -20,7 +20,7 @@ import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
 import { ConnectedAccount, ConnectedAccountDTO } from "@spacebar/util";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const connections = await ConnectedAccount.find({

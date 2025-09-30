@@ -30,7 +30,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 export default router;
 
 router.post(

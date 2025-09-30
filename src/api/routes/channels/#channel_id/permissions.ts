@@ -21,7 +21,7 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
 import { route } from "@spacebar/api";
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 // TODO: Only permissions your bot has in the guild or channel can be allowed/denied (unless your bot has a MANAGE_ROLES overwrite in the channel)
 

@@ -27,7 +27,7 @@ import {
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 // Undocumented API notes:
 // An invite is created for the widget_channel_id on request (only if an existing one created by the widget doesn't already exist)

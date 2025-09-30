@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { ConnectionStore, FieldErrors } from "../../../../util";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const { connection_name } = req.params;

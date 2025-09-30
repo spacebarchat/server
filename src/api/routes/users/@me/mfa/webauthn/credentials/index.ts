@@ -33,7 +33,7 @@ import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { ExpectedAttestationResult } from "fido2-lib";
 import { HTTPError } from "lambert-server";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 const isGenerateSchema = (
 	body: WebAuthnPostSchema,

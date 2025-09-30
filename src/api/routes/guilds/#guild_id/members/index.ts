@@ -22,7 +22,7 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 // TODO: send over websocket
 // TODO: check for GUILD_MEMBERS intent

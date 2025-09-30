@@ -29,7 +29,7 @@ import {
 	getPermission,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-const router = Router();
+const router = Router({ mergeParams: true });
 
 // TODO: scopes, other oauth types
 

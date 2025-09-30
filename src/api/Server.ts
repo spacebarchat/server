@@ -109,7 +109,7 @@ export class SpacebarServer extends Server {
 		this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
 
 		const app = this.app;
-		const api = Router();
+		const api = Router({ mergeParams: true });
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		this.app = api;

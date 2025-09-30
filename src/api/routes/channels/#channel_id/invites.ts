@@ -31,7 +31,7 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.post(
 	"/",

@@ -4,7 +4,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { executeWebhook } from "../../../../util/handlers/Webhook";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 const parseGitHubWebhook = (
 	req: Request,

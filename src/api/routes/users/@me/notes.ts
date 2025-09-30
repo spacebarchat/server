@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Note, Snowflake, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.get(
 	"/:id",

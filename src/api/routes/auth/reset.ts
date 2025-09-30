@@ -28,7 +28,7 @@ import {
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 // TODO: the response interface also returns settings, but this route doesn't actually return that.
 router.post(

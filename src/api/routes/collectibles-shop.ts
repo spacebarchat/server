@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { CollectiblesShopResponse } from "@spacebar/util";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get(
 	"/",

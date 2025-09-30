@@ -29,7 +29,7 @@ import {
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 //TODO need more testing when community guild and voice stage channel are working
 
 router.patch(

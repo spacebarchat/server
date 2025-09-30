@@ -29,7 +29,7 @@ import { Request, Response, Router } from "express";
 import { CloudAttachment } from "../../../../util/entities/CloudAttachment";
 import fetch from "node-fetch-commonjs";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 router.post(
 	"/",

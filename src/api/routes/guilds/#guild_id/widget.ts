@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Guild, WidgetModifySchema } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
-const router: Router = Router();
+const router: Router = Router({ mergeParams: true });
 
 // https://discord.com/developers/docs/resources/guild#get-guild-widget-settings
 router.get(

@@ -39,7 +39,7 @@ const STATIC_MIME_TYPES = [
 ];
 const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.post("/", multer.single("file"), async (req: Request, res: Response) => {
 	if (req.headers.signature !== Config.get().security.requestSignature)
