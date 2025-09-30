@@ -24,6 +24,7 @@ import { Config } from "../Config";
 import { generateToken } from "../Token";
 import { BaseEmailClient, IEmail, IEmailClient } from "./clients/IEmailClient";
 import { SendGridEmailClient } from "./clients/SendGridEmailClient";
+import { SMTPTransport } from "./clients/SMTPTransport";
 
 const ASSET_FOLDER_PATH = path.join(
 	__dirname,
@@ -78,7 +79,7 @@ export const Email: {
 
 		switch (provider) {
 			case "smtp":
-				this.transporter = new BaseEmailClient();
+				this.transporter = new SMTPTransport();
 				break;
 			case "sendgrid":
 				this.transporter = new SendGridEmailClient();
