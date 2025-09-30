@@ -24,14 +24,12 @@ import {
 	DefaultUserGuildSettings,
 	EVENTEnum,
 	Guild,
-	GuildCreateEvent,
 	GuildOrUnavailable,
 	IdentifySchema,
 	Intents,
 	Member,
 	MemberPrivateProjection,
 	OPCodes,
-	Permissions,
 	PresenceUpdateEvent,
 	PrivateSessionProjection,
 	PrivateUserProjection,
@@ -61,7 +59,6 @@ import {
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { In } from "typeorm";
-import guild_id from "../../api/routes/guilds/#guild_id";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config

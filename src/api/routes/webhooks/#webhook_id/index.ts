@@ -9,7 +9,6 @@ import {
 	WebhookUpdateSchema,
 	Channel,
 	handleFile,
-	FieldErrors,
 	ValidateName,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";

@@ -28,7 +28,6 @@ import {
 	handleFile,
 	isTextChannel,
 	trimSpecial,
-	FieldErrors,
 	ValidateName,
 } from "@spacebar/util";
 import crypto from "crypto";

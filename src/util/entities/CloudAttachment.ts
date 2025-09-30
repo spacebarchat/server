@@ -16,9 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BeforeRemove, Column, Entity, JoinColumn, ManyToOne, OneToOne, RelationId } from "typeorm";
-import { URL } from "url";
-import { deleteFile } from "../util/cdn";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { dbEngine } from "../util/Database";
 import { User } from "./User";

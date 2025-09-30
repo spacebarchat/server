@@ -39,7 +39,6 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { handleMessage, postHandleMessage, route } from "../../../../../util";
-import { URL } from "url";
 
 const router = Router();
 // TODO: message content/embed string length limit

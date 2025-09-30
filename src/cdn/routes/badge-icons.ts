@@ -18,8 +18,8 @@
 
 import { Router, Response, Request } from "express";
 import { storage } from "../util/Storage";
-import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
+import { fileTypeFromBuffer } from "file-type";
 
 const router = Router();
 

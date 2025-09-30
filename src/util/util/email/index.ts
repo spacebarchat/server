@@ -21,7 +21,7 @@ import path from "node:path";
 import { User } from "../../entities";
 import { Config } from "../Config";
 import { generateToken } from "../Token";
-import { BaseEmailClient, IEmail, IEmailClient } from "./clients/IEmailClient";
+import { IEmail, IEmailClient } from "./clients/IEmailClient";
 import { SendGridEmailClient } from "./clients/SendGridEmailClient";
 import { SMTPEmailClient } from "./clients/SMTPEmailClient";
 import { MailGunEmailClient } from "./clients/MailGunEmailClient";

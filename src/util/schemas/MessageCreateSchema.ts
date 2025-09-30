@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ActionRowComponent, Embed, PollAnswer, PollMedia, UploadAttachmentResponse } from "@spacebar/util";
-import { CloudAttachment } from "../entities/CloudAttachment";
+import { ActionRowComponent, Embed, PollAnswer, PollMedia } from "@spacebar/util";
 
 export type MessageCreateAttachment = {
 	id: string;

@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConnectedAccountTokenData } from "../interfaces";
 import { AllowedMentions } from "@spacebar/util*";
 
 export interface GreetRequestSchema {

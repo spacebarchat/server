@@ -16,16 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { AfterLoad, Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { Member } from "./Member";
 import { User } from "./User";
 import { dbEngine } from "../util/Database";
-import { emitEvent } from "../util";
-import { GuildCreateEvent } from "../interfaces";
-import { ReadyGuildDTO } from "../dtos";
 
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 

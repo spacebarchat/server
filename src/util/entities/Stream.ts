@@ -3,14 +3,12 @@ import {
 	Entity,
 	JoinColumn,
 	ManyToOne,
-	OneToMany,
 	RelationId,
 } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { dbEngine } from "../util/Database";
 import { User } from "./User";
 import { Channel } from "./Channel";
-import { StreamSession } from "./StreamSession";
 
 @Entity({
 	name: "streams",

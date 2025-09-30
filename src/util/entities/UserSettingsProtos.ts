@@ -16,18 +16,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, OneToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import { dbEngine } from "@spacebar/util";
 import { User } from "./User";
 import {
 	FrecencyUserSettings,
 	PreloadedUserSettings,
-	PreloadedUserSettings_LaunchPadMode,
-	PreloadedUserSettings_SwipeRightToLeftMode,
-	PreloadedUserSettings_Theme,
-	PreloadedUserSettings_TimestampHourCycle,
-	PreloadedUserSettings_UIDensity,
+
+
+
+
+
 } from "discord-protos";
 
 @Entity({

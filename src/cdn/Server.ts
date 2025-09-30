@@ -29,7 +29,7 @@ import avatarsRoute from "./routes/avatars";
 import guildProfilesRoute from "./routes/guild-profiles";
 import iconsRoute from "./routes/role-icons";
 import morgan from "morgan";
-import { Like, Or } from "typeorm";
+import { Like } from "typeorm";
 
 export type CDNServerOptions = ServerOptions;
 

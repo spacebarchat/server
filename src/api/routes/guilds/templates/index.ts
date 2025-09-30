@@ -23,8 +23,6 @@ import {
 	Guild,
 	GuildTemplateCreateSchema,
 	Member,
-	Role,
-	Snowflake,
 	Template,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";

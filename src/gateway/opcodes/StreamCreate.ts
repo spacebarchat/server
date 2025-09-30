@@ -9,7 +9,6 @@ import {
 	Config,
 	emitEvent,
 	Member,
-	Region,
 	Snowflake,
 	Stream,
 	StreamCreateEvent,

@@ -18,12 +18,12 @@
 
 import { Config, hasValidSignature, NewUrlUserSignatureData, Snowflake, UrlSignResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { fileTypeFromBuffer } from "file-type";
 import imageSize from "image-size";
 import { HTTPError } from "lambert-server";
 import { multer } from "../util/multer";
 import { storage } from "../util/Storage";
 import { CloudAttachment } from "../../util/entities/CloudAttachment";
+import { fileTypeFromBuffer } from "file-type";
 
 const router = Router();
 

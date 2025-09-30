@@ -47,8 +47,6 @@ import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { FindManyOptions, FindOperator, LessThan, MoreThan, MoreThanOrEqual } from "typeorm";
 import { URL } from "url";
-import fetch from "node-fetch-commonjs";
-import { CloudAttachment } from "../../../../../util/entities/CloudAttachment";
 
 const router: Router = Router();
 

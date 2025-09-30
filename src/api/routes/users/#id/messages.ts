@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, Config, DmMessagesResponseSchema, Message, User } from "@spacebar/util";
+import { Config, DmMessagesResponseSchema, Message, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router();
 

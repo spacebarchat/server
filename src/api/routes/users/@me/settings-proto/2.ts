@@ -27,7 +27,7 @@ import {
 	SettingsProtoUpdateSchema,
 	UserSettingsProtos,
 } from "@spacebar/util";
-import { FrecencyUserSettings, PreloadedUserSettings } from "discord-protos";
+import { FrecencyUserSettings } from "discord-protos";
 import { JsonValue } from "@protobuf-ts/runtime";
 
 const router: Router = Router();

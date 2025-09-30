@@ -3,7 +3,6 @@ import {
 	Entity,
 	JoinColumn,
 	ManyToOne,
-	OneToMany,
 	RelationId,
 } from "typeorm";
 import { BaseClass } from "./BaseClass";

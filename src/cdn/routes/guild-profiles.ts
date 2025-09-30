@@ -19,10 +19,10 @@
 import { Config, Snowflake } from "@spacebar/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
-import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
 import { multer } from "../util/multer";
 import { storage } from "../util/Storage";
+import { fileTypeFromBuffer } from "file-type";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
