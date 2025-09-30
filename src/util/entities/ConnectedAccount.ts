@@ -20,7 +20,6 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { ConnectedAccountTokenData } from "../interfaces";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 
 export type PublicConnectedAccount = Pick<
 	ConnectedAccount,
@@ -29,7 +28,6 @@ export type PublicConnectedAccount = Pick<
 
 @Entity({
 	name: "connected_accounts",
-	engine: dbEngine,
 })
 export class ConnectedAccount extends BaseClass {
 	@Column()

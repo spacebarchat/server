@@ -18,11 +18,9 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "client_release",
-	engine: dbEngine,
 })
 export class ClientRelease extends BaseClass {
 	@Column()

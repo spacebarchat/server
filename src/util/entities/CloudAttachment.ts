@@ -18,13 +18,11 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { dbEngine } from "../util/Database";
 import { User } from "./User";
 import { Channel } from "./Channel";
 
 @Entity({
 	name: "cloud_attachments",
-	engine: dbEngine,
 })
 export class CloudAttachment extends BaseClass {
 	// Internal tracking metadata

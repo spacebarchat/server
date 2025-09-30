@@ -6,13 +6,11 @@ import {
 	RelationId,
 } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { dbEngine } from "../util/Database";
 import { User } from "./User";
 import { Channel } from "./Channel";
 
 @Entity({
 	name: "streams",
-	engine: dbEngine,
 })
 export class Stream extends BaseClass {
 	@Column()

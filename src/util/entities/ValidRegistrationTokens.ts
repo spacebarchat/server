@@ -17,11 +17,9 @@
 */
 
 import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "valid_registration_tokens",
-	engine: dbEngine,
 })
 export class ValidRegistrationToken extends BaseEntity {
 	@PrimaryColumn()

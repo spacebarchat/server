@@ -18,11 +18,9 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "rate_limits",
-	engine: dbEngine,
 })
 export class RateLimit extends BaseClass {
 	@Column() // no relation as it also

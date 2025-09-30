@@ -48,7 +48,6 @@ import { Guild } from "./Guild";
 import { Message } from "./Message";
 import { Role } from "./Role";
 import { PublicUser, User } from "./User";
-import { dbEngine } from "../util/Database";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
 	"id",
@@ -68,7 +67,6 @@ export const MemberPrivateProjection: (keyof Member)[] = [
 
 @Entity({
 	name: "members",
-	engine: dbEngine,
 })
 @Index(["id", "guild_id"], { unique: true })
 export class Member extends BaseClassWithoutId {

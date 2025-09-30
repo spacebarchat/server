@@ -22,7 +22,6 @@ import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { Member } from "./Member";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 
 export enum PublicVoiceStateEnum {
 	user_id,
@@ -50,7 +49,6 @@ export type PublicVoiceState = Pick<VoiceState, PublicVoiceStateKeys>;
 //https://gist.github.com/vassjozsef/e482c65df6ee1facaace8b3c9ff66145#file-voice_state-ex
 @Entity({
 	name: "voice_states",
-	engine: dbEngine,
 })
 export class VoiceState extends BaseClass {
 	@Column({ nullable: true })

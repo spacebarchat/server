@@ -18,11 +18,9 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "badges",
-	engine: dbEngine,
 })
 export class Badge extends BaseClassWithoutId {
 	@Column({ primary: true })

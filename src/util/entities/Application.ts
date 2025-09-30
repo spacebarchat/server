@@ -27,12 +27,10 @@ import {
 import { BaseClass } from "./BaseClass";
 import { Team } from "./Team";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 import { Guild } from "./Guild";
 
 @Entity({
 	name: "applications",
-	engine: dbEngine,
 })
 export class Application extends BaseClass {
 	@Column()

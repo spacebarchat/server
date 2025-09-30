@@ -20,11 +20,9 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "templates",
-	engine: dbEngine,
 })
 export class Template extends BaseClass {
 	@Column({ unique: true })

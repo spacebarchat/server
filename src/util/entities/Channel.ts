@@ -37,7 +37,6 @@ import { Recipient } from "./Recipient";
 import { PublicUserProjection, User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
-import { dbEngine } from "../util/Database";
 import { Member } from "./Member";
 
 export enum ChannelType {
@@ -66,7 +65,6 @@ export enum ChannelType {
 
 @Entity({
 	name: "channels",
-	engine: dbEngine,
 })
 export class Channel extends BaseClass {
 	@Column()

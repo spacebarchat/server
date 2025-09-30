@@ -20,11 +20,9 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "bans",
-	engine: dbEngine,
 })
 export class Ban extends BaseClass {
 	@Column({ nullable: true })

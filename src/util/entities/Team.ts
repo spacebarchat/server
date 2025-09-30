@@ -27,11 +27,9 @@ import {
 import { BaseClass } from "./BaseClass";
 import { TeamMember } from "./TeamMember";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "teams",
-	engine: dbEngine,
 })
 export class Team extends BaseClass {
 	@Column({ nullable: true })

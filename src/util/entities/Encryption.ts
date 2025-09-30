@@ -18,11 +18,9 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "security_settings",
-	engine: dbEngine,
 })
 export class SecuritySettings extends BaseClass {
 	@Column({ nullable: true })

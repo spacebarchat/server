@@ -18,7 +18,6 @@
 
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
-import { dbEngine } from "@spacebar/util";
 import { User } from "./User";
 import {
 	FrecencyUserSettings,
@@ -32,7 +31,6 @@ import {
 
 @Entity({
 	name: "user_settings_protos",
-	engine: dbEngine,
 })
 export class UserSettingsProtos extends BaseClassWithoutId {
 	@OneToOne(() => User, {

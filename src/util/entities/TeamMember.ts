@@ -19,7 +19,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 
 export enum TeamMemberState {
 	INVITED = 1,
@@ -33,7 +32,6 @@ export enum TeamMemberRole {
 
 @Entity({
 	name: "team_members",
-	engine: dbEngine,
 })
 export class TeamMember extends BaseClass {
 	@Column({ type: "int" })

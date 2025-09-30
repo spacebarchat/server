@@ -18,11 +18,9 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "connection_config",
-	engine: dbEngine,
 })
 export class ConnectionConfigEntity extends BaseClassWithoutId {
 	@PrimaryIdColumn()

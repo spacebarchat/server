@@ -19,11 +19,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "notes",
-	engine: dbEngine,
 })
 @Unique(["owner", "target"])
 export class Note extends BaseClass {

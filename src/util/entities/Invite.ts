@@ -22,13 +22,11 @@ import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { Member } from "./Member";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 
 @Entity({
 	name: "invites",
-	engine: dbEngine,
 })
 export class Invite extends BaseClassWithoutId {
 	@PrimaryIdColumn()

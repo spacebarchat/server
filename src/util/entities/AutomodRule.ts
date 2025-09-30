@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { dbEngine } from "@spacebar/util";
 import { BaseClass } from "./BaseClass";
 import { Entity, JoinColumn, ManyToOne, Column } from "typeorm";
 import { User } from "./User";
@@ -41,7 +40,6 @@ export class AutomodCustomWordsRule {
 
 @Entity({
 	name: "automod_rules",
-	engine: dbEngine,
 })
 export class AutomodRule extends BaseClass {
 	@JoinColumn({ name: "creator_id" })

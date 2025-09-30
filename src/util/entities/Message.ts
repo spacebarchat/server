@@ -39,7 +39,6 @@ import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
-import { dbEngine } from "../util/Database";
 import { NewUrlUserSignatureData } from "../Signing";
 
 export enum MessageType {
@@ -72,7 +71,6 @@ export enum MessageType {
 
 @Entity({
 	name: "messages",
-	engine: dbEngine,
 })
 @Index(["channel_id", "id"], { unique: true })
 export class Message extends BaseClass {

@@ -27,7 +27,6 @@ import { Relationship } from "./Relationship";
 import { SecurityKey } from "./SecurityKey";
 import { Session } from "./Session";
 import { UserSettings } from "./UserSettings";
-import { dbEngine } from "../util/Database";
 
 export enum PublicUserEnum {
 	username,
@@ -77,7 +76,6 @@ export interface UserPrivate extends Pick<User, PrivateUserKeys> {
 
 @Entity({
 	name: "users",
-	engine: dbEngine,
 })
 export class User extends BaseClass {
 	@Column()

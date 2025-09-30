@@ -21,13 +21,11 @@ import { BaseClass } from "./BaseClass";
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { ClientStatus, Status } from "../interfaces/Status";
 import { Activity } from "../interfaces/Activity";
-import { dbEngine } from "../util/Database";
 
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 
 @Entity({
 	name: "sessions",
-	engine: dbEngine,
 })
 export class Session extends BaseClass {
 	@Column({ nullable: true })

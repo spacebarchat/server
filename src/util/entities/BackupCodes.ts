@@ -20,11 +20,9 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 import crypto from "crypto";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "backup_codes",
-	engine: dbEngine,
 })
 export class BackupCode extends BaseClass {
 	@JoinColumn({ name: "user_id" })

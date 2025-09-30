@@ -19,11 +19,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "security_keys",
-	engine: dbEngine,
 })
 export class SecurityKey extends BaseClass {
 	@Column({ nullable: true })

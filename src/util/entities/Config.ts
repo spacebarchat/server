@@ -18,11 +18,9 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "config",
-	engine: dbEngine,
 })
 export class ConfigEntity extends BaseClassWithoutId {
 	@PrimaryIdColumn()

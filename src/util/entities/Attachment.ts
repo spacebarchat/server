@@ -27,7 +27,6 @@ import {
 import { URL } from "url";
 import { deleteFile } from "../util/cdn";
 import { BaseClass } from "./BaseClass";
-import { dbEngine } from "../util/Database";
 import {
 	getUrlSignature,
 	NewUrlUserSignatureData,
@@ -36,7 +35,6 @@ import {
 
 @Entity({
 	name: "attachments",
-	engine: dbEngine,
 })
 export class Attachment extends BaseClass {
 	@Column()

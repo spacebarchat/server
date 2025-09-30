@@ -26,11 +26,9 @@ import {
 } from "typeorm";
 import { Sticker } from ".";
 import { BaseClass } from "./BaseClass";
-import { dbEngine } from "../util/Database";
 
 @Entity({
 	name: "sticker_packs",
-	engine: dbEngine,
 })
 export class StickerPack extends BaseClass {
 	@Column()

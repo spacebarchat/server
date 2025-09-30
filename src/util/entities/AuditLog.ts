@@ -20,7 +20,6 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { ChannelPermissionOverwrite } from "./Channel";
 import { User } from "./User";
-import { dbEngine } from "../util/Database";
 
 export enum AuditLogEvents {
 	// guild level
@@ -114,7 +113,6 @@ export enum AuditLogEvents {
 
 @Entity({
 	name: "audit_logs",
-	engine: dbEngine,
 })
 export class AuditLog extends BaseClass {
 	@JoinColumn({ name: "target_id" })

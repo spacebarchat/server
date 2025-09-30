@@ -20,7 +20,6 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
-import { dbEngine } from "../util/Database";
 
 export class RoleColors {
 	primary_color: number;
@@ -38,7 +37,6 @@ export class RoleColors {
 
 @Entity({
 	name: "roles",
-	engine: dbEngine,
 })
 export class Role extends BaseClass {
 	@Column()

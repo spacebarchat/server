@@ -26,7 +26,7 @@ import { Migration } from "../entities/Migration";
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
 
-let dbConnection: DataSource | undefined;
+export let dbConnection: DataSource | undefined;
 
 // For typeorm cli
 if (!process.env) {
@@ -36,14 +36,14 @@ if (!process.env) {
 const dbConnectionString =
 	process.env.DATABASE || path.join(process.cwd(), "database.db");
 
-const DatabaseType = dbConnectionString.includes("://")
+export const DatabaseType = dbConnectionString.includes("://")
 	? dbConnectionString.split(":")[0]?.replace("+srv", "")
 	: "sqlite";
 const isSqlite = DatabaseType.includes("sqlite");
 
-const DataSourceOptions = new DataSource({
+export const DataSourceOptions = new DataSource({
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	//@ts-ignore type 'string' is not 'mysql' | 'sqlite' | 'mariadb' | etc etc
+	//@ts-ignore type 'string' is not 'sqlite' | 'postgres' | etc etc
 	type: DatabaseType,
 	charset: "utf8mb4",
 	url: isSqlite ? undefined : dbConnectionString,
@@ -77,7 +77,7 @@ export async function initDatabase(): Promise<DataSource> {
 	}
 
 	if (!process.env.DB_SYNC) {
-		const supported = ["mysql", "mariadb", "postgres", "sqlite"];
+		const supported = ["postgres", "sqlite"];
 		if (!supported.includes(DatabaseType)) {
 			console.log(
 				"[Database]" +
@@ -129,11 +129,6 @@ export async function initDatabase(): Promise<DataSource> {
 	return dbConnection;
 }
 
-export { DataSourceOptions, DatabaseType, dbConnection };
-
 export async function closeDatabase() {
 	await dbConnection?.destroy();
 }
-
-export const dbEngine =
-	"InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
