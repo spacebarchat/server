@@ -22,10 +22,8 @@ import { SentMessageInfo, Transporter } from "nodemailer";
 import { User } from "../../entities";
 import { Config } from "../Config";
 import { generateToken } from "../Token";
-import MailGun from "./transports/MailGun";
-import MailJet from "./transports/MailJet";
-import SMTP from "./transports/SMTP";
-import SendGrid from "./transports/SendGrid";
+import { BaseEmailClient, IEmail, IEmailClient } from "./clients/IEmailClient";
+import { SendGridEmailClient } from "./clients/SendGridEmailClient";
 
 const ASSET_FOLDER_PATH = path.join(
 	__dirname,
@@ -36,23 +34,14 @@ const ASSET_FOLDER_PATH = path.join(
 	"assets",
 );
 
-enum MailTypes {
+export enum MailTypes {
 	verifyEmail = "verifyEmail",
 	resetPassword = "resetPassword",
 	changePassword = "changePassword",
 }
 
-const transporters: {
-	[key: string]: () => Promise<Transporter<unknown> | void>;
-} = {
-	smtp: SMTP,
-	mailgun: MailGun,
-	mailjet: MailJet,
-	sendgrid: SendGrid,
-};
-
 export const Email: {
-	transporter: Transporter | null;
+	transporter: IEmailClient | null;
 	init: () => Promise<void>;
 	generateLink: (
 		type: Omit<MailTypes, "changePassword">,
@@ -63,13 +52,13 @@ export const Email: {
 		type: MailTypes,
 		user: User,
 		email: string,
-	) => Promise<SentMessageInfo>;
-	sendVerifyEmail: (user: User, email: string) => Promise<SentMessageInfo>;
-	sendResetPassword: (user: User, email: string) => Promise<SentMessageInfo>;
+	) => Promise<void>;
+	sendVerifyEmail: (user: User, email: string) => Promise<void>;
+	sendResetPassword: (user: User, email: string) => Promise<void>;
 	sendPasswordChanged: (
 		user: User,
 		email: string,
-	) => Promise<SentMessageInfo>;
+	) => Promise<void>;
 	doReplacements: (
 		template: string,
 		user: User,
@@ -87,15 +76,31 @@ export const Email: {
 		const { provider } = Config.get().email;
 		if (!provider) return;
 
-		const transporterFn = transporters[provider];
-		if (!transporterFn)
+		switch (provider) {
+			case "smtp":
+				this.transporter = new BaseEmailClient();
+				break;
+			case "sendgrid":
+				this.transporter = new SendGridEmailClient();
+				break;
+			case "mailgun":
+				this.transporter = new BaseEmailClient();
+				break;
+			case "mailjet":
+				this.transporter = new BaseEmailClient();
+				break;
+			default:
+				console.error(`[Email] Invalid provider: ${provider}`);
+				return;
+		}
+
+		if (!this.transporter)
 			return console.error(`[Email] Invalid provider: ${provider}`);
 		console.log(`[Email] Initializing ${provider} transport...`);
-		const transporter = await transporterFn();
-		if (!transporter) return;
-		this.transporter = transporter;
+		await this.transporter.init();
 		console.log(`[Email] ${provider} transport initialized.`);
 	},
+
 	/**
 	 * Replaces all placeholders in an email template with the correct values
 	 */
@@ -134,6 +139,7 @@ export const Email: {
 
 		return template;
 	},
+
 	/**
 	 *
 	 * @param id user id
@@ -160,24 +166,48 @@ export const Email: {
 	sendMail: async function (type, user, email) {
 		if (!this.transporter) return;
 
-		const templateNames: { [key in MailTypes]: string } = {
+		const htmlTemplateNames: { [key in MailTypes]: string } = {
 			verifyEmail: "verify_email.html",
 			resetPassword: "password_reset_request.html",
 			changePassword: "password_changed.html",
 		};
 
-		const template = await fs.readFile(
+		const textTemplateNames: { [key in MailTypes]: string } = {
+			verifyEmail: "verify_email.txt",
+			resetPassword: "password_reset_request.txt",
+			changePassword: "password_changed.txt",
+		};
+
+		const htmlTemplate = await fs.readFile(
 			path.join(
 				ASSET_FOLDER_PATH,
 				"email_templates",
-				templateNames[type],
+				htmlTemplateNames[type],
+			),
+			{ encoding: "utf-8" },
+		);
+
+		const textTemplate = await fs.readFile(
+			path.join(
+				ASSET_FOLDER_PATH,
+				"email_templates",
+				textTemplateNames[type],
 			),
 			{ encoding: "utf-8" },
 		);
 
 		// replace email template placeholders
 		const html = this.doReplacements(
-			template,
+			htmlTemplate,
+			user,
+			// password change emails don't have links
+			type != MailTypes.changePassword
+				? await this.generateLink(type, user.id, email)
+				: undefined,
+		);
+
+		const text = this.doReplacements(
+			textTemplate,
 			user,
 			// password change emails don't have links
 			type != MailTypes.changePassword
@@ -188,13 +218,14 @@ export const Email: {
 		// extract the title from the email template to use as the email subject
 		const subject = html.match(/<title>(.*)<\/title>/)?.[1] || "";
 
-		const message = {
+		const message: IEmail = {
 			from:
 				Config.get().email.senderAddress ||
 				Config.get().general.correspondenceEmail ||
 				"noreply@localhost",
 			to: email,
 			subject,
+			text,
 			html,
 		};
 
@@ -207,12 +238,14 @@ export const Email: {
 	sendVerifyEmail: async function (user, email) {
 		return this.sendMail(MailTypes.verifyEmail, user, email);
 	},
+
 	/**
 	 * Sends an email to the user with a link to reset their password
 	 */
 	sendResetPassword: async function (user, email) {
 		return this.sendMail(MailTypes.resetPassword, user, email);
 	},
+
 	/**
 	 * Sends an email to the user notifying them that their password has been changed
 	 */

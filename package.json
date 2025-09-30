@@ -123,12 +123,12 @@
 		"@spacebar/webrtc": "dist/webrtc"
 	},
 	"optionalDependencies": {
+		"@sendgrid/mail": "^8.1.6",
 		"@yukikaze-bot/erlpack": "^1.0.1",
 		"jimp": "^1.6.0",
 		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.5",
 		"nodemailer-mailjet-transport": "github:n0script22/nodemailer-mailjet-transport",
-		"nodemailer-sendgrid-transport": "github:Maria-Golomb/nodemailer-sendgrid-transport",
 		"pg": "^8.16.3",
 		"sqlite3": "^5.1.7"
 	}

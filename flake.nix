@@ -73,7 +73,7 @@
             ];
             text = ''
               rm -rf node_modules
-              ${pkgs.nodejs_24}/bin/npm install --save
+              ${pkgs.nodejs_24}/bin/npm install --save --no-audit --no-fund --prefer-offline --ignore-scripts --no-bin-links
               DEPS_HASH=$(prefetch-npm-deps package-lock.json)
               TMPFILE=$(mktemp)
               jq '.npmDepsHash = "'"$DEPS_HASH"'"' hashes.json > "$TMPFILE"
