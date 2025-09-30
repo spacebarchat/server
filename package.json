@@ -127,6 +127,7 @@
 		"jimp": "^1.6.0",
 		"mailgun.js": "^12.1.0",
 		"mysql": "^2.18.1",
+		"node-mailjet": "^6.0.9",
 		"nodemailer": "^7.0.6",
 		"nodemailer-mailjet-transport": "github:n0script22/nodemailer-mailjet-transport",
 		"pg": "^8.16.3",

@@ -25,6 +25,7 @@ import { BaseEmailClient, IEmail, IEmailClient } from "./clients/IEmailClient";
 import { SendGridEmailClient } from "./clients/SendGridEmailClient";
 import { SMTPEmailClient } from "./clients/SMTPEmailClient";
 import { MailGunEmailClient } from "./clients/MailGunEmailClient";
+import { MailJetEmailClient } from "./clients/MailJetEmailClient";
 
 const ASSET_FOLDER_PATH = path.join(
 	__dirname,
@@ -88,7 +89,7 @@ export const Email: {
 				this.transporter = new MailGunEmailClient();
 				break;
 			case "mailjet":
-				this.transporter = new BaseEmailClient();
+				this.transporter = new MailJetEmailClient();
 				break;
 			default:
 				console.error(`[Email] Invalid provider: ${provider}`);
