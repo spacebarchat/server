@@ -1,0 +1,8 @@
+Hey {userUsername},
+
+Your phone number ********{phoneNumber} was recently removed
+from this account and added to a different {instanceName}
+account.
+
+Please note that your phone number can only be linked to one
+{instanceName} account at a time.

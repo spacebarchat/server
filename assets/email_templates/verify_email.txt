@@ -1,0 +1,7 @@
+Hey {userUsername},
+
+Thanks for registering an account on {instanceName}!
+Before we get started, we just need to confirm that this is
+you. Click below to verify your email address:
+
+Verify Email: {actionUrl}

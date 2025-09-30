@@ -1,0 +1,12 @@
+Hey {userUsername},
+
+It looks like someone tried to log into your {instanceName}
+account from a new location. If this is you, follow the link
+below to authorize logging in from this location on your
+account. If this isn't you, we suggest changing your
+password as soon as possible.
+
+IP Address: {ipAddress}
+Location: {locationCity}, {locationRegion}, {locationCountryName}
+
+Verify Login: {actionUrl}
