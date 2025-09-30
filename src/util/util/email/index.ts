@@ -18,13 +18,13 @@
 
 import fs from "fs/promises";
 import path from "node:path";
-import { SentMessageInfo, Transporter } from "nodemailer";
 import { User } from "../../entities";
 import { Config } from "../Config";
 import { generateToken } from "../Token";
 import { BaseEmailClient, IEmail, IEmailClient } from "./clients/IEmailClient";
 import { SendGridEmailClient } from "./clients/SendGridEmailClient";
-import { SMTPTransport } from "./clients/SMTPTransport";
+import { SMTPEmailClient } from "./clients/SMTPEmailClient";
+import { MailGunEmailClient } from "./clients/MailGunEmailClient";
 
 const ASSET_FOLDER_PATH = path.join(
 	__dirname,
@@ -79,13 +79,13 @@ export const Email: {
 
 		switch (provider) {
 			case "smtp":
-				this.transporter = new SMTPTransport();
+				this.transporter = new SMTPEmailClient();
 				break;
 			case "sendgrid":
 				this.transporter = new SendGridEmailClient();
 				break;
 			case "mailgun":
-				this.transporter = new BaseEmailClient();
+				this.transporter = new MailGunEmailClient();
 				break;
 			case "mailjet":
 				this.transporter = new BaseEmailClient();

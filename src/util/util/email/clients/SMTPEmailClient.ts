@@ -1,7 +1,7 @@
 import { BaseEmailClient, IEmail } from "./IEmailClient";
 import { Config } from "@spacebar/util*";
 
-export class SMTPTransport extends BaseEmailClient {
+export class SMTPEmailClient extends BaseEmailClient {
 	// sendGrid?: unknown;
 	nodemailer?: typeof import("nodemailer");
 	transporter: import("nodemailer").Transporter;
