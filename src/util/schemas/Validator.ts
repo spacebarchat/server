@@ -47,9 +47,12 @@ addFormats(ajv);
 
 export function validateSchema<G extends object>(schema: string, data: G): G {
 	// skip validation for settings proto JSON updates - TODO: figure out if this even possible?
-	if(schema === "SettingsProtoUpdateJsonSchema") return data;
+	if (schema === "SettingsProtoUpdateJsonSchema") return data;
 
 	const valid = ajv.validate(schema, data);
-	if (!valid) throw ajv.errors;
+	if (!valid) {
+		console.log("[Validator] Validation error in ", schema)
+		throw ajv.errors;
+	}
 	return data;
 }
