@@ -135,7 +135,7 @@ export function route(opts: RouteOptions) {
 				);
 				if (process.env.LOG_VALIDATION_ERRORS)
 					console.log(
-						`[VALIDATION ERROR] ${req.method} ${req.originalUrl} -`,
+						`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`,
 						validate?.errors,
 					);
 				throw FieldErrors(fields);
