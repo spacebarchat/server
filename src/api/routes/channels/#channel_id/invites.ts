@@ -17,17 +17,7 @@
 */
 
 import { randomString, route } from "@spacebar/api";
-import {
-	Channel,
-	Guild,
-	Invite,
-	InviteCreateEvent,
-	InviteCreateSchema,
-	PublicInviteRelation,
-	User,
-	emitEvent,
-	isTextChannel,
-} from "@spacebar/util";
+import { Channel, Guild, Invite, InviteCreateEvent, InviteCreateSchema, PublicInviteRelation, User, emitEvent, isTextChannel } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -64,10 +54,7 @@ router.post(
 		}
 		const { guild_id } = channel;
 
-		const expires_at =
-			body.max_age == 0 || body.max_age == undefined
-				? undefined
-				: new Date(body.max_age * 1000 + Date.now());
+		const expires_at = body.max_age == 0 || body.max_age == undefined ? undefined : new Date(body.max_age * 1000 + Date.now());
 
 		const invite = await Invite.create({
 			code: randomString(),
@@ -121,7 +108,7 @@ router.get(
 		const { guild_id } = channel;
 
 		const invites = await Invite.find({
-			where: { guild_id },
+			where: { guild_id, channel_id },
 			relations: PublicInviteRelation,
 		});
 
