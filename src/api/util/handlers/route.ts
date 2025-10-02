@@ -32,6 +32,11 @@ import {
 import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
 
+const ignoredRequestSchemas = [
+	// skip validation for settings proto JSON updates - TODO: figure out if this even possible to fix?
+	"SettingsProtoUpdateJsonSchema"
+]
+
 declare global {
 	// TODO: fix this
 	// eslint-disable-next-line @typescript-eslint/no-namespace
@@ -119,7 +124,8 @@ export function route(opts: RouteOptions) {
 			}
 		}
 
-		if (validate) {
+
+		if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
 			const valid = validate(req.body);
 			if (!valid) {
 				const fields: Record<
