@@ -102,7 +102,7 @@ export function instanceOf(
 			Object.keys(type).map((x) => (x.startsWith(OPTIONAL_PREFIX) ? x.slice(OPTIONAL_PREFIX.length) : x))
 		);
 
-		if (diff.length) throw `Unkown key ${diff}`;
+		if (diff.length) throw `Unknown key ${diff}`;
 
 		return Object.keys(type).every((key) => {
 			let newKey = key;

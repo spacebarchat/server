@@ -61,7 +61,7 @@ router.patch(
 	}),
 	async (req: Request, res: Response) => {
 		const body = req.body as UserSettingsSchema;
-		if (body.locale === "en") body.locale = "en-US"; // fix discord client crash on unkown locale
+		if (body.locale === "en") body.locale = "en-US"; // fix discord client crash on unknown locale
 
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id, bot: false },

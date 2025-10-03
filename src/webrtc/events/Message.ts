@@ -36,7 +36,7 @@ export async function onMessage(this: WebRtcWebSocket, buffer: Buffer) {
 
 		const OPCodeHandler = OPCodeHandlers[data.op];
 		if (!OPCodeHandler) {
-			console.error("[WebRTC] Unkown opcode " + VoiceOPCodes[data.op]);
+			console.error("[WebRTC] Unknown opcode " + VoiceOPCodes[data.op]);
 			// TODO: if all opcodes are implemented comment this out:
 			// this.close(CloseCodes.Unknown_opcode);
 			return;
