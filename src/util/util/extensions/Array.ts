@@ -27,6 +27,8 @@ declare global {
 		last(): T | undefined;
 		distinct(): T[];
 		distinctBy<K>(key: (elem: T) => K): T[];
+		intersect(other: T[]): T[];
+		except(other: T[]): T[];
 	}
 }
 
@@ -85,6 +87,14 @@ export function arrayDistinctBy<T, K>(this: T[], key: (elem: T) => K): T[] {
 	});
 }
 
+export function arrayIntersect<T>(this: T[], other: T[]): T[] {
+	return this.filter((value) => other.includes(value));
+}
+
+export function arrayExcept<T>(this: T[], other: T[]): T[] {
+	return this.filter((value) => !other.includes(value));
+}
+
 // register extensions
 if (!Array.prototype.containsAll)
 	Array.prototype.containsAll = function <T>(this: T[], target: T[]) {
@@ -121,4 +131,12 @@ if (!Array.prototype.distinct)
 if (!Array.prototype.distinctBy)
 	Array.prototype.distinctBy = function <T, K>(this: T[], key: (elem: T) => K) {
 		return arrayDistinctBy.call(this, key as ((elem: unknown) => unknown));
+	};
+if (!Array.prototype.intersect)
+	Array.prototype.intersect = function <T>(this: T[], other: T[]) {
+		return arrayIntersect.call(this, other);
+	};
+if (!Array.prototype.except)
+	Array.prototype.except = function <T>(this: T[], other: T[]) {
+		return arrayExcept.call(this, other);
 	};

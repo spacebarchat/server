@@ -23,7 +23,7 @@ export function FieldErrors(
 	return new FieldError(
 		50035,
 		"Invalid Form Body",
-		(fields as Object).map(({ message, code }) => ({
+		fields.map(({ message, code }) => ({
 			_errors: [
 				{
 					message,

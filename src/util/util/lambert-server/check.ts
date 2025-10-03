@@ -98,7 +98,7 @@ export function instanceOf(
 		}
 		if (typeof value !== "object") throw `${path} must be a object`;
 
-		const diff = Object.keys(value).missing(
+		const diff = Object.keys(value).except(
 			Object.keys(type).map((x) => (x.startsWith(OPTIONAL_PREFIX) ? x.slice(OPTIONAL_PREFIX.length) : x))
 		);
 
