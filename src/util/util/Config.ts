@@ -31,8 +31,8 @@ let pairs: ConfigEntity[];
 // TODO: use events to inform about config updates
 // Config keys are separated with _
 
-export const Config = {
-	init: async function init() {
+export class Config {
+	public static async init() {
 		if (config) return config;
 		console.log("[Config] Loading configuration...");
 		if (!process.env.CONFIG_PATH) {
@@ -55,8 +55,8 @@ export const Config = {
 		config = OrmUtils.mergeDeep({}, { ...new ConfigValue() }, config);
 
 		return this.set(config);
-	},
-	get: function get() {
+	};
+	public static get() {
 		if (!config) {
 			// If we haven't initialised the config yet, return default config.
 			// Typeorm instantiates each entity once when initising database,
@@ -67,14 +67,14 @@ export const Config = {
 		}
 
 		return config;
-	},
-	set: function set(val: Partial<ConfigValue>) {
+	};
+	public static set(val: Partial<ConfigValue>) {
 		if (!config || !val) return;
-		config = val.merge(config);
+		config = OrmUtils.mergeDeep(config);
 
 		return applyConfig(config);
-	},
-};
+	};
+}
 
 // TODO: better types
 const generatePairs = (obj: object | null, key = ""): ConfigEntity[] => {
