@@ -19,7 +19,7 @@
 import { Request } from "express";
 import { Column, Entity, FindOneOptions, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { Channel, ChannelType, Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
-import { BitField } from "../util/BitField";
+import { BitField, Random } from "../util";
 import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
@@ -284,7 +284,7 @@ export class User extends BaseClass {
 			// randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
 			// TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
 			for (let tries = 0; tries < 5; tries++) {
-				const discriminator = Math.randomIntBetween(1, 9999).toString().padStart(4, "0");
+				const discriminator = Random.nextInt(1, 9999).toString().padStart(4, "0");
 				const exists = await User.findOne({
 					where: { discriminator, username: username },
 					select: ["id"],
