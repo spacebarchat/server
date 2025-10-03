@@ -94,7 +94,6 @@
 		"image-size": "^2.0.2",
 		"json-bigint": "^1.0.0",
 		"jsonwebtoken": "^9.0.2",
-		"lambert-server": "^1.2.12",
 		"missing-native-js-functions": "^2.0.0",
 		"module-alias": "^2.2.3",
 		"morgan": "^1.10.1",
@@ -119,7 +118,8 @@
 		"@spacebar/cdn": "dist/cdn",
 		"@spacebar/gateway": "dist/gateway",
 		"@spacebar/util": "dist/util",
-		"@spacebar/webrtc": "dist/webrtc"
+		"@spacebar/webrtc": "dist/webrtc",
+        "lambert-server": "dist/util/util/lambert-server"
 	},
 	"optionalDependencies": {
 		"@sendgrid/mail": "^8.1.6",
