@@ -33,7 +33,6 @@ import {
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
 import { WebSocket } from "@spacebar/gateway";
-import "missing-native-js-functions";
 import { Channel as AMQChannel } from "amqplib";
 import { Recipient } from "@spacebar/util";
 import * as console from "node:console";

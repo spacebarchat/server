@@ -94,7 +94,6 @@
 		"image-size": "^2.0.2",
 		"json-bigint": "^1.0.0",
 		"jsonwebtoken": "^9.0.2",
-		"missing-native-js-functions": "^2.0.0",
 		"module-alias": "^2.2.3",
 		"morgan": "^1.10.1",
 		"ms": "^2.1.3",

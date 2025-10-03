@@ -21,7 +21,6 @@ moduleAlias(__dirname + "../../../package.json");
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
-import "missing-native-js-functions";
 import { config } from "dotenv";
 config({ quiet: true });
 import { SpacebarServer } from "./Server";

@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import "missing-native-js-functions";
 import dotenv from "dotenv";
 dotenv.config({ quiet: true });
 import {

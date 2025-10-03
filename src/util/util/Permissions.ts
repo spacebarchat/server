@@ -4,7 +4,6 @@
 
 import { Channel, ChannelPermissionOverwrite, ChannelPermissionOverwriteType, Guild, Member, Role } from "../entities";
 import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
-import "missing-native-js-functions";
 import { HTTPError } from "lambert-server";
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;

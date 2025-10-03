@@ -3,7 +3,6 @@ import { traverseDirectory } from "./Utils";
 import { Server as HTTPServer } from "http";
 import { HTTPError } from "./HTTPError";
 import "express-async-errors";
-import "missing-native-js-functions";
 import bodyParser from "body-parser";
 // import helmet from "helmet";
 import http from "http";

@@ -17,7 +17,6 @@
 */
 
 import { BitField } from "./BitField";
-import "missing-native-js-functions";
 import { BitFieldResolvable, BitFlag } from "./BitField";
 import { User } from "../entities";
 import { HTTPError } from "lambert-server";

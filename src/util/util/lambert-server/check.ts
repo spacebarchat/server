@@ -1,4 +1,3 @@
-import "missing-native-js-functions";
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from ".";
 

@@ -19,7 +19,6 @@
 import { Storage } from "./Storage";
 import fs from "fs";
 import { join, dirname } from "path";
-import "missing-native-js-functions";
 import { Readable } from "stream";
 import ExifTransformer from "exif-be-gone";
 

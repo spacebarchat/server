@@ -1,5 +1,4 @@
 import fs from "fs";
-import "missing-native-js-functions";
 
 export interface traverseDirectoryOptions {
 	dirname: string;

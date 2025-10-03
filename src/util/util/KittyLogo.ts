@@ -1,5 +1,4 @@
 import { readFileSync } from "node:fs";
-import "missing-native-js-functions";
 
 // const originalConsoleLog = console.log;
 // console.error =

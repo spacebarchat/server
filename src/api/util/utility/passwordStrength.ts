@@ -17,7 +17,6 @@
 */
 
 import { Config } from "@spacebar/util";
-import "missing-native-js-functions";
 
 const reNUMBER = /[0-9]/g;
 const reUPPERCASELETTER = /[A-Z]/g;

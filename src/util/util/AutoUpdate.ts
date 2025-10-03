@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import "missing-native-js-functions";
 import fetch from "node-fetch-commonjs";
 import { ProxyAgent } from "proxy-agent";
 import readline from "readline";
