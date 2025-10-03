@@ -26,7 +26,6 @@ import {
 	LazyRequestSchema,
 	User,
 	Presence,
-	partition,
 	Channel,
 	Permissions,
 } from "@spacebar/util";
@@ -108,7 +107,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	const member_roles = members
 		.map((m) => m.roles)
 		.flat()
-		.unique((r: Role) => r.id);
+		.distinctBy((r: Role) => r.id);
 	member_roles.push(
 		member_roles.splice(
 			member_roles.findIndex((x) => x.id === x.guild_id),
@@ -119,8 +118,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	const offlineItems = [];
 
 	for (const role of member_roles) {
-		const [role_members, other_members] = partition(
-			members,
+		const [role_members, other_members] = members.partition(
 			(m: Member) => !!m.roles.find((r) => r.id === role.id),
 		);
 		const group = {
@@ -284,9 +282,9 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 		channel.permission_overwrites.forEach((overwrite) => {
 			const { id, allow, deny } = overwrite;
 
-			if (allow.toBigInt() & Permissions.FLAGS.VIEW_CHANNEL)
+			if (BigInt(allow) & Permissions.FLAGS.VIEW_CHANNEL)
 				perms.push(`allow:${id}`);
-			else if (deny.toBigInt() & Permissions.FLAGS.VIEW_CHANNEL)
+			else if (BigInt(deny) & Permissions.FLAGS.VIEW_CHANNEL)
 				perms.push(`deny:${id}`);
 		});
 
@@ -307,7 +305,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 	const groups = ops
 		.map((x) => x.groups)
 		.flat()
-		.unique();
+		.distinct();
 
 	await Send(this, {
 		op: OPCODES.Dispatch,

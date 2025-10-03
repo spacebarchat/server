@@ -118,7 +118,7 @@
 		"@spacebar/gateway": "dist/gateway",
 		"@spacebar/util": "dist/util",
 		"@spacebar/webrtc": "dist/webrtc",
-        "lambert-server": "dist/util/util/lambert-server"
+		"lambert-server": "dist/util/util/lambert-server"
 	},
 	"optionalDependencies": {
 		"@sendgrid/mail": "^8.1.6",

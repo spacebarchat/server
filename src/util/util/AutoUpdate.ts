@@ -56,9 +56,9 @@ export function enableAutoUpdate(opts: {
 		const latestVersion = await getLatestVersion(opts.packageJsonLink);
 		if (currentVersion !== latestVersion) {
 			rl.question(
-				`[Auto Update] Current version (${currentVersion}) is out of date, would you like to update? (yes/no)`,
+				`[Auto Update] Current version (${currentVersion}) is out of date, would you like to update? (Y/n)`,
 				(answer) => {
-					if (answer.toBoolean()) {
+					if (answer === "" || answer.toLowerCase() === "y") {
 						console.log(`[Auto update] updating ...`);
 						download(opts.downloadUrl, opts.path);
 					} else {

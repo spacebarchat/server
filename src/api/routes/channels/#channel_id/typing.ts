@@ -35,7 +35,7 @@ router.post(
 	async (req: Request, res: Response) => {
 		const { channel_id } = req.params;
 		const user_id = req.user_id;
-		const timestamp = Date.nowSeconds();
+		const timestamp = Math.floor(Date.now() / 1000);
 		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
 		});

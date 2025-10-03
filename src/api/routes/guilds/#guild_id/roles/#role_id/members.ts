@@ -17,7 +17,7 @@
 */
 
 import { Router, Request, Response } from "express";
-import { DiscordApiErrors, Member, partition } from "@spacebar/util";
+import { DiscordApiErrors, Member } from "@spacebar/util";
 import { route } from "@spacebar/api";
 
 const router = Router({ mergeParams: true });
@@ -38,8 +38,7 @@ router.patch(
 			relations: ["roles"],
 		});
 
-		const [add, remove] = partition(
-			members,
+		const [add, remove] = members.partition(
 			(member) =>
 				member_ids.includes(member.id) &&
 				!member.roles.map((role) => role.id).includes(role_id),

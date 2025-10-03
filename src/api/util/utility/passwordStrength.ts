@@ -20,7 +20,7 @@ import { Config } from "@spacebar/util";
 
 const reNUMBER = /[0-9]/g;
 const reUPPERCASELETTER = /[A-Z]/g;
-const reSYMBOLS = /[A-Z,a-z,0-9]/g;
+const reSYMBOLS = /[A-Za-z0-9]/g;
 
 // const blocklist: string[] = []; // TODO: update ones passwordblocklist is stored in db
 /*
@@ -45,12 +45,12 @@ export function checkPassword(password: string): number {
 	}
 
 	// checks for amount of Numbers
-	if (password.count(reNUMBER) >= minNumbers - 1) {
+	if (password.match(reNUMBER)?.length ?? 0 >= minNumbers - 1) {
 		strength += 0.05;
 	}
 
 	// checks for amount of Uppercase Letters
-	if (password.count(reUPPERCASELETTER) >= minUpperCase - 1) {
+	if (password.match(reUPPERCASELETTER)?.length ?? 0 >= minUpperCase - 1) {
 		strength += 0.05;
 	}
 
@@ -61,8 +61,8 @@ export function checkPassword(password: string): number {
 
 	// checks if password only consists of numbers or only consists of chars
 	if (
-		password.length == password.count(reNUMBER) ||
-		password.length === password.count(reUPPERCASELETTER)
+		password.length == password.match(reNUMBER)?.length ||
+		password.length === password.match(reUPPERCASELETTER)?.length
 	) {
 		strength = 0;
 	}

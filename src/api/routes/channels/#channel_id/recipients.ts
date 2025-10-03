@@ -51,7 +51,7 @@ router.put(
 			const recipients = [
 				...(channel.recipients?.map((r) => r.user_id) || []),
 				user_id,
-			].unique();
+			].distinct();
 
 			const new_channel = await Channel.createDMChannel(
 				recipients,

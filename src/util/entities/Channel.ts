@@ -27,7 +27,7 @@ import {
 } from "typeorm";
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
-import { InvisibleCharacters, Snowflake, containsAll, emitEvent, getPermission, trimSpecial, Permissions, BitField } from "../util";
+import { InvisibleCharacters, Snowflake, emitEvent, getPermission, trimSpecial, Permissions, BitField } from "../util";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Invite } from "./Invite";
@@ -328,7 +328,7 @@ export class Channel extends BaseClass {
 		creator_user_id: string,
 		name?: string,
 	) {
-		recipients = recipients.unique().filter((x) => x !== creator_user_id);
+		recipients = recipients.distinct().filter((x) => x !== creator_user_id);
 		// TODO: check config for max number of recipients
 		/** if you want to disallow note to self channels, uncomment the conditional below
 
@@ -354,7 +354,7 @@ export class Channel extends BaseClass {
 			if (!ur.channel.recipients) continue;
 			const re = ur.channel.recipients.map((r) => r.user_id);
 			if (re.length === channelRecipients.length) {
-				if (containsAll(re, channelRecipients)) {
+				if (re.containsAll(channelRecipients)) {
 					if (channel == null) {
 						channel = ur.channel;
 						await ur.assign({ closed: false }).save();
