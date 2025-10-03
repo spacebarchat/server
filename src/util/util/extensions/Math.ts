@@ -22,11 +22,10 @@ declare global {
 	}
 }
 
-export function clamp(value: number, min: number, max: number): number {
+export function mathClamp(value: number, min: number, max: number): number {
 	return Math.min(Math.max(value, min), max);
 }
 
 // register extensions
-if (!Math.clamp) {
-	Math.clamp = clamp;
-}
+if (!Math.clamp)
+	Math.clamp = mathClamp;
