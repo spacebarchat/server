@@ -22,6 +22,7 @@ declare global {
 		partition(filter: (elem: T) => boolean): [T[], T[]];
 		single(filter: (elem: T) => boolean): T | null;
 		forEachAsync(callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void>;
+		remove(item: T): void;
 	}
 }
 
@@ -48,6 +49,13 @@ export async function forEachAsync<T>(array: T[], callback: (elem: T, index: num
 	await Promise.all(array.map(callback));
 }
 
+export function remove<T>(this: T[], item: T): void {
+	const index = this.indexOf(item);
+	if (index > -1) {
+		this.splice(index, 1);
+	}
+}
+
 // register extensions
 if (!Array.prototype.containsAll)
 	Array.prototype.containsAll = function <T>(this: T[], target: T[]) {
@@ -64,4 +72,8 @@ if (!Array.prototype.single)
 if (!Array.prototype.forEachAsync)
 	Array.prototype.forEachAsync = function <T>(this: T[], callback: (elem: T, index: number, array: T[]) => Promise<void>) {
 		return forEachAsync(this, callback);
+	};
+if (!Array.prototype.remove)
+	Array.prototype.remove = function <T>(this: T[], item: T) {
+		return remove.call(this, item);
 	};
