@@ -33,7 +33,8 @@ router.get(
 		},
 	}),
 	(req: Request, res: Response) => {
-		res.send([] as ReportingMenuResponseSchema);
+		// TODO: implement
+		//res.send([] as ReportingMenuResponseSchema);
 	},
 );
 
