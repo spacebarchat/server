@@ -21,6 +21,7 @@ import { Config, DiscordApiErrors, Guild, GuildTemplateCreateSchema, Member, Tem
 import { Request, Response, Router } from "express";
 import fetch from "node-fetch-commonjs";
 import { HTTPError } from "lambert-server";
+
 const router: Router = Router({ mergeParams: true });
 
 router.get(
@@ -95,7 +96,7 @@ async function getTemplate(code: string) {
 		return code.split("external:", 2)[1];
 	}
 
-	const template = await Template.findOneOrFail({
+	return await Template.findOneOrFail({
 		where: { code: code },
 	});
 }
