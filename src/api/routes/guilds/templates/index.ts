@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Config, DiscordApiErrors, Guild, GuildTemplateCreateSchema, Member, Template } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import fetch from "node-fetch-commonjs";
-import { HTTPError } from "lambert-server*";
+import { HTTPError } from "lambert-server";
 const router: Router = Router({ mergeParams: true });
 
 router.get(
