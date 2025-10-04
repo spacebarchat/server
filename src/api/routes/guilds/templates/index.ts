@@ -17,16 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Config,
-	DiscordApiErrors,
-	Guild,
-	GuildTemplateCreateSchema,
-	Member,
-	Template,
-} from "@spacebar/util";
+import { Config, DiscordApiErrors, Guild, GuildTemplateCreateSchema, Member, Template } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import fetch from "node-fetch-commonjs";
+import { HTTPError } from "lambert-server*";
 const router: Router = Router({ mergeParams: true });
 
 router.get(
@@ -45,112 +39,65 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { allowDiscordTemplates, allowRaws, enabled } =
-			Config.get().templates;
-		if (!enabled)
-			res.json({
-				code: 403,
-				message:
-					"Template creation & usage is disabled on this instance.",
-			}).sendStatus(403);
-
 		const { code } = req.params;
 
-		if (code.startsWith("discord:")) {
-			if (!allowDiscordTemplates)
-				return res
-					.json({
-						code: 403,
-						message:
-							"Discord templates cannot be used on this instance.",
-					})
-					.sendStatus(403);
-			const discordTemplateID = code.split("discord:", 2)[1];
+		const template = await getTemplate(code);
 
-			const discordTemplateData = await fetch(
-				`https://discord.com/api/v9/guilds/templates/${discordTemplateID}`,
-				{
-					method: "get",
-					headers: { "Content-Type": "application/json" },
-				},
-			);
-			return res.json(await discordTemplateData.json());
-		}
-
-		if (code.startsWith("external:")) {
-			if (!allowRaws)
-				return res
-					.json({
-						code: 403,
-						message: "Importing raws is disabled on this instance.",
-					})
-					.sendStatus(403);
-
-			return res.json(code.split("external:", 2)[1]);
-		}
-
-		const template = await Template.findOneOrFail({
-			where: { code: code },
-		});
 		res.json(template);
 	},
 );
 
-router.post(
-	"/:code",
-	route({ requestBody: "GuildTemplateCreateSchema" }),
-	async (req: Request, res: Response) => {
-		const {
-			enabled,
-			allowTemplateCreation,
-			// allowDiscordTemplates,
-			// allowRaws,
-		} = Config.get().templates;
-		if (!enabled) {
-			return res
-				.json({
-					code: 403,
-					message:
-						"Template creation & usage is disabled on this instance.",
-				})
-				.sendStatus(403);
-		}
+router.post("/:code", route({ requestBody: "GuildTemplateCreateSchema" }), async (req: Request, res: Response) => {
+	const { code } = req.params;
+	const body = req.body as GuildTemplateCreateSchema;
 
-		if (!allowTemplateCreation) {
-			return res
-				.json({
-					code: 403,
-					message: "Template creation is disabled on this instance.",
-				})
-				.sendStatus(403);
-		}
+	const { maxGuilds } = Config.get().limits.user;
 
-		const { code } = req.params;
-		const body = req.body as GuildTemplateCreateSchema;
+	const guild_count = await Member.count({ where: { id: req.user_id } });
+	if (guild_count >= maxGuilds) throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
 
-		const { maxGuilds } = Config.get().limits.user;
+	const template = await getTemplate(code) as Template;
 
-		const guild_count = await Member.count({ where: { id: req.user_id } });
-		if (guild_count >= maxGuilds) {
-			throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
-		}
+	const guild = await Guild.createGuild({
+		...template.serialized_source_guild,
+		// body comes after the template
+		...body,
+		owner_id: req.user_id,
+		template_guild_id: template.source_guild_id,
+	});
 
-		const template = await Template.findOneOrFail({
-			where: { code: code },
+	await Member.addToGuild(req.user_id, guild.id);
+
+	res.status(201).json({ id: guild.id });
+});
+
+async function getTemplate(code: string) {
+	const { allowDiscordTemplates, allowRaws, enabled } = Config.get().templates;
+
+	if (!enabled) throw new HTTPError("Template creation & usage is disabled on this instance.", 403);
+
+	if (code.startsWith("discord:")) {
+		if (!allowDiscordTemplates) throw new HTTPError("Discord templates cannot be used on this instance.", 403);
+
+		const discordTemplateID = code.split("discord:", 2)[1];
+
+		const discordTemplateData = await fetch(`https://discord.com/api/v9/guilds/templates/${discordTemplateID}`, {
+			method: "get",
+			headers: { "Content-Type": "application/json" },
 		});
 
-		const guild = await Guild.createGuild({
-			...template.serialized_source_guild,
-			// body comes after the template
-			...body,
-			owner_id: req.user_id,
-			template_guild_id: template.source_guild_id,
-		});
+		return await discordTemplateData.json();
+	}
 
-		await Member.addToGuild(req.user_id, guild.id);
+	if (code.startsWith("external:")) {
+		if (!allowRaws) throw new HTTPError("Importing raws is disabled on this instance.", 403);
 
-		res.status(201).json({ id: guild.id });
-	},
-);
+		return code.split("external:", 2)[1];
+	}
+
+	const template = await Template.findOneOrFail({
+		where: { code: code },
+	});
+}
 
 export default router;
