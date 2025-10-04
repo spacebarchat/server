@@ -2,7 +2,7 @@ import express, { Application, NextFunction, Request, Response, Router } from "e
 import { traverseDirectory } from "./Utils";
 import { Server as HTTPServer } from "http";
 import { HTTPError } from "./HTTPError";
-import "express-async-errors";
+// import "express-async-errors";
 import bodyParser from "body-parser";
 // import helmet from "helmet";
 import http from "http";

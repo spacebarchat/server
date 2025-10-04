@@ -16,14 +16,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+export interface FieldErrorResponse {
+	code: number;
+	message: string;
+	errors: Record<string, ObjectErrorContent>;
+}
 
-export function FieldErrors(
-	fields: Record<string, { code?: string; message: string }>,
-) {
+export type ErrorContent = { code: string; message: string };
+export type ObjectErrorContent = { _errors: ErrorContent[] };
+
+export function FieldErrors(fields: Record<string, { code?: string; message: string }>) {
 	return new FieldError(
 		50035,
 		"Invalid Form Body",
-		fields.map(({ message, code }) => ({
+		fields.map<ErrorContent, ObjectErrorContent>(({ message, code }) => ({
 			_errors: [
 				{
 					message,

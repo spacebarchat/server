@@ -6,10 +6,10 @@ import assert from "node:assert/strict";
 
 describe("Object extensions", () => {
 	it("forEach", async () => {
-		const obj = { a: 1, b: 2, c: 3 };
+		const obj: { [index:string]: number } = { a: 1, b: 2, c: 3 };
 		const keys: string[] = [];
 		const values: number[] = [];
-		obj.forEach((value, key) => {
+		obj.forEach<number>((value, key, _) => {
 			keys.push(key);
 			values.push(value);
 		});
