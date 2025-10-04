@@ -18,6 +18,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConnectionConfigEntity } from "../entities/ConnectionConfigEntity";
+import { OrmUtils } from "../imports";
 
 let config: any;
 let pairs: ConnectionConfigEntity[];
@@ -39,7 +40,7 @@ export const ConnectionConfig = {
 	},
 	set: function set(val: Partial<any>) {
 		if (!config || !val) return;
-		config = val.merge(config);
+		config = OrmUtils.mergeDeep(config, val);
 
 		// return applyConfig(config);
 		return applyConfig(val);
