@@ -1,16 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 using ArcaneLibs;
 using ArcaneLibs.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using Spacebar.AdminApi.Models;
 using Spacebar.AdminAPI.Services;
@@ -53,10 +45,10 @@ public class UserController(ILogger<UserController> logger, Configuration config
             Disabled = x.Disabled,
             Deleted = x.Deleted,
             Email = x.Email,
-            Flags = x.Flags,
+            Flags = ulong.Parse(x.Flags),
             PublicFlags = x.PublicFlags,
             Rights = x.Rights,
-            ApplicationBotUser = x.ApplicationBotUser == null ? null : new() { },
+            ApplicationBotUser = x.ApplicationBotUser == null ? null : new(),
             ConnectedAccounts = new List<UserModel.ConnectedAccountModel>(),
             MessageCount = x.MessageAuthors.Count, // This property is weirdly named due to scaffolding, might patch later
             SessionCount = x.Sessions.Count,
@@ -272,7 +264,7 @@ public class UserController(ILogger<UserController> logger, Configuration config
                     Embeds = msg.Embeds,
                     Reactions = msg.Reactions,
                     Nonce = msg.Nonce,
-                    Pinned = msg.Pinned,
+                    PinnedAt = msg.PinnedAt,
                     Type = msg.Type,
                 };
                 db.Messages.Add(newMsg);
@@ -313,7 +305,7 @@ public class UserController(ILogger<UserController> logger, Configuration config
                 Embeds = msg.Embeds,
                 Reactions = msg.Reactions,
                 Nonce = msg.Nonce,
-                Pinned = msg.Pinned,
+                PinnedAt = msg.PinnedAt,
                 Type = msg.Type,
             };
             db.Messages.Add(newMsg);
@@ -350,7 +342,7 @@ public class UserController(ILogger<UserController> logger, Configuration config
                 await using var _db = scope.ServiceProvider.GetRequiredService<SpacebarDbContext>();
                 // set timeout
                 _db.Database.SetCommandTimeout(6000);
-                await _db.Database.ExecuteSqlRawAsync($"""
+                await _db.Database.ExecuteSqlAsync($"""
                                                        DELETE FROM messages
                                                          WHERE channel_id = '{channelId}'
                                                            AND guild_id = '{guildId}'
