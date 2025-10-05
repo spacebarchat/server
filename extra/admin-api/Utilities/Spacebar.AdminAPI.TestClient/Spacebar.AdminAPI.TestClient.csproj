@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LinkIncremental>true</LinkIncremental>
+        <LangVersion>preview</LangVersion>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+
+        <UseBlazorWebAssembly>true</UseBlazorWebAssembly>
+        <BlazorEnableCompression>false</BlazorEnableCompression>
+        <BlazorCacheBootResources>false</BlazorCacheBootResources>
+        <!--        <RunAOTCompilation>true</RunAOTCompilation>-->
+        <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+        <InvariantGlobalization>true</InvariantGlobalization>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20241210-161342" />
+        <PackageReference Include="ArcaneLibs.Blazor.Components" Version="1.0.0-preview.20241210-161342" />
+        <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <Content Update="appsettings.Development.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="wwwroot\appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Spacebar.AdminApi.Models\Spacebar.AdminApi.Models.csproj" />
+    </ItemGroup>
+
+</Project>

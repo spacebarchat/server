@@ -1,0 +1,57 @@
+@page "/Login"
+@using System.Text.Json.Nodes
+@using Spacebar.AdminAPI.TestClient.Services
+@inject ILocalStorageService LocalStorage
+@inject Config Config
+@inject NavigationManager Navigation
+<h3>Login</h3>
+
+<span>Email: </span>
+<InputText @bind-Value="Email"/>
+<br/>
+
+<span>Password: </span>
+<InputText type="password" @bind-Value="Password"/>
+<br/>
+
+<button @onclick="DoLogin">Login</button>
+<br/>
+
+<pre style="color: red; font-family: 'JetBrains Mono',monospace">@Error</pre>
+
+
+@code {
+    private string Email { get; set; }
+    private string Password { get; set; }
+    private string Error { get; set; }
+
+    private async Task DoLogin() {
+        HttpResponseMessage response;
+        using var hc = new HttpClient();
+
+        try {
+            response = await hc.PostAsJsonAsync(Config.ApiUrl + "/api/v9/auth/login", new {
+                login = Email, 
+                password = Password, 
+                login_source = "Spacebar Admin API Test Client",
+                undelete = false
+            });
+        }
+        catch (Exception e) {
+            Error = e.ToString();
+            return;
+        }
+
+        if (!response.IsSuccessStatusCode) {
+            Error = await response.Content.ReadAsStringAsync();
+            return;
+        }
+        
+        var content = await response.Content.ReadFromJsonAsync<JsonObject>();
+        var accessToken = content!["token"].ToString();
+        Config.AccessToken = accessToken;
+        await LocalStorage.SetItemAsync("sb_admin_tc_config", Config);
+        Navigation.NavigateTo("/", true, true);
+    }
+
+}

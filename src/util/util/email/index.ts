@@ -48,7 +48,6 @@ export const Email: {
 	generateLink: (
 		type: Omit<MailTypes, "changePassword">,
 		id: string,
-		email: string,
 	) => Promise<string>;
 	sendMail: (
 		type: MailTypes,
@@ -145,10 +144,9 @@ export const Email: {
 	/**
 	 *
 	 * @param id user id
-	 * @param email user email
 	 */
-	generateLink: async function (type, id, email) {
-		const token = (await generateToken(id, email)) as string;
+	generateLink: async function (type, id) {
+		const token = (await generateToken(id)) as string;
 		// puyodead1: this is set to api endpoint because the verification page is on the server since no clients have one, and not all 3rd party clients will have one
 		const instanceUrl =
 			Config.get().api.endpointPublic?.replace("/api", "") ||
@@ -204,7 +202,7 @@ export const Email: {
 			user,
 			// password change emails don't have links
 			type != MailTypes.changePassword
-				? await this.generateLink(type, user.id, email)
+				? await this.generateLink(type, user.id)
 				: undefined,
 		);
 
@@ -213,7 +211,7 @@ export const Email: {
 			user,
 			// password change emails don't have links
 			type != MailTypes.changePassword
-				? await this.generateLink(type, user.id, email)
+				? await this.generateLink(type, user.id)
 				: undefined,
 		);
 
