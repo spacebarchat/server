@@ -92,11 +92,11 @@ public partial class User
     [Column("email", TypeName = "character varying")]
     public string? Email { get; set; }
 
-    [Column("flags", TypeName = "text")]
-    public ulong Flags { get; set; }
+    [Column("flags", TypeName = "character varying")]
+    public string Flags { get; set; }
 
     [Column("public_flags")]
-    public ulong PublicFlags { get; set; }
+    public int PublicFlags { get; set; }
 
     [Column("purchased_flags")]
     public int PurchasedFlags { get; set; }
@@ -105,7 +105,7 @@ public partial class User
     public int PremiumUsageFlags { get; set; }
 
     [Column("rights")]
-    public ulong Rights { get; set; }
+    public long Rights { get; set; }
 
     [Column("data")]
     public string Data { get; set; } = null!;
@@ -134,6 +134,9 @@ public partial class User
     [InverseProperty("User")]
     public virtual ICollection<AuditLog> AuditLogUsers { get; set; } = new List<AuditLog>();
 
+    [InverseProperty("Creator")]
+    public virtual ICollection<AutomodRule> AutomodRules { get; set; } = new List<AutomodRule>();
+
     [InverseProperty("User")]
     public virtual ICollection<BackupCode> BackupCodes { get; set; } = new List<BackupCode>();
 
@@ -145,6 +148,9 @@ public partial class User
 
     [InverseProperty("Owner")]
     public virtual ICollection<Channel> Channels { get; set; } = new List<Channel>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<CloudAttachment> CloudAttachments { get; set; } = new List<CloudAttachment>();
 
     [InverseProperty("User")]
     public virtual ICollection<ConnectedAccount> ConnectedAccounts { get; set; } = new List<ConnectedAccount>();
@@ -202,6 +208,12 @@ public partial class User
     public virtual ICollection<Sticker> Stickers { get; set; } = new List<Sticker>();
 
     [InverseProperty("User")]
+    public virtual ICollection<StreamSession> StreamSessions { get; set; } = new List<StreamSession>();
+
+    [InverseProperty("Owner")]
+    public virtual ICollection<Stream> Streams { get; set; } = new List<Stream>();
+
+    [InverseProperty("User")]
     public virtual ICollection<TeamMember> TeamMembers { get; set; } = new List<TeamMember>();
 
     [InverseProperty("OwnerUser")]
@@ -209,6 +221,9 @@ public partial class User
 
     [InverseProperty("Creator")]
     public virtual ICollection<Template> Templates { get; set; } = new List<Template>();
+
+    [InverseProperty("User")]
+    public virtual UserSettingsProto? UserSettingsProto { get; set; }
 
     [InverseProperty("User")]
     public virtual ICollection<VoiceState> VoiceStates { get; set; } = new List<VoiceState>();

@@ -1,8 +1,6 @@
-diff --git a/extra/admin-api/Spacebar.Db/Models/User.cs b/extra/admin-api/Spacebar.Db/Models/User.cs
-index 7825bd17..ca140dbc 100644
---- a/extra/admin-api/Spacebar.Db/Models/User.cs
-+++ b/extra/admin-api/Spacebar.Db/Models/User.cs
-@@ -92,8 +92,8 @@ public partial class User
+--- Spacebar.Db/Models/User.cs.orig	2025-10-05 22:04:37.168566856 +0200
++++ Spacebar.Db/Models/User.cs	2025-10-05 22:07:11.519980808 +0200
+@@ -92,8 +92,8 @@
      [Column("email", TypeName = "character varying")]
      public string? Email { get; set; }
  

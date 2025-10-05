@@ -58,8 +58,8 @@ public partial class Message
     [Column("nonce")]
     public string? Nonce { get; set; }
 
-    [Column("pinned")]
-    public bool? Pinned { get; set; }
+    [Column("pinned_at", TypeName = "timestamp without time zone")]
+    public DateTime? PinnedAt { get; set; }
 
     [Column("type")]
     public int Type { get; set; }

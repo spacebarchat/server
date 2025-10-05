@@ -71,7 +71,10 @@ public partial class Channel
     public int Flags { get; set; }
 
     [Column("default_thread_rate_limit_per_user")]
-    public int DefaultThreadRateLimitPerUser { get; set; }
+    public int? DefaultThreadRateLimitPerUser { get; set; }
+
+    [InverseProperty("Channel")]
+    public virtual ICollection<CloudAttachment> CloudAttachments { get; set; } = new List<CloudAttachment>();
 
     [ForeignKey("GuildId")]
     [InverseProperty("Channels")]
@@ -114,6 +117,9 @@ public partial class Channel
 
     [InverseProperty("Channel")]
     public virtual ICollection<Recipient> Recipients { get; set; } = new List<Recipient>();
+
+    [InverseProperty("Channel")]
+    public virtual ICollection<Stream> Streams { get; set; } = new List<Stream>();
 
     [InverseProperty("Channel")]
     public virtual ICollection<VoiceState> VoiceStates { get; set; } = new List<VoiceState>();

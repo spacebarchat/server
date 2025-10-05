@@ -5,9 +5,11 @@ using Spacebar.Db.Models;
 
 namespace Spacebar.Db.Contexts;
 
-public partial class SpacebarDbContext(DbContextOptions<SpacebarDbContext> options) : DbContext(options) {
-    public SpacebarDbContext Clone() {
-        return new SpacebarDbContext(options);
+public partial class SpacebarDbContext : DbContext
+{
+    public SpacebarDbContext(DbContextOptions<SpacebarDbContext> options)
+        : base(options)
+    {
     }
 
     public virtual DbSet<Application> Applications { get; set; }
@@ -15,6 +17,8 @@ public partial class SpacebarDbContext(DbContextOptions<SpacebarDbContext> optio
     public virtual DbSet<Attachment> Attachments { get; set; }
 
     public virtual DbSet<AuditLog> AuditLogs { get; set; }
+
+    public virtual DbSet<AutomodRule> AutomodRules { get; set; }
 
     public virtual DbSet<BackupCode> BackupCodes { get; set; }
 
@@ -27,6 +31,8 @@ public partial class SpacebarDbContext(DbContextOptions<SpacebarDbContext> optio
     public virtual DbSet<Channel> Channels { get; set; }
 
     public virtual DbSet<ClientRelease> ClientReleases { get; set; }
+
+    public virtual DbSet<CloudAttachment> CloudAttachments { get; set; }
 
     public virtual DbSet<Config> Configs { get; set; }
 
@@ -70,6 +76,10 @@ public partial class SpacebarDbContext(DbContextOptions<SpacebarDbContext> optio
 
     public virtual DbSet<StickerPack> StickerPacks { get; set; }
 
+    public virtual DbSet<Stream> Streams { get; set; }
+
+    public virtual DbSet<StreamSession> StreamSessions { get; set; }
+
     public virtual DbSet<Team> Teams { get; set; }
 
     public virtual DbSet<TeamMember> TeamMembers { get; set; }
@@ -79,6 +89,8 @@ public partial class SpacebarDbContext(DbContextOptions<SpacebarDbContext> optio
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserSetting> UserSettings { get; set; }
+
+    public virtual DbSet<UserSettingsProto> UserSettingsProtos { get; set; }
 
     public virtual DbSet<ValidRegistrationToken> ValidRegistrationTokens { get; set; }
 
@@ -123,6 +135,15 @@ public partial class SpacebarDbContext(DbContextOptions<SpacebarDbContext> optio
             entity.HasOne(d => d.Target).WithMany(p => p.AuditLogTargets).HasConstraintName("FK_3cd01cd3ae7aab010310d96ac8e");
 
             entity.HasOne(d => d.User).WithMany(p => p.AuditLogUsers).HasConstraintName("FK_bd2726fd31b35443f2245b93ba0");
+        });
+
+        modelBuilder.Entity<AutomodRule>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_99789ae863507f5aed9e58d7866");
+
+            entity.HasOne(d => d.Creator).WithMany(p => p.AutomodRules)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_12d3d60b961393d310429c062b7");
         });
 
         modelBuilder.Entity<BackupCode>(entity =>
@@ -177,6 +198,19 @@ public partial class SpacebarDbContext(DbContextOptions<SpacebarDbContext> optio
         modelBuilder.Entity<ClientRelease>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_4c4ea258342d2d6ba1be0a71a43");
+        });
+
+        modelBuilder.Entity<CloudAttachment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_5794827a3ee7c9318612dcb70c8");
+
+            entity.HasOne(d => d.Channel).WithMany(p => p.CloudAttachments)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_998d5fe91008ba5b09e1322104c");
+
+            entity.HasOne(d => d.User).WithMany(p => p.CloudAttachments)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_8bf8cc8767e48cb482ff644fce6");
         });
 
         modelBuilder.Entity<Config>(entity =>
@@ -512,6 +546,26 @@ public partial class SpacebarDbContext(DbContextOptions<SpacebarDbContext> optio
             entity.HasOne(d => d.CoverStickerId1Navigation).WithMany(p => p.StickerPacks).HasConstraintName("FK_448fafba4355ee1c837bbc865f1");
         });
 
+        modelBuilder.Entity<Stream>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_40440b6f569ebc02bc71c25c499");
+
+            entity.HasOne(d => d.Channel).WithMany(p => p.Streams).HasConstraintName("FK_5101f0cded27ff0aae78fc4eed7");
+
+            entity.HasOne(d => d.Owner).WithMany(p => p.Streams).HasConstraintName("FK_1b566f9b54d1cda271da53ac82f");
+        });
+
+        modelBuilder.Entity<StreamSession>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_49bdc3f66394c12478f8371c546");
+
+            entity.Property(e => e.Used).HasDefaultValue(false);
+
+            entity.HasOne(d => d.Stream).WithMany(p => p.StreamSessions).HasConstraintName("FK_8b5a028a34dae9ee54af37c9c32");
+
+            entity.HasOne(d => d.User).WithMany(p => p.StreamSessions).HasConstraintName("FK_13ae5c29aff4d0890c54179511a");
+        });
+
         modelBuilder.Entity<Team>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_7e5523774a38b08a6236d322403");
@@ -555,6 +609,15 @@ public partial class SpacebarDbContext(DbContextOptions<SpacebarDbContext> optio
         modelBuilder.Entity<UserSetting>(entity =>
         {
             entity.HasKey(e => e.Index).HasName("PK_e81f8bb92802737337d35c00981");
+        });
+
+        modelBuilder.Entity<UserSettingsProto>(entity =>
+        {
+            entity.HasKey(e => e.UserId).HasName("PK_8ff3d1961a48b693810c9f99853");
+
+            entity.HasOne(d => d.User).WithOne(p => p.UserSettingsProto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_8ff3d1961a48b693810c9f99853");
         });
 
         modelBuilder.Entity<ValidRegistrationToken>(entity =>

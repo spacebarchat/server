@@ -49,6 +49,9 @@ public partial class Role
     [Column("flags")]
     public int Flags { get; set; }
 
+    [Column("colors")]
+    public string Colors { get; set; } = null!;
+
     [ForeignKey("GuildId")]
     [InverseProperty("Roles")]
     public virtual Guild Guild { get; set; } = null!;
