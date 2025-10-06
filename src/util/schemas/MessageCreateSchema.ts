@@ -60,8 +60,8 @@ export interface MessageCreateSchema {
 	TODO: OpenWAAO<-->attachment-style metadata conversion
 	**/
 	attachments?: (MessageCreateAttachment | MessageCreateCloudAttachment)[];
-	sticker_ids?: string[];
-	components?: ActionRowComponent[];
+	sticker_ids?: string[] | null; // null check: fixes Discord-Go
+	components?: ActionRowComponent[] | null; // null check: fixes Discord-Go
 	// TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
 	poll?: PollCreationSchema;
 	enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here

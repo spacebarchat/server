@@ -89,6 +89,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		reactions: opts.reactions || [],
 		type: opts.type ?? 0,
 		mentions: [],
+		components: opts.components ?? undefined, // Fix Discord-Go?
 	});
 
 	if (cloudAttachments && cloudAttachments.length > 0) {
