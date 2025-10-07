@@ -39,6 +39,7 @@
             src = ./.;
             nativeBuildInputs = with pkgs; [ python3 ];
             npmDepsHash = hashesFile.npmDepsHash;
+            npmBuildScript = "build:src";
             makeCacheWritable = true;
             postPatch = ''
               substituteInPlace package.json --replace 'npx patch-package' '${pkgs.nodePackages.patch-package}/bin/patch-package'
