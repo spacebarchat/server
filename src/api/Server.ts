@@ -119,11 +119,11 @@ export class SpacebarServer extends Server {
 		app.get("/verify-email", (req, res) => res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "verify.html")));
 
 		app.get("/_spacebar/api/schemas.json", (req, res) => {
-			res.sendFile(path.join(__dirname, "schemas.json"));
+			res.sendFile(path.join(ASSETS_FOLDER, "schemas.json"));
 		});
 
 		app.get("/_spacebar/api/openapi.json", (req, res) => {
-			res.sendFile(path.join(__dirname, "openapi.json"));
+			res.sendFile(path.join(ASSETS_FOLDER, "openapi.json"));
 		});
 
 		this.app.use(ErrorHandler);
