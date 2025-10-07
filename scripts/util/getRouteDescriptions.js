@@ -13,17 +13,24 @@ let currentPath = "";
 	If someone could fix that I'd really appreciate it, but for now just, don't do that :p
 */
 
-const proxy = (file, method, prefix, path, ...args) => {
+/**
+ * @param {string} file
+ * @param {string} method
+ * @param {string} prefix
+ * @param {string} path
+ * @param args
+ */
+function proxy(file, method, prefix, path, ...args) {
 	const opts = args.find((x) => x?.prototype?.OPTS_MARKER == true);
 	if (!opts)
 		return console.error(
 			`${file} has route without route() description middleware`,
 		);
 
-	console.log(prefix + path + " - " + method);
+	console.log(`${method.toUpperCase().padStart("OPTIONS".length)} ${prefix + path}`);
 	opts.file = file.replace("/dist/", "/src/").replace(".js", ".ts");
 	routes.set(prefix + path + "|" + method, opts());
-};
+}
 
 express.Router = () => {
 	return Object.fromEntries(

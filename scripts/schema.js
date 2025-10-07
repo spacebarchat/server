@@ -115,6 +115,7 @@ function main() {
 	deleteOneOfKindUndefinedRecursive(definitions, "$");
 
 	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
+	console.log("Successfully wrote", Object.keys(definitions).length, "schemas to", schemaPath);
 }
 
 function deleteOneOfKindUndefinedRecursive(obj, path) {

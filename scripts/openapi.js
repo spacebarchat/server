@@ -23,7 +23,7 @@ const fs = require("fs");
 const {
 	NO_AUTHORIZATION_ROUTES,
 } = require("../dist/api/middlewares/Authentication");
-require("missing-native-js-functions");
+require("../dist/util/util/extensions");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
 const SchemaPath = path.join(__dirname, "..", "assets", "schemas.json");
@@ -84,7 +84,7 @@ function combineSchemas(schemas) {
 
 	for (const key in definitions) {
 		if (!schemaRegEx.test(key)) {
-			console.error(`Invalid schema name: ${key}`);
+			console.error(`Invalid schema name: ${key}, context:`, definitions[key]);
 			continue;
 		}
 		specification.components = specification.components || {};
@@ -121,7 +121,7 @@ function apiRoutes(missingRoutes) {
 	const tags = Array.from(routes.keys())
 		.map((x) => getTag(x))
 		.sort((a, b) => a.localeCompare(b));
-	specification.tags = tags.unique().map((x) => ({ name: x }));
+	specification.tags = tags.distinct().map((x) => ({ name: x }));
 
 	routes.forEach((route, pathAndMethod) => {
 		const [p, method] = pathAndMethod.split("|");
@@ -213,7 +213,7 @@ function apiRoutes(missingRoutes) {
 			obj.parameters = [...(obj.parameters || []), ...query];
 		}
 
-		obj.tags = [...(obj.tags || []), getTag(p)].unique();
+		obj.tags = [...(obj.tags || []), getTag(p)].distinct();
 
 		if (missingRoutes.additional.includes(path.replace(/\/$/, ""))) {
 			obj["x-badges"] = [
@@ -254,6 +254,14 @@ async function main() {
 		JSON.stringify(specification, null, 4)
 			.replaceAll("#/definitions", "#/components/schemas")
 			.replaceAll("bigint", "number"),
+	);
+	console.log("Wrote OpenAPI specification to", openapiPath);
+	console.log(
+		"Specification contains",
+		Object.keys(specification.paths).length,
+		"paths and",
+		Object.keys(specification.components.schemas).length,
+		"schemas.",
 	);
 }
 
