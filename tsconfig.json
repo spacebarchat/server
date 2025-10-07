@@ -31,14 +31,15 @@
 		"module": "commonjs" /* Specify what module code is generated. */,
 		// "rootDir": "./src",                                  /* Specify the root folder within your source files. */
 		"moduleResolution": "node" /* Specify how TypeScript looks up a file from a given module specifier. */,
-		"baseUrl": "./src/",
+		// "baseUrl": "./src/", //deprecated
 		"paths": {
-			"@spacebar/api*": ["./api"],
-			"@spacebar/gateway*": ["./gateway"],
-			"@spacebar/cdn*": ["./cdn"],
-			"@spacebar/util*": ["./util"],
-			"@spacebar/webrtc*": ["./webrtc"],
-            "lambert-server*": ["./util/util/lambert-server"]
+            "*": ["./src/*"],
+			"@spacebar/api*": ["./src/api"],
+			"@spacebar/gateway*": ["./src/gateway"],
+			"@spacebar/cdn*": ["./src/cdn"],
+			"@spacebar/util*": ["./src/util"],
+			"@spacebar/webrtc*": ["./src/webrtc"],
+            "lambert-server*": ["./src/util/util/lambert-server"]
 		} /* Specify a set of entries that re-map imports to additional lookup locations. */,
 		// "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
 		// "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */

@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { MemberNameType } from "@typescript-eslint/eslint-plugin/dist/util";
 import { Attachment } from "../../entities";
 
 export enum AccountStandingState {
