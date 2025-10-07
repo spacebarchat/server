@@ -16,26 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	Config,
-	ConnectionConfig,
-	ConnectionLoader,
-	Email,
-	JSONReplacer,
-	WebAuthn,
-	initDatabase,
-	initEvent,
-	registerRoutes,
-} from "@spacebar/util";
-import {
-	Authentication,
-	CORS,
-	ImageProxy,
-	BodyParser,
-	ErrorHandler,
-	initRateLimits,
-	initTranslation,
-} from "./middlewares";
+import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes } from "@spacebar/util";
+import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
 import morgan from "morgan";
@@ -43,13 +25,8 @@ import path from "path";
 import { red } from "picocolors";
 import { initInstance } from "./util/handlers/Instance";
 
-const PUBLIC_ASSETS_FOLDER = path.join(
-	__dirname,
-	"..",
-	"..",
-	"assets",
-	"public",
-);
+const ASSETS_FOLDER = path.join(__dirname, "..", "..", "assets");
+const PUBLIC_ASSETS_FOLDER = path.join(ASSETS_FOLDER, "public");
 
 export type SpacebarServerOptions = ServerOptions;
 
@@ -85,13 +62,8 @@ export class SpacebarServer extends Server {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						let skip = !(
-							process.env["LOG_REQUESTS"]?.includes(
-								res.statusCode.toString(),
-							) ?? false
-						);
-						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-")
-							skip = !skip;
+						let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
+						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
 						return skip;
 					},
 				}),
@@ -117,10 +89,7 @@ export class SpacebarServer extends Server {
 		await initRateLimits(api);
 		await initTranslation(api);
 
-		this.routes = await registerRoutes(
-			this,
-			path.join(__dirname, "routes", "/"),
-		);
+		this.routes = await registerRoutes(this, path.join(__dirname, "routes", "/"));
 
 		// 404 is not an error in express, so this should not be an error middleware
 		// this is a fine place to put the 404 handler because its after we register the routes
@@ -145,24 +114,23 @@ export class SpacebarServer extends Server {
 
 		app.use("/imageproxy/:hash/:size/:url", ImageProxy);
 
-		app.get("/", (req, res) =>
-			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "index.html")),
-		);
+		app.get("/", (req, res) => res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "index.html")));
 
-		app.get("/verify-email", (req, res) =>
-			res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "verify.html")),
-		);
+		app.get("/verify-email", (req, res) => res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "verify.html")));
+
+		app.get("/_spacebar/api/schemas.json", (req, res) => {
+			res.sendFile(path.join(__dirname, "schemas.json"));
+		});
+
+		app.get("/_spacebar/api/openapi.json", (req, res) => {
+			res.sendFile(path.join(__dirname, "openapi.json"));
+		});
 
 		this.app.use(ErrorHandler);
 
 		ConnectionLoader.loadConnections();
 
-		if (logRequests)
-			console.log(
-				red(
-					`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`,
-				),
-			);
+		if (logRequests) console.log(red(`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`));
 
 		return super.start();
 	}
