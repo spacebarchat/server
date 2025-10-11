@@ -118,7 +118,7 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 		}
 	}
 
-	static async getOrCreate(user_id: string): Promise<UserSettingsProtos> {
+	static async getOrDefault(user_id: string, save: boolean = false): Promise<UserSettingsProtos> {
 		const user = await User.findOneOrFail({
 			where: { id: user_id },
 			select: { settings: true },
@@ -158,7 +158,7 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 			modified = true;
 		}
 
-		if (modified) userSettings = await userSettings.save();
+		if (modified && save) userSettings = await userSettings.save();
 
 		return userSettings;
 	}

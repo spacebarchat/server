@@ -202,10 +202,10 @@ export class User extends BaseClass {
 	@OneToOne(() => UserSettings, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		eager: false,
+		nullable: true
 	})
 	@JoinColumn()
-	settings: UserSettings;
+	settings?: UserSettings;
 
 	// workaround to prevent fossord-unaware clients from deleting settings not used by them
 	@Column({ type: "simple-json", select: false })

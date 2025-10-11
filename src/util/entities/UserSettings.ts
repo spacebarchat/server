@@ -18,6 +18,7 @@
 
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
+import { User } from "./User";
 
 @Entity({
 	name: "user_settings",
@@ -124,6 +125,24 @@ export class UserSettings extends BaseClassWithoutId {
 
 	@Column({ nullable: true })
 	view_nsfw_guilds: boolean = true;
+
+	public static async getOrDefault(userId: string) {
+		// raw sql query
+		const userSettingsIndex = await User.getRepository()
+			.createQueryBuilder()
+			.select("settingsIndex")
+			.where('id = :id', { id: userId })
+			.execute();
+
+		console.log(`[INFO/UserSettings] Fetched settings index for user ${userId}:`, userSettingsIndex);
+
+		if (!userSettingsIndex) return new UserSettings();
+
+		const settings = await UserSettings.findOne({ where: { index: userSettingsIndex } });
+		if (!settings) return new UserSettings();
+
+		return settings;
+	}
 }
 
 interface CustomStatus {

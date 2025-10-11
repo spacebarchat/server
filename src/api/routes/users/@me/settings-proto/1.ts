@@ -50,7 +50,7 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const userSettings = await UserSettingsProtos.getOrCreate(req.user_id);
+		const userSettings = await UserSettingsProtos.getOrDefault(req.user_id);
 
 		res.json({
 			settings: PreloadedUserSettings.toBase64(
@@ -102,7 +102,7 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const userSettings = await UserSettingsProtos.getOrCreate(req.user_id);
+		const userSettings = await UserSettingsProtos.getOrDefault(req.user_id);
 
 		res.json({
 			settings: PreloadedUserSettings.toJson(userSettings.userSettings!),
@@ -155,7 +155,7 @@ async function patchUserSettings(
 	required_data_version: number | undefined,
 	atomic: boolean = false,
 ) {
-	const userSettings = await UserSettingsProtos.getOrCreate(userId);
+	const userSettings = await UserSettingsProtos.getOrDefault(userId);
 	let settings = userSettings.userSettings!;
 
 	if (

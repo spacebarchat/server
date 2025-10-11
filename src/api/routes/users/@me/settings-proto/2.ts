@@ -50,7 +50,7 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const userSettings = await UserSettingsProtos.getOrCreate(req.user_id);
+		const userSettings = await UserSettingsProtos.getOrDefault(req.user_id);
 
 		res.json({
 			settings: FrecencyUserSettings.toBase64(
@@ -102,7 +102,7 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const userSettings = await UserSettingsProtos.getOrCreate(req.user_id);
+		const userSettings = await UserSettingsProtos.getOrDefault(req.user_id);
 
 		res.json({
 			settings: FrecencyUserSettings.toJson(
@@ -157,7 +157,7 @@ async function patchUserSettings(
 	required_data_version: number | undefined,
 	atomic: boolean = false,
 ) {
-	const userSettings = await UserSettingsProtos.getOrCreate(userId);
+	const userSettings = await UserSettingsProtos.getOrDefault(userId);
 	let settings = userSettings.frecencySettings!;
 
 	if (
