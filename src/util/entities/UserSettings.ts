@@ -128,7 +128,9 @@ export class UserSettings extends BaseClassWithoutId {
 
 	public static async getOrDefault(userId: string) {
 		// raw sql query
-		const userSettingsIndex = await this.getRepository().query("SELECT \"settingsIndex\" FROM users WHERE id = $1", [userId]);
+		const userSettingsIndex = (
+			await this.getRepository().query("SELECT \"settingsIndex\" FROM users WHERE id = $1", [userId])
+		)[0]?.settingsIndex as string | null;
 
 		console.log(`[INFO/UserSettings] Fetched settings index for user ${userId}:`, userSettingsIndex);
 
