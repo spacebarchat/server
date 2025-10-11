@@ -29440,7 +29440,7 @@
                 ]
             }
         },
-        "/store/published-listings/applications/{application_id}": {
+        "/store/published-listings/applications/{application_id}/subscription-plans/": {
             "get": {
                 "security": [
                     {
@@ -29461,34 +29461,6 @@
                             "type": "string"
                         },
                         "description": "application_id"
-                    }
-                ],
-                "tags": [
-                    "store"
-                ]
-            }
-        },
-        "/store/published-listings/applications/{id}/subscription-plans/": {
-            "get": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": "No description available"
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "id"
                     }
                 ],
                 "tags": [

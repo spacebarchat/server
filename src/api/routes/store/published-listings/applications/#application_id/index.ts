@@ -17,11 +17,11 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { route } from "api";
 
 const router: Router = Router({ mergeParams: true });
 
-router.get("/:application_id", route({}), async (req: Request, res: Response) => {
+router.get("/", route({}), async (req: Request, res: Response) => {
 	//TODO
 	// const id = req.params.id;
 	res.json({
