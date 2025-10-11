@@ -46,7 +46,7 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		const app = await Application.findOneOrFail({
-			where: { id: req.params.id },
+			where: { id: req.params.application_id },
 			relations: ["owner"],
 		});
 
@@ -74,7 +74,7 @@ router.post(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const bot = await User.findOneOrFail({ where: { id: req.params.id } });
+		const bot = await User.findOneOrFail({ where: { id: req.params.application_id } });
 		const owner = await User.findOneOrFail({ where: { id: req.user_id } });
 
 		if (owner.id != req.user_id)
@@ -114,7 +114,7 @@ router.patch(
 		if (!body.avatar?.trim()) delete body.avatar;
 
 		const app = await Application.findOneOrFail({
-			where: { id: req.params.id },
+			where: { id: req.params.application_id },
 			relations: ["bot", "owner"],
 		});
 

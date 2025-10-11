@@ -39,11 +39,11 @@ import { In } from "typeorm";
 const router: Router = Router({ mergeParams: true });
 
 router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), async (req: Request, res: Response) => {
-	if (req.params.id === "@me") req.params.id = req.user_id;
+	if (req.params.user_id === "@me") req.params.user_id = req.user_id;
 
 	const { guild_id, with_mutual_guilds, with_mutual_friends, with_mutual_friends_count } = req.query;
 
-	const user = await User.getPublicUser(req.params.id, {
+	const user = await User.getPublicUser(req.params.user_id, {
 		relations: ["connected_accounts"],
 	});
 
@@ -52,7 +52,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
 
 	if (with_mutual_guilds == "true") {
 		const requested_member = await Member.find({
-			where: { id: req.params.id },
+			where: { id: req.params.user_id },
 		});
 		const self_member = await Member.find({
 			where: { id: req.user_id },
@@ -82,7 +82,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
 	const guild_member =
 		guild_id && typeof guild_id == "string"
 			? await Member.findOneOrFail({
-					where: { id: req.params.id, guild_id: guild_id },
+					where: { id: req.params.user_id, guild_id: guild_id },
 					relations: ["roles"],
 				})
 			: undefined;
@@ -111,7 +111,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
 
 	if (with_mutual_friends == "true" || with_mutual_friends_count == "true") {
 		const relationshipsSelf = await Relationship.find({ where: { from_id: req.user_id, type: RelationshipType.friends } });
-		const relationshipsUser = await Relationship.find({ where: { from_id: req.params.id, type: RelationshipType.friends } });
+		const relationshipsUser = await Relationship.find({ where: { from_id: req.params.user_id, type: RelationshipType.friends } });
 		const relationshipsIntersection = relationshipsSelf.filter((r1) => relationshipsUser.some((r2) => r2.to_id === r1.to_id));
 		if (with_mutual_friends_count) mutual_friends_count = relationshipsIntersection.length;
 		if (with_mutual_friends) {

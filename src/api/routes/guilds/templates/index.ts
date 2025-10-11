@@ -25,7 +25,7 @@ import { HTTPError } from "lambert-server";
 const router: Router = Router({ mergeParams: true });
 
 router.get(
-	"/:code",
+	"/:template_code",
 	route({
 		responses: {
 			200: {
@@ -40,16 +40,16 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { code } = req.params;
+		const { template_code } = req.params;
 
-		const template = await getTemplate(code);
+		const template = await getTemplate(template_code);
 
 		res.json(template);
 	},
 );
 
-router.post("/:code", route({ requestBody: "GuildTemplateCreateSchema" }), async (req: Request, res: Response) => {
-	const { code } = req.params;
+router.post("/:template_code", route({ requestBody: "GuildTemplateCreateSchema" }), async (req: Request, res: Response) => {
+	const { template_code } = req.params;
 	const body = req.body as GuildTemplateCreateSchema;
 
 	const { maxGuilds } = Config.get().limits.user;
@@ -57,7 +57,7 @@ router.post("/:code", route({ requestBody: "GuildTemplateCreateSchema" }), async
 	const guild_count = await Member.count({ where: { id: req.user_id } });
 	if (guild_count >= maxGuilds) throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
 
-	const template = await getTemplate(code) as Template;
+	const template = await getTemplate(template_code) as Template;
 
 	const guild = await Guild.createGuild({
 		...template.serialized_source_guild,

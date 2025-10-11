@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2025 Spacebar and Spacebar Contributors
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -17,40 +17,50 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, DmMessagesResponseSchema, Message, User } from "@spacebar/util";
+import {
+	emitEvent,
+	Member,
+	PrivateUserProjection,
+	User,
+	UserDeleteEvent,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
+
 const router = Router({ mergeParams: true });
 
-router.get(
+router.post(
 	"/",
 	route({
+		right: "MANAGE_USERS",
 		responses: {
-			200: {
-				body: "DmMessagesResponseSchema",
+			204: {},
+			403: {
+				body: "APIErrorResponse",
 			},
-			400: {
+			404: {
 				body: "APIErrorResponse",
 			},
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const user = await User.findOneOrFail({ where: { id: req.params.id } });
-		const channel = await user.getDmChannelWith(req.user_id);
+		await User.findOneOrFail({
+			where: { id: req.params.user_id },
+			select: [...PrivateUserProjection, "data"],
+		});
+		await Promise.all([
+			Member.delete({ id: req.params.user_id }),
+			User.delete({ id: req.params.user_id }),
+		]);
 
-		const messages = (
-			await Message.find({
-				where: { channel_id: channel?.id },
-				order: { timestamp: "DESC" },
-				take: Math.clamp(req.query.limit ? Number(req.query.limit) : 50, 1, Config.get().limits.message.maxPreloadCount),
-			})
-		).filter((x) => x !== null) as Message[];
+		// TODO: respect intents as USER_DELETE has potential to cause privacy issues
+		await emitEvent({
+			event: "USER_DELETE",
+			user_id: req.user_id,
+			data: { user_id: req.params.user_id },
+		} as UserDeleteEvent);
 
-		const filteredMessages = messages.map((message) => message.toPartialMessage()) as DmMessagesResponseSchema;
-
-		return res.status(200).send(filteredMessages);
+		res.sendStatus(204);
 	},
 );
-
-// TODO: POST to send a message to the user
 
 export default router;

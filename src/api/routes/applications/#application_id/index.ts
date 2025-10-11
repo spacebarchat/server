@@ -44,7 +44,7 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		const app = await Application.findOneOrFail({
-			where: { id: req.params.id },
+			where: { id: req.params.application_id },
 			relations: ["owner", "bot"],
 		});
 		if (app.owner.id != req.user_id)
@@ -71,7 +71,7 @@ router.patch(
 		const body = req.body as ApplicationModifySchema;
 
 		const app = await Application.findOneOrFail({
-			where: { id: req.params.id },
+			where: { id: req.params.application_id },
 			relations: ["owner", "bot"],
 		});
 
@@ -135,7 +135,7 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		const app = await Application.findOneOrFail({
-			where: { id: req.params.id },
+			where: { id: req.params.application_id },
 			relations: ["bot", "owner"],
 		});
 		if (app.owner.id != req.user_id)

@@ -33,7 +33,7 @@ import { HTTPError } from "lambert-server";
 const router: Router = Router({ mergeParams: true });
 
 router.get(
-	"/:code",
+	"/:invite_code",
 	route({
 		responses: {
 			"200": {
@@ -45,10 +45,10 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { code } = req.params;
+		const { invite_code } = req.params;
 
 		const invite = await Invite.findOneOrFail({
-			where: { code },
+			where: { code: invite_code },
 			relations: PublicInviteRelation,
 		});
 
@@ -57,7 +57,7 @@ router.get(
 );
 
 router.post(
-	"/:code",
+	"/:invite_code",
 	route({
 		right: "USE_MASS_INVITES",
 		responses: {
@@ -78,9 +78,9 @@ router.post(
 	async (req: Request, res: Response) => {
 		if (req.user_bot) throw DiscordApiErrors.BOT_PROHIBITED_ENDPOINT;
 
-		const { code } = req.params;
+		const { invite_code } = req.params;
 		const { guild_id } = await Invite.findOneOrFail({
-			where: { code: code },
+			where: { code: invite_code },
 		});
 		const { features } = await Guild.findOneOrFail({
 			where: { id: guild_id },
@@ -100,7 +100,7 @@ router.post(
 		if (features.includes("INVITES_DISABLED"))
 			throw new HTTPError("Sorry, this guild has joins closed.", 403);
 
-		const invite = await Invite.joinGuild(req.user_id, code);
+		const invite = await Invite.joinGuild(req.user_id, invite_code);
 
 		res.json(invite);
 	},
@@ -108,7 +108,7 @@ router.post(
 
 // * cant use permission of route() function because path doesn't have guild_id/channel_id
 router.delete(
-	"/:code",
+	"/:invite_code",
 	route({
 		responses: {
 			"200": {
@@ -123,8 +123,8 @@ router.delete(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { code } = req.params;
-		const invite = await Invite.findOneOrFail({ where: { code } });
+		const { invite_code } = req.params;
+		const invite = await Invite.findOneOrFail({ where: { code: invite_code } });
 		const { guild_id, channel_id } = invite;
 
 		const permission = await getPermission(
@@ -143,14 +143,14 @@ router.delete(
 			);
 
 		await Promise.all([
-			Invite.delete({ code }),
+			Invite.delete({ code: invite_code }),
 			emitEvent({
 				event: "INVITE_DELETE",
 				guild_id: guild_id,
 				data: {
 					channel_id: channel_id,
 					guild_id: guild_id,
-					code: code,
+					code: invite_code,
 				},
 			} as InviteDeleteEvent),
 		]);
