@@ -58,7 +58,7 @@ export enum PrivateUserEnum {
 	purchased_flags,
 	premium_usage_flags,
 	disabled,
-	// settings,	// now a relation
+	settings,
 	// locale
 }
 export type PrivateUserKeys = keyof typeof PrivateUserEnum | PublicUserKeys;

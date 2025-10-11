@@ -24101,6 +24101,9 @@
                     },
                     "disabled": {
                         "type": "boolean"
+                    },
+                    "settings": {
+                        "$ref": "#/components/schemas/UserSettings"
                     }
                 },
                 "required": [
@@ -24118,6 +24121,7 @@
                     "premium_usage_flags",
                     "public_flags",
                     "purchased_flags",
+                    "settings",
                     "username",
                     "verified"
                 ]
@@ -24309,6 +24313,9 @@
                     },
                     "disabled": {
                         "type": "boolean"
+                    },
+                    "settings": {
+                        "$ref": "#/components/schemas/UserSettings"
                     }
                 },
                 "required": [
@@ -24326,6 +24333,7 @@
                     "premium_usage_flags",
                     "public_flags",
                     "purchased_flags",
+                    "settings",
                     "username",
                     "verified"
                 ]
