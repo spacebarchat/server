@@ -358,9 +358,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	// so for instances that migrated, users may not have a `user_settings` row.
 	let createUserSettingsTime: ElapsedTime | undefined = undefined;
 	if (!user.settings) {
-		console.warn("[WARN] Creating new user settings!");
-		user.settings = new UserSettings();
-		await user.settings.save();
+		user.settings = await UserSettings.getOrDefault(user.id);
 		createUserSettingsTime = taskSw.getElapsedAndReset();
 	}
 
