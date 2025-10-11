@@ -27717,7 +27717,7 @@
                 ]
             }
         },
-        "/users/@me/relationships/{id}": {
+        "/users/@me/relationships/{user_id}": {
             "put": {
                 "security": [
                     {
@@ -27761,13 +27761,13 @@
                 },
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user_id",
                         "in": "path",
                         "required": true,
                         "schema": {
                             "type": "string"
                         },
-                        "description": "id"
+                        "description": "user_id"
                     }
                 ],
                 "tags": [
@@ -27807,13 +27807,13 @@
                 },
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user_id",
                         "in": "path",
                         "required": true,
                         "schema": {
                             "type": "string"
                         },
-                        "description": "id"
+                        "description": "user_id"
                     }
                 ],
                 "tags": [
@@ -27821,7 +27821,7 @@
                 ]
             }
         },
-        "/users/@me/notes/{id}": {
+        "/users/@me/notes/{user_id}": {
             "get": {
                 "security": [
                     {
@@ -27852,13 +27852,13 @@
                 },
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user_id",
                         "in": "path",
                         "required": true,
                         "schema": {
                             "type": "string"
                         },
-                        "description": "id"
+                        "description": "user_id"
                     }
                 ],
                 "tags": [
@@ -27898,13 +27898,13 @@
                 },
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user_id",
                         "in": "path",
                         "required": true,
                         "schema": {
                             "type": "string"
                         },
-                        "description": "id"
+                        "description": "user_id"
                     }
                 ],
                 "tags": [

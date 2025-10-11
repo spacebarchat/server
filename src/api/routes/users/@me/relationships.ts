@@ -72,7 +72,7 @@ router.get(
 );
 
 router.put(
-	"/:id",
+	"/:user_id",
 	route({
 		requestBody: "RelationshipPutSchema",
 		responses: {
@@ -90,7 +90,7 @@ router.put(
 			req,
 			res,
 			await User.findOneOrFail({
-				where: { id: req.params.id },
+				where: { id: req.params.user_id },
 				relations: ["relationships", "relationships.to"],
 				select: userProjection,
 			}),
@@ -134,7 +134,7 @@ router.post(
 );
 
 router.delete(
-	"/:id",
+	"/:user_id",
 	route({
 		responses: {
 			204: {},
