@@ -20,6 +20,14 @@
 	Regenerates the `spacebarchat/server/assets/schemas.json` file, used for API/Gateway input validation.
 */
 
+const conWarn = console.warn;
+console.warn = (...args) => {
+	// silence some expected warnings
+	if (args[0] === "initializer is expression for property id") return;
+	if (args[0].startsWith("unknown initializer for property ") && args[0].endsWith("[object Object]")) return;
+	conWarn(...args);
+}
+
 const path = require("path");
 const fs = require("fs");
 const TJS = require("typescript-json-schema");
@@ -35,6 +43,10 @@ const settings = {
 	defaultProps: false,
 };
 
+const ExcludeAndWarn = [
+	/^Record/,
+	/^Partial/,
+]
 const Excluded = [
 	"DefaultSchema",
 	"Schema",
@@ -62,6 +74,21 @@ const Excluded = [
 	"AnySchema",
 	"SMTPConnection.CustomAuthenticationResponse",
 	"TransportMakeRequestResponse",
+	// Emma [it/its] @ Rory& - 2025-10-14
+	/.*\..*/,
+	/^Axios.*/,
+	/^APIKeyConfiguration\..*/,
+	/^AccountSetting\..*/,
+	/^BulkContactManagement\..*/,
+	/^Campaign.*/,
+	/^Contact.*/,
+	/^DNS\..*/,
+	/^Delete.*/,
+	/^Destroy.*/,
+	/^Template\..*/,
+	/^Webhook\..*/,
+	/^(BigDecimal|BigInteger|Blob|Boolean|Document|Error|LazyRequest|List|Map|Normalized|Numeric)Schema/,
+	/^Put/
 ];
 
 function main() {
@@ -74,16 +101,24 @@ function main() {
 
 	let schemas = generator.getUserSymbols().filter((x) => {
 		return (
-			(x.endsWith("Schema") ||
-				x.endsWith("Response") ||
-				x.startsWith("API")) &&
-			!Excluded.includes(x)
+			(
+				x.endsWith("Schema")
+				||x.endsWith("Response")
+				|| x.startsWith("API")
+			)
+			&& !ExcludeAndWarn.some(exc => {
+				const match = exc instanceof RegExp ? exc.test(x) : x === exc;
+				if (match) console.warn("Warning: Excluding schema", x);
+				return match;
+			})
+			&& !Excluded.some(exc => exc instanceof RegExp ? exc.test(x) : x === exc)
 		);
 	});
 
 	var definitions = {};
 
 	for (const name of schemas) {
+		console.log("Processing schema", name);
 		const part = TJS.generateSchema(program, name, settings, [], generator);
 		if (!part) continue;
 
@@ -134,7 +169,7 @@ function deleteOneOfKindUndefinedRecursive(obj, path) {
 			delete obj[key];
 		}
 	}
-	
+
 	return false;
 }
 

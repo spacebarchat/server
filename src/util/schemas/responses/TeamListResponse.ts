@@ -18,5 +18,4 @@
 
 import { Team } from "@spacebar/util";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface TeamListResponse extends Array<Team> {}
+export type TeamListResponse = Team[];

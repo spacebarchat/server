@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "api";
+import { route } from "@spacebar/api";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -32,7 +32,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			type: 1,
 			dependent_sku_id: null,
 			application_id: "",
-			manifets_labels: [],
+			manifest_labels: [],
 			access_type: 2,
 			name: "",
 			features: [],
