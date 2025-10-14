@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { StringStringDictionary } from "../../util";
+import { StringStringDictionary } from "../../util/util";
 
 // TODO: Clean up
 export type CollectiblesCategoriesResponse = CollectiblesCategoryItem[];

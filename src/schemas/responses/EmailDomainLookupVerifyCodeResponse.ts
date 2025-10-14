@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { User, Webhook } from "../../entities";
+import { Guild } from "../../util/entities";
 
-export interface WebhookCreateResponse {
-	user: User;
-	hook: Webhook;
+export interface EmailDomainLookupVerifyCodeResponse {
+	guild: Guild;
+	joined: boolean;
 }

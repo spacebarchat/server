@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Embed } from "../entities";
+import { Embed } from "../util/entities";
 import {
 	MessageCreateAttachment,
 	PollCreationSchema,

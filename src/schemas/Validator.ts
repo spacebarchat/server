@@ -15,11 +15,40 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { PublicUser, RelationshipType } from "../../entities";
 
-export interface UserRelationshipsResponse {
-	id: string;
-	type: RelationshipType;
-	nickname: null;
-	user: PublicUser;
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
+import fs from "fs";
+import path from "path";
+
+const SchemaPath = path.join(
+	__dirname,
+	"..",
+	"..",
+	"assets",
+	"schemas.json",
+);
+const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
+
+export const ajv = new Ajv({
+	allErrors: true,
+	parseDate: true,
+	allowDate: true,
+	schemas,
+	coerceTypes: true,
+	messages: true,
+	strict: true,
+	strictRequired: true,
+	allowUnionTypes: true,
+});
+
+addFormats(ajv);
+
+export function validateSchema<G extends object>(schema: string, data: G): G {
+	const valid = ajv.validate(schema, data);
+	if (!valid) {
+		console.log("[Validator] Validation error in ", schema)
+		throw ajv.errors;
+	}
+	return data;
 }

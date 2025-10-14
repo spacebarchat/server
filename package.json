@@ -120,6 +120,7 @@
 		"@spacebar/gateway": "dist/gateway",
 		"@spacebar/util": "dist/util",
 		"@spacebar/webrtc": "dist/webrtc",
+		"@spacebar/schemas": "dist/schemas",
 		"lambert-server": "dist/util/util/lambert-server"
 	},
 	"optionalDependencies": {

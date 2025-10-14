@@ -39,6 +39,7 @@
 			"@spacebar/cdn*": ["./src/cdn"],
 			"@spacebar/util*": ["./src/util"],
 			"@spacebar/webrtc*": ["./src/webrtc"],
+			"@spacebar/schemas*": ["./src/schemas"],
             "lambert-server*": ["./src/util/util/lambert-server"]
 		} /* Specify a set of entries that re-map imports to additional lookup locations. */,
 		// "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */

@@ -16,9 +16,16 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Guild } from "../../entities";
+import { Guild } from "../../util/entities";
 
-export interface GuildRecommendationsResponse {
-	recommended_guilds: Guild[];
-	load_id: string;
+export interface HubDirectoryEntry {
+	author_id: string;
+	created_at: string;
+	description: string;
+	directory_channel_id: string;
+	guild: Guild;
+	primary_category_id: number;
+	type: number; // TODO: not exactly sure what this is, channel type?
 }
+
+export type HubDirectoryEntriesResponse = HubDirectoryEntry[];

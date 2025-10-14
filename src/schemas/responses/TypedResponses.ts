@@ -17,8 +17,8 @@
 */
 
 import { GuildBansResponse, GuildCreateResponse } from "@spacebar/util";
-import { GeneralConfiguration, LimitsConfiguration } from "../../config";
-import { DmChannelDTO } from "../../dtos";
+import { GeneralConfiguration, LimitsConfiguration } from "../../util/config";
+import { DmChannelDTO } from "../../util/dtos";
 import {
 	Application,
 	BackupCode,
@@ -37,7 +37,7 @@ import {
 	StickerPack,
 	Template,
 	Webhook,
-} from "../../entities";
+} from "../../util/entities";
 import { GuildVoiceRegion } from "./GuildVoiceRegionsResponse";
 
 // removes internal properties from the guild class

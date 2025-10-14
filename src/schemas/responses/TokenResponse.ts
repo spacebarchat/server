@@ -16,11 +16,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Guild } from "../../entities";
+import { BackupCode, UserSettings } from "../../util/entities";
 
-export interface DiscoverableGuildsResponse {
-	total: number;
-	guilds: Guild[];
-	offset: number;
-	limit: number;
+export interface TokenResponse {
+	token: string;
+	settings: UserSettings;
+}
+
+export interface TokenOnlyResponse {
+	token: string;
+}
+
+export interface TokenWithBackupCodesResponse {
+	token: string;
+	backup_codes: BackupCode[];
 }

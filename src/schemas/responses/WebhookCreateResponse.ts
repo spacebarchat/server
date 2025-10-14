@@ -16,18 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BackupCode, UserSettings } from "../../entities";
+import { User, Webhook } from "../../util/entities";
 
-export interface TokenResponse {
-	token: string;
-	settings: UserSettings;
-}
-
-export interface TokenOnlyResponse {
-	token: string;
-}
-
-export interface TokenWithBackupCodesResponse {
-	token: string;
-	backup_codes: BackupCode[];
+export interface WebhookCreateResponse {
+	user: User;
+	hook: Webhook;
 }

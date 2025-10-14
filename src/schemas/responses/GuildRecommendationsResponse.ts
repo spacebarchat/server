@@ -16,11 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Tuple } from "lambert-server";
+import { Guild } from "../../util/entities";
 
-export const PayloadSchema = {
-	op: Number,
-	$d: new Tuple(Object, Number), // or number for heartbeat sequence
-	$s: Number,
-	$t: String,
-};
+export interface GuildRecommendationsResponse {
+	recommended_guilds: Guild[];
+	load_id: string;
+}

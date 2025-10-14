@@ -4,11 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bf10e7c6-8c33-4385-b571-3e96ac86a389" name="Changes" comment="" />
+    <list default="true" id="bf10e7c6-8c33-4385-b571-3e96ac86a389" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extra/admin-api/Spacebar.AdminAPI/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/extra/admin-api/Spacebar.AdminAPI/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extra/admin-api/Spacebar.AdminAPI/Services/AuthenticationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/extra/admin-api/Spacebar.AdminAPI/Services/AuthenticationService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extra/admin-api/Spacebar.AdminApi.Models/UserModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/extra/admin-api/Spacebar.AdminApi.Models/UserModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extra/admin-api/Utilities/Spacebar.AdminAPI.TestClient/Layout/NavMenu.razor" beforeDir="false" afterPath="$PROJECT_DIR$/extra/admin-api/Utilities/Spacebar.AdminAPI.TestClient/Layout/NavMenu.razor" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$USER_HOME$/.cache/JetBrains/WebStorm2024.3/javascript/typings/node/20.17.10/node_modules/@types/node/crypto.d.ts" root0="SKIP_INSPECTION" />
@@ -30,40 +39,53 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "NIXITCH_NIXPKGS_CONFIG": "/etc/nix/nixpkgs-config.nix",
-    "NIXITCH_NIX_CONF_DIR": "",
-    "NIXITCH_NIX_OTHER_STORES": "",
-    "NIXITCH_NIX_PATH": "/home/Rory/.nix-defexpr/channels:nixpkgs=/nix/store/wb6agba4kfsxpbnb5hzlq58vkjzvbsk6-source",
-    "NIXITCH_NIX_PROFILES": "/run/current-system/sw /nix/var/nix/profiles/default /etc/profiles/per-user/Rory /home/Rory/.local/state/nix/profile /nix/profile /home/Rory/.nix-profile",
-    "NIXITCH_NIX_REMOTE": "",
-    "NIXITCH_NIX_USER_PROFILE_DIR": "/nix/var/nix/profiles/per-user/Rory",
-    "Node.js.Server.ts.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "javascript.nodejs.core.library.configured.version": "20.17.0",
-    "javascript.nodejs.core.library.typings.version": "20.17.10",
-    "last_opened_file_path": "/home/Rory/git/spacebar/server/src/admin-api/routes/v0",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "/nix/store/dcdc33kdjdhjnzg6rkmd0cx4kpwl8cac-nodejs-20.17.0/bin/node",
-    "nodejs_package_manager_path": "npm",
-    "npm.Start API.executor": "Run",
-    "npm.Start CDN.executor": "Run",
-    "npm.Start Gateway.executor": "Run",
-    "npm.build.executor": "Run",
-    "npm.start.executor": "Debug",
-    "prettierjs.PrettierConfiguration.Package": "/home/Rory/git/spacebar/server/node_modules/prettier",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "/home/Rory/git/spacebar/server/node_modules/typescript/lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;NIXITCH_NIXPKGS_CONFIG&quot;: &quot;/etc/nix/nixpkgs-config.nix&quot;,
+    &quot;NIXITCH_NIX_CONF_DIR&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_OTHER_STORES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PATH&quot;: &quot;/home/Rory/.nix-defexpr/channels:nixpkgs=/nix/store/wb6agba4kfsxpbnb5hzlq58vkjzvbsk6-source&quot;,
+    &quot;NIXITCH_NIX_PROFILES&quot;: &quot;/run/current-system/sw /nix/var/nix/profiles/default /etc/profiles/per-user/Rory /home/Rory/.local/state/nix/profile /nix/profile /home/Rory/.nix-profile&quot;,
+    &quot;NIXITCH_NIX_REMOTE&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_USER_PROFILE_DIR&quot;: &quot;/nix/var/nix/profiles/per-user/Rory&quot;,
+    &quot;Node.js.Server.ts.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;24.8.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;24.7.0&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/Rory/git/spacebar/server/src/admin-api/routes/v0&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.Start API.executor&quot;: &quot;Run&quot;,
+    &quot;npm.Start CDN.executor&quot;: &quot;Run&quot;,
+    &quot;npm.Start Gateway.executor&quot;: &quot;Run&quot;,
+    &quot;npm.build.executor&quot;: &quot;Run&quot;,
+    &quot;npm.start.executor&quot;: &quot;Debug&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/Rory/git/spacebar/server/node_modules/prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/typescript/lib&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;GitStage.ChangesTree.GroupingKeys&quot;: [
+      &quot;directory&quot;,
+      &quot;module&quot;,
+      &quot;repository&quot;
+    ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/admin-api/routes/v0" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/api/routes/channels/#channel_id/messages" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/api/routes/store/published-listings/applications/#application_id" />
+      <recent name="$PROJECT_DIR$/src/api/routes/store/published-listings/skus/#sku_id" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -85,7 +107,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-WS-243.22562.112" />
+        <option value="bundled-js-predefined-d6986cc7102b-9c94529fcfe0-JavaScript-WS-252.26199.162" />
       </set>
     </attachedChunks>
   </component>
@@ -108,6 +130,9 @@
       <workItem from="1735256039333" duration="390000" />
       <workItem from="1735256441657" duration="58156000" />
       <workItem from="1735848116134" duration="80763000" />
+      <workItem from="1759868659577" duration="8847000" />
+      <workItem from="1760044946282" duration="43683000" />
+      <workItem from="1760402350251" duration="18740000" />
     </task>
     <servers />
   </component>

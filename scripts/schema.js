@@ -94,7 +94,7 @@ const Excluded = [
 function main() {
 	const program = TJS.programFromConfig(
 		path.join(__dirname, "..", "tsconfig.json"),
-		walk(path.join(__dirname, "..", "src", "util", "schemas")),
+		walk(path.join(__dirname, "..", "src", "schemas")),
 	);
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
