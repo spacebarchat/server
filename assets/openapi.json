@@ -19602,7 +19602,6 @@
                     "rights",
                     "security_keys",
                     "sessions",
-                    "settings",
                     "system",
                     "username",
                     "verified",
@@ -24121,7 +24120,6 @@
                     "premium_usage_flags",
                     "public_flags",
                     "purchased_flags",
-                    "settings",
                     "username",
                     "verified"
                 ]
@@ -24333,7 +24331,6 @@
                     "premium_usage_flags",
                     "public_flags",
                     "purchased_flags",
-                    "settings",
                     "username",
                     "verified"
                 ]
@@ -28939,7 +28936,7 @@
                 ]
             }
         },
-        "/users/@me/applications/{app_id}/entitlements/": {
+        "/users/@me/applications/{application_id}/entitlements/": {
             "get": {
                 "security": [
                     {
@@ -28953,13 +28950,13 @@
                 },
                 "parameters": [
                     {
-                        "name": "app_id",
+                        "name": "application_id",
                         "in": "path",
                         "required": true,
                         "schema": {
                             "type": "string"
                         },
-                        "description": "app_id"
+                        "description": "application_id"
                     }
                 ],
                 "tags": [
