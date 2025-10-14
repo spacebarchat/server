@@ -13,7 +13,7 @@ using Spacebar.RabbitMqUtilities;
 namespace Spacebar.AdminAPI.Controllers;
 
 [ApiController]
-[Route("/Users")]
+[Route("/users")]
 public class UserController(ILogger<UserController> logger, Configuration config, RabbitMQConfiguration amqpConfig, SpacebarDbContext db, RabbitMQService mq, IServiceProvider sp) : ControllerBase {
     private readonly ILogger<UserController> _logger = logger;
 

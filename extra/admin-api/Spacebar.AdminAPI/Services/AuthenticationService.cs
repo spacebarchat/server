@@ -13,6 +13,7 @@ public class AuthenticationService(SpacebarDbContext db, Configuration config) {
     
     public async Task<User> GetCurrentUser(HttpRequest request) {
         if (!request.Headers.ContainsKey("Authorization")) {
+            Console.WriteLine(string.Join(", ", request.Headers.Keys));
             throw new UnauthorizedAccessException();
         }
 
@@ -25,7 +26,7 @@ public class AuthenticationService(SpacebarDbContext db, Configuration config) {
 
         var res = await handler.ValidateTokenAsync(token, new TokenValidationParameters {
             IssuerSigningKey = new ECDsaSecurityKey(key),
-            ValidAlgorithms = new[] { "ES512" },
+            ValidAlgorithms = ["ES512"],
             LogValidationExceptions = true,
             // These are required to be false for the token to be valid as they aren't provided by the token
             ValidateIssuer = false,
@@ -33,7 +34,7 @@ public class AuthenticationService(SpacebarDbContext db, Configuration config) {
             ValidateAudience = false,
         });
 
-        if (!res.IsValid) {
+        if (!res.IsValid && !config.DisableAuthentication) {
             throw new UnauthorizedAccessException();
         }
 

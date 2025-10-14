@@ -3,11 +3,11 @@
 namespace Spacebar.RabbitMqUtilities;
 
 public interface IRabbitMQService {
-    IConnection CreateChannel();
+    Task<IConnection> CreateChannel();
 }
 
 public class RabbitMQService(RabbitMQConfiguration config) : IRabbitMQService {
-    public IConnection CreateChannel() {
+    public async Task<IConnection> CreateChannel() {
         var connection = new ConnectionFactory {
             UserName = config.Username,
             Password = config.Password,
@@ -15,7 +15,7 @@ public class RabbitMQService(RabbitMQConfiguration config) : IRabbitMQService {
             // DispatchConsumersAsync = true
         };
 
-        var channel = connection.CreateConnection();
+        var channel = await connection.CreateConnectionAsync();
         return channel;
     }
 }

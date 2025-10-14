@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spacebar.AdminApi.Models", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spacebar.AdminApi.PrepareTestData", "Utilities\Spacebar.AdminApi.PrepareTestData\Spacebar.AdminApi.PrepareTestData.csproj", "{BCC6501C-16A7-4787-BA47-52DAE06718A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spacebar.CleanSettingsRows", "Spacebar.CleanSettingsRows\Spacebar.CleanSettingsRows.csproj", "{9B41FAC1-4427-487C-BF3F-69554848DEBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{BCC6501C-16A7-4787-BA47-52DAE06718A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCC6501C-16A7-4787-BA47-52DAE06718A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCC6501C-16A7-4787-BA47-52DAE06718A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B41FAC1-4427-487C-BF3F-69554848DEBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B41FAC1-4427-487C-BF3F-69554848DEBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B41FAC1-4427-487C-BF3F-69554848DEBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B41FAC1-4427-487C-BF3F-69554848DEBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F4E179D1-A3EB-4A1D-9C11-E7019F4B1EE2} = {04787943-EBB6-4DE4-96D5-4CFB4A2CEE99}

@@ -17,8 +17,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20241210-161342" />
-        <PackageReference Include="ArcaneLibs.Blazor.Components" Version="1.0.0-preview.20241210-161342" />
+        <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20251005-232225" />
+        <PackageReference Include="ArcaneLibs.Blazor.Components" Version="1.0.0-preview.20251005-232225" />
         <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" PrivateAssets="all"/>

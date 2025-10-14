@@ -1,4 +1,6 @@
-﻿namespace Spacebar.AdminApi.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace Spacebar.AdminApi.Models;
 
 public class UserModel {
     public string Id { get; set; } = null!;
@@ -26,9 +28,16 @@ public class UserModel {
     public bool Disabled { get; set; }
     public bool Deleted { get; set; }
     public string? Email { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString)]
     public ulong Flags { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString)]
     public ulong PublicFlags { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString)]
     public ulong Rights { get; set; }
+
     public ApplicationModel? ApplicationBotUser { get; set; }
     public List<ConnectedAccountModel> ConnectedAccounts { get; set; } = new();
     public int GuildCount { get; set; }

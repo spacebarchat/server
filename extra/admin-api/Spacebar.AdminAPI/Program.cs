@@ -45,20 +45,29 @@ builder.Services.AddRequestTimeouts(x => {
         }
     };
 });
-builder.Services.AddCors(options => {
-    options.AddPolicy(
-        "Open",
-        policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-});
+// builder.Services.AddCors(options => {
+//     options.AddPolicy(
+//         "Open",
+//         policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+// });
 
 var app = builder.Build();
+app.Use((context, next) => {
+    context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+    context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
+    context.Response.Headers["Access-Control-Allow-Headers"] = "*, Authorization";
+    if (context.Request.Method == "OPTIONS") {
+        context.Response.StatusCode = 200;
+        return Task.CompletedTask;
+    }
+
+    return next();
+});
 app.UsePathBase("/_spacebar/admin");
-app.UseCors("Open");
+// app.UseCors("Open");
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
-    app.MapOpenApi();
-}
+app.MapOpenApi();
 
 app.UseMiddleware<AuthenticationMiddleware>();
 app.UseAuthorization();
