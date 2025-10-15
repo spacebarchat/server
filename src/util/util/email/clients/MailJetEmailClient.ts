@@ -31,6 +31,8 @@ export class MailJetEmailClient extends BaseEmailClient {
 
 		try {
 			// try to import the transporter package
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-expect-error
 			this.mailJet = new (await import("node-mailjet")).default({
 				apiKey: apiKey,
 				apiSecret: apiSecret,
