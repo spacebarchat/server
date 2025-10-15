@@ -91631,6 +91631,3670 @@
         "const": 7,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "StaticSchema": {
+        "anyOf": [
+            {
+                "$ref": "#/definitions/StaticSimpleSchema"
+            },
+            {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 1
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    }
+                ],
+                "minItems": 5,
+                "maxItems": 5
+            },
+            {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 2
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    }
+                ],
+                "minItems": 6,
+                "maxItems": 6
+            },
+            {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 3
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    }
+                ],
+                "minItems": 6,
+                "maxItems": 6
+            },
+            {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": -3
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    }
+                ],
+                "minItems": 6,
+                "maxItems": 6
+            },
+            {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 9
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    }
+                ],
+                "minItems": 6,
+                "maxItems": 6
+            }
+        ],
+        "definitions": {
+            "SchemaTraits": {
+                "description": "Traits attached to schema objects.\n\nWhen this is a number, it refers to a pre-allocated\ntrait combination that is equivalent to one of the\nobject type's variations.",
+                "anyOf": [
+                    {
+                        "description": "See https://smithy.io/2.0/trait-index.html for individual definitions.",
+                        "type": "object",
+                        "additionalProperties": {},
+                        "properties": {
+                            "idempotent": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "idempotencyToken": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sensitive": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sparse": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpLabel": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpHeader": {
+                                "type": "string"
+                            },
+                            "httpQuery": {
+                                "type": "string"
+                            },
+                            "httpPrefixHeaders": {
+                                "type": "string"
+                            },
+                            "httpQueryParams": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpPayload": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "http": {
+                                "description": "[method, path, statusCode]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 3,
+                                "maxItems": 3
+                            },
+                            "httpResponseCode": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "endpoint": {
+                                "description": "[hostPrefix]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            },
+                            "xmlAttribute": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "xmlName": {
+                                "type": "string"
+                            },
+                            "xmlNamespace": {
+                                "description": "[prefix, uri]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 2,
+                                "maxItems": 2
+                            },
+                            "xmlFlattened": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "jsonName": {
+                                "type": "string"
+                            },
+                            "mediaType": {
+                                "type": "string"
+                            },
+                            "error": {
+                                "enum": [
+                                    "client",
+                                    "server"
+                                ],
+                                "type": "string"
+                            },
+                            "streaming": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventHeader": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventPayload": {
+                                "const": 1,
+                                "type": "number"
+                            }
+                        }
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "SchemaRef": {
+                "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/StaticSimpleSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "$ref": "#/definitions/TraitsSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/ListSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/MapSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/StructureSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "$ref": "#/definitions/OperationSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/NormalizedSchema"
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    {
+                        "const": "unit",
+                        "type": "string"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "StaticSimpleSchema": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 0
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    }
+                ],
+                "minItems": 5,
+                "maxItems": 5
+            },
+            "TraitsSchema": {
+                "description": "A schema that has traits.",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "ListSchema": {
+                "description": "Schema for the list aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "MapSchema": {
+                "description": "Schema for the map aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "keySchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "keySchema",
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "StructureSchema": {
+                "description": "Schema for the structure aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "memberNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "memberList": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    },
+                    "members": {
+                        "$ref": "#/definitions/Record<string,[SchemaRef,SchemaTraits]>"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "memberList",
+                    "memberNames",
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "Record<string,[SchemaRef,SchemaTraits]>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "OperationSchema": {
+                "description": "Schema for an operation.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "input": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "output": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "input",
+                    "name",
+                    "namespace",
+                    "output",
+                    "traits"
+                ]
+            },
+            "NormalizedSchema": {
+                "description": "Normalization wrapper for various schema data objects.",
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "StaticSimpleSchema": {
+        "$ref": "#/definitions/StaticSimpleSchema",
+        "definitions": {
+            "SchemaTraits": {
+                "description": "Traits attached to schema objects.\n\nWhen this is a number, it refers to a pre-allocated\ntrait combination that is equivalent to one of the\nobject type's variations.",
+                "anyOf": [
+                    {
+                        "description": "See https://smithy.io/2.0/trait-index.html for individual definitions.",
+                        "type": "object",
+                        "additionalProperties": {},
+                        "properties": {
+                            "idempotent": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "idempotencyToken": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sensitive": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sparse": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpLabel": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpHeader": {
+                                "type": "string"
+                            },
+                            "httpQuery": {
+                                "type": "string"
+                            },
+                            "httpPrefixHeaders": {
+                                "type": "string"
+                            },
+                            "httpQueryParams": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpPayload": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "http": {
+                                "description": "[method, path, statusCode]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 3,
+                                "maxItems": 3
+                            },
+                            "httpResponseCode": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "endpoint": {
+                                "description": "[hostPrefix]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            },
+                            "xmlAttribute": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "xmlName": {
+                                "type": "string"
+                            },
+                            "xmlNamespace": {
+                                "description": "[prefix, uri]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 2,
+                                "maxItems": 2
+                            },
+                            "xmlFlattened": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "jsonName": {
+                                "type": "string"
+                            },
+                            "mediaType": {
+                                "type": "string"
+                            },
+                            "error": {
+                                "enum": [
+                                    "client",
+                                    "server"
+                                ],
+                                "type": "string"
+                            },
+                            "streaming": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventHeader": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventPayload": {
+                                "const": 1,
+                                "type": "number"
+                            }
+                        }
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "SchemaRef": {
+                "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/StaticSimpleSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "$ref": "#/definitions/TraitsSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/ListSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/MapSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/StructureSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "$ref": "#/definitions/OperationSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/NormalizedSchema"
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    {
+                        "const": "unit",
+                        "type": "string"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "StaticSimpleSchema": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 0
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    }
+                ],
+                "minItems": 5,
+                "maxItems": 5
+            },
+            "TraitsSchema": {
+                "description": "A schema that has traits.",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "ListSchema": {
+                "description": "Schema for the list aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "MapSchema": {
+                "description": "Schema for the map aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "keySchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "keySchema",
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "StructureSchema": {
+                "description": "Schema for the structure aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "memberNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "memberList": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    },
+                    "members": {
+                        "$ref": "#/definitions/Record<string,[SchemaRef,SchemaTraits]>"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "memberList",
+                    "memberNames",
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "Record<string,[SchemaRef,SchemaTraits]>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "OperationSchema": {
+                "description": "Schema for an operation.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "input": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "output": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "input",
+                    "name",
+                    "namespace",
+                    "output",
+                    "traits"
+                ]
+            },
+            "NormalizedSchema": {
+                "description": "Normalization wrapper for various schema data objects.",
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "StaticListSchema": {
+        "$ref": "#/definitions/StaticListSchema",
+        "definitions": {
+            "SchemaTraits": {
+                "description": "Traits attached to schema objects.\n\nWhen this is a number, it refers to a pre-allocated\ntrait combination that is equivalent to one of the\nobject type's variations.",
+                "anyOf": [
+                    {
+                        "description": "See https://smithy.io/2.0/trait-index.html for individual definitions.",
+                        "type": "object",
+                        "additionalProperties": {},
+                        "properties": {
+                            "idempotent": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "idempotencyToken": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sensitive": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sparse": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpLabel": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpHeader": {
+                                "type": "string"
+                            },
+                            "httpQuery": {
+                                "type": "string"
+                            },
+                            "httpPrefixHeaders": {
+                                "type": "string"
+                            },
+                            "httpQueryParams": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpPayload": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "http": {
+                                "description": "[method, path, statusCode]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 3,
+                                "maxItems": 3
+                            },
+                            "httpResponseCode": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "endpoint": {
+                                "description": "[hostPrefix]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            },
+                            "xmlAttribute": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "xmlName": {
+                                "type": "string"
+                            },
+                            "xmlNamespace": {
+                                "description": "[prefix, uri]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 2,
+                                "maxItems": 2
+                            },
+                            "xmlFlattened": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "jsonName": {
+                                "type": "string"
+                            },
+                            "mediaType": {
+                                "type": "string"
+                            },
+                            "error": {
+                                "enum": [
+                                    "client",
+                                    "server"
+                                ],
+                                "type": "string"
+                            },
+                            "streaming": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventHeader": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventPayload": {
+                                "const": 1,
+                                "type": "number"
+                            }
+                        }
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "SchemaRef": {
+                "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 0
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "$ref": "#/definitions/StaticListSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "$ref": "#/definitions/TraitsSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/ListSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/MapSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/StructureSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "$ref": "#/definitions/OperationSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/NormalizedSchema"
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    {
+                        "const": "unit",
+                        "type": "string"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "StaticListSchema": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 1
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    }
+                ],
+                "minItems": 5,
+                "maxItems": 5
+            },
+            "TraitsSchema": {
+                "description": "A schema that has traits.",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "ListSchema": {
+                "description": "Schema for the list aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "MapSchema": {
+                "description": "Schema for the map aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "keySchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "keySchema",
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "StructureSchema": {
+                "description": "Schema for the structure aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "memberNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "memberList": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    },
+                    "members": {
+                        "$ref": "#/definitions/Record<string,[SchemaRef,SchemaTraits]>"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "memberList",
+                    "memberNames",
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "Record<string,[SchemaRef,SchemaTraits]>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "OperationSchema": {
+                "description": "Schema for an operation.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "input": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "output": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "input",
+                    "name",
+                    "namespace",
+                    "output",
+                    "traits"
+                ]
+            },
+            "NormalizedSchema": {
+                "description": "Normalization wrapper for various schema data objects.",
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "StaticMapSchema": {
+        "$ref": "#/definitions/StaticMapSchema",
+        "definitions": {
+            "SchemaTraits": {
+                "description": "Traits attached to schema objects.\n\nWhen this is a number, it refers to a pre-allocated\ntrait combination that is equivalent to one of the\nobject type's variations.",
+                "anyOf": [
+                    {
+                        "description": "See https://smithy.io/2.0/trait-index.html for individual definitions.",
+                        "type": "object",
+                        "additionalProperties": {},
+                        "properties": {
+                            "idempotent": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "idempotencyToken": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sensitive": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sparse": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpLabel": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpHeader": {
+                                "type": "string"
+                            },
+                            "httpQuery": {
+                                "type": "string"
+                            },
+                            "httpPrefixHeaders": {
+                                "type": "string"
+                            },
+                            "httpQueryParams": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpPayload": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "http": {
+                                "description": "[method, path, statusCode]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 3,
+                                "maxItems": 3
+                            },
+                            "httpResponseCode": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "endpoint": {
+                                "description": "[hostPrefix]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            },
+                            "xmlAttribute": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "xmlName": {
+                                "type": "string"
+                            },
+                            "xmlNamespace": {
+                                "description": "[prefix, uri]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 2,
+                                "maxItems": 2
+                            },
+                            "xmlFlattened": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "jsonName": {
+                                "type": "string"
+                            },
+                            "mediaType": {
+                                "type": "string"
+                            },
+                            "error": {
+                                "enum": [
+                                    "client",
+                                    "server"
+                                ],
+                                "type": "string"
+                            },
+                            "streaming": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventHeader": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventPayload": {
+                                "const": 1,
+                                "type": "number"
+                            }
+                        }
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "SchemaRef": {
+                "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 0
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "$ref": "#/definitions/StaticMapSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "$ref": "#/definitions/TraitsSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/ListSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/MapSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/StructureSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "$ref": "#/definitions/OperationSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/NormalizedSchema"
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    {
+                        "const": "unit",
+                        "type": "string"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "StaticMapSchema": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 2
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    }
+                ],
+                "minItems": 6,
+                "maxItems": 6
+            },
+            "TraitsSchema": {
+                "description": "A schema that has traits.",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "ListSchema": {
+                "description": "Schema for the list aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "MapSchema": {
+                "description": "Schema for the map aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "keySchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "keySchema",
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "StructureSchema": {
+                "description": "Schema for the structure aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "memberNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "memberList": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    },
+                    "members": {
+                        "$ref": "#/definitions/Record<string,[SchemaRef,SchemaTraits]>"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "memberList",
+                    "memberNames",
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "Record<string,[SchemaRef,SchemaTraits]>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "OperationSchema": {
+                "description": "Schema for an operation.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "input": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "output": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "input",
+                    "name",
+                    "namespace",
+                    "output",
+                    "traits"
+                ]
+            },
+            "NormalizedSchema": {
+                "description": "Normalization wrapper for various schema data objects.",
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "StaticStructureSchema": {
+        "$ref": "#/definitions/StaticStructureSchema",
+        "definitions": {
+            "SchemaTraits": {
+                "description": "Traits attached to schema objects.\n\nWhen this is a number, it refers to a pre-allocated\ntrait combination that is equivalent to one of the\nobject type's variations.",
+                "anyOf": [
+                    {
+                        "description": "See https://smithy.io/2.0/trait-index.html for individual definitions.",
+                        "type": "object",
+                        "additionalProperties": {},
+                        "properties": {
+                            "idempotent": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "idempotencyToken": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sensitive": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sparse": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpLabel": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpHeader": {
+                                "type": "string"
+                            },
+                            "httpQuery": {
+                                "type": "string"
+                            },
+                            "httpPrefixHeaders": {
+                                "type": "string"
+                            },
+                            "httpQueryParams": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpPayload": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "http": {
+                                "description": "[method, path, statusCode]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 3,
+                                "maxItems": 3
+                            },
+                            "httpResponseCode": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "endpoint": {
+                                "description": "[hostPrefix]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            },
+                            "xmlAttribute": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "xmlName": {
+                                "type": "string"
+                            },
+                            "xmlNamespace": {
+                                "description": "[prefix, uri]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 2,
+                                "maxItems": 2
+                            },
+                            "xmlFlattened": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "jsonName": {
+                                "type": "string"
+                            },
+                            "mediaType": {
+                                "type": "string"
+                            },
+                            "error": {
+                                "enum": [
+                                    "client",
+                                    "server"
+                                ],
+                                "type": "string"
+                            },
+                            "streaming": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventHeader": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventPayload": {
+                                "const": 1,
+                                "type": "number"
+                            }
+                        }
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "SchemaRef": {
+                "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 0
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "$ref": "#/definitions/StaticStructureSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "$ref": "#/definitions/TraitsSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/ListSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/MapSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/StructureSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "$ref": "#/definitions/OperationSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/NormalizedSchema"
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    {
+                        "const": "unit",
+                        "type": "string"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "StaticStructureSchema": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 3
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    }
+                ],
+                "minItems": 6,
+                "maxItems": 6
+            },
+            "TraitsSchema": {
+                "description": "A schema that has traits.",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "ListSchema": {
+                "description": "Schema for the list aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "MapSchema": {
+                "description": "Schema for the map aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "keySchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "keySchema",
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "StructureSchema": {
+                "description": "Schema for the structure aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "memberNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "memberList": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    },
+                    "members": {
+                        "$ref": "#/definitions/Record<string,[SchemaRef,SchemaTraits]>"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "memberList",
+                    "memberNames",
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "Record<string,[SchemaRef,SchemaTraits]>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "OperationSchema": {
+                "description": "Schema for an operation.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "input": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "output": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "input",
+                    "name",
+                    "namespace",
+                    "output",
+                    "traits"
+                ]
+            },
+            "NormalizedSchema": {
+                "description": "Normalization wrapper for various schema data objects.",
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "StaticErrorSchema": {
+        "$ref": "#/definitions/StaticErrorSchema",
+        "definitions": {
+            "SchemaTraits": {
+                "description": "Traits attached to schema objects.\n\nWhen this is a number, it refers to a pre-allocated\ntrait combination that is equivalent to one of the\nobject type's variations.",
+                "anyOf": [
+                    {
+                        "description": "See https://smithy.io/2.0/trait-index.html for individual definitions.",
+                        "type": "object",
+                        "additionalProperties": {},
+                        "properties": {
+                            "idempotent": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "idempotencyToken": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sensitive": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sparse": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpLabel": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpHeader": {
+                                "type": "string"
+                            },
+                            "httpQuery": {
+                                "type": "string"
+                            },
+                            "httpPrefixHeaders": {
+                                "type": "string"
+                            },
+                            "httpQueryParams": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpPayload": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "http": {
+                                "description": "[method, path, statusCode]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 3,
+                                "maxItems": 3
+                            },
+                            "httpResponseCode": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "endpoint": {
+                                "description": "[hostPrefix]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            },
+                            "xmlAttribute": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "xmlName": {
+                                "type": "string"
+                            },
+                            "xmlNamespace": {
+                                "description": "[prefix, uri]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 2,
+                                "maxItems": 2
+                            },
+                            "xmlFlattened": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "jsonName": {
+                                "type": "string"
+                            },
+                            "mediaType": {
+                                "type": "string"
+                            },
+                            "error": {
+                                "enum": [
+                                    "client",
+                                    "server"
+                                ],
+                                "type": "string"
+                            },
+                            "streaming": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventHeader": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventPayload": {
+                                "const": 1,
+                                "type": "number"
+                            }
+                        }
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "SchemaRef": {
+                "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 0
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "$ref": "#/definitions/StaticErrorSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "$ref": "#/definitions/TraitsSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/ListSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/MapSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/StructureSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "$ref": "#/definitions/OperationSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/NormalizedSchema"
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    {
+                        "const": "unit",
+                        "type": "string"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "StaticErrorSchema": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": -3
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    }
+                ],
+                "minItems": 6,
+                "maxItems": 6
+            },
+            "TraitsSchema": {
+                "description": "A schema that has traits.",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "ListSchema": {
+                "description": "Schema for the list aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "MapSchema": {
+                "description": "Schema for the map aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "keySchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "keySchema",
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "StructureSchema": {
+                "description": "Schema for the structure aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "memberNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "memberList": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    },
+                    "members": {
+                        "$ref": "#/definitions/Record<string,[SchemaRef,SchemaTraits]>"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "memberList",
+                    "memberNames",
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "Record<string,[SchemaRef,SchemaTraits]>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "OperationSchema": {
+                "description": "Schema for an operation.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "input": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "output": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "input",
+                    "name",
+                    "namespace",
+                    "output",
+                    "traits"
+                ]
+            },
+            "NormalizedSchema": {
+                "description": "Normalization wrapper for various schema data objects.",
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "StaticOperationSchema": {
+        "$ref": "#/definitions/StaticOperationSchema",
+        "definitions": {
+            "SchemaTraits": {
+                "description": "Traits attached to schema objects.\n\nWhen this is a number, it refers to a pre-allocated\ntrait combination that is equivalent to one of the\nobject type's variations.",
+                "anyOf": [
+                    {
+                        "description": "See https://smithy.io/2.0/trait-index.html for individual definitions.",
+                        "type": "object",
+                        "additionalProperties": {},
+                        "properties": {
+                            "idempotent": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "idempotencyToken": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sensitive": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "sparse": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpLabel": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpHeader": {
+                                "type": "string"
+                            },
+                            "httpQuery": {
+                                "type": "string"
+                            },
+                            "httpPrefixHeaders": {
+                                "type": "string"
+                            },
+                            "httpQueryParams": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "httpPayload": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "http": {
+                                "description": "[method, path, statusCode]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 3,
+                                "maxItems": 3
+                            },
+                            "httpResponseCode": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "endpoint": {
+                                "description": "[hostPrefix]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 1,
+                                "maxItems": 1
+                            },
+                            "xmlAttribute": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "xmlName": {
+                                "type": "string"
+                            },
+                            "xmlNamespace": {
+                                "description": "[prefix, uri]",
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ],
+                                "minItems": 2,
+                                "maxItems": 2
+                            },
+                            "xmlFlattened": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "jsonName": {
+                                "type": "string"
+                            },
+                            "mediaType": {
+                                "type": "string"
+                            },
+                            "error": {
+                                "enum": [
+                                    "client",
+                                    "server"
+                                ],
+                                "type": "string"
+                            },
+                            "streaming": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventHeader": {
+                                "const": 1,
+                                "type": "number"
+                            },
+                            "eventPayload": {
+                                "const": 1,
+                                "type": "number"
+                            }
+                        }
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "SchemaRef": {
+                "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 0
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "$ref": "#/definitions/StaticOperationSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/TraitsSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/ListSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/MapSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/StructureSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "$ref": "#/definitions/OperationSchema"
+                    },
+                    {
+                        "$ref": "#/definitions/NormalizedSchema"
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    {
+                        "const": "unit",
+                        "type": "string"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "StaticOperationSchema": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 9
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    {
+                        "$ref": "#/definitions/SchemaRef"
+                    }
+                ],
+                "minItems": 6,
+                "maxItems": 6
+            },
+            "TraitsSchema": {
+                "description": "A schema that has traits.",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "ListSchema": {
+                "description": "Schema for the list aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "MapSchema": {
+                "description": "Schema for the map aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "keySchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "keySchema",
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "StructureSchema": {
+                "description": "Schema for the structure aggregate type.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "memberNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "memberList": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SchemaRef"
+                        }
+                    },
+                    "members": {
+                        "$ref": "#/definitions/Record<string,[SchemaRef,SchemaTraits]>"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "memberList",
+                    "memberNames",
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "Record<string,[SchemaRef,SchemaTraits]>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "OperationSchema": {
+                "description": "Schema for an operation.",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    },
+                    "input": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "output": {
+                        "$ref": "#/definitions/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "input",
+                    "name",
+                    "namespace",
+                    "output",
+                    "traits"
+                ]
+            },
+            "NormalizedSchema": {
+                "description": "Normalization wrapper for various schema data objects.",
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "TraitsSchema": {
         "description": "A schema that has traits.",
         "type": "object",
@@ -91942,6 +95606,168 @@
                 "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
                 "anyOf": [
                     {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 0
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
                         "$ref": "#/definitions/TraitsSchema"
                     },
                     {
@@ -92146,6 +95972,168 @@
                 "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
                 "anyOf": [
                     {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 0
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
                         "$ref": "#/definitions/TraitsSchema"
                     },
                     {
@@ -92177,27 +96165,6 @@
                     {
                         "type": "integer"
                     }
-                ]
-            },
-            "TraitsSchema": {
-                "description": "A schema that has traits.",
-                "type": "object",
-                "properties": {
-                    "namespace": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "traits": {
-                        "$ref": "#/definitions/SchemaTraits"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "name",
-                    "namespace",
-                    "traits"
                 ]
             },
             "SchemaTraits": {
@@ -92332,6 +96299,27 @@
                     {
                         "type": "integer"
                     }
+                ]
+            },
+            "TraitsSchema": {
+                "description": "A schema that has traits.",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/definitions/SchemaTraits"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits"
                 ]
             },
             "ListSchema": {
@@ -92621,6 +96609,168 @@
             "SchemaRef": {
                 "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
                 "anyOf": [
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 0
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/definitions/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
                     {
                         "$ref": "#/definitions/TraitsSchema"
                     },
@@ -100979,6 +105129,21 @@
                     },
                     "template": {
                         "type": "string"
+                    },
+                    "headers": {
+                        "type": "object",
+                        "properties": {
+                            "From": {
+                                "type": "string"
+                            },
+                            "Reply-To": {
+                                "type": "string"
+                            },
+                            "Subject": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
                     }
                 },
                 "required": [
@@ -101169,6 +105334,21 @@
                     },
                     "template": {
                         "type": "string"
+                    },
+                    "headers": {
+                        "type": "object",
+                        "properties": {
+                            "From": {
+                                "type": "string"
+                            },
+                            "Reply-To": {
+                                "type": "string"
+                            },
+                            "Subject": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
                     }
                 },
                 "required": [
@@ -101331,6 +105511,21 @@
                     },
                     "template": {
                         "type": "string"
+                    },
+                    "headers": {
+                        "type": "object",
+                        "properties": {
+                            "From": {
+                                "type": "string"
+                            },
+                            "Reply-To": {
+                                "type": "string"
+                            },
+                            "Subject": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
                     }
                 },
                 "required": [
@@ -101562,6 +105757,21 @@
                     },
                     "template": {
                         "type": "string"
+                    },
+                    "headers": {
+                        "type": "object",
+                        "properties": {
+                            "From": {
+                                "type": "string"
+                            },
+                            "Reply-To": {
+                                "type": "string"
+                            },
+                            "Subject": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
                     }
                 },
                 "required": [

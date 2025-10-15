@@ -11736,38 +11736,171 @@
                     }
                 ]
             },
-            "TraitsSchema": {
-                "description": "A schema that has traits.",
-                "type": "object",
-                "properties": {
-                    "namespace": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "traits": {
-                        "$ref": "#/components/schemas/SchemaTraits"
-                    }
-                },
-                "required": [
-                    "name",
-                    "namespace",
-                    "traits"
-                ]
-            },
-            "SimpleSchema": {
-                "description": "Although numeric values exist for most simple schema, this class is used for cases where traits are\nattached to those schema, since a single number cannot easily represent both a schema and its traits.",
-                "type": "integer"
-            },
-            "UnitSchema": {
-                "description": "Signal value for the Smithy void value. Typically used for\noperation input and outputs.",
-                "type": "string",
-                "const": "unit"
-            },
             "SchemaRef": {
                 "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
                 "anyOf": [
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 0
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
                     {
                         "$ref": "#/components/schemas/TraitsSchema"
                     },
@@ -11810,6 +11943,29 @@
                     {
                         "type": "integer"
                     }
+                ]
+            },
+            "StaticSimpleSchema": {
+                "$ref": "#/components/schemas/StaticSimpleSchema"
+            },
+            "TraitsSchema": {
+                "description": "A schema that has traits.",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/components/schemas/SchemaTraits"
+                    }
+                },
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits"
                 ]
             },
             "ListSchema": {
@@ -11908,6 +12064,176 @@
             "NormalizedSchema": {
                 "description": "Normalization wrapper for various schema data objects.",
                 "type": "object"
+            },
+            "StaticSchema": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/StaticSimpleSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    }
+                ]
+            },
+            "StaticListSchema": {
+                "$ref": "#/components/schemas/StaticListSchema"
+            },
+            "StaticMapSchema": {
+                "$ref": "#/components/schemas/StaticMapSchema"
+            },
+            "StaticStructureSchema": {
+                "$ref": "#/components/schemas/StaticStructureSchema"
+            },
+            "StaticErrorSchema": {
+                "$ref": "#/components/schemas/StaticErrorSchema"
+            },
+            "StaticOperationSchema": {
+                "$ref": "#/components/schemas/StaticOperationSchema"
+            },
+            "SimpleSchema": {
+                "description": "Although numeric values exist for most simple schema, this class is used for cases where traits are\nattached to those schema, since a single number cannot easily represent both a schema and its traits.",
+                "type": "integer"
+            },
+            "UnitSchema": {
+                "description": "Signal value for the Smithy void value. Typically used for\noperation input and outputs.",
+                "type": "string",
+                "const": "unit"
             },
             "MemberSchema": {
                 "$ref": "#/components/schemas/MemberSchema"
@@ -19089,6 +19415,21 @@
                     },
                     "template": {
                         "type": "string"
+                    },
+                    "headers": {
+                        "type": "object",
+                        "properties": {
+                            "From": {
+                                "type": "string"
+                            },
+                            "Reply-To": {
+                                "type": "string"
+                            },
+                            "Subject": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
                     }
                 },
                 "required": [
