@@ -19,8 +19,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript File" />
         <option value="JavaScript File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -61,7 +61,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "javascript.nodejs.core.library.configured.version": "24.8.0",
     "javascript.nodejs.core.library.typings.version": "24.7.0",
-    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/schemas",
+    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/schemas/api/guilds",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -86,18 +86,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
       <recent name="$PROJECT_DIR$/src/schemas" />
       <recent name="$PROJECT_DIR$/src/schemas/api/users" />
       <recent name="$PROJECT_DIR$/src/schemas/api/messages" />
       <recent name="$PROJECT_DIR$/src/admin-api/routes/v0" />
-      <recent name="$PROJECT_DIR$/src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
       <recent name="$PROJECT_DIR$/src/schemas" />
       <recent name="$PROJECT_DIR$/src/schemas/uncategorised" />
       <recent name="$PROJECT_DIR$/src/schemas/gateway" />
       <recent name="$PROJECT_DIR$/src/schemas/api/developers" />
-      <recent name="$PROJECT_DIR$/src/schemas/webrtc" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -144,7 +144,7 @@
       <workItem from="1735848116134" duration="80763000" />
       <workItem from="1759868659577" duration="8847000" />
       <workItem from="1760044946282" duration="43683000" />
-      <workItem from="1760402350251" duration="40134000" />
+      <workItem from="1760402350251" duration="46974000" />
     </task>
     <servers />
   </component>

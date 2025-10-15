@@ -18,7 +18,7 @@
 
 import { ClientStatus, Status } from "./Status";
 import { Activity } from "./Activity";
-import { PublicUser } from "../entities/User";
+import { PublicUser } from "@spacebar/schemas";
 
 export interface Presence {
 	user: PublicUser;

@@ -19,24 +19,7 @@
 import { BaseClass } from "./BaseClass";
 import { Entity, JoinColumn, ManyToOne, Column } from "typeorm";
 import { User } from "./User";
-
-export class AutomodMentionSpamRule {
-	mention_total_limit: number;
-	mention_raid_protection_enabled: boolean;
-}
-
-export class AutomodSuspectedSpamRule {}
-
-export class AutomodCommonlyFlaggedWordsRule {
-	allow_list: [string];
-	presets: [number];
-}
-
-export class AutomodCustomWordsRule {
-	allow_list: [string];
-	keyword_filter: [string];
-	regex_patterns: [string];
-}
+import { AutomodRuleTriggerMetadata } from "@spacebar/schemas";
 
 @Entity({
 	name: "automod_rules",
@@ -75,10 +58,7 @@ export class AutomodRule extends BaseClass {
 		nullable: true,
 	})
 	trigger_metadata?: // this is null for "Block suspected spam content"
-	| AutomodMentionSpamRule
-		| AutomodSuspectedSpamRule
-		| AutomodCommonlyFlaggedWordsRule
-		| AutomodCustomWordsRule;
+	| AutomodRuleTriggerMetadata;
 
 	@Column({
 		type: "simple-json",

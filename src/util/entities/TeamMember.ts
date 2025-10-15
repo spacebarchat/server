@@ -19,16 +19,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
-
-export enum TeamMemberState {
-	INVITED = 1,
-	ACCEPTED = 2,
-}
-export enum TeamMemberRole {
-	ADMIN = "admin",
-	DEVELOPER = "developer",
-	READ_ONLY = "read_only",
-}
+import { TeamMemberRole, TeamMemberState } from "@spacebar/schemas";
 
 @Entity({
 	name: "team_members",

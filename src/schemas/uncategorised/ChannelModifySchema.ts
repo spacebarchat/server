@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChannelPermissionOverwriteType, ChannelType } from "@spacebar/util";
+import { ChannelPermissionOverwriteType, ChannelType } from "@spacebar/schemas";
 
 export interface ChannelModifySchema {
 	/**

@@ -17,10 +17,10 @@
 */
 
 import { randomString, route } from "@spacebar/api";
-import { Channel, Guild, Invite, InviteCreateEvent, PublicInviteRelation, User, emitEvent, isTextChannel } from "@spacebar/util";
+import { Channel, Guild, Invite, InviteCreateEvent, PublicInviteRelation, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { InviteCreateSchema } from "@spacebar/schemas"
+import { InviteCreateSchema, isTextChannel } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

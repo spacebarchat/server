@@ -17,10 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import { Member, PublicMemberProjection } from "@spacebar/util";
+import { Member } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
+import { PublicMemberProjection } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

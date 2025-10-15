@@ -16,7 +16,49 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Snowflake } from "@spacebar/schemas";
+import { ConnectedAccountSchema, Snowflake, UserSettingsSchema } from "@spacebar/schemas";
+import { BitField } from "@spacebar/util/util";
+import { Relationship, Session } from "@spacebar/util/entities";
+
+interface UserEntityPleaseRewriteThankYou {
+	id: Snowflake;
+	username: string;
+	discriminator: string;
+	avatar?: string;
+	accent_color?: number;
+	banner?: string;
+	theme_colors?: number[];
+	pronouns?: string;
+	phone?: string;
+	desktop: boolean;
+	mobile: boolean;
+	premium: boolean;
+	premium_type: number;
+	bot: boolean;
+	bio: string;
+	system: boolean;
+	nsfw_allowed: boolean;
+	mfa_enabled: boolean;
+	webauthn_enabled: boolean;
+	created_at: Date;
+	premium_since: Date;
+	verified: boolean;
+	disabled: boolean;
+	deleted: boolean;
+	email?: string;
+	flags: number;
+	public_flags: number;
+	purchased_flags: number;
+	premium_usage_flags: number;
+	rights: string;
+	sessions: Session[];
+	relationships: Relationship[];
+	connected_accounts: ConnectedAccountSchema[];
+	fingerprints: string[];
+	settings?: UserSettingsSchema;
+	extended_settings: string;
+	badge_ids?: string[];
+}
 
 export interface PartialUser {
 	id: Snowflake;
@@ -66,3 +108,77 @@ export interface PrimaryGuild {
 	badge: string | null;
 }
 
+export enum PublicUserEnum {
+	username,
+	discriminator,
+	id,
+	public_flags,
+	avatar,
+	accent_color,
+	banner,
+	bio,
+	bot,
+	premium_since,
+	premium_type,
+	theme_colors,
+	pronouns,
+	badge_ids,
+}
+export type PublicUserKeys = keyof typeof PublicUserEnum;
+
+export enum PrivateUserEnum {
+	flags,
+	mfa_enabled,
+	email,
+	phone,
+	verified,
+	nsfw_allowed,
+	premium,
+	premium_type,
+	purchased_flags,
+	premium_usage_flags,
+	disabled,
+	settings,
+	// locale
+}
+
+export type PrivateUserKeys = keyof typeof PrivateUserEnum | PublicUserKeys;
+
+export const PublicUserProjection = Object.values(PublicUserEnum).filter((x) => typeof x === "string") as PublicUserKeys[];
+export const PrivateUserProjection = [...PublicUserProjection, ...Object.values(PrivateUserEnum).filter((x) => typeof x === "string")] as PrivateUserKeys[];
+
+// Private user data that should never get sent to the client
+export type PublicUser = Pick<UserEntityPleaseRewriteThankYou, PublicUserKeys>;
+export type PrivateUser = Pick<UserEntityPleaseRewriteThankYou, PrivateUserKeys>;
+
+export interface UserPrivate extends Pick<UserEntityPleaseRewriteThankYou, PrivateUserKeys> {
+	locale: string;
+}
+
+export const CUSTOM_USER_FLAG_OFFSET = BigInt(1) << BigInt(32);
+
+// This causes a failure in openapi.js...?
+export class UserFlags extends BitField {
+	static FLAGS = {
+		DISCORD_EMPLOYEE: BigInt(1) << BigInt(0),
+		PARTNERED_SERVER_OWNER: BigInt(1) << BigInt(1),
+		HYPESQUAD_EVENTS: BigInt(1) << BigInt(2),
+		BUGHUNTER_LEVEL_1: BigInt(1) << BigInt(3),
+		MFA_SMS: BigInt(1) << BigInt(4),
+		PREMIUM_PROMO_DISMISSED: BigInt(1) << BigInt(5),
+		HOUSE_BRAVERY: BigInt(1) << BigInt(6),
+		HOUSE_BRILLIANCE: BigInt(1) << BigInt(7),
+		HOUSE_BALANCE: BigInt(1) << BigInt(8),
+		EARLY_SUPPORTER: BigInt(1) << BigInt(9),
+		TEAM_USER: BigInt(1) << BigInt(10),
+		TRUST_AND_SAFETY: BigInt(1) << BigInt(11),
+		SYSTEM: BigInt(1) << BigInt(12),
+		HAS_UNREAD_URGENT_MESSAGES: BigInt(1) << BigInt(13),
+		BUGHUNTER_LEVEL_2: BigInt(1) << BigInt(14),
+		UNDERAGE_DELETED: BigInt(1) << BigInt(15),
+		VERIFIED_BOT: BigInt(1) << BigInt(16),
+		EARLY_VERIFIED_BOT_DEVELOPER: BigInt(1) << BigInt(17),
+		CERTIFIED_MODERATOR: BigInt(1) << BigInt(18),
+		BOT_HTTP_INTERACTIONS: BigInt(1) << BigInt(19),
+	};
+}

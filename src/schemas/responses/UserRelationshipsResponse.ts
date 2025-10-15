@@ -15,8 +15,8 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { PublicUser } from "../../util/entities";
-import { RelationshipType } from "@spacebar/schemas"
+
+import { PublicUser, RelationshipType } from "@spacebar/schemas"
 
 export interface UserRelationshipsResponse {
 	id: string;

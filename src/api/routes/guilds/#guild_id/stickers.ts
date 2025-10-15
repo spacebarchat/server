@@ -22,8 +22,6 @@ import {
 	Member,
 	Snowflake,
 	Sticker,
-	StickerFormatType,
-	StickerType,
 	emitEvent,
 	uploadFile,
 	Config,
@@ -32,7 +30,7 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
-import { ModifyGuildStickerSchema } from "@spacebar/schemas"
+import { ModifyGuildStickerSchema, StickerFormatType, StickerType } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(

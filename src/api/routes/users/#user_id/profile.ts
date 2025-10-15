@@ -24,16 +24,13 @@ import {
 	FieldErrors,
 	handleFile,
 	Member,
-	PrivateUserProjection,
-	PublicUser,
-	PublicUserProjection,
 	Relationship,
 	User,
 	UserUpdateEvent,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
-import { RelationshipType, UserProfileModifySchema } from "@spacebar/schemas"
+import { PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType, UserProfileModifySchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 

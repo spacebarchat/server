@@ -18,7 +18,6 @@
 
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
-import { User } from "./User";
 import { CustomStatus, FriendSourceFlags, GuildFolder } from "@spacebar/schemas"
 
 @Entity({

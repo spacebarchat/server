@@ -20,8 +20,6 @@ import { CLOSECODES, Capabilities, OPCODES, Payload, Send, WebSocket, setupListe
 import {
 	Application,
 	Config,
-	DMChannel,
-	DefaultUserGuildSettings,
 	EVENTEnum,
 	Guild,
 	GuildOrUnavailable,
@@ -31,9 +29,6 @@ import {
 	OPCodes,
 	PresenceUpdateEvent,
 	PrivateSessionProjection,
-	PrivateUserProjection,
-	PublicUser,
-	PublicUserProjection,
 	ReadState,
 	ReadyEventData,
 	ReadyGuildDTO,
@@ -59,7 +54,7 @@ import {
 import { check } from "./instanceOf";
 import { In } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
-import { IdentifySchema } from "@spacebar/schemas"
+import { DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config

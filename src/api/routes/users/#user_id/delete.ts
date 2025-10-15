@@ -20,11 +20,11 @@ import { route } from "@spacebar/api";
 import {
 	emitEvent,
 	Member,
-	PrivateUserProjection,
 	User,
 	UserDeleteEvent,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { PrivateUserProjection } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

@@ -18,16 +18,12 @@
 
 import {
 	Channel,
-	ChannelOverride,
-	ChannelType,
 	Emoji,
 	Guild,
-	PublicUser,
 	Role,
 	Sticker,
-	UserGuildSettings,
-	PublicMember,
 } from "../entities";
+import { ChannelOverride, ChannelType, PublicMember, PublicUser, UserGuildSettings } from "@spacebar/schemas";
 
 // TODO: this is not the best place for this type
 export type ReadyUserGuildSettingsEntries = Omit<

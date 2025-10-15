@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChannelOverride, UserGuildSettings } from "@spacebar/util";
+import { ChannelOverride, UserGuildSettings } from "@spacebar/schemas";
 
 // This sucks. I would use a DeepPartial, my own or typeorms, but they both generate inncorect schema
 export interface UserGuildSettingsSchema

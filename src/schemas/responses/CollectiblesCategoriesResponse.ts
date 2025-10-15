@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { StringStringDictionary } from "../../util/util";
-
 // TODO: Clean up
+import { StringStringDictionary } from "@spacebar/schemas";
+
 export type CollectiblesCategoriesResponse = CollectiblesCategoryItem[];
 
 export interface CollectiblesCategoryStyle {

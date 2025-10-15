@@ -16,14 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	OneToOne,
-	RelationId,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Team } from "./Team";
 import { User } from "./User";
@@ -142,49 +135,4 @@ export class Application extends BaseClass {
 		nullable: true,
 	})
 	team?: Team;
-}
-
-export interface ApplicationCommand {
-	id: string;
-	application_id: string;
-	name: string;
-	description: string;
-	options?: ApplicationCommandOption[];
-}
-
-export interface ApplicationCommandOption {
-	type: ApplicationCommandOptionType;
-	name: string;
-	description: string;
-	required?: boolean;
-	choices?: ApplicationCommandOptionChoice[];
-	options?: ApplicationCommandOption[];
-}
-
-export interface ApplicationCommandOptionChoice {
-	name: string;
-	value: string | number;
-}
-
-export enum ApplicationCommandOptionType {
-	SUB_COMMAND = 1,
-	SUB_COMMAND_GROUP = 2,
-	STRING = 3,
-	INTEGER = 4,
-	BOOLEAN = 5,
-	USER = 6,
-	CHANNEL = 7,
-	ROLE = 8,
-}
-
-export interface ApplicationCommandInteractionData {
-	id: string;
-	name: string;
-	options?: ApplicationCommandInteractionDataOption[];
-}
-
-export interface ApplicationCommandInteractionDataOption {
-	name: string;
-	value?: unknown;
-	options?: ApplicationCommandInteractionDataOption[];
 }

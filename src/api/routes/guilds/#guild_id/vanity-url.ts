@@ -19,13 +19,12 @@
 import { route } from "@spacebar/api";
 import {
 	Channel,
-	ChannelType,
 	Guild,
 	Invite,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { VanityUrlSchema } from "@spacebar/schemas"
+import { ChannelType, VanityUrlSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PartialUser } from "@spacebar/schemas";
+import { PartialUser, Snowflake } from "@spacebar/schemas";
 
 export enum MessageType {
 	DEFAULT = 0,
@@ -65,7 +65,7 @@ export type PartialMessage = Pick<Message, "id">
  */
 
 export interface PartialMessage {
-	id: string;
+	id: Snowflake;
 	channel_id: string;
 	type: MessageType;
 	content: string;
@@ -80,7 +80,7 @@ export interface Reaction {
 	count: number;
 	//// not saved in the database // me: boolean; // whether the current user reacted using this emoji
 	emoji: PartialEmoji;
-	user_ids: string[];
+	user_ids: Snowflake[];
 }
 
 export interface PartialEmoji {
@@ -91,7 +91,7 @@ export interface PartialEmoji {
 
 export interface AllowedMentions {
 	parse?: ("users" | "roles" | "everyone")[];
-	roles?: string[];
-	users?: string[];
+	roles?: Snowflake[];
+	users?: Snowflake[];
 	replied_user?: boolean;
 }

@@ -46,6 +46,6 @@ export * from "./WebAuthn";
 export * from "./Gifs";
 export * from "./Application";
 export * from "./NameValidation";
-export * from "./HelperTypes";
+export * from "../../schemas/HelperTypes";
 export * from "./extensions";
 export * from "./Random";

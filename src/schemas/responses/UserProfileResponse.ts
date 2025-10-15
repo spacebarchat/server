@@ -19,11 +19,13 @@
 import {
 	Badge,
 	Member,
+	User,
+} from "@spacebar/util";
+import {
 	PublicConnectedAccount,
 	PublicMember,
 	PublicUser,
-	User,
-} from "@spacebar/util";
+} from "@spacebar/schemas";
 
 export type MutualGuild = {
 	id: string;

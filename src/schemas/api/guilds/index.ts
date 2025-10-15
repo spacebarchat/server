@@ -15,8 +15,10 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./channels";
-export * from "./developers";
-export * from "./guilds";
-export * from "./messages";
-export * from "./users";
+export * from "./AuditLog";
+export * from "./Automod";
+export * from "./GuildProfileResponse";
+export * from "./GuildSchema";
+export * from "./Role";
+export * from "./Sticker";
+export * from "./VoiceState";

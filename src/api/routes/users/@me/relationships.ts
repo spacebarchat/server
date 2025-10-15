@@ -20,7 +20,6 @@ import { route } from "@spacebar/api";
 import {
 	Config,
 	DiscordApiErrors,
-	PublicUserProjection,
 	Relationship,
 	RelationshipAddEvent,
 	RelationshipRemoveEvent,
@@ -29,7 +28,7 @@ import {
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { RelationshipType } from "@spacebar/schemas"
+import { PublicUserProjection, RelationshipType } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

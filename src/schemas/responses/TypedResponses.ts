@@ -18,41 +18,15 @@
 
 import { GeneralConfiguration, LimitsConfiguration } from "../../util/config";
 import { DmChannelDTO } from "../../util/dtos";
-import {
-	Application,
-	BackupCode,
-	Categories,
-	Channel,
-	Emoji,
-	Guild,
-	Invite,
-	Member,
-	Message,
-	PrivateUser,
-	PublicMember,
-	PublicUser,
-	Role,
-	Sticker,
-	StickerPack,
-	Template,
-	Webhook,
-} from "../../util/entities";
+import { Application, BackupCode, Categories, Channel, Emoji, Guild, Invite, Member, Message, Role, Sticker, StickerPack, Template, Webhook } from "../../util/entities";
 import { GuildVoiceRegion } from "./GuildVoiceRegionsResponse";
-import { GuildBansResponse, GuildCreateResponse } from "@spacebar/schemas"
+import { GuildBansResponse, GuildCreateResponse, PrivateUser, PublicMember, PublicUser } from "@spacebar/schemas";
 
 // removes internal properties from the guild class
-export type APIGuild = Omit<
-	Guild,
-	| "afk_channel"
-	| "template"
-	| "owner"
-	| "public_updates_channel"
-	| "rules_channel"
-	| "system_channel"
-	| "widget_channel"
->;
+export type APIGuild = Omit<Guild, "afk_channel" | "template" | "owner" | "public_updates_channel" | "rules_channel" | "system_channel" | "widget_channel">;
 
 export type APIPublicUser = PublicUser;
+
 export type APIPrivateUser = PrivateUser;
 
 export type APIGuildArray = APIGuild[];

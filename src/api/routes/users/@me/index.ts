@@ -23,13 +23,12 @@ import {
 	FieldErrors,
 	generateToken,
 	handleFile,
-	PrivateUserProjection,
 	User,
 	UserUpdateEvent,
 } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-import { UserModifySchema } from "@spacebar/schemas"
+import { PrivateUserProjection, UserModifySchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 

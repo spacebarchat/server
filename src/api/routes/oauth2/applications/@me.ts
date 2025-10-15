@@ -20,9 +20,9 @@ import { route } from "@spacebar/api";
 import {
 	Application,
 	DiscordApiErrors,
-	PublicUserProjection,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { PublicUserProjection } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 

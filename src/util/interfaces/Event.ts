@@ -19,14 +19,11 @@
 import {
 	ConnectedAccount,
 	Interaction,
-	ApplicationCommand,
 	Message,
 	Invite,
 	Role,
 	Emoji,
-	PublicMember,
 	Channel,
-	PublicUser,
 	User,
 	Sticker,
 	Activity,
@@ -35,14 +32,12 @@ import {
 	UserSettings,
 	IReadyGuildDTO,
 	ReadState,
-	UserPrivate,
 	ReadyUserGuildSettingsEntries,
 	ReadyPrivateChannel,
 	GuildOrUnavailable,
-	PublicVoiceState,
 } from "@spacebar/util";
 import { JsonValue } from "@protobuf-ts/runtime";
-import { GuildCreateResponse, PartialEmoji, RelationshipType } from "@spacebar/schemas"
+import { ApplicationCommand, GuildCreateResponse, PartialEmoji, PublicMember, PublicUser, PublicVoiceState, RelationshipType, UserPrivate } from "@spacebar/schemas";
 
 export interface Event {
 	guild_id?: string;

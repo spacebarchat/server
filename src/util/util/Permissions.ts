@@ -2,9 +2,10 @@
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
 // @fc-license-skip
 
-import { Channel, ChannelPermissionOverwrite, ChannelPermissionOverwriteType, Guild, Member, Role } from "../entities";
+import { Channel, Guild, Member, Role } from "../entities";
 import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 import { HTTPError } from "lambert-server";
+import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType } from "@spacebar/schemas";
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 

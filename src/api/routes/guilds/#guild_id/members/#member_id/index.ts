@@ -27,13 +27,11 @@ import {
 	GuildMemberUpdateEvent,
 	handleFile,
 	Member,
-	PublicMemberProjection,
-	PublicUserProjection,
 	Role,
 	Sticker,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { MemberChangeSchema } from "@spacebar/schemas"
+import { MemberChangeSchema, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

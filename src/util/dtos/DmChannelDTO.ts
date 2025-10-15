@@ -17,7 +17,8 @@
 */
 
 import { MinimalPublicUserDTO } from "./UserDTO";
-import { Channel, PublicUserProjection, User } from "../entities";
+import { Channel, User } from "../entities";
+import { PublicUserProjection } from "@spacebar/schemas";
 
 export class DmChannelDTO {
 	icon: string | null;

@@ -32,7 +32,6 @@ import {
 	User,
 	emitEvent,
 	getPermission,
-	isTextChannel,
 	getUrlSignature,
 	uploadFile,
 	NewUrlSignatureData,
@@ -43,7 +42,7 @@ import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { FindManyOptions, FindOperator, LessThan, MoreThan, MoreThanOrEqual } from "typeorm";
 import { URL } from "url";
-import { MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, Reaction } from "@spacebar/schemas"
+import { isTextChannel, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, Reaction } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 

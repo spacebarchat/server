@@ -18,10 +18,9 @@
 
 import {
 	Attachment,
-	PublicUser,
 	Role,
 } from "../../util/entities";
-import { ActionRowComponent, Embed, MessageType, Poll } from "@spacebar/schemas";
+import { ActionRowComponent, Embed, MessageType, Poll, PublicUser } from "@spacebar/schemas";
 
 export interface GuildMessagesSearchMessage {
 	id: string;

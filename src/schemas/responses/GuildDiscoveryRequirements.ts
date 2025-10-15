@@ -17,7 +17,7 @@
 */
 
 export interface GuildDiscoveryRequirementsResponse {
-	uild_id: string;
+	guild_id: string;
 	safe_environment: boolean;
 	healthy: boolean;
 	health_score_pending: boolean;

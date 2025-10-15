@@ -18,8 +18,8 @@
 
 import { Request } from "express";
 import { Column, Entity, FindOneOptions, JoinColumn, OneToMany, OneToOne } from "typeorm";
-import { Channel, ChannelType, Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
-import { BitField, Random } from "../util";
+import { Channel, Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
+import { Random } from "../util";
 import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
@@ -27,52 +27,7 @@ import { Relationship } from "./Relationship";
 import { SecurityKey } from "./SecurityKey";
 import { Session } from "./Session";
 import { UserSettings } from "./UserSettings";
-
-export enum PublicUserEnum {
-	username,
-	discriminator,
-	id,
-	public_flags,
-	avatar,
-	accent_color,
-	banner,
-	bio,
-	bot,
-	premium_since,
-	premium_type,
-	theme_colors,
-	pronouns,
-	badge_ids,
-}
-export type PublicUserKeys = keyof typeof PublicUserEnum;
-
-export enum PrivateUserEnum {
-	flags,
-	mfa_enabled,
-	email,
-	phone,
-	verified,
-	nsfw_allowed,
-	premium,
-	premium_type,
-	purchased_flags,
-	premium_usage_flags,
-	disabled,
-	settings,
-	// locale
-}
-export type PrivateUserKeys = keyof typeof PrivateUserEnum | PublicUserKeys;
-
-export const PublicUserProjection = Object.values(PublicUserEnum).filter((x) => typeof x === "string") as PublicUserKeys[];
-export const PrivateUserProjection = [...PublicUserProjection, ...Object.values(PrivateUserEnum).filter((x) => typeof x === "string")] as PrivateUserKeys[];
-
-// Private user data that should never get sent to the client
-export type PublicUser = Pick<User, PublicUserKeys>;
-export type PrivateUser = Pick<User, PrivateUserKeys>;
-
-export interface UserPrivate extends Pick<User, PrivateUserKeys> {
-	locale: string;
-}
+import { ChannelType, PrivateUserProjection, PublicUser, PublicUserProjection, UserPrivate } from "@spacebar/schemas";
 
 @Entity({
 	name: "users",
@@ -395,31 +350,4 @@ export class User extends BaseClass {
 		// throw if multiple
 		return qry.single((_) => true);
 	}
-}
-
-export const CUSTOM_USER_FLAG_OFFSET = BigInt(1) << BigInt(32);
-
-export class UserFlags extends BitField {
-	static FLAGS = {
-		DISCORD_EMPLOYEE: BigInt(1) << BigInt(0),
-		PARTNERED_SERVER_OWNER: BigInt(1) << BigInt(1),
-		HYPESQUAD_EVENTS: BigInt(1) << BigInt(2),
-		BUGHUNTER_LEVEL_1: BigInt(1) << BigInt(3),
-		MFA_SMS: BigInt(1) << BigInt(4),
-		PREMIUM_PROMO_DISMISSED: BigInt(1) << BigInt(5),
-		HOUSE_BRAVERY: BigInt(1) << BigInt(6),
-		HOUSE_BRILLIANCE: BigInt(1) << BigInt(7),
-		HOUSE_BALANCE: BigInt(1) << BigInt(8),
-		EARLY_SUPPORTER: BigInt(1) << BigInt(9),
-		TEAM_USER: BigInt(1) << BigInt(10),
-		TRUST_AND_SAFETY: BigInt(1) << BigInt(11),
-		SYSTEM: BigInt(1) << BigInt(12),
-		HAS_UNREAD_URGENT_MESSAGES: BigInt(1) << BigInt(13),
-		BUGHUNTER_LEVEL_2: BigInt(1) << BigInt(14),
-		UNDERAGE_DELETED: BigInt(1) << BigInt(15),
-		VERIFIED_BOT: BigInt(1) << BigInt(16),
-		EARLY_VERIFIED_BOT_DEVELOPER: BigInt(1) << BigInt(17),
-		CERTIFIED_MODERATOR: BigInt(1) << BigInt(18),
-		BOT_HTTP_INTERACTIONS: BigInt(1) << BigInt(19),
-	};
 }

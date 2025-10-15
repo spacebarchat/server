@@ -20,15 +20,14 @@ import { route } from "@spacebar/api";
 import {
 	Channel,
 	ChannelRecipientAddEvent,
-	ChannelType,
 	DiscordApiErrors,
 	DmChannelDTO,
 	emitEvent,
-	PublicUserProjection,
 	Recipient,
 	User,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { ChannelType, PublicUserProjection } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
