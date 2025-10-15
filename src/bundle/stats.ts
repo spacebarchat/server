@@ -17,7 +17,6 @@
 */
 
 import os from "os";
-import osu from "node-os-utils";
 import { readFileSync } from "node:fs";
 import { red } from "picocolors";
 
@@ -25,7 +24,7 @@ export function initStats() {
 	console.log(`[Path] Running in ${process.cwd()}`);
 	console.log(`[Path] Running from ${__dirname}`);
 	try {
-		console.log(`[CPU] ${osu.cpu.model()} (x${osu.cpu.count()})`);
+		console.log(`[CPU] ${os.cpus()[0].model} (x${os.cpus().length})`);
 	} catch {
 		console.log("[CPU] Failed to get CPU model!");
 	}
@@ -64,24 +63,4 @@ export function initStats() {
 			),
 		);
 	}
-
-	// TODO: node-os-utils might have a memory leak, more investigation needed
-	// TODO: doesn't work if spawned with multiple threads
-	// setInterval(async () => {
-	// 	const [cpuUsed, memory, network] = await Promise.all([
-	// 		osu.cpu.usage(),
-	// 		osu.mem.info(),
-	// 		osu.netstat.inOut(),
-	// 	]);
-	// 	var networkUsage = "";
-	// 	if (typeof network === "object") {
-	// 		networkUsage = `| [Network]: in ${network.total.inputMb}mb | out ${network.total.outputMb}mb`;
-	// 	}
-
-	// 	console.log(
-	// 		`[CPU] ${cpuUsed.toPrecision(3)}% | [Memory] ${Math.round(
-	// 			process.memoryUsage().rss / 1024 / 1024
-	// 		)}mb/${memory.totalMemMb.toFixed(0)}mb ${networkUsage}`
-	// 	);
-	// }, 1000 * 60 * 5);
 }
