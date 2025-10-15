@@ -33,7 +33,7 @@
 		"moduleResolution": "nodenext" /* Specify how TypeScript looks up a file from a given module specifier. */,
 		// "baseUrl": "./src/", //deprecated
 		"paths": {
-            "*": ["./src/*"],
+            //"*": ["./src/*"],
 			"@spacebar/api*": ["./src/api"],
 			"@spacebar/gateway*": ["./src/gateway"],
 			"@spacebar/cdn*": ["./src/cdn"],
