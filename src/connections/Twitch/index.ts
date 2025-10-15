@@ -19,13 +19,13 @@
 import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
-	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 	RefreshableConnection,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { TwitchSettings } from "./TwitchSettings";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 interface TwitchConnectionUserResponse {
 	data: {

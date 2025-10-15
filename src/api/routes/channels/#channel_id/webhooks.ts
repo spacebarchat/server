@@ -23,7 +23,6 @@ import {
 	DiscordApiErrors,
 	User,
 	Webhook,
-	WebhookCreateSchema,
 	WebhookType,
 	handleFile,
 	isTextChannel,
@@ -33,6 +32,7 @@ import {
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { WebhookCreateSchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

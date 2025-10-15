@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { HubDirectoryEntriesResponse } from "@spacebar/util";
+import { HubDirectoryEntriesResponse } from "@spacebar/schemas";
 import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 

@@ -20,12 +20,12 @@ import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
 	Connection,
-	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { DiscordSettings } from "./DiscordSettings";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 interface UserResponse {
 	id: string;

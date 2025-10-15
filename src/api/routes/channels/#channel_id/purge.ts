@@ -21,7 +21,6 @@ import {
 	Channel,
 	Message,
 	MessageDeleteBulkEvent,
-	PurgeSchema,
 	emitEvent,
 	getPermission,
 	getRights,
@@ -30,6 +29,7 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { Between, FindManyOptions, FindOperator, Not } from "typeorm";
+import { PurgeSchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

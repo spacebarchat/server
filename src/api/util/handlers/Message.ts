@@ -22,7 +22,6 @@ import {
 	Attachment,
 	Channel,
 	Config,
-	Embed,
 	EmbedCache,
 	emitEvent,
 	EVERYONE_MENTION,
@@ -32,8 +31,6 @@ import {
 	HERE_MENTION,
 	Message,
 	MessageCreateEvent,
-	MessageCreateSchema,
-	MessageType,
 	MessageUpdateEvent,
 	Role,
 	ROLE_MENTION,
@@ -45,14 +42,12 @@ import {
 	handleFile,
 	Permissions,
 	normalizeUrl,
-	Reaction,
-	MessageCreateCloudAttachment,
-	MessageCreateAttachment,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
 import fetch from "node-fetch-commonjs";
 import { CloudAttachment } from "../../../util/entities/CloudAttachment";
+import { Embed, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageType, Reaction } from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images

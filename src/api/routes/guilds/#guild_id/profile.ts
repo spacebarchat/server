@@ -17,8 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import { Guild, GuildProfileResponse, GuildVisibilityLevel } from "@spacebar/util";
+import { Guild } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { GuildProfileResponse, GuildVisibilityLevel } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

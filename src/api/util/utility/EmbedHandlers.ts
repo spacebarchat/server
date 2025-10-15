@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, Embed, EmbedImage, EmbedType } from "@spacebar/util";
+import { Config }from "@spacebar/util";
+import { Embed, EmbedImage, EmbedType } from "@spacebar/schemas";
 import * as cheerio from "cheerio";
 import crypto from "crypto";
 import fetch, { RequestInit } from "node-fetch-commonjs";

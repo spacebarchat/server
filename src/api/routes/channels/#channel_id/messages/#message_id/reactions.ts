@@ -28,7 +28,6 @@ import {
 	MessageReactionRemoveAllEvent,
 	MessageReactionRemoveEmojiEvent,
 	MessageReactionRemoveEvent,
-	PartialEmoji,
 	PublicMemberProjection,
 	PublicUserProjection,
 	User,
@@ -36,9 +35,10 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
+import { PartialEmoji } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
-// TODO: check if emoji is really an unicode emoji or a prperly encoded external emoji
+// TODO: check if emoji is really an unicode emoji or a properly encoded external emoji
 
 function getEmoji(emoji: string): PartialEmoji {
 	emoji = decodeURIComponent(emoji);

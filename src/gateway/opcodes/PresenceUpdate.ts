@@ -22,9 +22,9 @@ import {
 	PresenceUpdateEvent,
 	Session,
 	User,
-	ActivitySchema,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
+import { ActivitySchema } from "@spacebar/schemas"
 
 export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
 	const startTime = Date.now();

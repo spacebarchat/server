@@ -17,10 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import { BackupCode, TotpSchema, User, generateToken } from "@spacebar/util";
+import { BackupCode, User, generateToken } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
+import { TotpSchema } from "@spacebar/schemas"
 const router = Router({ mergeParams: true });
 
 router.post(

@@ -22,12 +22,12 @@ import {
 	GuildMembersChunkEvent,
 	Member,
 	Presence,
-	RequestGuildMembersSchema,
 	Session,
 } from "@spacebar/util";
 import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
 import { check } from "./instanceOf";
 import { FindManyOptions, ILike, In } from "typeorm";
+import { RequestGuildMembersSchema } from "@spacebar/schemas"
 
 export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	const startTime = Date.now();

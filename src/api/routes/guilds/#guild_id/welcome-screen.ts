@@ -20,10 +20,10 @@ import { route } from "@spacebar/api";
 import {
 	Channel,
 	Guild,
-	GuildUpdateWelcomeScreenSchema,
 	Member,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { GuildUpdateWelcomeScreenSchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

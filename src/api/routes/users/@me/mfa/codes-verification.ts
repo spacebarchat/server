@@ -19,12 +19,12 @@
 import { route } from "@spacebar/api";
 import {
 	BackupCode,
-	CodesVerificationSchema,
 	DiscordApiErrors,
 	User,
 	generateMfaBackupCodes,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { CodesVerificationSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

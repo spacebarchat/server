@@ -18,7 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { CollectiblesShopResponse } from "@spacebar/util";
+import { CollectiblesShopResponse } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

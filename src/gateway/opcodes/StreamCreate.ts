@@ -12,13 +12,13 @@ import {
 	Snowflake,
 	Stream,
 	StreamCreateEvent,
-	StreamCreateSchema,
 	StreamServerUpdateEvent,
 	StreamSession,
 	VoiceState,
 	VoiceStateUpdateEvent,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
+import { StreamCreateSchema } from "@spacebar/schemas"
 
 export async function onStreamCreate(this: WebSocket, data: Payload) {
 	const startTime = Date.now();

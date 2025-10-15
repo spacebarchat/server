@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { Stream, validateSchema, VoiceVideoSchema } from "@spacebar/util";
+import { Stream } from "@spacebar/util";
 import {
 	mediaServer,
 	Send,
@@ -24,6 +24,7 @@ import {
 	WebRtcWebSocket,
 } from "@spacebar/webrtc";
 import type { WebRtcClient } from "@spacebarchat/spacebar-webrtc-types";
+import { validateSchema, VoiceVideoSchema } from "@spacebar/schemas";
 
 export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 	if (!this.webRtcClient) return;

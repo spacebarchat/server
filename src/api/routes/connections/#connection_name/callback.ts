@@ -18,12 +18,12 @@
 
 import { route } from "@spacebar/api";
 import {
-	ConnectionCallbackSchema,
 	ConnectionStore,
 	emitEvent,
 	FieldErrors,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

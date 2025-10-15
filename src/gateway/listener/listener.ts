@@ -26,7 +26,6 @@ import {
 	Member,
 	EVENTEnum,
 	Relationship,
-	RelationshipType,
 	Message,
 	NewUrlUserSignatureData,
 } from "@spacebar/util";
@@ -36,6 +35,7 @@ import { WebSocket } from "@spacebar/gateway";
 import { Channel as AMQChannel } from "amqplib";
 import { Recipient } from "@spacebar/util";
 import * as console from "node:console";
+import { RelationshipType } from "@spacebar/schemas"
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent

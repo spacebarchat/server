@@ -25,12 +25,11 @@ import {
 	GuildRoleUpdateEvent,
 	Member,
 	Role,
-	RoleModifySchema,
-	RolePositionUpdateSchema,
 	Snowflake,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { Not } from "typeorm";
+import { RoleModifySchema, RolePositionUpdateSchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

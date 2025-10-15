@@ -23,7 +23,6 @@ import {
 	Member,
 	Role,
 	Session,
-	LazyRequestSchema,
 	User,
 	Presence,
 	Channel,
@@ -38,6 +37,7 @@ import {
 } from "@spacebar/gateway";
 import murmur from "murmurhash-js/murmurhash3_gc";
 import { check } from "./instanceOf";
+import { LazyRequestSchema } from "@spacebar/schemas"
 
 // TODO: only show roles/members that have access to this channel
 // TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online

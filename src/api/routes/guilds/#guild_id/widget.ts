@@ -17,8 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import { Guild, WidgetModifySchema } from "@spacebar/util";
+import { Guild } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { WidgetModifySchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

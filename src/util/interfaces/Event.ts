@@ -17,12 +17,10 @@
 */
 
 import {
-	RelationshipType,
 	ConnectedAccount,
 	Interaction,
 	ApplicationCommand,
 	Message,
-	PartialEmoji,
 	Invite,
 	Role,
 	Emoji,
@@ -41,10 +39,10 @@ import {
 	ReadyUserGuildSettingsEntries,
 	ReadyPrivateChannel,
 	GuildOrUnavailable,
-	GuildCreateResponse,
 	PublicVoiceState,
 } from "@spacebar/util";
 import { JsonValue } from "@protobuf-ts/runtime";
+import { GuildCreateResponse, PartialEmoji, RelationshipType } from "@spacebar/schemas"
 
 export interface Event {
 	guild_id?: string;

@@ -17,9 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, emitEvent, GreetRequestSchema, Message, MessageCreateEvent, MessageType, Permissions, Sticker } from "@spacebar/util";
+import { Channel, emitEvent, Message, MessageCreateEvent, Permissions, Sticker } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
+import { GreetRequestSchema, MessageType } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

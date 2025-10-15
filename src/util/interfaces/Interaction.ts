@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { AllowedMentions, Embed } from "../entities/Message";
+import { Embed, AllowedMentions } from "@spacebar/schemas";
 
 export interface Interaction {
 	id: string;

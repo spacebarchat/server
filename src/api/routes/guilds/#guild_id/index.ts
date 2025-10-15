@@ -22,7 +22,6 @@ import {
 	DiscordApiErrors,
 	Guild,
 	GuildUpdateEvent,
-	GuildUpdateSchema,
 	Member,
 	Permissions,
 	SpacebarApiErrors,
@@ -33,6 +32,7 @@ import {
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { GuildUpdateSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

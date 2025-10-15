@@ -20,12 +20,12 @@ import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
 	Connection,
-	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { XboxSettings } from "./XboxSettings";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 interface XboxUserResponse {
 	IssueInstant: string;

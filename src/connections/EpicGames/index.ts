@@ -20,12 +20,12 @@ import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
 	Connection,
-	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { EpicGamesSettings } from "./EpicGamesSettings";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 export interface UserResponse {
 	accountId: string;

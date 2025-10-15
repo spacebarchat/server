@@ -1,6 +1,6 @@
 import { WebSocket, Payload } from "@spacebar/gateway";
 import { onLazyRequest } from "./LazyRequest";
-import { GuildSubscriptionsBulkSchema } from "@spacebar/util";
+import { GuildSubscriptionsBulkSchema } from "@spacebar/schemas";
 import { check } from "./instanceOf";
 
 export async function onGuildSubscriptionsBulk(

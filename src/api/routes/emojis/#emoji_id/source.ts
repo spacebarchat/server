@@ -19,14 +19,12 @@
 import { route } from "@spacebar/api";
 import {
 	Emoji,
-	APIErrorResponse,
 	DiscordApiErrors,
-	EmojiSourceResponse,
 	Guild,
 	Member,
-	EmojiGuild,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { APIErrorResponse, EmojiGuild, EmojiSourceResponse } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

@@ -11,10 +11,10 @@ import {
 	StreamCreateEvent,
 	StreamServerUpdateEvent,
 	StreamSession,
-	StreamWatchSchema,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { Not } from "typeorm";
+import { StreamWatchSchema } from "@spacebar/schemas"
 
 export async function onStreamWatch(this: WebSocket, data: Payload) {
 	const startTime = Date.now();

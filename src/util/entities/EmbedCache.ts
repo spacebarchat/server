@@ -18,7 +18,7 @@
 
 import { BaseClass } from "./BaseClass";
 import { Entity, Column } from "typeorm";
-import { Embed } from "./Message";
+import { Embed } from "@spacebar/schemas";
 
 @Entity({
 	name: "embed_cache",

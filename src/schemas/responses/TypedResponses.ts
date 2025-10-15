@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { GuildBansResponse, GuildCreateResponse } from "@spacebar/util";
 import { GeneralConfiguration, LimitsConfiguration } from "../../util/config";
 import { DmChannelDTO } from "../../util/dtos";
 import {
@@ -39,6 +38,7 @@ import {
 	Webhook,
 } from "../../util/entities";
 import { GuildVoiceRegion } from "./GuildVoiceRegionsResponse";
+import { GuildBansResponse, GuildCreateResponse } from "@spacebar/schemas"
 
 // removes internal properties from the guild class
 export type APIGuild = Omit<

@@ -17,8 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import { AccountStandingResponse, AccountStandingState, AppealEligibility, User } from "@spacebar/util";
+import { User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { AccountStandingResponse, AccountStandingState, AppealEligibility } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

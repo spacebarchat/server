@@ -20,7 +20,6 @@ import { route } from "@spacebar/api";
 import {
 	GuildStickersUpdateEvent,
 	Member,
-	ModifyGuildStickerSchema,
 	Snowflake,
 	Sticker,
 	StickerFormatType,
@@ -33,6 +32,7 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
+import { ModifyGuildStickerSchema } from "@spacebar/schemas"
 const router = Router({ mergeParams: true });
 
 router.get(

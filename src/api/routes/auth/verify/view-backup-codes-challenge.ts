@@ -17,9 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import { BackupCodesChallengeSchema, FieldErrors, User } from "@spacebar/util";
+import { FieldErrors, User } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
+import { BackupCodesChallengeSchema } from "@spacebar/schemas"
 const router = Router({ mergeParams: true });
 
 router.post(

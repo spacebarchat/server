@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,14 +15,5 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-export interface GatewayBotResponse {
-	url: string;
-	shards: number;
-	session_start_limit: {
-		total: number;
-		remaining: number;
-		reset_after: number;
-		max_concurrency: number;
-	};
-}
+export * from "./VoiceIdentifySchema";
+export * from "./VoiceVideoSchema";

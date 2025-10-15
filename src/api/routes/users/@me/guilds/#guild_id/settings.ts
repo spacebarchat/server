@@ -21,9 +21,9 @@ import {
 	Channel,
 	Member,
 	OrmUtils,
-	UserGuildSettingsSchema,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { UserGuildSettingsSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

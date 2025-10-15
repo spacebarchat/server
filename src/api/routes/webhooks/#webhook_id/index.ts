@@ -6,13 +6,13 @@ import {
 	Webhook,
 	WebhooksUpdateEvent,
 	emitEvent,
-	WebhookUpdateSchema,
 	Channel,
 	handleFile,
 	ValidateName,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { WebhookUpdateSchema } from "@spacebar/schemas"
 const router = Router({ mergeParams: true });
 
 router.get(

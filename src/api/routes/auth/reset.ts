@@ -22,11 +22,11 @@ import {
 	Email,
 	FieldErrors,
 	generateToken,
-	PasswordResetSchema,
 	User,
 } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
+import { PasswordResetSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

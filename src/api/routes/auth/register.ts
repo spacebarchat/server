@@ -27,7 +27,6 @@ import {
 	Config,
 	FieldErrors,
 	Invite,
-	RegisterSchema,
 	User,
 	ValidRegistrationToken,
 	generateToken,
@@ -36,6 +35,7 @@ import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
+import { RegisterSchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

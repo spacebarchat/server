@@ -24,12 +24,12 @@ import {
 	Relationship,
 	RelationshipAddEvent,
 	RelationshipRemoveEvent,
-	RelationshipType,
 	User,
 	emitEvent,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { RelationshipType } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

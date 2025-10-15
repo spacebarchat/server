@@ -19,13 +19,13 @@
 import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
-	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 	RefreshableConnection,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { TwitterSettings } from "./TwitterSettings";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 interface TwitterUserResponse {
 	data: {

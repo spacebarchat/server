@@ -17,13 +17,14 @@
 */
 
 import { CLOSECODES, OPCODES, Payload, WebSocket } from "@spacebar/gateway";
-import { ErlpackType, PayloadSchema } from "@spacebar/util";
+import { ErlpackType } from "@spacebar/util";
 import fs from "fs/promises";
 import BigIntJson from "json-bigint";
 import path from "path";
 import WS from "ws";
 import OPCodeHandlers from "../opcodes";
 import { check } from "../opcodes/instanceOf";
+import { PayloadSchema } from "@spacebar/schemas"
 
 const bigIntJson = BigIntJson({ storeAsString: true });
 

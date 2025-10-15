@@ -20,7 +20,6 @@ import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
 import {
 	Config,
 	FieldErrors,
-	LoginSchema,
 	User,
 	WebAuthn,
 	generateToken,
@@ -29,6 +28,7 @@ import {
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
+import { LoginSchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 export default router;
@@ -47,8 +47,7 @@ router.post(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { login, password, captcha_key, undelete } =
-			req.body as LoginSchema;
+		const { login, password, captcha_key, undelete } = req.body as LoginSchema;
 
 		const config = Config.get();
 

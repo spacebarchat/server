@@ -19,13 +19,13 @@
 import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
-	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 	RefreshableConnection,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { SpotifySettings } from "./SpotifySettings";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 export interface UserResponse {
 	display_name: string;

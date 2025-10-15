@@ -19,7 +19,6 @@
 import { route } from "@spacebar/api";
 import {
 	Application,
-	BotModifySchema,
 	DiscordApiErrors,
 	User,
 	createAppBotUser,
@@ -29,6 +28,7 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
+import { BotModifySchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

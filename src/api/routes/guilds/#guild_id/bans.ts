@@ -18,19 +18,17 @@
 
 import { getIpAdress, route } from "@spacebar/api";
 import {
-	APIBansArray,
 	Ban,
-	BanRegistrySchema,
 	DiscordApiErrors,
 	GuildBanAddEvent,
 	GuildBanRemoveEvent,
-	GuildBansResponse,
 	Member,
 	User,
 	emitEvent,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { APIBansArray, BanRegistrySchema, GuildBansResponse } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

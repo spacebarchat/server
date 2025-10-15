@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { SelectProtocolSchema, validateSchema } from "@spacebar/util";
+import { SelectProtocolSchema, validateSchema } from "@spacebar/schemas";
 import {
 	VoiceOPCodes,
 	VoicePayload,

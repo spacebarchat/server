@@ -20,12 +20,12 @@ import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
 	Connection,
-	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { BattleNetSettings } from "./BattleNetSettings";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 interface BattleNetConnectionUser {
 	sub: string;

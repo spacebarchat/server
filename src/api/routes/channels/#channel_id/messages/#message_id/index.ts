@@ -21,9 +21,7 @@ import {
 	Channel,
 	Message,
 	MessageCreateEvent,
-	MessageCreateSchema,
 	MessageDeleteEvent,
-	MessageEditSchema,
 	MessageUpdateEvent,
 	Snowflake,
 	SpacebarApiErrors,
@@ -32,13 +30,12 @@ import {
 	getRights,
 	uploadFile,
 	NewUrlUserSignatureData,
-	MessageCreateAttachment,
-	MessageCreateCloudAttachment,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { handleMessage, postHandleMessage, route } from "../../../../../util";
+import { MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageEditSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 // TODO: message content/embed string length limit

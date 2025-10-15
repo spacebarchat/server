@@ -23,11 +23,11 @@ import {
 	User,
 	verifyWebAuthnToken,
 	WebAuthn,
-	WebAuthnTotpSchema,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ExpectedAssertionResult } from "fido2-lib";
 import { HTTPError } from "lambert-server";
+import { WebAuthnTotpSchema } from "@spacebar/schemas"
 const router = Router({ mergeParams: true });
 
 function toArrayBuffer(buf: Buffer) {

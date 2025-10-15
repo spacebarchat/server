@@ -25,7 +25,6 @@ import {
 	EVENTEnum,
 	Guild,
 	GuildOrUnavailable,
-	IdentifySchema,
 	Intents,
 	Member,
 	MemberPrivateProjection,
@@ -60,6 +59,7 @@ import {
 import { check } from "./instanceOf";
 import { In } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
+import { IdentifySchema } from "@spacebar/schemas"
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config

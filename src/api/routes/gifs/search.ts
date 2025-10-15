@@ -18,15 +18,14 @@
 
 import { route } from "@spacebar/api";
 import {
-	TenorMediaTypes,
 	getGifApiKey,
 	parseGifResult,
-	TenorGif,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import fetch from "node-fetch-commonjs";
 import { ProxyAgent } from "proxy-agent";
 import http from "http";
+import { TenorGif, TenorMediaTypes } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

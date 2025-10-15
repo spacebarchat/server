@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ActionRowComponent, Embed, PollAnswer, PollMedia } from "@spacebar/util";
+import { ActionRowComponent, Embed, PollAnswer, PollMedia } from "@spacebar/schemas"
 
 export type MessageCreateAttachment = {
 	id: string;

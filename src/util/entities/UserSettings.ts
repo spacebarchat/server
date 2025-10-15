@@ -19,6 +19,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
 import { User } from "./User";
+import { CustomStatus, FriendSourceFlags, GuildFolder } from "@spacebar/schemas"
 
 @Entity({
 	name: "user_settings",
@@ -141,22 +142,4 @@ export class UserSettings extends BaseClassWithoutId {
 
 		return settings;
 	}
-}
-
-interface CustomStatus {
-	emoji_id?: string;
-	emoji_name?: string;
-	expires_at?: number;
-	text?: string;
-}
-
-interface GuildFolder {
-	color: number;
-	guild_ids: string[];
-	id: number;
-	name: string;
-}
-
-interface FriendSourceFlags {
-	all: boolean;
 }

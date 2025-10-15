@@ -20,12 +20,12 @@ import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
 	Connection,
-	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { YoutubeSettings } from "./YoutubeSettings";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 interface YouTubeConnectionChannelListResult {
 	items: {

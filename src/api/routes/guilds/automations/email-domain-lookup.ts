@@ -18,14 +18,12 @@
 
 import { route } from "@spacebar/api";
 import {
-	EmailDomainLookupResponse,
-	EmailDomainLookupSchema,
-	EmailDomainLookupVerifyCodeSchema,
 	FieldErrors,
 } from "@spacebar/util";
 import emailProviders from "email-providers/all.json";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { EmailDomainLookupResponse, EmailDomainLookupSchema, EmailDomainLookupVerifyCodeSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

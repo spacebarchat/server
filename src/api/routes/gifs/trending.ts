@@ -18,8 +18,6 @@
 
 import { route } from "@spacebar/api";
 import {
-	TenorCategoriesResults,
-	TenorTrendingResults,
 	getGifApiKey,
 	parseGifResult,
 } from "@spacebar/util";
@@ -27,6 +25,7 @@ import { Request, Response, Router } from "express";
 import fetch from "node-fetch-commonjs";
 import { ProxyAgent } from "proxy-agent";
 import http from "http";
+import { TenorCategoriesResults, TenorTrendingResults } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

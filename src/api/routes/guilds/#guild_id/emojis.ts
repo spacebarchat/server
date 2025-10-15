@@ -21,8 +21,6 @@ import {
 	Config,
 	DiscordApiErrors,
 	Emoji,
-	EmojiCreateSchema,
-	EmojiModifySchema,
 	GuildEmojisUpdateEvent,
 	Member,
 	Snowflake,
@@ -31,6 +29,7 @@ import {
 	handleFile,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { EmojiCreateSchema, EmojiModifySchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

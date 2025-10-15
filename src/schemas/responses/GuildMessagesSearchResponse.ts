@@ -17,14 +17,11 @@
 */
 
 import {
-	ActionRowComponent,
 	Attachment,
-	Embed,
-	MessageType,
-	Poll,
 	PublicUser,
 	Role,
 } from "../../util/entities";
+import { ActionRowComponent, Embed, MessageType, Poll } from "@spacebar/schemas";
 
 export interface GuildMessagesSearchMessage {
 	id: string;

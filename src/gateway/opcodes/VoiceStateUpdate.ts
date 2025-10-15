@@ -26,10 +26,10 @@ import {
 	VoiceServerUpdateEvent,
 	VoiceState,
 	VoiceStateUpdateEvent,
-	VoiceStateUpdateSchema,
 } from "@spacebar/util";
 import { genVoiceToken } from "../util/SessionUtils";
 import { check } from "./instanceOf";
+import { VoiceStateUpdateSchema } from "@spacebar/schemas"
 // TODO: check if a voice server is setup
 
 // Notice: Bot users respect the voice channel's user limit, if set.

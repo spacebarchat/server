@@ -17,8 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, DmMessagesResponseSchema, Message, User } from "@spacebar/util";
+import { Config, Message, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { DmMessagesResponseSchema } from "@spacebar/schemas"
 const router = Router({ mergeParams: true });
 
 router.get(

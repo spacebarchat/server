@@ -17,8 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import { User, UserSettings, UserSettingsSchema } from "@spacebar/util";
+import { User, UserSettings } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { UserSettingsSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 
@@ -66,7 +67,7 @@ router.patch(
 		});
 
 		if (!user.settings)
-			user.settings = UserSettings.create(body);
+			user.settings = UserSettings.create(body as Partial<UserSettings>);
 		else
 			user.settings.assign(body);
 

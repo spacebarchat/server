@@ -20,12 +20,12 @@ import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
 	Connection,
-	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { RedditSettings } from "./RedditSettings";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 export interface UserResponse {
 	verified: boolean;

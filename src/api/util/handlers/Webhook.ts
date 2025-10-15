@@ -10,11 +10,11 @@ import {
 	uploadFile,
 	ValidateName,
 	Webhook,
-	WebhookExecuteSchema,
 } from "@spacebar/util";
 import { Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
+import { WebhookExecuteSchema } from "@spacebar/schemas"
 
 export const executeWebhook = async (req: Request, res: Response) => {
 	const { wait } = req.query;

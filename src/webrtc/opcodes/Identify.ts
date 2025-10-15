@@ -19,10 +19,12 @@
 import { CLOSECODES } from "@spacebar/gateway";
 import {
 	StreamSession,
-	validateSchema,
-	VoiceIdentifySchema,
 	VoiceState,
 } from "@spacebar/util";
+import {
+	validateSchema,
+	VoiceIdentifySchema,
+} from "@spacebar/schemas";
 import {
 	generateSsrc,
 	mediaServer,

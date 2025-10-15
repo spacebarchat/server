@@ -26,8 +26,6 @@ import {
 	Member,
 	Message,
 	MessageCreateEvent,
-	MessageCreateSchema,
-	Reaction,
 	ReadState,
 	Rights,
 	Snowflake,
@@ -39,14 +37,13 @@ import {
 	uploadFile,
 	NewUrlSignatureData,
 	NewUrlUserSignatureData,
-	MessageCreateCloudAttachment,
-	MessageCreateAttachment,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { FindManyOptions, FindOperator, LessThan, MoreThan, MoreThanOrEqual } from "typeorm";
 import { URL } from "url";
+import { MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, Reaction } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

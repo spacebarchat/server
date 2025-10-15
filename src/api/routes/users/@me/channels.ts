@@ -17,13 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Channel,
-	DmChannelCreateSchema,
-	DmChannelDTO,
-	Recipient,
-} from "@spacebar/util";
+import { Channel, DmChannelDTO, Recipient } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { DmChannelCreateSchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

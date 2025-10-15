@@ -1,4 +1,4 @@
-import { TokenResponse } from "./responses";
+import { TokenResponse } from "../responses";
 
 export interface MFAResponse {
 	ticket: string;

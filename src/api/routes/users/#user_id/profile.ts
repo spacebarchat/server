@@ -28,13 +28,12 @@ import {
 	PublicUser,
 	PublicUserProjection,
 	Relationship,
-	RelationshipType,
 	User,
-	UserProfileModifySchema,
 	UserUpdateEvent,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
+import { RelationshipType, UserProfileModifySchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

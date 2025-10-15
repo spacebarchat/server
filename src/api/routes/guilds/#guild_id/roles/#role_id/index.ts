@@ -24,10 +24,10 @@ import {
 	handleFile,
 	Member,
 	Role,
-	RoleModifySchema,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { RoleModifySchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

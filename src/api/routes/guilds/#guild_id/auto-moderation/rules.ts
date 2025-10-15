@@ -17,9 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import { User, AutomodRuleSchema, AutomodRule } from "@spacebar/util";
+import { User, AutomodRule } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { AutomodRuleSchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

@@ -20,12 +20,12 @@ import {
 	ConnectedAccount,
 	ConnectedAccountCommonOAuthTokenResponse,
 	Connection,
-	ConnectionCallbackSchema,
 	ConnectionLoader,
 	DiscordApiErrors,
 } from "@spacebar/util";
 import wretch from "wretch";
 import { GitHubSettings } from "./GitHubSettings";
+import { ConnectionCallbackSchema } from "@spacebar/schemas"
 
 interface UserResponse {
 	login: string;

@@ -27,6 +27,7 @@ export * from "./BaseClass";
 export * from "./Categories";
 export * from "./Channel";
 export * from "./ClientRelease";
+export * from "./CloudAttachment";
 export * from "./Config";
 export * from "./ConnectedAccount";
 export * from "./ConnectionConfigEntity";

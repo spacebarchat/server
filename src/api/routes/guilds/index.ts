@@ -21,11 +21,11 @@ import {
 	Config,
 	DiscordApiErrors,
 	Guild,
-	GuildCreateSchema,
 	Member,
 	getRights,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { GuildCreateSchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
 

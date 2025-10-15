@@ -21,11 +21,11 @@ import {
 	BackupCode,
 	FieldErrors,
 	generateMfaBackupCodes,
-	MfaCodesSchema,
 	User,
 } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
+import { MfaCodesSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

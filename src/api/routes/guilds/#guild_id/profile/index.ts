@@ -22,10 +22,10 @@ import {
 	GuildMemberUpdateEvent,
 	handleFile,
 	Member,
-	MemberChangeProfileSchema,
 	OrmUtils,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { MemberChangeProfileSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

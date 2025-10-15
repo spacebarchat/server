@@ -18,7 +18,6 @@
 
 import { route } from "@spacebar/api";
 import {
-	TotpEnableSchema,
 	User,
 	generateMfaBackupCodes,
 	generateToken,
@@ -27,6 +26,7 @@ import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
+import { TotpEnableSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 

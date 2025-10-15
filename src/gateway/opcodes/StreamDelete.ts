@@ -3,11 +3,11 @@ import {
 	emitEvent,
 	Stream,
 	StreamDeleteEvent,
-	StreamDeleteSchema,
 	VoiceState,
 	VoiceStateUpdateEvent,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
+import { StreamDeleteSchema } from "@spacebar/schemas"
 
 export async function onStreamDelete(this: WebSocket, data: Payload) {
 	const startTime = Date.now();

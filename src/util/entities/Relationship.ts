@@ -26,13 +26,7 @@ import {
 } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
-
-export enum RelationshipType {
-	outgoing = 4,
-	incoming = 3,
-	blocked = 2,
-	friends = 1,
-}
+import { RelationshipType } from "@spacebar/schemas";
 
 @Entity({
 	name: "relationships",

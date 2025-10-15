@@ -20,7 +20,6 @@ import { route } from "@spacebar/api";
 import {
 	ApiError,
 	Application,
-	ApplicationAuthorizeSchema,
 	DiscordApiErrors,
 	FieldErrors,
 	Member,
@@ -29,6 +28,7 @@ import {
 	getPermission,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { ApplicationAuthorizeSchema } from "@spacebar/schemas"
 const router = Router({ mergeParams: true });
 
 // TODO: scopes, other oauth types

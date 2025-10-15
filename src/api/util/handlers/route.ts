@@ -25,12 +25,12 @@ import {
 	RightResolvable,
 	Rights,
 	SpacebarApiErrors,
-	ajv,
 	getPermission,
 	getRights,
 } from "@spacebar/util";
 import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
+import { ajv } from "@spacebar/schemas"
 
 const ignoredRequestSchemas = [
 	// skip validation for settings proto JSON updates - TODO: figure out if this even possible to fix?

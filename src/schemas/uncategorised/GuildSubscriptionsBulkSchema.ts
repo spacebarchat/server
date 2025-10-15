@@ -1,4 +1,4 @@
-import { LazyRequestSchema } from "./LazyRequestSchema";
+import { LazyRequestSchema } from "../gateway/LazyRequestSchema";
 
 export interface GuildSubscriptionsBulkSchema {
 	subscriptions: { [key: string]: GuildSubscriptionSchema };

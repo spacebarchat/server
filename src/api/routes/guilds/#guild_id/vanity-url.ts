@@ -22,10 +22,10 @@ import {
 	ChannelType,
 	Guild,
 	Invite,
-	VanityUrlSchema,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { VanityUrlSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 
