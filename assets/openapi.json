@@ -15740,37 +15740,6 @@
                     "status"
                 ]
             },
-            "DNSRecord": {
-                "type": "object",
-                "properties": {
-                    "cached": {
-                        "type": "array",
-                        "items": {}
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "record_type": {
-                        "type": "string"
-                    },
-                    "valid": {
-                        "type": "string"
-                    },
-                    "value": {
-                        "type": "string"
-                    },
-                    "priority": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "cached",
-                    "name",
-                    "record_type",
-                    "valid",
-                    "value"
-                ]
-            },
             "UpdatedDKIMAuthorityResponse": {
                 "type": "object",
                 "properties": {
@@ -15786,7 +15755,7 @@
                             "sending_dns_records": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/DNSRecord"
+                                    "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
                                 }
                             }
                         },
@@ -19296,153 +19265,6 @@
                     "status"
                 ]
             },
-            "IDomainTemplate": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "anyOf": [
-                            {
-                                "type": "string",
-                                "format": "date-time"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ]
-                    },
-                    "createdBy": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "version": {
-                        "$ref": "#/components/schemas/TemplateVersion"
-                    },
-                    "versions": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "tag": {
-                                    "type": "string"
-                                },
-                                "engine": {
-                                    "type": "string"
-                                },
-                                "mjml": {
-                                    "type": "string"
-                                },
-                                "createdAt": {
-                                    "anyOf": [
-                                        {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        {
-                                            "type": "string"
-                                        }
-                                    ]
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "active": {
-                                    "type": "boolean"
-                                },
-                                "id": {
-                                    "type": "string"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "active",
-                                "comment",
-                                "createdAt",
-                                "engine",
-                                "id",
-                                "mjml",
-                                "tag"
-                            ]
-                        }
-                    }
-                },
-                "required": [
-                    "createdAt",
-                    "createdBy",
-                    "description",
-                    "id",
-                    "name"
-                ]
-            },
-            "TemplateVersion": {
-                "type": "object",
-                "properties": {
-                    "tag": {
-                        "type": "string"
-                    },
-                    "engine": {
-                        "type": "string"
-                    },
-                    "mjml": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "anyOf": [
-                            {
-                                "type": "string",
-                                "format": "date-time"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ]
-                    },
-                    "comment": {
-                        "type": "string"
-                    },
-                    "active": {
-                        "type": "boolean"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "template": {
-                        "type": "string"
-                    },
-                    "headers": {
-                        "type": "object",
-                        "properties": {
-                            "From": {
-                                "type": "string"
-                            },
-                            "Reply-To": {
-                                "type": "string"
-                            },
-                            "Subject": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false
-                    }
-                },
-                "required": [
-                    "active",
-                    "comment",
-                    "createdAt",
-                    "engine",
-                    "id",
-                    "mjml",
-                    "tag",
-                    "template"
-                ]
-            },
             "CreateDomainTemplateAPIResponse": {
                 "type": "object",
                 "properties": {
@@ -19456,7 +19278,7 @@
                                 "type": "string"
                             },
                             "template": {
-                                "$ref": "#/components/schemas/IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -19483,7 +19305,7 @@
                             "items": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/IDomainTemplate"
+                                    "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                                 }
                             },
                             "paging": {
@@ -19533,7 +19355,7 @@
                         "type": "object",
                         "properties": {
                             "template": {
-                                "$ref": "#/components/schemas/IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -19621,7 +19443,7 @@
                                 "type": "string"
                             },
                             "template": {
-                                "$ref": "#/components/schemas/IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -20671,129 +20493,11 @@
                     "status"
                 ]
             },
-            "SuppressionDataType": {
-                "anyOf": [
-                    {
-                        "type": "object",
-                        "properties": {
-                            "address": {
-                                "type": "string"
-                            },
-                            "code": {
-                                "type": "integer"
-                            },
-                            "error": {
-                                "type": "string"
-                            },
-                            "created_at": {
-                                "anyOf": [
-                                    {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "address",
-                            "code",
-                            "created_at",
-                            "error"
-                        ]
-                    },
-                    {
-                        "type": "object",
-                        "properties": {
-                            "address": {
-                                "type": "string"
-                            },
-                            "created_at": {
-                                "anyOf": [
-                                    {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "address",
-                            "created_at"
-                        ]
-                    },
-                    {
-                        "type": "object",
-                        "properties": {
-                            "address": {
-                                "type": "string"
-                            },
-                            "tags": {},
-                            "created_at": {
-                                "anyOf": [
-                                    {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "address",
-                            "created_at",
-                            "tags"
-                        ]
-                    },
-                    {
-                        "type": "object",
-                        "properties": {
-                            "type": {
-                                "type": "string"
-                            },
-                            "value": {
-                                "type": "string"
-                            },
-                            "reason": {
-                                "type": "string"
-                            },
-                            "createdAt": {
-                                "anyOf": [
-                                    {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "createdAt",
-                            "reason",
-                            "type",
-                            "value"
-                        ]
-                    }
-                ]
-            },
             "SuppressionResponse": {
                 "type": "object",
                 "properties": {
                     "body": {
-                        "$ref": "#/components/schemas/SuppressionDataType"
+                        "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
                     },
                     "status": {
                         "type": "integer"
@@ -20867,123 +20571,11 @@
             "Body": {
                 "type": "object"
             },
-            "AxiosResponseHeaders": {
-                "properties": {
-                    "Cache-Control": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "$ref": "#/components/schemas/AxiosHeaders"
-                            },
-                            {
-                                "type": [
-                                    "null",
-                                    "string",
-                                    "integer",
-                                    "boolean"
-                                ]
-                            }
-                        ]
-                    },
-                    "Content-Encoding": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "$ref": "#/components/schemas/AxiosHeaders"
-                            },
-                            {
-                                "type": [
-                                    "null",
-                                    "string",
-                                    "integer",
-                                    "boolean"
-                                ]
-                            }
-                        ]
-                    },
-                    "Content-Length": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "$ref": "#/components/schemas/AxiosHeaders"
-                            },
-                            {
-                                "type": [
-                                    "null",
-                                    "string",
-                                    "integer",
-                                    "boolean"
-                                ]
-                            }
-                        ]
-                    },
-                    "Content-Type": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "$ref": "#/components/schemas/AxiosHeaders"
-                            },
-                            {
-                                "type": [
-                                    "null",
-                                    "string",
-                                    "integer",
-                                    "boolean"
-                                ]
-                            }
-                        ]
-                    },
-                    "Server": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "$ref": "#/components/schemas/AxiosHeaders"
-                            },
-                            {
-                                "type": [
-                                    "null",
-                                    "string",
-                                    "integer",
-                                    "boolean"
-                                ]
-                            }
-                        ]
-                    },
-                    "set-cookie": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "AxiosHeaders": {
                 "type": "object"
+            },
+            "AxiosResponseHeaders": {
+                "properties": {}
             },
             "AxiosRequestHeaders": {
                 "properties": {
@@ -33121,6 +32713,82 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/applications/@me/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "applications"
+                ]
+            },
+            "patch": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApplicationModifySchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "applications"
                 ]
             }
         },
