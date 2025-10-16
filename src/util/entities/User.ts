@@ -113,13 +113,13 @@ export class User extends BaseClass {
 	@Column({ nullable: true, select: false })
 	email?: string; // email of the user
 
-	@Column()
+	@Column({ type: "bigint" })
 	flags: number = 0; // UserFlags // TODO: generate
 
-	@Column()
+	@Column({ type: "bigint" })
 	public_flags: number = 0;
 
-	@Column()
+	@Column({ type: "bigint" })
 	purchased_flags: number = 0;
 
 	@Column()

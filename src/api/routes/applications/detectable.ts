@@ -18,8 +18,13 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
+import { ApplicationDetectableResponse } from "@spacebar/schemas*";
 
 const router: Router = Router({ mergeParams: true });
+const cache = {
+	data: {},
+	lastUpdated: 0
+}
 
 router.get(
 	"/",
@@ -31,8 +36,15 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		//TODO
-		res.send([]).status(200);
+		// cache for 6 hours
+		if (Date.now() - cache.lastUpdated > 6 * 60 * 60 * 1000) {
+			const response = await fetch("https://discord.com/api/v10/applications/detectable"); // because, well, it's unauthenticated anyways
+			const data = await response.json();
+			cache.data = data as ApplicationDetectableResponse;
+			cache.lastUpdated = Date.now();
+		}
+
+		res.status(200).json(cache.data);
 	},
 );
 

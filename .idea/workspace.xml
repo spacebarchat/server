@@ -73,6 +73,9 @@
     "ts.external.directory.path": "/home/Rory/git/spacebar/server-master/node_modules/typescript/lib"
   },
   "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ],
     "GitStage.ChangesTree.GroupingKeys": [
       "directory",
       "module",
@@ -101,6 +104,18 @@
       <set>
         <option value="js.build_tools.npm" />
       </set>
+    </option>
+    <option name="configurationStatuses">
+      <map>
+        <entry key="js.build_tools.npm">
+          <value>
+            <map>
+              <entry key="Start API" value="STOPPED" />
+              <entry key="build" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
     </option>
   </component>
   <component name="RunManager" selected="npm.Start API">
