@@ -37,7 +37,7 @@ router.patch(
 		requestBody: "VoiceStateUpdateSchema",
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {

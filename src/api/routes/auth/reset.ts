@@ -39,7 +39,7 @@ router.post(
 			200: {
 				body: "TokenOnlyResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorOrCaptchaResponse",
 			},
 		},

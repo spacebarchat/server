@@ -86,7 +86,7 @@ router.post(
 			200: {
 				body: "WebhookCreateResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {},

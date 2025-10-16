@@ -62,7 +62,7 @@ router.post(
 			201: {
 				body: "Channel",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {
@@ -96,7 +96,7 @@ router.patch(
 		permission: "MANAGE_CHANNELS",
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {

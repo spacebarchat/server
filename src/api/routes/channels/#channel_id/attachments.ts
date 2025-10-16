@@ -39,7 +39,7 @@ router.post(
 				body: "UploadAttachmentResponseSchema",
 			},
 			404: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

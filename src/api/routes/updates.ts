@@ -29,7 +29,7 @@ router.get(
 			200: {
 				body: "UpdatesResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {

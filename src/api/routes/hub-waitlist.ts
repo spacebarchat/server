@@ -32,7 +32,7 @@ router.post(
 			200: {
 				body: "HubWaitlistSignupResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

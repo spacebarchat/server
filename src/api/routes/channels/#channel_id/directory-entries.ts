@@ -28,7 +28,7 @@ router.get(
 			200: {
 				body: "HubDirectoryEntriesResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

@@ -32,7 +32,7 @@
     <setting file="file://$PROJECT_DIR$/result/node_modules/lambert-server/src/Utils.ts" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -57,7 +57,8 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;24.8.0&quot;,
     &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;24.7.0&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/Rory/git/spacebar/server-master/src/schemas/api/guilds&quot;,
+    &quot;last.edited.regexp&quot;: &quot;\&quot;$ref\&quot;: \&quot;#/definitions/name\&quot;&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/Rory/git/spacebar/server-master/src/api/routes/applications&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
@@ -70,7 +71,8 @@
     &quot;npm.start.executor&quot;: &quot;Debug&quot;,
     &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/prettier&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/typescript/lib&quot;
+    &quot;ts.external.directory.path&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/typescript/lib&quot;,
+    &quot;two.files.diff.last.used.file&quot;: &quot;/home/Rory/git/spacebar/server-master/dist/openapi_discord.json&quot;
   },
   &quot;keyToStringList&quot;: {
     &quot;GitStage.ChangesTree.GroupingKeys&quot;: [
@@ -82,11 +84,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/api/routes/applications" />
+      <recent name="$PROJECT_DIR$/scripts" />
       <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
       <recent name="$PROJECT_DIR$/src/schemas" />
       <recent name="$PROJECT_DIR$/src/schemas/api/users" />
-      <recent name="$PROJECT_DIR$/src/schemas/api/messages" />
-      <recent name="$PROJECT_DIR$/src/admin-api/routes/v0" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
@@ -141,7 +143,8 @@
       <workItem from="1759868659577" duration="8847000" />
       <workItem from="1760044946282" duration="43683000" />
       <workItem from="1760402350251" duration="49898000" />
-      <workItem from="1760538864442" duration="1330000" />
+      <workItem from="1760538864442" duration="18561000" />
+      <workItem from="1760596006678" duration="3780000" />
     </task>
     <servers />
   </component>

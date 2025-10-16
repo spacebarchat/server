@@ -46,6 +46,7 @@ const settings = {
 const ExcludeAndWarn = [
 	/^Record/,
 	/^Partial/,
+	/^import\(/,
 ]
 const Excluded = [
 	"DefaultSchema",
@@ -148,6 +149,24 @@ function main() {
 	}
 
 	deleteOneOfKindUndefinedRecursive(definitions, "$");
+
+	// cant do this here:
+	// let hasUnreferencedSchemas = true;
+	// while (hasUnreferencedSchemas) {
+	// 	hasUnreferencedSchemas = false;
+	// 	console.log(`Checking for unreferenced schemas in ${definitions.length}..."`);
+	// 	let fullMap = JSON.stringify(definitions);
+	// 	for (const [name, schema] of Object.entries(definitions)) {
+	// 		const schemaStr = JSON.stringify(schema);
+	// 		const refRe = new RegExp(`"\\$ref":"#/definitions/${name}"`, "g");
+	// 		const count = (fullMap.match(refRe) || []).length;
+	// 		if (count <= 1) {
+	// 			console.log("Deleting unreferenced schema", name);
+	// 			delete definitions[name];
+	// 			hasUnreferencedSchemas = true;
+	// 		}
+	// 	}
+	// }
 
 	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
 	console.log("Successfully wrote", Object.keys(definitions).length, "schemas to", schemaPath);

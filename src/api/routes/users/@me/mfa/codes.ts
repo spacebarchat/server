@@ -42,7 +42,7 @@ router.post(
 			200: {
 				body: "APIBackupCodeArray",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {

@@ -49,7 +49,7 @@ router.patch(
 			200: {
 				body: "UserSettings",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {

@@ -77,7 +77,7 @@ router.post(
 			200: {
 				body: "WebAuthnCreateResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

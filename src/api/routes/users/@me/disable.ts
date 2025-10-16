@@ -28,7 +28,7 @@ router.post(
 	route({
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {

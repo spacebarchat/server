@@ -51,7 +51,7 @@ router.patch(
 		requestBody: "UserGuildSettingsSchema",
 		responses: {
 			200: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {

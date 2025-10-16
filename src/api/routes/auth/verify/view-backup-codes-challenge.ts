@@ -29,7 +29,7 @@ router.post(
 		requestBody: "BackupCodesChallengeSchema",
 		responses: {
 			200: { body: "BackupCodesChallengeResponse" },
-			400: { body: "APIErrorResponse" },
+			"4XX": { body: "APIErrorResponse" },
 		},
 	}),
 	async (req: Request, res: Response) => {

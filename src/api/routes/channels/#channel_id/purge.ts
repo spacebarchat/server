@@ -43,7 +43,7 @@ router.post(
 		/*body: "PurgeSchema",*/
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},

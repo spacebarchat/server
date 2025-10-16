@@ -58,7 +58,7 @@ export interface RouteOptions {
 	right?: RightResolvable;
 	requestBody?: `${string}Schema`; // typescript interface name
 	responses?: {
-		[status: number]: {
+		[status: number | string]: {
 			// body?: `${string}Response`;
 			body?: string;
 		};
@@ -75,6 +75,7 @@ export interface RouteOptions {
 		};
 	};
 	deprecated?: boolean;
+	ratelimitBucket?: string;
 	// test?: {
 	// 	response?: RouteResponse;
 	// 	body?: unknown;

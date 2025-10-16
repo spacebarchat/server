@@ -39,7 +39,7 @@ router.post(
 			204: {
 				body: "TokenOnlyResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},
@@ -68,7 +68,7 @@ router.post(
 			200: {
 				body: "TokenResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},
@@ -104,7 +104,7 @@ router.patch(
 			200: {
 				body: "Application",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

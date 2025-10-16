@@ -40,7 +40,7 @@ router.post(
 			200: {
 				body: "Ban",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {

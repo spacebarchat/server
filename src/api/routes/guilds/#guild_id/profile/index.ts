@@ -37,7 +37,7 @@ router.patch(
 			200: {
 				body: "Member",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {

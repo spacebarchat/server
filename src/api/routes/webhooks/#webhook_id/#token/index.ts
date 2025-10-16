@@ -99,7 +99,7 @@ router.post(
 		},
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},
@@ -113,7 +113,7 @@ router.delete(
 	route({
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},
@@ -160,7 +160,7 @@ router.patch(
 			200: {
 				body: "Message",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {},

@@ -38,7 +38,7 @@ router.post(
 			200: {
 				body: "TokenWithBackupCodesResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {

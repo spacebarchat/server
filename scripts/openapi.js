@@ -20,9 +20,7 @@ require("module-alias/register");
 const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");
 const fs = require("fs");
-const {
-	NO_AUTHORIZATION_ROUTES,
-} = require("../dist/api/middlewares/Authentication");
+const { NO_AUTHORIZATION_ROUTES } = require("../dist/api/middlewares/Authentication");
 require("../dist/util/util/extensions");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
@@ -39,7 +37,7 @@ let specification = {
 			name: "AGPLV3",
 			url: "https://www.gnu.org/licenses/agpl-3.0.en.html",
 		},
-		version: "1.0.0",
+		version: "9",
 	},
 	externalDocs: {
 		description: "Spacebar Docs",
@@ -47,8 +45,8 @@ let specification = {
 	},
 	servers: [
 		{
-			url: "https://old.server.spacebar.chat/api/",
 			description: "Official Spacebar Instance",
+			url: "https://old.server.spacebar.chat/api/v9",
 		},
 	],
 	components: {
@@ -88,8 +86,7 @@ function combineSchemas(schemas) {
 			continue;
 		}
 		specification.components = specification.components || {};
-		specification.components.schemas =
-			specification.components.schemas || {};
+		specification.components.schemas = specification.components.schemas || {};
 		specification.components.schemas[key] = definitions[key];
 		delete definitions[key].additionalProperties;
 		delete definitions[key].$schema;
@@ -134,8 +131,7 @@ function apiRoutes(missingRoutes) {
 
 		if (
 			!NO_AUTHORIZATION_ROUTES.some((x) => {
-				if (typeof x === "string")
-					return (method.toUpperCase() + " " + path).startsWith(x);
+				if (typeof x === "string") return (method.toUpperCase() + " " + path).startsWith(x);
 				return x.test(method.toUpperCase() + " " + path);
 			})
 		) {
@@ -162,10 +158,10 @@ function apiRoutes(missingRoutes) {
 		if (route.responses) {
 			obj.responses = {};
 
-			for (const [k, v] of Object.entries(route.responses)) {
+			for (const [statusCode, v] of Object.entries(route.responses)) {
 				if (v.body)
-					obj.responses[k] = {
-						description: obj?.responses?.[k]?.description || "",
+					obj.responses[statusCode] = {
+						description: obj?.responses?.[statusCode]?.description,
 						content: {
 							"application/json": {
 								schema: {
@@ -175,11 +171,22 @@ function apiRoutes(missingRoutes) {
 						},
 					};
 				else
-					obj.responses[k] = {
-						description:
-							obj?.responses?.[k]?.description ||
-							"No description available",
+					obj.responses[statusCode] = {
+						description: obj?.responses?.[statusCode]?.description || "No description available",
 					};
+			}
+
+			if (route.ratelimitBucket) {
+				obj["x-ratelimit-bucket"] = route.ratelimitBucket;
+				obj.responses["429"] = {};
+				if (obj.responses["200"]) {
+					obj.responses["200"].headers ??= {};
+					for (const key in ["Limit", "Remaining", "Reset", "Reset-After", "Bucket"]) {
+						obj.responses["200"].headers[`X-RateLimit-${key}`] = {
+							$ref: `#/components/headers/X-RateLimit-${key}`,
+						};
+					}
+				}
 			}
 		} else {
 			obj.responses = {
@@ -224,45 +231,39 @@ function apiRoutes(missingRoutes) {
 			];
 		}
 
-		specification.paths[path] = Object.assign(
-			specification.paths[path] || {},
-			{
-				[method]: obj,
-			},
-		);
+		specification.paths[path] = Object.assign(specification.paths[path] || {}, {
+			[method]: obj,
+		});
 	});
+
+	// order top level
+	const topLevelOrder = ["openapi", "info", "externalDocs", "servers", "paths", "tags", "components"];
+	specification = Object.fromEntries(
+		topLevelOrder
+			.map((x) => [x, specification[x]])
+			.filter((x) => x[1] !== undefined)
+			.concat(Object.entries(specification).filter((x) => !topLevelOrder.includes(x[0]))),
+	);
+	// order paths alphabetically
+	specification.paths = Object.fromEntries(Object.entries(specification.paths).sort((a, b) => a[0].localeCompare(b[0])));
 }
 
 async function main() {
 	console.log("Generating OpenAPI Specification...");
 
-	const routesRes = await fetch(
-		"https://github.com/spacebarchat/missing-routes/raw/main/missing.json",
-		{
-			headers: {
-				Accept: "application/json",
-			},
+	const routesRes = await fetch("https://github.com/spacebarchat/missing-routes/raw/main/missing.json", {
+		headers: {
+			Accept: "application/json",
 		},
-	);
+	});
 	const missingRoutes = await routesRes.json();
 
 	combineSchemas(schemas);
 	apiRoutes(missingRoutes);
 
-	fs.writeFileSync(
-		openapiPath,
-		JSON.stringify(specification, null, 4)
-			.replaceAll("#/definitions", "#/components/schemas")
-			.replaceAll("bigint", "number"),
-	);
+	fs.writeFileSync(openapiPath, JSON.stringify(specification, null, 4).replaceAll("#/definitions", "#/components/schemas").replaceAll("bigint", "number"));
 	console.log("Wrote OpenAPI specification to", openapiPath);
-	console.log(
-		"Specification contains",
-		Object.keys(specification.paths).length,
-		"paths and",
-		Object.keys(specification.components.schemas).length,
-		"schemas.",
-	);
+	console.log("Specification contains", Object.keys(specification.paths).length, "paths and", Object.keys(specification.components.schemas).length, "schemas.");
 }
 
 main();

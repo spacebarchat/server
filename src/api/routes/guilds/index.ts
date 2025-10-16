@@ -40,7 +40,7 @@ router.post(
 			201: {
 				body: "GuildCreateResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {

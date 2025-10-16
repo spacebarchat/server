@@ -33,7 +33,7 @@ router.post(
 			200: {
 				body: "RefreshUrlsResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

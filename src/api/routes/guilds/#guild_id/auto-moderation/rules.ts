@@ -53,7 +53,7 @@ router.post(
 			200: {
 				body: "AutomodRuleSchemaWithId",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {
@@ -102,7 +102,7 @@ router.patch(
 			200: {
 				body: "AutomodRuleSchemaWithId",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {

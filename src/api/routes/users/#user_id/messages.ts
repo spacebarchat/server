@@ -29,7 +29,7 @@ router.get(
 			200: {
 				body: "DmMessagesResponseSchema",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

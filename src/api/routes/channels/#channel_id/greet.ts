@@ -34,7 +34,7 @@ router.post(
 				body: "Message",
 			},
 			404: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

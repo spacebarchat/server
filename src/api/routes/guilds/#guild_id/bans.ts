@@ -200,7 +200,7 @@ router.put(
 		permission: "BAN_MEMBERS",
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {

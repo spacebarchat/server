@@ -28,7 +28,7 @@ router.post(
 		requestBody: "ForgotPasswordSchema",
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorOrCaptchaResponse",
 			},
 		},

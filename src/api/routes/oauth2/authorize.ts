@@ -44,7 +44,7 @@ router.get(
 		responses: {
 			// TODO: I really didn't feel like typing all of it out
 			200: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {
@@ -181,7 +181,7 @@ router.post(
 			200: {
 				body: "OAuthAuthorizeResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {

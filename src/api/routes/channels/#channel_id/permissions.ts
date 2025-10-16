@@ -35,7 +35,7 @@ router.put(
 			204: {},
 			404: {},
 			501: {},
-			400: { body: "APIErrorResponse" },
+			"4XX": { body: "APIErrorResponse" },
 		},
 	}),
 	async (req: Request, res: Response) => {

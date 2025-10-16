@@ -101369,7 +101369,7 @@
                     "sending_dns_records": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/DNSRecord"
+                            "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
                         }
                     }
                 },
@@ -101390,7 +101390,7 @@
             "status"
         ],
         "definitions": {
-            "DNSRecord": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord": {
                 "type": "object",
                 "properties": {
                     "cached": {
@@ -104992,7 +104992,7 @@
                         "type": "string"
                     },
                     "template": {
-                        "$ref": "#/definitions/IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -105008,7 +105008,7 @@
             "status"
         ],
         "definitions": {
-            "IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -105035,7 +105035,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -105094,7 +105094,7 @@
                     "name"
                 ]
             },
-            "TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -105172,7 +105172,7 @@
                     "items": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/IDomainTemplate"
+                            "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                         }
                     },
                     "paging": {
@@ -105213,7 +105213,7 @@
             "status"
         ],
         "definitions": {
-            "IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -105240,7 +105240,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -105299,7 +105299,7 @@
                     "name"
                 ]
             },
-            "TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -105375,7 +105375,7 @@
                 "type": "object",
                 "properties": {
                     "template": {
-                        "$ref": "#/definitions/IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -105390,7 +105390,7 @@
             "status"
         ],
         "definitions": {
-            "IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -105417,7 +105417,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -105476,7 +105476,7 @@
                     "name"
                 ]
             },
-            "TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -105620,7 +105620,7 @@
                         "type": "string"
                     },
                     "template": {
-                        "$ref": "#/definitions/IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -105636,7 +105636,7 @@
             "status"
         ],
         "definitions": {
-            "IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -105663,7 +105663,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -105722,7 +105722,7 @@
                     "name"
                 ]
             },
-            "TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -106855,7 +106855,7 @@
         "type": "object",
         "properties": {
             "body": {
-                "$ref": "#/definitions/SuppressionDataType"
+                "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
             },
             "status": {
                 "type": "integer"
@@ -106867,7 +106867,7 @@
             "status"
         ],
         "definitions": {
-            "SuppressionDataType": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType": {
                 "anyOf": [
                     {
                         "type": "object",
@@ -107083,10 +107083,10 @@
                     "headers": {
                         "anyOf": [
                             {
-                                "$ref": "#/definitions/AxiosResponseHeaders"
+                                "$ref": "#/definitions/Partial<RawAxiosHeaders&{\"Cache-Control\":AxiosHeaderValue;\"Content-Encoding\":AxiosHeaderValue;\"Content-Length\":AxiosHeaderValue;\"Content-Type\":AxiosHeaderValue;Server:AxiosHeaderValue;}&{\"set-cookie\":string[];}>"
                             },
                             {
-                                "$ref": "#/definitions/Partial<RawAxiosHeaders&{\"Cache-Control\":AxiosHeaderValue;\"Content-Encoding\":AxiosHeaderValue;\"Content-Length\":AxiosHeaderValue;\"Content-Type\":AxiosHeaderValue;Server:AxiosHeaderValue;}&{\"set-cookie\":string[];}>_1"
+                                "$ref": "#/definitions/AxiosResponseHeaders"
                             }
                         ]
                     },
@@ -107108,127 +107108,7 @@
                 "type": "object",
                 "additionalProperties": false
             },
-            "AxiosResponseHeaders": {
-                "additionalProperties": false,
-                "properties": {
-                    "Cache-Control": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "$ref": "#/definitions/AxiosHeaders"
-                            },
-                            {
-                                "type": [
-                                    "null",
-                                    "string",
-                                    "integer",
-                                    "boolean"
-                                ]
-                            }
-                        ]
-                    },
-                    "Content-Encoding": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "$ref": "#/definitions/AxiosHeaders"
-                            },
-                            {
-                                "type": [
-                                    "null",
-                                    "string",
-                                    "integer",
-                                    "boolean"
-                                ]
-                            }
-                        ]
-                    },
-                    "Content-Length": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "$ref": "#/definitions/AxiosHeaders"
-                            },
-                            {
-                                "type": [
-                                    "null",
-                                    "string",
-                                    "integer",
-                                    "boolean"
-                                ]
-                            }
-                        ]
-                    },
-                    "Content-Type": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "$ref": "#/definitions/AxiosHeaders"
-                            },
-                            {
-                                "type": [
-                                    "null",
-                                    "string",
-                                    "integer",
-                                    "boolean"
-                                ]
-                            }
-                        ]
-                    },
-                    "Server": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "$ref": "#/definitions/AxiosHeaders"
-                            },
-                            {
-                                "type": [
-                                    "null",
-                                    "string",
-                                    "integer",
-                                    "boolean"
-                                ]
-                            }
-                        ]
-                    },
-                    "set-cookie": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "AxiosHeaders": {
-                "type": "object",
-                "additionalProperties": {}
-            },
-            "Partial<RawAxiosHeaders&{\"Cache-Control\":AxiosHeaderValue;\"Content-Encoding\":AxiosHeaderValue;\"Content-Length\":AxiosHeaderValue;\"Content-Type\":AxiosHeaderValue;Server:AxiosHeaderValue;}&{\"set-cookie\":string[];}>_1": {
+            "Partial<RawAxiosHeaders&{\"Cache-Control\":AxiosHeaderValue;\"Content-Encoding\":AxiosHeaderValue;\"Content-Length\":AxiosHeaderValue;\"Content-Type\":AxiosHeaderValue;Server:AxiosHeaderValue;}&{\"set-cookie\":string[];}>": {
                 "type": "object",
                 "properties": {
                     "Cache-Control": {
@@ -107344,6 +107224,14 @@
                     }
                 },
                 "additionalProperties": false
+            },
+            "AxiosHeaders": {
+                "type": "object",
+                "additionalProperties": {}
+            },
+            "AxiosResponseHeaders": {
+                "additionalProperties": false,
+                "properties": {}
             },
             "InternalAxiosRequestConfig<any>": {
                 "type": "object",
@@ -107597,10 +107485,6 @@
                                 "type": "boolean"
                             }
                         ]
-                    },
-                    "parseReviver": {
-                        "type": "object",
-                        "additionalProperties": false
                     },
                     "fetchOptions": {
                         "anyOf": [

@@ -70,7 +70,7 @@ router.get(
 			200: {
 				body: "APIMessageArray",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {},
@@ -281,7 +281,7 @@ router.post(
 			200: {
 				body: "Message",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {},

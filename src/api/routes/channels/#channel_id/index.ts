@@ -137,7 +137,7 @@ router.patch(
 				body: "Channel",
 			},
 			404: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

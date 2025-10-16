@@ -45,7 +45,7 @@ router.post(
 		requestBody: "WebAuthnTotpSchema",
 		responses: {
 			200: { body: "TokenResponse" },
-			400: { body: "APIErrorResponse" },
+			"4XX": { body: "APIErrorResponse" },
 		},
 	}),
 	async (req: Request, res: Response) => {

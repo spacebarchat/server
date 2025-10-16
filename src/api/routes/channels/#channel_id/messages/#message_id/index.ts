@@ -59,7 +59,7 @@ router.patch(
 			200: {
 				body: "Message",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {},
@@ -161,7 +161,7 @@ router.put(
 			200: {
 				body: "Message",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {},
@@ -264,7 +264,7 @@ router.get(
 			200: {
 				body: "Message",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {},
@@ -297,7 +297,7 @@ router.delete(
 	route({
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},

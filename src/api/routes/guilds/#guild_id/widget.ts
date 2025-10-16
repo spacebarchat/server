@@ -58,7 +58,7 @@ router.patch(
 			200: {
 				body: "WidgetModifySchema",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {

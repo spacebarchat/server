@@ -541,7 +541,7 @@ router.post(
 		},
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},

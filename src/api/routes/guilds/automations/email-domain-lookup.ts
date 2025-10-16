@@ -35,7 +35,7 @@ router.post(
 			200: {
 				body: "EmailDomainLookupResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},
@@ -70,7 +70,7 @@ router.post(
 			// 200: {
 			// 	body: "EmailDomainLookupVerifyCodeResponse",
 			// },
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			501: {},

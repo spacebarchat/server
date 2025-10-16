@@ -59,7 +59,7 @@ router.delete(
 		permission: "MANAGE_MESSAGES",
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},
@@ -95,7 +95,7 @@ router.delete(
 		permission: "MANAGE_MESSAGES",
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},
@@ -144,7 +144,7 @@ router.get(
 			200: {
 				body: "PublicUser",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},
@@ -183,7 +183,7 @@ router.put(
 		right: "SELF_ADD_REACTIONS",
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},
@@ -264,7 +264,7 @@ router.delete(
 	route({
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},
@@ -334,7 +334,7 @@ router.delete(
 	route({
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {},

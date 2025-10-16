@@ -76,7 +76,7 @@ router.put(
 		requestBody: "RelationshipPutSchema",
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {
@@ -104,7 +104,7 @@ router.post(
 		requestBody: "RelationshipPostSchema",
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {
@@ -137,7 +137,7 @@ router.delete(
 	route({
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			404: {

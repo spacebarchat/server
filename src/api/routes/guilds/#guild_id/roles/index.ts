@@ -52,7 +52,7 @@ router.post(
 			200: {
 				body: "Role",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {
@@ -128,7 +128,7 @@ router.patch(
 			200: {
 				body: "APIRoleArray",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {

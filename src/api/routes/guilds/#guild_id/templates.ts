@@ -70,7 +70,7 @@ router.post(
 			200: {
 				body: "Template",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 			403: {

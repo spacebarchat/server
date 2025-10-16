@@ -35,7 +35,7 @@ router.post(
 				body: "Invite",
 			},
 			404: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

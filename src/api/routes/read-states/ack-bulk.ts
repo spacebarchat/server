@@ -28,7 +28,7 @@ router.post(
 		requestBody: "AckBulkSchema",
 		responses: {
 			204: {},
-			400: {
+			"4XX": {
 				body: "APIErrorResponse",
 			},
 		},

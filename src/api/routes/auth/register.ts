@@ -45,7 +45,7 @@ router.post(
 		requestBody: "RegisterSchema",
 		responses: {
 			200: { body: "TokenOnlyResponse" },
-			400: { body: "APIErrorOrCaptchaResponse" },
+			"4XX": { body: "APIErrorOrCaptchaResponse" },
 		},
 	}),
 	async (req: Request, res: Response) => {

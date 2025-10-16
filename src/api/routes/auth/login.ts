@@ -41,7 +41,7 @@ router.post(
 			200: {
 				body: "LoginResponse",
 			},
-			400: {
+			"4XX": {
 				body: "APIErrorOrCaptchaResponse",
 			},
 		},
