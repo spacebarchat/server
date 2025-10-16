@@ -11736,330 +11736,28 @@
                     }
                 ]
             },
-            "SchemaRef": {
-                "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
-                "anyOf": [
-                    {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "integer",
-                                "const": 0
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaTraits"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaRef"
-                            }
-                        ],
-                        "minItems": 5,
-                        "maxItems": 5
-                    },
-                    {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "integer",
-                                "const": 1
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaTraits"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaRef"
-                            }
-                        ],
-                        "minItems": 5,
-                        "maxItems": 5
-                    },
-                    {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "integer",
-                                "const": 2
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaTraits"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaRef"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaRef"
-                            }
-                        ],
-                        "minItems": 6,
-                        "maxItems": 6
-                    },
-                    {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "integer",
-                                "const": 3
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaTraits"
-                            },
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/SchemaRef"
-                                }
-                            }
-                        ],
-                        "minItems": 6,
-                        "maxItems": 6
-                    },
-                    {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "integer",
-                                "const": -3
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaTraits"
-                            },
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/SchemaRef"
-                                }
-                            }
-                        ],
-                        "minItems": 6,
-                        "maxItems": 6
-                    },
-                    {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "integer",
-                                "const": 9
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaTraits"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaRef"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaRef"
-                            }
-                        ],
-                        "minItems": 6,
-                        "maxItems": 6
-                    },
-                    {
-                        "$ref": "#/components/schemas/TraitsSchema"
-                    },
-                    {
-                        "$ref": "#/components/schemas/ListSchema"
-                    },
-                    {
-                        "$ref": "#/components/schemas/MapSchema"
-                    },
-                    {
-                        "$ref": "#/components/schemas/StructureSchema"
-                    },
-                    {
-                        "type": "array",
-                        "items": [
-                            {
-                                "$ref": "#/components/schemas/SchemaRef"
-                            },
-                            {
-                                "$ref": "#/components/schemas/SchemaTraits"
-                            }
-                        ],
-                        "minItems": 2,
-                        "maxItems": 2
-                    },
-                    {
-                        "$ref": "#/components/schemas/OperationSchema"
-                    },
-                    {
-                        "$ref": "#/components/schemas/NormalizedSchema"
-                    },
-                    {
-                        "type": "object",
-                        "additionalProperties": false
-                    },
-                    {
-                        "const": "unit",
-                        "type": "string"
-                    },
-                    {
-                        "type": "integer"
-                    }
-                ]
-            },
             "StaticSimpleSchema": {
-                "$ref": "#/components/schemas/StaticSimpleSchema"
-            },
-            "TraitsSchema": {
-                "description": "A schema that has traits.",
-                "type": "object",
-                "properties": {
-                    "namespace": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer",
+                        "const": 0
+                    },
+                    {
                         "type": "string"
                     },
-                    "name": {
+                    {
                         "type": "string"
                     },
-                    "traits": {
-                        "$ref": "#/components/schemas/SchemaTraits"
-                    }
-                },
-                "required": [
-                    "name",
-                    "namespace",
-                    "traits"
-                ]
-            },
-            "ListSchema": {
-                "description": "Schema for the list aggregate type.",
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "traits": {
+                    {
                         "$ref": "#/components/schemas/SchemaTraits"
                     },
-                    "valueSchema": {
-                        "$ref": "#/components/schemas/SchemaRef"
-                    },
-                    "namespace": {
-                        "type": "string"
+                    {
+                        "$ref": "#/components/schemas/$SchemaRef"
                     }
-                },
-                "required": [
-                    "name",
-                    "namespace",
-                    "traits",
-                    "valueSchema"
-                ]
-            },
-            "MapSchema": {
-                "description": "Schema for the map aggregate type.",
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "traits": {
-                        "$ref": "#/components/schemas/SchemaTraits"
-                    },
-                    "keySchema": {
-                        "$ref": "#/components/schemas/SchemaRef"
-                    },
-                    "valueSchema": {
-                        "$ref": "#/components/schemas/SchemaRef"
-                    },
-                    "namespace": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "keySchema",
-                    "name",
-                    "namespace",
-                    "traits",
-                    "valueSchema"
-                ]
-            },
-            "StructureSchema": {
-                "description": "Schema for the structure aggregate type.",
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "traits": {
-                        "$ref": "#/components/schemas/SchemaTraits"
-                    },
-                    "memberNames": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "memberList": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/SchemaRef"
-                        }
-                    },
-                    "members": {
-                        "$ref": "#/components/schemas/Record<string,[SchemaRef,SchemaTraits]>"
-                    },
-                    "namespace": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "memberList",
-                    "memberNames",
-                    "name",
-                    "namespace",
-                    "traits"
-                ]
-            },
-            "OperationSchema": {
-                "$ref": "#/components/schemas/OperationSchema",
-                "description": "Schema for an operation."
+                ],
+                "minItems": 5,
+                "maxItems": 5
             },
             "NormalizedSchema": {
                 "description": "Normalization wrapper for various schema data objects.",
@@ -12087,7 +11785,7 @@
                                 "$ref": "#/components/schemas/SchemaTraits"
                             },
                             {
-                                "$ref": "#/components/schemas/SchemaRef"
+                                "$ref": "#/components/schemas/$SchemaRef"
                             }
                         ],
                         "minItems": 5,
@@ -12110,10 +11808,10 @@
                                 "$ref": "#/components/schemas/SchemaTraits"
                             },
                             {
-                                "$ref": "#/components/schemas/SchemaRef"
+                                "$ref": "#/components/schemas/$SchemaRef"
                             },
                             {
-                                "$ref": "#/components/schemas/SchemaRef"
+                                "$ref": "#/components/schemas/$SchemaRef"
                             }
                         ],
                         "minItems": 6,
@@ -12144,7 +11842,7 @@
                             {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/SchemaRef"
+                                    "$ref": "#/components/schemas/$SchemaRef"
                                 }
                             }
                         ],
@@ -12176,7 +11874,7 @@
                             {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/SchemaRef"
+                                    "$ref": "#/components/schemas/$SchemaRef"
                                 }
                             }
                         ],
@@ -12200,10 +11898,10 @@
                                 "$ref": "#/components/schemas/SchemaTraits"
                             },
                             {
-                                "$ref": "#/components/schemas/SchemaRef"
+                                "$ref": "#/components/schemas/$SchemaRef"
                             },
                             {
-                                "$ref": "#/components/schemas/SchemaRef"
+                                "$ref": "#/components/schemas/$SchemaRef"
                             }
                         ],
                         "minItems": 6,
@@ -12235,8 +11933,312 @@
                 "type": "string",
                 "const": "unit"
             },
+            "TraitsSchema": {
+                "description": "A schema that has traits.",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/components/schemas/SchemaTraits"
+                    }
+                },
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
+            "SchemaRef": {
+                "description": "A schema \"reference\" is either a schema or a function that\nprovides a schema. This is useful for lazy loading, and to allow\ncode generation to define schema out of dependency order.",
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/StaticSimpleSchema"
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 1
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/components/schemas/$SchemaRef"
+                            }
+                        ],
+                        "minItems": 5,
+                        "maxItems": 5
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 2
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/components/schemas/$SchemaRef"
+                            },
+                            {
+                                "$ref": "#/components/schemas/$SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/$SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": -3
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/$SchemaRef"
+                                }
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer",
+                                "const": 9
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            },
+                            {
+                                "$ref": "#/components/schemas/$SchemaRef"
+                            },
+                            {
+                                "$ref": "#/components/schemas/$SchemaRef"
+                            }
+                        ],
+                        "minItems": 6,
+                        "maxItems": 6
+                    },
+                    {
+                        "$ref": "#/components/schemas/NormalizedSchema"
+                    },
+                    {
+                        "$ref": "#/components/schemas/TraitsSchema"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ListSchema"
+                    },
+                    {
+                        "$ref": "#/components/schemas/MapSchema"
+                    },
+                    {
+                        "$ref": "#/components/schemas/StructureSchema"
+                    },
+                    {
+                        "description": "Indicates the schema is a member of a parent Structure schema.\nIt may also have a set of member traits distinct from its target shape's traits.",
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/components/schemas/SchemaRef"
+                            },
+                            {
+                                "$ref": "#/components/schemas/SchemaTraits"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "$ref": "#/components/schemas/OperationSchema"
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    {
+                        "const": "unit",
+                        "type": "string"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            },
+            "ListSchema": {
+                "description": "Schema for the list aggregate type.",
+                "type": "object",
+                "properties": {
+                    "valueSchema": {
+                        "$ref": "#/components/schemas/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/components/schemas/SchemaTraits"
+                    }
+                },
+                "required": [
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "MapSchema": {
+                "description": "Schema for the map aggregate type.",
+                "type": "object",
+                "properties": {
+                    "keySchema": {
+                        "$ref": "#/components/schemas/SchemaRef"
+                    },
+                    "valueSchema": {
+                        "$ref": "#/components/schemas/SchemaRef"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/components/schemas/SchemaTraits"
+                    }
+                },
+                "required": [
+                    "keySchema",
+                    "name",
+                    "namespace",
+                    "traits",
+                    "valueSchema"
+                ]
+            },
+            "StructureSchema": {
+                "description": "Schema for the structure aggregate type.",
+                "type": "object",
+                "properties": {
+                    "memberNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "memberList": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SchemaRef"
+                        }
+                    },
+                    "members": {
+                        "$ref": "#/components/schemas/Record<string,[SchemaRef,SchemaTraits]>"
+                    },
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "traits": {
+                        "$ref": "#/components/schemas/SchemaTraits"
+                    }
+                },
+                "required": [
+                    "memberList",
+                    "memberNames",
+                    "name",
+                    "namespace",
+                    "traits"
+                ]
+            },
             "MemberSchema": {
-                "$ref": "#/components/schemas/MemberSchema"
+                "$ref": "#/components/schemas/MemberSchema",
+                "description": "Indicates the schema is a member of a parent Structure schema.\nIt may also have a set of member traits distinct from its target shape's traits."
+            },
+            "OperationSchema": {
+                "$ref": "#/components/schemas/OperationSchema",
+                "description": "Schema for an operation."
             },
             "ResolvedHttpResponse": {
                 "type": "object",
