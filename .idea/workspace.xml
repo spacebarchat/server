@@ -111,6 +111,7 @@
           <value>
             <map>
               <entry key="Start API" value="STOPPED" />
+              <entry key="Start Gateway" value="STOPPED" />
               <entry key="build" value="STOPPED" />
             </map>
           </value>
@@ -118,7 +119,7 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="npm.Start API">
+  <component name="RunManager" selected="npm.Start Gateway">
     <list>
       <item itemvalue="Compound.Start separated" />
       <item itemvalue="npm.Start bundle" />
