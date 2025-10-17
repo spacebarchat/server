@@ -43,9 +43,25 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const globalApplicationCommands = await ApplicationCommand.find({ where: { application_id: applications[0].id, guild_id: IsNull() } });
 	const guildApplicationCommands = await ApplicationCommand.find({ where: { application_id: applications[0].id, guild_id: req.params.guild_id } });
 
+	const applicationCommandsSendable = [];
+
+	for (const command of [...globalApplicationCommands, ...guildApplicationCommands]) {
+		applicationCommandsSendable.push({
+			application_id: command.application_id,
+			description: command.description,
+			dm_permission: command.dm_permission,
+			global_popularity_rank: command.global_popularity_rank,
+			id: command.id,
+			integration_types: command.integration_types,
+			name: command.name,
+			type: command.type,
+			version: command.version,
+		});
+	}
+
 	res.send({
 		applications: applicationsSendable,
-		application_commands: [...globalApplicationCommands, ...guildApplicationCommands],
+		application_commands: applicationCommandsSendable,
 		version: Snowflake.generate(),
 	});
 });
