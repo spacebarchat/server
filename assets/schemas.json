@@ -1,4 +1,1156 @@
 {
+    "ApplicationCommandSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "format": "snowflake",
+                "type": "string"
+            },
+            "type": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "type": "number"
+            },
+            "application_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "format": "snowflake",
+                "type": "string"
+            },
+            "guild_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "format": "snowflake",
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "name_localizations": {
+                "$ref": "#/definitions/Record<string,string>"
+            },
+            "name_localized": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "description": {
+                "type": "string"
+            },
+            "description_localizations": {
+                "$ref": "#/definitions/Record<string,string>"
+            },
+            "description_localized": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "options": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ApplicationCommandOption"
+                }
+            },
+            "default_member_permissions": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "dm_permission": {
+                "type": "boolean"
+            },
+            "permissions": {
+                "$ref": "#/definitions/ApplicationCommandIndexPermissions"
+            },
+            "nsfw": {
+                "type": "boolean"
+            },
+            "integration_types": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ApplicationIntegrationType"
+                }
+            },
+            "global_popularity_rank": {
+                "type": "integer"
+            },
+            "contexts": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/InteractionContextType"
+                }
+            },
+            "version": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "format": "snowflake",
+                "type": "string"
+            },
+            "handler": {
+                "enum": [
+                    1,
+                    2,
+                    3
+                ],
+                "type": "number"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "application_id",
+            "default_member_permissions",
+            "description",
+            "name",
+            "version"
+        ],
+        "definitions": {
+            "Record<string,string>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ApplicationCommandOption": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/ApplicationCommandOptionType"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ApplicationCommandOptionChoice"
+                        }
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ApplicationCommandOption"
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "description",
+                    "name",
+                    "type"
+                ]
+            },
+            "ApplicationCommandOptionType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
+                ]
+            },
+            "ApplicationCommandOptionChoice": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": [
+                            "string",
+                            "integer"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "value"
+                ]
+            },
+            "ApplicationCommandIndexPermissions": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "boolean"
+                    },
+                    "roles": {
+                        "$ref": "#/definitions/Record<string,boolean>"
+                    },
+                    "channels": {
+                        "$ref": "#/definitions/Record<string,boolean>"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Record<string,boolean>": {
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ApplicationIntegrationType": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1
+                ]
+            },
+            "InteractionContextType": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ]
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InteractionSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/ApplicationCommandType"
+            },
+            "application_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "format": "snowflake",
+                "type": "string"
+            },
+            "guild_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "format": "snowflake",
+                "type": "string"
+            },
+            "channel_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "format": "snowflake",
+                "type": "string"
+            },
+            "message_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "format": "snowflake",
+                "type": "string"
+            },
+            "message_flags": {
+                "type": "integer"
+            },
+            "session_id": {
+                "type": "string"
+            },
+            "data": {
+                "$ref": "#/definitions/InteractionData"
+            },
+            "files": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            },
+            "nonce": {
+                "type": "string"
+            },
+            "analytics_location": {
+                "type": "string"
+            },
+            "section_name": {
+                "type": "string"
+            },
+            "source": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "application_id",
+            "channel_id",
+            "data",
+            "type"
+        ],
+        "definitions": {
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ]
+            },
+            "InteractionData": {
+                "type": "object",
+                "properties": {
+                    "application_command": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": true
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/UploadAttachmentRequestSchema"
+                        }
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ApplicationCommandOption"
+                        }
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "version": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "application_command",
+                    "attachments",
+                    "id",
+                    "name",
+                    "options",
+                    "type",
+                    "version"
+                ]
+            },
+            "UploadAttachmentRequestSchema": {
+                "type": "object",
+                "properties": {
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/UploadAttachmentRequest"
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "files"
+                ]
+            },
+            "UploadAttachmentRequest": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "filename": {
+                        "type": "string"
+                    },
+                    "file_size": {
+                        "type": "integer"
+                    },
+                    "is_clip": {
+                        "type": "boolean"
+                    },
+                    "original_content_type": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "file_size",
+                    "filename"
+                ]
+            },
+            "ApplicationCommandOption": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/ApplicationCommandOptionType"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ApplicationCommandOptionChoice"
+                        }
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ApplicationCommandOption"
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "description",
+                    "name",
+                    "type"
+                ]
+            },
+            "ApplicationCommandOptionType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
+                ]
+            },
+            "ApplicationCommandOptionChoice": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": [
+                            "string",
+                            "integer"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "value"
+                ]
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InteractionCallbackSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/InteractionCallbackType"
+            },
+            "data": {
+                "$ref": "#/definitions/MessageCreateSchema"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "data",
+            "type"
+        ],
+        "definitions": {
+            "InteractionCallbackType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12
+                ]
+            },
+            "MessageCreateSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "integer"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "mobile_network_type": {
+                        "type": "string"
+                    },
+                    "nonce": {
+                        "type": "string"
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "tts": {
+                        "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "embeds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Embed"
+                        }
+                    },
+                    "embed": {
+                        "$ref": "#/definitions/Embed"
+                    },
+                    "allowed_mentions": {
+                        "type": "object",
+                        "properties": {
+                            "parse": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "roles": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "replied_user": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "message_reference": {
+                        "type": "object",
+                        "properties": {
+                            "message_id": {
+                                "type": "string"
+                            },
+                            "channel_id": {
+                                "type": "string"
+                            },
+                            "guild_id": {
+                                "type": "string"
+                            },
+                            "fail_if_not_exists": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "message_id"
+                        ]
+                    },
+                    "payload_json": {
+                        "type": "string"
+                    },
+                    "file": {
+                        "type": "object",
+                        "properties": {
+                            "filename": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "filename"
+                        ]
+                    },
+                    "attachments": {
+                        "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "filename": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "filename",
+                                        "id"
+                                    ]
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "filename": {
+                                            "type": "string"
+                                        },
+                                        "uploaded_filename": {
+                                            "type": "string"
+                                        },
+                                        "original_content_type": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "filename",
+                                        "uploaded_filename"
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    "sticker_ids": {
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "components": {
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/ActionRowComponent"
+                                }
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "poll": {
+                        "$ref": "#/definitions/PollCreationSchema"
+                    },
+                    "enforce_nonce": {
+                        "type": "boolean"
+                    },
+                    "applied_tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "thread_name": {
+                        "type": "string"
+                    },
+                    "avatar_url": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Embed": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "enum": [
+                            "article",
+                            "gifv",
+                            "image",
+                            "link",
+                            "rich",
+                            "video"
+                        ],
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "color": {
+                        "type": "integer"
+                    },
+                    "footer": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string"
+                            },
+                            "icon_url": {
+                                "type": "string"
+                            },
+                            "proxy_icon_url": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "text"
+                        ]
+                    },
+                    "image": {
+                        "$ref": "#/definitions/EmbedImage"
+                    },
+                    "thumbnail": {
+                        "$ref": "#/definitions/EmbedImage"
+                    },
+                    "video": {
+                        "$ref": "#/definitions/EmbedImage"
+                    },
+                    "provider": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "author": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string"
+                            },
+                            "icon_url": {
+                                "type": "string"
+                            },
+                            "proxy_icon_url": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                },
+                                "inline": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "name",
+                                "value"
+                            ]
+                        }
+                    }
+                },
+                "additionalProperties": false
+            },
+            "EmbedImage": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "proxy_url": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "width": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ActionRowComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/MessageComponentType.ActionRow"
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/ButtonComponent"
+                                },
+                                {
+                                    "$ref": "#/definitions/SelectMenuComponent"
+                                },
+                                {
+                                    "$ref": "#/definitions/StringSelectMenuComponent"
+                                },
+                                {
+                                    "$ref": "#/definitions/TextInputComponent"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "components",
+                    "type"
+                ]
+            },
+            "MessageComponentType.ActionRow": {
+                "type": "number",
+                "const": 1
+            },
+            "ButtonComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/MessageComponentType.Button"
+                    },
+                    "style": {
+                        "$ref": "#/definitions/ButtonStyle"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "emoji": {
+                        "$ref": "#/definitions/PartialEmoji"
+                    },
+                    "custom_id": {
+                        "type": "string"
+                    },
+                    "sku_id": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "style",
+                    "type"
+                ]
+            },
+            "MessageComponentType.Button": {
+                "type": "number",
+                "const": 2
+            },
+            "ButtonStyle": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ]
+            },
+            "PartialEmoji": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "animated": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name"
+                ]
+            },
+            "SelectMenuComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "enum": [
+                            3,
+                            5,
+                            6,
+                            7,
+                            8
+                        ],
+                        "type": "number"
+                    },
+                    "custom_id": {
+                        "type": "string"
+                    },
+                    "channel_types": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
+                    },
+                    "default_values": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SelectMenuDefaultOption"
+                        }
+                    },
+                    "min_values": {
+                        "type": "integer"
+                    },
+                    "max_values": {
+                        "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "custom_id",
+                    "type"
+                ]
+            },
+            "SelectMenuDefaultOption": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "enum": [
+                            "channel",
+                            "role",
+                            "user"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "type"
+                ]
+            },
+            "StringSelectMenuComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/MessageComponentType.StringSelect"
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SelectMenuOption"
+                        }
+                    },
+                    "custom_id": {
+                        "type": "string"
+                    },
+                    "channel_types": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "placeholder": {
+                        "type": "string"
+                    },
+                    "default_values": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/SelectMenuDefaultOption"
+                        }
+                    },
+                    "min_values": {
+                        "type": "integer"
+                    },
+                    "max_values": {
+                        "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "custom_id",
+                    "options",
+                    "type"
+                ]
+            },
+            "MessageComponentType.StringSelect": {
+                "type": "number",
+                "const": 3
+            },
+            "SelectMenuOption": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "emoji": {
+                        "$ref": "#/definitions/PartialEmoji"
+                    },
+                    "default": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "label",
+                    "value"
+                ]
+            },
+            "TextInputComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/MessageComponentType.TextInput"
+                    },
+                    "custom_id": {
+                        "type": "string"
+                    },
+                    "style": {
+                        "$ref": "#/definitions/TextInputStyle"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "min_length": {
+                        "type": "integer"
+                    },
+                    "max_length": {
+                        "type": "integer"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "placeholder": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "custom_id",
+                    "label",
+                    "style",
+                    "type"
+                ]
+            },
+            "MessageComponentType.TextInput": {
+                "type": "number",
+                "const": 4
+            },
+            "TextInputStyle": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2
+                ]
+            },
+            "PollCreationSchema": {
+                "type": "object",
+                "properties": {
+                    "question": {
+                        "$ref": "#/definitions/PollMedia"
+                    },
+                    "answers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/PollAnswer"
+                        }
+                    },
+                    "duration": {
+                        "type": "integer"
+                    },
+                    "allow_multiselect": {
+                        "type": "boolean"
+                    },
+                    "layout_type": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "answers",
+                    "question"
+                ]
+            },
+            "PollMedia": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string"
+                    },
+                    "emoji": {
+                        "$ref": "#/definitions/PartialEmoji"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PollAnswer": {
+                "type": "object",
+                "properties": {
+                    "answer_id": {
+                        "type": "string"
+                    },
+                    "poll_media": {
+                        "$ref": "#/definitions/PollMedia"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "poll_media"
+                ]
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ConnectedAccountCommonOAuthTokenResponse": {
         "type": "object",
         "properties": {
@@ -10485,7 +11637,7 @@
                     "sending_dns_records": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
+                            "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
                         }
                     }
                 },
@@ -10506,7 +11658,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord": {
+            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord": {
                 "type": "object",
                 "properties": {
                     "cached": {
@@ -14108,7 +15260,7 @@
                         "type": "string"
                     },
                     "template": {
-                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -14124,7 +15276,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -14151,7 +15303,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -14210,7 +15362,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -14288,7 +15440,7 @@
                     "items": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                            "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                         }
                     },
                     "paging": {
@@ -14329,7 +15481,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -14356,7 +15508,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -14415,7 +15567,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -14491,7 +15643,7 @@
                 "type": "object",
                 "properties": {
                     "template": {
-                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -14506,7 +15658,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -14533,7 +15685,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -14592,7 +15744,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -14736,7 +15888,7 @@
                         "type": "string"
                     },
                     "template": {
-                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -14752,7 +15904,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -14779,7 +15931,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -14838,7 +15990,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -15971,7 +17123,7 @@
         "type": "object",
         "properties": {
             "body": {
-                "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
+                "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
             },
             "status": {
                 "type": "integer"
@@ -15983,7 +17135,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType": {
+            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType": {
                 "anyOf": [
                     {
                         "type": "object",
@@ -16876,13 +18028,13 @@
             "Promise<Cancel>": {
                 "type": "object",
                 "properties": {
-                    "__@toStringTag@1273": {
+                    "__@toStringTag@1311": {
                         "type": "string"
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "__@toStringTag@1273"
+                    "__@toStringTag@1311"
                 ]
             },
             "Cancel": {
@@ -18183,6 +19335,262 @@
             }
         },
         "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SendableApplicationCommandDataSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "$ref": "#/definitions/Snowflake"
+            },
+            "type": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "type": "number"
+            },
+            "name": {
+                "type": "string"
+            },
+            "version": {
+                "$ref": "#/definitions/Snowflake"
+            },
+            "application_command": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+            },
+            "options": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ApplicationCommandOption"
+                }
+            },
+            "target_id": {
+                "description": "A container for useful snowflake-related methods.",
+                "$ref": "#/definitions/Snowflake"
+            },
+            "attachments": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "id",
+            "name",
+            "version"
+        ],
+        "definitions": {
+            "Snowflake": {
+                "description": "A container for useful snowflake-related methods.",
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ApplicationCommandOption": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/ApplicationCommandOptionType"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ApplicationCommandOptionChoice"
+                        }
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ApplicationCommandOption"
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "description",
+                    "name",
+                    "type"
+                ]
+            },
+            "ApplicationCommandOptionType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
+                ]
+            },
+            "ApplicationCommandOptionChoice": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": [
+                            "string",
+                            "integer"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "value"
+                ]
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SendableMessageComponentDataSchema": {
+        "type": "object",
+        "properties": {
+            "component_type": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
+                ],
+                "type": "number"
+            },
+            "type": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "type": "number"
+            },
+            "custom_id": {
+                "type": "string"
+            },
+            "values": {
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Snowflake"
+                        }
+                    }
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "custom_id"
+        ],
+        "definitions": {
+            "Snowflake": {
+                "description": "A container for useful snowflake-related methods.",
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SendableModalSubmitDataSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "$ref": "#/definitions/Snowflake"
+            },
+            "custom_id": {
+                "type": "string"
+            },
+            "attachments": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/UploadAttachmentRequestSchema"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "custom_id",
+            "id"
+        ],
+        "definitions": {
+            "Snowflake": {
+                "description": "A container for useful snowflake-related methods.",
+                "type": "object",
+                "additionalProperties": false
+            },
+            "UploadAttachmentRequestSchema": {
+                "type": "object",
+                "properties": {
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/UploadAttachmentRequest"
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "files"
+                ]
+            },
+            "UploadAttachmentRequest": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "filename": {
+                        "type": "string"
+                    },
+                    "file_size": {
+                        "type": "integer"
+                    },
+                    "is_clip": {
+                        "type": "boolean"
+                    },
+                    "original_content_type": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "file_size",
+                    "filename"
+                ]
+            }
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "GuildProfileResponse": {
@@ -22141,13 +23549,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -23185,6 +24623,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -25915,13 +27362,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -26959,6 +28436,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -29479,13 +30965,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -30523,6 +32039,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -32035,13 +33560,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -34813,6 +36368,15 @@
                     2
                 ]
             },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ]
+            },
             "ActionRowComponent": {
                 "type": "object",
                 "properties": {
@@ -36890,13 +38454,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -37934,6 +39528,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -40542,13 +42145,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -41586,6 +43219,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -44434,13 +46076,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -45480,6 +47152,15 @@
                     2
                 ]
             },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ]
+            },
             "ActionRowComponent": {
                 "type": "object",
                 "properties": {
@@ -46286,13 +47967,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -49137,6 +50848,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -54371,13 +56091,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -55415,6 +57165,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -58465,13 +60224,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -59509,6 +61298,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -63447,13 +65245,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -64245,6 +66073,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -66766,13 +68603,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -67812,6 +69679,15 @@
                     2
                 ]
             },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ]
+            },
             "ActionRowComponent": {
                 "type": "object",
                 "properties": {
@@ -68709,13 +70585,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -71560,6 +73466,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -73683,13 +75598,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -74644,6 +76589,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -78150,13 +80104,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -78449,6 +80433,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -80603,13 +82596,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -81647,6 +83670,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -84052,13 +86084,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -84878,6 +86940,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -87790,13 +89861,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -88739,6 +90840,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -91217,13 +93327,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -92158,6 +94298,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -94603,13 +96752,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -95647,6 +97826,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -98390,13 +100578,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -99331,6 +101549,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -102365,13 +104592,43 @@
                             },
                             "name": {
                                 "type": "string"
-                            },
-                            "user_id": {
-                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "interaction_metadata": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/definitions/InteractionType"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            },
+                            "authorizing_integration_owners": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "command_type": {
+                                "$ref": "#/definitions/ApplicationCommandType"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "authorizing_integration_owners",
+                            "command_type",
                             "id",
                             "name",
                             "type",
@@ -103326,6 +105583,15 @@
                     0,
                     1,
                     2
+                ]
+            },
+            "ApplicationCommandType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
                 ]
             },
             "ActionRowComponent": {
@@ -109636,14 +111902,9 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ApplicationCommandSchema": {
+    "ApplicationCommandCreateSchema": {
         "type": "object",
         "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
-                "type": "string"
-            },
             "type": {
                 "enum": [
                     1,
@@ -109653,39 +111914,17 @@
                 ],
                 "type": "number"
             },
-            "application_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
-                "type": "string"
-            },
-            "guild_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
-                "type": "string"
-            },
             "name": {
                 "type": "string"
             },
             "name_localizations": {
                 "$ref": "#/definitions/Record<string,string>"
             },
-            "name_localized": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
             "description": {
                 "type": "string"
             },
             "description_localizations": {
                 "$ref": "#/definitions/Record<string,string>"
-            },
-            "description_localized": {
-                "type": [
-                    "null",
-                    "string"
-                ]
             },
             "options": {
                 "type": "array",
@@ -109694,16 +111933,10 @@
                 }
             },
             "default_member_permissions": {
-                "type": [
-                    "null",
-                    "string"
-                ]
+                "type": "string"
             },
             "dm_permission": {
                 "type": "boolean"
-            },
-            "permissions": {
-                "$ref": "#/definitions/ApplicationCommandIndexPermissions"
             },
             "nsfw": {
                 "type": "boolean"
@@ -109714,19 +111947,11 @@
                     "$ref": "#/definitions/ApplicationIntegrationType"
                 }
             },
-            "global_popularity_rank": {
-                "type": "integer"
-            },
             "contexts": {
                 "type": "array",
                 "items": {
                     "$ref": "#/definitions/InteractionContextType"
                 }
-            },
-            "version": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
-                "type": "string"
             },
             "handler": {
                 "enum": [
@@ -109739,11 +111964,7 @@
         },
         "additionalProperties": false,
         "required": [
-            "application_id",
-            "default_member_permissions",
-            "description",
-            "name",
-            "version"
+            "name"
         ],
         "definitions": {
             "Record<string,string>": {
@@ -109816,25 +112037,6 @@
                     "name",
                     "value"
                 ]
-            },
-            "ApplicationCommandIndexPermissions": {
-                "type": "object",
-                "properties": {
-                    "user": {
-                        "type": "boolean"
-                    },
-                    "roles": {
-                        "$ref": "#/definitions/Record<string,boolean>"
-                    },
-                    "channels": {
-                        "$ref": "#/definitions/Record<string,boolean>"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "Record<string,boolean>": {
-                "type": "object",
-                "additionalProperties": false
             },
             "ApplicationIntegrationType": {
                 "type": "number",
