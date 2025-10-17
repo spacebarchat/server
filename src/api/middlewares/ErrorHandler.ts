@@ -34,6 +34,7 @@ export function ErrorHandler(
 		let httpcode = code;
 		let message = error?.toString();
 		let errors = undefined;
+		let _ajvErrors = undefined;
 
 		if (error instanceof HTTPError && error.code)
 			code = httpcode = error.code;
@@ -50,6 +51,7 @@ export function ErrorHandler(
 			code = Number(error.code);
 			message = error.message;
 			errors = error.errors;
+			_ajvErrors = error._ajvErrors;
 		} else if (error?.type == "entity.parse.failed") {
 			// body-parser failed
 			httpcode = 400;
@@ -72,7 +74,7 @@ export function ErrorHandler(
 
 		if (httpcode > 511) httpcode = 400;
 
-		res.status(httpcode).json({ code: code, message, errors });
+		res.status(httpcode).json({ code: code, message, errors, _ajvErrors });
 	} catch (error) {
 		console.error(`[Internal Server Error] 500`, error);
 		return res
