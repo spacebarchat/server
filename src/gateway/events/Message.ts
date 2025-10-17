@@ -45,9 +45,15 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 	) {
 		data = bigIntJson.parse(buffer.toString());
 	} else if (this.encoding === "json" && buffer instanceof Buffer) {
-		if (this.inflate) {
+		if (this.compress === "zlib-stream") {
 			try {
-				buffer = this.inflate.process(buffer);
+				buffer = this.inflate!.process(buffer);
+			} catch {
+				buffer = buffer.toString();
+			}
+		} else if (this.compress === "zstd-stream") {
+			try {
+				buffer = await this.zstdDecoder!.decode(buffer);
 			} catch {
 				buffer = buffer.toString();
 			}

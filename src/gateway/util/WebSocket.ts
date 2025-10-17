@@ -20,19 +20,24 @@ import { Intents, ListenEventOpts, Permissions } from "@spacebar/util";
 import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
 import { Capabilities } from "./Capabilities";
+import { ZstdCompress } from "zlib";
+import { ZstdDecompress } from "node:zlib";
+import { Decoder, Encoder } from "@toondepauw/node-zstd";
 
 export interface WebSocket extends WS {
 	version: number;
 	user_id: string;
 	session_id: string;
 	encoding: "etf" | "json";
-	compress?: "zlib-stream";
+	compress?: "zlib-stream" | "zstd-stream";
 	ipAddress?: string;
 	userAgent?: string; // for cdn request signing
 	shard_count?: bigint;
 	shard_id?: bigint;
 	deflate?: Deflate;
 	inflate?: Inflate;
+	zstdEncoder?: Encoder;
+	zstdDecoder?: Decoder;
 	heartbeatTimeout: NodeJS.Timeout;
 	readyTimeout: NodeJS.Timeout;
 	intents: Intents;
