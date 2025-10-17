@@ -144,7 +144,7 @@ export function route(opts: RouteOptions) {
 						`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`,
 						validate?.errors,
 					);
-				throw FieldErrors(fields);
+				throw FieldErrors(fields, validate.errors!);
 			}
 		}
 		next();

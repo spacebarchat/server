@@ -22,13 +22,22 @@ export function objectMap<SV, TV>(srcObj: { [index: string]: SV }, callback: (va
 
 if (!Object.prototype.forEach)
 	Object.defineProperty(Object.prototype, "forEach", {
-		value: objectForEach,
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-expect-error
+		value: function (cb) {
+			return objectForEach(this, cb);
+		},
 		enumerable: false,
 		writable: true,
 	});
+
 if (!Object.prototype.map)
 	Object.defineProperty(Object.prototype, "map", {
-		value: objectMap,
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-expect-error
+		value: function (cb) {
+			return objectMap(this, cb);
+		},
 		enumerable: false,
 		writable: true,
 	});
