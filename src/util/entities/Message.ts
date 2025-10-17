@@ -29,7 +29,7 @@ import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
 import { NewUrlUserSignatureData } from "../Signing";
-import { ActionRowComponent, Embed, MessageType, PartialMessage, Poll, Reaction } from "@spacebar/schemas";
+import { ActionRowComponent, ApplicationCommandType, Embed, MessageType, PartialMessage, Poll, Reaction } from "@spacebar/schemas";
 
 @Entity({
 	name: "messages",
@@ -177,8 +177,16 @@ export class Message extends BaseClass {
 		id: string;
 		type: InteractionType;
 		name: string;
-		user_id: string; // the user who invoked the interaction
-		// user: User; // TODO: autopopulate user
+	};
+
+	@Column({ type: "simple-json", nullable: true })
+	interaction_metadata?: {
+		id: string;
+		type: InteractionType;
+		user_id: string;
+		authorizing_integration_owners: object;
+		name: string;
+		command_type: ApplicationCommandType;
 	};
 
 	@Column({ type: "simple-json", nullable: true })
@@ -231,7 +239,7 @@ export class Message extends BaseClass {
 			channel_id: this.channel_id!,
 			type: this.type,
 			content: this.content!,
-			author: {...this.author!, avatar: this.author?.avatar ?? null },
+			author: { ...this.author!, avatar: this.author?.avatar ?? null },
 			flags: this.flags,
 			application_id: this.application_id,
 			//channel: this.channel, // TODO: ephemeral DM channels

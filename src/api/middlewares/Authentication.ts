@@ -32,6 +32,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"GET /invites/",
 	// Routes with a seperate auth system
 	/^(POST|HEAD|GET|PATCH|DELETE) \/webhooks\/\d+\/\w+\/?/, // no token requires auth
+	/^POST \/interactions\/\d+\/\w+\/callback/,
 	// Public information endpoints
 	"GET /ping",
 	"GET /gateway",
@@ -72,11 +73,7 @@ declare global {
 	}
 }
 
-export async function Authentication(
-	req: Request,
-	res: Response,
-	next: NextFunction,
-) {
+export async function Authentication(req: Request, res: Response, next: NextFunction) {
 	if (req.method === "OPTIONS") return res.sendStatus(204);
 	const url = req.url.replace(API_PREFIX, "");
 	if (
@@ -104,8 +101,7 @@ export async function Authentication(
 		})
 	)
 		return next();
-	if (!req.headers.authorization)
-		return next(new HTTPError("Missing Authorization Header", 401));
+	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 
 	try {
 		const { decoded, user } = await checkToken(req.headers.authorization);

@@ -19,3 +19,4 @@
 export * from "./OrmUtils";
 export * from "./Erlpack";
 export * from "./Jimp";
+export * from "./Interactions";
