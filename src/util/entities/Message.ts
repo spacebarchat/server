@@ -174,6 +174,7 @@ export class Message extends BaseClass {
 
 	@Column({ type: "simple-json", nullable: true })
 	interaction?: {
+		user: User | null;
 		id: string;
 		type: InteractionType;
 		name: string;
@@ -181,6 +182,7 @@ export class Message extends BaseClass {
 
 	@Column({ type: "simple-json", nullable: true })
 	interaction_metadata?: {
+		user: User | null;
 		id: string;
 		type: InteractionType;
 		user_id: string;
