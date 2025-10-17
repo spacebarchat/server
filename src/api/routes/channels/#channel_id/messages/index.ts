@@ -229,17 +229,25 @@ router.get(
 			return x;
 		});
 
+		await ret
+			.filter((x) => x.interaction_metadata && !x.interaction_metadata.user)
+			.forEachAsync(async (x) => {
+				x.interaction_metadata!.user = await User.findOne({ where: { id: x.interaction_metadata!.user_id } });
+				x.interaction!.user = await User.findOne({ where: { id: x.interaction_metadata!.user_id } });
+			});
 
 		// polyfill message references for old messages
-		await ret.filter((msg) => msg.message_reference && !msg.referenced_message?.id).forEachAsync(async (msg) => {
-			const whereOptions: { id: string; guild_id?: string; channel_id?: string } = {
-				id: msg.message_reference!.message_id,
-			};
-			if (msg.message_reference!.guild_id) whereOptions.guild_id = msg.message_reference!.guild_id;
-			if (msg.message_reference!.channel_id) whereOptions.channel_id = msg.message_reference!.channel_id;
+		await ret
+			.filter((msg) => msg.message_reference && !msg.referenced_message?.id)
+			.forEachAsync(async (msg) => {
+				const whereOptions: { id: string; guild_id?: string; channel_id?: string } = {
+					id: msg.message_reference!.message_id,
+				};
+				if (msg.message_reference!.guild_id) whereOptions.guild_id = msg.message_reference!.guild_id;
+				if (msg.message_reference!.channel_id) whereOptions.channel_id = msg.message_reference!.channel_id;
 
-			msg.referenced_message = await Message.findOne({ where: whereOptions, relations: ["author", "mentions", "mention_roles", "mention_channels"] });
-		});
+				msg.referenced_message = await Message.findOne({ where: whereOptions, relations: ["author", "mentions", "mention_roles", "mention_channels"] });
+			});
 
 		return res.json(ret);
 	},
