@@ -5,17 +5,17 @@ declare global {
 	}
 }
 
-export function objectForEach<T>(obj: { [index: string]: T }, callback: (value: T, key: string, object: { [index: string]: T }) => void): void {
-	Object.keys(obj).forEach((key) => {
-		callback(obj[key], key, obj);
+export function objectForEach<T>(this: { [index: string]: T }, callback: (value: T, key: string, object: { [index: string]: T }) => void): void {
+	Object.keys(this).forEach((key) => {
+		callback(this[key], key, this);
 	});
 }
 
-export function objectMap<SV, TV>(srcObj: { [index: string]: SV }, callback: (value: SV, key: string, object: { [index: string]: SV }) => TV): { [index: string]: TV } {
+export function objectMap<SV, TV>(this: { [index: string]: SV }, callback: (value: SV, key: string, object: { [index: string]: SV }) => TV): { [index: string]: TV } {
 	if (typeof callback !== "function") throw new TypeError(`${callback} is not a function`);
 	const obj: { [index: string]: TV } = {};
-	Object.keys(srcObj).forEach((key) => {
-		obj[key] = callback(srcObj[key], key, srcObj);
+	Object.keys(this).forEach((key) => {
+		obj[key] = callback(this[key], key, this);
 	});
 	return obj;
 }
