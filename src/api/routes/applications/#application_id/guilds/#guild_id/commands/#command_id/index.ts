@@ -19,7 +19,7 @@
 import { ApplicationCommandCreateSchema, ApplicationCommandSchema } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { Application, ApplicationCommand, FieldErrors, Guild, Snowflake } from "@spacebar/util";
+import { Application, ApplicationCommand, FieldErrors, Guild, Member, Snowflake } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 
@@ -34,7 +34,12 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const guildExists = await Guild.exists({ where: { id: req.params.guild_id } });
 
 	if (!guildExists) {
-		res.status(404).send({ code: 404, message: "Unknown guild" });
+		res.status(404).send({ code: 404, message: "Unknown Server" });
+		return;
+	}
+
+	if (!(await Member.exists({ where: { id: req.params.application_id, guild_id: req.params.guild_id } }))) {
+		res.status(401).send({ code: 401, message: "Missing Access" });
 		return;
 	}
 
@@ -64,7 +69,12 @@ router.patch(
 		const guildExists = await Guild.exists({ where: { id: req.params.guild_id } });
 
 		if (!guildExists) {
-			res.status(404).send({ code: 404, message: "Unknown guild" });
+			res.status(404).send({ code: 404, message: "Unknown Server" });
+			return;
+		}
+
+		if (!(await Member.exists({ where: { id: req.params.application_id, guild_id: req.params.guild_id } }))) {
+			res.status(401).send({ code: 401, message: "Missing Access" });
 			return;
 		}
 
@@ -127,7 +137,12 @@ router.delete("/", async (req: Request, res: Response) => {
 	const guildExists = await Guild.exists({ where: { id: req.params.guild_id } });
 
 	if (!guildExists) {
-		res.status(404).send({ code: 404, message: "Unknown guild" });
+		res.status(404).send({ code: 404, message: "Unknown Server" });
+		return;
+	}
+
+	if (!(await Member.exists({ where: { id: req.params.application_id, guild_id: req.params.guild_id } }))) {
+		res.status(401).send({ code: 401, message: "Missing Access" });
 		return;
 	}
 
