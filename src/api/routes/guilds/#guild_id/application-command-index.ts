@@ -18,19 +18,33 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { ApplicationCommand, Member, Snowflake } from "@spacebar/util";
+import { Application, ApplicationCommand, Member, Snowflake } from "@spacebar/util";
 import { IsNull } from "typeorm";
 
 const router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const applications = await Member.find({ where: { guild_id: req.params.guild_id, user: { bot: true } } });
+	const members = await Member.find({ where: { guild_id: req.params.guild_id, user: { bot: true } } });
+
+	const applications = await Application.find({ where: { id: members[0].id } });
+	const applicationsSendable = [];
+
+	for (const application of applications) {
+		applicationsSendable.push({
+			bot_id: application.bot?.id,
+			description: application.description,
+			flags: application.flags,
+			icon: application.icon,
+			id: application.id,
+			name: application.name,
+		});
+	}
 
 	const globalApplicationCommands = await ApplicationCommand.find({ where: { application_id: applications[0].id, guild_id: IsNull() } });
 	const guildApplicationCommands = await ApplicationCommand.find({ where: { application_id: applications[0].id, guild_id: req.params.guild_id } });
 
 	res.send({
-		applications,
+		applications: applicationsSendable,
 		application_commands: [...globalApplicationCommands, ...guildApplicationCommands],
 		version: Snowflake.generate(),
 	});
