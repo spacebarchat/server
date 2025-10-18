@@ -214,6 +214,7 @@ export class Message extends BaseClass {
 			guild: this.guild ?? undefined,
 			webhook: this.webhook ?? undefined,
 			interaction: this.interaction ?? undefined,
+			interaction_metadata: this.interaction_metadata ?? undefined,
 			reactions: this.reactions ?? undefined,
 			sticker_items: this.sticker_items ?? undefined,
 			message_reference: this.message_reference ?? undefined,
