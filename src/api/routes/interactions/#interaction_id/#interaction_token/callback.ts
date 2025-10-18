@@ -106,7 +106,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 					components: message.components,
 					content: message.content,
 					edited_timestamp: null,
-					emmbeds: message.embeds,
+					embeds: message.embeds,
 					flags: message.flags,
 					id: message.id,
 					interaction: {
