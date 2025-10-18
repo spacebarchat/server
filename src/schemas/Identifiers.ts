@@ -25,6 +25,5 @@
  *  000000111011000111100001101001000101000000  00001  00000  000000000000
  *       number of ms since Discord epoch       worker  pid    increment
  * ```
- * @format snowflake
  */
 export type Snowflake = string;
