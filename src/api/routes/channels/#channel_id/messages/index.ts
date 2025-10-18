@@ -463,7 +463,7 @@ router.post(
 												.map((x) => `\`${x![0]}\``)
 												.join(", ")}`,
 											author: message.author,
-											guild_id: message.channel.guild_id,
+											guild_id: message.guild_id,
 										});
 										await Promise.all([
 											Message.insert(message),
