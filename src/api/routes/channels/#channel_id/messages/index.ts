@@ -230,10 +230,9 @@ router.get(
 		});
 
 		await ret
-			.filter((x) => x.interaction_metadata && !x.interaction_metadata.user)
-			.forEachAsync(async (x) => {
-				x.interaction_metadata!.user = await User.findOne({ where: { id: x.interaction_metadata!.user_id } });
-				x.interaction!.user = await User.findOne({ where: { id: x.interaction_metadata!.user_id } });
+			.filter((x: MessageCreateSchema) => x.interaction_metadata && !x.interaction_metadata.user)
+			.forEachAsync(async (x: MessageCreateSchema) => {
+				x.interaction_metadata!.user = x.interaction!.user = await User.findOneOrFail({ where: { id: (x as Message).interaction_metadata!.user_id } });
 			});
 
 		// polyfill message references for old messages
