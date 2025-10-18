@@ -1152,14 +1152,49 @@
                     "id": {
                         "type": "string"
                     },
-                    "name": {
-                        "type": "string"
-                    },
                     "type": {
                         "$ref": "#/definitions/InteractionType"
                     },
+                    "name": {
+                        "type": "string"
+                    },
+                    "command_type": {
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number"
+                    },
+                    "ephemerality_reason": {
+                        "type": "integer"
+                    },
                     "user": {
                         "$ref": "#/definitions/PublicUser"
+                    },
+                    "authorizing_integration_owners": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": true
+                    },
+                    "original_response_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
+                    },
+                    "interacted_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
+                    },
+                    "triggering_interaction_metadata": {
+                        "$ref": "#/definitions/MessageInteractionSchema"
+                    },
+                    "target_user": {
+                        "$ref": "#/definitions/PublicUser"
+                    },
+                    "target_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
                     }
                 },
                 "additionalProperties": false,
@@ -1242,6 +1277,11 @@
                     "public_flags",
                     "username"
                 ]
+            },
+            "Snowflake": {
+                "description": "A container for useful snowflake-related methods.",
+                "type": "object",
+                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -109686,14 +109726,49 @@
                     "id": {
                         "type": "string"
                     },
-                    "name": {
-                        "type": "string"
-                    },
                     "type": {
                         "$ref": "#/definitions/InteractionType"
                     },
+                    "name": {
+                        "type": "string"
+                    },
+                    "command_type": {
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number"
+                    },
+                    "ephemerality_reason": {
+                        "type": "integer"
+                    },
                     "user": {
                         "$ref": "#/definitions/PublicUser"
+                    },
+                    "authorizing_integration_owners": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": true
+                    },
+                    "original_response_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
+                    },
+                    "interacted_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
+                    },
+                    "triggering_interaction_metadata": {
+                        "$ref": "#/definitions/MessageInteractionSchema"
+                    },
+                    "target_user": {
+                        "$ref": "#/definitions/PublicUser"
+                    },
+                    "target_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
                     }
                 },
                 "additionalProperties": false,
@@ -109776,6 +109851,11 @@
                     "public_flags",
                     "username"
                 ]
+            },
+            "Snowflake": {
+                "description": "A container for useful snowflake-related methods.",
+                "type": "object",
+                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -109857,27 +109937,7 @@
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "MessageInteractionSchema": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "type": {
-                "$ref": "#/definitions/InteractionType"
-            },
-            "user": {
-                "$ref": "#/definitions/PublicUser"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "id",
-            "name",
-            "type"
-        ],
+        "$ref": "#/definitions/MessageInteractionSchema",
         "definitions": {
             "InteractionType": {
                 "type": "number",
@@ -109951,6 +110011,69 @@
                     "premium_type",
                     "public_flags",
                     "username"
+                ]
+            },
+            "Snowflake": {
+                "description": "A container for useful snowflake-related methods.",
+                "type": "object",
+                "additionalProperties": false
+            },
+            "MessageInteractionSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/definitions/InteractionType"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "command_type": {
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number"
+                    },
+                    "ephemerality_reason": {
+                        "type": "integer"
+                    },
+                    "user": {
+                        "$ref": "#/definitions/PublicUser"
+                    },
+                    "authorizing_integration_owners": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": true
+                    },
+                    "original_response_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
+                    },
+                    "interacted_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
+                    },
+                    "triggering_interaction_metadata": {
+                        "$ref": "#/definitions/MessageInteractionSchema"
+                    },
+                    "target_user": {
+                        "$ref": "#/definitions/PublicUser"
+                    },
+                    "target_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "name",
+                    "type"
                 ]
             }
         },
@@ -110636,14 +110759,49 @@
                     "id": {
                         "type": "string"
                     },
-                    "name": {
-                        "type": "string"
-                    },
                     "type": {
                         "$ref": "#/definitions/InteractionType"
                     },
+                    "name": {
+                        "type": "string"
+                    },
+                    "command_type": {
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number"
+                    },
+                    "ephemerality_reason": {
+                        "type": "integer"
+                    },
                     "user": {
                         "$ref": "#/definitions/PublicUser"
+                    },
+                    "authorizing_integration_owners": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": true
+                    },
+                    "original_response_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
+                    },
+                    "interacted_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
+                    },
+                    "triggering_interaction_metadata": {
+                        "$ref": "#/definitions/MessageInteractionSchema"
+                    },
+                    "target_user": {
+                        "$ref": "#/definitions/PublicUser"
+                    },
+                    "target_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/definitions/Snowflake"
                     }
                 },
                 "additionalProperties": false,
@@ -110726,6 +110884,11 @@
                     "public_flags",
                     "username"
                 ]
+            },
+            "Snowflake": {
+                "description": "A container for useful snowflake-related methods.",
+                "type": "object",
+                "additionalProperties": false
             }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"

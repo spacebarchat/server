@@ -1058,14 +1058,49 @@
                     "id": {
                         "type": "string"
                     },
-                    "name": {
-                        "type": "string"
-                    },
                     "type": {
                         "$ref": "#/components/schemas/InteractionType"
                     },
+                    "name": {
+                        "type": "string"
+                    },
+                    "command_type": {
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number"
+                    },
+                    "ephemerality_reason": {
+                        "type": "integer"
+                    },
                     "user": {
                         "$ref": "#/components/schemas/PublicUser"
+                    },
+                    "authorizing_integration_owners": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": true
+                    },
+                    "original_response_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/components/schemas/Snowflake"
+                    },
+                    "interacted_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/components/schemas/Snowflake"
+                    },
+                    "triggering_interaction_metadata": {
+                        "$ref": "#/components/schemas/MessageInteractionSchema"
+                    },
+                    "target_user": {
+                        "$ref": "#/components/schemas/PublicUser"
+                    },
+                    "target_message_id": {
+                        "description": "A container for useful snowflake-related methods.",
+                        "$ref": "#/components/schemas/Snowflake"
                     }
                 },
                 "required": [
@@ -1146,6 +1181,10 @@
                     "public_flags",
                     "username"
                 ]
+            },
+            "Snowflake": {
+                "description": "A container for useful snowflake-related methods.",
+                "type": "object"
             },
             "InteractionCallbackSchema": {
                 "type": "object",
@@ -11618,10 +11657,6 @@
                         "type": "string"
                     }
                 }
-            },
-            "Snowflake": {
-                "description": "A container for useful snowflake-related methods.",
-                "type": "object"
             },
             "SendableApplicationCommandDataSchema": {
                 "type": "object",
