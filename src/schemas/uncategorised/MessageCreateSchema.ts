@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { InteractionType } from "@spacebar/util";
-import { ActionRowComponent, Embed, PollAnswer, PollMedia, PublicUser } from "@spacebar/schemas";
+import { InteractionType, Snowflake } from "@spacebar/util";
+import { ActionRowComponent, ApplicationCommandType, Embed, PollAnswer, PollMedia, PublicUser } from "@spacebar/schemas";
 
 export type MessageCreateAttachment = {
 	id: string;
@@ -84,7 +84,15 @@ export interface PollCreationSchema {
 
 interface MessageInteractionSchema {
 	id: string;
-	name: string;
 	type: InteractionType;
+	name: string;
+	command_type?: ApplicationCommandType;
+	ephemerality_reason?: number;
 	user?: PublicUser; // It has to be optional cause LSP gives an errors for some reason
+	authorizing_integration_owners?: object; // It has to be optional cause LSP gives an errors for some reason
+	original_response_message_id?: Snowflake;
+	interacted_message_id?: Snowflake;
+	triggering_interaction_metadata?: MessageInteractionSchema;
+	target_user?: PublicUser;
+	target_message_id?: Snowflake;
 }
