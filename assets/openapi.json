@@ -574,6 +574,12 @@
                     },
                     "avatar_url": {
                         "type": "string"
+                    },
+                    "interaction": {
+                        "$ref": "#/components/schemas/MessageInteractionSchema"
+                    },
+                    "interaction_metadata": {
+                        "$ref": "#/components/schemas/MessageInteractionSchema"
                     }
                 }
             },
@@ -1044,6 +1050,101 @@
                 },
                 "required": [
                     "poll_media"
+                ]
+            },
+            "MessageInteractionSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/InteractionType"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/PublicUser"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "type"
+                ]
+            },
+            "InteractionType": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ]
+            },
+            "PublicUser": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "badge_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "premium_type",
+                    "public_flags",
+                    "username"
                 ]
             },
             "InteractionCallbackSchema": {
@@ -5308,7 +5409,7 @@
                             "sending_dns_records": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
+                                    "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
                                 }
                             }
                         },
@@ -8831,7 +8932,7 @@
                                 "type": "string"
                             },
                             "template": {
-                                "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -8858,7 +8959,7 @@
                             "items": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                    "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                                 }
                             },
                             "paging": {
@@ -8908,7 +9009,7 @@
                         "type": "object",
                         "properties": {
                             "template": {
-                                "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -8996,7 +9097,7 @@
                                 "type": "string"
                             },
                             "template": {
-                                "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -10050,7 +10151,7 @@
                 "type": "object",
                 "properties": {
                     "body": {
-                        "$ref": "#/components/schemas/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
+                        "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
                     },
                     "status": {
                         "type": "integer"
@@ -15965,14 +16066,6 @@
                     255
                 ]
             },
-            "InteractionType": {
-                "type": "number",
-                "enum": [
-                    0,
-                    1,
-                    2
-                ]
-            },
             "Poll": {
                 "type": "object",
                 "properties": {
@@ -17219,71 +17312,6 @@
                     "timestamp",
                     "tts",
                     "type"
-                ]
-            },
-            "PublicUser": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "premium_since": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    },
-                    "accent_color": {
-                        "type": "integer"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "premium_type": {
-                        "type": "integer"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
-                    },
-                    "badge_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "required": [
-                    "bio",
-                    "bot",
-                    "discriminator",
-                    "id",
-                    "premium_since",
-                    "premium_type",
-                    "public_flags",
-                    "username"
                 ]
             },
             "GuildMessagesSearchResponse": {
@@ -21381,6 +21409,12 @@
                     },
                     "avatar_url": {
                         "type": "string"
+                    },
+                    "interaction": {
+                        "$ref": "#/components/schemas/MessageInteractionSchema"
+                    },
+                    "interaction_metadata": {
+                        "$ref": "#/components/schemas/MessageInteractionSchema"
                     }
                 }
             },
