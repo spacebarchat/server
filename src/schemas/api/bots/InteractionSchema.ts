@@ -1,8 +1,8 @@
 import { ApplicationCommandOption, Snowflake, UploadAttachmentRequestSchema } from "@spacebar/schemas";
-import { ApplicationCommandType } from "./ApplicationCommandSchema";
+import { InteractionType } from "@spacebar/util";
 
 export interface InteractionSchema {
-	type: ApplicationCommandType;
+	type: InteractionType;
 	application_id: Snowflake;
 	guild_id?: Snowflake;
 	channel_id: Snowflake;
