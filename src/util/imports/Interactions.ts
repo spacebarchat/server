@@ -17,7 +17,7 @@
 */
 
 import { ApplicationCommandType } from "@spacebar/schemas";
-import { Snowflake } from "@spacebar/util";
+import { InteractionType, Snowflake } from "@spacebar/util";
 
 interface PendingInteraction {
 	timeout: NodeJS.Timeout;
@@ -25,7 +25,8 @@ interface PendingInteraction {
 	channelId?: string;
 	guildId?: string;
 	nonce?: string;
-	type: ApplicationCommandType;
+	type: InteractionType;
+	commandType: ApplicationCommandType;
 	commandName: string;
 }
 

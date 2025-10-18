@@ -20,7 +20,7 @@ import { randomBytes } from "crypto";
 import { InteractionSchema } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { Application, ApplicationCommand, emitEvent, InteractionCreateEvent, InteractionFailureEvent, Snowflake } from "@spacebar/util";
+import { emitEvent, InteractionCreateEvent, InteractionFailureEvent, Snowflake } from "@spacebar/util";
 import { pendingInteractions } from "../../../util/imports/Interactions";
 
 const router = Router({ mergeParams: true });
@@ -73,6 +73,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		guildId: body.guild_id,
 		channelId: body.channel_id,
 		type: body.type,
+		commandType: body.data.type,
 		commandName: body.data.name,
 	});
 
