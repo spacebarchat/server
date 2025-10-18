@@ -4,7 +4,6 @@
         "properties": {
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "type": {
@@ -18,12 +17,10 @@
             },
             "application_id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "guild_id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "name": {
@@ -88,7 +85,6 @@
             },
             "version": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "handler": {
@@ -225,22 +221,18 @@
             },
             "application_id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "guild_id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "channel_id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "message_id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "message_flags": {
@@ -11637,7 +11629,7 @@
                     "sending_dns_records": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
+                            "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
                         }
                     }
                 },
@@ -11658,7 +11650,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord": {
                 "type": "object",
                 "properties": {
                     "cached": {
@@ -15260,7 +15252,7 @@
                         "type": "string"
                     },
                     "template": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -15276,7 +15268,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -15303,7 +15295,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -15362,7 +15354,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -15440,7 +15432,7 @@
                     "items": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                            "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                         }
                     },
                     "paging": {
@@ -15481,7 +15473,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -15508,7 +15500,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -15567,7 +15559,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -15643,7 +15635,7 @@
                 "type": "object",
                 "properties": {
                     "template": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -15658,7 +15650,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -15685,7 +15677,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -15744,7 +15736,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -15888,7 +15880,7 @@
                         "type": "string"
                     },
                     "template": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -15904,7 +15896,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -15931,7 +15923,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -15990,7 +15982,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -17123,7 +17115,7 @@
         "type": "object",
         "properties": {
             "body": {
-                "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
+                "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
             },
             "status": {
                 "type": "integer"
@@ -17135,7 +17127,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType": {
                 "anyOf": [
                     {
                         "type": "object",
@@ -19811,7 +19803,6 @@
         "properties": {
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "available": {
@@ -19823,6 +19814,425 @@
             "available",
             "id"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UserSettingsUpdateSchema": {
+        "type": "object",
+        "properties": {
+            "afk_timeout": {
+                "type": "integer"
+            },
+            "allow_accessibility_detection": {
+                "type": "boolean"
+            },
+            "animate_emoji": {
+                "type": "boolean"
+            },
+            "animate_stickers": {
+                "type": "integer"
+            },
+            "contact_sync_enabled": {
+                "type": "boolean"
+            },
+            "convert_emoticons": {
+                "type": "boolean"
+            },
+            "custom_status": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/CustomStatus"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "default_guilds_restricted": {
+                "type": "boolean"
+            },
+            "detect_platform_accounts": {
+                "type": "boolean"
+            },
+            "developer_mode": {
+                "type": "boolean"
+            },
+            "disable_games_tab": {
+                "type": "boolean"
+            },
+            "enable_tts_command": {
+                "type": "boolean"
+            },
+            "explicit_content_filter": {
+                "type": "integer"
+            },
+            "friend_discovery_flags": {
+                "type": "integer"
+            },
+            "friend_source_flags": {
+                "$ref": "#/definitions/FriendSourceFlags"
+            },
+            "gateway_connected": {
+                "type": "boolean"
+            },
+            "gif_auto_play": {
+                "type": "boolean"
+            },
+            "guild_folders": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/GuildFolder"
+                }
+            },
+            "guild_positions": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "inline_attachment_media": {
+                "type": "boolean"
+            },
+            "inline_embed_media": {
+                "type": "boolean"
+            },
+            "locale": {
+                "type": "string"
+            },
+            "message_display_compact": {
+                "type": "boolean"
+            },
+            "native_phone_integration_enabled": {
+                "type": "boolean"
+            },
+            "render_embeds": {
+                "type": "boolean"
+            },
+            "render_reactions": {
+                "type": "boolean"
+            },
+            "restricted_guilds": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "show_current_game": {
+                "type": "boolean"
+            },
+            "status": {
+                "enum": [
+                    "dnd",
+                    "idle",
+                    "invisible",
+                    "offline",
+                    "online"
+                ],
+                "type": "string"
+            },
+            "stream_notifications_enabled": {
+                "type": "boolean"
+            },
+            "theme": {
+                "enum": [
+                    "dark",
+                    "light"
+                ],
+                "type": "string"
+            },
+            "timezone_offset": {
+                "type": "integer"
+            },
+            "view_nsfw_guilds": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "definitions": {
+            "CustomStatus": {
+                "type": "object",
+                "properties": {
+                    "emoji_id": {
+                        "type": "string"
+                    },
+                    "emoji_name": {
+                        "type": "string"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "text": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "FriendSourceFlags": {
+                "type": "object",
+                "properties": {
+                    "all": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "all"
+                ]
+            },
+            "GuildFolder": {
+                "type": "object",
+                "properties": {
+                    "color": {
+                        "type": "integer"
+                    },
+                    "guild_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "color",
+                    "guild_ids",
+                    "id",
+                    "name"
+                ]
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UserSettingsSchema": {
+        "type": "object",
+        "properties": {
+            "afk_timeout": {
+                "type": "integer"
+            },
+            "allow_accessibility_detection": {
+                "type": "boolean"
+            },
+            "animate_emoji": {
+                "type": "boolean"
+            },
+            "animate_stickers": {
+                "type": "integer"
+            },
+            "contact_sync_enabled": {
+                "type": "boolean"
+            },
+            "convert_emoticons": {
+                "type": "boolean"
+            },
+            "custom_status": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/CustomStatus"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "default_guilds_restricted": {
+                "type": "boolean"
+            },
+            "detect_platform_accounts": {
+                "type": "boolean"
+            },
+            "developer_mode": {
+                "type": "boolean"
+            },
+            "disable_games_tab": {
+                "type": "boolean"
+            },
+            "enable_tts_command": {
+                "type": "boolean"
+            },
+            "explicit_content_filter": {
+                "type": "integer"
+            },
+            "friend_discovery_flags": {
+                "type": "integer"
+            },
+            "friend_source_flags": {
+                "$ref": "#/definitions/FriendSourceFlags"
+            },
+            "gateway_connected": {
+                "type": "boolean"
+            },
+            "gif_auto_play": {
+                "type": "boolean"
+            },
+            "guild_folders": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/GuildFolder"
+                }
+            },
+            "guild_positions": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "inline_attachment_media": {
+                "type": "boolean"
+            },
+            "inline_embed_media": {
+                "type": "boolean"
+            },
+            "locale": {
+                "type": "string"
+            },
+            "message_display_compact": {
+                "type": "boolean"
+            },
+            "native_phone_integration_enabled": {
+                "type": "boolean"
+            },
+            "render_embeds": {
+                "type": "boolean"
+            },
+            "render_reactions": {
+                "type": "boolean"
+            },
+            "restricted_guilds": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "show_current_game": {
+                "type": "boolean"
+            },
+            "status": {
+                "enum": [
+                    "dnd",
+                    "idle",
+                    "invisible",
+                    "offline",
+                    "online"
+                ],
+                "type": "string"
+            },
+            "stream_notifications_enabled": {
+                "type": "boolean"
+            },
+            "theme": {
+                "enum": [
+                    "dark",
+                    "light"
+                ],
+                "type": "string"
+            },
+            "timezone_offset": {
+                "type": "integer"
+            },
+            "view_nsfw_guilds": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "afk_timeout",
+            "allow_accessibility_detection",
+            "animate_emoji",
+            "animate_stickers",
+            "contact_sync_enabled",
+            "convert_emoticons",
+            "custom_status",
+            "default_guilds_restricted",
+            "detect_platform_accounts",
+            "developer_mode",
+            "disable_games_tab",
+            "enable_tts_command",
+            "explicit_content_filter",
+            "friend_discovery_flags",
+            "friend_source_flags",
+            "gateway_connected",
+            "gif_auto_play",
+            "guild_folders",
+            "guild_positions",
+            "inline_attachment_media",
+            "inline_embed_media",
+            "locale",
+            "message_display_compact",
+            "native_phone_integration_enabled",
+            "render_embeds",
+            "render_reactions",
+            "restricted_guilds",
+            "show_current_game",
+            "status",
+            "stream_notifications_enabled",
+            "theme",
+            "timezone_offset",
+            "view_nsfw_guilds"
+        ],
+        "definitions": {
+            "CustomStatus": {
+                "type": "object",
+                "properties": {
+                    "emoji_id": {
+                        "type": "string"
+                    },
+                    "emoji_name": {
+                        "type": "string"
+                    },
+                    "expires_at": {
+                        "type": "integer"
+                    },
+                    "text": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "FriendSourceFlags": {
+                "type": "object",
+                "properties": {
+                    "all": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "all"
+                ]
+            },
+            "GuildFolder": {
+                "type": "object",
+                "properties": {
+                    "color": {
+                        "type": "integer"
+                    },
+                    "guild_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "color",
+                    "guild_ids",
+                    "id",
+                    "name"
+                ]
+            }
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "IdentifySchema": {
@@ -25358,7 +25768,6 @@
                 "properties": {
                     "id": {
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "format": "snowflake",
                         "type": "string"
                     },
                     "channel_id": {
@@ -25424,7 +25833,6 @@
                 "properties": {
                     "id": {
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "format": "snowflake",
                         "type": "string"
                     },
                     "username": {
@@ -25523,7 +25931,6 @@
                     },
                     "sku_id": {
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "format": "snowflake",
                         "type": "string"
                     },
                     "expires_at": {
@@ -25567,7 +25974,6 @@
                     },
                     "sku_id": {
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "format": "snowflake",
                         "type": "string"
                     },
                     "label": {
@@ -33274,7 +33680,6 @@
                 "properties": {
                     "id": {
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "format": "snowflake",
                         "type": "string"
                     },
                     "premium_since": {
@@ -57893,7 +58298,6 @@
         "properties": {
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "premium_since": {
@@ -57964,7 +58368,6 @@
             },
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "flags": {
@@ -63090,7 +63493,6 @@
             },
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "format": "snowflake",
                 "type": "string"
             },
             "flags": {
@@ -87845,7 +88247,6 @@
                 "properties": {
                     "id": {
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "format": "snowflake",
                         "type": "string"
                     },
                     "premium_since": {
@@ -102478,7 +102879,6 @@
                 "properties": {
                     "id": {
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "format": "snowflake",
                         "type": "string"
                     },
                     "premium_since": {
@@ -102758,7 +103158,6 @@
                 "properties": {
                     "id": {
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "format": "snowflake",
                         "type": "string"
                     },
                     "premium_since": {
@@ -110962,233 +111361,6 @@
             }
         },
         "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "UserSettingsSchema": {
-        "type": "object",
-        "properties": {
-            "afk_timeout": {
-                "type": "integer"
-            },
-            "allow_accessibility_detection": {
-                "type": "boolean"
-            },
-            "animate_emoji": {
-                "type": "boolean"
-            },
-            "animate_stickers": {
-                "type": "integer"
-            },
-            "contact_sync_enabled": {
-                "type": "boolean"
-            },
-            "convert_emoticons": {
-                "type": "boolean"
-            },
-            "custom_status": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/CustomStatus"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "default_guilds_restricted": {
-                "type": "boolean"
-            },
-            "detect_platform_accounts": {
-                "type": "boolean"
-            },
-            "developer_mode": {
-                "type": "boolean"
-            },
-            "disable_games_tab": {
-                "type": "boolean"
-            },
-            "enable_tts_command": {
-                "type": "boolean"
-            },
-            "explicit_content_filter": {
-                "type": "integer"
-            },
-            "friend_discovery_flags": {
-                "type": "integer"
-            },
-            "friend_source_flags": {
-                "$ref": "#/definitions/FriendSourceFlags"
-            },
-            "gateway_connected": {
-                "type": "boolean"
-            },
-            "gif_auto_play": {
-                "type": "boolean"
-            },
-            "guild_folders": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/GuildFolder"
-                }
-            },
-            "guild_positions": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "inline_attachment_media": {
-                "type": "boolean"
-            },
-            "inline_embed_media": {
-                "type": "boolean"
-            },
-            "locale": {
-                "type": "string"
-            },
-            "message_display_compact": {
-                "type": "boolean"
-            },
-            "native_phone_integration_enabled": {
-                "type": "boolean"
-            },
-            "render_embeds": {
-                "type": "boolean"
-            },
-            "render_reactions": {
-                "type": "boolean"
-            },
-            "restricted_guilds": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "show_current_game": {
-                "type": "boolean"
-            },
-            "status": {
-                "enum": [
-                    "dnd",
-                    "idle",
-                    "invisible",
-                    "offline",
-                    "online"
-                ],
-                "type": "string"
-            },
-            "stream_notifications_enabled": {
-                "type": "boolean"
-            },
-            "theme": {
-                "enum": [
-                    "dark",
-                    "light"
-                ],
-                "type": "string"
-            },
-            "timezone_offset": {
-                "type": "integer"
-            },
-            "view_nsfw_guilds": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "afk_timeout",
-            "allow_accessibility_detection",
-            "animate_emoji",
-            "animate_stickers",
-            "contact_sync_enabled",
-            "convert_emoticons",
-            "custom_status",
-            "default_guilds_restricted",
-            "detect_platform_accounts",
-            "developer_mode",
-            "disable_games_tab",
-            "enable_tts_command",
-            "explicit_content_filter",
-            "friend_discovery_flags",
-            "friend_source_flags",
-            "gateway_connected",
-            "gif_auto_play",
-            "guild_folders",
-            "guild_positions",
-            "inline_attachment_media",
-            "inline_embed_media",
-            "locale",
-            "message_display_compact",
-            "native_phone_integration_enabled",
-            "render_embeds",
-            "render_reactions",
-            "restricted_guilds",
-            "show_current_game",
-            "status",
-            "stream_notifications_enabled",
-            "theme",
-            "timezone_offset",
-            "view_nsfw_guilds"
-        ],
-        "definitions": {
-            "CustomStatus": {
-                "type": "object",
-                "properties": {
-                    "emoji_id": {
-                        "type": "string"
-                    },
-                    "emoji_name": {
-                        "type": "string"
-                    },
-                    "expires_at": {
-                        "type": "integer"
-                    },
-                    "text": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "FriendSourceFlags": {
-                "type": "object",
-                "properties": {
-                    "all": {
-                        "type": "boolean"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "all"
-                ]
-            },
-            "GuildFolder": {
-                "type": "object",
-                "properties": {
-                    "color": {
-                        "type": "integer"
-                    },
-                    "guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "color",
-                    "guild_ids",
-                    "id",
-                    "name"
-                ]
-            }
-        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "VanityUrlSchema": {

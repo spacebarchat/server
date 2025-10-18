@@ -18,3 +18,4 @@
 export * from "./ConnectedAccount";
 export * from "./Member";
 export * from "./User";
+export * from "./UserSettings";
