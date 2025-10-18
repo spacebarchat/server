@@ -16,10 +16,10 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { InteractionCallbackSchema, InteractionCallbackType, MessageType } from "@spacebar/schemas";
+import { InteractionCallbackSchema, InteractionCallbackType, MessageCreateSchema, MessageType } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { ApplicationCommand, emitEvent, InteractionSuccessEvent, Message, MessageCreateEvent, pendingInteractions } from "@spacebar/util";
+import { emitEvent, InteractionSuccessEvent, Message, MessageCreateEvent, pendingInteractions, User } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 
@@ -54,9 +54,88 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		case InteractionCallbackType.CHANNEL_MESSAGE:
 			// TODO
 			break;
-		case InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE:
-			// TODO
+		case InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE: {
+			const message = Message.create({
+				type: MessageType.APPLICATION_COMMAND,
+				timestamp: new Date(),
+				application_id: req.user_id,
+				guild_id: interaction.guildId,
+				channel_id: interaction.channelId,
+				author_id: req.user_id,
+				content: body.data.content,
+				tts: body.data.tts,
+				embeds: body.data.embeds || [],
+				attachments: body.data.attachments,
+				poll: body.data.poll,
+				flags: body.data.flags,
+				reactions: [],
+				// webhook_id: req.user_id, // This one requires a webhook to be created first
+				interaction: {
+					id: interactionId,
+					name: interaction.commandName,
+					type: 2,
+				},
+				interaction_metadata: {
+					id: interactionId,
+					type: 2,
+					user_id: interaction.userId,
+					authorizing_integration_owners: {
+						"1": interaction.userId,
+					},
+					name: interaction.commandName,
+					command_type: interaction.commandType,
+				},
+			});
+
+			const user = await User.findOneOrFail({ where: { id: interaction.userId } });
+
+			// Don't save messages with ephemeral flag (64) set
+			if ((message.flags & (1 << 6)) == 0) {
+				message.save();
+			}
+
+			emitEvent({
+				event: "MESSAGE_CREATE",
+				channel_id: interaction.channelId,
+				data: {
+					application_id: message.application_id,
+					attachments: message.attachments,
+					author: (await User.findOneOrFail({ where: { id: message.author_id } })).toPublicUser(),
+					channel_id: message.channel_id,
+					channel_type: 0,
+					components: message.components,
+					content: message.content,
+					edited_timestamp: null,
+					emmbeds: message.embeds,
+					flags: message.flags,
+					id: message.id,
+					interaction: {
+						id: interactionId,
+						name: interaction.commandName,
+						type: interaction.type,
+						user,
+					},
+					interaction_metadata: {
+						authorizing_integration_owners: { "1": interaction.userId },
+						command_type: interaction.commandType,
+						id: interactionId,
+						name: interaction.commandName,
+						type: interaction.type,
+						user,
+					},
+					mention_everyone: false,
+					mentions: [],
+					nonce: interaction.nonce,
+					pinned: false,
+					position: 0,
+					timestamp: message.timestamp,
+					tss: message.tts,
+					type: message.type,
+					webhook_id: req.user_id,
+				} as MessageCreateSchema,
+			} as MessageCreateEvent);
 			break;
+		}
 		case InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE:
 			// TODO
 			break;
