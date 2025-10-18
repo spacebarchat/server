@@ -56,16 +56,7 @@ router.get(
 			select: ["id", "relationships"],
 		});
 
-		//TODO DTO
-		const related_users = user.relationships.map((r) => {
-			return {
-				id: r.to.id,
-				type: r.type,
-				nickname: null,
-				user: r.to.toPublicUser(),
-			};
-		});
-
+		const related_users = user.relationships.map((r) => r.toPublicRelationship());
 		return res.json(related_users);
 	},
 );
@@ -146,8 +137,8 @@ router.delete(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { id } = req.params;
-		if (id === req.user_id)
+		const { user_id } = req.params;
+		if (user_id === req.user_id)
 			throw new HTTPError("You can't remove yourself as a friend");
 
 		const user = await User.findOneOrFail({
@@ -156,21 +147,21 @@ router.delete(
 			relations: ["relationships"],
 		});
 		const friend = await User.findOneOrFail({
-			where: { id: id },
+			where: { id: user_id },
 			select: userProjection,
 			relations: ["relationships"],
 		});
 
-		const relationship = user.relationships.find((x) => x.to_id === id);
+		const relationship = user.relationships.find((x) => x.to_id === user_id);
 		const friendRequest = friend.relationships.find(
 			(x) => x.to_id === req.user_id,
 		);
 
 		if (!relationship)
 			throw new HTTPError("You are not friends with the user", 404);
+
 		if (relationship?.type === RelationshipType.blocked) {
 			// unblock user
-
 			await Promise.all([
 				Relationship.delete({ id: relationship.id }),
 				emitEvent({
@@ -187,7 +178,7 @@ router.delete(
 				await emitEvent({
 					event: "RELATIONSHIP_REMOVE",
 					data: friendRequest.toPublicRelationship(),
-					user_id: id,
+					user_id: user_id,
 				} as RelationshipRemoveEvent),
 			]);
 		}
