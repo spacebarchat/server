@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { User, UserSettings } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { UserSettingsSchema } from "@spacebar/schemas"
+import { UserSettingsUpdateSchema, UserSettingsSchema } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
 
@@ -44,7 +44,7 @@ router.get(
 router.patch(
 	"/",
 	route({
-		requestBody: "UserSettingsSchema",
+		requestBody: "UserSettingsUpdateSchema",
 		responses: {
 			200: {
 				body: "UserSettings",
@@ -58,7 +58,8 @@ router.patch(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const body = req.body as UserSettingsSchema;
+		const body = req.body as UserSettingsUpdateSchema;
+		if (!body) return res.status(400).json({ code: 400, message: "Invalid request body" });
 		if (body.locale === "en") body.locale = "en-US"; // fix discord client crash on unknown locale
 
 		const user = await User.findOneOrFail({
@@ -67,7 +68,7 @@ router.patch(
 		});
 
 		if (!user.settings)
-			user.settings = UserSettings.create(body as Partial<UserSettings>);
+			user.settings = UserSettings.create(body as UserSettingsUpdateSchema);
 		else
 			user.settings.assign(body);
 

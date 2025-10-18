@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+export type UserSettingsUpdateSchema = Partial<UserSettingsSchema>;
+
 export interface UserSettingsSchema {
 	afk_timeout: number;
 	allow_accessibility_detection: boolean;
@@ -49,7 +51,7 @@ export interface UserSettingsSchema {
 	stream_notifications_enabled: boolean;
 	theme: "dark" | "light"; // dark
 	timezone_offset: number; // e.g -60
-	view_nsfw_guilds: boolean
+	view_nsfw_guilds: boolean;
 }
 
 export interface CustomStatus {
