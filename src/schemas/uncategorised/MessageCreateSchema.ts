@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ActionRowComponent, Embed, PollAnswer, PollMedia } from "@spacebar/schemas"
+import { InteractionType } from "@spacebar/util";
+import { ActionRowComponent, Embed, PollAnswer, PollMedia, PublicUser } from "@spacebar/schemas";
 
 export type MessageCreateAttachment = {
 	id: string;
@@ -28,7 +29,7 @@ export type MessageCreateCloudAttachment = {
 	filename: string;
 	uploaded_filename: string;
 	original_content_type?: string;
-}
+};
 
 export interface MessageCreateSchema {
 	type?: number;
@@ -68,6 +69,8 @@ export interface MessageCreateSchema {
 	applied_tags?: string[]; // Not implemented yet, for webhooks in forums
 	thread_name?: string; // Not implemented yet, for webhooks
 	avatar_url?: string; // Not implemented yet, for webhooks
+	interaction?: MessageInteractionSchema;
+	interaction_metadata?: MessageInteractionSchema;
 }
 
 // TypeScript complains once this is used above
@@ -77,4 +80,11 @@ export interface PollCreationSchema {
 	duration?: number;
 	allow_multiselect?: boolean;
 	layout_type?: number;
+}
+
+interface MessageInteractionSchema {
+	id: string;
+	name: string;
+	type: InteractionType;
+	user?: PublicUser; // It has to be optional cause LSP gives an errors for some reason
 }
