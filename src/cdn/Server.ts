@@ -129,7 +129,7 @@ export class CDNServer extends Server {
 	}
 
 	async cleanupSignaturesInDb() {
-		this.log("verbose", "[Server] Cleaning up signatures in database");
+		this.log("verbose", "[CDN] Cleaning up signatures in database");
 		const attachmentsToFix = await Attachment.find({
 			where: { url: Like("%?ex=%") },
 		});

@@ -19,30 +19,41 @@
 import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
 	Attachment,
+	AutomodRule,
+	AutomodTriggerTypes,
 	Channel,
 	Config,
 	DmChannelDTO,
+	emitEvent,
 	FieldErrors,
+	getPermission,
+	getUrlSignature,
 	Member,
 	Message,
 	MessageCreateEvent,
+	NewUrlSignatureData,
+	NewUrlUserSignatureData,
 	ReadState,
 	Rights,
 	Snowflake,
-	User,
-	emitEvent,
-	getPermission,
-	getUrlSignature,
 	uploadFile,
-	NewUrlSignatureData,
-	NewUrlUserSignatureData,
+	User,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { FindManyOptions, FindOperator, LessThan, MoreThan, MoreThanOrEqual } from "typeorm";
 import { URL } from "url";
-import { isTextChannel, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, Reaction } from "@spacebar/schemas";
+import {
+	AutomodCustomWordsRule,
+	AutomodRuleActionType,
+	AutomodRuleEventType,
+	isTextChannel,
+	MessageCreateAttachment,
+	MessageCreateCloudAttachment,
+	MessageCreateSchema,
+	Reaction,
+} from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -404,6 +415,72 @@ router.post(
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			//@ts-ignore
 			message.member.roles = message.member.roles.filter((x) => x.id != x.guild_id).map((x) => x.id);
+
+			try {
+				if (message.content)
+					for (const rule of await AutomodRule.find({ where: { guild_id: message.guild_id, enabled: true, event_type: AutomodRuleEventType.MESSAGE_SEND } })) {
+						if (rule.exempt_channels.includes(channel_id)) continue;
+						if (message.member.roles.some((x) => rule.exempt_roles.includes(x.id))) continue;
+						if (rule.trigger_type == AutomodTriggerTypes.CUSTOM_WORDS) {
+							const triggerMeta = rule.trigger_metadata as AutomodCustomWordsRule;
+							const regexes = triggerMeta.regex_patterns
+								.map((x) => new RegExp(x, "i"))
+								.concat(
+									triggerMeta.keyword_filter
+										.map((k) =>
+											k
+												// Convert simple wildcard patterns to regex
+												.replace(".", "\\.")
+												.replace("?", ".")
+												.replace("*", ".*"),
+										)
+										.map((k) => new RegExp(k, "i")),
+								);
+							const allowedRegexes = triggerMeta.allow_list
+								.map((k) =>
+									k
+										// Convert simple wildcard patterns to regex
+										.replace(".", "\\.")
+										.replace("?", ".")
+										.replace("*", ".*"),
+								)
+								.map((k) => new RegExp(k, "i"));
+
+							const matches = regexes
+								.map((r) => message.content!.match(r))
+								.filter((x) => x !== null && x.length > 0)
+								.filter((x) => !allowedRegexes.some((ar) => ar.test(x![0])));
+							if (matches.length > 0) {
+								console.log("Automod triggered by message:", message.id, "matches:", matches);
+								if (rule.actions.some((x) => x.type == AutomodRuleActionType.SEND_ALERT_MESSAGE && x.metadata.channel_id)) {
+									const alertActions = rule.actions.filter((x) => x.type == AutomodRuleActionType.SEND_ALERT_MESSAGE);
+									for (const action of alertActions) {
+										const alertChannel = await Channel.findOne({ where: { id: action.metadata.channel_id } });
+										if (!alertChannel) continue;
+										const msg = Message.create({
+											channel_id: alertChannel.id,
+											content: `Automod Alert: Message ${message.id} by <@${message.author_id}> in <#${channel.id}> triggered automod rule "${rule.name}".\nMatched terms: ${matches
+												.map((x) => `\`${x![0]}\``)
+												.join(", ")}`,
+											author: message.author,
+											guild_id: message.channel.guild_id,
+										});
+										await Promise.all([
+											Message.insert(message),
+											emitEvent({
+												event: "MESSAGE_CREATE",
+												channel_id: msg.channel_id,
+												data: msg.toJSON(),
+											} as MessageCreateEvent),
+										]);
+									}
+								}
+							}
+						}
+					}
+			} catch (e) {
+				console.log("[Automod] failed to process message:", e);
+			}
 		}
 
 		let read_state = await ReadState.findOne({

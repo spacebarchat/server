@@ -19,7 +19,7 @@
 import { BaseClass } from "./BaseClass";
 import { Entity, JoinColumn, ManyToOne, Column } from "typeorm";
 import { User } from "./User";
-import { AutomodRuleTriggerMetadata } from "@spacebar/schemas";
+import { AutomodAction, AutomodRuleActionType, AutomodRuleEventType, AutomodRuleTriggerMetadata, AutomodRuleTriggerType } from "@spacebar/schemas";
 
 @Entity({
 	name: "automod_rules",
@@ -33,13 +33,13 @@ export class AutomodRule extends BaseClass {
 	enabled: boolean;
 
 	@Column()
-	event_type: number; // No idea...
+	event_type: AutomodRuleEventType;
 
 	@Column({ type: "simple-array" })
-	exempt_channels: [string];
+	exempt_channels: string[];
 
 	@Column({ type: "simple-array" })
-	exempt_roles: [string];
+	exempt_roles: string[];
 
 	@Column()
 	guild_id: string;
@@ -51,7 +51,7 @@ export class AutomodRule extends BaseClass {
 	position: number;
 
 	@Column()
-	trigger_type: number;
+	trigger_type: AutomodRuleTriggerType;
 
 	@Column({
 		type: "simple-json",
@@ -63,5 +63,5 @@ export class AutomodRule extends BaseClass {
 	@Column({
 		type: "simple-json",
 	})
-	actions: { type: number; metadata: unknown }[];
+	actions: AutomodAction[];
 }

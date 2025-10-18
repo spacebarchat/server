@@ -10699,7 +10699,7 @@
                     "sending_dns_records": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
+                            "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
                         }
                     }
                 },
@@ -10720,7 +10720,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord": {
                 "type": "object",
                 "properties": {
                     "cached": {
@@ -14322,7 +14322,7 @@
                         "type": "string"
                     },
                     "template": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -14338,7 +14338,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -14365,7 +14365,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -14424,7 +14424,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -14502,7 +14502,7 @@
                     "items": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                            "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                         }
                     },
                     "paging": {
@@ -14543,7 +14543,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -14570,7 +14570,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -14629,7 +14629,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -14705,7 +14705,7 @@
                 "type": "object",
                 "properties": {
                     "template": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -14720,7 +14720,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -14747,7 +14747,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -14806,7 +14806,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -14950,7 +14950,7 @@
                         "type": "string"
                     },
                     "template": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                     }
                 },
                 "additionalProperties": false,
@@ -14966,7 +14966,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -14993,7 +14993,7 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
+                        "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion"
                     },
                     "versions": {
                         "type": "array",
@@ -15052,7 +15052,7 @@
                     "name"
                 ]
             },
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).TemplateVersion": {
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
@@ -16185,7 +16185,7 @@
         "type": "object",
         "properties": {
             "body": {
-                "$ref": "#/definitions/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
+                "$ref": "#/definitions/import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
             },
             "status": {
                 "type": "integer"
@@ -16197,7 +16197,7 @@
             "status"
         ],
         "definitions": {
-            "import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType": {
+            "import(\"/home/Rory/git/spacebar/server-master/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType": {
                 "anyOf": [
                     {
                         "type": "object",

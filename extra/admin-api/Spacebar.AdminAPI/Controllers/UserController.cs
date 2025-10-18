@@ -173,16 +173,20 @@ public class UserController(ILogger<UserController> logger, Configuration config
                 total_messages = messages.Count(), total_channels = channels.Count,
                 messages_per_channel = channels.ToDictionary(c => c.ChannelId, c => messages.Count(m => m.ChannelId == c.ChannelId))
             });
-        var results = channels
-            .Select(ctx => DeleteMessagesForChannel(ctx.GuildId, ctx.ChannelId!, id, mqChannel, messageDeleteChunkSize))
-            .ToList();
-        var a = AggregateAsyncEnumerablesWithoutOrder(results);
-        await foreach (var result in a) {
-            yield return result;
-        }
+        if (messages.Any()) {
+            var results = channels
+                .Select(ctx => DeleteMessagesForChannel(ctx.GuildId, ctx.ChannelId!, id, mqChannel, messageDeleteChunkSize))
+                .ToList();
+            var a = AggregateAsyncEnumerablesWithoutOrder(results);
+            await foreach (var result in a) {
+                yield return result;
+            }
 
-        await db.Database.ExecuteSqlRawAsync("VACUUM FULL messages");
-        await db.Database.ExecuteSqlRawAsync("REINDEX TABLE messages");
+            if (messages.Count() >= 100) {
+                await db.Database.ExecuteSqlRawAsync("VACUUM FULL messages");
+                await db.Database.ExecuteSqlRawAsync("REINDEX TABLE messages");
+            }
+        }
     }
 
     private async IAsyncEnumerable<AsyncActionResult> DeleteMessagesForChannel(
@@ -203,10 +207,10 @@ public class UserController(ILogger<UserController> logger, Configuration config
                 var messageIds = _db.Database.SqlQuery<string>($"""
                                                                 DELETE FROM messages
                                                                   WHERE id IN (
-                                                                    SELECT id FROM messages 
-                                                                      WHERE author_id = {authorId} 
-                                                                        AND channel_id = {channelId} 
-                                                                        AND guild_id = {guildId} 
+                                                                    SELECT id FROM messages
+                                                                      WHERE author_id = {authorId}
+                                                                        AND channel_id = {channelId}
+                                                                        AND guild_id = {guildId}
                                                                      LIMIT {messageDeleteChunkSize}
                                                                   ) RETURNING id;
                                                                 """).ToList();
@@ -410,7 +414,7 @@ public class UserController(ILogger<UserController> logger, Configuration config
             }
         }
     }
-    
+
     // {
         // "op": 0,
         // "t": "GUILD_ROLE_UPDATE",
@@ -432,7 +436,7 @@ public class UserController(ILogger<UserController> logger, Configuration config
         // },
         // "s": 38
     // }
-    
+
     [HttpGet("test")]
     public async IAsyncEnumerable<string> Test() {
         var factory = new ConnectionFactory {
@@ -446,7 +450,7 @@ public class UserController(ILogger<UserController> logger, Configuration config
         var roleId = "1391303296148639051"; //Spacebar Maintainer
         // int color = 16711680; //Administrator
         int color = 99839; //Spacebar Maintainer
-        
+
         await mqChannel.ExchangeDeclareAsync(exchange: guildId, type: ExchangeType.Fanout, durable: false);
 
         var props = new BasicProperties() { Type = "GUILD_ROLE_UPDATE" };
