@@ -256,7 +256,7 @@ export class Message extends BaseClass {
 	}
 
 	static async createWithDefaults(opts: Partial<Message>): Promise<Message> {
-		const message = new Message();
+		const message = Message.create();
 
 		if (!opts.author) {
 			if (!opts.author_id) throw new Error("Either author or author_id must be provided to create a Message");

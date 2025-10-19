@@ -467,6 +467,7 @@ router.post(
 											member_id: message.member_id,
 											author_id: message.author_id
 										});
+
 										await Promise.all([
 											message.save(),
 											emitEvent({
