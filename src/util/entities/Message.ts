@@ -285,6 +285,14 @@ export class Message extends BaseClass {
 		// try 2 now that we have a guild
 		if (!opts.member) opts.member = await Member.findOneOrFail({ where: { id: opts.author!.id, guild_id: opts.guild!.id } });
 
+		// backpropagate ids
+		opts.channel_id = opts.channel.id;
+		opts.guild_id = opts.guild.id;
+		opts.author_id = opts.author.id;
+		opts.member_id = opts.member.id;
+		opts.webhook_id = opts.webhook?.id;
+		opts.application_id = opts.application?.id;
+
 		Object.assign(message, {
 			tts: false,
 			embeds: [],
