@@ -468,7 +468,7 @@ router.post(
 											author_id: message.author_id
 										});
 										await Promise.all([
-											Message.insert(message),
+											message.save(),
 											emitEvent({
 												event: "MESSAGE_CREATE",
 												channel_id: msg.channel_id,
