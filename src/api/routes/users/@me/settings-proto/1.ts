@@ -166,10 +166,11 @@ async function patchUserSettings(
 		};
 	}
 
-	console.log(
-		`Updating user settings for user ${userId} with atomic=${atomic}:`,
-		updatedSettings,
-	);
+	if ((process.env.LOG_PROTO_UPDATES || process.env.LOG_PROTO_SETTINGS_UPDATES) && process.env.LOG_PROTO_SETTINGS_UPDATES !== "false")
+		console.log(
+			`Updating user settings for user ${userId} with atomic=${atomic}:`,
+			updatedSettings,
+		);
 
 	if (!atomic) {
 		settings = PreloadedUserSettings.fromJson(

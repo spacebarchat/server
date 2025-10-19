@@ -168,10 +168,11 @@ async function patchUserSettings(
 		};
 	}
 
-	console.log(
-		`Updating frecency settings for user ${userId} with atomic=${atomic}:`,
-		updatedSettings,
-	);
+	if ((process.env.LOG_PROTO_UPDATES || process.env.LOG_PROTO_FRECENCY_UPDATES) && process.env.LOG_PROTO_FRECENCY_UPDATES !== "false")
+		console.log(
+			`Updating frecency settings for user ${userId} with atomic=${atomic}:`,
+			updatedSettings,
+		);
 
 	if (!atomic) {
 		settings = FrecencyUserSettings.fromJson(
