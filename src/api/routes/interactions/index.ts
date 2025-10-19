@@ -20,8 +20,9 @@ import { randomBytes } from "crypto";
 import { InteractionSchema } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { emitEvent, InteractionCreateEvent, InteractionFailureEvent, Snowflake } from "@spacebar/util";
-import { pendingInteractions } from "../../../util/imports/Interactions";
+import { emitEvent, Guild, InteractionCreateEvent, InteractionFailureEvent, InteractionType, Member, Message, Snowflake, User } from "@spacebar/util";
+import { pendingInteractions } from "@spacebar/util/imports/Interactions";
+import { InteractionCreateSchema } from "@spacebar/schemas/api/bots/InteractionCreateSchema";
 
 const router = Router({ mergeParams: true });
 
@@ -40,18 +41,56 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		},
 	} as InteractionCreateEvent);
 
+	const user = await User.findOneOrFail({ where: { id: req.user_id } });
+
+	const interactionData: Partial<InteractionCreateSchema> = {
+		id: interactionId,
+		application_id: body.application_id,
+		channel_id: body.channel_id,
+		type: body.type,
+		token: interactionToken,
+		version: 1,
+		app_permissions: "0", // TODO: add this later
+		entitlements: [],
+		authorizing_integration_owners: { "0": req.user_id },
+		context: 0, // TODO: add this later
+		attachment_size_limit: 0, // TODO: add this later
+	};
+
+	if (body.type === InteractionType.ApplicationCommand || body.data.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
+		interactionData.data = body.data;
+	}
+
+	if (body.type != InteractionType.Ping) {
+		interactionData.locale = user?.settings?.locale;
+	}
+
+	if (body.guild_id) {
+		interactionData.guild_id = body.guild_id;
+
+		const guild = await Guild.findOneOrFail({ where: { id: body.guild_id } });
+		const member = await Member.findOneOrFail({ where: { guild_id: body.guild_id, id: req.user_id }, relations: ["user"] });
+
+		interactionData.guild = {
+			id: guild.id,
+			features: guild.features,
+			locale: guild.preferred_locale!,
+		};
+
+		interactionData.guild_locale = guild.preferred_locale;
+		interactionData.member = member.toPublicMember();
+	} else {
+		interactionData.user = user.toPublicUser();
+	}
+
+	if (body.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
+		interactionData.message = await Message.findOneOrFail({ where: { id: body.message_id } });
+	}
+
 	emitEvent({
 		event: "INTERACTION_CREATE",
 		user_id: body.application_id,
-		data: {
-			channel_id: body.channel_id,
-			guild_id: body.guild_id,
-			id: interactionId,
-			member_id: req.user_id,
-			token: interactionToken,
-			type: body.type,
-			nonce: body.nonce,
-		},
+		data: interactionData,
 	} as InteractionCreateEvent);
 
 	const interactionTimeout = setTimeout(() => {
@@ -69,6 +108,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 	pendingInteractions.set(interactionId, {
 		timeout: interactionTimeout,
 		nonce: body.nonce,
+		applicationId: body.application_id,
 		userId: req.user_id,
 		guildId: body.guild_id,
 		channelId: body.channel_id,

@@ -55,13 +55,13 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 			// TODO
 			break;
 		case InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE: {
-			const message = Message.create({
+			const message = await Message.createWithDefaults({
 				type: MessageType.APPLICATION_COMMAND,
 				timestamp: new Date(),
-				application_id: req.user_id,
+				application_id: interaction.applicationId,
 				guild_id: interaction.guildId,
 				channel_id: interaction.channelId,
-				author_id: req.user_id,
+				author_id: interaction.applicationId,
 				content: body.data.content,
 				tts: body.data.tts,
 				embeds: body.data.embeds || [],
@@ -69,7 +69,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 				poll: body.data.poll,
 				flags: body.data.flags,
 				reactions: [],
-				// webhook_id: req.user_id, // This one requires a webhook to be created first
+				// webhook_id: interaction.applicationId, // This one requires a webhook to be created first
 				interaction: {
 					id: interactionId,
 					name: interaction.commandName,
@@ -98,9 +98,9 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 				event: "MESSAGE_CREATE",
 				channel_id: interaction.channelId,
 				data: {
-					application_id: message.application_id,
+					application_id: interaction.applicationId,
 					attachments: message.attachments,
-					author: (await User.findOneOrFail({ where: { id: message.author_id } })).toPublicUser(),
+					author: message.author?.toPublicUser(),
 					channel_id: message.channel_id,
 					channel_type: 0,
 					components: message.components,
@@ -131,7 +131,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 					timestamp: message.timestamp,
 					tss: message.tts,
 					type: message.type,
-					webhook_id: req.user_id,
+					webhook_id: interaction.applicationId,
 				} as MessageCreateSchema,
 			} as MessageCreateEvent);
 			break;

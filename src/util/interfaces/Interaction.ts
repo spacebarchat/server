@@ -30,9 +30,11 @@ export interface Interaction {
 }
 
 export enum InteractionType {
-	SelfCommand = 0,
 	Ping = 1,
 	ApplicationCommand = 2,
+	MessageComponent = 3,
+	ApplicationCommandAutocomplete = 4,
+	ModalSubmit = 5,
 }
 
 export enum InteractionResponseType {
