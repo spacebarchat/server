@@ -20,6 +20,7 @@ export * from "./ApplicationCommandSchema";
 export * from "./InteractionSchema";
 export * from "./InteractionCallbackSchema";
 export * from "./InteractionCallbackType";
+export * from "./InteractionCreateSchema";
 export * from "./SendableApplicationCommandDataSchema";
 export * from "./SendableMessageComponentDataSchema";
 export * from "./SendableModalSubmitDataSchema";

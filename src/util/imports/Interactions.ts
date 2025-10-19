@@ -21,6 +21,7 @@ import { InteractionType, Snowflake } from "@spacebar/util";
 
 interface PendingInteraction {
 	timeout: NodeJS.Timeout;
+	applicationId: string;
 	userId: string;
 	channelId?: string;
 	guildId?: string;

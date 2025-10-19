@@ -1,7 +1,7 @@
-import { MessageCreateSchema } from "@spacebar/schemas";
+import { Message } from "@spacebar/util";
 import { InteractionCallbackType } from "./InteractionCallbackType";
 
 export interface InteractionCallbackSchema {
 	type: InteractionCallbackType;
-	data: MessageCreateSchema;
+	data: Message;
 }

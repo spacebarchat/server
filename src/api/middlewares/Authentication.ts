@@ -32,7 +32,7 @@ export const NO_AUTHORIZATION_ROUTES = [
 	"GET /invites/",
 	// Routes with a seperate auth system
 	/^(POST|HEAD|GET|PATCH|DELETE) \/webhooks\/\d+\/\w+\/?/, // no token requires auth
-	// /^POST \/interactions\/\d+\/\w+\/callback/, // This is marked as Unauthoricated route on https://discord.food. But when it is then not all requests have req.user_id?
+	/^POST \/interactions\/\d+\/[A-Za-z0-9_-]+\/callback/,
 	// Public information endpoints
 	"GET /ping",
 	"GET /gateway",
