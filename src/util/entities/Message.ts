@@ -257,35 +257,33 @@ export class Message extends BaseClass {
 
 	static async createWithDefaults(opts: Partial<Message>): Promise<Message> {
 		const message = new Message();
+
 		if (!opts.author) {
 			if (!opts.author_id) throw new Error("Either author or author_id must be provided to create a Message");
-			message.author = await User.findOneOrFail({ where: { id: opts.author_id! } });
+			opts.author = await User.findOneOrFail({ where: { id: opts.author_id! } });
 		}
 
 		if (!opts.channel) {
 			if (!opts.channel_id) throw new Error("Either channel or channel_id must be provided to create a Message");
-			message.channel = await Channel.findOneOrFail({ where: { id: opts.channel_id! } });
-			message.guild_id ??= message.channel.guild_id;
+			opts.channel = await Channel.findOneOrFail({ where: { id: opts.channel_id! } });
+			opts.guild_id ??= opts.channel.guild_id;
 		}
 
-		if (!opts.member) {
-			if (opts.member_id) message.member = await Member.findOneOrFail({ where: { id: opts.member_id! } });
-			else if (message.author?.id && opts.guild_id) message.member = await Member.findOneOrFail({ where: { id: message.author.id, guild_id: opts.guild_id! } });
-			else throw new Error("Either member, member_id, or (author and guild_id) must be provided to create a Message");
-		}
+		if (!opts.member_id) opts.member_id = message.author_id;
+		if (!opts.member) opts.member = await Member.findOneOrFail({ where: { id: opts.member_id! } });
 
 
 		if (!opts.guild) {
-			if (opts.guild_id) message.guild = await Guild.findOneOrFail({ where: { id: opts.guild_id! } });
-			else if (opts.channel?.guild?.id) message.guild = opts.channel.guild;
-			else if (opts.channel?.guild_id) message.guild = await Guild.findOneOrFail({ where: { id: opts.channel.guild_id! } });
-			else if (opts.member?.guild?.id) message.guild = opts.member.guild;
-			else if (opts.member?.guild_id) message.guild = await Guild.findOneOrFail({ where: { id: opts.member.guild_id! } });
+			if (opts.guild_id) opts.guild = await Guild.findOneOrFail({ where: { id: opts.guild_id! } });
+			else if (opts.channel?.guild?.id) opts.guild = opts.channel.guild;
+			else if (opts.channel?.guild_id) opts.guild = await Guild.findOneOrFail({ where: { id: opts.channel.guild_id! } });
+			else if (opts.member?.guild?.id) opts.guild = opts.member.guild;
+			else if (opts.member?.guild_id) opts.guild = await Guild.findOneOrFail({ where: { id: opts.member.guild_id! } });
 			else throw new Error("Either guild, guild_id, channel.guild, channel.guild_id, member.guild or member.guild_id must be provided to create a Message");
 		}
 
 		// try 2 now that we have a guild
-		if (!opts.member) message.member = await Member.findOneOrFail({ where: { id: message.author!.id, guild_id: message.guild!.id } });
+		if (!opts.member) opts.member = await Member.findOneOrFail({ where: { id: opts.author!.id, guild_id: opts.guild!.id } });
 
 		Object.assign(message, {
 			tts: false,
