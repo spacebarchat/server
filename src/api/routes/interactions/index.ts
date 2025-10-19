@@ -53,7 +53,6 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		app_permissions: "0", // TODO: add this later
 		entitlements: [],
 		authorizing_integration_owners: { "0": req.user_id },
-		context: 0, // TODO: add this later
 		attachment_size_limit: 0, // TODO: add this later
 	};
 
@@ -66,6 +65,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 	}
 
 	if (body.guild_id) {
+		interactionData.context = 0;
 		interactionData.guild_id = body.guild_id;
 
 		const guild = await Guild.findOneOrFail({ where: { id: body.guild_id } });
@@ -81,6 +81,12 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		interactionData.member = member.toPublicMember();
 	} else {
 		interactionData.user = user.toPublicUser();
+
+		if (body.channel_id === body.application_id) {
+			interactionData.context = 1;
+		} else {
+			interactionData.context = 2;
+		}
 	}
 
 	if (body.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
