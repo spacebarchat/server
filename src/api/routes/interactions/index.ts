@@ -20,7 +20,7 @@ import { randomBytes } from "crypto";
 import { InteractionSchema } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { emitEvent, Guild, InteractionCreateEvent, InteractionFailureEvent, InteractionType, Member, Message, Snowflake, User } from "@spacebar/util";
+import { emitEvent, getPermission, Guild, InteractionCreateEvent, InteractionFailureEvent, InteractionType, Member, Message, Snowflake, User } from "@spacebar/util";
 import { pendingInteractions } from "@spacebar/util/imports/Interactions";
 import { InteractionCreateSchema } from "@spacebar/schemas/api/bots/InteractionCreateSchema";
 
@@ -50,7 +50,6 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		type: body.type,
 		token: interactionToken,
 		version: 1,
-		app_permissions: "0", // TODO: add this later
 		entitlements: [],
 		authorizing_integration_owners: { "0": req.user_id },
 		attachment_size_limit: 0, // TODO: add this later
@@ -67,6 +66,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 	if (body.guild_id) {
 		interactionData.context = 0;
 		interactionData.guild_id = body.guild_id;
+		interactionData.app_permissions = (await getPermission(body.application_id, body.guild_id, body.channel_id)).bitfield.toString();
 
 		const guild = await Guild.findOneOrFail({ where: { id: body.guild_id } });
 		const member = await Member.findOneOrFail({ where: { guild_id: body.guild_id, id: req.user_id }, relations: ["user"] });
@@ -81,6 +81,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		interactionData.member = member.toPublicMember();
 	} else {
 		interactionData.user = user.toPublicUser();
+		interactionData.app_permissions = (await getPermission(body.application_id, "", body.channel_id)).bitfield.toString();
 
 		if (body.channel_id === body.application_id) {
 			interactionData.context = 1;
