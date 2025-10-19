@@ -96,7 +96,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 
 			emitEvent({
 				event: "MESSAGE_CREATE",
-				channel_id: interaction.channelId,
+				...((message.flags & (1 << 6)) === 0 ? { channel_id: interaction.channelId } : { user_id: interaction.userId }),
 				data: {
 					application_id: interaction.applicationId,
 					attachments: message.attachments,
