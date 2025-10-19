@@ -55,7 +55,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		attachment_size_limit: Config.get().cdn.maxAttachmentSize,
 	};
 
-	if (body.type === InteractionType.ApplicationCommand || body.data.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
+	if (body.type === InteractionType.ApplicationCommand || body.type === InteractionType.MessageComponent || body.type === InteractionType.ModalSubmit) {
 		interactionData.data = body.data;
 	}
 
