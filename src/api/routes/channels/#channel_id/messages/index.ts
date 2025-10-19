@@ -457,13 +457,15 @@ router.post(
 									for (const action of alertActions) {
 										const alertChannel = await Channel.findOne({ where: { id: action.metadata.channel_id } });
 										if (!alertChannel) continue;
-										const msg = Message.create({
+										const msg = await Message.createWithDefaults({
 											channel_id: alertChannel.id,
 											content: `Automod Alert: Message ${message.id} by <@${message.author_id}> in <#${channel.id}> triggered automod rule "${rule.name}".\nMatched terms: ${matches
 												.map((x) => `\`${x![0]}\``)
 												.join(", ")}`,
 											author: message.author,
 											guild_id: message.guild_id,
+											member_id: message.member_id,
+											author_id: message.author_id
 										});
 										await Promise.all([
 											Message.insert(message),

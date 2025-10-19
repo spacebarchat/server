@@ -254,4 +254,45 @@ export class Message extends BaseClass {
 			attachments: this.attachments?.map((attachment: Attachment) => Attachment.prototype.signUrls.call(attachment, data)),
 		};
 	}
+
+	static async createWithDefaults(opts: Partial<Message>): Promise<Message> {
+		const message = new Message();
+		if (!opts.author) {
+			if (!opts.author_id) throw new Error("Either author or author_id must be provided to create a Message");
+			message.author = await User.findOneOrFail({ where: { id: opts.author_id! } });
+		}
+
+		if (!opts.member) {
+			if (opts.member_id) message.member = await Member.findOneOrFail({ where: { id: opts.member_id! } });
+			else if (message.author && opts.guild_id) message.member = await Member.findOneOrFail({ where: { id: message.author.id, guild_id: opts.guild_id! } });
+		}
+
+		if (!opts.channel) {
+			if (!opts.channel_id) throw new Error("Either channel or channel_id must be provided to create a Message");
+			message.channel = await Channel.findOneOrFail({ where: { id: opts.channel_id! } });
+		}
+
+		if (!opts.guild) {
+			if (opts.guild_id) message.guild = await Guild.findOneOrFail({ where: { id: opts.guild_id! } });
+			else if (opts.channel?.guild) message.guild = opts.channel.guild;
+			else if (opts.channel?.guild_id) message.guild = await Guild.findOneOrFail({ where: { id: opts.channel.guild_id! } });
+			else if (opts.member?.guild) message.guild = opts.member.guild;
+			else if (opts.member?.guild_id) message.guild = await Guild.findOneOrFail({ where: { id: opts.member.guild_id! } });
+			else throw new Error("Either guild, guild_id, channel.guild, channel.guild_id, member.guild or member.guild_id must be provided to create a Message");
+		}
+
+		// try 2 now that we have a guild
+		if (!opts.member) message.member = await Member.findOneOrFail({ where: { id: message.author!.id, guild_id: message.guild!.id } });
+
+		Object.assign(message, {
+			tts: false,
+			embeds: [],
+			reactions: [],
+			flags: 0,
+			type: 0,
+			timestamp: new Date(),
+			...opts,
+		});
+		return message;
+	}
 }
