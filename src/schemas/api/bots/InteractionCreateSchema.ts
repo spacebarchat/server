@@ -11,12 +11,12 @@ export interface InteractionCreateSchema {
 	guild?: InteractionGuild;
 	guild_id?: Snowflake;
 	guild_locale?: string;
-	channel?: Channel; // TODO: is this right?
+	channel?: Channel;
 	channel_id?: Snowflake;
-	member?: PublicMember; // TODO: is this right?
-	user?: PublicUser; // TODO: is this right?
+	member?: PublicMember;
+	user?: PublicUser;
 	locale?: string;
-	message?: Message; // TODO: is this right?
+	message?: Message;
 	app_permissions: string;
 	entitlements?: object[]; // TODO: types?
 	entitlement_sku_ids?: Snowflake[]; // DEPRECATED
