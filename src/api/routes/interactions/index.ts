@@ -20,7 +20,7 @@ import { randomBytes } from "crypto";
 import { InteractionSchema } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { emitEvent, getPermission, Guild, InteractionCreateEvent, InteractionFailureEvent, InteractionType, Member, Message, Snowflake, User } from "@spacebar/util";
+import { Config, emitEvent, getPermission, Guild, InteractionCreateEvent, InteractionFailureEvent, InteractionType, Member, Message, Snowflake, User } from "@spacebar/util";
 import { pendingInteractions } from "@spacebar/util/imports/Interactions";
 import { InteractionCreateSchema } from "@spacebar/schemas/api/bots/InteractionCreateSchema";
 
@@ -52,7 +52,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 		version: 1,
 		entitlements: [],
 		authorizing_integration_owners: { "0": req.user_id },
-		attachment_size_limit: 0, // TODO: add this later
+		attachment_size_limit: Config.get().cdn.maxAttachmentSize,
 	};
 
 	if (body.type === InteractionType.ApplicationCommand || body.data.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
