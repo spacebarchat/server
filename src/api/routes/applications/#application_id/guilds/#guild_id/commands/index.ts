@@ -78,10 +78,10 @@ router.post(
 			body.type = 1;
 		}
 
-		if (body.name.length < 1 || body.name.length > 32) {
+		if (body.name.trim().length < 1 || body.name.trim().length > 32) {
 			// TODO: configurable?
 			throw FieldErrors({
-				username: {
+				name: {
 					code: "BASE_TYPE_BAD_LENGTH",
 					message: `Must be between 1 and 32 in length.`,
 				},
@@ -91,9 +91,9 @@ router.post(
 		const commandForDb: ApplicationCommandSchema = {
 			application_id: req.params.application_id,
 			guild_id: req.params.guild_id,
-			name: body.name,
+			name: body.name.trim(),
 			name_localizations: body.name_localizations,
-			description: body.description || "",
+			description: body.description?.trim() || "",
 			description_localizations: body.description_localizations,
 			default_member_permissions: body.default_member_permissions || null,
 			contexts: body.contexts,
@@ -152,10 +152,10 @@ router.put(
 				command.type = 1;
 			}
 
-			if (command.name.length < 1 || command.name.length > 32) {
+			if (command.name.trim().length < 1 || command.name.trim().length > 32) {
 				// TODO: configurable?
 				throw FieldErrors({
-					username: {
+					name: {
 						code: "BASE_TYPE_BAD_LENGTH",
 						message: `Must be between 1 and 32 in length.`,
 					},
@@ -165,9 +165,9 @@ router.put(
 			const commandForDb: ApplicationCommandSchema = {
 				application_id: req.params.application_id,
 				guild_id: req.params.guild_id,
-				name: command.name,
+				name: command.name.trim(),
 				name_localizations: command.name_localizations,
-				description: command.description || "",
+				description: command.description?.trim() || "",
 				description_localizations: command.description_localizations,
 				default_member_permissions: command.default_member_permissions || null,
 				contexts: command.contexts,

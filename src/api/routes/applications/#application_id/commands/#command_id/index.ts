@@ -67,10 +67,10 @@ router.patch(
 			body.type = 1;
 		}
 
-		if (body.name.length < 1 || body.name.length > 32) {
+		if (body.name.trim().length < 1 || body.name.trim().length > 32) {
 			// TODO: configurable?
 			throw FieldErrors({
-				username: {
+				name: {
 					code: "BASE_TYPE_BAD_LENGTH",
 					message: `Must be between 1 and 32 in length.`,
 				},
@@ -79,9 +79,9 @@ router.patch(
 
 		const commandForDb: ApplicationCommandSchema = {
 			application_id: req.params.application_id,
-			name: body.name,
+			name: body.name.trim(),
 			name_localizations: body.name_localizations,
-			description: body.description || "",
+			description: body.description?.trim() || "",
 			description_localizations: body.description_localizations,
 			default_member_permissions: body.default_member_permissions || null,
 			contexts: body.contexts,
