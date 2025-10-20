@@ -169,7 +169,7 @@ export class Message extends BaseClass {
 	};
 
 	@JoinColumn({ name: "message_reference_id" })
-	@ManyToOne(() => Message)
+	@ManyToOne(() => Message, { onDelete: "SET NULL" })
 	referenced_message?: Message | null;
 
 	@Column({ type: "simple-json", nullable: true })
@@ -271,7 +271,6 @@ export class Message extends BaseClass {
 
 		if (!opts.member_id) opts.member_id = message.author_id;
 		if (!opts.member) opts.member = await Member.findOneOrFail({ where: { id: opts.member_id! } });
-
 
 		if (!opts.guild) {
 			if (opts.guild_id) opts.guild = await Guild.findOneOrFail({ where: { id: opts.guild_id! } });
