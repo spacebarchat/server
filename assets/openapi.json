@@ -30,6 +30,17 @@
             }
         },
         "schemas": {
+            "CreateFingerprintResponse": {
+                "type": "object",
+                "properties": {
+                    "fingerprint": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "fingerprint"
+                ]
+            },
             "ApplicationCommandOption": {
                 "type": "object",
                 "properties": {
@@ -4470,7 +4481,7 @@
                             "sending_dns_records": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
+                                    "$ref": "#/components/schemas/import(\"/data/data/com.termux/files/home/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
                                 }
                             }
                         },
@@ -7993,7 +8004,7 @@
                                 "type": "string"
                             },
                             "template": {
-                                "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/data/data/com.termux/files/home/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -8020,7 +8031,7 @@
                             "items": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                    "$ref": "#/components/schemas/import(\"/data/data/com.termux/files/home/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                                 }
                             },
                             "paging": {
@@ -8070,7 +8081,7 @@
                         "type": "object",
                         "properties": {
                             "template": {
-                                "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/data/data/com.termux/files/home/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -8158,7 +8169,7 @@
                                 "type": "string"
                             },
                             "template": {
-                                "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/data/data/com.termux/files/home/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -9212,7 +9223,7 @@
                 "type": "object",
                 "properties": {
                     "body": {
-                        "$ref": "#/components/schemas/import(\"/home/cyber/Dokumenty/git-projects/private/spacebar-test-station/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
+                        "$ref": "#/components/schemas/import(\"/data/data/com.termux/files/home/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
                     },
                     "status": {
                         "type": "integer"
@@ -17813,7 +17824,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@689": {
+                            "__@unscopables@691": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -17972,17 +17983,17 @@
                                     "except": {
                                         "type": "boolean"
                                     },
-                                    "__@iterator@687": {
+                                    "__@iterator@689": {
                                         "type": "boolean"
                                     },
-                                    "__@unscopables@689": {
+                                    "__@unscopables@691": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@689",
+                            "__@unscopables@691",
                             "length"
                         ]
                     },
@@ -33555,6 +33566,25 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/APIErrorOrCaptchaResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/auth/fingerprint/": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateFingerprintResponse"
                                 }
                             }
                         }
