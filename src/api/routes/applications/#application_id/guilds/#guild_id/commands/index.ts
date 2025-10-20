@@ -147,6 +147,16 @@ router.put(
 
 		const body = req.body as ApplicationCommandCreateSchema[];
 
+		// Remove commands not present in array
+		const applicationCommands = await ApplicationCommand.find({ where: { application_id: req.params.application_id, guild_id: req.params.guild_id } });
+
+		const commandNamesInArray = body.map((c) => c.name);
+		const commandsNotInArray = applicationCommands.filter((c) => !commandNamesInArray.includes(c.name));
+
+		for (const command of commandsNotInArray) {
+			await ApplicationCommand.delete({ application_id: req.params.application_id, guild_id: req.params.guild_id, id: command.id });
+		}
+
 		for (const command of body) {
 			if (!command.type) {
 				command.type = 1;
