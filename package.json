@@ -34,9 +34,6 @@
 	"bugs": {
 		"url": "https://github.com/spacebarchat/server/issues"
 	},
-	"imports": {
-		"#*": "./dist/*/index.js"
-	},
 	"homepage": "https://spacebar.chat",
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.1",
