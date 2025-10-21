@@ -35,6 +35,8 @@ import {
     uploadFile,
     ThreadMembersUpdateEvent,
     ThreadCreateEvent,
+    AutomodExecutor,
+    AutomodInvocation,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
@@ -53,6 +55,7 @@ import {
     ReadStateType,
     RelationshipType,
     ThreadMemberFlags,
+    AutomodRuleEventType,
 } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
@@ -492,6 +495,18 @@ router.post(
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             message.member.roles = message.member.roles.filter((x) => x.id != x.guild_id).map((x) => x.id);
+
+            const automodResult = await AutomodExecutor.executeInvocation(
+                new AutomodInvocation({
+                    eventType: AutomodRuleEventType.MESSAGE_SEND,
+                    guildId: message.guild_id,
+                    payload: message,
+                }),
+            );
+
+            if (automodResult.blocked) {
+                throw new HTTPError("Unhandled error sending message", 403);
+            }
         }
 
         let read_state = await ReadState.findOne({
