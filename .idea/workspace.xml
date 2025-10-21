@@ -24,12 +24,10 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$USER_HOME$/.cache/JetBrains/WebStorm2024.3/javascript/typings/node/20.17.10/node_modules/@types/node/crypto.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/amqplib/index.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/jsonwebtoken/index.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/node/events.d.ts" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/result/node_modules/lambert-server/src/Server.ts" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/result/node_modules/lambert-server/src/Utils.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/repository/BaseEntity.d.ts" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="ProjectErrors" />
@@ -55,21 +53,23 @@
     "Node.js.Server.ts.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "javascript.nodejs.core.library.configured.version": "24.8.0",
-    "javascript.nodejs.core.library.typings.version": "24.7.0",
-    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/util/migration/postgres",
+    "javascript.nodejs.core.library.configured.version": "22.19.0",
+    "javascript.nodejs.core.library.typings.version": "22.18.11",
+    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/util/config/envTypes",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "node",
     "nodejs_package_manager_path": "npm",
     "npm.Start API.executor": "Run",
-    "npm.Start CDN.executor": "Run",
-    "npm.Start Gateway.executor": "Run",
+    "npm.Start CDN.executor": "Debug",
+    "npm.Start Gateway.executor": "Debug",
+    "npm.Start bundle.executor": "Debug",
     "npm.build.executor": "Run",
+    "npm.build:src.executor": "Run",
     "npm.start.executor": "Debug",
     "prettierjs.PrettierConfiguration.Package": "/home/Rory/git/spacebar/server-master/node_modules/prettier",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "settings.nodejs",
     "ts.external.directory.path": "/home/Rory/git/spacebar/server-master/node_modules/typescript/lib"
   },
   "keyToStringList": {
@@ -85,18 +85,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/util/config/envTypes" />
+      <recent name="$PROJECT_DIR$/src/util/config" />
+      <recent name="$PROJECT_DIR$/src/util/util/extensions" />
+      <recent name="$PROJECT_DIR$/src/api/routes/games" />
       <recent name="$PROJECT_DIR$/src/util/migration/postgres" />
-      <recent name="$PROJECT_DIR$/src/util/entities" />
-      <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
-      <recent name="$PROJECT_DIR$/src/schemas" />
-      <recent name="$PROJECT_DIR$/src/schemas/api/users" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/schemas/webrtc" />
+      <recent name="$PROJECT_DIR$/src/schemas/api/users" />
       <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
       <recent name="$PROJECT_DIR$/src/schemas" />
       <recent name="$PROJECT_DIR$/src/schemas/uncategorised" />
-      <recent name="$PROJECT_DIR$/src/schemas/gateway" />
-      <recent name="$PROJECT_DIR$/src/schemas/api/developers" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -111,15 +111,17 @@
           <value>
             <map>
               <entry key="Start API" value="STOPPED" />
+              <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
-              <entry key="build" value="STOPPED" />
+              <entry key="build" value="FAILED" />
+              <entry key="build:src" value="FAILED" />
             </map>
           </value>
         </entry>
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="npm.Start Gateway">
+  <component name="RunManager" selected="npm.Start API">
     <list>
       <item itemvalue="Compound.Start separated" />
       <item itemvalue="npm.Start bundle" />
@@ -158,6 +160,7 @@
       <workItem from="1760044946282" duration="43683000" />
       <workItem from="1760402350251" duration="49898000" />
       <workItem from="1760538864442" duration="1330000" />
+      <workItem from="1761030386438" duration="50824000" />
     </task>
     <servers />
   </component>
