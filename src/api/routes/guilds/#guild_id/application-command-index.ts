@@ -25,8 +25,12 @@ const router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
 	const members = await Member.find({ where: { guild_id: req.params.guild_id, user: { bot: true } } });
+	const applications: Application[] = [];
 
-	const applications = await Application.find({ where: { id: members[0].id } });
+	for (const member of members) {
+		applications.push(await Application.findOneOrFail({ where: { id: member.id } }));
+	}
+
 	const applicationsSendable = [];
 
 	for (const application of applications) {
@@ -40,8 +44,13 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		});
 	}
 
-	const globalApplicationCommands = await ApplicationCommand.find({ where: { application_id: applications[0].id, guild_id: IsNull() } });
-	const guildApplicationCommands = await ApplicationCommand.find({ where: { application_id: applications[0].id, guild_id: req.params.guild_id } });
+	const globalApplicationCommands: ApplicationCommand[] = [];
+	const guildApplicationCommands: ApplicationCommand[] = [];
+
+	for (const application of applications) {
+		globalApplicationCommands.push(await ApplicationCommand.findOneOrFail({ where: { application_id: application.id, guild_id: IsNull() } }));
+		guildApplicationCommands.push(await ApplicationCommand.findOneOrFail({ where: { application_id: application.id, guild_id: req.params.guild_id } }));
+	}
 
 	const applicationCommandsSendable = [];
 
