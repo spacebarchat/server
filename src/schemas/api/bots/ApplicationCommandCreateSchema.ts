@@ -17,3 +17,5 @@ export interface ApplicationCommandCreateSchema {
 	contexts?: InteractionContextType[];
 	handler?: ApplicationCommandHandlerType;
 }
+
+export type BulkApplicationCommandCreateSchema = ApplicationCommandCreateSchema[];

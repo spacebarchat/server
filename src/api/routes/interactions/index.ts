@@ -91,7 +91,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 	}
 
 	if (body.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
-		interactionData.message = await Message.findOneOrFail({ where: { id: body.message_id } });
+		interactionData.message = await Message.findOneOrFail({ where: { id: body.message_id }, relations: ["author"] });
 	}
 
 	emitEvent({

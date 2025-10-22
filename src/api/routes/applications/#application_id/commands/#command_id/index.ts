@@ -95,7 +95,7 @@ router.patch(
 			version: Snowflake.generate(),
 		};
 
-		await ApplicationCommand.update({ name: body.name }, commandForDb);
+		await ApplicationCommand.update({ name: body.name.trim() }, commandForDb);
 		res.send(commandForDb);
 	},
 );
