@@ -99,7 +99,7 @@ router.post(
 router.put(
 	"/",
 	route({
-		// requestBody: "ApplicationCommandCreateSchema", // How to make this array?
+		requestBody: "BulkApplicationCommandCreateSchema",
 	}),
 	async (req: Request, res: Response) => {
 		const applicationExists = await Application.exists({ where: { id: req.params.application_id } });
