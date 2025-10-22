@@ -28,7 +28,8 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 	const applications: Application[] = [];
 
 	for (const member of members) {
-		applications.push(await Application.findOneOrFail({ where: { id: member.id } }));
+		const app = await Application.findOne({ where: { id: member.id } });
+		if (app) applications.push(app);
 	}
 
 	const applicationsSendable = [];
@@ -44,17 +45,17 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		});
 	}
 
-	const globalApplicationCommands: ApplicationCommand[] = [];
-	const guildApplicationCommands: ApplicationCommand[] = [];
+	const globalApplicationCommands: ApplicationCommand[][] = [];
+	const guildApplicationCommands: ApplicationCommand[][] = [];
 
 	for (const application of applications) {
-		globalApplicationCommands.push(await ApplicationCommand.findOneOrFail({ where: { application_id: application.id, guild_id: IsNull() } }));
-		guildApplicationCommands.push(await ApplicationCommand.findOneOrFail({ where: { application_id: application.id, guild_id: req.params.guild_id } }));
+		globalApplicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: IsNull() } }));
+		guildApplicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: req.params.guild_id } }));
 	}
 
 	const applicationCommandsSendable = [];
 
-	for (const command of [...globalApplicationCommands, ...guildApplicationCommands]) {
+	for (const command of [...globalApplicationCommands, ...guildApplicationCommands].flat()) {
 		applicationCommandsSendable.push({
 			application_id: command.application_id,
 			description: command.description,
