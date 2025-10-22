@@ -45,17 +45,16 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		});
 	}
 
-	const globalApplicationCommands: ApplicationCommand[][] = [];
-	const guildApplicationCommands: ApplicationCommand[][] = [];
+	const applicationCommands: ApplicationCommand[][] = [];
 
 	for (const application of applications) {
-		globalApplicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: IsNull() } }));
-		guildApplicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: req.params.guild_id } }));
+		applicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: IsNull() } }));
+		applicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: req.params.guild_id } }));
 	}
 
 	const applicationCommandsSendable = [];
 
-	for (const command of [...globalApplicationCommands, ...guildApplicationCommands].flat()) {
+	for (const command of applicationCommands.flat()) {
 		applicationCommandsSendable.push({
 			application_id: command.application_id,
 			description: command.description,
