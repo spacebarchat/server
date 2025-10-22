@@ -107,10 +107,10 @@ router.post(
 			version: Snowflake.generate(),
 		};
 
-		const commandExists = await ApplicationCommand.exists({ where: { application_id: req.params.application_id, guild_id: req.params.guild_id, name: body.name } });
+		const commandExists = await ApplicationCommand.exists({ where: { application_id: req.params.application_id, guild_id: req.params.guild_id, name: body.name.trim() } });
 
 		if (commandExists) {
-			await ApplicationCommand.update({ application_id: req.params.application_id, guild_id: req.params.guild_id, name: body.name }, commandForDb);
+			await ApplicationCommand.update({ application_id: req.params.application_id, guild_id: req.params.guild_id, name: body.name.trim() }, commandForDb);
 		} else {
 			commandForDb.id = Snowflake.generate(); // Have to be done that way so the id doesn't change
 			await ApplicationCommand.save(commandForDb);

@@ -113,7 +113,7 @@ router.patch(
 		};
 
 		const commandExists = await ApplicationCommand.exists({
-			where: { application_id: req.params.application_id, guild_id: req.params.guild_id, id: req.params.command_id, name: body.name },
+			where: { application_id: req.params.application_id, guild_id: req.params.guild_id, id: req.params.command_id, name: body.name.trim() },
 		});
 
 		if (!commandExists) {
@@ -121,7 +121,10 @@ router.patch(
 			return;
 		}
 
-		await ApplicationCommand.update({ application_id: req.params.application_id, guild_id: req.params.guild_id, id: req.params.command_id, name: body.name }, commandForDb);
+		await ApplicationCommand.update(
+			{ application_id: req.params.application_id, guild_id: req.params.guild_id, id: req.params.command_id, name: body.name.trim() },
+			commandForDb,
+		);
 		res.send(commandForDb);
 	},
 );
