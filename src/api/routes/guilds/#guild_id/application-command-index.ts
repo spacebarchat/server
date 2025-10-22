@@ -19,7 +19,6 @@
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { Application, ApplicationCommand, Member, Snowflake } from "@spacebar/util";
-import { IsNull } from "typeorm";
 
 const router = Router({ mergeParams: true });
 
@@ -31,6 +30,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		applications.push(await Application.findOneOrFail({ where: { id: member.id } }));
 	}
 
+	const applicationCommands: ApplicationCommand[] = [];
 	const applicationsSendable = [];
 
 	for (const application of applications) {
@@ -42,19 +42,13 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			id: application.id,
 			name: application.name,
 		});
-	}
 
-	const globalApplicationCommands: ApplicationCommand[] = [];
-	const guildApplicationCommands: ApplicationCommand[] = [];
-
-	for (const application of applications) {
-		globalApplicationCommands.push(await ApplicationCommand.findOneOrFail({ where: { application_id: application.id, guild_id: IsNull() } }));
-		guildApplicationCommands.push(await ApplicationCommand.findOneOrFail({ where: { application_id: application.id, guild_id: req.params.guild_id } }));
+		applicationCommands.push(await ApplicationCommand.findOneOrFail({ where: { application_id: application.id } }));
 	}
 
 	const applicationCommandsSendable = [];
 
-	for (const command of [...globalApplicationCommands, ...guildApplicationCommands]) {
+	for (const command of applicationCommands) {
 		applicationCommandsSendable.push({
 			application_id: command.application_id,
 			description: command.description,
