@@ -1,0 +1,345 @@
+{
+    "include": [
+        "MessageInteractionSchema"
+    ],
+    "includeRe": [],
+    "manual": [
+        "DefaultSchema",
+        "Schema",
+        "EntitySchema",
+        "ReadableStream<any>",
+        "SomeJSONSchema",
+        "UncheckedPartialSchema",
+        "PartialSchema",
+        "UncheckedPropertiesSchema",
+        "PropertiesSchema",
+        "AsyncSchema",
+        "AnySchema",
+        "SMTPConnection.CustomAuthenticationResponse",
+        "TransportMakeRequestResponse",
+        "StaticSchema",
+        "CSVImportResponse"
+    ],
+    "manualRe": [
+        ".*\\.Response$",
+        "^(Http2Server|Server|Express|(Resolved|)Http|Client|_|)Response$",
+        ".*\\..*",
+        "^Axios.*",
+        "^ListContact(s|Lists)Response$",
+        "^APIKeyConfiguration\\..*",
+        "^AccountSetting\\..*",
+        "^BulkContactManagement\\..*",
+        "^Campaign.*",
+        "^Contact.*",
+        "^DNS\\..*",
+        "^Delete.*",
+        "^Destroy.*",
+        "^Template\\..*",
+        "^Webhook\\..*",
+        "^(BigDecimal|BigInteger|Blob|Boolean|Document|Error|LazyRequest|List|Map|Normalized|Numeric|StreamingBlob|TimestampDateTime|TimestampHttpDate|TimestampEpochSeconds|Simple)Schema",
+        "^((Create|Update)Contact(|List))Response$",
+        "^(T|Unt)agResourceResponse$",
+        "^Put",
+        "^Inbox",
+        "^Seed",
+        "^DomainTag",
+        "^IpPool",
+        "DomainTemplate",
+        "^\\$",
+        "^Suppression",
+        "^Mail(|ing)List",
+        "DomainTracking",
+        "UpdatedDomain",
+        "ConfigurationSet",
+        "ContactList",
+        "^IPR",
+        "^Job"
+    ],
+    "manualWarn": [],
+    "manualWarnRe": [
+        "^Record",
+        "^Partial"
+    ],
+    "auto": [
+        {
+            "value": "StringSchema",
+            "reason": "AWS Smithy schema"
+        },
+        {
+            "value": "TimestampDefaultSchema",
+            "reason": "AWS Smithy schema"
+        },
+        {
+            "value": "StaticSimpleSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "StaticListSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "StaticMapSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "StaticStructureSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "StaticErrorSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "StaticOperationSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "UnitSchema",
+            "reason": "AWS Smithy schema"
+        },
+        {
+            "value": "MemberSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "StructureSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "OperationSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "BatchGetMetricDataResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CancelExportJobResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateCustomVerificationEmailTemplateResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateDedicatedIpPoolResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateDeliverabilityTestReportResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateEmailIdentityResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateEmailIdentityPolicyResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateEmailTemplateResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateExportJobResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateImportJobResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateMultiRegionEndpointResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateTenantResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "CreateTenantResourceAssociationResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetAccountResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetBlacklistReportsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetCustomVerificationEmailTemplateResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetDedicatedIpResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetDedicatedIpPoolResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetDedicatedIpsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetDeliverabilityDashboardOptionsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetDeliverabilityTestReportResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetDomainDeliverabilityCampaignResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetDomainStatisticsReportResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetEmailIdentityResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetEmailIdentityPoliciesResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetEmailTemplateResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetExportJobResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetImportJobResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetMessageInsightsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetMultiRegionEndpointResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetReputationEntityResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetSuppressedDestinationResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "GetTenantResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListCustomVerificationEmailTemplatesResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListDedicatedIpPoolsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListDeliverabilityTestReportsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListDomainDeliverabilityCampaignsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListEmailIdentitiesResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListEmailTemplatesResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListExportJobsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListImportJobsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListMultiRegionEndpointsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListRecommendationsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListReputationEntitiesResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListResourceTenantsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListSuppressedDestinationsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListTenantResourcesResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "ListTenantsResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "SendBulkEmailResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "SendCustomVerificationEmailResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "SendEmailResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "TestRenderEmailTemplateResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "UpdateCustomVerificationEmailTemplateResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "UpdateEmailIdentityPolicyResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "UpdateEmailTemplateResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "UpdateReputationEntityCustomerManagedStatusResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "UpdateReputationEntityPolicyResponse",
+            "reason": "HTML paragraph in description"
+        },
+        {
+            "value": "UpdatedDKIMAuthorityResponse",
+            "reason": "Uses import()"
+        }
+    ]
+}

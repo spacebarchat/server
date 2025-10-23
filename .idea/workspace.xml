@@ -60,7 +60,7 @@
     "Shell Script.Clean.executor": "Run",
     "javascript.nodejs.core.library.configured.version": "22.19.0",
     "javascript.nodejs.core.library.typings.version": "22.18.11",
-    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/scripts/configTemplates",
+    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/scripts",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -94,11 +94,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts" />
       <recent name="$PROJECT_DIR$/scripts/configTemplates" />
       <recent name="$PROJECT_DIR$/src/util/config/envTypes" />
       <recent name="$PROJECT_DIR$/src/util/config" />
       <recent name="$PROJECT_DIR$/src/util/util/extensions" />
-      <recent name="$PROJECT_DIR$/src/api/routes/games" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src" />
@@ -125,10 +125,6 @@
               <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
               <entry key="Start bundle" value="STOPPED" />
-              <entry key="build" value="FAILED" />
-              <entry key="build:src" value="FAILED" />
-              <entry key="config:apply scripts/configTemplates/bundle.json" value="STOPPED" />
-              <entry key="config:apply scripts/configTemplates/split.json" value="STOPPED" />
             </map>
           </value>
         </entry>
@@ -317,6 +313,7 @@
       <workItem from="1760402350251" duration="49898000" />
       <workItem from="1760538864442" duration="1330000" />
       <workItem from="1761030386438" duration="79726000" />
+      <workItem from="1761240570032" duration="10467000" />
     </task>
     <servers />
   </component>
