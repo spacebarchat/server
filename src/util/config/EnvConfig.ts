@@ -52,6 +52,10 @@ export class EnvConfig {
 			return 1;
 		}
 	}
+
+	get port(): number | undefined {
+		return Number(process.env.PORT);
+	}
 }
 
 // Deprecations:

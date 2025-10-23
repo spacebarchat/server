@@ -32,7 +32,7 @@ import { Config, EnvConfig, initDatabase } from "@spacebar/util";
 
 const app = express();
 const server = http.createServer();
-const port = Number(process.env.PORT) || 3001;
+const port = EnvConfig.get().port || 3001;
 const wrtcWsPort = Number(process.env.WRTC_WS_PORT) || 3004;
 const production = process.env.NODE_ENV == "development" ? false : true;
 server.on("request", app);

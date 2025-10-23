@@ -40,7 +40,7 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
 		cluster.fork();
 	});
 } else {
-	const port = Number(process.env.PORT) || 3001;
+	const port = EnvConfig.get().port || 3001;
 
 	const server = new SpacebarServer({ port });
 	server.start().catch(console.error);

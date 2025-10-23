@@ -22,12 +22,12 @@ import { config } from "dotenv";
 config({ quiet: true });
 
 import { CDNServer } from "./Server";
-const server = new CDNServer({ port: Number(process.env.PORT) || 3003 });
+const server = new CDNServer({ port: EnvConfig.get().port || 3003 });
 server
-    .start()
-    .then(() => {
-        console.log("[Server] started on :" + server.options.port);
-    })
-    .catch((e) => console.error("[Server] Error starting: ", e));
+	.start()
+	.then(() => {
+		console.log("[Server] started on :" + server.options.port);
+	})
+	.catch((e) => console.error("[Server] Error starting: ", e));
 
 module.exports = server;
