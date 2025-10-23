@@ -23,7 +23,7 @@ import { Server, ServerOptions } from "lambert-server/Server";
 import { red } from "picocolors";
 import { initDatabase, Message } from "@spacebar/database";
 import { GifProviderManager } from "@spacebar/integrations/gifs";
-import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initEvent, registerRoutes, JwtKeypairManager } from "@spacebar/util";
+import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initEvent, registerRoutes, JwtKeypairManager, EnvConfig } from "@spacebar/util";
 import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 // import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
@@ -65,13 +65,13 @@ export class SpacebarServer extends Server {
         // await BcryptWorkerPool.Init(8); // TODO: make configurable
         await GifProviderManager.init();
 
-        const logRequests = process.env["LOG_REQUESTS"] != undefined;
+        const logRequests = EnvConfig.logging.logRequests !== "";
         if (logRequests) {
             this.app.use(
                 morgan("combined", {
                     skip: (req, res) => {
-                        let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
-                        if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
+                        let skip = !(EnvConfig.logging.logRequests.includes(res.statusCode.toString()) ?? false);
+                        if (EnvConfig.logging.logRequests.charAt(0) == "-") skip = !skip;
                         return skip;
                     },
                 }),

@@ -26,7 +26,7 @@ import { SpacebarServer } from "@spacebar/api";
 import { CDNServer } from "@spacebar/cdn";
 import { initDatabase } from "@spacebar/database";
 import { GatewayServer } from "@spacebar/gateway";
-import { Config } from "@spacebar/util";
+import { Config, EnvConfig } from "@spacebar/util";
 import { WebrtcServer } from "@spacebar/webrtc";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
@@ -61,13 +61,13 @@ async function main() {
     await initDatabase();
     await Config.init();
 
-    const logRequests = process.env["LOG_REQUESTS"] != undefined;
+    const logRequests = EnvConfig.logging.logRequests != "";
     if (logRequests) {
         app.use(
             morgan("combined", {
                 skip: (req, res) => {
-                    let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
-                    if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
+                    let skip = !(EnvConfig.logging.logRequests.includes(res.statusCode.toString()) ?? false);
+                    if (EnvConfig.logging.logRequests.charAt(0) == "-") skip = !skip;
                     return skip;
                 },
             }),

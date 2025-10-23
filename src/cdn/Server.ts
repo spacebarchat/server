@@ -21,7 +21,7 @@ import morgan from "morgan";
 import { Server, ServerOptions } from "lambert-server/Server";
 import { CORS, BodyParser, Authentication } from "@spacebar/api/middlewares";
 import { Attachment, initDatabase } from "@spacebar/database";
-import { Config, JwtKeypairManager, registerRoutes } from "@spacebar/util";
+import { Config, JwtKeypairManager, registerRoutes, EnvConfig } from "@spacebar/util";
 import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import guildProfilesRoute from "./routes/guild-profiles";
@@ -49,13 +49,13 @@ export class CDNServer extends Server {
             (_) => console.log("[CDN] Attachment migration failed"),
         );
 
-        const logRequests = process.env["LOG_REQUESTS"] != undefined;
+        const logRequests = EnvConfig.logging.logRequests != undefined;
         if (logRequests) {
             this.app.use(
                 morgan("combined", {
                     skip: (req, res) => {
-                        let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
-                        if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
+                        let skip = !(EnvConfig.logging.logRequests.includes(res.statusCode.toString()) ?? false);
+                        if (EnvConfig.logging.logRequests.charAt(0) == "-") skip = !skip;
                         return skip;
                     },
                 }),
