@@ -36,7 +36,7 @@ export async function Connection(this: WS.Server, rawSocket: WS, request: Incomi
         socket.rawSocket.on("message", (data, isBinary) => onMessage(socket, data as Buffer));
         console.log("[WebRTC] new connection", request.url);
 
-        if (EnvConfig.logging.logGatewayEvents) {
+        if (EnvConfig.get().logging.logGatewayEvents) {
             [
                 "close",
                 "error",

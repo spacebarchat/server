@@ -45,7 +45,7 @@ export class NewUrlSignatureData extends NewUrlUserSignatureData {
             throw new Error("Either path or url must be provided for URL signing");
         }
         if (this.path && this.url) {
-            if (EnvConfig.logging.logCdnSignatures) console.warn("[Signing] Both path and url are provided, using path for signing", this, new Error().stack);
+            if (EnvConfig.get().logging.logCdnSignatures) console.warn("[Signing] Both path and url are provided, using path for signing", this, new Error().stack);
         }
         if (this.url) {
             try {
@@ -94,10 +94,10 @@ export class UrlSignResult {
 
     static fromUrl(url: URL | string): UrlSignResult {
         if (typeof url === "string") {
-            if (EnvConfig.logging.logCdnSignatures) console.debug("[Signing] Parsing URL from string:", url);
+            if (EnvConfig.get().logging.logCdnSignatures) console.debug("[Signing] Parsing URL from string:", url);
             url = new URL(url);
         }
-        if (EnvConfig.logging.logCdnSignatures) console.debug("[Signing] Parsing URL from URL object:", url.toString());
+        if (EnvConfig.get().logging.logCdnSignatures) console.debug("[Signing] Parsing URL from URL object:", url.toString());
         const ex = url.searchParams.get("ex");
         const is = url.searchParams.get("is");
         const hm = url.searchParams.get("hm");
@@ -149,7 +149,7 @@ function calculateHash(request: UrlSignatureData): UrlSignResult {
                 "[Signing] CDN Signature IP is enabled but we couldn't find the IP field in the request. This may cause issues with signature validation. Please report this to the Spacebar team!",
             );
         else {
-            if (EnvConfig.logging.logCdnSignatures) console.log("[Signing] CDN Signature IP is enabled, adding IP to hash:", request.ip);
+            if (EnvConfig.get().logging.logCdnSignatures) console.log("[Signing] CDN Signature IP is enabled, adding IP to hash:", request.ip);
             data.update(request.ip!);
             ipData = new Int8Array(new TextEncoder().encode(request.ip!));
         }
@@ -162,7 +162,7 @@ function calculateHash(request: UrlSignatureData): UrlSignResult {
                 "[Signing] CDN Signature User-Agent is enabled but we couldn't find the user-agent header in the request. This may cause issues with signature validation. Please report this to the Spacebar team!",
             );
         else {
-            if (EnvConfig.logging.logCdnSignatures) console.log("[Signing] CDN Signature User-Agent is enabled, adding User-Agent to hash:", request.userAgent);
+            if (EnvConfig.get().logging.logCdnSignatures) console.log("[Signing] CDN Signature User-Agent is enabled, adding User-Agent to hash:", request.userAgent);
             data.update(request.userAgent!);
             userAgentData = new Int8Array(new TextEncoder().encode(request.userAgent!));
         }
@@ -193,7 +193,7 @@ function calculateHash(request: UrlSignatureData): UrlSignResult {
         expiresAt: request.expiresAt,
         hash,
     });
-    if (EnvConfig.logging.logCdnSignatures)
+    if (EnvConfig.get().logging.logCdnSignatures)
         console.log(
             "[Signing]",
             {
@@ -214,7 +214,7 @@ export const isExpired = (data: UrlSignResult | UrlSignatureData) => {
     const expiresAt = parseInt(data.expiresAt, 16);
 
     if (Number.isNaN(issuedAt) || Number.isNaN(expiresAt)) {
-        if (EnvConfig.logging.logCdnSignatures) console.debug("[Signing] Invalid timestamps in query");
+        if (EnvConfig.get().logging.logCdnSignatures) console.debug("[Signing] Invalid timestamps in query");
         return true;
     }
 
@@ -222,13 +222,13 @@ export const isExpired = (data: UrlSignResult | UrlSignatureData) => {
 
     const isExpired = expiresAt < currentTime;
     if (isExpired) {
-        if (EnvConfig.logging.logCdnSignatures) console.debug("[Signing] Signature expired");
+        if (EnvConfig.get().logging.logCdnSignatures) console.debug("[Signing] Signature expired");
         return true;
     }
 
     const isValidIssuedAt = issuedAt < currentTime;
     if (!isValidIssuedAt) {
-        if (EnvConfig.logging.logCdnSignatures) console.debug("[Signing] Signature issued in the future");
+        if (EnvConfig.get().logging.logCdnSignatures) console.debug("[Signing] Signature issued in the future");
         return true;
     }
 
@@ -238,13 +238,13 @@ export const isExpired = (data: UrlSignResult | UrlSignatureData) => {
 export const hasValidSignature = (req: NewUrlUserSignatureData, sig: UrlSignResult) => {
     // if the required query parameters are not present, return false
     if (!sig.expiresAt || !sig.issuedAt || !sig.hash) {
-        if (EnvConfig.logging.logCdnSignatures) console.warn("[Signing] Missing required query parameters for signature validation");
+        if (EnvConfig.get().logging.logCdnSignatures) console.warn("[Signing] Missing required query parameters for signature validation");
         return false;
     }
 
     // check if the signature is expired
     if (isExpired(sig)) {
-        if (EnvConfig.logging.logCdnSignatures) console.warn("[Signing] Signature is expired");
+        if (EnvConfig.get().logging.logCdnSignatures) console.warn("[Signing] Signature is expired");
         return false;
     }
 
@@ -279,7 +279,7 @@ export const hasValidSignature = (req: NewUrlUserSignatureData, sig: UrlSignResu
     const isHashValid = calculated.length === received.length && timingSafeEqual(calculated, received);
 
     if (!isHashValid)
-        if (EnvConfig.logging.logCdnSignatures)
+        if (EnvConfig.get().logging.logCdnSignatures)
             console.warn(`Signature validation for ${sig.path} (is=${sig.issuedAt}, ex=${sig.expiresAt}) failed: calculated: ${calcd}, received: ${sig.hash}`);
 
     return isHashValid;

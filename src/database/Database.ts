@@ -59,10 +59,10 @@ export const DataSourceOptions = isHeadlessProcess
           charset: "utf8mb4",
           url: process.env.DATABASE,
           entities: [path.join(__dirname, "entities", "*.js")],
-          synchronize: EnvConfig.database.unsafeSchemaSync,
-          logging: EnvConfig.logging.logDatabaseQueries,
+          synchronize: EnvConfig.get().database.unsafeSchemaSync,
+          logging: EnvConfig.get().logging.logDatabaseQueries,
           // Figure out why this doesn't work someday.
-          // relationLoadStrategy: EnvConfig.database.disableJoins ? "query" : undefined, // mirrors DB_NO_JOINS
+          // relationLoadStrategy: EnvConfig.get().database.disableJoins ? "query" : undefined, // mirrors DB_NO_JOINS
           bigNumberStrings: false,
           supportBigNumbers: true,
           name: "default",
@@ -85,7 +85,7 @@ export function getDatabase(): DataSource | null {
 export async function initDatabase(): Promise<DataSource> {
     if (dbConnection) return dbConnection;
 
-    if (!EnvConfig.database.unsafeSchemaSync) {
+    if (!EnvConfig.get().database.unsafeSchemaSync) {
         const supported = ["postgres"];
         if (!supported.includes(DatabaseType)) {
             console.log(

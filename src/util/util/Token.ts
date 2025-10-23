@@ -52,7 +52,7 @@ export type UserTokenData = {
 };
 
 function logAuth(text: string) {
-    if (!EnvConfig.logging.logAuthentication) return;
+    if (!EnvConfig.get().logging.logAuthentication) return;
     console.log(`[AUTH] ${text}`);
 }
 

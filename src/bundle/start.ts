@@ -33,7 +33,7 @@ import { centerString } from "@spacebar/extensions";
 import { getRevInfoOrFail, Logo, EnvConfig } from "@spacebar/util";
 import { initStats } from "./stats";
 
-const cores = EnvConfig.threads;
+const cores = EnvConfig.get().threads;
 
 if (cluster.isPrimary) {
     const revInfo = getRevInfoOrFail();

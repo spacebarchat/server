@@ -16,36 +16,42 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import os from "node:os";
 import { LogEnvConfiguration } from "./envTypes/LogEnvConfiguration";
 import { DatabaseEnvConfiguration } from "./envTypes/DatabaseEnvConfiguration";
-import os from "os";
 import { ConfigurationEnvConfiguration } from "./envTypes/ConfigurationEnvConfiguration";
 
+const logConfig = new LogEnvConfiguration();
+const databaseConfig = new DatabaseEnvConfiguration();
+const configurationConfig = new ConfigurationEnvConfiguration();
+
 export class EnvConfig {
-	private static logConfig = new LogEnvConfiguration();
-	private static databaseConfig = new DatabaseEnvConfiguration();
-	private static configurationConfig = new ConfigurationEnvConfiguration();
+    private static _instance: EnvConfig;
+    static get() {
+        if (!this._instance) this._instance = new EnvConfig();
+        return this._instance;
+    }
 
-	static get logging(): LogEnvConfiguration {
-		return this.logConfig;
-	}
+    get logging(): LogEnvConfiguration {
+        return logConfig;
+    }
 
-	static get database(): DatabaseEnvConfiguration {
-		return this.databaseConfig;
-	}
+    get database(): DatabaseEnvConfiguration {
+        return databaseConfig;
+    }
 
-	static get configuration(): ConfigurationEnvConfiguration {
-		return this.configurationConfig;
-	}
+    get configuration(): ConfigurationEnvConfiguration {
+        return configurationConfig;
+    }
 
-	static get threads(): number {
-		try {
-			return Number(process.env.THREADS) || os.cpus().length;
-		} catch {
-			console.log("[EnvConfig] Failed to get thread count! Using 1...");
-			return 1;
-		}
-	}
+    get threads(): number {
+        try {
+            return Number(process.env.THREADS) || os.cpus().length;
+        } catch {
+            console.log("[EnvConfig] Failed to get thread count! Using 1...");
+            return 1;
+        }
+    }
 }
 
 // Deprecations:
