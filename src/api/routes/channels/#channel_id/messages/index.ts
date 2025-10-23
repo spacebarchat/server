@@ -18,11 +18,13 @@
 
 import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
+	ApiError,
 	Attachment,
 	AutomodRule,
 	AutomodTriggerTypes,
 	Channel,
 	Config,
+	DiscordApiErrors,
 	DmChannelDTO,
 	emitEvent,
 	FieldErrors,
@@ -34,6 +36,7 @@ import {
 	NewUrlSignatureData,
 	NewUrlUserSignatureData,
 	ReadState,
+	Relationship,
 	Rights,
 	Snowflake,
 	uploadFile,
@@ -53,6 +56,7 @@ import {
 	MessageCreateCloudAttachment,
 	MessageCreateSchema,
 	Reaction,
+	RelationshipType,
 } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
@@ -318,6 +322,24 @@ router.post(
 		if (!channel.isWritable()) {
 			throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
 		}
+
+		// handle blocked users in dms
+		if(channel.recipients?.length == 2) {
+			const otherUser = channel.recipients.find((r) => r.user_id != req.user_id)?.user;
+			if (otherUser) {
+				const relationship = await Relationship.findOne({
+					where: [
+						{ from_id: req.user_id, to_id: otherUser.id },
+						{ from_id: otherUser.id, to_id: req.user_id },
+					],
+				});
+
+				if (relationship?.type === RelationshipType.blocked) {
+				throw DiscordApiErrors.CANNOT_MESSAGE_USER;
+				}
+			}
+		}
+
 
 		if (body.nonce) {
 			const existing = await Message.findOne({
