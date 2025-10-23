@@ -18,11 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import {
-	emitEvent,
-	OrmUtils,
-	UserSettingsProtos,
-} from "@spacebar/util";
+import { emitEvent, EnvConfig, OrmUtils, UserSettingsProtos } from "@spacebar/util";
 import { PreloadedUserSettings } from "discord-protos";
 import { JsonValue } from "@protobuf-ts/runtime";
 import { SettingsProtoJsonResponse, SettingsProtoResponse, SettingsProtoUpdateJsonSchema, SettingsProtoUpdateSchema } from "@spacebar/schemas"
@@ -166,7 +162,7 @@ async function patchUserSettings(
 		};
 	}
 
-	if ((process.env.LOG_PROTO_UPDATES || process.env.LOG_PROTO_SETTINGS_UPDATES) && process.env.LOG_PROTO_SETTINGS_UPDATES !== "false")
+	if (EnvConfig.logging.logProtoUpdates.includes("SETTINGS"))
 		console.log(
 			`Updating user settings for user ${userId} with atomic=${atomic}:`,
 			updatedSettings,
