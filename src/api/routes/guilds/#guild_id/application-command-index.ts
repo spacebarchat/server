@@ -20,6 +20,7 @@ import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { Application, ApplicationCommand, Member, Snowflake } from "@spacebar/util";
 import { IsNull } from "typeorm";
+import { ApplicationCommandSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -52,19 +53,30 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 		applicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: req.params.guild_id } }));
 	}
 
-	const applicationCommandsSendable = [];
+	const applicationCommandsSendable: ApplicationCommandSchema[] = [];
 
 	for (const command of applicationCommands.flat()) {
 		applicationCommandsSendable.push({
-			application_id: command.application_id,
-			description: command.description,
-			dm_permission: command.dm_permission,
-			global_popularity_rank: command.global_popularity_rank,
 			id: command.id,
-			integration_types: command.integration_types,
-			name: command.name,
 			type: command.type,
+			application_id: command.application_id,
+			guild_id: command.guild_id,
+			name: command.name,
+			name_localizations: command.name_localizations,
+			// name_localized: // TODO: make this work
+			description: command.description,
+			description_localizations: command.description_localizations,
+			// description_localized: // TODO: make this work
+			options: command.options,
+			default_member_permissions: command.default_member_permissions,
+			dm_permission: command.dm_permission,
+			permissions: command.permissions,
+			nsfw: command.nsfw,
+			integration_types: command.integration_types,
+			global_popularity_rank: command.global_popularity_rank,
+			contexts: command.contexts,
 			version: command.version,
+			handler: command.handler,
 		});
 	}
 
