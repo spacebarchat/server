@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Region } from ".";
+import { Region } from "@spacebar/schemas";
 
 export class RegionConfiguration {
 	default: string = "spacebar";

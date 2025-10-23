@@ -17,10 +17,10 @@
 */
 
 import { Payload, WebSocket } from "@spacebar/gateway";
-import { Config, emitEvent, Guild, Member, Region, VoiceServerUpdateEvent, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
+import { Config, emitEvent, Guild, Member, VoiceServerUpdateEvent, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
 import { genVoiceToken } from "../util/SessionUtils";
 import { check } from "./instanceOf";
-import { VoiceStateUpdateSchema } from "@spacebar/schemas";
+import { Region, VoiceStateUpdateSchema } from "@spacebar/schemas";
 // TODO: check if a voice server is setup
 
 // Notice: Bot users respect the voice channel's user limit, if set.
