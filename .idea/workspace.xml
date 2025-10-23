@@ -138,6 +138,8 @@
       <item itemvalue="npm.Start CDN" />
       <item itemvalue="npm.Start Gateway" />
       <item itemvalue="npm.Start bundle" />
+      <item itemvalue="npm.Build" />
+      <item itemvalue="npm.Clean" />
     </list>
   </component>
   <component name="SharedIndexes">

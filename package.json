@@ -11,7 +11,8 @@
 		"start:gateway": "node --enable-source-maps dist/gateway/start.js",
 		"build": "npm run build:src && npm run generate:schema && npm run generate:openapi",
 		"build:src": "tsc -b -v",
-		"watch": "tsc -w -b .",
+		"build:watch": "tsc -w -b .",
+        "clean": "rm -rf dist/",
 		"test": "node scripts/test.js",
 		"lint": "eslint .",
 		"setup": "npm run build && npm run generate:schema",
@@ -22,7 +23,8 @@
 		"generate:openapi": "node scripts/openapi.js",
 		"add:license": "node scripts/license.js",
 		"migrate-from-staging": "node -r dotenv/config -r module-alias/register scripts/stagingMigration/index.js",
-		"node:tests": "npm run build:src && node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js"
+		"node:tests": "npm run build:src && node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js",
+        "config:apply": "node dist/applyConfig.js"
 	},
 	"main": "dist/bundle/index.js",
 	"types": "src/bundle/index.ts",
