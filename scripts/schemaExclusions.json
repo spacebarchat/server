@@ -18,13 +18,38 @@
         "SMTPConnection.CustomAuthenticationResponse",
         "TransportMakeRequestResponse",
         "StaticSchema",
-        "CSVImportResponse"
+        "CSVImportResponse",
+        "NewMultipleMembersResponse",
+        "EventsResponse",
+        "NotificationAPIResponse",
+        "MetricsAPIResponse",
+        "ValidationResponse",
+        "MultipleValidationJobsListResponse",
+        "UpdateRouteResponse",
+        "MessagesSendAPIResponse",
+        "APIWebhook",
+        "WebhookResponse",
+        "WebhookValidationResponse",
+        "MessageResponse",
+        "ConnectionSettingsResponse",
+        "UpdatedDKIMSelectorResponse",
+        "UpdatedWebPrefixResponse",
+        "APIResponse",
+        "APIErrorOptions",
+        "APIErrorType",
+        "ListTagsForResourceResponse",
+        "GetContactResponse",
+        "LibraryResponse",
+        "LibraryLocalResponse"
     ],
     "manualRe": [
         ".*\\.Response$",
         "^(Http2Server|Server|Express|(Resolved|)Http|Client|_|)Response$",
         ".*\\..*",
-        "^Axios.*",
+        "^Axios",
+        "^Internal",
+        "^Record<",
+        "^Omit<",
         "^ListContact(s|Lists)Response$",
         "^APIKeyConfiguration\\..*",
         "^AccountSetting\\..*",
@@ -340,6 +365,46 @@
         {
             "value": "UpdatedDKIMAuthorityResponse",
             "reason": "Uses import()"
+        },
+        {
+            "value": "ListRecipientResponse",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "TemplateResponse",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "TemplateDetailContentResponse",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "EventCallbackUrlResponse",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "ParseRouteResponse",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "SenderResponse",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "MetaSenderResponse",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "ApiKeyResponse",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "MyProfileResponse",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "UserResponse",
+            "reason": "Schema with only uppercase properties"
         }
     ]
 }
