@@ -15,8 +15,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="TypeScript File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -27,6 +27,10 @@
     <setting file="file://$PROJECT_DIR$/node_modules/@types/amqplib/index.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/jsonwebtoken/index.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/node/events.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/data-source/BaseDataSourceOptions.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/data-source/DataSource.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/data-source/DataSourceOptions.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/driver/postgres/PostgresConnectionOptions.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/typeorm/repository/BaseEntity.d.ts" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
@@ -53,20 +57,25 @@
     "Node.js.Server.ts.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "Shell Script.Clean.executor": "Run",
     "javascript.nodejs.core.library.configured.version": "22.19.0",
     "javascript.nodejs.core.library.typings.version": "22.18.11",
-    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/util/config/envTypes",
+    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/scripts/configTemplates",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "node",
     "nodejs_package_manager_path": "npm",
+    "npm.Build.executor": "Run",
+    "npm.Clean.executor": "Run",
     "npm.Start API.executor": "Run",
-    "npm.Start CDN.executor": "Debug",
-    "npm.Start Gateway.executor": "Debug",
-    "npm.Start bundle.executor": "Debug",
+    "npm.Start CDN.executor": "Run",
+    "npm.Start Gateway.executor": "Run",
+    "npm.Start bundle.executor": "Run",
     "npm.build.executor": "Run",
     "npm.build:src.executor": "Run",
+    "npm.config:apply scripts/configTemplates/bundle.json.executor": "Run",
+    "npm.config:apply scripts/configTemplates/split.json.executor": "Run",
     "npm.start.executor": "Debug",
     "prettierjs.PrettierConfiguration.Package": "/home/Rory/git/spacebar/server-master/node_modules/prettier",
     "settings.editor.selected.configurable": "settings.nodejs",
@@ -85,18 +94,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts/configTemplates" />
       <recent name="$PROJECT_DIR$/src/util/config/envTypes" />
       <recent name="$PROJECT_DIR$/src/util/config" />
       <recent name="$PROJECT_DIR$/src/util/util/extensions" />
       <recent name="$PROJECT_DIR$/src/api/routes/games" />
-      <recent name="$PROJECT_DIR$/src/util/migration/postgres" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/schemas/webrtc" />
       <recent name="$PROJECT_DIR$/src/schemas/api/users" />
       <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
       <recent name="$PROJECT_DIR$/src/schemas" />
-      <recent name="$PROJECT_DIR$/src/schemas/uncategorised" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -110,20 +119,167 @@
         <entry key="js.build_tools.npm">
           <value>
             <map>
+              <entry key="Build" value="STOPPED" />
+              <entry key="Clean" value="STOPPED" />
               <entry key="Start API" value="STOPPED" />
               <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
+              <entry key="Start bundle" value="STOPPED" />
               <entry key="build" value="FAILED" />
               <entry key="build:src" value="FAILED" />
+              <entry key="config:apply scripts/configTemplates/bundle.json" value="STOPPED" />
+              <entry key="config:apply scripts/configTemplates/split.json" value="STOPPED" />
             </map>
           </value>
         </entry>
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="npm.Start API">
+  <component name="RunManager" selected="npm.Build">
+    <configuration name="Start API" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start:api" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="npm" />
+      <envs />
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <method v="2">
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="build" />
+          </scripts>
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="config:apply" />
+          </scripts>
+          <arguments value="scripts/configTemplates/split.json" />
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+      </method>
+    </configuration>
+    <configuration name="Start CDN" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start:cdn" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="npm" />
+      <envs />
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <method v="2">
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="build:src" />
+          </scripts>
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="config:apply" />
+          </scripts>
+          <arguments value="scripts/configTemplates/split.json" />
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+      </method>
+    </configuration>
+    <configuration name="Start Gateway" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start:gateway" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="npm" />
+      <envs />
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <method v="2">
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="build" />
+          </scripts>
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="config:apply" />
+          </scripts>
+          <arguments value="scripts/configTemplates/split.json" />
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+      </method>
+    </configuration>
+    <configuration name="Start bundle" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="npm" />
+      <envs />
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <method v="2">
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="build" />
+          </scripts>
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="config:apply" />
+          </scripts>
+          <arguments value="scripts/configTemplates/bundle.json" />
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Compound.Start separated" />
+      <item itemvalue="npm.Build" />
+      <item itemvalue="npm.Clean" />
       <item itemvalue="npm.Start bundle" />
       <item itemvalue="npm.Start API" />
       <item itemvalue="npm.Start CDN" />
@@ -160,7 +316,7 @@
       <workItem from="1760044946282" duration="43683000" />
       <workItem from="1760402350251" duration="49898000" />
       <workItem from="1760538864442" duration="1330000" />
-      <workItem from="1761030386438" duration="50824000" />
+      <workItem from="1761030386438" duration="79726000" />
     </task>
     <servers />
   </component>
