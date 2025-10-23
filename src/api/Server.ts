@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes } from "@spacebar/util";
+import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes, EnvConfig } from "@spacebar/util";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
@@ -57,13 +57,13 @@ export class SpacebarServer extends Server {
 		await initInstance();
 		WebAuthn.init();
 
-		const logRequests = process.env["LOG_REQUESTS"] != undefined;
+		const logRequests = EnvConfig.logging.logRequests !== "";
 		if (logRequests) {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
-						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
+						let skip = !(EnvConfig.logging.logRequests.includes(res.statusCode.toString()) ?? false);
+						if (EnvConfig.logging.logRequests.charAt(0) == "-") skip = !skip;
 						return skip;
 					},
 				}),
