@@ -27,7 +27,7 @@ import { Close } from "./Close";
 import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "url";
-import { Config, ErlpackType } from "@spacebar/util";
+import { Config, EnvConfig, ErlpackType } from "@spacebar/util";
 import zlib from "node:zlib";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 
@@ -88,7 +88,7 @@ export async function Connection(
 			`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`,
 		);
 
-		if (process.env.WS_LOGEVENTS)
+		if (EnvConfig.logging.logGatewayEvents)
 			[
 				"close",
 				"error",
