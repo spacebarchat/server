@@ -21,24 +21,30 @@ import { DatabaseEnvConfiguration } from "./envTypes/DatabaseEnvConfiguration";
 import os from "os";
 import { ConfigurationEnvConfiguration } from "./envTypes/ConfigurationEnvConfiguration";
 
+const logConfig = new LogEnvConfiguration();
+const databaseConfig = new DatabaseEnvConfiguration();
+const configurationConfig = new ConfigurationEnvConfiguration();
+
 export class EnvConfig {
-	private static logConfig = new LogEnvConfiguration();
-	private static databaseConfig = new DatabaseEnvConfiguration();
-	private static configurationConfig = new ConfigurationEnvConfiguration();
-
-	static get logging(): LogEnvConfiguration {
-		return this.logConfig;
+	private static _instance: EnvConfig;
+	static get() {
+		if (!this._instance) this._instance = new EnvConfig();
+		return this._instance;
 	}
 
-	static get database(): DatabaseEnvConfiguration {
-		return this.databaseConfig;
+	get logging(): LogEnvConfiguration {
+		return logConfig;
 	}
 
-	static get configuration(): ConfigurationEnvConfiguration {
-		return this.configurationConfig;
+	get database(): DatabaseEnvConfiguration {
+		return databaseConfig;
 	}
 
-	static get threads(): number {
+	get configuration(): ConfigurationEnvConfiguration {
+		return configurationConfig;
+	}
+
+	get threads(): number {
 		try {
 			return Number(process.env.THREADS) || os.cpus().length;
 		} catch {

@@ -45,7 +45,7 @@ export class NewUrlSignatureData extends NewUrlUserSignatureData {
 			);
 		}
 		if (this.path && this.url) {
-			if (EnvConfig.logging.logCdnSignatures)
+			if (EnvConfig.get().logging.logCdnSignatures)
 				console.warn(
 					"[Signing] Both path and url are provided, using path for signing",
 					this,
@@ -101,11 +101,11 @@ export class UrlSignResult {
 
 	static fromUrl(url: URL | string): UrlSignResult {
 		if (typeof url === "string") {
-			if (EnvConfig.logging.logCdnSignatures)
+			if (EnvConfig.get().logging.logCdnSignatures)
 				console.debug("[Signing] Parsing URL from string:", url);
 			url = new URL(url);
 		}
-		if (EnvConfig.logging.logCdnSignatures)
+		if (EnvConfig.get().logging.logCdnSignatures)
 			console.debug(
 				"[Signing] Parsing URL from URL object:",
 				url.toString(),
@@ -160,7 +160,7 @@ function calculateHash(request: UrlSignatureData): UrlSignResult {
 				"[Signing] CDN Signature IP is enabled but we couldn't find the IP field in the request. This may cause issues with signature validation. Please report this to the Spacebar team!",
 			);
 		else {
-			if (EnvConfig.logging.logCdnSignatures)
+			if (EnvConfig.get().logging.logCdnSignatures)
 				console.log(
 					"[Signing] CDN Signature IP is enabled, adding IP to hash:",
 					request.ip,
@@ -175,7 +175,7 @@ function calculateHash(request: UrlSignatureData): UrlSignResult {
 				"[Signing] CDN Signature User-Agent is enabled but we couldn't find the user-agent header in the request. This may cause issues with signature validation. Please report this to the Spacebar team!",
 			);
 		else {
-			if (EnvConfig.logging.logCdnSignatures)
+			if (EnvConfig.get().logging.logCdnSignatures)
 				console.log(
 					"[Signing] CDN Signature User-Agent is enabled, adding User-Agent to hash:",
 					request.userAgent,
@@ -191,7 +191,7 @@ function calculateHash(request: UrlSignatureData): UrlSignResult {
 		expiresAt: request.expiresAt,
 		hash,
 	});
-	if (EnvConfig.logging.logCdnSignatures)
+	if (EnvConfig.get().logging.logCdnSignatures)
 		console.log(
 			"[Signing]",
 			{
@@ -216,7 +216,7 @@ export const isExpired = (data: UrlSignResult | UrlSignatureData) => {
 	const expiresAt = parseInt(data.expiresAt, 16);
 
 	if (Number.isNaN(issuedAt) || Number.isNaN(expiresAt)) {
-		if (EnvConfig.logging.logCdnSignatures)
+		if (EnvConfig.get().logging.logCdnSignatures)
 			console.debug("[Signing] Invalid timestamps in query");
 		return true;
 	}
@@ -225,14 +225,14 @@ export const isExpired = (data: UrlSignResult | UrlSignatureData) => {
 
 	const isExpired = expiresAt < currentTime;
 	if (isExpired) {
-		if (EnvConfig.logging.logCdnSignatures)
+		if (EnvConfig.get().logging.logCdnSignatures)
 			console.debug("[Signing] Signature expired");
 		return true;
 	}
 
 	const isValidIssuedAt = issuedAt < currentTime;
 	if (!isValidIssuedAt) {
-		if (EnvConfig.logging.logCdnSignatures)
+		if (EnvConfig.get().logging.logCdnSignatures)
 			console.debug("[Signing] Signature issued in the future");
 		return true;
 	}
@@ -246,7 +246,7 @@ export const hasValidSignature = (
 ) => {
 	// if the required query parameters are not present, return false
 	if (!sig.expiresAt || !sig.issuedAt || !sig.hash) {
-		if (EnvConfig.logging.logCdnSignatures)
+		if (EnvConfig.get().logging.logCdnSignatures)
 			console.warn(
 				"[Signing] Missing required query parameters for signature validation",
 			);
@@ -255,7 +255,7 @@ export const hasValidSignature = (
 
 	// check if the signature is expired
 	if (isExpired(sig)) {
-		if (EnvConfig.logging.logCdnSignatures)
+		if (EnvConfig.get().logging.logCdnSignatures)
 			console.warn("[Signing] Signature is expired");
 		return false;
 	}
@@ -305,7 +305,7 @@ export const hasValidSignature = (
 		timingSafeEqual(calculated, received);
 
 	if (!isHashValid)
-		if (EnvConfig.logging.logCdnSignatures)
+		if (EnvConfig.get().logging.logCdnSignatures)
 			console.warn(
 				`Signature validation for ${sig.path} (is=${sig.issuedAt}, ex=${sig.expiresAt}) failed: calculated: ${calcd}, received: ${sig.hash}`,
 			);

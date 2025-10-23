@@ -31,7 +31,7 @@ config({ quiet: true });
 import { execSync } from "child_process";
 import { centerString, EnvConfig, Logo } from "@spacebar/util";
 
-const cores = EnvConfig.threads;
+const cores = EnvConfig.get().threads;
 
 function getCommitOrFail() {
 	try {

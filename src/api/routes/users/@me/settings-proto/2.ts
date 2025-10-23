@@ -164,7 +164,7 @@ async function patchUserSettings(
 		};
 	}
 
-	if (EnvConfig.logging.logProtoUpdates.includes("FRECENCY"))
+	if (EnvConfig.get().logging.logProtoUpdates.includes("FRECENCY"))
 		console.log(
 			`Updating frecency settings for user ${userId} with atomic=${atomic}:`,
 			updatedSettings,
