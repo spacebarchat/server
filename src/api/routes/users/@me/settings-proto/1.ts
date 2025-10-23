@@ -162,7 +162,7 @@ async function patchUserSettings(
 		};
 	}
 
-	if (EnvConfig.logging.logProtoUpdates.includes("SETTINGS"))
+	if (EnvConfig.get().logging.logProtoUpdates.includes("SETTINGS"))
 		console.log(
 			`Updating user settings for user ${userId} with atomic=${atomic}:`,
 			updatedSettings,

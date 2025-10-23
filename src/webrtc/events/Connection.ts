@@ -39,7 +39,7 @@ export async function Connection(
 		socket.on("message", onMessage.bind(socket));
 		console.log("[WebRTC] new connection", request.url);
 
-		if (EnvConfig.logging.logGatewayEvents) {
+		if (EnvConfig.get().logging.logGatewayEvents) {
 			[
 				"close",
 				"error",
