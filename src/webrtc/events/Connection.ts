@@ -23,6 +23,7 @@ import WS from "ws";
 import { VoiceOPCodes, WebRtcWebSocket, Send } from "../util";
 import { onClose } from "./Close";
 import { onMessage } from "./Message";
+import { EnvConfig } from "@spacebar/util";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -35,7 +36,7 @@ export async function Connection(this: WS.Server, rawSocket: WS, request: Incomi
         socket.rawSocket.on("message", (data, isBinary) => onMessage(socket, data as Buffer));
         console.log("[WebRTC] new connection", request.url);
 
-        if (process.env.WS_LOGEVENTS) {
+        if (EnvConfig.logging.logGatewayEvents) {
             [
                 "close",
                 "error",

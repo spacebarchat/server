@@ -27,7 +27,7 @@ import { Close } from "./Close";
 import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "node:url";
-import { Config } from "@spacebar/util";
+import { Config, EnvConfig } from "@spacebar/util";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 import { ProcessLifecycle } from "@spacebar/util/util/ProcessLifecycle";
 import { Monitoring } from "../../util/monitoring/Monitoring";
@@ -113,7 +113,7 @@ export async function Connection(this: WS.Server, rawSocket: WS, request: Incomi
 
         console.log(`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`);
 
-        if (process.env.WS_LOGEVENTS)
+        if (EnvConfig.logging.logGatewayEvents)
             [
                 "close",
                 "error",
