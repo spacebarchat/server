@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { Application, ApplicationCommand, Member, Snowflake } from "@spacebar/util";
 import { IsNull } from "typeorm";
-import { ApplicationCommandSchema } from "@spacebar/schemas";
+import { ApplicationCommandSchema, ApplicationCommandType } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -67,7 +67,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 			description: command.description,
 			description_localizations: command.description_localizations,
 			// description_localized: // TODO: make this work
-			options: command.options,
+			options: command.type === ApplicationCommandType.CHAT_INPUT ? command.options : undefined,
 			default_member_permissions: command.default_member_permissions,
 			dm_permission: command.dm_permission,
 			permissions: command.permissions,
