@@ -29,11 +29,11 @@ import { config } from "dotenv";
 
 config({ quiet: true });
 import { execSync } from "child_process";
-import { centerString, Logo } from "@spacebar/util";
+import { centerString, EnvConfig, Logo } from "@spacebar/util";
 import fs from "fs";
 import path from "path";
 
-const cores = process.env.THREADS ? parseInt(process.env.THREADS) : 1;
+const cores = EnvConfig.threads;
 
 function getRevInfoOrFail(): { rev: string | null; lastModified: number } {
 	const rootDir = path.join(__dirname, "../../");
