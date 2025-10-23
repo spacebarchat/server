@@ -20,19 +20,23 @@
 	Regenerates the `spacebarchat/server/assets/schemas.json` file, used for API/Gateway input validation.
 */
 
+const scriptStartTime = new Date();
+
 const conWarn = console.warn;
 console.warn = (...args) => {
 	// silence some expected warnings
 	if (args[0] === "initializer is expression for property id") return;
 	if (args[0].startsWith("unknown initializer for property ") && args[0].endsWith("[object Object]")) return;
 	conWarn(...args);
-}
+};
 
 const path = require("path");
 const fs = require("fs");
 const TJS = require("typescript-json-schema");
 const walk = require("./util/walk");
+const { redBright, yellowBright, bgRedBright, yellow } = require("picocolors");
 const schemaPath = path.join(__dirname, "..", "assets", "schemas.json");
+const exclusionList = JSON.parse(fs.readFileSync(path.join(__dirname, "schemaExclusions.json"), { encoding: "utf8" }));
 
 const settings = {
 	required: true,
@@ -43,82 +47,102 @@ const settings = {
 	defaultProps: false,
 };
 
-const ExcludeAndWarn = [
-	/^Record/,
-	/^Partial/,
-]
-const Excluded = [
-	"DefaultSchema",
-	"Schema",
-	"EntitySchema",
-	"ServerResponse",
-	"Http2ServerResponse",
-	"ExpressResponse",
-	"global.Express.Response",
-	"global.Response",
-	"Response",
-	"e.Response",
-	"request.Response",
-	"supertest.Response",
-	"DiagnosticsChannel.Response",
-	"_Response",
-	"ReadableStream<any>",
+const ExcludeAndWarn = [...exclusionList.manualWarn, ...exclusionList.manualWarnRe.map((r) => new RegExp(r))];
+const Excluded = [...exclusionList.manual, ...exclusionList.manualRe.map((r) => new RegExp(r)), ...exclusionList.auto.map((r) => r.value)];
+const Included = [...exclusionList.include, ...exclusionList.includeRe.map((r) => new RegExp(r))];
 
-	// TODO: Figure out how to exclude schemas from node_modules?
-	"SomeJSONSchema",
-	"UncheckedPartialSchema",
-	"PartialSchema",
-	"UncheckedPropertiesSchema",
-	"PropertiesSchema",
-	"AsyncSchema",
-	"AnySchema",
-	"SMTPConnection.CustomAuthenticationResponse",
-	"TransportMakeRequestResponse",
-	// Emma [it/its] @ Rory& - 2025-10-14
-	/.*\..*/,
-	/^Axios.*/,
-	/^APIKeyConfiguration\..*/,
-	/^AccountSetting\..*/,
-	/^BulkContactManagement\..*/,
-	/^Campaign.*/,
-	/^Contact.*/,
-	/^DNS\..*/,
-	/^Delete.*/,
-	/^Destroy.*/,
-	/^Template\..*/,
-	/^Webhook\..*/,
-	/^(BigDecimal|BigInteger|Blob|Boolean|Document|Error|LazyRequest|List|Map|Normalized|Numeric)Schema/,
-	/^Put/
+const excludedLambdas = [
+	(n, s) => {
+		// attempt to import
+		if (JSON.stringify(s).includes(`#/definitions/import(`)) {
+			console.log(`\r${redBright("[WARN]")} Omitting schema ${n} as it attempted to use import().`);
+			exclusionList.auto.push({ value: n, reason: "Uses import()" });
+			return true;
+		}
+	},
+	(n, s) => {
+		if (JSON.stringify(s).includes(process.cwd())) {
+			console.log(`\r${redBright("[WARN]")} Omitting schema ${n} as it leaked $PWD.`);
+			exclusionList.auto.push({ value: n, reason: "Leaked $PWD" });
+			return true;
+		}
+	},
+	(n, s) => {
+		if (JSON.stringify(s).includes(process.env.HOME)) {
+			console.log(`\r${redBright("[WARN]")} Omitting schema ${n} as it leaked a $HOME path.`);
+			exclusionList.auto.push({ value: n, reason: "Leaked $HOME" });
+			return true;
+		}
+	},
+	(n, s) => {
+		if (s["$ref"] === `#/definitions/${n}`) {
+			console.log(`\r${redBright("[WARN]")} Omitting schema ${n} as it is a self-reference only schema.`);
+			exclusionList.auto.push({ value: n, reason: "Self-reference only schema" });
+			// fs.writeFileSync(`fucked/${n}.json`, JSON.stringify(s, null, 4));
+			return true;
+		}
+	},
+	(n, s) => {
+		if (s.description?.match(/Smithy/)) {
+			console.log(`\r${redBright("[WARN]")} Omitting schema ${n} as it appears to be an AWS Smithy schema.`);
+			exclusionList.auto.push({ value: n, reason: "AWS Smithy schema" });
+			return true;
+		}
+	},
+	(n, s) => {
+		if (s.description?.startsWith("<p>")) {
+			console.log(`\r${redBright("[WARN]")} Omitting schema ${n} as we don't use HTML paragraphs for descriptions.`);
+			exclusionList.auto.push({ value: n, reason: "HTML paragraph in description" });
+			return true;
+		}
+	},
+	// (n, s) => {
+	// 	if (JSON.stringify(s).length <= 300) {
+	// 		console.log({n, s});
+	// 	}
+	// }
 ];
 
+function includesMatch(haystack, needles, log = false) {
+	for (const needle of needles) {
+		const match = needle instanceof RegExp ? needle.test(haystack) : haystack === needle;
+		if (match) {
+			if (log) console.warn(redBright("[WARN]:"), "Excluding schema", haystack, "due to match with", needle);
+			return true;
+		}
+	}
+	return false;
+}
+
 function main() {
-	const program = TJS.programFromConfig(
-		path.join(__dirname, "..", "tsconfig.json"),
-		walk(path.join(__dirname, "..", "src", "schemas")),
-	);
+	const program = TJS.programFromConfig(path.join(__dirname, "..", "tsconfig.json"), walk(path.join(__dirname, "..", "src", "schemas")));
 	const generator = TJS.buildGenerator(program, settings);
 	if (!generator || !program) return;
 
 	let schemas = generator.getUserSymbols().filter((x) => {
 		return (
-			(
-				x.endsWith("Schema")
-				||x.endsWith("Response")
-				|| x.startsWith("API")
-			)
-			&& !ExcludeAndWarn.some(exc => {
-				const match = exc instanceof RegExp ? exc.test(x) : x === exc;
-				if (match) console.warn("Warning: Excluding schema", x);
-				return match;
-			})
-			&& !Excluded.some(exc => exc instanceof RegExp ? exc.test(x) : x === exc)
+			(x.endsWith("Schema") || x.endsWith("Response") || x.startsWith("API")) &&
+			// !ExcludeAndWarn.some((exc) => {
+			// 	const match = exc instanceof RegExp ? exc.test(x) : x === exc;
+			// 	if (match) console.warn("Warning: Excluding schema", x);
+			// 	return match;
+			// }) &&
+			// !Excluded.some((exc) => (exc instanceof RegExp ? exc.test(x) : x === exc))
+			(includesMatch(x, Included) || (!includesMatch(x, ExcludeAndWarn, true) && !includesMatch(x, Excluded)))
 		);
 	});
+		//.sort((a,b) => a.localeCompare(b));
 
 	var definitions = {};
 
+	if (process.env.WRITE_SCHEMA_DIR === "true") {
+		fs.rmSync("schemas", { recursive: true, force: true });
+		fs.mkdirSync("schemas");
+	}
+
 	for (const name of schemas) {
-		console.log("Processing schema", name);
+		const startTime = new Date();
+		process.stdout.write(`Processing schema ${name}... `);
 		const part = TJS.generateSchema(program, name, settings, [], generator);
 		if (!part) continue;
 
@@ -144,27 +168,35 @@ function main() {
 			}
 		}
 
+		if (definitions[name]) {
+			process.stdout.write(yellow(` [ERROR] Duplicate schema name detected: ${name}. Overwriting previous schema.`));
+		}
+
+		if (!includesMatch(name, Included) && excludedLambdas.some((fn) => fn(name, part))) {
+			continue;
+		}
+
+		if (process.env.WRITE_SCHEMA_DIR === "true") fs.writeFileSync(path.join("schemas", `${name}.json`), JSON.stringify(part, null, 4));
+
+		process.stdout.write("Done in " + yellowBright(new Date() - startTime) + " ms, " + yellowBright(JSON.stringify(part).length) + " bytes (unformatted) ");
+		if (new Date() - startTime >= 20) console.log(bgRedBright("[SLOW]"));
+		else console.log();
+
 		definitions = { ...definitions, [name]: { ...part } };
 	}
 
 	deleteOneOfKindUndefinedRecursive(definitions, "$");
 
 	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
-	console.log("Successfully wrote", Object.keys(definitions).length, "schemas to", schemaPath);
+	fs.writeFileSync(__dirname + "/schemaExclusions.json", JSON.stringify(exclusionList, null, 4));
+	console.log("Successfully wrote", Object.keys(definitions).length, "schemas to", schemaPath, "in", new Date() - scriptStartTime, "ms.");
 }
 
 function deleteOneOfKindUndefinedRecursive(obj, path) {
-	if (
-		obj?.type === "object" &&
-		obj?.properties?.oneofKind?.type === "undefined"
-	)
-		return true;
+	if (obj?.type === "object" && obj?.properties?.oneofKind?.type === "undefined") return true;
 
 	for (const key in obj) {
-		if (
-			typeof obj[key] === "object" &&
-			deleteOneOfKindUndefinedRecursive(obj[key], path + "." + key)
-		) {
+		if (typeof obj[key] === "object" && deleteOneOfKindUndefinedRecursive(obj[key], path + "." + key)) {
 			console.log("Deleting", path, key);
 			delete obj[key];
 		}
