@@ -28,7 +28,7 @@ import * as Webrtc from "@spacebar/webrtc";
 import { CDNServer } from "@spacebar/cdn";
 import express from "express";
 import { green, bold } from "picocolors";
-import { Config, initDatabase } from "@spacebar/util";
+import { Config, EnvConfig, initDatabase } from "@spacebar/util";
 
 const app = express();
 const server = http.createServer();
@@ -59,17 +59,17 @@ async function main() {
 	await initDatabase();
 	await Config.init();
 
-	const logRequests = process.env["LOG_REQUESTS"] != undefined;
+	const logRequests = EnvConfig.get().logging.logRequests != "";
 	if (logRequests) {
 		app.use(
 			morgan("combined", {
 				skip: (req, res) => {
 					let skip = !(
-						process.env["LOG_REQUESTS"]?.includes(
+						EnvConfig.get().logging.logRequests.includes(
 							res.statusCode.toString(),
 						) ?? false
 					);
-					if (process.env["LOG_REQUESTS"]?.charAt(0) == "-")
+					if (EnvConfig.get().logging.logRequests.charAt(0) == "-")
 						skip = !skip;
 					return skip;
 				},

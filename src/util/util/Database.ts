@@ -22,6 +22,7 @@ import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
 import { ConfigEntity } from "../entities/Config";
 import { Migration } from "../entities/Migration";
+import { EnvConfig } from "../config";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -49,8 +50,10 @@ export const DataSourceOptions = new DataSource({
 	url: isSqlite ? undefined : dbConnectionString,
 	database: isSqlite ? dbConnectionString : undefined,
 	entities: [path.join(__dirname, "..", "entities", "*.js")],
-	synchronize: !!process.env.DB_SYNC,
-	logging: !!process.env.DB_LOGGING,
+	synchronize: EnvConfig.get().database.unsafeSchemaSync,
+	logging: EnvConfig.get().logging.logDatabaseQueries,
+	// Figure out why this doesn't work someday.
+	// relationLoadStrategy: EnvConfig.get().database.disableJoins ? "query" : undefined, // mirrors DB_NO_JOINS
 	bigNumberStrings: false,
 	supportBigNumbers: true,
 	name: "default",
@@ -76,14 +79,14 @@ export async function initDatabase(): Promise<DataSource> {
 		);
 	}
 
-	if (!process.env.DB_SYNC) {
+	if (!EnvConfig.get().database.unsafeSchemaSync) {
 		const supported = ["postgres", "sqlite"];
 		if (!supported.includes(DatabaseType)) {
 			console.log(
 				"[Database]" +
 					red(
 						` We don't have migrations for DB type '${DatabaseType}'` +
-							` To ignore, set DB_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
+							` To ignore, set DB_UNSAFE_SCHEMA_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
 					),
 			);
 			process.exit();

@@ -16,6 +16,30 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * from "./VoiceIdentifySchema";
-export * from "./VoiceVideoSchema";
-export * from "./Region"
+export class DatabaseEnvConfiguration {
+	get unsafeSchemaSync(): boolean {
+		if (process.env.DB_UNSAFE_SCHEMA_SYNC !== undefined) {
+			return process.env.DB_UNSAFE_SCHEMA_SYNC === "true";
+		}
+
+		if (process.env.DB_SYNC !== undefined) {
+			console.warn("[EnvConfig] DB_SYNC is deprecated. Please use DB_UNSAFE_SCHEMA_SYNC instead.");
+			return process.env.DB_SYNC === "true";
+		}
+
+		return false;
+	}
+
+	get disableJoins(): boolean {
+		if (process.env.DB_DISABLE_JOINS !== undefined) {
+			return process.env.DB_DISABLE_JOINS === "true";
+		}
+
+		if (process.env.DB_NO_JOINS !== undefined) {
+			console.warn("[EnvConfig] DB_NO_JOINS is deprecated. Please use DB_DISABLE_JOINS instead.");
+			return process.env.DB_NO_JOINS === "true";
+		}
+
+		return false;
+	}
+}

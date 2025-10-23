@@ -17,12 +17,7 @@
 */
 
 import { Server, ServerOptions } from "lambert-server";
-import {
-	Attachment,
-	Config,
-	initDatabase,
-	registerRoutes,
-} from "@spacebar/util";
+import { Attachment, Config, EnvConfig, initDatabase, registerRoutes } from "@spacebar/util";
 import { CORS, BodyParser } from "@spacebar/api";
 import path from "path";
 import avatarsRoute from "./routes/avatars";
@@ -45,18 +40,13 @@ export class CDNServer extends Server {
 		await Config.init();
 		await this.cleanupSignaturesInDb();
 
-		const logRequests = process.env["LOG_REQUESTS"] != undefined;
+		const logRequests = EnvConfig.get().logging.logRequests != undefined;
 		if (logRequests) {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						let skip = !(
-							process.env["LOG_REQUESTS"]?.includes(
-								res.statusCode.toString(),
-							) ?? false
-						);
-						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-")
-							skip = !skip;
+						let skip = !(EnvConfig.get().logging.logRequests.includes(res.statusCode.toString()) ?? false);
+						if (EnvConfig.get().logging.logRequests.charAt(0) == "-") skip = !skip;
 						return skip;
 					},
 				}),
@@ -109,16 +99,10 @@ export class CDNServer extends Server {
 		this.app.use("/channel-icons/", avatarsRoute);
 		this.log("verbose", "[Server] Route /channel-icons registered");
 
-		this.app.use(
-			"/guilds/:guild_id/users/:user_id/avatars",
-			guildProfilesRoute,
-		);
+		this.app.use("/guilds/:guild_id/users/:user_id/avatars", guildProfilesRoute);
 		this.log("verbose", "[Server] Route /guilds/avatars registered");
 
-		this.app.use(
-			"/guilds/:guild_id/users/:user_id/banners",
-			guildProfilesRoute,
-		);
+		this.app.use("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
 		this.log("verbose", "[Server] Route /guilds/banners registered");
 
 		return super.start();
@@ -138,10 +122,7 @@ export class CDNServer extends Server {
 			return;
 		}
 
-		this.log(
-			"verbose",
-			`[CDN] Found ${attachmentsToFix.length} attachments to fix`,
-		);
+		this.log("verbose", `[CDN] Found ${attachmentsToFix.length} attachments to fix`);
 		for (const attachment of attachmentsToFix) {
 			attachment.url = attachment.url.split("?ex=")[0];
 			attachment.proxy_url = attachment.proxy_url?.split("?ex=")[0];

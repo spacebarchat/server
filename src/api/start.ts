@@ -25,19 +25,13 @@ import { config } from "dotenv";
 config({ quiet: true });
 import { SpacebarServer } from "./Server";
 import cluster from "cluster";
-import os from "os";
-let cores = 1;
-try {
-	cores = Number(process.env.THREADS) || os.cpus().length;
-} catch {
-	console.log("[API] Failed to get thread count! Using 1...");
-}
+import { EnvConfig } from "@spacebar/util";
 
 if (cluster.isPrimary && process.env.NODE_ENV == "production") {
 	console.log(`Primary PID: ${process.pid}`);
 
 	// Fork workers.
-	for (let i = 0; i < cores; i++) {
+	for (let i = 0; i < EnvConfig.get().threads; i++) {
 		cluster.fork();
 	}
 
