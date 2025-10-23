@@ -113,6 +113,13 @@ const excludedLambdas = [
 			return true;
 		}
 	},
+	(n, s) => {
+		if (s.properties && Object.keys(s.properties).every(x=> x[0] === x[0].toUpperCase())) {
+			console.log(`\r${redBright("[WARN]")} Omitting schema ${n} as all its properties have uppercase characters.`);
+			exclusionList.auto.push({ value: n, reason: "Schema with only uppercase properties" });
+			return true;
+		}
+	}
 	// (n, s) => {
 	// 	if (JSON.stringify(s).length <= 300) {
 	// 		console.log({n, s});
