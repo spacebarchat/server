@@ -40,13 +40,13 @@ export class CDNServer extends Server {
 		await Config.init();
 		await this.cleanupSignaturesInDb();
 
-		const logRequests = EnvConfig.logging.logRequests != undefined;
+		const logRequests = EnvConfig.get().logging.logRequests != undefined;
 		if (logRequests) {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						let skip = !(EnvConfig.logging.logRequests.includes(res.statusCode.toString()) ?? false);
-						if (EnvConfig.logging.logRequests.charAt(0) == "-") skip = !skip;
+						let skip = !(EnvConfig.get().logging.logRequests.includes(res.statusCode.toString()) ?? false);
+						if (EnvConfig.get().logging.logRequests.charAt(0) == "-") skip = !skip;
 						return skip;
 					},
 				}),

@@ -131,7 +131,8 @@ export function route(opts: RouteOptions) {
 							message: x.message || "",
 						}),
 				);
-				if (EnvConfig.logging.logValidationErrors) console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`, validate?.errors);
+				if (EnvConfig.get().logging.logValidationErrors)
+					console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`, validate?.errors);
 				throw FieldErrors(fields, validate.errors!);
 			}
 		}

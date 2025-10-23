@@ -48,10 +48,10 @@ export const DataSourceOptions = new DataSource({
 	url: isSqlite ? undefined : dbConnectionString,
 	database: isSqlite ? dbConnectionString : undefined,
 	entities: [path.join(__dirname, "..", "entities", "*.js")],
-	synchronize: EnvConfig.database.unsafeSchemaSync,
-	logging: EnvConfig.logging.logDatabaseQueries,
+	synchronize: EnvConfig.get().database.unsafeSchemaSync,
+	logging: EnvConfig.get().logging.logDatabaseQueries,
 	// Figure out why this doesn't work someday.
-	// relationLoadStrategy: EnvConfig.database.disableJoins ? "query" : undefined, // mirrors DB_NO_JOINS
+	// relationLoadStrategy: EnvConfig.get().database.disableJoins ? "query" : undefined, // mirrors DB_NO_JOINS
 	bigNumberStrings: false,
 	supportBigNumbers: true,
 	name: "default",
@@ -73,7 +73,7 @@ export async function initDatabase(): Promise<DataSource> {
 		console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
 	}
 
-	if (!EnvConfig.database.unsafeSchemaSync) {
+	if (!EnvConfig.get().database.unsafeSchemaSync) {
 		const supported = ["postgres", "sqlite"];
 		if (!supported.includes(DatabaseType)) {
 			console.log(

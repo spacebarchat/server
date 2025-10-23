@@ -78,7 +78,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
 
 		console.log(`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`);
 
-		if (EnvConfig.logging.logGatewayEvents)
+		if (EnvConfig.get().logging.logGatewayEvents)
 			[
 				"close",
 				"error",

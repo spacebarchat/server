@@ -31,7 +31,7 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
 	console.log(`Primary PID: ${process.pid}`);
 
 	// Fork workers.
-	for (let i = 0; i < EnvConfig.threads; i++) {
+	for (let i = 0; i < EnvConfig.get().threads; i++) {
 		cluster.fork();
 	}
 

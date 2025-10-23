@@ -33,7 +33,7 @@ import { centerString, EnvConfig, Logo } from "@spacebar/util";
 import fs from "fs";
 import path from "path";
 
-const cores = EnvConfig.threads;
+const cores = EnvConfig.get().threads;
 
 function getRevInfoOrFail(): { rev: string | null; lastModified: number } {
 	const rootDir = path.join(__dirname, "../../");
