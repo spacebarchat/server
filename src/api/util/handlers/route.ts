@@ -16,113 +16,125 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { DiscordApiErrors, EVENT, FieldErrors, PermissionResolvable, Permissions, RightResolvable, Rights, SpacebarApiErrors, getPermission, getRights } from "@spacebar/util";
+import {
+	DiscordApiErrors,
+	EVENT,
+	FieldErrors,
+	PermissionResolvable,
+	Permissions,
+	RightResolvable,
+	Rights,
+	SpacebarApiErrors,
+	getPermission,
+	getRights,
+	EnvConfig,
+} from "@spacebar/util";
 import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
 import { ajv } from "@spacebar/schemas";
 
 const ignoredRequestSchemas = [
-    // skip validation for settings proto JSON updates - TODO: figure out if this even possible to fix?
-    "SettingsProtoUpdateJsonSchema",
+	// skip validation for settings proto JSON updates - TODO: figure out if this even possible to fix?
+	"SettingsProtoUpdateJsonSchema",
 ];
 
 declare global {
-    // TODO: fix this
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace Express {
-        interface Request {
-            permission?: Permissions;
-        }
-    }
+	// TODO: fix this
+	// eslint-disable-next-line @typescript-eslint/no-namespace
+	namespace Express {
+		interface Request {
+			permission?: Permissions;
+		}
+	}
 }
 
 export type RouteResponse = {
-    status?: number;
-    body?: `${string}Response`;
-    headers?: Record<string, string>;
+	status?: number;
+	body?: `${string}Response`;
+	headers?: Record<string, string>;
 };
 
 export interface RouteOptions {
-    permission?: PermissionResolvable;
-    right?: RightResolvable;
-    requestBody?: `${string}Schema`; // typescript interface name
-    responses?: {
-        [status: number]: {
-            // body?: `${string}Response`;
-            body?: string;
-        };
-    };
-    event?: EVENT | EVENT[];
-    summary?: string;
-    description?: string;
-    query?: {
-        [key: string]: {
-            type: string;
-            required?: boolean;
-            description?: string;
-            values?: string[];
-        };
-    };
-    deprecated?: boolean;
-    // test?: {
-    // 	response?: RouteResponse;
-    // 	body?: unknown;
-    // 	path?: string;
-    // 	event?: EVENT | EVENT[];
-    // 	headers?: Record<string, string>;
-    // };
+	permission?: PermissionResolvable;
+	right?: RightResolvable;
+	requestBody?: `${string}Schema`; // typescript interface name
+	responses?: {
+		[status: number]: {
+			// body?: `${string}Response`;
+			body?: string;
+		};
+	};
+	event?: EVENT | EVENT[];
+	summary?: string;
+	description?: string;
+	query?: {
+		[key: string]: {
+			type: string;
+			required?: boolean;
+			description?: string;
+			values?: string[];
+		};
+	};
+	deprecated?: boolean;
+	// test?: {
+	// 	response?: RouteResponse;
+	// 	body?: unknown;
+	// 	path?: string;
+	// 	event?: EVENT | EVENT[];
+	// 	headers?: Record<string, string>;
+	// };
 }
 
 export function route(opts: RouteOptions) {
-    let validate: AnyValidateFunction | undefined;
-    if (opts.requestBody) {
-        try {
-            validate = ajv.getSchema(opts.requestBody);
-        } catch (e) {
-            console.error("AJV getSchema failed!");
-            throw e;
-        }
+	let validate: AnyValidateFunction | undefined;
+	if (opts.requestBody) {
+		try {
+			validate = ajv.getSchema(opts.requestBody);
+		} catch (e) {
+			console.error("AJV getSchema failed!");
+			throw e;
+		}
 
-        if (!validate) throw new Error(`Body schema ${opts.requestBody} not found`);
-    }
+		if (!validate) throw new Error(`Body schema ${opts.requestBody} not found`);
+	}
 
-    return async (req: Request, res: Response, next: NextFunction) => {
-        if (opts.permission) {
-            req.permission = await getPermission(req.user_id, req.params.guild_id, req.params.channel_id);
+	return async (req: Request, res: Response, next: NextFunction) => {
+		if (opts.permission) {
+			req.permission = await getPermission(req.user_id, req.params.guild_id, req.params.channel_id);
 
-            const requiredPerms = Array.isArray(opts.permission) ? opts.permission : [opts.permission];
-            requiredPerms.forEach((perm) => {
-                // bitfield comparison: check if user lacks certain permission
-                if (!req.permission!.has(new Permissions(perm))) {
-                    throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(perm as string);
-                }
-            });
-        }
+			const requiredPerms = Array.isArray(opts.permission) ? opts.permission : [opts.permission];
+			requiredPerms.forEach((perm) => {
+				// bitfield comparison: check if user lacks certain permission
+				if (!req.permission!.has(new Permissions(perm))) {
+					throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(perm as string);
+				}
+			});
+		}
 
-        if (opts.right) {
-            const required = new Rights(opts.right);
-            req.rights = await getRights(req.user_id);
+		if (opts.right) {
+			const required = new Rights(opts.right);
+			req.rights = await getRights(req.user_id);
 
-            if (!req.rights || !req.rights.has(required)) {
-                throw SpacebarApiErrors.MISSING_RIGHTS.withParams(opts.right as string);
-            }
-        }
+			if (!req.rights || !req.rights.has(required)) {
+				throw SpacebarApiErrors.MISSING_RIGHTS.withParams(opts.right as string);
+			}
+		}
 
-        if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
-            const valid = validate(req.body);
-            if (!valid) {
-                const fields: Record<string, { code?: string; message: string }> = {};
-                validate.errors?.forEach(
-                    (x) =>
-                        (fields[x.instancePath.slice(1)] = {
-                            code: x.keyword,
-                            message: x.message || "",
-                        }),
-                );
-                if (process.env.LOG_VALIDATION_ERRORS) console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`, validate?.errors);
-                throw FieldErrors(fields, validate.errors!);
-            }
-        }
-        next();
-    };
+		if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
+			const valid = validate(req.body);
+			if (!valid) {
+				const fields: Record<string, { code?: string; message: string }> = {};
+				validate.errors?.forEach(
+					(x) =>
+						(fields[x.instancePath.slice(1)] = {
+							code: x.keyword,
+							message: x.message || "",
+						}),
+				);
+				if (EnvConfig.logging.logValidationErrors) console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`, validate?.errors);
+				throw FieldErrors(fields, validate.errors!);
+			}
+		}
+		next();
+	};
 }
