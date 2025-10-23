@@ -23,7 +23,7 @@ import WS from "ws";
 import { VoiceOPCodes, WebRtcWebSocket, Send } from "../util";
 import { onClose } from "./Close";
 import { onMessage } from "./Message";
-import { EnvConfig } from "@spacebar/util*";
+import { EnvConfig } from "@spacebar/util";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config

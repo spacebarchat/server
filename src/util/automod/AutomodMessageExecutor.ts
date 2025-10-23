@@ -1,6 +1,6 @@
 import { AutomodMessageInvocation, AutomodResult } from "./";
 import { AutomodRule } from "@spacebar/util";
-import { AutomodRuleTriggerType } from "@spacebar/schemas*";
+import { AutomodRuleTriggerType } from "@spacebar/schemas";
 
 export async function internalExecuteMessageAutomod(context: AutomodMessageInvocation, matchingRules: AutomodRule[]): Promise<AutomodResult> {
 	const result: AutomodResult = {
