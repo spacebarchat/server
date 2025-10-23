@@ -27,6 +27,7 @@ import {
 	SpacebarApiErrors,
 	getPermission,
 	getRights,
+	EnvConfig,
 } from "@spacebar/util";
 import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
@@ -139,7 +140,7 @@ export function route(opts: RouteOptions) {
 							message: x.message || "",
 						}),
 				);
-				if (process.env.LOG_VALIDATION_ERRORS)
+				if (EnvConfig.logging.logValidationErrors)
 					console.log(
 						`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`,
 						validate?.errors,
