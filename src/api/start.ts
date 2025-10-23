@@ -28,6 +28,7 @@ import cluster from "node:cluster";
 import os from "node:os";
 import fs from "node:fs";
 import { SpacebarServer } from "./Server";
+import { EnvConfig } from "@spacebar/util";
 
 let cores = 1;
 try {
@@ -40,7 +41,7 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
     console.log(`Primary PID: ${process.pid}`);
 
     // Fork workers.
-    for (let i = 0; i < cores; i++) {
+    for (let i = 0; i < EnvConfig.threads; i++) {
         cluster.fork();
     }
 
