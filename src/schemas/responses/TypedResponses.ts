@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { GeneralConfiguration, LimitsConfiguration } from "../../util/config";
+import { GeneralConfiguration, LimitsConfiguration } from "../../util/config/types";
 import { DmChannelDTO } from "../../util/dtos";
 import { Application, BackupCode, Categories, Channel, Emoji, Guild, Invite, Member, Message, Role, Sticker, StickerPack, Template, Webhook } from "../../util/entities";
 import { GuildVoiceRegion } from "./GuildVoiceRegionsResponse";

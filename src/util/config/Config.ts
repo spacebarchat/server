@@ -37,7 +37,7 @@ import {
 	SecurityConfiguration,
 	TemplateConfiguration,
 	UserConfiguration,
-} from "../config";
+} from "./types";
 
 export class ConfigValue {
 	admin: EndpointConfiguration = new EndpointConfiguration();
