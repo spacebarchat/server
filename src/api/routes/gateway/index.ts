@@ -34,7 +34,7 @@ router.get(
 	(req: Request, res: Response) => {
 		const { endpointPublic } = Config.get().gateway;
 		res.json({
-			url: endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
+			url: endpointPublic,
 		});
 	},
 );

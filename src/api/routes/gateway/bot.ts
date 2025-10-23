@@ -34,7 +34,7 @@ router.get(
 	(req: Request, res: Response) => {
 		const { endpointPublic } = Config.get().gateway;
 		res.json({
-			url: endpointPublic || process.env.GATEWAY || "ws://localhost:3001",
+			url: endpointPublic,
 			shards: 1,
 			session_start_limit: {
 				total: 1000,
