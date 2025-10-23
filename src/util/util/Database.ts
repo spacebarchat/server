@@ -23,6 +23,7 @@ import { DataSource } from "typeorm";
 import { ConfigEntity } from "../entities/Config";
 import { Migration } from "../entities/Migration";
 import fs from "fs";
+import { EnvConfig } from "../config";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -31,7 +32,7 @@ export let dbConnection: DataSource | undefined;
 
 // For typeorm cli
 if (!process.env) {
-    config({ quiet: true });
+	config({ quiet: true });
 }
 
 const dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
@@ -40,85 +41,87 @@ export const DatabaseType = dbConnectionString.includes("://") ? dbConnectionStr
 const isSqlite = DatabaseType.includes("sqlite");
 
 export const DataSourceOptions = new DataSource({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore type 'string' is not 'sqlite' | 'postgres' | etc etc
-    type: DatabaseType,
-    charset: "utf8mb4",
-    url: isSqlite ? undefined : dbConnectionString,
-    database: isSqlite ? dbConnectionString : undefined,
-    entities: [path.join(__dirname, "..", "entities", "*.js")],
-    synchronize: !!process.env.DB_SYNC,
-    logging: !!process.env.DB_LOGGING,
-    bigNumberStrings: false,
-    supportBigNumbers: true,
-    name: "default",
-    migrations: [path.join(__dirname, "..", "migration", DatabaseType, "*.js")],
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	//@ts-ignore type 'string' is not 'sqlite' | 'postgres' | etc etc
+	type: DatabaseType,
+	charset: "utf8mb4",
+	url: isSqlite ? undefined : dbConnectionString,
+	database: isSqlite ? dbConnectionString : undefined,
+	entities: [path.join(__dirname, "..", "entities", "*.js")],
+	synchronize: EnvConfig.database.unsafeSchemaSync,
+	logging: EnvConfig.logging.logDatabaseQueries,
+	// Figure out why this doesn't work someday.
+	// relationLoadStrategy: EnvConfig.database.disableJoins ? "query" : undefined, // mirrors DB_NO_JOINS
+	bigNumberStrings: false,
+	supportBigNumbers: true,
+	name: "default",
+	migrations: [path.join(__dirname, "..", "migration", DatabaseType, "*.js")],
 });
 
 // Gets the existing database connection
 export function getDatabase(): DataSource | null {
-    // if (!dbConnection) throw new Error("Tried to get database before it was initialised");
-    if (!dbConnection) return null;
-    return dbConnection;
+	// if (!dbConnection) throw new Error("Tried to get database before it was initialised");
+	if (!dbConnection) return null;
+	return dbConnection;
 }
 
 // Called once on server start
 export async function initDatabase(): Promise<DataSource> {
-    if (dbConnection) return dbConnection;
+	if (dbConnection) return dbConnection;
 
-    if (isSqlite) {
-        console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
-    }
+	if (isSqlite) {
+		console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
+	}
 
-    if (!process.env.DB_SYNC) {
-        const supported = ["postgres", "sqlite"];
-        if (!supported.includes(DatabaseType)) {
-            console.log(
-                "[Database]" +
-                    red(
-                        ` We don't have migrations for DB type '${DatabaseType}'` +
-                            ` To ignore, set DB_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
-                    ),
-            );
-            process.exit();
-        }
-    }
+	if (!EnvConfig.database.unsafeSchemaSync) {
+		const supported = ["postgres", "sqlite"];
+		if (!supported.includes(DatabaseType)) {
+			console.log(
+				"[Database]" +
+					red(
+						` We don't have migrations for DB type '${DatabaseType}'` +
+							` To ignore, set DB_UNSAFE_SCHEMA_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
+					),
+			);
+			process.exit();
+		}
+	}
 
-    console.log(`[Database] ${yellow(`Connecting to ${DatabaseType} db`)}`);
+	console.log(`[Database] ${yellow(`Connecting to ${DatabaseType} db`)}`);
 
-    dbConnection = await DataSourceOptions.initialize();
+	dbConnection = await DataSourceOptions.initialize();
 
-    if (DatabaseType === "sqlite") {
-        console.log(`[Database] ${yellow("Warning: SQLite is not supported. Forcing sync, this may lead to data loss!")}`);
-        await dbConnection.synchronize();
-        console.log(`[Database] ${green("Connected")}`);
-        return dbConnection;
-    }
+	if (DatabaseType === "sqlite") {
+		console.log(`[Database] ${yellow("Warning: SQLite is not supported. Forcing sync, this may lead to data loss!")}`);
+		await dbConnection.synchronize();
+		console.log(`[Database] ${green("Connected")}`);
+		return dbConnection;
+	}
 
-    // Crude way of detecting if the migrations table exists.
-    const dbExists = async () => {
-        try {
-            await ConfigEntity.count();
-            return true;
-        } catch (e) {
-            return false;
-        }
-    };
+	// Crude way of detecting if the migrations table exists.
+	const dbExists = async () => {
+		try {
+			await ConfigEntity.count();
+			return true;
+		} catch (e) {
+			return false;
+		}
+	};
 
-    if (!(await dbExists())) {
-        console.log("[Database] This appears to be a fresh database. Running initial DDL.");
-        const qr = dbConnection.createQueryRunner();
-        if (fs.existsSync(path.join(__dirname, "..", "migration", DatabaseType, "initial0.js"))) await new (require(`../migration/${DatabaseType}-initial`).initial0)().up(qr);
-    }
+	if (!(await dbExists())) {
+		console.log("[Database] This appears to be a fresh database. Running initial DDL.");
+		const qr = dbConnection.createQueryRunner();
+		if (fs.existsSync(path.join(__dirname, "..", "migration", DatabaseType, "initial0.js"))) await new (require(`../migration/${DatabaseType}-initial`).initial0)().up(qr);
+	}
 
-    console.log("[Database] Applying missing migrations, if any.");
-    await dbConnection.runMigrations();
+	console.log("[Database] Applying missing migrations, if any.");
+	await dbConnection.runMigrations();
 
-    console.log(`[Database] ${green("Connected")}`);
+	console.log(`[Database] ${green("Connected")}`);
 
-    return dbConnection;
+	return dbConnection;
 }
 
 export async function closeDatabase() {
-    await dbConnection?.destroy();
+	await dbConnection?.destroy();
 }
