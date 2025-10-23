@@ -53,7 +53,7 @@ export class ApplicationCommand extends BaseClass {
 	@Column({ nullable: true, type: "simple-json" })
 	description_localizations?: Record<string, string>;
 
-	@Column({ type: "simple-json", default: [] })
+	@Column({ nullable: true, type: "simple-json" })
 	options?: ApplicationCommandOption[];
 
 	@Column({ nullable: true, type: String })
@@ -71,13 +71,13 @@ export class ApplicationCommand extends BaseClass {
 	@Column({ default: false })
 	nsfw?: boolean;
 
-	@Column({ type: "simple-json", default: [] })
+	@Column({ nullable: true, type: "simple-json" })
 	integration_types?: ApplicationIntegrationType[];
 
 	@Column({ default: 0 })
 	global_popularity_rank?: number;
 
-	@Column({ type: "simple-json", default: [] })
+	@Column({ nullable: true, type: "simple-json" })
 	contexts?: InteractionContextType[];
 
 	@Column({ default: 0 })
