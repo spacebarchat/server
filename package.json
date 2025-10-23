@@ -24,6 +24,7 @@
         "add:license": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/license.js",
         "node:tests": "npm run build:src && node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js",
         "apply:migrations": "node --enable-source-maps dist/apply-migrations.js"
+        "apply:config": "node dist/applyConfig.js"
     },
     "main": "dist/bundle/index.js",
     "types": "src/bundle/index.ts",
