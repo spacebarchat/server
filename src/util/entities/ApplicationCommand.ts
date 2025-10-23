@@ -53,8 +53,8 @@ export class ApplicationCommand extends BaseClass {
 	@Column({ nullable: true, type: "simple-json" })
 	description_localizations?: Record<string, string>;
 
-	@Column({ nullable: true, type: "simple-json" })
-	options?: ApplicationCommandOption[];
+	@Column({ type: "simple-json", default: [] })
+	options: ApplicationCommandOption[];
 
 	@Column({ nullable: true, type: String })
 	default_member_permissions: string | null;
