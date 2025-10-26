@@ -21,6 +21,7 @@ import path from "path";
 import fs from "fs";
 import { S3 } from "@aws-sdk/client-s3";
 import { S3Storage } from "./S3Storage";
+import { EnvConfig } from "@spacebar/util";
 process.cwd();
 
 export interface Storage {
@@ -32,8 +33,8 @@ export interface Storage {
 
 let storage: Storage;
 
-if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
-	let location = process.env.STORAGE_LOCATION;
+if (EnvConfig.get().cdn.storageProvider === "file" || !EnvConfig.get().cdn.storageProvider ) {
+	let location = EnvConfig.get().cdn.storageLocation;
 	if (location) {
 		location = path.resolve(location);
 	} else {
@@ -45,9 +46,9 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
 	process.env.STORAGE_LOCATION = location;
 
 	storage = new FileStorage();
-} else if (process.env.STORAGE_PROVIDER === "s3") {
-	const region = process.env.STORAGE_REGION,
-		bucket = process.env.STORAGE_BUCKET;
+} else if (EnvConfig.get().cdn.storageProvider === "s3") {
+	const region = EnvConfig.get().cdn.storageRegion,
+		bucket = EnvConfig.get().cdn.storageBucket;
 
 	if (!region) {
 		console.error(
@@ -64,7 +65,7 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
 	}
 
 	// in the S3 provider, this should be the root path in the bucket
-	let location = process.env.STORAGE_LOCATION;
+	let location = EnvConfig.get().cdn.storageLocation;
 
 	if (!location) {
 		console.warn(

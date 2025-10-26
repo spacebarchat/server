@@ -20,6 +20,7 @@ import { Channel } from "amqplib";
 import { RabbitMQ } from "./RabbitMQ";
 import EventEmitter from "events";
 import { EVENT, Event } from "../interfaces";
+import { EnvConfig } from "../config";
 export const events = new EventEmitter();
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
@@ -45,7 +46,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 			{ type: payload.event },
 		);
 		if (!successful) throw new Error("failed to send event");
-	} else if (process.env.EVENT_TRANSMISSION === "process") {
+	} else if (EnvConfig.get().eventTransmission === "process") {
 		process.send?.({ type: "event", event: payload, id } as ProcessEvent);
 	} else {
 		events.emit(id, payload);
@@ -93,7 +94,7 @@ export async function listenEvent(
 		return await rabbitListen(channel, event, callback, {
 			acknowledge: opts?.acknowledge,
 		});
-	} else if (process.env.EVENT_TRANSMISSION === "process") {
+	} else if (EnvConfig.get().eventTransmission === "process") {
 		const cancel = async () => {
 			process.removeListener("message", listener);
 			process.setMaxListeners(process.getMaxListeners() - 1);

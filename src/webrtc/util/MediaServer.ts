@@ -18,18 +18,15 @@
 
 import type { SignalingDelegate } from "@spacebarchat/spacebar-webrtc-types";
 import { green, red } from "picocolors";
+import { EnvConfig } from "@spacebar/util";
 
 export let mediaServer: SignalingDelegate;
 
-export const WRTC_PUBLIC_IP = process.env.WRTC_PUBLIC_IP ?? "127.0.0.1";
-export const WRTC_PORT_MIN = process.env.WRTC_PORT_MIN
-	? parseInt(process.env.WRTC_PORT_MIN)
-	: 2000;
-export const WRTC_PORT_MAX = process.env.WRTC_PORT_MAX
-	? parseInt(process.env.WRTC_PORT_MAX)
-	: 65000;
+export const WRTC_PUBLIC_IP = EnvConfig.get().webrtc.publicIp;
+export const WRTC_PORT_MIN = EnvConfig.get().webrtc.portMin;
+export const WRTC_PORT_MAX = EnvConfig.get().webrtc.portMax;
 
-const selectedWrtcLibrary = process.env.WRTC_LIBRARY;
+const selectedWrtcLibrary = EnvConfig.get().webrtc.library;
 
 // could not find a way to hide stack trace from base Error object
 class NoConfiguredLibraryError implements Error {

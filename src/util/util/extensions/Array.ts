@@ -29,6 +29,8 @@ declare global {
 		distinctBy<K>(key: (elem: T) => K): T[];
 		intersect(other: T[]): T[];
 		except(other: T[]): T[];
+		orderBy<K>(...key: ((elem: T) => unknown)[]): T[];
+		orderByDescending<K>(...key: ((elem: T) => unknown)[]): T[];
 	}
 }
 
@@ -95,6 +97,23 @@ export function arrayExcept<T>(this: T[], other: T[]): T[] {
 	return this.filter((value) => !other.includes(value));
 }
 
+export function arrayOrderBy<T, K>(arr: T[], ...keySelectors: ((elem: T) => K)[]): T[] {
+	return arr.slice().sort((a, b) => {
+		for (const keySelector of keySelectors) {
+			const keyA = keySelector(a);
+			const keyB = keySelector(b);
+
+			if (keyA < keyB) return -1;
+			if (keyA > keyB) return 1;
+		}
+		return 0;
+	});
+}
+
+export function arrayOrderByDescending<T, K>(arr: T[], ...keySelectors: ((elem: T) => K)[]): T[] {
+	return arrayOrderBy(arr, ...keySelectors).reverse();
+}
+
 // register extensions
 if (!Array.prototype.containsAll)
 	Array.prototype.containsAll = function <T>(this: T[], target: T[]) {
@@ -139,4 +158,12 @@ if (!Array.prototype.intersect)
 if (!Array.prototype.except)
 	Array.prototype.except = function <T>(this: T[], other: T[]) {
 		return arrayExcept.call(this, other);
+	};
+if (!Array.prototype.orderBy)
+	Array.prototype.orderBy = function <T, K>(this: T[], ...keySelectors: ((elem: T) => K)[]) {
+		return arrayOrderBy(this, ...keySelectors);
+	};
+if (!Array.prototype.orderByDescending)
+	Array.prototype.orderByDescending = function <T, K>(this: T[], ...keySelectors: ((elem: T) => K)[]) {
+		return arrayOrderByDescending(this, ...keySelectors);
 	};

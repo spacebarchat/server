@@ -23,7 +23,7 @@ process.on("unhandledRejection", console.error);
 
 import { Server } from "./Server";
 import { config } from "dotenv";
-import { EnvConfig } from "@spacebar/util*";
+import { EnvConfig } from "@spacebar/util";
 config({ quiet: true });
 
 const port = EnvConfig.get().port || 3002;
