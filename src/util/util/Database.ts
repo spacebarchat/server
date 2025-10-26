@@ -34,8 +34,7 @@ if (!process.env) {
 	config({ quiet: true });
 }
 
-const dbConnectionString =
-	process.env.DATABASE || path.join(process.cwd(), "database.db");
+const dbConnectionString = EnvConfig.get().database.url || path.join(process.cwd(), "database.db");
 
 export const DatabaseType = dbConnectionString.includes("://")
 	? dbConnectionString.split(":")[0]?.replace("+srv", "")

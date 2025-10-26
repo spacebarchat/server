@@ -7792,6 +7792,12 @@
                                     "except": {
                                         "type": "boolean"
                                     },
+                                    "orderBy": {
+                                        "type": "boolean"
+                                    },
+                                    "orderByDescending": {
+                                        "type": "boolean"
+                                    },
                                     "__@iterator@689": {
                                         "type": "boolean"
                                     },

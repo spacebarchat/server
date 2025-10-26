@@ -20,16 +20,33 @@ import { LogEnvConfiguration } from "./envTypes/LogEnvConfiguration";
 import { DatabaseEnvConfiguration } from "./envTypes/DatabaseEnvConfiguration";
 import os from "os";
 import { ConfigurationEnvConfiguration } from "./envTypes/ConfigurationEnvConfiguration";
+import { CdnEnvConfiguration } from "./envTypes/CdnEnvConfiguration";
+import { WebRtcEnvConfiguration } from "./envTypes/WebRtcEnvConfiguration";
 
 const logConfig = new LogEnvConfiguration();
 const databaseConfig = new DatabaseEnvConfiguration();
 const configurationConfig = new ConfigurationEnvConfiguration();
+const cdnConfig = new CdnEnvConfiguration();
+const webrtcConfig = new WebRtcEnvConfiguration();
 
 export class EnvConfig {
 	private static _instance: EnvConfig;
 	static get() {
 		if (!this._instance) this._instance = new EnvConfig();
 		return this._instance;
+	}
+
+	static schema() {
+		return [
+			{ key: "THREADS", type: "number", description: "Number of threads to use for the server. Defaults to number of CPU cores." },
+			{ key: "PORT", type: "number", description: "Port to run the server on." },
+			{ key: "FORCE_KITTY_LOGO", type: "boolean", description: "Force enable/disable KiTTY logo support in terminal." },
+			...LogEnvConfiguration.schema,
+			...DatabaseEnvConfiguration.schema,
+			...ConfigurationEnvConfiguration.schema,
+			...CdnEnvConfiguration.schema,
+			...WebRtcEnvConfiguration.schema,
+		];
 	}
 
 	get logging(): LogEnvConfiguration {
@@ -44,6 +61,14 @@ export class EnvConfig {
 		return configurationConfig;
 	}
 
+	get cdn(): CdnEnvConfiguration {
+		return cdnConfig;
+	}
+
+	get webrtc(): WebRtcEnvConfiguration {
+		return webrtcConfig;
+	}
+
 	get threads(): number {
 		try {
 			return Number(process.env.THREADS) || os.cpus().length;
@@ -56,9 +81,23 @@ export class EnvConfig {
 	get port(): number | undefined {
 		return Number(process.env.PORT);
 	}
+
+	get forceKiTTYLogo(): boolean | undefined {
+		if (process.env.FORCE_KITTY_LOGO !== undefined) {
+			return process.env.FORCE_KITTY_LOGO === "true";
+		}
+		return undefined;
+	}
+
+	get terminalEmulator(): string | undefined {
+		return process.env.TERM;
+	}
+
+	get eventTransmission(): string | undefined {
+		return process.env.EVENT_TRANSMISSION;
+	}
 }
 
 // Deprecations:
 if (process.env.GATEWAY) console.warn("[EnvConfig] GATEWAY is deprecated and no longer does anything. Please configure cdn_endpointPublic in configuration instead.");
-
 if (process.env.CDN) console.warn("[EnvConfig] CDN is deprecated and no longer does anything. Please configure cdn_endpointPublic in configuration instead.");

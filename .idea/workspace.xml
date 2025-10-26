@@ -27,6 +27,7 @@
     <setting file="file://$PROJECT_DIR$/node_modules/@types/amqplib/index.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/jsonwebtoken/index.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/node/events.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/picocolors/types.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/typeorm/data-source/BaseDataSourceOptions.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/typeorm/data-source/DataSource.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/typeorm/data-source/DataSourceOptions.d.ts" root0="SKIP_INSPECTION" />
@@ -45,61 +46,63 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;NIXITCH_NIXPKGS_CONFIG&quot;: &quot;/etc/nix/nixpkgs-config.nix&quot;,
-    &quot;NIXITCH_NIX_CONF_DIR&quot;: &quot;&quot;,
-    &quot;NIXITCH_NIX_OTHER_STORES&quot;: &quot;&quot;,
-    &quot;NIXITCH_NIX_PATH&quot;: &quot;/home/Rory/.nix-defexpr/channels:nixpkgs=/nix/store/wb6agba4kfsxpbnb5hzlq58vkjzvbsk6-source&quot;,
-    &quot;NIXITCH_NIX_PROFILES&quot;: &quot;/run/current-system/sw /nix/var/nix/profiles/default /etc/profiles/per-user/Rory /home/Rory/.local/state/nix/profile /nix/profile /home/Rory/.nix-profile&quot;,
-    &quot;NIXITCH_NIX_REMOTE&quot;: &quot;&quot;,
-    &quot;NIXITCH_NIX_USER_PROFILE_DIR&quot;: &quot;/nix/var/nix/profiles/per-user/Rory&quot;,
-    &quot;Node.js.Server.ts.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Shell Script.Clean.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev/emma-wip&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.19.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.18.11&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/Rory/git/spacebar/server-master/scripts&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.Build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.Clean.executor&quot;: &quot;Run&quot;,
-    &quot;npm.Start API.executor&quot;: &quot;Run&quot;,
-    &quot;npm.Start CDN.executor&quot;: &quot;Run&quot;,
-    &quot;npm.Start Gateway.executor&quot;: &quot;Run&quot;,
-    &quot;npm.Start bundle.executor&quot;: &quot;Run&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.build:src.executor&quot;: &quot;Run&quot;,
-    &quot;npm.config:apply scripts/configTemplates/bundle.json.executor&quot;: &quot;Run&quot;,
-    &quot;npm.config:apply scripts/configTemplates/split.json.executor&quot;: &quot;Run&quot;,
-    &quot;npm.start.executor&quot;: &quot;Debug&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/typescript/lib&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "NIXITCH_NIXPKGS_CONFIG": "/etc/nix/nixpkgs-config.nix",
+    "NIXITCH_NIX_CONF_DIR": "",
+    "NIXITCH_NIX_OTHER_STORES": "",
+    "NIXITCH_NIX_PATH": "/home/Rory/.nix-defexpr/channels:nixpkgs=/nix/store/wb6agba4kfsxpbnb5hzlq58vkjzvbsk6-source",
+    "NIXITCH_NIX_PROFILES": "/run/current-system/sw /nix/var/nix/profiles/default /etc/profiles/per-user/Rory /home/Rory/.local/state/nix/profile /nix/profile /home/Rory/.nix-profile",
+    "NIXITCH_NIX_REMOTE": "",
+    "NIXITCH_NIX_USER_PROFILE_DIR": "/nix/var/nix/profiles/per-user/Rory",
+    "Node.js Test Runner.All Tests.executor": "Run",
+    "Node.js Test Runner.Tests in dist/.executor": "Run",
+    "Node.js.Server.ts.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Shell Script.Clean.executor": "Run",
+    "git-widget-placeholder": "dev/emma-wip",
+    "javascript.nodejs.core.library.configured.version": "24.9.0",
+    "javascript.nodejs.core.library.typings.version": "24.9.1",
+    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/util/config/envTypes",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "node",
+    "nodejs_package_manager_path": "npm",
+    "npm.Build.executor": "Run",
+    "npm.Clean.executor": "Run",
+    "npm.Start API.executor": "Run",
+    "npm.Start CDN.executor": "Run",
+    "npm.Start Gateway.executor": "Run",
+    "npm.Start bundle.executor": "Run",
+    "npm.build.executor": "Run",
+    "npm.build:src.executor": "Run",
+    "npm.config:apply scripts/configTemplates/bundle.json.executor": "Run",
+    "npm.config:apply scripts/configTemplates/split.json.executor": "Run",
+    "npm.start.executor": "Debug",
+    "prettierjs.PrettierConfiguration.Package": "/home/Rory/git/spacebar/server-master/node_modules/prettier",
+    "settings.editor.selected.configurable": "settings.nodejs",
+    "ts.external.directory.path": "/home/Rory/git/spacebar/server-master/node_modules/typescript/lib"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ],
-    &quot;GitStage.ChangesTree.GroupingKeys&quot;: [
-      &quot;directory&quot;,
-      &quot;module&quot;,
-      &quot;repository&quot;
+    "GitStage.ChangesTree.GroupingKeys": [
+      "directory",
+      "module",
+      "repository"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/util/config/envTypes" />
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/scripts" />
       <recent name="$PROJECT_DIR$/scripts/configTemplates" />
-      <recent name="$PROJECT_DIR$/src/util/config/envTypes" />
       <recent name="$PROJECT_DIR$/src/util/config" />
-      <recent name="$PROJECT_DIR$/src/util/util/extensions" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src" />
@@ -132,7 +135,19 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="npm.Build">
+  <component name="RunManager" selected="Node.js Test Runner.Tests in dist/">
+    <configuration name="Tests in dist/" type="NodeJsTestRunner">
+      <node-interpreter value="project" />
+      <working-dir value="$PROJECT_DIR$" />
+      <language value="JAVA_SCRIPT" />
+      <typescript-loader value="MANUAL_SETUP_IN_NODE_OPTION" />
+      <envs />
+      <scope-kind value="DIRECTORY" />
+      <test-directory value="$PROJECT_DIR$/dist" />
+      <method v="2">
+        <option name="RunConfigurationTask" enabled="true" run_configuration_name="Build" run_configuration_type="js.build_tools.npm" />
+      </method>
+    </configuration>
     <configuration name="Start API" type="js.build_tools.npm">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -275,6 +290,7 @@
     </configuration>
     <list>
       <item itemvalue="Compound.Start separated" />
+      <item itemvalue="Node.js Test Runner.Tests in dist/" />
       <item itemvalue="npm.Build" />
       <item itemvalue="npm.Clean" />
       <item itemvalue="npm.Start bundle" />
@@ -315,7 +331,7 @@
       <workItem from="1760538864442" duration="1330000" />
       <workItem from="1761030386438" duration="79726000" />
       <workItem from="1761240570032" duration="14579000" />
-      <workItem from="1761258528845" duration="1055000" />
+      <workItem from="1761258528845" duration="68701000" />
     </task>
     <servers />
   </component>
@@ -334,6 +350,12 @@
           <url>file://$PROJECT_DIR$/src/admin-api/Server.ts</url>
           <line>140</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/util/util/extensions/String.test.ts</url>
+          <line>10</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

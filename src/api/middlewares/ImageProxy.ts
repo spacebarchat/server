@@ -16,7 +16,7 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, JimpType } from "@spacebar/util";
+import { Config, EnvConfig, JimpType } from "@spacebar/util";
 import { Request, Response } from "express";
 import { yellow } from "picocolors";
 import crypto from "crypto";
@@ -27,8 +27,8 @@ let sharp: undefined | false | { default: typeof import("sharp") } = undefined;
 let Jimp: JimpType | undefined = undefined;
 try {
 	Jimp = require("jimp") as JimpType;
-} catch {
-	// empty
+} catch (e) {
+	console.log("[ImageProxy] Failed to import jimp:", EnvConfig.get().logging.logImportErrors ? e : "is it installed?");
 }
 
 let sentImageProxyWarning = false;
