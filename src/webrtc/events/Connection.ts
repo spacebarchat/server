@@ -35,16 +35,16 @@ export async function Connection(this: WS.Server, socket: WebRtcWebSocket, reque
 		socket.on("message", onMessage.bind(socket));
 		console.log("[WebRTC] new connection", request.url);
 
-		if (EnvConfig.get().logging.logGatewayEvents) {
+		if (EnvConfig.get().logging.gatewayLogging.logHttp) {
 			[
 				"close",
 				"error",
 				"upgrade",
-				//"message",
 				"open",
 				"ping",
 				"pong",
 				"unexpected-response",
+				...(EnvConfig.get().logging.gatewayLogging.logHttpMessages ? ["message"] : []),
 			].forEach((x) => {
 				socket.on(x, (y) => console.log("[WebRTC]", x, y));
 			});
@@ -52,6 +52,7 @@ export async function Connection(this: WS.Server, socket: WebRtcWebSocket, reque
 
 		const { searchParams } = new URL(`http://localhost${request.url}`);
 
+		socket.logUserRef = "[Unauthenticated]";
 		socket.encoding = "json";
 		socket.version = Number(searchParams.get("v")) || 5;
 		if (socket.version < 3) return socket.close(CLOSECODES.Unknown_error, "invalid version");

@@ -28,14 +28,13 @@ import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "url";
 import { Config, EnvConfig, ErlpackType } from "@spacebar/util";
-import zlib from "node:zlib";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 
 let erlpack: ErlpackType | null = null;
 try {
 	erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
 } catch (e) {
-	console.log("Failed to import @yukikaze-bot/erlpack: ", e);
+	console.log("[Gateway] Failed to import @yukikaze-bot/erlpack:", EnvConfig.get().logging.logImportErrors ? e : "is it installed?");
 }
 
 // TODO: check rate limit
@@ -48,6 +47,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
 
 	socket.ipAddress = ipAddress;
 	socket.userAgent = request.headers["user-agent"] as string;
+	socket.logUserRef = "[Unauthenticated]";
 
 	if (!ipAddress && Config.get().security.cdnSignatureIncludeIp) {
 		return socket.close(CLOSECODES.Decode_error, "Gateway connection rejected: IP address is required.");
@@ -78,16 +78,16 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
 
 		console.log(`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`);
 
-		if (EnvConfig.get().logging.logGatewayEvents)
+		if (EnvConfig.get().logging.gatewayLogging.logHttp)
 			[
 				"close",
 				"error",
 				"upgrade",
-				//"message",
 				"open",
 				"ping",
 				"pong",
 				"unexpected-response",
+				...(EnvConfig.get().logging.gatewayLogging.logHttpMessages ? ["message"] : []),
 			].forEach((x) => {
 				socket.on(x, (y) => console.log(x, y));
 			});

@@ -17,6 +17,30 @@
 */
 
 export class DatabaseEnvConfiguration {
+	static get schema() {
+		return [
+			{
+				key: "DATABASE",
+				type: "string",
+				description: "The database connection URL, eg. `postgres://user:password@localhost:5432/spacebar`.",
+			},
+			{
+				key: "DB_UNSAFE_SCHEMA_SYNC",
+				type: "boolean",
+				description: "If true, the database schema will be forcibly synchronised. This is unsafe for production environments. **We claim no responsibility for data loss!**",
+			},
+			{
+				key: "DB_DISABLE_JOINS",
+				type: "boolean",
+				description: "(Presumed not working) If true, joins will be disabled in database queries. This can improve performance in some cases.",
+			},
+		];
+	}
+
+	get url(): (string | undefined) {
+		return process.env.DATABASE;
+	}
+
 	get unsafeSchemaSync(): boolean {
 		if (process.env.DB_UNSAFE_SCHEMA_SYNC !== undefined) {
 			return process.env.DB_UNSAFE_SCHEMA_SYNC === "true";

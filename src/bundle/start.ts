@@ -94,7 +94,7 @@ if (cluster.isPrimary) {
 			// Fork workers.
 			for (let i = 0; i < cores; i++) {
 				// Delay each worker start if using sqlite database to prevent locking it
-				const delay = process.env.DATABASE?.includes("://") ? 0 : i * 1000;
+				const delay = EnvConfig.get().database.url?.includes("://") ? 0 : i * 1000;
 				setTimeout(() => {
 					cluster.fork();
 					console.log(`[Process] Worker ${cyan(i)} started.`);

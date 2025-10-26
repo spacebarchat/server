@@ -17,7 +17,7 @@
 */
 
 import { CLOSECODES, OPCODES, Payload, WebSocket } from "@spacebar/gateway";
-import { ErlpackType } from "@spacebar/util";
+import { EnvConfig, ErlpackType } from "@spacebar/util";
 import fs from "fs/promises";
 import BigIntJson from "json-bigint";
 import path from "path";
@@ -30,69 +30,79 @@ const bigIntJson = BigIntJson({ storeAsString: true });
 
 let erlpack: ErlpackType | null = null;
 try {
-    erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
+	erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
 } catch (e) {
-    console.log("Failed to import @yukikaze-bot/erlpack: ", e);
+	console.log("[Gateway] Failed to import @yukikaze-bot/erlpack:", EnvConfig.get().logging.logImportErrors ? e : "is it installed?");
 }
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
-    // TODO: compression
-    let data: Payload;
+	// TODO: compression
+	let data: Payload;
 
-    if (
-        (buffer instanceof Buffer && buffer[0] === 123) || // ASCII 123 = `{`. Bad check for JSON
-        typeof buffer === "string"
-    ) {
-        data = bigIntJson.parse(buffer.toString());
-    } else if (this.encoding === "json" && buffer instanceof Buffer) {
-        if (this.compress === "zlib-stream") {
-            try {
-                buffer = this.inflate!.process(buffer);
-            } catch {
-                buffer = buffer.toString();
-            }
-        } else if (this.compress === "zstd-stream") {
-            try {
-                buffer = await this.zstdDecoder!.decode(buffer);
-            } catch {
-                buffer = buffer.toString();
-            }
-        }
-        data = bigIntJson.parse(buffer as string);
-    } else if (this.encoding === "etf" && buffer instanceof Buffer && erlpack) {
-        try {
-            data = erlpack.unpack(buffer);
-        } catch {
-            return this.close(CLOSECODES.Decode_error);
-        }
-    } else return this.close(CLOSECODES.Decode_error);
+	if (
+		(buffer instanceof Buffer && buffer[0] === 123) || // ASCII 123 = `{`. Bad check for JSON
+		typeof buffer === "string"
+	) {
+		data = bigIntJson.parse(buffer.toString());
+	} else if (this.encoding === "json" && buffer instanceof Buffer) {
+		if (this.compress === "zlib-stream") {
+			try {
+				buffer = this.inflate!.process(buffer);
+			} catch {
+				buffer = buffer.toString();
+			}
+		} else if (this.compress === "zstd-stream") {
+			try {
+				buffer = await this.zstdDecoder!.decode(buffer);
+			} catch {
+				buffer = buffer.toString();
+			}
+		}
+		data = bigIntJson.parse(buffer as string);
+	} else if (this.encoding === "etf" && buffer instanceof Buffer && erlpack) {
+		try {
+			data = erlpack.unpack(buffer);
+		} catch {
+			return this.close(CLOSECODES.Decode_error);
+		}
+	} else return this.close(CLOSECODES.Decode_error);
 
-    if (process.env.WS_VERBOSE) console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
+	const logging = EnvConfig.get().logging.gatewayLogging;
+	if (logging.enabled) {
+		const opcodeName = OPCODES[data.op];
 
-    if (process.env.WS_DUMP) {
-        const id = this.session_id || "unknown";
+		let message = `[Gateway] <~ ${this.logUserRef} ${opcodeName}(${data.op})`;
+		if (data.t !== undefined) message += ` ${data.t}`;
+		if (data.s !== undefined) message += ` Seq=${data.s}`;
+		if (logging.logPayload) message += ` ${JSON.stringify(data.d)}`;
+		console.log(message);
+	}
 
-        await fs.mkdir(path.join("dump", id), { recursive: true });
-        await fs.writeFile(path.join("dump", id, `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
+	const dumpPath = EnvConfig.get().logging.dumpGatewayEventPath;
+	if (dumpPath) {
+		const id = this.session_id || "unknown";
 
-        if (!this.session_id) console.log("[Gateway] Unknown session id, dumping to unknown folder");
-    }
+		await fs.mkdir(path.join(dumpPath!, id), { recursive: true });
+		await fs.writeFile(path.join(dumpPath!, id, `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
 
-    check.call(this, PayloadSchema, data);
+		if (!this.session_id) console.log("[Gateway] Unknown session id, dumping to unknown folder");
+	}
 
-    const OPCodeHandler = OPCodeHandlers[data.op];
-    if (!OPCodeHandler) {
-        console.error("[Gateway] Unknown opcode " + data.op);
-        // TODO: if all opcodes are implemented comment this out:
-        // this.close(CLOSECODES.Unknown_opcode);
-        return;
-    }
+	check.call(this, PayloadSchema, data);
 
-    try {
-        return await OPCodeHandler.call(this, data);
-    } catch (error) {
-        console.error(`Error: Op ${data.op}`, error);
-        // if (!this.CLOSED && this.CLOSING)
-        return this.close(CLOSECODES.Unknown_error);
-    }
+	const OPCodeHandler = OPCodeHandlers[data.op];
+	if (!OPCodeHandler) {
+		console.error("[Gateway] Unknown opcode " + data.op);
+		// TODO: if all opcodes are implemented comment this out:
+		// this.close(CLOSECODES.Unknown_opcode);
+		return;
+	}
+
+	try {
+		return await OPCodeHandler.call(this, data);
+	} catch (error) {
+		console.error(`Error: Op ${data.op}`, error);
+		// if (!this.CLOSED && this.CLOSING)
+		return this.close(CLOSECODES.Unknown_error);
+	}
 }

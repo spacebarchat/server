@@ -17,110 +17,115 @@
 */
 
 import { CLOSECODES } from "@spacebar/gateway";
-import { StreamSession, VoiceState } from "@spacebar/util";
+import { EnvConfig, StreamSession, User, VoiceState } from "@spacebar/util";
 import { validateSchema, VoiceIdentifySchema } from "@spacebar/schemas";
 import { generateSsrc, mediaServer, Send, VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "@spacebar/webrtc";
 import { SSRCs } from "@spacebarchat/spacebar-webrtc-types";
 import { subscribeToProducers } from "./Video";
 
 export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
-    clearTimeout(this.readyTimeout);
-    const { server_id, user_id, session_id, token, streams, video } = validateSchema("VoiceIdentifySchema", data.d) as VoiceIdentifySchema;
+	clearTimeout(this.readyTimeout);
+	const { server_id, user_id, session_id, token, streams, video } = validateSchema("VoiceIdentifySchema", data.d) as VoiceIdentifySchema;
 
-    // server_id can be one of the following: a unique id for a GO Live stream, a channel id for a DM voice call, or a guild id for a guild voice channel
-    // not sure if there's a way to determine whether a snowflake is a channel id or a guild id without checking if it exists in db
-    // luckily we will only have to determine this once
-    let type: "guild-voice" | "dm-voice" | "stream" = "guild-voice";
-    let authenticated = false;
+	// server_id can be one of the following: a unique id for a GO Live stream, a channel id for a DM voice call, or a guild id for a guild voice channel
+	// not sure if there's a way to determine whether a snowflake is a channel id or a guild id without checking if it exists in db
+	// luckily we will only have to determine this once
+	let type: "guild-voice" | "dm-voice" | "stream" = "guild-voice";
+	let authenticated = false;
 
-    // first check if its a guild voice connection or DM voice call
-    const voiceState = await VoiceState.findOne({
-        where: [
-            { guild_id: server_id, user_id, token, session_id },
-            { channel_id: server_id, user_id, token, session_id },
-        ],
-    });
+	// first check if its a guild voice connection or DM voice call
+	const voiceState = await VoiceState.findOne({
+		where: [
+			{ guild_id: server_id, user_id, token, session_id },
+			{ channel_id: server_id, user_id, token, session_id },
+		],
+	});
 
-    if (voiceState) {
-        type = voiceState.guild_id === server_id ? "guild-voice" : "dm-voice";
-        authenticated = true;
-    } else {
-        // if its not a guild/dm voice connection, check if it is a go live stream
-        const streamSession = await StreamSession.findOne({
-            where: {
-                stream_id: server_id,
-                user_id,
-                token,
-                session_id,
-                used: false,
-            },
-            relations: ["stream"],
-        });
+	if (voiceState) {
+		type = voiceState.guild_id === server_id ? "guild-voice" : "dm-voice";
+		authenticated = true;
+	} else {
+		// if its not a guild/dm voice connection, check if it is a go live stream
+		const streamSession = await StreamSession.findOne({
+			where: {
+				stream_id: server_id,
+				user_id,
+				token,
+				session_id,
+				used: false,
+			},
+			relations: ["stream"],
+		});
 
-        if (streamSession) {
-            type = "stream";
-            authenticated = true;
-            streamSession.used = true;
-            await streamSession.save();
+		if (streamSession) {
+			type = "stream";
+			authenticated = true;
+			streamSession.used = true;
+			await streamSession.save();
 
-            this.once("close", async () => {
-                await streamSession.remove();
-            });
-        }
-    }
+			this.once("close", async () => {
+				await streamSession.remove();
+			});
+		}
+	}
 
-    // if it doesnt match any then not valid token
-    if (!authenticated) return this.close(CLOSECODES.Authentication_failed);
+	// if it doesnt match any then not valid token
+	if (!authenticated) return this.close(CLOSECODES.Authentication_failed);
 
-    this.user_id = user_id;
-    this.session_id = session_id;
+	this.user_id = user_id;
+	this.session_id = session_id;
 
-    this.type = type;
+	const user = await User.findOneOrFail({ where: { id: user_id } });
+	this.logUserRef = EnvConfig.get().logging.gatewayLogging.logUserId
+		? `${user.id}${EnvConfig.get().logging.gatewayLogging.logSessionId ? `/${this.session_id}` : ""}`
+		: `${user.username.substring(0, 16).padStart(16, " ")}#${user.discriminator}`;
 
-    const voiceRoomId = type === "stream" ? server_id : voiceState!.channel_id;
-    this.webRtcClient = await mediaServer.join(voiceRoomId, this.user_id, this, type!);
+	this.type = type;
 
-    this.on("close", () => {
-        // ice-lite media server relies on this to know when the peer went away
-        mediaServer.onClientClose(this.webRtcClient!);
-    });
+	const voiceRoomId = type === "stream" ? server_id : voiceState!.channel_id;
+	this.webRtcClient = await mediaServer.join(voiceRoomId, this.user_id, this, type!);
 
-    // once connected subscribe to tracks from other users
-    this.webRtcClient.emitter.once("connected", async () => {
-        await subscribeToProducers.call(this);
-    });
+	this.on("close", () => {
+		// ice-lite media server relies on this to know when the peer went away
+		mediaServer.onClientClose(this.webRtcClient!);
+	});
 
-    // the server generates a unique ssrc for the audio and video stream. Must be unique among users connected to same server
-    // UDP clients will respect this ssrc, but websocket clients will generate and replace it with their own
-    const generatedSsrc: SSRCs = {
-        audio_ssrc: generateSsrc(),
-        video_ssrc: generateSsrc(),
-        rtx_ssrc: generateSsrc(),
-    };
-    this.webRtcClient.initIncomingSSRCs(generatedSsrc);
+	// once connected subscribe to tracks from other users
+	this.webRtcClient.emitter.once("connected", async () => {
+		await subscribeToProducers.call(this);
+	});
 
-    await Send(this, {
-        op: VoiceOPCodes.READY,
-        d: {
-            ssrc: generatedSsrc.audio_ssrc,
-            port: mediaServer.port,
-            modes: [
-                "aead_aes256_gcm_rtpsize",
-                "aead_aes256_gcm",
-                "aead_xchacha20_poly1305_rtpsize",
-                "xsalsa20_poly1305_lite_rtpsize",
-                "xsalsa20_poly1305_lite",
-                "xsalsa20_poly1305_suffix",
-                "xsalsa20_poly1305",
-            ],
-            ip: mediaServer.ip,
-            experiments: [],
-            streams: streams?.map((x) => ({
-                ...x,
-                ssrc: generatedSsrc.video_ssrc,
-                rtx_ssrc: generatedSsrc.rtx_ssrc,
-                type: "video", // client expects this to be overriden for some reason???
-            })),
-        },
-    });
+	// the server generates a unique ssrc for the audio and video stream. Must be unique among users connected to same server
+	// UDP clients will respect this ssrc, but websocket clients will generate and replace it with their own
+	const generatedSsrc: SSRCs = {
+		audio_ssrc: generateSsrc(),
+		video_ssrc: generateSsrc(),
+		rtx_ssrc: generateSsrc(),
+	};
+	this.webRtcClient.initIncomingSSRCs(generatedSsrc);
+
+	await Send(this, {
+		op: VoiceOPCodes.READY,
+		d: {
+			ssrc: generatedSsrc.audio_ssrc,
+			port: mediaServer.port,
+			modes: [
+				"aead_aes256_gcm_rtpsize",
+				"aead_aes256_gcm",
+				"aead_xchacha20_poly1305_rtpsize",
+				"xsalsa20_poly1305_lite_rtpsize",
+				"xsalsa20_poly1305_lite",
+				"xsalsa20_poly1305_suffix",
+				"xsalsa20_poly1305",
+			],
+			ip: mediaServer.ip,
+			experiments: [],
+			streams: streams?.map((x) => ({
+				...x,
+				ssrc: generatedSsrc.video_ssrc,
+				rtx_ssrc: generatedSsrc.rtx_ssrc,
+				type: "video", // client expects this to be overriden for some reason???
+			})),
+		},
+	});
 }
