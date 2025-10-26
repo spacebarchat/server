@@ -70,6 +70,7 @@ if (cluster.isPrimary) {
             for (let i = 0; i < cores; i++) {
                 cluster.fork();
                 console.log(`[Process] Worker ${cyan(i)} started.`);
+                console.log(`[Process] Worker ${cyan(i)} started.`);
             }
 
             cluster.on("message", (sender: Worker, message) => {

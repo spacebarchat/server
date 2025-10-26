@@ -13,6 +13,7 @@
         "build": "npm run build:src && npm run generate:schema && npm run generate:openapi",
         "build:src": "tsc -b -v",
         "watch": "tsc -w -b .",
+        "clean": "rm -rf dist/",
         "test": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/test.js",
         "lint": "eslint . --stats --concurrency 4",
         "setup": "npm run build && npm run generate:schema",

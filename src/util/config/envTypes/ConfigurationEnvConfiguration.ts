@@ -16,34 +16,66 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { arrayOrderBy } from "@spacebar/extensions";
+
 export class ConfigurationEnvConfiguration {
-	get enabled(): boolean {
-		return process.env.CONFIG_PATH !== undefined;
-	}
+    static get schema() {
+        return arrayOrderBy(
+            [
+                { key: "CONFIG_PATH", type: "string", description: "Path to a JSON file containing configuration data" },
+                { key: "CONFIG_WRITEBACK", type: "boolean", description: "Whether to write back configuration changes to the specified JSON file" },
+                {
+                    key: "CONFIG_MODE",
+                    type: "string",
+                    description:
+                        "How to treat the JSON config.<br/>" +
+                        "<ul>" +
+                        "<li>**`override`**: Apply overrides without saving</li>" +
+                        "<li>**`overwrite`**: Apply overrides, saving changes to the database</li>" +
+                        "<li>**`single`**: Ignore database config outright</li>" +
+                        "</ul>",
+                },
+            ],
+            (e) => e.key,
+        );
+    }
 
-	get path(): string {
-		if (process.env.CONFIG_PATH === undefined && this.enabled) {
-			throw new Error("BUGBUG: enabled() determined that JSON config is enabled, but it is not?");
-		}
+    get enabled(): boolean {
+        return process.env.CONFIG_PATH !== undefined;
+    }
 
-		return process.env.CONFIG_PATH!;
-	}
+    get path(): string {
+        if (process.env.CONFIG_PATH === undefined && this.enabled) {
+            throw new Error("BUGBUG: enabled() determined that JSON config is enabled, but it is not?");
+        }
 
-	get writebackEnabled(): boolean {
-		return process.env.CONFIG_WRITEBACK === "true" || process.env.CONFIG_WRITEBACK === undefined;
-	}
+        return process.env.CONFIG_PATH!;
+    }
 
-	/**
-	 * Gets the configuration mode.
-	 * - "override": Config file overrides settings at runtime
-	 * - "overwrite": Config file overwrites database values at runtime
-	 * - "single": Database is not used
-	 */
-	get mode(): ("override" | "overwrite" | "single") {
-		if (process.env.CONFIG_MODE === "override" || process.env.CONFIG_MODE === "overwrite" || process.env.CONFIG_MODE === "single") {
-			return process.env.CONFIG_MODE;
-		}
+    get writebackEnabled(): boolean {
+        if (process.env.CONFIG_WRITEBACK !== undefined) {
+            return process.env.CONFIG_WRITEBACK === "true";
+        }
 
-		return "override";
-	}
+        if (process.env.CONFIG_READONLY !== undefined) {
+            console.warn("[EnvConfig] CONFIG_READONLY is deprecated. Please use CONFIG_WRITEBACK instead.");
+            return process.env.CONFIG_READONLY !== "true";
+        }
+
+        return this.enabled;
+    }
+
+    /**
+     * Gets the configuration mode.
+     * - "override": Config file overrides settings at runtime
+     * - "overwrite": Config file overwrites database values at runtime
+     * - "single": Database is not used
+     */
+    get mode(): "override" | "overwrite" | "single" {
+        if (process.env.CONFIG_MODE === "override" || process.env.CONFIG_MODE === "overwrite" || process.env.CONFIG_MODE === "single") {
+            return process.env.CONFIG_MODE;
+        }
+
+        return "override";
+    }
 }

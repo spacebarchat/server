@@ -20,7 +20,8 @@ import { Payload, WebSocket } from "@spacebar/gateway";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { JSONReplacer } from "@spacebar/util";
+import { JSONReplacer, EnvConfig } from "@spacebar/util";
+import { OPCODES } from "../util";
 import * as erlpack from "harmony-erlpack";
 
 // don't care
@@ -38,15 +39,25 @@ const recurseJsonReplace = (json: any) => {
 };
 
 export async function Send(socket: WebSocket, data: Payload) {
-    if (process.env.WS_VERBOSE) console.log(`[Websocket] Outgoing message: ${JSON.stringify(data)}`);
+    const logging = EnvConfig.get().logging.gatewayLogging;
+    if (logging.enabled) {
+        const opcodeName = OPCODES[data.op];
 
-    if (process.env.WS_DUMP) {
+        let message = `[Gateway] ~> ${socket.logUserRef} ${opcodeName}(${data.op})`;
+        if (data.t !== undefined) message += ` ${data.t}`;
+        if (data.s !== undefined) message += ` Seq=${data.s}`;
+        if (logging.logPayload) message += ` ${JSON.stringify(data.d)}`;
+        console.log(message);
+    }
+
+    const dumpPath = EnvConfig.get().logging.dumpGatewayEventPath;
+    if (dumpPath) {
         const id = socket.session_id || "unknown";
 
-        await fs.mkdir(path.join("dump", id), {
+        await fs.mkdir(path.join(dumpPath!, id), {
             recursive: true,
         });
-        await fs.writeFile(path.join("dump", id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
+        await fs.writeFile(path.join(dumpPath!, id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
     }
 
     let buffer: Buffer | string;

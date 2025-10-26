@@ -22,6 +22,7 @@ import { Channel } from "amqplib";
 import { yellow } from "picocolors";
 import { Event } from "../../interfaces";
 import { Config } from "../Config";
+import { EnvConfig } from "../../config";
 import { rabbitListen, RabbitMQ } from "./RabbitMQ";
 import { BaseEventListener } from "./listener/BaseEventListener";
 import { BaseEventWriter } from "./writer/BaseEventWriter";
@@ -40,7 +41,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 
     if (writer) {
         await writer.emit(payload);
-    } else if (process.env.EVENT_TRANSMISSION === "process") {
+    } else if (EnvConfig.get().eventTransmission === "process") {
         process.send?.({ type: "event", event: payload, id } as ProcessEvent);
     } else if (RabbitMQ.connection) {
         await RabbitMQ.publishEvent(id, payload);
@@ -50,7 +51,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 }
 
 export async function initEvent() {
-    if (process.env.EVENT_TRANSMISSION === "rabbitmq-single") {
+    if (EnvConfig.get().eventTransmission === "rabbitmq-single") {
         if (!Config.get().rabbitmq.host!) {
             throw new Error("[Events] rabbitmq.host is not configured.");
         }
@@ -59,7 +60,7 @@ export async function initEvent() {
             writer = new RabbitMqSingleWriter(Config.get().rabbitmq.host!);
             await writer.init();
         }
-    } else if (process.env.EVENT_TRANSMISSION === "unix" && process.env.EVENT_SOCKET_PATH) {
+    } else if (EnvConfig.get().eventTransmission === "unix" && process.env.EVENT_SOCKET_PATH) {
         if (!process.env.EVENT_SOCKET_PATH) {
             throw new Error("[Events] EVENT_SOCKET_PATH is not configured.");
         }
@@ -110,7 +111,7 @@ export interface ProcessEvent {
 }
 
 export async function listenEvent(event: string, callback: (event: EventOpts) => unknown, opts?: ListenEventOpts): Promise<() => Promise<void>> {
-    if (process.env.EVENT_TRANSMISSION === "rabbitmq-single") {
+    if (EnvConfig.get().eventTransmission === "rabbitmq-single") {
         if (!Config.get().rabbitmq.host) {
             throw new Error("[Events] rabbitmq.host is not configured.");
         }
@@ -119,7 +120,7 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
             await listener.init();
         }
         return await listener.listen(event, callback);
-    } else if (process.env.EVENT_TRANSMISSION === "unix") {
+    } else if (EnvConfig.get().eventTransmission === "unix") {
         if (!process.env.EVENT_SOCKET_PATH) {
             throw new Error("[Events] EVENT_SOCKET_PATH is not configured.");
         }
@@ -129,7 +130,7 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
             await listener.init();
         }
         return await listener.listen(event, callback);
-    } else if (process.env.EVENT_TRANSMISSION === "process") {
+    } else if (EnvConfig.get().eventTransmission === "process") {
         const cancel = async () => {
             process.removeListener("message", listener);
             process.setMaxListeners(process.getMaxListeners() - 1);
@@ -146,7 +147,7 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 
         return cancel;
     } else if (RabbitMQ.connection) {
-        if (process.env.EVENT_TRANSMISSION !== "rabbitmq-legacy") {
+        if (EnvConfig.get().eventTransmission !== "rabbitmq-legacy") {
             console.warn(yellow("[Events] Warning:"), "RabbitMQ replication without configuring EVENT_TRANSMISSION is deprecated.");
             console.warn(yellow("[Events] Warning:"), "Set EVENT_TRANSMISSION to 'rabbitmq-legacy' in environment variables to silence this warning.");
         }

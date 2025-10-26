@@ -58,4 +58,5 @@ export class WebSocket {
     large_threshold: number;
     qos?: QoSPayload;
     session?: Session;
+    logUserRef: string;
 }

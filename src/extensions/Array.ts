@@ -24,6 +24,30 @@ export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[
     return [pass, fail];
 }
 
+export type Comparable = number | string | bigint | Date | { valueOf(): number | string | bigint };
+
+export function arrayOrderBy<T>(array: T[], keySelector: (elem: T) => Comparable): T[] {
+    return array.slice().sort((a, b) => {
+        const keyA = keySelector(a);
+        const keyB = keySelector(b);
+
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+    });
+}
+
+export function arrayOrderByDescending<T>(array: T[], keySelector: (elem: T) => Comparable): T[] {
+    return array.slice().sort((a, b) => {
+        const keyA = keySelector(a);
+        const keyB = keySelector(b);
+
+        if (keyA > keyB) return -1;
+        if (keyA < keyB) return 1;
+        return 0;
+    });
+}
+
 export function arrayRemove<T>(array: T[], item: T): void {
     const index = array.indexOf(item);
     if (index > -1) {

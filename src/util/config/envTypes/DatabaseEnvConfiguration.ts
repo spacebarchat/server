@@ -17,29 +17,54 @@
 */
 
 export class DatabaseEnvConfiguration {
-	get unsafeSchemaSync(): boolean {
-		if (process.env.DB_UNSAFE_SCHEMA_SYNC !== undefined) {
-			return process.env.DB_UNSAFE_SCHEMA_SYNC === "true";
-		}
+    static get schema() {
+        return [
+            {
+                key: "DATABASE",
+                type: "string",
+                description: "The database connection URL, eg. `postgres://user:password@localhost:5432/spacebar`.",
+            },
+            {
+                key: "DB_UNSAFE_SCHEMA_SYNC",
+                type: "boolean",
+                description:
+                    "If true, the database schema will be forcibly synchronised. This is unsafe for production environments. **We claim no responsibility for data loss!**",
+            },
+            {
+                key: "DB_DISABLE_JOINS",
+                type: "boolean",
+                description: "(Presumed not working) If true, joins will be disabled in database queries. This can improve performance in some cases.",
+            },
+        ];
+    }
 
-		if (process.env.DB_SYNC !== undefined) {
-			console.warn("[EnvConfig] DB_SYNC is deprecated. Please use DB_UNSAFE_SCHEMA_SYNC instead.");
-			return process.env.DB_SYNC === "true";
-		}
+    get url(): string | undefined {
+        return process.env.DATABASE;
+    }
 
-		return false;
-	}
+    get unsafeSchemaSync(): boolean {
+        if (process.env.DB_UNSAFE_SCHEMA_SYNC !== undefined) {
+            return process.env.DB_UNSAFE_SCHEMA_SYNC === "true";
+        }
 
-	get disableJoins(): boolean {
-		if (process.env.DB_DISABLE_JOINS !== undefined) {
-			return process.env.DB_DISABLE_JOINS === "true";
-		}
+        if (process.env.DB_SYNC !== undefined) {
+            console.warn("[EnvConfig] DB_SYNC is deprecated. Please use DB_UNSAFE_SCHEMA_SYNC instead.");
+            return process.env.DB_SYNC === "true";
+        }
 
-		if (process.env.DB_NO_JOINS !== undefined) {
-			console.warn("[EnvConfig] DB_NO_JOINS is deprecated. Please use DB_DISABLE_JOINS instead.");
-			return process.env.DB_NO_JOINS === "true";
-		}
+        return false;
+    }
 
-		return false;
-	}
+    get disableJoins(): boolean {
+        if (process.env.DB_DISABLE_JOINS !== undefined) {
+            return process.env.DB_DISABLE_JOINS === "true";
+        }
+
+        if (process.env.DB_NO_JOINS !== undefined) {
+            console.warn("[EnvConfig] DB_NO_JOINS is deprecated. Please use DB_DISABLE_JOINS instead.");
+            return process.env.DB_NO_JOINS === "true";
+        }
+
+        return false;
+    }
 }
