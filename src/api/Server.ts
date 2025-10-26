@@ -126,6 +126,42 @@ export class SpacebarServer extends Server {
 			res.sendFile(path.join(ASSETS_FOLDER, "openapi.json"));
 		});
 
+		// current well-known location
+		app.get("/.well-known/spacebar", (req,res)=>{
+			res.json({
+				api: Config.get().api.endpointPublic
+			});
+		});
+
+		// new well-known location
+		app.get("/.well-known/spacebar/client", (req,res)=>{
+			let erlpackSupported = false;
+			try {
+				require("@yukikaze-bot/erlpack");
+				erlpackSupported = true;
+			} catch (e) {
+				// empty
+			}
+
+			res.json({
+				api: {
+					baseUrl: Config.get().api.endpointPublic?.split("/api")[0] || "", // TODO: migrate database values to not include /api/v9
+					apiVersions: {
+						default: Config.get().api.defaultVersion,
+						active: Config.get().api.activeVersions
+					}
+				},
+				cdn: {
+					baseUrl: Config.get().cdn.endpointPublic
+				},
+				gateway: {
+					baseUrl: Config.get().gateway.endpointPublic,
+					encoding: [...(erlpackSupported ? ["etf"] : []), "json"],
+					compression: ["zstd-stream", "zlib-stream", null],
+				}
+			});
+		});
+
 		this.app.use(ErrorHandler);
 
 		ConnectionLoader.loadConnections();
