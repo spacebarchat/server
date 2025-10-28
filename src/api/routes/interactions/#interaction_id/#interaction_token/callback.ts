@@ -26,7 +26,6 @@ const router = Router({ mergeParams: true });
 router.post("/", route({}), async (req: Request, res: Response) => {
 	const body = req.body as InteractionCallbackSchema;
 
-	// TODO: Only one error is ever returned. That's not the case on discord's side
 	const errors: Record<string, { code?: string; message: string }> = {};
 
 	for (const row of body.data.components || []) {
