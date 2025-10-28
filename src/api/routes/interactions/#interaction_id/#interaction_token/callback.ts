@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { InteractionCallbackSchema, InteractionCallbackType, MessageCreateSchema, MessageType } from "@spacebar/schemas";
+import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, MessageComponentType, MessageCreateSchema, MessageType } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { emitEvent, FieldErrors, InteractionSuccessEvent, Message, MessageCreateEvent, pendingInteractions, User } from "@spacebar/util";
@@ -27,6 +27,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 	const body = req.body as InteractionCallbackSchema;
 
 	const errors: Record<string, { code?: string; message: string }> = {};
+	const knownComponentIds: string[] = [];
 
 	for (const row of body.data.components || []) {
 		if (!row.components) {
@@ -38,6 +39,26 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 				code: "BASE_TYPE_BAD_LENGTH",
 				message: `Must be between 1 and 5 in length.`,
 			};
+		}
+
+		for (const component of row.components) {
+			if (component.type == MessageComponentType.Button && component.style != ButtonStyle.Link) {
+				if (component.custom_id?.trim() === "") {
+					errors[`data.components[${body.data.components!.indexOf(row)}].components[${row.components.indexOf(component)}].custom_id`] = {
+						code: "BUTTON_COMPONENT_CUSTOM_ID_REQUIRED",
+						message: "A custom id required",
+					};
+				}
+
+				if (knownComponentIds.includes(component.custom_id!)) {
+					errors[`data.components[${body.data.components!.indexOf(row)}].components[${row.components.indexOf(component)}].custom_id`] = {
+						code: "COMPONENT_CUSTOM_ID_DUPLICATED",
+						message: "Component custom id cannot be duplicated",
+					};
+				} else {
+					knownComponentIds.push(component.custom_id!);
+				}
+			}
 		}
 	}
 
