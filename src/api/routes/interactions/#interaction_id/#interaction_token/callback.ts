@@ -19,12 +19,32 @@
 import { InteractionCallbackSchema, InteractionCallbackType, MessageCreateSchema, MessageType } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { emitEvent, InteractionSuccessEvent, Message, MessageCreateEvent, pendingInteractions, User } from "@spacebar/util";
+import { emitEvent, FieldErrors, InteractionSuccessEvent, Message, MessageCreateEvent, pendingInteractions, User } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 
 router.post("/", route({}), async (req: Request, res: Response) => {
 	const body = req.body as InteractionCallbackSchema;
+
+	// TODO: Only one error is ever returned. That's not the case on discord's side
+	const errors: Record<string, { code?: string; message: string }> = {};
+
+	for (const row of body.data.components || []) {
+		if (!row.components) {
+			continue;
+		}
+
+		if (row.components.length < 1 || row.components.length > 5) {
+			errors[`data.components[${body.data.components!.indexOf(row)}].components`] = {
+				code: "BASE_TYPE_BAD_LENGTH",
+				message: `Must be between 1 and 5 in length.`,
+			};
+		}
+	}
+
+	if (Object.keys(errors).length > 0) {
+		throw FieldErrors(errors);
+	}
 
 	const interactionId = req.params.interaction_id;
 	const interaction = pendingInteractions.get(req.params.interaction_id);
