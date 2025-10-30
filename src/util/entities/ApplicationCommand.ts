@@ -53,7 +53,7 @@ export class ApplicationCommand extends BaseClass {
 	@Column({ nullable: true, type: "simple-json" })
 	description_localizations?: Record<string, string>;
 
-	@Column({ type: "simple-json" })
+	@Column({ type: "simple-json", default: "[]" })
 	options: ApplicationCommandOption[];
 
 	@Column({ nullable: true, type: String })
