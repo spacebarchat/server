@@ -17,14 +17,7 @@
 */
 
 import { getIpAdress, route } from "@spacebar/api";
-import {
-	Ban,
-	DiscordApiErrors,
-	GuildBanAddEvent,
-	Member,
-	User,
-	emitEvent,
-} from "@spacebar/util";
+import { Ban, DiscordApiErrors, GuildBanAddEvent, Member, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { Config } from "@spacebar/util";
@@ -54,19 +47,12 @@ router.post(
 		const userIds: Array<string> = req.body.user_ids;
 		if (!userIds) throw new HTTPError("The user_ids array is missing", 400);
 
-		if (userIds.length > Config.get().limits.guild.maxBulkBanUsers)
-			throw new HTTPError(
-				"The user_ids array must be between 1 and 200 in length",
-				400,
-			);
+		if (userIds.length > Config.get().limits.guild.maxBulkBanUsers) throw new HTTPError("The user_ids array must be between 1 and 200 in length", 400);
 
 		const banned_users = [];
 		const failed_users = [];
 		for await (const banned_user_id of userIds) {
-			if (
-				req.user_id === banned_user_id &&
-				banned_user_id === req.permission?.cache.guild?.owner_id
-			) {
+			if (req.user_id === banned_user_id && banned_user_id === req.permission?.cache.guild?.owner_id) {
 				failed_users.push(banned_user_id);
 				continue;
 			}
@@ -108,7 +94,7 @@ router.post(
 						event: "GUILD_BAN_ADD",
 						data: {
 							guild_id: guild_id,
-							user: banned_user,
+							user: banned_user.toPublicUser(),
 						},
 						guild_id: guild_id,
 					} as GuildBanAddEvent),
@@ -120,8 +106,7 @@ router.post(
 			}
 		}
 
-		if (banned_users.length === 0 && failed_users.length > 0)
-			throw DiscordApiErrors.BULK_BAN_FAILED;
+		if (banned_users.length === 0 && failed_users.length > 0) throw DiscordApiErrors.BULK_BAN_FAILED;
 		return res.json({
 			banned_users: banned_users,
 			failed_users: failed_users,

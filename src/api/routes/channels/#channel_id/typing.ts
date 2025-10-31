@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, emitEvent, Member, TypingStartEvent } from "@spacebar/util";
+import { Channel, emitEvent, Member, TypingStartEvent, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router({ mergeParams: true });
@@ -43,7 +43,6 @@ router.post(
 			where: { id: user_id, guild_id: channel.guild_id },
 			relations: ["roles", "user"],
 		});
-
 		await emitEvent({
 			event: "TYPING_START",
 			channel_id: channel_id,
@@ -51,7 +50,7 @@ router.post(
 				...(member
 					? {
 							member: {
-								...member,
+								...member.toPublicMember(),
 								roles: member?.roles?.map((x) => x.id),
 							},
 						}

@@ -17,30 +17,10 @@
 */
 
 import { HTTPError } from "lambert-server";
-import {
-	BeforeInsert,
-	BeforeUpdate,
-	Column,
-	Entity,
-	Index,
-	JoinColumn,
-	JoinTable,
-	ManyToMany,
-	ManyToOne,
-	Not,
-	PrimaryGeneratedColumn,
-	RelationId,
-} from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, Not, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { Ban, Channel, PublicGuildRelations } from ".";
 import { ReadyGuildDTO } from "../dtos";
-import {
-	GuildCreateEvent,
-	GuildDeleteEvent,
-	GuildMemberAddEvent,
-	GuildMemberRemoveEvent,
-	GuildMemberUpdateEvent,
-	MessageCreateEvent,
-} from "../interfaces";
+import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent, MessageCreateEvent } from "../interfaces";
 import { Config, emitEvent } from "../util";
 import { DiscordApiErrors } from "../util/Constants";
 import { BaseClassWithoutId } from "./BaseClass";
@@ -186,8 +166,7 @@ export class Member extends BaseClassWithoutId {
 			select: ["owner_id"],
 			where: { id: guild_id },
 		});
-		if (guild.owner_id === user_id)
-			throw new Error("The owner cannot be removed of the guild");
+		if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
 		const member = await Member.findOneOrFail({
 			where: { id: user_id, guild_id },
 			relations: ["user"],
@@ -210,7 +189,7 @@ export class Member extends BaseClassWithoutId {
 			} as GuildDeleteEvent),
 			emitEvent({
 				event: "GUILD_MEMBER_REMOVE",
-				data: { guild_id, user: member.user },
+				data: { guild_id, user: member.user.toPublicUser() },
 				guild_id,
 			} as GuildMemberRemoveEvent),
 		]);
@@ -249,11 +228,7 @@ export class Member extends BaseClassWithoutId {
 		]);
 	}
 
-	static async removeRole(
-		user_id: string,
-		guild_id: string,
-		role_id: string,
-	) {
+	static async removeRole(user_id: string, guild_id: string, role_id: string) {
 		const [member] = await Promise.all([
 			Member.findOneOrFail({
 				where: { id: user_id, guild_id },
@@ -283,11 +258,7 @@ export class Member extends BaseClassWithoutId {
 		]);
 	}
 
-	static async changeNickname(
-		user_id: string,
-		guild_id: string,
-		nickname: string,
-	) {
+	static async changeNickname(user_id: string, guild_id: string, nickname: string) {
 		const member = await Member.findOneOrFail({
 			where: {
 				id: user_id,
@@ -323,10 +294,7 @@ export class Member extends BaseClassWithoutId {
 		const { maxGuilds } = Config.get().limits.user;
 		const guild_count = await Member.count({ where: { id: user_id } });
 		if (guild_count >= maxGuilds) {
-			throw new HTTPError(
-				`You are at the ${maxGuilds} server limit.`,
-				403,
-			);
+			throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
 		}
 
 		const guild = await Guild.findOneOrFail({
@@ -338,10 +306,7 @@ export class Member extends BaseClassWithoutId {
 		});
 
 		for await (const channel of guild.channels) {
-			channel.position = await Channel.calculatePosition(
-				channel.id,
-				guild_id,
-			);
+			channel.position = await Channel.calculatePosition(channel.id, guild_id);
 		}
 
 		const memberCount = await Member.count({ where: { guild_id } });
@@ -407,7 +372,7 @@ export class Member extends BaseClassWithoutId {
 				event: "GUILD_MEMBER_ADD",
 				data: {
 					...member,
-					user,
+					user: user.toPublicUser(),
 					guild_id,
 				},
 				guild_id,

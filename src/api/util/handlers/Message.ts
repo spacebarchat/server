@@ -362,14 +362,16 @@ export async function postHandleMessage(message: Message) {
 			const hasUrl = !!embed.url;
 			return !hasUrl;
 		});
-		await Promise.all([
-			emitEvent({
-				event: "MESSAGE_UPDATE",
-				channel_id: message.channel_id,
-				data,
-			} as MessageUpdateEvent),
-			Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: data.embeds }),
-		]);
+		const author = data.author?.toPublicUser();
+		const event = {
+			event: "MESSAGE_UPDATE",
+			channel_id: message.channel_id,
+			data: {
+				...data,
+				author,
+			},
+		} as MessageUpdateEvent;
+		await Promise.all([emitEvent(event), Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: data.embeds })]);
 		return;
 	}
 

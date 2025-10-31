@@ -17,15 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Config,
-	Guild,
-	GuildDeleteEvent,
-	GuildMemberRemoveEvent,
-	Member,
-	User,
-	emitEvent,
-} from "@spacebar/util";
+import { Config, Guild, GuildDeleteEvent, GuildMemberRemoveEvent, Member, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -79,17 +71,9 @@ router.delete(
 		});
 
 		if (!guild) throw new HTTPError("Guild doesn't exist", 404);
-		if (guild.owner_id === req.user_id)
-			throw new HTTPError("You can't leave your own guild", 400);
-		if (
-			autoJoin.enabled &&
-			autoJoin.guilds.includes(guild_id) &&
-			!autoJoin.canLeave
-		) {
-			throw new HTTPError(
-				"You can't leave instance auto join guilds",
-				400,
-			);
+		if (guild.owner_id === req.user_id) throw new HTTPError("You can't leave your own guild", 400);
+		if (autoJoin.enabled && autoJoin.guilds.includes(guild_id) && !autoJoin.canLeave) {
+			throw new HTTPError("You can't leave instance auto join guilds", 400);
 		}
 
 		await Promise.all([
@@ -109,7 +93,7 @@ router.delete(
 			event: "GUILD_MEMBER_REMOVE",
 			data: {
 				guild_id: guild_id,
-				user: user,
+				user: user.toPublicUser(),
 			},
 			guild_id: guild_id,
 		} as GuildMemberRemoveEvent);
