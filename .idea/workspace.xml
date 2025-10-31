@@ -15,8 +15,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="TypeScript File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -24,12 +24,15 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$USER_HOME$/.cache/JetBrains/WebStorm2024.3/javascript/typings/node/20.17.10/node_modules/@types/node/crypto.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/amqplib/index.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/jsonwebtoken/index.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/node/events.d.ts" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/result/node_modules/lambert-server/src/Server.ts" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/result/node_modules/lambert-server/src/Utils.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/picocolors/types.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/data-source/BaseDataSourceOptions.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/data-source/DataSource.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/data-source/DataSourceOptions.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/driver/postgres/PostgresConnectionOptions.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/repository/BaseEntity.d.ts" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="ProjectErrors" />
@@ -52,24 +55,34 @@
     "NIXITCH_NIX_PROFILES": "/run/current-system/sw /nix/var/nix/profiles/default /etc/profiles/per-user/Rory /home/Rory/.local/state/nix/profile /nix/profile /home/Rory/.nix-profile",
     "NIXITCH_NIX_REMOTE": "",
     "NIXITCH_NIX_USER_PROFILE_DIR": "/nix/var/nix/profiles/per-user/Rory",
+    "Node.js Test Runner.All Tests.executor": "Run",
+    "Node.js Test Runner.Tests in dist/.executor": "Run",
     "Node.js.Server.ts.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "javascript.nodejs.core.library.configured.version": "24.8.0",
-    "javascript.nodejs.core.library.typings.version": "24.7.0",
-    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/util/migration/postgres",
+    "Shell Script.Clean.executor": "Run",
+    "git-widget-placeholder": "dev/emma-wip",
+    "javascript.nodejs.core.library.configured.version": "24.9.0",
+    "javascript.nodejs.core.library.typings.version": "24.9.1",
+    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/util/config/envTypes",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "node",
     "nodejs_package_manager_path": "npm",
+    "npm.Build.executor": "Run",
+    "npm.Clean.executor": "Run",
     "npm.Start API.executor": "Run",
     "npm.Start CDN.executor": "Run",
     "npm.Start Gateway.executor": "Run",
+    "npm.Start bundle.executor": "Run",
     "npm.build.executor": "Run",
+    "npm.build:src.executor": "Run",
+    "npm.config:apply scripts/configTemplates/bundle.json.executor": "Run",
+    "npm.config:apply scripts/configTemplates/split.json.executor": "Run",
     "npm.start.executor": "Debug",
     "prettierjs.PrettierConfiguration.Package": "/home/Rory/git/spacebar/server-master/node_modules/prettier",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "settings.nodejs",
     "ts.external.directory.path": "/home/Rory/git/spacebar/server-master/node_modules/typescript/lib"
   },
   "keyToStringList": {
@@ -85,18 +98,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/util/migration/postgres" />
-      <recent name="$PROJECT_DIR$/src/util/entities" />
-      <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
-      <recent name="$PROJECT_DIR$/src/schemas" />
-      <recent name="$PROJECT_DIR$/src/schemas/api/users" />
+      <recent name="$PROJECT_DIR$/src/util/config/envTypes" />
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/scripts" />
+      <recent name="$PROJECT_DIR$/scripts/configTemplates" />
+      <recent name="$PROJECT_DIR$/src/util/config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/schemas/webrtc" />
+      <recent name="$PROJECT_DIR$/src/schemas/api/users" />
       <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
       <recent name="$PROJECT_DIR$/src/schemas" />
-      <recent name="$PROJECT_DIR$/src/schemas/uncategorised" />
-      <recent name="$PROJECT_DIR$/src/schemas/gateway" />
-      <recent name="$PROJECT_DIR$/src/schemas/api/developers" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -110,18 +123,176 @@
         <entry key="js.build_tools.npm">
           <value>
             <map>
+              <entry key="Build" value="STOPPED" />
+              <entry key="Clean" value="STOPPED" />
               <entry key="Start API" value="STOPPED" />
+              <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
-              <entry key="build" value="STOPPED" />
+              <entry key="Start bundle" value="STOPPED" />
             </map>
           </value>
         </entry>
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="npm.Start Gateway">
+  <component name="RunManager" selected="Node.js Test Runner.Tests in dist/">
+    <configuration name="Tests in dist/" type="NodeJsTestRunner">
+      <node-interpreter value="project" />
+      <working-dir value="$PROJECT_DIR$" />
+      <language value="JAVA_SCRIPT" />
+      <typescript-loader value="MANUAL_SETUP_IN_NODE_OPTION" />
+      <envs />
+      <scope-kind value="DIRECTORY" />
+      <test-directory value="$PROJECT_DIR$/dist" />
+      <method v="2">
+        <option name="RunConfigurationTask" enabled="true" run_configuration_name="Build" run_configuration_type="js.build_tools.npm" />
+      </method>
+    </configuration>
+    <configuration name="Start API" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start:api" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="npm" />
+      <envs />
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <method v="2">
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="build" />
+          </scripts>
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="config:apply" />
+          </scripts>
+          <arguments value="scripts/configTemplates/split.json" />
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+      </method>
+    </configuration>
+    <configuration name="Start CDN" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start:cdn" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="npm" />
+      <envs />
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <method v="2">
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="build:src" />
+          </scripts>
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="config:apply" />
+          </scripts>
+          <arguments value="scripts/configTemplates/split.json" />
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+      </method>
+    </configuration>
+    <configuration name="Start Gateway" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start:gateway" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="npm" />
+      <envs />
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <method v="2">
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="build" />
+          </scripts>
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="config:apply" />
+          </scripts>
+          <arguments value="scripts/configTemplates/split.json" />
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+      </method>
+    </configuration>
+    <configuration name="Start bundle" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="npm" />
+      <envs />
+      <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">
+        <option name="DIRENV_ENABLED" value="false" />
+        <option name="DIRENV_TRUSTED" value="false" />
+      </EXTENSION>
+      <method v="2">
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="build" />
+          </scripts>
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="config:apply" />
+          </scripts>
+          <arguments value="scripts/configTemplates/bundle.json" />
+          <node-interpreter value="project" />
+          <envs />
+        </option>
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Compound.Start separated" />
+      <item itemvalue="Node.js Test Runner.Tests in dist/" />
+      <item itemvalue="npm.Build" />
+      <item itemvalue="npm.Clean" />
       <item itemvalue="npm.Start bundle" />
       <item itemvalue="npm.Start API" />
       <item itemvalue="npm.Start CDN" />
@@ -158,6 +329,9 @@
       <workItem from="1760044946282" duration="43683000" />
       <workItem from="1760402350251" duration="49898000" />
       <workItem from="1760538864442" duration="1330000" />
+      <workItem from="1761030386438" duration="79726000" />
+      <workItem from="1761240570032" duration="14579000" />
+      <workItem from="1761258528845" duration="70664000" />
     </task>
     <servers />
   </component>
@@ -176,6 +350,12 @@
           <url>file://$PROJECT_DIR$/src/admin-api/Server.ts</url>
           <line>140</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/util/util/extensions/String.test.ts</url>
+          <line>10</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

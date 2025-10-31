@@ -32,6 +32,6 @@ export function stringGlobToRegexp(str: string, flags?: string): RegExp {
 
 // Register extensions
 if (!String.prototype.globToRegexp)
-	String.prototype.globToRegexp = function (str: string, flags?: string) {
-		return stringGlobToRegexp.call(null, str, flags);
+	String.prototype.globToRegexp = function (flags?: string) {
+		return stringGlobToRegexp.call(null, this as string, flags);
 	};

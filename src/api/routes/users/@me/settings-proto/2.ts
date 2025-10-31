@@ -18,11 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import {
-	emitEvent,
-	OrmUtils,
-	UserSettingsProtos,
-} from "@spacebar/util";
+import { emitEvent, EnvConfig, OrmUtils, UserSettingsProtos } from "@spacebar/util";
 import { FrecencyUserSettings } from "discord-protos";
 import { JsonValue } from "@protobuf-ts/runtime";
 import { SettingsProtoJsonResponse, SettingsProtoResponse, SettingsProtoUpdateJsonSchema, SettingsProtoUpdateSchema } from "@spacebar/schemas"
@@ -168,7 +164,7 @@ async function patchUserSettings(
 		};
 	}
 
-	if ((process.env.LOG_PROTO_UPDATES || process.env.LOG_PROTO_FRECENCY_UPDATES) && process.env.LOG_PROTO_FRECENCY_UPDATES !== "false")
+	if (EnvConfig.get().logging.logProtoUpdates.includes("FRECENCY"))
 		console.log(
 			`Updating frecency settings for user ${userId} with atomic=${atomic}:`,
 			updatedSettings,

@@ -93,4 +93,55 @@ describe("Array extensions", () => {
 		assert.deepEqual([].except(arr2), []);
 	});
 
+	it("orderBy", () => {
+		const arr = [{ id: 2, name: 'b' }, { id: 1, name: 'a' }, { id: 3, name: 'c' }];
+		assert.deepEqual(arr.orderBy(x => x.id), [{ id: 1, name: 'a' }, { id: 2, name: 'b' }, { id: 3, name: 'c' }]);
+	});
+
+	it("orderByDescending", () => {
+		const arr = [{ id: 2, name: 'b' }, { id: 1, name: 'a' }, { id: 3, name: 'c' }];
+		assert.deepEqual(arr.orderByDescending(x => x.id), [{ id: 3, name: 'c' }, { id: 2, name: 'b' }, { id: 1, name: 'a' }]);
+	});
+
+	it("orderBy with multiple keys", () => {
+		const arr = [
+			{ id: 2, name: 'b' },
+			{ id: 1, name: 'a' },
+			{ id: 2, name: 'a' },
+			{ id: 1, name: 'b' }
+		];
+		assert.deepEqual(arr.orderBy(x => x.id, x => x.name), [
+			{ id: 1, name: 'a' },
+			{ id: 1, name: 'b' },
+			{ id: 2, name: 'a' },
+			{ id: 2, name: 'b' }
+		]);
+		assert.deepEqual(arr.orderBy(x => x.name, x => x.id), [
+			{ id: 1, name: 'a' },
+			{ id: 2, name: 'a' },
+			{ id: 1, name: 'b' },
+			{ id: 2, name: 'b' }
+		]);
+	});
+
+	it("orderByDescending with multiple keys", () => {
+		const arr = [
+			{ id: 2, name: 'b' },
+			{ id: 1, name: 'a' },
+			{ id: 2, name: 'a' },
+			{ id: 1, name: 'b' }
+		];
+		assert.deepEqual(arr.orderByDescending(x => x.id, x => x.name), [
+			{ id: 2, name: 'b' },
+			{ id: 2, name: 'a' },
+			{ id: 1, name: 'b' },
+			{ id: 1, name: 'a' },
+		]);
+		assert.deepEqual(arr.orderByDescending(x => x.name, x => x.id), [
+			{ id: 2, name: 'b' },
+			{ id: 1, name: 'b' },
+			{ id: 2, name: 'a' },
+			{ id: 1, name: 'a' },
+		]);
+	});
 });

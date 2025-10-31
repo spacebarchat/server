@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { EnvConfig } from "../config";
 
 // const originalConsoleLog = console.log;
 // console.error =
@@ -53,17 +54,17 @@ export class KittyLogo {
 	}
 
 	private static checkSupport(): Promise<boolean> {
-		if (process.env.FORCE_KITTY) return Promise.resolve(true);
+		if (EnvConfig.get().forceKiTTYLogo) return Promise.resolve(EnvConfig.get().forceKiTTYLogo === true);
 		// Check if we are running in a terminal
 		if (!process.stdin.isTTY) return Promise.resolve(false);
 		if (!process.stdout.isTTY) return Promise.resolve(false);
 
 		// Check if we are running in a Kitty terminal
-		if (process.env.TERM == "xterm-kitty") return Promise.resolve(true);
+		if (EnvConfig.get().terminalEmulator == "xterm-kitty") return Promise.resolve(true);
 
 		// Check if we are running in a common unsupported terminal
-		if (process.env.TERM == "xterm") return Promise.resolve(false);
-		if (process.env.TERM == "xterm-256color") return Promise.resolve(false);
+		if (EnvConfig.get().terminalEmulator == "xterm") return Promise.resolve(false);
+		if (EnvConfig.get().terminalEmulator == "xterm-256color") return Promise.resolve(false);
 
 		return new Promise<boolean>((resolve) => {
 			(async () => {

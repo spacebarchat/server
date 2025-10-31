@@ -49,7 +49,9 @@ import {
 	Emoji,
 	Role,
 	Sticker,
-	VoiceState, UserSettingsProtos,
+	VoiceState,
+	UserSettingsProtos,
+	EnvConfig,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { In } from "typeorm";
@@ -60,7 +62,7 @@ import { DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProject
 // TODO: check privileged intents, if defined in the config
 
 function logAuth(message: string) {
-	if (process.env.LOG_AUTH != "true") return;
+	if (!EnvConfig.get().logging.logAuthentication) return;
 	console.log(`[Gateway/Auth] ${message}`);
 }
 
@@ -103,6 +105,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = user.id;
+	this.logUserRef = EnvConfig.get().logging.gatewayLogging.logUserId
+		? `${user.id}${EnvConfig.get().logging.gatewayLogging.logSessionId ? `/${this.session_id}` : ""}`
+		: `${user.username.substring(0, 16).padStart(16, " ")}#${user.discriminator}`;
+
 	const userQueryTime = taskSw.getElapsedAndReset();
 
 	// Check intents
@@ -704,5 +710,5 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const setupListenerTime = Date.now();
 
-	console.log(`[Gateway] IDENTIFY ${this.user_id} in ${totalSw.elapsed().totalMilliseconds}ms`, process.env.LOG_GATEWAY_TRACES ? JSON.stringify(d._trace, null, 2) : "");
+	console.log(`[Gateway] IDENTIFY ${this.user_id} in ${totalSw.elapsed().totalMilliseconds}ms`, EnvConfig.get().logging.gatewayLogging.logTraces ? JSON.stringify(d._trace, null, 2) : "");
 }

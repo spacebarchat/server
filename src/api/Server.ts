@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes } from "@spacebar/util";
+import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes, EnvConfig, ErlpackType } from "@spacebar/util";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
@@ -57,13 +57,13 @@ export class SpacebarServer extends Server {
 		await initInstance();
 		WebAuthn.init();
 
-		const logRequests = process.env["LOG_REQUESTS"] != undefined;
+		const logRequests = EnvConfig.get().logging.logRequests !== "";
 		if (logRequests) {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
-						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
+						let skip = !(EnvConfig.get().logging.logRequests.includes(res.statusCode.toString()) ?? false);
+						if (EnvConfig.get().logging.logRequests.charAt(0) == "-") skip = !skip;
 						return skip;
 					},
 				}),
@@ -124,6 +124,42 @@ export class SpacebarServer extends Server {
 
 		app.get("/_spacebar/api/openapi.json", (req, res) => {
 			res.sendFile(path.join(ASSETS_FOLDER, "openapi.json"));
+		});
+
+		// current well-known location
+		app.get("/.well-known/spacebar", (req,res)=>{
+			res.json({
+				api: Config.get().api.endpointPublic
+			});
+		});
+
+		// new well-known location
+		app.get("/.well-known/spacebar/client", (req,res)=>{
+			let erlpackSupported = false;
+			try {
+				require("@yukikaze-bot/erlpack");
+				erlpackSupported = true;
+			} catch (e) {
+				// empty
+			}
+
+			res.json({
+				api: {
+					baseUrl: Config.get().api.endpointPublic?.split("/api")[0] || "", // TODO: migrate database values to not include /api/v9
+					apiVersions: {
+						default: Config.get().api.defaultVersion,
+						active: Config.get().api.activeVersions
+					}
+				},
+				cdn: {
+					baseUrl: Config.get().cdn.endpointPublic
+				},
+				gateway: {
+					baseUrl: Config.get().gateway.endpointPublic,
+					encoding: [...(erlpackSupported ? ["etf"] : []), "json"],
+					compression: ["zstd-stream", "zlib-stream", null],
+				}
+			});
 		});
 
 		this.app.use(ErrorHandler);

@@ -17,7 +17,7 @@
 */
 
 import { CLOSECODES, OPCODES, Payload, WebSocket } from "@spacebar/gateway";
-import { ErlpackType } from "@spacebar/util";
+import { EnvConfig, ErlpackType } from "@spacebar/util";
 import fs from "fs/promises";
 import BigIntJson from "json-bigint";
 import path from "path";
@@ -32,7 +32,7 @@ let erlpack: ErlpackType | null = null;
 try {
 	erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
 } catch (e) {
-	console.log("Failed to import @yukikaze-bot/erlpack: ", e);
+	console.log("[Gateway] Failed to import @yukikaze-bot/erlpack:", EnvConfig.get().logging.logImportErrors ? e : "is it installed?");
 }
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
@@ -67,15 +67,24 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
 		}
 	} else return this.close(CLOSECODES.Decode_error);
 
-	if (process.env.WS_VERBOSE)
-		console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
+	const logging = EnvConfig.get().logging.gatewayLogging;
+	if (logging.enabled) {
+		const opcodeName = OPCODES[data.op];
 
-	if (process.env.WS_DUMP) {
+		let message = `[Gateway] <~ ${this.logUserRef} ${opcodeName}(${data.op})`;
+		if (data.t !== undefined) message += ` ${data.t}`;
+		if (data.s !== undefined) message += ` Seq=${data.s}`;
+		if (logging.logPayload) message += ` ${JSON.stringify(data.d)}`;
+		console.log(message);
+	}
+
+	const dumpPath = EnvConfig.get().logging.dumpGatewayEventPath;
+	if (dumpPath) {
 		const id = this.session_id || "unknown";
 
-		await fs.mkdir(path.join("dump", id), { recursive: true });
+		await fs.mkdir(path.join(dumpPath!, id), { recursive: true });
 		await fs.writeFile(
-			path.join("dump", id, `${Date.now()}.in.json`),
+			path.join(dumpPath!, id, `${Date.now()}.in.json`),
 			JSON.stringify(data, null, 2),
 		);
 
