@@ -2,3 +2,7 @@
 .husky/
 .idea/
 .vscode/
+
+node_modules/
+dist/
+files/
