@@ -1,4 +1,3 @@
-ARG BRANCH=master
 ARG DEBIAN_CODE=trixie
 ARG NODE_VERSION=24
 ARG PYTHON_VERSION=3.13
@@ -6,7 +5,7 @@ ARG USER_NAME=spacebar
 ARG USER_GROUP=$USER_NAME
 ARG USER_UID=1000
 ARG USER_GID=1000
-ARG WORKDIR=/spacebar
+ARG BASEDIR=/spacebar
 
 
 FROM python:${PYTHON_VERSION}-slim-${DEBIAN_CODE} AS base_python
@@ -44,10 +43,10 @@ ARG USER_NAME
 ARG USER_GROUP
 ARG USER_UID
 ARG USER_GID
-ARG WORKDIR
+ARG BASEDIR
 
-RUN mkdir -p "${WORKDIR}/server" \
-    && chown -R "${USER_UID}:${USER_GID}" "${WORKDIR}"
+RUN mkdir -p "${BASEDIR}/server" \
+    && chown -R "${USER_UID}:${USER_GID}" "${BASEDIR}"
 
 RUN deluser node 2>/dev/null || true \
     && delgroup node 2>/dev/null || true \
@@ -65,13 +64,13 @@ RUN deluser node 2>/dev/null || true \
 USER ${USER_NAME}
 
 #@todo: only bring what we need
-COPY --chown=${USER_NAME}:${USER_GROUP} --from=builder /build/server "${WORKDIR}/server"
+COPY --chown=${USER_NAME}:${USER_GROUP} --from=builder /build/server "${BASEDIR}/server"
 
 ENV PORT="8080"
-ENV CONFIG_PATH="${WORKDIR}/config.json"
-ENV DATABASE="${WORKDIR}/database.db"
+ENV CONFIG_PATH="${BASEDIR}/config.json"
+ENV DATABASE="${BASEDIR}/database.db"
 
-WORKDIR "${WORKDIR}/server"
+WORKDIR "${BASEDIR}/server"
 
 ENTRYPOINT [ "npm", "run" ]
 CMD [ "start" ]
