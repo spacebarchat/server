@@ -66,7 +66,7 @@ USER ${USER_NAME}
 #@todo: only bring what we need
 COPY --chown=${USER_NAME}:${USER_GROUP} --from=builder /build/server "${BASEDIR}/server"
 
-ENV PORT="8080"
+ENV PORT="3001"
 ENV CONFIG_PATH="${BASEDIR}/config.json"
 ENV DATABASE="${BASEDIR}/database.db"
 
