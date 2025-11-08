@@ -50,14 +50,13 @@ RUN mkdir -p "${BASEDIR}/server" \
 
 RUN deluser node 2>/dev/null || true \
     && delgroup node 2>/dev/null || true \
-    && rm -fr /home/node \
+    && rm -fr /home/node 2>/dev/null || true \
     && addgroup --gid "$USER_GID" "$USER_GROUP" \
     && adduser \
         --disabled-password \
         --gecos "" \
         --uid "$USER_UID" \
         --gid "$USER_GID" \
-        --home "$WORKDIR" \
         --no-create-home \
         "$USER_NAME"
 
