@@ -17,18 +17,10 @@
 */
 
 import { getIpAdress, route } from "@spacebar/api";
-import {
-	Ban,
-	DiscordApiErrors,
-	GuildBanAddEvent,
-	GuildBanRemoveEvent,
-	Member,
-	User,
-	emitEvent,
-} from "@spacebar/util";
+import { Ban, DiscordApiErrors, GuildBanAddEvent, GuildBanRemoveEvent, Member, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { APIBansArray, BanRegistrySchema, GuildBansResponse } from "@spacebar/schemas"
+import { APIBansArray, BanRegistrySchema, GuildBansResponse } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -87,14 +79,12 @@ router.get(
 		query: {
 			query: {
 				type: "string",
-				description:
-					"Query to match username(s) and display name(s) against (1-32 characters)",
+				description: "Query to match username(s) and display name(s) against (1-32 characters)",
 				required: true,
 			},
 			limit: {
 				type: "number",
-				description:
-					"Max number of members to return (1-10, default 10)",
+				description: "Max number of members to return (1-10, default 10)",
 				required: false,
 			},
 		},
@@ -111,14 +101,11 @@ router.get(
 		const { guild_id } = req.params;
 
 		const limit = Number(req.query.limit) || 10;
-		if (limit > 10 || limit < 1)
-			throw new HTTPError("Limit must be between 1 and 10");
+		if (limit > 10 || limit < 1) throw new HTTPError("Limit must be between 1 and 10");
 
 		const query = String(req.query.query);
 		if (!query || query.trim().length === 0 || query.length > 32) {
-			throw new HTTPError(
-				"The query must be between 1 and 32 characters in length",
-			);
+			throw new HTTPError("The query must be between 1 and 32 characters in length");
 		}
 
 		let bans = await Ban.createQueryBuilder("ban")
@@ -212,17 +199,10 @@ router.put(
 		const { guild_id } = req.params;
 		const banned_user_id = req.params.user_id;
 
-		if (
-			req.user_id === banned_user_id &&
-			banned_user_id === req.permission?.cache.guild?.owner_id
-		)
-			throw new HTTPError(
-				"You are the guild owner, hence can't ban yourself",
-				403,
-			);
+		if (req.user_id === banned_user_id && banned_user_id === req.permission?.cache.guild?.owner_id)
+			throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
 
-		if (req.permission?.cache.guild?.owner_id === banned_user_id)
-			throw new HTTPError("You can't ban the owner", 400);
+		if (req.permission?.cache.guild?.owner_id === banned_user_id) throw new HTTPError("You can't ban the owner", 400);
 
 		const existingBan = await Ban.findOne({
 			where: { guild_id: guild_id, user_id: banned_user_id },
@@ -247,7 +227,7 @@ router.put(
 				event: "GUILD_BAN_ADD",
 				data: {
 					guild_id: guild_id,
-					user: banned_user,
+					user: banned_user.toPublicUser(),
 				},
 				guild_id: guild_id,
 			} as GuildBanAddEvent),
