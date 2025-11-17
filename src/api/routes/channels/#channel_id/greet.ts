@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Channel, emitEvent, Message, MessageCreateEvent, Permissions, Sticker } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
-import { GreetRequestSchema, MessageType } from "@spacebar/schemas"
+import { GreetRequestSchema, MessageType } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -28,7 +28,7 @@ router.post(
 	"/",
 	route({
 		requestBody: "GreetRequestSchema",
-		permission: "MANAGE_CHANNELS",
+		permission: "SEND_MESSAGES",
 		responses: {
 			200: {
 				body: "Message",
@@ -97,7 +97,7 @@ router.post(
 			} as MessageCreateEvent),
 		]);
 
-		res.send(channel);
+		res.send(message);
 	},
 );
 
