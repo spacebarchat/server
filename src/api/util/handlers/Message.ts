@@ -307,6 +307,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 			}),
 		)
 	).filter((role) => role !== null);
+
 	message.mentions = [
 		...message.mentions,
 		...(
