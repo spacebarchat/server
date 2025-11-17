@@ -21,3 +21,4 @@ tmp/
 dump/
 result
 jwt.key*
+bun.lock
