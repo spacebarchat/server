@@ -316,7 +316,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 					return User.findOne({ where: { id: x } });
 				}),
 			)
-		).filter((role) => role !== null),
+		).filter((user) => user !== null),
 	];
 
 	message.mention_everyone = mention_everyone;
