@@ -4481,7 +4481,7 @@
                             "sending_dns_records": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/sbserver/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
+                                    "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/server5/server/node_modules/mailgun.js/Types/Types/Domains/Domains\",{with:{\"resolution-mode\":\"import\"}}).DNSRecord"
                                 }
                             }
                         },
@@ -8004,7 +8004,7 @@
                                 "type": "string"
                             },
                             "template": {
-                                "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/sbserver/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/server5/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -8031,7 +8031,7 @@
                             "items": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/sbserver/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                    "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/server5/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                                 }
                             },
                             "paging": {
@@ -8081,7 +8081,7 @@
                         "type": "object",
                         "properties": {
                             "template": {
-                                "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/sbserver/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/server5/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -8169,7 +8169,7 @@
                                 "type": "string"
                             },
                             "template": {
-                                "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/sbserver/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
+                                "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/server5/server/node_modules/mailgun.js/Types/Interfaces/Domains/DomainTemplates\",{with:{\"resolution-mode\":\"import\"}}).IDomainTemplate"
                             }
                         },
                         "additionalProperties": false,
@@ -9223,7 +9223,7 @@
                 "type": "object",
                 "properties": {
                     "body": {
-                        "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/sbserver/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
+                        "$ref": "#/components/schemas/import(\"/home/mathman05/Downloads/server5/server/node_modules/mailgun.js/Types/Types/Suppressions/Suppressions\",{with:{\"resolution-mode\":\"import\"}}).SuppressionDataType"
                     },
                     "status": {
                         "type": "integer"
@@ -9917,96 +9917,86 @@
                         "type": "integer"
                     },
                     "Data": {
+                        "additionalProperties": false,
                         "type": "array",
-                        "items": {
-                            "additionalProperties": false,
-                            "type": "object",
-                            "properties": {
-                                "Author": {
-                                    "type": "string"
-                                },
-                                "Categories": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Template.Categories"
-                                    }
-                                },
-                                "Copyright": {
-                                    "type": "string"
-                                },
-                                "Description": {
-                                    "type": "string"
-                                },
-                                "EditMode": {
-                                    "$ref": "#/components/schemas/Template.EditMode"
-                                },
-                                "IsStarred": {
-                                    "type": "boolean"
-                                },
-                                "IsTextPartGenerationEnabled": {
-                                    "type": "boolean"
-                                },
-                                "Locale": {
-                                    "type": "string"
-                                },
-                                "Name": {
-                                    "type": "string"
-                                },
-                                "OwnerType": {
-                                    "$ref": "#/components/schemas/Template.OwnerType"
-                                },
-                                "Presets": {
-                                    "type": "string"
-                                },
-                                "Purposes": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Template.Purposes"
-                                    }
-                                },
-                                "ID": {
-                                    "type": "integer"
-                                },
-                                "OwnerId": {
-                                    "type": "integer"
-                                },
-                                "Previews": {
-                                    "type": "string"
-                                },
-                                "CreatedAt": {
-                                    "type": "string"
-                                },
-                                "LastUpdatedAt": {
-                                    "type": "string"
-                                },
-                                "LocaleList": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
+                        "properties": {
+                            "Author": {
+                                "type": "string"
+                            },
+                            "Categories": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Template.Categories"
                                 }
                             },
-                            "required": [
-                                "Author",
-                                "Categories",
-                                "Copyright",
-                                "CreatedAt",
-                                "Description",
-                                "EditMode",
-                                "ID",
-                                "IsStarred",
-                                "IsTextPartGenerationEnabled",
-                                "LastUpdatedAt",
-                                "Locale",
-                                "LocaleList",
-                                "Name",
-                                "OwnerId",
-                                "OwnerType",
-                                "Presets",
-                                "Previews",
-                                "Purposes"
-                            ]
-                        }
+                            "Copyright": {
+                                "type": "string"
+                            },
+                            "Description": {
+                                "type": "string"
+                            },
+                            "EditMode": {
+                                "$ref": "#/components/schemas/Template.EditMode"
+                            },
+                            "IsStarred": {
+                                "type": "boolean"
+                            },
+                            "IsTextPartGenerationEnabled": {
+                                "type": "boolean"
+                            },
+                            "Locale": {
+                                "type": "string"
+                            },
+                            "Name": {
+                                "type": "string"
+                            },
+                            "OwnerType": {
+                                "$ref": "#/components/schemas/Template.OwnerType"
+                            },
+                            "Presets": {
+                                "type": "string"
+                            },
+                            "Purposes": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Template.Purposes"
+                                }
+                            },
+                            "ID": {
+                                "type": "integer"
+                            },
+                            "OwnerId": {
+                                "type": "integer"
+                            },
+                            "Previews": {
+                                "type": "string"
+                            },
+                            "CreatedAt": {
+                                "type": "string"
+                            },
+                            "LastUpdatedAt": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "Author",
+                            "Categories",
+                            "Copyright",
+                            "CreatedAt",
+                            "Description",
+                            "EditMode",
+                            "ID",
+                            "IsStarred",
+                            "IsTextPartGenerationEnabled",
+                            "LastUpdatedAt",
+                            "Locale",
+                            "Name",
+                            "OwnerId",
+                            "OwnerType",
+                            "Presets",
+                            "Previews",
+                            "Purposes"
+                        ]
                     }
                 },
                 "required": [
@@ -12949,10 +12939,10 @@
             "StickerFormatType": {
                 "type": "number",
                 "enum": [
-                    0,
                     1,
                     2,
-                    3
+                    3,
+                    4
                 ]
             },
             "Invite": {

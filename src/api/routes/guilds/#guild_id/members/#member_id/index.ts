@@ -17,19 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	DiscordApiErrors,
-	emitEvent,
-	Emoji,
-	getPermission,
-	getRights,
-	Guild,
-	GuildMemberUpdateEvent,
-	handleFile,
-	Member,
-	Role,
-	Sticker,
-} from "@spacebar/util";
+import { DiscordApiErrors, emitEvent, Emoji, getPermission, getRights, Guild, GuildMemberUpdateEvent, handleFile, Member, Role, Sticker } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { MemberChangeSchema, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
 
@@ -60,13 +48,9 @@ router.get(
 			select: {
 				index: true,
 				// only grab public member props
-				...Object.fromEntries(
-					PublicMemberProjection.map((x) => [x, true]),
-				),
+				...Object.fromEntries(PublicMemberProjection.map((x) => [x, true])),
 				// and public user props
-				user: Object.fromEntries(
-					PublicUserProjection.map((x) => [x, true]),
-				),
+				user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
 				roles: {
 					id: true,
 				},
@@ -102,8 +86,7 @@ router.patch(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
-		const member_id =
-			req.params.member_id === "@me" ? req.user_id : req.params.member_id;
+		const member_id = req.params.member_id === "@me" ? req.user_id : req.params.member_id;
 		const body = req.body as MemberChangeSchema;
 
 		const member = await Member.findOneOrFail({
@@ -123,19 +106,12 @@ router.patch(
 			}
 		}
 
-		if (
-			("bio" in body || "avatar" in body) &&
-			req.params.member_id != "@me"
-		) {
+		if (("bio" in body || "avatar" in body) && req.params.member_id != "@me") {
 			const rights = await getRights(req.user_id);
 			rights.hasThrow("MANAGE_USERS");
 		}
 
-		if (body.avatar)
-			body.avatar = await handleFile(
-				`/guilds/${guild_id}/users/${member_id}/avatars`,
-				body.avatar as string,
-			);
+		if (body.avatar) body.avatar = await handleFile(`/guilds/${guild_id}/users/${member_id}/avatars`, body.avatar as string);
 
 		member.assign(body);
 
@@ -201,6 +177,10 @@ router.put(
 		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
 		});
+
+		if (!guild.features.includes("DISCOVERABLE")) {
+			throw DiscordApiErrors.UNKNOWN_GUILD;
+		}
 
 		const emoji = await Emoji.find({
 			where: { guild_id: guild_id },
