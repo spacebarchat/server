@@ -300,8 +300,23 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	/*message.mention_channels = mention_channel_ids.map((x) =>
 		Channel.create({ id: x }),
 	);*/
-	message.mention_roles = mention_role_ids.map((x) => Role.create({ id: x }));
-	message.mentions = [...message.mentions, ...mention_user_ids.map((x) => User.create({ id: x }))];
+	message.mention_roles = (
+		await Promise.all(
+			mention_role_ids.map((x) => {
+				return Role.findOne({ where: { id: x } });
+			}),
+		)
+	).filter((role) => role !== null);
+	message.mentions = [
+		...message.mentions,
+		...(
+			await Promise.all(
+				mention_user_ids.map((x) => {
+					return User.findOne({ where: { id: x } });
+				}),
+			)
+		).filter((role) => role !== null),
+	];
 
 	message.mention_everyone = mention_everyone;
 
