@@ -157,7 +157,7 @@ export class User extends BaseClass {
 	@OneToOne(() => UserSettings, {
 		cascade: true,
 		orphanedRowAction: "delete",
-		nullable: true
+		nullable: true,
 	})
 	@JoinColumn()
 	settings?: UserSettings;
@@ -257,6 +257,7 @@ export class User extends BaseClass {
 		password,
 		id,
 		req,
+		bot,
 	}: {
 		username: string;
 		password?: string;
@@ -264,6 +265,7 @@ export class User extends BaseClass {
 		date_of_birth?: Date; // "2000-04-03"
 		id?: string;
 		req?: Request;
+		bot?: boolean;
 	}) {
 		// trim special uf8 control characters -> Backspace, Newline, ...
 		username = trimSpecial(username);
@@ -306,6 +308,7 @@ export class User extends BaseClass {
 			premium_type: Config.get().defaults.user.premiumType ?? 0,
 			verified: Config.get().defaults.user.verified ?? true,
 			created_at: new Date(),
+			bot: !!bot,
 		});
 
 		user.validate();
@@ -319,6 +322,12 @@ export class User extends BaseClass {
 		}
 
 		setImmediate(async () => {
+			if (bot) {
+				const { guild } = Config.get();
+				if (!guild.autoJoin.bots) {
+					return;
+				}
+			}
 			if (Config.get().guild.autoJoin.enabled) {
 				for (const guild of Config.get().guild.autoJoin.guilds || []) {
 					await Member.addToGuild(user.id, guild).catch((e) => console.error("[Autojoin]", e));
