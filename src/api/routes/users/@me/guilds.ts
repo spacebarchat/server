@@ -77,7 +77,7 @@ router.delete(
 		}
 
 		await Promise.all([
-			Member.delete({ id: req.user_id, guild_id: guild_id }),
+			Member.removeFromGuild(req.user_id, guild_id),
 			emitEvent({
 				event: "GUILD_DELETE",
 				data: {

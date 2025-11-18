@@ -21871,8 +21871,7 @@
                         },
                         "additionalProperties": false,
                         "required": [
-                            "primary_color",
-                            "secondary_color"
+                            "primary_color"
                         ]
                     }
                 }

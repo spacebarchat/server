@@ -17,12 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	emitEvent,
-	Member,
-	User,
-	UserDeleteEvent,
-} from "@spacebar/util";
+import { emitEvent, Member, User, UserDeleteEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { PrivateUserProjection } from "@spacebar/schemas";
 
@@ -47,10 +42,8 @@ router.post(
 			where: { id: req.params.user_id },
 			select: [...PrivateUserProjection, "data"],
 		});
-		await Promise.all([
-			Member.delete({ id: req.params.user_id }),
-			User.delete({ id: req.params.user_id }),
-		]);
+		const members = await Member.find({ where: { id: req.params.user_id } });
+		await Promise.all([...members.map((member) => Member.removeFromGuild(member.id, member.guild_id)), User.delete({ id: req.params.user_id })]);
 
 		// TODO: respect intents as USER_DELETE has potential to cause privacy issues
 		await emitEvent({
