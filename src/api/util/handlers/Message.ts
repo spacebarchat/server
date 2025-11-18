@@ -349,7 +349,7 @@ export async function postHandleMessage(message: Message) {
 	}
 
 	// Filter out embeds that could be links, start from scratch
-	data.embeds = data.embeds.filter((embed) => embed.type !== "rich");
+	data.embeds = data.embeds.filter((embed) => embed.type === "rich");
 
 	const seenNormalizedUrls = new Set<string>();
 	const uniqueLinks: string[] = [];
