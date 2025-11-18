@@ -7,6 +7,7 @@ export async function createAppBotUser(app: Application, req: Request) {
 		password: undefined,
 		id: app.id,
 		req,
+		bot: true,
 	});
 
 	user.id = app.id;
