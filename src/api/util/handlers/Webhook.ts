@@ -1,24 +1,15 @@
 import { handleMessage, postHandleMessage } from "@spacebar/api";
-import {
-	Attachment,
-	Config,
-	DiscordApiErrors,
-	emitEvent,
-	FieldErrors,
-	Message,
-	MessageCreateEvent,
-	uploadFile,
-	ValidateName,
-	Webhook,
-} from "@spacebar/util";
+import { Attachment, Config, DiscordApiErrors, emitEvent, FieldErrors, Message, MessageCreateEvent, uploadFile, ValidateName, Webhook } from "@spacebar/util";
 import { Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
-import { WebhookExecuteSchema } from "@spacebar/schemas"
+import { WebhookExecuteSchema } from "@spacebar/schemas";
 
 export const executeWebhook = async (req: Request, res: Response) => {
 	const { wait } = req.query;
-	if (!wait) return res.status(204).send();
+	if (!wait) {
+		res.status(204).send();
+	}
 
 	const { webhook_id, token } = req.params;
 
@@ -26,13 +17,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
 	const attachments: Attachment[] = [];
 
 	// ensure one of content, embeds, components, or file is present
-	if (
-		!body.content &&
-		!body.embeds &&
-		!body.components &&
-		!body.file &&
-		!body.attachments
-	) {
+	if (!body.content && !body.embeds && !body.components && !body.file && !body.attachments) {
 		throw DiscordApiErrors.CANNOT_SEND_EMPTY_MESSAGE;
 	}
 
@@ -47,9 +32,11 @@ export const executeWebhook = async (req: Request, res: Response) => {
 	const blockedEquals = ["everyone", "here"];
 	for (const word of blockedEquals) {
 		if (body.username?.toLowerCase() === word) {
-			return res.status(400).json({
-				username: [`Username cannot be "${word}"`],
-			});
+			if (wait)
+				res.status(400).json({
+					username: [`Username cannot be "${word}"`],
+				});
+			return;
 		}
 	}
 
@@ -65,10 +52,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
 	}
 
 	if (!webhook.channel.isWritable()) {
-		throw new HTTPError(
-			`Cannot send messages to channel of type ${webhook.channel.type}`,
-			400,
-		);
+		throw new HTTPError(`Cannot send messages to channel of type ${webhook.channel.type}`, 400);
 	}
 
 	if (webhook.token !== token) {
@@ -81,11 +65,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
 		const count = await Message.count({
 			where: {
 				channel_id: webhook.channel_id,
-				timestamp: MoreThan(
-					new Date(
-						Date.now() - limits.absoluteRate.sendMessage.window,
-					),
-				),
+				timestamp: MoreThan(new Date(Date.now() - limits.absoluteRate.sendMessage.window)),
 			},
 		});
 
@@ -101,15 +81,11 @@ export const executeWebhook = async (req: Request, res: Response) => {
 	const files = (req.files as Express.Multer.File[]) ?? [];
 	for (const currFile of files) {
 		try {
-			const file = await uploadFile(
-				`/attachments/${webhook.channel.id}`,
-				currFile,
-			);
-			attachments.push(
-				Attachment.create({ ...file, proxy_url: file.url }),
-			);
+			const file = await uploadFile(`/attachments/${webhook.channel.id}`, currFile);
+			attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
 		} catch (error) {
-			return res.status(400).json({ message: error?.toString() });
+			if (wait) res.status(400).json({ message: error?.toString() });
+			return;
 		}
 	}
 
@@ -146,9 +122,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
 	]);
 
 	// no await as it shouldnt block the message send function and silently catch error
-	postHandleMessage(message).catch((e) =>
-		console.error("[Message] post-message handler failed", e),
-	);
-
-	return res.json(message);
+	postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));
+	if (wait) res.json(message);
+	return;
 };
