@@ -349,7 +349,7 @@ export async function postHandleMessage(message: Message) {
 	}
 
 	// Filter out embeds that could be links, start from scratch
-	data.embeds = data.embeds.filter((embed) => embed.type === "rich");
+	data.embeds = data.embeds.filter((embed) => embed.type !== "rich");
 
 	const seenNormalizedUrls = new Set<string>();
 	const uniqueLinks: string[] = [];
@@ -374,10 +374,7 @@ export async function postHandleMessage(message: Message) {
 
 	if (uniqueLinks.length === 0) {
 		// No valid unique links found, update message to remove old embeds
-		data.embeds = data.embeds.filter((embed) => {
-			const hasUrl = !!embed.url;
-			return !hasUrl;
-		});
+		data.embeds = data.embeds.filter((embed) => embed.type !== "rich");
 		const author = data.author?.toPublicUser();
 		const event = {
 			event: "MESSAGE_UPDATE",
