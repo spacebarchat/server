@@ -358,7 +358,7 @@ export class Member extends BaseClassWithoutId {
 					hide_muted_channels: false,
 					notify_highlights: 0,
 					channel_overrides: {},
-					message_notifications: 0,
+					message_notifications: guild.default_message_notifications,
 					mobile_push: true,
 					muted: false,
 					suppress_everyone: false,
@@ -397,6 +397,9 @@ export class Member extends BaseClassWithoutId {
 		]);
 
 		if (guild.system_channel_id) {
+			const channel = await Channel.findOneOrFail({
+				where: { id: guild.system_channel_id },
+			});
 			// Send a welcome message
 			const message = Message.create({
 				type: 7,
@@ -414,6 +417,9 @@ export class Member extends BaseClassWithoutId {
 				mention_roles: [],
 				mention_everyone: false,
 			});
+
+			channel.last_message_id = message.id;
+
 			await Promise.all([
 				message.save(),
 				emitEvent({
@@ -421,6 +427,7 @@ export class Member extends BaseClassWithoutId {
 					channel_id: message.channel_id,
 					data: message,
 				} as MessageCreateEvent),
+				channel.save(),
 			]);
 		}
 	}
