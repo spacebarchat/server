@@ -358,7 +358,7 @@ export class Member extends BaseClassWithoutId {
 					hide_muted_channels: false,
 					notify_highlights: 0,
 					channel_overrides: {},
-					message_notifications: 0,
+					message_notifications: guild.default_message_notifications,
 					mobile_push: true,
 					muted: false,
 					suppress_everyone: false,
