@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Channel, emitEvent, Message, MessageCreateEvent, Permissions, Sticker } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
-import { GreetRequestSchema, MessageType } from "@spacebar/schemas"
+import { GreetRequestSchema, MessageType } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -88,6 +88,8 @@ router.post(
 			sticker_items: randomSticker ? [{ id: randomSticker.id, name: randomSticker.name, format_type: randomSticker.format_type }] : [],
 		});
 
+		channel.last_message_id = message.id;
+
 		await Promise.all([
 			message.save(),
 			emitEvent({
@@ -95,6 +97,7 @@ router.post(
 				data: message,
 				channel_id,
 			} as MessageCreateEvent),
+			channel.save(),
 		]);
 
 		res.send(channel);
