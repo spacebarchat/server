@@ -178,7 +178,7 @@ export class Member extends BaseClassWithoutId {
 				id: user_id,
 				guild_id,
 			}),
-			Guild.decrement({ id: guild_id }, "member_count", -1),
+			Guild.decrement({ id: guild_id }, "member_count", 1),
 
 			emitEvent({
 				event: "GUILD_DELETE",
