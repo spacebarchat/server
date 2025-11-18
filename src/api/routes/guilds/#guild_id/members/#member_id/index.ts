@@ -168,6 +168,7 @@ router.put(
 		if (member_id === "@me") {
 			member_id = req.user_id;
 			rights.hasThrow("JOIN_GUILDS");
+			if (req.user_bot) throw DiscordApiErrors.BOT_PROHIBITED_ENDPOINT;
 		} else {
 			// TODO: check oauth2 scope
 
