@@ -88,6 +88,8 @@ router.post(
 			sticker_items: randomSticker ? [{ id: randomSticker.id, name: randomSticker.name, format_type: randomSticker.format_type }] : [],
 		});
 
+		channel.last_message_id = message.id;
+
 		await Promise.all([
 			message.save(),
 			emitEvent({
@@ -95,6 +97,7 @@ router.post(
 				data: message,
 				channel_id,
 			} as MessageCreateEvent),
+			channel.save(),
 		]);
 
 		res.send(message);
