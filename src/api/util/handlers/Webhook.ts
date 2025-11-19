@@ -6,44 +6,17 @@ import { MoreThan } from "typeorm";
 import { WebhookExecuteSchema } from "@spacebar/schemas";
 
 export const executeWebhook = async (req: Request, res: Response) => {
-	const { wait } = req.query;
-
-	if (!wait) {
-		res.status(204).send();
-	}
-
-	const { webhook_id, token } = req.params;
-
 	const body = req.body as WebhookExecuteSchema;
-	const attachments: Attachment[] = [];
 
-	// ensure one of content, embeds, components, or file is present
-	if (!body.content && !body.embeds && !body.components && !body.file && !body.attachments) {
-		if (wait) {
-			throw DiscordApiErrors.CANNOT_SEND_EMPTY_MESSAGE;
-		} else {
-			return;
-		}
-	}
-
-	// block username from containing certain words
-	// TODO: configurable additions
 	if (body.username) {
 		ValidateName(body.username);
 	}
 
-	// block username from being certain words
-	// TODO: configurable additions
-	const blockedEquals = ["everyone", "here"];
-	for (const word of blockedEquals) {
-		if (body.username?.toLowerCase() === word) {
-			if (wait)
-				res.status(400).json({
-					username: [`Username cannot be "${word}"`],
-				});
-			return;
-		}
+	// ensure one of content, embeds, components, or file is present
+	if (!body.content && !body.embeds && !body.components && !body.file && !body.attachments) {
+		throw DiscordApiErrors.CANNOT_SEND_EMPTY_MESSAGE;
 	}
+	const { webhook_id, token } = req.params;
 
 	const webhook = await Webhook.findOne({
 		where: {
@@ -53,24 +26,24 @@ export const executeWebhook = async (req: Request, res: Response) => {
 	});
 
 	if (!webhook) {
-		if (wait) {
-			throw DiscordApiErrors.UNKNOWN_WEBHOOK;
-		} else {
-			return;
-		}
+		throw DiscordApiErrors.UNKNOWN_WEBHOOK;
 	}
+
+	if (webhook.token !== token) {
+		throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
+	}
+
+	const { wait } = req.query;
+
+	if (!wait) {
+		res.status(204).send();
+	}
+
+	const attachments: Attachment[] = [];
 
 	if (!webhook.channel.isWritable()) {
 		if (wait) {
 			throw new HTTPError(`Cannot send messages to channel of type ${webhook.channel.type}`, 400);
-		} else {
-			return;
-		}
-	}
-
-	if (webhook.token !== token) {
-		if (wait) {
-			throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
 		} else {
 			return;
 		}
