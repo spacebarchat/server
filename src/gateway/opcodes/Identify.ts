@@ -49,7 +49,8 @@ import {
 	Emoji,
 	Role,
 	Sticker,
-	VoiceState, UserSettingsProtos,
+	VoiceState,
+	UserSettingsProtos,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { In } from "typeorm";
@@ -261,7 +262,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		timePromise(() =>
 			UserSettingsProtos.findOne({
 				where: { user_id: this.user_id },
-			})
+			}),
 		),
 		timePromise(() =>
 			Channel.find({
@@ -342,8 +343,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	});
 
 	for (const call of mergeMemberGuildsTrace.calls!) {
-		if (typeof call !== "string")
-			mergeMemberGuildsTrace.micros += (call as { micros: number }).micros;
+		if (typeof call !== "string") mergeMemberGuildsTrace.micros += (call as { micros: number }).micros;
 	}
 
 	const totalQueryTime = taskSw.getElapsedAndReset();
@@ -363,9 +363,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			{
 				...x,
 				// filter out @everyone role
-				roles: x.roles
-					.filter((r) => r.id !== x.guild.id)
-					.map((x) => x.id),
+				roles: x.roles.filter((r) => r.id !== x.guild.id).map((x) => x.id),
 
 				// add back user, which we don't fetch from db
 				// TODO: For guild profiles, this may need to be changed.
@@ -461,6 +459,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				last_message_id: channel.last_message_id,
 				type: channel.type,
 				recipients: channelUsers || [],
+				icon: channel.icon,
+				name: channel.name,
 				is_spam: false, // TODO
 			};
 		});
@@ -621,7 +621,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					}
 				}
 
-				val.calls.push("mergeMemberGuildsTrace", mergeMemberGuildsTrace)
+				val.calls.push("mergeMemberGuildsTrace", mergeMemberGuildsTrace);
 			}
 		}
 	}
