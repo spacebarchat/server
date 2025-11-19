@@ -91,6 +91,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		mentions: [],
 		components: opts.components ?? undefined, // Fix Discord-Go?
 	});
+	const ephermal = (message.flags & (1 << 6)) !== 0;
 
 	if (cloudAttachments && cloudAttachments.length > 0) {
 		console.log("[Message] Processing attachments for message", message.id, ":", message.attachments);
@@ -341,7 +342,17 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 			}),
 		);
 	}
-	if ((!!message.content?.match(EVERYONE_MENTION) && permission?.has("MENTION_EVERYONE")) || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
+	if (ephermal) {
+		const id = message.interaction_metadata?.user_id;
+		if (id) {
+			let pinged = mention_everyone || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM;
+			if (!pinged) pinged = !!message.mentions.find((user) => user.id === id);
+			if (!pinged) pinged = !!(await Member.find({ where: { id, roles: Or(...message.mention_roles.map(({ id }) => Equal(id))) } }));
+			if (pinged) {
+				//stuff
+			}
+		}
+	} else if ((!!message.content?.match(EVERYONE_MENTION) && permission?.has("MENTION_EVERYONE")) || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
 		if (channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
 			if (channel.recipients) {
 				await fillInMissingIDs(channel.recipients.map(({ user_id }) => user_id));
