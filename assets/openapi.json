@@ -10980,6 +10980,9 @@
                     "user": {
                         "$ref": "#/components/schemas/PublicUser"
                     },
+                    "user_id": {
+                        "type": "string"
+                    },
                     "authorizing_integration_owners": {
                         "type": "object",
                         "properties": {},
