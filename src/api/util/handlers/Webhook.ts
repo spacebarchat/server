@@ -34,7 +34,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
 		throw DiscordApiErrors.CANNOT_SEND_EMPTY_MESSAGE;
 	}
 
-	const { wait } = req.query;
+	const wait = req.query.wait === "true";
 
 	if (!wait) {
 		res.status(204).send();
