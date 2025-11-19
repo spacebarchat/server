@@ -7,6 +7,7 @@ import { WebhookExecuteSchema } from "@spacebar/schemas";
 
 export const executeWebhook = async (req: Request, res: Response) => {
 	const { wait } = req.query;
+
 	if (!wait) {
 		res.status(204).send();
 	}
@@ -18,7 +19,11 @@ export const executeWebhook = async (req: Request, res: Response) => {
 
 	// ensure one of content, embeds, components, or file is present
 	if (!body.content && !body.embeds && !body.components && !body.file && !body.attachments) {
-		throw DiscordApiErrors.CANNOT_SEND_EMPTY_MESSAGE;
+		if (wait) {
+			throw DiscordApiErrors.CANNOT_SEND_EMPTY_MESSAGE;
+		} else {
+			return;
+		}
 	}
 
 	// block username from containing certain words
@@ -46,17 +51,30 @@ export const executeWebhook = async (req: Request, res: Response) => {
 		},
 		relations: ["channel", "guild", "application"],
 	});
+	console.log("in here?", wait);
 
 	if (!webhook) {
-		throw DiscordApiErrors.UNKNOWN_WEBHOOK;
+		if (wait) {
+			throw DiscordApiErrors.UNKNOWN_WEBHOOK;
+		} else {
+			return;
+		}
 	}
 
 	if (!webhook.channel.isWritable()) {
-		throw new HTTPError(`Cannot send messages to channel of type ${webhook.channel.type}`, 400);
+		if (wait) {
+			throw new HTTPError(`Cannot send messages to channel of type ${webhook.channel.type}`, 400);
+		} else {
+			return;
+		}
 	}
 
 	if (webhook.token !== token) {
-		throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
+		if (wait) {
+			throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
+		} else {
+			return;
+		}
 	}
 
 	// TODO: creating messages by users checks if the user can bypass rate limits, we cant do that on webhooks, but maybe we could check the application if there is one?
@@ -70,12 +88,16 @@ export const executeWebhook = async (req: Request, res: Response) => {
 		});
 
 		if (count >= limits.absoluteRate.sendMessage.limit)
-			throw FieldErrors({
-				channel_id: {
-					code: "TOO_MANY_MESSAGES",
-					message: req.t("common:toomany.MESSAGE"),
-				},
-			});
+			if (wait) {
+				throw FieldErrors({
+					channel_id: {
+						code: "TOO_MANY_MESSAGES",
+						message: req.t("common:toomany.MESSAGE"),
+					},
+				});
+			} else {
+				return;
+			}
 	}
 
 	const files = (req.files as Express.Multer.File[]) ?? [];
