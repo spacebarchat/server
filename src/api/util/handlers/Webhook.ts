@@ -51,7 +51,6 @@ export const executeWebhook = async (req: Request, res: Response) => {
 		},
 		relations: ["channel", "guild", "application"],
 	});
-	console.log("in here?", wait);
 
 	if (!webhook) {
 		if (wait) {
