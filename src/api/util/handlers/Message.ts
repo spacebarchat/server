@@ -49,6 +49,7 @@ import fetch from "node-fetch-commonjs";
 import { CloudAttachment } from "../../../util/entities/CloudAttachment";
 import { ReadState } from "../../../util/entities/ReadState";
 import { Member } from "../../../util/entities/Member";
+import { Session } from "../../../util/entities/Session";
 import { ChannelType } from "@spacebar/schemas";
 import { Embed, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageType, Reaction } from "@spacebar/schemas";
 import { EmbedType } from "../../../schemas/api/messages/Embeds";
@@ -324,12 +325,35 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	];
 
 	message.mention_everyone = mention_everyone;
-
-	if (mention_everyone || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
+	async function fillInMissingIDs(ids: string[]) {
+		const states = await ReadState.findBy({
+			user_id: Or(...ids.map((id) => Equal(id))),
+			channel_id: channel.id,
+		});
+		const users = new Set(ids);
+		states.forEach((state) => users.delete(state.user_id));
+		if (!users.size) {
+			return;
+		}
+		return Promise.all(
+			[...users].map((user_id) => {
+				return ReadState.create({ user_id, channel_id: channel.id }).save();
+			}),
+		);
+	}
+	if ((!!message.content?.match(EVERYONE_MENTION) && permission?.has("MENTION_EVERYONE")) || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
+		if (channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
+			if (channel.recipients) {
+				await fillInMissingIDs(channel.recipients.map(({ user_id }) => user_id));
+			}
+		} else {
+			console.log(channel.guild_id);
+			await fillInMissingIDs((await Member.find({ where: { guild_id: channel.guild_id } })).map(({ id }) => id));
+		}
 		const repository = ReadState.getRepository();
 		const condition = { channel_id: channel.id };
-		repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
-		repository.increment(condition, "mention_count", 1);
+		await repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
+		await repository.increment(condition, "mention_count", 1);
 	} else {
 		const users = new Set<string>([
 			...(message.mention_roles.length
@@ -344,11 +368,19 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 			).map((member) => member.id),
 			...message.mentions.map((user) => user.id),
 		]);
+		if (!!message.content?.match(HERE_MENTION) && permission?.has("MENTION_EVERYONE")) {
+			const ids = (await Member.find({ where: { guild_id: channel.guild_id } })).map(({ id }) => id);
+			(await Session.find({ where: { user_id: Or(...ids.map((id) => Equal(id))) } })).forEach(({ user_id }) => users.add(user_id));
+		}
+		if (users.size) {
+			const repository = ReadState.getRepository();
+			const condition = { user_id: Or(...[...users].map((id) => Equal(id))), channel_id: channel.id };
 
-		const repository = ReadState.getRepository();
-		const condition = { user_id: Or(...[...users].map((id) => Equal(id))), channel_id: channel.id };
-		repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
-		repository.increment(condition, "mention_count", 1);
+			await fillInMissingIDs([...users]);
+
+			await repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
+			await repository.increment(condition, "mention_count", 1);
+		}
 	}
 
 	// TODO: check and put it all in the body
