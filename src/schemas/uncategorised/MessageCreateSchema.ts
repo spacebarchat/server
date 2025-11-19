@@ -89,6 +89,7 @@ interface MessageInteractionSchema {
 	command_type?: ApplicationCommandType;
 	ephemerality_reason?: number;
 	user?: PublicUser; // It has to be optional cause LSP gives an errors for some reason
+	user_id?: string;
 	authorizing_integration_owners?: object; // It has to be optional cause LSP gives an errors for some reason
 	original_response_message_id?: Snowflake;
 	interacted_message_id?: Snowflake;

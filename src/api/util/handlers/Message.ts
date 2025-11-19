@@ -501,6 +501,7 @@ export async function postHandleMessage(message: Message) {
 			console.error(`[Embeds] Error while generating embed for ${link}`, e);
 		}
 	}
+	const ephermal = (message.flags & (1 << 6)) !== 0;
 
 	await Promise.all([
 		emitEvent({
@@ -508,7 +509,7 @@ export async function postHandleMessage(message: Message) {
 			channel_id: message.channel_id,
 			data,
 		} as MessageUpdateEvent),
-		Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: data.embeds }),
+		ephermal ? null : Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: data.embeds }),
 		...cachePromises,
 	]);
 }
@@ -516,11 +517,12 @@ export async function postHandleMessage(message: Message) {
 export async function sendMessage(opts: MessageOptions) {
 	const message = await handleMessage({ ...opts, timestamp: new Date() });
 
+	const ephermal = (message.flags & (1 << 6)) !== 0;
 	await Promise.all([
-		Message.insert(message),
+		ephermal ? null : Message.insert(message),
 		emitEvent({
 			event: "MESSAGE_CREATE",
-			channel_id: opts.channel_id,
+			...(ephermal ? { user_id: message.interaction_metadata?.user_id } : { channel_id: message.channel_id }),
 			data: message.toJSON(),
 		} as MessageCreateEvent),
 	]);

@@ -20,6 +20,7 @@ import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, Messag
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { emitEvent, FieldErrors, InteractionSuccessEvent, Message, MessageCreateEvent, pendingInteractions, User } from "@spacebar/util";
+import { sendMessage } from "../../../../util/handlers/Message";
 
 const router = Router({ mergeParams: true });
 
@@ -95,11 +96,11 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 			// TODO
 			break;
 		case InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE: {
-			const message = await Message.createWithDefaults({
+			const user = await User.findOneOrFail({ where: { id: interaction.userId } });
+			await sendMessage({
 				type: MessageType.APPLICATION_COMMAND,
 				timestamp: new Date(),
 				application_id: interaction.applicationId,
-				guild_id: interaction.guildId,
 				channel_id: interaction.channelId,
 				author_id: interaction.applicationId,
 				content: body.data.content,
@@ -115,11 +116,13 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 					id: interactionId,
 					name: interaction.commandName,
 					type: 2,
+					user,
 				},
 				interaction_metadata: {
 					id: interactionId,
 					type: 2,
 					user_id: interaction.userId,
+					user,
 					authorizing_integration_owners: {
 						"1": interaction.userId,
 					},
@@ -128,53 +131,6 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 				},
 			});
 
-			const user = await User.findOneOrFail({ where: { id: interaction.userId } });
-
-			// Don't save messages with ephemeral flag (64) set
-			if ((message.flags & (1 << 6)) == 0) {
-				message.save();
-			}
-
-			emitEvent({
-				event: "MESSAGE_CREATE",
-				...((message.flags & (1 << 6)) === 0 ? { channel_id: interaction.channelId } : { user_id: interaction.userId }),
-				data: {
-					application_id: interaction.applicationId,
-					attachments: message.attachments,
-					author: message.author?.toPublicUser(),
-					channel_id: message.channel_id,
-					channel_type: 0,
-					components: message.components,
-					content: message.content,
-					edited_timestamp: null,
-					embeds: message.embeds,
-					flags: message.flags,
-					id: message.id,
-					interaction: {
-						id: interactionId,
-						name: interaction.commandName,
-						type: interaction.type,
-						user,
-					},
-					interaction_metadata: {
-						authorizing_integration_owners: { "1": interaction.userId },
-						command_type: interaction.commandType,
-						id: interactionId,
-						name: interaction.commandName,
-						type: interaction.type,
-						user,
-					},
-					mention_everyone: false,
-					mentions: [],
-					nonce: interaction.nonce,
-					pinned: false,
-					position: 0,
-					timestamp: message.timestamp,
-					tss: message.tts,
-					type: message.type,
-					webhook_id: interaction.applicationId,
-				} as MessageCreateSchema,
-			} as MessageCreateEvent);
 			break;
 		}
 		case InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE:

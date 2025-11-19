@@ -98233,6 +98233,9 @@
                     "user": {
                         "$ref": "#/definitions/PublicUser"
                     },
+                    "user_id": {
+                        "type": "string"
+                    },
                     "authorizing_integration_owners": {
                         "type": "object",
                         "properties": {},
@@ -98534,6 +98537,9 @@
                     },
                     "user": {
                         "$ref": "#/definitions/PublicUser"
+                    },
+                    "user_id": {
+                        "type": "string"
                     },
                     "authorizing_integration_owners": {
                         "type": "object",
@@ -99269,6 +99275,9 @@
                     },
                     "user": {
                         "$ref": "#/definitions/PublicUser"
+                    },
+                    "user_id": {
+                        "type": "string"
                     },
                     "authorizing_integration_owners": {
                         "type": "object",
