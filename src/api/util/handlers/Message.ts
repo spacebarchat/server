@@ -44,9 +44,12 @@ import {
 	normalizeUrl,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
-import { In } from "typeorm";
+import { In, Or, Equal, IsNull } from "typeorm";
 import fetch from "node-fetch-commonjs";
 import { CloudAttachment } from "../../../util/entities/CloudAttachment";
+import { ReadState } from "../../../util/entities/ReadState";
+import { Member } from "../../../util/entities/Member";
+import { ChannelType } from "@spacebar/schemas";
 import { Embed, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageType, Reaction } from "@spacebar/schemas";
 import { EmbedType } from "../../../schemas/api/messages/Embeds";
 const allow_empty = false;
@@ -321,6 +324,32 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	];
 
 	message.mention_everyone = mention_everyone;
+
+	if (mention_everyone || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
+		const repository = ReadState.getRepository();
+		const condition = { channel_id: channel.id };
+		repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
+		repository.increment(condition, "mention_count", 1);
+	} else {
+		const users = new Set<string>([
+			...(message.mention_roles.length
+				? await Member.find({
+						where: [
+							...message.mention_roles.map((role) => {
+								return { roles: { id: role.id } };
+							}),
+						],
+					})
+				: []
+			).map((member) => member.id),
+			...message.mentions.map((user) => user.id),
+		]);
+
+		const repository = ReadState.getRepository();
+		const condition = { user_id: Or(...[...users].map((id) => Equal(id))), channel_id: channel.id };
+		repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
+		repository.increment(condition, "mention_count", 1);
+	}
 
 	// TODO: check and put it all in the body
 
