@@ -351,8 +351,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		}
 		const repository = ReadState.getRepository();
 		const condition = { channel_id: channel.id };
-		repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
-		repository.increment(condition, "mention_count", 1);
+		await repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
+		await repository.increment(condition, "mention_count", 1);
 	} else {
 		const users = new Set<string>([
 			...(message.mention_roles.length
