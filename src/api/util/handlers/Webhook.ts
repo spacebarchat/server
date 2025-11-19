@@ -8,14 +8,6 @@ import { WebhookExecuteSchema } from "@spacebar/schemas";
 export const executeWebhook = async (req: Request, res: Response) => {
 	const body = req.body as WebhookExecuteSchema;
 
-	if (body.username) {
-		ValidateName(body.username);
-	}
-
-	// ensure one of content, embeds, components, or file is present
-	if (!body.content && !body.embeds && !body.components && !body.file && !body.attachments) {
-		throw DiscordApiErrors.CANNOT_SEND_EMPTY_MESSAGE;
-	}
 	const { webhook_id, token } = req.params;
 
 	const webhook = await Webhook.findOne({
@@ -31,6 +23,15 @@ export const executeWebhook = async (req: Request, res: Response) => {
 
 	if (webhook.token !== token) {
 		throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
+	}
+
+	if (body.username) {
+		ValidateName(body.username);
+	}
+
+	// ensure one of content, embeds, components, or file is present
+	if (!body.content && !body.embeds && !body.components && !body.file && !body.attachments) {
+		throw DiscordApiErrors.CANNOT_SEND_EMPTY_MESSAGE;
 	}
 
 	const { wait } = req.query;
