@@ -324,7 +324,7 @@ router.post(
 		}
 
 		// handle blocked users in dms
-		if(channel.recipients?.length == 2) {
+		if (channel.recipients?.length == 2) {
 			const otherUser = channel.recipients.find((r) => r.user_id != req.user_id)?.user;
 			if (otherUser) {
 				const relationship = await Relationship.findOne({
@@ -335,11 +335,10 @@ router.post(
 				});
 
 				if (relationship?.type === RelationshipType.blocked) {
-				throw DiscordApiErrors.CANNOT_MESSAGE_USER;
+					throw DiscordApiErrors.CANNOT_MESSAGE_USER;
 				}
 			}
 		}
-
 
 		if (body.nonce) {
 			const existing = await Message.findOne({
@@ -499,6 +498,8 @@ router.post(
 		});
 		if (!read_state) read_state = ReadState.create({ user_id: req.user_id, channel_id });
 		read_state.last_message_id = message.id;
+		//It's a little more complicated than this but this'll do
+		read_state.mention_count = 0;
 
 		await Promise.all([
 			read_state.save(),
