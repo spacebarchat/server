@@ -103,6 +103,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 				application_id: interaction.applicationId,
 				channel_id: interaction.channelId,
 				author_id: interaction.applicationId,
+				nonce: interaction.nonce,
 				content: body.data.content,
 				components: body.data.components || [],
 				tts: body.data.tts,
