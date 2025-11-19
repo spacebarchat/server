@@ -48,6 +48,7 @@ import { In } from "typeorm";
 import fetch from "node-fetch-commonjs";
 import { CloudAttachment } from "../../../util/entities/CloudAttachment";
 import { Embed, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageType, Reaction } from "@spacebar/schemas";
+import { EmbedType } from "../../../schemas/api/messages/Embeds";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
@@ -348,6 +349,11 @@ export async function postHandleMessage(message: Message) {
 		}
 	}
 
+	data.embeds.forEach((embed) => {
+		if (!embed.type) {
+			embed.type = EmbedType.rich;
+		}
+	});
 	// Filter out embeds that could be links, start from scratch
 	data.embeds = data.embeds.filter((embed) => embed.type === "rich");
 
@@ -374,10 +380,7 @@ export async function postHandleMessage(message: Message) {
 
 	if (uniqueLinks.length === 0) {
 		// No valid unique links found, update message to remove old embeds
-		data.embeds = data.embeds.filter((embed) => {
-			const hasUrl = !!embed.url;
-			return !hasUrl;
-		});
+		data.embeds = data.embeds.filter((embed) => embed.type === "rich");
 		const author = data.author?.toPublicUser();
 		const event = {
 			event: "MESSAGE_UPDATE",
