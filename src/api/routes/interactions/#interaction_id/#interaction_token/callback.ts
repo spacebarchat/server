@@ -97,8 +97,8 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 			// TODO
 			break;
 		case InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE: {
-			/*
 			const user = await User.findOneOrFail({ where: { id: interaction.userId } });
+			/*
 			const files = (req.files as Express.Multer.File[]) ?? [];
 			//I don't think traditional attachments are allowed anyways
 			const attachments: (Attachment | MessageCreateAttachment | MessageCreateCloudAttachment)[] = [];
@@ -122,7 +122,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 				components: body.data.components || [],
 				tts: body.data.tts,
 				embeds: body.data.embeds || [],
-				attachments,
+				attachments: body.data.attachments,
 				poll: body.data.poll,
 				flags: body.data.flags,
 				reactions: [],
