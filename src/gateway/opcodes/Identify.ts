@@ -461,7 +461,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				icon: channel.icon,
 				name: channel.name,
 				is_spam: false, // TODO
-				owner_id: channel.owner_id,
+				owner_id: channel.owner_id || undefined,
 			};
 		});
 	const generateDmChannelsTime = taskSw.getElapsedAndReset();
