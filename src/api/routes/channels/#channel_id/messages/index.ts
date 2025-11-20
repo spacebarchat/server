@@ -178,7 +178,7 @@ router.get(
 			messages = await Message.find(query);
 		}
 
-		const endpoint = Config.get().cdn.endpointPublic;
+		const endpoint = Config.get().cdn.endpointPublic || "http://localhost:3001";
 
 		const ret = messages.map((x: Message) => {
 			x = x.toJSON();

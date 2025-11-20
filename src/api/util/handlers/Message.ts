@@ -102,12 +102,15 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 					},
 				});
 
-				const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${message.id}`, {
-					method: "POST",
-					headers: {
-						signature: Config.get().security.requestSignature || "",
+				const cloneResponse = await fetch(
+					`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}/attachments/${attEnt.uploadFilename}/clone_to_message/${message.id}`,
+					{
+						method: "POST",
+						headers: {
+							signature: Config.get().security.requestSignature || "",
+						},
 					},
-				});
+				);
 
 				if (!cloneResponse.ok) {
 					console.error(`[Message] Failed to clone attachment ${attEnt.userFilename} to message ${message.id}`);
@@ -118,8 +121,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 				const realAtt = Attachment.create({
 					filename: attEnt.userFilename,
-					url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
-					proxy_url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
+					url: `${Config.get().cdn.endpointPublic || "http://localhost:3001"}/${cloneRespBody.new_path}`,
+					proxy_url: `${Config.get().cdn.endpointPublic || "http://localhost:3001"}/${cloneRespBody.new_path}`,
 					size: attEnt.size,
 					height: attEnt.height,
 					width: attEnt.width,

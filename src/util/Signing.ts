@@ -40,26 +40,17 @@ export class NewUrlSignatureData extends NewUrlUserSignatureData {
 		this.path = data.path;
 		this.url = data.url;
 		if (!this.path && !this.url) {
-			throw new Error(
-				"Either path or url must be provided for URL signing",
-			);
+			throw new Error("Either path or url must be provided for URL signing");
 		}
 		if (this.path && this.url) {
-			if (process.env["LOG_CDN_SIGNATURES"])
-				console.warn(
-					"[Signing] Both path and url are provided, using path for signing",
-					this,
-					new Error().stack,
-				);
+			if (process.env["LOG_CDN_SIGNATURES"]) console.warn("[Signing] Both path and url are provided, using path for signing", this, new Error().stack);
 		}
 		if (this.url) {
 			try {
 				const parsedUrl = new URL(this.url);
 				this.path = parsedUrl.pathname;
 			} catch (e) {
-				throw new Error(
-					"Invalid URL provided for signing: " + this.url,
-				);
+				throw new Error("Invalid URL provided for signing: " + this.url);
 			}
 		}
 	}
@@ -101,15 +92,10 @@ export class UrlSignResult {
 
 	static fromUrl(url: URL | string): UrlSignResult {
 		if (typeof url === "string") {
-			if (process.env["LOG_CDN_SIGNATURES"])
-				console.debug("[Signing] Parsing URL from string:", url);
+			if (process.env["LOG_CDN_SIGNATURES"]) console.debug("[Signing] Parsing URL from string:", url);
 			url = new URL(url);
 		}
-		if (process.env["LOG_CDN_SIGNATURES"])
-			console.debug(
-				"[Signing] Parsing URL from URL object:",
-				url.toString(),
-			);
+		if (process.env["LOG_CDN_SIGNATURES"]) console.debug("[Signing] Parsing URL from URL object:", url.toString());
 		const ex = url.searchParams.get("ex");
 		const is = url.searchParams.get("is");
 		const hm = url.searchParams.get("hm");
@@ -133,9 +119,7 @@ export const getUrlSignature = (data: NewUrlSignatureData): UrlSignResult => {
 	// calculate the expiration time
 	const now = Date.now();
 	const issuedAt = now.toString(16);
-	const expiresAt = (now + ms(cdnSignatureDuration as StringValue)).toString(
-		16,
-	);
+	const expiresAt = (now + ms(cdnSignatureDuration as StringValue)).toString(16);
 
 	// hash the url with the cdnSignatureKey
 	return calculateHash(
@@ -160,11 +144,7 @@ function calculateHash(request: UrlSignatureData): UrlSignResult {
 				"[Signing] CDN Signature IP is enabled but we couldn't find the IP field in the request. This may cause issues with signature validation. Please report this to the Spacebar team!",
 			);
 		else {
-			if (process.env["LOG_CDN_SIGNATURES"])
-				console.log(
-					"[Signing] CDN Signature IP is enabled, adding IP to hash:",
-					request.ip,
-				);
+			if (process.env["LOG_CDN_SIGNATURES"]) console.log("[Signing] CDN Signature IP is enabled, adding IP to hash:", request.ip);
 			data.update(request.ip!);
 		}
 	}
@@ -175,11 +155,7 @@ function calculateHash(request: UrlSignatureData): UrlSignResult {
 				"[Signing] CDN Signature User-Agent is enabled but we couldn't find the user-agent header in the request. This may cause issues with signature validation. Please report this to the Spacebar team!",
 			);
 		else {
-			if (process.env["LOG_CDN_SIGNATURES"])
-				console.log(
-					"[Signing] CDN Signature User-Agent is enabled, adding User-Agent to hash:",
-					request.userAgent,
-				);
+			if (process.env["LOG_CDN_SIGNATURES"]) console.log("[Signing] CDN Signature User-Agent is enabled, adding User-Agent to hash:", request.userAgent);
 			data.update(request.userAgent!);
 		}
 	}
@@ -197,12 +173,8 @@ function calculateHash(request: UrlSignatureData): UrlSignResult {
 			{
 				path: request.path,
 				validity: request.issuedAt + " .. " + request.expiresAt,
-				ua: Config.get().security.cdnSignatureIncludeUserAgent
-					? request.userAgent
-					: "[disabled]",
-				ip: Config.get().security.cdnSignatureIncludeIp
-					? request.ip
-					: "[disabled]",
+				ua: Config.get().security.cdnSignatureIncludeUserAgent ? request.userAgent : "[disabled]",
+				ip: Config.get().security.cdnSignatureIncludeIp ? request.ip : "[disabled]",
 			},
 			"->",
 			result,
@@ -216,8 +188,7 @@ export const isExpired = (data: UrlSignResult | UrlSignatureData) => {
 	const expiresAt = parseInt(data.expiresAt, 16);
 
 	if (Number.isNaN(issuedAt) || Number.isNaN(expiresAt)) {
-		if (process.env["LOG_CDN_SIGNATURES"])
-			console.debug("[Signing] Invalid timestamps in query");
+		if (process.env["LOG_CDN_SIGNATURES"]) console.debug("[Signing] Invalid timestamps in query");
 		return true;
 	}
 
@@ -225,38 +196,29 @@ export const isExpired = (data: UrlSignResult | UrlSignatureData) => {
 
 	const isExpired = expiresAt < currentTime;
 	if (isExpired) {
-		if (process.env["LOG_CDN_SIGNATURES"])
-			console.debug("[Signing] Signature expired");
+		if (process.env["LOG_CDN_SIGNATURES"]) console.debug("[Signing] Signature expired");
 		return true;
 	}
 
 	const isValidIssuedAt = issuedAt < currentTime;
 	if (!isValidIssuedAt) {
-		if (process.env["LOG_CDN_SIGNATURES"])
-			console.debug("[Signing] Signature issued in the future");
+		if (process.env["LOG_CDN_SIGNATURES"]) console.debug("[Signing] Signature issued in the future");
 		return true;
 	}
 
 	return false;
 };
 
-export const hasValidSignature = (
-	req: NewUrlUserSignatureData,
-	sig: UrlSignResult,
-) => {
+export const hasValidSignature = (req: NewUrlUserSignatureData, sig: UrlSignResult) => {
 	// if the required query parameters are not present, return false
 	if (!sig.expiresAt || !sig.issuedAt || !sig.hash) {
-		if (process.env["LOG_CDN_SIGNATURES"])
-			console.warn(
-				"[Signing] Missing required query parameters for signature validation",
-			);
+		if (process.env["LOG_CDN_SIGNATURES"]) console.warn("[Signing] Missing required query parameters for signature validation");
 		return false;
 	}
 
 	// check if the signature is expired
 	if (isExpired(sig)) {
-		if (process.env["LOG_CDN_SIGNATURES"])
-			console.warn("[Signing] Signature is expired");
+		if (process.env["LOG_CDN_SIGNATURES"]) console.warn("[Signing] Signature is expired");
 		return false;
 	}
 
@@ -273,42 +235,26 @@ export const hasValidSignature = (
 	const calculated = Buffer.from(calcd);
 	const received = Buffer.from(sig.hash as string);
 
-	console.assert(
-		sig.issuedAt == calcResult.issuedAt,
-		"[Signing] Mismatched issuedAt",
-		{
-			is: sig.issuedAt,
-			calculated: calcResult.issuedAt,
-		},
-	);
+	console.assert(sig.issuedAt == calcResult.issuedAt, "[Signing] Mismatched issuedAt", {
+		is: sig.issuedAt,
+		calculated: calcResult.issuedAt,
+	});
 
-	console.assert(
-		sig.expiresAt == calcResult.expiresAt,
-		"[Signing] Mismatched expiresAt",
-		{
-			ex: sig.expiresAt,
-			calculated: calcResult.expiresAt,
-		},
-	);
+	console.assert(sig.expiresAt == calcResult.expiresAt, "[Signing] Mismatched expiresAt", {
+		ex: sig.expiresAt,
+		calculated: calcResult.expiresAt,
+	});
 
-	console.assert(
-		calculated.length === received.length,
-		"[Signing] Mismatched hash length",
-		{
-			calculated: calculated.length,
-			received: received.length,
-		},
-	);
+	console.assert(calculated.length === received.length, "[Signing] Mismatched hash length", {
+		calculated: calculated.length,
+		received: received.length,
+	});
 
-	const isHashValid =
-		calculated.length === received.length &&
-		timingSafeEqual(calculated, received);
+	const isHashValid = calculated.length === received.length && timingSafeEqual(calculated, received);
 
 	if (!isHashValid)
 		if (process.env["LOG_CDN_SIGNATURES"])
-			console.warn(
-				`Signature validation for ${sig.path} (is=${sig.issuedAt}, ex=${sig.expiresAt}) failed: calculated: ${calcd}, received: ${sig.hash}`,
-			);
+			console.warn(`Signature validation for ${sig.path} (is=${sig.issuedAt}, ex=${sig.expiresAt}) failed: calculated: ${calcd}, received: ${sig.hash}`);
 
 	return isHashValid;
 };
