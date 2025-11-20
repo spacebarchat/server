@@ -68,7 +68,8 @@
 		"prettier": "^3.6.2",
 		"pretty-quick": "^4.2.2",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.9.3"
+		"typescript": "^5.9.3",
+		"typescript-json-schema": "^0.65.1"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.936.0",
@@ -111,7 +112,6 @@
 		"sqlite3": "^5.1.7",
 		"tslib": "^2.8.1",
 		"typeorm": "^0.3.27",
-		"typescript-json-schema": "^0.65.1",
 		"wretch": "^2.11.1",
 		"ws": "^8.18.3"
 	},
