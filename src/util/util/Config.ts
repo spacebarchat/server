@@ -51,9 +51,9 @@ export class Config {
 		if (Object.keys(config).length == 0) config = new ConfigValue();
 
 		config = OrmUtils.mergeDeep({}, { ...new ConfigValue() }, config);
-		config.cdn.endpointPrivate = "http://localhost:3001";
-		config.cdn.endpointPublic = "http://localhost:3001";
-		config.cdn.endpointClient = "http://localhost:3001";
+		config.cdn.endpointPrivate ||= "http://localhost:3001";
+		config.cdn.endpointPublic ||= "http://localhost:3001";
+		config.cdn.endpointClient ||= "http://localhost:3001";
 
 		return this.set(config);
 	}
