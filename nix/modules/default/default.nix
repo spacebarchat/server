@@ -97,7 +97,7 @@ in
         UMask = "077";
         WorkingDirectory = "/var/lib/spacebarchat-server/";
       }
-      // optionalAttrs (cfg.databaseFile != null) { EnvironmentFile = cfg.databaseFile; };
+      // lib.optionalAttrs (cfg.databaseFile != null) { EnvironmentFile = cfg.databaseFile; };
     };
   };
 }
