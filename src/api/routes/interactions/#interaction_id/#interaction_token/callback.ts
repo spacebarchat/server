@@ -16,10 +16,11 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, MessageComponentType, MessageCreateSchema, MessageType } from "@spacebar/schemas";
+import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, MessageComponentType, MessageType } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
+import { MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
 import { Request, Response, Router } from "express";
-import { emitEvent, FieldErrors, InteractionSuccessEvent, Message, MessageCreateEvent, pendingInteractions, User } from "@spacebar/util";
+import { emitEvent, FieldErrors, InteractionSuccessEvent, uploadFile, Attachment, pendingInteractions, User } from "@spacebar/util";
 import { sendMessage } from "../../../../util/handlers/Message";
 
 const router = Router({ mergeParams: true });
@@ -97,6 +98,17 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 			break;
 		case InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE: {
 			const user = await User.findOneOrFail({ where: { id: interaction.userId } });
+			const files = (req.files as Express.Multer.File[]) ?? [];
+			//I don't think traditional attachments are allowed anyways
+			const attachments: (Attachment | MessageCreateAttachment | MessageCreateCloudAttachment)[] = [];
+			for (const currFile of files) {
+				try {
+					const file = await uploadFile(`/attachments/${interaction.channelId}`, currFile);
+					attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
+				} catch (error) {
+					return res.status(400).json({ message: error?.toString() });
+				}
+			}
 			await sendMessage({
 				type: MessageType.APPLICATION_COMMAND,
 				timestamp: new Date(),
@@ -108,7 +120,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 				components: body.data.components || [],
 				tts: body.data.tts,
 				embeds: body.data.embeds || [],
-				attachments: body.data.attachments,
+				attachments,
 				poll: body.data.poll,
 				flags: body.data.flags,
 				reactions: [],
