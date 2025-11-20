@@ -452,7 +452,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			const channelUsers = channel.recipients?.map((recipient) => recipient.user.toPublicUser());
 
 			if (channelUsers && channelUsers.length > 0) channelUsers.forEach((user) => users.add(user));
-
 			return {
 				id: channel.id,
 				flags: channel.flags,
@@ -462,6 +461,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				icon: channel.icon,
 				name: channel.name,
 				is_spam: false, // TODO
+				owner_id: channel.owner_id,
 			};
 		});
 	const generateDmChannelsTime = taskSw.getElapsedAndReset();
