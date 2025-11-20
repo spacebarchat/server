@@ -41,9 +41,7 @@ export class Config {
 		} else {
 			console.log(`[Config] Using CONFIG_PATH rather than database`);
 			if (existsSync(process.env.CONFIG_PATH)) {
-				const file = JSON.parse(
-					(await fs.readFile(process.env.CONFIG_PATH)).toString(),
-				);
+				const file = JSON.parse((await fs.readFile(process.env.CONFIG_PATH)).toString());
 				config = file;
 			} else config = new ConfigValue();
 			pairs = generatePairs(config);
@@ -53,9 +51,12 @@ export class Config {
 		if (Object.keys(config).length == 0) config = new ConfigValue();
 
 		config = OrmUtils.mergeDeep({}, { ...new ConfigValue() }, config);
+		config.cdn.endpointPrivate = "http://localhost:3001";
+		config.cdn.endpointPublic = "http://localhost:3001";
+		config.cdn.endpointClient = "http://localhost:3001";
 
 		return this.set(config);
-	};
+	}
 	public static get() {
 		if (!config) {
 			// If we haven't initialised the config yet, return default config.
@@ -67,13 +68,13 @@ export class Config {
 		}
 
 		return config;
-	};
+	}
 	public static set(val: Partial<ConfigValue>) {
 		if (!config || !val) return;
 		config = OrmUtils.mergeDeep(config);
 
 		return applyConfig(config);
-	};
+	}
 }
 
 // TODO: better types
@@ -95,13 +96,12 @@ const generatePairs = (obj: object | null, key = ""): ConfigEntity[] => {
 
 async function applyConfig(val: ConfigValue) {
 	if (process.env.CONFIG_PATH)
-		if (!process.env.CONFIG_READONLY)
-			await fs.writeFile(overridePath, JSON.stringify(val, null, 4));
+		if (!process.env.CONFIG_READONLY) await fs.writeFile(overridePath, JSON.stringify(val, null, 4));
 		else console.log("[WARNING] JSON config file in use, and writing is disabled! Programmatic config changes will not be persisted, and your config will not get updated!");
 	else {
 		const pairs = generatePairs(val);
 		// keys are sorted to try to influence database order...
-		await Promise.all(pairs.sort((x, y) => x.key > y.key ? 1 : -1).map((pair) => pair.save()));
+		await Promise.all(pairs.sort((x, y) => (x.key > y.key ? 1 : -1)).map((pair) => pair.save()));
 	}
 	return val;
 }
@@ -119,8 +119,7 @@ function pairsToConfig(pairs: ConfigEntity[]) {
 		let i = 0;
 
 		for (const key of keys) {
-			if (!isNaN(Number(key)) && !prevObj[prev]?.length)
-				prevObj[prev] = obj = [];
+			if (!isNaN(Number(key)) && !prevObj[prev]?.length) prevObj[prev] = obj = [];
 			if (i++ === keys.length - 1) obj[key] = p.value;
 			else if (!obj[key]) obj[key] = {};
 
@@ -140,7 +139,7 @@ const validateConfig = async () => {
 
 	for (const row in config) {
 		// extension methods...
-		if(typeof config[row] === "function") continue;
+		if (typeof config[row] === "function") continue;
 
 		try {
 			const found = await ConfigEntity.findOne({
@@ -149,11 +148,7 @@ const validateConfig = async () => {
 			if (!found) continue;
 			config[row] = found;
 		} catch (e) {
-			console.error(
-				`Config key '${config[row].key}' has invalid JSON value : ${
-					(e as Error)?.message
-				}`,
-			);
+			console.error(`Config key '${config[row].key}' has invalid JSON value : ${(e as Error)?.message}`);
 			hasErrored = true;
 		}
 	}
@@ -161,9 +156,7 @@ const validateConfig = async () => {
 	console.log("[Config] Total config load time:", new Date().getTime() - totalStartTime.getTime(), "ms");
 
 	if (hasErrored) {
-		console.error(
-			"[Config] Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration",
-		);
+		console.error("[Config] Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration");
 		process.exit(1);
 	}
 

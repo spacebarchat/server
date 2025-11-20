@@ -17,7 +17,7 @@
 */
 
 export class EndpointConfiguration {
-	endpointClient: string | null = null;
-	endpointPrivate: string | null = null;
-	endpointPublic: string | null = null;
+	endpointClient: string | null = "http://localhost:3001";
+	endpointPrivate: string | null = "http://localhost:3001";
+	endpointPublic: string | null = "http://localhost:3001";
 }
