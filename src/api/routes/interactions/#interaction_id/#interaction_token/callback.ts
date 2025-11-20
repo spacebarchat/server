@@ -97,6 +97,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 			// TODO
 			break;
 		case InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE: {
+			/*
 			const user = await User.findOneOrFail({ where: { id: interaction.userId } });
 			const files = (req.files as Express.Multer.File[]) ?? [];
 			//I don't think traditional attachments are allowed anyways
@@ -109,6 +110,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 					return res.status(400).json({ message: error?.toString() });
 				}
 			}
+			*/
 			await sendMessage({
 				type: MessageType.APPLICATION_COMMAND,
 				timestamp: new Date(),
