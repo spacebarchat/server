@@ -2,7 +2,7 @@ self:
 { config, lib, pkgs, ... }:
 
 {
-  name = "example-test";
+  name = "test-bundle-starts";
 
   nodes.machine = {
     imports = [ self.nixosModules.default ];
