@@ -46,32 +46,44 @@
             };
 
             src = ./.;
-            nativeBuildInputs = with pkgs; [ python3 ];
+            nativeBuildInputs = with pkgs; [
+              python3
+              nodePackages.patch-package
+              jq
+            ];
             npmDepsHash = hashesFile.npmDepsHash;
             npmBuildScript = "build:src";
             makeCacheWritable = true;
             postPatch = ''
-              substituteInPlace package.json --replace 'npx patch-package' '${pkgs.nodePackages.patch-package}/bin/patch-package'
+              echo "Patching postinstall to use OS-provided patch-package"
+              jq -r '.scripts["postinstall"] = "patch-package"' package.json > package.tmp.json
+              mv package.tmp.json package.json
             '';
             installPhase = ''
               runHook preInstall
-              set -x
-              #remove packages not needed for production, or at least try to...
-              npm prune --omit dev --no-save $npmInstallFlags "''${npmInstallFlagsArray[@]}" $npmFlags "''${npmFlagsArray[@]}"
-              find node_modules -maxdepth 1 -type d -empty -delete
+              # set -x
 
+              # remove packages not needed for production, or at least try to...
+              npm prune --omit dev --no-save $npmInstallFlags "''${npmInstallFlagsArray[@]}" $npmFlags "''${npmFlagsArray[@]}"
+              ${./nix/trimNodeModules.sh}
+
+              # Copy outputs
+              echo "Installing package into $out"
               mkdir -p $out
               cp -r assets dist node_modules package.json $out/
+
+              # Create wrappers for start scripts
+              echo "Creating wrappers for start scripts"
               for i in dist/**/start.js
               do
-                makeWrapper ${pkgs.nodejs_24}/bin/node $out/bin/start-`dirname ''${i/dist\//}` --prefix NODE_PATH : $out/node_modules --add-flags $out/$i
+                makeWrapper ${pkgs.nodejs_24}/bin/node $out/bin/start-`dirname ''${i/dist\//}` --prefix NODE_PATH : $out/node_modules --add-flags --enable-source-maps --add-flags $out/$i
               done
 
-              set +x
+              # set +x
               runHook postInstall
             '';
 
-            passthru.tests = pkgs.testers.runNixOSTest (import ./nix/tests/test_1.nix self);
+            passthru.tests = pkgs.testers.runNixOSTest (import ./nix/tests/test-bundle-starts.nix self);
           };
 
           update-nix-hashes = pkgs.writeShellApplication {
@@ -124,8 +136,16 @@
         };
       }
     )
-    //
-    {
+    // {
       nixosModules.default = import ./nix/modules/default self;
+      checks =
+        let
+          pkgs = import nixpkgs { system = "x86_64-linux"; };
+        in
+        pkgs.lib.recursiveUpdate (pkgs.lib.attrsets.unionOfDisjoint { } self.packages) {
+          x86_64-linux = {
+            spacebar-server-tests = self.packages.x86_64-linux.default.passthru.tests;
+          };
+        };
     };
 }
