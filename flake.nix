@@ -12,21 +12,30 @@
       nixpkgs,
       flake-utils,
     }:
+    let
+      hashesFile = builtins.fromJSON (builtins.readFile ./hashes.json);
+      rVersion =
+        let
+          rev = self.sourceInfo.shortRev or self.sourceInfo.dirtyShortRev;
+          date = builtins.substring 0 8 self.sourceInfo.lastModifiedDate;
+          time = builtins.substring 8 6 self.sourceInfo.lastModifiedDate;
+        in
+        "preview.${date}-${time}+${rev}";
+    in
     flake-utils.lib.eachSystem flake-utils.lib.allSystems (
       system:
       let
         pkgs = import nixpkgs {
           inherit system;
         };
-        hashesFile = builtins.fromJSON (builtins.readFile ./hashes.json);
         lib = pkgs.lib;
       in
       {
         packages = {
           default = pkgs.buildNpmPackage {
             pname = "spacebar-server-ts";
-            name = "spacebar-server-ts";
             nodejs = pkgs.nodejs_24;
+            version = "1.0.0-" + rVersion;
 
             meta = with lib; {
               description = "Spacebar server, a FOSS reimplementation of the Discord backend.";
