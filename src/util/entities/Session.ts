@@ -42,7 +42,7 @@ export class Session extends BaseClass {
 	@Column({ nullable: false, select: false })
 	session_id: string;
 
-	@Column({ type: "simple-json", nullable: true })
+	@Column({ type: "simple-json", default: "[]" })
 	activities: Activity[];
 
 	@Column({ type: "simple-json", select: false })
@@ -59,10 +59,4 @@ export class Session extends BaseClass {
 	status: Status; //TODO enum
 }
 
-export const PrivateSessionProjection: (keyof Session)[] = [
-	"user_id",
-	"session_id",
-	"activities",
-	"client_info",
-	"status",
-];
+export const PrivateSessionProjection: (keyof Session)[] = ["user_id", "session_id", "activities", "client_info", "status"];
