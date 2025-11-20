@@ -109,7 +109,6 @@
           buildInputs = with pkgs; [
             nodejs_24
             nodePackages.typescript
-            nodePackages.ts-node
             nodePackages.patch-package
             nodePackages.prettier
           ];
