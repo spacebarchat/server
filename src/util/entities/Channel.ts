@@ -295,7 +295,7 @@ export class Channel extends BaseClass {
 			channel = await Channel.create({
 				name,
 				type,
-				owner_id: creator_user_id,
+				owner_id: type === ChannelType.GROUP_DM ? creator_user_id : undefined,
 				created_at: new Date(),
 				last_message_id: undefined,
 				recipients: channelRecipients.map((x) =>
