@@ -100,7 +100,7 @@
           tag = "latest";
           contents = [ self.packages.${system}.default ];
           config = {
-            Cmd = [ "${self.outputs.packages.x86_64-linux.default}/bin/start-bundle" ];
+            Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-bundle" ];
             Expose = [ "3001" ];
           };
         };
