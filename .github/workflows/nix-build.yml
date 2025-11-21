@@ -16,3 +16,4 @@ jobs:
     - uses: DeterminateSystems/magic-nix-cache-action@v13
     - run: nix build -L
     - run: nix develop --command echo OK
+    - run: nix flake check -vL
