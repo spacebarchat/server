@@ -53,7 +53,14 @@
             nativeBuildInputs = with pkgs; [
               python3
             ];
-            installPhase = ''
+            installPhase =
+            let
+                revsFile = pkgs.writeText "spacebar-server-rev.json" (builtins.toJSON {
+                  rev = self.sourceInfo.rev or self.sourceInfo.dirtyRev;
+                  shortRev = self.sourceInfo.shortRev or self.sourceInfo.dirtyShortRev;
+                  lastModified = self.sourceInfo.lastModified;
+                });
+            in ''
               runHook preInstall
               # set -x
 
@@ -65,6 +72,7 @@
               echo "Installing package into $out"
               mkdir -p $out
               cp -r assets dist node_modules package.json $out/
+              cp ${revsFile} $out/.rev
 
               # Create wrappers for start scripts
               echo "Creating wrappers for start scripts"
