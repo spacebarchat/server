@@ -4,7 +4,7 @@
 	"description": "A Spacebar server written in Node.js",
 	"scripts": {
 		"prepare": "husky install",
-		"postinstall": "npx patch-package",
+		"postinstall": "patch-package",
 		"start": "node --enable-source-maps dist/bundle/start.js",
 		"start:api": "node --enable-source-maps dist/api/start.js",
 		"start:cdn": "node --enable-source-maps dist/cdn/start.js",
@@ -65,6 +65,7 @@
 		"eslint": "^9.39.1",
 		"globals": "^16.5.0",
 		"husky": "^9.1.7",
+		"patch-package": "^8.0.1",
 		"prettier": "^3.6.2",
 		"pretty-quick": "^4.2.2",
 		"ts-node": "^10.9.2",

@@ -43,22 +43,16 @@
               license = licenses.agpl3Plus;
               platforms = platforms.all;
               mainProgram = "start-bundle";
+              maintainers = with maintainers; [ RorySys ]; # lol.
             };
 
             src = ./.;
-            nativeBuildInputs = with pkgs; [
-              python3
-              nodePackages.patch-package
-              jq
-            ];
             npmDepsHash = hashesFile.npmDepsHash;
             npmBuildScript = "build:src";
             makeCacheWritable = true;
-            postPatch = ''
-              echo "Patching postinstall to use OS-provided patch-package"
-              jq -r '.scripts["postinstall"] = "patch-package"' package.json > package.tmp.json
-              mv package.tmp.json package.json
-            '';
+            nativeBuildInputs = with pkgs; [
+              python3
+            ];
             installPhase = ''
               runHook preInstall
               # set -x
@@ -118,7 +112,7 @@
 
         containers.docker = pkgs.dockerTools.buildLayeredImage {
           name = "spacebar-server-ts";
-          tag = "latest";
+          tag = self.packages.${system}.default.version;
           contents = [ self.packages.${system}.default ];
           config = {
             Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-bundle" ];
@@ -145,6 +139,7 @@
         pkgs.lib.recursiveUpdate (pkgs.lib.attrsets.unionOfDisjoint { } self.packages) {
           x86_64-linux = {
             spacebar-server-tests = self.packages.x86_64-linux.default.passthru.tests;
+            docker-image = self.containers.x86_64-linux.docker;
           };
         };
     };
