@@ -17,14 +17,7 @@
 */
 
 import { HTTPError } from "lambert-server";
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	OneToMany,
-	RelationId,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent } from "../interfaces";
 import { InvisibleCharacters, Snowflake, emitEvent, getPermission, trimSpecial, Permissions, BitField } from "../util";
@@ -135,14 +128,10 @@ export class Channel extends BaseClass {
 	})
 	messages?: Message[];
 
-	@OneToMany(
-		() => VoiceState,
-		(voice_state: VoiceState) => voice_state.channel,
-		{
-			cascade: true,
-			orphanedRowAction: "delete",
-		},
-	)
+	@OneToMany(() => VoiceState, (voice_state: VoiceState) => voice_state.channel, {
+		cascade: true,
+		orphanedRowAction: "delete",
+	})
 	voice_states?: VoiceState[];
 
 	@OneToMany(() => ReadState, (read_state: ReadState) => read_state.channel, {
@@ -194,48 +183,22 @@ export class Channel extends BaseClass {
 		});
 
 		if (!opts?.skipNameChecks) {
-			if (
-				!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") &&
-				channel.name
-			) {
-				for (const character of InvisibleCharacters)
-					if (channel.name.includes(character))
-						throw new HTTPError(
-							"Channel name cannot include invalid characters",
-							403,
-						);
+			if (!guild.features.includes("ALLOW_INVALID_CHANNEL_NAMES") && channel.name) {
+				for (const character of InvisibleCharacters) if (channel.name.includes(character)) throw new HTTPError("Channel name cannot include invalid characters", 403);
 
 				// Categories skip these checks on discord.com
-				if (
-					channel.type !== ChannelType.GUILD_CATEGORY ||
-					guild.features.includes("IRC_LIKE_CATEGORY_NAMES")
-				) {
-					if (channel.name.includes(" "))
-						throw new HTTPError(
-							"Channel name cannot include invalid characters",
-							403,
-						);
+				if (channel.type !== ChannelType.GUILD_CATEGORY || guild.features.includes("IRC_LIKE_CATEGORY_NAMES")) {
+					if (channel.name.includes(" ")) throw new HTTPError("Channel name cannot include invalid characters", 403);
 
-					if (channel.name.match(/--+/g))
-						throw new HTTPError(
-							"Channel name cannot include multiple adjacent dashes.",
-							403,
-						);
+					if (channel.name.match(/--+/g)) throw new HTTPError("Channel name cannot include multiple adjacent dashes.", 403);
 
-					if (
-						channel.name.charAt(0) === "-" ||
-						channel.name.charAt(channel.name.length - 1) === "-"
-					)
-						throw new HTTPError(
-							"Channel name cannot start/end with dash.",
-							403,
-						);
+					if (channel.name.charAt(0) === "-" || channel.name.charAt(channel.name.length - 1) === "-")
+						throw new HTTPError("Channel name cannot start/end with dash.", 403);
 				} else channel.name = channel.name.trim(); //category names are trimmed client side on discord.com
 			}
 
 			if (!guild.features.includes("ALLOW_UNNAMED_CHANNELS")) {
-				if (!channel.name)
-					throw new HTTPError("Channel name cannot be empty.", 403);
+				if (!channel.name) throw new HTTPError("Channel name cannot be empty.", 403);
 			}
 		}
 
@@ -247,15 +210,8 @@ export class Channel extends BaseClass {
 					const exists = await Channel.findOneOrFail({
 						where: { id: channel.parent_id },
 					});
-					if (!exists)
-						throw new HTTPError(
-							"Parent id channel doesn't exist",
-							400,
-						);
-					if (exists.guild_id !== channel.guild_id)
-						throw new HTTPError(
-							"The category channel needs to be in the guild",
-						);
+					if (!exists) throw new HTTPError("Parent id channel doesn't exist", 400);
+					if (exists.guild_id !== channel.guild_id) throw new HTTPError("The category channel needs to be in the guild");
 				}
 				break;
 			case ChannelType.GUILD_CATEGORY:
@@ -272,9 +228,7 @@ export class Channel extends BaseClass {
 		if (!channel.permission_overwrites) channel.permission_overwrites = [];
 		// TODO: eagerly auto generate position of all guild channels
 
-		const position =
-			(channel.type === ChannelType.UNHANDLED ? 0 : channel.position) ||
-			0;
+		const position = (channel.type === ChannelType.UNHANDLED ? 0 : channel.position) || 0;
 
 		channel = {
 			...channel,
@@ -300,11 +254,7 @@ export class Channel extends BaseClass {
 		return ret;
 	}
 
-	static async createDMChannel(
-		recipients: string[],
-		creator_user_id: string,
-		name?: string,
-	) {
+	static async createDMChannel(recipients: string[], creator_user_id: string, name?: string) {
 		recipients = recipients.distinct().filter((x) => x !== creator_user_id);
 		// TODO: check config for max number of recipients
 		/** if you want to disallow note to self channels, uncomment the conditional below
@@ -315,8 +265,7 @@ export class Channel extends BaseClass {
 		}
 		**/
 
-		const type =
-			recipients.length > 1 ? ChannelType.GROUP_DM : ChannelType.DM;
+		const type = recipients.length > 1 ? ChannelType.GROUP_DM : ChannelType.DM;
 
 		let channel = null;
 
@@ -346,16 +295,13 @@ export class Channel extends BaseClass {
 			channel = await Channel.create({
 				name,
 				type,
-				owner_id: undefined,
+				owner_id: type === ChannelType.GROUP_DM ? creator_user_id : undefined,
 				created_at: new Date(),
 				last_message_id: undefined,
 				recipients: channelRecipients.map((x) =>
 					Recipient.create({
 						user_id: x,
-						closed: !(
-							type === ChannelType.GROUP_DM ||
-							x === creator_user_id
-						),
+						closed: !(type === ChannelType.GROUP_DM || x === creator_user_id),
 					}),
 				),
 				nsfw: false,
@@ -386,9 +332,7 @@ export class Channel extends BaseClass {
 
 	static async removeRecipientFromChannel(channel: Channel, user_id: string) {
 		await Recipient.delete({ channel_id: channel.id, user_id: user_id });
-		channel.recipients = channel.recipients?.filter(
-			(r) => r.user_id !== user_id,
-		);
+		channel.recipients = channel.recipients?.filter((r) => r.user_id !== user_id);
 
 		if (channel.recipients?.length === 0) {
 			await Channel.deleteChannel(channel);
@@ -440,20 +384,11 @@ export class Channel extends BaseClass {
 			select: { channel_ordering: true },
 		});
 
-		const updatedOrdering = guild.channel_ordering.filter(
-			(id) => id != channel.id,
-		);
-		await Guild.update(
-			{ id: channel.guild_id },
-			{ channel_ordering: updatedOrdering },
-		);
+		const updatedOrdering = guild.channel_ordering.filter((id) => id != channel.id);
+		await Guild.update({ id: channel.guild_id }, { channel_ordering: updatedOrdering });
 	}
 
-	static async calculatePosition(
-		channel_id: string,
-		guild_id: string,
-		guild?: Guild,
-	) {
+	static async calculatePosition(channel_id: string, guild_id: string, guild?: Guild) {
 		if (!guild)
 			guild = await Guild.findOneOrFail({
 				where: { id: guild_id },
@@ -470,11 +405,7 @@ export class Channel extends BaseClass {
 				select: { channel_ordering: true },
 			});
 
-		const channels = await Promise.all(
-			guild.channel_ordering.map((id) =>
-				Channel.findOne({ where: { id } }),
-			),
-		);
+		const channels = await Promise.all(guild.channel_ordering.map((id) => Channel.findOne({ where: { id } })));
 
 		return channels
 			.filter((channel) => channel !== null)
@@ -488,22 +419,16 @@ export class Channel extends BaseClass {
 	}
 
 	isDm() {
-		return (
-			this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM
-		);
+		return this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM;
 	}
 
 	// Does the channel support sending messages ( eg categories do not )
 	isWritable() {
-		const disallowedChannelTypes = [
-			ChannelType.GUILD_CATEGORY,
-			ChannelType.GUILD_STAGE_VOICE,
-			ChannelType.VOICELESS_WHITEBOARD,
-		];
+		const disallowedChannelTypes = [ChannelType.GUILD_CATEGORY, ChannelType.GUILD_STAGE_VOICE, ChannelType.VOICELESS_WHITEBOARD];
 		return disallowedChannelTypes.indexOf(this.type) == -1;
 	}
 
-	async getUserPermissions(opts: {user_id?: string, user?: User, member?: Member, guild?: Guild}): Promise<Permissions> {
+	async getUserPermissions(opts: { user_id?: string; user?: User; member?: Member; guild?: Guild }): Promise<Permissions> {
 		let guild = opts.guild;
 		if (!guild) {
 			if (this.guild) guild = this.guild;
@@ -523,20 +448,21 @@ export class Channel extends BaseClass {
 
 		let member = opts.member;
 		if (!member) {
-			if (opts.user) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user.id }, relations: [ "roles" ] });
-			else if (opts.user_id) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user_id }, relations: [ "roles" ] });
+			if (opts.user) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user.id }, relations: ["roles"] });
+			else if (opts.user_id) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user_id }, relations: ["roles"] });
 			else {
 				console.error("Channel.getUserPermissions: called without user or member for non-DM channel.");
 				return Permissions.NONE;
 			}
 		}
 
-		const roles = (member.roles || (await Member.findOneOrFail({ where: { guild_id: guild.id, index: member.index }, relations: [ "roles" ] })).roles)
-			.sort((a, b) => a.position - b.position); // ascending by position
+		const roles = (member.roles || (await Member.findOneOrFail({ where: { guild_id: guild.id, index: member.index }, relations: ["roles"] })).roles).sort(
+			(a, b) => a.position - b.position,
+		); // ascending by position
 
 		// calculate user's channel perms - should in theory match https://docs.discord.food/topics/permissions#permission-overwrites
 		// start at role permissions
-		let userPerms = new Permissions(new BitField(0).add(roles.map(r => r.permissions)));
+		let userPerms = new Permissions(new BitField(0).add(roles.map((r) => r.permissions)));
 
 		// TODO: do we want to have an instance-wide opt out of this behavior? It would just be an extra if statement here
 		if (userPerms.has(Permissions.FLAGS.ADMINISTRATOR)) return userPerms;
@@ -544,11 +470,11 @@ export class Channel extends BaseClass {
 		// apply channel overrides
 		if (this.permission_overwrites) {
 			// role overwrites - TODO: this probably violates the geneva conventions - we should probably be ordering roles here
-			for (const overwrite of this.permission_overwrites.filter(o => o.type === ChannelPermissionOverwriteType.role && roles.map(r => r.id).includes(o.id)))
+			for (const overwrite of this.permission_overwrites.filter((o) => o.type === ChannelPermissionOverwriteType.role && roles.map((r) => r.id).includes(o.id)))
 				userPerms = new Permissions(userPerms.remove(overwrite.deny).add(overwrite.allow));
 
 			// member overwrite, throws if somehow we have multiple overwrites for the same member
-			const memberOverwrite = this.permission_overwrites.single(o => o.type === ChannelPermissionOverwriteType.member && o.id === member?.id);
+			const memberOverwrite = this.permission_overwrites.single((o) => o.type === ChannelPermissionOverwriteType.member && o.id === member?.id);
 			if (memberOverwrite) userPerms = new Permissions(userPerms.remove(memberOverwrite.deny).add(memberOverwrite.allow));
 		}
 
@@ -556,8 +482,8 @@ export class Channel extends BaseClass {
 	}
 
 	// TODO: should we throw for missing args?
-	async canViewChannel(opts: {user_id?: string, user?: User, member?: Member, guild?: Guild}): Promise<boolean> {
-		if(this.isDm()) return await this.canViewDmChannel(opts.user_id, opts.user);
+	async canViewChannel(opts: { user_id?: string; user?: User; member?: Member; guild?: Guild }): Promise<boolean> {
+		if (this.isDm()) return await this.canViewDmChannel(opts.user_id, opts.user);
 
 		const userPerms = await this.getUserPermissions(opts);
 		return userPerms.has("VIEW_CHANNEL");
@@ -570,9 +496,9 @@ export class Channel extends BaseClass {
 			return false;
 		}
 		if (!user) return false;
-		if (this.recipients)
-			return this.recipients.some((r) => r.user_id === user.id && !r.closed);
-		else { // we dont have recipients on hand
+		if (this.recipients) return this.recipients.some((r) => r.user_id === user.id && !r.closed);
+		else {
+			// we dont have recipients on hand
 			const recipient = await Recipient.findOne({ where: { channel_id: this.id, user_id: user.id } });
 			return recipient == null ? false : !recipient.closed;
 		}
