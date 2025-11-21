@@ -120,6 +120,8 @@
         <entry key="js.build_tools.npm">
           <value>
             <map>
+              <entry key="Build" value="STOPPED" />
+              <entry key="Clean" value="STOPPED" />
               <entry key="Start API" value="STOPPED" />
               <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
