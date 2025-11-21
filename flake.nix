@@ -120,7 +120,7 @@
 
         containers.docker = pkgs.dockerTools.buildLayeredImage {
           name = "spacebar-server-ts";
-          tag = self.packages.${system}.default.version;
+          tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.default.version;
           contents = [ self.packages.${system}.default ];
           config = {
             Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-bundle" ];
