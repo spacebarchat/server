@@ -111,18 +111,28 @@
           <value>
             <map>
               <entry key="Start API" value="STOPPED" />
+              <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
-              <entry key="build" value="STOPPED" />
+              <entry key="Start bundle" value="STOPPED" />
             </map>
           </value>
         </entry>
       </map>
     </option>
   </component>
+  <component name="RunManager" selected="Compound.Start separated">
+    <list>
+      <item itemvalue="Compound.Start separated" />
+      <item itemvalue="npm.Start API" />
+      <item itemvalue="npm.Start CDN" />
+      <item itemvalue="npm.Start Gateway" />
+      <item itemvalue="npm.Start bundle" />
+    </list>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9c94529fcfe0-JavaScript-WS-252.26199.162" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-WS-252.27397.92" />
       </set>
     </attachedChunks>
   </component>
@@ -149,6 +159,7 @@
       <workItem from="1760044946282" duration="43683000" />
       <workItem from="1760402350251" duration="49898000" />
       <workItem from="1760538864442" duration="1330000" />
+      <workItem from="1763745191714" duration="16112000" />
     </task>
     <servers />
   </component>
