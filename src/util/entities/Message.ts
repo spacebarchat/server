@@ -284,6 +284,9 @@ export class Message extends BaseClass {
 		// try 2 now that we have a guild
 		if (!opts.member) opts.member = await Member.findOneOrFail({ where: { id: opts.author!.id, guild_id: opts.guild!.id } });
 
+		// set reply type if a message if referenced
+		if (opts.message_reference && !opts.type) message.type = MessageType.REPLY;
+
 		// backpropagate ids
 		opts.channel_id = opts.channel.id;
 		opts.guild_id = opts.guild.id;
