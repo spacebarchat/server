@@ -530,7 +530,7 @@ export async function sendMessage(opts: MessageOptions) {
 
 	const ephermal = (message.flags & (1 << 6)) !== 0;
 	await Promise.all([
-		ephermal ? null : Message.insert(message),
+		Message.insert(message),
 		emitEvent({
 			event: "MESSAGE_CREATE",
 			...(ephermal ? { user_id: message.interaction_metadata?.user_id } : { channel_id: message.channel_id }),
