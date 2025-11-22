@@ -22,7 +22,7 @@ import { Role } from "./Role";
 import { Channel } from "./Channel";
 import { InteractionType } from "../interfaces/Interaction";
 import { Application } from "./Application";
-import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId, FindOneOptions, Raw, Not, BaseEntity } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
@@ -306,4 +306,33 @@ export class Message extends BaseClass {
 		});
 		return message;
 	}
+	static addDefault(options: FindOneOptions<Message>) {
+		if (options.where) {
+			const arr = options.where instanceof Array ? options.where : [options.where];
+			for (const thing of arr) {
+				if (!("flags" in thing)) {
+					thing.flags = Not(Raw((alias) => `${alias} & ${1 << 6} = ${1 << 6}`));
+				}
+			}
+		}
+	}
 }
+
+//@ts-expect-error It works but TS types hate it
+Message.findOneOrFail = function (this: Message, options: FindOneOptions<Message>): Promise<Message> {
+	Message.addDefault(options as FindOneOptions<Message>);
+	//@ts-expect-error how to use generics on call, who knows!
+	return BaseEntity.findOneOrFail.call(Message, options);
+};
+//@ts-expect-error It works but TS types hate it
+Message.findOne = function (this: Message, options: FindOneOptions<Message>): Promise<Message> {
+	Message.addDefault(options as FindOneOptions<Message>);
+	//@ts-expect-error how to use generics on call, who knows!
+	return BaseEntity.findOne.call(Message, options);
+};
+//@ts-expect-error It works but TS types hate it
+Message.find = function (this: Message, options: FindOneOptions<Message>): Promise<Message[]> {
+	Message.addDefault(options as FindOneOptions<Message>);
+	//@ts-expect-error how to use generics on call, who knows!
+	return BaseEntity.find.call(Message, options);
+};
