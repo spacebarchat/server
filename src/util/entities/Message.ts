@@ -30,6 +30,7 @@ import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
 import { NewUrlUserSignatureData } from "../Signing";
 import { ActionRowComponent, ApplicationCommandType, Embed, MessageType, PartialMessage, Poll, Reaction } from "@spacebar/schemas";
+import { MessageFlags } from "@spacebar/util";
 
 @Entity({
 	name: "messages",
@@ -311,7 +312,7 @@ export class Message extends BaseClass {
 			const arr = options.where instanceof Array ? options.where : [options.where];
 			for (const thing of arr) {
 				if (!("flags" in thing)) {
-					thing.flags = Not(Raw((alias) => `${alias} & ${1 << 6} = ${1 << 6}`));
+					thing.flags = Not(Raw((alias) => `${alias} & ${MessageFlags.FLAGS.PRIVATE_ROUTE} = ${MessageFlags.FLAGS.PRIVATE_ROUTE}`));
 				}
 			}
 		}
