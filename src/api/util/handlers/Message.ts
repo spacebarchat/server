@@ -512,7 +512,6 @@ export async function postHandleMessage(message: Message) {
 			console.error(`[Embeds] Error while generating embed for ${link}`, e);
 		}
 	}
-	const ephermal = (message.flags & (1 << 6)) !== 0;
 
 	await Promise.all([
 		emitEvent({
@@ -520,7 +519,7 @@ export async function postHandleMessage(message: Message) {
 			channel_id: message.channel_id,
 			data,
 		} as MessageUpdateEvent),
-		ephermal ? null : Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: data.embeds }),
+		Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: data.embeds }),
 		...cachePromises,
 	]);
 }
