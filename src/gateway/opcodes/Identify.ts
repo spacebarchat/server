@@ -97,7 +97,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const user = await tryGetUserFromToken(identify.token, {
 		relations: ["relationships", "relationships.to", "settings"],
-		select: [...PrivateUserProjection, "relationships"],
+		select: [...PrivateUserProjection, "relationships", "rights"],
 	});
 	if (!user) {
 		console.log("[Gateway] Failed to identify user");
