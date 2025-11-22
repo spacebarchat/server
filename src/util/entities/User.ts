@@ -197,10 +197,10 @@ export class User extends BaseClass {
 		return user as PublicUser;
 	}
 
-	toPrivateUser() {
+	toPrivateUser(extraFields: (keyof User)[] = []) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const user: any = {};
-		PrivateUserProjection.forEach((x) => {
+		[...PrivateUserProjection, ...extraFields].forEach((x) => {
 			user[x] = this[x];
 		});
 		return user as UserPrivate;

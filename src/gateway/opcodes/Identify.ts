@@ -519,7 +519,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const d: ReadyEventData = {
 		v: 9,
 		application: application ? { id: application.id, flags: application.flags } : undefined,
-		user: user.toPrivateUser(),
+		user: user.toPrivateUser(["rights"]),
 		user_settings: user.settings,
 		user_settings_proto: settingsProtos?.userSettings ? PreloadedUserSettings.toBase64(settingsProtos.userSettings) : undefined,
 		user_settings_proto_json: settingsProtos?.userSettings ? PreloadedUserSettings.toJson(settingsProtos.userSettings) : undefined,
