@@ -29,7 +29,7 @@ export type RightResolvable =
 	| RightString;
 
 type RightString = keyof typeof Rights.FLAGS;
-// TODO: just like roles for members, users should have privilidges which combine multiple rights into one and make it easy to assign
+// TODO: just like roles for members, users should have priviliges which combine multiple rights into one and make it easy to assign
 
 export class Rights extends BitField {
 	constructor(bits: BitFieldResolvable = 0) {
@@ -86,12 +86,12 @@ export class Rights extends BitField {
 		INITIATE_INTERACTIONS: BitFlag(40), // can initiate interactions
 		RESPOND_TO_INTERACTIONS: BitFlag(41), // can respond to interactions
 		SEND_BACKDATED_EVENTS: BitFlag(42), // can send backdated events
-		USE_MASS_INVITES: BitFlag(43), // added per @xnacly's request — can accept mass invites
-		ACCEPT_INVITES: BitFlag(44), // added per @xnacly's request — can accept user-specific invites and DM requests
+		USE_MASS_INVITES: BitFlag(43), // added per @xnacly's request - can accept mass invites
+		ACCEPT_INVITES: BitFlag(44), // added per @xnacly's request - can accept user-specific invites and DM requests
 		SELF_EDIT_FLAGS: BitFlag(45), // can modify own flags
 		EDIT_FLAGS: BitFlag(46), // can set others' flags
 		MANAGE_GROUPS: BitFlag(47), // can manage others' groups
-		VIEW_SERVER_STATS: BitFlag(48), // added per @chrischrome's request — can view server stats)
+		VIEW_SERVER_STATS: BitFlag(48), // added per @chrischrome's request - can view server stats)
 		RESEND_VERIFICATION_EMAIL: BitFlag(49), // can resend verification emails (/auth/verify/resend)
 		CREATE_REGISTRATION_TOKENS: BitFlag(50), // can create registration tokens (/auth/generate-registration-tokens)
 	};

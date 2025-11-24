@@ -1,10 +1,8 @@
-using System.Diagnostics;
-using ArcaneLibs;
 using ArcaneLibs.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RabbitMQ.Client;
+using Spacebar.AdminAPI.Extensions;
 using Spacebar.AdminApi.Models;
 using Spacebar.AdminAPI.Services;
 using Spacebar.Db.Contexts;
@@ -15,12 +13,14 @@ namespace Spacebar.AdminAPI.Controllers;
 
 [ApiController]
 [Route("/Guilds")]
-public class GuildController(ILogger<GuildController> logger, Configuration config, RabbitMQConfiguration amqpConfig, SpacebarDbContext db, RabbitMQService mq, IServiceProvider sp, AuthenticationService authService) : ControllerBase {
+public class GuildController(ILogger<GuildController> logger, Configuration config, RabbitMQConfiguration amqpConfig, SpacebarDbContext db, RabbitMQService mq, IServiceProvider sp, AuthenticationService auth) : ControllerBase {
     private readonly ILogger<GuildController> _logger = logger;
 
     [HttpGet]
-    public IAsyncEnumerable<GuildModel> Get() {
-        return db.Guilds.Select(x => new GuildModel {
+    public async IAsyncEnumerable<GuildModel> Get() {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        
+        var results = db.Guilds.Select(x => new GuildModel {
             Id = x.Id,
             AfkChannelId = x.AfkChannelId,
             AfkTimeout = x.AfkTimeout,
@@ -70,16 +70,21 @@ public class GuildController(ILogger<GuildController> logger, Configuration conf
             BanCount = x.Bans.Count(),
             VoiceStateCount = x.VoiceStates.Count(),
         }).AsAsyncEnumerable();
+        await foreach (var result in results) {
+            yield return result;
+        }
     }
     
     [HttpPost("{id}/force_join")]
     public async Task<IActionResult> ForceJoinGuild([FromBody] ForceJoinRequest request, string id) {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        
         var guild = await db.Guilds.FindAsync(id);
         if (guild == null) {
             return NotFound(new { entity = "Guild", id, message = "Guild not found" });
         }
         
-        var userId = request.UserId ?? config.OverrideUid ?? (await authService.GetCurrentUser(Request)).Id;
+        var userId = request.UserId ?? config.OverrideUid ?? (await auth.GetCurrentUser(Request)).Id;
         var user = await db.Users.FindAsync(userId);
         if (user == null) {
             return NotFound(new { entity = "User", id = userId, message = "User not found" });
@@ -138,6 +143,8 @@ public class GuildController(ILogger<GuildController> logger, Configuration conf
 
     [HttpGet("{id}/delete")]
     public async IAsyncEnumerable<AsyncActionResult> DeleteUser(string id, [FromQuery] int messageDeleteChunkSize = 100) {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        
         var user = await db.Users.FindAsync(id);
         if (user == null) {
             Console.WriteLine($"User {id} not found");
