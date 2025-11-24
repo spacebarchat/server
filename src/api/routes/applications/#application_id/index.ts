@@ -119,12 +119,10 @@ router.post(
 		if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
 		if (app.owner.totp_secret && (!req.body.code || verifyToken(app.owner.totp_secret, req.body.code))) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
-
-		await Application.delete({ id: app.id });
-
 		if (app.bot) {
 			await User.delete({ id: app.id });
 		}
+		await Application.delete({ id: app.id });
 
 		res.send().status(200);
 	},
