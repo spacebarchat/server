@@ -88,26 +88,17 @@ export class Permissions extends BitField {
 		// CUSTOM_PERMISSION: BigInt(1) << BigInt(0) + CUSTOM_PERMISSION_OFFSET
 	};
 
-	static ALL_PERMISSIONS = Object.values(Permissions.FLAGS).reduce(
-		(total, val) => total | val,
-		BigInt(0),
-	);
+	static ALL_PERMISSIONS = Object.values(Permissions.FLAGS).reduce((total, val) => total | val, BigInt(0));
 
 	any(permission: PermissionResolvable, checkAdmin = true) {
-		return (
-			(checkAdmin && super.any(Permissions.FLAGS.ADMINISTRATOR)) ||
-			super.any(permission)
-		);
+		return (checkAdmin && super.any(Permissions.FLAGS.ADMINISTRATOR)) || super.any(permission);
 	}
 
 	/**
 	 * Checks whether the bitfield has a permission, or multiple permissions.
 	 */
 	has(permission: PermissionResolvable, checkAdmin = true) {
-		return (
-			(checkAdmin && super.has(Permissions.FLAGS.ADMINISTRATOR)) ||
-			super.has(permission)
-		);
+		return (checkAdmin && super.has(Permissions.FLAGS.ADMINISTRATOR)) || super.has(permission);
 	}
 
 	/**
@@ -115,30 +106,21 @@ export class Permissions extends BitField {
 	 */
 	hasThrow(permission: PermissionResolvable) {
 		if (this.has(permission) && this.has("VIEW_CHANNEL")) return true;
-		throw new HTTPError(
-			`You are missing the following permissions ${permission}`,
-			403,
-		);
+		throw new HTTPError(`You are missing the following permissions ${permission}`, 403);
 	}
 
 	overwriteChannel(overwrites: ChannelPermissionOverwrite[]) {
 		if (!overwrites) return this;
 		if (!this.cache) throw new Error("permission chache not available");
 		overwrites = overwrites.filter((x) => {
-			if (x.type === ChannelPermissionOverwriteType.role && this.cache.roles?.some((r) => r.id === x.id))
-				return true;
+			if (x.type === ChannelPermissionOverwriteType.role && this.cache.roles?.some((r) => r.id === x.id)) return true;
 			if (x.type === ChannelPermissionOverwriteType.member && x.id == this.cache.user_id) return true;
 			return false;
 		});
-		return new Permissions(
-			Permissions.channelPermission(overwrites, this.bitfield),
-		);
+		return new Permissions(Permissions.channelPermission(overwrites, this.bitfield));
 	}
 
-	static channelPermission(
-		overwrites: ChannelPermissionOverwrite[],
-		init?: bigint,
-	) {
+	static channelPermission(overwrites: ChannelPermissionOverwrite[], init?: bigint) {
 		// TODO: do not deny any permissions if admin
 		return overwrites.reduce(
 			(permission, overwrite) => {
@@ -146,10 +128,7 @@ export class Permissions extends BitField {
 				// * permission: current calculated permission (e.g. 010)
 				// * deny contains all denied permissions (e.g. 011)
 				// * allow contains all explicitly allowed permisions (e.g. 100)
-				return (
-					(permission & ~BigInt(overwrite.deny)) |
-					BigInt(overwrite.allow)
-				);
+				return (permission & ~BigInt(overwrite.deny)) | BigInt(overwrite.allow);
 				// ~ operator inverts deny (e.g. 011 -> 100)
 				// & operator only allows 1 for both ~deny and permission (e.g. 010 & 100 -> 000)
 				// | operators adds both together (e.g. 000 + 100 -> 100)
@@ -160,10 +139,7 @@ export class Permissions extends BitField {
 
 	static rolePermission(roles: Role[]) {
 		// adds all permissions of all roles together (Bit OR)
-		return roles.reduce(
-			(permission, role) => permission | BigInt(role.permissions),
-			BigInt(0),
-		);
+		return roles.reduce((permission, role) => permission | BigInt(role.permissions), BigInt(0));
 	}
 
 	static finalPermission({
@@ -194,8 +170,7 @@ export class Permissions extends BitField {
 		}
 
 		if (channel?.recipient_ids) {
-			if (channel?.owner_id === user.id)
-				return new Permissions("ADMINISTRATOR");
+			if (channel?.owner_id === user.id) return new Permissions("ADMINISTRATOR");
 			if (channel.recipient_ids.includes(user.id)) {
 				// Default dm permissions
 				return new Permissions([
@@ -221,10 +196,7 @@ export class Permissions extends BitField {
 	}
 
 	static NONE: Permissions = new Permissions(0);
-	static ALL: Permissions = new Permissions(Object.values(Permissions.FLAGS).reduce(
-		(total, val) => total | val,
-		BigInt(0),
-	));
+	static ALL: Permissions = new Permissions(Object.values(Permissions.FLAGS).reduce((total, val) => total | val, BigInt(0)));
 }
 
 export type PermissionCache = {
@@ -237,8 +209,8 @@ export type PermissionCache = {
 
 export async function getPermission(
 	user_id?: string,
-	guild_id?: string,
-	channel_id?: string,
+	guild_id?: string | Guild,
+	channel_id?: string | Channel,
 	opts: {
 		guild_select?: (keyof Guild)[];
 		guild_relations?: string[];
@@ -253,33 +225,31 @@ export async function getPermission(
 	let member: Member | undefined;
 	let guild: Guild | undefined;
 
-	if (channel_id) {
+	if (typeof channel_id === "string") {
 		channel = await Channel.findOneOrFail({
 			where: { id: channel_id },
 			relations: ["recipients", ...(opts.channel_relations || [])],
-			select: [
-				"id",
-				"recipients",
-				"permission_overwrites",
-				"owner_id",
-				"guild_id",
-				...(opts.channel_select || []),
-			],
+			select: ["id", "recipients", "permission_overwrites", "owner_id", "guild_id", ...(opts.channel_select || [])],
 		});
 		if (channel.guild_id) guild_id = channel.guild_id; // derive guild_id from the channel
+	} else if (channel_id) {
+		channel = channel_id;
 	}
 
 	if (guild_id) {
-		guild = await Guild.findOneOrFail({
-			where: { id: guild_id },
-			select: ["id", "owner_id", ...(opts.guild_select || [])],
-			relations: opts.guild_relations,
-		});
-		if (guild.owner_id === user_id)
-			return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
+		if (typeof guild_id === "string") {
+			guild = await Guild.findOneOrFail({
+				where: { id: guild_id },
+				select: ["id", "owner_id", ...(opts.guild_select || [])],
+				relations: opts.guild_relations,
+			});
+		} else {
+			guild = guild_id;
+		}
+		if (guild.owner_id === user_id) return new Permissions(Permissions.FLAGS.ADMINISTRATOR);
 
 		member = await Member.findOneOrFail({
-			where: { guild_id, id: user_id },
+			where: { guild_id: guild.id, id: user_id },
 			relations: ["roles", ...(opts.member_relations || [])],
 			// select: [
 			// "id",		// TODO: Bug in typeorm? adding these selects breaks the query.
