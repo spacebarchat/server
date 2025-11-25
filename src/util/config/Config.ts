@@ -37,7 +37,7 @@ import {
 	SecurityConfiguration,
 	TemplateConfiguration,
 	UserConfiguration,
-} from "../config";
+} from "./types";
 
 export class ConfigValue {
 	gateway: EndpointConfiguration = new EndpointConfiguration();
@@ -58,7 +58,6 @@ export class ConfigValue {
 	defaults: DefaultsConfiguration = new DefaultsConfiguration();
 	external: ExternalTokensConfiguration = new ExternalTokensConfiguration();
 	email: EmailConfiguration = new EmailConfiguration();
-	passwordReset: PasswordResetConfiguration =
-		new PasswordResetConfiguration();
+	passwordReset: PasswordResetConfiguration = new PasswordResetConfiguration();
 	user: UserConfiguration = new UserConfiguration();
 }

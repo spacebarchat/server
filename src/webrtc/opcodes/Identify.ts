@@ -17,10 +17,7 @@
 */
 
 import { CLOSECODES } from "@spacebar/gateway";
-import {
-	StreamSession,
-	VoiceState,
-} from "@spacebar/util";
+import { EnvConfig, StreamSession, User, VoiceState } from "@spacebar/util";
 import {
 	validateSchema,
 	VoiceIdentifySchema,
@@ -88,6 +85,11 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 
 	this.user_id = user_id;
 	this.session_id = session_id;
+
+	const user = await User.findOneOrFail({ where: { id: user_id } });
+	this.logUserRef = EnvConfig.get().logging.gatewayLogging.logUserId
+		? `${user.id}${EnvConfig.get().logging.gatewayLogging.logSessionId ? `/${this.session_id}` : ""}`
+		: `${user.username.substring(0, 16).padStart(16, " ")}#${user.discriminator}`;
 
 	this.type = type;
 

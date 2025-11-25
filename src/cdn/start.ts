@@ -22,7 +22,8 @@ import { config } from "dotenv";
 config({ quiet: true});
 
 import { CDNServer } from "./Server";
-const server = new CDNServer({ port: Number(process.env.PORT) || 3003 });
+import { EnvConfig } from "@spacebar/util";
+const server = new CDNServer({ port: EnvConfig.get().port || 3003 });
 server
 	.start()
 	.then(() => {

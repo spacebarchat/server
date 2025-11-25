@@ -110,14 +110,28 @@
         <entry key="js.build_tools.npm">
           <value>
             <map>
+              <entry key="Build" value="STOPPED" />
+              <entry key="Clean" value="STOPPED" />
               <entry key="Start API" value="STOPPED" />
+              <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
-              <entry key="build" value="STOPPED" />
+              <entry key="Start bundle" value="STOPPED" />
             </map>
           </value>
         </entry>
       </map>
     </option>
+  </component>
+  <component name="RunManager" selected="Compound.Start separated">
+    <list>
+      <item itemvalue="Compound.Start separated" />
+      <item itemvalue="npm.Start API" />
+      <item itemvalue="npm.Start CDN" />
+      <item itemvalue="npm.Start Gateway" />
+      <item itemvalue="npm.Start bundle" />
+      <item itemvalue="npm.Build" />
+      <item itemvalue="npm.Clean" />
+    </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>

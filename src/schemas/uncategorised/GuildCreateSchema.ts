@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChannelModifySchema } from "@spacebar/schemas*";
+import { ChannelModifySchema } from "@spacebar/schemas";
 
 export interface GuildCreateSchema {
 	/**

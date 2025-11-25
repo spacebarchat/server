@@ -28,6 +28,7 @@ import {
 	FindOptionsSelectByString,
 } from "typeorm";
 import * as console from "node:console";
+import { EnvConfig } from "../config";
 
 export const JWTOptions: VerifyOptions = { algorithms: ["HS256"] };
 
@@ -37,7 +38,7 @@ export type UserTokenData = {
 };
 
 function logAuth(text: string) {
-	if(process.env.LOG_AUTH !== "true") return;
+	if(!EnvConfig.get().logging.logAuthentication) return;
 	console.log(`[AUTH] ${text}`);
 }
 
