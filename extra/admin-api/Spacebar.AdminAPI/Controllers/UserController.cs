@@ -4,6 +4,7 @@ using ArcaneLibs.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
+using Spacebar.AdminAPI.Extensions;
 using Spacebar.AdminApi.Models;
 using Spacebar.AdminAPI.Services;
 using Spacebar.Db.Contexts;
@@ -14,12 +15,14 @@ namespace Spacebar.AdminAPI.Controllers;
 
 [ApiController]
 [Route("/users")]
-public class UserController(ILogger<UserController> logger, Configuration config, RabbitMQConfiguration amqpConfig, SpacebarDbContext db, RabbitMQService mq, IServiceProvider sp) : ControllerBase {
+public class UserController(ILogger<UserController> logger, Configuration config, RabbitMQConfiguration amqpConfig, SpacebarDbContext db, RabbitMQService mq, IServiceProvider sp, AuthenticationService auth) : ControllerBase {
     private readonly ILogger<UserController> _logger = logger;
 
     [HttpGet]
-    public IAsyncEnumerable<UserModel> Get() {
-        return db.Users.Select(x => new UserModel {
+    public async IAsyncEnumerable<UserModel> Get() {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        
+        var results = db.Users.Select(x => new UserModel {
             Id = x.Id,
             Username = x.Username,
             Discriminator = x.Discriminator,
@@ -57,10 +60,15 @@ public class UserController(ILogger<UserController> logger, Configuration config
             GuildCount = x.Guilds.Count,
             OwnedGuildCount = x.Guilds.Count(g => g.OwnerId == x.Id)
         }).AsAsyncEnumerable();
+        
+        await foreach (var user in results) {
+            yield return user;
+        }
     }
 
     [HttpGet("meow")]
     public async Task Meow() {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
         Console.WriteLine("meow");
 
         ConnectionFactory factory = new ConnectionFactory();
@@ -141,6 +149,8 @@ public class UserController(ILogger<UserController> logger, Configuration config
 
     [HttpGet("{id}/delete")]
     public async IAsyncEnumerable<AsyncActionResult> DeleteUser(string id, [FromQuery] int messageDeleteChunkSize = 100) {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        
         var user = await db.Users.FindAsync(id);
         if (user == null) {
             Console.WriteLine($"User {id} not found");
@@ -248,6 +258,8 @@ public class UserController(ILogger<UserController> logger, Configuration config
 
     [HttpGet("duplicate")]
     public async Task<IActionResult> Duplicate() {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        
         var msg = db.Messages.First();
         var channels = db.Channels.Select(x => new { x.Id, x.GuildId }).ToList();
         int count = 1;
@@ -291,6 +303,8 @@ public class UserController(ILogger<UserController> logger, Configuration config
 
     [HttpGet("duplicate/{id}")]
     public async Task<IActionResult> DuplicateMessage(ulong id, [FromQuery] int count = 100) {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        
         var msg = await db.Messages.FindAsync(id.ToString());
         int createdCount = 1;
         while (true) {
@@ -335,6 +349,8 @@ public class UserController(ILogger<UserController> logger, Configuration config
 
     [HttpGet("truncate_messages")]
     public async Task TruncateMessages() {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        
         var channels = db.Channels.Select(x => new { x.Id, x.GuildId }).ToList();
 
         var ss = new SemaphoreSlim(12, 12);
@@ -364,6 +380,8 @@ public class UserController(ILogger<UserController> logger, Configuration config
     }
 
     private async IAsyncEnumerable<T> AggregateAsyncEnumerablesWithoutOrder<T>(params IEnumerable<IAsyncEnumerable<T>> enumerables) {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        
         var enumerators = enumerables.Select(e => e.GetAsyncEnumerator()).ToList();
         var tasks = enumerators.Select(e => e.MoveNextAsync().AsTask()).ToList();
 
@@ -439,6 +457,8 @@ public class UserController(ILogger<UserController> logger, Configuration config
 
     [HttpGet("test")]
     public async IAsyncEnumerable<string> Test() {
+        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        
         var factory = new ConnectionFactory {
             Uri = new Uri(amqpConfig.ToConnectionString())
         };
