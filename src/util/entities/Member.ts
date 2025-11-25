@@ -133,7 +133,7 @@ export class Member extends BaseClassWithoutId {
 	@Column({ nullable: true })
 	pronouns?: string;
 
-	@Column({ nullable: true })
+	@Column({ nullable: true, type: Date })
 	communication_disabled_until: Date | null;
 
 	// TODO: add this when we have proper read receipts
